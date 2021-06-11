@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Net.WebSockets;
 using System.Text;
@@ -30,39 +31,83 @@ namespace Friflo.Json.Flow.Database.Remote
         public async Task Connect() {
             var uri = new Uri(endpoint);
             await websocket.ConnectAsync(uri, CancellationToken.None).ConfigureAwait(false);
+            _ = MessageReceiver();
         }
         
         public async Task Close() {
             await websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
         }
-
-        protected override async Task<JsonResponse> ExecuteRequestJson(string jsonSyncRequest, SyncContext syncContext) {
-            try {
-                byte[] requestBytes  = Encoding.UTF8.GetBytes(jsonSyncRequest);
-                var arraySegment    = new ArraySegment<byte>(requestBytes, 0, requestBytes.Length);
-                await websocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
-                
-                var         buffer      = new ArraySegment<byte>(new byte[8192]);
-                using (var memoryStream = new MemoryStream()) {
-                    if (websocket.State != WebSocketState.Open) {
-                        return JsonResponse.CreateResponseError(syncContext, $"WebSocket not Open. {endpoint}", RequestStatusType.Error);
-                    }
+        
+        private async Task MessageReceiver() {
+            var        buffer       = new ArraySegment<byte>(new byte[8192]);
+            using (var memoryStream = new MemoryStream()) {
+                while (true) {
                     memoryStream.Position = 0;
                     memoryStream.SetLength(0);
                     WebSocketReceiveResult wsResult;
                     do {
+                        if (websocket.State != WebSocketState.Open) {
+                            Console.WriteLine($"Pre-ReceiveAsync. State: {websocket.State}");
+                            return;
+                        }
                         wsResult = await websocket.ReceiveAsync(buffer, CancellationToken.None).ConfigureAwait(false);
                         memoryStream.Write(buffer.Array, buffer.Offset, wsResult.Count);
                     }
                     while(!wsResult.EndOfMessage);
-                    
+                    if (websocket.State != WebSocketState.Open) {
+                        Console.WriteLine($"Post-ReceiveAsync. State: {websocket.State}");
+                        return;
+                    }
                     var messageType = wsResult.MessageType;
                     if (messageType != WebSocketMessageType.Text) {
-                        return JsonResponse.CreateResponseError(syncContext, $"Expect WebSocket message type text. type: {messageType} {endpoint}", RequestStatusType.Error);
+                        Console.WriteLine($"Expect WebSocket message type text. type: {messageType} {endpoint}");
+                        continue;
                     }
                     var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
-                    return new JsonResponse(requestContent, RequestStatusType.Ok);
+                    OnReceive (requestContent); 
                 }
+            }
+        }
+        
+        private ConcurrentQueue<WebsocketRequest> requestQueue = new ConcurrentQueue<WebsocketRequest>();
+        
+        
+        private void OnReceive(string messageJson) {
+            var contextPools    = new Pools(Pools.SharedPools);
+            using (var pooledMapper = contextPools.ObjectMapper.Get()) {
+                var reader = pooledMapper.instance.reader;
+                var message = reader.Read<WebSocketMessage>(messageJson);
+                if (message.response != null) {
+                    if (requestQueue.TryDequeue(out WebsocketRequest request)) {
+                        if (websocket.State != WebSocketState.Open) {
+                            var error = JsonResponse.CreateResponseError(request.syncContext, $"WebSocket not Open. {endpoint}", RequestStatusType.Error);
+                            request.response.SetResult(error);
+                            return;
+                        }
+                        var writer = pooledMapper.instance.writer;
+                        var responseJson = writer.Write(message.response);
+                        var response = new JsonResponse(responseJson, RequestStatusType.Ok);
+                        request.response.SetResult(response);
+                        return;
+                    }
+                    return;
+                }
+                if (message.push != null) {
+                    throw new NotImplementedException("");
+                }
+            }
+        }
+
+        protected override async Task<JsonResponse> ExecuteRequestJson(string jsonSyncRequest, SyncContext syncContext) {
+            try {
+                byte[] requestBytes = Encoding.UTF8.GetBytes(jsonSyncRequest);
+                var arraySegment    = new ArraySegment<byte>(requestBytes, 0, requestBytes.Length);
+                await websocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);
+                var request         = new WebsocketRequest(syncContext);
+                requestQueue.Enqueue(request);
+                
+                var response = await request.response.Task;
+                return response;
             }
             catch (Exception e) {
                 var error = ResponseError.ErrorFromException(e);
@@ -71,5 +116,21 @@ namespace Friflo.Json.Flow.Database.Remote
                 return JsonResponse.CreateResponseError(syncContext, error.ToString(), RequestStatusType.Exception);
             }
         }
+    }
+    
+    internal class WebsocketRequest {
+        internal readonly   SyncContext                         syncContext;
+        internal readonly   TaskCompletionSource<JsonResponse>  response;          
+        
+        internal WebsocketRequest(SyncContext syncContext) {
+            response = new TaskCompletionSource<JsonResponse>(); 
+            this.syncContext    = syncContext;
+        }
+    }
+    
+    public class WebSocketMessage
+    {
+        public DatabaseResponse response;
+        public PushMessage      push;
     }
 }

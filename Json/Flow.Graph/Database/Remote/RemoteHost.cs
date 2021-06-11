@@ -29,7 +29,7 @@ namespace Friflo.Json.Flow.Database.Remote
             return result;
         }
 
-        public async Task<JsonResponse> ExecuteRequestJson(string jsonRequest, SyncContext syncContext) {
+        public async Task<JsonResponse> ExecuteRequestJson(string jsonRequest, SyncContext syncContext, ResponseType type) {
             try {
                 string jsonResponse;
                 using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
@@ -41,13 +41,26 @@ namespace Friflo.Json.Flow.Database.Remote
                     DatabaseResponse response = await ExecuteRequest(request, syncContext).ConfigureAwait(false);
                     mapper.WriteNullMembers = false;
                     mapper.Pretty = true;
-                    jsonResponse = mapper.Write(response);
+                    jsonResponse = CreateResponse(mapper.writer, response, type);
                 }
                 return new JsonResponse(jsonResponse, RequestStatusType.Ok);
             } catch (Exception e) {
                 var errorMsg = ResponseError.ErrorFromException(e).ToString();
                 return JsonResponse.CreateResponseError(syncContext, errorMsg, RequestStatusType.Exception);
             }
+        }
+        
+        private string CreateResponse (ObjectWriter writer, DatabaseResponse response, ResponseType type) {
+            switch (type) {
+                case ResponseType.Response:
+                    return writer.Write(response);
+                case ResponseType.Message:
+                    var message = new WebSocketMessage {
+                        response = response
+                    };
+                    return writer.Write(message);
+            }
+            throw new InvalidOperationException("can't be reached");
         }
         
         private async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, SyncContext syncContext) {
@@ -58,6 +71,12 @@ namespace Friflo.Json.Flow.Database.Remote
                     throw new NotImplementedException();
             }
         }
+    }
+    
+    // todo should be named MessageType
+    public enum ResponseType {
+        Response,
+        Message
     }
     
     public enum RequestStatusType {

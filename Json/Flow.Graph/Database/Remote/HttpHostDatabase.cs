@@ -99,7 +99,7 @@ namespace Friflo.Json.Flow.Database.Remote
 
                 var contextPools    = new Pools(Pools.SharedPools);
                 var syncContext     = new SyncContext(contextPools, null);
-                var     result      = await ExecuteRequestJson(requestContent, syncContext).ConfigureAwait(false);
+                var     result      = await ExecuteRequestJson(requestContent, syncContext, ResponseType.Response).ConfigureAwait(false);
                 syncContext.pools.AssertNoLeaks();
                 byte[]  resultBytes = Encoding.UTF8.GetBytes(result.body);
                 HttpStatusCode statusCode;
@@ -148,7 +148,7 @@ namespace Friflo.Json.Flow.Database.Remote
                                 var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
                                 var contextPools    = new Pools(Pools.SharedPools);
                                 var syncContext     = new SyncContext(contextPools, target);
-                                var result          = await ExecuteRequestJson(requestContent, syncContext).ConfigureAwait(false);
+                                var result          = await ExecuteRequestJson(requestContent, syncContext, ResponseType.Message).ConfigureAwait(false);
                                 syncContext.pools.AssertNoLeaks();
                                 byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);
                                 var arraySegment    = new ArraySegment<byte>(resultBytes, 0, resultBytes.Length);
@@ -227,11 +227,12 @@ namespace Friflo.Json.Flow.Database.Remote
             return webSocket.State == WebSocketState.Open;
         }
         
-        public async Task<bool> SendMessage(PushMessage message, SyncContext syncContext) {
+        public async Task<bool> SendMessage(PushMessage push, SyncContext syncContext) {
             using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                 var writer = pooledMapper.instance.writer;
                 writer.WriteNullMembers = false;
                 writer.Pretty           = true;
+                var message = new WebSocketMessage { push = push };
                 var jsonMessage         = writer.Write(message);
                 byte[] jsonBytes        = Encoding.UTF8.GetBytes(jsonMessage);
                 try {
