@@ -33,6 +33,7 @@ namespace Friflo.Json.Flow.Graph
         // --- non readonly
         internal            SyncStore                       sync;
         internal            LogTask                         tracerLogTask;
+        internal            IChangeListener                 changeListener;
 
         
         internal StoreIntern(
@@ -55,6 +56,7 @@ namespace Friflo.Json.Flow.Graph
             objectPatcher       = new ObjectPatcher(jsonMapper);
             contextPools        = new Pools(Pools.SharedPools);
             tracerLogTask       = null;
+            changeListener      = null;
         }
     }
 
@@ -159,6 +161,10 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
+        public void SetChangeListener(IChangeListener changeListener) {
+            _intern.changeListener = changeListener;
+        }
+        
         // ------------------------------------------- internals -------------------------------------------
         private async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             SyncResponse response;
@@ -255,7 +261,7 @@ namespace Friflo.Json.Flow.Graph
                     foreach (var containerResult in containerResults) {
                         ContainerEntities containerEntities = containerResult.Value;
                         var set = _intern.setByName[containerResult.Key];
-                        set.SyncPeerEntities(containerEntities.entities, null);
+                        set.SyncPeerEntities(containerEntities.entities);
                     }
                     SetErrors(response);
                 } else {

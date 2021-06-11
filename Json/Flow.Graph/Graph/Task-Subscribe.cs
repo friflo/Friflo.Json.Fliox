@@ -8,12 +8,11 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public abstract class ChangeListener {}
-    
-    public abstract class ChangeListener<T> : ChangeListener where T : Entity
+    public interface IChangeListener
     {
-        public virtual void CreatedEntities(List<T> entities) {}
+        void OnSubscribeChanges(DatabaseMessage message);
     }
+    
     
     public class SubscribeTask<T> : SyncTask where T : Entity
     {

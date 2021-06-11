@@ -26,9 +26,8 @@ namespace Friflo.Json.Flow.Graph
         internal static readonly QueryPath RefQueryPath = new RefQueryPath();
         
         internal  abstract  void            LogSetChangesInternal   (LogTask logTask);
-        internal  abstract  void            SyncPeerEntities        (Dictionary<string, EntityValue> entities, ChangeListener changeListener);
+        internal  abstract  void            SyncPeerEntities        (Dictionary<string, EntityValue> entities);
         internal  abstract  void            ResetSync               ();
-        internal  abstract  ChangeListener  GetChangeListener();
 
         protected EntitySet(string name) {
             this.name = name;
@@ -42,7 +41,6 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   ObjectPatcher       objectPatcher;
         internal readonly   Tracer              tracer;
         internal readonly   EntityStore         store;
-        internal            ChangeListener      changeListener;
 
         internal SetIntern(EntityStore store) {
             jsonMapper      = store._intern.jsonMapper;
@@ -50,7 +48,6 @@ namespace Friflo.Json.Flow.Graph
             objectPatcher   = store._intern.objectPatcher;
             tracer          = new Tracer(store._intern.typeCache, store);
             this.store      = store;
-            changeListener  = null;
         }
     }
     
@@ -74,8 +71,6 @@ namespace Friflo.Json.Flow.Graph
         
         internal override   SyncSet                             Sync => sync;
         public   override   string                              ToString() => SetInfo.ToString();
-        
-        internal override   ChangeListener                      GetChangeListener() => intern.changeListener;
         
         internal override   SetInfo                             SetInfo { get {
             var info = new SetInfo (name) { peers = peers.Count };
@@ -119,22 +114,22 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- Subscribe
-        public SubscribeTask<T> Subscribe(HashSet<TaskType> types, Expression<Func<T, bool>> filter, ChangeListener<T> changeListener) {
+        public SubscribeTask<T> Subscribe(HashSet<TaskType> types, Expression<Func<T, bool>> filter) {
             var op = Operation.FromFilter(filter);
-            var task = sync.SubscribeFilter(types, op, changeListener);
+            var task = sync.SubscribeFilter(types, op);
             intern.store.AddTask(task);
             return task;
         }
         
-        public SubscribeTask<T> SubscribeByFilter(HashSet<TaskType> types, EntityFilter<T> filter, ChangeListener<T> changeListener) {
-            var task = sync.SubscribeFilter(types, filter.op, changeListener);
+        public SubscribeTask<T> SubscribeByFilter(HashSet<TaskType> types, EntityFilter<T> filter) {
+            var task = sync.SubscribeFilter(types, filter.op);
             intern.store.AddTask(task);
             return task;
         }
         
-        public SubscribeTask<T> SubscribeAll(HashSet<TaskType> types, ChangeListener<T> changeListener) {
+        public SubscribeTask<T> SubscribeAll(HashSet<TaskType> types) {
             var all = Operation.FilterTrue;
-            var task = sync.SubscribeFilter(types, all, changeListener);
+            var task = sync.SubscribeFilter(types, all);
             intern.store.AddTask(task);
             return task;
         }
@@ -330,11 +325,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- EntitySet
-        internal override void SyncPeerEntities(Dictionary<string, EntityValue> entities, ChangeListener changeListener) {
-            var typedListener = (ChangeListener<T>)changeListener;
-            List<T> createdEntities = null;
-            if (typedListener != null)
-                createdEntities = new List<T>();
+        internal override void SyncPeerEntities(Dictionary<string, EntityValue> entities) {
                 
             foreach (var entityPair in entities) {
                 var id = entityPair.Key;
@@ -371,11 +362,7 @@ namespace Friflo.Json.Flow.Graph
                     peer.SetPatchSourceNull();
                 }
                 peer.assigned = true;
-                if (createdEntities != null)
-                    createdEntities.Add(peer.Entity);
             }
-            if (typedListener != null)
-                typedListener.CreatedEntities(createdEntities);
         }
 
         internal override void ResetSync() {

@@ -22,9 +22,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
     {
         [Test] public async Task TestSubscribe      () { await TestCreate(async (store) => await AssertSubscribe ()); }
 
-        private class ArticleChanges : ChangeListener<Article> {
-            public override void CreatedEntities(List<Article> entities) {
-            }
+        private class StoreChanges : IChangeListener {
+            public void OnSubscribeChanges (DatabaseMessage message) { }
         }
         
         private static async Task AssertSubscribe() {
@@ -34,7 +33,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var useStore     = new PocStore(fileDatabase)) {
                 fileDatabase.messageBroker = messageBroker;
                 var types = new HashSet<TaskType>(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
-                var subscribeArticles = useStore.articles.SubscribeAll(types, new ArticleChanges());
+                useStore.SetChangeListener(new StoreChanges());
+                var subscribeArticles = useStore.articles.SubscribeAll(types);
                 
                 await useStore.Sync(); // -------- Sync --------
                 
