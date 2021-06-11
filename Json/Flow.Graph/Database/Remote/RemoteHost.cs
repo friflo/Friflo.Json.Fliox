@@ -55,7 +55,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 case ResponseType.Response:
                     return writer.Write(response);
                 case ResponseType.Message:
-                    var message = new WebSocketMessage { resp = response };
+                    var message = new DatabaseMessage { resp = response };
                     return writer.Write(message);
             }
             throw new InvalidOperationException("can't be reached");

@@ -79,7 +79,7 @@ namespace Friflo.Json.Flow.Database.Remote
             using (var pooledMapper = contextPools.ObjectMapper.Get()) {
                 var reader = pooledMapper.instance.reader;
                 try {
-                    var message = reader.Read<WebSocketMessage>(messageJson);
+                    var message = reader.Read<DatabaseMessage>(messageJson);
                     if (message.resp != null) {
                         if (requestQueue.TryDequeue(out WebsocketRequest request)) {
                             if (websocket.State != WebSocketState.Open) {
@@ -136,9 +136,5 @@ namespace Friflo.Json.Flow.Database.Remote
         }
     }
     
-    public class WebSocketMessage
-    {
-        public DatabaseResponse resp;
-        public DatabaseEvent    ev;
-    }
+
 }

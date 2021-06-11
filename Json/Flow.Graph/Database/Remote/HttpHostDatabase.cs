@@ -232,7 +232,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 var writer = pooledMapper.instance.writer;
                 writer.WriteNullMembers = false;
                 writer.Pretty           = true;
-                var message         = new WebSocketMessage { ev = ev };
+                var message         = new DatabaseMessage { ev = ev };
                 var jsonMessage     = writer.Write(message);
                 byte[] jsonBytes    = Encoding.UTF8.GetBytes(jsonMessage);
                 try {
