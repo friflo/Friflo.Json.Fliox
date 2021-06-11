@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Database
     {
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
-        public              MessageBroker                       messageBroker;
+        public              EventBroker                         eventBroker;
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 
@@ -106,9 +106,9 @@ namespace Friflo.Json.Flow.Database
             }
             response.AssertResponse(syncRequest);
             
-            if (messageBroker != null) {
-                messageBroker.EnqueueSyncTasks(syncRequest);
-                await messageBroker.SendQueueMessages().ConfigureAwait(false);
+            if (eventBroker != null) {
+                eventBroker.EnqueueSyncTasks(syncRequest);
+                await eventBroker.SendQueueMessages().ConfigureAwait(false);
             }
             
             return response;

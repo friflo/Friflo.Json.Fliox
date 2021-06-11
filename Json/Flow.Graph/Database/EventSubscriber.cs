@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Database
     public class EventSubscriber {
         private  readonly   IEventTarget                            eventTarget;
         /// key: <see cref="SubscribeChanges.container"/>
-        internal readonly   Dictionary<string, SubscribeChanges>   subscribeMap = new Dictionary<string, SubscribeChanges>();
+        internal readonly   Dictionary<string, SubscribeChanges>    subscribeMap = new Dictionary<string, SubscribeChanges>();
         internal readonly   ConcurrentQueue<DatabaseEvent>          queue = new ConcurrentQueue<DatabaseEvent>();
         
         public EventSubscriber (IEventTarget eventTarget) {

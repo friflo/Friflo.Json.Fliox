@@ -19,20 +19,20 @@ namespace Friflo.Json.Flow.Sync
         public   override   string      ToString()  => container;
 
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
-            var messageBroker = database.messageBroker;
-            if (messageBroker == null)
+            var eventBroker = database.eventBroker;
+            if (eventBroker == null)
                 return Task.FromResult<TaskResult>(InvalidTask("database has no messageBroker"));
             
             var messageTarget = syncContext.eventTarget;
             if (messageTarget == null)
                 return Task.FromResult<TaskResult>(InvalidTask("caller/request doesnt provide a messageTarget"));
             
-            messageBroker.Subscribe(this, messageTarget);
-            return Task.FromResult<TaskResult>(new SubscribeMessagesResult());
+            eventBroker.Subscribe(this, messageTarget);
+            return Task.FromResult<TaskResult>(new SubscribeChangesResult());
         }
     }
     
-    public class SubscribeMessagesResult : TaskResult
+    public class SubscribeChangesResult : TaskResult
     {
         internal override   TaskType    TaskType => TaskType.subscribe;
     }

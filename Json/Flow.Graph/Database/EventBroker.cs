@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Database
         Task<bool>  SendEvent(DatabaseEvent ev, SyncContext syncContext);
     }
     
-    public class MessageBroker : IDisposable
+    public class EventBroker : IDisposable
     {
         private readonly JsonEvaluator                              jsonEvaluator = new JsonEvaluator();
         private readonly Dictionary<IEventTarget, EventSubscriber>  subscribers = new Dictionary<IEventTarget, EventSubscriber>();
@@ -44,8 +44,8 @@ namespace Friflo.Json.Flow.Database
                 List<DatabaseTask>  tasks = null;
                 EventSubscriber     subscriber = pair.Value;
                 foreach (var task in syncRequest.tasks) {
-                    foreach (var messagePair in subscriber.subscribeMap) {
-                        SubscribeChanges subscribeChanges = messagePair.Value;
+                    foreach (var changesPair in subscriber.subscribeMap) {
+                        SubscribeChanges subscribeChanges = changesPair.Value;
                         var taskResult = FilterTask(task, subscribeChanges);
                         if (taskResult == null)
                             continue;

@@ -28,10 +28,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         private static async Task AssertSubscribe() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
-            using (var messageBroker= new MessageBroker())
+            using (var eventBroker  = new EventBroker())
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var useStore     = new PocStore(fileDatabase)) {
-                fileDatabase.messageBroker = messageBroker;
+                fileDatabase.eventBroker = eventBroker;
                 var types = new HashSet<TaskType>(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
                 useStore.SetChangeListener(new StoreChanges());
                 var subscribeArticles = useStore.articles.SubscribeAll(types);

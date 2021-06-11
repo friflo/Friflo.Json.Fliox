@@ -81,7 +81,7 @@ namespace Friflo.Json.Flow.Sync
     [Fri.Polymorph(typeof(PatchEntitiesResult),     Discriminant = "patch")]
     [Fri.Polymorph(typeof(DeleteEntitiesResult),    Discriminant = "delete")]
     [Fri.Polymorph(typeof(EchoResult),              Discriminant = "echo")]
-    [Fri.Polymorph(typeof(SubscribeMessagesResult), Discriminant = "subscribe")]
+    [Fri.Polymorph(typeof(SubscribeChangesResult), Discriminant = "subscribe")]
     //
     [Fri.Polymorph(typeof(TaskErrorResult),         Discriminant = "error")]
     public abstract class TaskResult
