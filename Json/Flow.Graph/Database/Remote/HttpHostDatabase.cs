@@ -128,18 +128,18 @@ namespace Friflo.Json.Flow.Database.Remote
         
         private async Task AcceptWebSocket(HttpListenerContext ctx) {
             var         wsContext   = await ctx.AcceptWebSocketAsync(null);
-            WebSocket   ws          = wsContext.WebSocket;
+            WebSocket   websocket   = wsContext.WebSocket;
             var         buffer      = new ArraySegment<byte>(new byte[8192]);
-            WebSocketTarget target  = new WebSocketTarget(ws);
+            WebSocketTarget target  = new WebSocketTarget(websocket);
             using (var memoryStream = new MemoryStream()) {
                 while (true) {
-                    switch (ws.State) {
+                    switch (websocket.State) {
                         case WebSocketState.Open:
                             memoryStream.Position = 0;
                             memoryStream.SetLength(0);
                             WebSocketReceiveResult wsResult;
                             do {
-                                wsResult = await ws.ReceiveAsync(buffer, CancellationToken.None).ConfigureAwait(false);
+                                wsResult = await websocket.ReceiveAsync(buffer, CancellationToken.None).ConfigureAwait(false);
                                 memoryStream.Write(buffer.Array, buffer.Offset, wsResult.Count);
                             }
                             while(!wsResult.EndOfMessage);
@@ -152,12 +152,12 @@ namespace Friflo.Json.Flow.Database.Remote
                                 syncContext.pools.AssertNoLeaks();
                                 byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);
                                 var arraySegment    = new ArraySegment<byte>(resultBytes, 0, resultBytes.Length);
-                                await ws.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+                                await websocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                             }
                             break;
                         case WebSocketState.CloseReceived:
                             Log("WebSocket CloseReceived");
-                            await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+                            await websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
                             return;
                         case WebSocketState.Closed:
                             Log("WebSocket Closed");
@@ -232,9 +232,9 @@ namespace Friflo.Json.Flow.Database.Remote
                 var writer = pooledMapper.instance.writer;
                 writer.WriteNullMembers = false;
                 writer.Pretty           = true;
-                var message = new WebSocketMessage { push = push };
-                var jsonMessage         = writer.Write(message);
-                byte[] jsonBytes        = Encoding.UTF8.GetBytes(jsonMessage);
+                var message         = new WebSocketMessage { push = push };
+                var jsonMessage     = writer.Write(message);
+                byte[] jsonBytes    = Encoding.UTF8.GetBytes(jsonMessage);
                 try {
                     var arraySegment    = new ArraySegment<byte>(jsonBytes, 0, jsonBytes.Length);
                     await webSocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);

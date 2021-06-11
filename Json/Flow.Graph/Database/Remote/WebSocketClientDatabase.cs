@@ -48,6 +48,7 @@ namespace Friflo.Json.Flow.Database.Remote
                     memoryStream.Position = 0;
                     memoryStream.SetLength(0);
                     WebSocketReceiveResult wsResult;
+                    
                     do {
                         if (websocket.State != WebSocketState.Open) {
                             Console.WriteLine($"Pre-ReceiveAsync. State: {websocket.State}");
@@ -57,6 +58,7 @@ namespace Friflo.Json.Flow.Database.Remote
                         memoryStream.Write(buffer.Array, buffer.Offset, wsResult.Count);
                     }
                     while(!wsResult.EndOfMessage);
+                    
                     if (websocket.State != WebSocketState.Open) {
                         Console.WriteLine($"Post-ReceiveAsync. State: {websocket.State}");
                         return;
@@ -78,7 +80,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 var reader = pooledMapper.instance.reader;
                 try {
                     var message = reader.Read<WebSocketMessage>(messageJson);
-                    if (message.response != null) {
+                    if (message.resp != null) {
                         if (requestQueue.TryDequeue(out WebsocketRequest request)) {
                             if (websocket.State != WebSocketState.Open) {
                                 var error = JsonResponse.CreateResponseError(request.syncContext, $"WebSocket not Open. {endpoint}", RequestStatusType.Error);
@@ -86,7 +88,7 @@ namespace Friflo.Json.Flow.Database.Remote
                                 return;
                             }
                             var writer = pooledMapper.instance.writer;
-                            var responseJson = writer.Write(message.response);
+                            var responseJson = writer.Write(message.resp);
                             var response = new JsonResponse(responseJson, RequestStatusType.Ok);
                             request.response.SetResult(response);
                             return;
@@ -136,7 +138,7 @@ namespace Friflo.Json.Flow.Database.Remote
     
     public class WebSocketMessage
     {
-        public DatabaseResponse response;
+        public DatabaseResponse resp;
         public PushMessage      push;
     }
 }
