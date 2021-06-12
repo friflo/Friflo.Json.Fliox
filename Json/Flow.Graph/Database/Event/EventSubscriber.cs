@@ -19,7 +19,7 @@ namespace Friflo.Json.Flow.Database.Event
             this.eventTarget  = eventTarget;
         }
         
-        internal async Task SendMessages () {
+        internal async Task SendEvents () {
             if (!eventTarget.IsOpen())
                 return;
             
