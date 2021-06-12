@@ -4,17 +4,17 @@
 namespace Friflo.Json.Flow.Sync
 {
     /// <summary>
-    /// A container for different types of message classified into request, response and event messages.
-    /// It is used in communication protocols which support more than request/response schema.
+    /// A container for different types of a message classified into request, response and event.
+    /// It is used in communication protocols which support more than the request / response schema.
     /// Only one of its fields is set at a time.
     /// 
     /// <para>
-    ///     <see cref="DatabaseMessage"/>'s are used for WebSocket communication to notify about event messages having
-    ///     no corresponding request message.
+    ///     <see cref="DatabaseMessage"/>'s are used for WebSocket communication to notify multiple events to a client
+    ///     having sent only a single subscription request upfront.
     /// </para>
     /// <para>
-    ///     <see cref="DatabaseMessage"/>' are not not used for HTTP communication as HTTP support request / response
-    ///     pattern by itself and has not support for events. 
+    ///     <see cref="DatabaseMessage"/>' are not used for HTTP communication as HTTP support request / response
+    ///     pattern by itself and has no mechanism to implements event messages.
     /// </para>
     /// </summary>
     public class DatabaseMessage
