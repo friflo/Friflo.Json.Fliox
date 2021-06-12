@@ -84,6 +84,8 @@ namespace Friflo.Json.Flow.Database.Remote
                 string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod} {req.UserAgent}"; // {req.UserHostName} 
                 Log(reqMsg);
             }
+            // accepting WebSockets in Unity fails at IsWebSocketRequest. See: 
+            // [Help Wanted - Websocket Server in Standalone build - Unity Forum] https://forum.unity.com/threads/websocket-server-in-standalone-build.1072526/
             if (req.IsWebSocketRequest) {
                 await WebSocketHostTarget.AcceptWebSocket (ctx, this).ConfigureAwait(false);
                 return;
