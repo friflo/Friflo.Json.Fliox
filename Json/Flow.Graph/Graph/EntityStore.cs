@@ -98,9 +98,9 @@ namespace Friflo.Json.Flow.Graph
             var jsonMapper = new ObjectMapper(typeStore, new NoThrowHandler()) {
                 TracerContext = this
             };
-            var messageTarget = new EventTarget(this);
+            var eventTarget = new EventTarget(this);
             var sync = new SyncStore();
-            _intern = new StoreIntern(typeStore, owned, database, jsonMapper, messageTarget, sync);
+            _intern = new StoreIntern(typeStore, owned, database, jsonMapper, eventTarget, sync);
         }
         
         public void Dispose() {

@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Sync
             
             var eventTarget = syncContext.eventTarget;
             if (eventTarget == null)
-                return Task.FromResult<TaskResult>(InvalidTask("caller/request doesnt provide a messageTarget"));
+                return Task.FromResult<TaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
             eventBroker.Subscribe(this, eventTarget);
             return Task.FromResult<TaskResult>(new SubscribeChangesResult());
