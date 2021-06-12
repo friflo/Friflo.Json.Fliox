@@ -101,6 +101,8 @@ namespace Friflo.Json.Flow.Graph
         public readonly List<T>         updates;
         public readonly HashSet<string> deletes;
         
+        public          int             Count => creates.Count + updates.Count + deletes.Count;
+        
         internal EntityChanges(List<T> creates, List<T> updates, HashSet<string> deletes) {
             this.creates = creates;
             this.updates = updates;

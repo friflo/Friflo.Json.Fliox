@@ -25,6 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 
         internal class StoreChanges : ChangeListener {
             internal int changeCount;
+            internal int articleCount;
             internal int createArticleCount;
             internal int updateArticleCount;
             internal int deleteArticleCount;
@@ -33,9 +34,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 base.OnChanges(changes, store);
                 var articleChanges = GetEntityChanges<Article>();
                 changeCount++;
-                createArticleCount += articleChanges.creates.Count;
-                updateArticleCount += articleChanges.updates.Count;
-                deleteArticleCount += articleChanges.deletes.Count;
+                articleCount        += articleChanges.Count;
+                createArticleCount  += articleChanges.creates.Count;
+                updateArticleCount  += articleChanges.updates.Count;
+                deleteArticleCount  += articleChanges.deletes.Count;
             }
         }
         
@@ -55,10 +57,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 IsTrue(subscribeArticles.Success);
                 
                 using (await TestRelationPoC.CreateStore(fileDatabase)) { }
-                AreEqual(7, storeChanges.changeCount);
-                AreEqual(9, storeChanges.createArticleCount);
-                AreEqual(0, storeChanges.updateArticleCount);
-                AreEqual(4, storeChanges.deleteArticleCount);
+                AreEqual(7,  storeChanges.changeCount);
+                AreEqual(13, storeChanges.articleCount);
+                AreEqual(9,  storeChanges.createArticleCount);
+                AreEqual(0,  storeChanges.updateArticleCount);
+                AreEqual(4,  storeChanges.deleteArticleCount);
             }
         }
     }
