@@ -24,8 +24,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         [Test] public async Task TestSubscribe      () { await TestCreate(async (store) => await AssertSubscribe ()); }
 
         internal class StoreChanges : ChangeListener {
-            internal int changeCount;
-            internal int articleCount;
+            internal int onChangeCount;
+            internal int changeArticleCount;
             internal int createArticleCount;
             internal int updateArticleCount;
             internal int deleteArticleCount;
@@ -33,8 +33,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             public override void OnChanges (ChangesEvent changes, EntityStore store) {
                 base.OnChanges(changes, store);
                 var articleChanges = GetEntityChanges<Article>();
-                changeCount++;
-                articleCount        += articleChanges.Count;
+                onChangeCount++;
+                changeArticleCount  += articleChanges.Count;
                 createArticleCount  += articleChanges.creates.Count;
                 updateArticleCount  += articleChanges.updates.Count;
                 deleteArticleCount  += articleChanges.deletes.Count;
@@ -57,8 +57,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 IsTrue(subscribeArticles.Success);
                 
                 using (await TestRelationPoC.CreateStore(fileDatabase)) { }
-                AreEqual(7,  storeChanges.changeCount);
-                AreEqual(13, storeChanges.articleCount);
+                AreEqual(7,  storeChanges.onChangeCount);
+                AreEqual(13, storeChanges.changeArticleCount);
                 AreEqual(9,  storeChanges.createArticleCount);
                 AreEqual(0,  storeChanges.updateArticleCount);
                 AreEqual(4,  storeChanges.deleteArticleCount);
