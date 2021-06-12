@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        // [UnityTest] public IEnumerator WebSocketCreateCoroutine()   { yield return RunAsync.Await(WebSocketCreate()); }
+        [UnityTest] public IEnumerator WebSocketCreateCoroutine()   { yield return RunAsync.Await(WebSocketCreate()); }
         [Test]      public async Task  WebSocketCreateAsync()       { await WebSocketCreate(); }
         
         private static async Task WebSocketCreate() {
@@ -134,18 +134,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         internal static async Task RunRemoteHost(HttpHostDatabase remoteHost, Func<Task> run) {
             remoteHost.Start();
-            var hostTask = Task.Run(() => {
-                // await hostDatabase.HandleIncomingConnections();
-                remoteHost.Run();
-                // await Task.Delay(100); // test awaiting hostTask
-                Logger.Info("1. RemoteHost finished");
-            });
-            
-            await run();
-            
-            await remoteHost.Stop();
-            await hostTask;
-            Logger.Info("2. awaited hostTask");
+            Task hostTask = null;
+            try {
+                hostTask = Task.Run(() => {
+                    // await hostDatabase.HandleIncomingConnections();
+                    remoteHost.Run();
+                    // await Task.Delay(100); // test awaiting hostTask
+                    Logger.Info("1. RemoteHost finished");
+                });
+                
+                await run();
+            } finally {
+                await remoteHost.Stop();
+                if (hostTask != null)
+                    await hostTask;
+                Logger.Info("2. awaited hostTask");
+            }
         } 
 
         // ------------------------------------ test assertion methods ------------------------------------
