@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             this.store = store; 
         } 
             
-        // --- IMessageTarget 
+        // --- IEventTarget 
         public Task<bool> SendEvent(DatabaseEvent ev, SyncContext syncContext) {
             var changesEvent = ev as ChangesEvent;
             if (changesEvent == null)
