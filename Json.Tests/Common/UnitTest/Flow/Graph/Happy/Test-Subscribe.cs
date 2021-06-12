@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             
             public override void OnChanges (ChangesEvent changes, EntityStore store) {
                 base.OnChanges(changes, store);
-                var articleChanges = GetEntitySetChanges<Article>();
+                var articleChanges = GetEntityChanges<Article>();
                 changeCount++;
                 createArticleCount += articleChanges.creates.Count;
                 updateArticleCount += articleChanges.updates.Count;

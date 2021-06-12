@@ -57,7 +57,7 @@ namespace Friflo.Json.Flow.Graph
             }
         }
         
-        protected EntitySetChanges<T> GetEntitySetChanges<T>() where T : Entity {
+        protected EntityChanges<T> GetEntityChanges<T>() where T : Entity {
             var             creates = new List<T>();
             var             updates = new List<T>();
             HashSet<string> deletes = null;
@@ -91,17 +91,17 @@ namespace Friflo.Json.Flow.Graph
                         break;
                 }
             }
-            var setChanges = new EntitySetChanges<T>(creates, updates, deletes);
+            var setChanges = new EntityChanges<T>(creates, updates, deletes);
             return setChanges;
         }
     }
     
-    public class EntitySetChanges<T> where T : Entity {
+    public class EntityChanges<T> where T : Entity {
         public readonly List<T>         creates;
         public readonly List<T>         updates;
         public readonly HashSet<string> deletes;
         
-        internal EntitySetChanges(List<T> creates, List<T> updates, HashSet<string> deletes) {
+        internal EntityChanges(List<T> creates, List<T> updates, HashSet<string> deletes) {
             this.creates = creates;
             this.updates = updates;
             this.deletes = deletes ?? new HashSet<string>();
