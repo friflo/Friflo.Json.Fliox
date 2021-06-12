@@ -5,6 +5,7 @@ using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Tests.Common.UnitTest.Flow.Graph;
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
 
-namespace Friflo.Json.Flow.Database
+namespace Friflo.Json.Flow.Database.Event
 {
     public interface IEventTarget {
         bool        IsOpen ();

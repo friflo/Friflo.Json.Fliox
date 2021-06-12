@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;

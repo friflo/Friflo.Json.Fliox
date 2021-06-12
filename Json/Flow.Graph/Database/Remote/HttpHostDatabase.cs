@@ -8,6 +8,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database.Remote

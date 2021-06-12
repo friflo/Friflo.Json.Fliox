@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Sync;
 
 
