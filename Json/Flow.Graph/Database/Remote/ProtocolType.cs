@@ -14,7 +14,9 @@ namespace Friflo.Json.Flow.Database.Remote
     public enum ProtocolType {
         /// requests and responses are not encapsulated. Used for HTTP
         ReqResp,
-        /// requests and responses are encapsulated in a <see cref="DatabaseMessage"/>. Used for WebSockets
+        /// requests and responses are encapsulated in a <see cref="DatabaseMessage"/>. Used for WebSockets.
+        /// <see cref="BiDirect"/> supports sending <see cref="DatabaseRequest"/> from both sides of a peer-to-peer
+        /// connection.
         BiDirect
     }
 }
