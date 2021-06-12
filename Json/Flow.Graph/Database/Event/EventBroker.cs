@@ -58,7 +58,7 @@ namespace Friflo.Json.Flow.Database.Event
                 if (tasks == null)
                     continue;
                 var changesEvent = new ChangesEvent {tasks = tasks};
-                subscriber.queue.Enqueue(changesEvent);
+                subscriber.eventQueue.Enqueue(changesEvent);
             }
         }
         

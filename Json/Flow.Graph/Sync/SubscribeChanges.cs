@@ -23,11 +23,11 @@ namespace Friflo.Json.Flow.Sync
             if (eventBroker == null)
                 return Task.FromResult<TaskResult>(InvalidTask("database has no eventBroker"));
             
-            var messageTarget = syncContext.eventTarget;
-            if (messageTarget == null)
+            var eventTarget = syncContext.eventTarget;
+            if (eventTarget == null)
                 return Task.FromResult<TaskResult>(InvalidTask("caller/request doesnt provide a messageTarget"));
             
-            eventBroker.Subscribe(this, messageTarget);
+            eventBroker.Subscribe(this, eventTarget);
             return Task.FromResult<TaskResult>(new SubscribeChangesResult());
         }
     }
