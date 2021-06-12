@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Sync
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var eventBroker = database.eventBroker;
             if (eventBroker == null)
-                return Task.FromResult<TaskResult>(InvalidTask("database has no messageBroker"));
+                return Task.FromResult<TaskResult>(InvalidTask("database has no eventBroker"));
             
             var messageTarget = syncContext.eventTarget;
             if (messageTarget == null)
