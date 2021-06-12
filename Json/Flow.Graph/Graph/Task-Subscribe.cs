@@ -28,7 +28,12 @@ namespace Friflo.Json.Flow.Graph
     
     public class ChangeListener
     {
+        private ChangesEvent    changes;
+        private EntityStore     store;
+            
         public virtual void OnSubscribeChanges(ChangesEvent changes, EntityStore store) {
+            this.changes    = changes;
+            this.store      = store;
             foreach (var task in changes.tasks) {
                 switch (task.TaskType) {
                     case TaskType.create:
@@ -42,6 +47,7 @@ namespace Friflo.Json.Flow.Graph
                         set.SyncPeerEntities(update.entities);
                         break;
                     case TaskType.delete:
+                        var delete = (DeleteEntities)task;
                         // todo implement
                         break;
                     case TaskType.patch:
@@ -49,6 +55,58 @@ namespace Friflo.Json.Flow.Graph
                         break;
                 }
             }
+        }
+        
+        protected EntitySetChanges<T> GetEntitySetChanges<T>() where T : Entity {
+            var             creates = new List<T>();
+            var             updates = new List<T>();
+            HashSet<string> deletes = null;
+            var set = (EntitySet<T>) store._intern.setByType[typeof(T)];
+            
+            foreach (var task in changes.tasks) {
+                switch (task.TaskType) {
+                    case TaskType.create:
+                        var create = (CreateEntities)task;
+                        if (create.container != set.name)
+                            continue;
+                        creates.Capacity = create.entities.Count;
+                        foreach (var entityPair in create.entities) {
+                            string key = entityPair.Key;
+                            var peer = set.GetPeerById(key);
+                            creates.Add(peer.Entity);
+                        }
+                        break;
+                    case TaskType.update:
+                        var update = (UpdateEntities)task;
+                        if (update.container != set.name)
+                            continue;
+                        updates.Capacity = update.entities.Count;
+                        foreach (var entityPair in update.entities) {
+                            string key = entityPair.Key;
+                            var peer = set.GetPeerById(key);
+                            updates.Add(peer.Entity);
+                        }
+                        break;
+                    case TaskType.delete:
+                        var delete = (DeleteEntities)task;
+                        deletes = delete.ids;
+                        break;
+                }
+            }
+            var setChanges = new EntitySetChanges<T>(creates, updates, deletes);
+            return setChanges;
+        }
+    }
+    
+    public class EntitySetChanges<T> where T : Entity {
+        public readonly List<T>         creates;
+        public readonly List<T>         updates;
+        public readonly HashSet<string> deletes;
+        
+        internal EntitySetChanges(List<T> creates, List<T> updates, HashSet<string> deletes) {
+            this.creates = creates;
+            this.updates = updates;
+            this.deletes = deletes ?? new HashSet<string>();
         }
     }
 }

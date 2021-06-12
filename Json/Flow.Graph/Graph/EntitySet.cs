@@ -34,7 +34,7 @@ namespace Friflo.Json.Flow.Graph
         }
     }
 
-    internal struct SetIntern<T> where T : Entity
+    internal readonly struct SetIntern<T> where T : Entity
     {
         internal readonly   TypeMapper<T>       typeMapper;
         internal readonly   ObjectMapper        jsonMapper;

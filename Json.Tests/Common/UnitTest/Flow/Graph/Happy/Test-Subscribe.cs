@@ -25,10 +25,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 
         internal class StoreChanges : ChangeListener {
             internal int changeCount;
+            internal int createArticleCount;
+            internal int updateArticleCount;
+            internal int deleteArticleCount;
             
             public override void OnSubscribeChanges (ChangesEvent changes, EntityStore store) {
                 base.OnSubscribeChanges(changes, store);
+                var articleChanges = GetEntitySetChanges<Article>();
                 changeCount++;
+                createArticleCount += articleChanges.creates.Count;
+                updateArticleCount += articleChanges.updates.Count;
+                deleteArticleCount += articleChanges.deletes.Count;
             }
         }
         
@@ -49,6 +56,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 
                 using (await TestRelationPoC.CreateStore(fileDatabase)) { }
                 AreEqual(7, storeChanges.changeCount);
+                AreEqual(9, storeChanges.createArticleCount);
+                AreEqual(0, storeChanges.updateArticleCount);
+                AreEqual(4, storeChanges.deleteArticleCount);
             }
         }
     }
