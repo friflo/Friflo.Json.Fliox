@@ -33,7 +33,7 @@ namespace Friflo.Json.Flow.Graph
         // --- non readonly
         internal            SyncStore                       sync;
         internal            LogTask                         tracerLogTask;
-        internal            IChangeListener                 changeListener;
+        internal            ChangeListener                  changeListener;
 
         
         internal StoreIntern(
@@ -56,7 +56,7 @@ namespace Friflo.Json.Flow.Graph
             objectPatcher       = new ObjectPatcher(jsonMapper);
             contextPools        = new Pools(Pools.SharedPools);
             tracerLogTask       = null;
-            changeListener      = null;
+            changeListener      = new ChangeListener();
         }
     }
 
@@ -76,6 +76,8 @@ namespace Friflo.Json.Flow.Graph
         public              StoreInfo               StoreInfo   => new StoreInfo(_intern.sync, _intern.setByType); 
         public   override   string                  ToString()  => StoreInfo.ToString();
         public              IReadOnlyList<SyncTask> Tasks       => _intern.sync.appTasks;
+        
+        public              EntitySet               GetEntitySet(string name) => _intern.setByName[name];
         
         /// <summary>
         /// Instantiate an <see cref="EntityStore"/> with a given <see cref="database"/> and an optional <see cref="typeStore"/>.
@@ -161,7 +163,7 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public void SetChangeListener(IChangeListener changeListener) {
+        public void SetChangeListener(ChangeListener changeListener) {
             _intern.changeListener = changeListener;
         }
         

@@ -8,12 +8,6 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public interface IChangeListener
-    {
-        void OnSubscribeChanges(ChangesEvent changes);
-    }
-    
-    
     public class SubscribeTask<T> : SyncTask where T : Entity
     {
         internal            TaskState               state;
@@ -29,6 +23,32 @@ namespace Friflo.Json.Flow.Graph
             this.types      = types;
             this.filter     = filter;
             this.filterLinq = filter.Linq;
+        }
+    }
+    
+    public class ChangeListener
+    {
+        public virtual void OnSubscribeChanges(ChangesEvent changes, EntityStore store) {
+            foreach (var task in changes.tasks) {
+                switch (task.TaskType) {
+                    case TaskType.create:
+                        var create = (CreateEntities)task;
+                        var set = store.GetEntitySet(create.container);
+                        set.SyncPeerEntities(create.entities);
+                        break;
+                    case TaskType.update:
+                        var update = (UpdateEntities)task;
+                        set = store.GetEntitySet(update.container);
+                        set.SyncPeerEntities(update.entities);
+                        break;
+                    case TaskType.delete:
+                        // todo implement
+                        break;
+                    case TaskType.patch:
+                        // todo implement
+                        break;
+                }
+            }
         }
     }
 }

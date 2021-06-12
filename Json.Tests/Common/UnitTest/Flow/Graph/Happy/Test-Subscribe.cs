@@ -23,8 +23,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
     {
         [Test] public async Task TestSubscribe      () { await TestCreate(async (store) => await AssertSubscribe ()); }
 
-        private class StoreChanges : IChangeListener {
-            public void OnSubscribeChanges (ChangesEvent changes) { }
+        internal class StoreChanges : ChangeListener {
+            internal int changeCount;
+            
+            public override void OnSubscribeChanges (ChangesEvent changes, EntityStore store) {
+                base.OnSubscribeChanges(changes, store);
+                changeCount++;
+            }
         }
         
         private static async Task AssertSubscribe() {
@@ -34,16 +39,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var useStore     = new PocStore(fileDatabase)) {
                 fileDatabase.eventBroker = eventBroker;
                 var types = new HashSet<TaskType>(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
-                useStore.SetChangeListener(new StoreChanges());
+                var storeChanges = new StoreChanges();
+                useStore.SetChangeListener(storeChanges);
                 var subscribeArticles = useStore.articles.SubscribeAll(types);
                 
                 await useStore.Sync(); // -------- Sync --------
                 
                 IsTrue(subscribeArticles.Success);
                 
-                using (await TestRelationPoC.CreateStore(fileDatabase)) {
-
-                }
+                using (await TestRelationPoC.CreateStore(fileDatabase)) { }
+                AreEqual(7, storeChanges.changeCount);
             }
         }
     }

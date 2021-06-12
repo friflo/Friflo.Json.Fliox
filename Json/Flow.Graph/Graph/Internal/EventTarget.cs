@@ -5,7 +5,6 @@ using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Sync;
 
-
 namespace Friflo.Json.Flow.Graph.Internal
 {
     public class EventTarget : IEventTarget
@@ -21,27 +20,8 @@ namespace Friflo.Json.Flow.Graph.Internal
             var changesEvent = ev as ChangesEvent;
             if (changesEvent == null)
                 return Task.FromResult(true);
-            foreach (var task in changesEvent.tasks) {
-                switch (task.TaskType) {
-                    case TaskType.create:
-                        var create = (CreateEntities)task;
-                        var set = store._intern.setByName[create.container];
-                        set.SyncPeerEntities(create.entities);
-                        break;
-                    case TaskType.update:
-                        var update = (UpdateEntities)task;
-                        set = store._intern.setByName[update.container];
-                        set.SyncPeerEntities(update.entities);
-                        break;
-                    case TaskType.delete:
-                        // todo implement
-                        break;
-                    case TaskType.patch:
-                        // todo implement
-                        break;
-                }
-            }
-            store._intern.changeListener?.OnSubscribeChanges(changesEvent);
+
+            store._intern.changeListener?.OnSubscribeChanges(changesEvent, store);
 
             return Task.FromResult(true);
         }
