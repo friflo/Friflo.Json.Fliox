@@ -12,12 +12,12 @@ namespace Friflo.Json.Flow.Sync
     /// Note: By applying this classification the protocol can also be used in peer-to-peer networking.
     /// 
     /// <para>
-    ///     <see cref="DatabaseMessage"/>'s are used for WebSocket communication to notify multiple events to a client
-    ///     having sent only a single subscription request upfront.
+    ///     <see cref="DatabaseMessage"/>'s are used for WebSocket communication to notify multiple
+    ///     <see cref="DatabaseEvent"/> to a client having sent only a single subscription request upfront.
     /// </para>
     /// <para>
-    ///     <see cref="DatabaseMessage"/>' are not used for HTTP communication as HTTP support request / response
-    ///     pattern by itself and has no mechanism to implements event messages.
+    ///     <see cref="DatabaseMessage"/>' are not applicable for HTTP as HTTP support only a
+    ///     request / response pattern and has no mechanism to implement <see cref="DatabaseEvent"/>'s.
     /// </para>
     /// </summary>
     public class DatabaseMessage
