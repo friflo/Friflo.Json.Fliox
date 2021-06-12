@@ -46,7 +46,7 @@ namespace Friflo.Json.Flow.Database.Remote
         }
         
         internal static async Task AcceptWebSocket(HttpListenerContext ctx, RemoteHostDatabase remoteHost) {
-            var         wsContext   = await ctx.AcceptWebSocketAsync(null);
+            var         wsContext   = await ctx.AcceptWebSocketAsync(null).ConfigureAwait(false);
             WebSocket   websocket   = wsContext.WebSocket;
             var         buffer      = new ArraySegment<byte>(new byte[8192]);
             WebSocketHostTarget target  = new WebSocketHostTarget(websocket);
@@ -76,7 +76,7 @@ namespace Friflo.Json.Flow.Database.Remote
                             break;
                         case WebSocketState.CloseReceived:
                             Console.WriteLine("WebSocket CloseReceived");
-                            await websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+                            await websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
                             return;
                         case WebSocketState.Closed:
                             Console.WriteLine("WebSocket Closed");

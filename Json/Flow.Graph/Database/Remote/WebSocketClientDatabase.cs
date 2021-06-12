@@ -38,7 +38,7 @@ namespace Friflo.Json.Flow.Database.Remote
         }
         
         public async Task Close() {
-            await websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None);
+            await websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
         }
         
         private async Task MessageReceiver() {
@@ -110,11 +110,11 @@ namespace Friflo.Json.Flow.Database.Remote
             try {
                 byte[] requestBytes = Encoding.UTF8.GetBytes(jsonSyncRequest);
                 var arraySegment    = new ArraySegment<byte>(requestBytes, 0, requestBytes.Length);
-                await websocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);
+                await websocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                 var request         = new WebsocketRequest(syncContext);
                 requestQueue.Enqueue(request);
                 
-                var response = await request.response.Task;
+                var response = await request.response.Task.ConfigureAwait(false);
                 return response;
             }
             catch (Exception e) {

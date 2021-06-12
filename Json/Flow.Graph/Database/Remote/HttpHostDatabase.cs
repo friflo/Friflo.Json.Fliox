@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Database.Remote
                     // await HandleListenerContext(ctx);            // handle incoming requests serial
                     _ = Task.Run(async () => {
                         try {
-                            await HandleListenerContext(ctx); // handle incoming requests parallel
+                            await HandleListenerContext(ctx).ConfigureAwait(false); // handle incoming requests parallel
                         }
                         catch (Exception e) {
                             Log($"Request failed - {e.GetType()}: {e.Message}");
