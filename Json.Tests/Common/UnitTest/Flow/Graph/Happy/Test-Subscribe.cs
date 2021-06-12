@@ -29,8 +29,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             internal int updateArticleCount;
             internal int deleteArticleCount;
             
-            public override void OnSubscribeChanges (ChangesEvent changes, EntityStore store) {
-                base.OnSubscribeChanges(changes, store);
+            public override void OnChanges (ChangesEvent changes, EntityStore store) {
+                base.OnChanges(changes, store);
                 var articleChanges = GetEntitySetChanges<Article>();
                 changeCount++;
                 createArticleCount += articleChanges.creates.Count;

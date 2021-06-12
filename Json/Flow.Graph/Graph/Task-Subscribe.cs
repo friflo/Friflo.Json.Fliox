@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Graph
         private ChangesEvent    changes;
         private EntityStore     store;
             
-        public virtual void OnSubscribeChanges(ChangesEvent changes, EntityStore store) {
+        public virtual void OnChanges(ChangesEvent changes, EntityStore store) {
             this.changes    = changes;
             this.store      = store;
             foreach (var task in changes.tasks) {
