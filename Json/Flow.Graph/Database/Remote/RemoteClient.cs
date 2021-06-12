@@ -34,7 +34,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 _singleton.GetTypeMapper(typeof(DatabaseRequest));
                 _singleton.GetTypeMapper(typeof(DatabaseResponse));
                 _singleton.GetTypeMapper(typeof(DatabaseMessage));
-                _singleton.GetTypeMapper(typeof(ResponseError));
+                _singleton.GetTypeMapper(typeof(ErrorResponse));
             }
             return _singleton;
         }
@@ -67,7 +67,7 @@ namespace Friflo.Json.Flow.Database.Remote
             var response = await ExecuteRequest(syncRequest, syncContext).ConfigureAwait(false);
             if (response is SyncResponse syncResponse)
                 return syncResponse;
-            var error = (ResponseError)response;
+            var error = (ErrorResponse)response;
             return new SyncResponse {error = error};
         }
         
@@ -82,15 +82,15 @@ namespace Friflo.Json.Flow.Database.Remote
                 if (result.statusType == RequestStatusType.Ok) {
                     var response = reader.Read<DatabaseResponse>(result.body);
                     if (reader.Error.ErrSet)
-                        return new ResponseError{message = reader.Error.msg.ToString()};
+                        return new ErrorResponse{message = reader.Error.msg.ToString()};
                     // At this point the returned result.body is valid JSON.
                     // => All entities of a SyncResponse.results have either a valid JSON value or an error. 
                     return response;
                 }
-                var responseError = reader.Read<ResponseError>(result.body);
+                var errorResponse = reader.Read<ErrorResponse>(result.body);
                 if (reader.Error.ErrSet)
-                    return new ResponseError{message = reader.Error.msg.ToString()};
-                return responseError;
+                    return new ErrorResponse{message = reader.Error.msg.ToString()};
+                return errorResponse;
             }
         }
         

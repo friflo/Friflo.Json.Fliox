@@ -45,7 +45,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 }
                 return new JsonResponse(jsonResponse, RequestStatusType.Ok);
             } catch (Exception e) {
-                var errorMsg = ResponseError.ErrorFromException(e).ToString();
+                var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
                 return JsonResponse.CreateResponseError(syncContext, errorMsg, RequestStatusType.Exception);
             }
         }
@@ -109,10 +109,10 @@ namespace Friflo.Json.Flow.Database.Remote
         }
         
         public static JsonResponse CreateResponseError(SyncContext syncContext, string message, RequestStatusType type) {
-            var responseError = new ResponseError {message = message};
+            var errorResponse = new ErrorResponse {message = message};
             using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
-                var body = mapper.Write(responseError);
+                var body = mapper.Write(errorResponse);
                 return new JsonResponse(body, type);
             }
         }

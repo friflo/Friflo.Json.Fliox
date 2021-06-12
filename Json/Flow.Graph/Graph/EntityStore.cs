@@ -172,8 +172,8 @@ namespace Friflo.Json.Flow.Graph
                 response = await _intern.database.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
             }
             catch (Exception e) {
-                var errorMsg = ResponseError.ErrorFromException(e).ToString();
-                response = new SyncResponse{error = new ResponseError{message = errorMsg}};
+                var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
+                response = new SyncResponse{error = new ErrorResponse{message = errorMsg}};
             }
             return response;
         }
@@ -250,7 +250,7 @@ namespace Friflo.Json.Flow.Graph
 
         private SyncResult HandleSyncResponse(SyncRequest syncRequest, SyncResponse response) {
             SyncResult      syncResult;
-            ResponseError   error = response.error;
+            ErrorResponse   error = response.error;
             try {
                 TaskErrorResult                         syncError;
                 Dictionary<string, ContainerEntities>   containerResults;

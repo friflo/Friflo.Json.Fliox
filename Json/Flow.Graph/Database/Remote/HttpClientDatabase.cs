@@ -42,7 +42,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 return new JsonResponse(body, statusType);
             }
             catch (HttpRequestException e) {
-                var error = ResponseError.ErrorFromException(e);
+                var error = ErrorResponse.ErrorFromException(e);
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
                 return JsonResponse.CreateResponseError(syncContext, error.ToString(), RequestStatusType.Exception);

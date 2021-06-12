@@ -11,23 +11,23 @@ namespace Friflo.Json.Flow.Graph
         public  readonly    List<SyncTask>  tasks;
         public  readonly    List<SyncTask>  failed;
         
-        private readonly    ResponseError   responseError;
+        private readonly    ErrorResponse   errorResponse;
 
 
-        public              bool            Success => failed.Count == 0 && responseError == null;
-        public              string          Message => GetMessage(responseError, failed);
+        public              bool            Success => failed.Count == 0 && errorResponse == null;
+        public              string          Message => GetMessage(errorResponse, failed);
 
         public override string          ToString() => $"tasks: {tasks.Count}, failed: {failed.Count}";
         
-        internal SyncResult(List<SyncTask> tasks, List<SyncTask> failed, ResponseError responseError) {
-            this.responseError  = responseError;
+        internal SyncResult(List<SyncTask> tasks, List<SyncTask> failed, ErrorResponse errorResponse) {
+            this.errorResponse  = errorResponse;
             this.tasks      = tasks;
             this.failed     = failed;
         }
         
-        internal static string GetMessage(ResponseError responseError, List<SyncTask> failed) {
-            if (responseError != null) {
-                return responseError.message;
+        internal static string GetMessage(ErrorResponse errorResponse, List<SyncTask> failed) {
+            if (errorResponse != null) {
+                return errorResponse.message;
             }
             var sb = new StringBuilder();
             sb.Append("Sync() failed with task errors. Count: ");

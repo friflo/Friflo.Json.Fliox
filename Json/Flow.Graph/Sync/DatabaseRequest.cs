@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Sync
     
     [Fri.Discriminator("type")]
     [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "sync")]
-    [Fri.Polymorph(typeof(ResponseError),       Discriminant = "error")]
+    [Fri.Polymorph(typeof(ErrorResponse),       Discriminant = "error")]
     public abstract class DatabaseResponse {
         internal abstract   RequestType  RequestType { get; }
     }
