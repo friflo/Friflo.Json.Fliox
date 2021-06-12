@@ -99,7 +99,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        [UnityTest] public IEnumerator WebSocketCreateCoroutine()   { yield return RunAsync.Await(WebSocketCreate()); }
+        // accepting WebSockets in Unity fails at IsWebSocketRequest. See: 
+        // [Help Wanted - Websocket Server in Standalone build - Unity Forum] https://forum.unity.com/threads/websocket-server-in-standalone-build.1072526/
+        // [UnityTest] public IEnumerator WebSocketCreateCoroutine()   { yield return RunAsync.Await(WebSocketCreate()); }
         [Test]      public async Task  WebSocketCreateAsync()       { await WebSocketCreate(); }
         
         private static async Task WebSocketCreate() {
