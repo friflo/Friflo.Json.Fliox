@@ -61,7 +61,7 @@ namespace Friflo.Json.Flow.Graph
             var             creates = new List<T>();
             var             updates = new List<T>();
             HashSet<string> deletes = null;
-            var set = (EntitySet<T>) store._intern.setByType[typeof(T)];
+            var             set     = (EntitySet<T>) store._intern.setByType[typeof(T)];
             
             foreach (var task in changes.tasks) {
                 switch (task.TaskType) {
@@ -69,7 +69,6 @@ namespace Friflo.Json.Flow.Graph
                         var create = (CreateEntities)task;
                         if (create.container != set.name)
                             continue;
-                        creates.Capacity = create.entities.Count;
                         foreach (var entityPair in create.entities) {
                             string key = entityPair.Key;
                             var peer = set.GetPeerById(key);
@@ -80,7 +79,6 @@ namespace Friflo.Json.Flow.Graph
                         var update = (UpdateEntities)task;
                         if (update.container != set.name)
                             continue;
-                        updates.Capacity = update.entities.Count;
                         foreach (var entityPair in update.entities) {
                             string key = entityPair.Key;
                             var peer = set.GetPeerById(key);
