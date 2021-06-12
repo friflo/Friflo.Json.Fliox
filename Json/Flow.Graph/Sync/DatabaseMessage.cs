@@ -7,6 +7,8 @@ namespace Friflo.Json.Flow.Sync
     /// A container for different types of a message classified into request, response and event.
     /// It is used in communication protocols which support more than the request / response schema.
     /// Only one of its fields is set at a time.
+    /// <br></br>
+    /// Note: By applying this classification the protocol can also be used in peer-to-peer networking.
     /// 
     /// <para>
     ///     <see cref="DatabaseMessage"/>'s are used for WebSocket communication to notify multiple events to a client
