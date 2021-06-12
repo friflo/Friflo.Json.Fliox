@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   Dictionary<Type,   EntitySet>   setByType;
         internal readonly   Dictionary<string, EntitySet>   setByName;
         internal readonly   Pools                           contextPools;
-        internal readonly   EventTarget                   eventTarget;
+        internal readonly   EventTarget                     eventTarget;
         
         // --- non readonly
         internal            SyncStore                       sync;
@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Graph
             this.database       = database;
             this.jsonMapper     = jsonMapper;
             this.typeCache      = jsonMapper.writer.TypeCache;
-            this.eventTarget  = eventTarget;
+            this.eventTarget    = eventTarget;
             this.sync           = sync;
             setByType           = new Dictionary<Type, EntitySet>();
             setByName           = new Dictionary<string, EntitySet>();
