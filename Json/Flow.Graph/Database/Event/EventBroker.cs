@@ -24,11 +24,11 @@ namespace Friflo.Json.Flow.Database.Event
         }
 
         public void Subscribe (SubscribeChanges subscribe, IEventTarget eventTarget) {
-            if (!subscribers.TryGetValue(eventTarget, out var messageSubscriber)) {
-                messageSubscriber = new EventSubscriber(eventTarget);
-                subscribers.Add(eventTarget, messageSubscriber);
+            if (!subscribers.TryGetValue(eventTarget, out var eventSubscriber)) {
+                eventSubscriber = new EventSubscriber(eventTarget);
+                subscribers.Add(eventTarget, eventSubscriber);
             }
-            messageSubscriber.subscribeMap[subscribe.container] = subscribe;
+            eventSubscriber.subscribeMap[subscribe.container] = subscribe;
         }
         
         // todo remove - only for testing
