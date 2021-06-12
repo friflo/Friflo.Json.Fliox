@@ -82,7 +82,6 @@ namespace Friflo.Json.Flow.Database.Remote
         }
     }
     
-    // todo should be named MessageType
     public enum MessageType {
         /// request / response
         ReqResp,

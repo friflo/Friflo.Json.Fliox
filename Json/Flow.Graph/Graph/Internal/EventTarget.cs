@@ -10,7 +10,7 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     public class EventTarget : IEventTarget
     {
-        readonly EntityStore store;
+        private readonly EntityStore store;
         
         internal EventTarget (EntityStore store) {
             this.store = store; 
