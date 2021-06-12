@@ -98,7 +98,7 @@ namespace Friflo.Json.Flow.Database.Remote
             switch (protocolType) {
                 case ProtocolType.ReqResp:
                     return writer.Write(request);
-                case ProtocolType.Message:
+                case ProtocolType.BiDirect:
                     var msg = new DatabaseMessage { req = request };
                     return writer.Write(msg);
             }

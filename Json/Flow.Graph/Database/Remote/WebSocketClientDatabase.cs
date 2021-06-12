@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Database.Remote
         private readonly    ConcurrentQueue<WebsocketRequest>   requestQueue = new ConcurrentQueue<WebsocketRequest>();
 
 
-        public WebSocketClientDatabase(string endpoint) : base(ProtocolType.Message) {
+        public WebSocketClientDatabase(string endpoint) : base(ProtocolType.BiDirect) {
             this.endpoint = endpoint;
             websocket = new ClientWebSocket();
         }

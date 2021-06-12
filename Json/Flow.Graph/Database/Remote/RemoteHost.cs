@@ -12,14 +12,14 @@ namespace Friflo.Json.Flow.Database.Remote
     /// <summary>
     /// Specify how <see cref="DatabaseRequest"/>'s and <see cref="DatabaseResponse"/>'s are send via the used
     /// transmission protocol. E.g. HTTP or WebSockets.
-    /// In case of <see cref="Message"/> (used for WebSockets) request and responses are encapsulated in a <see cref="DatabaseMessage"/>.
+    /// In case of <see cref="BiDirect"/> (used for WebSockets) request and responses are encapsulated in a <see cref="DatabaseMessage"/>.
     /// Otherwise (HTTP) requests and responses are send / received as they are. Meaning they are not encapsulated.
     /// </summary>
     public enum ProtocolType {
         /// requests and responses are not encapsulated.
         ReqResp,
         /// requests and responses are encapsulated in a <see cref="DatabaseMessage"/>.
-        Message
+        BiDirect
     }
     
     public class RemoteHostDatabase : EntityDatabase
@@ -67,7 +67,7 @@ namespace Friflo.Json.Flow.Database.Remote
             switch (type) {
                 case ProtocolType.ReqResp:
                     return reader.Read<DatabaseRequest>(jsonRequest);
-                case ProtocolType.Message:
+                case ProtocolType.BiDirect:
                     var msg = reader.Read<DatabaseMessage>(jsonRequest);
                     return msg.req;
             }
@@ -78,7 +78,7 @@ namespace Friflo.Json.Flow.Database.Remote
             switch (type) {
                 case ProtocolType.ReqResp:
                     return writer.Write(response);
-                case ProtocolType.Message:
+                case ProtocolType.BiDirect:
                     var message = new DatabaseMessage { resp = response };
                     return writer.Write(message);
             }
