@@ -67,7 +67,7 @@ namespace Friflo.Json.Flow.Database.Remote
                                 var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
                                 var contextPools    = new Pools(Pools.SharedPools);
                                 var syncContext     = new SyncContext(contextPools, target);
-                                var result          = await remoteHost.ExecuteRequestJson(requestContent, syncContext, MessageType.Message).ConfigureAwait(false);
+                                var result          = await remoteHost.ExecuteRequestJson(requestContent, syncContext, ProtocolType.Message).ConfigureAwait(false);
                                 syncContext.pools.AssertNoLeaks();
                                 byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);
                                 var arraySegment    = new ArraySegment<byte>(resultBytes, 0, resultBytes.Length);

@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     {
         private readonly    RemoteHostDatabase  loopbackHost;
 
-        public LoopbackDatabase(EntityDatabase local) : base(MessageType.ReqResp) {
+        public LoopbackDatabase(EntityDatabase local) : base(ProtocolType.ReqResp) {
             loopbackHost = new RemoteHostDatabase(local);
         }
 
@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         protected override async Task<JsonResponse> ExecuteRequestJson(string jsonRequest, SyncContext syncContext) {
-            var jsonResponse = await loopbackHost.ExecuteRequestJson(jsonRequest, syncContext, MessageType.ReqResp).ConfigureAwait(false);
+            var jsonResponse = await loopbackHost.ExecuteRequestJson(jsonRequest, syncContext, ProtocolType.ReqResp).ConfigureAwait(false);
             return jsonResponse;
         }
     }

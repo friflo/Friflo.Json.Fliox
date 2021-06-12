@@ -9,6 +9,19 @@ using Friflo.Json.Flow.Sync;
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Flow.Database.Remote
 {
+    /// <summary>
+    /// Specify how <see cref="DatabaseRequest"/>'s and <see cref="DatabaseResponse"/>'s are send via the used
+    /// transmission protocol. E.g. HTTP or WebSockets.
+    /// In case of <see cref="Message"/> (used for WebSockets) request and responses are encapsulated in a <see cref="DatabaseMessage"/>.
+    /// Otherwise (HTTP) requests and responses are send / received as they are. Meaning they are not encapsulated.
+    /// </summary>
+    public enum ProtocolType {
+        /// requests and responses are not encapsulated.
+        ReqResp,
+        /// requests and responses are encapsulated in a <see cref="DatabaseMessage"/>.
+        Message
+    }
+    
     public class RemoteHostDatabase : EntityDatabase
     {
         private readonly    EntityDatabase  local;
@@ -29,7 +42,7 @@ namespace Friflo.Json.Flow.Database.Remote
             return result;
         }
 
-        public async Task<JsonResponse> ExecuteRequestJson(string jsonRequest, SyncContext syncContext, MessageType type) {
+        public async Task<JsonResponse> ExecuteRequestJson(string jsonRequest, SyncContext syncContext, ProtocolType type) {
             try {
                 string jsonResponse;
                 using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
@@ -50,22 +63,22 @@ namespace Friflo.Json.Flow.Database.Remote
             }
         }
         
-        private static DatabaseRequest ReadRequest (ObjectReader reader, string jsonRequest, MessageType type) {
+        private static DatabaseRequest ReadRequest (ObjectReader reader, string jsonRequest, ProtocolType type) {
             switch (type) {
-                case MessageType.ReqResp:
+                case ProtocolType.ReqResp:
                     return reader.Read<DatabaseRequest>(jsonRequest);
-                case MessageType.Message:
+                case ProtocolType.Message:
                     var msg = reader.Read<DatabaseMessage>(jsonRequest);
                     return msg.req;
             }
             throw new InvalidOperationException("can't be reached");
         }
         
-        private static string CreateResponse (ObjectWriter writer, DatabaseResponse response, MessageType type) {
+        private static string CreateResponse (ObjectWriter writer, DatabaseResponse response, ProtocolType type) {
             switch (type) {
-                case MessageType.ReqResp:
+                case ProtocolType.ReqResp:
                     return writer.Write(response);
-                case MessageType.Message:
+                case ProtocolType.Message:
                     var message = new DatabaseMessage { resp = response };
                     return writer.Write(message);
             }
@@ -80,12 +93,6 @@ namespace Friflo.Json.Flow.Database.Remote
                     throw new NotImplementedException();
             }
         }
-    }
-    
-    public enum MessageType {
-        /// request / response
-        ReqResp,
-        Message
     }
     
     public enum RequestStatusType {

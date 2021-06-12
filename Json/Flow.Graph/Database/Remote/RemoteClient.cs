@@ -49,11 +49,11 @@ namespace Friflo.Json.Flow.Database.Remote
     
     public abstract class RemoteClientDatabase : EntityDatabase
     {
-        private readonly MessageType messageType;
+        private readonly ProtocolType protocolType;
         
         // ReSharper disable once EmptyConstructor - added for source navigation
-        protected RemoteClientDatabase(MessageType messageType) {
-            this.messageType = messageType;
+        protected RemoteClientDatabase(ProtocolType protocolType) {
+            this.protocolType = protocolType;
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
@@ -95,10 +95,10 @@ namespace Friflo.Json.Flow.Database.Remote
         }
         
         private string CreateRequest (ObjectWriter writer, DatabaseRequest request) {
-            switch (messageType) {
-                case MessageType.ReqResp:
+            switch (protocolType) {
+                case ProtocolType.ReqResp:
                     return writer.Write(request);
-                case MessageType.Message:
+                case ProtocolType.Message:
                     var msg = new DatabaseMessage { req = request };
                     return writer.Write(msg);
             }
