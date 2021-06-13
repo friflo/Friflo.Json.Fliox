@@ -64,11 +64,9 @@ namespace Friflo.Json.Flow.Graph
                 result = new EntityChanges<T>();
                 results.Add(typeof(T), result);
             }
-            result.Clear();
             var typedResult = (EntityChanges<T>)result;
-            List<T>         creates = typedResult.creates;
-            List<T>         updates = typedResult.updates;
-            var             set     = (EntitySet<T>) store._intern.setByType[typeof(T)];
+            var set         = (EntitySet<T>) store._intern.setByType[typeof(T)];
+            typedResult.Clear();
             
             foreach (var task in changes.tasks) {
                 switch (task.TaskType) {
@@ -79,7 +77,7 @@ namespace Friflo.Json.Flow.Graph
                         foreach (var entityPair in create.entities) {
                             string key = entityPair.Key;
                             var peer = set.GetPeerById(key);
-                            creates.Add(peer.Entity);
+                            typedResult.creates.Add(peer.Entity);
                         }
                         break;
                     case TaskType.update:
@@ -89,7 +87,7 @@ namespace Friflo.Json.Flow.Graph
                         foreach (var entityPair in update.entities) {
                             string key = entityPair.Key;
                             var peer = set.GetPeerById(key);
-                            updates.Add(peer.Entity);
+                            typedResult.updates.Add(peer.Entity);
                         }
                         break;
                     case TaskType.delete:
@@ -104,9 +102,7 @@ namespace Friflo.Json.Flow.Graph
         }
     }
     
-    public abstract class EntityChanges {
-        internal abstract void Clear();
-    }
+    public abstract class EntityChanges { }
     
     public class EntityChanges<T> : EntityChanges where T : Entity {
         public  readonly    List<T>         creates = new List<T>();
@@ -119,7 +115,7 @@ namespace Friflo.Json.Flow.Graph
         
         internal EntityChanges() { }
 
-        internal override void Clear() {
+        internal void Clear() {
             creates.Clear();
             updates.Clear();
             deletes = deletesEmpty;
