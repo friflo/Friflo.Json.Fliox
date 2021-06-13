@@ -96,11 +96,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         /// assert that all database changes by <see cref="TestRelationPoC.CreateStore"/> are reflected
         public void AssertCreateStoreChanges() {
             AreEqual(8,  onChangeCount);
-            AreSimilar("( 6, 2, 0, 4)", orderCounts);
-            AreSimilar("(10, 6, 0, 4)", customerCounts);
+            AreSimilar("( 2, 2, 0, 0)", orderCounts);
+            AreSimilar("( 6, 6, 0, 0)", customerCounts);
             AreSimilar("(13, 9, 0, 4)", articleCounts);
-            AreSimilar("( 7, 3, 0, 4)", produceCounts);
-            AreSimilar("( 5, 1, 0, 4)", employeeCounts);
+            AreSimilar("( 3, 3, 0, 0)", produceCounts);
+            AreSimilar("( 1, 1, 0, 0)", employeeCounts);
         }
     }
 }

@@ -87,6 +87,8 @@ namespace Friflo.Json.Flow.Graph
                         break;
                     case TaskType.delete:
                         var delete = (DeleteEntities)task;
+                        if (delete.container != set.name)
+                            continue;
                         deletes = delete.ids;
                         break;
                 }
