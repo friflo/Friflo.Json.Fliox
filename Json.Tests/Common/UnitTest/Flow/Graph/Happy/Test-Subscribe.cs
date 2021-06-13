@@ -42,11 +42,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             var storeChanges = new PocListener();
             var types = new HashSet<TaskType>(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
             store.SetChangeListener(storeChanges);
-            var subscribeArticles = store.articles.SubscribeAll(types);
+            var subscribeArticles   = store.articles. SubscribeAll(types);
+            var subscribeCustomers  = store.customers.SubscribeAll(types);
+            var subscribeEmployees  = store.employees.SubscribeAll(types);
+            var subscribeOrders     = store.orders.   SubscribeAll(types);
+            var subscribeProducers  = store.producers.SubscribeAll(types);
                 
             await store.Sync(); // -------- Sync --------
                 
-            IsTrue(subscribeArticles.Success);
+            IsTrue(subscribeArticles    .Success);
+            IsTrue(subscribeCustomers   .Success);
+            IsTrue(subscribeEmployees   .Success);
+            IsTrue(subscribeOrders      .Success);
+            IsTrue(subscribeProducers   .Success);
             return storeChanges;
         }
     }
@@ -87,12 +95,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         /// assert that all database changes by <see cref="TestRelationPoC.CreateStore"/> are reflected
         public void AssertCreateStoreChanges() {
-            AreEqual(7,  onChangeCount);
-            AreSimilar("( 4, 0, 0, 4)", orderCounts);
-            AreSimilar("( 4, 0, 0, 4)", customerCounts);
+            AreEqual(8,  onChangeCount);
+            AreSimilar("( 6, 2, 0, 4)", orderCounts);
+            AreSimilar("(10, 6, 0, 4)", customerCounts);
             AreSimilar("(13, 9, 0, 4)", articleCounts);
-            AreSimilar("( 4, 0, 0, 4)", produceCounts);
-            AreSimilar("( 4, 0, 0, 4)", employeeCounts);
+            AreSimilar("( 7, 3, 0, 4)", produceCounts);
+            AreSimilar("( 5, 1, 0, 4)", employeeCounts);
         }
     }
 }
