@@ -27,6 +27,8 @@ namespace Friflo.Json.Flow.Database
                 container.Value.Dispose();
             }
         }
+        
+        public virtual void AddEventTarget(string clientId, IEventTarget eventTarget) {}
 
         internal void AddContainer(EntityContainer container)
         {

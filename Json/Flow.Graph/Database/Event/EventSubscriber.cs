@@ -10,13 +10,15 @@ using Friflo.Json.Flow.Sync;
 namespace Friflo.Json.Flow.Database.Event
 {
     public class EventSubscriber {
+        internal readonly   string                                  clientId;
         private  readonly   IEventTarget                            eventTarget;
         /// key: <see cref="SubscribeChanges.container"/>
         internal readonly   Dictionary<string, SubscribeChanges>    subscribeMap = new Dictionary<string, SubscribeChanges>();
         internal readonly   ConcurrentQueue<DatabaseEvent>          eventQueue = new ConcurrentQueue<DatabaseEvent>();
         
-        public EventSubscriber (IEventTarget eventTarget) {
-            this.eventTarget  = eventTarget;
+        public EventSubscriber (string clientId, IEventTarget eventTarget) {
+            this.clientId       = clientId;
+            this.eventTarget    = eventTarget;
         }
         
         internal async Task SendEvents () {

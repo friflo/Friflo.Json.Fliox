@@ -15,17 +15,17 @@ namespace Friflo.Json.Flow.Database.Remote
 {
     internal class WebSocketHostTarget : IEventTarget
     {
-        readonly WebSocket webSocket;
+        readonly WebSocket  webSocket;
         
         private WebSocketHostTarget (WebSocket webSocket) {
-            this.webSocket = webSocket;
+            this.webSocket  = webSocket;
         }
         
         // --- IEventTarget
         public bool IsOpen () {
             return webSocket.State == WebSocketState.Open;
         }
-        
+
         public async Task<bool> SendEvent(DatabaseEvent ev, SyncContext syncContext) {
             using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                 var writer = pooledMapper.instance.writer;
@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Database.Remote
             var         wsContext   = await ctx.AcceptWebSocketAsync(null).ConfigureAwait(false);
             WebSocket   websocket   = wsContext.WebSocket;
             var         buffer      = new ArraySegment<byte>(new byte[8192]);
-            WebSocketHostTarget target  = new WebSocketHostTarget(websocket);
+            var         target      = new WebSocketHostTarget(websocket);
             using (var memoryStream = new MemoryStream()) {
                 while (true) {
                     switch (websocket.State) {

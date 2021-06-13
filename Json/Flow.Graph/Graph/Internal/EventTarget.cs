@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
+using System;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Event;
@@ -9,14 +11,19 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     public class EventTarget : IEventTarget
     {
-        private readonly EntityStore store;
+        private readonly EntityStore    store;
         
         internal EventTarget (EntityStore store) {
             this.store = store; 
         } 
             
-        // --- IEventTarget 
+        // --- IEventTarget
+        public bool     IsOpen ()   => true;
+
         public Task<bool> SendEvent(DatabaseEvent ev, SyncContext syncContext) {
+            if (ev.clientId != store._intern.clientId)
+                throw new InvalidOperationException("Expect DatabaseEvent.clientId == EntityStore.clientId");
+            
             var changesEvent = ev as ChangesEvent;
             if (changesEvent == null)
                 return Task.FromResult(true);
@@ -24,10 +31,6 @@ namespace Friflo.Json.Flow.Graph.Internal
             store._intern.changeListener?.OnChanges(changesEvent, store);
 
             return Task.FromResult(true);
-        }
-        
-        public bool IsOpen () {
-            return true;
         }
     }
 }

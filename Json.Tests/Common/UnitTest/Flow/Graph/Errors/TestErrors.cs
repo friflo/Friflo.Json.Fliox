@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var testDatabase = new TestDatabase(fileDatabase))
-            using (var useStore     = new PocStore(testDatabase)) {
+            using (var useStore     = new PocStore(testDatabase, "useStore")) {
                 await TestStoresErrors(useStore, testDatabase);
             }
         }
@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var testDatabase     = new TestDatabase(fileDatabase))
             using (var loopbackDatabase = new LoopbackDatabase(testDatabase))
-            using (var useStore         = new PocStore(loopbackDatabase)) {
+            using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
                 await TestStoresErrors(useStore, testDatabase);
             }
         }
@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             using (var hostDatabase = new HttpHostDatabase(testDatabase, "http://+:8080/", null)) {
                 await Happy.TestStore.RunRemoteHost(hostDatabase, async () => {
                     using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/"))
-                    using (var useStore         = new PocStore(remoteDatabase)) {
+                    using (var useStore         = new PocStore(remoteDatabase, "useStore")) {
                         await TestStoresErrors(useStore, testDatabase);
                     }
                 });
@@ -82,7 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var testDatabase = new TestDatabase(fileDatabase))
-            using (var useStore     = new PocStore(testDatabase)) {
+            using (var useStore     = new PocStore(testDatabase, "useStore")) {
                 await test(useStore, testDatabase);
             }
         }

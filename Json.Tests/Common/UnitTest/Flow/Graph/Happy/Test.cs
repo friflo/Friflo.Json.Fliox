@@ -5,10 +5,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Database.Remote;
+using Friflo.Json.Flow.Sync;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using UnityEngine.TestTools;
+using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
     using UnitTest.Dummy;
@@ -53,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var database     = new MemoryDatabase())
             using (var createStore  = await TestRelationPoC.CreateStore(database))
-            using (var useStore     = new PocStore(database))  {
+            using (var useStore     = new PocStore(database, "useStore"))  {
                 await TestStores(createStore, useStore);
             }
         }
@@ -65,7 +68,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var createStore  = await TestRelationPoC.CreateStore(fileDatabase))
-            using (var useStore     = new PocStore(fileDatabase)) {
+            using (var useStore     = new PocStore(fileDatabase, "useStore")) {
                 await TestStores(createStore, useStore);
             }
         }
@@ -77,7 +80,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var createStore  = await TestRelationPoC.CreateStore(fileDatabase))
-            using (var useStore     = new PocStore(fileDatabase)) {
+            using (var useStore     = new PocStore(fileDatabase, "useStore")) {
                 await TestStores(createStore, useStore);
             }
         }
@@ -92,7 +95,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
                     using (var createStore      = await TestRelationPoC.CreateStore(remoteDatabase))
-                    using (var useStore         = new PocStore(remoteDatabase)) {
+                    using (var useStore         = new PocStore(remoteDatabase, "useStore")) {
                         await TestStores(createStore, useStore);
                     }
                 });
@@ -106,15 +109,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         private static async Task WebSocketCreate() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
+            using (var eventBroker      = new EventBroker())
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/", null)) 
-            using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/")) {
+            using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/", null))
+            using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/"))
+            // using (var listenDbRemote   = new WebSocketClientDatabase("ws://localhost:8080/"))
+            using (var listenDb         = new PocStore(remoteDatabase, "listenDb")) {
+                fileDatabase.eventBroker = eventBroker;
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
+                    var storeChanges = new StoreChanges();
+                    {
+                        // await listenDbRemote.Connect();
+                        var types = new HashSet<TaskType>(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
+                        listenDb.SetChangeListener(storeChanges);
+                        var subscribeArticles = listenDb.articles.SubscribeAll(types);
+                    
+                        await listenDb.Sync(); // -------- Sync --------
+                    
+                        IsTrue(subscribeArticles.Success);
+                    }
                     using (var createStore      = await TestRelationPoC.CreateStore(remoteDatabase))
-                    using (var useStore         = new PocStore(remoteDatabase)) {
+                    using (var useStore         = new PocStore(remoteDatabase, "useStore")) {
                         await TestStores(createStore, useStore);
                     }
+                    storeChanges.AssertCreateStoreChanges();
                     await remoteDatabase.Close();
                 });
             }
@@ -127,8 +146,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase)) {
-                using (var createStore      = new PocStore(loopbackDatabase))
-                using (var useStore         = new PocStore(loopbackDatabase)) {
+                using (var createStore      = new PocStore(loopbackDatabase, "createStore"))
+                using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
                     await TestStores(createStore, useStore);
                 }
             }
@@ -175,7 +194,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static async Task TestUse(Func<PocStore, Task> test) {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var createStore  = new PocStore(fileDatabase)) {
+            using (var createStore  = new PocStore(fileDatabase, "createStore")) {
                 await test(createStore);
             }
         }

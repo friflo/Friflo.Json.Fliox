@@ -16,17 +16,19 @@ namespace Friflo.Json.Flow.Database.Event
     
     public class EventBroker : IDisposable
     {
-        private readonly JsonEvaluator                              jsonEvaluator = new JsonEvaluator();
-        private readonly Dictionary<IEventTarget, EventSubscriber>  subscribers = new Dictionary<IEventTarget, EventSubscriber>();
+        private readonly JsonEvaluator                          jsonEvaluator   = new JsonEvaluator();
+        /// key: <see cref="EventSubscriber.clientId"/>
+        private readonly Dictionary<string, EventSubscriber>    subscribers     = new Dictionary<string, EventSubscriber>();
 
         public void Dispose() {
             jsonEvaluator.Dispose();
         }
 
         public void Subscribe (SubscribeChanges subscribe, IEventTarget eventTarget) {
-            if (!subscribers.TryGetValue(eventTarget, out var eventSubscriber)) {
-                eventSubscriber = new EventSubscriber(eventTarget);
-                subscribers.Add(eventTarget, eventSubscriber);
+            var clientId = subscribe.clientId;
+            if (!subscribers.TryGetValue(clientId, out var eventSubscriber)) {
+                eventSubscriber = new EventSubscriber(clientId, eventTarget);
+                subscribers.Add(clientId, eventSubscriber);
             }
             eventSubscriber.subscribeMap[subscribe.container] = subscribe;
         }
@@ -57,7 +59,7 @@ namespace Friflo.Json.Flow.Database.Event
                 }
                 if (tasks == null)
                     continue;
-                var changesEvent = new ChangesEvent {tasks = tasks};
+                var changesEvent = new ChangesEvent { tasks = tasks, clientId = subscriber.clientId };
                 subscriber.eventQueue.Enqueue(changesEvent);
             }
         }

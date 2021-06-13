@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public void TestQueryRef() {
             using (var __       = Pools.SharedPools) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
-            using (var store    = new PocStore(database)) {
+            using (var store    = new PocStore(database, "TestQueryRef")) {
                 var orders = store.orders;
                 var customerId = orders.Query(o => o.customer.id == "customer-1");
                 AreEqual("QueryTask<Order> (filter: .customer == 'customer-1')", customerId.ToString());
@@ -66,7 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 #if !UNITY_2020_1_OR_NEWER
         [Test]
         public void TestDictionaryValueIterator() {
-            var store = new PocStore(new MemoryDatabase());
+            var store = new PocStore(new MemoryDatabase(), "TestDictionaryValueIterator");
             var readArticles = store.articles.Read();
                         readArticles.Find("missing-id");
             var task =  readArticles.ReadRef(a => a.producer);

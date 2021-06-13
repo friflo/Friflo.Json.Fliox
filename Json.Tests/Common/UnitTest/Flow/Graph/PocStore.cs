@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     // --- store containers
     public class PocStore : EntityStore
     {
-        public PocStore(EntityDatabase database) : base (database, TestGlobals.typeStore) {
+        public PocStore(EntityDatabase database, string clientId) : base (database, TestGlobals.typeStore, clientId) {
             orders      = new EntitySet<Order>       (this);
             customers   = new EntitySet<Customer>    (this);
             articles    = new EntitySet<Article>     (this);
@@ -69,7 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             SyncTypeStore.Init();
             typeStore = new TypeStore();
             // by new PocStore() all TypeMappers for model classes are created before leak tracking of LeakTestsFixture starts. 
-            using (var _= new PocStore(new MemoryDatabase())) { }
+            using (var _= new PocStore(new MemoryDatabase(), "TestGlobals")) { }
         }
         
         public static void Dispose() {
@@ -83,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     public static class TestRelationPoC
     {
         public static async Task<PocStore> CreateStore(EntityDatabase database) {
-            var store = new PocStore(database);
+            var store = new PocStore(database, "CreateStore");
             AreSimilar("entities: 0",    store);    // initial state, empty store
             var orders      = store.orders;
             var articles    = store.articles;

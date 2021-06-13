@@ -17,6 +17,7 @@ namespace Friflo.Json.Flow.Graph
 {
     internal struct StoreIntern
     {
+        internal readonly   string                          clientId;
         internal readonly   TypeStore                       typeStore;
         internal readonly   TypeStore                       ownedTypeStore;
         internal readonly   TypeCache                       typeCache;
@@ -37,13 +38,15 @@ namespace Friflo.Json.Flow.Graph
 
         
         internal StoreIntern(
+            string          clientId,
             TypeStore       typeStore,
             TypeStore       owned,
             EntityDatabase  database,
             ObjectMapper    jsonMapper,
-            EventTarget   eventTarget,
+            EventTarget     eventTarget,
             SyncStore       sync)
         {
+            this.clientId       = clientId;
             this.typeStore      = typeStore;
             this.ownedTypeStore = owned;
             this.database       = database;
@@ -87,7 +90,7 @@ namespace Friflo.Json.Flow.Graph
         /// a <see cref="typeStore"/>. <see cref="TypeStore"/> instances are designed to be reused from multiple threads.
         /// Their creation is expensive compared to the instantiation of an <see cref="EntityStore"/>. 
         /// </summary>
-        protected EntityStore(EntityDatabase database, TypeStore typeStore) {
+        protected EntityStore(EntityDatabase database, TypeStore typeStore, string clientId) {
             TypeStore owned = null;
             if (typeStore == null) {
                 typeStore = owned = new TypeStore();
@@ -100,7 +103,8 @@ namespace Friflo.Json.Flow.Graph
             };
             var eventTarget = new EventTarget(this);
             var sync = new SyncStore();
-            _intern = new StoreIntern(typeStore, owned, database, jsonMapper, eventTarget, sync);
+            _intern = new StoreIntern(clientId, typeStore, owned, database, jsonMapper, eventTarget, sync);
+            database.AddEventTarget(clientId, eventTarget);
         }
         
         public void Dispose() {
