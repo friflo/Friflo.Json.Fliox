@@ -82,18 +82,18 @@ namespace Friflo.Json.Flow.Database.Remote
                     var message = reader.Read<DatabaseMessage>(messageJson);
                     var resp = message.resp; 
                     if (resp != null) {
-                        if (requestQueue.TryDequeue(out WebsocketRequest request)) {
-                            if (websocket.State != WebSocketState.Open) {
-                                var error = JsonResponse.CreateResponseError(request.syncContext, $"WebSocket not Open. {endpoint}", RequestStatusType.Error);
-                                request.response.SetResult(error);
-                                return;
-                            }
-                            var writer = pooledMapper.instance.writer;
-                            var responseJson = writer.Write(resp);
-                            var response = new JsonResponse(responseJson, RequestStatusType.Ok);
-                            request.response.SetResult(response);
+                        if (!requestQueue.TryDequeue(out WebsocketRequest request)) {
+                            throw new InvalidOperationException("Expect corresponding request to response");
+                        }
+                        if (websocket.State != WebSocketState.Open) {
+                            var error = JsonResponse.CreateResponseError(request.syncContext, $"WebSocket not Open. {endpoint}", RequestStatusType.Error);
+                            request.response.SetResult(error);
                             return;
                         }
+                        var writer = pooledMapper.instance.writer;
+                        var responseJson = writer.Write(resp);
+                        var response = new JsonResponse(responseJson, RequestStatusType.Ok);
+                        request.response.SetResult(response);
                         return;
                     }
                     var ev = message.ev;
