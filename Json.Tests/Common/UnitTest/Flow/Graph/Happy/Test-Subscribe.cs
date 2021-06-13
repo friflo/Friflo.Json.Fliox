@@ -58,29 +58,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             return storeChanges;
         }
     }
-    
-    internal class ChangeCounts<T> where T : Entity {
-        private     int changeCount;
-        private     int createCount;
-        private     int updateCount;
-        private     int deleteCount;
-        
-        internal void AddChanges(EntityChanges<T> entityChanges) {
-            changeCount += entityChanges.Count;
-            createCount += entityChanges.creates.Count;
-            updateCount += entityChanges.updates.Count;
-            deleteCount += entityChanges.deletes.Count;
-        }
 
-        public override string ToString() => $"({changeCount}, {createCount}, {updateCount}, {deleteCount})";
-    }
-    
     internal class PocListener : ChangeListener {
         private             int                     onChangeCount;
         private readonly    ChangeCounts<Order>     orderCounts     = new ChangeCounts<Order>();
         private readonly    ChangeCounts<Customer>  customerCounts  = new ChangeCounts<Customer>();
         private readonly    ChangeCounts<Article>   articleCounts   = new ChangeCounts<Article>();
-        private readonly    ChangeCounts<Producer>  produceCounts   = new ChangeCounts<Producer>();
+        private readonly    ChangeCounts<Producer>  producerCounts   = new ChangeCounts<Producer>();
         private readonly    ChangeCounts<Employee>  employeeCounts  = new ChangeCounts<Employee>();
             
         public override void OnChanges (ChangesEvent changes, EntityStore store) {
@@ -89,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             orderCounts.   AddChanges(GetEntityChanges<Order>());
             customerCounts.AddChanges(GetEntityChanges<Customer>());
             articleCounts. AddChanges(GetEntityChanges<Article>());
-            produceCounts. AddChanges(GetEntityChanges<Producer>());
+            producerCounts. AddChanges(GetEntityChanges<Producer>());
             employeeCounts.AddChanges(GetEntityChanges<Employee>());
         }
         
@@ -99,8 +83,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             AreSimilar("( 2, 2, 0, 0)", orderCounts);
             AreSimilar("( 6, 6, 0, 0)", customerCounts);
             AreSimilar("(13, 9, 0, 4)", articleCounts);
-            AreSimilar("( 3, 3, 0, 0)", produceCounts);
+            AreSimilar("( 3, 3, 0, 0)", producerCounts);
             AreSimilar("( 1, 1, 0, 0)", employeeCounts);
+            
+            IsTrue(orderCounts      .IsEqual(GetChangeCounts<Order>()));
+            IsTrue(customerCounts   .IsEqual(GetChangeCounts<Customer>()));
+            IsTrue(articleCounts    .IsEqual(GetChangeCounts<Article>()));
+            IsTrue(producerCounts   .IsEqual(GetChangeCounts<Producer>()));
+            IsTrue(employeeCounts   .IsEqual(GetChangeCounts<Employee>()));
         }
     }
 }

@@ -32,6 +32,8 @@ namespace Friflo.Json.Flow.Graph
         private             ChangesEvent                    changes;
         private             EntityStore                     store;
         private readonly    Dictionary<Type, EntityChanges> results = new Dictionary<Type, EntityChanges>();
+        
+        public              ChangeCounts<T>                 GetChangeCounts<T>() where T : Entity => GetChanges<T>().sum;
             
         public virtual void OnChanges(ChangesEvent changes, EntityStore store) {
             this.changes    = changes;
@@ -59,12 +61,17 @@ namespace Friflo.Json.Flow.Graph
             }
         }
         
-        protected EntityChanges<T> GetEntityChanges<T>() where T : Entity {
+        private EntityChanges<T> GetChanges<T> () where T : Entity {
             if (!results.TryGetValue(typeof(T), out var result)) {
-                result = new EntityChanges<T>();
-                results.Add(typeof(T), result);
+                var resultTyped = new EntityChanges<T>();
+                results.Add(typeof(T), resultTyped);
+                return resultTyped;
             }
-            var typedResult = (EntityChanges<T>)result;
+            return (EntityChanges<T>)result;
+        }
+        
+        protected EntityChanges<T> GetEntityChanges<T>() where T : Entity {
+            var typedResult = GetChanges<T>();
             var set         = (EntitySet<T>) store._intern.setByType[typeof(T)];
             typedResult.Clear();
             
@@ -78,6 +85,7 @@ namespace Friflo.Json.Flow.Graph
                             string key = entityPair.Key;
                             var peer = set.GetPeerById(key);
                             typedResult.creates.Add(peer.Entity);
+                            typedResult.sum.creates++;
                         }
                         break;
                     case TaskType.update:
@@ -88,6 +96,7 @@ namespace Friflo.Json.Flow.Graph
                             string key = entityPair.Key;
                             var peer = set.GetPeerById(key);
                             typedResult.updates.Add(peer.Entity);
+                            typedResult.sum.updates++;
                         }
                         break;
                     case TaskType.delete:
@@ -95,10 +104,35 @@ namespace Friflo.Json.Flow.Graph
                         if (delete.container != set.name)
                             continue;
                         typedResult.deletes = delete.ids;
+                        typedResult.sum.deletes += delete.ids.Count;
                         break;
                 }
             }
+            typedResult.sum.changes += typedResult.Count;
             return typedResult;
+        }
+    }
+    
+    public class ChangeCounts<T> where T : Entity {
+        public  int changes;
+        public  int creates;
+        public  int updates;
+        public  int deletes;
+
+        public override string ToString() => $"({changes}, {creates}, {updates}, {deletes})";
+
+        public void AddChanges(EntityChanges<T> entityChanges) {
+            changes += entityChanges.Count;
+            creates += entityChanges.creates.Count;
+            updates += entityChanges.updates.Count;
+            deletes += entityChanges.deletes.Count;
+        }
+
+        public bool IsEqual(ChangeCounts<T> other) {
+            return changes == other.changes &&
+                   creates == other.creates &&
+                   updates == other.updates &&
+                   deletes == other.deletes;
         }
     }
     
@@ -108,6 +142,7 @@ namespace Friflo.Json.Flow.Graph
         public  readonly    List<T>         creates = new List<T>();
         public  readonly    List<T>         updates = new List<T>();
         public              HashSet<string> deletes;
+        public  readonly    ChangeCounts<T> sum = new ChangeCounts<T>();
         
         private readonly    HashSet<string> deletesEmpty = new HashSet<string>(); 
         
