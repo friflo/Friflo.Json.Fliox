@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Graph.Internal;
 using Friflo.Json.Flow.Sync;
@@ -28,8 +29,9 @@ namespace Friflo.Json.Flow.Graph
     
     public class ChangeListener
     {
-        private ChangesEvent    changes;
-        private EntityStore     store;
+        private             ChangesEvent                    changes;
+        private             EntityStore                     store;
+        private readonly    Dictionary<Type, EntityChanges> results = new Dictionary<Type, EntityChanges>();
             
         public virtual void OnChanges(ChangesEvent changes, EntityStore store) {
             this.changes    = changes;
@@ -58,9 +60,14 @@ namespace Friflo.Json.Flow.Graph
         }
         
         protected EntityChanges<T> GetEntityChanges<T>() where T : Entity {
-            var             creates = new List<T>();
-            var             updates = new List<T>();
-            HashSet<string> deletes = null;
+            if (!results.TryGetValue(typeof(T), out var result)) {
+                result = new EntityChanges<T>();
+                results.Add(typeof(T), result);
+            }
+            result.Clear();
+            var typedResult = (EntityChanges<T>)result;
+            List<T>         creates = typedResult.creates;
+            List<T>         updates = typedResult.updates;
             var             set     = (EntitySet<T>) store._intern.setByType[typeof(T)];
             
             foreach (var task in changes.tasks) {
@@ -89,26 +96,33 @@ namespace Friflo.Json.Flow.Graph
                         var delete = (DeleteEntities)task;
                         if (delete.container != set.name)
                             continue;
-                        deletes = delete.ids;
+                        typedResult.deletes = delete.ids;
                         break;
                 }
             }
-            var setChanges = new EntityChanges<T>(creates, updates, deletes);
-            return setChanges;
+            return typedResult;
         }
     }
     
-    public class EntityChanges<T> where T : Entity {
-        public readonly List<T>         creates;
-        public readonly List<T>         updates;
-        public readonly HashSet<string> deletes;
+    public abstract class EntityChanges {
+        internal abstract void Clear();
+    }
+    
+    public class EntityChanges<T> : EntityChanges where T : Entity {
+        public  readonly    List<T>         creates = new List<T>();
+        public  readonly    List<T>         updates = new List<T>();
+        public              HashSet<string> deletes;
         
-        public          int             Count => creates.Count + updates.Count + deletes.Count;
+        private readonly    HashSet<string> deletesEmpty = new HashSet<string>(); 
         
-        internal EntityChanges(List<T> creates, List<T> updates, HashSet<string> deletes) {
-            this.creates = creates;
-            this.updates = updates;
-            this.deletes = deletes ?? new HashSet<string>();
+        public          int                 Count => creates.Count + updates.Count + deletes.Count;
+        
+        internal EntityChanges() { }
+
+        internal override void Clear() {
+            creates.Clear();
+            updates.Clear();
+            deletes = deletesEmpty;
         }
     }
 }
