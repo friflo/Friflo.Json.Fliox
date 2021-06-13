@@ -26,6 +26,11 @@ namespace Friflo.Json.Flow.Database.Event
 
         public void Subscribe (SubscribeChanges subscribe, IEventTarget eventTarget) {
             var clientId = subscribe.clientId;
+            // remove subscriber if nothing is subscribed
+            if (subscribe.types.Count == 0) {
+                subscribers.Remove(clientId);
+                return;
+            }
             if (!subscribers.TryGetValue(clientId, out var eventSubscriber)) {
                 eventSubscriber = new EventSubscriber(clientId, eventTarget);
                 subscribers.Add(clientId, eventSubscriber);
