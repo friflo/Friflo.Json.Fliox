@@ -2,7 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
@@ -49,8 +51,9 @@ namespace Friflo.Json.Flow.Database.Remote
     
     public abstract class RemoteClientDatabase : EntityDatabase
     {
-        private readonly ProtocolType protocolType;
-        
+        private  readonly   ProtocolType                        protocolType;
+        private  readonly   Dictionary<string, IEventTarget>    clientTargets = new Dictionary<string, IEventTarget>();
+
         // ReSharper disable once EmptyConstructor - added for source navigation
         protected RemoteClientDatabase(ProtocolType protocolType) {
             this.protocolType = protocolType;
@@ -59,6 +62,21 @@ namespace Friflo.Json.Flow.Database.Remote
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             RemoteClientContainer container = new RemoteClientContainer(name, this);
             return container;
+        }
+        
+        public override void AddClientTarget(string clientId, IEventTarget eventTarget) {
+            clientTargets.Add(clientId, eventTarget);
+        }
+        
+        public override void RemoveClientTarget(string clientId) {
+            clientTargets.Remove(clientId);
+        }
+        
+        protected void SendEvent(DatabaseEvent ev) {
+            var eventTarget     = clientTargets[ev.clientId];
+            var contextPools    = new Pools(Pools.SharedPools);
+            var syncContext     = new SyncContext(contextPools, eventTarget);
+            eventTarget.SendEvent(ev, syncContext);
         }
 
         protected abstract Task<JsonResponse> ExecuteRequestJson(string jsonRequest, SyncContext syncContext);

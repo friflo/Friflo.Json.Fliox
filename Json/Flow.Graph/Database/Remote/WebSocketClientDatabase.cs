@@ -3,14 +3,12 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database.Remote
@@ -20,7 +18,6 @@ namespace Friflo.Json.Flow.Database.Remote
         private  readonly   string                              endpoint;
         private  readonly   ClientWebSocket                     websocket;
         private  readonly   ConcurrentQueue<WebsocketRequest>   requestQueue = new ConcurrentQueue<WebsocketRequest>();
-        private  readonly   Dictionary<string, IEventTarget>    clientTargets = new Dictionary<string, IEventTarget>(); 
 
 
         public WebSocketClientDatabase(string endpoint) : base(ProtocolType.BiDirect) {
@@ -32,14 +29,6 @@ namespace Friflo.Json.Flow.Database.Remote
             base.Dispose();
             // websocket.CancelPendingRequests();
             websocket.Dispose();
-        }
-        
-        public override void AddClientTarget(string clientId, IEventTarget eventTarget) {
-            clientTargets.Add(clientId, eventTarget);
-        }
-        
-        public override void RemoveClientTarget(string clientId) {
-            clientTargets.Remove(clientId);
         }
         
         public async Task Connect() {
@@ -86,10 +75,10 @@ namespace Friflo.Json.Flow.Database.Remote
         }
         
         private void OnReceive(string messageJson) {
-            var contextPools    = new Pools(Pools.SharedPools);
-            using (var pooledMapper = contextPools.ObjectMapper.Get()) {
-                var reader = pooledMapper.instance.reader;
-                try {
+            try {
+                var contextPools    = new Pools(Pools.SharedPools);
+                using (var pooledMapper = contextPools.ObjectMapper.Get()) {
+                    var reader = pooledMapper.instance.reader;
                     var message = reader.Read<DatabaseMessage>(messageJson);
                     var resp = message.resp; 
                     if (resp != null) {
@@ -109,15 +98,13 @@ namespace Friflo.Json.Flow.Database.Remote
                     }
                     var ev = message.ev;
                     if (ev != null) {
-                        var eventTarget = clientTargets[ev.clientId];
-                        var syncContext = new SyncContext(contextPools, eventTarget);
-                        eventTarget.SendEvent(ev, syncContext);
+                        SendEvent(ev);
                     }
-                } catch (Exception e) {
-                    var error = $"OnReceive failed processing WebSocket message. Exception: {e}";
-                    Console.WriteLine(error);
-                    Debug.Fail(error);
                 }
+            } catch (Exception e) {
+                var error = $"OnReceive failed processing WebSocket message. Exception: {e}";
+                Console.WriteLine(error);
+                Debug.Fail(error);
             }
         }
 

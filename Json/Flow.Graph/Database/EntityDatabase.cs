@@ -9,8 +9,6 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database
 {
-   
-    // ----------------------------------------- EntityDatabase -----------------------------------------
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif

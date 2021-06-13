@@ -115,9 +115,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 fileDatabase.eventBroker = eventBroker;
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
-                    var pocListener             = await CreatePocListener(listenDb);
-                    using (var createStore      = await TestRelationPoC.CreateStore(remoteDatabase))
-                    using (var useStore         = new PocStore(remoteDatabase, "useStore")) {
+                    var pocListener         = await CreatePocListener(listenDb);
+                    using (var createStore  = await TestRelationPoC.CreateStore(remoteDatabase))
+                    using (var useStore     = new PocStore(remoteDatabase, "useStore")) {
                         await TestStores(createStore, useStore);
                     }
                     pocListener.AssertCreateStoreChanges();
@@ -131,11 +131,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         private static async Task LoopbackUse() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
+            using (var eventBroker      = new EventBroker())
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var loopbackDatabase = new LoopbackDatabase(fileDatabase)) {
-                using (var createStore      = new PocStore(loopbackDatabase, "createStore"))
+            using (var loopbackDatabase = new LoopbackDatabase(fileDatabase))
+            using (var listenDb         = new PocStore(fileDatabase, "listenDb")) {
+                fileDatabase.eventBroker= eventBroker;
+                var pocListener         = await CreatePocListener(listenDb);
+                using (var createStore      = await TestRelationPoC.CreateStore(loopbackDatabase))
                 using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
                     await TestStores(createStore, useStore);
+                    pocListener.AssertCreateStoreChanges();
                 }
             }
         }
