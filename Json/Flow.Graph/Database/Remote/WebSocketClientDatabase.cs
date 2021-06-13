@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Database.Remote
         private  readonly   string                              endpoint;
         private  readonly   ClientWebSocket                     websocket;
         private  readonly   ConcurrentQueue<WebsocketRequest>   requestQueue = new ConcurrentQueue<WebsocketRequest>();
-        private  readonly   Dictionary<string, IEventTarget>    eventTargets = new Dictionary<string, IEventTarget>(); 
+        private  readonly   Dictionary<string, IEventTarget>    clientTargets = new Dictionary<string, IEventTarget>(); 
 
 
         public WebSocketClientDatabase(string endpoint) : base(ProtocolType.BiDirect) {
@@ -35,11 +35,11 @@ namespace Friflo.Json.Flow.Database.Remote
         }
         
         public override void AddClientTarget(string clientId, IEventTarget eventTarget) {
-            eventTargets.Add(clientId, eventTarget);
+            clientTargets.Add(clientId, eventTarget);
         }
         
         public override void RemoveClientTarget(string clientId) {
-            eventTargets.Remove(clientId);
+            clientTargets.Remove(clientId);
         }
         
         public async Task Connect() {
@@ -109,7 +109,7 @@ namespace Friflo.Json.Flow.Database.Remote
                     }
                     var ev = message.ev;
                     if (ev != null) {
-                        var eventTarget = eventTargets[ev.clientId];
+                        var eventTarget = clientTargets[ev.clientId];
                         var syncContext = new SyncContext(contextPools, eventTarget);
                         eventTarget.SendEvent(ev, syncContext);
                     }
