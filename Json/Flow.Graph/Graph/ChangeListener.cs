@@ -144,8 +144,9 @@ namespace Friflo.Json.Flow.Graph
         internal EntityChanges() { }
 
         internal void Clear() {
-            creates.Clear();
-            updates.Clear();
+            creates     .Clear();
+            updates     .Clear();
+            deletesEmpty.Clear();
             deletes = deletesEmpty;
         }
     }
