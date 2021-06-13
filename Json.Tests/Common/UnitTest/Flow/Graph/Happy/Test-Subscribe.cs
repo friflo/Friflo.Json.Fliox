@@ -9,6 +9,7 @@ using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Tests.Common.Utils;
 using static NUnit.Framework.Assert;
+using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 
 #if UNITY_5_3_OR_NEWER
     using UnitTest.Dummy;
@@ -50,31 +51,48 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         }
     }
     
+    internal class ChangeCounts<T> where T : Entity {
+        private     int changeCount;
+        private     int createCount;
+        private     int updateCount;
+        private     int deleteCount;
+        
+        internal void AddChanges(EntityChanges<T> entityChanges) {
+            changeCount += entityChanges.Count;
+            createCount += entityChanges.creates.Count;
+            updateCount += entityChanges.updates.Count;
+            deleteCount += entityChanges.deletes.Count;
+        }
+
+        public override string ToString() => $"({changeCount}, {createCount}, {updateCount}, {deleteCount})";
+    }
+    
     internal class PocListener : ChangeListener {
-        private int onChangeCount;
-        private int changeArticleCount;
-        private int createArticleCount;
-        private int updateArticleCount;
-        private int deleteArticleCount;
+        private             int                     onChangeCount;
+        private readonly    ChangeCounts<Order>     orderCounts     = new ChangeCounts<Order>();
+        private readonly    ChangeCounts<Customer>  customerCounts  = new ChangeCounts<Customer>();
+        private readonly    ChangeCounts<Article>   articleCounts   = new ChangeCounts<Article>();
+        private readonly    ChangeCounts<Producer>  produceCounts   = new ChangeCounts<Producer>();
+        private readonly    ChangeCounts<Employee>  employeeCounts  = new ChangeCounts<Employee>();
             
         public override void OnChanges (ChangesEvent changes, EntityStore store) {
             base.OnChanges(changes, store);
-            var articleChanges = GetEntityChanges<Article>();
             onChangeCount++;
-            changeArticleCount  += articleChanges.Count;
-            createArticleCount  += articleChanges.creates.Count;
-            updateArticleCount  += articleChanges.updates.Count;
-            deleteArticleCount  += articleChanges.deletes.Count;
+            orderCounts.   AddChanges(GetEntityChanges<Order>());
+            customerCounts.AddChanges(GetEntityChanges<Customer>());
+            articleCounts. AddChanges(GetEntityChanges<Article>());
+            produceCounts. AddChanges(GetEntityChanges<Producer>());
+            employeeCounts.AddChanges(GetEntityChanges<Employee>());
         }
         
         /// assert that all database changes by <see cref="TestRelationPoC.CreateStore"/> are reflected
         public void AssertCreateStoreChanges() {
             AreEqual(7,  onChangeCount);
-            AreEqual(13, changeArticleCount);
-            AreEqual(9,  createArticleCount);
-            AreEqual(0,  updateArticleCount);
-            AreEqual(4,  deleteArticleCount);
+            AreSimilar("( 4, 0, 0, 4)", orderCounts);
+            AreSimilar("( 4, 0, 0, 4)", customerCounts);
+            AreSimilar("(13, 9, 0, 4)", articleCounts);
+            AreSimilar("( 4, 0, 0, 4)", produceCounts);
+            AreSimilar("( 4, 0, 0, 4)", employeeCounts);
         }
-
     }
 }
