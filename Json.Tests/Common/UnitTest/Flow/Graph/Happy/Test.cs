@@ -118,9 +118,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     var pocListener         = await CreatePocListener(listenDb);
                     using (var createStore  = await TestRelationPoC.CreateStore(remoteDatabase))
                     using (var useStore     = new PocStore(remoteDatabase, "useStore")) {
+                        pocListener.AssertCreateStoreChanges();
                         await TestStores(createStore, useStore);
                     }
-                    pocListener.AssertCreateStoreChanges();
                     await remoteDatabase.Close();
                 });
             }
@@ -139,8 +139,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 var pocListener         = await CreatePocListener(listenDb);
                 using (var createStore      = await TestRelationPoC.CreateStore(loopbackDatabase))
                 using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
-                    await TestStores(createStore, useStore);
                     pocListener.AssertCreateStoreChanges();
+                    await TestStores(createStore, useStore);
                 }
             }
         }
