@@ -35,6 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 using (await TestRelationPoC.CreateStore(fileDatabase)) { }
                 
                 pocListener.AssertCreateStoreChanges();
+                AreSimilar("(13, 9, 0, 4)", pocListener.GetChangeCounts<Article>()); // non protected access
             }
         }
         
