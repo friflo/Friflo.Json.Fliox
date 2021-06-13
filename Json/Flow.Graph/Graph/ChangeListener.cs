@@ -37,6 +37,7 @@ namespace Friflo.Json.Flow.Graph
                         // todo implement
                         break;
                     case TaskType.patch:
+                        var patches = (PatchEntities)task;
                         // todo implement
                         break;
                 }
@@ -88,6 +89,13 @@ namespace Friflo.Json.Flow.Graph
                         typedResult.deletes = delete.ids;
                         typedResult.sum.deletes += delete.ids.Count;
                         break;
+                    case TaskType.patch:
+                        var patch = (PatchEntities)task;
+                        if (patch.container != set.name)
+                            continue;
+                        // todo
+                        typedResult.sum.patches++;
+                        break;
                 }
             }
             typedResult.sum.changes += typedResult.Count;
@@ -100,21 +108,24 @@ namespace Friflo.Json.Flow.Graph
         public  int creates;
         public  int updates;
         public  int deletes;
+        public  int patches;
 
-        public override string ToString() => $"({changes}, {creates}, {updates}, {deletes})";
+        public override string ToString() => $"({changes}, {creates}, {updates}, {deletes}, {patches})";
 
         public void AddChanges(EntityChanges<T> entityChanges) {
             changes += entityChanges.Count;
             creates += entityChanges.creates.Count;
             updates += entityChanges.updates.Count;
             deletes += entityChanges.deletes.Count;
+            // deletes += entityChanges.patches.Count; // todo
         }
 
         public bool IsEqual(ChangeInfo<T> other) {
             return changes == other.changes &&
                    creates == other.creates &&
                    updates == other.updates &&
-                   deletes == other.deletes;
+                   deletes == other.deletes &&
+                   patches == other.patches;
         }
     }
     
