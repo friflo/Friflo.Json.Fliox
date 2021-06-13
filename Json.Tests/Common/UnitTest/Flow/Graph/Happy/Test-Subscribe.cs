@@ -67,6 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             deleteArticleCount  += articleChanges.deletes.Count;
         }
         
+        /// assert that all database changes by <see cref="TestRelationPoC.CreateStore"/> are reflected
         public void AssertCreateStoreChanges() {
             AreEqual(7,  onChangeCount);
             AreEqual(13, changeArticleCount);
