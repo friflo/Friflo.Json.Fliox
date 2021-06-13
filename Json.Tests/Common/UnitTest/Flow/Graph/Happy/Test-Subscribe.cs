@@ -29,23 +29,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var listenDb     = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker = eventBroker;
-                var types = new HashSet<TaskType>(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
-                var storeChanges = new StoreChanges();
-                listenDb.SetChangeListener(storeChanges);
-                var subscribeArticles = listenDb.articles.SubscribeAll(types);
-                
-                await listenDb.Sync(); // -------- Sync --------
-                
-                IsTrue(subscribeArticles.Success);
+                var pocListener = await CreatePocListener(listenDb);
                 
                 using (await TestRelationPoC.CreateStore(fileDatabase)) { }
                 
-                storeChanges.AssertCreateStoreChanges();
+                pocListener.AssertCreateStoreChanges();
             }
+        }
+        
+        private static async Task<PocListener> CreatePocListener (PocStore store) {
+            var storeChanges = new PocListener();
+            var types = new HashSet<TaskType>(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
+            store.SetChangeListener(storeChanges);
+            var subscribeArticles = store.articles.SubscribeAll(types);
+                
+            await store.Sync(); // -------- Sync --------
+                
+            IsTrue(subscribeArticles.Success);
+            return storeChanges;
         }
     }
     
-    internal class StoreChanges : ChangeListener {
+    internal class PocListener : ChangeListener {
         private int onChangeCount;
         private int changeArticleCount;
         private int createArticleCount;
@@ -69,5 +74,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             AreEqual(0,  updateArticleCount);
             AreEqual(4,  deleteArticleCount);
         }
+
     }
 }
