@@ -35,7 +35,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 using (await TestRelationPoC.CreateStore(fileDatabase)) { }
                 
                 pocListener.AssertCreateStoreChanges();
-                AreSimilar("(13, 9, 0, 4)", pocListener.GetChangeCounts<Article>()); // non protected access
+                AreEqual(8,                 pocListener.onChangeCount);             // non protected access
+                AreSimilar("(13, 9, 0, 4)", pocListener.GetChangeInfo<Article>());  // non protected access
             }
         }
         
@@ -61,37 +62,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
     }
 
     internal class PocListener : ChangeListener {
-        private             int                     onChangeCount;
-        private readonly    ChangeCounts<Order>     orderCounts     = new ChangeCounts<Order>();
-        private readonly    ChangeCounts<Customer>  customerCounts  = new ChangeCounts<Customer>();
-        private readonly    ChangeCounts<Article>   articleCounts   = new ChangeCounts<Article>();
-        private readonly    ChangeCounts<Producer>  producerCounts   = new ChangeCounts<Producer>();
-        private readonly    ChangeCounts<Employee>  employeeCounts  = new ChangeCounts<Employee>();
+        private readonly    ChangeInfo<Order>       orderInfo     = new ChangeInfo<Order>();
+        private readonly    ChangeInfo<Customer>    customerInfo  = new ChangeInfo<Customer>();
+        private readonly    ChangeInfo<Article>     articleInfo   = new ChangeInfo<Article>();
+        private readonly    ChangeInfo<Producer>    producerInfo  = new ChangeInfo<Producer>();
+        private readonly    ChangeInfo<Employee>    employeeInfo  = new ChangeInfo<Employee>();
             
         public override void OnChanges (ChangesEvent changes, EntityStore store) {
             base.OnChanges(changes, store);
-            onChangeCount++;
-            orderCounts.   AddChanges(GetEntityChanges<Order>());
-            customerCounts.AddChanges(GetEntityChanges<Customer>());
-            articleCounts. AddChanges(GetEntityChanges<Article>());
-            producerCounts. AddChanges(GetEntityChanges<Producer>());
-            employeeCounts.AddChanges(GetEntityChanges<Employee>());
+            orderInfo.   AddChanges(GetEntityChanges<Order>());
+            customerInfo.AddChanges(GetEntityChanges<Customer>());
+            articleInfo. AddChanges(GetEntityChanges<Article>());
+            producerInfo.AddChanges(GetEntityChanges<Producer>());
+            employeeInfo.AddChanges(GetEntityChanges<Employee>());
         }
         
         /// assert that all database changes by <see cref="TestRelationPoC.CreateStore"/> are reflected
         public void AssertCreateStoreChanges() {
             AreEqual(8,  onChangeCount);
-            AreSimilar("( 2, 2, 0, 0)", orderCounts);
-            AreSimilar("( 6, 6, 0, 0)", customerCounts);
-            AreSimilar("(13, 9, 0, 4)", articleCounts);
-            AreSimilar("( 3, 3, 0, 0)", producerCounts);
-            AreSimilar("( 1, 1, 0, 0)", employeeCounts);
+            AreSimilar("( 2, 2, 0, 0)", orderInfo);
+            AreSimilar("( 6, 6, 0, 0)", customerInfo);
+            AreSimilar("(13, 9, 0, 4)", articleInfo);
+            AreSimilar("( 3, 3, 0, 0)", producerInfo);
+            AreSimilar("( 1, 1, 0, 0)", employeeInfo);
             
-            IsTrue(orderCounts      .IsEqual(GetChangeCounts<Order>()));
-            IsTrue(customerCounts   .IsEqual(GetChangeCounts<Customer>()));
-            IsTrue(articleCounts    .IsEqual(GetChangeCounts<Article>()));
-            IsTrue(producerCounts   .IsEqual(GetChangeCounts<Producer>()));
-            IsTrue(employeeCounts   .IsEqual(GetChangeCounts<Employee>()));
+            IsTrue(orderInfo      .IsEqual(GetChangeInfo<Order>()));
+            IsTrue(customerInfo   .IsEqual(GetChangeInfo<Customer>()));
+            IsTrue(articleInfo    .IsEqual(GetChangeInfo<Article>()));
+            IsTrue(producerInfo   .IsEqual(GetChangeInfo<Producer>()));
+            IsTrue(employeeInfo   .IsEqual(GetChangeInfo<Employee>()));
         }
     }
 }

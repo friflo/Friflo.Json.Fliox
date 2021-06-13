@@ -9,13 +9,15 @@ namespace Friflo.Json.Flow.Graph
 {
     public class ChangeListener
     {
+        public              int                             onChangeCount;
+        public              ChangeInfo<T>                   GetChangeInfo<T>() where T : Entity => GetChanges<T>().sum;
+        
         private             ChangesEvent                    changes;
         private             EntityStore                     store;
         private readonly    Dictionary<Type, EntityChanges> results = new Dictionary<Type, EntityChanges>();
-        
-        public              ChangeCounts<T>                 GetChangeCounts<T>() where T : Entity => GetChanges<T>().sum;
             
         public virtual void OnChanges(ChangesEvent changes, EntityStore store) {
+            onChangeCount++;
             this.changes    = changes;
             this.store      = store;
             foreach (var task in changes.tasks) {
@@ -93,7 +95,7 @@ namespace Friflo.Json.Flow.Graph
         }
     }
     
-    public class ChangeCounts<T> where T : Entity {
+    public class ChangeInfo<T> where T : Entity {
         public  int changes;
         public  int creates;
         public  int updates;
@@ -108,7 +110,7 @@ namespace Friflo.Json.Flow.Graph
             deletes += entityChanges.deletes.Count;
         }
 
-        public bool IsEqual(ChangeCounts<T> other) {
+        public bool IsEqual(ChangeInfo<T> other) {
             return changes == other.changes &&
                    creates == other.creates &&
                    updates == other.updates &&
@@ -122,7 +124,7 @@ namespace Friflo.Json.Flow.Graph
         public  readonly    List<T>         creates = new List<T>();
         public  readonly    List<T>         updates = new List<T>();
         public              HashSet<string> deletes;
-        public  readonly    ChangeCounts<T> sum = new ChangeCounts<T>();
+        public  readonly    ChangeInfo<T>   sum = new ChangeInfo<T>();
         
         private readonly    HashSet<string> deletesEmpty = new HashSet<string>(); 
         
