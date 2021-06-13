@@ -22,47 +22,52 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
     public partial class TestStore
     {
         [Test] public async Task TestSubscribe      () { await TestCreate(async (store) => await AssertSubscribe ()); }
-
-        internal class StoreChanges : ChangeListener {
-            internal int onChangeCount;
-            internal int changeArticleCount;
-            internal int createArticleCount;
-            internal int updateArticleCount;
-            internal int deleteArticleCount;
-            
-            public override void OnChanges (ChangesEvent changes, EntityStore store) {
-                base.OnChanges(changes, store);
-                var articleChanges = GetEntityChanges<Article>();
-                onChangeCount++;
-                changeArticleCount  += articleChanges.Count;
-                createArticleCount  += articleChanges.creates.Count;
-                updateArticleCount  += articleChanges.updates.Count;
-                deleteArticleCount  += articleChanges.deletes.Count;
-            }
-        }
         
         private static async Task AssertSubscribe() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var eventBroker  = new EventBroker())
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var useStore     = new PocStore(fileDatabase)) {
+            using (var listenDb     = new PocStore(fileDatabase)) {
                 fileDatabase.eventBroker = eventBroker;
                 var types = new HashSet<TaskType>(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
                 var storeChanges = new StoreChanges();
-                useStore.SetChangeListener(storeChanges);
-                var subscribeArticles = useStore.articles.SubscribeAll(types);
+                listenDb.SetChangeListener(storeChanges);
+                var subscribeArticles = listenDb.articles.SubscribeAll(types);
                 
-                await useStore.Sync(); // -------- Sync --------
+                await listenDb.Sync(); // -------- Sync --------
                 
                 IsTrue(subscribeArticles.Success);
                 
                 using (await TestRelationPoC.CreateStore(fileDatabase)) { }
-                AreEqual(7,  storeChanges.onChangeCount);
-                AreEqual(13, storeChanges.changeArticleCount);
-                AreEqual(9,  storeChanges.createArticleCount);
-                AreEqual(0,  storeChanges.updateArticleCount);
-                AreEqual(4,  storeChanges.deleteArticleCount);
+                
+                storeChanges.AssertCreateStoreChanges();
             }
+        }
+    }
+    
+    internal class StoreChanges : ChangeListener {
+        private int onChangeCount;
+        private int changeArticleCount;
+        private int createArticleCount;
+        private int updateArticleCount;
+        private int deleteArticleCount;
+            
+        public override void OnChanges (ChangesEvent changes, EntityStore store) {
+            base.OnChanges(changes, store);
+            var articleChanges = GetEntityChanges<Article>();
+            onChangeCount++;
+            changeArticleCount  += articleChanges.Count;
+            createArticleCount  += articleChanges.creates.Count;
+            updateArticleCount  += articleChanges.updates.Count;
+            deleteArticleCount  += articleChanges.deletes.Count;
+        }
+        
+        public void AssertCreateStoreChanges() {
+            AreEqual(7,  onChangeCount);
+            AreEqual(13, changeArticleCount);
+            AreEqual(9,  createArticleCount);
+            AreEqual(0,  updateArticleCount);
+            AreEqual(4,  deleteArticleCount);
         }
     }
 }
