@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 using (await TestRelationPoC.CreateStore(fileDatabase)) { }
                 
                 pocSubscriber.AssertCreateStoreChanges();
-                AreEqual(8,                     pocSubscriber.onChangeCount);             // non protected access
+                AreEqual(8,                     pocSubscriber.ChangeCount);             // non protected access
                 AreSimilar("(13, 9, 0, 4, 2)",  pocSubscriber.GetChangeInfo<Article>());  // non protected access
             }
         }
@@ -79,7 +79,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         /// assert that all database changes by <see cref="TestRelationPoC.CreateStore"/> are reflected
         public void AssertCreateStoreChanges() {
-            AreEqual(8,  onChangeCount);
+            AreEqual(8,  ChangeCount);
             AreSimilar("( 2, 2, 0, 0, 0)", orderInfo);
             AreSimilar("( 6, 6, 0, 0, 0)", customerInfo);
             AreSimilar("(13, 9, 0, 4, 0)", articleInfo); // todo patches

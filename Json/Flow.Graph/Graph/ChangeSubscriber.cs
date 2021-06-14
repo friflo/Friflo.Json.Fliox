@@ -9,7 +9,7 @@ namespace Friflo.Json.Flow.Graph
 {
     public class ChangeSubscriber
     {
-        public              int                             onChangeCount;
+        public              int                             ChangeCount     { get; private set ;}
         public              ChangeInfo<T>                   GetChangeInfo<T>() where T : Entity => GetChanges<T>().sum;
         
         private             ChangesEvent                    changes;
@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Graph
         private readonly    Dictionary<Type, EntityChanges> results = new Dictionary<Type, EntityChanges>();
             
         public virtual void OnChanges(ChangesEvent changes, EntityStore store) {
-            onChangeCount++;
+            ChangeCount++;
             this.changes    = changes;
             this.store      = store;
             foreach (var task in changes.tasks) {
