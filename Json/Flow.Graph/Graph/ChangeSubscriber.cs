@@ -46,7 +46,8 @@ namespace Friflo.Json.Flow.Graph
         
         private EntityChanges<T> GetChanges<T> () where T : Entity {
             if (!results.TryGetValue(typeof(T), out var result)) {
-                var resultTyped = new EntityChanges<T>();
+                var set         = (EntitySet<T>) store._intern.setByType[typeof(T)];
+                var resultTyped = new EntityChanges<T>(set);
                 results.Add(typeof(T), resultTyped);
                 return resultTyped;
             }
@@ -54,9 +55,9 @@ namespace Friflo.Json.Flow.Graph
         }
         
         protected EntityChanges<T> GetEntityChanges<T>() where T : Entity {
-            var typedResult = GetChanges<T>();
-            var set         = (EntitySet<T>) store._intern.setByType[typeof(T)];
-            typedResult.Clear();
+            var result  = GetChanges<T>();
+            var set     = result.set;
+            result.Clear();
             
             foreach (var task in changes.tasks) {
                 switch (task.TaskType) {
@@ -67,8 +68,8 @@ namespace Friflo.Json.Flow.Graph
                         foreach (var entityPair in create.entities) {
                             string key = entityPair.Key;
                             var peer = set.GetPeerById(key);
-                            typedResult.creates.Add(peer.Entity);
-                            typedResult.sum.creates++;
+                            result.creates.Add(peer.Entity);
+                            result.sum.creates++;
                         }
                         break;
                     case TaskType.update:
@@ -78,28 +79,28 @@ namespace Friflo.Json.Flow.Graph
                         foreach (var entityPair in update.entities) {
                             string key = entityPair.Key;
                             var peer = set.GetPeerById(key);
-                            typedResult.updates.Add(peer.Entity);
-                            typedResult.sum.updates++;
+                            result.updates.Add(peer.Entity);
+                            result.sum.updates++;
                         }
                         break;
                     case TaskType.delete:
                         var delete = (DeleteEntities)task;
                         if (delete.container != set.name)
                             continue;
-                        typedResult.deletes = delete.ids;
-                        typedResult.sum.deletes += delete.ids.Count;
+                        result.deletes = delete.ids;
+                        result.sum.deletes += delete.ids.Count;
                         break;
                     case TaskType.patch:
                         var patch = (PatchEntities)task;
                         if (patch.container != set.name)
                             continue;
                         // todo
-                        typedResult.sum.patches++;
+                        result.sum.patches++;
                         break;
                 }
             }
-            typedResult.sum.changes += typedResult.Count;
-            return typedResult;
+            result.sum.changes += result.Count;
+            return result;
         }
     }
     
@@ -132,16 +133,19 @@ namespace Friflo.Json.Flow.Graph
     public abstract class EntityChanges { }
     
     public class EntityChanges<T> : EntityChanges where T : Entity {
-        public  readonly    List<T>         creates = new List<T>();
-        public  readonly    List<T>         updates = new List<T>();
+        public   readonly   List<T>         creates = new List<T>();
+        public   readonly   List<T>         updates = new List<T>();
         public              HashSet<string> deletes;
-        public  readonly    ChangeInfo<T>   sum = new ChangeInfo<T>();
+        public   readonly   ChangeInfo<T>   sum = new ChangeInfo<T>();
         
-        private readonly    HashSet<string> deletesEmpty = new HashSet<string>(); 
+        internal readonly   EntitySet<T>    set;
+        private  readonly   HashSet<string> deletesEmpty = new HashSet<string>(); 
         
         public          int                 Count => creates.Count + updates.Count + deletes.Count;
         
-        internal EntityChanges() { }
+        internal EntityChanges(EntitySet<T> set) {
+            this.set = set;
+        }
 
         internal void Clear() {
             creates     .Clear();
