@@ -7,7 +7,7 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public class ChangeListener
+    public class ChangeSubscriber
     {
         public              int                             onChangeCount;
         public              ChangeInfo<T>                   GetChangeInfo<T>() where T : Entity => GetChanges<T>().sum;

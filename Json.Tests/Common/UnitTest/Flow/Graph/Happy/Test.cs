@@ -115,10 +115,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 fileDatabase.eventBroker = eventBroker;
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
-                    var pocListener         = await CreatePocListener(listenDb);
+                    var pocSubscriber       = await CreatePocSubscriber(listenDb);
                     using (var createStore  = await TestRelationPoC.CreateStore(remoteDatabase))
                     using (var useStore     = new PocStore(remoteDatabase, "useStore")) {
-                        pocListener.AssertCreateStoreChanges();
+                        pocSubscriber.AssertCreateStoreChanges();
                         await TestStores(createStore, useStore);
                     }
                     await remoteDatabase.Close();
@@ -136,10 +136,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase))
             using (var listenDb         = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker= eventBroker;
-                var pocListener         = await CreatePocListener(listenDb);
+                var pocSubscriber           = await CreatePocSubscriber(listenDb);
                 using (var createStore      = await TestRelationPoC.CreateStore(loopbackDatabase))
                 using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
-                    pocListener.AssertCreateStoreChanges();
+                    pocSubscriber.AssertCreateStoreChanges();
                     await TestStores(createStore, useStore);
                 }
             }

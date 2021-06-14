@@ -30,20 +30,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var listenDb     = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker = eventBroker;
-                var pocListener = await CreatePocListener(listenDb);
+                var pocSubscriber   = await CreatePocSubscriber(listenDb);
                 
                 using (await TestRelationPoC.CreateStore(fileDatabase)) { }
                 
-                pocListener.AssertCreateStoreChanges();
-                AreEqual(8,                     pocListener.onChangeCount);             // non protected access
-                AreSimilar("(13, 9, 0, 4, 2)",  pocListener.GetChangeInfo<Article>());  // non protected access
+                pocSubscriber.AssertCreateStoreChanges();
+                AreEqual(8,                     pocSubscriber.onChangeCount);             // non protected access
+                AreSimilar("(13, 9, 0, 4, 2)",  pocSubscriber.GetChangeInfo<Article>());  // non protected access
             }
         }
         
-        private static async Task<PocListener> CreatePocListener (PocStore store) {
-            var storeChanges = new PocListener();
+        private static async Task<PocSubscriber> CreatePocSubscriber (PocStore store) {
+            var subscriber = new PocSubscriber();
             var types = new HashSet<TaskType>(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
-            store.SetChangeListener(storeChanges);
+            store.SetChangeSubscriber(subscriber);
             var subscribeArticles   = store.articles. SubscribeAll(types);
             var subscribeCustomers  = store.customers.SubscribeAll(types);
             var subscribeEmployees  = store.employees.SubscribeAll(types);
@@ -57,11 +57,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             IsTrue(subscribeEmployees   .Success);
             IsTrue(subscribeOrders      .Success);
             IsTrue(subscribeProducers   .Success);
-            return storeChanges;
+            return subscriber;
         }
     }
 
-    internal class PocListener : ChangeListener {
+    internal class PocSubscriber : ChangeSubscriber {
         private readonly    ChangeInfo<Order>       orderInfo     = new ChangeInfo<Order>();
         private readonly    ChangeInfo<Customer>    customerInfo  = new ChangeInfo<Customer>();
         private readonly    ChangeInfo<Article>     articleInfo   = new ChangeInfo<Article>();

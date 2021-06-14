@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (changesEvent == null)
                 return Task.FromResult(true);
 
-            store._intern.changeListener?.OnChanges(changesEvent, store);
+            store._intern.changeSubscriber?.OnChanges(changesEvent, store);
 
             return Task.FromResult(true);
         }
