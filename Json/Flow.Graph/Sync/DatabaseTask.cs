@@ -17,11 +17,11 @@ namespace Friflo.Json.Flow.Sync
     [Fri.Polymorph(typeof(PatchEntities),           Discriminant = "patch")]
     [Fri.Polymorph(typeof(DeleteEntities),          Discriminant = "delete")]
     [Fri.Polymorph(typeof(Echo),                    Discriminant = "echo")]
-    [Fri.Polymorph(typeof(SubscribeChanges),       Discriminant = "subscribe")]
+    [Fri.Polymorph(typeof(SubscribeChanges),        Discriminant = "subscribe")]
     public abstract class DatabaseTask
     {
         [Fri.Ignore]
-        public              int                     index;              
+        public              int                     index;
             
         internal abstract   Task<TaskResult>        Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext);
         internal abstract   TaskType                TaskType { get; }

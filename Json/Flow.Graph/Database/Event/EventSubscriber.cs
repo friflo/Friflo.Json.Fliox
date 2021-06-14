@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Sync;
 
@@ -35,7 +36,9 @@ namespace Friflo.Json.Flow.Database.Event
                     }
                     syncContext.pools.AssertNoLeaks();
                 } catch (Exception e) {
-                    Console.WriteLine(e.ToString());
+                    var error = e.ToString();
+                    Console.WriteLine(error);
+                    Debug.Fail(error);
                 }
             }
         }
