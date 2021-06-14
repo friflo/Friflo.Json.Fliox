@@ -101,22 +101,19 @@ namespace Friflo.Json.Flow.Graph
                         break;
                 }
             }
-            result.sum.changes += result.Count;
             return result;
         }
     }
     
     public class ChangeInfo<T> where T : Entity {
-        public  int changes;
         public  int creates;
         public  int updates;
         public  int deletes;
         public  int patches;
 
-        public override string ToString() => $"({changes}, {creates}, {updates}, {deletes}, {patches})";
+        public override string ToString() => $"({creates}, {updates}, {deletes}, {patches})";
 
         public void AddChanges(EntityChanges<T> entityChanges) {
-            changes += entityChanges.Count;
             creates += entityChanges.creates.Count;
             updates += entityChanges.updates.Count;
             deletes += entityChanges.deletes.Count;
@@ -124,8 +121,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         public bool IsEqual(ChangeInfo<T> other) {
-            return changes == other.changes &&
-                   creates == other.creates &&
+            return creates == other.creates &&
                    updates == other.updates &&
                    deletes == other.deletes &&
                    patches == other.patches;
