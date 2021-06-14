@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Graph
         
 
         internal SubscribeTask(HashSet<TaskType> types, FilterOperation filter) {
-            this.types      = types;
+            this.types      = types ?? new HashSet<TaskType>();
             this.filter     = filter;
             this.filterLinq = filter.Linq;
         }

@@ -169,8 +169,9 @@ namespace Friflo.Json.Flow.Graph
         }
         
         /// <summary>
-        /// Set a custom <see cref="ChangeSubscriber"/> to enable reacting on specific database changes.
-        /// E.g. notifying other modules about created, updated, deleted or patches entities.
+        /// Set a custom <see cref="ChangeSubscriber"/> to enable reacting on specific database change events.
+        /// E.g. notifying other application modules about created, updated, deleted or patches entities.
+        /// To subscribe to database change events <see cref="Graph.EntitySet{T}.Subscribe"/> need to be called before.
         /// The default <see cref="ChangeSubscriber"/> apply all changes to the <see cref="EntityStore"/> as they arrive. 
         /// </summary>
         public void SetChangeSubscriber(ChangeSubscriber changeSubscriber) {
