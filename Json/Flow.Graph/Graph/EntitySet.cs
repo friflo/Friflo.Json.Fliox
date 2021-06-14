@@ -119,7 +119,7 @@ namespace Friflo.Json.Flow.Graph
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{T}"/>.
         /// To react on specific changes use <see cref="EntityStore.SetChangeSubscriber"/>.
-        /// To unsubscribe change events set <see cref="changes"/> to null.
+        /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeTask<T> SubscribeFilter(HashSet<Change> changes, Expression<Func<T, bool>> filter) {
             var op = Operation.FromFilter(filter);
@@ -132,7 +132,7 @@ namespace Friflo.Json.Flow.Graph
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{T}"/>.
         /// To react on specific changes use <see cref="EntityStore.SetChangeSubscriber"/>.
-        /// To unsubscribe change events set <see cref="changes"/> to null.
+        /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeTask<T> SubscribeByFilter(HashSet<Change> changes, EntityFilter<T> filter) {
             var task = sync.SubscribeFilter(changes, filter.op);
@@ -144,7 +144,7 @@ namespace Friflo.Json.Flow.Graph
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{T}"/>.
         /// To react on specific changes use <see cref="EntityStore.SetChangeSubscriber"/>.
-        /// To unsubscribe change events set <see cref="changes"/> to null.
+        /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeTask<T> Subscribe(HashSet<Change> changes) {
             var all = Operation.FilterTrue;

@@ -165,7 +165,7 @@ namespace Friflo.Json.Flow.Graph
         /// Subscribe to database changes of all <see cref="EntityContainer"/>'s with the given <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntityStore"/>.
         /// To react on specific changes use <see cref="SetChangeSubscriber"/>.
-        /// To unsubscribe change events set <see cref="changes"/> to null.
+        /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public List<SyncTask> SubscribeAll(HashSet<Change> changes) {
             var tasks = new List<SyncTask>();
