@@ -68,7 +68,8 @@ namespace Friflo.Json.Flow.Graph
                         foreach (var entityPair in create.entities) {
                             string key = entityPair.Key;
                             var peer = set.GetPeerById(key);
-                            result.creates.Add(peer.Entity);
+                            var entity = peer.Entity;
+                            result.creates.Add(entity.id, entity);
                             result.sum.creates++;
                         }
                         break;
@@ -79,7 +80,8 @@ namespace Friflo.Json.Flow.Graph
                         foreach (var entityPair in update.entities) {
                             string key = entityPair.Key;
                             var peer = set.GetPeerById(key);
-                            result.updates.Add(peer.Entity);
+                            var entity = peer.Entity;
+                            result.updates.Add(entity.id, entity);
                             result.sum.updates++;
                         }
                         break;
@@ -131,14 +133,14 @@ namespace Friflo.Json.Flow.Graph
     public abstract class EntityChanges { }
     
     public class EntityChanges<T> : EntityChanges where T : Entity {
-        public   readonly   List<T>         creates = new List<T>();
-        public   readonly   List<T>         updates = new List<T>();
-        public   readonly   List<string>    deletes = new List<string>();
-        public   readonly   ChangeInfo<T>   sum = new ChangeInfo<T>();
+        public   readonly   Dictionary<string, T>   creates = new Dictionary<string, T>();
+        public   readonly   Dictionary<string, T>   updates = new Dictionary<string, T>();
+        public   readonly   HashSet<string>         deletes = new HashSet   <string>();
+        public   readonly   ChangeInfo<T>           sum     = new ChangeInfo<T>();
         
-        internal readonly   EntitySet<T>    set;
+        internal readonly   EntitySet<T>            set;
         
-        public          int                 Count => creates.Count + updates.Count + deletes.Count;
+        public              int                     Count => creates.Count + updates.Count + deletes.Count;
         
         internal EntityChanges(EntitySet<T> set) {
             this.set = set;
