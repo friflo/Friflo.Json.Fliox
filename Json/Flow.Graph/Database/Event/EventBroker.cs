@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Database.Event
         public void Subscribe (SubscribeChanges subscribe, IEventTarget eventTarget) {
             var clientId = subscribe.clientId;
             // remove subscriber if nothing is subscribed
-            if (subscribe.types.Count == 0) {
+            if (subscribe.changes.Count == 0) {
                 subscribers.Remove(clientId);
                 return;
             }
@@ -127,9 +127,9 @@ namespace Friflo.Json.Flow.Database.Event
             return result;
         }
         
-        private static bool MatchFilter (SubscribeChanges subscribe, string container, Change taskType) {
+        private static bool MatchFilter (SubscribeChanges subscribe, string container, Change change) {
             if (subscribe.container == container) {
-                if (subscribe.types.Contains(taskType))
+                if (subscribe.changes.Contains(change))
                     return true;
                 return false;
             }

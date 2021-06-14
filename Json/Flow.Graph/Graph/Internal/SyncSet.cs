@@ -91,8 +91,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         // --- Subscribe
-        internal SubscribeTask<T> SubscribeFilter(HashSet<Change> types, FilterOperation filter) {
-            subscribe = new SubscribeTask<T>(types, filter);
+        internal SubscribeTask<T> SubscribeFilter(HashSet<Change> changes, FilterOperation filter) {
+            subscribe = new SubscribeTask<T>(changes, filter);
             return subscribe;
         }
         
@@ -352,7 +352,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 clientId    = set.intern.store._intern.clientId,
                 container   = set.name,
                 filter      = sub.filter,
-                types       = sub.types
+                changes     = sub.changes
             };
             tasks.Add(req);
         }

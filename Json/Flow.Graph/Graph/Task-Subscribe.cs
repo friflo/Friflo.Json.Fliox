@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Graph
     public class SubscribeTask<T> : SyncTask where T : Entity
     {
         internal            TaskState               state;
-        internal readonly   HashSet<Change>         types;
+        internal readonly   HashSet<Change>         changes;
         internal readonly   FilterOperation         filter;
         private  readonly   string                  filterLinq; // use as string identifier of a filter
             
@@ -19,8 +19,8 @@ namespace Friflo.Json.Flow.Graph
         public   override   string                  Details         => $"SubscribeTask<{typeof(T).Name}> (filter: {filterLinq})";
         
 
-        internal SubscribeTask(HashSet<Change> types, FilterOperation filter) {
-            this.types      = types ?? new HashSet<Change>();
+        internal SubscribeTask(HashSet<Change> changes, FilterOperation filter) {
+            this.changes    = changes ?? new HashSet<Change>();
             this.filter     = filter;
             this.filterLinq = filter.Linq;
         }

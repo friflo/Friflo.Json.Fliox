@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Graph
         internal  abstract  void            LogSetChangesInternal   (LogTask logTask);
         internal  abstract  void            SyncPeerEntities        (Dictionary<string, EntityValue> entities);
         internal  abstract  void            ResetSync               ();
-        internal  abstract  SyncTask        SubscribeInternal       (HashSet<Change> types);
+        internal  abstract  SyncTask        SubscribeInternal       (HashSet<Change> changes);
 
         protected EntitySet(string name) {
             this.name = name;
@@ -116,39 +116,39 @@ namespace Friflo.Json.Flow.Graph
         
         // --- Subscribe
         /// <summary>
-        /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given change <see cref="types"/>.
+        /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{T}"/>.
         /// To react on specific changes use <see cref="EntityStore.SetChangeSubscriber"/>.
-        /// To unsubscribe change events set <see cref="types"/> to null.
+        /// To unsubscribe change events set <see cref="changes"/> to null.
         /// </summary>
-        public SubscribeTask<T> SubscribeFilter(HashSet<Change> types, Expression<Func<T, bool>> filter) {
+        public SubscribeTask<T> SubscribeFilter(HashSet<Change> changes, Expression<Func<T, bool>> filter) {
             var op = Operation.FromFilter(filter);
-            var task = sync.SubscribeFilter(types, op);
+            var task = sync.SubscribeFilter(changes, op);
             intern.store.AddTask(task);
             return task;
         }
         
         /// <summary>
-        /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given change <see cref="types"/>.
+        /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{T}"/>.
         /// To react on specific changes use <see cref="EntityStore.SetChangeSubscriber"/>.
-        /// To unsubscribe change events set <see cref="types"/> to null.
+        /// To unsubscribe change events set <see cref="changes"/> to null.
         /// </summary>
-        public SubscribeTask<T> SubscribeByFilter(HashSet<Change> types, EntityFilter<T> filter) {
-            var task = sync.SubscribeFilter(types, filter.op);
+        public SubscribeTask<T> SubscribeByFilter(HashSet<Change> changes, EntityFilter<T> filter) {
+            var task = sync.SubscribeFilter(changes, filter.op);
             intern.store.AddTask(task);
             return task;
         }
         
         /// <summary>
-        /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given change <see cref="types"/>.
+        /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{T}"/>.
         /// To react on specific changes use <see cref="EntityStore.SetChangeSubscriber"/>.
-        /// To unsubscribe change events set <see cref="types"/> to null.
+        /// To unsubscribe change events set <see cref="changes"/> to null.
         /// </summary>
-        public SubscribeTask<T> Subscribe(HashSet<Change> types) {
+        public SubscribeTask<T> Subscribe(HashSet<Change> changes) {
             var all = Operation.FilterTrue;
-            var task = sync.SubscribeFilter(types, all);
+            var task = sync.SubscribeFilter(changes, all);
             intern.store.AddTask(task);
             return task;
         }
@@ -388,8 +388,8 @@ namespace Friflo.Json.Flow.Graph
             sync = new SyncSet<T>(this);
         }
         
-        internal override SyncTask SubscribeInternal(HashSet<Change> types) {
-            return Subscribe(types);    
+        internal override SyncTask SubscribeInternal(HashSet<Change> changes) {
+            return Subscribe(changes);    
         }
     }
 }

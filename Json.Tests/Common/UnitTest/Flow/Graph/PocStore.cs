@@ -86,8 +86,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var store = new PocStore(database, "CreateStore");
             if (subscriber != null) {
                 store.SetChangeSubscriber(subscriber);
-                var types = new HashSet<Change>(new [] {Change.create, Change.update, Change.delete, Change.patch});
-                store.SubscribeAll(types);
+                var changes = new HashSet<Change>(new [] { Change.create, Change.update, Change.delete, Change.patch} );
+                store.SubscribeAll(changes);
                 await store.Sync();
             }
             

@@ -45,8 +45,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             var subscriber = new PocSubscriber();
             store.SetChangeSubscriber(subscriber);
             
-            var types = new HashSet<Change>(new [] {Change.create, Change.update, Change.delete, Change.patch});
-            var subscriptions = store.SubscribeAll(types);
+            var changes = new HashSet<Change>(new [] {Change.create, Change.update, Change.delete, Change.patch});
+            var subscriptions = store.SubscribeAll(changes);
                 
             await store.Sync(); // -------- Sync --------
 
