@@ -154,7 +154,7 @@ content-type: application/json
 { "type": "sync", "tasks": [
   {
     "task": "subscribe", "container": "Article", "clientId": "test-client",
-    "types": ["create", "update", "delete", "patch"]
+    "changes": ["create", "update", "delete", "patch"]
   }
 ]}
 
