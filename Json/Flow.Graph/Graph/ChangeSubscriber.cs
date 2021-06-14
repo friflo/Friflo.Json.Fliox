@@ -123,13 +123,12 @@ namespace Friflo.Json.Flow.Graph
     public class EntityChanges<T> : EntityChanges where T : Entity {
         public   readonly   Dictionary<string, T>   creates = new Dictionary<string, T>();
         public   readonly   Dictionary<string, T>   updates = new Dictionary<string, T>();
-        public   readonly   HashSet<string>         deletes = new HashSet   <string>();
+        public   readonly   HashSet   <string>      deletes = new HashSet   <string>();
         public   readonly   ChangeInfo<T>           sum     = new ChangeInfo<T>();
         public   readonly   ChangeInfo<T>           info    = new ChangeInfo<T>();
         
         internal readonly   EntitySet<T>            set;
         
-        public              int                     Count => creates.Count + updates.Count + deletes.Count;
         public override     string                  ToString() => info.ToString();       
 
         internal EntityChanges(EntitySet<T> set) {
