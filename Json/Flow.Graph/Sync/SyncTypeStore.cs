@@ -2,9 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Flow.Mapper;
-using Friflo.Json.Flow.Sync;
 
-namespace Friflo.Json.Flow.Database
+namespace Friflo.Json.Flow.Sync
 {
     /// Singleton are typically a bad practice, but its okay in this case as <see cref="TypeStore"/> behaves like an
     /// immutable object because the mapped types <see cref="SyncRequest"/> and <see cref="SyncResponse"/> are
