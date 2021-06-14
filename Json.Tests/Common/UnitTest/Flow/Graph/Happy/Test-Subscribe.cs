@@ -44,19 +44,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             var subscriber = new PocSubscriber();
             var types = new HashSet<TaskType>(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
             store.SetChangeSubscriber(subscriber);
-            var subscribeArticles   = store.articles. SubscribeAll(types);
-            var subscribeCustomers  = store.customers.SubscribeAll(types);
-            var subscribeEmployees  = store.employees.SubscribeAll(types);
-            var subscribeOrders     = store.orders.   SubscribeAll(types);
-            var subscribeProducers  = store.producers.SubscribeAll(types);
+            var subscriptions = store.SubscribeAll(types);
                 
             await store.Sync(); // -------- Sync --------
-                
-            IsTrue(subscribeArticles    .Success);
-            IsTrue(subscribeCustomers   .Success);
-            IsTrue(subscribeEmployees   .Success);
-            IsTrue(subscribeOrders      .Success);
-            IsTrue(subscribeProducers   .Success);
+
+            foreach (var subscription in subscriptions) {
+                IsTrue(subscription.Success);    
+            }
             return subscriber;
         }
     }

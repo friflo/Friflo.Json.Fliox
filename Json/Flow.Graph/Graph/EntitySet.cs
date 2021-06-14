@@ -28,6 +28,7 @@ namespace Friflo.Json.Flow.Graph
         internal  abstract  void            LogSetChangesInternal   (LogTask logTask);
         internal  abstract  void            SyncPeerEntities        (Dictionary<string, EntityValue> entities);
         internal  abstract  void            ResetSync               ();
+        internal  abstract  SyncTask        SubscribeAllInternal    (HashSet<TaskType> types);
 
         protected EntitySet(string name) {
             this.name = name;
@@ -382,6 +383,10 @@ namespace Friflo.Json.Flow.Graph
 
         internal override void ResetSync() {
             sync = new SyncSet<T>(this);
+        }
+        
+        internal override SyncTask SubscribeAllInternal(HashSet<TaskType> types) {
+            return SubscribeAll(types);    
         }
     }
 }
