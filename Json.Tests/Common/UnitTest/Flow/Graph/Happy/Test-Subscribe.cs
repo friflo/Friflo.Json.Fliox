@@ -35,8 +35,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 using (await TestRelationPoC.CreateStore(fileDatabase)) { }
                 
                 pocSubscriber.AssertCreateStoreChanges();
-                AreEqual(8,                     pocSubscriber.ChangeCount);           // non protected access
-                AreSimilar("(9, 0, 4, 2)",  pocSubscriber.GetChangeInfo<Article>());  // non protected access
+                AreEqual(8, pocSubscriber.ChangeCount);           // non protected access
+                AreSimilar("(creates: 9, updates: 0, deletes: 4, patches: 2)",  pocSubscriber.GetChangeInfo<Article>());  // non protected access
             }
         }
         
@@ -61,36 +61,46 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         }
     }
 
+    // assert expected database changes by counting the entity changes for each DatabaseContainer / EntitySet<>
     internal class PocSubscriber : ChangeSubscriber {
-        private readonly    ChangeInfo<Order>       orderInfo     = new ChangeInfo<Order>();
-        private readonly    ChangeInfo<Customer>    customerInfo  = new ChangeInfo<Customer>();
-        private readonly    ChangeInfo<Article>     articleInfo   = new ChangeInfo<Article>();
-        private readonly    ChangeInfo<Producer>    producerInfo  = new ChangeInfo<Producer>();
-        private readonly    ChangeInfo<Employee>    employeeInfo  = new ChangeInfo<Employee>();
+        private readonly    ChangeInfo<Order>       orderSum     = new ChangeInfo<Order>();
+        private readonly    ChangeInfo<Customer>    customerSum  = new ChangeInfo<Customer>();
+        private readonly    ChangeInfo<Article>     articleSum   = new ChangeInfo<Article>();
+        private readonly    ChangeInfo<Producer>    producerSum  = new ChangeInfo<Producer>();
+        private readonly    ChangeInfo<Employee>    employeeSum  = new ChangeInfo<Employee>();
             
         public override void OnChanges (ChangesEvent changes, EntityStore store) {
             base.OnChanges(changes, store);
-            orderInfo.   AddChanges(GetEntityChanges<Order>());
-            customerInfo.AddChanges(GetEntityChanges<Customer>());
-            articleInfo. AddChanges(GetEntityChanges<Article>());
-            producerInfo.AddChanges(GetEntityChanges<Producer>());
-            employeeInfo.AddChanges(GetEntityChanges<Employee>());
+            var orderChanges    = GetEntityChanges<Order>();
+            var customerChanges = GetEntityChanges<Customer>();
+            var articleChanges  = GetEntityChanges<Article>();
+            var producerChanges = GetEntityChanges<Producer>();
+            var employeeChanges = GetEntityChanges<Employee>();
+            
+            var changeInfo = changes.GetChangeInfo();
+            IsTrue(changeInfo.Count > 0);
+            
+            orderSum.   AddChanges(orderChanges);
+            customerSum.AddChanges(customerChanges);
+            articleSum. AddChanges(articleChanges);
+            producerSum.AddChanges(producerChanges);
+            employeeSum.AddChanges(employeeChanges);
         }
         
         /// assert that all database changes by <see cref="TestRelationPoC.CreateStore"/> are reflected
         public void AssertCreateStoreChanges() {
             AreEqual(8,  ChangeCount);
-            AreSimilar("(2, 0, 0, 0)", orderInfo);
-            AreSimilar("(6, 0, 0, 0)", customerInfo);
-            AreSimilar("(9, 0, 4, 0)", articleInfo); // todo patches
-            AreSimilar("(3, 0, 0, 0)", producerInfo);
-            AreSimilar("(1, 0, 0, 0)", employeeInfo);
+            AreSimilar("(creates: 2, updates: 0, deletes: 0, patches: 0)", orderSum);
+            AreSimilar("(creates: 6, updates: 0, deletes: 0, patches: 0)", customerSum);
+            AreSimilar("(creates: 9, updates: 0, deletes: 4, patches: 0)", articleSum); // todo patches
+            AreSimilar("(creates: 3, updates: 0, deletes: 0, patches: 0)", producerSum);
+            AreSimilar("(creates: 1, updates: 0, deletes: 0, patches: 0)", employeeSum);
             
-            IsTrue(orderInfo      .IsEqual(GetChangeInfo<Order>()));
-            IsTrue(customerInfo   .IsEqual(GetChangeInfo<Customer>()));
+            IsTrue(orderSum      .IsEqual(GetChangeInfo<Order>()));
+            IsTrue(customerSum   .IsEqual(GetChangeInfo<Customer>()));
          // IsTrue(articleInfo    .IsEqual(GetChangeInfo<Article>()));
-            IsTrue(producerInfo   .IsEqual(GetChangeInfo<Producer>()));
-            IsTrue(employeeInfo   .IsEqual(GetChangeInfo<Employee>()));
+            IsTrue(producerSum   .IsEqual(GetChangeInfo<Producer>()));
+            IsTrue(employeeSum   .IsEqual(GetChangeInfo<Employee>()));
         }
     }
 }

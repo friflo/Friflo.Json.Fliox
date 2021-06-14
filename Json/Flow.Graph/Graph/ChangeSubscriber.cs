@@ -70,7 +70,7 @@ namespace Friflo.Json.Flow.Graph
                             var peer = set.GetPeerById(key);
                             var entity = peer.Entity;
                             result.creates.Add(entity.id, entity);
-                            result.sum.creates++;
+                            result.info.creates++;
                         }
                         break;
                     case TaskType.update:
@@ -82,7 +82,7 @@ namespace Friflo.Json.Flow.Graph
                             var peer = set.GetPeerById(key);
                             var entity = peer.Entity;
                             result.updates.Add(entity.id, entity);
-                            result.sum.updates++;
+                            result.info.updates++;
                         }
                         break;
                     case TaskType.delete:
@@ -92,29 +92,24 @@ namespace Friflo.Json.Flow.Graph
                         foreach (var id in delete.ids) {
                             result.deletes.Add(id);
                         }
-                        result.sum.deletes += delete.ids.Count;
+                        result.info.deletes += delete.ids.Count;
                         break;
                     case TaskType.patch:
                         var patch = (PatchEntities)task;
                         if (patch.container != set.name)
                             continue;
                         // todo
-                        result.sum.patches++;
+                        result.info.patches++;
                         break;
                 }
             }
+            result.sum.Add(result.info);
             return result;
         }
     }
     
-    public class ChangeInfo<T> where T : Entity {
-        public  int creates;
-        public  int updates;
-        public  int deletes;
-        public  int patches;
-
-        public override string ToString() => $"({creates}, {updates}, {deletes}, {patches})";
-
+    public class ChangeInfo<T> : ChangeInfo where T : Entity
+    {
         public void AddChanges(EntityChanges<T> entityChanges) {
             creates += entityChanges.creates.Count;
             updates += entityChanges.updates.Count;
@@ -137,11 +132,13 @@ namespace Friflo.Json.Flow.Graph
         public   readonly   Dictionary<string, T>   updates = new Dictionary<string, T>();
         public   readonly   HashSet<string>         deletes = new HashSet   <string>();
         public   readonly   ChangeInfo<T>           sum     = new ChangeInfo<T>();
+        public   readonly   ChangeInfo<T>           info    = new ChangeInfo<T>();
         
         internal readonly   EntitySet<T>            set;
         
         public              int                     Count => creates.Count + updates.Count + deletes.Count;
-        
+        public override     string                  ToString() => info.ToString();       
+
         internal EntityChanges(EntitySet<T> set) {
             this.set = set;
         }
@@ -150,6 +147,8 @@ namespace Friflo.Json.Flow.Graph
             creates.Clear();
             updates.Clear();
             deletes.Clear();
+            //
+            info.Clear();
         }
     }
 }
