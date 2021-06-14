@@ -137,6 +137,4 @@ namespace Friflo.Json.Flow.Database.Remote
             this.syncContext    = syncContext;
         }
     }
-    
-
 }
