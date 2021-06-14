@@ -42,8 +42,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         private static async Task<PocSubscriber> CreatePocSubscriber (PocStore store) {
             var subscriber = new PocSubscriber();
-            var types = new HashSet<TaskType>(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
             store.SetChangeSubscriber(subscriber);
+            
+            var types = new HashSet<TaskType>(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
             var subscriptions = store.SubscribeAll(types);
                 
             await store.Sync(); // -------- Sync --------
@@ -109,7 +110,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             sum.creates += changes.creates.Count;
             sum.updates += changes.updates.Count;
             sum.deletes += changes.deletes.Count;
-            // sum.deletes += entityChanges.patches.Count; // todo
+            // sum.patches += changes.patches.Count; // todo
         }
     }
 }
