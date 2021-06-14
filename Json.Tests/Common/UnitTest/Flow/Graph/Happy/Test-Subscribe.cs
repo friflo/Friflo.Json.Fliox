@@ -79,7 +79,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             
             var changeInfo = changes.GetChangeInfo();
             IsTrue(changeInfo.Count > 0);
-            
+
             orderSum.   AddChanges(orderChanges);
             customerSum.AddChanges(customerChanges);
             articleSum. AddChanges(articleChanges);
@@ -101,6 +101,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
          // IsTrue(articleInfo    .IsEqual(GetChangeInfo<Article>()));
             IsTrue(producerSum   .IsEqual(GetChangeInfo<Producer>()));
             IsTrue(employeeSum   .IsEqual(GetChangeInfo<Employee>()));
+        }
+    }
+    
+    static class PocUtils
+    {
+        public static void AddChanges<T> (this ChangeInfo<T> sum, EntityChanges<T> changes) where T: Entity {
+            sum.creates += changes.creates.Count;
+            sum.updates += changes.updates.Count;
+            sum.deletes += changes.deletes.Count;
+            // sum.deletes += entityChanges.patches.Count; // todo
         }
     }
 }

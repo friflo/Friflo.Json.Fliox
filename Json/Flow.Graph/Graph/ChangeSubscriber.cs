@@ -110,13 +110,6 @@ namespace Friflo.Json.Flow.Graph
     
     public class ChangeInfo<T> : ChangeInfo where T : Entity
     {
-        public void AddChanges(EntityChanges<T> entityChanges) {
-            creates += entityChanges.creates.Count;
-            updates += entityChanges.updates.Count;
-            deletes += entityChanges.deletes.Count;
-            // deletes += entityChanges.patches.Count; // todo
-        }
-
         public bool IsEqual(ChangeInfo<T> other) {
             return creates == other.creates &&
                    updates == other.updates &&
