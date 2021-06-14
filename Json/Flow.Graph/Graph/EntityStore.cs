@@ -170,7 +170,7 @@ namespace Friflo.Json.Flow.Graph
             var tasks = new List<SyncTask>();
             foreach (var setPair in _intern.setByType) {
                 var set = setPair.Value;
-                var task = set.SubscribeAllInternal(types);
+                var task = set.SubscribeInternal(types);
                 tasks.Add(task);
             }
             return tasks;
