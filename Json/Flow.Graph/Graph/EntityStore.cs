@@ -168,6 +168,11 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
+        /// <summary>
+        /// Set a custom <see cref="ChangeSubscriber"/> to enable reacting on specific database changes.
+        /// E.g. notifying other modules about created, updated, deleted or patches entities.
+        /// The default <see cref="ChangeSubscriber"/> apply all changes to the <see cref="EntityStore"/> as they arrive. 
+        /// </summary>
         public void SetChangeSubscriber(ChangeSubscriber changeSubscriber) {
             _intern.changeSubscriber = changeSubscriber;
         }

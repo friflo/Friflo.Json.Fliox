@@ -114,6 +114,10 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- Subscribe
+        /// <summary>
+        /// Subscribe to database changes of the given <see cref="types"/>. By default these changes are applied to the <see cref="EntitySet{T}"/>.
+        /// To react on specific changes use <see cref="EntityStore.SetChangeSubscriber"/>
+        /// </summary>
         public SubscribeTask<T> Subscribe(HashSet<TaskType> types, Expression<Func<T, bool>> filter) {
             var op = Operation.FromFilter(filter);
             var task = sync.SubscribeFilter(types, op);
@@ -121,12 +125,20 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
+        /// <summary>
+        /// Subscribe to database changes of the given <see cref="types"/>. By default these changes are applied to the <see cref="EntitySet{T}"/>.
+        /// To react on specific changes use <see cref="EntityStore.SetChangeSubscriber"/>
+        /// </summary>
         public SubscribeTask<T> SubscribeByFilter(HashSet<TaskType> types, EntityFilter<T> filter) {
             var task = sync.SubscribeFilter(types, filter.op);
             intern.store.AddTask(task);
             return task;
         }
         
+        /// <summary>
+        /// Subscribe to database changes of the given <see cref="types"/>. By default these changes are applied to the <see cref="EntitySet{T}"/>.
+        /// To react on specific changes use <see cref="EntityStore.SetChangeSubscriber"/>
+        /// </summary>
         public SubscribeTask<T> SubscribeAll(HashSet<TaskType> types) {
             var all = Operation.FilterTrue;
             var task = sync.SubscribeFilter(types, all);
