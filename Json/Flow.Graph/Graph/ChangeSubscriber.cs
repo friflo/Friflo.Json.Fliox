@@ -87,7 +87,9 @@ namespace Friflo.Json.Flow.Graph
                         var delete = (DeleteEntities)task;
                         if (delete.container != set.name)
                             continue;
-                        result.deletes = delete.ids;
+                        foreach (var id in delete.ids) {
+                            result.deletes.Add(id);
+                        }
                         result.sum.deletes += delete.ids.Count;
                         break;
                     case TaskType.patch:
@@ -135,11 +137,10 @@ namespace Friflo.Json.Flow.Graph
     public class EntityChanges<T> : EntityChanges where T : Entity {
         public   readonly   List<T>         creates = new List<T>();
         public   readonly   List<T>         updates = new List<T>();
-        public              HashSet<string> deletes;
+        public   readonly   List<string>    deletes = new List<string>();
         public   readonly   ChangeInfo<T>   sum = new ChangeInfo<T>();
         
         internal readonly   EntitySet<T>    set;
-        private  readonly   HashSet<string> deletesEmpty = new HashSet<string>(); 
         
         public          int                 Count => creates.Count + updates.Count + deletes.Count;
         
@@ -148,10 +149,9 @@ namespace Friflo.Json.Flow.Graph
         }
 
         internal void Clear() {
-            creates     .Clear();
-            updates     .Clear();
-            deletesEmpty.Clear();
-            deletes = deletesEmpty;
+            creates.Clear();
+            updates.Clear();
+            deletes.Clear();
         }
     }
 }
