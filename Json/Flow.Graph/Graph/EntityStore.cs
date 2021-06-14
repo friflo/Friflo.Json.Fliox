@@ -162,8 +162,9 @@ namespace Friflo.Json.Flow.Graph
         }
         
         /// <summary>
-        /// Subscribe to database changes of the given <see cref="types"/>. By default these changes are applied to the <see cref="EntityStore"/>.
-        /// To react on specific changes use <see cref="EntityStore.SetChangeSubscriber"/>.
+        /// Subscribe to database changes of all <see cref="EntityContainer"/>'s with the given changes <see cref="types"/>.
+        /// By default these changes are applied to the <see cref="EntityStore"/>.
+        /// To react on specific changes use <see cref="SetChangeSubscriber"/>.
         /// To unsubscribe change events set <see cref="types"/> to null.
         /// </summary>
         public List<SyncTask> SubscribeAll(HashSet<TaskType> types) {
