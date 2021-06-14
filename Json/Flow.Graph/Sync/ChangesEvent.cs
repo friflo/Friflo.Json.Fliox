@@ -44,6 +44,10 @@ namespace Friflo.Json.Flow.Sync
         changes
     }
     
+    /// <summary>
+    /// <see cref="ChangeInfo"/> is never de-/serialized.
+    /// It purpose is to get aggregated information about a <see cref="ChangesEvent"/> by <see cref="ChangesEvent.GetChangeInfo"/>
+    /// </summary>
     public class ChangeInfo {
         public  int creates;
         public  int updates;
