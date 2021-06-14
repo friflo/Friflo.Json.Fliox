@@ -85,6 +85,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             articleSum. AddChanges(articleChanges);
             producerSum.AddChanges(producerChanges);
             employeeSum.AddChanges(employeeChanges);
+            
+            if (ChangeCount == 1) {
+                AreEqual("iPad Pro", articleChanges.creates["article-ipad"].name);
+                IsTrue(articleChanges.deletes.Contains("article-iphone"));
+            }
         }
         
         /// assert that all database changes by <see cref="TestRelationPoC.CreateStore"/> are reflected
