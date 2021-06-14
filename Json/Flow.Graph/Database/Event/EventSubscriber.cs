@@ -29,7 +29,7 @@ namespace Friflo.Json.Flow.Database.Event
             while (eventQueue.TryPeek(out var ev)) {
                 try {
                     var syncContext     = new SyncContext(contextPools, eventTarget);
-                    var success = await eventTarget.SendEvent(ev, syncContext).ConfigureAwait(false);
+                    var success = await eventTarget.ProcessEvent(ev, syncContext).ConfigureAwait(false);
                     if (success) {
                         eventQueue.TryDequeue(out _);
                     }

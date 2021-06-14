@@ -98,7 +98,7 @@ namespace Friflo.Json.Flow.Database.Remote
                     }
                     var ev = message.ev;
                     if (ev != null) {
-                        SendEvent(ev);
+                        ProcessEvent(ev);
                     }
                 }
             } catch (Exception e) {

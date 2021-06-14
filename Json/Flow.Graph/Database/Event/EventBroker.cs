@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Database.Event
 {
     public interface IEventTarget {
         bool        IsOpen ();
-        Task<bool>  SendEvent(DatabaseEvent ev, SyncContext syncContext);
+        Task<bool>  ProcessEvent(DatabaseEvent ev, SyncContext syncContext);
     }
     
     public class EventBroker : IDisposable

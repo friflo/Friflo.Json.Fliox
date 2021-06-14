@@ -72,11 +72,11 @@ namespace Friflo.Json.Flow.Database.Remote
             clientTargets.Remove(clientId);
         }
         
-        protected void SendEvent(DatabaseEvent ev) {
+        protected void ProcessEvent(DatabaseEvent ev) {
             var eventTarget     = clientTargets[ev.clientId];
             var contextPools    = new Pools(Pools.SharedPools);
             var syncContext     = new SyncContext(contextPools, eventTarget);
-            eventTarget.SendEvent(ev, syncContext);
+            eventTarget.ProcessEvent(ev, syncContext);
         }
 
         protected abstract Task<JsonResponse> ExecuteRequestJson(string jsonRequest, SyncContext syncContext);
