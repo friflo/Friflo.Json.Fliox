@@ -86,13 +86,13 @@ namespace Friflo.Json.Flow.Database.Remote
                             throw new InvalidOperationException("Expect corresponding request to response");
                         }
                         if (websocket.State != WebSocketState.Open) {
-                            var error = JsonResponse.CreateResponseError(request.syncContext, $"WebSocket not Open. {endpoint}", RequestStatusType.Error);
+                            var error = JsonResponse.CreateResponseError(request.syncContext, $"WebSocket not Open. {endpoint}", ResponseStatusType.Error);
                             request.response.SetResult(error);
                             return;
                         }
                         var writer = pooledMapper.instance.writer;
                         var responseJson = writer.Write(resp);
-                        var response = new JsonResponse(responseJson, RequestStatusType.Ok);
+                        var response = new JsonResponse(responseJson, ResponseStatusType.Ok);
                         request.response.SetResult(response);
                         return;
                     }
@@ -123,7 +123,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 var error = ErrorResponse.ErrorFromException(e);
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
-                return JsonResponse.CreateResponseError(syncContext, error.ToString(), RequestStatusType.Exception);
+                return JsonResponse.CreateResponseError(syncContext, error.ToString(), ResponseStatusType.Exception);
             }
         }
     }

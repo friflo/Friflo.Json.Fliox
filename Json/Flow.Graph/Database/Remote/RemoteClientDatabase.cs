@@ -97,7 +97,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 var jsonRequest = CreateRequest(mapper.writer, request);
                 var result = await ExecuteRequestJson(jsonRequest, syncContext).ConfigureAwait(false);
                 ObjectReader reader = mapper.reader;
-                if (result.statusType == RequestStatusType.Ok) {
+                if (result.statusType == ResponseStatusType.Ok) {
                     var response = reader.Read<DatabaseResponse>(result.body);
                     if (reader.Error.ErrSet)
                         return new ErrorResponse{message = reader.Error.msg.ToString()};

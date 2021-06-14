@@ -103,9 +103,9 @@ namespace Friflo.Json.Flow.Database.Remote
                 byte[]  resultBytes = Encoding.UTF8.GetBytes(result.body);
                 HttpStatusCode statusCode;
                 switch (result.statusType){
-                    case RequestStatusType.Ok:          statusCode = HttpStatusCode.OK;                     break;
-                    case RequestStatusType.Error:       statusCode = HttpStatusCode.BadRequest;             break;
-                    case RequestStatusType.Exception:   statusCode = HttpStatusCode.InternalServerError;    break;
+                    case ResponseStatusType.Ok:         statusCode = HttpStatusCode.OK;                     break;
+                    case ResponseStatusType.Error:      statusCode = HttpStatusCode.BadRequest;             break;
+                    case ResponseStatusType.Exception:  statusCode = HttpStatusCode.InternalServerError;    break;
                     default:                            statusCode = HttpStatusCode.InternalServerError;    break;
                 } 
                 SetResponseHeader(resp, "application/json", statusCode, resultBytes.Length);
