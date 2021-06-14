@@ -75,6 +75,7 @@ namespace Friflo.Json.Flow.Database.Event
         
         private DatabaseTask FilterTask (DatabaseTask task, SubscribeChanges subscribe) {
             switch (task.TaskType) {
+                
                 case TaskType.create:
                     if (!subscribe.changes.Contains(Change.create))
                         return null;
@@ -86,6 +87,7 @@ namespace Friflo.Json.Flow.Database.Event
                         entities    = FilterEntities(subscribe.filter, create.entities)
                     };
                     return createResult;
+                
                 case TaskType.update:
                     if (!subscribe.changes.Contains(Change.update))
                         return null;
@@ -97,6 +99,7 @@ namespace Friflo.Json.Flow.Database.Event
                         entities    = FilterEntities(subscribe.filter, update.entities)
                     };
                     return updateResult;
+                
                 case TaskType.delete:
                     if (!subscribe.changes.Contains(Change.delete))
                         return null;
@@ -105,6 +108,7 @@ namespace Friflo.Json.Flow.Database.Event
                         return null;
                     // todo apply filter
                     return task;
+                
                 case TaskType.patch:
                     if (!subscribe.changes.Contains(Change.patch))
                         return null;
@@ -113,6 +117,7 @@ namespace Friflo.Json.Flow.Database.Event
                         return null;
                     // todo apply filter
                     return task;
+                
                 default:
                     return null;
             }
