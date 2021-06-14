@@ -76,8 +76,10 @@ namespace Friflo.Json.Flow.Database.Event
         private DatabaseTask FilterTask (DatabaseTask task, SubscribeChanges subscribe) {
             switch (task.TaskType) {
                 case TaskType.create:
+                    if (!subscribe.changes.Contains(Change.create))
+                        return null;
                     var create = (CreateEntities) task;
-                    if (!MatchFilter(subscribe, create.container, Change.create))
+                    if (create.container != subscribe.container)
                         return null;
                     var createResult = new CreateEntities {
                         container   = create.container,
@@ -85,8 +87,10 @@ namespace Friflo.Json.Flow.Database.Event
                     };
                     return createResult;
                 case TaskType.update:
+                    if (!subscribe.changes.Contains(Change.update))
+                        return null;
                     var update = (UpdateEntities) task;
-                    if (!MatchFilter(subscribe, update.container, Change.update))
+                    if (update.container != subscribe.container)
                         return null;
                     var updateResult = new UpdateEntities {
                         container   = update.container,
@@ -94,17 +98,21 @@ namespace Friflo.Json.Flow.Database.Event
                     };
                     return updateResult;
                 case TaskType.delete:
-                    // todo apply filter
+                    if (!subscribe.changes.Contains(Change.delete))
+                        return null;
                     var delete = (DeleteEntities) task;
-                    if (subscribe.container == delete.container)
-                        return task;
-                    return null;
-                case TaskType.patch:
+                    if (subscribe.container != delete.container)
+                        return null;
                     // todo apply filter
+                    return task;
+                case TaskType.patch:
+                    if (!subscribe.changes.Contains(Change.patch))
+                        return null;
                     var patch = (PatchEntities) task;
-                    if (subscribe.container == patch.container)
-                        return task;
-                    return null;
+                    if (subscribe.container != patch.container)
+                        return null;
+                    // todo apply filter
+                    return task;
                 default:
                     return null;
             }
@@ -125,15 +133,6 @@ namespace Friflo.Json.Flow.Database.Event
                 }
             }
             return result;
-        }
-        
-        private static bool MatchFilter (SubscribeChanges subscribe, string container, Change change) {
-            if (subscribe.container == container) {
-                if (subscribe.changes.Contains(change))
-                    return true;
-                return false;
-            }
-            return false;
         }
     }
 }
