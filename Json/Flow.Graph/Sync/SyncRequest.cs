@@ -9,6 +9,7 @@ namespace Friflo.Json.Flow.Sync
     // ------------------------------ SyncRequest / SyncResponse ------------------------------
     public class SyncRequest : DatabaseRequest
     {
+        public              string                      clientId;
         public              List<DatabaseTask>          tasks;
         
         internal override   RequestType                 RequestType => RequestType.sync;

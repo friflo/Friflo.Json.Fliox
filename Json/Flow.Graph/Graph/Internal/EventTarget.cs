@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         public bool     IsOpen ()   => true;
 
         public Task<bool> ProcessEvent(DatabaseEvent ev, SyncContext syncContext) {
-            if (ev.clientId != store._intern.clientId)
+            if (ev.targetId != store._intern.clientId)
                 throw new InvalidOperationException("Expect DatabaseEvent.clientId == EntityStore.clientId");
             
             var changesEvent = ev as ChangesEvent;

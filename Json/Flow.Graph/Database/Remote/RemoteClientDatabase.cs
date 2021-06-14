@@ -35,7 +35,7 @@ namespace Friflo.Json.Flow.Database.Remote
         }
         
         protected void ProcessEvent(DatabaseEvent ev) {
-            var eventTarget     = clientTargets[ev.clientId];
+            var eventTarget     = clientTargets[ev.targetId];
             var contextPools    = new Pools(Pools.SharedPools);
             var syncContext     = new SyncContext(contextPools, eventTarget);
             eventTarget.ProcessEvent(ev, syncContext);

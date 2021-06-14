@@ -31,8 +31,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var listenDb     = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker = eventBroker;
                 var pocSubscriber   = await CreatePocSubscriber(listenDb);
-                
-                using (await TestRelationPoC.CreateStore(fileDatabase)) { }
+                var createSubscriber= new ChangeSubscriber();
+                using (await TestRelationPoC.CreateStore(fileDatabase, createSubscriber)) { }
+                AreEqual(0, createSubscriber.ChangeCount);  // received no change events for changes done by itself
                 
                 pocSubscriber.AssertCreateStoreChanges();
                 AreEqual(8, pocSubscriber.ChangeCount);           // non protected access

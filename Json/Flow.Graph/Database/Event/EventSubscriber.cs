@@ -29,13 +29,16 @@ namespace Friflo.Json.Flow.Database.Event
             var contextPools    = new Pools(Pools.SharedPools);
             while (eventQueue.TryPeek(out var ev)) {
                 try {
-                    var syncContext     = new SyncContext(contextPools, eventTarget);
-                    var success = await eventTarget.ProcessEvent(ev, syncContext).ConfigureAwait(false);
-                    if (success) {
-                        eventQueue.TryDequeue(out _);
-                    }
+                    eventQueue.TryDequeue(out _);
+                    // Send only events for task which are not created by the client itself
+                    if (ev.clientId == clientId)
+                        continue;
+                    
+                    var syncContext = new SyncContext(contextPools, eventTarget);
+                    await eventTarget.ProcessEvent(ev, syncContext).ConfigureAwait(false);
                     syncContext.pools.AssertNoLeaks();
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     var error = e.ToString();
                     Console.WriteLine(error);
                     Debug.Fail(error);

@@ -82,8 +82,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     // --------------------------------------------------------------------
     public static class TestRelationPoC
     {
-        public static async Task<PocStore> CreateStore(EntityDatabase database) {
+        public static async Task<PocStore> CreateStore(EntityDatabase database, ChangeSubscriber subscriber = null) {
             var store = new PocStore(database, "CreateStore");
+            if (subscriber != null) {
+                store.SetChangeSubscriber(subscriber);
+                var types = new HashSet<TaskType>(new [] {TaskType.create, TaskType.update, TaskType.delete, TaskType.patch});
+                store.SubscribeAll(types);
+                await store.Sync();
+            }
+            
             AreSimilar("entities: 0",    store);    // initial state, empty store
             var orders      = store.orders;
             var articles    = store.articles;

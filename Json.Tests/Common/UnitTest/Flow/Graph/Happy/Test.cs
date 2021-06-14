@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Database.Remote;
+using Friflo.Json.Flow.Graph;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using UnityEngine.TestTools;
+using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
     using UnitTest.Dummy;
@@ -115,9 +117,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 fileDatabase.eventBroker = eventBroker;
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
+                    var createSubscriber    = new ChangeSubscriber();
                     var pocSubscriber       = await CreatePocSubscriber(listenDb);
-                    using (var createStore  = await TestRelationPoC.CreateStore(remoteDatabase))
+                    using (var createStore  = await TestRelationPoC.CreateStore(remoteDatabase, createSubscriber))
                     using (var useStore     = new PocStore(remoteDatabase, "useStore")) {
+                        AreEqual(0, createSubscriber.ChangeCount);  // received no change events for changes done by itself
                         pocSubscriber.AssertCreateStoreChanges();
                         await TestStores(createStore, useStore);
                     }
@@ -135,10 +139,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase))
             using (var listenDb         = new PocStore(fileDatabase, "listenDb")) {
-                fileDatabase.eventBroker= eventBroker;
+                fileDatabase.eventBroker    = eventBroker;
+                var createSubscriber        = new ChangeSubscriber();
                 var pocSubscriber           = await CreatePocSubscriber(listenDb);
-                using (var createStore      = await TestRelationPoC.CreateStore(loopbackDatabase))
+                using (var createStore      = await TestRelationPoC.CreateStore(loopbackDatabase, createSubscriber))
                 using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
+                    AreEqual(0, createSubscriber.ChangeCount);  // received no change events for changes done by itself
                     pocSubscriber.AssertCreateStoreChanges();
                     await TestStores(createStore, useStore);
                 }

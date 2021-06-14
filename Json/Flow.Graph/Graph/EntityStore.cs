@@ -223,7 +223,7 @@ namespace Friflo.Json.Flow.Graph
 
         private SyncRequest CreateSyncRequest() {
             var tasks       = new List<DatabaseTask>();
-            var syncRequest = new SyncRequest { tasks = tasks };
+            var syncRequest = new SyncRequest { tasks = tasks, clientId = _intern.clientId };
             foreach (var setPair in _intern.setByType) {
                 EntitySet set = setPair.Value;
                 var setInfo = set.SetInfo;
