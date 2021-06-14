@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Graph
         internal  abstract  void            LogSetChangesInternal   (LogTask logTask);
         internal  abstract  void            SyncPeerEntities        (Dictionary<string, EntityValue> entities);
         internal  abstract  void            ResetSync               ();
-        internal  abstract  SyncTask        SubscribeInternal       (HashSet<TaskType> types);
+        internal  abstract  SyncTask        SubscribeInternal       (HashSet<Change> types);
 
         protected EntitySet(string name) {
             this.name = name;
@@ -121,7 +121,7 @@ namespace Friflo.Json.Flow.Graph
         /// To react on specific changes use <see cref="EntityStore.SetChangeSubscriber"/>.
         /// To unsubscribe change events set <see cref="types"/> to null.
         /// </summary>
-        public SubscribeTask<T> SubscribeFilter(HashSet<TaskType> types, Expression<Func<T, bool>> filter) {
+        public SubscribeTask<T> SubscribeFilter(HashSet<Change> types, Expression<Func<T, bool>> filter) {
             var op = Operation.FromFilter(filter);
             var task = sync.SubscribeFilter(types, op);
             intern.store.AddTask(task);
@@ -134,7 +134,7 @@ namespace Friflo.Json.Flow.Graph
         /// To react on specific changes use <see cref="EntityStore.SetChangeSubscriber"/>.
         /// To unsubscribe change events set <see cref="types"/> to null.
         /// </summary>
-        public SubscribeTask<T> SubscribeByFilter(HashSet<TaskType> types, EntityFilter<T> filter) {
+        public SubscribeTask<T> SubscribeByFilter(HashSet<Change> types, EntityFilter<T> filter) {
             var task = sync.SubscribeFilter(types, filter.op);
             intern.store.AddTask(task);
             return task;
@@ -146,7 +146,7 @@ namespace Friflo.Json.Flow.Graph
         /// To react on specific changes use <see cref="EntityStore.SetChangeSubscriber"/>.
         /// To unsubscribe change events set <see cref="types"/> to null.
         /// </summary>
-        public SubscribeTask<T> Subscribe(HashSet<TaskType> types) {
+        public SubscribeTask<T> Subscribe(HashSet<Change> types) {
             var all = Operation.FilterTrue;
             var task = sync.SubscribeFilter(types, all);
             intern.store.AddTask(task);
@@ -388,7 +388,7 @@ namespace Friflo.Json.Flow.Graph
             sync = new SyncSet<T>(this);
         }
         
-        internal override SyncTask SubscribeInternal(HashSet<TaskType> types) {
+        internal override SyncTask SubscribeInternal(HashSet<Change> types) {
             return Subscribe(types);    
         }
     }

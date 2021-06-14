@@ -77,7 +77,7 @@ namespace Friflo.Json.Flow.Database.Event
             switch (task.TaskType) {
                 case TaskType.create:
                     var create = (CreateEntities) task;
-                    if (!MatchFilter(subscribe, create.container, TaskType.create))
+                    if (!MatchFilter(subscribe, create.container, Change.create))
                         return null;
                     var createResult = new CreateEntities {
                         container   = create.container,
@@ -86,7 +86,7 @@ namespace Friflo.Json.Flow.Database.Event
                     return createResult;
                 case TaskType.update:
                     var update = (UpdateEntities) task;
-                    if (!MatchFilter(subscribe, update.container, TaskType.create))
+                    if (!MatchFilter(subscribe, update.container, Change.update))
                         return null;
                     var updateResult = new UpdateEntities {
                         container   = update.container,
@@ -127,7 +127,7 @@ namespace Friflo.Json.Flow.Database.Event
             return result;
         }
         
-        private static bool MatchFilter (SubscribeChanges subscribe, string container, TaskType taskType) {
+        private static bool MatchFilter (SubscribeChanges subscribe, string container, Change taskType) {
             if (subscribe.container == container) {
                 if (subscribe.types.Contains(taskType))
                     return true;

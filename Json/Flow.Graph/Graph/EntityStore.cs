@@ -167,7 +167,7 @@ namespace Friflo.Json.Flow.Graph
         /// To react on specific changes use <see cref="SetChangeSubscriber"/>.
         /// To unsubscribe change events set <see cref="types"/> to null.
         /// </summary>
-        public List<SyncTask> SubscribeAll(HashSet<TaskType> types) {
+        public List<SyncTask> SubscribeAll(HashSet<Change> types) {
             var tasks = new List<SyncTask>();
             foreach (var setPair in _intern.setByType) {
                 var set = setPair.Value;
