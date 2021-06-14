@@ -15,7 +15,7 @@ namespace Friflo.Json.Flow.Database.Remote
 {
     internal class WebSocketHostTarget : IEventTarget
     {
-        readonly WebSocket  webSocket;
+        private readonly WebSocket  webSocket;
         
         private WebSocketHostTarget (WebSocket webSocket) {
             this.webSocket  = webSocket;
