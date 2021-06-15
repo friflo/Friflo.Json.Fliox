@@ -59,6 +59,10 @@ namespace Friflo.Json.Flow.Database.Event
                 if (subscriber.subscriptions.Count == 0)
                     throw new InvalidOperationException("Expect subscribeMap not empty");
                 
+                // Enqueue only events for task which are not created by the client itself
+                if (syncRequest.clientId == subscriber.clientId)
+                    continue;
+                
                 foreach (var task in syncRequest.tasks) {
                     foreach (var changesPair in subscriber.subscriptions) {
                         SubscribeChanges subscribeChanges = changesPair.Value;

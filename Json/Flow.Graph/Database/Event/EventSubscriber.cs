@@ -32,9 +32,6 @@ namespace Friflo.Json.Flow.Database.Event
             while (eventQueue.TryPeek(out var ev)) {
                 try {
                     eventQueue.TryDequeue(out _);
-                    // Send only events for task which are not created by the client itself
-                    if (ev.clientId == clientId)
-                        continue;
                     
                     var syncContext = new SyncContext(contextPools, eventTarget);
                     await eventTarget.ProcessEvent(ev, syncContext).ConfigureAwait(false);
