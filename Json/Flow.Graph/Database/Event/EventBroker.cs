@@ -49,6 +49,9 @@ namespace Friflo.Json.Flow.Database.Event
             foreach (var pair in subscribers) {
                 List<DatabaseTask>  tasks = null;
                 EventSubscriber     subscriber = pair.Value;
+                if (subscriber.subscribeMap.Count == 0)
+                    throw new InvalidOperationException("Expect subscribeMap not empty");
+                
                 foreach (var task in syncRequest.tasks) {
                     foreach (var changesPair in subscriber.subscribeMap) {
                         SubscribeChanges subscribeChanges = changesPair.Value;
