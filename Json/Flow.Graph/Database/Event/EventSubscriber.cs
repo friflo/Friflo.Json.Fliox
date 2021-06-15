@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Database.Event
         internal readonly   string                                  clientId;
         private  readonly   IEventTarget                            eventTarget;
         /// key: <see cref="SubscribeChanges.container"/>
-        internal readonly   Dictionary<string, SubscribeChanges>    subscribeMap = new Dictionary<string, SubscribeChanges>();
+        internal readonly   Dictionary<string, SubscribeChanges>    subscriptions = new Dictionary<string, SubscribeChanges>();
         internal readonly   ConcurrentQueue<DatabaseEvent>          eventQueue = new ConcurrentQueue<DatabaseEvent>();
 
         public   override   string                                  ToString() => clientId;

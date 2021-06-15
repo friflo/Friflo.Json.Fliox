@@ -26,15 +26,22 @@ namespace Friflo.Json.Flow.Database.Event
 
         public void Subscribe (SubscribeChanges subscribe, string clientId, IEventTarget eventTarget) {
             // remove subscriber if nothing is subscribed
+            EventSubscriber eventSubscriber;
             if (subscribe.changes.Count == 0) {
-                subscribers.Remove(clientId);
+                if (subscribers.TryGetValue(clientId, out eventSubscriber)) {
+                    var map = eventSubscriber.subscriptions;
+                    map.Remove(subscribe.container);
+                    if (map.Count == 0) {
+                        subscribers.Remove(clientId);
+                    }
+                }
                 return;
             }
-            if (!subscribers.TryGetValue(clientId, out var eventSubscriber)) {
+            if (!subscribers.TryGetValue(clientId, out eventSubscriber)) {
                 eventSubscriber = new EventSubscriber(clientId, eventTarget);
                 subscribers.Add(clientId, eventSubscriber);
             }
-            eventSubscriber.subscribeMap[subscribe.container] = subscribe;
+            eventSubscriber.subscriptions[subscribe.container] = subscribe;
         }
         
         // todo remove - only for testing
@@ -49,11 +56,11 @@ namespace Friflo.Json.Flow.Database.Event
             foreach (var pair in subscribers) {
                 List<DatabaseTask>  tasks = null;
                 EventSubscriber     subscriber = pair.Value;
-                if (subscriber.subscribeMap.Count == 0)
+                if (subscriber.subscriptions.Count == 0)
                     throw new InvalidOperationException("Expect subscribeMap not empty");
                 
                 foreach (var task in syncRequest.tasks) {
-                    foreach (var changesPair in subscriber.subscribeMap) {
+                    foreach (var changesPair in subscriber.subscriptions) {
                         SubscribeChanges subscribeChanges = changesPair.Value;
                         var taskResult = FilterTask(task, subscribeChanges);
                         if (taskResult == null)
