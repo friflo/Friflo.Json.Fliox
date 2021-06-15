@@ -10,7 +10,6 @@ namespace Friflo.Json.Flow.Sync
 {
     public class SubscribeChanges : DatabaseTask
     {
-        public string                   clientId;
         public string                   container;
         public HashSet<Change>          changes;
         public FilterOperation          filter;
@@ -23,14 +22,14 @@ namespace Friflo.Json.Flow.Sync
             var eventBroker = database.eventBroker;
             if (eventBroker == null)
                 return Task.FromResult<TaskResult>(InvalidTask("database has no eventBroker"));
-            if (clientId == null)
-                return Task.FromResult<TaskResult>(MissingField(nameof(clientId)));
+            if (syncContext.clientId == null)
+                return Task.FromResult<TaskResult>(MissingField(nameof(syncContext.clientId)));
             
             var eventTarget = syncContext.eventTarget;
             if (eventTarget == null)
                 return Task.FromResult<TaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
-            eventBroker.Subscribe(this, eventTarget);
+            eventBroker.Subscribe(this, syncContext.clientId, eventTarget);
             return Task.FromResult<TaskResult>(new SubscribeChangesResult());
         }
     }

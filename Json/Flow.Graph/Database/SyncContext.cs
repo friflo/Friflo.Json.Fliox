@@ -19,12 +19,13 @@ namespace Friflo.Json.Flow.Database
     /// </summary>
     public class SyncContext
     {
+        public                  string          clientId;
         public  readonly        IPools          pools;
         public  readonly        IEventTarget    eventTarget;
         
         public SyncContext (IPools pools, IEventTarget eventTarget) {
             this.pools          = pools;
-            this.eventTarget  = eventTarget;
+            this.eventTarget    = eventTarget;
         }
     }
     

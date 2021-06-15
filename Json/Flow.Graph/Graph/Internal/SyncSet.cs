@@ -349,7 +349,6 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (sub == null)
                 return;
             var req = new SubscribeChanges {
-                clientId    = set.intern.store._intern.clientId,
                 container   = set.name,
                 filter      = sub.filter,
                 changes     = sub.changes

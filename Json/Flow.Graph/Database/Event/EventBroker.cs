@@ -24,8 +24,7 @@ namespace Friflo.Json.Flow.Database.Event
             jsonEvaluator.Dispose();
         }
 
-        public void Subscribe (SubscribeChanges subscribe, IEventTarget eventTarget) {
-            var clientId = subscribe.clientId;
+        public void Subscribe (SubscribeChanges subscribe, string clientId, IEventTarget eventTarget) {
             // remove subscriber if nothing is subscribed
             if (subscribe.changes.Count == 0) {
                 subscribers.Remove(clientId);

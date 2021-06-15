@@ -151,9 +151,9 @@ content-type: application/json
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
-{ "type": "sync", "tasks": [
-  {
-    "task": "subscribe", "container": "Article", "clientId": "test-client",
+{ "type": "sync", "clientId": "test-client",
+  "tasks": [{
+    "task": "subscribe", "container": "Article", 
     "changes": ["create", "update", "delete", "patch"]
   }
 ]}

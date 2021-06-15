@@ -50,13 +50,16 @@ namespace Friflo.Json.Flow.Database.Remote
             }
         }
         
+        /// Caller need to check <see cref="reader"/> error state. 
         private static DatabaseRequest ReadRequest (ObjectReader reader, string jsonRequest, ProtocolType type) {
             switch (type) {
                 case ProtocolType.ReqResp:
                     return reader.Read<DatabaseRequest>(jsonRequest);
                 case ProtocolType.BiDirect:
                     var msg = reader.Read<DatabaseMessage>(jsonRequest);
-                    return msg.req;
+                    if (reader.Success)
+                        return msg.req;
+                    return null;
             }
             throw new InvalidOperationException("can't be reached");
         }
