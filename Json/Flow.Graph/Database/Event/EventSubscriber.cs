@@ -76,6 +76,8 @@ namespace Friflo.Json.Flow.Database.Event
             while (DequeueEvent(out var ev)) {
                 try {
                     var syncContext = new SyncContext(contextPools, eventTarget);
+                    // In case the event target is remote connection it is not guaranteed that the event arrives.
+                    // The remote target may already be disconnected and this is still not know when sending the event.
                     await eventTarget.ProcessEvent(ev, syncContext).ConfigureAwait(false);
                     
                     syncContext.pools.AssertNoLeaks();
