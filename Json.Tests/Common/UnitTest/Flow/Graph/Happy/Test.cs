@@ -136,6 +136,33 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
+        // [Test]      public async Task  WebSocketReconnectAsync()       { await WebSocketReconnect(); }
+        
+        /// test WebSocket reconnect for subscribed changes. Pushed change events may not arrived at subscriber, so they have to be resent. 
+        private static async Task WebSocketReconnect() {
+            using (var _                = Pools.SharedPools) // for LeakTestsFixture
+            using (var eventBroker      = new EventBroker())
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
+            using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/", null))
+            using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/"))
+            using (var listenDb         = new PocStore(remoteDatabase, "listenDb")) {
+                fileDatabase.eventBroker = eventBroker;
+                await RunRemoteHost(hostDatabase, async () => {
+                    await remoteDatabase.Connect();
+                    var pocSubscriber       = await CreatePocSubscriber(listenDb);
+                    using (var createStore  = new PocStore(fileDatabase, "createStore")) {
+                        await remoteDatabase.Close();
+                        await remoteDatabase.Connect();
+                        pocSubscriber       = await CreatePocSubscriber(listenDb);
+                        await TestRelationPoC.CreateStore(createStore);
+                        
+                        pocSubscriber.AssertCreateStoreChanges();
+                    }
+                    await remoteDatabase.Close();
+                });
+            }
+        }
+        
         [UnityTest] public IEnumerator LoopbackUseCoroutine() { yield return RunAsync.Await(LoopbackUse()); }
         [Test]      public async Task  LoopbackUseAsync() { await LoopbackUse(); }
         

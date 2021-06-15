@@ -16,29 +16,32 @@ namespace Friflo.Json.Flow.Database.Remote
     public class WebSocketClientDatabase : RemoteClientDatabase
     {
         private  readonly   string                              endpoint;
-        private  readonly   ClientWebSocket                     websocket;
+        private             ClientWebSocket                     websocket;
         private  readonly   ConcurrentQueue<WebsocketRequest>   requestQueue = new ConcurrentQueue<WebsocketRequest>();
 
 
         public WebSocketClientDatabase(string endpoint) : base(ProtocolType.BiDirect) {
             this.endpoint = endpoint;
-            websocket = new ClientWebSocket();
         }
         
         public override void Dispose() {
             base.Dispose();
             // websocket.CancelPendingRequests();
-            websocket.Dispose();
         }
         
         public async Task Connect() {
             var uri = new Uri(endpoint);
+            if (websocket != null)
+                throw new InvalidOperationException("websocket already in use");
+            websocket = new ClientWebSocket();
             await websocket.ConnectAsync(uri, CancellationToken.None).ConfigureAwait(false);
             _ = MessageReceiver();
         }
         
         public async Task Close() {
             await websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
+            websocket.Dispose();
+            websocket = null;
         }
         
         private async Task MessageReceiver() {

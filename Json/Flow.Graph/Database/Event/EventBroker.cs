@@ -37,9 +37,15 @@ namespace Friflo.Json.Flow.Database.Event
                 }
                 return;
             }
-            if (!subscribers.TryGetValue(clientId, out eventSubscriber)) {
+            subscribers.TryGetValue(clientId, out eventSubscriber);
+            if (eventSubscriber == null) {
                 eventSubscriber = new EventSubscriber(clientId, eventTarget);
                 subscribers.Add(clientId, eventSubscriber);
+            } else {
+                if (eventSubscriber.eventTarget != eventTarget) {
+                    Console.WriteLine($"client changed event target. clientId: {clientId}");
+                    eventSubscriber.eventTarget = eventTarget;
+                }
             }
             eventSubscriber.subscriptions[subscribe.container] = subscribe;
         }

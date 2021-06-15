@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Database.Event
 {
     public class EventSubscriber {
         internal readonly   string                                  clientId;
-        private  readonly   IEventTarget                            eventTarget;
+        internal            IEventTarget                            eventTarget;
         /// key: <see cref="SubscribeChanges.container"/>
         internal readonly   Dictionary<string, SubscribeChanges>    subscriptions = new Dictionary<string, SubscribeChanges>();
         internal readonly   ConcurrentQueue<DatabaseEvent>          eventQueue = new ConcurrentQueue<DatabaseEvent>();
@@ -32,9 +32,9 @@ namespace Friflo.Json.Flow.Database.Event
             while (eventQueue.TryPeek(out var ev)) {
                 try {
                     eventQueue.TryDequeue(out _);
-                    
                     var syncContext = new SyncContext(contextPools, eventTarget);
                     await eventTarget.ProcessEvent(ev, syncContext).ConfigureAwait(false);
+                    
                     syncContext.pools.AssertNoLeaks();
                 }
                 catch (Exception e) {
