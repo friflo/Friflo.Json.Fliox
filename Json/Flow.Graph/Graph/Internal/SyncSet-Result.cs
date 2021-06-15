@@ -329,6 +329,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 subscribe.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
+            set.intern.subscription = task.changes.Count > 0 ? task : null;
             subscribe.state.Synced = true;
         }
     }

@@ -16,13 +16,17 @@ namespace Friflo.Json.Flow.Database.Remote
     internal class WebSocketHostTarget : IEventTarget
     {
         private readonly WebSocket  webSocket;
+        private readonly bool       fakeOpenClosedSocket;
         
-        private WebSocketHostTarget (WebSocket webSocket) {
-            this.webSocket  = webSocket;
+        private WebSocketHostTarget (WebSocket webSocket, bool fakeOpenClosedSocket) {
+            this.webSocket              = webSocket;
+            this.fakeOpenClosedSocket   = fakeOpenClosedSocket;
         }
         
         // --- IEventTarget
         public bool IsOpen () {
+            if (fakeOpenClosedSocket)
+                return true;
             return webSocket.State == WebSocketState.Open;
         }
 
@@ -49,7 +53,7 @@ namespace Friflo.Json.Flow.Database.Remote
             var         wsContext   = await ctx.AcceptWebSocketAsync(null).ConfigureAwait(false);
             WebSocket   websocket   = wsContext.WebSocket;
             var         buffer      = new ArraySegment<byte>(new byte[8192]);
-            var         target      = new WebSocketHostTarget(websocket);
+            var         target      = new WebSocketHostTarget(websocket, remoteHost.fakeOpenClosedSockets);
             using (var memoryStream = new MemoryStream()) {
                 while (true) {
                     switch (websocket.State) {

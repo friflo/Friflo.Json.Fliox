@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Database.Remote
         
         public async Task Connect() {
             var uri = new Uri(endpoint);
-            if (websocket != null)
+            if (websocket != null && websocket.State == WebSocketState.Open)
                 throw new InvalidOperationException("websocket already in use");
             websocket = new ClientWebSocket();
             await websocket.ConnectAsync(uri, CancellationToken.None).ConfigureAwait(false);
@@ -40,10 +40,8 @@ namespace Friflo.Json.Flow.Database.Remote
         
         public async Task Close() {
             await websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
-            websocket.Dispose();
-            websocket = null;
         }
-        
+
         private async Task MessageReceiver() {
             var        buffer       = new ArraySegment<byte>(new byte[8192]);
             using (var memoryStream = new MemoryStream()) {

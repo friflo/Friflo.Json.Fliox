@@ -12,6 +12,8 @@ namespace Friflo.Json.Flow.Database.Remote
     public class RemoteHostDatabase : EntityDatabase
     {
         private readonly    EntityDatabase  local;
+        public              bool            fakeOpenClosedSockets;
+
 
 
         public RemoteHostDatabase(EntityDatabase local) {

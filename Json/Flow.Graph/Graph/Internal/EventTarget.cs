@@ -24,6 +24,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (ev.targetId != store._intern.clientId)
                 throw new InvalidOperationException("Expect DatabaseEvent.clientId == EntityStore.clientId");
             
+            store._intern.lastEvent = ev.eventId;
             var changesEvent = ev as ChangesEvent;
             if (changesEvent == null)
                 return Task.FromResult(true);

@@ -10,6 +10,8 @@ namespace Friflo.Json.Flow.Sync
     public class SyncRequest : DatabaseRequest
     {
         public              string                      clientId;
+        /// <see cref="eventAck"/> is used to ensure change events are reliable delivered.
+        public              int?                        eventAck;
         public              List<DatabaseTask>          tasks;
         
         internal override   RequestType                 RequestType => RequestType.sync;

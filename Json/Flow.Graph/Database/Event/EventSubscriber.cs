@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -15,8 +14,12 @@ namespace Friflo.Json.Flow.Database.Event
         private             IEventTarget                            eventTarget;
         /// key: <see cref="SubscribeChanges.container"/>
         internal readonly   Dictionary<string, SubscribeChanges>    subscriptions = new Dictionary<string, SubscribeChanges>();
-        private  readonly   ConcurrentQueue<DatabaseEvent>          eventQueue = new ConcurrentQueue<DatabaseEvent>();
+
+        /// lock (<see cref="eventQueue"/>) {
         private             int                                     eventCounter;
+        private  readonly   LinkedList<DatabaseEvent>               eventQueue = new LinkedList<DatabaseEvent>();
+        private  readonly   List<DatabaseEvent>                     sentEvents = new List<DatabaseEvent>();
+        // }
 
         public   override   string                                  ToString() => clientId;
 
@@ -25,20 +28,44 @@ namespace Friflo.Json.Flow.Database.Event
             this.eventTarget    = eventTarget;
         }
         
-        internal void EnqueueEvent(DatabaseEvent ev) {
-            ev.eventId = ++eventCounter;
-            eventQueue.Enqueue(ev);
-        }
-        
         internal void UpdateTarget(IEventTarget eventTarget) {
             if (this.eventTarget == eventTarget)
                 return;
-            Console.WriteLine($"client changed event target. clientId: {clientId}");
+            Console.WriteLine($"EventSubscriber: eventTarget changed. clientId: {clientId}");
             this.eventTarget = eventTarget;
         }
         
-        internal void Subscribe(SubscribeChanges subscribe) {
-            subscriptions[subscribe.container] = subscribe;
+        internal void EnqueueEvent(DatabaseEvent ev) {
+            lock (eventQueue) {
+                ev.eventId = ++eventCounter;
+                eventQueue.AddLast(ev);
+            }
+        }
+        
+        private bool DequeueEvent(out DatabaseEvent ev) {
+            lock (eventQueue) {
+                var node = eventQueue.First;
+                if (node == null) {
+                    ev = null;
+                    return false;
+                }
+                ev = node.Value;
+                eventQueue.RemoveFirst();
+                sentEvents.Add(ev);
+                return true;
+            }
+        }
+
+        internal void AcknowledgeEvent(int eventAck) {
+            lock (eventQueue) {
+                for (int i = sentEvents.Count - 1; i >= 0; i--) {
+                    var ev = sentEvents[i];
+                    if (ev.eventId > eventAck) {
+                        eventQueue.AddFirst(ev);
+                    }
+                }
+                sentEvents.Clear();
+            }
         }
         
         internal async Task SendEvents () {
@@ -46,9 +73,8 @@ namespace Friflo.Json.Flow.Database.Event
                 return;
             
             var contextPools    = new Pools(Pools.SharedPools);
-            while (eventQueue.TryPeek(out var ev)) {
+            while (DequeueEvent(out var ev)) {
                 try {
-                    eventQueue.TryDequeue(out _);
                     var syncContext = new SyncContext(contextPools, eventTarget);
                     await eventTarget.ProcessEvent(ev, syncContext).ConfigureAwait(false);
                     

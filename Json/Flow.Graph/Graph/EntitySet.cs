@@ -25,23 +25,27 @@ namespace Friflo.Json.Flow.Graph
 
         internal static readonly QueryPath RefQueryPath = new RefQueryPath();
         
-        internal  abstract  void            LogSetChangesInternal   (LogTask logTask);
-        internal  abstract  void            SyncPeerEntities        (Dictionary<string, EntityValue> entities);
-        internal  abstract  void            ResetSync               ();
-        internal  abstract  SyncTask        SubscribeInternal       (HashSet<Change> changes);
+        internal  abstract  void                LogSetChangesInternal   (LogTask logTask);
+        internal  abstract  void                SyncPeerEntities        (Dictionary<string, EntityValue> entities);
+        internal  abstract  void                ResetSync               ();
+        internal  abstract  SyncTask            SubscribeInternal       (HashSet<Change> changes);
+        internal abstract   SubscribeChanges    GetSubscription();
 
         protected EntitySet(string name) {
             this.name = name;
         }
     }
 
-    internal readonly struct SetIntern<T> where T : Entity
+    internal struct SetIntern<T> where T : Entity
     {
         internal readonly   TypeMapper<T>       typeMapper;
         internal readonly   ObjectMapper        jsonMapper;
         internal readonly   ObjectPatcher       objectPatcher;
         internal readonly   Tracer              tracer;
         internal readonly   EntityStore         store;
+        
+        // --- non readonly
+        internal            SubscribeChanges    subscription;
 
         internal SetIntern(EntityStore store) {
             jsonMapper      = store._intern.jsonMapper;
@@ -49,6 +53,7 @@ namespace Friflo.Json.Flow.Graph
             objectPatcher   = store._intern.objectPatcher;
             tracer          = new Tracer(store._intern.typeCache, store);
             this.store      = store;
+            subscription    = null;
         }
     }
     
@@ -390,6 +395,10 @@ namespace Friflo.Json.Flow.Graph
         
         internal override SyncTask SubscribeInternal(HashSet<Change> changes) {
             return Subscribe(changes);    
+        }
+        
+        internal override SubscribeChanges GetSubscription() {
+            return intern.subscription;
         }
     }
 }

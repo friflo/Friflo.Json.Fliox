@@ -8,6 +8,7 @@ using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Sync;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using UnityEngine.TestTools;
@@ -121,14 +122,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 fileDatabase.eventBroker = eventBroker;
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
-                    var pocSubscriber       = await CreatePocSubscriber(listenDb);
+                    var listenSubscriber    = await CreatePocSubscriber(listenDb);
                     using (var createStore  = new PocStore(remoteDatabase, "createStore"))
                     using (var useStore     = new PocStore(remoteDatabase, "useStore")) {
                         var createSubscriber = await TestRelationPoC.SubscribeChanges(createStore);
                         await TestRelationPoC.CreateStore(createStore);
                         AreEqual(0, createSubscriber.ChangeCount);  // received no change events for changes done by itself
                         
-                        pocSubscriber.AssertCreateStoreChanges();
+                        listenSubscriber.AssertCreateStoreChanges();
                         await TestStores(createStore, useStore);
                     }
                     await remoteDatabase.Close();
@@ -136,9 +137,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        //[Test]      public async Task  WebSocketReconnectAsync()       { await WebSocketReconnect(); }
+        [Test]      public async Task  WebSocketReconnectAsync()       { await WebSocketReconnect(); }
         
-        /// test WebSocket reconnect for subscribed changes. Pushed change events may not arrived at subscriber, so they have to be resent. 
+        /// Test WebSocket disconnect while having changes subscribed. Change events pushed by the database may not arrived at subscriber.
+        /// To ensure all change events arrive at <see cref="ChangeSubscriber"/> <see cref="SyncRequest.eventAck"/>
+        /// is used to inform database about arrived events. All not acknowledged events are resent.
         private static async Task WebSocketReconnect() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker())
@@ -146,17 +149,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/", null))
             using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/"))
             using (var listenDb         = new PocStore(remoteDatabase, "listenDb")) {
+                hostDatabase.fakeOpenClosedSockets = true;
                 fileDatabase.eventBroker = eventBroker;
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
-                    var pocSubscriber       = await CreatePocSubscriber(listenDb);
+                    var listenSubscriber    = await CreatePocSubscriber(listenDb);
                     using (var createStore  = new PocStore(fileDatabase, "createStore")) {
                         await remoteDatabase.Close();
-                        await remoteDatabase.Connect();
-                        pocSubscriber       = await CreatePocSubscriber(listenDb);
+                        // all change events sent by createStore doesnt arrive at listenDb
                         await TestRelationPoC.CreateStore(createStore);
+                        AreEqual(0, listenSubscriber.ChangeCount);
                         
-                        pocSubscriber.AssertCreateStoreChanges();
+                        await remoteDatabase.Connect();
+                        listenSubscriber       = await CreatePocSubscriber(listenDb); // todo - should be done automatically
+                        listenSubscriber.AssertCreateStoreChanges();
+                        await listenDb.Sync(); // all changes are received => state of store remains unchanged 
+                        listenSubscriber.AssertCreateStoreChanges();
                     }
                     await remoteDatabase.Close();
                 });
@@ -173,14 +181,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase))
             using (var listenDb         = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker    = eventBroker;
-                var pocSubscriber           = await CreatePocSubscriber(listenDb);
+                var listenSubscriber        = await CreatePocSubscriber(listenDb);
                 using (var createStore      = new PocStore(loopbackDatabase, "createStore"))
                 using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
                     var createSubscriber        = await TestRelationPoC.SubscribeChanges(createStore);
                     await TestRelationPoC.CreateStore(createStore);
                     AreEqual(0, createSubscriber.ChangeCount);  // received no change events for changes done by itself
 
-                    pocSubscriber.AssertCreateStoreChanges();
+                    listenSubscriber.AssertCreateStoreChanges();
                     await TestStores(createStore, useStore);
                 }
             }
