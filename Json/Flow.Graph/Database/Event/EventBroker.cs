@@ -42,12 +42,9 @@ namespace Friflo.Json.Flow.Database.Event
                 eventSubscriber = new EventSubscriber(clientId, eventTarget);
                 subscribers.Add(clientId, eventSubscriber);
             } else {
-                if (eventSubscriber.eventTarget != eventTarget) {
-                    Console.WriteLine($"client changed event target. clientId: {clientId}");
-                    eventSubscriber.eventTarget = eventTarget;
-                }
+                eventSubscriber.UpdateTarget (eventTarget);
             }
-            eventSubscriber.subscriptions[subscribe.container] = subscribe;
+            eventSubscriber.Subscribe(subscribe);
         }
         
         // todo remove - only for testing
@@ -88,7 +85,7 @@ namespace Friflo.Json.Flow.Database.Event
                     clientId    = syncRequest.clientId,
                     targetId    = subscriber.clientId
                 };
-                subscriber.eventQueue.Enqueue(changesEvent);
+                subscriber.EnqueueEvent(changesEvent);
             }
         }
         

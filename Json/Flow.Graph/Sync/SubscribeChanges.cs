@@ -13,6 +13,7 @@ namespace Friflo.Json.Flow.Sync
         public string                   container;
         public HashSet<Change>          changes;
         public FilterOperation          filter;
+        public int                      lastEvent;
         
         internal override   TaskType    TaskType    => TaskType.subscribe;
 
