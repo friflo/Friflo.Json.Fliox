@@ -23,7 +23,7 @@ namespace Friflo.Json.Flow.Sync
             if (eventBroker == null)
                 return Task.FromResult<TaskResult>(InvalidTask("database has no eventBroker"));
             if (syncContext.clientId == null)
-                return Task.FromResult<TaskResult>(MissingField(nameof(syncContext.clientId)));
+                return Task.FromResult<TaskResult>(InvalidTask("subscribe task requires clientId set in sync request"));
             
             var eventTarget = syncContext.eventTarget;
             if (eventTarget == null)
