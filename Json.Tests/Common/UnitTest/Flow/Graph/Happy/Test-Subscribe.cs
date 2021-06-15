@@ -30,11 +30,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var listenDb     = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker = eventBroker;
-                var pocSubscriber   = await CreatePocSubscriber(listenDb);
-                var createSubscriber= new ChangeSubscriber();
-                using (await TestRelationPoC.CreateStore(fileDatabase, createSubscriber)) { }
-                AreEqual(0, createSubscriber.ChangeCount);  // received no change events for changes done by itself
-                
+                var pocSubscriber        = await CreatePocSubscriber(listenDb);
+                using (var createStore = new PocStore(fileDatabase, "createStore")) {
+                    var createSubscriber = await TestRelationPoC.SubscribeChanges(createStore);
+                    await TestRelationPoC.FillStore(createStore);
+                    AreEqual(0, createSubscriber.ChangeCount);  // received no change events for changes done by itself
+                }
                 pocSubscriber.AssertCreateStoreChanges();
                 AreEqual(8, pocSubscriber.ChangeCount);           // non protected access
                 AreSimilar("(creates: 9, updates: 0, deletes: 4, patches: 2)",  pocSubscriber.GetChangeInfo<Article>());  // non protected access
@@ -88,7 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        /// assert that all database changes by <see cref="TestRelationPoC.CreateStore"/> are reflected
+        /// assert that all database changes by <see cref="TestRelationPoC.FillStore"/> are reflected
         public void AssertCreateStoreChanges() {
             AreEqual(8,  ChangeCount);
             AreSimilar("(creates: 2, updates: 0, deletes: 0, patches: 0)", orderSum);

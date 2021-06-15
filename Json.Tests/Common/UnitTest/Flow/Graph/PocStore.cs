@@ -82,14 +82,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     // --------------------------------------------------------------------
     public static class TestRelationPoC
     {
-        public static async Task<PocStore> CreateStore(EntityDatabase database, ChangeSubscriber subscriber = null) {
+        public static async Task<PocStore> CreateStore(EntityDatabase database) {
             var store = new PocStore(database, "CreateStore");
-            if (subscriber != null) {
-                store.SetChangeSubscriber(subscriber);
-                var changes = new HashSet<Change>(new [] { Change.create, Change.update, Change.delete, Change.patch} );
-                store.SubscribeAll(changes);
-                await store.Sync();
-            }
+            await FillStore(store);
+            return store;
+        }
+        
+        public static async Task<ChangeSubscriber> SubscribeChanges(PocStore store) {
+            var subscriber = new ChangeSubscriber(); 
+            store.SetChangeSubscriber(subscriber);
+            var changes = new HashSet<Change>(new [] { Change.create, Change.update, Change.delete, Change.patch} );
+            store.SubscribeAll(changes);
+            await store.Sync();
+            return subscriber;
+        }
+
+        public static async Task FillStore(PocStore store) {
             
             AreSimilar("entities: 0",    store);    // initial state, empty store
             var orders      = store.orders;
@@ -289,8 +297,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             orders.Create(order2);
             
             await store.Sync();
-            
-            return store;
         }
 
         static void AssertLog(LogTask logTask, int patches, int creates) {
