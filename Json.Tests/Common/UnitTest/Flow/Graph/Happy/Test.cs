@@ -55,8 +55,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static async Task MemoryCreate() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var database     = new MemoryDatabase())
-            using (var createStore  = await TestRelationPoC.CreateStore(database))
+            using (var createStore  = new PocStore(database, "createStore"))
             using (var useStore     = new PocStore(database, "useStore"))  {
+                await TestRelationPoC.CreateStore(createStore);
                 await TestStores(createStore, useStore);
             }
         }
@@ -67,8 +68,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static async Task FileCreate() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var createStore  = await TestRelationPoC.CreateStore(fileDatabase))
+            using (var createStore  = new PocStore(fileDatabase, "createStore"))
             using (var useStore     = new PocStore(fileDatabase, "useStore")) {
+                await TestRelationPoC.CreateStore(createStore);
                 await TestStores(createStore, useStore);
             }
         }
@@ -79,8 +81,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static async Task FileUse() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var createStore  = await TestRelationPoC.CreateStore(fileDatabase))
+            using (var createStore  = new PocStore(fileDatabase, "createStore"))
             using (var useStore     = new PocStore(fileDatabase, "useStore")) {
+                await TestRelationPoC.CreateStore(createStore);
                 await TestStores(createStore, useStore);
             }
         }
@@ -94,8 +97,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/", null))
             using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
-                    using (var createStore      = await TestRelationPoC.CreateStore(remoteDatabase))
+                    using (var createStore      = new PocStore(remoteDatabase, "createStore"))
                     using (var useStore         = new PocStore(remoteDatabase, "useStore")) {
+                        await TestRelationPoC.CreateStore(createStore);
                         await TestStores(createStore, useStore);
                     }
                 });
@@ -121,7 +125,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     using (var createStore  = new PocStore(remoteDatabase, "createStore"))
                     using (var useStore     = new PocStore(remoteDatabase, "useStore")) {
                         var createSubscriber = await TestRelationPoC.SubscribeChanges(createStore);
-                        await TestRelationPoC.FillStore(createStore);
+                        await TestRelationPoC.CreateStore(createStore);
                         AreEqual(0, createSubscriber.ChangeCount);  // received no change events for changes done by itself
                         
                         pocSubscriber.AssertCreateStoreChanges();
@@ -146,7 +150,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 using (var createStore      = new PocStore(loopbackDatabase, "createStore"))
                 using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
                     var createSubscriber        = await TestRelationPoC.SubscribeChanges(createStore);
-                    await TestRelationPoC.FillStore(createStore);
+                    await TestRelationPoC.CreateStore(createStore);
                     AreEqual(0, createSubscriber.ChangeCount);  // received no change events for changes done by itself
 
                     pocSubscriber.AssertCreateStoreChanges();
@@ -188,7 +192,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static async Task TestCreate(Func<PocStore, Task> test) {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
-            using (var createStore  = await TestRelationPoC.CreateStore(fileDatabase)) {
+            using (var createStore  = new PocStore(fileDatabase, "createStore")) {
+                await TestRelationPoC.CreateStore(createStore);
                 await test(createStore);
             }
         }

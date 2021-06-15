@@ -51,8 +51,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         public void RunLinq() {
             using (var _        = Pools.SharedPools) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
-            using (var store    = TestRelationPoC.CreateStore(database).Result)
+            using (var store    = new PocStore(database, "store"))
             using (var m        = new ObjectMapper(store.TypeStore)) {
+                TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order1 = readOrders.Find("order-1");
                 store.Sync().Wait();
@@ -104,7 +105,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         
         private static Flow.Graph.Order GetOrder(string id) {
             using (var database = new MemoryDatabase())
-            using (var store = TestRelationPoC.CreateStore(database).Result) {
+            using (var store = new PocStore(database, "store")) {
+                TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order = readOrders.Find(id);
                 store.Sync().Wait();
@@ -144,7 +146,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         public async Task TestSelectSameInstance() {
             using (var _        = Pools.SharedPools) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
-            using (var store    = await TestRelationPoC.CreateStore(database)) {
+            using (var store    = new PocStore(database, "store")) {
+                TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order1 = readOrders.Find("order-1");
                 await store.Sync();
