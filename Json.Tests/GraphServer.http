@@ -161,7 +161,7 @@ POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync",
-  "clientId": "test-client",
+  "client": "test-client",
   "tasks": [{
     "task": "subscribe", "container": "Article", 
     "changes": ["create", "update", "delete", "patch"]

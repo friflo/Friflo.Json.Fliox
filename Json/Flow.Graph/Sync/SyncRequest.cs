@@ -3,18 +3,19 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
 {
     // ------------------------------ SyncRequest / SyncResponse ------------------------------
     public class SyncRequest : DatabaseRequest
     {
-        public              string                      clientId;
+        [Fri.Property(Name = "client")] public  string              clientId;
         /// <see cref="eventAck"/> is used to ensure change events are reliable delivered.
-        public              int?                        eventAck;
-        public              List<DatabaseTask>          tasks;
+        [Fri.Property(Name = "ack")]    public  int?                eventAck;
+                                        public  List<DatabaseTask>  tasks;
         
-        internal override   RequestType                 RequestType => RequestType.sync;
+        internal override                       RequestType         RequestType => RequestType.sync;
     }
     
     public class SyncResponse : DatabaseResponse

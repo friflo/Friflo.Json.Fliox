@@ -9,9 +9,10 @@ namespace Friflo.Json.Flow.Sync
     [Fri.Discriminator("type")]
     [Fri.Polymorph(typeof(ChangesEvent), Discriminant = "changes")]
     public abstract class DatabaseEvent {
-        public              int                 eventId;
-        public              string              targetId {get; set;}
-        public              string              clientId {get; set;}
+        // used { get; set; } to force properties on the top of JSON
+        [Fri.Property(Name = "id")]     public  int     eventId  { get; set; }
+        [Fri.Property(Name = "target")] public  string  targetId { get; set; }
+        [Fri.Property(Name = "client")] public  string  clientId { get; set; }
 
         internal abstract   DatabaseEventType   EventType { get; }
     }

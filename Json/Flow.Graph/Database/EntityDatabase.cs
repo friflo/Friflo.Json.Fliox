@@ -113,8 +113,8 @@ namespace Friflo.Json.Flow.Database
                 eventBroker.EnqueueSyncTasks(syncRequest);
                 var eventAck = syncRequest.eventAck;
                 if (eventAck.HasValue) {
-                    int eventAckId =  eventAck.Value;
-                    eventBroker.AcknowledgeSubscriberEvent(eventAckId, syncRequest.clientId);
+                    int value =  eventAck.Value;
+                    eventBroker.AcknowledgeSubscriberEvent(value, syncRequest.clientId);
                 }
                 await eventBroker.SendQueueMessages().ConfigureAwait(false);
             }
