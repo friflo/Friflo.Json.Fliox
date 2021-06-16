@@ -35,7 +35,7 @@ namespace Friflo.Json.Flow.Graph
         internal            SyncStore                       sync;
         internal            LogTask                         tracerLogTask;
         internal            ChangeSubscriber                changeSubscriber;
-        internal            int                             lastEvent;
+        internal            int                             lastEventSeq;
 
         public   override   string                          ToString() => clientId;
 
@@ -63,7 +63,7 @@ namespace Friflo.Json.Flow.Graph
             contextPools        = new Pools(Pools.SharedPools);
             tracerLogTask       = null;
             changeSubscriber    = new ChangeSubscriber();
-            lastEvent           = 0;
+            lastEventSeq           = 0;
         }
     }
 
@@ -243,7 +243,7 @@ namespace Friflo.Json.Flow.Graph
             };
             var subscriptionCount = GetSubscriptionCount();
             if (subscriptionCount > 0) {
-                syncRequest.eventAck = _intern.lastEvent;
+                syncRequest.eventAck = _intern.lastEventSeq;
             }
 
             foreach (var setPair in _intern.setByType) {
