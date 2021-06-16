@@ -41,8 +41,6 @@ namespace Friflo.Json.Flow.Database.Event
             if (eventSubscriber == null) {
                 eventSubscriber = new EventSubscriber(clientId, eventTarget);
                 subscribers.Add(clientId, eventSubscriber);
-            } else {
-                eventSubscriber.UpdateTarget (eventTarget);
             }
             eventSubscriber.subscriptions[subscribe.container] = subscribe;
         }
@@ -55,13 +53,23 @@ namespace Friflo.Json.Flow.Database.Event
             }
         }
         
-        internal void AcknowledgeSubscriberEvents(int eventAck, string clientId) {
+        private void ProcessSubscriber(SyncRequest syncRequest, SyncContext syncContext) {
+            string  clientId = syncRequest.clientId;
             if (!subscribers.TryGetValue(clientId, out var subscriber))
                 return;
-            subscriber.AcknowledgeEvents(eventAck);
+            
+            subscriber.UpdateTarget (syncContext.eventTarget);
+            
+            var eventAck = syncRequest.eventAck;
+            if (eventAck.HasValue) {
+                int value =  eventAck.Value;
+                subscriber.AcknowledgeEvents(value);
+            }
         }
 
-        public void EnqueueSyncTasks (SyncRequest syncRequest) {
+        public void EnqueueSyncTasks (SyncRequest syncRequest, SyncContext syncContext) {
+            ProcessSubscriber (syncRequest, syncContext);
+            
             foreach (var pair in subscribers) {
                 List<DatabaseTask>  tasks = null;
                 EventSubscriber     subscriber = pair.Value;

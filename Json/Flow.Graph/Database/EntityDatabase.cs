@@ -110,12 +110,7 @@ namespace Friflo.Json.Flow.Database
             response.AssertResponse(syncRequest);
             
             if (eventBroker != null) {
-                eventBroker.EnqueueSyncTasks(syncRequest);
-                var eventAck = syncRequest.eventAck;
-                if (eventAck.HasValue) {
-                    int value =  eventAck.Value;
-                    eventBroker.AcknowledgeSubscriberEvents(value, syncRequest.clientId);
-                }
+                eventBroker.EnqueueSyncTasks(syncRequest, syncContext);
                 await eventBroker.SendQueueMessages().ConfigureAwait(false);
             }
             
