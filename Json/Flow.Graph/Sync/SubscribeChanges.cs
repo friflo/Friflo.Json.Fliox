@@ -26,6 +26,8 @@ namespace Friflo.Json.Flow.Sync
                 return Task.FromResult<TaskResult>(InvalidTask("subscribe task requires client id set in sync request"));
             if (container == null)
                 return Task.FromResult<TaskResult>(MissingContainer());
+            if (changes == null)
+                return Task.FromResult<TaskResult>(MissingField(nameof(changes)));
             
             var eventTarget = syncContext.eventTarget;
             if (eventTarget == null)
