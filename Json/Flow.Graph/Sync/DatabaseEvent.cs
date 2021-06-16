@@ -13,7 +13,8 @@ namespace Friflo.Json.Flow.Sync
         // note for all fields
         // used { get; set; } to force properties on the top of JSON
         
-        /// Increasing event sequence number starting with 1
+        /// Increasing event sequence number starting with 1.
+        /// Each <see cref="targetId"/> (subscriber) has its own sequence.  
                                         public  int     seq      { get; set; }
         /// The target the event is sent to
         [Fri.Property(Name = "target")] public  string  targetId { get; set; }
