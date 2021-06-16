@@ -37,7 +37,7 @@ namespace Friflo.Json.Flow.Database.Event
         
         internal void EnqueueEvent(DatabaseEvent ev) {
             lock (eventQueue) {
-                ev.eventSeq = ++eventCounter;
+                ev.seq = ++eventCounter;
                 eventQueue.AddLast(ev);
             }
         }
@@ -60,7 +60,7 @@ namespace Friflo.Json.Flow.Database.Event
             lock (eventQueue) {
                 for (int i = sentEvents.Count - 1; i >= 0; i--) {
                     var ev = sentEvents[i];
-                    if (ev.eventSeq > eventAck) {
+                    if (ev.seq > eventAck) {
                         eventQueue.AddFirst(ev);
                     }
                 }
