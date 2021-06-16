@@ -55,6 +55,9 @@ namespace Friflo.Json.Flow.Database.Event
         
         private void ProcessSubscriber(SyncRequest syncRequest, SyncContext syncContext) {
             string  clientId = syncRequest.clientId;
+            if (clientId == null)
+                return;
+            
             if (!subscribers.TryGetValue(clientId, out var subscriber))
                 return;
             
