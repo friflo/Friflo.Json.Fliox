@@ -149,10 +149,10 @@ namespace Friflo.Json.Flow.Database
                 foreach (var entityPair in readEntities.entities) {
                     var key     = entityPair.Key;
                     var payload = entityPair.Value.Json;
-                    if (evaluator.Filter(payload, jsonFilter)) {
-                        var entry = new EntityValue(payload);
-                        result.Add(key, entry);
-                    }
+                    if (!evaluator.Filter(payload, jsonFilter))
+                        continue;
+                    var entry = new EntityValue(payload);
+                    result.Add(key, entry);
                 }
             }
             return new QueryEntitiesResult{entities = result};

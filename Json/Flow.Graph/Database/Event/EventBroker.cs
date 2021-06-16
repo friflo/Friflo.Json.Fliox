@@ -61,10 +61,10 @@ namespace Friflo.Json.Flow.Database.Event
             subscriber.UpdateTarget (syncContext.eventTarget);
             
             var eventAck = syncRequest.eventAck;
-            if (eventAck.HasValue) {
-                int value =  eventAck.Value;
-                subscriber.AcknowledgeEvents(value);
-            }
+            if (!eventAck.HasValue)
+                return;
+            int value =  eventAck.Value;
+            subscriber.AcknowledgeEvents(value);
         }
 
         public void EnqueueSyncTasks (SyncRequest syncRequest, SyncContext syncContext) {
