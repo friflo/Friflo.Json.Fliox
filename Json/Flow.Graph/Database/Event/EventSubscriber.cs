@@ -69,6 +69,7 @@ namespace Friflo.Json.Flow.Database.Event
         }
         
         internal async Task SendEvents () {
+            // early out in case the target is a remote connection which already closed.
             if (!eventTarget.IsOpen())
                 return;
             

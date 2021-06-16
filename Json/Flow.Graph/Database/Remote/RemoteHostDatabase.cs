@@ -12,9 +12,8 @@ namespace Friflo.Json.Flow.Database.Remote
     public class RemoteHostDatabase : EntityDatabase
     {
         private readonly    EntityDatabase  local;
+        /// Only set to true for testing. It avoids an early out at <see cref="Event.EventSubscriber.SendEvents"/> 
         public              bool            fakeOpenClosedSockets;
-
-
 
         public RemoteHostDatabase(EntityDatabase local) {
             this.local = local;
