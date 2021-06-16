@@ -25,16 +25,16 @@ namespace Friflo.Json.Flow.Database.Event
         }
 
         public void Subscribe (SubscribeChanges subscribe, string clientId, IEventTarget eventTarget) {
-            // remove subscriber if nothing is subscribed
             EventSubscriber eventSubscriber;
             if (subscribe.changes.Count == 0) {
-                if (subscribers.TryGetValue(clientId, out eventSubscriber)) {
-                    var map = eventSubscriber.subscriptions;
-                    map.Remove(subscribe.container);
-                    if (map.Count == 0) {
-                        subscribers.Remove(clientId);
-                    }
-                }
+                if (!subscribers.TryGetValue(clientId, out eventSubscriber))
+                    return;
+                var subscriptions = eventSubscriber.subscriptions;
+                subscriptions.Remove(subscribe.container);
+                if (subscriptions.Count > 0)
+                    return;
+                // remove subscriber - nothing is subscribed
+                subscribers.Remove(clientId);
                 return;
             }
             subscribers.TryGetValue(clientId, out eventSubscriber);
