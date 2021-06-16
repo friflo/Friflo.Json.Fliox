@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Flow.Sync
 {
-    public class ChangesEvent : DatabaseEvent
+    public class ChangeEvent : DatabaseEvent
     {
         public              List<DatabaseTask>  tasks;
         
-        internal override   DatabaseEventType   EventType   => DatabaseEventType.changes;
+        internal override   DatabaseEventType   EventType   => DatabaseEventType.change;
         public   override   string              ToString()  => GetChangeInfo().ToString();
 
         public ChangeInfo GetChangeInfo() {
@@ -41,12 +41,12 @@ namespace Friflo.Json.Flow.Sync
     
     // ReSharper disable InconsistentNaming
     public enum DatabaseEventType {
-        changes
+        change
     }
     
     /// <summary>
     /// <see cref="ChangeInfo"/> is never de-/serialized.
-    /// It purpose is to get aggregated information about a <see cref="ChangesEvent"/> by <see cref="ChangesEvent.GetChangeInfo"/>
+    /// It purpose is to get aggregated information about a <see cref="ChangeEvent"/> by <see cref="ChangeEvent.GetChangeInfo"/>
     /// </summary>
     public class ChangeInfo {
         public  int creates;

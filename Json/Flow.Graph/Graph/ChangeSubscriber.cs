@@ -12,15 +12,15 @@ namespace Friflo.Json.Flow.Graph
         public              int                             ChangeCount     { get; private set ;}
         public              ChangeInfo<T>                   GetChangeInfo<T>() where T : Entity => GetChanges<T>().sum;
         
-        private             ChangesEvent                    changes;
+        private             ChangeEvent                     change;
         private             EntityStore                     store;
         private readonly    Dictionary<Type, EntityChanges> results = new Dictionary<Type, EntityChanges>();
             
-        public virtual void OnChanges(ChangesEvent changes, EntityStore store) {
+        public virtual void OnChanges(ChangeEvent change, EntityStore store) {
             ChangeCount++;
-            this.changes    = changes;
+            this.change    = change;
             this.store      = store;
-            foreach (var task in changes.tasks) {
+            foreach (var task in change.tasks) {
                 switch (task.TaskType) {
                     case TaskType.create:
                         var create = (CreateEntities)task;
@@ -59,7 +59,7 @@ namespace Friflo.Json.Flow.Graph
             var set     = result.set;
             result.Clear();
             
-            foreach (var task in changes.tasks) {
+            foreach (var task in change.tasks) {
                 switch (task.TaskType) {
                     case TaskType.create:
                         var create = (CreateEntities)task;

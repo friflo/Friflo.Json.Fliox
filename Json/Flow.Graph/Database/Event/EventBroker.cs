@@ -85,12 +85,12 @@ namespace Friflo.Json.Flow.Database.Event
                 }
                 if (tasks == null)
                     continue;
-                var changesEvent = new ChangesEvent {
+                var changeEvent = new ChangeEvent {
                     tasks       = tasks,
                     clientId    = syncRequest.clientId,
                     targetId    = subscriber.clientId
                 };
-                subscriber.EnqueueEvent(changesEvent);
+                subscriber.EnqueueEvent(changeEvent);
             }
         }
         

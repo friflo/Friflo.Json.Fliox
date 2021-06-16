@@ -7,7 +7,7 @@ using Friflo.Json.Flow.Mapper;
 namespace Friflo.Json.Flow.Sync
 {
     [Fri.Discriminator("type")]
-    [Fri.Polymorph(typeof(ChangesEvent), Discriminant = "changes")]
+    [Fri.Polymorph(typeof(ChangeEvent), Discriminant = "change")]
     public abstract class DatabaseEvent {
         // used { get; set; } to force properties on the top of JSON
         [Fri.Property(Name = "id")]     public  int     eventId  { get; set; }

@@ -66,15 +66,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private readonly    ChangeInfo<Producer>    producerSum  = new ChangeInfo<Producer>();
         private readonly    ChangeInfo<Employee>    employeeSum  = new ChangeInfo<Employee>();
             
-        public override void OnChanges (ChangesEvent changes, EntityStore store) {
-            base.OnChanges(changes, store);
+        public override void OnChanges (ChangeEvent change, EntityStore store) {
+            base.OnChanges(change, store);
             var orderChanges    = GetEntityChanges<Order>();
             var customerChanges = GetEntityChanges<Customer>();
             var articleChanges  = GetEntityChanges<Article>();
             var producerChanges = GetEntityChanges<Producer>();
             var employeeChanges = GetEntityChanges<Employee>();
             
-            var changeInfo = changes.GetChangeInfo();
+            var changeInfo = change.GetChangeInfo();
             IsTrue(changeInfo.Count > 0);
 
             orderSum.   AddChanges(orderChanges);
