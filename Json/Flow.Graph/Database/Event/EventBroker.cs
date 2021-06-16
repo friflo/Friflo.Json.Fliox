@@ -55,9 +55,10 @@ namespace Friflo.Json.Flow.Database.Event
             }
         }
         
-        internal void AcknowledgeSubscriberEvent(int eventAck, string clientId) {
-            var subscriber = subscribers[clientId];
-            subscriber.AcknowledgeEvent(eventAck);
+        internal void AcknowledgeSubscriberEvents(int eventAck, string clientId) {
+            if (!subscribers.TryGetValue(clientId, out var subscriber))
+                return;
+            subscriber.AcknowledgeEvents(eventAck);
         }
 
         public void EnqueueSyncTasks (SyncRequest syncRequest) {

@@ -58,7 +58,7 @@ namespace Friflo.Json.Flow.Database.Event
         }
         
         /// Enqueue all not acknowledged events back to <see cref="eventQueue"/> in their original order
-        internal void AcknowledgeEvent(int eventAck) {
+        internal void AcknowledgeEvents(int eventAck) {
             lock (eventQueue) {
                 for (int i = sentEvents.Count - 1; i >= 0; i--) {
                     var ev = sentEvents[i];
