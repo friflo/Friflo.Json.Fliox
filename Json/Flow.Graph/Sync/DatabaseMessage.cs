@@ -19,6 +19,17 @@ namespace Friflo.Json.Flow.Sync
     ///     <see cref="DatabaseMessage"/>' are not applicable for HTTP as HTTP support only a
     ///     request / response pattern and has no mechanism to implement <see cref="DatabaseEvent"/>'s.
     /// </para>
+    /// <br></br>
+    /// General principle of the application communication of <see cref="Flow"/>
+    /// <para>
+    ///     All messages like requests (their tasks), responses (their results) and events are stateless.
+    ///     In other words: All messages are self-contained and doesnt (and must not) rely and previous sent messages.
+    ///     This enables embedding all messages in various communication protocols like HTTP, WebSockets, TCP
+    ///     or datagram based protocols.
+    ///     This also means all <see cref="Flow"/> messages doesnt (and must not) require a session.
+    ///     This principle also enables using a single <see cref="Database.EntityDatabase"/> by multiple clients like
+    ///     <see cref="Graph.EntityStore"/> even for remote clients like <see cref="Database.Remote.RemoteClientDatabase"/>.
+    /// </para>
     /// </summary>
     public class DatabaseMessage
     {
