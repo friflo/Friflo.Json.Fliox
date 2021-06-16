@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Flow.Sync
 {
+    // ----------------------------------- event -----------------------------------
     public class ChangeEvent : DatabaseEvent
     {
         public              List<DatabaseTask>  tasks;

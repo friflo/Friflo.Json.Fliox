@@ -6,6 +6,7 @@ using Friflo.Json.Flow.Mapper;
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Flow.Sync
 {
+    // ----------------------------------- event -----------------------------------
     [Fri.Discriminator("type")]
     [Fri.Polymorph(typeof(ChangeEvent), Discriminant = "change")]
     public abstract class DatabaseEvent {

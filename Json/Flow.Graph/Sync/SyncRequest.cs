@@ -74,7 +74,7 @@ namespace Friflo.Json.Flow.Sync
         }
     }
     
-    // ------ ContainerEntities
+    // ----------------------------------- sync results -----------------------------------
     public class ContainerEntities
     {
         public  string                                  container; // only for debugging

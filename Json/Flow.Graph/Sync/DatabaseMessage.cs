@@ -3,6 +3,7 @@
 
 namespace Friflo.Json.Flow.Sync
 {
+    // ----------------------------------- message -----------------------------------
     /// <summary>
     /// A container for different types of a message classified into request, response and event.
     /// It is used in communication protocols which support more than the request / response schema.
