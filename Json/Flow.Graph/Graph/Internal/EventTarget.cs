@@ -22,7 +22,7 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         public Task<bool> ProcessEvent(DatabaseEvent ev, SyncContext syncContext) {
             if (ev.targetId != store._intern.clientId)
-                throw new InvalidOperationException("Expect DatabaseEvent.clientId == EntityStore.clientId");
+                throw new InvalidOperationException("Expect DatabaseEvent client id == EntityStore client id");
             
             // Skip already received events
             if (store._intern.lastEvent >= ev.seq)
