@@ -18,6 +18,7 @@ namespace Friflo.Json.Flow.Database.Event
         /// lock (<see cref="eventQueue"/>) {
         private             int                                     eventCounter;
         private  readonly   LinkedList<DatabaseEvent>               eventQueue = new LinkedList<DatabaseEvent>();
+        /// contains all events which are sent but not acknowledged
         private  readonly   List<DatabaseEvent>                     sentEvents = new List<DatabaseEvent>();
         // }
 
@@ -55,7 +56,8 @@ namespace Friflo.Json.Flow.Database.Event
                 return true;
             }
         }
-
+        
+        /// Enqueue all not acknowledged events back to <see cref="eventQueue"/> in their original order
         internal void AcknowledgeEvent(int eventAck) {
             lock (eventQueue) {
                 for (int i = sentEvents.Count - 1; i >= 0; i--) {
