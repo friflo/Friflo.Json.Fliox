@@ -16,6 +16,7 @@ namespace Friflo.Json.Flow.Database.Remote
     internal class WebSocketHostTarget : IEventTarget
     {
         private readonly WebSocket  webSocket;
+        /// Only set to true for testing. It avoids an early out at <see cref="Event.EventSubscriber.SendEvents"/> 
         private readonly bool       fakeOpenClosedSocket;
         
         private WebSocketHostTarget (WebSocket webSocket, bool fakeOpenClosedSocket) {
