@@ -66,7 +66,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private readonly    ChangeInfo<Producer>    producerSum  = new ChangeInfo<Producer>();
         private readonly    ChangeInfo<Employee>    employeeSum  = new ChangeInfo<Employee>();
             
+        /// All tests using <see cref="PocSubscriber"/> are required to use "createStore" as clientId
         public override void OnChanges (ChangeEvent change, EntityStore store) {
+            AreEqual("createStore", change.clientId);
             base.OnChanges(change, store);
             var orderChanges    = GetEntityChanges<Order>();
             var customerChanges = GetEntityChanges<Customer>();
