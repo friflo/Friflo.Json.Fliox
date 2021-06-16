@@ -19,4 +19,9 @@ namespace Friflo.Json.Flow.Sync
 
         internal abstract   DatabaseEventType   EventType { get; }
     }
+    
+    // ReSharper disable InconsistentNaming
+    public enum DatabaseEventType {
+        change
+    }
 }

@@ -40,10 +40,7 @@ namespace Friflo.Json.Flow.Sync
     }
     
     
-    // ReSharper disable InconsistentNaming
-    public enum DatabaseEventType {
-        change
-    }
+
     
     /// <summary>
     /// <see cref="ChangeInfo"/> is never de-/serialized.
