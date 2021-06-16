@@ -112,9 +112,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         // [UnityTest] public IEnumerator WebSocketCreateCoroutine()   { yield return RunAsync.Await(WebSocketCreate()); }
         [Test]      public async Task  WebSocketCreateAsync()       { await WebSocketCreate(); }
         
-        /// This test ensure that a <see cref="WebSocketClientDatabase"/> behaves exactly like all other tests in this file.
-        /// It also ensures that a <see cref="WebSocketClientDatabase"/> can be used by multiple clients simultaneously.
-        /// In this case three <see cref="PocStore"/> instances.
+        /// This test ensure that a <see cref="WebSocketClientDatabase"/> behaves exactly like all other
+        /// <see cref="EntityDatabase"/> implementations in this file.
+        /// It also ensures that a single <see cref="WebSocketClientDatabase"/> instance can be used by multiple clients
+        /// simultaneously. In this case three <see cref="PocStore"/> instances.
         private static async Task WebSocketCreate() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker())
