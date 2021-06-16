@@ -25,10 +25,10 @@ namespace Friflo.Json.Flow.Graph.Internal
                 throw new InvalidOperationException("Expect DatabaseEvent.clientId == EntityStore.clientId");
             
             // Skip already received events
-            if (store._intern.lastEvent >= ev.eventId)
+            if (store._intern.lastEvent >= ev.eventSeq)
                 return Task.FromResult(true);
             
-            store._intern.lastEvent = ev.eventId;
+            store._intern.lastEvent = ev.eventSeq;
             var changeEvent = ev as ChangeEvent;
             if (changeEvent == null)
                 return Task.FromResult(true);
