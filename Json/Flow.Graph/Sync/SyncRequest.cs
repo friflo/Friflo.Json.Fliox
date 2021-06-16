@@ -10,8 +10,18 @@ namespace Friflo.Json.Flow.Sync
     // ------------------------------ SyncRequest / SyncResponse ------------------------------
     public class SyncRequest : DatabaseRequest
     {
+        /// <summary>
+        /// Specify an optional id to identify the client performing a request by a host.
+        /// In case the request contains a <see cref="SubscribeChanges"/> <see cref="clientId"/> is required to
+        /// enable sending <see cref="ChangeEvent"/>'s to the desired subscriber.
+        /// </summary>
         [Fri.Property(Name = "client")] public  string              clientId;
-        /// <see cref="eventAck"/> is used to ensure change events are reliable delivered.
+        /// <summary>
+        /// <see cref="eventAck"/> is used to ensure (change) events are delivered reliable.
+        /// A client set <see cref="eventAck"/> to the last received <see cref="DatabaseEvent.seq"/> in case
+        /// it has subscribed to database changes by a <see cref="SubscribeChanges"/> task.
+        /// Otherwise <see cref="eventAck"/> is null.
+        /// </summary>
         [Fri.Property(Name = "ack")]    public  int?                eventAck;
                                         public  List<DatabaseTask>  tasks;
         
