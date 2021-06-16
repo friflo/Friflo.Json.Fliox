@@ -6,6 +6,7 @@ using Friflo.Json.Flow.Database;
 
 namespace Friflo.Json.Flow.Sync
 {
+    // ----------------------------------- task -----------------------------------
     public class ReadEntitiesList : DatabaseTask
     {
         public  string                  container;
@@ -71,6 +72,7 @@ namespace Friflo.Json.Flow.Sync
         }
     }
     
+    // ----------------------------------- task result -----------------------------------
     public class ReadEntitiesListResult : TaskResult
     {
         public   List<ReadEntitiesResult>   reads;

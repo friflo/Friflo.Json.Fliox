@@ -6,12 +6,14 @@ using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
 {
+    // ----------------------------------- sub task -----------------------------------
     public class ReadEntities
     {
         public  HashSet<string>                 ids;
         public  List<References>                references;
     }
     
+    // ----------------------------------- sub task result -----------------------------------
     /// The data of requested entities are added to <see cref="ContainerEntities.entities"/> 
     public class ReadEntitiesResult: ICommandResult
     {

@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Friflo.Json.Flow.Sync
 {
+    // ----------------------------------- response -----------------------------------
     public class ErrorResponse : DatabaseResponse
     {
         public          string  message;

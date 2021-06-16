@@ -8,7 +8,7 @@ using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
 {
-    // ------------------------------ DatabaseTask ------------------------------
+    // ----------------------------------- task -----------------------------------
     [Fri.Discriminator("task")]
     [Fri.Polymorph(typeof(CreateEntities),          Discriminant = "create")]
     [Fri.Polymorph(typeof(UpdateEntities),          Discriminant = "update")]
@@ -72,7 +72,7 @@ namespace Friflo.Json.Flow.Sync
         }
     }
     
-    // ------------------------------ TaskResult ------------------------------
+    // ----------------------------------- task result -----------------------------------
     [Fri.Discriminator("task")]
     [Fri.Polymorph(typeof(CreateEntitiesResult),    Discriminant = "create")]
     [Fri.Polymorph(typeof(UpdateEntitiesResult),    Discriminant = "update")]

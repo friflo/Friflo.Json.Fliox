@@ -7,6 +7,7 @@ using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
 {
+    // ----------------------------------- task -----------------------------------
     public class DeleteEntities : DatabaseTask
     {
         public              string              container;
@@ -33,6 +34,7 @@ namespace Friflo.Json.Flow.Sync
         }
     }
     
+    // ----------------------------------- task result -----------------------------------
     public class DeleteEntitiesResult : TaskResult, ICommandResult
     {
                      public CommandError                    Error { get; set; }

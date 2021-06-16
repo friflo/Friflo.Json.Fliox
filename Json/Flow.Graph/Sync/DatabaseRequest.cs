@@ -4,12 +4,14 @@ using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
 {
+    // ----------------------------------- request -----------------------------------
     [Fri.Discriminator("type")]
     [Fri.Polymorph(typeof(SyncRequest),         Discriminant = "sync")]
     public abstract class DatabaseRequest {
         internal abstract   RequestType  RequestType { get; }
     }
     
+    // ----------------------------------- response -----------------------------------
     [Fri.Discriminator("type")]
     [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "sync")]
     [Fri.Polymorph(typeof(ErrorResponse),       Discriminant = "error")]

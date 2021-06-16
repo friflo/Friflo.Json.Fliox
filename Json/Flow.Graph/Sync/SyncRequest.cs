@@ -7,7 +7,7 @@ using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
 {
-    // ------------------------------ SyncRequest / SyncResponse ------------------------------
+    // ----------------------------------- request -----------------------------------
     public class SyncRequest : DatabaseRequest
     {
         /// <summary>
@@ -28,6 +28,7 @@ namespace Friflo.Json.Flow.Sync
         internal override                       RequestType         RequestType => RequestType.sync;
     }
     
+    // ----------------------------------- response -----------------------------------
     public class SyncResponse : DatabaseResponse
     {
         public  ErrorResponse                           error;

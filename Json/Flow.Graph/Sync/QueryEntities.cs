@@ -9,6 +9,7 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Sync
 {
+    // ----------------------------------- task -----------------------------------
     public class QueryEntities : DatabaseTask
     {
         public  string                      container;
@@ -51,6 +52,7 @@ namespace Friflo.Json.Flow.Sync
         }
     }
     
+    // ----------------------------------- task result -----------------------------------
     public class QueryEntitiesResult : TaskResult, ICommandResult
     {
         public  string                          container;  // only for debugging ergonomics

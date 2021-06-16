@@ -5,6 +5,7 @@ using Friflo.Json.Flow.Database;
 
 namespace Friflo.Json.Flow.Sync
 {
+    // ----------------------------------- task result -----------------------------------
     public class TaskErrorResult : TaskResult
     {
         public              TaskErrorResultType type;

@@ -5,6 +5,7 @@ using Friflo.Json.Flow.Graph;
 
 namespace Friflo.Json.Flow.Sync
 {
+    // ----------------------------------- sub task -----------------------------------
     public class References
     {
         /// Path to a <see cref="Ref{T}"/> field referencing an <see cref="Entity"/>.
@@ -14,6 +15,7 @@ namespace Friflo.Json.Flow.Sync
         public  List<References>        references;
     }
     
+    // ----------------------------------- sub task result -----------------------------------
     public class ReferencesResult
     {
         public  string                  error;

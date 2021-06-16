@@ -8,6 +8,7 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Sync
 {
+    // ----------------------------------- task -----------------------------------
     public class PatchEntities : DatabaseTask
     {
         public  string                          container;
@@ -39,6 +40,7 @@ namespace Friflo.Json.Flow.Sync
         public List<JsonPatch>                  patches;
     }
 
+    // ----------------------------------- task result -----------------------------------
     public class PatchEntitiesResult : TaskResult, ICommandResult
     {
                      public  CommandError                    Error { get; set; }

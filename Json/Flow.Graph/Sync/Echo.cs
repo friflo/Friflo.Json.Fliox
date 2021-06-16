@@ -5,6 +5,7 @@ using Friflo.Json.Flow.Database;
 
 namespace Friflo.Json.Flow.Sync
 {
+    // ----------------------------------- task -----------------------------------
     public class Echo : DatabaseTask
     {
         public              string          message;
@@ -17,6 +18,7 @@ namespace Friflo.Json.Flow.Sync
         }
     }
     
+    // ----------------------------------- task result -----------------------------------
     public class EchoResult : TaskResult, ICommandResult
     {
         public              string          message;

@@ -8,6 +8,7 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Sync
 {
+    // ----------------------------------- task -----------------------------------
     public class CreateEntities : DatabaseTask
     {
         public  string                          container;
@@ -46,6 +47,7 @@ namespace Friflo.Json.Flow.Sync
         }
     }
     
+    // ----------------------------------- task result -----------------------------------
     public class CreateEntitiesResult : TaskResult, ICommandResult
     {
                      public CommandError                    Error { get; set; }

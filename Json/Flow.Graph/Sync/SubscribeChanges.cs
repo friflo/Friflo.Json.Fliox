@@ -8,6 +8,7 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Sync
 {
+    // ----------------------------------- task -----------------------------------
     public class SubscribeChanges : DatabaseTask
     {
         public string                   container;
@@ -38,6 +39,7 @@ namespace Friflo.Json.Flow.Sync
         }
     }
     
+    // ----------------------------------- task result -----------------------------------
     public class SubscribeChangesResult : TaskResult
     {
         internal override   TaskType    TaskType => TaskType.subscribe;
