@@ -143,14 +143,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         }
 
         [Test]
-        public async Task TestSelectSameInstance() {
+        public void TestSelectSameInstance() {
             using (var _        = Pools.SharedPools) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
             using (var store    = new PocStore(database, "store")) {
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order1 = readOrders.Find("order-1");
-                await store.Sync();
+                store.Sync().Wait();
                 var orders = new List<Flow.Graph.Order> {order1.Result};
 
                 var orderQuery =
