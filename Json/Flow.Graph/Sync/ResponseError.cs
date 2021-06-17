@@ -8,11 +8,11 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- response -----------------------------------
     public class ErrorResponse : DatabaseResponse
     {
-        public          string  message;
+        public              string      message;
         
-        internal override   RequestType  RequestType => RequestType.error;
+        internal override   RequestType RequestType => RequestType.error;
 
-        public override string  ToString() => message;
+        public override     string      ToString() => message;
 
         public static StringBuilder ErrorFromException(Exception e) {
             var sb = new StringBuilder();

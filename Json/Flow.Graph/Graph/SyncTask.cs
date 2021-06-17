@@ -61,10 +61,10 @@ namespace Friflo.Json.Flow.Graph
         /// <summary>
         /// An arbitrary name which can be assigned to a task. Typically the name of the variable the task is assigned to.
         /// The <see cref="name"/> is used to simplify finding a <see cref="SyncTask"/> in the source code while debugging.
-        /// It also simplify finding a <see cref="TaskError"/> by its <see cref="TaskError.Message"/>
+        /// It also simplifies finding a <see cref="TaskError"/> by its <see cref="TaskError.Message"/>
         /// or a <see cref="TaskResultException"/> by its <see cref="Exception.Message"/>.
         /// The library itself doesnt use the <see cref="name"/> internally - its purpose is only to enhance debugging
-        /// or post-mortem of application code.
+        /// or post-mortem debugging of application code.
         /// </summary>
         public static T TaskName<T> (this T task, string name) where T : SyncTask {
             task.name = name;

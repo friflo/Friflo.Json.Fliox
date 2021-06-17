@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, TaskResult result, ContainerEntities queryEntities);
         internal  abstract  void    PatchEntitiesResult     (PatchEntities      task, TaskResult result);
         internal  abstract  void    DeleteEntitiesResult    (DeleteEntities     task, TaskResult result);
-        internal  abstract  void    SubscribeResult         (SubscribeChanges  task, TaskResult result);
+        internal  abstract  void    SubscribeResult         (SubscribeChanges   task, TaskResult result);
     }
 
     internal partial class SyncSet<T>

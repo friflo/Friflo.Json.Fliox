@@ -43,9 +43,9 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task result -----------------------------------
     public class PatchEntitiesResult : TaskResult, ICommandResult
     {
-                     public  CommandError                    Error { get; set; }
-        [Fri.Ignore] public  Dictionary<string, EntityError> patchErrors;
+                     public CommandError                    Error { get; set; }
+        [Fri.Ignore] public Dictionary<string, EntityError> patchErrors;
         
-        internal override   TaskType            TaskType => TaskType.patch;
+        internal override   TaskType                        TaskType => TaskType.patch;
     }
 }

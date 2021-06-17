@@ -53,6 +53,6 @@ namespace Friflo.Json.Flow.Sync
         public              CommandError                    Error { get; set; }
         [Fri.Ignore] public Dictionary<string, EntityError> updateErrors;
 
-        internal override   TaskType            TaskType => TaskType.update;
+        internal override   TaskType                        TaskType => TaskType.update;
     }
 }
