@@ -26,11 +26,11 @@ namespace Friflo.Json.Flow.Database.Remote
             return container;
         }
         
-        public override void AddClientTarget(string clientId, IEventTarget eventTarget) {
+        public override void AddEventTarget(string clientId, IEventTarget eventTarget) {
             clientTargets.Add(clientId, eventTarget);
         }
         
-        public override void RemoveClientTarget(string clientId) {
+        public override void RemoveEventTarget(string clientId) {
             clientTargets.Remove(clientId);
         }
         

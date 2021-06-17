@@ -108,11 +108,11 @@ namespace Friflo.Json.Flow.Graph
             var eventTarget = new EventTarget(this);
             var sync = new SyncStore();
             _intern = new StoreIntern(clientId, typeStore, owned, database, jsonMapper, eventTarget, sync);
-            database.AddClientTarget(clientId, eventTarget);
+            database.AddEventTarget(clientId, eventTarget);
         }
         
         public void Dispose() {
-            _intern.database.RemoveClientTarget(_intern.clientId);
+            _intern.database.RemoveEventTarget(_intern.clientId);
             _intern.objectPatcher.Dispose();
             _intern.jsonMapper.Dispose();
             _intern.ownedTypeStore?.Dispose();

@@ -26,8 +26,8 @@ namespace Friflo.Json.Flow.Database
             }
         }
         
-        public virtual void AddClientTarget     (string clientId, IEventTarget eventTarget) {}
-        public virtual void RemoveClientTarget  (string clientId) {}
+        public virtual void AddEventTarget     (string clientId, IEventTarget eventTarget) {}
+        public virtual void RemoveEventTarget  (string clientId) {}
 
         internal void AddContainer(EntityContainer container)
         {
