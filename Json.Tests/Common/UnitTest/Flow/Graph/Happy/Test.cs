@@ -166,10 +166,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         
                         await remoteDatabase.Connect();
                         
-                        AreEqual("entities: 0", listenDb.ToString());  // task: 0
+                        AreEqual(0, listenDb.Tasks.Count);
                         await listenDb.Sync();  // an empty Sync() is sufficient initiate re-sending all not-received change events
                         listenSubscriber.AssertCreateStoreChanges();
-                        AreEqual("entities: 22", listenDb.ToString());
                         
                         await listenDb.Sync();  // all changes are received => state of store remains unchanged 
                         listenSubscriber.AssertCreateStoreChanges();
