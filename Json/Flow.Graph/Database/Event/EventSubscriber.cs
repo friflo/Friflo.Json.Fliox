@@ -125,10 +125,10 @@ namespace Friflo.Json.Flow.Database.Event
         private Task RunQueue(ChannelReader<TriggerType> triggerReader) {
             var runQueue = Task.Run(async () => {
                 while (true) {
-                    var entry = await triggerReader.ReadAsync();
+                    var entry = await triggerReader.ReadAsync().ConfigureAwait(false);
                     if (entry == TriggerType.Finish)
                         return;
-                    await SendEvents();
+                    await SendEvents().ConfigureAwait(false);
                 }
             });
             return runQueue;

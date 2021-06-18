@@ -38,7 +38,9 @@ namespace Friflo.Json.Flow.Database.Event
                 subscriber.FinishQueue();
                 queues.Add(subscriber.triggerQueue);
             }
-            await Task.WhenAll(queues);
+            Console.WriteLine("WhenAll 1");
+            await Task.WhenAll(queues).ConfigureAwait(false);
+            Console.WriteLine("WhenAll 2");
         }
 
         public void Subscribe (SubscribeChanges subscribe, string clientId, IEventTarget eventTarget) {
