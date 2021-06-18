@@ -19,10 +19,26 @@ namespace Friflo.Json.Flow.Database.Event
         private  readonly   JsonEvaluator                       jsonEvaluator   = new JsonEvaluator();
         /// key: <see cref="EventSubscriber.clientId"/>
         private  readonly   Dictionary<string, EventSubscriber> subscribers     = new Dictionary<string, EventSubscriber>();
-        public              bool                                background      = false;
+        public   readonly   bool                                background;
         
         public void Dispose() {
             jsonEvaluator.Dispose();
+        }
+        
+        public EventBroker (bool background) {
+            this.background = background;
+        }
+        
+        public async Task FinishQueues() {
+            if (!background)
+                return;
+            var queues = new List<Task>();
+            foreach (var pair in subscribers) {
+                var subscriber = pair.Value;
+                subscriber.FinishQueue();
+                queues.Add(subscriber.triggerQueue);
+            }
+            await Task.WhenAll(queues);
         }
 
         public void Subscribe (SubscribeChanges subscribe, string clientId, IEventTarget eventTarget) {

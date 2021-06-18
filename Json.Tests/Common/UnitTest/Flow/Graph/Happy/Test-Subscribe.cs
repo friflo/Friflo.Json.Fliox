@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         private static async Task AssertSubscribe() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
-            using (var eventBroker  = new EventBroker())
+            using (var eventBroker  = new EventBroker(false))
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var listenDb     = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker = eventBroker;
@@ -39,6 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 pocSubscriber.AssertCreateStoreChanges();
                 AreEqual(8, pocSubscriber.ChangeCount);           // non protected access
                 AreSimilar("(creates: 9, updates: 0, deletes: 4, patches: 2)",  pocSubscriber.GetChangeInfo<Article>());  // non protected access
+                await eventBroker.FinishQueues();
             }
         }
         

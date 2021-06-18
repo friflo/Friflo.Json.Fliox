@@ -118,7 +118,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         /// simultaneously. In this case three <see cref="PocStore"/> instances.
         private static async Task WebSocketCreate() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
-            using (var eventBroker      = new EventBroker())
+            using (var eventBroker      = new EventBroker(false))
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/", null))
             using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/"))
@@ -138,6 +138,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     }
                     await remoteDatabase.Close();
                 });
+                await eventBroker.FinishQueues();
             }
         }
         
@@ -148,7 +149,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         /// is used to inform database about arrived events. All not acknowledged events are resent.
         private static async Task WebSocketReconnect() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
-            using (var eventBroker      = new EventBroker())
+            using (var eventBroker      = new EventBroker(false))
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/", null))
             using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/"))
@@ -172,7 +173,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                             while (listenSubscriber.ChangeCount != 8 ) {
                                 await Task.Delay(1);
                             }
-                        }                        
+                        }
                         listenSubscriber.AssertCreateStoreChanges();
                         
                         await listenDb.Sync();  // all changes are received => state of store remains unchanged 
@@ -180,6 +181,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     }
                     await remoteDatabase.Close();
                 });
+                await eventBroker.FinishQueues();
             }
         }
         
@@ -188,7 +190,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         private static async Task LoopbackUse() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
-            using (var eventBroker      = new EventBroker())
+            using (var eventBroker      = new EventBroker(false))
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase))
             using (var listenDb         = new PocStore(fileDatabase, "listenDb")) {
@@ -203,6 +205,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     listenSubscriber.AssertCreateStoreChanges();
                     await TestStores(createStore, useStore);
                 }
+                await eventBroker.FinishQueues();
             }
         }
         

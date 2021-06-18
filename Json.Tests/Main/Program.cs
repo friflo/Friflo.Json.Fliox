@@ -66,7 +66,7 @@ namespace Friflo.Json.Tests.Main
         //     $env:UserDomain 
         private static void GraphServer(string endpoint, string database, string wwwRoot, bool simulateErrors) {
             Console.WriteLine($"FileDatabase: {database}");
-            var fileDatabase = new FileDatabase(database) { eventBroker = new EventBroker() };
+            var fileDatabase = new FileDatabase(database) { eventBroker = new EventBroker(true) };
             EntityDatabase localDatabase = fileDatabase;
             if (simulateErrors) {
                 var testDatabase = new TestDatabase(fileDatabase);

@@ -11,7 +11,7 @@ using Friflo.Json.Flow.Sync;
 namespace Friflo.Json.Flow.Database.Event
 {
     internal enum TriggerType {
-        Finished,
+        Finish,
         Event
     }
     
@@ -21,8 +21,6 @@ namespace Friflo.Json.Flow.Database.Event
         /// key: <see cref="SubscribeChanges.container"/>
         internal readonly   Dictionary<string, SubscribeChanges>    subscriptions = new Dictionary<string, SubscribeChanges>();
         
-        private  readonly   bool                                    background;
-
         /// lock (<see cref="eventQueue"/>) {
         private             int                                     eventCounter;
         private  readonly   LinkedList<DatabaseEvent>               eventQueue = new LinkedList<DatabaseEvent>();
@@ -30,7 +28,8 @@ namespace Friflo.Json.Flow.Database.Event
         private  readonly   List<DatabaseEvent>                     sentEvents = new List<DatabaseEvent>();
         // }
         
-        private  readonly   Task                                    triggerQueue;
+        private  readonly   bool                                    background;
+        internal readonly   Task                                    triggerQueue;
         private  readonly   ChannelWriter<TriggerType>              triggerWriter;
 
         public   override   string                                  ToString() => clientId;
@@ -127,7 +126,7 @@ namespace Friflo.Json.Flow.Database.Event
             var runQueue = Task.Run(async () => {
                 while (true) {
                     var entry = await triggerReader.ReadAsync();
-                    if (entry == TriggerType.Finished)
+                    if (entry == TriggerType.Finish)
                         return;
                     await SendEvents();
                 }
@@ -140,6 +139,11 @@ namespace Friflo.Json.Flow.Database.Event
             if (success)
                 return;
             Debug.Fail("EnqueueTrigger() - writer.TryWrite() failed");
+        }
+        
+        internal void FinishQueue() {
+            EnqueueTrigger(TriggerType.Finish);
+            triggerWriter.Complete();
         }
     }
 }
