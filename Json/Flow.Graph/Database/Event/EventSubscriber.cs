@@ -11,6 +11,7 @@ using Friflo.Json.Flow.Sync;
 namespace Friflo.Json.Flow.Database.Event
 {
     internal enum TriggerType {
+        None,
         Finish,
         Event
     }
@@ -125,17 +126,21 @@ namespace Friflo.Json.Flow.Database.Event
         private Task RunQueue(ChannelReader<TriggerType> triggerReader) {
             var runQueue = Task.Run(async () => {
                 while (true) {
-                    var entry = await triggerReader.ReadAsync().ConfigureAwait(false);
-                    if (entry == TriggerType.Finish)
-                        return;
+                    var trigger = await triggerReader.ReadAsync().ConfigureAwait(false);
+                    switch (trigger) {
+                        case TriggerType.None:
+                        case TriggerType.Finish:
+                            Console.WriteLine($"RunQueue return. {trigger}");
+                            return;
+                    }
                     await SendEvents().ConfigureAwait(false);
                 }
             });
             return runQueue;
         }
         
-        private void EnqueueTrigger(TriggerType entry) {
-            bool success = triggerWriter.TryWrite(entry);
+        private void EnqueueTrigger(TriggerType trigger) {
+            bool success = triggerWriter.TryWrite(trigger);
             if (success)
                 return;
             Debug.Fail("EnqueueTrigger() - writer.TryWrite() failed");

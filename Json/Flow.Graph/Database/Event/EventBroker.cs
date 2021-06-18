@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Sync;
@@ -16,19 +17,21 @@ namespace Friflo.Json.Flow.Database.Event
     
     public class EventBroker : IDisposable
     {
-        private  readonly   JsonEvaluator                       jsonEvaluator   = new JsonEvaluator();
+        private  readonly   JsonEvaluator                                   jsonEvaluator;
         /// key: <see cref="EventSubscriber.clientId"/>
-        private  readonly   Dictionary<string, EventSubscriber> subscribers     = new Dictionary<string, EventSubscriber>();
-        public   readonly   bool                                background;
-        
+        private  readonly   ConcurrentDictionary<string, EventSubscriber>   subscribers;
+        public   readonly   bool                                            background;
+
+        public EventBroker (bool background) {
+            jsonEvaluator   = new JsonEvaluator();
+            subscribers     = new ConcurrentDictionary<string, EventSubscriber>();
+            this.background = background;
+        }
+
         public void Dispose() {
             jsonEvaluator.Dispose();
         }
-        
-        public EventBroker (bool background) {
-            this.background = background;
-        }
-        
+
         public async Task FinishQueues() {
             if (!background)
                 return;
@@ -53,13 +56,13 @@ namespace Friflo.Json.Flow.Database.Event
                 if (subscriptions.Count > 0)
                     return;
                 // remove subscriber - nothing is subscribed
-                subscribers.Remove(clientId);
+                subscribers.TryRemove(clientId, out _);
                 return;
             }
             subscribers.TryGetValue(clientId, out eventSubscriber);
             if (eventSubscriber == null) {
                 eventSubscriber = new EventSubscriber(clientId, eventTarget, background);
-                subscribers.Add(clientId, eventSubscriber);
+                subscribers.TryAdd(clientId, eventSubscriber);
             }
             eventSubscriber.subscriptions[subscribe.container] = subscribe;
         }
