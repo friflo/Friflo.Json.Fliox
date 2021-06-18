@@ -168,6 +168,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         
                         AreEqual(0, listenDb.Tasks.Count);
                         await listenDb.Sync();  // an empty Sync() is sufficient initiate re-sending all not-received change events
+                        if (eventBroker.background) {
+                            while (listenSubscriber.ChangeCount != 8 ) {
+                                await Task.Delay(1);
+                            }
+                        }                        
                         listenSubscriber.AssertCreateStoreChanges();
                         
                         await listenDb.Sync();  // all changes are received => state of store remains unchanged 

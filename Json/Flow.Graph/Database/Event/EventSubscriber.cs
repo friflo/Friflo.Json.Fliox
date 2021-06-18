@@ -4,16 +4,24 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database.Event
 {
+    internal enum QueueEntryType {
+        Finished,
+        Event
+    }
+    
     public class EventSubscriber {
         internal readonly   string                                  clientId;
         private             IEventTarget                            eventTarget;
         /// key: <see cref="SubscribeChanges.container"/>
         internal readonly   Dictionary<string, SubscribeChanges>    subscriptions = new Dictionary<string, SubscribeChanges>();
+        
+        private  readonly   bool                                    background;
 
         /// lock (<see cref="eventQueue"/>) {
         private             int                                     eventCounter;
@@ -21,12 +29,25 @@ namespace Friflo.Json.Flow.Database.Event
         /// contains all events which are sent but not acknowledged
         private  readonly   List<DatabaseEvent>                     sentEvents = new List<DatabaseEvent>();
         // }
+        
+        private  readonly   Task                                    queueTask;
+        private  readonly   ChannelWriter<QueueEntryType>           writer;
 
         public   override   string                                  ToString() => clientId;
 
-        public EventSubscriber (string clientId, IEventTarget eventTarget) {
+        public EventSubscriber (string clientId, IEventTarget eventTarget, bool background) {
             this.clientId       = clientId;
             this.eventTarget    = eventTarget;
+            this.background     = background;
+            if (this.background) {
+                // --- Task queue
+                var opt = new UnboundedChannelOptions { SingleReader = true, SingleWriter = true };
+                // opt.AllowSynchronousContinuations = true;
+                var channel = Channel.CreateUnbounded<QueueEntryType>(opt);
+                writer      = channel.Writer;
+                var reader  = channel.Reader;
+                queueTask   = RunQueue(reader);
+            }
         }
         
         internal void UpdateTarget(IEventTarget eventTarget) {
@@ -40,6 +61,9 @@ namespace Friflo.Json.Flow.Database.Event
             lock (eventQueue) {
                 ev.seq = ++eventCounter;
                 eventQueue.AddLast(ev);
+                if (background) {
+                    EnqueueToWriter(QueueEntryType.Event);
+                }
             }
         }
         
@@ -60,13 +84,18 @@ namespace Friflo.Json.Flow.Database.Event
         /// Enqueue all not acknowledged events back to <see cref="eventQueue"/> in their original order
         internal void AcknowledgeEvents(int eventAck) {
             lock (eventQueue) {
+                bool pendingSendEvents = false;
                 for (int i = sentEvents.Count - 1; i >= 0; i--) {
                     var ev = sentEvents[i];
                     if (ev.seq > eventAck) {
                         eventQueue.AddFirst(ev);
+                        pendingSendEvents = true;
                     }
                 }
                 sentEvents.Clear();
+                if (background && pendingSendEvents) {
+                    EnqueueToWriter (QueueEntryType.Event);
+                }
             }
         }
         
@@ -91,6 +120,26 @@ namespace Friflo.Json.Flow.Database.Event
                     Debug.Fail(error);
                 }
             }
+        }
+        
+        // ------------------------------------- Task queue -------------------------------------
+        private Task RunQueue(ChannelReader<QueueEntryType> reader) {
+            var runQueue = Task.Run(async () => {
+                while (true) {
+                    var entry = await reader.ReadAsync();
+                    if (entry == QueueEntryType.Finished)
+                        return;
+                    await SendEvents();
+                }
+            });
+            return runQueue;
+        }
+        
+        private void EnqueueToWriter(QueueEntryType entry) {
+            bool success = writer.TryWrite(entry);
+            if (success)
+                return;
+            Debug.Fail("writer.TryWrite() failed");
         }
     }
 }

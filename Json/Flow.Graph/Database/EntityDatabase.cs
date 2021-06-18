@@ -111,9 +111,10 @@ namespace Friflo.Json.Flow.Database
             
             if (eventBroker != null) {
                 eventBroker.EnqueueSyncTasks(syncRequest, syncContext);
-                await eventBroker.SendQueuedEvents().ConfigureAwait(false); // todo remove - only for testing
+                if (!eventBroker.background) {
+                    await eventBroker.SendQueuedEvents().ConfigureAwait(false); // todo remove - only for testing
+                }
             }
-            
             return response;
         }
     }

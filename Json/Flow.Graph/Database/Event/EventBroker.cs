@@ -16,9 +16,10 @@ namespace Friflo.Json.Flow.Database.Event
     
     public class EventBroker : IDisposable
     {
-        private readonly    JsonEvaluator                       jsonEvaluator   = new JsonEvaluator();
+        private  readonly   JsonEvaluator                       jsonEvaluator   = new JsonEvaluator();
         /// key: <see cref="EventSubscriber.clientId"/>
-        private readonly    Dictionary<string, EventSubscriber> subscribers     = new Dictionary<string, EventSubscriber>();
+        private  readonly   Dictionary<string, EventSubscriber> subscribers     = new Dictionary<string, EventSubscriber>();
+        public              bool                                background      = false;
         
         public void Dispose() {
             jsonEvaluator.Dispose();
@@ -39,7 +40,7 @@ namespace Friflo.Json.Flow.Database.Event
             }
             subscribers.TryGetValue(clientId, out eventSubscriber);
             if (eventSubscriber == null) {
-                eventSubscriber = new EventSubscriber(clientId, eventTarget);
+                eventSubscriber = new EventSubscriber(clientId, eventTarget, background);
                 subscribers.Add(clientId, eventSubscriber);
             }
             eventSubscriber.subscriptions[subscribe.container] = subscribe;
