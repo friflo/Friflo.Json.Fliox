@@ -10,7 +10,7 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database.Event
 {
-    internal enum QueueEntryType {
+    internal enum TriggerType {
         Finished,
         Event
     }
@@ -30,8 +30,8 @@ namespace Friflo.Json.Flow.Database.Event
         private  readonly   List<DatabaseEvent>                     sentEvents = new List<DatabaseEvent>();
         // }
         
-        private  readonly   Task                                    queueTask;
-        private  readonly   ChannelWriter<QueueEntryType>           writer;
+        private  readonly   Task                                    triggerQueue;
+        private  readonly   ChannelWriter<TriggerType>              triggerWriter;
 
         public   override   string                                  ToString() => clientId;
 
@@ -43,10 +43,10 @@ namespace Friflo.Json.Flow.Database.Event
                 // --- Task queue
                 var opt = new UnboundedChannelOptions { SingleReader = true, SingleWriter = true };
                 // opt.AllowSynchronousContinuations = true;
-                var channel = Channel.CreateUnbounded<QueueEntryType>(opt);
-                writer      = channel.Writer;
-                var reader  = channel.Reader;
-                queueTask   = RunQueue(reader);
+                var channel         = Channel.CreateUnbounded<TriggerType>(opt);
+                triggerWriter       = channel.Writer;
+                var triggerReader   = channel.Reader;
+                triggerQueue        = RunQueue(triggerReader);
             }
         }
         
@@ -62,7 +62,7 @@ namespace Friflo.Json.Flow.Database.Event
                 ev.seq = ++eventCounter;
                 eventQueue.AddLast(ev);
                 if (background) {
-                    EnqueueToWriter(QueueEntryType.Event);
+                    EnqueueTrigger(TriggerType.Event);
                 }
             }
         }
@@ -94,7 +94,7 @@ namespace Friflo.Json.Flow.Database.Event
                 }
                 sentEvents.Clear();
                 if (background && pendingSendEvents) {
-                    EnqueueToWriter (QueueEntryType.Event);
+                    EnqueueTrigger (TriggerType.Event);
                 }
             }
         }
@@ -123,11 +123,11 @@ namespace Friflo.Json.Flow.Database.Event
         }
         
         // ------------------------------------- Task queue -------------------------------------
-        private Task RunQueue(ChannelReader<QueueEntryType> reader) {
+        private Task RunQueue(ChannelReader<TriggerType> triggerReader) {
             var runQueue = Task.Run(async () => {
                 while (true) {
-                    var entry = await reader.ReadAsync();
-                    if (entry == QueueEntryType.Finished)
+                    var entry = await triggerReader.ReadAsync();
+                    if (entry == TriggerType.Finished)
                         return;
                     await SendEvents();
                 }
@@ -135,11 +135,11 @@ namespace Friflo.Json.Flow.Database.Event
             return runQueue;
         }
         
-        private void EnqueueToWriter(QueueEntryType entry) {
-            bool success = writer.TryWrite(entry);
+        private void EnqueueTrigger(TriggerType entry) {
+            bool success = triggerWriter.TryWrite(entry);
             if (success)
                 return;
-            Debug.Fail("writer.TryWrite() failed");
+            Debug.Fail("EnqueueTrigger() - writer.TryWrite() failed");
         }
     }
 }
