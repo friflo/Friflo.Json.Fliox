@@ -41,7 +41,7 @@ namespace Friflo.Json.Flow.Database.Event
             this.background     = background;
             if (!this.background)
                 return;
-            // --- use trigger channel and queue
+            // --- use trigger channel and loop
             var channel         = DataChannel<TriggerType>.CreateUnbounded(true, true);
             triggerWriter       = channel.writer;
             var triggerReader   = channel.reader;
@@ -122,7 +122,7 @@ namespace Friflo.Json.Flow.Database.Event
         
         // ---------------------------- trigger channel and queue ----------------------------
         private Task TriggerLoop(DataChannelReader<TriggerType> triggerReader) {
-            var runQueue = Task.Run(async () => {
+            var loopTask = Task.Run(async () => {
                 try {
                     while (true) {
                         var trigger = await triggerReader.ReadAsync().ConfigureAwait(false);
@@ -137,7 +137,7 @@ namespace Friflo.Json.Flow.Database.Event
                     Debug.Fail("TriggerLoop() failed", e.Message);
                 }
             });
-            return runQueue;
+            return loopTask;
         }
         
         private void EnqueueTrigger(TriggerType trigger) {
