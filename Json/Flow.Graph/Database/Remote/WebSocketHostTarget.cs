@@ -8,9 +8,9 @@ using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database.Event;
+using Friflo.Json.Flow.Database.Utils;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database.Remote
@@ -18,22 +18,20 @@ namespace Friflo.Json.Flow.Database.Remote
     // [Things I Wish Someone Told Me About ASP.NET Core WebSockets | codetinkerer.com] https://www.codetinkerer.com/2018/06/05/aspnet-core-websockets.html
     internal class WebSocketHostTarget : IEventTarget
     {
-        private readonly WebSocket                          webSocket;
+        private readonly WebSocket                              webSocket;
         /// Only set to true for testing. It avoids an early out at <see cref="Event.EventSubscriber.SendEvents"/> 
-        private readonly bool                               fakeOpenClosedSocket;
+        private readonly bool                                   fakeOpenClosedSocket;
 
-        private readonly ChannelWriter<ArraySegment<byte>>  sendWriter;
-        private readonly Task                               sendLoop;
+        private readonly DataChannelWriter<ArraySegment<byte>>  sendWriter;
+        private readonly Task                                   sendLoop;
         
         private WebSocketHostTarget (WebSocket webSocket, bool fakeOpenClosedSocket) {
             this.webSocket              = webSocket;
             this.fakeOpenClosedSocket   = fakeOpenClosedSocket;
             
-            var opt = new UnboundedChannelOptions { SingleReader = true, SingleWriter = false };
-            // opt.AllowSynchronousContinuations = true;
-            var channel         = Channel.CreateUnbounded<ArraySegment<byte>>(opt);
-            sendWriter          = channel.Writer;
-            var sendReader      = channel.Reader;
+            var channel         = DataChannel<ArraySegment<byte>>.CreateUnbounded(true, false);
+            sendWriter          = channel.writer;
+            var sendReader      = channel.reader;
             sendLoop            = SendLoop(sendReader);
         }
         
@@ -66,7 +64,7 @@ namespace Friflo.Json.Flow.Database.Remote
         // Send queue (sendWriter / sendReader) is required  to prevent having more than one WebSocket.SendAsync() call outstanding.
         // Otherwise:
         // System.InvalidOperationException: There is already one outstanding 'SendAsync' call for this WebSocket instance. ReceiveAsync and SendAsync can be called simultaneously, but at most one outstanding operation for each of them is allowed at the same time. 
-        private Task SendLoop(ChannelReader<ArraySegment<byte>> sendReader) {
+        private Task SendLoop(DataChannelReader<ArraySegment<byte>> sendReader) {
             var loopTask = Task.Run(async () => {
                 try {
                     while (true) {

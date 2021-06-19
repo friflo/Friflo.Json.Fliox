@@ -4,8 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Channels;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Database.Utils;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database.Event
@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Database.Event
         
         private  readonly   bool                                    background;
         internal readonly   Task                                    triggerLoop;
-        private  readonly   ChannelWriter<TriggerType>              triggerWriter;
+        private  readonly   DataChannelWriter<TriggerType>          triggerWriter;
 
         public   override   string                                  ToString() => clientId;
 
@@ -41,11 +41,9 @@ namespace Friflo.Json.Flow.Database.Event
             this.background     = background;
             if (this.background) {
                 // --- Task queue
-                var opt = new UnboundedChannelOptions { SingleReader = true, SingleWriter = true };
-                // opt.AllowSynchronousContinuations = true;
-                var channel         = Channel.CreateUnbounded<TriggerType>(opt);
-                triggerWriter       = channel.Writer;
-                var triggerReader   = channel.Reader;
+                var channel         = DataChannel<TriggerType>.CreateUnbounded(true, true);
+                triggerWriter       = channel.writer;
+                var triggerReader   = channel.reader;
                 triggerLoop         = TriggerLoop(triggerReader);
             }
         }
@@ -123,7 +121,7 @@ namespace Friflo.Json.Flow.Database.Event
         }
         
         // ------------------------------------- Task queue -------------------------------------
-        private Task TriggerLoop(ChannelReader<TriggerType> triggerReader) {
+        private Task TriggerLoop(DataChannelReader<TriggerType> triggerReader) {
             var runQueue = Task.Run(async () => {
                 try {
                     while (true) {
