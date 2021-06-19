@@ -80,7 +80,7 @@ namespace Friflo.Json.Flow.Database.Remote
             return loopTask;
         }
         
-        private async Task ReadLoop(MemoryStream memoryStream, RemoteHostDatabase remoteHost) {
+        private async Task ReceiveLoop(MemoryStream memoryStream, RemoteHostDatabase remoteHost) {
             var         buffer      = new ArraySegment<byte>(new byte[8192]);
             while (true) {
                 var state = webSocket.State;
@@ -120,7 +120,7 @@ namespace Friflo.Json.Flow.Database.Remote
             var         target      = new WebSocketHostTarget(websocket, remoteHost.fakeOpenClosedSockets);
             try {
                 using (var memoryStream = new MemoryStream()) {
-                    await target.ReadLoop(memoryStream, remoteHost);
+                    await target.ReceiveLoop(memoryStream, remoteHost);
                 }
                 target.sendWriter.TryWrite(default);
                 target.sendWriter.Complete();
