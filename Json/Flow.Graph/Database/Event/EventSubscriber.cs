@@ -39,13 +39,13 @@ namespace Friflo.Json.Flow.Database.Event
             this.clientId       = clientId;
             this.eventTarget    = eventTarget;
             this.background     = background;
-            if (this.background) {
-                // --- Task queue
-                var channel         = DataChannel<TriggerType>.CreateUnbounded(true, true);
-                triggerWriter       = channel.writer;
-                var triggerReader   = channel.reader;
-                triggerLoop         = TriggerLoop(triggerReader);
-            }
+            if (!this.background)
+                return;
+            // --- use trigger channel and queue
+            var channel         = DataChannel<TriggerType>.CreateUnbounded(true, true);
+            triggerWriter       = channel.writer;
+            var triggerReader   = channel.reader;
+            triggerLoop         = TriggerLoop(triggerReader);
         }
         
         internal void UpdateTarget(IEventTarget eventTarget) {
@@ -85,10 +85,10 @@ namespace Friflo.Json.Flow.Database.Event
                 bool pendingSendEvents = false;
                 for (int i = sentEvents.Count - 1; i >= 0; i--) {
                     var ev = sentEvents[i];
-                    if (ev.seq > eventAck) {
-                        eventQueue.AddFirst(ev);
-                        pendingSendEvents = true;
-                    }
+                    if (ev.seq <= eventAck)
+                        continue;
+                    eventQueue.AddFirst(ev);
+                    pendingSendEvents = true;
                 }
                 sentEvents.Clear();
                 if (background && pendingSendEvents) {
@@ -120,19 +120,18 @@ namespace Friflo.Json.Flow.Database.Event
             }
         }
         
-        // ------------------------------------- Task queue -------------------------------------
+        // ---------------------------- trigger channel and queue ----------------------------
         private Task TriggerLoop(DataChannelReader<TriggerType> triggerReader) {
             var runQueue = Task.Run(async () => {
                 try {
                     while (true) {
                         var trigger = await triggerReader.ReadAsync().ConfigureAwait(false);
-                        switch (trigger) {
-                            case TriggerType.None:
-                            case TriggerType.Finish:
-                                Console.WriteLine($"TriggerLoop() returns. {trigger}");
-                                return;
+                        if (trigger == TriggerType.Event) {
+                            await SendEvents().ConfigureAwait(false);
+                            continue;
                         }
-                        await SendEvents().ConfigureAwait(false);
+                        Console.WriteLine($"TriggerLoop() returns. {trigger}");
+                        return;
                     }
                 } catch (Exception e) {
                     Debug.Fail("TriggerLoop() failed", e.Message);
