@@ -109,10 +109,11 @@ namespace Friflo.Json.Flow.Database
             }
             response.AssertResponse(syncRequest);
             
-            if (eventBroker != null) {
-                eventBroker.EnqueueSyncTasks(syncRequest, syncContext);
-                if (!eventBroker.background) {
-                    await eventBroker.SendQueuedEvents().ConfigureAwait(false); // use only for testing
+            var broker = eventBroker;
+            if (broker != null) {
+                broker.EnqueueSyncTasks(syncRequest, syncContext);
+                if (!broker.background) {
+                    await broker.SendQueuedEvents().ConfigureAwait(false); // use only for testing
                 }
             }
             return response;
