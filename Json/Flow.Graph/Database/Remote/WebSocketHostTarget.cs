@@ -68,7 +68,7 @@ namespace Friflo.Json.Flow.Database.Remote
             var loopTask = Task.Run(async () => {
                 try {
                     while (true) {
-                        var sendMessage = await sendReader.ReadAsync();
+                        var sendMessage = await sendReader.ReadAsync().ConfigureAwait(false);
                         if (sendMessage == null)
                             return;
                         await webSocket.SendAsync(sendMessage, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
@@ -120,14 +120,14 @@ namespace Friflo.Json.Flow.Database.Remote
             var         target      = new WebSocketHostTarget(websocket, remoteHost.fakeOpenClosedSockets);
             try {
                 using (var memoryStream = new MemoryStream()) {
-                    await target.ReceiveLoop(memoryStream, remoteHost);
+                    await target.ReceiveLoop(memoryStream, remoteHost).ConfigureAwait(false);
                 }
                 target.sendWriter.TryWrite(default);
                 target.sendWriter.Complete();
             } catch (Exception e) {
                 Debug.Fail("AcceptWebSocket() failed", e.Message);
             }
-            await target.sendLoop;
+            await target.sendLoop.ConfigureAwait(false);
         }
     }
 }

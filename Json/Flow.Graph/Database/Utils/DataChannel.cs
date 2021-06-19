@@ -42,7 +42,7 @@ namespace Friflo.Json.Flow.Database.Utils
         }
         
         public async Task<T> ReadAsync (CancellationToken cancellationToken = default) {
-            return await reader.ReadAsync(cancellationToken);
+            return await reader.ReadAsync(cancellationToken).ConfigureAwait(false);
         }
     }
     
