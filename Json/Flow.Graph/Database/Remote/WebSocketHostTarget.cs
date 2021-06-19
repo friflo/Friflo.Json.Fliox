@@ -122,7 +122,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 using (var memoryStream = new MemoryStream()) {
                     await target.ReadLoop(memoryStream, remoteHost);
                 }
-                target.sendWriter.TryWrite(null);
+                target.sendWriter.TryWrite(default);
                 target.sendWriter.Complete();
             } catch (Exception e) {
                 Debug.Fail("AcceptWebSocket() failed", e.Message);
