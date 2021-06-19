@@ -43,7 +43,7 @@ namespace Friflo.Json.Flow.Database.Utils
         }
         
         public async Task<T> ReadAsync (CancellationToken cancellationToken = default) {
-            await channel.itemsAvailable.WaitAsync(cancellationToken);
+            await channel.itemsAvailable.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             channel.queue.TryDequeue(out T item);
             return item;
