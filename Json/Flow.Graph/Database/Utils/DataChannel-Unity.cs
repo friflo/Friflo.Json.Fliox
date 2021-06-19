@@ -1,6 +1,10 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+// Different implementation proposals can be found via google: async task queue c#
+// e.g.
+// [c# - awaitable Task based queue - Stack Overflow] https://stackoverflow.com/questions/7863573/awaitable-task-based-queue
+
 #if UNITY_5_3_OR_NEWER
 using System;
 using System.Threading;
