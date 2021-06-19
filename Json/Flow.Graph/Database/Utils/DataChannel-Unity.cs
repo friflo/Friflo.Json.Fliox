@@ -6,53 +6,65 @@
 // [c# - awaitable Task based queue - Stack Overflow] https://stackoverflow.com/questions/7863573/awaitable-task-based-queue
 
 #if UNITY_5_3_OR_NEWER
+
 using System;
+using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
+// Note!!    Implementation untested
 namespace Friflo.Json.Flow.Database.Utils
 {
     /// Added <see cref="DataChannel{T}"/> as a stub to enable compiling in Unity as there are no <see cref="Channel"/>'s
     /// available as of 2021-06-21.
     public class DataChannel<T>
     {
-        public  readonly DataChannelReader<T>   reader; 
-        public  readonly DataChannelWriter<T>   writer; 
-     // private readonly Channel<T>             channel;
+        public   readonly DataChannelReader<T>   reader; 
+        public   readonly DataChannelWriter<T>   writer;
+        
+        internal readonly SemaphoreSlim          itemsAvailable = new SemaphoreSlim(0);
+        internal readonly ConcurrentQueue<T>     queue          = new ConcurrentQueue<T>();
 
         private DataChannel() {
-            reader = new DataChannelReader<T>();
-            writer = new DataChannelWriter<T>();
+            reader = new DataChannelReader<T>(this);
+            writer = new DataChannelWriter<T>(this);
         }
         
         public static DataChannel<T> CreateUnbounded(bool singleReader, bool singleWriter) {
-            throw new NotImplementedException("in Unity");
+            return new DataChannel<T>();
         }
     }
     
     public class DataChannelReader<T> {
-        // private readonly ChannelReader<T> reader;
+        private readonly DataChannel<T> channel;
         
-        internal DataChannelReader() {
+        internal DataChannelReader(DataChannel<T> channel) {
+            this.channel = channel;
         }
         
-        public Task<T> ReadAsync (CancellationToken cancellationToken = default) {
-            throw new NotImplementedException("in Unity");
+        public async Task<T> ReadAsync (CancellationToken cancellationToken = default) {
+            await channel.itemsAvailable.WaitAsync(cancellationToken);
+
+            channel.queue.TryDequeue(out T item);
+            return item;
         }
     }
     
     public class DataChannelWriter<T> {
-        // private readonly ChannelWriter<T> writer;
+        private readonly DataChannel<T> channel;
         
-        internal DataChannelWriter() {
+        internal DataChannelWriter(DataChannel<T> channel) {
+            this.channel = channel;
         }
         
         public bool TryWrite(T data) {
-            throw new NotImplementedException("in Unity");
+            channel.queue.Enqueue(data);
+            channel.itemsAvailable.Release();
+            return true;
         }
         
         public void Complete(Exception error = null) {
-            throw new NotImplementedException("in Unity");
+            // Do nothing for now. Assumption: completing queue is not a hard requirement
         }
     }
 }
