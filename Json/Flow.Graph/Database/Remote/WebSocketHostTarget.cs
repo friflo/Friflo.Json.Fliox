@@ -106,7 +106,7 @@ namespace Friflo.Json.Flow.Database.Remote
                     }
                     continue;
                 }
-                Console.WriteLine($"ReadLoop() returns. WebSocket state: {state}");
+                Console.WriteLine($"ReceiveLoop() returns. WebSocket state: {state}");
                 if (state == WebSocketState.CloseReceived) {
                     await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);    
                 }

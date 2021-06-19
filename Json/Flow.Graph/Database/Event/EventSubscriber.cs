@@ -129,7 +129,7 @@ namespace Friflo.Json.Flow.Database.Event
                         switch (trigger) {
                             case TriggerType.None:
                             case TriggerType.Finish:
-                                Console.WriteLine($"TriggerLoop returns. {trigger}");
+                                Console.WriteLine($"TriggerLoop() returns. {trigger}");
                                 return;
                         }
                         await SendEvents().ConfigureAwait(false);
