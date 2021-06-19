@@ -35,13 +35,13 @@ namespace Friflo.Json.Flow.Database.Event
         public async Task FinishQueues() {
             if (!background)
                 return;
-            var queues = new List<Task>();
+            var loopTasks = new List<Task>();
             foreach (var pair in subscribers) {
                 var subscriber = pair.Value;
                 subscriber.FinishQueue();
-                queues.Add(subscriber.triggerLoop);
+                loopTasks.Add(subscriber.triggerLoop);
             }
-            await Task.WhenAll(queues).ConfigureAwait(false);
+            await Task.WhenAll(loopTasks).ConfigureAwait(false);
         }
 
         public void Subscribe (SubscribeChanges subscribe, string clientId, IEventTarget eventTarget) {
