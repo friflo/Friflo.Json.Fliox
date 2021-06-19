@@ -44,7 +44,7 @@ namespace Friflo.Json.Flow.Database.Remote
             return webSocket.State == WebSocketState.Open;
         }
 
-        public async Task<bool> ProcessEvent(DatabaseEvent ev, SyncContext syncContext) {
+        public Task<bool> ProcessEvent(DatabaseEvent ev, SyncContext syncContext) {
             using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
                 var writer = pooledMapper.instance.writer;
                 writer.WriteNullMembers = false;
@@ -55,10 +55,10 @@ namespace Friflo.Json.Flow.Database.Remote
                 try {
                     var arraySegment    = new ArraySegment<byte>(jsonBytes, 0, jsonBytes.Length);
                     sendWriter.TryWrite(arraySegment);
-                    return true;
+                    return Task.FromResult(true);
                 }
                 catch (Exception) {
-                    return false;
+                    return Task.FromResult(false);
                 }
             }
         }

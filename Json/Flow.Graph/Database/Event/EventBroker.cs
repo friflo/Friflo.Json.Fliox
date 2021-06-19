@@ -65,8 +65,11 @@ namespace Friflo.Json.Flow.Database.Event
             eventSubscriber.subscriptions[subscribe.container] = subscribe;
         }
         
-        // todo remove - only for testing
+        // use only for testing
         internal async Task SendQueuedEvents() {
+            if (background) {
+                throw new InvalidOperationException("must not be called, if using a background Tasks");
+            }
             foreach (var pair in subscribers) {
                 var subscriber = pair.Value;
                 await subscriber.SendEvents().ConfigureAwait(false);

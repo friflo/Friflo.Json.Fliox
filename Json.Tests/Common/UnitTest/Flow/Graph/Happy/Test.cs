@@ -149,7 +149,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         /// is used to inform database about arrived events. All not acknowledged events are resent.
         private static async Task WebSocketReconnect() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
-            using (var eventBroker      = new EventBroker(false))
+            using (var eventBroker      = new EventBroker(true))
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/", null))
             using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/"))
