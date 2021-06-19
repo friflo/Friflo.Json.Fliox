@@ -30,7 +30,7 @@ namespace Friflo.Json.Flow.Database.Event
         // }
         
         private  readonly   bool                                    background;
-        internal readonly   Task                                    triggerQueue;
+        internal readonly   Task                                    triggerLoop;
         private  readonly   ChannelWriter<TriggerType>              triggerWriter;
 
         public   override   string                                  ToString() => clientId;
@@ -46,7 +46,7 @@ namespace Friflo.Json.Flow.Database.Event
                 var channel         = Channel.CreateUnbounded<TriggerType>(opt);
                 triggerWriter       = channel.Writer;
                 var triggerReader   = channel.Reader;
-                triggerQueue        = RunQueue(triggerReader);
+                triggerLoop         = TriggerLoop(triggerReader);
             }
         }
         
@@ -123,17 +123,21 @@ namespace Friflo.Json.Flow.Database.Event
         }
         
         // ------------------------------------- Task queue -------------------------------------
-        private Task RunQueue(ChannelReader<TriggerType> triggerReader) {
+        private Task TriggerLoop(ChannelReader<TriggerType> triggerReader) {
             var runQueue = Task.Run(async () => {
-                while (true) {
-                    var trigger = await triggerReader.ReadAsync().ConfigureAwait(false);
-                    switch (trigger) {
-                        case TriggerType.None:
-                        case TriggerType.Finish:
-                            Console.WriteLine($"RunQueue return. {trigger}");
-                            return;
+                try {
+                    while (true) {
+                        var trigger = await triggerReader.ReadAsync().ConfigureAwait(false);
+                        switch (trigger) {
+                            case TriggerType.None:
+                            case TriggerType.Finish:
+                                Console.WriteLine($"TriggerLoop returns. {trigger}");
+                                return;
+                        }
+                        await SendEvents().ConfigureAwait(false);
                     }
-                    await SendEvents().ConfigureAwait(false);
+                } catch (Exception e) {
+                    Debug.Fail("TriggerLoop() failed", e.Message);
                 }
             });
             return runQueue;
