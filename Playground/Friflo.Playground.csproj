@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+
+        <IsPackable>false</IsPackable>
+
+        <LangVersion>7.3</LangVersion>
+		<GenerateProgramFile>false</GenerateProgramFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <OutputPath>.bin\Debug\</OutputPath>
+      <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <OutputPath>.bin\Release\</OutputPath>
+      <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentAssertions" Version="5.10.3" />
+        <PackageReference Include="NUnit" Version="3.12.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+        <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21216.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Json.Tests\Friflo.Json.Tests.csproj" />
+      <ProjectReference Include="..\Json\Burst\Friflo.Json.Burst.csproj" />
+      <ProjectReference Include="..\Json\Flow.Graph\Friflo.Json.Flow.Graph.csproj" />
+      <ProjectReference Include="..\Json\Flow\Friflo.Json.Flow.csproj" />
+    </ItemGroup>
+	
+    <ItemGroup>
+      <None Remove="**/*.meta" />
+    </ItemGroup>
+
+</Project>

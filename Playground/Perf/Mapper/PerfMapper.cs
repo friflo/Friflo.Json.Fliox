@@ -6,11 +6,10 @@ using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
-
 using static NUnit.Framework.Assert;
 // using static Friflo.Json.Tests.Common.UnitTest.NoCheck;
 
-namespace Friflo.Json.Tests.Perf.Mapper
+namespace Friflo.Playground.Perf.Mapper
 {
     public class PerfMapper: LeakTestsFixture
     {
