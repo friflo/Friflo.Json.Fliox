@@ -21,23 +21,42 @@ namespace Friflo.Json.Flow.Graph
             this.change    = change;
             this.store      = store;
             foreach (var task in change.tasks) {
+                EntitySet set;
                 switch (task.TaskType) {
+                    
                     case TaskType.create:
                         var create = (CreateEntities)task;
-                        var set = store.GetEntitySet(create.container);
+                        set = store.GetEntitySet(create.container);
+                        // apply changes only if subscribed
+                        if (set.GetSubscription() == null)
+                            continue;
                         set.SyncPeerEntities(create.entities);
                         break;
+                    
                     case TaskType.update:
                         var update = (UpdateEntities)task;
                         set = store.GetEntitySet(update.container);
+                        // apply changes only if subscribed
+                        if (set.GetSubscription() == null)
+                            continue;
                         set.SyncPeerEntities(update.entities);
                         break;
+                    
                     case TaskType.delete:
                         var delete = (DeleteEntities)task;
+                        set = store.GetEntitySet(delete.container);
+                        // apply changes only if subscribed
+                        if (set.GetSubscription() == null)
+                            continue;
                         // todo implement
                         break;
+                    
                     case TaskType.patch:
                         var patches = (PatchEntities)task;
+                        set = store.GetEntitySet(patches.container);
+                        // apply changes only if subscribed
+                        if (set.GetSubscription() == null)
+                            continue;
                         // todo implement
                         break;
                 }
