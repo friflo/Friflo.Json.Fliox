@@ -74,7 +74,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
                 var jsonQuery = m.Write(orderQuery);
                 var json = m.Write(orders);
                 AreEqual(json, jsonQuery);
-                Console.WriteLine(json);
             }
         }
 
