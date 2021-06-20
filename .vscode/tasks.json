@@ -20,6 +20,8 @@
             "group": "test",
             "args": [
                 "test",
+                "-c",
+                "Release",
                 "${workspaceFolder}/Json.Tests/Friflo.Json.Tests.csproj",
                 "-l",
                 "console;verbosity=detailed"
