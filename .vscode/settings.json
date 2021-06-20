@@ -13,5 +13,6 @@
     ],
     "cSpell.enableFiletypes": [
         "http"
-    ]
+    ],
+    "dotnet-test-explorer.testProjectPath": "Json.Tests"
 }
