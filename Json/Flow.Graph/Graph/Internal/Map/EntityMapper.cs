@@ -60,6 +60,10 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         public override      object  CreateInstance() {
             return mapper.CreateInstance();
         }
+        
+        public override void PatchObject(Patcher patcher, object obj) {
+            mapper.PatchObject(patcher, obj);
+        }
 
         public override void MemberObject(Accessor accessor, object obj, PathNode<MemberValue> node) {
             mapper.MemberObject(accessor, obj, node);

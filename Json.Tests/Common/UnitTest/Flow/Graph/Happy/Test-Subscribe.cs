@@ -86,9 +86,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             producerSum.AddChanges(producerChanges);
             employeeSum.AddChanges(employeeChanges);
             
-            if (ChangeCount == 1) {
-                AreEqual("iPad Pro", articleChanges.creates["article-ipad"].name);
-                IsTrue(articleChanges.deletes.Contains("article-iphone"));
+            switch (ChangeCount) {
+                case 1:
+                    AreEqual("(creates: 2, updates: 0, deletes: 1, patches: 0)", articleChanges.info.ToString());
+                    AreEqual("iPad Pro", articleChanges.creates["article-ipad"].name);
+                    IsTrue(articleChanges.deletes.Contains("article-iphone"));
+                    break;
+                case 4:
+                    AreEqual("(creates: 0, updates: 0, deletes: 1, patches: 1)", articleChanges.info.ToString());
+                    // AreEqual("Changed name", articleChanges.patches["article-1"].name); todo
+                    break;
             }
         }
         
