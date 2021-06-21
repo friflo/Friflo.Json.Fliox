@@ -109,13 +109,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             AreEqual(8,  ChangeCount);
             AreSimilar("(creates: 2, updates: 0, deletes: 0, patches: 0)", orderSum);
             AreSimilar("(creates: 6, updates: 0, deletes: 0, patches: 0)", customerSum);
-            AreSimilar("(creates: 9, updates: 0, deletes: 4, patches: 0)", articleSum); // todo patches
+            AreSimilar("(creates: 9, updates: 0, deletes: 4, patches: 2)", articleSum);
             AreSimilar("(creates: 3, updates: 0, deletes: 0, patches: 0)", producerSum);
             AreSimilar("(creates: 1, updates: 0, deletes: 0, patches: 0)", employeeSum);
             
             IsTrue(orderSum      .IsEqual(GetChangeInfo<Order>()));
             IsTrue(customerSum   .IsEqual(GetChangeInfo<Customer>()));
-         // IsTrue(articleInfo    .IsEqual(GetChangeInfo<Article>()));
+            IsTrue(articleSum    .IsEqual(GetChangeInfo<Article>()));
             IsTrue(producerSum   .IsEqual(GetChangeInfo<Producer>()));
             IsTrue(employeeSum   .IsEqual(GetChangeInfo<Employee>()));
         }
@@ -127,7 +127,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             sum.creates += changes.creates.Count;
             sum.updates += changes.updates.Count;
             sum.deletes += changes.deletes.Count;
-            // sum.patches += changes.patches.Count; // todo
+            sum.patches += changes.patches.Count;
         }
     }
 }
