@@ -83,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     public static class TestRelationPoC
     {
         public static async Task<ChangeSubscriber> SubscribeChanges(PocStore store) {
-            var subscriber = new ChangeSubscriber(); 
+            var subscriber = new ChangeSubscriber(store); 
             store.SetChangeSubscriber(subscriber);
             var changes = new HashSet<Change>(new [] { Change.create, Change.update, Change.delete, Change.patch} );
             store.SubscribeAll(changes);

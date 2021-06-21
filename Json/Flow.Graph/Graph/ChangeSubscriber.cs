@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
@@ -10,17 +11,36 @@ namespace Friflo.Json.Flow.Graph
 {
     public class ChangeSubscriber
     {
-        public              int                             ChangeSequence     { get; private set ;}
-        public              ChangeInfo<T>                   GetChangeInfo<T>() where T : Entity => GetChanges<T>().sum;
-        
+        private readonly    EntityStore                     store;
         private             ChangeEvent                     change;
-        private             EntityStore                     store;
-        private readonly    Dictionary<Type, EntityChanges> results = new Dictionary<Type, EntityChanges>();
-            
-        public virtual void OnChanges(ChangeEvent change, EntityStore store) {
+        private readonly    Dictionary<Type, EntityChanges> results     = new Dictionary<Type, EntityChanges>();
+        private readonly    ConcurrentQueue <ChangeEvent>   changeQueue = new ConcurrentQueue <ChangeEvent> ();
+        
+        public              int                             ChangeSequence     { get; private set ;}
+        public              ChangeInfo<T>                   GetChangeInfo<T>() where T : Entity => GetChanges<T>().sum; 
+     // private readonly    TaskScheduler                   scheduler;
+        
+        public ChangeSubscriber (EntityStore store) {
+            this.store  = store;
+        }
+        
+        public virtual void EnqueueChange(ChangeEvent change) {
+            /* var task = Task.CompletedTask;
+            task.ContinueWith((_) => {
+                OnChanges(change);
+            }); */
+            changeQueue.Enqueue(change);
+        }
+        
+        public void ProcessChanges() {
+            while (changeQueue.TryDequeue(out ChangeEvent changeEvent)) {
+                OnChange(changeEvent);
+            }
+        }
+
+        protected virtual void OnChange(ChangeEvent change) {
             ChangeSequence++;
             this.change    = change;
-            this.store      = store;
             foreach (var task in change.tasks) {
                 EntitySet set;
                 switch (task.TaskType) {
