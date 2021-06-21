@@ -12,7 +12,6 @@ namespace Friflo.Json.Flow.Graph
     public class ChangeSubscriber
     {
         private readonly    EntityStore                     store;
-        private             ChangeEvent                     change;
         private readonly    Dictionary<Type, EntityChanges> results     = new Dictionary<Type, EntityChanges>();
         private readonly    ConcurrentQueue <ChangeEvent>   changeQueue = new ConcurrentQueue <ChangeEvent> ();
         
@@ -40,7 +39,6 @@ namespace Friflo.Json.Flow.Graph
 
         protected virtual void OnChange(ChangeEvent change) {
             ChangeSequence++;
-            this.change    = change;
             foreach (var task in change.tasks) {
                 EntitySet set;
                 switch (task.TaskType) {
@@ -94,7 +92,7 @@ namespace Friflo.Json.Flow.Graph
             return (EntityChanges<T>)result;
         }
         
-        protected EntityChanges<T> GetEntityChanges<T>() where T : Entity {
+        protected EntityChanges<T> GetEntityChanges<T>(ChangeEvent change) where T : Entity {
             var result  = GetChanges<T>();
             var set     = result.set;
             result.Clear();

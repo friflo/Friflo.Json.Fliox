@@ -79,11 +79,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         protected override void OnChange (ChangeEvent change) {
             AreEqual("createStore", change.clientId);
             base.OnChange(change);
-            var orderChanges    = GetEntityChanges<Order>();
-            var customerChanges = GetEntityChanges<Customer>();
-            var articleChanges  = GetEntityChanges<Article>();
-            var producerChanges = GetEntityChanges<Producer>();
-            var employeeChanges = GetEntityChanges<Employee>();
+            var orderChanges    = GetEntityChanges<Order>   (change);
+            var customerChanges = GetEntityChanges<Customer>(change);
+            var articleChanges  = GetEntityChanges<Article> (change);
+            var producerChanges = GetEntityChanges<Producer>(change);
+            var employeeChanges = GetEntityChanges<Employee>(change);
             
             var changeInfo = change.GetChangeInfo();
             IsTrue(changeInfo.Count > 0);
