@@ -81,6 +81,7 @@ namespace Friflo.Json.Flow.Graph
             
             foreach (var task in change.tasks) {
                 switch (task.TaskType) {
+                    
                     case TaskType.create:
                         var create = (CreateEntities)task;
                         if (create.container != set.name)
@@ -90,9 +91,10 @@ namespace Friflo.Json.Flow.Graph
                             var peer = set.GetPeerById(key);
                             var entity = peer.Entity;
                             result.creates.Add(entity.id, entity);
-                            result.info.creates++;
                         }
+                        result.info.creates += create.entities.Count;
                         break;
+                    
                     case TaskType.update:
                         var update = (UpdateEntities)task;
                         if (update.container != set.name)
@@ -102,9 +104,10 @@ namespace Friflo.Json.Flow.Graph
                             var peer = set.GetPeerById(key);
                             var entity = peer.Entity;
                             result.updates.Add(entity.id, entity);
-                            result.info.updates++;
                         }
+                        result.info.updates += update.entities.Count;
                         break;
+                    
                     case TaskType.delete:
                         var delete = (DeleteEntities)task;
                         if (delete.container != set.name)
@@ -114,6 +117,7 @@ namespace Friflo.Json.Flow.Graph
                         }
                         result.info.deletes += delete.ids.Count;
                         break;
+                    
                     case TaskType.patch:
                         var patch = (PatchEntities)task;
                         if (patch.container != set.name)
