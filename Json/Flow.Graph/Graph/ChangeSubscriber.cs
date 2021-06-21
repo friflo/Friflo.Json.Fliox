@@ -179,9 +179,11 @@ namespace Friflo.Json.Flow.Graph
     }
     
     public readonly struct ChangePatch<T> where T : Entity {
-        public readonly T                  entity;
-        public readonly List<JsonPatch>    patches;
-        
+        public readonly T               entity;
+        public readonly List<JsonPatch> patches;
+
+        public override string          ToString() => entity.id;
+
         public ChangePatch(T entity, List<JsonPatch> patches) {
             this.entity     = entity;
             this.patches    = patches;

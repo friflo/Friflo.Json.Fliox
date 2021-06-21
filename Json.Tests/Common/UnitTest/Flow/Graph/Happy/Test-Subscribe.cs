@@ -96,6 +96,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 case 4:
                     AreEqual("(creates: 0, updates: 0, deletes: 1, patches: 1)", articleChanges.info.ToString());
                     ChangePatch<Article> articlePatch = articleChanges.patches["article-1"];
+                    AreEqual("article-1",               articlePatch.ToString());
                     var articlePatch0 = (PatchReplace)  articlePatch.patches[0];
                     AreEqual("Changed name",            articlePatch.entity.name);
                     AreEqual("/name",                   articlePatch0.path);
