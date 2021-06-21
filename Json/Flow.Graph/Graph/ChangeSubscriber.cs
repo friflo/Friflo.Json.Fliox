@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Sync;
+using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph
 {
@@ -117,8 +118,15 @@ namespace Friflo.Json.Flow.Graph
                         var patch = (PatchEntities)task;
                         if (patch.container != set.name)
                             continue;
-                        // todo
-                        result.info.patches++;
+                        foreach (var pair in patch.patches) {
+                            string      id          = pair.Key;
+                            var         peer        = set.GetPeerById(id);
+                            var         entity      = peer.Entity;
+                            EntityPatch entityPatch = pair.Value;
+                            var         changePatch = new ChangePatch<T>(entity, entityPatch.patches);
+                            result.patches.Add(id, changePatch);
+                        }
+                        result.info.patches += patch.patches.Count;
                         break;
                 }
             }
@@ -140,15 +148,17 @@ namespace Friflo.Json.Flow.Graph
     public abstract class EntityChanges { }
     
     public class EntityChanges<T> : EntityChanges where T : Entity {
-        public   readonly   Dictionary<string, T>   creates = new Dictionary<string, T>();
-        public   readonly   Dictionary<string, T>   updates = new Dictionary<string, T>();
-        public   readonly   HashSet   <string>      deletes = new HashSet   <string>();
-        public   readonly   ChangeInfo<T>           sum     = new ChangeInfo<T>();
-        public   readonly   ChangeInfo<T>           info    = new ChangeInfo<T>();
+        public   readonly   Dictionary<string, T>               creates = new Dictionary<string, T>();
+        public   readonly   Dictionary<string, T>               updates = new Dictionary<string, T>();
+        public   readonly   HashSet   <string>                  deletes = new HashSet   <string>();
+        public   readonly   Dictionary<string, ChangePatch<T>>  patches = new Dictionary<string, ChangePatch<T>>();
+
+        public   readonly   ChangeInfo<T>                       sum     = new ChangeInfo<T>();
+        public   readonly   ChangeInfo<T>                       info    = new ChangeInfo<T>();
+
+        internal readonly   EntitySet<T>                        set;
         
-        internal readonly   EntitySet<T>            set;
-        
-        public override     string                  ToString() => info.ToString();       
+        public override     string                              ToString() => info.ToString();       
 
         internal EntityChanges(EntitySet<T> set) {
             this.set = set;
@@ -158,8 +168,19 @@ namespace Friflo.Json.Flow.Graph
             creates.Clear();
             updates.Clear();
             deletes.Clear();
+            patches.Clear();
             //
             info.Clear();
+        }
+    }
+    
+    public readonly struct ChangePatch<T> where T : Entity {
+        public readonly T                  entity;
+        public readonly List<JsonPatch>    patches;
+        
+        public ChangePatch(T entity, List<JsonPatch> patches) {
+            this.entity     = entity;
+            this.patches    = patches;
         }
     }
 }

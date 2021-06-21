@@ -7,6 +7,7 @@ using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Sync;
+using Friflo.Json.Flow.Transform;
 using Friflo.Json.Tests.Common.Utils;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Common.Utils.AssertUtils;
@@ -94,7 +95,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     break;
                 case 4:
                     AreEqual("(creates: 0, updates: 0, deletes: 1, patches: 1)", articleChanges.info.ToString());
-                    // AreEqual("Changed name", articleChanges.patches["article-1"].name); todo
+                    ChangePatch<Article> articlePatch = articleChanges.patches["article-1"];
+                    var articlePatch0 = (PatchReplace)  articlePatch.patches[0];
+                    AreEqual("Changed name",            articlePatch.entity.name);
+                    AreEqual("/name",                   articlePatch0.path);
+                    AreEqual("\"Changed name\"",        articlePatch0.value.json);
                     break;
             }
         }
