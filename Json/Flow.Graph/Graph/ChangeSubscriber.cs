@@ -48,7 +48,7 @@ namespace Friflo.Json.Flow.Graph
                         // apply changes only if subscribed
                         if (set.GetSubscription() == null)
                             continue;
-                        // todo implement
+                        set.DeletePeerEntities (delete.ids);
                         break;
                     
                     case TaskType.patch:
@@ -57,7 +57,7 @@ namespace Friflo.Json.Flow.Graph
                         // apply changes only if subscribed
                         if (set.GetSubscription() == null)
                             continue;
-                        // todo implement
+                        set.PatchPeerEntities(patches.patches);
                         break;
                 }
             }

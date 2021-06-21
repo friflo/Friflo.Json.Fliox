@@ -27,6 +27,9 @@ namespace Friflo.Json.Flow.Graph
         
         internal  abstract  void                LogSetChangesInternal   (LogTask logTask);
         internal  abstract  void                SyncPeerEntities        (Dictionary<string, EntityValue> entities);
+        internal  abstract  void                DeletePeerEntities      (HashSet   <string> ids);
+        internal  abstract  void                PatchPeerEntities       (Dictionary<string, EntityPatch> patches);
+        
         internal  abstract  void                ResetSync               ();
         internal  abstract  SyncTask            SubscribeInternal       (HashSet<Change> changes);
         internal abstract   SubscribeChanges    GetSubscription();
@@ -386,6 +389,23 @@ namespace Friflo.Json.Flow.Graph
                     peer.SetPatchSourceNull();
                 }
                 peer.assigned = true;
+            }
+        }
+        
+        internal  override void DeletePeerEntities (HashSet<string> ids) {
+            foreach (var id in ids) {
+                DeletePeer(id);
+            }
+        }
+        
+        internal  override void PatchPeerEntities (Dictionary<string, EntityPatch> patches) {
+            var objectPatcher = intern.store._intern.objectPatcher;
+            foreach (var pair in patches) {
+                string      id          = pair.Key;
+                EntityPatch entityPatch = pair.Value;
+                var         peer        = GetPeerById(id);
+                var         entity      = peer.Entity;
+                objectPatcher.ApplyPatches(entity, entityPatch.patches);
             }
         }
 
