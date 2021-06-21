@@ -105,9 +105,9 @@ namespace Friflo.Json.Flow.Graph
                         if (create.container != set.name)
                             continue;
                         foreach (var entityPair in create.entities) {
-                            string key = entityPair.Key;
-                            var peer = set.GetPeerById(key);
-                            var entity = peer.Entity;
+                            string  id      = entityPair.Key;
+                            var     peer    = set.GetPeerById(id);
+                            var     entity  = peer.Entity;
                             result.creates.Add(entity.id, entity);
                         }
                         result.info.creates += create.entities.Count;
@@ -118,9 +118,9 @@ namespace Friflo.Json.Flow.Graph
                         if (update.container != set.name)
                             continue;
                         foreach (var entityPair in update.entities) {
-                            string key = entityPair.Key;
-                            var peer = set.GetPeerById(key);
-                            var entity = peer.Entity;
+                            string  id      = entityPair.Key;
+                            var     peer    = set.GetPeerById(id);
+                            var     entity  = peer.Entity;
                             result.updates.Add(entity.id, entity);
                         }
                         result.info.updates += update.entities.Count;
