@@ -112,6 +112,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public void Dispose() {
+            _intern.changeSubscriber = null; // ignore all remaining change events
             _intern.database.RemoveEventTarget(_intern.clientId);
             _intern.objectPatcher.Dispose();
             _intern.jsonMapper.Dispose();
