@@ -185,7 +185,7 @@ namespace Friflo.Json.Flow.Graph
             return tasks;
         }
         
-        public SubscribeEchoTask SubscribeEcho(List<string> prefixes) {
+        public SubscribeEchoTask SubscribeEcho(IEnumerable<string> prefixes) {
             AssertChangeSubscriber();
             var task = new SubscribeEchoTask(prefixes);
             _intern.sync.subscribeEcho = task;

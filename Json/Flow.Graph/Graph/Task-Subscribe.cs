@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Linq;
 using Friflo.Json.Flow.Graph.Internal;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
@@ -29,15 +30,15 @@ namespace Friflo.Json.Flow.Graph
     
     public class SubscribeEchoTask : SyncTask
     {
-        internal            List<string>            prefixes;
+        internal readonly   List<string>            prefixes;
         internal            TaskState               state;
             
         internal override   TaskState               State           => state;
         public   override   string                  Details         => $"SubscribeEchoTask";
         
 
-        internal SubscribeEchoTask(List<string> prefixes) {
-            this.prefixes = prefixes;
+        internal SubscribeEchoTask(IEnumerable<string> prefixes) {
+            this.prefixes = prefixes.ToList();
         }
     }
 }
