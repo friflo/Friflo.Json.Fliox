@@ -3,10 +3,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Database.Remote;
+using Friflo.Json.Flow.Database.Utils;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Tests.Common.Utils;
@@ -110,13 +112,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         // accepting WebSockets in Unity fails at IsWebSocketRequest. See: 
         // [Help Wanted - Websocket Server in Standalone build - Unity Forum] https://forum.unity.com/threads/websocket-server-in-standalone-build.1072526/
         // [UnityTest] public IEnumerator WebSocketCreateCoroutine()   { yield return RunAsync.Await(WebSocketCreate()); }
-        [Test]      public async Task  WebSocketCreateAsync()       { await WebSocketCreate(); }
+        [Test]      public void  WebSocketCreateAsync()       { SingleThreadSynchronizationContext.Run(WebSocketCreate); }
         
         /// This test ensure that a <see cref="WebSocketClientDatabase"/> behaves exactly like all other
         /// <see cref="EntityDatabase"/> implementations in this file.
         /// It also ensures that a single <see cref="WebSocketClientDatabase"/> instance can be used by multiple clients
         /// simultaneously. In this case three <see cref="PocStore"/> instances.
         private static async Task WebSocketCreate() {
+            var sc = SynchronizationContext.Current; 
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(false))
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
@@ -126,10 +129,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 fileDatabase.eventBroker = eventBroker;
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
-                    var listenSubscriber    = await CreatePocSubscriber(listenDb);
+                    var listenSubscriber    = await CreatePocSubscriber(listenDb, sc);
                     using (var createStore  = new PocStore(remoteDatabase, "createStore"))
                     using (var useStore     = new PocStore(remoteDatabase, "useStore")) {
-                        var createSubscriber = await TestRelationPoC.SubscribeChanges(createStore);
+                        var createSubscriber = await TestRelationPoC.SubscribeChanges(createStore, sc);
                         await TestRelationPoC.CreateStore(createStore);
                         createSubscriber.ProcessChanges();
                         AreEqual(0, createSubscriber.ChangeSequence);  // received no change events for changes done by itself
@@ -144,12 +147,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        [Test]      public async Task  WebSocketReconnectAsync()       { await WebSocketReconnect(); }
+        [Test]      public void  WebSocketReconnectAsync()       { SingleThreadSynchronizationContext.Run(WebSocketReconnect); }
         
         /// Test WebSocket disconnect while having changes subscribed. Change events pushed by the database may not arrived at subscriber.
         /// To ensure all change events arrive at <see cref="ChangeSubscriber"/> <see cref="SyncRequest.eventAck"/>
         /// is used to inform database about arrived events. All not acknowledged events are resent.
         private static async Task WebSocketReconnect() {
+            var sc = SynchronizationContext.Current; 
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(true))
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
@@ -160,7 +164,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 fileDatabase.eventBroker = eventBroker;
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
-                    var listenSubscriber    = await CreatePocSubscriber(listenDb);
+                    var listenSubscriber    = await CreatePocSubscriber(listenDb, sc);
                     using (var createStore  = new PocStore(fileDatabase, "createStore")) {
                         await remoteDatabase.Close();
                         // all change events sent by createStore doesnt arrive at listenDb
@@ -189,20 +193,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        [UnityTest] public IEnumerator LoopbackUseCoroutine() { yield return RunAsync.Await(LoopbackUse()); }
-        [Test]      public async Task  LoopbackUseAsync() { await LoopbackUse(); }
+        [UnityTest] public IEnumerator  LoopbackUseCoroutine() { yield return RunAsync.Await(LoopbackUse()); }
+        [Test]      public void         LoopbackUseAsync() { SingleThreadSynchronizationContext.Run(LoopbackUse); }
         
         private static async Task LoopbackUse() {
+            var sc = SynchronizationContext.Current; 
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(false))
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase))
             using (var listenDb         = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker    = eventBroker;
-                var listenSubscriber        = await CreatePocSubscriber(listenDb);
+                var listenSubscriber        = await CreatePocSubscriber(listenDb, sc);
                 using (var createStore      = new PocStore(loopbackDatabase, "createStore"))
                 using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
-                    var createSubscriber        = await TestRelationPoC.SubscribeChanges(createStore);
+                    var createSubscriber        = await TestRelationPoC.SubscribeChanges(createStore, sc);
                     await TestRelationPoC.CreateStore(createStore);
                     createSubscriber.ProcessChanges();
                     AreEqual(0, createSubscriber.ChangeSequence);  // received no change events for changes done by itself

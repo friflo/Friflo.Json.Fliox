@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
@@ -82,8 +83,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     // --------------------------------------------------------------------
     public static class TestRelationPoC
     {
-        public static async Task<ChangeSubscriber> SubscribeChanges(PocStore store) {
-            var subscriber = new ChangeSubscriber(store); 
+        public static async Task<ChangeSubscriber> SubscribeChanges(PocStore store, SynchronizationContext sc) {
+            var subscriber = new ChangeSubscriber(store, sc); 
             store.SetChangeSubscriber(subscriber);
             var changes = new HashSet<Change>(new [] { Change.create, Change.update, Change.delete, Change.patch} );
             store.SubscribeAll(changes);

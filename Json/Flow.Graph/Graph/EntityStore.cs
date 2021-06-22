@@ -41,30 +41,29 @@ namespace Friflo.Json.Flow.Graph
 
 
         internal StoreIntern(
-            string              clientId,
-            TypeStore           typeStore,
-            TypeStore           owned,
-            EntityDatabase      database,
-            ObjectMapper        jsonMapper,
-            EventTarget         eventTarget,
-            SyncStore           sync,
-            ChangeSubscriber    changeSubscriber)
+            string                  clientId,
+            TypeStore               typeStore,
+            TypeStore               owned,
+            EntityDatabase          database,
+            ObjectMapper            jsonMapper,
+            EventTarget             eventTarget,
+            SyncStore               sync)
         {
-            this.clientId           = clientId;
-            this.typeStore          = typeStore;
-            this.ownedTypeStore     = owned;
-            this.database           = database;
-            this.jsonMapper         = jsonMapper;
-            this.typeCache          = jsonMapper.writer.TypeCache;
-            this.eventTarget        = eventTarget;
-            this.sync               = sync;
-            setByType               = new Dictionary<Type, EntitySet>();
-            setByName               = new Dictionary<string, EntitySet>();
-            objectPatcher           = new ObjectPatcher(jsonMapper);
-            contextPools            = new Pools(Pools.SharedPools);
-            tracerLogTask           = null;
-            this.changeSubscriber   = changeSubscriber;
-            lastEventSeq            = 0;
+            this.clientId               = clientId;
+            this.typeStore              = typeStore;
+            this.ownedTypeStore         = owned;
+            this.database               = database;
+            this.jsonMapper             = jsonMapper;
+            this.typeCache              = jsonMapper.writer.TypeCache;
+            this.eventTarget            = eventTarget;
+            this.sync                   = sync;
+            setByType                   = new Dictionary<Type, EntitySet>();
+            setByName                   = new Dictionary<string, EntitySet>();
+            objectPatcher               = new ObjectPatcher(jsonMapper);
+            contextPools                = new Pools(Pools.SharedPools);
+            tracerLogTask               = null;
+            this.changeSubscriber       = null;
+            lastEventSeq                = 0;
         }
     }
 
@@ -108,8 +107,7 @@ namespace Friflo.Json.Flow.Graph
             };
             var eventTarget = new EventTarget(this);
             var sync = new SyncStore();
-            var changeSubscriber = new ChangeSubscriber(this);
-            _intern = new StoreIntern(clientId, typeStore, owned, database, jsonMapper, eventTarget, sync, changeSubscriber);
+            _intern = new StoreIntern(clientId, typeStore, owned, database, jsonMapper, eventTarget, sync);
             database.AddEventTarget(clientId, eventTarget);
         }
         

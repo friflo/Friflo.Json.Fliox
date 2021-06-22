@@ -3,9 +3,11 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Event;
+using Friflo.Json.Flow.Database.Utils;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
@@ -26,17 +28,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
     public partial class TestStore
     {
         [UnityTest] public IEnumerator  SubscribeCoroutine() { yield return RunAsync.Await(AssertSubscribe()); }
-        [Test]      public async Task   SubscribeAsync() { await TestCreate(async (store) => await AssertSubscribe ()); }
+        [Test]      public void         SubscribeAsync() { SingleThreadSynchronizationContext.Run(AssertSubscribe); }
         
         private static async Task AssertSubscribe() {
+            var sc = SynchronizationContext.Current;
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var eventBroker  = new EventBroker(false))
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var listenDb     = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker = eventBroker;
-                var pocSubscriber        = await CreatePocSubscriber(listenDb);
+                var pocSubscriber        = await CreatePocSubscriber(listenDb, sc);
                 using (var createStore = new PocStore(fileDatabase, "createStore")) {
-                    var createSubscriber = await TestRelationPoC.SubscribeChanges(createStore);
+                    var createSubscriber = await TestRelationPoC.SubscribeChanges(createStore, sc);
                     await TestRelationPoC.CreateStore(createStore);
                     createSubscriber.ProcessChanges();
                     AreEqual(0, createSubscriber.ChangeSequence);  // received no change events for changes done by itself
@@ -49,8 +52,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        private static async Task<PocSubscriber> CreatePocSubscriber (PocStore store) {
-            var subscriber = new PocSubscriber(store);
+        private static async Task<PocSubscriber> CreatePocSubscriber (PocStore store, SynchronizationContext sc) {
+            var subscriber = new PocSubscriber(store, sc);
             store.SetChangeSubscriber(subscriber);
             
             var changes = new HashSet<Change>(new [] {Change.create, Change.update, Change.delete, Change.patch});
@@ -73,7 +76,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private readonly    ChangeInfo<Producer>    producerSum  = new ChangeInfo<Producer>();
         private readonly    ChangeInfo<Employee>    employeeSum  = new ChangeInfo<Employee>();
         
-        internal PocSubscriber (EntityStore store) : base (store) { }
+        internal PocSubscriber (EntityStore store, SynchronizationContext synchronizationContext) : base (store, synchronizationContext) { }
             
         /// All tests using <see cref="PocSubscriber"/> are required to use "createStore" as clientId
         protected override void OnChange (ChangeEvent change) {

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
 
@@ -13,25 +14,38 @@ namespace Friflo.Json.Flow.Graph
     {
         private readonly    EntityStore                     store;
         private readonly    Dictionary<Type, EntityChanges> results     = new Dictionary<Type, EntityChanges>();
-        private readonly    ConcurrentQueue <ChangeEvent>   changeQueue = new ConcurrentQueue <ChangeEvent> ();
+        
+        /// Either <see cref="synchronizationContext"/> or <see cref="changeQueue"/> is set. Never both.
+        private readonly    SynchronizationContext          synchronizationContext;
+        /// Either <see cref="synchronizationContext"/> or <see cref="changeQueue"/> is set. Never both.
+        private readonly    ConcurrentQueue <ChangeEvent>   changeQueue;
         
         public              int                             ChangeSequence     { get; private set ;}
-        public              ChangeInfo<T>                   GetChangeInfo<T>() where T : Entity => GetChanges<T>().sum; 
-     // private readonly    TaskScheduler                   scheduler;
+        public              ChangeInfo<T>                   GetChangeInfo<T>() where T : Entity => GetChanges<T>().sum;
+        
+        public ChangeSubscriber (EntityStore store, SynchronizationContext synchronizationContext) {
+            this.store                  = store;
+            this.synchronizationContext = synchronizationContext;
+        }
         
         public ChangeSubscriber (EntityStore store) {
-            this.store  = store;
+            this.store                  = store;
+            this.changeQueue            = new ConcurrentQueue <ChangeEvent> ();
         }
         
         public virtual void EnqueueChange(ChangeEvent change) {
-            /* var task = Task.CompletedTask;
-            task.ContinueWith((_) => {
-                OnChanges(change);
-            }); */
-            changeQueue.Enqueue(change);
+            if (changeQueue != null) {
+                changeQueue.Enqueue(change);
+                return;
+            }
+            synchronizationContext.Post(delegate {
+                OnChange(change);
+            }, null);
         }
         
         public void ProcessChanges() {
+            if (changeQueue == null)
+                return;
             while (changeQueue.TryDequeue(out ChangeEvent changeEvent)) {
                 OnChange(changeEvent);
             }
