@@ -19,6 +19,7 @@ namespace Friflo.Json.Flow.Mapper.Diff
         private             int             pathPos;
         private readonly    List<string>    pathNodes = new List<string>();
         private             string          path;
+        internal readonly   object[]        setMethodParams = new object[1];
         
         public Patcher(ObjectReader jsonReader) {
             this.jsonReader = jsonReader;

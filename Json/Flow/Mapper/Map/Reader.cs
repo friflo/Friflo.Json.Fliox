@@ -28,6 +28,7 @@ namespace Friflo.Json.Flow.Mapper.Map
         /// <summary>Can be used for custom mappers to create a temporary "string"
         /// without creating a string on the heap.</summary>
         public              char[]              charBuf;
+        public              object[]            setMethodParams;
         /// <summary>Can be used for custom mappers to lookup for a "string" in a Dictionary
         /// without creating a string on the heap.</summary>
         public readonly     BytesString         keyRef;
@@ -49,6 +50,7 @@ namespace Friflo.Json.Flow.Mapper.Map
             strBuf          = new Bytes(0);
             searchKey       = new Bytes32();
             charBuf         = new char[128];
+            setMethodParams = new object[1];
             keyRef          = new BytesString();
             jsonSerializerStub = null;
 #if !UNITY_5_3_OR_NEWER

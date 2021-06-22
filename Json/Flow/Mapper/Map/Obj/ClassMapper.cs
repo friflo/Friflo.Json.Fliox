@@ -162,7 +162,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
                     var value = field.GetField(obj); 
                     var action = patcher.DescendMember(field.fieldType, value, out object newValue);
                     if  (action == NodeAction.Assign)
-                        field.SetField(obj, newValue);
+                        field.SetField(obj, newValue, patcher.setMethodParams);
                     else
                         throw new InvalidOperationException($"NodeAction not applicable: {action}");
                     return;
@@ -315,7 +315,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
                             return reader.ErrorIncompatible<T>(this, field, out success);
                         
                         if (curFieldVal != fieldVal)
-                            field.SetField(objRef, fieldVal);
+                            field.SetField(objRef, fieldVal, reader.setMethodParams);
                         break;
 
                     case JsonEvent.ObjectEnd:

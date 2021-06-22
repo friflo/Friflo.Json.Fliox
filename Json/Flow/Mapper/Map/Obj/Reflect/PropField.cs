@@ -26,7 +26,6 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
         internal readonly   PropertyInfo    property;      
         private  readonly   MethodInfo      getMethod;
         private  readonly   MethodInfo      setMethod;
-        private  readonly   object[]        setMethodParams = new object[1];
 
         internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
             int primIndex, int objIndex)
@@ -53,7 +52,8 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
         
         private static readonly bool useDirect = false; // Unity: System.NotImplementedException : GetValueDirect
         
-        public void SetField (object obj, object value)
+        /// <see cref="setMethodParams"/> need to be of Length 1
+        public void SetField (object obj, object value, object[] setMethodParams)
         {
             if (field != null) {
                 if (useDirect)
