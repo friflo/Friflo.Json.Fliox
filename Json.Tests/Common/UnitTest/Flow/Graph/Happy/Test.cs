@@ -112,7 +112,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         // accepting WebSockets in Unity fails at IsWebSocketRequest. See: 
         // [Help Wanted - Websocket Server in Standalone build - Unity Forum] https://forum.unity.com/threads/websocket-server-in-standalone-build.1072526/
         // [UnityTest] public IEnumerator WebSocketCreateCoroutine()   { yield return RunAsync.Await(WebSocketCreate()); }
-        [Test]      public void  WebSocketCreateAsync()       { SingleThreadSynchronizationContext.Run(WebSocketCreate); }
+        [Test]      public void  WebSocketCreateSync()       { SingleThreadSynchronizationContext.Run(WebSocketCreate); }
         
         /// This test ensure that a <see cref="WebSocketClientDatabase"/> behaves exactly like all other
         /// <see cref="EntityDatabase"/> implementations in this file.
@@ -147,7 +147,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        [Test]      public void  WebSocketReconnectAsync()       { SingleThreadSynchronizationContext.Run(WebSocketReconnect); }
+        [Test]      public void  WebSocketReconnectSync()       { SingleThreadSynchronizationContext.Run(WebSocketReconnect); }
         
         /// Test WebSocket disconnect while having changes subscribed. Change events pushed by the database may not arrived at subscriber.
         /// To ensure all change events arrive at <see cref="ChangeSubscriber"/> <see cref="SyncRequest.eventAck"/>
@@ -194,7 +194,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         }
         
         [UnityTest] public IEnumerator  LoopbackUseCoroutine() { yield return RunAsync.Await(LoopbackUse()); }
-        [Test]      public void         LoopbackUseAsync() { SingleThreadSynchronizationContext.Run(LoopbackUse); }
+        [Test]      public void         LoopbackUseSync()     { SingleThreadSynchronizationContext.Run(LoopbackUse); }
         
         private static async Task LoopbackUse() {
             var sc = SynchronizationContext.Current; 

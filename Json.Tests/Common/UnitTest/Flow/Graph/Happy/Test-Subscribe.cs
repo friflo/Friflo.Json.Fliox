@@ -12,15 +12,12 @@ using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
 using Friflo.Json.Tests.Common.Utils;
+using NUnit.Framework;
 using UnityEngine.TestTools;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 
-#if UNITY_5_3_OR_NEWER
-    using UnitTest.Dummy;
-#else
-    using NUnit.Framework;
-#endif
+
 
 // ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
@@ -28,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
     public partial class TestStore
     {
         [UnityTest] public IEnumerator  SubscribeCoroutine() { yield return RunAsync.Await(AssertSubscribe()); }
-        [Test]      public void         SubscribeAsync() { SingleThreadSynchronizationContext.Run(AssertSubscribe); }
+        [Test]      public void         SubscribeSync() { SingleThreadSynchronizationContext.Run(AssertSubscribe); }
         
         private static async Task AssertSubscribe() {
             var sc = SynchronizationContext.Current;
