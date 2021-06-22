@@ -38,10 +38,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 using (var createStore = new PocStore(fileDatabase, "createStore")) {
                     var createSubscriber = await TestRelationPoC.SubscribeChanges(createStore, sc);
                     await TestRelationPoC.CreateStore(createStore);
-                    createSubscriber.ProcessChanges();
                     AreEqual(0, createSubscriber.ChangeSequence);  // received no change events for changes done by itself
                 }
-                pocSubscriber.ProcessChanges();
                 pocSubscriber.AssertCreateStoreChanges();
                 AreEqual(8, pocSubscriber.ChangeSequence);           // non protected access
                 AreSimilar("(creates: 9, updates: 0, deletes: 4, patches: 2)",  pocSubscriber.GetChangeInfo<Article>());  // non protected access

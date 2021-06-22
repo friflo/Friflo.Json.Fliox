@@ -44,8 +44,9 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public void ProcessChanges() {
-            if (changeQueue == null)
-                return;
+            if (synchronizationContext != null) {
+                throw new InvalidOperationException("ChangeSubscriber initialized with SynchronizationContext");
+            }
             while (changeQueue.TryDequeue(out ChangeEvent changeEvent)) {
                 OnChange(changeEvent);
             }
