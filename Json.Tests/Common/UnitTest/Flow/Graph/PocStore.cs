@@ -86,7 +86,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public static async Task<ChangeSubscriber> SubscribeChanges(PocStore store, SynchronizationContext sc) {
             var subscriber = new ChangeSubscriber(store, sc); 
             store.SetChangeSubscriber(subscriber);
-            var changes = new HashSet<Change>(new [] { Change.create, Change.update, Change.delete, Change.patch} );
+            var changes = new HashSet<Change>(new [] { Change.create, Change.update, Change.delete, Change.patch, Change.echo} );
             store.SubscribeAll(changes);
             await store.Sync();
             return subscriber;
@@ -290,6 +290,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var errorRefTask = new Customer{ id = "read-task-error" };
             var order2 = new Order{id = "order-2", customer = errorRefTask};
             orders.Create(order2);
+            store.Echo("EndCreate");
             
             await store.Sync();
         }

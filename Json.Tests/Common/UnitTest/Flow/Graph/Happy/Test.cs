@@ -134,7 +134,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     using (var useStore     = new PocStore(remoteDatabase, "useStore")) {
                         var createSubscriber = await TestRelationPoC.SubscribeChanges(createStore, sc);
                         await TestRelationPoC.CreateStore(createStore);
-                        AreEqual(0, createSubscriber.ChangeSequence);  // received no change events for changes done by itself
+                        AreEqual(1, createSubscriber.ChangeSequence);  // received no change events for changes done by itself
                         
                         while (listenSubscriber.ChangeSequence != 8 ) { await Task.Delay(1); }
                         
@@ -205,7 +205,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
                     var createSubscriber        = await TestRelationPoC.SubscribeChanges(createStore, sc);
                     await TestRelationPoC.CreateStore(createStore);
-                    AreEqual(0, createSubscriber.ChangeSequence);  // received no change events for changes done by itself
+                    AreEqual(1, createSubscriber.ChangeSequence);  // received no change events for changes done by itself
 
                     while (listenSubscriber.ChangeSequence != 8 ) { await Task.Delay(1); }
 

@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 using (var createStore = new PocStore(fileDatabase, "createStore")) {
                     var createSubscriber = await TestRelationPoC.SubscribeChanges(createStore, sc);
                     await TestRelationPoC.CreateStore(createStore);
-                    AreEqual(0, createSubscriber.ChangeSequence);  // received no change events for changes done by itself
+                    AreEqual(1, createSubscriber.ChangeSequence);  // received no change events for changes done by itself
                 }
                 pocSubscriber.AssertCreateStoreChanges();
                 AreEqual(8, pocSubscriber.ChangeSequence);           // non protected access
@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             var subscriber = new PocSubscriber(store, sc);
             store.SetChangeSubscriber(subscriber);
             
-            var changes = new HashSet<Change>(new [] {Change.create, Change.update, Change.delete, Change.patch});
+            var changes = new HashSet<Change>(new [] {Change.create, Change.update, Change.delete, Change.patch, Change.echo});
             var subscriptions = store.SubscribeAll(changes);
                 
             await store.Sync(); // -------- Sync --------

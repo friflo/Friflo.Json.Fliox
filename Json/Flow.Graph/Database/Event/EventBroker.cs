@@ -103,13 +103,12 @@ namespace Friflo.Json.Flow.Database.Event
                     throw new InvalidOperationException("Expect subscribeMap not empty");
                 
                 // Enqueue only change events for (change) tasks which are not send by the client itself
-                if (syncRequest.clientId == subscriber.clientId)
-                    continue;
+                bool subscriberIsSender = syncRequest.clientId == subscriber.clientId;
                 
                 foreach (var task in syncRequest.tasks) {
                     foreach (var changesPair in subscriber.subscriptions) {
                         SubscribeChanges subscribeChanges = changesPair.Value;
-                        var taskResult = FilterTask(task, subscribeChanges);
+                        var taskResult = FilterTask(task, subscribeChanges, subscriberIsSender);
                         if (taskResult == null)
                             continue;
                         if (tasks == null) {
@@ -129,10 +128,12 @@ namespace Friflo.Json.Flow.Database.Event
             }
         }
         
-        private DatabaseTask FilterTask (DatabaseTask task, SubscribeChanges subscribe) {
+        private DatabaseTask FilterTask (DatabaseTask task, SubscribeChanges subscribe, bool subscriberIsSender) {
             switch (task.TaskType) {
                 
                 case TaskType.create:
+                    if (subscriberIsSender)
+                        return null;
                     if (!subscribe.changes.Contains(Change.create))
                         return null;
                     var create = (CreateEntities) task;
@@ -145,6 +146,8 @@ namespace Friflo.Json.Flow.Database.Event
                     return createResult;
                 
                 case TaskType.update:
+                    if (subscriberIsSender)
+                        return null;
                     if (!subscribe.changes.Contains(Change.update))
                         return null;
                     var update = (UpdateEntities) task;
@@ -157,6 +160,8 @@ namespace Friflo.Json.Flow.Database.Event
                     return updateResult;
                 
                 case TaskType.delete:
+                    if (subscriberIsSender)
+                        return null;
                     if (!subscribe.changes.Contains(Change.delete))
                         return null;
                     var delete = (DeleteEntities) task;
@@ -166,12 +171,19 @@ namespace Friflo.Json.Flow.Database.Event
                     return task;
                 
                 case TaskType.patch:
+                    if (subscriberIsSender)
+                        return null;
                     if (!subscribe.changes.Contains(Change.patch))
                         return null;
                     var patch = (PatchEntities) task;
                     if (subscribe.container != patch.container)
                         return null;
                     // todo apply filter
+                    return task;
+                
+                case TaskType.echo:
+                    if (!subscribe.changes.Contains(Change.echo))
+                        return null;
                     return task;
                 
                 default:

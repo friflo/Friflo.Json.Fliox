@@ -52,5 +52,6 @@ namespace Friflo.Json.Flow.Sync
         update,
         patch,
         delete,
+        echo
     }
 }
