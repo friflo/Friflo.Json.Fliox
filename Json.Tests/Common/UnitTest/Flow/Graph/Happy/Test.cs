@@ -136,6 +136,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         await TestRelationPoC.CreateStore(createStore);
                         AreEqual(0, createSubscriber.ChangeSequence);  // received no change events for changes done by itself
                         
+                        while (listenSubscriber.ChangeSequence != 8 ) { await Task.Delay(1); }
+                        
                         listenSubscriber.AssertCreateStoreChanges();
                         await TestStores(createStore, useStore);
                     }
@@ -173,11 +175,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         
                         AreEqual(0, listenDb.Tasks.Count);
                         await listenDb.Sync();  // an empty Sync() is sufficient initiate re-sending all not-received change events
-                        if (eventBroker.background) {
-                            while (listenSubscriber.ChangeSequence != 8 ) {
-                                await Task.Delay(1);
-                            }
-                        }
+
+                        while (listenSubscriber.ChangeSequence != 8 ) { await Task.Delay(1); }
+
                         listenSubscriber.AssertCreateStoreChanges();
                         
                         await listenDb.Sync();  // all changes are received => state of store remains unchanged
@@ -206,6 +206,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     var createSubscriber        = await TestRelationPoC.SubscribeChanges(createStore, sc);
                     await TestRelationPoC.CreateStore(createStore);
                     AreEqual(0, createSubscriber.ChangeSequence);  // received no change events for changes done by itself
+
+                    while (listenSubscriber.ChangeSequence != 8 ) { await Task.Delay(1); }
 
                     listenSubscriber.AssertCreateStoreChanges();
                     await TestStores(createStore, useStore);

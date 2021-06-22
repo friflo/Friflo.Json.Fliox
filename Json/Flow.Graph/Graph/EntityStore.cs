@@ -35,6 +35,7 @@ namespace Friflo.Json.Flow.Graph
         internal            SyncStore                       sync;
         internal            LogTask                         tracerLogTask;
         internal            ChangeSubscriber                changeSubscriber;
+        internal            bool                            disposed;
         internal            int                             lastEventSeq;
 
         public   override   string                          ToString() => clientId;
@@ -64,6 +65,7 @@ namespace Friflo.Json.Flow.Graph
             tracerLogTask               = null;
             this.changeSubscriber       = null;
             lastEventSeq                = 0;
+            disposed                    = false;
         }
     }
 
@@ -112,7 +114,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public void Dispose() {
-            _intern.changeSubscriber = null; // ignore all remaining change events
+            _intern.disposed = true;
             _intern.database.RemoveEventTarget(_intern.clientId);
             _intern.objectPatcher.Dispose();
             _intern.jsonMapper.Dispose();

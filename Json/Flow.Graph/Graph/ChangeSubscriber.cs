@@ -76,6 +76,9 @@ namespace Friflo.Json.Flow.Graph
 
         protected virtual void OnChange(ChangeEvent change) {
             ChangeSequence++;
+            if (store._intern.disposed)  // store may already be disposed
+                return;
+            
             foreach (var task in change.tasks) {
                 EntitySet set;
                 switch (task.TaskType) {
