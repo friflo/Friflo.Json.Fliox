@@ -86,8 +86,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public static async Task<ChangeSubscriber> SubscribeChanges(PocStore store, SynchronizationContext sc) {
             var subscriber = new ChangeSubscriber(store, sc); 
             store.SetChangeSubscriber(subscriber);
-            var changes = new HashSet<Change>(new [] { Change.create, Change.update, Change.delete, Change.patch, Change.echo} );
+            var changes = new HashSet<Change>(new [] { Change.create, Change.update, Change.delete, Change.patch } );
             store.SubscribeAll(changes);
+            store.SubscribeEcho(new List<string> {"EndCreate"});
             await store.Sync();
             return subscriber;
         }

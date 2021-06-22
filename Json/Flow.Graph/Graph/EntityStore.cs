@@ -185,6 +185,14 @@ namespace Friflo.Json.Flow.Graph
             return tasks;
         }
         
+        public SubscribeEchoTask SubscribeEcho(List<string> prefixes) {
+            AssertChangeSubscriber();
+            var task = new SubscribeEchoTask(prefixes);
+            _intern.sync.subscribeEcho = task;
+            AddTask(task);
+            return task;
+        }
+        
         public EchoTask Echo(string message) {
             var task = new EchoTask(message);
             _intern.sync.echoTasks.Add(message, task);
@@ -392,6 +400,10 @@ namespace Friflo.Json.Flow.Graph
                             var subscribe = (SubscribeChanges) task;
                             set = _intern.setByName[subscribe.container];
                             set.Sync.SubscribeResult(subscribe, result);
+                            break;
+                        case TaskType.subscribeEcho:
+                            var subscribeEcho = (SubscribeEcho) task;
+                            _intern.sync.SubscribeEchoResult(subscribeEcho, result);
                             break;
                     }
                 }

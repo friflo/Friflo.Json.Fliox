@@ -14,7 +14,8 @@ namespace Friflo.Json.Flow.Graph
     public class ChangeSubscriber
     {
         private readonly    EntityStore                     store;
-        private readonly    Dictionary<Type, EntityChanges> results     = new Dictionary<Type, EntityChanges>();
+        private readonly    Dictionary<Type, EntityChanges> results   = new Dictionary<Type, EntityChanges>();
+        private readonly    List<string>                    echos     = new List<string>();
         
         /// Either <see cref="synchronizationContext"/> or <see cref="changeQueue"/> is set. Never both.
         private readonly    SynchronizationContext          synchronizationContext;
@@ -130,6 +131,20 @@ namespace Friflo.Json.Flow.Graph
                 return resultTyped;
             }
             return (EntityChanges<T>)result;
+        }
+        
+        protected List<string> GetEchos(ChangeEvent change) {
+            echos.Clear();
+            foreach (var task in change.tasks) {
+                switch (task.TaskType) {
+                    
+                    case TaskType.echo:
+                        var echo = (Echo)task;
+                        echos.Add(echo.message);
+                        break;
+                }
+            }
+            return echos;
         }
         
         protected EntityChanges<T> GetEntityChanges<T>(ChangeEvent change) where T : Entity {

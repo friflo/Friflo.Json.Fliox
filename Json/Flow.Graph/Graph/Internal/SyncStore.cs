@@ -11,6 +11,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal readonly   List<SyncTask>                  appTasks        = new List<SyncTask>();
         private  readonly   List<LogTask>                   logTasks        = new List<LogTask>();
         internal readonly   Dictionary<string, EchoTask>    echoTasks       = new Dictionary<string, EchoTask>();
+        internal            SubscribeEchoTask               subscribeEcho;
+
         
         internal LogTask CreateLog() {
             var logTask = new LogTask();
@@ -27,7 +29,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         // ----------------------------------- add tasks methods -----------------------------------
         internal void AddTasks(List<DatabaseTask> tasks) {
-            Echo        (tasks);
+            Echo            (tasks);
+            SubscribeEcho   (tasks);
         }
                 
         // --- Echo
@@ -50,6 +53,22 @@ namespace Friflo.Json.Flow.Graph.Internal
             var echoResult = (EchoResult)result;
             echoTask.result = echoResult.message;
             echoTask.state.Synced = true;
+        }
+        
+        // --- Subscribe
+        private void SubscribeEcho(List<DatabaseTask> tasks) {
+            if (subscribeEcho == null)
+                return;
+            var req = new SubscribeEcho{ prefixes = subscribeEcho.prefixes};
+            tasks.Add(req);
+        }
+        
+        internal void SubscribeEchoResult (SubscribeEcho task, TaskResult result) {
+            if (result is TaskErrorResult taskError) {
+                subscribeEcho.state.SetError(new TaskErrorInfo(taskError));
+                return;
+            }
+            subscribeEcho.state.Synced = true;
         }
     }
 }
