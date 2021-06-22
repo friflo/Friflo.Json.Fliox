@@ -11,23 +11,23 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public class ChangeSubscriber
+    public class SubscriptionHandler
     {
-        private readonly    EntityStore                     store;
-        private readonly    Dictionary<Type, EntityChanges> results   = new Dictionary<Type, EntityChanges>();
-        private readonly    List<string>                    echos     = new List<string>();
+        private readonly    EntityStore                         store;
+        private readonly    Dictionary<Type, EntityChanges>     results   = new Dictionary<Type, EntityChanges>();
+        private readonly    List<string>                        echos     = new List<string>();
         
-        /// Either <see cref="synchronizationContext"/> or <see cref="changeQueue"/> is set. Never both.
-        private readonly    SynchronizationContext          synchronizationContext;
-        /// Either <see cref="synchronizationContext"/> or <see cref="changeQueue"/> is set. Never both.
-        private readonly    ConcurrentQueue <ChangeEvent>   changeQueue;
+        /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
+        private readonly    SynchronizationContext              synchronizationContext;
+        /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
+        private readonly    ConcurrentQueue <SubscribeEvent>    eventQueue;
         
-        public              int                             ChangeSequence     { get; private set ;}
-        public              ChangeInfo<T>                   GetChangeInfo<T>() where T : Entity => GetChanges<T>().sum;
+        public              int                                 ChangeSequence     { get; private set ;}
+        public              ChangeInfo<T>                       GetChangeInfo<T>() where T : Entity => GetChanges<T>().sum;
         
         /// <summary>
-        /// Creates a <see cref="ChangeSubscriber"/> with the specified <see cref="synchronizationContext"/>
-        /// The <see cref="synchronizationContext"/> is required to ensure that <see cref="OnChange"/> is called on the
+        /// Creates a <see cref="SubscriptionHandler"/> with the specified <see cref="synchronizationContext"/>
+        /// The <see cref="synchronizationContext"/> is required to ensure that <see cref="OnEvent"/> is called on the
         /// same thread as all other API calls of <see cref="EntityStore"/> and <see cref="EntitySet{T}"/>.
         /// <para>
         ///   In case of a UI application like WinForms or WPF <see cref="SynchronizationContext.Current"/> can be used
@@ -36,51 +36,51 @@ namespace Friflo.Json.Flow.Graph
         ///   In case of a Console application <see cref="SingleThreadSynchronizationContext"/> can be used.
         /// </para> 
         /// </summary>
-        public ChangeSubscriber (EntityStore store, SynchronizationContext synchronizationContext) {
+        public SubscriptionHandler (EntityStore store, SynchronizationContext synchronizationContext) {
             this.store                  = store;
             this.synchronizationContext = synchronizationContext ?? throw new ArgumentNullException(nameof(synchronizationContext));
         }
         
         /// <summary>
-        /// Creates a <see cref="ChangeSubscriber"/> without a <see cref="synchronizationContext"/>
-        /// In this case the application must frequently call <see cref="ProcessChanges"/> to apply changes to the
+        /// Creates a <see cref="SubscriptionHandler"/> without a <see cref="synchronizationContext"/>
+        /// In this case the application must frequently call <see cref="ProcessEvents"/> to apply changes to the
         /// <see cref="EntityStore"/>.
-        /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="ChangeEvent"/>'s
+        /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="SubscribeEvent"/>'s
         /// are applied to the <see cref="EntityStore"/>.
         /// </summary>
-        public ChangeSubscriber (EntityStore store) {
+        public SubscriptionHandler (EntityStore store) {
             this.store                  = store;
-            this.changeQueue            = new ConcurrentQueue <ChangeEvent> ();
+            this.eventQueue             = new ConcurrentQueue <SubscribeEvent> ();
         }
         
-        public virtual void EnqueueChange(ChangeEvent change) {
-            if (changeQueue != null) {
-                changeQueue.Enqueue(change);
+        public virtual void EnqueueEvent(SubscribeEvent ev) {
+            if (eventQueue != null) {
+                eventQueue.Enqueue(ev);
                 return;
             }
             synchronizationContext.Post(delegate {
-                OnChange(change);
+                OnEvent(ev);
             }, null);
         }
         
         /// <summary>
-        /// Need to be called frequently if <see cref="ChangeSubscriber"/> is initialized without a <see cref="SynchronizationContext"/>.
+        /// Need to be called frequently if <see cref="SubscriptionHandler"/> is initialized without a <see cref="SynchronizationContext"/>.
         /// </summary>
-        public void ProcessChanges() {
+        public void ProcessEvents() {
             if (synchronizationContext != null) {
                 throw new InvalidOperationException("ChangeSubscriber initialized with SynchronizationContext");
             }
-            while (changeQueue.TryDequeue(out ChangeEvent changeEvent)) {
-                OnChange(changeEvent);
+            while (eventQueue.TryDequeue(out SubscribeEvent subscribeEvent)) {
+                OnEvent(subscribeEvent);
             }
         }
 
-        protected virtual void OnChange(ChangeEvent change) {
+        protected virtual void OnEvent(SubscribeEvent ev) {
             ChangeSequence++;
             if (store._intern.disposed)  // store may already be disposed
                 return;
             
-            foreach (var task in change.tasks) {
+            foreach (var task in ev.tasks) {
                 EntitySet set;
                 switch (task.TaskType) {
                     
@@ -133,9 +133,9 @@ namespace Friflo.Json.Flow.Graph
             return (EntityChanges<T>)result;
         }
         
-        protected List<string> GetEchos(ChangeEvent change) {
+        protected List<string> GetEchos(SubscribeEvent subscribeEvent) {
             echos.Clear();
-            foreach (var task in change.tasks) {
+            foreach (var task in subscribeEvent.tasks) {
                 switch (task.TaskType) {
                     
                     case TaskType.echo:
@@ -147,12 +147,12 @@ namespace Friflo.Json.Flow.Graph
             return echos;
         }
         
-        protected EntityChanges<T> GetEntityChanges<T>(ChangeEvent change) where T : Entity {
+        protected EntityChanges<T> GetEntityChanges<T>(SubscribeEvent subscribeEvent) where T : Entity {
             var result  = GetChanges<T>();
             var set     = result.set;
             result.Clear();
             
-            foreach (var task in change.tasks) {
+            foreach (var task in subscribeEvent.tasks) {
                 switch (task.TaskType) {
                     
                     case TaskType.create:

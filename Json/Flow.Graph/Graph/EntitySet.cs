@@ -126,11 +126,11 @@ namespace Friflo.Json.Flow.Graph
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{T}"/>.
-        /// To react on specific changes use <see cref="EntityStore.SetChangeSubscriber"/>.
+        /// To react on specific changes use <see cref="EntityStore.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeTask<T> SubscribeFilter(HashSet<Change> changes, Expression<Func<T, bool>> filter) {
-            intern.store.AssertChangeSubscriber();
+            intern.store.AssertSubscriptionHandler();
             var op = Operation.FromFilter(filter);
             var task = sync.SubscribeFilter(changes, op);
             intern.store.AddTask(task);
@@ -140,11 +140,11 @@ namespace Friflo.Json.Flow.Graph
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{T}"/>.
-        /// To react on specific changes use <see cref="EntityStore.SetChangeSubscriber"/>.
+        /// To react on specific changes use <see cref="EntityStore.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeTask<T> SubscribeByFilter(HashSet<Change> changes, EntityFilter<T> filter) {
-            intern.store.AssertChangeSubscriber();
+            intern.store.AssertSubscriptionHandler();
             var task = sync.SubscribeFilter(changes, filter.op);
             intern.store.AddTask(task);
             return task;
@@ -153,11 +153,11 @@ namespace Friflo.Json.Flow.Graph
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{T}"/>.
-        /// To react on specific changes use <see cref="EntityStore.SetChangeSubscriber"/>.
+        /// To react on specific changes use <see cref="EntityStore.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeTask<T> Subscribe(HashSet<Change> changes) {
-            intern.store.AssertChangeSubscriber();
+            intern.store.AssertSubscriptionHandler();
             var all = Operation.FilterTrue;
             var task = sync.SubscribeFilter(changes, all);
             intern.store.AddTask(task);

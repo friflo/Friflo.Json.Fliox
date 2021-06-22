@@ -34,7 +34,7 @@ namespace Friflo.Json.Flow.Graph
         // --- non readonly
         internal            SyncStore                       sync;
         internal            LogTask                         tracerLogTask;
-        internal            ChangeSubscriber                changeSubscriber;
+        internal            SubscriptionHandler             subscriptionHandler;
         internal            bool                            disposed;
         internal            int                             lastEventSeq;
 
@@ -63,7 +63,7 @@ namespace Friflo.Json.Flow.Graph
             objectPatcher               = new ObjectPatcher(jsonMapper);
             contextPools                = new Pools(Pools.SharedPools);
             tracerLogTask               = null;
-            this.changeSubscriber       = null;
+            subscriptionHandler         = null;
             lastEventSeq                = 0;
             disposed                    = false;
         }
@@ -171,11 +171,11 @@ namespace Friflo.Json.Flow.Graph
         /// <summary>
         /// Subscribe to database changes of all <see cref="EntityContainer"/>'s with the given <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntityStore"/>.
-        /// To react on specific changes use <see cref="SetChangeSubscriber"/>.
+        /// To react on specific changes use <see cref="SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public List<SyncTask> SubscribeAll(HashSet<Change> changes) {
-            AssertChangeSubscriber();
+            AssertSubscriptionHandler();
             var tasks = new List<SyncTask>();
             foreach (var setPair in _intern.setByType) {
                 var set = setPair.Value;
@@ -186,7 +186,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public SubscribeEchoTask SubscribeEcho(IEnumerable<string> prefixes) {
-            AssertChangeSubscriber();
+            AssertSubscriptionHandler();
             var task = new SubscribeEchoTask(prefixes);
             _intern.sync.subscribeEcho = task;
             AddTask(task);
@@ -201,19 +201,19 @@ namespace Friflo.Json.Flow.Graph
         }
         
         /// <summary>
-        /// Set a custom <see cref="ChangeSubscriber"/> to enable reacting on specific database change events.
+        /// Set a custom <see cref="SubscriptionHandler"/> to enable reacting on specific database change events.
         /// E.g. notifying other application modules about created, updated, deleted or patches entities.
         /// To subscribe to database change events <see cref="Graph.EntitySet{T}.Subscribe"/> need to be called before.
-        /// The default <see cref="ChangeSubscriber"/> apply all changes to the <see cref="EntityStore"/> as they arrive. 
+        /// The default <see cref="SubscriptionHandler"/> apply all changes to the <see cref="EntityStore"/> as they arrive. 
         /// </summary>
-        public void SetChangeSubscriber(ChangeSubscriber changeSubscriber) {
-            _intern.changeSubscriber = changeSubscriber;
+        public void SetSubscriptionHandler(SubscriptionHandler subscriptionHandler) {
+            _intern.subscriptionHandler = subscriptionHandler;
         }
         
         // ------------------------------------------- internals -------------------------------------------
-        internal void AssertChangeSubscriber() {
-            if (_intern.changeSubscriber == null)
-                throw new InvalidOperationException("change subscriptions require a ChangeSubscriber. SetChangeSubscriber() before");
+        internal void AssertSubscriptionHandler() {
+            if (_intern.subscriptionHandler == null)
+                throw new InvalidOperationException("subscriptions require a SubscriptionHandler. SetSubscriptionHandler() before");
         }
         
         private async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {

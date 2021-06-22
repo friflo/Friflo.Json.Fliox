@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Friflo.Json.Flow.Sync
 {
     // ----------------------------------- event -----------------------------------
-    public class ChangeEvent : DatabaseEvent
+    public class SubscribeEvent : DatabaseEvent
     {
         public              List<DatabaseTask>  tasks;
         
@@ -44,7 +44,7 @@ namespace Friflo.Json.Flow.Sync
     
     /// <summary>
     /// <see cref="ChangeInfo"/> is never de-/serialized.
-    /// It purpose is to get aggregated information about a <see cref="ChangeEvent"/> by <see cref="ChangeEvent.GetChangeInfo"/>
+    /// It purpose is to get aggregated information about a <see cref="SubscribeEvent"/> by <see cref="SubscribeEvent.GetChangeInfo"/>
     /// </summary>
     public class ChangeInfo {
         public  int creates;

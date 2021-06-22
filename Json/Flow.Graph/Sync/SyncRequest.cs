@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Sync
         /// <summary>
         /// Specify an optional id to identify the client performing a request by a host.
         /// In case the request contains a <see cref="SubscribeChanges"/> <see cref="clientId"/> is required to
-        /// enable sending <see cref="ChangeEvent"/>'s to the desired subscriber.
+        /// enable sending <see cref="SubscribeEvent"/>'s to the desired subscriber.
         /// </summary>
         [Fri.Property(Name = "client")] public  string              clientId;
         /// <summary>

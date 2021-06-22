@@ -47,9 +47,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        private static async Task<PocSubscriber> CreatePocSubscriber (PocStore store, SynchronizationContext sc) {
-            var subscriber = new PocSubscriber(store, sc);
-            store.SetChangeSubscriber(subscriber);
+        private static async Task<PocHandler> CreatePocSubscriber (PocStore store, SynchronizationContext sc) {
+            var subscriber = new PocHandler(store, sc);
+            store.SetSubscriptionHandler(subscriber);
             
             var changes = new HashSet<Change>(new [] {Change.create, Change.update, Change.delete, Change.patch});
             var subscriptions = store.SubscribeAll(changes);
@@ -66,7 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
     }
 
     // assert expected database changes by counting the entity changes for each DatabaseContainer / EntitySet<>
-    internal class PocSubscriber : ChangeSubscriber {
+    internal class PocHandler : SubscriptionHandler {
         private readonly    ChangeInfo<Order>       orderSum     = new ChangeInfo<Order>();
         private readonly    ChangeInfo<Customer>    customerSum  = new ChangeInfo<Customer>();
         private readonly    ChangeInfo<Article>     articleSum   = new ChangeInfo<Article>();
@@ -74,20 +74,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private readonly    ChangeInfo<Employee>    employeeSum  = new ChangeInfo<Employee>();
         private             int                     echoSum;
         
-        internal PocSubscriber (EntityStore store, SynchronizationContext synchronizationContext) : base (store, synchronizationContext) { }
+        internal PocHandler (EntityStore store, SynchronizationContext synchronizationContext) : base (store, synchronizationContext) { }
             
-        /// All tests using <see cref="PocSubscriber"/> are required to use "createStore" as clientId
-        protected override void OnChange (ChangeEvent change) {
-            AreEqual("createStore", change.clientId);
-            base.OnChange(change);
-            var orderChanges    = GetEntityChanges<Order>   (change);
-            var customerChanges = GetEntityChanges<Customer>(change);
-            var articleChanges  = GetEntityChanges<Article> (change);
-            var producerChanges = GetEntityChanges<Producer>(change);
-            var employeeChanges = GetEntityChanges<Employee>(change);
-            var echos           = GetEchos                  (change);
+        /// All tests using <see cref="PocHandler"/> are required to use "createStore" as clientId
+        protected override void OnEvent (SubscribeEvent ev) {
+            AreEqual("createStore", ev.clientId);
+            base.OnEvent(ev);
+            var orderChanges    = GetEntityChanges<Order>   (ev);
+            var customerChanges = GetEntityChanges<Customer>(ev);
+            var articleChanges  = GetEntityChanges<Article> (ev);
+            var producerChanges = GetEntityChanges<Producer>(ev);
+            var employeeChanges = GetEntityChanges<Employee>(ev);
+            var echos           = GetEchos                  (ev);
             
-            var changeInfo = change.GetChangeInfo();
+            var changeInfo = ev.GetChangeInfo();
             IsTrue(changeInfo.Count > 0);
 
             orderSum.   AddChanges(orderChanges);
