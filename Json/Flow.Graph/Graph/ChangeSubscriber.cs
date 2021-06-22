@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
+using Friflo.Json.Flow.Database.Utils;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
 
@@ -23,11 +24,29 @@ namespace Friflo.Json.Flow.Graph
         public              int                             ChangeSequence     { get; private set ;}
         public              ChangeInfo<T>                   GetChangeInfo<T>() where T : Entity => GetChanges<T>().sum;
         
+        /// <summary>
+        /// Creates a <see cref="ChangeSubscriber"/> with the specified <see cref="synchronizationContext"/>
+        /// The <see cref="synchronizationContext"/> is required to ensure that <see cref="OnChange"/> is called on the
+        /// same thread as all other API calls of <see cref="EntityStore"/> and <see cref="EntitySet{T}"/>.
+        /// <para>
+        ///   In case of a UI application like WinForms or WPF <see cref="SynchronizationContext.Current"/> can be used
+        /// </para> 
+        /// <para>
+        ///   In case of a Console application <see cref="SingleThreadSynchronizationContext"/> can be used.
+        /// </para> 
+        /// </summary>
         public ChangeSubscriber (EntityStore store, SynchronizationContext synchronizationContext) {
             this.store                  = store;
-            this.synchronizationContext = synchronizationContext;
+            this.synchronizationContext = synchronizationContext ?? throw new ArgumentNullException(nameof(synchronizationContext));
         }
         
+        /// <summary>
+        /// Creates a <see cref="ChangeSubscriber"/> without a <see cref="synchronizationContext"/>
+        /// In this case the application must frequently call <see cref="ProcessChanges"/> to apply changes to the
+        /// <see cref="EntityStore"/>.
+        /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="ChangeEvent"/>'s
+        /// are applied to the <see cref="EntityStore"/>.
+        /// </summary>
         public ChangeSubscriber (EntityStore store) {
             this.store                  = store;
             this.changeQueue            = new ConcurrentQueue <ChangeEvent> ();
@@ -43,6 +62,9 @@ namespace Friflo.Json.Flow.Graph
             }, null);
         }
         
+        /// <summary>
+        /// Need to be called frequently if <see cref="ChangeSubscriber"/> is initialized without a <see cref="SynchronizationContext"/>.
+        /// </summary>
         public void ProcessChanges() {
             if (synchronizationContext != null) {
                 throw new InvalidOperationException("ChangeSubscriber initialized with SynchronizationContext");

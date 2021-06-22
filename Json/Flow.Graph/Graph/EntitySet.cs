@@ -130,6 +130,7 @@ namespace Friflo.Json.Flow.Graph
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeTask<T> SubscribeFilter(HashSet<Change> changes, Expression<Func<T, bool>> filter) {
+            intern.store.AssertChangeSubscriber();
             var op = Operation.FromFilter(filter);
             var task = sync.SubscribeFilter(changes, op);
             intern.store.AddTask(task);
@@ -143,6 +144,7 @@ namespace Friflo.Json.Flow.Graph
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeTask<T> SubscribeByFilter(HashSet<Change> changes, EntityFilter<T> filter) {
+            intern.store.AssertChangeSubscriber();
             var task = sync.SubscribeFilter(changes, filter.op);
             intern.store.AddTask(task);
             return task;
@@ -155,6 +157,7 @@ namespace Friflo.Json.Flow.Graph
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeTask<T> Subscribe(HashSet<Change> changes) {
+            intern.store.AssertChangeSubscriber();
             var all = Operation.FilterTrue;
             var task = sync.SubscribeFilter(changes, all);
             intern.store.AddTask(task);

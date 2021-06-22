@@ -172,6 +172,7 @@ namespace Friflo.Json.Flow.Graph
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public List<SyncTask> SubscribeAll(HashSet<Change> changes) {
+            AssertChangeSubscriber();
             var tasks = new List<SyncTask>();
             foreach (var setPair in _intern.setByType) {
                 var set = setPair.Value;
@@ -199,6 +200,11 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // ------------------------------------------- internals -------------------------------------------
+        internal void AssertChangeSubscriber() {
+            if (_intern.changeSubscriber == null)
+                throw new InvalidOperationException("change subscriptions require a ChangeSubscriber. SetChangeSubscriber() before");
+        }
+        
         private async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
             SyncResponse response;
             try {
