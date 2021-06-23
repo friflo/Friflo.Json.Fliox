@@ -10,7 +10,7 @@ namespace Friflo.Json.Flow.Sync
     {
         public              List<DatabaseTask>  tasks;
         
-        internal override   DatabaseEventType   EventType   => DatabaseEventType.change;
+        internal override   DatabaseEventType   EventType   => DatabaseEventType.subscription;
         public   override   string              ToString()  => GetChangeInfo().ToString();
 
         public ChangeInfo GetChangeInfo() {

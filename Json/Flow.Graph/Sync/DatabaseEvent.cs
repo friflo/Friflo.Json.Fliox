@@ -26,6 +26,6 @@ namespace Friflo.Json.Flow.Sync
     
     // ReSharper disable InconsistentNaming
     public enum DatabaseEventType {
-        change
+        subscription
     }
 }
