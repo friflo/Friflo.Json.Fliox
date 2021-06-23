@@ -8,7 +8,7 @@ namespace Friflo.Json.Flow.Sync
 {
     // ----------------------------------- event -----------------------------------
     [Fri.Discriminator("type")]
-    [Fri.Polymorph(typeof(SubscribeEvent), Discriminant = "subscribeEvent")]
+    [Fri.Polymorph(typeof(SubscriptionEvent), Discriminant = "subscription")]
     public abstract class DatabaseEvent {
         // note for all fields
         // used { get; set; } to force properties on the top of JSON

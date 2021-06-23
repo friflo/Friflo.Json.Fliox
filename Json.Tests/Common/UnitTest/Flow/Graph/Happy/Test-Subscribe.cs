@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         internal PocHandler (EntityStore store, SynchronizationContext synchronizationContext) : base (store, synchronizationContext) { }
             
         /// All tests using <see cref="PocHandler"/> are required to use "createStore" as clientId
-        protected override void OnEvent (SubscribeEvent ev) {
+        protected override void OnEvent (SubscriptionEvent ev) {
             AreEqual("createStore", ev.clientId);
             base.OnEvent(ev);
             var orderChanges    = GetEntityChanges<Order>   (ev);

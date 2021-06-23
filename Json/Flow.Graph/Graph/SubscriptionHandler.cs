@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Graph
         /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
         private readonly    SynchronizationContext              synchronizationContext;
         /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
-        private readonly    ConcurrentQueue <SubscribeEvent>    eventQueue;
+        private readonly    ConcurrentQueue <SubscriptionEvent> eventQueue;
         
         public              int                                 EventSequence     { get; private set ;}
         public              ChangeInfo<T>                       GetChangeInfo<T>() where T : Entity => GetChanges<T>().sum;
@@ -45,15 +45,15 @@ namespace Friflo.Json.Flow.Graph
         /// Creates a <see cref="SubscriptionHandler"/> without a <see cref="synchronizationContext"/>
         /// In this case the application must frequently call <see cref="ProcessEvents"/> to apply changes to the
         /// <see cref="EntityStore"/>.
-        /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="SubscribeEvent"/>'s
+        /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="SubscriptionEvent"/>'s
         /// are applied to the <see cref="EntityStore"/>.
         /// </summary>
         public SubscriptionHandler (EntityStore store) {
             this.store                  = store;
-            this.eventQueue             = new ConcurrentQueue <SubscribeEvent> ();
+            this.eventQueue             = new ConcurrentQueue <SubscriptionEvent> ();
         }
         
-        public virtual void EnqueueEvent(SubscribeEvent ev) {
+        public virtual void EnqueueEvent(SubscriptionEvent ev) {
             if (eventQueue != null) {
                 eventQueue.Enqueue(ev);
                 return;
@@ -70,12 +70,12 @@ namespace Friflo.Json.Flow.Graph
             if (synchronizationContext != null) {
                 throw new InvalidOperationException("SubscriptionHandler initialized with SynchronizationContext");
             }
-            while (eventQueue.TryDequeue(out SubscribeEvent subscribeEvent)) {
+            while (eventQueue.TryDequeue(out SubscriptionEvent subscribeEvent)) {
                 OnEvent(subscribeEvent);
             }
         }
 
-        protected virtual void OnEvent(SubscribeEvent ev) {
+        protected virtual void OnEvent(SubscriptionEvent ev) {
             EventSequence++;
             if (store._intern.disposed)  // store may already be disposed
                 return;
@@ -133,9 +133,9 @@ namespace Friflo.Json.Flow.Graph
             return (EntityChanges<T>)result;
         }
         
-        protected List<string> GetEchos(SubscribeEvent subscribeEvent) {
+        protected List<string> GetEchos(SubscriptionEvent subscriptionEvent) {
             echos.Clear();
-            foreach (var task in subscribeEvent.tasks) {
+            foreach (var task in subscriptionEvent.tasks) {
                 switch (task.TaskType) {
                     
                     case TaskType.echo:
@@ -147,12 +147,12 @@ namespace Friflo.Json.Flow.Graph
             return echos;
         }
         
-        protected EntityChanges<T> GetEntityChanges<T>(SubscribeEvent subscribeEvent) where T : Entity {
+        protected EntityChanges<T> GetEntityChanges<T>(SubscriptionEvent subscriptionEvent) where T : Entity {
             var result  = GetChanges<T>();
             var set     = result.set;
             result.Clear();
             
-            foreach (var task in subscribeEvent.tasks) {
+            foreach (var task in subscriptionEvent.tasks) {
                 switch (task.TaskType) {
                     
                     case TaskType.create:

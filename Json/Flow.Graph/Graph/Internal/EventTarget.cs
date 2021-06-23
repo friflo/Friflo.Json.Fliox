@@ -29,11 +29,11 @@ namespace Friflo.Json.Flow.Graph.Internal
                 return Task.FromResult(true);
             
             store._intern.lastEventSeq = ev.seq;
-            var subscribeEvent = ev as SubscribeEvent;
-            if (subscribeEvent == null)
+            var subscriptionEvent = ev as SubscriptionEvent;
+            if (subscriptionEvent == null)
                 return Task.FromResult(true);
 
-            store._intern.subscriptionHandler?.EnqueueEvent(subscribeEvent);
+            store._intern.subscriptionHandler?.EnqueueEvent(subscriptionEvent);
 
             return Task.FromResult(true);
         }
