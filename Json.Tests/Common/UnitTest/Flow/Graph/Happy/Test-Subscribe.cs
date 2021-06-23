@@ -22,6 +22,10 @@ using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 // ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 {
+    internal enum EventAssertion {
+        Changes
+    }
+    
     public partial class TestStore
     {
         [UnityTest] public IEnumerator  SubscribeCoroutine() { yield return RunAsync.Await(AssertSubscribe()); }
@@ -34,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var listenDb     = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker = eventBroker;
-                var pocSubscriber        = await CreatePocSubscriber(listenDb, sc);
+                var pocSubscriber        = await CreatePocHandler(listenDb, sc, EventAssertion.Changes);
                 using (var createStore = new PocStore(fileDatabase, "createStore")) {
                     var createSubscriber = await TestRelationPoC.SubscribeChanges(createStore, sc);
                     await TestRelationPoC.CreateStore(createStore);
@@ -47,8 +51,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        private static async Task<PocHandler> CreatePocSubscriber (PocStore store, SynchronizationContext sc) {
-            var subscriber = new PocHandler(store, sc);
+        private static async Task<PocHandler> CreatePocHandler (PocStore store, SynchronizationContext sc, EventAssertion eventAssertion) {
+            var subscriber = new PocHandler(store, sc, eventAssertion);
             store.SetSubscriptionHandler(subscriber);
             
             var changes = new HashSet<Change>(new [] {Change.create, Change.update, Change.delete, Change.patch});
@@ -74,7 +78,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private readonly    ChangeInfo<Employee>    employeeSum  = new ChangeInfo<Employee>();
         private             int                     echoSum;
         
-        internal PocHandler (EntityStore store, SynchronizationContext synchronizationContext) : base (store, synchronizationContext) { }
+        private readonly    EventAssertion          eventAssertion;
+        
+        internal PocHandler (EntityStore store, SynchronizationContext synchronizationContext, EventAssertion eventAssertion)
+            : base (store, synchronizationContext)
+        {
+            this.eventAssertion = eventAssertion;
+        }
             
         /// All tests using <see cref="PocHandler"/> are required to use "createStore" as clientId
         protected override void OnEvent (SubscriptionEvent ev) {
@@ -97,6 +107,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             employeeSum.AddChanges(employeeChanges);
             echoSum += echos.Count;
             
+            if (eventAssertion == EventAssertion.Changes)
+                AssertChangeEvent(articleChanges);
+        }
+        
+        private  void AssertChangeEvent (EntityChanges<Article> articleChanges) {
             switch (EventSequence) {
                 case 1:
                     AreEqual("(creates: 2, updates: 0, deletes: 1, patches: 0)", articleChanges.info.ToString());
