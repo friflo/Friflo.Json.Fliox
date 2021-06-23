@@ -56,9 +56,7 @@ namespace Friflo.Json.Flow.Database.Event
             }
             subscriber = GetOrCreateSubscriber(clientId, eventTarget);
             subscriber.echoSubscriptions.Clear();
-            foreach (var prefix in subscribe.prefixes) {
-                subscriber.echoSubscriptions.Add(prefix);
-            }
+            subscriber.echoSubscriptions.AddRange(subscribe.prefixes);
         }
 
         internal void SubscribeChanges (SubscribeChanges subscribe, string clientId, IEventTarget eventTarget) {
@@ -66,8 +64,7 @@ namespace Friflo.Json.Flow.Database.Event
             if (subscribe.changes.Count == 0) {
                 if (!subscribers.TryGetValue(clientId, out subscriber))
                     return;
-                var subscriptions = subscriber.changeSubscriptions;
-                subscriptions.Remove(subscribe.container);
+                subscriber.changeSubscriptions.Remove(subscribe.container);
                 RemoveEmptySubscriber(subscriber, clientId);
                 return;
             }
