@@ -44,50 +44,54 @@ namespace Friflo.Json.Flow.Database.Event
             await Task.WhenAll(loopTasks).ConfigureAwait(false);
         }
         
+        // -------------------------------- add / remove subscriptions --------------------------------
         public void SubscribeEcho(SubscribeEcho subscribe, string clientId, IEventTarget eventTarget) {
-            EventSubscriber eventSubscriber;
+            EventSubscriber subscriber;
             if (subscribe.prefixes.Count == 0) {
-                if (!subscribers.TryGetValue(clientId, out eventSubscriber))
+                if (!subscribers.TryGetValue(clientId, out subscriber))
                     return;
-                eventSubscriber.echoSubscriptions.Clear();
-                if (eventSubscriber.SubscriptionCount > 0)
-                    return;
-                // remove subscriber - nothing is subscribed
-                subscribers.TryRemove(clientId, out _);
+                subscriber.echoSubscriptions.Clear();
+                RemoveOnEmptySubscriptions(subscriber, clientId);
                 return;
             }
-            subscribers.TryGetValue(clientId, out eventSubscriber);
-            if (eventSubscriber == null) {
-                eventSubscriber = new EventSubscriber(clientId, eventTarget, background);
-                subscribers.TryAdd(clientId, eventSubscriber);
-            }
-            eventSubscriber.echoSubscriptions.Clear();
+            subscriber = GetOrCreateSubscriber(clientId, eventTarget);
+            subscriber.echoSubscriptions.Clear();
             foreach (var prefix in subscribe.prefixes) {
-                eventSubscriber.echoSubscriptions.Add(prefix);
+                subscriber.echoSubscriptions.Add(prefix);
             }
         }
 
         public void Subscribe (SubscribeChanges subscribe, string clientId, IEventTarget eventTarget) {
-            EventSubscriber eventSubscriber;
+            EventSubscriber subscriber;
             if (subscribe.changes.Count == 0) {
-                if (!subscribers.TryGetValue(clientId, out eventSubscriber))
+                if (!subscribers.TryGetValue(clientId, out subscriber))
                     return;
-                var subscriptions = eventSubscriber.subscriptions;
+                var subscriptions = subscriber.subscriptions;
                 subscriptions.Remove(subscribe.container);
-                if (eventSubscriber.SubscriptionCount > 0)
-                    return;
-                // remove subscriber - nothing is subscribed
-                subscribers.TryRemove(clientId, out _);
+                RemoveOnEmptySubscriptions(subscriber, clientId);
                 return;
             }
-            subscribers.TryGetValue(clientId, out eventSubscriber);
-            if (eventSubscriber == null) {
-                eventSubscriber = new EventSubscriber(clientId, eventTarget, background);
-                subscribers.TryAdd(clientId, eventSubscriber);
-            }
-            eventSubscriber.subscriptions[subscribe.container] = subscribe;
+            subscriber = GetOrCreateSubscriber(clientId, eventTarget);
+            subscriber.subscriptions[subscribe.container] = subscribe;
         }
         
+        private EventSubscriber GetOrCreateSubscriber(string clientId, IEventTarget eventTarget) {
+            subscribers.TryGetValue(clientId, out EventSubscriber subscriber);
+            if (subscriber != null)
+                return subscriber;
+            subscriber = new EventSubscriber(clientId, eventTarget, background);
+            subscribers.TryAdd(clientId, subscriber);
+            return subscriber;
+        }
+        
+        private void RemoveOnEmptySubscriptions(EventSubscriber subscriber, string clientId) {
+            if (subscriber.SubscriptionCount > 0)
+                return;
+            subscribers.TryRemove(clientId, out _);
+        }
+        
+        
+        // -------------------------- event distribution --------------------------------
         // use only for testing
         internal async Task SendQueuedEvents() {
             if (background) {
