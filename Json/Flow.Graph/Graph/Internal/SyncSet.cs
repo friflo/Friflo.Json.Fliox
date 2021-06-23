@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         /// key: <see cref="QueryTask{T}.filterLinq"/> 
         private readonly    Dictionary<string, QueryTask<T>>    queries      = new Dictionary<string, QueryTask<T>>();
         
-        private             SubscribeTask<T>                    subscribe;
+        private             SubscribeChangesTask<T>             subscribeChanges;
         
         /// key: <see cref="PeerEntity{T}.entity"/>.id
         private readonly    Dictionary<string, PeerEntity<T>>   creates      = new Dictionary<string, PeerEntity<T>>();
@@ -91,9 +91,9 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         // --- Subscribe
-        internal SubscribeTask<T> SubscribeFilter(HashSet<Change> changes, FilterOperation filter) {
-            subscribe = new SubscribeTask<T>(changes, filter);
-            return subscribe;
+        internal SubscribeChangesTask<T> SubscribeChangesFilter(HashSet<Change> changes, FilterOperation filter) {
+            subscribeChanges = new SubscribeChangesTask<T>(changes, filter);
+            return subscribeChanges;
         }
         
         // --- Create
@@ -345,7 +345,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         private void Subscribe(List<DatabaseTask> tasks) {
-            var sub = subscribe;
+            var sub = subscribeChanges;
             if (sub == null)
                 return;
             var req = new SubscribeChanges {
@@ -387,7 +387,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 Any(updates.Count) +
                 Any(patches.Count + patchTasks.Count) +
                 Any(deletes.Count) +
-                (subscribe != null ? 1 : 0);
+                (subscribeChanges != null ? 1 : 0);
             //
             info.reads      = reads.Count;
             info.queries    = queries.Count;

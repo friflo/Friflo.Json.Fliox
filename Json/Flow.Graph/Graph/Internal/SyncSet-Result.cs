@@ -326,11 +326,11 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal override void SubscribeResult (SubscribeChanges task, TaskResult result) {
             if (result is TaskErrorResult taskError) {
-                subscribe.state.SetError(new TaskErrorInfo(taskError));
+                subscribeChanges.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
             set.intern.subscription = task.changes.Count > 0 ? task : null;
-            subscribe.state.Synced = true;
+            subscribeChanges.state.Synced = true;
         }
     }
 }

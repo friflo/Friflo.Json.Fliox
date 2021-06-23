@@ -174,21 +174,21 @@ namespace Friflo.Json.Flow.Graph
         /// To react on specific changes use <see cref="SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
-        public List<SyncTask> SubscribeAll(HashSet<Change> changes) {
+        public List<SyncTask> SubscribeAllChanges(HashSet<Change> changes) {
             AssertSubscriptionHandler();
             var tasks = new List<SyncTask>();
             foreach (var setPair in _intern.setByType) {
                 var set = setPair.Value;
-                var task = set.SubscribeInternal(changes);
+                var task = set.SubscribeChangesInternal(changes);
                 tasks.Add(task);
             }
             return tasks;
         }
         
-        public SubscribeEchoTask SubscribeEcho(IEnumerable<string> prefixes) {
+        public SubscribeEchosTask SubscribeEcho(IEnumerable<string> prefixes) {
             AssertSubscriptionHandler();
-            var task = new SubscribeEchoTask(prefixes);
-            _intern.sync.subscribeEcho = task;
+            var task = new SubscribeEchosTask(prefixes);
+            _intern.sync.subscribeEchos = task;
             AddTask(task);
             return task;
         }
@@ -203,7 +203,7 @@ namespace Friflo.Json.Flow.Graph
         /// <summary>
         /// Set a custom <see cref="SubscriptionHandler"/> to enable reacting on specific database change events.
         /// E.g. notifying other application modules about created, updated, deleted or patches entities.
-        /// To subscribe to database change events <see cref="Graph.EntitySet{T}.Subscribe"/> need to be called before.
+        /// To subscribe to database change events <see cref="Graph.EntitySet{T}.SubscribeChanges"/> need to be called before.
         /// The default <see cref="SubscriptionHandler"/> apply all changes to the <see cref="EntityStore"/> as they arrive. 
         /// </summary>
         public void SetSubscriptionHandler(SubscriptionHandler subscriptionHandler) {

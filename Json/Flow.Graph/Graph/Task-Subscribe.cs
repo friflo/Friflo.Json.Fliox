@@ -9,8 +9,7 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph
 {
-    // todo rename SubscribeChangeTask
-    public class SubscribeTask<T> : SyncTask where T : Entity
+    public class SubscribeChangesTask<T> : SyncTask where T : Entity
     {
         internal            TaskState               state;
         internal readonly   HashSet<Change>         changes;
@@ -21,14 +20,14 @@ namespace Friflo.Json.Flow.Graph
         public   override   string                  Details         => $"SubscribeTask<{typeof(T).Name}> (filter: {filterLinq})";
         
 
-        internal SubscribeTask(HashSet<Change> changes, FilterOperation filter) {
+        internal SubscribeChangesTask(HashSet<Change> changes, FilterOperation filter) {
             this.changes    = changes ?? new HashSet<Change>();
             this.filter     = filter;
             this.filterLinq = filter.Linq;
         }
     }
     
-    public class SubscribeEchoTask : SyncTask
+    public class SubscribeEchosTask : SyncTask
     {
         internal readonly   List<string>            prefixes;
         internal            TaskState               state;
@@ -37,7 +36,7 @@ namespace Friflo.Json.Flow.Graph
         public   override   string                  Details         => $"SubscribeEchoTask";
         
 
-        internal SubscribeEchoTask(IEnumerable<string> prefixes) {
+        internal SubscribeEchosTask(IEnumerable<string> prefixes) {
             this.prefixes = prefixes.ToList();
         }
     }
