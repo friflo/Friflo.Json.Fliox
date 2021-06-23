@@ -37,7 +37,7 @@ namespace Friflo.Json.Flow.Database
         /// <summary> Returned <see cref="Mapper.ObjectMapper"/> doesnt throw Read() exceptions. To handle errors its
         /// <see cref="Mapper.ObjectMapper.reader"/> -> <see cref="ObjectReader.Error"/> need to be checked. </summary>
         ObjectPool<ObjectMapper>    ObjectMapper    { get; }
-        ObjectPool<EntityValidator> EntityValidator   { get; }
+        ObjectPool<EntityValidator> EntityValidator { get; }
         
         void                        AssertNoLeaks ();
     }
@@ -48,7 +48,7 @@ namespace Friflo.Json.Flow.Database
         public ObjectPool<ScalarSelector>   ScalarSelector  { get; }
         public ObjectPool<JsonEvaluator>    JsonEvaluator   { get; }
         public ObjectPool<ObjectMapper>     ObjectMapper    { get; }
-        public ObjectPool<EntityValidator>  EntityValidator   { get; }
+        public ObjectPool<EntityValidator>  EntityValidator { get; }
         
         public   static readonly    Pools   SharedPools = new Pools();
         
