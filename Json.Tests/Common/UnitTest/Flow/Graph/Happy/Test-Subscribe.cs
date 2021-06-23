@@ -23,7 +23,7 @@ using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 {
     internal enum EventAssertion {
-        None,
+        NoChanges,
         Changes
     }
     
@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 fileDatabase.eventBroker = eventBroker;
                 var pocSubscriber        = await CreatePocHandler(listenDb, sc, EventAssertion.Changes);
                 using (var createStore = new PocStore(fileDatabase, "createStore")) {
-                    var createSubscriber = await CreatePocHandler(createStore, sc, EventAssertion.None);
+                    var createSubscriber = await CreatePocHandler(createStore, sc, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
                     
                     while (!pocSubscriber.receivedAll ) { await Task.Delay(1); }
@@ -112,10 +112,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             if (echos.Contains(TestRelationPoC.EndCreate))
                 receivedAll = true;
             
-            if (eventAssertion == EventAssertion.Changes) {
-                var changeInfo = ev.GetChangeInfo();
-                IsTrue(changeInfo.Count > 0);
-                AssertChangeEvent(articleChanges);
+            switch (eventAssertion) {
+                case EventAssertion.NoChanges:
+                    var changeInfo = ev.GetChangeInfo();
+                    IsTrue(changeInfo.Count == 0);
+                    break;
+                case EventAssertion.Changes:
+                    changeInfo = ev.GetChangeInfo();
+                    IsTrue(changeInfo.Count > 0);
+                    AssertChangeEvent(articleChanges);
+                    break;
             }
         }
         

@@ -132,7 +132,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     var listenSubscriber    = await CreatePocHandler(listenDb, sc, EventAssertion.Changes);
                     using (var createStore  = new PocStore(remoteDatabase, "createStore"))
                     using (var useStore     = new PocStore(remoteDatabase, "useStore")) {
-                        var createSubscriber = await CreatePocHandler(createStore, sc, EventAssertion.None);
+                        var createSubscriber = await CreatePocHandler(createStore, sc, EventAssertion.NoChanges);
                         await TestRelationPoC.CreateStore(createStore);
                         
                         while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
@@ -203,7 +203,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 var listenSubscriber        = await CreatePocHandler(listenDb, sc, EventAssertion.Changes);
                 using (var createStore      = new PocStore(loopbackDatabase, "createStore"))
                 using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
-                    var createSubscriber        = await CreatePocHandler(createStore, sc, EventAssertion.None);
+                    var createSubscriber        = await CreatePocHandler(createStore, sc, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
                     
                     while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
