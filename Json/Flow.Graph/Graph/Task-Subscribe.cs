@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   string                  filterLinq; // use as string identifier of a filter
             
         internal override   TaskState               State           => state;
-        public   override   string                  Details         => $"SubscribeTask<{typeof(T).Name}> (filter: {filterLinq})";
+        public   override   string                  Details         => $"SubscribeChangesTask<{typeof(T).Name}> (filter: {filterLinq})";
         
 
         internal SubscribeChangesTask(HashSet<Change> changes, FilterOperation filter) {
@@ -33,7 +33,7 @@ namespace Friflo.Json.Flow.Graph
         internal            TaskState               state;
             
         internal override   TaskState               State           => state;
-        public   override   string                  Details         => $"SubscribeEchoTask";
+        public   override   string                  Details         => $"SubscribeEchosTask";
         
 
         internal SubscribeEchosTask(IEnumerable<string> prefixes) {
