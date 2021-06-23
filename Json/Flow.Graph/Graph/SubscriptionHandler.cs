@@ -22,7 +22,7 @@ namespace Friflo.Json.Flow.Graph
         /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
         private readonly    ConcurrentQueue <SubscribeEvent>    eventQueue;
         
-        public              int                                 ChangeSequence     { get; private set ;}
+        public              int                                 EventSequence     { get; private set ;}
         public              ChangeInfo<T>                       GetChangeInfo<T>() where T : Entity => GetChanges<T>().sum;
         
         /// <summary>
@@ -68,7 +68,7 @@ namespace Friflo.Json.Flow.Graph
         /// </summary>
         public void ProcessEvents() {
             if (synchronizationContext != null) {
-                throw new InvalidOperationException("ChangeSubscriber initialized with SynchronizationContext");
+                throw new InvalidOperationException("SubscriptionHandler initialized with SynchronizationContext");
             }
             while (eventQueue.TryDequeue(out SubscribeEvent subscribeEvent)) {
                 OnEvent(subscribeEvent);
@@ -76,7 +76,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         protected virtual void OnEvent(SubscribeEvent ev) {
-            ChangeSequence++;
+            EventSequence++;
             if (store._intern.disposed)  // store may already be disposed
                 return;
             

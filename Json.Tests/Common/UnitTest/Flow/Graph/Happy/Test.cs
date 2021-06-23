@@ -134,9 +134,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     using (var useStore     = new PocStore(remoteDatabase, "useStore")) {
                         var createSubscriber = await TestRelationPoC.SubscribeChanges(createStore, sc);
                         await TestRelationPoC.CreateStore(createStore);
-                        AreEqual(1, createSubscriber.ChangeSequence);  // received no change events for changes done by itself
+                        AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
                         
-                        while (listenSubscriber.ChangeSequence != 8 ) { await Task.Delay(1); }
+                        while (listenSubscriber.EventSequence != 8 ) { await Task.Delay(1); }
                         
                         listenSubscriber.AssertCreateStoreChanges();
                         await TestStores(createStore, useStore);
@@ -169,14 +169,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         await remoteDatabase.Close();
                         // all change events sent by createStore doesnt arrive at listenDb
                         await TestRelationPoC.CreateStore(createStore);
-                        AreEqual(0, listenSubscriber.ChangeSequence);
+                        AreEqual(0, listenSubscriber.EventSequence);
                         
                         await remoteDatabase.Connect();
                         
                         AreEqual(0, listenDb.Tasks.Count);
                         await listenDb.Sync();  // an empty Sync() is sufficient initiate re-sending all not-received change events
 
-                        while (listenSubscriber.ChangeSequence != 8 ) { await Task.Delay(1); }
+                        while (listenSubscriber.EventSequence != 8 ) { await Task.Delay(1); }
 
                         listenSubscriber.AssertCreateStoreChanges();
                         
@@ -205,9 +205,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
                     var createSubscriber        = await TestRelationPoC.SubscribeChanges(createStore, sc);
                     await TestRelationPoC.CreateStore(createStore);
-                    AreEqual(1, createSubscriber.ChangeSequence);  // received no change events for changes done by itself
+                    AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
 
-                    while (listenSubscriber.ChangeSequence != 8 ) { await Task.Delay(1); }
+                    while (listenSubscriber.EventSequence != 8 ) { await Task.Delay(1); }
 
                     listenSubscriber.AssertCreateStoreChanges();
                     await TestStores(createStore, useStore);

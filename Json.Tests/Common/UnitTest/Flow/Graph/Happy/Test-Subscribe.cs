@@ -38,10 +38,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 using (var createStore = new PocStore(fileDatabase, "createStore")) {
                     var createSubscriber = await TestRelationPoC.SubscribeChanges(createStore, sc);
                     await TestRelationPoC.CreateStore(createStore);
-                    AreEqual(1, createSubscriber.ChangeSequence);  // received no change events for changes done by itself
+                    AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
                 }
                 pocSubscriber.AssertCreateStoreChanges();
-                AreEqual(8, pocSubscriber.ChangeSequence);           // non protected access
+                AreEqual(8, pocSubscriber.EventSequence);           // non protected access
                 AreSimilar("(creates: 9, updates: 0, deletes: 4, patches: 2)",  pocSubscriber.GetChangeInfo<Article>());  // non protected access
                 await eventBroker.FinishQueues();
             }
@@ -97,7 +97,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             employeeSum.AddChanges(employeeChanges);
             echoSum += echos.Count;
             
-            switch (ChangeSequence) {
+            switch (EventSequence) {
                 case 1:
                     AreEqual("(creates: 2, updates: 0, deletes: 1, patches: 0)", articleChanges.info.ToString());
                     AreEqual("iPad Pro", articleChanges.creates["article-ipad"].name);
@@ -117,7 +117,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         /// assert that all database changes by <see cref="TestRelationPoC.CreateStore"/> are reflected
         public void AssertCreateStoreChanges() {
-            AreEqual(8,  ChangeSequence);
+            AreEqual(8,  EventSequence);
             AreSimilar("(creates: 2, updates: 0, deletes: 0, patches: 0)", orderSum);
             AreSimilar("(creates: 6, updates: 0, deletes: 0, patches: 0)", customerSum);
             AreSimilar("(creates: 9, updates: 0, deletes: 4, patches: 2)", articleSum);
