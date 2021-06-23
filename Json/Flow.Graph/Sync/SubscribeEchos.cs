@@ -10,6 +10,11 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task -----------------------------------
     public class SubscribeEchos : DatabaseTask
     {
+        /// <summary>
+        ///   Filter all <see cref="Echo.message"/>'s starting with one of the given <see cref="prefixes"/> strings.
+        ///   <para><see cref="prefixes"/> = {""} => subscribe all echo events.</para>
+        ///   <para><see cref="prefixes"/> = {} => unsubscribe echos events.</para>
+        /// </summary>
         public              List<string>    prefixes;
         internal override   TaskType        TaskType    => TaskType.subscribeEchos;
 

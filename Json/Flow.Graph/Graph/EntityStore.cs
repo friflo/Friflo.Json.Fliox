@@ -185,6 +185,11 @@ namespace Friflo.Json.Flow.Graph
             return tasks;
         }
         
+        /// <summary>
+        /// Filter all <see cref="Echo"/> messages starting with one of the given <see cref="prefixes"/> strings.
+        ///   <para><see cref="prefixes"/> = {""} => subscribe all echo events.</para>
+        ///   <para><see cref="prefixes"/> = {} => unsubscribe echos events.</para>
+        /// </summary>
         public SubscribeEchosTask SubscribeEchos(IEnumerable<string> prefixes) {
             AssertSubscriptionHandler();
             var task = new SubscribeEchosTask(prefixes);

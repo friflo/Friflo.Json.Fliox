@@ -158,6 +158,8 @@ content-type: application/json
 
 
 ### subscribe to echo tasks - run only for WebSocket; fails for HTTP POST
+# Filter all echos starting with one of the given "prefixes" strings.
+# "prefixes": [""] => get all echos. "prefixes": [] => unsubscribe echos events
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
