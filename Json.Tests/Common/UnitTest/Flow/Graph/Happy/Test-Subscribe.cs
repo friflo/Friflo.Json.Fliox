@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     var createSubscriber = await CreatePocHandler(createStore, sc, EventAssertion.None);
                     await TestRelationPoC.CreateStore(createStore);
                     
-                    while (!pocSubscriber.finished ) { await Task.Delay(1); }
+                    while (!pocSubscriber.receivedAll ) { await Task.Delay(1); }
 
                     AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
                 }
@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private readonly    ChangeInfo<Producer>    producerSum  = new ChangeInfo<Producer>();
         private readonly    ChangeInfo<Employee>    employeeSum  = new ChangeInfo<Employee>();
         private             int                     echoSum;
-        internal            bool                    finished;
+        internal            bool                    receivedAll;
         
         private readonly    EventAssertion          eventAssertion;
         
@@ -110,7 +110,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             echoSum += echos.Count;
             
             if (echos.Contains(TestRelationPoC.EndCreate))
-                finished = true;
+                receivedAll = true;
             
             if (eventAssertion == EventAssertion.Changes) {
                 var changeInfo = ev.GetChangeInfo();
