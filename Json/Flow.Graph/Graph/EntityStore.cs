@@ -174,11 +174,12 @@ namespace Friflo.Json.Flow.Graph
         /// To react on specific changes use <see cref="SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
-        public List<SyncTask> SubscribeAllChanges(HashSet<Change> changes) {
+        public List<SyncTask> SubscribeAllChanges(IEnumerable<Change> changes) {
             AssertSubscriptionHandler();
             var tasks = new List<SyncTask>();
             foreach (var setPair in _intern.setByType) {
                 var set = setPair.Value;
+                // ReSharper disable once PossibleMultipleEnumeration
                 var task = set.SubscribeChangesInternal(changes);
                 tasks.Add(task);
             }

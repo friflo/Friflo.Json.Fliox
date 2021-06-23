@@ -91,7 +91,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         // --- Subscribe
-        internal SubscribeChangesTask<T> SubscribeChangesFilter(HashSet<Change> changes, FilterOperation filter) {
+        internal SubscribeChangesTask<T> SubscribeChangesFilter(IEnumerable<Change> changes, FilterOperation filter) {
             subscribeChanges = new SubscribeChangesTask<T>(changes, filter);
             return subscribeChanges;
         }

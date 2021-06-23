@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Graph
         internal  abstract  void                PatchPeerEntities       (Dictionary<string, EntityPatch> patches);
         
         internal  abstract  void                ResetSync               ();
-        internal  abstract  SyncTask            SubscribeChangesInternal(HashSet<Change> changes);
+        internal  abstract  SyncTask            SubscribeChangesInternal(IEnumerable<Change> changes);
         internal abstract   SubscribeChanges    GetSubscription();
 
         protected EntitySet(string name) {
@@ -129,7 +129,7 @@ namespace Friflo.Json.Flow.Graph
         /// To react on specific changes use <see cref="EntityStore.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
-        public SubscribeChangesTask<T> SubscribeChangesFilter(HashSet<Change> changes, Expression<Func<T, bool>> filter) {
+        public SubscribeChangesTask<T> SubscribeChangesFilter(IEnumerable<Change> changes, Expression<Func<T, bool>> filter) {
             intern.store.AssertSubscriptionHandler();
             var op = Operation.FromFilter(filter);
             var task = sync.SubscribeChangesFilter(changes, op);
@@ -143,7 +143,7 @@ namespace Friflo.Json.Flow.Graph
         /// To react on specific changes use <see cref="EntityStore.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
-        public SubscribeChangesTask<T> SubscribeChangesByFilter(HashSet<Change> changes, EntityFilter<T> filter) {
+        public SubscribeChangesTask<T> SubscribeChangesByFilter(IEnumerable<Change> changes, EntityFilter<T> filter) {
             intern.store.AssertSubscriptionHandler();
             var task = sync.SubscribeChangesFilter(changes, filter.op);
             intern.store.AddTask(task);
@@ -156,7 +156,7 @@ namespace Friflo.Json.Flow.Graph
         /// To react on specific changes use <see cref="EntityStore.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
-        public SubscribeChangesTask<T> SubscribeChanges(HashSet<Change> changes) {
+        public SubscribeChangesTask<T> SubscribeChanges(IEnumerable<Change> changes) {
             intern.store.AssertSubscriptionHandler();
             var all = Operation.FilterTrue;
             var task = sync.SubscribeChangesFilter(changes, all);
@@ -416,7 +416,7 @@ namespace Friflo.Json.Flow.Graph
             sync = new SyncSet<T>(this);
         }
         
-        internal override SyncTask SubscribeChangesInternal(HashSet<Change> changes) {
+        internal override SyncTask SubscribeChangesInternal(IEnumerable<Change> changes) {
             return SubscribeChanges(changes);    
         }
         

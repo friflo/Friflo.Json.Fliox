@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Transform;
@@ -12,7 +13,7 @@ namespace Friflo.Json.Flow.Sync
     public class SubscribeChanges : DatabaseTask
     {
         public string                   container;
-        public HashSet<Change>          changes;
+        public List<Change>             changes;
         public FilterOperation          filter;
         
         internal override   TaskType    TaskType    => TaskType.subscribeChanges;
@@ -52,5 +53,11 @@ namespace Friflo.Json.Flow.Sync
         update,
         patch,
         delete
+    }
+    
+    public static class Changes
+    {
+        public static readonly ImmutableList<Change> All  = new [] { Change.create, Change.update, Change.delete, Change.patch }.ToImmutableList(); 
+        public static readonly ImmutableList<Change> None = new Change[]{}.ToImmutableList();
     }
 }
