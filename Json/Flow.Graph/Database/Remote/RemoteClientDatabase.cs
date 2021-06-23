@@ -37,27 +37,27 @@ namespace Friflo.Json.Flow.Database.Remote
         protected void ProcessEvent(DatabaseEvent ev) {
             var eventTarget     = clientTargets[ev.targetId];
             var contextPools    = new Pools(Pools.SharedPools);
-            var syncContext     = new SyncContext(contextPools, eventTarget);
-            eventTarget.ProcessEvent(ev, syncContext);
+            var messageContext  = new MessageContext(contextPools, eventTarget);
+            eventTarget.ProcessEvent(ev, messageContext);
         }
 
-        protected abstract Task<JsonResponse> ExecuteRequestJson(string jsonRequest, SyncContext syncContext);
+        protected abstract Task<JsonResponse> ExecuteRequestJson(string jsonRequest, MessageContext messageContext);
         
-        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
-            var response = await ExecuteRequest(syncRequest, syncContext).ConfigureAwait(false);
+        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+            var response = await ExecuteRequest(syncRequest, messageContext).ConfigureAwait(false);
             if (response is SyncResponse syncResponse)
                 return syncResponse;
             var error = (ErrorResponse)response;
             return new SyncResponse {error = error};
         }
         
-        private async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, SyncContext syncContext) {
-            using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
+        private async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, MessageContext messageContext) {
+            using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
                 mapper.Pretty = true;
                 mapper.WriteNullMembers = false;
                 var jsonRequest = CreateRequest(mapper.writer, request);
-                var result = await ExecuteRequestJson(jsonRequest, syncContext).ConfigureAwait(false);
+                var result = await ExecuteRequestJson(jsonRequest, messageContext).ConfigureAwait(false);
                 ObjectReader reader = mapper.reader;
                 if (result.statusType == ResponseStatusType.Ok) {
                     var response = reader.Read<DatabaseResponse>(result.body);
@@ -92,23 +92,23 @@ namespace Friflo.Json.Flow.Database.Remote
             : base(name, database) {
         }
 
-        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
+        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
             throw new InvalidOperationException("RemoteClientContainer does not execute CRUD commands");
         }
 
-        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, SyncContext syncContext) {
+        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
             throw new InvalidOperationException("RemoteClientContainer does not execute CRUD commands");
         }
 
-        public override Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
+        public override Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {
             throw new InvalidOperationException("RemoteClientContainer does not execute CRUD commands");
         }
         
-        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
+        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
             throw new InvalidOperationException("RemoteClientContainer does not execute CRUD commands");
         }
         
-        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, SyncContext syncContext) {
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
             throw new InvalidOperationException("RemoteClientContainer does not execute CRUD commands");
         }
     }

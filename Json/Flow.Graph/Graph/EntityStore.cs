@@ -129,33 +129,33 @@ namespace Friflo.Json.Flow.Graph
         // --------------------------------------- public interface --------------------------------------- 
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest();
-            var syncContext = new SyncContext(_intern.contextPools, _intern.eventTarget);
-            SyncResponse response = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+            var messageContext = new MessageContext(_intern.contextPools, _intern.eventTarget);
+            SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
             var result = HandleSyncResponse(syncRequest, response);
 
             if (!result.Success)
                 throw new SyncResultException(response.error, result.failed);
-            syncContext.pools.AssertNoLeaks();
+            messageContext.pools.AssertNoLeaks();
         }
         
         public async Task<SyncResult> TrySync() {
             SyncRequest syncRequest = CreateSyncRequest();
-            var syncContext = new SyncContext(_intern.contextPools, _intern.eventTarget);
-            SyncResponse response = await ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+            var messageContext = new MessageContext(_intern.contextPools, _intern.eventTarget);
+            SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
             var result = HandleSyncResponse(syncRequest, response);
-            syncContext.pools.AssertNoLeaks();
+            messageContext.pools.AssertNoLeaks();
             return result;
         }
         
         /// <see cref="SyncWait"/> is redundant -> made private. Keep it for exploring (Unity)
         private void SyncWait() {
             SyncRequest syncRequest = CreateSyncRequest();
-            var syncContext = new SyncContext(_intern.contextPools, _intern.eventTarget);
-            var responseTask = ExecuteSync(syncRequest, syncContext);
+            var messageContext = new MessageContext(_intern.contextPools, _intern.eventTarget);
+            var responseTask = ExecuteSync(syncRequest, messageContext);
             // responseTask.Wait();  
             SyncResponse response = responseTask.Result;  // <--- synchronous Sync point!!
             HandleSyncResponse(syncRequest, response);
-            syncContext.pools.AssertNoLeaks();
+            messageContext.pools.AssertNoLeaks();
         }
 
         public LogTask LogChanges() {
@@ -221,10 +221,10 @@ namespace Friflo.Json.Flow.Graph
                 throw new InvalidOperationException("subscriptions require a SubscriptionHandler. SetSubscriptionHandler() before");
         }
         
-        private async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+        private async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             SyncResponse response;
             try {
-                response = await _intern.database.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+                response = await _intern.database.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
             }
             catch (Exception e) {
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();

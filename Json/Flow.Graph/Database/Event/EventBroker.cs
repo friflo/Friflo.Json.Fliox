@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Database.Event
 {
     public interface IEventTarget {
         bool        IsOpen ();
-        Task<bool>  ProcessEvent(DatabaseEvent ev, SyncContext syncContext);
+        Task<bool>  ProcessEvent(DatabaseEvent ev, MessageContext messageContext);
     }
     
     public class EventBroker : IDisposable
@@ -100,7 +100,7 @@ namespace Friflo.Json.Flow.Database.Event
             }
         }
         
-        private void ProcessSubscriber(SyncRequest syncRequest, SyncContext syncContext) {
+        private void ProcessSubscriber(SyncRequest syncRequest, MessageContext messageContext) {
             string  clientId = syncRequest.clientId;
             if (clientId == null)
                 return;
@@ -108,7 +108,7 @@ namespace Friflo.Json.Flow.Database.Event
             if (!subscribers.TryGetValue(clientId, out var subscriber))
                 return;
             
-            subscriber.UpdateTarget (syncContext.eventTarget);
+            subscriber.UpdateTarget (messageContext.eventTarget);
             
             var eventAck = syncRequest.eventAck;
             if (!eventAck.HasValue)
@@ -124,8 +124,8 @@ namespace Friflo.Json.Flow.Database.Event
             tasks.Add(task);
         }
 
-        internal void EnqueueSyncTasks (SyncRequest syncRequest, SyncContext syncContext) {
-            ProcessSubscriber (syncRequest, syncContext);
+        internal void EnqueueSyncTasks (SyncRequest syncRequest, MessageContext messageContext) {
+            ProcessSubscriber (syncRequest, messageContext);
             
             foreach (var pair in subscribers) {
                 List<DatabaseTask>  tasks = null;

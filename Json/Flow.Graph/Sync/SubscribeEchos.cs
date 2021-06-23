@@ -18,20 +18,20 @@ namespace Friflo.Json.Flow.Sync
         public              List<string>    prefixes;
         internal override   TaskType        TaskType    => TaskType.subscribeEchos;
 
-        internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             var eventBroker = database.eventBroker;
             if (eventBroker == null)
                 return Task.FromResult<TaskResult>(InvalidTask("database has no eventBroker"));
-            if (syncContext.clientId == null)
+            if (messageContext.clientId == null)
                 return Task.FromResult<TaskResult>(InvalidTask("subscribe task requires client id set in sync request"));
             if (prefixes == null)
                 return Task.FromResult<TaskResult>(MissingField(nameof(prefixes)));
             
-            var eventTarget = syncContext.eventTarget;
+            var eventTarget = messageContext.eventTarget;
             if (eventTarget == null)
                 return Task.FromResult<TaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
-            eventBroker.SubscribeEchos(this, syncContext.clientId, eventTarget);
+            eventBroker.SubscribeEchos(this, messageContext.clientId, eventTarget);
             return Task.FromResult<TaskResult>(new SubscribeEchoResult());
         }
     }

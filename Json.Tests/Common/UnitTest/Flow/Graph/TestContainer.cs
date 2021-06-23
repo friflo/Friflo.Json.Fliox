@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return testContainer;
         }
         
-        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
+        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             foreach (var task in syncRequest.tasks) {
                 if (task is Echo echo) {
                     if (!syncErrors.TryGetValue(echo.message, out var fcn))
@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                     return fcn();
                 }
             }
-            var response = await base.ExecuteSync(syncRequest, syncContext);
+            var response = await base.ExecuteSync(syncRequest, messageContext);
             return response;
         }
 
@@ -90,7 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             local = localContainer;
         }
 
-        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
+        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
             var error = SimulateWriteErrors(command.entities.Keys.ToHashSet(), out var errors);
             if (error != null)
                 return Task.FromResult(new CreateEntitiesResult {Error = error});
@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return Task.FromResult(new CreateEntitiesResult());
         }
 
-        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, SyncContext syncContext) {
+        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
             var error = SimulateWriteErrors(command.entities.Keys.ToHashSet(), out var errors);
             if (error != null)
                 return Task.FromResult(new UpdateEntitiesResult {Error = error});
@@ -108,7 +108,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return Task.FromResult(new UpdateEntitiesResult());
         }
         
-        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, SyncContext syncContext) {
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
             var error = SimulateWriteErrors(command.ids, out var errors);
             if (error != null)
                 return Task.FromResult(new DeleteEntitiesResult {Error = error});
@@ -119,17 +119,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
         /// Validation of JSON entity values in result set is required, as this this implementation is able to
         /// simulate assign invalid JSON via .<see cref="SimulateReadErrors"/>.
-        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
-            var result = await local.ReadEntities(command, syncContext).ConfigureAwait(false);
+        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {
+            var result = await local.ReadEntities(command, messageContext).ConfigureAwait(false);
             var databaseError = SimulateReadErrors(result.entities);
             if (databaseError != null)
                 result.Error = databaseError;
-            result.ValidateEntities(local.name, syncContext);
+            result.ValidateEntities(local.name, messageContext);
             return result;
         }
         
-        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
-            var result = await local.QueryEntities(command, syncContext).ConfigureAwait(false);
+        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
+            var result = await local.QueryEntities(command, messageContext).ConfigureAwait(false);
             var databaseError = SimulateReadErrors(result.entities);
             if (databaseError != null) {
                 result.Error = databaseError;

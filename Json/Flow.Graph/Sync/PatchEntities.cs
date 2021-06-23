@@ -17,13 +17,13 @@ namespace Friflo.Json.Flow.Sync
         internal override   TaskType            TaskType => TaskType.patch;
         public   override   string              ToString() => "container: " + container;
         
-        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
             if (patches == null)
                 return MissingField(nameof(patches));
             var entityContainer = database.GetOrCreateContainer(container);
-            var result = await entityContainer.PatchEntities(this, syncContext).ConfigureAwait(false);
+            var result = await entityContainer.PatchEntities(this, messageContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error); 
             }

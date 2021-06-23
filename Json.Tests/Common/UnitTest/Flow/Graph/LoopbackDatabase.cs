@@ -30,8 +30,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             loopbackHost.Dispose();
         }
 
-        protected override async Task<JsonResponse> ExecuteRequestJson(string jsonRequest, SyncContext syncContext) {
-            var jsonResponse = await loopbackHost.ExecuteRequestJson(jsonRequest, syncContext, ProtocolType.ReqResp).ConfigureAwait(false);
+        protected override async Task<JsonResponse> ExecuteRequestJson(string jsonRequest, MessageContext messageContext) {
+            var jsonResponse = await loopbackHost.ExecuteRequestJson(jsonRequest, messageContext, ProtocolType.ReqResp).ConfigureAwait(false);
             return jsonResponse;
         }
     }

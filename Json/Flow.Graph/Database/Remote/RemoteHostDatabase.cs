@@ -25,21 +25,21 @@ namespace Friflo.Json.Flow.Database.Remote
             return container;
         }
         
-        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
-            var result = await local.ExecuteSync(syncRequest, syncContext).ConfigureAwait(false);
+        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+            var result = await local.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
             return result;
         }
 
-        public async Task<JsonResponse> ExecuteRequestJson(string jsonRequest, SyncContext syncContext, ProtocolType type) {
+        public async Task<JsonResponse> ExecuteRequestJson(string jsonRequest, MessageContext messageContext, ProtocolType type) {
             try {
                 string jsonResponse;
-                using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
+                using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                     ObjectMapper    mapper  = pooledMapper.instance;
                     ObjectReader    reader  = mapper.reader;
                     DatabaseRequest request = ReadRequest (reader, jsonRequest, type);
                     if (reader.Error.ErrSet)
-                        return JsonResponse.CreateResponseError(syncContext, reader.Error.msg.ToString(), ResponseStatusType.Error);
-                    DatabaseResponse response = await ExecuteRequest(request, syncContext).ConfigureAwait(false);
+                        return JsonResponse.CreateResponseError(messageContext, reader.Error.msg.ToString(), ResponseStatusType.Error);
+                    DatabaseResponse response = await ExecuteRequest(request, messageContext).ConfigureAwait(false);
                     mapper.WriteNullMembers = false;
                     mapper.Pretty = true;
                     jsonResponse = CreateResponse(mapper.writer, response, type);
@@ -47,7 +47,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 return new JsonResponse(jsonResponse, ResponseStatusType.Ok);
             } catch (Exception e) {
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                return JsonResponse.CreateResponseError(syncContext, errorMsg, ResponseStatusType.Exception);
+                return JsonResponse.CreateResponseError(messageContext, errorMsg, ResponseStatusType.Exception);
             }
         }
         
@@ -76,10 +76,10 @@ namespace Friflo.Json.Flow.Database.Remote
             throw new InvalidOperationException("can't be reached");
         }
         
-        private async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, SyncContext syncContext) {
+        private async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, MessageContext messageContext) {
             switch (request.RequestType) {
                 case RequestType.sync:
-                    return await ExecuteSync((SyncRequest)request, syncContext).ConfigureAwait(false);
+                    return await ExecuteSync((SyncRequest)request, messageContext).ConfigureAwait(false);
                 default:
                     throw new NotImplementedException();
             }
@@ -105,9 +105,9 @@ namespace Friflo.Json.Flow.Database.Remote
             this.statusType  = statusType;
         }
         
-        public static JsonResponse CreateResponseError(SyncContext syncContext, string message, ResponseStatusType type) {
+        public static JsonResponse CreateResponseError(MessageContext messageContext, string message, ResponseStatusType type) {
             var errorResponse = new ErrorResponse {message = message};
-            using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
+            using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
                 var body = mapper.Write(errorResponse);
                 return new JsonResponse(body, type);
@@ -127,24 +127,24 @@ namespace Friflo.Json.Flow.Database.Remote
         }
 
 
-        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
-            return await local.CreateEntities(command, syncContext).ConfigureAwait(false);
+        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
+            return await local.CreateEntities(command, messageContext).ConfigureAwait(false);
         }
 
-        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, SyncContext syncContext) {
-            return await local.UpdateEntities(command, syncContext).ConfigureAwait(false);
+        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
+            return await local.UpdateEntities(command, messageContext).ConfigureAwait(false);
         }
 
-        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
-            return await local.ReadEntities(command, syncContext).ConfigureAwait(false);
+        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {
+            return await local.ReadEntities(command, messageContext).ConfigureAwait(false);
         }
         
-        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
-            return await local.QueryEntities(command, syncContext).ConfigureAwait(false);
+        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
+            return await local.QueryEntities(command, messageContext).ConfigureAwait(false);
         }
         
-        public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, SyncContext syncContext) {
-            return await local.DeleteEntities(command, syncContext).ConfigureAwait(false);
+        public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
+            return await local.DeleteEntities(command, messageContext).ConfigureAwait(false);
         }
     }
 }

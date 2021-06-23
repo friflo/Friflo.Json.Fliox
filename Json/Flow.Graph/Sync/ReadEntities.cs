@@ -37,8 +37,8 @@ namespace Friflo.Json.Flow.Sync
         /// So database adapters which can ensure the JSON value is always valid made calling <see cref="ValidateEntities"/>
         /// obsolete - like Postgres/JSONB, Azure Cosmos DB or MongoDB.
         /// </summary>
-        public void ValidateEntities(string container, SyncContext syncContext) {
-            using (var pooledValidator = syncContext.pools.EntityValidator.Get()) {
+        public void ValidateEntities(string container, MessageContext messageContext) {
+            using (var pooledValidator = messageContext.pools.EntityValidator.Get()) {
                 var validator = pooledValidator.instance;
                 foreach (var entityEntry in entities) {
                     var entity = entityEntry.Value;

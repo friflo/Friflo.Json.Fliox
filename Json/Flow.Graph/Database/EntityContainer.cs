@@ -48,11 +48,11 @@ namespace Friflo.Json.Flow.Database
 
         public virtual      bool            Pretty      => false;
 
-        public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities command, SyncContext syncContext);
-        public abstract Task<UpdateEntitiesResult>  UpdateEntities  (UpdateEntities command, SyncContext syncContext);
-        public abstract Task<ReadEntitiesResult>    ReadEntities    (ReadEntities   command, SyncContext syncContext);
-        public abstract Task<QueryEntitiesResult>   QueryEntities   (QueryEntities  command, SyncContext syncContext);
-        public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities command, SyncContext syncContext);
+        public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities command, MessageContext messageContext);
+        public abstract Task<UpdateEntitiesResult>  UpdateEntities  (UpdateEntities command, MessageContext messageContext);
+        public abstract Task<ReadEntitiesResult>    ReadEntities    (ReadEntities   command, MessageContext messageContext);
+        public abstract Task<QueryEntitiesResult>   QueryEntities   (QueryEntities  command, MessageContext messageContext);
+        public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities command, MessageContext messageContext);
         
         
         protected EntityContainer(string name, EntityDatabase database) {
@@ -73,12 +73,12 @@ namespace Friflo.Json.Flow.Database
         /// If the used database has integrated support for patching JSON its <see cref="EntityContainer"/>
         /// implementation can override this method to replace two database requests by one.
         /// </summary>
-        public virtual async Task<PatchEntitiesResult> PatchEntities   (PatchEntities patchEntities, SyncContext syncContext) {
+        public virtual async Task<PatchEntitiesResult> PatchEntities   (PatchEntities patchEntities, MessageContext messageContext) {
             var entityPatches = patchEntities.patches;
             var ids = entityPatches.Select(patch => patch.Key).ToHashSet();
             // Read entities to be patched
             var readTask = new ReadEntities {ids = ids};
-            var readResult = await ReadEntities(readTask, syncContext).ConfigureAwait(false);
+            var readResult = await ReadEntities(readTask, messageContext).ConfigureAwait(false);
             if (readResult.Error != null) {
                 return new PatchEntitiesResult {Error = readResult.Error};
             }
@@ -91,7 +91,7 @@ namespace Friflo.Json.Flow.Database
             var targets = new  Dictionary<string,EntityValue>(entities.Count);
             
             Dictionary<string, EntityError> patchErrors = null;
-            using (var pooledPatcher = syncContext.pools.JsonPatcher.Get()) {
+            using (var pooledPatcher = messageContext.pools.JsonPatcher.Get()) {
                 JsonPatcher patcher = pooledPatcher.instance;
                 foreach (var entity in entities) {
                     var key = entity.Key;
@@ -117,7 +117,7 @@ namespace Friflo.Json.Flow.Database
             }
             // Write patched entities back
             var task = new UpdateEntities {entities = targets};
-            var updateResult = await UpdateEntities(task, syncContext).ConfigureAwait(false);
+            var updateResult = await UpdateEntities(task, messageContext).ConfigureAwait(false);
             if (updateResult.Error != null) {
                 return new PatchEntitiesResult {Error = updateResult.Error};
             }
@@ -132,9 +132,9 @@ namespace Friflo.Json.Flow.Database
             return new PatchEntitiesResult{patchErrors = patchErrors};
         }
         
-        internal async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, HashSet<string> ids, SyncContext syncContext) {
+        internal async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, HashSet<string> ids, MessageContext messageContext) {
             var readIds         = new ReadEntities {ids = ids};
-            var readEntities    = await ReadEntities(readIds, syncContext).ConfigureAwait(false);
+            var readEntities    = await ReadEntities(readIds, messageContext).ConfigureAwait(false);
             if (readEntities.Error != null) {
                 // todo add error test 
                 var message = $"failed filter entities of '{name}' (filter: {command.filterLinq}) - {readEntities.Error.message}";
@@ -144,7 +144,7 @@ namespace Friflo.Json.Flow.Database
             
             var jsonFilter      = new JsonFilter(command.filter); // filter can be reused
             var result          = new Dictionary<string, EntityValue>();
-            using (var pooledEvaluator = syncContext.pools.JsonEvaluator.Get()) {
+            using (var pooledEvaluator = messageContext.pools.JsonEvaluator.Get()) {
                 JsonEvaluator evaluator = pooledEvaluator.instance;
                 foreach (var entityPair in readEntities.entities) {
                     var key     = entityPair.Key;
@@ -162,7 +162,7 @@ namespace Friflo.Json.Flow.Database
             List<References>                    references,
             Dictionary<string, EntityValue>     entities,
             string                              container,
-            SyncContext                         syncContext)
+            MessageContext                         messageContext)
         {
             if (references.Count == 0)
                 throw new InvalidOperationException("Expect references.Count > 0");
@@ -179,7 +179,7 @@ namespace Friflo.Json.Flow.Database
                 referenceResults.Add(referenceResult);
             }
             var select      = new ScalarSelect(selectors);  // can be reused
-            using (var pooledSelector    = syncContext.pools.ScalarSelector.Get()) {
+            using (var pooledSelector    = messageContext.pools.ScalarSelector.Get()) {
                 ScalarSelector selector = pooledSelector.instance;
                 // Get the selected refs for all entities.
                 // Select() is expensive as it requires a full JSON parse. By using an selector array only one
@@ -214,9 +214,9 @@ namespace Friflo.Json.Flow.Database
                 string                              container,
                 string                              selectorPath,
                 SyncResponse                        syncResponse,
-                SyncContext                         syncContext)
+                MessageContext                      messageContext)
         {
-            var referenceResults = GetReferences(references, entities, container, syncContext);
+            var referenceResults = GetReferences(references, entities, container, messageContext);
             
             // add referenced entities to ContainerEntities
             for (int n = 0; n < references.Count; n++) {
@@ -229,7 +229,7 @@ namespace Friflo.Json.Flow.Database
                     continue;
                 var refIdList   = ids.ToHashSet();
                 var readRefIds  = new ReadEntities {ids = refIdList};
-                var refEntities = await refCont.ReadEntities(readRefIds, syncContext).ConfigureAwait(false);
+                var refEntities = await refCont.ReadEntities(readRefIds, messageContext).ConfigureAwait(false);
                 var subPath = $"{selectorPath} -> {reference.selector}";
                 // In case of ReadEntities error: Assign error to result and continue with other references.
                 // Resolving other references are independent may be successful.
@@ -249,7 +249,7 @@ namespace Friflo.Json.Flow.Database
                     subEntities.Add(id, refEntities.entities[id]);
                 }
                 var refReferencesResult =
-                    await ReadReferences(subReferences, subEntities, refContName, subPath, syncResponse, syncContext).ConfigureAwait(false);
+                    await ReadReferences(subReferences, subEntities, refContName, subPath, syncResponse, messageContext).ConfigureAwait(false);
                 // returned refReferencesResult.references is always set. Each references[] item contain either a result or an error.
                 referenceResult.references = refReferencesResult.references;
             }

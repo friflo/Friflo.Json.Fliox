@@ -10,20 +10,20 @@ using Friflo.Json.Flow.Utils;
 
 namespace Friflo.Json.Flow.Database
 {
-    // ------------------------------------ SyncContext ------------------------------------
+    // ------------------------------------ MessageContext ------------------------------------
     /// <summary>
-    /// One <see cref="SyncContext"/> is created per <see cref="SyncRequest"/> instance to enable
+    /// One <see cref="MessageContext"/> is created per <see cref="SyncRequest"/> instance to enable
     /// multi threaded and concurrent request handling.
     /// <br></br>
     /// Note: In case of adding transaction support in future transaction data/state will be stored here.
     /// </summary>
-    public class SyncContext
+    public class MessageContext
     {
         public                  string          clientId;
         public  readonly        IPools          pools;
         public  readonly        IEventTarget    eventTarget;
         
-        public SyncContext (IPools pools, IEventTarget eventTarget) {
+        public MessageContext (IPools pools, IEventTarget eventTarget) {
             this.pools          = pools;
             this.eventTarget    = eventTarget;
         }

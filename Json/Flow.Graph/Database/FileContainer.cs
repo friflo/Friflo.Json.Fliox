@@ -44,7 +44,7 @@ namespace Friflo.Json.Flow.Database
             return folder + key + ".json";
         }
         
-        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
+        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
             var entities = command.entities;
             Dictionary<string, EntityError> createErrors = null;
             foreach (var entityPair in entities) {
@@ -61,7 +61,7 @@ namespace Friflo.Json.Flow.Database
             return new CreateEntitiesResult{createErrors = createErrors};
         }
 
-        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, SyncContext syncContext) {
+        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
             var entities = command.entities;
             Dictionary<string, EntityError> updateErrors = null;
             foreach (var entityPair in entities) {
@@ -78,7 +78,7 @@ namespace Friflo.Json.Flow.Database
             return new UpdateEntitiesResult{updateErrors = updateErrors};
         }
 
-        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
+        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {
             var keys        = command.ids;
             var entities    = new Dictionary<string, EntityValue>(keys.Count);
             foreach (var key in keys) {
@@ -98,17 +98,17 @@ namespace Friflo.Json.Flow.Database
                 entities.TryAdd(key, entry);
             }
             var result = new ReadEntitiesResult{entities = entities};
-            result.ValidateEntities(name, syncContext);
+            result.ValidateEntities(name, messageContext);
             return result;
         }
 
-        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
+        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
             var ids     = GetIds(folder);
-            var result  = await FilterEntities(command, ids, syncContext).ConfigureAwait(false);
+            var result  = await FilterEntities(command, ids, messageContext).ConfigureAwait(false);
             return result;
         }
 
-        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, SyncContext syncContext) {
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
             var keys = command.ids;
             Dictionary<string, EntityError> deleteErrors = null;
             foreach (var key in keys) {

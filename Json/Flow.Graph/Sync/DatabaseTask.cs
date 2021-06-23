@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Sync
         [Fri.Ignore]
         public              int                     index;
             
-        internal abstract   Task<TaskResult>        Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext);
+        internal abstract   Task<TaskResult>        Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext);
         internal abstract   TaskType                TaskType { get; }
         
         internal static TaskErrorResult TaskError(CommandError error) {

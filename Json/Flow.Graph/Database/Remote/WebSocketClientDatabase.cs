@@ -91,7 +91,7 @@ namespace Friflo.Json.Flow.Database.Remote
                             throw new InvalidOperationException("Expect corresponding request to response");
                         }
                         if (websocket.State != WebSocketState.Open) {
-                            var error = JsonResponse.CreateResponseError(request.syncContext, $"WebSocket not Open. {endpoint}", ResponseStatusType.Error);
+                            var error = JsonResponse.CreateResponseError(request.messageContext, $"WebSocket not Open. {endpoint}", ResponseStatusType.Error);
                             request.response.SetResult(error);
                             return;
                         }
@@ -113,12 +113,12 @@ namespace Friflo.Json.Flow.Database.Remote
             }
         }
 
-        protected override async Task<JsonResponse> ExecuteRequestJson(string jsonSyncRequest, SyncContext syncContext) {
+        protected override async Task<JsonResponse> ExecuteRequestJson(string jsonSyncRequest, MessageContext messageContext) {
             try {
                 byte[] requestBytes = Encoding.UTF8.GetBytes(jsonSyncRequest);
                 var arraySegment    = new ArraySegment<byte>(requestBytes, 0, requestBytes.Length);
                 await websocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
-                var request         = new WebsocketRequest(syncContext);
+                var request         = new WebsocketRequest(messageContext);
                 requestQueue.Enqueue(request);
                 
                 var response = await request.response.Task.ConfigureAwait(false);
@@ -128,18 +128,18 @@ namespace Friflo.Json.Flow.Database.Remote
                 var error = ErrorResponse.ErrorFromException(e);
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
-                return JsonResponse.CreateResponseError(syncContext, error.ToString(), ResponseStatusType.Exception);
+                return JsonResponse.CreateResponseError(messageContext, error.ToString(), ResponseStatusType.Exception);
             }
         }
     }
     
     internal class WebsocketRequest {
-        internal readonly   SyncContext                         syncContext;
+        internal readonly   MessageContext                      messageContext;
         internal readonly   TaskCompletionSource<JsonResponse>  response;          
         
-        internal WebsocketRequest(SyncContext syncContext) {
+        internal WebsocketRequest(MessageContext messageContext) {
             response            = new TaskCompletionSource<JsonResponse>(); 
-            this.syncContext    = syncContext;
+            this.messageContext = messageContext;
         }
     }
 }

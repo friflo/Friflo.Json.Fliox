@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Sync
         internal override   TaskType            TaskType => TaskType.update;
         public   override   string              ToString() => "container: " + container;
         
-        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
             if (entities == null)
@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Sync
             var entityContainer = database.GetOrCreateContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {
-                using (var pooledPatcher = syncContext.pools.JsonPatcher.Get()) {
+                using (var pooledPatcher = messageContext.pools.JsonPatcher.Get()) {
                     JsonPatcher patcher = pooledPatcher.instance;
                     foreach (var entity in entities) {
                         var value = entity.Value;
@@ -35,7 +35,7 @@ namespace Friflo.Json.Flow.Sync
                     }
                 }
             }
-            var result = await entityContainer.UpdateEntities(this, syncContext).ConfigureAwait(false);
+            var result = await entityContainer.UpdateEntities(this, messageContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error);
             }

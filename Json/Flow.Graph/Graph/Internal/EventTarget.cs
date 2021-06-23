@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         // --- IEventTarget
         public bool     IsOpen ()   => true;
 
-        public Task<bool> ProcessEvent(DatabaseEvent ev, SyncContext syncContext) {
+        public Task<bool> ProcessEvent(DatabaseEvent ev, MessageContext messageContext) {
             if (ev.targetId != store._intern.clientId)
                 throw new InvalidOperationException("Expect DatabaseEvent client id == EntityStore client id");
             

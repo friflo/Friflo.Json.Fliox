@@ -42,8 +42,8 @@ namespace Friflo.Json.Flow.Database.Remote
             return webSocket.State == WebSocketState.Open;
         }
 
-        public Task<bool> ProcessEvent(DatabaseEvent ev, SyncContext syncContext) {
-            using (var pooledMapper = syncContext.pools.ObjectMapper.Get()) {
+        public Task<bool> ProcessEvent(DatabaseEvent ev, MessageContext messageContext) {
+            using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 var writer = pooledMapper.instance.writer;
                 writer.WriteNullMembers = false;
                 writer.Pretty           = true;
@@ -97,9 +97,9 @@ namespace Friflo.Json.Flow.Database.Remote
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
                         var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
                         var contextPools    = new Pools(Pools.SharedPools);
-                        var syncContext     = new SyncContext(contextPools, this);
-                        var result          = await remoteHost.ExecuteRequestJson(requestContent, syncContext, ProtocolType.BiDirect).ConfigureAwait(false);
-                        syncContext.pools.AssertNoLeaks();
+                        var messageContext  = new MessageContext(contextPools, this);
+                        var result          = await remoteHost.ExecuteRequestJson(requestContent, messageContext, ProtocolType.BiDirect).ConfigureAwait(false);
+                        messageContext.pools.AssertNoLeaks();
                         byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);
                         var arraySegment    = new ArraySegment<byte>(resultBytes, 0, resultBytes.Length);
                         sendWriter.TryWrite(arraySegment);

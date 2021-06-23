@@ -32,7 +32,7 @@ namespace Friflo.Json.Flow.Database
             Pretty = pretty;
         }
         
-        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, SyncContext syncContext) {
+        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
             var entities = command.entities;
             foreach (var entityPair in entities) {
                 string      key      = entityPair.Key;
@@ -43,7 +43,7 @@ namespace Friflo.Json.Flow.Database
             return Task.FromResult(result);
         }
 
-        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, SyncContext syncContext) {
+        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
             var entities = command.entities;
             foreach (var entityPair in entities) {
                 string      key      = entityPair.Key;
@@ -56,7 +56,7 @@ namespace Friflo.Json.Flow.Database
             return Task.FromResult(result);
         }
 
-        public override Task<ReadEntitiesResult> ReadEntities(ReadEntities command, SyncContext syncContext) {
+        public override Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {
             var keys = command.ids;
             var entities = new Dictionary<string, EntityValue>(keys.Count);
             foreach (var key in keys) {
@@ -68,13 +68,13 @@ namespace Friflo.Json.Flow.Database
             return Task.FromResult(result);
         }
         
-        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, SyncContext syncContext) {
+        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
             var ids     = payloads.Keys.ToHashSet();
-            var result  = await FilterEntities(command, ids, syncContext).ConfigureAwait(false);
+            var result  = await FilterEntities(command, ids, messageContext).ConfigureAwait(false);
             return result;
         }
         
-        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, SyncContext syncContext) {
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
             var keys = command.ids;
             foreach (var key in keys) {
                 payloads.Remove(key);

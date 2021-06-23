@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Sync
         internal override   TaskType        TaskType => TaskType.query;
         public   override   string          ToString() => $"container: {container}, filter: {filterLinq}";
         
-        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
             if (filter == null)
@@ -30,7 +30,7 @@ namespace Friflo.Json.Flow.Sync
             if (!ValidReferences(references, out var error))
                 return error;
             var entityContainer = database.GetOrCreateContainer(container);
-            var result = await entityContainer.QueryEntities(this, syncContext).ConfigureAwait(false);
+            var result = await entityContainer.QueryEntities(this, messageContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
@@ -41,7 +41,7 @@ namespace Friflo.Json.Flow.Sync
             var queryRefsResults = new ReadReferencesResult();
             if (references != null && references.Count > 0) {
                 queryRefsResults =
-                    await entityContainer.ReadReferences(references, entities, container, "", response, syncContext).ConfigureAwait(false);
+                    await entityContainer.ReadReferences(references, entities, container, "", response, messageContext).ConfigureAwait(false);
                 // returned queryRefsResults.references is always set. Each references[] item contain either a result or an error.
             }
             result.container    = container;

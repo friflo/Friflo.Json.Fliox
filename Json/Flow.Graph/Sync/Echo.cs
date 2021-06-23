@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Sync
         internal override   TaskType        TaskType    => TaskType.echo;
         public   override   string          ToString()  => message;
 
-        internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             TaskResult result = new EchoResult{message = message};
             return Task.FromResult(result); 
         }

@@ -66,8 +66,8 @@ namespace Friflo.Json.Flow.Database
         ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Flow.Sync"/> which must to be fixed.</para> 
         /// </para>
         /// </summary>
-        public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, SyncContext syncContext) {
-            syncContext.clientId = syncRequest.clientId;
+        public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+            messageContext.clientId = syncRequest.clientId;
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null)
                 return new SyncResponse{error = new ErrorResponse{message = "missing field: tasks (array)"}};
@@ -90,7 +90,7 @@ namespace Friflo.Json.Flow.Database
                 task.index = index;
                     
                 try {
-                    var result = await task.Execute(this, response, syncContext).ConfigureAwait(false);
+                    var result = await task.Execute(this, response, messageContext).ConfigureAwait(false);
                     tasks.Add(result);
                 }
                 catch (Exception e) {
@@ -111,7 +111,7 @@ namespace Friflo.Json.Flow.Database
             
             var broker = eventBroker;
             if (broker != null) {
-                broker.EnqueueSyncTasks(syncRequest, syncContext);
+                broker.EnqueueSyncTasks(syncRequest, messageContext);
                 if (!broker.background) {
                     await broker.SendQueuedEvents().ConfigureAwait(false); // use only for testing
                 }

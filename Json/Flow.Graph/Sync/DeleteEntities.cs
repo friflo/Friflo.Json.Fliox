@@ -16,13 +16,13 @@ namespace Friflo.Json.Flow.Sync
         internal override   TaskType            TaskType => TaskType.delete;
         public   override   string              ToString() => "container: " + container;
         
-        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
+        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
             if (ids == null)
                 return MissingField(nameof(ids));
             var entityContainer = database.GetOrCreateContainer(container);
-            var result = await entityContainer.DeleteEntities(this, syncContext).ConfigureAwait(false);
+            var result = await entityContainer.DeleteEntities(this, messageContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
