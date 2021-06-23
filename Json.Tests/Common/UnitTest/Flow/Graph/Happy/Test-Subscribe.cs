@@ -23,6 +23,7 @@ using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 {
     internal enum EventAssertion {
+        None,
         Changes
     }
     
@@ -40,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 fileDatabase.eventBroker = eventBroker;
                 var pocSubscriber        = await CreatePocHandler(listenDb, sc, EventAssertion.Changes);
                 using (var createStore = new PocStore(fileDatabase, "createStore")) {
-                    var createSubscriber = await TestRelationPoC.SubscribeChanges(createStore, sc);
+                    var createSubscriber = await CreatePocHandler(createStore, sc, EventAssertion.None);
                     await TestRelationPoC.CreateStore(createStore);
                     AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
                 }
@@ -97,9 +98,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             var employeeChanges = GetEntityChanges<Employee>(ev);
             var echos           = GetEchos                  (ev);
             
-            var changeInfo = ev.GetChangeInfo();
-            IsTrue(changeInfo.Count > 0);
-
             orderSum.   AddChanges(orderChanges);
             customerSum.AddChanges(customerChanges);
             articleSum. AddChanges(articleChanges);
@@ -107,8 +105,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             employeeSum.AddChanges(employeeChanges);
             echoSum += echos.Count;
             
-            if (eventAssertion == EventAssertion.Changes)
+            if (eventAssertion == EventAssertion.Changes) {
+                var changeInfo = ev.GetChangeInfo();
+                IsTrue(changeInfo.Count > 0);
                 AssertChangeEvent(articleChanges);
+            }
         }
         
         private  void AssertChangeEvent (EntityChanges<Article> articleChanges) {
