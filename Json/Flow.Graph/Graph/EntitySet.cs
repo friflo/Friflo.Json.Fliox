@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Graph
         internal  abstract  void                PatchPeerEntities       (Dictionary<string, EntityPatch> patches);
         
         internal  abstract  void                ResetSync               ();
-        internal  abstract  SyncTask            SubscribeChangesInternal       (HashSet<Change> changes);
+        internal  abstract  SyncTask            SubscribeChangesInternal(HashSet<Change> changes);
         internal abstract   SubscribeChanges    GetSubscription();
 
         protected EntitySet(string name) {
