@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             
             var changes = new HashSet<Change>(new [] {Change.create, Change.update, Change.delete, Change.patch});
             var subscriptions = store.SubscribeAllChanges(changes);
-            var subscribeEcho = store.SubscribeEcho(new [] { TestRelationPoC.EndCreate });
+            var subscribeEcho = store.SubscribeEchos(new [] { TestRelationPoC.EndCreate });
                 
             await store.Sync(); // -------- Sync --------
 
