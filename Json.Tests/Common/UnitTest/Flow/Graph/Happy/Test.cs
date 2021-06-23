@@ -134,10 +134,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     using (var useStore     = new PocStore(remoteDatabase, "useStore")) {
                         var createSubscriber = await CreatePocHandler(createStore, sc, EventAssertion.None);
                         await TestRelationPoC.CreateStore(createStore);
+                        
+                        while (!listenSubscriber.finished ) { await Task.Delay(1); }
+                        
                         AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
-                        
-                        while (listenSubscriber.EventSequence != 8 ) { await Task.Delay(1); }
-                        
                         listenSubscriber.AssertCreateStoreChanges();
                         await TestStores(createStore, useStore);
                     }
@@ -176,7 +176,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         AreEqual(0, listenDb.Tasks.Count);
                         await listenDb.Sync();  // an empty Sync() is sufficient initiate re-sending all not-received change events
 
-                        while (listenSubscriber.EventSequence != 8 ) { await Task.Delay(1); }
+                        while (!listenSubscriber.finished ) { await Task.Delay(1); }
 
                         listenSubscriber.AssertCreateStoreChanges();
                         
@@ -205,10 +205,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
                     var createSubscriber        = await CreatePocHandler(createStore, sc, EventAssertion.None);
                     await TestRelationPoC.CreateStore(createStore);
+                    
+                    while (!listenSubscriber.finished ) { await Task.Delay(1); }
+                    
                     AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
-
-                    while (listenSubscriber.EventSequence != 8 ) { await Task.Delay(1); }
-
                     listenSubscriber.AssertCreateStoreChanges();
                     await TestStores(createStore, useStore);
                 }

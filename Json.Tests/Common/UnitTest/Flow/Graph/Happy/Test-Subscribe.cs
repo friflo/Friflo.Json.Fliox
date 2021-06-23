@@ -43,6 +43,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 using (var createStore = new PocStore(fileDatabase, "createStore")) {
                     var createSubscriber = await CreatePocHandler(createStore, sc, EventAssertion.None);
                     await TestRelationPoC.CreateStore(createStore);
+                    
+                    while (!pocSubscriber.finished ) { await Task.Delay(1); }
+
                     AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
                 }
                 pocSubscriber.AssertCreateStoreChanges();
@@ -58,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             
             var changes = new HashSet<Change>(new [] {Change.create, Change.update, Change.delete, Change.patch});
             var subscriptions = store.SubscribeAll(changes);
-            var subscribeEcho = store.SubscribeEcho(new [] {"EndCreate"});
+            var subscribeEcho = store.SubscribeEcho(new [] { TestRelationPoC.EndCreate });
                 
             await store.Sync(); // -------- Sync --------
 
@@ -78,6 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private readonly    ChangeInfo<Producer>    producerSum  = new ChangeInfo<Producer>();
         private readonly    ChangeInfo<Employee>    employeeSum  = new ChangeInfo<Employee>();
         private             int                     echoSum;
+        internal            bool                    finished;
         
         private readonly    EventAssertion          eventAssertion;
         
@@ -104,6 +108,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             producerSum.AddChanges(producerChanges);
             employeeSum.AddChanges(employeeChanges);
             echoSum += echos.Count;
+            
+            if (echos.Contains(TestRelationPoC.EndCreate))
+                finished = true;
             
             if (eventAssertion == EventAssertion.Changes) {
                 var changeInfo = ev.GetChangeInfo();
