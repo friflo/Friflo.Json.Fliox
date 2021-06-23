@@ -32,12 +32,12 @@ namespace Friflo.Json.Flow.Sync
                 return Task.FromResult<TaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
             eventBroker.SubscribeEchos(this, messageContext.clientId, eventTarget);
-            return Task.FromResult<TaskResult>(new SubscribeEchoResult());
+            return Task.FromResult<TaskResult>(new SubscribeEchosResult());
         }
     }
     
     // ----------------------------------- task result -----------------------------------
-    public class SubscribeEchoResult : TaskResult
+    public class SubscribeEchosResult : TaskResult
     {
         internal override   TaskType    TaskType => TaskType.subscribeEchos;
     }
