@@ -23,7 +23,11 @@ using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 {
     internal enum EventAssertion {
+        /// <summary>Assert a <see cref="SubscriptionHandler"/> will not get change events from the
+        /// <see cref="EntityStore"/> it is attached to.</summary>.
         NoChanges,
+        /// <summary>Assert a <see cref="SubscriptionHandler"/> will get change events from all
+        /// <see cref="EntityStore"/>'s it is not attached to.</summary>.
         Changes
     }
     
