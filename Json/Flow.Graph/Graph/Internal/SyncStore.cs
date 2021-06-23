@@ -59,11 +59,11 @@ namespace Friflo.Json.Flow.Graph.Internal
         private void SubscribeEcho(List<DatabaseTask> tasks) {
             if (subscribeEchos == null)
                 return;
-            var req = new SubscribeEcho{ prefixes = subscribeEchos.prefixes};
+            var req = new SubscribeEchos{ prefixes = subscribeEchos.prefixes};
             tasks.Add(req);
         }
         
-        internal void SubscribeEchoResult (SubscribeEcho task, TaskResult result) {
+        internal void SubscribeEchoResult (SubscribeEchos task, TaskResult result) {
             if (result is TaskErrorResult taskError) {
                 subscribeEchos.state.SetError(new TaskErrorInfo(taskError));
                 return;

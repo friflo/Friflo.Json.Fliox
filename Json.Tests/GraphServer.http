@@ -164,7 +164,7 @@ content-type: application/json
 { "type": "sync",
   "client": "client-1",
   "tasks": [{
-    "task": "subscribeEcho",
+    "task": "subscribeEchos",
     "prefixes": [""]
   }
 ]}
@@ -174,9 +174,9 @@ POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync",
-  "client": "client-2",
+  "client": "client-1",
   "tasks": [{
-    "task": "subscribe", "container": "Article", 
+    "task": "subscribeChanges", "container": "Article", 
     "changes": ["create", "update", "delete", "patch"]
   }
 ]}

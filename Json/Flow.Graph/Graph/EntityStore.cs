@@ -396,13 +396,13 @@ namespace Friflo.Json.Flow.Graph
                             var echo = (Echo) task;
                             _intern.sync.EchoResult(echo, result);
                             break;
-                        case TaskType.subscribe:
+                        case TaskType.subscribeChanges:
                             var subscribe = (SubscribeChanges) task;
                             set = _intern.setByName[subscribe.container];
                             set.Sync.SubscribeResult(subscribe, result);
                             break;
-                        case TaskType.subscribeEcho:
-                            var subscribeEcho = (SubscribeEcho) task;
+                        case TaskType.subscribeEchos:
+                            var subscribeEcho = (SubscribeEchos) task;
                             _intern.sync.SubscribeEchoResult(subscribeEcho, result);
                             break;
                     }

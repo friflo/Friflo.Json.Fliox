@@ -8,10 +8,10 @@ using Friflo.Json.Flow.Database;
 namespace Friflo.Json.Flow.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class SubscribeEcho : DatabaseTask
+    public class SubscribeEchos : DatabaseTask
     {
         public              List<string>    prefixes;
-        internal override   TaskType        TaskType    => TaskType.subscribeEcho;
+        internal override   TaskType        TaskType    => TaskType.subscribeEchos;
 
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, SyncContext syncContext) {
             var eventBroker = database.eventBroker;
@@ -26,7 +26,7 @@ namespace Friflo.Json.Flow.Sync
             if (eventTarget == null)
                 return Task.FromResult<TaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
-            eventBroker.SubscribeEcho(this, syncContext.clientId, eventTarget);
+            eventBroker.SubscribeEchos(this, syncContext.clientId, eventTarget);
             return Task.FromResult<TaskResult>(new SubscribeEchoResult());
         }
     }
@@ -34,6 +34,6 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task result -----------------------------------
     public class SubscribeEchoResult : TaskResult
     {
-        internal override   TaskType    TaskType => TaskType.subscribeEcho;
+        internal override   TaskType    TaskType => TaskType.subscribeEchos;
     }
 }

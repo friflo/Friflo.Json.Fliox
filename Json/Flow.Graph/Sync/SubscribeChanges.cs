@@ -15,7 +15,7 @@ namespace Friflo.Json.Flow.Sync
         public HashSet<Change>          changes;
         public FilterOperation          filter;
         
-        internal override   TaskType    TaskType    => TaskType.subscribe;
+        internal override   TaskType    TaskType    => TaskType.subscribeChanges;
 
         public   override   string      ToString()  => container;
 
@@ -42,7 +42,7 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task result -----------------------------------
     public class SubscribeChangesResult : TaskResult
     {
-        internal override   TaskType    TaskType => TaskType.subscribe;
+        internal override   TaskType    TaskType => TaskType.subscribeChanges;
     }
     
     // ReSharper disable InconsistentNaming

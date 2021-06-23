@@ -45,7 +45,7 @@ namespace Friflo.Json.Flow.Database.Event
         }
         
         // -------------------------------- add / remove subscriptions --------------------------------
-        internal void SubscribeEcho(SubscribeEcho subscribe, string clientId, IEventTarget eventTarget) {
+        internal void SubscribeEchos(SubscribeEchos subscribe, string clientId, IEventTarget eventTarget) {
             EventSubscriber subscriber;
             if (subscribe.prefixes.Count == 0) {
                 if (!subscribers.TryGetValue(clientId, out subscriber))
