@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Database.Event
         private  readonly   JsonEvaluator                                   jsonEvaluator;
         /// key: <see cref="EventSubscriber.clientId"/>
         private  readonly   ConcurrentDictionary<string, EventSubscriber>   subscribers;
-        public   readonly   bool                                            background;
+        internal readonly   bool                                            background;
 
         public EventBroker (bool background) {
             jsonEvaluator   = new JsonEvaluator();
@@ -45,7 +45,7 @@ namespace Friflo.Json.Flow.Database.Event
         }
         
         // -------------------------------- add / remove subscriptions --------------------------------
-        public void SubscribeEcho(SubscribeEcho subscribe, string clientId, IEventTarget eventTarget) {
+        internal void SubscribeEcho(SubscribeEcho subscribe, string clientId, IEventTarget eventTarget) {
             EventSubscriber subscriber;
             if (subscribe.prefixes.Count == 0) {
                 if (!subscribers.TryGetValue(clientId, out subscriber))
@@ -61,7 +61,7 @@ namespace Friflo.Json.Flow.Database.Event
             }
         }
 
-        public void Subscribe (SubscribeChanges subscribe, string clientId, IEventTarget eventTarget) {
+        internal void SubscribeChanges (SubscribeChanges subscribe, string clientId, IEventTarget eventTarget) {
             EventSubscriber subscriber;
             if (subscribe.changes.Count == 0) {
                 if (!subscribers.TryGetValue(clientId, out subscriber))
@@ -127,7 +127,7 @@ namespace Friflo.Json.Flow.Database.Event
             tasks.Add(task);
         }
 
-        public void EnqueueSyncTasks (SyncRequest syncRequest, SyncContext syncContext) {
+        internal void EnqueueSyncTasks (SyncRequest syncRequest, SyncContext syncContext) {
             ProcessSubscriber (syncRequest, syncContext);
             
             foreach (var pair in subscribers) {

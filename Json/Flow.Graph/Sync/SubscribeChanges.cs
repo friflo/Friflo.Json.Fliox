@@ -34,7 +34,7 @@ namespace Friflo.Json.Flow.Sync
             if (eventTarget == null)
                 return Task.FromResult<TaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
-            eventBroker.Subscribe(this, syncContext.clientId, eventTarget);
+            eventBroker.SubscribeChanges(this, syncContext.clientId, eventTarget);
             return Task.FromResult<TaskResult>(new SubscribeChangesResult());
         }
     }
