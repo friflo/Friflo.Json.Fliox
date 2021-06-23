@@ -66,13 +66,13 @@ namespace Friflo.Json.Flow.Database.Event
             if (subscribe.changes.Count == 0) {
                 if (!subscribers.TryGetValue(clientId, out subscriber))
                     return;
-                var subscriptions = subscriber.subscriptions;
+                var subscriptions = subscriber.changeSubscriptions;
                 subscriptions.Remove(subscribe.container);
                 RemoveOnEmptySubscriptions(subscriber, clientId);
                 return;
             }
             subscriber = GetOrCreateSubscriber(clientId, eventTarget);
-            subscriber.subscriptions[subscribe.container] = subscribe;
+            subscriber.changeSubscriptions[subscribe.container] = subscribe;
         }
         
         private EventSubscriber GetOrCreateSubscriber(string clientId, IEventTarget eventTarget) {
@@ -119,6 +119,13 @@ namespace Friflo.Json.Flow.Database.Event
             int value =  eventAck.Value;
             subscriber.AcknowledgeEvents(value);
         }
+        
+        private static void AddTask(ref List<DatabaseTask> tasks, DatabaseTask task) {
+            if (tasks == null) {
+                tasks = new List<DatabaseTask>();
+            }
+            tasks.Add(task);
+        }
 
         public void EnqueueSyncTasks (SyncRequest syncRequest, SyncContext syncContext) {
             ProcessSubscriber (syncRequest, syncContext);
@@ -126,34 +133,28 @@ namespace Friflo.Json.Flow.Database.Event
             foreach (var pair in subscribers) {
                 List<DatabaseTask>  tasks = null;
                 EventSubscriber     subscriber = pair.Value;
-                if (subscriber.subscriptions.Count == 0)
-                    throw new InvalidOperationException("Expect subscribeMap not empty");
+                if (subscriber.SubscriptionCount == 0)
+                    throw new InvalidOperationException("Expect SubscriptionCount > 0");
                 
                 // Enqueue only change events for (change) tasks which are not send by the client itself
                 bool subscriberIsSender = syncRequest.clientId == subscriber.clientId;
                 
                 foreach (var task in syncRequest.tasks) {
-                    foreach (var changesPair in subscriber.subscriptions) {
+                    foreach (var changesPair in subscriber.changeSubscriptions) {
                         if (subscriberIsSender)
                             continue;
                         SubscribeChanges subscribeChanges = changesPair.Value;
                         var taskResult = FilterTask(task, subscribeChanges);
                         if (taskResult == null)
                             continue;
-                        if (tasks == null) {
-                            tasks = new List<DatabaseTask>();
-                        }
-                        tasks.Add(taskResult);
+                        AddTask(ref tasks, taskResult);
                     }
                     if (task.TaskType == TaskType.echo) {
                         var echo = (Echo) task;
                         foreach (var echoSubscription in subscriber.echoSubscriptions) {
                             if (!echo.message.StartsWith(echoSubscription))
                                 continue;
-                            if (tasks == null) {
-                                tasks = new List<DatabaseTask>();
-                            }
-                            tasks.Add(task);
+                            AddTask(ref tasks, task);
                         }
                     }
                 }

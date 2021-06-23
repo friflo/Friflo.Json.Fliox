@@ -20,10 +20,10 @@ namespace Friflo.Json.Flow.Database.Event
         internal readonly   string                                  clientId;
         private             IEventTarget                            eventTarget;
         /// key: <see cref="SubscribeChanges.container"/>
-        internal readonly   Dictionary<string, SubscribeChanges>    subscriptions       = new Dictionary<string, SubscribeChanges>();
+        internal readonly   Dictionary<string, SubscribeChanges>    changeSubscriptions = new Dictionary<string, SubscribeChanges>();
         internal readonly   List<string>                            echoSubscriptions   = new List<string>();
         
-        internal            int                                     SubscriptionCount => subscriptions.Count + echoSubscriptions.Count; 
+        internal            int                                     SubscriptionCount => changeSubscriptions.Count + echoSubscriptions.Count; 
         
         /// lock (<see cref="eventQueue"/>) {
         private             int                                     eventCounter;
