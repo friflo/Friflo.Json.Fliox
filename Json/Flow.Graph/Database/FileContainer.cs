@@ -55,7 +55,7 @@ namespace Friflo.Json.Flow.Database
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
             var entities = command.entities;
             Dictionary<string, EntityError> createErrors = null;
-            await rwLock.AcquireWriterLock();
+            await rwLock.AcquireWriterLock().ConfigureAwait(false);
             try {
                 foreach (var entityPair in entities) {
                     string      key     = entityPair.Key;
@@ -77,7 +77,7 @@ namespace Friflo.Json.Flow.Database
         public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
             var entities = command.entities;
             Dictionary<string, EntityError> updateErrors = null;
-            await rwLock.AcquireWriterLock();
+            await rwLock.AcquireWriterLock().ConfigureAwait(false);
             try {
                 foreach (var entityPair in entities) {
                     string      key     = entityPair.Key;
@@ -99,7 +99,7 @@ namespace Friflo.Json.Flow.Database
         public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {
             var keys        = command.ids;
             var entities    = new Dictionary<string, EntityValue>(keys.Count);
-            await rwLock.AcquireReaderLock();
+            await rwLock.AcquireReaderLock().ConfigureAwait(false);
             try {
                 foreach (var key in keys) {
                     var filePath = FilePath(key);
@@ -134,7 +134,7 @@ namespace Friflo.Json.Flow.Database
         public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
             var keys = command.ids;
             Dictionary<string, EntityError> deleteErrors = null;
-            await rwLock.AcquireWriterLock();
+            await rwLock.AcquireWriterLock().ConfigureAwait(false);
             try {
                 foreach (var key in keys) {
                     string path = FilePath(key);
