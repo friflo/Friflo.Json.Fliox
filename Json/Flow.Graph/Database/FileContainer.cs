@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Database.Utils;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database
@@ -29,15 +30,22 @@ namespace Friflo.Json.Flow.Database
     
     public class FileContainer : EntityContainer
     {
-        private readonly    string          folder;
+        private readonly    string                  folder;
+        private readonly    AsyncReaderWriterLock   rwLock;
 
-        public  override    bool            Pretty      { get; }
+        public  override    bool                    Pretty      { get; }
 
 
         public FileContainer(string name, EntityDatabase database, string folder, bool pretty) : base (name, database) {
             this.Pretty = pretty;
             this.folder = folder + "/";
+            rwLock      = new AsyncReaderWriterLock();
             Directory.CreateDirectory(folder);
+        }
+
+        public override void Dispose() {
+            rwLock.Dispose();
+            base.Dispose();
         }
 
         private string FilePath(string key) {
@@ -47,16 +55,21 @@ namespace Friflo.Json.Flow.Database
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
             var entities = command.entities;
             Dictionary<string, EntityError> createErrors = null;
-            foreach (var entityPair in entities) {
-                string      key     = entityPair.Key;
-                EntityValue payload = entityPair.Value;
-                var path = FilePath(key);
-                try {
-                    await WriteText(path, payload.Json).ConfigureAwait(false);
-                } catch (Exception e) {
-                    var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
-                    AddEntityError(ref createErrors, key, error);
+            await rwLock.AcquireWriterLock();
+            try {
+                foreach (var entityPair in entities) {
+                    string      key     = entityPair.Key;
+                    EntityValue payload = entityPair.Value;
+                    var path = FilePath(key);
+                    try {
+                        await WriteText(path, payload.Json).ConfigureAwait(false);
+                    } catch (Exception e) {
+                        var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
+                        AddEntityError(ref createErrors, key, error);
+                    }
                 }
+            } finally {
+                rwLock.ReleaseWriterLock();
             }
             return new CreateEntitiesResult{createErrors = createErrors};
         }
@@ -64,16 +77,21 @@ namespace Friflo.Json.Flow.Database
         public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
             var entities = command.entities;
             Dictionary<string, EntityError> updateErrors = null;
-            foreach (var entityPair in entities) {
-                string      key     = entityPair.Key;
-                EntityValue payload = entityPair.Value;
-                var path = FilePath(key);
-                try {
-                    await WriteText(path, payload.Json).ConfigureAwait(false);
-                } catch (Exception e) {
-                    var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
-                    AddEntityError(ref updateErrors, key, error);
+            await rwLock.AcquireWriterLock();
+            try {
+                foreach (var entityPair in entities) {
+                    string      key     = entityPair.Key;
+                    EntityValue payload = entityPair.Value;
+                    var path = FilePath(key);
+                    try {
+                        await WriteText(path, payload.Json).ConfigureAwait(false);
+                    } catch (Exception e) {
+                        var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
+                        AddEntityError(ref updateErrors, key, error);
+                    }
                 }
+            } finally {
+                rwLock.ReleaseWriterLock();
             }
             return new UpdateEntitiesResult{updateErrors = updateErrors};
         }
@@ -81,21 +99,26 @@ namespace Friflo.Json.Flow.Database
         public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {
             var keys        = command.ids;
             var entities    = new Dictionary<string, EntityValue>(keys.Count);
-            foreach (var key in keys) {
-                var filePath = FilePath(key);
-                EntityValue entry;
-                if (File.Exists(filePath)) {
-                    try {
-                        var payload = await ReadText(filePath).ConfigureAwait(false);
-                        entry = new EntityValue(payload);
-                    } catch (Exception e) {
-                        var error = new EntityError(EntityErrorType.ReadError, name, key, e.Message);
-                        entry = new EntityValue(error);
+            await rwLock.AcquireReaderLock();
+            try {
+                foreach (var key in keys) {
+                    var filePath = FilePath(key);
+                    EntityValue entry;
+                    if (File.Exists(filePath)) {
+                        try {
+                            var payload = await ReadText(filePath).ConfigureAwait(false);
+                            entry = new EntityValue(payload);
+                        } catch (Exception e) {
+                            var error = new EntityError(EntityErrorType.ReadError, name, key, e.Message);
+                            entry = new EntityValue(error);
+                        }
+                    } else {
+                        entry = new EntityValue();
                     }
-                } else {
-                    entry = new EntityValue();
+                    entities.TryAdd(key, entry);
                 }
-                entities.TryAdd(key, entry);
+            } finally {
+                rwLock.ReleaseReaderLock();
             }
             var result = new ReadEntitiesResult{entities = entities};
             result.ValidateEntities(name, messageContext);
@@ -108,20 +131,25 @@ namespace Friflo.Json.Flow.Database
             return result;
         }
 
-        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
+        public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
             var keys = command.ids;
             Dictionary<string, EntityError> deleteErrors = null;
-            foreach (var key in keys) {
-                string path = FilePath(key);
-                try {
-                    DeleteFile(path);
-                } catch (Exception e) {
-                    var error = new EntityError(EntityErrorType.DeleteError, name, key, e.Message);
-                    AddEntityError(ref deleteErrors, key, error);
+            await rwLock.AcquireWriterLock();
+            try {
+                foreach (var key in keys) {
+                    string path = FilePath(key);
+                    try {
+                        DeleteFile(path);
+                    } catch (Exception e) {
+                        var error = new EntityError(EntityErrorType.DeleteError, name, key, e.Message);
+                        AddEntityError(ref deleteErrors, key, error);
+                    }
                 }
+            } finally {
+                rwLock.ReleaseWriterLock();
             }
             var result = new DeleteEntitiesResult{deleteErrors = deleteErrors};
-            return Task.FromResult(result);
+            return result;
         }
         
         
