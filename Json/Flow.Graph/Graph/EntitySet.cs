@@ -122,7 +122,7 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        // --- Subscribe
+        // --- SubscribeChanges
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{T}"/>.

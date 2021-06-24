@@ -90,7 +90,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             return query;
         }
         
-        // --- Subscribe
+        // --- SubscribeChanges
         internal SubscribeChangesTask<T> SubscribeChangesFilter(IEnumerable<Change> changes, FilterOperation filter) {
             subscribeChanges = new SubscribeChangesTask<T>(changes, filter);
             return subscribeChanges;
@@ -214,7 +214,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             QueryEntities   (tasks);
             PatchEntities   (tasks);
             DeleteEntities  (tasks);
-            Subscribe       (tasks);
+            SubscribeChanges(tasks);
         }
         
         private void CreateEntities(List<DatabaseTask> tasks) {
@@ -344,7 +344,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             deletes.Clear();
         }
         
-        private void Subscribe(List<DatabaseTask> tasks) {
+        private void SubscribeChanges(List<DatabaseTask> tasks) {
             var sub = subscribeChanges;
             if (sub == null)
                 return;
