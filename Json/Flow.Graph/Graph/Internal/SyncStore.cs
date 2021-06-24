@@ -30,7 +30,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         // ----------------------------------- add tasks methods -----------------------------------
         internal void AddTasks(List<DatabaseTask> tasks) {
             Echo            (tasks);
-            SubscribeEcho   (tasks);
+            SubscribeEchos  (tasks);
         }
                 
         // --- Echo
@@ -56,14 +56,14 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         // --- Subscribe
-        private void SubscribeEcho(List<DatabaseTask> tasks) {
+        private void SubscribeEchos(List<DatabaseTask> tasks) {
             if (subscribeEchos == null)
                 return;
             var req = new SubscribeEchos{ prefixes = subscribeEchos.prefixes};
             tasks.Add(req);
         }
         
-        internal void SubscribeEchoResult (SubscribeEchos task, TaskResult result) {
+        internal void SubscribeEchosResult (SubscribeEchos task, TaskResult result) {
             if (result is TaskErrorResult taskError) {
                 subscribeEchos.state.SetError(new TaskErrorInfo(taskError));
                 return;

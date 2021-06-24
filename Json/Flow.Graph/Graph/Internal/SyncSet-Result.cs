@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, TaskResult result, ContainerEntities queryEntities);
         internal  abstract  void    PatchEntitiesResult     (PatchEntities      task, TaskResult result);
         internal  abstract  void    DeleteEntitiesResult    (DeleteEntities     task, TaskResult result);
-        internal  abstract  void    SubscribeResult         (SubscribeChanges   task, TaskResult result);
+        internal  abstract  void    SubscribeChangesResult  (SubscribeChanges   task, TaskResult result);
     }
 
     internal partial class SyncSet<T>
@@ -324,7 +324,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
-        internal override void SubscribeResult (SubscribeChanges task, TaskResult result) {
+        internal override void SubscribeChangesResult (SubscribeChanges task, TaskResult result) {
             if (result is TaskErrorResult taskError) {
                 subscribeChanges.state.SetError(new TaskErrorInfo(taskError));
                 return;
