@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Transform;
@@ -57,7 +57,7 @@ namespace Friflo.Json.Flow.Sync
     
     public static class Changes
     {
-        public static readonly ImmutableList<Change> All  = new [] { Change.create, Change.update, Change.delete, Change.patch }.ToImmutableList(); 
-        public static readonly ImmutableList<Change> None = new Change[]{}.ToImmutableList();
+        public static readonly ReadOnlyCollection<Change> All  = new List<Change> { Change.create, Change.update, Change.delete, Change.patch }.AsReadOnly(); 
+        public static readonly ReadOnlyCollection<Change> None = new List<Change>().AsReadOnly();
     }
 }
