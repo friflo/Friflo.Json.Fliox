@@ -3,11 +3,12 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Burst;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Utils;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
-
+using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 {
@@ -16,6 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         [Test] public static void TestConcurrentAccessSync      () { SingleThreadSynchronizationContext.Run(AssertConcurrentAccess);  }
         
         private static async Task AssertConcurrentAccess() {
+            DebugUtils.StopLeakDetection();
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db")) {
                 const int readerCount = 2;
@@ -62,6 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     var readEmployee = store.employees.Read();
                     readEmployee.Find(id);
                     await store.Sync();
+                    AreEqual (1, readEmployee.Results.Count);
                 }
             });
         }
