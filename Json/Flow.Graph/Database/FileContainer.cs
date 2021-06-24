@@ -138,9 +138,14 @@ namespace Friflo.Json.Flow.Database
             return ids;
         }
         
+        /// <summary>
+        /// Write with <see cref="FileShare.Read"/> as on a developer machine other processes like virus scanner or file watcher
+        /// may access the file concurrently resulting in:
+        /// IOException: The process cannot access the file file 'path' because it is being used by another process 
+        /// </summary>
         private static async Task WriteText(string filePath, string text) {
             byte[] encodedText = Encoding.UTF8.GetBytes(text);
-            using (var destStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 4096, useAsync: false)) {
+            using (var destStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.Read, bufferSize: 4096, useAsync: false)) {
                 await destStream.WriteAsync(encodedText, 0, encodedText.Length).ConfigureAwait(false);
             }
         }
