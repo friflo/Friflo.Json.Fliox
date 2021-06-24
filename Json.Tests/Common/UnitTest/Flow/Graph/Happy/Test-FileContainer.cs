@@ -1,8 +1,11 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
+using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Tests.Common.Utils;
+using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
     using UnitTest.Dummy;
@@ -17,6 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         [Test] public async Task TestConcurrentAccess      () { await AssertConcurrentAccess(); }
         
         private static async Task AssertConcurrentAccess() {
+            IsNull(SynchronizationContext.Current); 
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var read1        = new PocStore(fileDatabase, "read-1"))
@@ -38,19 +42,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        private static async Task ReadLoop (PocStore store, string id) {
-            for (int n= 0; n < 20; n++) {
-                var readEmployee = store.employees.Read();
-                readEmployee.Find(id);
-                await store.Sync();
-            }
+        private static Task ReadLoop (PocStore store, string id) {
+            return Task.Run(async () => {
+                for (int n= 0; n < 20; n++) {
+                    var readEmployee = store.employees.Read();
+                    readEmployee.Find(id);
+                    await store.Sync();
+                }
+            });
         }
         
-        private static async Task WriteLoop (PocStore store, Employee employee) {
-            for (int n= 0; n < 10; n++) {
-                store.employees.Create(employee);
-                await store.Sync();
-            }
+        private static Task WriteLoop (PocStore store, Employee employee) {
+            return Task.Run(async () => {
+                for (int n= 0; n < 10; n++) {
+                    store.employees.Create(employee);
+                    await store.Sync();
+                }
+            });
         }
     }
 }
