@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         }
         
         private static async Task ReadLoop (PocStore store, string id) {
-            for (int n= 0; n < 100; n++) {
+            for (int n= 0; n < 20; n++) {
                 var readEmployee = store.employees.Read();
                 readEmployee.Find(id);
                 await store.Sync();
@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         }
         
         private static async Task WriteLoop (PocStore store, Employee employee) {
-            for (int n= 0; n < 100; n++) {
+            for (int n= 0; n < 10; n++) {
                 store.employees.Create(employee);
                 await store.Sync();
             }
