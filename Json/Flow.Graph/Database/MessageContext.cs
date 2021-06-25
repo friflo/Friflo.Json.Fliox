@@ -19,6 +19,7 @@ namespace Friflo.Json.Flow.Database
     /// </summary>
     public class MessageContext
     {
+        /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="DatabaseRequest"/></summary>
         public                  string          clientId;
         public  readonly        IPools          pools;
         public  readonly        IEventTarget    eventTarget;
@@ -26,6 +27,12 @@ namespace Friflo.Json.Flow.Database
         public MessageContext (IPools pools, IEventTarget eventTarget) {
             this.pools          = pools;
             this.eventTarget    = eventTarget;
+        }
+        
+        public MessageContext (IPools pools, IEventTarget eventTarget, string clientId) {
+            this.pools          = pools;
+            this.eventTarget    = eventTarget;
+            this.clientId       = clientId;
         }
     }
     

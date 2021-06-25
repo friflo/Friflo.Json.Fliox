@@ -43,6 +43,7 @@ namespace Friflo.Json.Flow.Database.Remote
         }
         
         public async Task Close() {
+            requestQueue.Clear();
             await websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", CancellationToken.None).ConfigureAwait(false);
         }
 
@@ -115,11 +116,13 @@ namespace Friflo.Json.Flow.Database.Remote
 
         protected override async Task<JsonResponse> ExecuteRequestJson(string jsonSyncRequest, MessageContext messageContext) {
             try {
+                // request need to be queued _before_ sending it to be prepared for handling the response.
+                var request         = new WebsocketRequest(messageContext);
+                requestQueue.Enqueue(request);
+                
                 byte[] requestBytes = Encoding.UTF8.GetBytes(jsonSyncRequest);
                 var arraySegment    = new ArraySegment<byte>(requestBytes, 0, requestBytes.Length);
                 await websocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
-                var request         = new WebsocketRequest(messageContext);
-                requestQueue.Enqueue(request);
                 
                 var response = await request.response.Task.ConfigureAwait(false);
                 return response;
