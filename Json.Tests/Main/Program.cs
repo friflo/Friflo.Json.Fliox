@@ -21,7 +21,8 @@ namespace Friflo.Json.Tests.Main
             GraphServer,
             MemoryDbThroughput,
             FileDbThroughput,
-            RemoteDbThroughput
+            WebsocketDbThroughput,
+            HttpDbThroughput
         }
         
         // run GraphServer via one of the following methods:
@@ -59,8 +60,11 @@ namespace Friflo.Json.Tests.Main
                     case Module.FileDbThroughput:
                         await FileDbThroughput();
                         break;
-                    case Module.RemoteDbThroughput:
-                        await RemoteDbThroughput();
+                    case Module.WebsocketDbThroughput:
+                        await WebsocketDbThroughput();
+                        break;
+                    case Module.HttpDbThroughput:
+                        await HttpDbThroughput();
                         break;
                 }
             });
@@ -104,12 +108,22 @@ namespace Friflo.Json.Tests.Main
             await TestStore.AssertConcurrentAccess(db, 4, 0, 1_000_000);
         }
         
-        private static async Task RemoteDbThroughput() {
+        private static async Task WebsocketDbThroughput() {
             var db = new MemoryDatabase();
             using (var hostDatabase     = new HttpHostDatabase(db, "http://+:8080/", null))
             using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/")) {
                 await TestStore.RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
+                    await TestStore.AssertConcurrentAccess(remoteDatabase, 4, 0, 1_000_000);
+                });
+            }
+        }
+        
+        private static async Task HttpDbThroughput() {
+            var db = new MemoryDatabase();
+            using (var hostDatabase     = new HttpHostDatabase(db, "http://+:8080/", null))
+            using (var remoteDatabase   = new HttpClientDatabase("ws://localhost:8080/")) {
+                await TestStore.RunRemoteHost(hostDatabase, async () => {
                     await TestStore.AssertConcurrentAccess(remoteDatabase, 4, 0, 1_000_000);
                 });
             }
