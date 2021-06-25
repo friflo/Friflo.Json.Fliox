@@ -46,18 +46,30 @@ namespace Friflo.Json.Flow.Sync
         internal override   TaskType    TaskType => TaskType.subscribeChanges;
     }
     
+    /// <summary>Contains predefined sets of common database <see cref="Change"/> filters.</summary>
+    public static class Changes
+    {
+        /// <summary>Shortcut to subscribe to all types database changes. These ase <see cref="Change.create"/>,
+        /// <see cref="Change.update"/>, <see cref="Change.patch"/> and <see cref="Change.delete"/></summary>
+        public static readonly ReadOnlyCollection<Change> All  = new List<Change> { Change.create, Change.update, Change.delete, Change.patch }.AsReadOnly();
+        /// <summary>Shortcut to unsubscribe from all database change types.</summary>
+        public static readonly ReadOnlyCollection<Change> None = new List<Change>().AsReadOnly();
+    }
+    
+    /// <summary>
+    /// Filters used to specify the type of a database chane.
+    /// Consider using the predefined sets <see cref="Changes.All"/> or <see cref="Changes.None"/> as shortcuts.
+    /// </summary>
     // ReSharper disable InconsistentNaming
     public enum Change
     {
+        /// <summary>Filter database change events of new created entities.</summary>
         create,
+        /// <summary>Filter database change events of updated entities.</summary>
         update,
+        /// <summary>Filter database change events used to patch entities.</summary>
         patch,
+        /// <summary>Filter database change events used to delete entities.</summary>
         delete
-    }
-    
-    public static class Changes
-    {
-        public static readonly ReadOnlyCollection<Change> All  = new List<Change> { Change.create, Change.update, Change.delete, Change.patch }.AsReadOnly(); 
-        public static readonly ReadOnlyCollection<Change> None = new List<Change>().AsReadOnly();
     }
 }
