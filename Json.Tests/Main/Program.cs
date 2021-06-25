@@ -10,6 +10,7 @@ using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Tests.Common.UnitTest.Flow.Graph;
 using Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy;
+using Friflo.Json.Tests.Common.Utils;
 
 namespace Friflo.Json.Tests.Main
 {
@@ -18,7 +19,8 @@ namespace Friflo.Json.Tests.Main
         enum Module
         {
             GraphServer,
-            MemoryDbThroughput
+            MemoryDbThroughput,
+            FileDbThroughput
         }
         
         // run GraphServer via one of the following methods:
@@ -52,6 +54,9 @@ namespace Friflo.Json.Tests.Main
                         break;
                     case Module.MemoryDbThroughput:
                         await MemoryDbThroughput();
+                        break;
+                    case Module.FileDbThroughput:
+                        await FileDbThroughput();
                         break;
                 }
             });
@@ -87,8 +92,14 @@ namespace Friflo.Json.Tests.Main
         
         private static async Task MemoryDbThroughput() {
             var db = new MemoryDatabase();
-            await TestStore.AssertConcurrentAccess(db, 4, 0, 1000_000);
+            await TestStore.AssertConcurrentAccess(db, 4, 0, 1_000_000);
         }
+        
+        private static async Task FileDbThroughput() {
+            var db = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
+            await TestStore.AssertConcurrentAccess(db, 4, 0, 1_000_000);
+        }
+
     }
 }
 
