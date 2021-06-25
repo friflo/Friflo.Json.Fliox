@@ -1,5 +1,28 @@
 
-test failed:	https://github.com/friflo/Friflo.Json.Flow/runs/2891888359
+
+-------------------------------------------------------------------------
+Test Run Aborted.
+https://github.com/friflo/Friflo.Json.Flow/runs/2911471132
+
+√ WebSocketCreateSync [1s 165ms] => test OK - danach Test Run Aborted.
+ 
+	=> problem in 
+   WebSocketReconnectSync [1s 71ms]
+
+The active test run was aborted. Reason: Test host process crashed : Process terminated. Assertion failed.
+OnReceive failed processing WebSocket message. Exception: System.InvalidOperationException: Expect corresponding request to response
+   at Friflo.Json.Flow.Database.Remote.WebSocketClientDatabase.OnReceive(String messageJson) in /home/runner/work/Friflo.Json.Flow/Friflo.Json.Flow/Json/Flow.Graph/Database/Remote/WebSocketClientDatabase.cs:line 93
+   at Friflo.Json.Flow.Database.Remote.WebSocketClientDatabase.OnReceive(String messageJson) in /home/runner/work/Friflo.Json.Flow/Friflo.Json.Flow/Json/Flow.Graph/Database/Remote/WebSocketClientDatabase.cs:line 93
+   at Friflo.Json.Flow.Database.Remote.WebSocketClientDatabase.ReceiveLoop() in /home/runner/work/Friflo.Json.Flow/Friflo.Json.Flow/Json/Flow.Graph/Database/Remote/WebSocketClientDatabase.cs:line 77
+
+...
+Test Run Aborted.
+
+
+-------------------------------------------------------------------------
+test failed:
+https://github.com/friflo/Friflo.Json.Flow/runs/2891888359
+
 
   X LoopbackUseSync [98ms]
   Error Message:
