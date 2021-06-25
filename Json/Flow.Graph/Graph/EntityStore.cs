@@ -37,6 +37,8 @@ namespace Friflo.Json.Flow.Graph
         internal            SubscriptionHandler             subscriptionHandler;
         internal            bool                            disposed;
         internal            int                             lastEventSeq;
+        internal            int                             syncCount;
+        
 
         public   override   string                          ToString() => clientId;
 
@@ -66,6 +68,7 @@ namespace Friflo.Json.Flow.Graph
             subscriptionHandler         = null;
             lastEventSeq                = 0;
             disposed                    = false;
+            syncCount                   = 0;
         }
     }
 
@@ -86,7 +89,8 @@ namespace Friflo.Json.Flow.Graph
         public   override   string                  ToString()  => StoreInfo.ToString();
         public              IReadOnlyList<SyncTask> Tasks       => _intern.sync.appTasks;
         
-        public              EntitySet               GetEntitySet(string name) => _intern.setByName[name];
+        public              EntitySet               GetEntitySet(string name)   => _intern.setByName[name];
+        public              int                     GetSyncCount()              => _intern.syncCount;
         
         /// <summary>
         /// Instantiate an <see cref="EntityStore"/> with a given <see cref="database"/> and an optional <see cref="typeStore"/>.
@@ -223,6 +227,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         private async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+            _intern.syncCount++;
             SyncResponse response;
             try {
                 response = await _intern.database.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);

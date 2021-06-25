@@ -1,7 +1,10 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Burst;
 using Friflo.Json.Flow.Database;
@@ -52,7 +55,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     foreach (var writerStore in writerStores) {
                         tasks.Add(WriteLoop (writerStore, employee, requestCount));
                     }
+                    var cancel = new CancellationTokenSource();
+                    Task countTask = Task.Run(async () => {
+                        while (!cancel.IsCancellationRequested) {
+                            await Task.Delay(500, cancel.Token);
+                            CountRequests(readerStores, writerStores);
+                        }
+                    });
+
                     await Task.WhenAll(tasks);
+                    CountRequests(readerStores, writerStores);
+                    
+                    cancel.Cancel();
+                    await countTask;
                 }
                 finally {
                     foreach (var readerStore in readerStores)
@@ -82,6 +97,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     await store.Sync();
                 }
             });
+        }
+        
+        private static int CountRequests (List<PocStore> readers, List<PocStore> writers) {
+            int requests = 0;
+            requests += readers.Sum(reader => reader.GetSyncCount());
+            requests += writers.Sum(writer => writer.GetSyncCount());
+            Console.WriteLine($"requests: {requests}");
+            return requests;
         }
     }
 }
