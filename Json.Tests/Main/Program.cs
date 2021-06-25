@@ -4,10 +4,12 @@ using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
+using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Tests.Common.UnitTest.Flow.Graph;
+using Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy;
 
 namespace Friflo.Json.Tests.Main
 {
@@ -15,7 +17,8 @@ namespace Friflo.Json.Tests.Main
     {
         enum Module
         {
-            GraphServer
+            GraphServer,
+            MemoryDbThroughput
         }
         
         // run GraphServer via one of the following methods:
@@ -40,12 +43,15 @@ namespace Friflo.Json.Tests.Main
             };
             rootCommand.Description = "small tests within Friflo.Json.Tests";
 
-            rootCommand.Handler = CommandHandler.Create<Module, string, string, string>((module, endpoint, database, www) =>
+            rootCommand.Handler = CommandHandler.Create<Module, string, string, string>(async (module, endpoint, database, www) =>
             {
                 Console.WriteLine($"module: {module}");
                 switch (module) {
                     case Module.GraphServer:
                         GraphServer(endpoint, database, www, false);
+                        break;
+                    case Module.MemoryDbThroughput:
+                        await MemoryDbThroughput();
                         break;
                 }
             });
@@ -77,6 +83,11 @@ namespace Friflo.Json.Tests.Main
             var hostDatabase = new HttpHostDatabase(localDatabase, endpoint, contextHandler);
             hostDatabase.Start();
             hostDatabase.Run();
+        }
+        
+        private static async Task MemoryDbThroughput() {
+            var db = new MemoryDatabase();
+            await TestStore.AssertConcurrentAccess(db, 8, 0, 1000);
         }
     }
 }

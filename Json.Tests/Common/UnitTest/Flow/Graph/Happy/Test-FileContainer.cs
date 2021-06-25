@@ -22,10 +22,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             });
         }
         
-        private static async Task AssertConcurrentAccess(EntityDatabase database, int readerCount, int writerCount, int requestCount) {
+        public static async Task AssertConcurrentAccess(EntityDatabase database, int readerCount, int writerCount, int requestCount) {
             DebugUtils.StopLeakDetection();
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             {
+                // prepare
+                var             store       = new PocStore(database, "prepare");
+                const string    id          = "concurrent-access";
+                var             employee    = new Employee { id = id, firstName = "Concurrent accessed entity"};
+                store.employees.Create(employee);
+                await store.Sync();
+
                 var readerStores = new List<PocStore>();
                 var writerStores = new List<PocStore>();
                 try {
@@ -36,9 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         writerStores.Add(new PocStore(database, $"writer-{n}"));
                     }
 
-                    const string    id          = "concurrent-access";
-                    var             employee    = new Employee { id = id, firstName = "Concurrent accessed entity"};
-                    
+                    // run readers and writers
                     var tasks = new List<Task>();
 
                     foreach (var readerStore in readerStores) {
