@@ -56,15 +56,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         tasks.Add(WriteLoop (writerStore, employee, requestCount));
                     }
                     var cancel = new CancellationTokenSource();
+                    var lastCount = 0;
                     Task countTask = Task.Run(async () => {
                         while (!cancel.IsCancellationRequested) {
-                            await Task.Delay(500, cancel.Token);
-                            CountRequests(readerStores, writerStores);
+                            await Task.Delay(1000, cancel.Token);
+                            lastCount = CountRequests(readerStores, writerStores, lastCount);
                         }
                     });
 
                     await Task.WhenAll(tasks);
-                    CountRequests(readerStores, writerStores);
+                    CountRequests(readerStores, writerStores, lastCount);
                     
                     cancel.Cancel();
                     await countTask;
@@ -99,12 +100,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             });
         }
         
-        private static int CountRequests (List<PocStore> readers, List<PocStore> writers) {
-            int requests = 0;
-            requests += readers.Sum(reader => reader.GetSyncCount());
-            requests += writers.Sum(writer => writer.GetSyncCount());
-            Console.WriteLine($"requests: {requests}");
-            return requests;
+        private static int CountRequests (List<PocStore> readers, List<PocStore> writers, int lastCount) {
+            int sum = 0;
+            sum += readers.Sum(reader => reader.GetSyncCount());
+            sum += writers.Sum(writer => writer.GetSyncCount());
+            var requests = sum - lastCount;
+            Console.WriteLine($"requests: {requests}, sum: {sum}");
+            return sum;
         }
     }
 }
