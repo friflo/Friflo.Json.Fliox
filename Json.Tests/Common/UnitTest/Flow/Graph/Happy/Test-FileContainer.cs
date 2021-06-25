@@ -55,20 +55,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     foreach (var writerStore in writerStores) {
                         tasks.Add(WriteLoop (writerStore, employee, requestCount));
                     }
-                    var cancel = new CancellationTokenSource();
                     var lastCount = 0;
-                    Task countTask = Task.Run(async () => {
-                        while (!cancel.IsCancellationRequested) {
-                            await Task.Delay(1000, cancel.Token);
+                    var count = new Thread(() => {
+                        while (true) {
+                            try {
+                                Thread.Sleep(1000);
+                            } catch { break; }
                             lastCount = CountRequests(readerStores, writerStores, lastCount);
                         }
                     });
+                    count.Start();
 
                     await Task.WhenAll(tasks);
                     CountRequests(readerStores, writerStores, lastCount);
-                    
-                    cancel.Cancel();
-                    await countTask;
+                    count.Interrupt();
                 }
                 finally {
                     foreach (var readerStore in readerStores)

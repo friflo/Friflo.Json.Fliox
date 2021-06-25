@@ -87,7 +87,7 @@ namespace Friflo.Json.Tests.Main
         
         private static async Task MemoryDbThroughput() {
             var db = new MemoryDatabase();
-            await TestStore.AssertConcurrentAccess(db, 4, 0, 1000000);
+            await TestStore.AssertConcurrentAccess(db, 4, 0, 1000_000);
         }
     }
 }
