@@ -20,7 +20,8 @@ namespace Friflo.Json.Tests.Main
         {
             GraphServer,
             MemoryDbThroughput,
-            FileDbThroughput
+            FileDbThroughput,
+            RemoteDbThroughput
         }
         
         // run GraphServer via one of the following methods:
@@ -57,6 +58,9 @@ namespace Friflo.Json.Tests.Main
                         break;
                     case Module.FileDbThroughput:
                         await FileDbThroughput();
+                        break;
+                    case Module.RemoteDbThroughput:
+                        await RemoteDbThroughput();
                         break;
                 }
             });
@@ -98,6 +102,17 @@ namespace Friflo.Json.Tests.Main
         private static async Task FileDbThroughput() {
             var db = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
             await TestStore.AssertConcurrentAccess(db, 4, 0, 1_000_000);
+        }
+        
+        private static async Task RemoteDbThroughput() {
+            var db = new MemoryDatabase();
+            using (var hostDatabase     = new HttpHostDatabase(db, "http://+:8080/", null))
+            using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/")) {
+                await TestStore.RunRemoteHost(hostDatabase, async () => {
+                    await remoteDatabase.Connect();
+                    await TestStore.AssertConcurrentAccess(remoteDatabase, 4, 0, 1_000_000);
+                });
+            }
         }
 
     }
