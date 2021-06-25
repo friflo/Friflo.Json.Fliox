@@ -95,9 +95,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         }
             
         /// All tests using <see cref="PocHandler"/> are required to use "createStore" as clientId
-        protected override void OnEvent (SubscriptionEvent ev) {
+        protected override void ProcessEvent (SubscriptionEvent ev) {
             AreEqual("createStore", ev.clientId);
-            base.OnEvent(ev);
+            base.ProcessEvent(ev);
             var orderChanges    = GetEntityChanges<Order>   (ev);
             var customerChanges = GetEntityChanges<Customer>(ev);
             var articleChanges  = GetEntityChanges<Article> (ev);

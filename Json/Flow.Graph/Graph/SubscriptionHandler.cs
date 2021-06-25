@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Graph
         
         /// <summary>
         /// Creates a <see cref="SubscriptionHandler"/> with the specified <see cref="synchronizationContext"/>
-        /// The <see cref="synchronizationContext"/> is required to ensure that <see cref="OnEvent"/> is called on the
+        /// The <see cref="synchronizationContext"/> is required to ensure that <see cref="ProcessEvent"/> is called on the
         /// same thread as all other API calls of <see cref="EntityStore"/> and <see cref="EntitySet{T}"/>.
         /// <para>
         ///   In case of a UI application like WinForms or WPF <see cref="SynchronizationContext.Current"/> can be used
@@ -59,7 +59,7 @@ namespace Friflo.Json.Flow.Graph
                 return;
             }
             synchronizationContext.Post(delegate {
-                OnEvent(ev);
+                ProcessEvent(ev);
             }, null);
         }
         
@@ -71,11 +71,23 @@ namespace Friflo.Json.Flow.Graph
                 throw new InvalidOperationException("SubscriptionHandler initialized with SynchronizationContext");
             }
             while (eventQueue.TryDequeue(out SubscriptionEvent subscribeEvent)) {
-                OnEvent(subscribeEvent);
+                ProcessEvent(subscribeEvent);
             }
         }
 
-        protected virtual void OnEvent(SubscriptionEvent ev) {
+        /// <summary>
+        /// Process the <see cref="SubscriptionEvent.tasks"/> of the given <see cref="SubscriptionEvent"/>.
+        /// These <see cref="SubscriptionEvent.tasks"/> are "messages" resulting from subscriptions registered by
+        /// methods like <see cref="EntitySet{T}.SubscribeChanges"/> or <see cref="EntityStore.SubscribeAllChanges"/>.
+        /// <br></br>
+        /// Tasks notifying about database changes are applied to the <see cref="EntityStore"/> the <see cref="SubscriptionHandler"/>
+        /// is attached to.
+        /// Types of database changes refer to <see cref="Change.create"/>ed, <see cref="Change.update"/>ed,
+        /// <see cref="Change.delete"/>ed and <see cref="Change.patch"/>ed entities.
+        /// <br></br>
+        /// Tasks notifying echo "messages" are ignored. These echo subscriptions are registered by <see cref="EntityStore.SubscribeEchos"/>.
+        /// </summary>
+        protected virtual void ProcessEvent(SubscriptionEvent ev) {
             EventSequence++;
             if (store._intern.disposed)  // store may already be disposed
                 return;
