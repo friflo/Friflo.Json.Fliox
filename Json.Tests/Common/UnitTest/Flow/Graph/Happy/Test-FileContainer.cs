@@ -17,15 +17,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 {
     public partial class TestStore
     {
+        /// <summary>
+        /// Assert that the used <see cref="FileDatabase"/> support multi threaded access when reading and writing
+        /// the same entity. By using <see cref="AsyncReaderWriterLock"/> a multi read / single write lock
+        /// is used for each <see cref="FileContainer"/>. Without this lock it would result in:
+        /// IOException: The process cannot access the file 'path' because it is being used by another process. 
+        /// </summary>
         [Test] public static void TestConcurrentAccessSync () {
             SingleThreadSynchronizationContext.Run(async () => {
                 using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db")) {
-                    await AssertConcurrentAccess(fileDatabase, 2, 2, 10);
+                    await ConcurrentAccess(fileDatabase, 2, 2, 10);
                 }
             });
         }
         
-        public static async Task AssertConcurrentAccess(EntityDatabase database, int readerCount, int writerCount, int requestCount) {
+        public static async Task ConcurrentAccess(EntityDatabase database, int readerCount, int writerCount, int requestCount) {
             DebugUtils.StopLeakDetection();
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             {

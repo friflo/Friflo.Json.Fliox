@@ -80,7 +80,7 @@ namespace Friflo.Json.Flow.Database.Remote
             HttpListenerRequest  req  = ctx.Request;
             HttpListenerResponse resp = ctx.Response;
 
-            if (requestCount++ == 0 || requestCount % 500 == 0) {
+            if (requestCount++ == 0 || requestCount % 10000 == 0) {
                 string reqMsg = $@"request {requestCount} {req.Url} {req.HttpMethod} {req.UserAgent}"; // {req.UserHostName} 
                 Log(reqMsg);
             }

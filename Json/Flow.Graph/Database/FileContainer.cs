@@ -169,7 +169,7 @@ namespace Friflo.Json.Flow.Database
         /// <summary>
         /// Write with <see cref="FileShare.Read"/> as on a developer machine other processes like virus scanner or file watcher
         /// may access the file concurrently resulting in:
-        /// IOException: The process cannot access the file file 'path' because it is being used by another process 
+        /// IOException: The process cannot access the file 'path' because it is being used by another process
         /// </summary>
         private static async Task WriteText(string filePath, string text) {
             byte[] encodedText = Encoding.UTF8.GetBytes(text);
