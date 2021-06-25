@@ -14,23 +14,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 {
     public partial class TestStore
     {
-        [Test] public static void TestConcurrentAccessSync      () { SingleThreadSynchronizationContext.Run(AssertConcurrentAccess);  }
+        [Test] public static void TestConcurrentAccessSync () {
+            SingleThreadSynchronizationContext.Run(async () => {
+                using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db")) {
+                    await AssertConcurrentAccess(fileDatabase, 2, 2, 10);
+                }
+            });
+        }
         
-        private static async Task AssertConcurrentAccess() {
+        private static async Task AssertConcurrentAccess(EntityDatabase database, int readerCount, int writerCount, int requestCount) {
             DebugUtils.StopLeakDetection();
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db")) {
-                const int readerCount = 2;
-                const int writerCount = 2;
-                
+            {
                 var readerStores = new List<PocStore>();
                 var writerStores = new List<PocStore>();
                 try {
                     for (int n = 0; n < readerCount; n++) {
-                        readerStores.Add(new PocStore(fileDatabase, $"reader-{n}"));
+                        readerStores.Add(new PocStore(database, $"reader-{n}"));
                     }
                     for (int n = 0; n < writerCount; n++) {
-                        writerStores.Add(new PocStore(fileDatabase, $"writer-{n}"));
+                        writerStores.Add(new PocStore(database, $"writer-{n}"));
                     }
 
                     const string    id          = "concurrent-access";
@@ -39,10 +42,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     var tasks = new List<Task>();
 
                     foreach (var readerStore in readerStores) {
-                        tasks.Add(ReadLoop (readerStore, id));
+                        tasks.Add(ReadLoop (readerStore, id, requestCount));
                     }
                     foreach (var writerStore in writerStores) {
-                        tasks.Add(WriteLoop (writerStore, employee));
+                        tasks.Add(WriteLoop (writerStore, employee, requestCount));
                     }
                     await Task.WhenAll(tasks);
                 }
@@ -56,11 +59,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
 
-        private const int AccessCount = 10;
-
-        private static Task ReadLoop (PocStore store, string id) {
+        private static Task ReadLoop (PocStore store, string id, int requestCount) {
             return Task.Run(async () => {
-                for (int n= 0; n < AccessCount; n++) {
+                for (int n= 0; n < requestCount; n++) {
                     var readEmployee = store.employees.Read();
                     readEmployee.Find(id);
                     await store.Sync();
@@ -69,9 +70,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             });
         }
         
-        private static Task WriteLoop (PocStore store, Employee employee) {
+        private static Task WriteLoop (PocStore store, Employee employee, int requestCount) {
             return Task.Run(async () => {
-                for (int n= 0; n < AccessCount; n++) {
+                for (int n= 0; n < requestCount; n++) {
                     store.employees.Create(employee);
                     await store.Sync();
                 }
