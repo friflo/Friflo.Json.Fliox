@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Mapper;
@@ -13,6 +14,7 @@ namespace Friflo.Json.Flow.Database.Remote
 {
     public abstract class RemoteClientDatabase : EntityDatabase
     {
+        private             int                                 reqId;
         private  readonly   ProtocolType                        protocolType;
         private  readonly   Dictionary<string, IEventTarget>    clientTargets = new Dictionary<string, IEventTarget>();
 
@@ -41,7 +43,7 @@ namespace Friflo.Json.Flow.Database.Remote
             eventTarget.ProcessEvent(ev, messageContext);
         }
 
-        protected abstract Task<JsonResponse> ExecuteRequestJson(string jsonRequest, MessageContext messageContext);
+        protected abstract Task<JsonResponse> ExecuteRequestJson(int requestId, string jsonRequest, MessageContext messageContext);
         
         public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             var response = await ExecuteRequest(syncRequest, messageContext).ConfigureAwait(false);
@@ -52,12 +54,14 @@ namespace Friflo.Json.Flow.Database.Remote
         }
         
         private async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, MessageContext messageContext) {
+            int requestId = Interlocked.Increment(ref reqId);
+            request.reqId = requestId; 
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
                 mapper.Pretty = true;
                 mapper.WriteNullMembers = false;
                 var jsonRequest = CreateRequest(mapper.writer, request);
-                var result = await ExecuteRequestJson(jsonRequest, messageContext).ConfigureAwait(false);
+                var result = await ExecuteRequestJson(requestId, jsonRequest, messageContext).ConfigureAwait(false);
                 ObjectReader reader = mapper.reader;
                 if (result.statusType == ResponseStatusType.Ok) {
                     var response = reader.Read<DatabaseResponse>(result.body);

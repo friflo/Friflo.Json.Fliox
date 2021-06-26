@@ -15,19 +15,19 @@ namespace Friflo.Json.Flow.Database.Remote
 {
     public class WebSocketClientDatabase : RemoteClientDatabase
     {
-        private  readonly   string                              endpoint;
-        private             ClientWebSocket                     websocket;
-        private  readonly   ConcurrentQueue<WebsocketRequest>   requestQueue = new ConcurrentQueue<WebsocketRequest>();
+        private  readonly   string                                      endpoint;
+        private             ClientWebSocket                             websocket;
+        private  readonly   ConcurrentDictionary<int, WebsocketRequest> requests = new ConcurrentDictionary<int, WebsocketRequest>();
 
 
         public WebSocketClientDatabase(string endpoint) : base(ProtocolType.BiDirect) {
             this.endpoint = endpoint;
         }
         
-        public override void Dispose() {
+        /* public override void Dispose() {
             base.Dispose();
             // websocket.CancelPendingRequests();
-        }
+        } */
         
         public async Task Connect() {
             var uri = new Uri(endpoint);
@@ -35,7 +35,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 throw new InvalidOperationException("websocket already in use");
             }
             // clear request queue is required for reconnects 
-            requestQueue.Clear();
+            requests.Clear();
             
             websocket = new ClientWebSocket();
             await websocket.ConnectAsync(uri, CancellationToken.None).ConfigureAwait(false);
@@ -91,7 +91,11 @@ namespace Friflo.Json.Flow.Database.Remote
                     var message = reader.Read<DatabaseMessage>(messageJson);
                     var resp = message.resp; 
                     if (resp != null) {
-                        if (!requestQueue.TryDequeue(out WebsocketRequest request)) {
+                        var requestId = resp.reqId;
+                        if (!requestId.HasValue)
+                            throw new InvalidOperationException("WebSocketClientDatabase requires reqId in response");
+                        var id = requestId.Value;
+                        if (!requests.TryGetValue(id, out WebsocketRequest request)) {
                             throw new InvalidOperationException("Expect corresponding request to response");
                         }
                         if (websocket.State != WebSocketState.Open) {
@@ -117,11 +121,13 @@ namespace Friflo.Json.Flow.Database.Remote
             }
         }
 
-        protected override async Task<JsonResponse> ExecuteRequestJson(string jsonSyncRequest, MessageContext messageContext) {
+        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, string jsonSyncRequest, MessageContext messageContext) {
+            if (requestId < 1)
+                throw new InvalidOperationException("Expect requestId > 0");
             try {
                 // request need to be queued _before_ sending it to be prepared for handling the response.
                 var request         = new WebsocketRequest(messageContext);
-                requestQueue.Enqueue(request);
+                requests.TryAdd(requestId, request);
                 
                 byte[] requestBytes = Encoding.UTF8.GetBytes(jsonSyncRequest);
                 var arraySegment    = new ArraySegment<byte>(requestBytes, 0, requestBytes.Length);

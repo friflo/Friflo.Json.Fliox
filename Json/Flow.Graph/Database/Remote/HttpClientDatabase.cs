@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Database.Remote
             httpClient.Dispose();
         }
 
-        protected override async Task<JsonResponse> ExecuteRequestJson(string jsonSyncRequest, MessageContext messageContext) {
+        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, string jsonSyncRequest, MessageContext messageContext) {
             var content = new StringContent(jsonSyncRequest);
             content.Headers.ContentType.MediaType = "application/json";
             // body.Headers.ContentEncoding = new string[]{"charset=utf-8"};
