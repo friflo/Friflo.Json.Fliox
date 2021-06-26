@@ -64,12 +64,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     var tasks = new List<Task>();
 
                     for (int n = 0; n < readerStores.Count; n++) {
-                        var readerStore = readerStores[n];
-                        tasks.Add(ReadLoop (readerStore, employees[0], requestCount));
+                        tasks.Add(ReadLoop  (readerStores[n], employees[n], requestCount));
                     }
                     for (int n = 0; n < writerStores.Count; n++) {
-                        var writerStore = writerStores[n];
-                        tasks.Add(WriteLoop (writerStore, employees[0], requestCount));
+                        tasks.Add(WriteLoop (writerStores[n], employees[n], requestCount));
                     }
                     var lastCount = 0;
                     var count = new Thread(() => {

@@ -100,12 +100,12 @@ namespace Friflo.Json.Tests.Main
         
         private static async Task MemoryDbThroughput() {
             var db = new MemoryDatabase();
-            await TestStore.ConcurrentAccess(db, 4, 0, 1_000_000, true);
+            await TestStore.ConcurrentAccess(db, 4, 0, 1_000_000, false);
         }
         
         private static async Task FileDbThroughput() {
             var db = new FileDatabase(CommonUtils.GetBasePath() + "assets/db");
-            await TestStore.ConcurrentAccess(db, 4, 0, 1_000_000, true);
+            await TestStore.ConcurrentAccess(db, 4, 0, 1_000_000, false);
         }
         
         private static async Task WebsocketDbThroughput() {
@@ -124,7 +124,7 @@ namespace Friflo.Json.Tests.Main
             using (var hostDatabase     = new HttpHostDatabase(db, "http://+:8080/", null))
             using (var remoteDatabase   = new HttpClientDatabase("ws://localhost:8080/")) {
                 await TestStore.RunRemoteHost(hostDatabase, async () => {
-                    await TestStore.ConcurrentAccess(remoteDatabase, 4, 0, 1_000_000, true);
+                    await TestStore.ConcurrentAccess(remoteDatabase, 4, 0, 1_000_000, false);
                 });
             }
         }
