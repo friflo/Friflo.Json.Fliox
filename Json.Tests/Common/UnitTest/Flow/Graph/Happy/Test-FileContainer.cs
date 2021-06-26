@@ -39,15 +39,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 var store       = new PocStore(database, "prepare");
                 var employees   = new List<Employee>();
                 int max         = Math.Max(readerCount, writerCount);
-                for (int n = 0; n < max; n++) {
-                    if (singleEntity) {
-                        employees.Add(new Employee{ id = "concurrent-access", firstName = "Concurrent accessed entity" });    
-                    } else {
-                        // use individual entity per readerStores / writerStore
-                        employees.Add(new Employee{ id = $"concurrent-{n}", firstName = "Concurrent accessed entity" });    
+                if (singleEntity) {
+                    var employee = new Employee{ id = "concurrent-access", firstName = "Concurrent accessed entity" };
+                    for (int n = 0; n < max; n++) {
+                        employees.Add(employee);
                     }
+                    store.employees.Create(employee);
+                } else {
+                    // use individual entity per readerStores / writerStore
+                    for (int n = 0; n < max; n++) {
+                        employees.Add(new Employee{ id = $"concurrent-{n}", firstName = "Concurrent accessed entity" });
+                    }
+                    store.employees.CreateRange(employees);
                 }
-                store.employees.CreateRange(employees);
                 await store.Sync();
 
                 var readerStores = new List<PocStore>();
