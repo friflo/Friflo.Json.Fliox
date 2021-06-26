@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         employees.Add(new Employee{ id = $"concurrent-{n}", firstName = "Concurrent accessed entity" });    
                     }
                 }
-                store.employees.Create(employees[0]);
+                store.employees.CreateRange(employees);
                 await store.Sync();
 
                 var readerStores = new List<PocStore>();
