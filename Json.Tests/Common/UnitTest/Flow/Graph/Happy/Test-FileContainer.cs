@@ -26,20 +26,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         [Test] public static void TestConcurrentAccessSync () {
             SingleThreadSynchronizationContext.Run(async () => {
                 using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db")) {
-                    await ConcurrentAccess(fileDatabase, 2, 2, 10);
+                    await ConcurrentAccess(fileDatabase, 2, 2, 10, true);
                 }
             });
         }
         
-        public static async Task ConcurrentAccess(EntityDatabase database, int readerCount, int writerCount, int requestCount) {
+        public static async Task ConcurrentAccess(EntityDatabase database, int readerCount, int writerCount, int requestCount, bool singleEntity) {
             DebugUtils.StopLeakDetection();
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             {
-                // prepare
-                var             store       = new PocStore(database, "prepare");
-                const string    id          = "concurrent-access";
-                var             employee    = new Employee { id = id, firstName = "Concurrent accessed entity"};
-                store.employees.Create(employee);
+                // --- prepare
+                var store       = new PocStore(database, "prepare");
+                var employees   = new List<Employee>();
+                int max         = Math.Max(readerCount, writerCount);
+                for (int n = 0; n < max; n++) {
+                    if (singleEntity) {
+                        employees.Add(new Employee{ id = "concurrent-access", firstName = "Concurrent accessed entity" });    
+                    } else {
+                        // use individual entity per readerStores / writerStore
+                        employees.Add(new Employee{ id = $"concurrent-{n}", firstName = "Concurrent accessed entity" });    
+                    }
+                }
+                store.employees.Create(employees[0]);
                 await store.Sync();
 
                 var readerStores = new List<PocStore>();
@@ -52,14 +60,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         writerStores.Add(new PocStore(database, $"writer-{n}"));
                     }
 
-                    // run readers and writers
+                    // --- run readers and writers
                     var tasks = new List<Task>();
 
-                    foreach (var readerStore in readerStores) {
-                        tasks.Add(ReadLoop (readerStore, id, requestCount));
+                    for (int n = 0; n < readerStores.Count; n++) {
+                        var readerStore = readerStores[n];
+                        tasks.Add(ReadLoop (readerStore, employees[0], requestCount));
                     }
-                    foreach (var writerStore in writerStores) {
-                        tasks.Add(WriteLoop (writerStore, employee, requestCount));
+                    for (int n = 0; n < writerStores.Count; n++) {
+                        var writerStore = writerStores[n];
+                        tasks.Add(WriteLoop (writerStore, employees[0], requestCount));
                     }
                     var lastCount = 0;
                     var count = new Thread(() => {
@@ -86,13 +96,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
 
-        private static Task ReadLoop (PocStore store, string id, int requestCount) {
+        private static Task ReadLoop (PocStore store, Employee employee, int requestCount) {
+            var id = employee.id;
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
                     var readEmployee = store.employees.Read();
                     readEmployee.Find(id);
                     await store.Sync();
                     AreEqual (1, readEmployee.Results.Count);
+                    if (!readEmployee.Results.ContainsKey(id))
+                        throw new TestException($"Expect entity with id: {id}");
                 }
             });
         }
