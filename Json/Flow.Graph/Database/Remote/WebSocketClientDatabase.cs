@@ -95,8 +95,8 @@ namespace Friflo.Json.Flow.Database.Remote
                         if (!requestId.HasValue)
                             throw new InvalidOperationException("WebSocketClientDatabase requires reqId in response");
                         var id = requestId.Value;
-                        if (!requests.TryGetValue(id, out WebsocketRequest request)) {
-                            throw new InvalidOperationException("Expect corresponding request to response");
+                        if (!requests.TryRemove(id, out WebsocketRequest request)) {
+                            throw new InvalidOperationException($"Expect corresponding request to response. id: {id}");
                         }
                         if (websocket.State != WebSocketState.Open) {
                             var error = JsonResponse.CreateResponseError(request.messageContext, $"WebSocket not Open. {endpoint}", ResponseStatusType.Error);
