@@ -127,21 +127,8 @@ namespace Friflo.Json.Flow.Graph.Internal
                 SetReadTaskError(read, taskError);
                 return;
             }
-            // remove all requested peers from EntitySet which are not present in database
-            foreach (var id in task.ids) {
-                var value = readEntities.entities[id];
-                if (value.Error != null) {
-                    continue;
-                }
-                var json = value.Json;  // in case of RemoteClient json is "null"
-                var isNull = json == null || json == "null";
-                if (isNull)
-                    set.DeletePeer(id);
-            }
-
             var entityErrorInfo = new TaskErrorInfo();
-            var readIds = read.results.Keys.ToList();
-            foreach (var id in readIds) {
+            foreach (var id in task.ids) {
                 var value = readEntities.entities[id];
                 var error = value.Error;
                 if (error != null) {
@@ -149,12 +136,14 @@ namespace Friflo.Json.Flow.Graph.Internal
                     continue;
                 }
                 var json = value.Json;  // in case of RemoteClient json is "null"
-                if (json == null || json == "null") {
-                    read.results[id] = null;
-                } else {
-                    var peer = set.GetPeerById(id);
-                    read.results[id] = peer.Entity;
+                var isNull = json == null || json == "null";
+                if (isNull) {
+                    // remove requested peer from EntitySet which is not present in database
+                    set.DeletePeer(id);
+                    continue;
                 }
+                var peer = set.GetPeerById(id);
+                read.results[id] = peer.Entity;
             }
             foreach (var findTask in read.findTasks) {
                 findTask.SetFindResult(read.results, readEntities.entities);
