@@ -33,6 +33,8 @@ namespace Friflo.Json.Flow.Sync
         
         InvalidTask,
         
+        PermissionDenied,
+        
         SyncError
     }
 }

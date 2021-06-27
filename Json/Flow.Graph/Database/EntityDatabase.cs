@@ -17,6 +17,7 @@ namespace Friflo.Json.Flow.Database
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         public              EventBroker                         eventBroker;
+        public              PermissionChecker                   permissionChecker;
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 
@@ -82,7 +83,7 @@ namespace Friflo.Json.Flow.Database
                 if (task == null) {
                     var taskResult = new TaskErrorResult{
                         type        = TaskErrorResultType.InvalidTask,
-                        message     = $"element must not be null. tasks[{index}]",
+                        message     = $"element must not be null. tasks[{index}]"
                     };
                     tasks.Add(taskResult);
                     continue;
@@ -90,6 +91,14 @@ namespace Friflo.Json.Flow.Database
                 task.index = index;
                     
                 try {
+                    if (permissionChecker != null) {
+                        var permission = await permissionChecker.GrantPermission(this, messageContext);
+                        if (!permission.granted) {
+                            var taskResult = PermissionChecker.PermissionDenied(permission, task.index);
+                            tasks.Add(taskResult);
+                            continue;
+                        }
+                    }
                     var result = await task.Execute(this, response, messageContext).ConfigureAwait(false);
                     tasks.Add(result);
                 }

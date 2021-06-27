@@ -31,6 +31,8 @@ namespace Friflo.Json.Flow.Graph
         
         InvalidTask,
         
+        PermissionDenied,
+        
         SyncError,
         
         /// <summary>
@@ -75,6 +77,7 @@ namespace Friflo.Json.Flow.Graph
                 case TaskErrorResultType.UnhandledException:    return TaskErrorType.UnhandledException;
                 case TaskErrorResultType.DatabaseError:         return TaskErrorType.DatabaseError;
                 case TaskErrorResultType.InvalidTask:           return TaskErrorType.InvalidTask;
+                case TaskErrorResultType.PermissionDenied:      return TaskErrorType.PermissionDenied;
                 case TaskErrorResultType.SyncError:             return TaskErrorType.SyncError;
             }
             throw new ArgumentException($"cant convert error type: {type}");
