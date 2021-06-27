@@ -10,7 +10,6 @@ using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Tests.Common.UnitTest.Flow.Graph;
 using Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy;
-using Friflo.Json.Tests.Common.Utils;
 
 namespace Friflo.Json.Tests.Main
 {
@@ -22,7 +21,8 @@ namespace Friflo.Json.Tests.Main
             MemoryDbThroughput,
             FileDbThroughput,
             WebsocketDbThroughput,
-            HttpDbThroughput
+            HttpDbThroughput,
+            LoopbackDbThroughput
         }
         
         // run GraphServer via one of the following methods:
@@ -65,6 +65,9 @@ namespace Friflo.Json.Tests.Main
                         break;
                     case Module.HttpDbThroughput:
                         await HttpDbThroughput();
+                        break;
+                    case Module.LoopbackDbThroughput:
+                        await LoopbackDbThroughput();
                         break;
                 }
             });
@@ -126,6 +129,13 @@ namespace Friflo.Json.Tests.Main
                 await TestStore.RunRemoteHost(hostDatabase, async () => {
                     await TestStore.ConcurrentAccess(remoteDatabase, 4, 0, 1_000_000, false);
                 });
+            }
+        }
+        
+        private static async Task LoopbackDbThroughput() {
+            var db = new MemoryDatabase();
+            using (var loopbackDatabase     = new LoopbackDatabase(db)) {
+                await TestStore.ConcurrentAccess(loopbackDatabase, 4, 0, 1_000_000, false);
             }
         }
 
