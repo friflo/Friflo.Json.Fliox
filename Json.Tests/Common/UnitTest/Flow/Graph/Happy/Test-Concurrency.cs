@@ -135,7 +135,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         /// <summary>
         /// Assert that <see cref="WebSocketClientDatabase"/> support being used by multiple clients aka
-        /// <see cref="EntityStore"/>'s when using concurrent requests.
+        /// <see cref="EntityStore"/>'s and using concurrent requests.
         /// All <see cref="EntityDatabase"/> implementations support this behavior, so <see cref="WebSocketClientDatabase"/>
         /// have to ensure this also. It utilize <see cref="DatabaseRequest.reqId"/> to ensure this.
         /// </summary>
