@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         /// </summary>
         [Test] public static void TestConcurrentAccessSync () {
             SingleThreadSynchronizationContext.Run(async () => {
-                using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db")) {
+                using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/testConcurrencyDb")) {
                     await ConcurrentAccess(fileDatabase, 2, 2, 10, true);
                 }
             });

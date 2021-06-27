@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Main
                         await MemoryDbThroughput();
                         break;
                     case Module.FileDbThroughput:
-                        await FileDbThroughput(database);
+                        await FileDbThroughput();
                         break;
                     case Module.WebsocketDbThroughput:
                         await WebsocketDbThroughput();
@@ -103,8 +103,8 @@ namespace Friflo.Json.Tests.Main
             await TestStore.ConcurrentAccess(db, 4, 0, 1_000_000, false);
         }
         
-        private static async Task FileDbThroughput(string database) {
-            var db = new FileDatabase(database);
+        private static async Task FileDbThroughput() {
+            var db = new FileDatabase("./Json.Tests/assets/testConcurrencyDb");
             await TestStore.ConcurrentAccess(db, 4, 0, 1_000_000, false);
         }
         
