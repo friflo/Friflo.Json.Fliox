@@ -169,6 +169,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             IsFalse(order2CustomerError.Success);
             AreEqual("read-task-error", orders2WithTaskError.Results["order-2"].customer.id);
             AreEqual("DatabaseError ~ read references failed: 'Order -> .customer' - simulated read task error", order2CustomerError.  Error.ToString());
+            
+            // --- Test invalid response
+ 
+            testDatabase.ClearErrors();
+            const string missingArticle1      = "article-1";
+            testArticles.missingResultErrors.Add(missingArticle1); 
+            var allArticles2 = store.articles.QueryAll()          .TaskName("allArticles2");
+            
+            var result = await store.TrySync();
+            AreEqual(1, result.failed.Count);
+            IsFalse(allArticles2.Success);
+            AreEqual(@"EntityErrors ~ count: 1
+| ReadError: Article 'article-1', requested entity missing in response results", allArticles2.Error.ToString());
+            
         }
     }
 }

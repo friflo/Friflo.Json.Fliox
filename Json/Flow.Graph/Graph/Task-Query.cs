@@ -19,11 +19,11 @@ namespace Friflo.Json.Flow.Graph
         internal            RefsTask                refsTask;
         internal readonly   FilterOperation         filter;
         internal readonly   string                  filterLinq; // use as string identifier of a filter 
-        internal            Dictionary<string, T>   entities;
+        internal            Dictionary<string, T>   results;
         private  readonly   EntityStore             store;
 
-        public              Dictionary<string, T>   Results         => IsOk("QueryTask.Result",  out Exception e) ? entities     : throw e;
-        public              T                       this[string id] => IsOk("QueryTask[]",       out Exception e) ? entities[id] : throw e;
+        public              Dictionary<string, T>   Results         => IsOk("QueryTask.Result",  out Exception e) ? results     : throw e;
+        public              T                       this[string id] => IsOk("QueryTask[]",       out Exception e) ? results[id] : throw e;
             
         internal override   TaskState               State           => state;
         public   override   string                  Details         => $"QueryTask<{typeof(T).Name}> (filter: {filterLinq})";

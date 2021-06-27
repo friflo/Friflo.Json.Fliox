@@ -131,11 +131,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             var entities = readEntities.entities;
             foreach (var id in task.ids) {
                 if (!entities.TryGetValue(id, out EntityValue value)) {
-                    // handle invalid response
-                    var responseError = new EntityError(EntityErrorType.ReadError, set.name, id, "requested entity missing in response results");
-                    entityErrorInfo.AddEntityError(responseError);
-                    value = new EntityValue(responseError); 
-                    entities.Add(id, value);
+                    AddEntityResponseError(id, entities, ref entityErrorInfo);
                     continue;
                 }
                 var error = value.Error;
@@ -175,6 +171,13 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
+        private void AddEntityResponseError(string id, Dictionary<string, EntityValue> entities, ref TaskErrorInfo entityErrorInfo) {
+            var responseError = new EntityError(EntityErrorType.ReadError, set.name, id, "requested entity missing in response results");
+            entityErrorInfo.AddEntityError(responseError);
+            var value = new EntityValue(responseError); 
+            entities.Add(id, value);
+        }
+        
         internal override void QueryEntitiesResult(QueryEntities task, TaskResult result, ContainerEntities queryEntities) {
             var filterLinq = task.filterLinq;
             var query = queries[filterLinq];
@@ -184,18 +187,22 @@ namespace Friflo.Json.Flow.Graph.Internal
                 SetSubRefsError(query.refsTask.subRefs, taskErrorInfo);
                 return;
             }
-            var queryResult = (QueryEntitiesResult)result;
+            var queryResult     = (QueryEntitiesResult)result;
             var entityErrorInfo = new TaskErrorInfo();
-            var entities = query.entities = new Dictionary<string, T>(queryResult.ids.Count);
+            var entities        = queryEntities.entities;
+            var results         = query.results = new Dictionary<string, T>(queryResult.ids.Count);
             foreach (var id in queryResult.ids) {
-                var value = queryEntities.entities[id];
+                if (!entities.TryGetValue(id, out EntityValue value)) {
+                    AddEntityResponseError(id, entities, ref entityErrorInfo);
+                    continue;
+                }
                 var error = value.Error;
                 if (error != null) {
                     entityErrorInfo.AddEntityError(error);
                     continue;
                 }
                 var peer = set.GetPeerById(id);
-                entities.Add(id, peer.Entity);
+                results.Add(id, peer.Entity);
             }
             if (entityErrorInfo.HasErrors) {
                 query.state.SetError(entityErrorInfo);
