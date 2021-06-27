@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Friflo.Json.Burst;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Flow.Database.Utils;
@@ -27,78 +26,79 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         /// IOException: The process cannot access the file 'path' because it is being used by another process. 
         /// </summary>
         [Test] public static void TestConcurrentFileAccessSync () {
-            SingleThreadSynchronizationContext.Run(async () => {
-                using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/testConcurrencyDb")) {
-                    await ConcurrentAccess(fileDatabase, 2, 2, 10, true);
-                }
-            });
+            using (var _                = Pools.SharedPools) // for LeakTestsFixture
+            {
+                SingleThreadSynchronizationContext.Run(async () => {
+                    using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/testConcurrencyDb")) {
+                        await ConcurrentAccess(fileDatabase, 2, 2, 10, true);
+                    }
+                });
+            }
         }
         
         public static async Task ConcurrentAccess(EntityDatabase database, int readerCount, int writerCount, int requestCount, bool singleEntity) {
-            DebugUtils.StopLeakDetection();
-            using (var _            = Pools.SharedPools) // for LeakTestsFixture
-            {
-                // --- prepare
-                var store       = new PocStore(database, "prepare");
-                var employees   = new List<Employee>();
-                int max         = Math.Max(readerCount, writerCount);
-                if (singleEntity) {
-                    var employee = new Employee{ id = "concurrent-access", firstName = "Concurrent accessed entity" };
-                    for (int n = 0; n < max; n++) {
-                        employees.Add(employee);
-                    }
-                    store.employees.Create(employee);
-                } else {
-                    // use individual entity per readerStores / writerStore
-                    for (int n = 0; n < max; n++) {
-                        employees.Add(new Employee{ id = $"concurrent-{n}", firstName = "Concurrent accessed entity" });
-                    }
-                    store.employees.CreateRange(employees);
+            // --- prepare
+            var store       = new PocStore(database, "prepare");
+            var employees   = new List<Employee>();
+            int max         = Math.Max(readerCount, writerCount);
+            if (singleEntity) {
+                var employee = new Employee{ id = "concurrent-access", firstName = "Concurrent accessed entity" };
+                for (int n = 0; n < max; n++) {
+                    employees.Add(employee);
                 }
-                await store.Sync();
-
-                var readerStores = new List<PocStore>();
-                var writerStores = new List<PocStore>();
-                try {
-                    for (int n = 0; n < readerCount; n++) {
-                        readerStores.Add(new PocStore(database, $"reader-{n}"));
-                    }
-                    for (int n = 0; n < writerCount; n++) {
-                        writerStores.Add(new PocStore(database, $"writer-{n}"));
-                    }
-
-                    // --- run readers and writers
-                    var tasks = new List<Task>();
-
-                    for (int n = 0; n < readerStores.Count; n++) {
-                        tasks.Add(ReadLoop  (readerStores[n], employees[n], requestCount));
-                    }
-                    for (int n = 0; n < writerStores.Count; n++) {
-                        tasks.Add(WriteLoop (writerStores[n], employees[n], requestCount));
-                    }
-                    var lastCount = 0;
-                    var count = new Thread(() => {
-                        while (true) {
-                            try {
-                                Thread.Sleep(1000);
-                            } catch { break; }
-                            lastCount = CountRequests(readerStores, writerStores, lastCount);
-                        }
-                    });
-                    count.Start();
-
-                    await Task.WhenAll(tasks);
-                    CountRequests(readerStores, writerStores, lastCount);
-                    count.Interrupt();
+                store.employees.Create(employee);
+            } else {
+                // use individual entity per readerStores / writerStore
+                for (int n = 0; n < max; n++) {
+                    employees.Add(new Employee{ id = $"concurrent-{n}", firstName = "Concurrent accessed entity" });
                 }
-                finally {
-                    foreach (var readerStore in readerStores)
-                        readerStore.Dispose();
-                    foreach (var writerStore in writerStores) {
-                        writerStore.Dispose();
+                store.employees.CreateRange(employees);
+            }
+            await store.Sync();
+
+            var readerStores = new List<PocStore>();
+            var writerStores = new List<PocStore>();
+            try {
+                for (int n = 0; n < readerCount; n++) {
+                    readerStores.Add(new PocStore(database, $"reader-{n}"));
+                }
+                for (int n = 0; n < writerCount; n++) {
+                    writerStores.Add(new PocStore(database, $"writer-{n}"));
+                }
+
+                // --- run readers and writers
+                var tasks = new List<Task>();
+
+                for (int n = 0; n < readerStores.Count; n++) {
+                    tasks.Add(ReadLoop  (readerStores[n], employees[n], requestCount));
+                }
+                for (int n = 0; n < writerStores.Count; n++) {
+                    tasks.Add(WriteLoop (writerStores[n], employees[n], requestCount));
+                }
+                var lastCount = 0;
+                var count = new Thread(() => {
+                    while (true) {
+                        try {
+                            Thread.Sleep(1000);
+                        } catch { break; }
+                        lastCount = CountRequests(readerStores, writerStores, lastCount);
                     }
+                });
+                count.Start();
+
+                await Task.WhenAll(tasks);
+                CountRequests(readerStores, writerStores, lastCount);
+                count.Interrupt();
+            }
+            finally {
+                store.Dispose();
+                foreach (var readerStore in readerStores)
+                    readerStore.Dispose();
+                foreach (var writerStore in writerStores) {
+                    writerStore.Dispose();
                 }
             }
+            
         }
 
         private static Task ReadLoop (PocStore store, Employee employee, int requestCount) {
@@ -139,6 +139,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         /// All <see cref="EntityDatabase"/> implementations support this behavior, so <see cref="WebSocketClientDatabase"/>
         /// have to ensure this also. It utilize <see cref="DatabaseRequest.reqId"/> to ensure this.
         /// </summary>
+#if !UNITY_5_3_OR_NEWER 
         [Test]
         public static async Task TestConcurrentWebSocket () {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
@@ -152,6 +153,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 });
             }
         }
+#endif
         
         private static async Task ConcurrentWebSocket(EntityDatabase database, int clientCount, int requestCount)
         {
