@@ -8,7 +8,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Burst;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Flow.Database.Utils;
+using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Sync;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -23,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         /// is used for each <see cref="FileContainer"/>. Without this lock it would result in:
         /// IOException: The process cannot access the file 'path' because it is being used by another process. 
         /// </summary>
-        [Test] public static void TestConcurrentAccessSync () {
+        [Test] public static void TestConcurrentFileAccessSync () {
             SingleThreadSynchronizationContext.Run(async () => {
                 using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/testConcurrencyDb")) {
                     await ConcurrentAccess(fileDatabase, 2, 2, 10, true);
@@ -128,6 +131,58 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             var requests = sum - lastCount;
             Console.WriteLine($"requests: {requests}, sum: {sum}");
             return sum;
+        }
+        
+        /// <summary>
+        /// Assert that <see cref="WebSocketClientDatabase"/> support being used by multiple clients aka
+        /// <see cref="EntityStore"/>'s when using concurrent requests.
+        /// All <see cref="EntityDatabase"/> implementations support this behavior, so <see cref="WebSocketClientDatabase"/>
+        /// have to ensure this also. It utilize <see cref="DatabaseRequest.reqId"/> to ensure this.
+        /// </summary>
+        [Test]
+        public static async Task TestConcurrentWebSocket () {
+            using (var _                = Pools.SharedPools) // for LeakTestsFixture
+            using (var db               = new MemoryDatabase())
+            using (var hostDatabase     = new HttpHostDatabase(db, "http://+:8080/", null))
+            using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/")) {
+                await RunRemoteHost(hostDatabase, async () => {
+                    await remoteDatabase.Connect();
+                    await ConcurrentWebSocket(remoteDatabase, 4, 100);
+                });
+            }
+        }
+        
+        private static async Task ConcurrentWebSocket(EntityDatabase database, int clientCount, int requestCount)
+        {
+            // --- prepare
+            var stores = new List<PocStore>();
+            try {
+                for (int n = 0; n < clientCount; n++) {
+                    stores.Add(new PocStore(database, $"reader-{n}"));
+                }
+                var tasks = new List<Task>();
+                
+                // run loops
+                for (int n = 0; n < stores.Count; n++) {
+                    tasks.Add(EchoLoop  (stores[n], $"echo-{n}", requestCount));
+                }
+                await Task.WhenAll(tasks);
+            }
+            finally {
+                foreach (var store in stores) {
+                    store.Dispose();
+                }
+            }
+        }
+        
+        private static Task EchoLoop (EntityStore store, string message, int requestCount) {
+            return Task.Run(async () => {
+                for (int n= 0; n < requestCount; n++) {
+                    var echo = store.Echo(message);
+                    await store.Sync();
+                    AreEqual (message, echo.Result);
+                }
+            });
         }
     }
 }
