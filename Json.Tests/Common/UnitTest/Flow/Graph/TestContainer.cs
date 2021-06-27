@@ -26,6 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             foreach (var pair in testContainers) {
                 var container = pair.Value;
                 container.readEntityErrors.Clear();
+                container.missingResultErrors.Clear();
                 container.readTaskErrors.Clear();
                 container.writeEntityErrors.Clear();
                 container.writeTaskErrors.Clear();
@@ -52,6 +53,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 }
             }
             var response = await base.ExecuteSync(syncRequest, messageContext);
+            foreach (var pair in testContainers) {
+                TestContainer testContainer = pair.Value;
+                if (!response.results.TryGetValue(testContainer.name, out var result))
+                    continue;
+                var entities = result.entities;
+                foreach (var id in testContainer.missingResultErrors) {
+                    if (entities.TryGetValue(id, out EntityValue value)) {
+                        entities.Remove(id);
+                    }
+                }
+            }
             return response;
         }
 
@@ -74,12 +86,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     {
         private readonly    EntityContainer local;
         public  readonly    Dictionary<string, Action<EntityValue>> readEntityErrors    = new Dictionary<string, Action<EntityValue>>();
+        public  readonly    HashSet<string>                         missingResultErrors = new HashSet<string>();
         public  readonly    Dictionary<string, Func<CommandError>>  readTaskErrors      = new Dictionary<string, Func<CommandError>>();
 
         public  readonly    Dictionary<string, Func<EntityError>>   writeEntityErrors   = new Dictionary<string, Func<EntityError>>();
         public  readonly    Dictionary<string, Func<CommandError>>  writeTaskErrors     = new Dictionary<string, Func<CommandError>>();
 
-        public  readonly    Dictionary<string, Func<QueryEntitiesResult>>  queryErrors = new Dictionary<string,  Func<QueryEntitiesResult>>();
+        public  readonly    Dictionary<string, Func<QueryEntitiesResult>>  queryErrors  = new Dictionary<string,  Func<QueryEntitiesResult>>();
         
 
         

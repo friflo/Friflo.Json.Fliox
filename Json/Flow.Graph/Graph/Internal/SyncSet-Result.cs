@@ -128,8 +128,16 @@ namespace Friflo.Json.Flow.Graph.Internal
                 return;
             }
             var entityErrorInfo = new TaskErrorInfo();
+            var entities = readEntities.entities;
             foreach (var id in task.ids) {
-                var value = readEntities.entities[id];
+                if (!entities.TryGetValue(id, out EntityValue value)) {
+                    // handle invalid response
+                    var responseError = new EntityError(EntityErrorType.ReadError, set.name, id, "requested entity missing in response results");
+                    entityErrorInfo.AddEntityError(responseError);
+                    value = new EntityValue(responseError); 
+                    entities.Add(id, value);
+                    continue;
+                }
                 var error = value.Error;
                 if (error != null) {
                     entityErrorInfo.AddEntityError(error);
@@ -146,7 +154,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 read.results[id] = peer.Entity;
             }
             foreach (var findTask in read.findTasks) {
-                findTask.SetFindResult(read.results, readEntities.entities);
+                findTask.SetFindResult(read.results, entities);
             }
             // A ReadTask is set to error if at least one of its JSON results has an error.
             if (entityErrorInfo.HasErrors) {
