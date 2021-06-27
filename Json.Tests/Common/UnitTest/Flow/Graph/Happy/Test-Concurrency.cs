@@ -148,6 +148,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
                     await ConcurrentWebSocket(remoteDatabase, 4, 100);
+                    await remoteDatabase.Close();
                 });
             }
         }
