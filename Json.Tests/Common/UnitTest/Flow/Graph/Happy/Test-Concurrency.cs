@@ -147,7 +147,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
-                    await ConcurrentWebSocket(remoteDatabase, 4, 100);
+                    await ConcurrentWebSocket(remoteDatabase, 4, 10); // 10 requests are sufficient to force concurrency error
                     await remoteDatabase.Close();
                 });
             }
