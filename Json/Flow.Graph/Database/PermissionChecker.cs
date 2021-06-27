@@ -22,9 +22,9 @@ namespace Friflo.Json.Flow.Database
     
     public struct PermissionResult
     {
-        /// need to be set to true, if permission is granted
+        /// need to be set to true if permission is granted
         public bool     granted;
-        /// optional message if permission if not <see cref="granted"/>
+        /// optional message if permission is not <see cref="granted"/>
         public string   message;
     }
 }
