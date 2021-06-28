@@ -11,45 +11,45 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal class MessageSubscriber
     {
-        internal readonly List<MessageHandler> handlers = new List<MessageHandler>();
+        internal readonly List<MessageHandler> messageHandlers = new List<MessageHandler>();
         
         internal void InvokeMessageHandlers(ObjectReader reader, JsonValue messageValue) {
-            foreach (var handler in handlers) {
+            foreach (var messageHandler in messageHandlers) {
                 try {
-                    handler.InvokeMessageHandler(reader, messageValue);
+                    messageHandler.InvokeMessageHandler(reader, messageValue);
                 }
                 catch (Exception e) {
-                    Debug.Fail($"MessageHandler failed. type: {handler.MessageType.Name}, exception: {e}");
+                    Debug.Fail($"MessageHandler failed. type: {messageHandler.MessageType.Name}, exception: {e}");
                 }
             }
         }
     }
     
     internal abstract class MessageHandler {
-        private  readonly   object  actionObject;
+        private  readonly   object  handlerObject;
         
-        internal            bool    HasAction (object action) => action == actionObject;
+        internal            bool    HasAction (object action) => action == handlerObject;
         internal abstract   Type    MessageType { get; } 
         
         internal abstract void InvokeMessageHandler(ObjectReader reader, JsonValue messageValue);
         
-        internal MessageHandler (object actionObject) {
-            this.actionObject = actionObject;
+        internal MessageHandler (object handler) {
+            handlerObject = handler;
         } 
     }
     
     internal class MessageHandler<TMessage> : MessageHandler
     {
-        private  readonly   Action<TMessage>    action;
+        private  readonly   Handler<TMessage>   handler;
         internal override   Type                MessageType => typeof(TMessage);
         
-        internal MessageHandler (Action<TMessage> action) : base(action) {
-            this.action = action;
+        internal MessageHandler (Handler<TMessage> handler) : base(handler) {
+            this.handler = handler;
         }
         
         internal override void InvokeMessageHandler(ObjectReader reader, JsonValue messageValue) {
             var message = reader.Read<TMessage>(messageValue.json);
-            action(message);
+            handler(message, messageValue.json);
         }
     }
 }

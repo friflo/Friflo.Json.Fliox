@@ -14,6 +14,8 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
 {
+    public delegate void Handler<in TMessage>(TMessage message, string json);
+
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
@@ -127,7 +129,7 @@ namespace Friflo.Json.Flow.Graph
             return tasks;
         }
         
-        public SubscribeMessageTask SubscribeMessage<TMessage>(string name, Action<TMessage> action) {
+        public SubscribeMessageTask SubscribeMessage<TMessage>(string name, Handler<TMessage> action) {
             AssertSubscriptionHandler();
             _intern.AddMessageHandler(name, action);
             var task            = new SubscribeMessageTask(name);
@@ -140,14 +142,14 @@ namespace Friflo.Json.Flow.Graph
             return SubscribeMessage<object>(name, null);
         }
         
-        public SubscribeMessageTask SubscribeMessage<TMessage>(Action<TMessage> action) {
+        public SubscribeMessageTask SubscribeMessage<TMessage>(Handler<TMessage> handler) {
             var name = typeof(TMessage).Name;
-            return SubscribeMessage(name, action);
+            return SubscribeMessage(name, handler);
         }
         
-        public SubscribeMessageTask UnsubscribeMessage<TMessage>(string name, Action<TMessage> action) {
+        public SubscribeMessageTask UnsubscribeMessage<TMessage>(string name, Handler<TMessage> handler) {
             AssertSubscriptionHandler();
-            _intern.RemoveMessageHandler(name, action);
+            _intern.RemoveMessageHandler(name, handler);
             var task            = new SubscribeMessageTask(name);
             _intern.sync.subscribeMessage.Add(task);
             AddTask(task);
