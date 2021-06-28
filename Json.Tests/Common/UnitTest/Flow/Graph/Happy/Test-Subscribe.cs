@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;

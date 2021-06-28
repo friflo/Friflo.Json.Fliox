@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                     continue;
                 var entities = result.entities;
                 foreach (var id in testContainer.missingResultErrors) {
-                    if (entities.TryGetValue(id, out EntityValue value)) {
+                    if (entities.TryGetValue(id, out EntityValue _)) {
                         entities.Remove(id);
                     }
                 }

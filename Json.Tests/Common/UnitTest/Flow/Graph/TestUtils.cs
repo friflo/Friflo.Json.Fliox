@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsFalse(empty.TryGetValue("Y", out var value));
             IsNull(value);
             
-            foreach (var entry in empty) {
+            foreach (var _ in empty) {
                 Fail("cant be reached - dictionary is always empty");
             }
         }
