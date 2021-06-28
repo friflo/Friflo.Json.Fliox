@@ -80,21 +80,20 @@ namespace Friflo.Json.Flow.Graph.Internal
             ownedTypeStore?.Dispose();
         }
         
-        internal Dictionary<string, MessageSubscriber> AddMessageHandler<TMessage> (string name, Action<TMessage> action) {
+        internal void AddMessageHandler<TMessage> (string name, Action<TMessage> action) {
             if (!subscriptions.TryGetValue(name, out var subscriber)) {
                 subscriber = new MessageSubscriber();
                 subscriptions.Add(name, subscriber);
             }
             if (action == null)
-                return subscriptions;
+                return;
             var messageHandler = new MessageHandler<TMessage>(action);
             subscriber.handlers.Add(messageHandler);
-            return subscriptions;
         }
         
-        internal Dictionary<string, MessageSubscriber> RemoveMessageHandler<TMessage> (string name, Action<TMessage> action) {
+        internal void RemoveMessageHandler<TMessage> (string name, Action<TMessage> action) {
             if (!subscriptions.TryGetValue(name, out var subscriber)) {
-                return subscriptions;
+                return;
             }
             foreach (var handler in subscriber.handlers) {
                 if (handler.HasAction(action))
@@ -103,7 +102,6 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (subscriber.handlers.Count == 0) {
                 subscriptions.Remove(name);
             }
-            return subscriptions;
         }
     }
 }

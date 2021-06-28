@@ -127,43 +127,50 @@ namespace Friflo.Json.Flow.Graph
             return tasks;
         }
         
+        /*
         /// <summary>
         /// Filter all <see cref="SendMessage"/> messages by the given <see cref="names"/>.
         ///   <para><see cref="names"/> = {""} => subscribe all message events.</para>
         ///   <para><see cref="names"/> = {} => unsubscribe message events.</para>
         /// </summary>
-        public SubscribeMessagesTask SubscribeMessages(IEnumerable<string> names) {
+        public SubscribeMessageTask SubscribeMessage(IEnumerable<string> names) {
             AssertSubscriptionHandler();
             var subscriptions = _intern.subscriptions;
             subscriptions.Clear();
             foreach (var name in names) {
                 _intern.AddMessageHandler<object>(name, null);
             }
-            var task = new SubscribeMessagesTask(subscriptions.Keys);
-            _intern.sync.subscribeMessages.Add(task);
+            var task = new SubscribeMessageTask(subscriptions.Keys);
+            _intern.sync.subscribeMessage.Add(task);
             AddTask(task);
             return task;
-        }
+        } */
         
-        public SubscribeMessagesTask SubscribeMessage<TMessage>(string name, Action<TMessage> action) {
+
+        
+        public SubscribeMessageTask SubscribeMessage<TMessage>(string name, Action<TMessage> action) {
             AssertSubscriptionHandler();
-            var subscriptions   = _intern.AddMessageHandler(name, action);
-            var task            = new SubscribeMessagesTask(subscriptions.Keys);
-            _intern.sync.subscribeMessages.Add(task);
+            _intern.AddMessageHandler(name, action);
+            var task            = new SubscribeMessageTask(name);
+            _intern.sync.subscribeMessage.Add(task);
             AddTask(task);
             return task;
         }
         
-        public SubscribeMessagesTask SubscribeMessage<TMessage>(Action<TMessage> action) {
+        public SubscribeMessageTask SubscribeMessage(string name) {
+            return SubscribeMessage<object>(name, null);
+        }
+        
+        public SubscribeMessageTask SubscribeMessage<TMessage>(Action<TMessage> action) {
             var name = typeof(TMessage).Name;
             return SubscribeMessage(name, action);
         }
         
-        public SubscribeMessagesTask UnsubscribeMessage<TMessage>(string name, Action<TMessage> action) {
+        public SubscribeMessageTask UnsubscribeMessage<TMessage>(string name, Action<TMessage> action) {
             AssertSubscriptionHandler();
-            var subscriptions   = _intern.RemoveMessageHandler(name, action);
-            var task            = new SubscribeMessagesTask(subscriptions.Keys);
-            _intern.sync.subscribeMessages.Add(task);
+            _intern.RemoveMessageHandler(name, action);
+            var task            = new SubscribeMessageTask(name);
+            _intern.sync.subscribeMessage.Add(task);
             AddTask(task);
             return task;
         }
@@ -385,9 +392,9 @@ namespace Friflo.Json.Flow.Graph
                             set = _intern.setByName[subscribe.container];
                             set.Sync.SubscribeChangesResult(subscribe, result);
                             break;
-                        case TaskType.subscribeMessages:
-                            var subscribeMessages = (SubscribeMessages) task;
-                            _intern.sync.SubscribeMessagesResult(subscribeMessages, result);
+                        case TaskType.subscribeMessage:
+                            var subscribeMessage = (SubscribeMessage) task;
+                            _intern.sync.SubscribeMessageResult(subscribeMessage, result);
                             break;
                     }
                 }

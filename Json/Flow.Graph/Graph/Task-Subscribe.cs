@@ -27,17 +27,17 @@ namespace Friflo.Json.Flow.Graph
         }
     }
     
-    public class SubscribeMessagesTask : SyncTask
+    public class SubscribeMessageTask : SyncTask
     {
-        internal readonly   List<string>            tags;
+        internal readonly   string                  name;
         internal            TaskState               state;
             
         internal override   TaskState               State           => state;
-        public   override   string                  Details         => $"SubscribeMessagesTask";
+        public   override   string                  Details         => $"SubscribeMessageTask (name: {name})";
         
 
-        internal SubscribeMessagesTask(IEnumerable<string> tags) {
-            this.tags = tags.ToList();
+        internal SubscribeMessageTask(string name) {
+            this.name = name;
         }
     }
 }

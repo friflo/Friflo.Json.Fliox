@@ -86,7 +86,7 @@ namespace Friflo.Json.Flow.Graph
         /// Types of database changes refer to <see cref="Change.create"/>ed, <see cref="Change.update"/>ed,
         /// <see cref="Change.delete"/>ed and <see cref="Change.patch"/>ed entities.
         /// <br></br>
-        /// Tasks notifying "messages" are ignored. These message subscriptions are registered by <see cref="EntityStore.SubscribeMessages"/>.
+        /// Tasks notifying "messages" are ignored. These message subscriptions are registered by <see cref="EntityStore.SubscribeMessage"/>.
         /// </summary>
         protected virtual void ProcessEvent(SubscriptionEvent ev) {
             EventSequence++;

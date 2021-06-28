@@ -45,18 +45,17 @@ namespace Friflo.Json.Flow.Database.Event
         }
         
         // -------------------------------- add / remove subscriptions --------------------------------
-        internal void SubscribeMessages(SubscribeMessages subscribe, string clientId, IEventTarget eventTarget) {
+        internal void SubscribeMessage(SubscribeMessage subscribe, string clientId, IEventTarget eventTarget) {
             EventSubscriber subscriber;
-            if (subscribe.tags.Count == 0) {
+            /* if (subscribe.name.Count == 0) {
                 if (!subscribers.TryGetValue(clientId, out subscriber))
                     return;
                 subscriber.messageSubscriptions.Clear();
                 RemoveEmptySubscriber(subscriber, clientId);
                 return;
-            }
+            } */
             subscriber = GetOrCreateSubscriber(clientId, eventTarget);
-            subscriber.messageSubscriptions.Clear();
-            subscriber.messageSubscriptions.AddRange(subscribe.tags);
+            subscriber.messageSubscriptions.Add(subscribe.name);
         }
 
         internal void SubscribeChanges (SubscribeChanges subscribe, string clientId, IEventTarget eventTarget) {

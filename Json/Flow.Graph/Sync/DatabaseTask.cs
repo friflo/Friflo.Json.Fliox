@@ -18,7 +18,7 @@ namespace Friflo.Json.Flow.Sync
     [Fri.Polymorph(typeof(DeleteEntities),          Discriminant = "delete")]
     [Fri.Polymorph(typeof(Message),                 Discriminant = "message")]
     [Fri.Polymorph(typeof(SubscribeChanges),        Discriminant = "subscribeChanges")]
-    [Fri.Polymorph(typeof(SubscribeMessages),       Discriminant = "subscribeMessages")]
+    [Fri.Polymorph(typeof(SubscribeMessage),        Discriminant = "subscribeMessage")]
     public abstract class DatabaseTask
     {
         [Fri.Ignore]
@@ -83,7 +83,7 @@ namespace Friflo.Json.Flow.Sync
     [Fri.Polymorph(typeof(DeleteEntitiesResult),    Discriminant = "delete")]
     [Fri.Polymorph(typeof(MessageResult),           Discriminant = "message")]
     [Fri.Polymorph(typeof(SubscribeChangesResult),  Discriminant = "subscribeChanges")]
-    [Fri.Polymorph(typeof(SubscribeMessagesResult), Discriminant = "subscribeMessages")]
+    [Fri.Polymorph(typeof(SubscribeMessageResult),  Discriminant = "subscribeMessage")]
     //
     [Fri.Polymorph(typeof(TaskErrorResult),         Discriminant = "error")]
     public abstract class TaskResult
@@ -102,7 +102,7 @@ namespace Friflo.Json.Flow.Sync
         delete,
         message,
         subscribeChanges,
-        subscribeMessages,
+        subscribeMessage,
         //
         error
     }

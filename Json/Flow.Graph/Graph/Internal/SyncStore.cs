@@ -12,8 +12,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         private  readonly   List<LogTask>                   logTasks            = new List<LogTask>();
         internal readonly   Dictionary<string, MessageTask> messageTasks        = new Dictionary<string, MessageTask>();
         
-        internal readonly   List<SubscribeMessagesTask>     subscribeMessages   = new List<SubscribeMessagesTask>();
-        internal            int                             subscribeMessagesIndex;
+        internal readonly   List<SubscribeMessageTask>      subscribeMessage    = new List<SubscribeMessageTask>();
+        internal            int                             subscribeMessageIndex;
 
         
         internal LogTask CreateLog() {
@@ -31,8 +31,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         // ----------------------------------- add tasks methods -----------------------------------
         internal void AddTasks(List<DatabaseTask> tasks) {
-            Message            (tasks);
-            SubscribeMessages  (tasks);
+            Message             (tasks);
+            SubscribeMessage    (tasks);
         }
                 
         // --- Message
@@ -58,20 +58,20 @@ namespace Friflo.Json.Flow.Graph.Internal
             messageTask.state.Synced = true;
         }
         
-        // --- SubscribeMessages
-        private void SubscribeMessages(List<DatabaseTask> tasks) {
-            foreach (var subscribe in subscribeMessages) {
-                var req = new SubscribeMessages{ tags = subscribe.tags};
+        // --- SubscribeMessage
+        private void SubscribeMessage(List<DatabaseTask> tasks) {
+            foreach (var subscribe in subscribeMessage) {
+                var req = new SubscribeMessage{ name = subscribe.name };
                 tasks.Add(req);
             }
         }
         
-        internal void SubscribeMessagesResult (SubscribeMessages task, TaskResult result) {
+        internal void SubscribeMessageResult (SubscribeMessage task, TaskResult result) {
             // consider invalid response
-            if (subscribeMessagesIndex >= subscribeMessages.Count)
+            if (subscribeMessageIndex >= subscribeMessage.Count)
                 return;
-            var index = subscribeMessagesIndex++;
-            var subscribeTask = subscribeMessages[index];
+            var index = subscribeMessageIndex++;
+            var subscribeTask = subscribeMessage[index];
             if (result is TaskErrorResult taskError) {
                 subscribeTask.state.SetError(new TaskErrorInfo(taskError));
                 return;

@@ -8,15 +8,16 @@ using Friflo.Json.Flow.Database;
 namespace Friflo.Json.Flow.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class SubscribeMessages : DatabaseTask
+    public class SubscribeMessage : DatabaseTask
     {
         /// <summary>
-        ///   Filter all <see cref="Message.name"/>'s starting with one of the given <see cref="tags"/> strings.
-        ///   <para><see cref="tags"/> = {""} => subscribe all message events.</para>
-        ///   <para><see cref="tags"/> = {} => unsubscribe message events.</para>
+        ///   Filter all <see cref="Message.name"/>'s starting with one of the given <see cref="name"/> strings.
+        ///   <para><see cref="name"/> = {""} => subscribe all message events.</para>
+        ///   <para><see cref="name"/> = {} => unsubscribe message events.</para>
         /// </summary>
-        public              List<string>    tags;
-        internal override   TaskType        TaskType    => TaskType.subscribeMessages;
+        public              string          name;
+        internal override   TaskType        TaskType    => TaskType.subscribeMessage;
+        public   override   string          ToString()  => name;
 
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             var eventBroker = database.eventBroker;
@@ -24,21 +25,21 @@ namespace Friflo.Json.Flow.Sync
                 return Task.FromResult<TaskResult>(InvalidTask("database has no eventBroker"));
             if (messageContext.clientId == null)
                 return Task.FromResult<TaskResult>(InvalidTask("subscribe task requires client id set in sync request"));
-            if (tags == null)
-                return Task.FromResult<TaskResult>(MissingField(nameof(tags)));
+            if (name == null)
+                return Task.FromResult<TaskResult>(MissingField(nameof(name)));
             
             var eventTarget = messageContext.eventTarget;
             if (eventTarget == null)
                 return Task.FromResult<TaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
-            eventBroker.SubscribeMessages(this, messageContext.clientId, eventTarget);
-            return Task.FromResult<TaskResult>(new SubscribeMessagesResult());
+            eventBroker.SubscribeMessage(this, messageContext.clientId, eventTarget);
+            return Task.FromResult<TaskResult>(new SubscribeMessageResult());
         }
     }
     
     // ----------------------------------- task result -----------------------------------
-    public class SubscribeMessagesResult : TaskResult
+    public class SubscribeMessageResult : TaskResult
     {
-        internal override   TaskType    TaskType => TaskType.subscribeMessages;
+        internal override   TaskType    TaskType => TaskType.subscribeMessage;
     }
 }
