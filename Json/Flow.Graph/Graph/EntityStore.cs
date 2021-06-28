@@ -14,7 +14,19 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public delegate void Handler<in TMessage>(TMessage message, string json);
+    public readonly struct MessageEvent<TMessage> {
+        public readonly string          json;
+        public readonly ObjectReader    reader;
+        
+        public          TMessage        Value => reader.Read<TMessage>(json);
+
+        public MessageEvent(string json, ObjectReader reader) {
+            this.json       = json;
+            this.reader     = reader;
+        }
+    }
+    
+    public delegate void Handler<TMessage>(MessageEvent<TMessage> ev);
 
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
