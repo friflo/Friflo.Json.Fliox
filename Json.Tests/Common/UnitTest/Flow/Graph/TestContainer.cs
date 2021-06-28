@@ -46,8 +46,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             foreach (var task in syncRequest.tasks) {
-                if (task is Echo echo) {
-                    if (!syncErrors.TryGetValue(echo.message, out var fcn))
+                if (task is Message message) {
+                    if (!syncErrors.TryGetValue(message.message, out var fcn))
                         continue;
                     return fcn();
                 }

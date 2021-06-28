@@ -8,15 +8,15 @@ using Friflo.Json.Flow.Database;
 namespace Friflo.Json.Flow.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class SubscribeEchos : DatabaseTask
+    public class SubscribeMessages : DatabaseTask
     {
         /// <summary>
-        ///   Filter all <see cref="Echo.message"/>'s starting with one of the given <see cref="prefixes"/> strings.
-        ///   <para><see cref="prefixes"/> = {""} => subscribe all echo events.</para>
-        ///   <para><see cref="prefixes"/> = {} => unsubscribe echos events.</para>
+        ///   Filter all <see cref="Message.message"/>'s starting with one of the given <see cref="prefixes"/> strings.
+        ///   <para><see cref="prefixes"/> = {""} => subscribe all message events.</para>
+        ///   <para><see cref="prefixes"/> = {} => unsubscribe message events.</para>
         /// </summary>
         public              List<string>    prefixes;
-        internal override   TaskType        TaskType    => TaskType.subscribeEchos;
+        internal override   TaskType        TaskType    => TaskType.subscribeMessages;
 
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             var eventBroker = database.eventBroker;
@@ -31,14 +31,14 @@ namespace Friflo.Json.Flow.Sync
             if (eventTarget == null)
                 return Task.FromResult<TaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
-            eventBroker.SubscribeEchos(this, messageContext.clientId, eventTarget);
-            return Task.FromResult<TaskResult>(new SubscribeEchosResult());
+            eventBroker.SubscribeMessages(this, messageContext.clientId, eventTarget);
+            return Task.FromResult<TaskResult>(new SubscribeMessagesResult());
         }
     }
     
     // ----------------------------------- task result -----------------------------------
-    public class SubscribeEchosResult : TaskResult
+    public class SubscribeMessagesResult : TaskResult
     {
-        internal override   TaskType    TaskType => TaskType.subscribeEchos;
+        internal override   TaskType    TaskType => TaskType.subscribeMessages;
     }
 }

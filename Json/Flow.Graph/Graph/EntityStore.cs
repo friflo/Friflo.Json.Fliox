@@ -191,21 +191,21 @@ namespace Friflo.Json.Flow.Graph
         }
         
         /// <summary>
-        /// Filter all <see cref="Echo"/> messages starting with one of the given <see cref="prefixes"/> strings.
-        ///   <para><see cref="prefixes"/> = {""} => subscribe all echo events.</para>
-        ///   <para><see cref="prefixes"/> = {} => unsubscribe echos events.</para>
+        /// Filter all <see cref="SendMessage"/> messages starting with one of the given <see cref="prefixes"/> strings.
+        ///   <para><see cref="prefixes"/> = {""} => subscribe all message events.</para>
+        ///   <para><see cref="prefixes"/> = {} => unsubscribe message events.</para>
         /// </summary>
-        public SubscribeEchosTask SubscribeEchos(IEnumerable<string> prefixes) {
+        public SubscribeMessagesTask SubscribeMessages(IEnumerable<string> prefixes) {
             AssertSubscriptionHandler();
-            var task = new SubscribeEchosTask(prefixes);
-            _intern.sync.subscribeEchos = task;
+            var task = new SubscribeMessagesTask(prefixes);
+            _intern.sync.subscribeMessages = task;
             AddTask(task);
             return task;
         }
         
-        public EchoTask Echo(string message) {
-            var task = new EchoTask(message);
-            _intern.sync.echoTasks.Add(message, task);
+        public MessageTask SendMessage(string message) {
+            var task = new MessageTask(message);
+            _intern.sync.messageTasks.Add(message, task);
             AddTask(task);
             return task;
         }
@@ -403,18 +403,18 @@ namespace Friflo.Json.Flow.Graph
                             set = _intern.setByName[delete.container];
                             set.Sync.DeleteEntitiesResult(delete, result);
                             break;
-                        case TaskType.echo:
-                            var echo = (Echo) task;
-                            _intern.sync.EchoResult(echo, result);
+                        case TaskType.message:
+                            var message = (Message) task;
+                            _intern.sync.MessageResult(message, result);
                             break;
                         case TaskType.subscribeChanges:
                             var subscribe = (SubscribeChanges) task;
                             set = _intern.setByName[subscribe.container];
                             set.Sync.SubscribeChangesResult(subscribe, result);
                             break;
-                        case TaskType.subscribeEchos:
-                            var subscribeEcho = (SubscribeEchos) task;
-                            _intern.sync.SubscribeEchosResult(subscribeEcho, result);
+                        case TaskType.subscribeMessages:
+                            var subscribeMessages = (SubscribeMessages) task;
+                            _intern.sync.SubscribeMessagesResult(subscribeMessages, result);
                             break;
                     }
                 }

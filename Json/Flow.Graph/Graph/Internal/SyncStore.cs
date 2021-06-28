@@ -10,8 +10,8 @@ namespace Friflo.Json.Flow.Graph.Internal
     {
         internal readonly   List<SyncTask>                  appTasks        = new List<SyncTask>();
         private  readonly   List<LogTask>                   logTasks        = new List<LogTask>();
-        internal readonly   Dictionary<string, EchoTask>    echoTasks       = new Dictionary<string, EchoTask>();
-        internal            SubscribeEchosTask              subscribeEchos;
+        internal readonly   Dictionary<string, MessageTask> messageTasks    = new Dictionary<string, MessageTask>();
+        internal            SubscribeMessagesTask           subscribeMessages;
 
         
         internal LogTask CreateLog() {
@@ -29,46 +29,46 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         // ----------------------------------- add tasks methods -----------------------------------
         internal void AddTasks(List<DatabaseTask> tasks) {
-            Echo            (tasks);
-            SubscribeEchos  (tasks);
+            Message            (tasks);
+            SubscribeMessages  (tasks);
         }
                 
-        // --- Echo
-        private void Echo(List<DatabaseTask> tasks) {
-            foreach (var entry in echoTasks) {
-                EchoTask echoTask = entry.Value;
-                var req = new Echo {
-                    message   = echoTask.message,
+        // --- Message
+        private void Message(List<DatabaseTask> tasks) {
+            foreach (var entry in messageTasks) {
+                MessageTask messageTask = entry.Value;
+                var req = new Message {
+                    message   = messageTask.message,
                 };
                 tasks.Add(req);
             }
         }
         
-        internal void EchoResult (Echo task, TaskResult result) {
-            EchoTask echoTask = echoTasks[task.message];
+        internal void MessageResult (Message task, TaskResult result) {
+            MessageTask messageTask = messageTasks[task.message];
             if (result is TaskErrorResult taskError) {
-                echoTask.state.SetError(new TaskErrorInfo(taskError));
+                messageTask.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
-            var echoResult = (EchoResult)result;
-            echoTask.result = echoResult.message;
-            echoTask.state.Synced = true;
+            var messageResult = (MessageResult)result;
+            messageTask.result = messageResult.message;
+            messageTask.state.Synced = true;
         }
         
-        // --- SubscribeEchos
-        private void SubscribeEchos(List<DatabaseTask> tasks) {
-            if (subscribeEchos == null)
+        // --- SubscribeMessages
+        private void SubscribeMessages(List<DatabaseTask> tasks) {
+            if (subscribeMessages == null)
                 return;
-            var req = new SubscribeEchos{ prefixes = subscribeEchos.prefixes};
+            var req = new SubscribeMessages{ prefixes = subscribeMessages.prefixes};
             tasks.Add(req);
         }
         
-        internal void SubscribeEchosResult (SubscribeEchos task, TaskResult result) {
+        internal void SubscribeMessagesResult (SubscribeMessages task, TaskResult result) {
             if (result is TaskErrorResult taskError) {
-                subscribeEchos.state.SetError(new TaskErrorInfo(taskError));
+                subscribeMessages.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
-            subscribeEchos.state.Synced = true;
+            subscribeMessages.state.Synced = true;
         }
     }
 }

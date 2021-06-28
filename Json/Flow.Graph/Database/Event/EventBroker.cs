@@ -45,18 +45,18 @@ namespace Friflo.Json.Flow.Database.Event
         }
         
         // -------------------------------- add / remove subscriptions --------------------------------
-        internal void SubscribeEchos(SubscribeEchos subscribe, string clientId, IEventTarget eventTarget) {
+        internal void SubscribeMessages(SubscribeMessages subscribe, string clientId, IEventTarget eventTarget) {
             EventSubscriber subscriber;
             if (subscribe.prefixes.Count == 0) {
                 if (!subscribers.TryGetValue(clientId, out subscriber))
                     return;
-                subscriber.echoSubscriptions.Clear();
+                subscriber.messageSubscriptions.Clear();
                 RemoveEmptySubscriber(subscriber, clientId);
                 return;
             }
             subscriber = GetOrCreateSubscriber(clientId, eventTarget);
-            subscriber.echoSubscriptions.Clear();
-            subscriber.echoSubscriptions.AddRange(subscribe.prefixes);
+            subscriber.messageSubscriptions.Clear();
+            subscriber.messageSubscriptions.AddRange(subscribe.prefixes);
         }
 
         internal void SubscribeChanges (SubscribeChanges subscribe, string clientId, IEventTarget eventTarget) {
@@ -146,10 +146,10 @@ namespace Friflo.Json.Flow.Database.Event
                             continue;
                         AddTask(ref tasks, taskResult);
                     }
-                    if (task.TaskType == TaskType.echo) {
-                        var echo = (Echo) task;
-                        foreach (var echoSubscription in subscriber.echoSubscriptions) {
-                            if (!echo.message.StartsWith(echoSubscription))
+                    if (task.TaskType == TaskType.message) {
+                        var message = (Message) task;
+                        foreach (var messageSubscription in subscriber.messageSubscriptions) {
+                            if (!message.message.StartsWith(messageSubscription))
                                 continue;
                             AddTask(ref tasks, task);
                         }

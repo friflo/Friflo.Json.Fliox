@@ -167,7 +167,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 
                 // run loops
                 for (int n = 0; n < stores.Count; n++) {
-                    tasks.Add(EchoLoop  (stores[n], $"echo-{n}", requestCount));
+                    tasks.Add(MessageLoop  (stores[n], $"message-{n}", requestCount));
                 }
                 await Task.WhenAll(tasks);
             }
@@ -178,12 +178,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        private static Task EchoLoop (EntityStore store, string message, int requestCount) {
+        private static Task MessageLoop (EntityStore store, string text, int requestCount) {
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
-                    var echo = store.Echo(message);
+                    var message = store.SendMessage(text);
                     await store.Sync();
-                    AreEqual (message, echo.Result);
+                    AreEqual (text, message.Result);
                 }
             });
         }

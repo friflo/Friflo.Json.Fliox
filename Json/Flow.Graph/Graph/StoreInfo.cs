@@ -109,7 +109,7 @@ namespace Friflo.Json.Flow.Graph
         internal StoreInfo(SyncStore sync, Dictionary<Type, EntitySet> setByType) {
             peers = 0;
             tasks = 0;
-            tasks += sync.echoTasks.Count;
+            tasks += sync.messageTasks.Count;
             foreach (var pair in setByType)
                 Add(pair.Value.SetInfo);
         }

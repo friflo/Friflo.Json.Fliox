@@ -5,7 +5,7 @@ using Friflo.Json.Flow.Graph.Internal;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public class EchoTask : SyncTask
+    public class MessageTask : SyncTask
     {
         internal readonly   string      message;
         internal            string      result;
@@ -13,12 +13,12 @@ namespace Friflo.Json.Flow.Graph
         internal            TaskState   state;
         internal override   TaskState   State       => state;
         
-        public   override   string      Details     => $"EchoTask (message: {message})";
+        public   override   string      Details     => $"MessageTask (message: {message})";
         
         
-        public              string      Result      => IsOk("EchoTask.Result", out Exception e) ? result : throw e;
+        public              string      Result      => IsOk("MessageTask.Result", out Exception e) ? result : throw e;
         
-        internal EchoTask(string message) {
+        internal MessageTask(string message) {
             this.message = message;
         }
         

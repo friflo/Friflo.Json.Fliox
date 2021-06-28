@@ -62,15 +62,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             var subscriber = new PocHandler(store, sc, eventAssertion);
             store.SetSubscriptionHandler(subscriber);
             
-            var subscriptions = store.SubscribeAllChanges(Changes.All);
-            var subscribeEcho = store.SubscribeEchos(new [] { TestRelationPoC.EndCreate });
+            var subscriptions       = store.SubscribeAllChanges(Changes.All);
+            var subscribeMessages   = store.SubscribeMessages(new [] { TestRelationPoC.EndCreate });
                 
             await store.Sync(); // -------- Sync --------
 
             foreach (var subscription in subscriptions) {
                 IsTrue(subscription.Success);    
             }
-            IsTrue(subscribeEcho.Success);
+            IsTrue(subscribeMessages.Success);
             return subscriber;
         }
     }
@@ -82,7 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private readonly    ChangeInfo<Article>     articleSum   = new ChangeInfo<Article>();
         private readonly    ChangeInfo<Producer>    producerSum  = new ChangeInfo<Producer>();
         private readonly    ChangeInfo<Employee>    employeeSum  = new ChangeInfo<Employee>();
-        private             int                     echoSum;
+        private             int                     messageSum;
         internal            bool                    receivedAll;
         
         private readonly    EventAssertion          eventAssertion;
@@ -102,16 +102,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             var articleChanges  = GetEntityChanges<Article> (ev);
             var producerChanges = GetEntityChanges<Producer>(ev);
             var employeeChanges = GetEntityChanges<Employee>(ev);
-            var echos           = GetEchos                  (ev);
+            var messages        = GetMessages                  (ev);
             
             orderSum.   AddChanges(orderChanges);
             customerSum.AddChanges(customerChanges);
             articleSum. AddChanges(articleChanges);
             producerSum.AddChanges(producerChanges);
             employeeSum.AddChanges(employeeChanges);
-            echoSum += echos.Count;
+            messageSum += messages.Count;
             
-            if (echos.Contains(TestRelationPoC.EndCreate))
+            if (messages.Contains(TestRelationPoC.EndCreate))
                 receivedAll = true;
             
             switch (eventAssertion) {
@@ -154,7 +154,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             AreSimilar("(creates: 9, updates: 0, deletes: 4, patches: 2)", articleSum);
             AreSimilar("(creates: 3, updates: 0, deletes: 0, patches: 0)", producerSum);
             AreSimilar("(creates: 1, updates: 0, deletes: 0, patches: 0)", employeeSum);
-            AreEqual(1, echoSum);
+            AreEqual(1, messageSum);
             
             IsTrue(orderSum      .IsEqual(GetChangeInfo<Order>()));
             IsTrue(customerSum   .IsEqual(GetChangeInfo<Customer>()));

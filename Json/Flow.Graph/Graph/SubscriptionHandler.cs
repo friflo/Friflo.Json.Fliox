@@ -15,7 +15,7 @@ namespace Friflo.Json.Flow.Graph
     {
         private readonly    EntityStore                         store;
         private readonly    Dictionary<Type, EntityChanges>     results   = new Dictionary<Type, EntityChanges>();
-        private readonly    List<string>                        echos     = new List<string>();
+        private readonly    List<string>                        messages  = new List<string>();
         
         /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
         private readonly    SynchronizationContext              synchronizationContext;
@@ -85,7 +85,7 @@ namespace Friflo.Json.Flow.Graph
         /// Types of database changes refer to <see cref="Change.create"/>ed, <see cref="Change.update"/>ed,
         /// <see cref="Change.delete"/>ed and <see cref="Change.patch"/>ed entities.
         /// <br></br>
-        /// Tasks notifying echo "messages" are ignored. These echo subscriptions are registered by <see cref="EntityStore.SubscribeEchos"/>.
+        /// Tasks notifying "messages" are ignored. These message subscriptions are registered by <see cref="EntityStore.SubscribeMessages"/>.
         /// </summary>
         protected virtual void ProcessEvent(SubscriptionEvent ev) {
             EventSequence++;
@@ -145,18 +145,18 @@ namespace Friflo.Json.Flow.Graph
             return (EntityChanges<T>)result;
         }
         
-        protected List<string> GetEchos(SubscriptionEvent subscriptionEvent) {
-            echos.Clear();
+        protected List<string> GetMessages(SubscriptionEvent subscriptionEvent) {
+            messages.Clear();
             foreach (var task in subscriptionEvent.tasks) {
                 switch (task.TaskType) {
                     
-                    case TaskType.echo:
-                        var echo = (Echo)task;
-                        echos.Add(echo.message);
+                    case TaskType.message:
+                        var message = (Message)task;
+                        messages.Add(message.message);
                         break;
                 }
             }
-            return echos;
+            return messages;
         }
         
         protected EntityChanges<T> GetEntityChanges<T>(SubscriptionEvent subscriptionEvent) where T : Entity {

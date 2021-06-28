@@ -280,7 +280,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var errorRefTask = new Customer{ id = "read-task-error" };
             var order2 = new Order{id = "order-2", customer = errorRefTask};
             orders.Create(order2);
-            store.Echo(EndCreate);  // indicates store changes are finished
+            store.SendMessage(EndCreate);  // indicates store changes are finished
             
             await store.Sync(); // -------- Sync --------
         }
