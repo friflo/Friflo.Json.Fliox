@@ -10,11 +10,11 @@ namespace Friflo.Json.Flow.Database
     {
         public abstract Task<PermissionResult> GrantTaskPermission (DatabaseTask task, MessageContext messageContext);
         
-        public static TaskErrorResult PermissionDenied(in PermissionResult result, int taskIndex) {
+        public static TaskErrorResult PermissionDenied(in PermissionResult result) {
             var message = result.message ?? "permission denied";
             var taskResult = new TaskErrorResult{
                 type        = TaskErrorResultType.PermissionDenied,
-                message     = $"{message}. tasks[{taskIndex}]"
+                message     = $"{message}. tasks[{result.taskIndex}]"
             };
             return taskResult;
         }
@@ -26,5 +26,7 @@ namespace Friflo.Json.Flow.Database
         public bool     granted;
         /// optional message if permission is not <see cref="granted"/>
         public string   message;
+        
+        public int      taskIndex;
     }
 }
