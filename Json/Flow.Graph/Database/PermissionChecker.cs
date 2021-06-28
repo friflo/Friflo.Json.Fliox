@@ -10,7 +10,7 @@ namespace Friflo.Json.Flow.Database
     {
         public abstract Task<PermissionResult> GrantPermission (EntityDatabase database, MessageContext messageContext);
         
-        internal static TaskErrorResult PermissionDenied(in PermissionResult result, int taskIndex) {
+        public static TaskErrorResult PermissionDenied(in PermissionResult result, int taskIndex) {
             var message = result.message ?? "permission denied";
             var taskResult = new TaskErrorResult{
                 type        = TaskErrorResultType.PermissionDenied,
