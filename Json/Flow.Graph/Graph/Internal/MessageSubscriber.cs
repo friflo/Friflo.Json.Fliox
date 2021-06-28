@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map.Val;
 
@@ -14,7 +15,12 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal void CallHandlers(ObjectReader reader, JsonValue messageValue) {
             foreach (var handler in handlers) {
-                handler.CallHandler(reader, messageValue);
+                try {
+                    handler.CallHandler(reader, messageValue);
+                }
+                catch (Exception e) {
+                    Debug.Fail($"MessageHandler failed. type: {handler.MessageType.Name}");
+                }
             }
         }
     }

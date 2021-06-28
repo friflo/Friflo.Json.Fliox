@@ -64,6 +64,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             
             var subscriptions       = store.SubscribeAllChanges(Changes.All);
             var subscribeMessages   = store.SubscribeMessages(new [] { TestRelationPoC.EndCreate });
+            var subscribeTestEvent  = store.SubscribeMessage<TestEvent>((ev) => {
+            });
                 
             await store.Sync(); // -------- Sync --------
 
@@ -71,6 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 IsTrue(subscription.Success);    
             }
             IsTrue(subscribeMessages.Success);
+            IsTrue(subscribeTestEvent.Success);
             return subscriber;
         }
     }

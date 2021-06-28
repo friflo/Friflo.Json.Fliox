@@ -62,12 +62,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public readonly EntitySet<Employee>   employees;
     }
     
+    class TestEvent {
+        public string testMessage;
+    }
+    
     public static class TestGlobals {
         public static TypeStore typeStore;
         
         public static void Init() {
             SyncTypeStore.Init();
+            // LeakTestsFixture requires to register all types used by TypeStore before leak tracking starts 
             typeStore = new TypeStore();
+            typeStore.GetTypeMapper(typeof(TestEvent));
             // by new PocStore() all TypeMappers for model classes are created before leak tracking of LeakTestsFixture starts. 
             using (var _= new PocStore(new MemoryDatabase(), "TestGlobals")) { }
         }
@@ -280,6 +286,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var errorRefTask = new Customer{ id = "read-task-error" };
             var order2 = new Order{id = "order-2", customer = errorRefTask};
             orders.Create(order2);
+            
+            var testEvent = new TestEvent{testMessage = "test event"};
+            // store.SendMessage(testEvent);
             store.SendMessageText(EndCreate);  // indicates store changes are finished
             
             await store.Sync(); // -------- Sync --------

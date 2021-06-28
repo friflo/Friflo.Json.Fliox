@@ -231,27 +231,27 @@ namespace Friflo.Json.Flow.Graph
                 _intern.AddMessageHandler<object>(tag, null);
             }
             var task = new SubscribeMessagesTask(subscriptions.Keys);
-            _intern.sync.subscribeMessages = task;
+            _intern.sync.subscribeMessages.Add(task);
             AddTask(task);
             return task;
         }
         
         public SubscribeMessagesTask SubscribeMessage<TMessage>(Action<TMessage> action) {
             AssertSubscriptionHandler();
-            const string tag    = nameof(TMessage);
+            var tag             = typeof(TMessage).Name;
             var subscriptions   = _intern.AddMessageHandler(tag, action);
-            var task = new SubscribeMessagesTask(subscriptions.Keys);
-            _intern.sync.subscribeMessages = task;
+            var task            = new SubscribeMessagesTask(subscriptions.Keys);
+            _intern.sync.subscribeMessages.Add(task);
             AddTask(task);
             return task;
         }
         
         public SubscribeMessagesTask UnsubscribeMessage<TMessage>(Action<TMessage> action) {
             AssertSubscriptionHandler();
-            const string tag    = nameof(TMessage);
+            var tag             = typeof(TMessage).Name;
             var subscriptions   = _intern.RemoveMessageHandler(tag, action);
-            var task = new SubscribeMessagesTask(subscriptions.Keys);
-            _intern.sync.subscribeMessages = task;
+            var task            = new SubscribeMessagesTask(subscriptions.Keys);
+            _intern.sync.subscribeMessages.Add(task);
             AddTask(task);
             return task;
         }
@@ -265,7 +265,7 @@ namespace Friflo.Json.Flow.Graph
         
         public MessageTask SendMessage<TMessage>(TMessage message) {
             var value           = _intern.jsonMapper.Write(message);
-            const string tag    = nameof(Message);
+            var tag             = typeof(TMessage).Name;
             var task            = new MessageTask(tag, value);
             _intern.sync.messageTasks.Add(tag, task);
             AddTask(task);

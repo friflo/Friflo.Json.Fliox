@@ -8,10 +8,12 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal class SyncStore
     {
-        internal readonly   List<SyncTask>                  appTasks        = new List<SyncTask>();
-        private  readonly   List<LogTask>                   logTasks        = new List<LogTask>();
-        internal readonly   Dictionary<string, MessageTask> messageTasks    = new Dictionary<string, MessageTask>();
-        internal            SubscribeMessagesTask           subscribeMessages;
+        internal readonly   List<SyncTask>                  appTasks            = new List<SyncTask>();
+        private  readonly   List<LogTask>                   logTasks            = new List<LogTask>();
+        internal readonly   Dictionary<string, MessageTask> messageTasks        = new Dictionary<string, MessageTask>();
+        
+        internal readonly   List<SubscribeMessagesTask>     subscribeMessages   = new List<SubscribeMessagesTask>();
+        internal            int                             subscribeMessagesIndex;
 
         
         internal LogTask CreateLog() {
@@ -58,18 +60,23 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         // --- SubscribeMessages
         private void SubscribeMessages(List<DatabaseTask> tasks) {
-            if (subscribeMessages == null)
-                return;
-            var req = new SubscribeMessages{ tags = subscribeMessages.tags};
-            tasks.Add(req);
+            foreach (var subscribe in subscribeMessages) {
+                var req = new SubscribeMessages{ tags = subscribe.tags};
+                tasks.Add(req);
+            }
         }
         
         internal void SubscribeMessagesResult (SubscribeMessages task, TaskResult result) {
+            // consider invalid response
+            if (subscribeMessagesIndex >= subscribeMessages.Count)
+                return;
+            var index = subscribeMessagesIndex++;
+            var subscribeTask = subscribeMessages[index];
             if (result is TaskErrorResult taskError) {
-                subscribeMessages.state.SetError(new TaskErrorInfo(taskError));
+                subscribeTask.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
-            subscribeMessages.state.Synced = true;
+            subscribeTask.state.Synced = true;
         }
     }
 }
