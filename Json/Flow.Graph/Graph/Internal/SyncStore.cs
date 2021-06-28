@@ -38,20 +38,20 @@ namespace Friflo.Json.Flow.Graph.Internal
             foreach (var entry in messageTasks) {
                 MessageTask messageTask = entry.Value;
                 var req = new Message {
-                    message   = messageTask.message,
+                    text   = messageTask.text,
                 };
                 tasks.Add(req);
             }
         }
         
         internal void MessageResult (Message task, TaskResult result) {
-            MessageTask messageTask = messageTasks[task.message];
+            MessageTask messageTask = messageTasks[task.text];
             if (result is TaskErrorResult taskError) {
                 messageTask.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
             var messageResult = (MessageResult)result;
-            messageTask.result = messageResult.message;
+            messageTask.result = messageResult.text;
             messageTask.state.Synced = true;
         }
         

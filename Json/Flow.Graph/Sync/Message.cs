@@ -8,13 +8,13 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task -----------------------------------
     public class Message : DatabaseTask
     {
-        public              string          message;
+        public              string          text;
             
         internal override   TaskType        TaskType    => TaskType.message;
-        public   override   string          ToString()  => message;
+        public   override   string          ToString()  => text;
 
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
-            TaskResult result = new MessageResult{message = message};
+            TaskResult result = new MessageResult{text = text};
             return Task.FromResult(result); 
         }
     }
@@ -22,7 +22,7 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task result -----------------------------------
     public class MessageResult : TaskResult, ICommandResult
     {
-        public              string          message;
+        public              string          text;
         
         public CommandError                 Error { get; set; }
 

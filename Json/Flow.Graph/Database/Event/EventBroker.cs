@@ -149,7 +149,7 @@ namespace Friflo.Json.Flow.Database.Event
                     if (task.TaskType == TaskType.message) {
                         var message = (Message) task;
                         foreach (var messageSubscription in subscriber.messageSubscriptions) {
-                            if (!message.message.StartsWith(messageSubscription))
+                            if (!message.text.StartsWith(messageSubscription))
                                 continue;
                             AddTask(ref tasks, task);
                         }
