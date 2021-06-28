@@ -92,7 +92,7 @@ namespace Friflo.Json.Flow.Database
                     
                 try {
                     if (permissionChecker != null) {
-                        var permission = await permissionChecker.GrantPermission(this, messageContext);
+                        var permission = await permissionChecker.GrantTaskPermission(task, messageContext);
                         if (!permission.granted) {
                             var taskResult = PermissionChecker.PermissionDenied(permission, task.index);
                             tasks.Add(taskResult);

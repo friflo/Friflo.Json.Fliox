@@ -8,7 +8,7 @@ namespace Friflo.Json.Flow.Database
 {
     public abstract class PermissionChecker
     {
-        public abstract Task<PermissionResult> GrantPermission (EntityDatabase database, MessageContext messageContext);
+        public abstract Task<PermissionResult> GrantTaskPermission (DatabaseTask task, MessageContext messageContext);
         
         public static TaskErrorResult PermissionDenied(in PermissionResult result, int taskIndex) {
             var message = result.message ?? "permission denied";
