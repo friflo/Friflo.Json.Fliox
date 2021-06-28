@@ -293,7 +293,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var sendMessage1 = store.SendMessage(nameof(TestMessage), testMessage);
             int testMessageInt = 42;
             var sendMessage2 = store.SendMessage("testMessageInt", testMessageInt);
-            store.SendMessageText(EndCreate);  // indicates store changes are finished
+            store.SendMessage(EndCreate);  // indicates store changes are finished
             
             await store.Sync(); // -------- Sync --------
             

@@ -128,16 +128,16 @@ namespace Friflo.Json.Flow.Graph
         }
         
         /// <summary>
-        /// Filter all <see cref="SendMessageText"/> messages by the given <see cref="tags"/>.
-        ///   <para><see cref="tags"/> = {""} => subscribe all message events.</para>
-        ///   <para><see cref="tags"/> = {} => unsubscribe message events.</para>
+        /// Filter all <see cref="SendMessage"/> messages by the given <see cref="names"/>.
+        ///   <para><see cref="names"/> = {""} => subscribe all message events.</para>
+        ///   <para><see cref="names"/> = {} => unsubscribe message events.</para>
         /// </summary>
-        public SubscribeMessagesTask SubscribeMessages(IEnumerable<string> tags) {
+        public SubscribeMessagesTask SubscribeMessages(IEnumerable<string> names) {
             AssertSubscriptionHandler();
             var subscriptions = _intern.subscriptions;
             subscriptions.Clear();
-            foreach (var tag in tags) {
-                _intern.AddMessageHandler<object>(tag, null);
+            foreach (var name in names) {
+                _intern.AddMessageHandler<object>(name, null);
             }
             var task = new SubscribeMessagesTask(subscriptions.Keys);
             _intern.sync.subscribeMessages.Add(task);
@@ -155,30 +155,30 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public SubscribeMessagesTask SubscribeMessage<TMessage>(Action<TMessage> action) {
-            var tag = typeof(TMessage).Name;
-            return SubscribeMessage(tag, action);
+            var name = typeof(TMessage).Name;
+            return SubscribeMessage(name, action);
         }
         
-        public SubscribeMessagesTask UnsubscribeMessage<TMessage>(string tag, Action<TMessage> action) {
+        public SubscribeMessagesTask UnsubscribeMessage<TMessage>(string name, Action<TMessage> action) {
             AssertSubscriptionHandler();
-            var subscriptions   = _intern.RemoveMessageHandler(tag, action);
+            var subscriptions   = _intern.RemoveMessageHandler(name, action);
             var task            = new SubscribeMessagesTask(subscriptions.Keys);
             _intern.sync.subscribeMessages.Add(task);
             AddTask(task);
             return task;
         }
         
-        public MessageTask SendMessageText(string text) {
-            var task = new MessageTask(text, null);
-            _intern.sync.messageTasks.Add(text, task);
+        public MessageTask SendMessage(string name) {
+            var task = new MessageTask(name, null);
+            _intern.sync.messageTasks.Add(name, task);
             AddTask(task);
             return task;
         }
         
-        public MessageTask SendMessage<TMessage>(string tag, TMessage message) {
+        public MessageTask SendMessage<TMessage>(string name, TMessage message) {
             var value           = _intern.jsonMapper.Write(message);
-            var task            = new MessageTask(tag, value);
-            _intern.sync.messageTasks.Add(tag, task);
+            var task            = new MessageTask(name, value);
+            _intern.sync.messageTasks.Add(name, task);
             AddTask(task);
             return task;
         }

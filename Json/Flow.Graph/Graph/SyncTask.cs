@@ -12,8 +12,8 @@ namespace Friflo.Json.Flow.Graph
 {
     public abstract class SyncTask
     {
-                                    internal            string      name;
-                                    internal            string      GetLabel() => name ?? Details;
+                                    internal            string      taskName;
+                                    internal            string      GetLabel() => taskName ?? Details;
         [DebuggerBrowsable(Never)]  public    abstract  string      Details { get; }
         [DebuggerBrowsable(Never)]  internal  abstract  TaskState   State   { get; }
         
@@ -67,7 +67,7 @@ namespace Friflo.Json.Flow.Graph
         /// or post-mortem debugging of application code.
         /// </summary>
         public static T TaskName<T> (this T task, string name) where T : SyncTask {
-            task.name = name;
+            task.taskName = name;
             return task;
         }
     }

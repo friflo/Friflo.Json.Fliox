@@ -40,7 +40,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             foreach (var entry in messageTasks) {
                 MessageTask messageTask = entry.Value;
                 var req = new Message {
-                    tag   = messageTask.tag,
+                    name  = messageTask.name,
                     value = messageTask.value
                 };
                 tasks.Add(req);
@@ -48,13 +48,13 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal void MessageResult (Message task, TaskResult result) {
-            MessageTask messageTask = messageTasks[task.tag];
+            MessageTask messageTask = messageTasks[task.name];
             if (result is TaskErrorResult taskError) {
                 messageTask.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
             var messageResult = (MessageResult)result;
-            messageTask.result = messageResult.tag;
+            messageTask.result = messageResult.name;
             messageTask.state.Synced = true;
         }
         
