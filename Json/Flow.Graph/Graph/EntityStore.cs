@@ -145,9 +145,9 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public SubscribeMessagesTask SubscribeMessage<TMessage>(string tag, Action<TMessage> action) {
+        public SubscribeMessagesTask SubscribeMessage<TMessage>(string name, Action<TMessage> action) {
             AssertSubscriptionHandler();
-            var subscriptions   = _intern.AddMessageHandler(tag, action);
+            var subscriptions   = _intern.AddMessageHandler(name, action);
             var task            = new SubscribeMessagesTask(subscriptions.Keys);
             _intern.sync.subscribeMessages.Add(task);
             AddTask(task);
