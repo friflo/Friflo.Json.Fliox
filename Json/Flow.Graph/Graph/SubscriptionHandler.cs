@@ -137,7 +137,11 @@ namespace Friflo.Json.Flow.Graph
                         var message = (Message)task;
                         if (!store._intern.subscriptions.TryGetValue(message.tag, out MessageSubscriber subscriber))
                             return;
-                        subscriber.CallHandlers(store._intern.jsonMapper.reader, message.value);
+                        // Require its own reader as store._intern.jsonMapper.reader cannot be used.
+                        // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
+                        // and ProcessEvent() can be called concurrently from the "main" thread.
+                        var reader = store._intern.messageReader;
+                        subscriber.CallHandlers(reader, message.value);    
                         break;
                 }
             }

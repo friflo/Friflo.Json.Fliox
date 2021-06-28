@@ -19,7 +19,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                     handler.CallHandler(reader, messageValue);
                 }
                 catch (Exception e) {
-                    Debug.Fail($"MessageHandler failed. type: {handler.MessageType.Name}");
+                    Debug.Fail($"MessageHandler failed. type: {handler.MessageType.Name}, exception: {e}");
                 }
             }
         }

@@ -373,8 +373,9 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         private void SetNextPatchSource(PeerEntity<T> peer) {
-            var json = set.intern.jsonMapper.writer.Write(peer.Entity);
-            peer.SetNextPatchSource(set.intern.jsonMapper.Read<T>(json));
+            var mapper = set.intern.jsonMapper;
+            var json = mapper.writer.Write(peer.Entity);
+            peer.SetNextPatchSource(mapper.Read<T>(json));
         }
 
         private static int Any(int count) { return count != 0 ? 1 : 0; }

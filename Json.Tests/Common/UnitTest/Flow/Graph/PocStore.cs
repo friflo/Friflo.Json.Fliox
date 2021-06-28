@@ -288,7 +288,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             orders.Create(order2);
             
             var testEvent = new TestEvent{testMessage = "test event"};
-            // store.SendMessage(testEvent);
+            store.SendMessage(testEvent);
             store.SendMessageText(EndCreate);  // indicates store changes are finished
             
             await store.Sync(); // -------- Sync --------

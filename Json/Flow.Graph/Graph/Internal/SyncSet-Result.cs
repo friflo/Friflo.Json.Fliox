@@ -71,6 +71,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 }
                 return;
             }
+            var reader = set.intern.jsonMapper.reader;
             foreach (var entry in entities) {
                 var id = entry.Key;
                 if (writeErrors.TryGetValue(id, out EntityError _)) {
@@ -79,7 +80,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 var peer = set.GetPeerById(id);
                 peer.created = false;
                 peer.updated = false;
-                peer.SetPatchSource(set.intern.jsonMapper.Read<T>(entry.Value.Json));
+                peer.SetPatchSource(reader.Read<T>(entry.Value.Json));
             }
             foreach (var writeTask in writeTasks) {
                 var entityErrorInfo = new TaskErrorInfo();

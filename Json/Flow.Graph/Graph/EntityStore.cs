@@ -31,6 +31,7 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   Pools                                   contextPools;
         internal readonly   EventTarget                             eventTarget;
         internal readonly   Dictionary<string, MessageSubscriber>   subscriptions;
+        internal readonly   ObjectReader                            messageReader;
         
         // --- non readonly
         internal            SyncStore                               sync;
@@ -66,6 +67,7 @@ namespace Friflo.Json.Flow.Graph
             objectPatcher               = new ObjectPatcher(jsonMapper);
             contextPools                = new Pools(Pools.SharedPools);
             subscriptions               = new Dictionary<string, MessageSubscriber>();
+            messageReader               = new ObjectReader(typeStore);
             tracerLogTask               = null;
             subscriptionHandler         = null;
             lastEventSeq                = 0;
@@ -147,6 +149,9 @@ namespace Friflo.Json.Flow.Graph
         
         public void Dispose() {
             _intern.disposed = true;
+            _intern.messageReader.Dispose();
+            _intern.subscriptions.Clear();
+            _intern.contextPools.Dispose(); // dispose nothing - LocalPool's are used
             _intern.database.RemoveEventTarget(_intern.clientId);
             _intern.objectPatcher.Dispose();
             _intern.jsonMapper.Dispose();

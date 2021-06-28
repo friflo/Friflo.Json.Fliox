@@ -157,7 +157,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             AreSimilar("(creates: 9, updates: 0, deletes: 4, patches: 2)", articleSum);
             AreSimilar("(creates: 3, updates: 0, deletes: 0, patches: 0)", producerSum);
             AreSimilar("(creates: 1, updates: 0, deletes: 0, patches: 0)", employeeSum);
-            AreEqual(1, messageSum);
+            AreEqual(2, messageSum);
             
             IsTrue(orderSum      .IsEqual(GetChangeInfo<Order>()));
             IsTrue(customerSum   .IsEqual(GetChangeInfo<Customer>()));
