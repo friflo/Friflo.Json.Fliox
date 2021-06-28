@@ -69,6 +69,17 @@ namespace Friflo.Json.Flow.Graph.Internal
             syncCount                   = 0;
         }
         
+        internal void Dispose() {
+            disposed = true;
+            messageReader.Dispose();
+            subscriptions.Clear();
+            contextPools.Dispose(); // dispose nothing - LocalPool's are used
+            database.RemoveEventTarget(clientId);
+            objectPatcher.Dispose();
+            jsonMapper.Dispose();
+            ownedTypeStore?.Dispose();
+        }
+        
         internal Dictionary<string, MessageSubscriber> AddMessageHandler<TMessage> (string tag, Action<TMessage> action) {
             if (!subscriptions.TryGetValue(tag, out var subscriber)) {
                 subscriber = new MessageSubscriber();

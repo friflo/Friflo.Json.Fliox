@@ -59,14 +59,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public void Dispose() {
-            _intern.disposed = true;
-            _intern.messageReader.Dispose();
-            _intern.subscriptions.Clear();
-            _intern.contextPools.Dispose(); // dispose nothing - LocalPool's are used
-            _intern.database.RemoveEventTarget(_intern.clientId);
-            _intern.objectPatcher.Dispose();
-            _intern.jsonMapper.Dispose();
-            _intern.ownedTypeStore?.Dispose();
+            _intern.Dispose();
         }
         
         private static void AddTypeMappers (TypeStore typeStore) {
