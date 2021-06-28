@@ -220,10 +220,12 @@ namespace Friflo.Json.Flow.Graph.Internal
         private void CreateEntities(List<DatabaseTask> tasks) {
             if (creates.Count == 0)
                 return;
+            var writer = set.intern.jsonMapper.writer;
             var entries = new Dictionary<string, EntityValue>();
+            
             foreach (var createPair in creates) {
                 T entity = createPair.Value.Entity;
-                var json = set.intern.jsonMapper.Write(entity);
+                var json = writer.Write(entity);
                 var entry = new EntityValue(json);
                 entries.Add(entity.id, entry);
             }
@@ -237,10 +239,12 @@ namespace Friflo.Json.Flow.Graph.Internal
         private void UpdateEntities(List<DatabaseTask> tasks) {
             if (updates.Count == 0)
                 return;
+            var writer = set.intern.jsonMapper.writer;
             var entries = new Dictionary<string, EntityValue>();
+            
             foreach (var updatePair in updates) {
                 T entity = updatePair.Value.Entity;
-                var json = set.intern.jsonMapper.Write(entity);
+                var json = writer.Write(entity);
                 var entry = new EntityValue(json);
                 entries.Add(entity.id, entry);
             }

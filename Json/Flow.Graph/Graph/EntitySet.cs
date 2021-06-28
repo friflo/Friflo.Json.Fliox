@@ -333,6 +333,7 @@ namespace Friflo.Json.Flow.Graph
         
         // --- EntitySet
         internal override void SyncPeerEntities(Dictionary<string, EntityValue> entities) {
+            var reader = intern.jsonMapper.reader;
                 
             foreach (var entityPair in entities) {
                 var id = entityPair.Key;
@@ -351,7 +352,6 @@ namespace Friflo.Json.Flow.Graph
                 peer.error = null;
                 var json = value.Json;
                 if (json != null && "null" != json) {
-                    var reader = intern.jsonMapper.reader;
                     var entity = peer.NullableEntity;
                     if (entity == null) {
                         entity = (T)intern.typeMapper.CreateInstance();
