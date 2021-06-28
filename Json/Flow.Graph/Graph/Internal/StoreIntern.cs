@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Graph.Internal
     {
         internal readonly   string                                  clientId;
         internal readonly   TypeStore                               typeStore;
-        internal readonly   TypeStore                               ownedTypeStore;
+        private  readonly   TypeStore                               ownedTypeStore;
         internal readonly   TypeCache                               typeCache;
         internal readonly   ObjectMapper                            jsonMapper;
 
