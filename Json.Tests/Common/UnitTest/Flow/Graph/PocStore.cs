@@ -64,6 +64,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     
     class TestEvent {
         public string testMessage;
+
+        public override string ToString() => testMessage;
     }
     
     public static class TestGlobals {

@@ -13,10 +13,10 @@ namespace Friflo.Json.Flow.Graph.Internal
     {
         internal readonly List<MessageHandler> handlers = new List<MessageHandler>();
         
-        internal void CallHandlers(ObjectReader reader, JsonValue messageValue) {
+        internal void InvokeMessageHandlers(ObjectReader reader, JsonValue messageValue) {
             foreach (var handler in handlers) {
                 try {
-                    handler.CallHandler(reader, messageValue);
+                    handler.InvokeMessageHandler(reader, messageValue);
                 }
                 catch (Exception e) {
                     Debug.Fail($"MessageHandler failed. type: {handler.MessageType.Name}, exception: {e}");
@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal            bool    HasAction (object action) => action == actionObject;
         internal abstract   Type    MessageType { get; } 
         
-        internal abstract void CallHandler(ObjectReader reader, JsonValue messageValue);
+        internal abstract void InvokeMessageHandler(ObjectReader reader, JsonValue messageValue);
         
         internal MessageHandler (object actionObject) {
             this.actionObject = actionObject;
@@ -47,7 +47,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             this.action = action;
         }
         
-        internal override void CallHandler(ObjectReader reader, JsonValue messageValue) {
+        internal override void InvokeMessageHandler(ObjectReader reader, JsonValue messageValue) {
             var message = reader.Read<TMessage>(messageValue.json);
             action(message);
         }

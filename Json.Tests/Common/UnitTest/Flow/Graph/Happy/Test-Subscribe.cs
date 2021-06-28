@@ -105,7 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             var articleChanges  = GetEntityChanges<Article> (ev);
             var producerChanges = GetEntityChanges<Producer>(ev);
             var employeeChanges = GetEntityChanges<Employee>(ev);
-            var messages        = GetMessages                  (ev);
+            var messages        = GetMessages               (ev);
             
             orderSum.   AddChanges(orderChanges);
             customerSum.AddChanges(customerChanges);
