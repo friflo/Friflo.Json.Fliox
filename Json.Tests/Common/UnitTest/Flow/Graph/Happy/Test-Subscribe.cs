@@ -64,7 +64,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             
             var subscriptions       = store.SubscribeAllChanges(Changes.All);
             var subscribeMessages   = store.SubscribeMessages(new [] { TestRelationPoC.EndCreate });
-            var subscribeTestEvent  = store.SubscribeMessage<TestEvent>((ev) => {
+            var subscribeTestEvent  = store.SubscribeMessage<TestMessage>((msg) => {
+                subscriber.testMessageCount++;
+                AreEqual("test message", msg.text);
             });
                 
             await store.Sync(); // -------- Sync --------
@@ -85,7 +87,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private readonly    ChangeInfo<Article>     articleSum   = new ChangeInfo<Article>();
         private readonly    ChangeInfo<Producer>    producerSum  = new ChangeInfo<Producer>();
         private readonly    ChangeInfo<Employee>    employeeSum  = new ChangeInfo<Employee>();
-        private             int                     messageSum;
+        private             int                     messageCount;
+        internal            int                     testMessageCount;
         internal            bool                    receivedAll;
         
         private readonly    EventAssertion          eventAssertion;
@@ -112,7 +115,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             articleSum. AddChanges(articleChanges);
             producerSum.AddChanges(producerChanges);
             employeeSum.AddChanges(employeeChanges);
-            messageSum += messages.Count;
+            messageCount += messages.Count;
             
             if (messages.Contains(TestRelationPoC.EndCreate))
                 receivedAll = true;
@@ -157,7 +160,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             AreSimilar("(creates: 9, updates: 0, deletes: 4, patches: 2)", articleSum);
             AreSimilar("(creates: 3, updates: 0, deletes: 0, patches: 0)", producerSum);
             AreSimilar("(creates: 1, updates: 0, deletes: 0, patches: 0)", employeeSum);
-            AreEqual(2, messageSum);
+            AreEqual(2, messageCount);
+            AreEqual(1, testMessageCount);
             
             IsTrue(orderSum      .IsEqual(GetChangeInfo<Order>()));
             IsTrue(customerSum   .IsEqual(GetChangeInfo<Customer>()));
