@@ -11,6 +11,30 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph
 {
+    internal class MessageSubscriber
+    {
+        internal readonly List<MessageHandler> handlers = new List<MessageHandler>();
+    }
+    
+    internal abstract class MessageHandler {
+        internal abstract bool HasAction (object action);
+    }
+    
+    internal class MessageHandler<TMessage> : MessageHandler
+    {
+        internal readonly Action<TMessage> action;
+        
+        internal MessageHandler (Action<TMessage> action) {
+            this.action = action;
+        }
+
+        internal override bool HasAction(object action) {
+            return this.action == action;
+        }
+    }
+
+
+    
     public class SubscriptionHandler
     {
         private readonly    EntityStore                         store;

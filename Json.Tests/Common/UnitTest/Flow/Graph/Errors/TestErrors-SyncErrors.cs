@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             testDatabase.syncErrors.Add(echoSyncError,       () => new SyncResponse{error = new ErrorResponse{message = "simulated SyncError"}});
             testDatabase.syncErrors.Add(echoSyncException,   () => throw new SimulationException ("simulated SyncException"));
             
-            var helloTask = store.SendMessage("Hello World");
+            var helloTask = store.SendMessageText("Hello World");
             AreEqual("MessageTask (message: Hello World)", helloTask.ToString());
             
             await store.Sync(); // -------- Sync --------
@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
 
             // --- Sync error
             {
-                var syncError = store.SendMessage(echoSyncError);
+                var syncError = store.SendMessageText(echoSyncError);
                 
                 // test throwing exception in case of Sync errors
                 try {
@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             }
             // --- Sync exception
             {
-                var syncException = store.SendMessage(echoSyncException);
+                var syncException = store.SendMessageText(echoSyncException);
                 
                 var sync = await store.TrySync(); // -------- Sync --------
                 

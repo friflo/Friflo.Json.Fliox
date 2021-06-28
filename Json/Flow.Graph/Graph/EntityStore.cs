@@ -17,30 +17,31 @@ namespace Friflo.Json.Flow.Graph
 {
     internal struct StoreIntern
     {
-        internal readonly   string                          clientId;
-        internal readonly   TypeStore                       typeStore;
-        internal readonly   TypeStore                       ownedTypeStore;
-        internal readonly   TypeCache                       typeCache;
-        internal readonly   ObjectMapper                    jsonMapper;
+        internal readonly   string                                  clientId;
+        internal readonly   TypeStore                               typeStore;
+        internal readonly   TypeStore                               ownedTypeStore;
+        internal readonly   TypeCache                               typeCache;
+        internal readonly   ObjectMapper                            jsonMapper;
 
-        internal readonly   ObjectPatcher                   objectPatcher;
+        internal readonly   ObjectPatcher                           objectPatcher;
         
-        internal readonly   EntityDatabase                  database;
-        internal readonly   Dictionary<Type,   EntitySet>   setByType;
-        internal readonly   Dictionary<string, EntitySet>   setByName;
-        internal readonly   Pools                           contextPools;
-        internal readonly   EventTarget                     eventTarget;
+        internal readonly   EntityDatabase                          database;
+        internal readonly   Dictionary<Type,   EntitySet>           setByType;
+        internal readonly   Dictionary<string, EntitySet>           setByName;
+        internal readonly   Pools                                   contextPools;
+        internal readonly   EventTarget                             eventTarget;
+        internal readonly   Dictionary<string, MessageSubscriber>   subscriptions;
         
         // --- non readonly
-        internal            SyncStore                       sync;
-        internal            LogTask                         tracerLogTask;
-        internal            SubscriptionHandler             subscriptionHandler;
-        internal            bool                            disposed;
-        internal            int                             lastEventSeq;
-        internal            int                             syncCount;
+        internal            SyncStore                               sync;
+        internal            LogTask                                 tracerLogTask;
+        internal            SubscriptionHandler                     subscriptionHandler;
+        internal            bool                                    disposed;
+        internal            int                                     lastEventSeq;
+        internal            int                                     syncCount;
         
 
-        public   override   string                          ToString() => clientId;
+        public   override   string                                  ToString() => clientId;
 
 
         internal StoreIntern(
@@ -64,11 +65,35 @@ namespace Friflo.Json.Flow.Graph
             setByName                   = new Dictionary<string, EntitySet>();
             objectPatcher               = new ObjectPatcher(jsonMapper);
             contextPools                = new Pools(Pools.SharedPools);
+            subscriptions               = new Dictionary<string, MessageSubscriber>();
             tracerLogTask               = null;
             subscriptionHandler         = null;
             lastEventSeq                = 0;
             disposed                    = false;
             syncCount                   = 0;
+        }
+        
+        internal Dictionary<string, MessageSubscriber> AddMessageHandler<TMessage> (string tag, Action<TMessage> action) {
+            if (!subscriptions.TryGetValue(tag, out var subscriber)) {
+                subscriber = new MessageSubscriber();
+            }
+            var messageHandler = new MessageHandler<TMessage>(action);
+            subscriber.handlers.Add(messageHandler);
+            return subscriptions;
+        }
+        
+        internal Dictionary<string, MessageSubscriber> RemoveMessageHandler<TMessage> (string tag, Action<TMessage> action) {
+            if (!subscriptions.TryGetValue(tag, out var subscriber)) {
+                return subscriptions;
+            }
+            foreach (var handler in subscriber.handlers) {
+                if (handler.HasAction(action))
+                    subscriber.handlers.Remove(handler);
+            }
+            if (subscriber.handlers.Count == 0) {
+                subscriptions.Remove(tag);
+            }
+            return subscriptions;
         }
     }
 
@@ -191,21 +216,55 @@ namespace Friflo.Json.Flow.Graph
         }
         
         /// <summary>
-        /// Filter all <see cref="SendMessage"/> messages by the given <see cref="tags"/>.
+        /// Filter all <see cref="SendMessageText"/> messages by the given <see cref="tags"/>.
         ///   <para><see cref="tags"/> = {""} => subscribe all message events.</para>
         ///   <para><see cref="tags"/> = {} => unsubscribe message events.</para>
         /// </summary>
         public SubscribeMessagesTask SubscribeMessages(IEnumerable<string> tags) {
             AssertSubscriptionHandler();
-            var task = new SubscribeMessagesTask(tags);
+            var subscriptions = _intern.subscriptions;
+            subscriptions.Clear();
+            foreach (var tag in tags) {
+                subscriptions.Add(tag, null);
+            }
+            var task = new SubscribeMessagesTask(subscriptions.Keys);
             _intern.sync.subscribeMessages = task;
             AddTask(task);
             return task;
         }
         
-        public MessageTask SendMessage(string message) {
-            var task = new MessageTask(message);
-            _intern.sync.messageTasks.Add(message, task);
+        public SubscribeMessagesTask SubscribeMessage<TMessage>(Action<TMessage> action) {
+            AssertSubscriptionHandler();
+            const string tag    = nameof(TMessage);
+            var subscriptions   = _intern.AddMessageHandler(tag, action);
+            var task = new SubscribeMessagesTask(subscriptions.Keys);
+            _intern.sync.subscribeMessages = task;
+            AddTask(task);
+            return task;
+        }
+        
+        public SubscribeMessagesTask UnsubscribeMessage<TMessage>(Action<TMessage> action) {
+            AssertSubscriptionHandler();
+            const string tag    = nameof(TMessage);
+            var subscriptions   = _intern.RemoveMessageHandler(tag, action);
+            var task = new SubscribeMessagesTask(subscriptions.Keys);
+            _intern.sync.subscribeMessages = task;
+            AddTask(task);
+            return task;
+        }
+        
+        public MessageTask SendMessageText(string text) {
+            var task = new MessageTask(text, null);
+            _intern.sync.messageTasks.Add(text, task);
+            AddTask(task);
+            return task;
+        }
+        
+        public MessageTask SendMessage<TMessage>(TMessage message) {
+            var value           = _intern.jsonMapper.Write(message);
+            const string tag    = nameof(Message);
+            var task            = new MessageTask(tag, value);
+            _intern.sync.messageTasks.Add(tag, task);
             AddTask(task);
             return task;
         }
