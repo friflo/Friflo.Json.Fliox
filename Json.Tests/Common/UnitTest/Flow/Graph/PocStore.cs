@@ -290,7 +290,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             orders.Create(order2);
             
             var testMessage = new TestMessage{ text = "test message" };
-            var sendMessage1 = store.SendMessage(nameof(TestMessage), testMessage);
+            var sendMessage1 = store.SendMessage(testMessage);
             int testMessageInt = 42;
             var sendMessage2 = store.SendMessage("testMessageInt", testMessageInt);
             store.SendMessage(EndCreate);  // indicates store changes are finished

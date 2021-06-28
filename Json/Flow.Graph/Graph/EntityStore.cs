@@ -127,27 +127,6 @@ namespace Friflo.Json.Flow.Graph
             return tasks;
         }
         
-        /*
-        /// <summary>
-        /// Filter all <see cref="SendMessage"/> messages by the given <see cref="names"/>.
-        ///   <para><see cref="names"/> = {""} => subscribe all message events.</para>
-        ///   <para><see cref="names"/> = {} => unsubscribe message events.</para>
-        /// </summary>
-        public SubscribeMessageTask SubscribeMessage(IEnumerable<string> names) {
-            AssertSubscriptionHandler();
-            var subscriptions = _intern.subscriptions;
-            subscriptions.Clear();
-            foreach (var name in names) {
-                _intern.AddMessageHandler<object>(name, null);
-            }
-            var task = new SubscribeMessageTask(subscriptions.Keys);
-            _intern.sync.subscribeMessage.Add(task);
-            AddTask(task);
-            return task;
-        } */
-        
-
-        
         public SubscribeMessageTask SubscribeMessage<TMessage>(string name, Action<TMessage> action) {
             AssertSubscriptionHandler();
             _intern.AddMessageHandler(name, action);
@@ -188,6 +167,11 @@ namespace Friflo.Json.Flow.Graph
             _intern.sync.messageTasks.Add(name, task);
             AddTask(task);
             return task;
+        }
+        
+        public MessageTask SendMessage<TMessage>(TMessage message) {
+            var name = typeof(TMessage).Name;
+            return SendMessage(name, message);
         }
         
         /// <summary>
