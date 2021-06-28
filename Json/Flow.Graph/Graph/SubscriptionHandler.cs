@@ -152,7 +152,7 @@ namespace Friflo.Json.Flow.Graph
                     
                     case TaskType.message:
                         var message = (Message)task;
-                        messages.Add(message.text);
+                        messages.Add(message.tag);
                         break;
                 }
             }

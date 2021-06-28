@@ -7,19 +7,19 @@ namespace Friflo.Json.Flow.Graph
 {
     public class MessageTask : SyncTask
     {
-        internal readonly   string      text;
+        internal readonly   string      tag;
         internal            string      result;
         
         internal            TaskState   state;
         internal override   TaskState   State       => state;
         
-        public   override   string      Details     => $"MessageTask (message: {text})";
+        public   override   string      Details     => $"MessageTask (message: {tag})";
         
         
         public              string      Result      => IsOk("MessageTask.Result", out Exception e) ? result : throw e;
         
-        internal MessageTask(string text) {
-            this.text = text;
+        internal MessageTask(string tag) {
+            this.tag = tag;
         }
         
     }

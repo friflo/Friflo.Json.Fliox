@@ -191,13 +191,13 @@ namespace Friflo.Json.Flow.Graph
         }
         
         /// <summary>
-        /// Filter all <see cref="SendMessage"/> messages starting with one of the given <see cref="prefixes"/> strings.
-        ///   <para><see cref="prefixes"/> = {""} => subscribe all message events.</para>
-        ///   <para><see cref="prefixes"/> = {} => unsubscribe message events.</para>
+        /// Filter all <see cref="SendMessage"/> messages by the given <see cref="tags"/>.
+        ///   <para><see cref="tags"/> = {""} => subscribe all message events.</para>
+        ///   <para><see cref="tags"/> = {} => unsubscribe message events.</para>
         /// </summary>
-        public SubscribeMessagesTask SubscribeMessages(IEnumerable<string> prefixes) {
+        public SubscribeMessagesTask SubscribeMessages(IEnumerable<string> tags) {
             AssertSubscriptionHandler();
-            var task = new SubscribeMessagesTask(prefixes);
+            var task = new SubscribeMessagesTask(tags);
             _intern.sync.subscribeMessages = task;
             AddTask(task);
             return task;

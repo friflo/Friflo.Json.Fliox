@@ -11,11 +11,11 @@ namespace Friflo.Json.Flow.Sync
     public class SubscribeMessages : DatabaseTask
     {
         /// <summary>
-        ///   Filter all <see cref="Message.text"/>'s starting with one of the given <see cref="prefixes"/> strings.
-        ///   <para><see cref="prefixes"/> = {""} => subscribe all message events.</para>
-        ///   <para><see cref="prefixes"/> = {} => unsubscribe message events.</para>
+        ///   Filter all <see cref="Message.tag"/>'s starting with one of the given <see cref="tags"/> strings.
+        ///   <para><see cref="tags"/> = {""} => subscribe all message events.</para>
+        ///   <para><see cref="tags"/> = {} => unsubscribe message events.</para>
         /// </summary>
-        public              List<string>    prefixes;
+        public              List<string>    tags;
         internal override   TaskType        TaskType    => TaskType.subscribeMessages;
 
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
@@ -24,8 +24,8 @@ namespace Friflo.Json.Flow.Sync
                 return Task.FromResult<TaskResult>(InvalidTask("database has no eventBroker"));
             if (messageContext.clientId == null)
                 return Task.FromResult<TaskResult>(InvalidTask("subscribe task requires client id set in sync request"));
-            if (prefixes == null)
-                return Task.FromResult<TaskResult>(MissingField(nameof(prefixes)));
+            if (tags == null)
+                return Task.FromResult<TaskResult>(MissingField(nameof(tags)));
             
             var eventTarget = messageContext.eventTarget;
             if (eventTarget == null)

@@ -47,7 +47,7 @@ namespace Friflo.Json.Flow.Database.Event
         // -------------------------------- add / remove subscriptions --------------------------------
         internal void SubscribeMessages(SubscribeMessages subscribe, string clientId, IEventTarget eventTarget) {
             EventSubscriber subscriber;
-            if (subscribe.prefixes.Count == 0) {
+            if (subscribe.tags.Count == 0) {
                 if (!subscribers.TryGetValue(clientId, out subscriber))
                     return;
                 subscriber.messageSubscriptions.Clear();
@@ -56,7 +56,7 @@ namespace Friflo.Json.Flow.Database.Event
             }
             subscriber = GetOrCreateSubscriber(clientId, eventTarget);
             subscriber.messageSubscriptions.Clear();
-            subscriber.messageSubscriptions.AddRange(subscribe.prefixes);
+            subscriber.messageSubscriptions.AddRange(subscribe.tags);
         }
 
         internal void SubscribeChanges (SubscribeChanges subscribe, string clientId, IEventTarget eventTarget) {
@@ -149,7 +149,7 @@ namespace Friflo.Json.Flow.Database.Event
                     if (task.TaskType == TaskType.message) {
                         var message = (Message) task;
                         foreach (var messageSubscription in subscriber.messageSubscriptions) {
-                            if (!message.text.StartsWith(messageSubscription))
+                            if (!message.tag.Equals(messageSubscription))
                                 continue;
                             AddTask(ref tasks, task);
                         }

@@ -29,15 +29,15 @@ namespace Friflo.Json.Flow.Graph
     
     public class SubscribeMessagesTask : SyncTask
     {
-        internal readonly   List<string>            prefixes;
+        internal readonly   List<string>            tags;
         internal            TaskState               state;
             
         internal override   TaskState               State           => state;
         public   override   string                  Details         => $"SubscribeMessagesTask";
         
 
-        internal SubscribeMessagesTask(IEnumerable<string> prefixes) {
-            this.prefixes = prefixes.ToList();
+        internal SubscribeMessagesTask(IEnumerable<string> tags) {
+            this.tags = tags.ToList();
         }
     }
 }
