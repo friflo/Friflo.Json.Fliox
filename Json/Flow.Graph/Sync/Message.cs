@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Mapper.Map.Val;
 
 namespace Friflo.Json.Flow.Sync
 {
@@ -9,6 +10,7 @@ namespace Friflo.Json.Flow.Sync
     public class Message : DatabaseTask
     {
         public              string          tag;
+        public              JsonValue       value;
             
         internal override   TaskType        TaskType    => TaskType.message;
         public   override   string          ToString()  => tag;

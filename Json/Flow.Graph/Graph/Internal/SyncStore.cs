@@ -39,6 +39,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 MessageTask messageTask = entry.Value;
                 var req = new Message {
                     tag   = messageTask.tag,
+                    value = messageTask.value
                 };
                 tasks.Add(req);
             }

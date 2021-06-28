@@ -76,7 +76,10 @@ namespace Friflo.Json.Flow.Graph
         internal Dictionary<string, MessageSubscriber> AddMessageHandler<TMessage> (string tag, Action<TMessage> action) {
             if (!subscriptions.TryGetValue(tag, out var subscriber)) {
                 subscriber = new MessageSubscriber();
+                subscriptions.Add(tag, subscriber);
             }
+            if (action == null)
+                return subscriptions;
             var messageHandler = new MessageHandler<TMessage>(action);
             subscriber.handlers.Add(messageHandler);
             return subscriptions;
@@ -225,7 +228,7 @@ namespace Friflo.Json.Flow.Graph
             var subscriptions = _intern.subscriptions;
             subscriptions.Clear();
             foreach (var tag in tags) {
-                subscriptions.Add(tag, null);
+                _intern.AddMessageHandler<object>(tag, null);
             }
             var task = new SubscribeMessagesTask(subscriptions.Keys);
             _intern.sync.subscribeMessages = task;

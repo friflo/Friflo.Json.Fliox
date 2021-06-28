@@ -6,35 +6,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using Friflo.Json.Flow.Database.Utils;
+using Friflo.Json.Flow.Graph.Internal;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph
 {
-    internal class MessageSubscriber
-    {
-        internal readonly List<MessageHandler> handlers = new List<MessageHandler>();
-    }
-    
-    internal abstract class MessageHandler {
-        internal abstract bool HasAction (object action);
-    }
-    
-    internal class MessageHandler<TMessage> : MessageHandler
-    {
-        internal readonly Action<TMessage> action;
-        
-        internal MessageHandler (Action<TMessage> action) {
-            this.action = action;
-        }
-
-        internal override bool HasAction(object action) {
-            return this.action == action;
-        }
-    }
-
-
-    
     public class SubscriptionHandler
     {
         private readonly    EntityStore                         store;
@@ -154,6 +131,13 @@ namespace Friflo.Json.Flow.Graph
                         if (set.GetSubscription() == null)
                             continue;
                         set.PatchPeerEntities(patches.patches);
+                        break;
+                    
+                    case TaskType.message:
+                        var message = (Message)task;
+                        if (!store._intern.subscriptions.TryGetValue(message.tag, out MessageSubscriber subscriber))
+                            return;
+                        subscriber.CallHandlers(store._intern.jsonMapper.reader, message.value);
                         break;
                 }
             }
