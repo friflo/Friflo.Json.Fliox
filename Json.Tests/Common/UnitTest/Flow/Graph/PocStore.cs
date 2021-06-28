@@ -289,11 +289,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var order2 = new Order{id = "order-2", customer = errorRefTask};
             orders.Create(order2);
             
-            var testEvent = new TestMessage{ text = "test message" };
-            store.SendMessage(testEvent);
+            var testMessage = new TestMessage{ text = "test message" };
+            var sendMessage1 = store.SendMessage(nameof(TestMessage), testMessage);
+            int testMessageInt = 42;
+            var sendMessage2 = store.SendMessage("testMessageInt", testMessageInt);
             store.SendMessageText(EndCreate);  // indicates store changes are finished
             
             await store.Sync(); // -------- Sync --------
+            
+            IsTrue(sendMessage1.Success);
+            IsTrue(sendMessage2.Success);
         }
 
         internal const string EndCreate = "EndCreate";

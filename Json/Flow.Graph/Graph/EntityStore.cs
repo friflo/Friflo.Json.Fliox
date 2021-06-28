@@ -145,9 +145,8 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public SubscribeMessagesTask SubscribeMessage<TMessage>(Action<TMessage> action) {
+        public SubscribeMessagesTask SubscribeMessage<TMessage>(string tag, Action<TMessage> action) {
             AssertSubscriptionHandler();
-            var tag             = typeof(TMessage).Name;
             var subscriptions   = _intern.AddMessageHandler(tag, action);
             var task            = new SubscribeMessagesTask(subscriptions.Keys);
             _intern.sync.subscribeMessages.Add(task);
@@ -155,9 +154,13 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public SubscribeMessagesTask UnsubscribeMessage<TMessage>(Action<TMessage> action) {
+        public SubscribeMessagesTask SubscribeMessage<TMessage>(Action<TMessage> action) {
+            var tag = typeof(TMessage).Name;
+            return SubscribeMessage(tag, action);
+        }
+        
+        public SubscribeMessagesTask UnsubscribeMessage<TMessage>(string tag, Action<TMessage> action) {
             AssertSubscriptionHandler();
-            var tag             = typeof(TMessage).Name;
             var subscriptions   = _intern.RemoveMessageHandler(tag, action);
             var task            = new SubscribeMessagesTask(subscriptions.Keys);
             _intern.sync.subscribeMessages.Add(task);
@@ -172,9 +175,8 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public MessageTask SendMessage<TMessage>(TMessage message) {
+        public MessageTask SendMessage<TMessage>(string tag, TMessage message) {
             var value           = _intern.jsonMapper.Write(message);
-            var tag             = typeof(TMessage).Name;
             var task            = new MessageTask(tag, value);
             _intern.sync.messageTasks.Add(tag, task);
             AddTask(task);

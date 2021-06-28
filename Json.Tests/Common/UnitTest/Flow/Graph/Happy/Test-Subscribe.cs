@@ -42,8 +42,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var listenDb     = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker = eventBroker;
-                var pocSubscriber        = await CreatePocHandler(listenDb, sc, EventAssertion.Changes);
-                using (var createStore = new PocStore(fileDatabase, "createStore")) {
+                var pocSubscriber   = await CreatePocHandler(listenDb, sc, EventAssertion.Changes);
+                using (var createStore  = new PocStore(fileDatabase, "createStore")) {
                     var createSubscriber = await CreatePocHandler(createStore, sc, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
                     
@@ -64,10 +64,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             
             var subscriptions       = store.SubscribeAllChanges(Changes.All);
             var subscribeMessages   = store.SubscribeMessages(new [] { TestRelationPoC.EndCreate });
-            var subscribeTestEvent  = store.SubscribeMessage<TestMessage>((msg) => {
-                subscriber.testMessageCount++;
+            var subscribeMessage1   = store.SubscribeMessage<TestMessage>((msg) => {
+                subscriber.handlerCalls++;
                 AreEqual("test message", msg.text);
             });
+            var subscribeMessage2   = store.SubscribeMessage<int>("testMessageInt", (msg) => {
+                subscriber.handlerCalls++;
+                AreEqual(42, msg);
+            });
+
                 
             await store.Sync(); // -------- Sync --------
 
@@ -75,7 +80,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 IsTrue(subscription.Success);    
             }
             IsTrue(subscribeMessages.Success);
-            IsTrue(subscribeTestEvent.Success);
+            IsTrue(subscribeMessage1.Success);
+            IsTrue(subscribeMessage2.Success);
             return subscriber;
         }
     }
@@ -88,7 +94,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private readonly    ChangeInfo<Producer>    producerSum  = new ChangeInfo<Producer>();
         private readonly    ChangeInfo<Employee>    employeeSum  = new ChangeInfo<Employee>();
         private             int                     messageCount;
-        internal            int                     testMessageCount;
+        internal            int                     handlerCalls;
         internal            bool                    receivedAll;
         
         private readonly    EventAssertion          eventAssertion;
@@ -160,8 +166,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             AreSimilar("(creates: 9, updates: 0, deletes: 4, patches: 2)", articleSum);
             AreSimilar("(creates: 3, updates: 0, deletes: 0, patches: 0)", producerSum);
             AreSimilar("(creates: 1, updates: 0, deletes: 0, patches: 0)", employeeSum);
-            AreEqual(2, messageCount);
-            AreEqual(1, testMessageCount);
+            AreEqual(3, messageCount);
+            AreEqual(2, handlerCalls);
             
             IsTrue(orderSum      .IsEqual(GetChangeInfo<Order>()));
             IsTrue(customerSum   .IsEqual(GetChangeInfo<Customer>()));
