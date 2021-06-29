@@ -32,7 +32,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         private  readonly   object  handlerObject;
         
         internal            bool    HasHandler (object handler) => handler == handlerObject;
-        
+        public   override   string  ToString()                  => name;
+
         internal abstract void InvokeMessageHandler(ObjectReader reader, JsonValue messageValue);
         
         internal MessageHandler (string name, object handler) {

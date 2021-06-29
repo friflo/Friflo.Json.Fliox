@@ -11,28 +11,30 @@ namespace Friflo.Json.Flow.Graph
     } 
     
     public readonly struct Message<TValue> : IMessage {
-        public string       Name    { get; }
-        public string       Json    { get; }
-        public ObjectReader Reader  { get; }
+        public          string          Name    { get; }
+        public          string          Json    { get; }
+        public          ObjectReader    Reader  { get; }
        
-        public TValue     Value => Reader.Read<TValue>(Json);
+        public          TValue          Value       => Reader.Read<TValue>(Json);
+        public override string          ToString()  => Name;
 
         public Message(string name, string json, ObjectReader reader) {
-            this.Name       = name;
-            this.Json       = json;
-            this.Reader     = reader;
+            Name    = name;
+            Json    = json;
+            Reader  = reader;
         }
     }
     
     public readonly struct Message  : IMessage {
-        public string       Name    { get; }
-        public string       Json    { get; }
-        public ObjectReader Reader  { get; }
+        public          string          Name    { get; }
+        public          string          Json    { get; }
+        public          ObjectReader    Reader  { get; }
+        public override string          ToString()  => Name;
         
         public Message(string name, string json, ObjectReader reader) {
-            this.Name       = name;
-            this.Json       = json;
-            this.Reader     = reader;
+            Name    = name;
+            Json    = json;
+            Reader  = reader;
         }
     }
 
