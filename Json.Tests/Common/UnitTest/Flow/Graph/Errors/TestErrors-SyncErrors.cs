@@ -26,12 +26,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             testDatabase.syncErrors.Add(echoSyncError,       () => new SyncResponse{error = new ErrorResponse{message = "simulated SyncError"}});
             testDatabase.syncErrors.Add(echoSyncException,   () => throw new SimulationException ("simulated SyncException"));
             
-            var helloTask = store.SendMessage("Hello World");
+            var helloTask = store.SendMessage("Hello World", "Hello back");
             AreEqual("MessageTask (name: Hello World)", helloTask.ToString());
             
             await store.Sync(); // -------- Sync --------
             
-            AreEqual("\"Hello World\"", helloTask.Result);
+            AreEqual("\"Hello back\"", helloTask.Result);
 
             // --- Sync error
             {

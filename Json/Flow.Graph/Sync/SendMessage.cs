@@ -16,13 +16,8 @@ namespace Friflo.Json.Flow.Sync
         public   override   string          ToString()  => name;
 
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
-            using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
-                var writer = pooledMapper.instance.writer;
-                var json = writer.Write(name);
-                var resultValue = new JsonValue { json =  json };
-                TaskResult result = new SendMessageResult{ result = resultValue };
-                return Task.FromResult(result);
-            }
+            TaskResult result = new SendMessageResult{ result = value };
+            return Task.FromResult(result);
         }
     }
     

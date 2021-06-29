@@ -182,7 +182,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             var result = $"\"{name}\"";
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
-                    var message = store.SendMessage(name);
+                    var message = store.SendMessage(name, name);
                     await store.Sync();
                     AreEqual (result, message.Result);
                 }
