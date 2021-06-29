@@ -11,8 +11,9 @@ content-type: application/json
 { "type": "sync",
   "tasks": [
   {
-    "task": "message",
-    "name": "test"		
+    "task":  "message",
+    "name":  "test",
+    "value": "some value"
   }
 ]}
 
