@@ -131,8 +131,8 @@ namespace Friflo.Json.Flow.Graph
         // --- SubscribeMessage
         public SubscribeMessageTask SubscribeMessage<TValue>    (string name, Handler<TValue> handler) {
             AssertSubscriptionHandler();
-            var messageHandler  = new MessageHandler<TValue>(name, handler);
-            var task            = _intern.AddMessageHandler(name, messageHandler);
+            var callbackHandler = new GenericCallback<TValue>(name, handler);
+            var task            = _intern.AddCallbackHandler(name, callbackHandler);
             AddTask(task);
             return task;
         }
@@ -144,21 +144,21 @@ namespace Friflo.Json.Flow.Graph
         
         public SubscribeMessageTask SubscribeMessage            (string name, Handler handler) {
             AssertSubscriptionHandler();
-            var messageHandler  = new GenericHandler(name, handler);
-            var task            = _intern.AddMessageHandler(name, messageHandler);
+            var callbackHandler = new NonGenericCallback(name, handler);
+            var task            = _intern.AddCallbackHandler(name, callbackHandler);
             AddTask(task);
             return task;
         }
         
         // --- UnsubscribeMessage
         public SubscribeMessageTask UnsubscribeMessage<TValue>  (string name, Handler<TValue> handler) {
-            var task = _intern.RemoveMessageHandler(name, handler);
+            var task = _intern.RemoveCallbackHandler(name, handler);
             AddTask(task);
             return task;
         }
         
         public SubscribeMessageTask UnsubscribeMessage          (string name, Handler handler) {
-            var task = _intern.RemoveMessageHandler(name, handler);
+            var task = _intern.RemoveCallbackHandler(name, handler);
             AddTask(task);
             return task;
         }

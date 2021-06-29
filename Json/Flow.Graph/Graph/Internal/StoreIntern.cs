@@ -80,7 +80,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             ownedTypeStore?.Dispose();
         }
         
-        internal SubscribeMessageTask AddMessageHandler(string name, MessageHandler handler) {
+        internal SubscribeMessageTask AddCallbackHandler(string name, CallbackHandler handler) {
             var task = new SubscribeMessageTask(name, null);
             if (!subscriptions.TryGetValue(name, out var subscriber)) {
                 subscriber = new MessageSubscriber(name);
@@ -89,22 +89,22 @@ namespace Friflo.Json.Flow.Graph.Internal
             } else {
                 task.state.Synced = true;
             }
-            subscriber.messageHandlers.Add(handler);
+            subscriber.callbackHandlers.Add(handler);
             return task;
         }
         
-        internal SubscribeMessageTask RemoveMessageHandler (string name, object handler) {
+        internal SubscribeMessageTask RemoveCallbackHandler (string name, object handler) {
             var task = new SubscribeMessageTask(name, true);
             if (!subscriptions.TryGetValue(name, out var subscriber)) {
                 task.state.Synced = true;
                 return task;
             }
             if (handler != null) {
-                subscriber.messageHandlers.RemoveAll((h) => h.HasHandler(handler));
+                subscriber.callbackHandlers.RemoveAll((h) => h.HasHandler(handler));
             } else {
-                subscriber.messageHandlers.Clear();
+                subscriber.callbackHandlers.Clear();
             }
-            if (subscriber.messageHandlers.Count == 0) {
+            if (subscriber.callbackHandlers.Count == 0) {
                 subscriptions.Remove(name);
                 sync.subscribeMessage.Add(task);
             } else {
