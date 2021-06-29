@@ -63,7 +63,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             store.SetSubscriptionHandler(subscriber);
             
             var subscriptions       = store.SubscribeAllChanges(Changes.All);
-            var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate);
+            var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg) => {
+            });
             var subscribeMessage1   = store.SubscribeMessage<TestMessage>((msg) => {
                 subscriber.handlerCalls++;
                 TestMessage value = msg.Value;
@@ -74,8 +75,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual(42,    msg.Value);
                 AreEqual("42",  msg.json);
             });
+            var subscribeMessage3   = store.SubscribeMessage("testMessageInt", (msg) => {
+                subscriber.handlerCalls++;
+                AreEqual("42",  msg.json);
+            });
 
-                
             await store.Sync(); // -------- Sync --------
 
             foreach (var subscription in subscriptions) {
@@ -84,6 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             IsTrue(subscribeMessage.Success);
             IsTrue(subscribeMessage1.Success);
             IsTrue(subscribeMessage2.Success);
+            IsTrue(subscribeMessage3.Success);
             return subscriber;
         }
     }
@@ -169,7 +174,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             AreSimilar("(creates: 3, updates: 0, deletes: 0, patches: 0)", producerSum);
             AreSimilar("(creates: 1, updates: 0, deletes: 0, patches: 0)", employeeSum);
             AreEqual(3, messageCount);
-            AreEqual(2, handlerCalls);
+            AreEqual(3, handlerCalls);
             
             IsTrue(orderSum      .IsEqual(GetChangeInfo<Order>()));
             IsTrue(customerSum   .IsEqual(GetChangeInfo<Customer>()));

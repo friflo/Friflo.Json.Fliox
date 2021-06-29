@@ -14,19 +14,30 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public readonly struct MessageEvent<TMessage> {
+    public readonly struct Message {
         public readonly string          json;
         public readonly ObjectReader    reader;
         
-        public          TMessage        Value => reader.Read<TMessage>(json);
-
-        public MessageEvent(string json, ObjectReader reader) {
+        public Message(string json, ObjectReader reader) {
             this.json       = json;
             this.reader     = reader;
         }
     }
     
-    public delegate void Handler<TMessage>(MessageEvent<TMessage> msg);
+    public readonly struct Message<TMessage> {
+        public readonly string          json;
+        public readonly ObjectReader    reader;
+        
+        public          TMessage        Value => reader.Read<TMessage>(json);
+
+        public Message(string json, ObjectReader reader) {
+            this.json       = json;
+            this.reader     = reader;
+        }
+    }
+    
+    public delegate void Handler<TMessage>(Message<TMessage> msg);
+    public delegate void Handler(Message msg);
 
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
@@ -143,20 +154,27 @@ namespace Friflo.Json.Flow.Graph
         
         public SubscribeMessageTask SubscribeMessage<TMessage>(string name, Handler<TMessage> handler) {
             AssertSubscriptionHandler();
-            _intern.AddMessageHandler(name, handler);
+            var messageHandler = handler != null ? new MessageHandler<TMessage>(name, handler) : null;
+            _intern.AddMessageHandler(name, messageHandler);
             var task            = new SubscribeMessageTask(name);
             _intern.sync.subscribeMessage.Add(task);
             AddTask(task);
             return task;
         }
         
-        public SubscribeMessageTask SubscribeMessage(string name) {
-            return SubscribeMessage<object>(name, null);
-        }
-        
         public SubscribeMessageTask SubscribeMessage<TMessage>(Handler<TMessage> handler) {
             var name = typeof(TMessage).Name;
             return SubscribeMessage(name, handler);
+        }
+        
+        public SubscribeMessageTask SubscribeMessage(string name, Handler handler) {
+            AssertSubscriptionHandler();
+            var messageHandler = new GenericHandler(name, handler);
+            _intern.AddMessageHandler(name, messageHandler);
+            var task            = new SubscribeMessageTask(name);
+            _intern.sync.subscribeMessage.Add(task);
+            AddTask(task);
+            return task;
         }
         
         public SubscribeMessageTask UnsubscribeMessage<TMessage>(string name, Handler<TMessage> handler) {

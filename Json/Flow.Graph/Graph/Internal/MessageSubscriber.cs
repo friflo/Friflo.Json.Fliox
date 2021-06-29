@@ -19,36 +19,52 @@ namespace Friflo.Json.Flow.Graph.Internal
                     messageHandler.InvokeMessageHandler(reader, messageValue);
                 }
                 catch (Exception e) {
-                    Debug.Fail($"MessageHandler failed. type: {messageHandler.MessageType.Name}, exception: {e}");
+                    var msg = $"MessageHandler failed. name: {messageHandler.name}, exception: {e}";
+                    Console.WriteLine(msg);
+                    Debug.Fail(msg);
                 }
             }
         }
     }
     
     internal abstract class MessageHandler {
+        internal readonly   string  name;
         private  readonly   object  handlerObject;
         
         internal            bool    HasHandler (object handler) => handler == handlerObject;
-        internal abstract   Type    MessageType { get; } 
         
         internal abstract void InvokeMessageHandler(ObjectReader reader, JsonValue messageValue);
         
-        internal MessageHandler (object handler) {
-            handlerObject = handler;
+        internal MessageHandler (string name, object handler) {
+            this.name       = name;
+            handlerObject   = handler;
         } 
+    }
+    
+    internal class GenericHandler : MessageHandler
+    {
+        private  readonly   Handler   handler;
+        
+        internal GenericHandler (string name, Handler handler) : base(name, handler) {
+            this.handler = handler;
+        }
+        
+        internal override void InvokeMessageHandler(ObjectReader reader, JsonValue messageValue) {
+            var msg = new Message(messageValue.json, reader);
+            handler(msg);
+        }
     }
     
     internal class MessageHandler<TMessage> : MessageHandler
     {
         private  readonly   Handler<TMessage>   handler;
-        internal override   Type                MessageType => typeof(TMessage);
         
-        internal MessageHandler (Handler<TMessage> handler) : base(handler) {
+        internal MessageHandler (string name, Handler<TMessage> handler) : base(name, handler) {
             this.handler = handler;
         }
         
         internal override void InvokeMessageHandler(ObjectReader reader, JsonValue messageValue) {
-            var msg = new MessageEvent<TMessage>(messageValue.json, reader);
+            var msg = new Message<TMessage>(messageValue.json, reader);
             handler(msg);
         }
     }

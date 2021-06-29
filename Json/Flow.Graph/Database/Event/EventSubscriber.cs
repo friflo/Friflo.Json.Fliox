@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Database.Event
         private             IEventTarget                            eventTarget;
         /// key: <see cref="SubscribeChanges.container"/>
         internal readonly   Dictionary<string, SubscribeChanges>    changeSubscriptions = new Dictionary<string, SubscribeChanges>();
-        internal readonly   List<string>                            messageSubscriptions   = new List<string>();
+        internal readonly   HashSet<string>                         messageSubscriptions   = new HashSet<string>();
         
         internal            int                                     SubscriptionCount => changeSubscriptions.Count + messageSubscriptions.Count; 
         
