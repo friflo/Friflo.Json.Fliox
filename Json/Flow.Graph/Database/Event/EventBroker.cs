@@ -55,7 +55,12 @@ namespace Friflo.Json.Flow.Database.Event
                 return;
             } */
             subscriber = GetOrCreateSubscriber(clientId, eventTarget);
-            subscriber.messageSubscriptions.Add(subscribe.name);
+            var subs = subscriber.messageSubscriptions;
+            if (subs.TryGetValue(subscribe.name, out var subscription)) {
+                subscription.subCount++;
+                return;
+            }
+            subs.Add(subscribe.name, new MessageSubscription());
         }
 
         internal void SubscribeChanges (SubscribeChanges subscribe, string clientId, IEventTarget eventTarget) {
@@ -147,11 +152,9 @@ namespace Friflo.Json.Flow.Database.Event
                     }
                     if (task.TaskType == TaskType.message) {
                         var message = (SendMessage) task;
-                        foreach (var messageSubscription in subscriber.messageSubscriptions) {
-                            if (!message.name.Equals(messageSubscription))
-                                continue;
-                            AddTask(ref tasks, task);
-                        }
+                        if (!subscriber.messageSubscriptions.TryGetValue(message.name, out _))
+                            continue;
+                        AddTask(ref tasks, task);
                     }
                 }
                 if (tasks == null)

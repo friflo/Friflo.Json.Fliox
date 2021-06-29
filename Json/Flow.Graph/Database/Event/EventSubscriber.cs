@@ -16,12 +16,16 @@ namespace Friflo.Json.Flow.Database.Event
         Event
     }
     
+    internal class MessageSubscription {
+        internal int    subCount = 1;
+    }
+    
     public class EventSubscriber {
         internal readonly   string                                  clientId;
         private             IEventTarget                            eventTarget;
         /// key: <see cref="SubscribeChanges.container"/>
         internal readonly   Dictionary<string, SubscribeChanges>    changeSubscriptions = new Dictionary<string, SubscribeChanges>();
-        internal readonly   HashSet<string>                         messageSubscriptions   = new HashSet<string>();
+        internal readonly   Dictionary<string, MessageSubscription> messageSubscriptions= new Dictionary<string, MessageSubscription>();
         
         internal            int                                     SubscriptionCount => changeSubscriptions.Count + messageSubscriptions.Count; 
         

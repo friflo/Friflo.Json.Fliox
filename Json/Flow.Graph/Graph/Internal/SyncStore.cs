@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal readonly   Dictionary<string, SendMessageTask> messageTasks        = new Dictionary<string, SendMessageTask>();
         
         internal readonly   List<SubscribeMessageTask>          subscribeMessage    = new List<SubscribeMessageTask>();
-        internal            int                                 subscribeMessageIndex;
+        private             int                                 subscribeMessageIndex;
 
         
         internal LogTask CreateLog() {

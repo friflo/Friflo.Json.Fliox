@@ -134,6 +134,7 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
+        // --- SubscribeAllChanges
         /// <summary>
         /// Subscribe to database changes of all <see cref="EntityContainer"/>'s with the given <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntityStore"/>.
@@ -152,6 +153,7 @@ namespace Friflo.Json.Flow.Graph
             return tasks;
         }
         
+        // --- SubscribeMessage
         public SubscribeMessageTask SubscribeMessage<TMessage>(string name, Handler<TMessage> handler) {
             AssertSubscriptionHandler();
             var messageHandler = handler != null ? new MessageHandler<TMessage>(name, handler) : null;
@@ -186,6 +188,7 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
+        // --- SendMessage
         public SendMessageTask SendMessage(string name) {
             var task = new SendMessageTask(name, null);
             _intern.sync.messageTasks.Add(name, task);
