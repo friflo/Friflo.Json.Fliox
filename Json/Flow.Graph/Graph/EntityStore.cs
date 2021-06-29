@@ -165,7 +165,7 @@ namespace Friflo.Json.Flow.Graph
         
         // --- SendMessage
         public SendMessageTask SendMessage(string name) {
-            var task = new SendMessageTask(name, null);
+            var task = new SendMessageTask(name, null, _intern.jsonMapper.reader);
             _intern.sync.messageTasks.Add(name, task);
             AddTask(task);
             return task;
@@ -173,7 +173,7 @@ namespace Friflo.Json.Flow.Graph
         
         public SendMessageTask SendMessage<TValue>(string name, TValue value) {
             var json           = _intern.jsonMapper.Write(value);
-            var task            = new SendMessageTask(name, json);
+            var task            = new SendMessageTask(name, json, _intern.jsonMapper.reader);
             _intern.sync.messageTasks.Add(name, task);
             AddTask(task);
             return task;

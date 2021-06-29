@@ -31,7 +31,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             
             await store.Sync(); // -------- Sync --------
             
-            AreEqual("\"Hello back\"", helloTask.Result);
+            AreEqual("\"Hello back\"",  helloTask.Result);
+            AreEqual("Hello back",      helloTask.GetResult<string>());
 
             // --- Sync error
             {
