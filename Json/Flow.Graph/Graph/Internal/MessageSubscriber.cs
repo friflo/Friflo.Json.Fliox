@@ -26,7 +26,8 @@ namespace Friflo.Json.Flow.Graph.Internal
                     callbackHandler.InvokeCallback(reader, messageValue);
                 }
                 catch (Exception e) {
-                    var msg = $"MessageHandler failed. name: {callbackHandler.name}, exception: {e}";
+                    var type = callbackHandler.GetType().Name;
+                    var msg = $"{type} failed. name: {callbackHandler.name}, exception: {e}";
                     Console.WriteLine(msg);
                     Debug.Fail(msg);
                 }
