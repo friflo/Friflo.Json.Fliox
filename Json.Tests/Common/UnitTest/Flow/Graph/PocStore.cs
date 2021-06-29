@@ -292,8 +292,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var testMessage = new TestMessage{ text = "test message" };
             var sendMessage1 = store.SendMessage(testMessage);
             int testMessageInt = 42;
-            var sendMessage2 = store.SendMessage(TestMessageInt,    testMessageInt);
-            var sendMessage3 = store.SendMessage(TestRemoveHandler, 1337);
+            var sendMessage2 = store.SendMessage(TestMessageInt,        testMessageInt);
+            var sendMessage3 = store.SendMessage(TestRemoveHandler,     1337);
+            var sendMessage4 = store.SendMessage(TestRemoveAllHandler,  1337);
             store.SendMessage(EndCreate);  // indicates store changes are finished
             
             await store.Sync(); // -------- Sync --------
@@ -301,11 +302,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             IsTrue(sendMessage1.Success);
             IsTrue(sendMessage2.Success);
             IsTrue(sendMessage3.Success);
+            IsTrue(sendMessage4.Success);
         }
 
-        internal const string EndCreate         = "EndCreate";
-        internal const string TestMessageInt    = "TestMessageInt";
-        internal const string TestRemoveHandler = "TestRemoveHandler";
+        internal const string EndCreate             = "EndCreate";
+        internal const string TestMessageInt        = "TestMessageInt";
+        internal const string TestRemoveHandler     = "TestRemoveHandler";
+        internal const string TestRemoveAllHandler  = "TestRemoveAllHandler";
 
         static void AssertLog(LogTask logTask, int patches, int creates) {
             var patchCount  = logTask.GetPatchCount();

@@ -85,7 +85,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             });
             
             var subscribeMessage4   = store.SubscribeMessage  (TestRelationPoC.TestRemoveHandler, RemovedHandler);
-            var unsubscribe         = store.UnsubscribeMessage(TestRelationPoC.TestRemoveHandler, RemovedHandler);
+            var unsubscribe1        = store.UnsubscribeMessage(TestRelationPoC.TestRemoveHandler, RemovedHandler);
+
+            var subscribeMessage5   = store.SubscribeMessage  (TestRelationPoC.TestRemoveAllHandler, RemovedHandler);
+            var unsubscribe2        = store.UnsubscribeMessage(TestRelationPoC.TestRemoveAllHandler, null);
 
             await store.Sync(); // -------- Sync --------
 
@@ -97,7 +100,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             IsTrue(subscribeMessage2.Success);
             IsTrue(subscribeMessage3.Success);
             IsTrue(subscribeMessage4.Success);
-            IsTrue(unsubscribe.      Success);
+            IsTrue(subscribeMessage5.Success);
+            IsTrue(unsubscribe1.     Success);
+            IsTrue(unsubscribe2.     Success);
             return subscriber;
         }
         

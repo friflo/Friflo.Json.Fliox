@@ -99,13 +99,10 @@ namespace Friflo.Json.Flow.Graph.Internal
                 task.state.Synced = true;
                 return task;
             }
-            MessageHandler found = null;
-            foreach (var messageHandler in subscriber.messageHandlers) {
-                if (messageHandler.HasHandler(handler))
-                    found = messageHandler;
-            }
-            if (found != null) {
-                subscriber.messageHandlers.Remove(found);
+            if (handler != null) {
+                subscriber.messageHandlers.RemoveAll((h) => h.HasHandler(handler));
+            } else {
+                subscriber.messageHandlers.Clear();
             }
             if (subscriber.messageHandlers.Count == 0) {
                 subscriptions.Remove(name);
