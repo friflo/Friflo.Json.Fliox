@@ -72,16 +72,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual("test message",    value.text);
                 AreEqual("TestMessage",     msg.Name);
             });
-            var subscribeMessage2   = store.SubscribeMessage<int>("testMessageInt", (msg) => {
+            var subscribeMessage2   = store.SubscribeMessage<int>(TestRelationPoC.TestMessageInt, (msg) => {
                 subscriber.handlerCalls++;
-                AreEqual(42,                msg.Value);
-                AreEqual("42",              msg.Json);
-                AreEqual("testMessageInt",  msg.Name);
+                AreEqual(42,                            msg.Value);
+                AreEqual("42",                          msg.Json);
+                AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
             });
-            var subscribeMessage3   = store.SubscribeMessage("testMessageInt", (msg) => {
+            var subscribeMessage3   = store.SubscribeMessage(TestRelationPoC.TestMessageInt, (msg) => {
                 subscriber.handlerCalls++;
-                AreEqual("42",              msg.Json);
-                AreEqual("testMessageInt",  msg.Name);
+                AreEqual("42",                          msg.Json);
+                AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
             });
 
             await store.Sync(); // -------- Sync --------

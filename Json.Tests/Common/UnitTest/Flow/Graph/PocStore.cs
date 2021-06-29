@@ -292,7 +292,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var testMessage = new TestMessage{ text = "test message" };
             var sendMessage1 = store.SendMessage(testMessage);
             int testMessageInt = 42;
-            var sendMessage2 = store.SendMessage("testMessageInt", testMessageInt);
+            var sendMessage2 = store.SendMessage(TestMessageInt, testMessageInt);
             store.SendMessage(EndCreate);  // indicates store changes are finished
             
             await store.Sync(); // -------- Sync --------
@@ -302,6 +302,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         internal const string EndCreate = "EndCreate";
+        internal const string TestMessageInt = "TestMessageInt";
 
         static void AssertLog(LogTask logTask, int patches, int creates) {
             var patchCount  = logTask.GetPatchCount();
