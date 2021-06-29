@@ -96,7 +96,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 return;
             }
             foreach (var messageHandler in subscriber.messageHandlers) {
-                if (messageHandler.HasAction(handler))
+                if (messageHandler.HasHandler(handler))
                     subscriber.messageHandlers.Remove(messageHandler);
             }
             if (subscriber.messageHandlers.Count == 0) {

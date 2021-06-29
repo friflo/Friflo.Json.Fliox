@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Graph.Internal
     internal abstract class MessageHandler {
         private  readonly   object  handlerObject;
         
-        internal            bool    HasAction (object action) => action == handlerObject;
+        internal            bool    HasHandler (object handler) => handler == handlerObject;
         internal abstract   Type    MessageType { get; } 
         
         internal abstract void InvokeMessageHandler(ObjectReader reader, JsonValue messageValue);
