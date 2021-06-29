@@ -14,41 +14,6 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public interface IMessage {
-        string              name    { get; }
-        string              json    { get; }
-        ObjectReader        reader  { get; }
-    } 
-    
-    public readonly struct Message<TMessage> : IMessage {
-        public string       name    { get; }
-        public string       json    { get; }
-        public ObjectReader reader  { get; }
-       
-        public TMessage     Value => reader.Read<TMessage>(json);
-
-        public Message(string name, string json, ObjectReader reader) {
-            this.name       = name;
-            this.json       = json;
-            this.reader     = reader;
-        }
-    }
-    
-    public readonly struct Message  : IMessage {
-        public string       name    { get; }
-        public string       json    { get; }
-        public ObjectReader reader  { get; }
-        
-        public Message(string name, string json, ObjectReader reader) {
-            this.name       = name;
-            this.json       = json;
-            this.reader     = reader;
-        }
-    }
-
-    public delegate void Handler<TMessage>(Message<TMessage> msg);
-    public delegate void Handler          (Message msg);
-
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
