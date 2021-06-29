@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
@@ -65,6 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             
             var subscriptions       = store.SubscribeAllChanges(Changes.All);
             var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg) => {
+                subscriber.receivedAll = true;
             });
             var subscribeMessage1   = store.SubscribeMessage<TestMessage>((msg) => {
                 subscriber.handlerCalls++;
@@ -133,9 +133,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             producerSum.AddChanges(producerChanges);
             employeeSum.AddChanges(employeeChanges);
             messageCount += messages.Count;
-            
-            if (messages.Any((msg) => msg.name == TestRelationPoC.EndCreate))
-                receivedAll = true;
             
             switch (eventAssertion) {
                 case EventAssertion.NoChanges:
