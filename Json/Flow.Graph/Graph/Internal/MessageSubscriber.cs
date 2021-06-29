@@ -11,7 +11,14 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal class MessageSubscriber
     {
-        internal readonly List<MessageHandler> messageHandlers = new List<MessageHandler>();
+        private  readonly   string                  name;
+        internal readonly   List<MessageHandler>    messageHandlers = new List<MessageHandler>();
+
+        public   override   string                  ToString() => name;
+
+        internal MessageSubscriber (string name) {
+            this.name = name;
+        }
         
         internal void InvokeMessageHandlers(ObjectReader reader, JsonValue messageValue) {
             foreach (var messageHandler in messageHandlers) {

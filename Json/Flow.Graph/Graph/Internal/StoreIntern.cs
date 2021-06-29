@@ -82,7 +82,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal void AddMessageHandler(string name, MessageHandler handler) {
             if (!subscriptions.TryGetValue(name, out var subscriber)) {
-                subscriber = new MessageSubscriber();
+                subscriber = new MessageSubscriber(name);
                 subscriptions.Add(name, subscriber);
             }
             subscriber.messageHandlers.Add(handler);
