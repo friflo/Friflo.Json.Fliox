@@ -179,11 +179,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         }
         
         private static Task MessageLoop (EntityStore store, string name, int requestCount) {
+            var result = $"\"{name}\"";
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
                     var message = store.SendMessage(name);
                     await store.Sync();
-                    AreEqual (name, message.Result);
+                    AreEqual (result, message.Result);
                 }
             });
         }

@@ -54,7 +54,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 return;
             }
             var messageResult = (SendMessageResult)result;
-            messageTask.result = messageResult.name;
+            messageTask.result = messageResult.result.json;
             messageTask.state.Synced = true;
         }
         
