@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Sync
     public class SubscribeMessage : DatabaseTask
     {
         /// <summary>
-        ///   Filter all <see cref="Message.name"/>'s starting with one of the given <see cref="name"/> strings.
+        ///   Filter all <see cref="SendMessage.name"/>'s starting with one of the given <see cref="name"/> strings.
         ///   <para><see cref="name"/> = {""} => subscribe all message events.</para>
         ///   <para><see cref="name"/> = {} => unsubscribe message events.</para>
         /// </summary>

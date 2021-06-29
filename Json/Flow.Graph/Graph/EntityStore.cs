@@ -26,7 +26,7 @@ namespace Friflo.Json.Flow.Graph
         }
     }
     
-    public delegate void Handler<TMessage>(MessageEvent<TMessage> ev);
+    public delegate void Handler<TMessage>(MessageEvent<TMessage> msg);
 
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
@@ -168,22 +168,22 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public MessageTask SendMessage(string name) {
-            var task = new MessageTask(name, null);
+        public SendMessageTask SendMessage(string name) {
+            var task = new SendMessageTask(name, null);
             _intern.sync.messageTasks.Add(name, task);
             AddTask(task);
             return task;
         }
         
-        public MessageTask SendMessage<TMessage>(string name, TMessage message) {
+        public SendMessageTask SendMessage<TMessage>(string name, TMessage message) {
             var value           = _intern.jsonMapper.Write(message);
-            var task            = new MessageTask(name, value);
+            var task            = new SendMessageTask(name, value);
             _intern.sync.messageTasks.Add(name, task);
             AddTask(task);
             return task;
         }
         
-        public MessageTask SendMessage<TMessage>(TMessage message) {
+        public SendMessageTask SendMessage<TMessage>(TMessage message) {
             var name = typeof(TMessage).Name;
             return SendMessage(name, message);
         }
@@ -382,7 +382,7 @@ namespace Friflo.Json.Flow.Graph
                             set.Sync.DeleteEntitiesResult(delete, result);
                             break;
                         case TaskType.message:
-                            var message = (Message) task;
+                            var message = (SendMessage) task;
                             _intern.sync.MessageResult(message, result);
                             break;
                         case TaskType.subscribeChanges:

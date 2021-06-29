@@ -146,7 +146,7 @@ namespace Friflo.Json.Flow.Database.Event
                         AddTask(ref tasks, taskResult);
                     }
                     if (task.TaskType == TaskType.message) {
-                        var message = (Message) task;
+                        var message = (SendMessage) task;
                         foreach (var messageSubscription in subscriber.messageSubscriptions) {
                             if (!message.name.Equals(messageSubscription))
                                 continue;

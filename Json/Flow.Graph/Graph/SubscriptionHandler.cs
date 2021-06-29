@@ -134,7 +134,7 @@ namespace Friflo.Json.Flow.Graph
                         break;
                     
                     case TaskType.message:
-                        var message = (Message)task;
+                        var message = (SendMessage)task;
                         if (!store._intern.subscriptions.TryGetValue(message.name, out MessageSubscriber subscriber))
                             return;
                         // Require its own reader as store._intern.jsonMapper.reader cannot be used.
@@ -163,7 +163,7 @@ namespace Friflo.Json.Flow.Graph
                 switch (task.TaskType) {
                     
                     case TaskType.message:
-                        var message = (Message)task;
+                        var message = (SendMessage)task;
                         messages.Add(message.name);
                         break;
                 }

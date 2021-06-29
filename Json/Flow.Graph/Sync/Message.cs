@@ -7,7 +7,7 @@ using Friflo.Json.Flow.Mapper.Map.Val;
 namespace Friflo.Json.Flow.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class Message : DatabaseTask
+    public class SendMessage : DatabaseTask
     {
         public              string          name;
         public              JsonValue       value;
@@ -16,13 +16,13 @@ namespace Friflo.Json.Flow.Sync
         public   override   string          ToString()  => name;
 
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
-            TaskResult result = new MessageResult{ name = name };
+            TaskResult result = new SendMessageResult{ name = name };
             return Task.FromResult(result); 
         }
     }
     
     // ----------------------------------- task result -----------------------------------
-    public class MessageResult : TaskResult, ICommandResult
+    public class SendMessageResult : TaskResult, ICommandResult
     {
         // todo should be removed
         public              string          name;

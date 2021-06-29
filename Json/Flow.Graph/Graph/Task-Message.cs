@@ -6,7 +6,7 @@ using Friflo.Json.Flow.Mapper.Map.Val;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public class MessageTask : SyncTask
+    public class SendMessageTask : SyncTask
     {
         internal readonly   string      name;
         internal readonly   JsonValue   value;
@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Graph
         
         public              string      Result      => IsOk("MessageTask.Result", out Exception e) ? result : throw e;
         
-        internal MessageTask(string name, string value) {
+        internal SendMessageTask(string name, string value) {
             this.name = name;
             this.value = new JsonValue {json = value };
         }

@@ -8,12 +8,12 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal class SyncStore
     {
-        internal readonly   List<SyncTask>                  appTasks            = new List<SyncTask>();
-        private  readonly   List<LogTask>                   logTasks            = new List<LogTask>();
-        internal readonly   Dictionary<string, MessageTask> messageTasks        = new Dictionary<string, MessageTask>();
+        internal readonly   List<SyncTask>                      appTasks            = new List<SyncTask>();
+        private  readonly   List<LogTask>                       logTasks            = new List<LogTask>();
+        internal readonly   Dictionary<string, SendMessageTask> messageTasks        = new Dictionary<string, SendMessageTask>();
         
-        internal readonly   List<SubscribeMessageTask>      subscribeMessage    = new List<SubscribeMessageTask>();
-        internal            int                             subscribeMessageIndex;
+        internal readonly   List<SubscribeMessageTask>          subscribeMessage    = new List<SubscribeMessageTask>();
+        internal            int                                 subscribeMessageIndex;
 
         
         internal LogTask CreateLog() {
@@ -38,8 +38,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         // --- Message
         private void Message(List<DatabaseTask> tasks) {
             foreach (var entry in messageTasks) {
-                MessageTask messageTask = entry.Value;
-                var req = new Message {
+                SendMessageTask messageTask = entry.Value;
+                var req = new SendMessage {
                     name  = messageTask.name,
                     value = messageTask.value
                 };
@@ -47,13 +47,13 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
-        internal void MessageResult (Message task, TaskResult result) {
-            MessageTask messageTask = messageTasks[task.name];
+        internal void MessageResult (SendMessage task, TaskResult result) {
+            SendMessageTask messageTask = messageTasks[task.name];
             if (result is TaskErrorResult taskError) {
                 messageTask.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
-            var messageResult = (MessageResult)result;
+            var messageResult = (SendMessageResult)result;
             messageTask.result = messageResult.name;
             messageTask.state.Synced = true;
         }

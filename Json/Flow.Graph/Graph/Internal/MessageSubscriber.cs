@@ -48,8 +48,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal override void InvokeMessageHandler(ObjectReader reader, JsonValue messageValue) {
-            var ev = new MessageEvent<TMessage>(messageValue.json, reader);
-            handler(ev);
+            var msg = new MessageEvent<TMessage>(messageValue.json, reader);
+            handler(msg);
         }
     }
 }
