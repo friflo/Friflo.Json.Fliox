@@ -47,6 +47,15 @@ namespace Friflo.Json.Flow.Sync
         internal TaskErrorResult InvalidTask(string error) {
             return InvalidTaskError(error);
         }
+        
+        public TaskErrorResult PermissionDenied(string message) {
+            message = message ?? "permission denied";
+            var taskResult = new TaskErrorResult{
+                type        = TaskErrorResultType.PermissionDenied,
+                message     = $"{message} - tasks[{index}]"
+            };
+            return taskResult;
+        }
 
         internal bool ValidReferences(List<References> references, out TaskErrorResult error) {
             if (references == null) {

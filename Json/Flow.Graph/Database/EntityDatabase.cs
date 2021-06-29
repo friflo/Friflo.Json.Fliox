@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Database
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         public              EventBroker                         eventBroker;
-        public              PermissionChecker                   permissionChecker;
+        public              TaskHandler                         taskHandler;
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 
@@ -91,15 +91,12 @@ namespace Friflo.Json.Flow.Database
                 task.index = index;
                     
                 try {
-                    if (permissionChecker != null) {
-                        var permission = await permissionChecker.GrantTaskPermission(task, messageContext);
-                        if (!permission.granted) {
-                            var taskResult = PermissionChecker.PermissionDenied(permission);
-                            tasks.Add(taskResult);
-                            continue;
-                        }
+                    TaskResult result;
+                    if (taskHandler != null) {
+                        result = await taskHandler.ExecuteTask(task, this, response, messageContext).ConfigureAwait(false);
+                    } else {
+                        result = await task.Execute(this, response, messageContext).ConfigureAwait(false);
                     }
-                    var result = await task.Execute(this, response, messageContext).ConfigureAwait(false);
                     tasks.Add(result);
                 }
                 catch (Exception e) {
@@ -126,6 +123,14 @@ namespace Friflo.Json.Flow.Database
                 }
             }
             return response;
+        }
+    }
+    
+    public class TaskHandler
+    {
+        public virtual Task<TaskResult> ExecuteTask (DatabaseTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+            Task<TaskResult> result = task.Execute(database, response, messageContext);
+            return result;
         }
     }
 }
