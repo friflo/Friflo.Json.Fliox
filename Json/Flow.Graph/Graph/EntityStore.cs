@@ -129,9 +129,9 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- SubscribeMessage
-        public SubscribeMessageTask SubscribeMessage<TMessage> (string name, Handler<TMessage> handler) {
+        public SubscribeMessageTask SubscribeMessage<TValue> (string name, Handler<TValue> handler) {
             AssertSubscriptionHandler();
-            var messageHandler = new MessageHandler<TMessage>(name, handler);
+            var messageHandler = new MessageHandler<TValue>(name, handler);
             _intern.AddMessageHandler(name, messageHandler);
             var task            = new SubscribeMessageTask(name);
             _intern.sync.subscribeMessage.Add(task);
@@ -139,12 +139,12 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public SubscribeMessageTask SubscribeMessage<TMessage> (Handler<TMessage> handler) {
-            var name = typeof(TMessage).Name;
+        public SubscribeMessageTask SubscribeMessage<TValue> (Handler<TValue> handler) {
+            var name = typeof(TValue).Name;
             return SubscribeMessage(name, handler);
         }
         
-        public SubscribeMessageTask SubscribeMessage           (string name, Handler handler) {
+        public SubscribeMessageTask SubscribeMessage          (string name, Handler handler) {
             AssertSubscriptionHandler();
             var messageHandler = new GenericHandler(name, handler);
             _intern.AddMessageHandler(name, messageHandler);
@@ -155,7 +155,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- UnsubscribeMessage
-        public SubscribeMessageTask UnsubscribeMessage<TMessage>(string name, Handler<TMessage> handler) {
+        public SubscribeMessageTask UnsubscribeMessage<TValue>(string name, Handler<TValue> handler) {
             AssertSubscriptionHandler();
             _intern.RemoveMessageHandler(name, handler);
             var task            = new SubscribeMessageTask(name);
@@ -172,17 +172,17 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public SendMessageTask SendMessage<TMessage>(string name, TMessage message) {
-            var value           = _intern.jsonMapper.Write(message);
-            var task            = new SendMessageTask(name, value);
+        public SendMessageTask SendMessage<TValue>(string name, TValue value) {
+            var json           = _intern.jsonMapper.Write(value);
+            var task            = new SendMessageTask(name, json);
             _intern.sync.messageTasks.Add(name, task);
             AddTask(task);
             return task;
         }
         
-        public SendMessageTask SendMessage<TMessage>(TMessage message) {
-            var name = typeof(TMessage).Name;
-            return SendMessage(name, message);
+        public SendMessageTask SendMessage<TValue>(TValue value) {
+            var name = typeof(TValue).Name;
+            return SendMessage(name, value);
         }
         
         /// <summary>

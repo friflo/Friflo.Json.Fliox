@@ -55,16 +55,16 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
     }
     
-    internal class MessageHandler<TMessage> : MessageHandler
+    internal class MessageHandler<TValue> : MessageHandler
     {
-        private  readonly   Handler<TMessage>   handler;
+        private  readonly   Handler<TValue>   handler;
         
-        internal MessageHandler (string name, Handler<TMessage> handler) : base(name, handler) {
+        internal MessageHandler (string name, Handler<TValue> handler) : base(name, handler) {
             this.handler = handler;
         }
         
         internal override void InvokeMessageHandler(ObjectReader reader, JsonValue messageValue) {
-            var msg = new Message<TMessage>(name, messageValue.json, reader);
+            var msg = new Message<TValue>(name, messageValue.json, reader);
             handler(msg);
         }
     }

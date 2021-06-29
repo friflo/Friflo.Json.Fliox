@@ -10,12 +10,12 @@ namespace Friflo.Json.Flow.Graph
         ObjectReader        Reader  { get; }
     } 
     
-    public readonly struct Message<TMessage> : IMessage {
+    public readonly struct Message<TValue> : IMessage {
         public string       Name    { get; }
         public string       Json    { get; }
         public ObjectReader Reader  { get; }
        
-        public TMessage     Value => Reader.Read<TMessage>(Json);
+        public TValue     Value => Reader.Read<TValue>(Json);
 
         public Message(string name, string json, ObjectReader reader) {
             this.Name       = name;
@@ -36,6 +36,6 @@ namespace Friflo.Json.Flow.Graph
         }
     }
 
-    public delegate void Handler<TMessage>(Message<TMessage> msg);
-    public delegate void Handler          (Message msg);
+    public delegate void Handler<TValue>(Message<TValue> msg);
+    public delegate void Handler        (Message         msg);
 }

@@ -23,7 +23,7 @@ namespace Friflo.Json.Flow.Graph
         
         internal SendMessageTask(string name, string value) {
             this.name = name;
-            this.value = new JsonValue {json = value };
+            this.value = new JsonValue { json = value };
         }
         
     }
