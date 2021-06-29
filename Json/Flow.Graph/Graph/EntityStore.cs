@@ -14,16 +14,6 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public readonly struct Message {
-        public readonly string          json;
-        public readonly ObjectReader    reader;
-        
-        public Message(string json, ObjectReader reader) {
-            this.json       = json;
-            this.reader     = reader;
-        }
-    }
-    
     public readonly struct Message<TMessage> {
         public readonly string          json;
         public readonly ObjectReader    reader;
@@ -36,8 +26,18 @@ namespace Friflo.Json.Flow.Graph
         }
     }
     
+    public readonly struct Message {
+        public readonly string          json;
+        public readonly ObjectReader    reader;
+        
+        public Message(string json, ObjectReader reader) {
+            this.json       = json;
+            this.reader     = reader;
+        }
+    }
+
     public delegate void Handler<TMessage>(Message<TMessage> msg);
-    public delegate void Handler(Message msg);
+    public delegate void Handler          (Message msg);
 
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
@@ -154,7 +154,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- SubscribeMessage
-        public SubscribeMessageTask SubscribeMessage<TMessage>(string name, Handler<TMessage> handler) {
+        public SubscribeMessageTask SubscribeMessage<TMessage> (string name, Handler<TMessage> handler) {
             AssertSubscriptionHandler();
             var messageHandler = new MessageHandler<TMessage>(name, handler);
             _intern.AddMessageHandler(name, messageHandler);
@@ -164,12 +164,12 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public SubscribeMessageTask SubscribeMessage<TMessage>(Handler<TMessage> handler) {
+        public SubscribeMessageTask SubscribeMessage<TMessage> (Handler<TMessage> handler) {
             var name = typeof(TMessage).Name;
             return SubscribeMessage(name, handler);
         }
         
-        public SubscribeMessageTask SubscribeMessage(string name, Handler handler) {
+        public SubscribeMessageTask SubscribeMessage           (string name, Handler handler) {
             AssertSubscriptionHandler();
             var messageHandler = new GenericHandler(name, handler);
             _intern.AddMessageHandler(name, messageHandler);
@@ -179,6 +179,7 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
+        // --- UnsubscribeMessage
         public SubscribeMessageTask UnsubscribeMessage<TMessage>(string name, Handler<TMessage> handler) {
             AssertSubscriptionHandler();
             _intern.RemoveMessageHandler(name, handler);
