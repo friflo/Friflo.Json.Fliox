@@ -69,16 +69,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             var subscribeMessage1   = store.SubscribeMessage<TestMessage>((msg) => {
                 subscriber.handlerCalls++;
                 TestMessage value = msg.Value;
-                AreEqual("test message", value.text);
+                AreEqual("test message",    value.text);
+                AreEqual("TestMessage",     msg.name);
             });
             var subscribeMessage2   = store.SubscribeMessage<int>("testMessageInt", (msg) => {
                 subscriber.handlerCalls++;
-                AreEqual(42,    msg.Value);
-                AreEqual("42",  msg.json);
+                AreEqual(42,                msg.Value);
+                AreEqual("42",              msg.json);
+                AreEqual("testMessageInt",  msg.name);
             });
             var subscribeMessage3   = store.SubscribeMessage("testMessageInt", (msg) => {
                 subscriber.handlerCalls++;
-                AreEqual("42",  msg.json);
+                AreEqual("42",              msg.json);
+                AreEqual("testMessageInt",  msg.name);
             });
 
             await store.Sync(); // -------- Sync --------

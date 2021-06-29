@@ -14,23 +14,33 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public readonly struct Message<TMessage> {
-        public readonly string          json;
-        public readonly ObjectReader    reader;
-        
-        public          TMessage        Value => reader.Read<TMessage>(json);
+    public interface IMessage {
+        string              name    { get; }
+        string              json    { get; }
+        ObjectReader        reader  { get; }
+    } 
+    
+    public readonly struct Message<TMessage> : IMessage {
+        public string       name    { get; }
+        public string       json    { get; }
+        public ObjectReader reader  { get; }
+       
+        public TMessage     Value => reader.Read<TMessage>(json);
 
-        public Message(string json, ObjectReader reader) {
+        public Message(string name, string json, ObjectReader reader) {
+            this.name       = name;
             this.json       = json;
             this.reader     = reader;
         }
     }
     
-    public readonly struct Message {
-        public readonly string          json;
-        public readonly ObjectReader    reader;
+    public readonly struct Message  : IMessage {
+        public string       name    { get; }
+        public string       json    { get; }
+        public ObjectReader reader  { get; }
         
-        public Message(string json, ObjectReader reader) {
+        public Message(string name, string json, ObjectReader reader) {
+            this.name       = name;
             this.json       = json;
             this.reader     = reader;
         }

@@ -50,7 +50,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal override void InvokeMessageHandler(ObjectReader reader, JsonValue messageValue) {
-            var msg = new Message(messageValue.json, reader);
+            var msg = new Message(name, messageValue.json, reader);
             handler(msg);
         }
     }
@@ -64,7 +64,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal override void InvokeMessageHandler(ObjectReader reader, JsonValue messageValue) {
-            var msg = new Message<TMessage>(messageValue.json, reader);
+            var msg = new Message<TMessage>(name, messageValue.json, reader);
             handler(msg);
         }
     }
