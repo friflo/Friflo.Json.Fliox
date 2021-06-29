@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
@@ -130,7 +131,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             employeeSum.AddChanges(employeeChanges);
             messageCount += messages.Count;
             
-            if (messages.Contains(TestRelationPoC.EndCreate))
+            if (messages.Any((msg) => msg.name == TestRelationPoC.EndCreate))
                 receivedAll = true;
             
             switch (eventAssertion) {
