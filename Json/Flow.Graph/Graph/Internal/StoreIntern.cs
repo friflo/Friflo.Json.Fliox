@@ -85,8 +85,6 @@ namespace Friflo.Json.Flow.Graph.Internal
                 subscriber = new MessageSubscriber();
                 subscriptions.Add(name, subscriber);
             }
-            if (handler == null)
-                return;
             subscriber.messageHandlers.Add(handler);
         }
         
