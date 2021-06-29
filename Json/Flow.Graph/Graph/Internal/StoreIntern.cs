@@ -80,12 +80,17 @@ namespace Friflo.Json.Flow.Graph.Internal
             ownedTypeStore?.Dispose();
         }
         
-        internal void AddMessageHandler(string name, MessageHandler handler) {
+        internal SubscribeMessageTask AddMessageHandler(string name, MessageHandler handler) {
+            var task = new SubscribeMessageTask(name);
             if (!subscriptions.TryGetValue(name, out var subscriber)) {
                 subscriber = new MessageSubscriber(name);
                 subscriptions.Add(name, subscriber);
+                sync.subscribeMessage.Add(task);
+            } else {
+                task.state.Synced = true;
             }
             subscriber.messageHandlers.Add(handler);
+            return task;
         }
         
         internal void RemoveMessageHandler (string name, object handler) {

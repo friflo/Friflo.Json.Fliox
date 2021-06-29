@@ -131,10 +131,8 @@ namespace Friflo.Json.Flow.Graph
         // --- SubscribeMessage
         public SubscribeMessageTask SubscribeMessage<TValue> (string name, Handler<TValue> handler) {
             AssertSubscriptionHandler();
-            var messageHandler = new MessageHandler<TValue>(name, handler);
-            _intern.AddMessageHandler(name, messageHandler);
-            var task            = new SubscribeMessageTask(name);
-            _intern.sync.subscribeMessage.Add(task);
+            var messageHandler  = new MessageHandler<TValue>(name, handler);
+            var task            = _intern.AddMessageHandler(name, messageHandler);
             AddTask(task);
             return task;
         }
@@ -146,10 +144,8 @@ namespace Friflo.Json.Flow.Graph
         
         public SubscribeMessageTask SubscribeMessage          (string name, Handler handler) {
             AssertSubscriptionHandler();
-            var messageHandler = new GenericHandler(name, handler);
-            _intern.AddMessageHandler(name, messageHandler);
-            var task            = new SubscribeMessageTask(name);
-            _intern.sync.subscribeMessage.Add(task);
+            var messageHandler  = new GenericHandler(name, handler);
+            var task            = _intern.AddMessageHandler(name, messageHandler);
             AddTask(task);
             return task;
         }
