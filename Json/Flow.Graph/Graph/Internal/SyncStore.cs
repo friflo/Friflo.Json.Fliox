@@ -61,7 +61,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         // --- SubscribeMessage
         private void SubscribeMessage(List<DatabaseTask> tasks) {
             foreach (var subscribe in subscribeMessage) {
-                var req = new SubscribeMessage{ name = subscribe.name };
+                var req = new SubscribeMessage{ name = subscribe.name, remove = subscribe.remove };
                 tasks.Add(req);
             }
         }

@@ -83,18 +83,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual("42",                          msg.Json);
                 AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
             });
+            
+            var subscribeMessage4   = store.SubscribeMessage<int>  (TestRelationPoC.TestRemoveHandler, RemovedHandler);
+            var unsubscribe         = store.UnsubscribeMessage<int>(TestRelationPoC.TestRemoveHandler, RemovedHandler);
 
             await store.Sync(); // -------- Sync --------
 
             foreach (var subscription in subscriptions) {
                 IsTrue(subscription.Success);    
             }
-            IsTrue(subscribeMessage.Success);
+            IsTrue(subscribeMessage. Success);
             IsTrue(subscribeMessage1.Success);
             IsTrue(subscribeMessage2.Success);
             IsTrue(subscribeMessage3.Success);
+            IsTrue(subscribeMessage4.Success);
+            IsTrue(unsubscribe.      Success);
             return subscriber;
         }
+        
+        private static readonly Handler<int> RemovedHandler =  (Message<int> msg) => {
+            Fail("unexpected call");
+        };
     }
 
     // assert expected database changes by counting the entity changes for each DatabaseContainer / EntitySet<>

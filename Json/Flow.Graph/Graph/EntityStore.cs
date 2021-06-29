@@ -153,9 +153,7 @@ namespace Friflo.Json.Flow.Graph
         // --- UnsubscribeMessage
         public SubscribeMessageTask UnsubscribeMessage<TValue>(string name, Handler<TValue> handler) {
             AssertSubscriptionHandler();
-            _intern.RemoveMessageHandler(name, handler);
-            var task            = new SubscribeMessageTask(name);
-            _intern.sync.subscribeMessage.Add(task);
+            var task = _intern.RemoveMessageHandler(name, handler);
             AddTask(task);
             return task;
         }

@@ -16,6 +16,8 @@ namespace Friflo.Json.Flow.Sync
         ///   <para><see cref="name"/> = {} => unsubscribe message events.</para>
         /// </summary>
         public              string          name;
+        public              bool?           remove;
+        
         internal override   TaskType        TaskType    => TaskType.subscribeMessage;
         public   override   string          ToString()  => name;
 

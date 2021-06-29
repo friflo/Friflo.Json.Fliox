@@ -30,14 +30,16 @@ namespace Friflo.Json.Flow.Graph
     public class SubscribeMessageTask : SyncTask
     {
         internal readonly   string                  name;
+        internal readonly   bool?                   remove;
         internal            TaskState               state;
             
         internal override   TaskState               State           => state;
         public   override   string                  Details         => $"SubscribeMessageTask (name: {name})";
         
 
-        internal SubscribeMessageTask(string name) {
-            this.name = name;
+        internal SubscribeMessageTask(string name, bool? remove) {
+            this.name   = name;
+            this.remove = remove;
         }
     }
 }
