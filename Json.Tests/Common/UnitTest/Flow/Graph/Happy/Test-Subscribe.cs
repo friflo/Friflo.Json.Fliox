@@ -84,8 +84,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
             });
             
-            var subscribeMessage4   = store.SubscribeMessage<int>  (TestRelationPoC.TestRemoveHandler, RemovedHandler);
-            var unsubscribe         = store.UnsubscribeMessage<int>(TestRelationPoC.TestRemoveHandler, RemovedHandler);
+            var subscribeMessage4   = store.SubscribeMessage  (TestRelationPoC.TestRemoveHandler, RemovedHandler);
+            var unsubscribe         = store.UnsubscribeMessage(TestRelationPoC.TestRemoveHandler, RemovedHandler);
 
             await store.Sync(); // -------- Sync --------
 
@@ -101,7 +101,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             return subscriber;
         }
         
-        private static readonly Handler<int> RemovedHandler =  (Message<int> msg) => {
+        private static readonly Handler<int> RemovedHandler = (msg) => {
             Fail("unexpected call");
         };
     }
