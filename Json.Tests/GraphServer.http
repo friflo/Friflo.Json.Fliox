@@ -12,7 +12,7 @@ content-type: application/json
   "tasks": [
   {
     "task": "message",
-    "message": "Hello"		
+    "name": "test"		
   }
 ]}
 
@@ -166,8 +166,9 @@ content-type: application/json
 { "type": "sync",
   "client": "client-1",
   "tasks": [{
-    "task": "subscribeMessages",
-    "prefixes": [""]
+    "task":     "subscribeMessage",
+    "name":     "test",
+    "remove":   false
   }
 ]}
 
