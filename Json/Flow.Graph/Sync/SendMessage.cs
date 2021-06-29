@@ -27,6 +27,10 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task result -----------------------------------
     public class SendMessageResult : TaskResult, ICommandResult
     {
+        /// <summary>
+        /// By default it echos <see cref="SendMessage.value"/>.
+        /// If using a custom <see cref="TaskHandler"/> it can be used to return the request specific result.
+        /// </summary>
         public              JsonValue       result;
         
         public CommandError                 Error { get; set; }
