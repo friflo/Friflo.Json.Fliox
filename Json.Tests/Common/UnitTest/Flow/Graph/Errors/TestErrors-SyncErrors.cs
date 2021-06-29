@@ -29,10 +29,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             var helloTask = store.SendMessage("Hello World", "Hello back");
             AreEqual("MessageTask (name: Hello World)", helloTask.ToString());
             
+            // var helloTask2 = store.SendMessage<string, string>("Hello World 2", "Hello back 2");
+            
             await store.Sync(); // -------- Sync --------
             
             AreEqual("\"Hello back\"",  helloTask.Result);
             AreEqual("Hello back",      helloTask.GetResult<string>());
+            
+            // AreEqual("Hello back 2",    helloTask2.Result2);
+            
 
             // --- Sync error
             {

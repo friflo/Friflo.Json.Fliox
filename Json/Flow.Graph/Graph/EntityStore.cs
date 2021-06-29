@@ -184,6 +184,20 @@ namespace Friflo.Json.Flow.Graph
             return SendMessage(name, value);
         }
         
+        /*
+        public SendMessageTask<TResult> SendMessage<TValue, TResult>(string name, TValue value) {
+            var json           = _intern.jsonMapper.Write(value);
+            var task            = new SendMessageTask<TResult>(name, json, _intern.jsonMapper.reader);
+            _intern.sync.messageTasks.Add(name, task);
+            AddTask(task);
+            return task;
+        }
+        
+        public SendMessageTask<TResult> SendMessage<TValue, TResult>(TValue value) {
+            var name = typeof(TValue).Name;
+            return SendMessage<TValue, TResult>(name, value);
+        } */
+        
         /// <summary>
         /// Set a custom <see cref="SubscriptionHandler"/> to enable reacting on specific database change events.
         /// E.g. notifying other application modules about created, updated, deleted or patches entities.
