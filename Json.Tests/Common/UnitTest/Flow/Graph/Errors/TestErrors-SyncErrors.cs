@@ -26,17 +26,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             testDatabase.syncErrors.Add(echoSyncError,       () => new SyncResponse{error = new ErrorResponse{message = "simulated SyncError"}});
             testDatabase.syncErrors.Add(echoSyncException,   () => throw new SimulationException ("simulated SyncException"));
             
-            var helloTask = store.SendMessage("Hello World", "Hello back");
-            AreEqual("MessageTask (name: Hello World)", helloTask.ToString());
+            var helloTask1 = store.SendMessage("HelloMessage", "Hello World 1");
+            var helloTask2 = store.SendMessage("HelloMessage", "Hello World 2");
+            // var helloTask3 = store.SendMessage<string, string>("HelloMessage", "Hello back 3");
             
-            // var helloTask2 = store.SendMessage<string, string>("Hello World 2", "Hello back 2");
-            
+            AreEqual("MessageTask (name: HelloMessage)", helloTask1.ToString());
+
             await store.Sync(); // -------- Sync --------
             
-            AreEqual("\"Hello back\"",  helloTask.Result);
-            AreEqual("Hello back",      helloTask.GetResult<string>());
+            AreEqual("\"Hello World 1\"",   helloTask1.Result);
+            AreEqual("Hello World 1",       helloTask1.GetResult<string>());
             
-            // AreEqual("Hello back 2",    helloTask2.Result2);
+            AreEqual("Hello World 2",       helloTask2.GetResult<string>());
             
 
             // --- Sync error

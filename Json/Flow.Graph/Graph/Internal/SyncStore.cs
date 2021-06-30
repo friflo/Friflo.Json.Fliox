@@ -8,12 +8,14 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal class SyncStore
     {
-        internal readonly   List<SyncTask>                      appTasks            = new List<SyncTask>();
-        private  readonly   List<LogTask>                       logTasks            = new List<LogTask>();
-        internal readonly   Dictionary<string, SendMessageTask> messageTasks        = new Dictionary<string, SendMessageTask>();
+        internal readonly   List<SyncTask>              appTasks            = new List<SyncTask>();
+        private  readonly   List<LogTask>               logTasks            = new List<LogTask>();
         
-        internal readonly   List<SubscribeMessageTask>          subscribeMessage    = new List<SubscribeMessageTask>();
-        private             int                                 subscribeMessageIndex;
+        internal readonly   List<SendMessageTask>       messageTasks        = new List<SendMessageTask>();
+        private             int                         messageTasksIndex;
+        
+        internal readonly   List<SubscribeMessageTask>  subscribeMessage    = new List<SubscribeMessageTask>();
+        private             int                         subscribeMessageIndex;
 
         
         internal LogTask CreateLog() {
@@ -37,8 +39,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 
         // --- Message
         private void Message(List<DatabaseTask> tasks) {
-            foreach (var entry in messageTasks) {
-                SendMessageTask messageTask = entry.Value;
+            foreach (var messageTask in messageTasks) {
                 var req = new SendMessage {
                     name  = messageTask.name,
                     value = messageTask.value
@@ -48,7 +49,11 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal void MessageResult (SendMessage task, TaskResult result) {
-            SendMessageTask messageTask = messageTasks[task.name];
+            // consider invalid response
+            if (messageTasksIndex >= messageTasks.Count)
+                return;
+            var index = subscribeMessageIndex++;
+            SendMessageTask messageTask = messageTasks[index];
             if (result is TaskErrorResult taskError) {
                 messageTask.state.SetError(new TaskErrorInfo(taskError));
                 return;
