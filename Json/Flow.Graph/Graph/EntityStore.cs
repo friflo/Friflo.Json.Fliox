@@ -67,7 +67,9 @@ namespace Friflo.Json.Flow.Graph
             typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
         }
 
-        // --------------------------------------- public interface --------------------------------------- 
+        // --------------------------------------- public interface ---------------------------------------
+        
+        // --- Sync / TrySync
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest();
             var messageContext = new MessageContext(_intern.contextPools, _intern.eventTarget, _intern.clientId);
@@ -99,6 +101,8 @@ namespace Friflo.Json.Flow.Graph
             messageContext.pools.AssertNoLeaks();
         }
 
+        
+        // --- LogChanges
         public LogTask LogChanges() {
             var task = _intern.sync.CreateLog();
             foreach (var setPair in _intern.setByType) {
@@ -108,6 +112,7 @@ namespace Friflo.Json.Flow.Graph
             AddTask(task);
             return task;
         }
+        
         
         // --- SubscribeAllChanges
         /// <summary>
@@ -127,6 +132,42 @@ namespace Friflo.Json.Flow.Graph
             }
             return tasks;
         }
+        
+        
+        // --- SendMessage
+        public SendMessageTask SendMessage(string name) {
+            var task = new SendMessageTask(name, null, _intern.jsonMapper.reader);
+            _intern.sync.messageTasks.Add(task);
+            AddTask(task);
+            return task;
+        }
+        
+        public SendMessageTask SendMessage<TValue>(string name, TValue value) {
+            var json           = _intern.jsonMapper.Write(value);
+            var task            = new SendMessageTask(name, json, _intern.jsonMapper.reader);
+            _intern.sync.messageTasks.Add(task);
+            AddTask(task);
+            return task;
+        }
+        
+        public SendMessageTask SendMessage<TValue>(TValue value) {
+            var name = typeof(TValue).Name;
+            return SendMessage(name, value);
+        }
+        
+        /* public SendMessageTask<TResult> SendMessage<TValue, TResult>(string name, TValue value) {
+            var json           = _intern.jsonMapper.Write(value);
+            var task            = new SendMessageTask<TResult>(name, json, _intern.jsonMapper.reader);
+            _intern.sync.messageTasks.Add(name, task);
+            AddTask(task);
+            return task;
+        }
+        
+        public SendMessageTask<TResult> SendMessage<TValue, TResult>(TValue value) {
+            var name = typeof(TValue).Name;
+            return SendMessage<TValue, TResult>(name, value);
+        } */
+        
         
         // --- SubscribeMessage
         public SubscribeMessageTask SubscribeMessage<TValue>    (string name, Handler<TValue> handler) {
@@ -162,42 +203,7 @@ namespace Friflo.Json.Flow.Graph
             AddTask(task);
             return task;
         }
-        
-        // --- SendMessage
-        public SendMessageTask SendMessage(string name) {
-            var task = new SendMessageTask(name, null, _intern.jsonMapper.reader);
-            _intern.sync.messageTasks.Add(task);
-            AddTask(task);
-            return task;
-        }
-        
-        public SendMessageTask SendMessage<TValue>(string name, TValue value) {
-            var json           = _intern.jsonMapper.Write(value);
-            var task            = new SendMessageTask(name, json, _intern.jsonMapper.reader);
-            _intern.sync.messageTasks.Add(task);
-            AddTask(task);
-            return task;
-        }
-        
-        public SendMessageTask SendMessage<TValue>(TValue value) {
-            var name = typeof(TValue).Name;
-            return SendMessage(name, value);
-        }
-        
-        /*
-        public SendMessageTask<TResult> SendMessage<TValue, TResult>(string name, TValue value) {
-            var json           = _intern.jsonMapper.Write(value);
-            var task            = new SendMessageTask<TResult>(name, json, _intern.jsonMapper.reader);
-            _intern.sync.messageTasks.Add(name, task);
-            AddTask(task);
-            return task;
-        }
-        
-        public SendMessageTask<TResult> SendMessage<TValue, TResult>(TValue value) {
-            var name = typeof(TValue).Name;
-            return SendMessage<TValue, TResult>(name, value);
-        } */
-        
+
         /// <summary>
         /// Set a custom <see cref="SubscriptionHandler"/> to enable reacting on specific database change events.
         /// E.g. notifying other application modules about created, updated, deleted or patches entities.
@@ -207,6 +213,7 @@ namespace Friflo.Json.Flow.Graph
         public void SetSubscriptionHandler(SubscriptionHandler subscriptionHandler) {
             _intern.subscriptionHandler = subscriptionHandler;
         }
+        
         
         // ------------------------------------------- internals -------------------------------------------
         internal void AssertSubscriptionHandler() {
