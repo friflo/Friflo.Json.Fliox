@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Graph
         
         public   override   string          Details     => $"MessageTask (name: {name})";
 
-        public              string          Result      => IsOk("MessageTask.Result", out Exception e) ? result : throw e;
+        public              string          ResultJson  => IsOk("MessageTask.Result", out Exception e) ? result : throw e;
         
         internal SendMessageTask(string name, string value, ObjectReader reader) {
             this.name   = name;

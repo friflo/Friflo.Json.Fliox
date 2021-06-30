@@ -184,7 +184,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 for (int n= 0; n < requestCount; n++) {
                     var message = store.SendMessage(name, name);
                     await store.Sync();
-                    AreEqual (result, message.Result);
+                    AreEqual (result, message.ResultJson);
                 }
             });
         }
