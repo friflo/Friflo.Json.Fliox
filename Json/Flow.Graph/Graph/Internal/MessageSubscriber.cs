@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             this.name = name;
         }
         
-        internal void InvokeMessageHandlers(ObjectReader reader, JsonValue messageValue) {
+        internal void InvokeCallbacks(ObjectReader reader, JsonValue messageValue) {
             foreach (var callbackHandler in callbackHandlers) {
                 try {
                     callbackHandler.InvokeCallback(reader, messageValue);

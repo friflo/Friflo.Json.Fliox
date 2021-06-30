@@ -141,7 +141,7 @@ namespace Friflo.Json.Flow.Graph
                         // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
                         // and ProcessEvent() can be called concurrently from the "main" thread.
                         var reader = store._intern.messageReader;
-                        subscriber.InvokeMessageHandlers(reader, message.value);    
+                        subscriber.InvokeCallbacks(reader, message.value);    
                         break;
                 }
             }
