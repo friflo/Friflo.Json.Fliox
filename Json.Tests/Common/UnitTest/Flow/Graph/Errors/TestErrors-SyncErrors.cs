@@ -28,6 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             
             var helloTask1 = store.SendMessage("HelloMessage", "Hello World 1");
             var helloTask2 = store.SendMessage("HelloMessage", "Hello World 2");
+            var helloTask3 = store.SendMessage("HelloMessage");
             // var helloTask3 = store.SendMessage<string, string>("HelloMessage", "Hello back 3");
             
             AreEqual("MessageTask (name: HelloMessage)", helloTask1.ToString());

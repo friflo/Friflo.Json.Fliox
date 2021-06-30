@@ -52,7 +52,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             // consider invalid response
             if (messageTasksIndex >= messageTasks.Count)
                 return;
-            var index = subscribeMessageIndex++;
+            var index = messageTasksIndex++;
             SendMessageTask messageTask = messageTasks[index];
             if (result is TaskErrorResult taskError) {
                 messageTask.state.SetError(new TaskErrorInfo(taskError));
