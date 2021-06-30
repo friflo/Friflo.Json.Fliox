@@ -80,7 +80,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             ownedTypeStore?.Dispose();
         }
         
-        internal SubscribeMessageTask AddCallbackHandler(string name, CallbackHandler handler) {
+        internal SubscribeMessageTask AddCallbackHandler(string name, MessageCallback handler) {
             var task = new SubscribeMessageTask(name, null);
             if (!subscriptions.TryGetValue(name, out var subscriber)) {
                 subscriber = new MessageSubscriber(name);

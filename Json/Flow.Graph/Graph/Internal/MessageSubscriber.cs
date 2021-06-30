@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Graph.Internal
     internal class MessageSubscriber
     {
         private  readonly   string                  name;
-        internal readonly   List<CallbackHandler>   callbackHandlers = new List<CallbackHandler>();
+        internal readonly   List<MessageCallback>   callbackHandlers = new List<MessageCallback>();
 
         public   override   string                  ToString() => name;
 
@@ -35,7 +35,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
     }
     
-    internal abstract class CallbackHandler {
+    internal abstract class MessageCallback {
         internal readonly   string  name;
         private  readonly   object  handlerObject;
         
@@ -44,17 +44,17 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         internal abstract void InvokeCallback(ObjectReader reader, JsonValue messageValue);
         
-        internal CallbackHandler (string name, object handler) {
+        internal MessageCallback (string name, object handler) {
             this.name       = name;
             handlerObject   = handler;
         } 
     }
     
-    internal class NonGenericCallback : CallbackHandler
+    internal class NonGenericMessageCallback : MessageCallback
     {
         private  readonly   Handler   handler;
         
-        internal NonGenericCallback (string name, Handler handler) : base(name, handler) {
+        internal NonGenericMessageCallback (string name, Handler handler) : base(name, handler) {
             this.handler = handler;
         }
         
@@ -64,11 +64,11 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
     }
     
-    internal class GenericCallback<TValue> : CallbackHandler
+    internal class GenericMessageCallback<TValue> : MessageCallback
     {
         private  readonly   Handler<TValue>   handler;
         
-        internal GenericCallback (string name, Handler<TValue> handler) : base(name, handler) {
+        internal GenericMessageCallback (string name, Handler<TValue> handler) : base(name, handler) {
             this.handler = handler;
         }
         
