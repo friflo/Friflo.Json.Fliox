@@ -133,6 +133,16 @@ namespace Friflo.Json.Flow.Graph
             return tasks;
         }
         
+        /// <summary>
+        /// Set a custom <see cref="SubscriptionHandler"/> to enable reacting on specific database change events.
+        /// E.g. notifying other application modules about created, updated, deleted or patches entities.
+        /// To subscribe to database change events <see cref="Graph.EntitySet{T}.SubscribeChanges"/> need to be called before.
+        /// The default <see cref="SubscriptionHandler"/> apply all changes to the <see cref="EntityStore"/> as they arrive. 
+        /// </summary>
+        public void SetSubscriptionHandler(SubscriptionHandler subscriptionHandler) {
+            _intern.subscriptionHandler = subscriptionHandler;
+        }
+        
         
         // --- SendMessage
         public SendMessageTask SendMessage(string name) {
@@ -204,16 +214,6 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
 
-        /// <summary>
-        /// Set a custom <see cref="SubscriptionHandler"/> to enable reacting on specific database change events.
-        /// E.g. notifying other application modules about created, updated, deleted or patches entities.
-        /// To subscribe to database change events <see cref="Graph.EntitySet{T}.SubscribeChanges"/> need to be called before.
-        /// The default <see cref="SubscriptionHandler"/> apply all changes to the <see cref="EntityStore"/> as they arrive. 
-        /// </summary>
-        public void SetSubscriptionHandler(SubscriptionHandler subscriptionHandler) {
-            _intern.subscriptionHandler = subscriptionHandler;
-        }
-        
         
         // ------------------------------------------- internals -------------------------------------------
         internal void AssertSubscriptionHandler() {
