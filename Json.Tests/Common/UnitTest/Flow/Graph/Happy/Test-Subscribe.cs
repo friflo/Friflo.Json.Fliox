@@ -147,6 +147,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             producerSum.AddChanges(producerChanges);
             employeeSum.AddChanges(employeeChanges);
             messageCount += messages.Count;
+
+            foreach (var message in messages) {
+                switch (message.Name) {
+                    case nameof(TestRelationPoC.TestMessageInt):
+                        var intVal = message.Reader.Read<int>(message.Json);
+                        AreEqual(42, intVal);
+                        break;
+                    case nameof(TestMessage):
+                        var testVal = message.Reader.Read<TestMessage>(message.Json);
+                        AreEqual("test message", testVal.text);
+                        break;
+                }
+            }
             
             switch (eventAssertion) {
                 case EventAssertion.NoChanges:
