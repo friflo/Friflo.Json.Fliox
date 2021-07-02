@@ -367,48 +367,48 @@ namespace Friflo.Json.Flow.Graph
 
                     switch (taskType) {
                         case TaskType.create:
-                            var create = (CreateEntities) task;
+                            var create =            (CreateEntities) task;
                             EntitySet set = _intern.setByName[create.container];
                             set.Sync.CreateEntitiesResult(create, result);
                             break;
                         case TaskType.update:
-                            var update = (UpdateEntities) task;
+                            var update =            (UpdateEntities) task;
                             set = _intern.setByName[update.container];
                             set.Sync.UpdateEntitiesResult(update, result);
                             break;
                         case TaskType.read:
-                            var readList = (ReadEntitiesList) task;
+                            var readList =          (ReadEntitiesList) task;
                             set = _intern.setByName[readList.container];
                             containerResults.TryGetValue(readList.container, out ContainerEntities entities);
                             set.Sync.ReadEntitiesListResult(readList, result, entities);
                             break;
                         case TaskType.query:
-                            var query = (QueryEntities) task;
+                            var query =             (QueryEntities) task;
                             set = _intern.setByName[query.container];
                             containerResults.TryGetValue(query.container, out ContainerEntities queryEntities);
                             set.Sync.QueryEntitiesResult(query, result, queryEntities);
                             break;
                         case TaskType.patch:
-                            var patch = (PatchEntities) task;
+                            var patch =             (PatchEntities) task;
                             set = _intern.setByName[patch.container];
                             set.Sync.PatchEntitiesResult(patch, result);
                             break;
                         case TaskType.delete:
-                            var delete = (DeleteEntities) task;
+                            var delete =            (DeleteEntities) task;
                             set = _intern.setByName[delete.container];
                             set.Sync.DeleteEntitiesResult(delete, result);
                             break;
                         case TaskType.message:
-                            var message = (SendMessage) task;
+                            var message =           (SendMessage) task;
                             _intern.sync.MessageResult(message, result);
                             break;
                         case TaskType.subscribeChanges:
-                            var subscribe = (SubscribeChanges) task;
-                            set = _intern.setByName[subscribe.container];
-                            set.Sync.SubscribeChangesResult(subscribe, result);
+                            var subscribeChanges =  (SubscribeChanges) task;
+                            set = _intern.setByName[subscribeChanges.container];
+                            set.Sync.SubscribeChangesResult(subscribeChanges, result);
                             break;
                         case TaskType.subscribeMessage:
-                            var subscribeMessage = (SubscribeMessage) task;
+                            var subscribeMessage =  (SubscribeMessage) task;
                             _intern.sync.SubscribeMessageResult(subscribeMessage, result);
                             break;
                     }
