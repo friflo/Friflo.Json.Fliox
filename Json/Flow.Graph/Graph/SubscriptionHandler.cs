@@ -135,16 +135,17 @@ namespace Friflo.Json.Flow.Graph
                     
                     case TaskType.message:
                         var message = (SendMessage)task;
+                        var name = message.name;
                         // callbacks require their own reader as store._intern.jsonMapper.reader cannot be used.
                         // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
                         // and ProcessEvent() can be called concurrently from the "main" thread.
                         var reader = store._intern.messageReader;
-                        if (store._intern.subscriptions.TryGetValue(message.name, out MessageSubscriber subscriber)) {
-                            subscriber.InvokeCallbacks(reader, message.value);    
+                        if (store._intern.subscriptions.TryGetValue(name, out MessageSubscriber subscriber)) {
+                            subscriber.InvokeCallbacks(reader, name, message.value);    
                         }
                         foreach (var sub in store._intern.subscriptionsPrefix) {
-                            if (message.name.StartsWith(sub.name)) {
-                                sub.InvokeCallbacks(reader, message.value);
+                            if (name.StartsWith(sub.name)) {
+                                sub.InvokeCallbacks(reader, name, message.value);
                             }
                         }
                         break;

@@ -28,10 +28,10 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
-        internal void InvokeCallbacks(ObjectReader reader, JsonValue messageValue) {
+        internal void InvokeCallbacks(ObjectReader reader, string messageName, JsonValue messageValue) {
             foreach (var callbackHandler in callbackHandlers) {
                 try {
-                    callbackHandler.InvokeCallback(reader, messageValue);
+                    callbackHandler.InvokeCallback(reader, messageName, messageValue);
                 }
                 catch (Exception e) {
                     var type = callbackHandler.GetType().Name;
@@ -50,7 +50,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal            bool    HasHandler (object handler) => handler == handlerObject;
         public   override   string  ToString()                  => name;
 
-        internal abstract void InvokeCallback(ObjectReader reader, JsonValue messageValue);
+        internal abstract void InvokeCallback(ObjectReader reader, string messageName, JsonValue messageValue);
         
         internal MessageCallback (string name, object handler) {
             this.name       = name;
@@ -66,8 +66,8 @@ namespace Friflo.Json.Flow.Graph.Internal
             this.handler = handler;
         }
         
-        internal override void InvokeCallback(ObjectReader reader, JsonValue messageValue) {
-            var msg = new Message(name, messageValue.json, reader);
+        internal override void InvokeCallback(ObjectReader reader, string messageName, JsonValue messageValue) {
+            var msg = new Message(messageName, messageValue.json, reader);
             handler(msg);
         }
     }
@@ -80,8 +80,8 @@ namespace Friflo.Json.Flow.Graph.Internal
             this.handler = handler;
         }
         
-        internal override void InvokeCallback(ObjectReader reader, JsonValue messageValue) {
-            var msg = new Message<TValue>(name, messageValue.json, reader);
+        internal override void InvokeCallback(ObjectReader reader, string messageName, JsonValue messageValue) {
+            var msg = new Message<TValue>(messageName, messageValue.json, reader);
             handler(msg);
         }
     }
