@@ -68,19 +68,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual("null",            msg.Json);
             });
             var subscribeMessage1   = store.SubscribeMessage<TestMessage>((msg) => {
-                subscriber.handlerCalls++;
+                subscriber.testMessageCalls++;
                 TestMessage value = msg.Value;
                 AreEqual("test message",    value.text);
                 AreEqual("TestMessage",     msg.Name);
             });
             var subscribeMessage2   = store.SubscribeMessage<int>(TestRelationPoC.TestMessageInt, (msg) => {
-                subscriber.handlerCalls++;
+                subscriber.testMessageIntCalls++;
                 AreEqual(42,                            msg.Value);
                 AreEqual("42",                          msg.Json);
                 AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
             });
             var subscribeMessage3   = store.SubscribeMessage(TestRelationPoC.TestMessageInt, (msg) => {
-                subscriber.handlerCalls++;
+                subscriber.testMessageIntCalls++;
                 var val = msg.ReadJson<int>();
                 AreEqual(42,                            val);
                 AreEqual("42",                          msg.Json);
@@ -93,8 +93,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             var subscribeMessage5   = store.SubscribeMessage  (TestRelationPoC.TestRemoveAllHandler, RemovedHandler);
             var unsubscribe2        = store.UnsubscribeMessage(TestRelationPoC.TestRemoveAllHandler, null);
             
-            var subscribeAllMessages    = store.SubscribeMessage("*", msg => {});
-            var unsubscribeAllMessages  = store.UnsubscribeMessage("*", null);
+            var subscribeAllMessages= store.SubscribeMessage  ("Test*", msg => {
+                subscriber.testWildcardCalls++;
+            });
 
             await store.Sync(); // -------- Sync --------
 
@@ -110,7 +111,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             IsTrue(unsubscribe1.            Success);
             IsTrue(unsubscribe2.            Success);
             IsTrue(subscribeAllMessages.    Success);
-            IsTrue(unsubscribeAllMessages.  Success);
             return subscriber;
         }
         
@@ -127,7 +127,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private readonly    ChangeInfo<Producer>    producerSum  = new ChangeInfo<Producer>();
         private readonly    ChangeInfo<Employee>    employeeSum  = new ChangeInfo<Employee>();
         private             int                     messageCount;
-        internal            int                     handlerCalls;
+        internal            int                     testMessageCalls;
+        internal            int                     testMessageIntCalls;
+        internal            int                     testWildcardCalls;
         internal            bool                    receivedAll;
         
         private readonly    EventAssertion          eventAssertion;
@@ -164,6 +166,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     case nameof(TestRelationPoC.TestMessageInt):
                         var intVal = message.ReadJson<int>();
                         AreEqual(42, intVal);
+                        break;
+                    case nameof(TestRelationPoC.TestRemoveHandler):
+                    case nameof(TestRelationPoC.TestRemoveAllHandler):
                         break;
                     case nameof(TestMessage):
                         var testVal = message.ReadJson<TestMessage>();
@@ -215,8 +220,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             AreSimilar("(creates: 9, updates: 0, deletes: 4, patches: 2)", articleSum);
             AreSimilar("(creates: 3, updates: 0, deletes: 0, patches: 0)", producerSum);
             AreSimilar("(creates: 1, updates: 0, deletes: 0, patches: 0)", employeeSum);
-            AreEqual(3, messageCount);
-            AreEqual(3, handlerCalls);
+            
+            AreEqual(5, messageCount);
+            AreEqual(4, testWildcardCalls);
+
+            AreEqual(1, testMessageCalls);
+            AreEqual(2, testMessageIntCalls);
+            
             
             IsTrue(orderSum      .IsEqual(GetChangeInfo<Order>()));
             IsTrue(customerSum   .IsEqual(GetChangeInfo<Customer>()));
