@@ -65,6 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             var subscriptions       = store.SubscribeAllChanges(Changes.All);
             var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg) => {
                 subscriber.receivedAll = true;
+                AreEqual("null",            msg.Json);
             });
             var subscribeMessage1   = store.SubscribeMessage<TestMessage>((msg) => {
                 subscriber.handlerCalls++;
