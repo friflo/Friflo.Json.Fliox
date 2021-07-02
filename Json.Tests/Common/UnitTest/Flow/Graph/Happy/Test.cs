@@ -129,10 +129,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 fileDatabase.eventBroker = eventBroker;
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
-                    var listenSubscriber    = await CreatePocHandler(listenDb, sc, EventAssertion.Changes);
+                    var listenSubscriber    = await CreateSubscriptionHandler(listenDb, sc, EventAssertion.Changes);
                     using (var createStore  = new PocStore(remoteDatabase, "createStore"))
                     using (var useStore     = new PocStore(remoteDatabase, "useStore")) {
-                        var createSubscriber = await CreatePocHandler(createStore, sc, EventAssertion.NoChanges);
+                        var createSubscriber = await CreateSubscriptionHandler(createStore, sc, EventAssertion.NoChanges);
                         await TestRelationPoC.CreateStore(createStore);
                         
                         while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
@@ -164,7 +164,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 fileDatabase.eventBroker = eventBroker;
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
-                    var listenSubscriber    = await CreatePocHandler(listenDb, sc, EventAssertion.Changes);
+                    var listenSubscriber    = await CreateSubscriptionHandler(listenDb, sc, EventAssertion.Changes);
                     using (var createStore  = new PocStore(fileDatabase, "createStore")) {
                         await remoteDatabase.Close();
                         // all change events sent by createStore doesnt arrive at listenDb
@@ -200,10 +200,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase))
             using (var listenDb         = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker    = eventBroker;
-                var listenSubscriber        = await CreatePocHandler(listenDb, sc, EventAssertion.Changes);
+                var listenSubscriber        = await CreateSubscriptionHandler(listenDb, sc, EventAssertion.Changes);
                 using (var createStore      = new PocStore(loopbackDatabase, "createStore"))
                 using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
-                    var createSubscriber        = await CreatePocHandler(createStore, sc, EventAssertion.NoChanges);
+                    var createSubscriber        = await CreateSubscriptionHandler(createStore, sc, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
                     
                     while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }

@@ -42,9 +42,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var listenDb     = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker = eventBroker;
-                var pocSubscriber   = await CreatePocHandler(listenDb, sc, EventAssertion.Changes);
+                var pocSubscriber   = await CreateSubscriptionHandler(listenDb, sc, EventAssertion.Changes);
                 using (var createStore  = new PocStore(fileDatabase, "createStore")) {
-                    var createSubscriber = await CreatePocHandler(createStore, sc, EventAssertion.NoChanges);
+                    var createSubscriber = await CreateSubscriptionHandler(createStore, sc, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
                     
                     while (!pocSubscriber.receivedAll ) { await Task.Delay(1); }
@@ -58,8 +58,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        private static async Task<PocHandler> CreatePocHandler (PocStore store, SynchronizationContext sc, EventAssertion eventAssertion) {
-            var subscriber = new PocHandler(store, sc, eventAssertion);
+        private static async Task<PocSubscriptionHandler> CreateSubscriptionHandler (PocStore store, SynchronizationContext sc, EventAssertion eventAssertion) {
+            var subscriber = new PocSubscriptionHandler(store, sc, eventAssertion);
             store.SetSubscriptionHandler(subscriber);
             
             var subscriptions       = store.SubscribeAllChanges(Changes.All);
@@ -115,7 +115,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
     }
 
     // assert expected database changes by counting the entity changes for each DatabaseContainer / EntitySet<>
-    internal class PocHandler : SubscriptionHandler {
+    internal class PocSubscriptionHandler : SubscriptionHandler {
         private readonly    ChangeInfo<Order>       orderSum     = new ChangeInfo<Order>();
         private readonly    ChangeInfo<Customer>    customerSum  = new ChangeInfo<Customer>();
         private readonly    ChangeInfo<Article>     articleSum   = new ChangeInfo<Article>();
@@ -127,13 +127,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         private readonly    EventAssertion          eventAssertion;
         
-        internal PocHandler (EntityStore store, SynchronizationContext synchronizationContext, EventAssertion eventAssertion)
+        internal PocSubscriptionHandler (EntityStore store, SynchronizationContext synchronizationContext, EventAssertion eventAssertion)
             : base (store, synchronizationContext)
         {
             this.eventAssertion = eventAssertion;
         }
             
-        /// All tests using <see cref="PocHandler"/> are required to use "createStore" as clientId
+        /// All tests using <see cref="PocSubscriptionHandler"/> are required to use "createStore" as clientId
         protected override void ProcessEvent (SubscriptionEvent ev) {
             AreEqual("createStore", ev.clientId);
             base.ProcessEvent(ev);
