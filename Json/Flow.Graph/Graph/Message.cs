@@ -9,6 +9,8 @@ namespace Friflo.Json.Flow.Graph
         string              Name    { get; }
         string              Json    { get; }
         ObjectReader        Reader  { get; }
+        
+        T                   GetValue<T>();
     } 
     
     public readonly struct Message<TValue> : IMessage {
@@ -17,7 +19,12 @@ namespace Friflo.Json.Flow.Graph
         public          ObjectReader    Reader  { get; }
        
         public          TValue          Value       => Reader.Read<TValue>(Json);
+        
         public override string          ToString()  => Name;
+        
+        public T GetValue<T>() {
+            return Reader.Read<T>(Json);
+        }
 
         /// <summary>
         /// <see cref="Json"/> is set to <see cref="SendMessage.value"/> json.
@@ -34,7 +41,12 @@ namespace Friflo.Json.Flow.Graph
         public          string          Name    { get; }
         public          string          Json    { get; }
         public          ObjectReader    Reader  { get; }
+        
         public override string          ToString()  => Name;
+        
+        public T GetValue<T>() {
+            return Reader.Read<T>(Json);
+        }
         
         public Message(string name, string json, ObjectReader reader) {
             Name    = name;

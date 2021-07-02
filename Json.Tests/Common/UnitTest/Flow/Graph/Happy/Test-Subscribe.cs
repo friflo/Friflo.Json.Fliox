@@ -81,6 +81,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             });
             var subscribeMessage3   = store.SubscribeMessage(TestRelationPoC.TestMessageInt, (msg) => {
                 subscriber.handlerCalls++;
+                var val = msg.GetValue<int>();
+                AreEqual(42,                            val);
                 AreEqual("42",                          msg.Json);
                 AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
             });
@@ -155,11 +157,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         AreEqual("null", message.Json);
                         break;
                     case nameof(TestRelationPoC.TestMessageInt):
-                        var intVal = message.Reader.Read<int>(message.Json);
+                        var intVal = message.GetValue<int>();
                         AreEqual(42, intVal);
                         break;
                     case nameof(TestMessage):
-                        var testVal = message.Reader.Read<TestMessage>(message.Json);
+                        var testVal = message.GetValue<TestMessage>();
                         AreEqual("test message", testVal.text);
                         break;
                     default:
