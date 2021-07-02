@@ -150,6 +150,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 
             foreach (var message in messages) {
                 switch (message.Name) {
+                    case nameof(TestRelationPoC.EndCreate):
+                        AreEqual("null", message.Json);
+                        break;
                     case nameof(TestRelationPoC.TestMessageInt):
                         var intVal = message.Reader.Read<int>(message.Json);
                         AreEqual(42, intVal);
@@ -157,6 +160,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     case nameof(TestMessage):
                         var testVal = message.Reader.Read<TestMessage>(message.Json);
                         AreEqual("test message", testVal.text);
+                        break;
+                    default:
+                        Fail("test expect handling all messages");
                         break;
                 }
             }

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
 {
@@ -18,9 +19,13 @@ namespace Friflo.Json.Flow.Graph
         public          TValue          Value       => Reader.Read<TValue>(Json);
         public override string          ToString()  => Name;
 
+        /// <summary>
+        /// <see cref="Json"/> is set to <see cref="SendMessage.value"/> json.
+        /// If json is null <see cref="Json"/> is set to "null".
+        /// </summary>
         public Message(string name, string json, ObjectReader reader) {
             Name    = name;
-            Json    = json;
+            Json    = json ?? "null";  
             Reader  = reader;
         }
     }
@@ -33,7 +38,7 @@ namespace Friflo.Json.Flow.Graph
         
         public Message(string name, string json, ObjectReader reader) {
             Name    = name;
-            Json    = json;
+            Json    = json ?? "null";
             Reader  = reader;
         }
     }
