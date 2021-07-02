@@ -48,16 +48,24 @@ namespace Friflo.Json.Flow.Database.Event
         internal void SubscribeMessage(SubscribeMessage subscribe, string clientId, IEventTarget eventTarget) {
             EventSubscriber subscriber;
             var remove = subscribe.remove;
+            var prefix = Sync.SubscribeMessage.GetPrefix(subscribe.name);
             if (remove.HasValue && remove.Value) {
                 if (!subscribers.TryGetValue(clientId, out subscriber))
                     return;
-                subscriber.messageSubscriptions.Remove(subscribe.name);
+                if (prefix == null) {
+                    subscriber.messageSubscriptions.Remove(subscribe.name);
+                } else {
+                    subscriber.messagePrefixSubscriptions.Remove(prefix);
+                }
                 RemoveEmptySubscriber(subscriber, clientId);
                 return;
             }
             subscriber = GetOrCreateSubscriber(clientId, eventTarget);
-            var subs = subscriber.messageSubscriptions;
-            subs.Add(subscribe.name);
+            if (prefix == null) {
+                subscriber.messageSubscriptions.Add(subscribe.name);
+            } else {
+                subscriber.messagePrefixSubscriptions.Add(prefix);
+            }
         }
 
         internal void SubscribeChanges (SubscribeChanges subscribe, string clientId, IEventTarget eventTarget) {
@@ -142,14 +150,14 @@ namespace Friflo.Json.Flow.Database.Event
                         if (subscriberIsSender)
                             continue;
                         SubscribeChanges subscribeChanges = changesPair.Value;
-                        var taskResult = FilterTask(task, subscribeChanges);
+                        var taskResult = FilterChanges(task, subscribeChanges);
                         if (taskResult == null)
                             continue;
                         AddTask(ref tasks, taskResult);
                     }
                     if (task.TaskType == TaskType.message) {
                         var message = (SendMessage) task;
-                        if (!subscriber.messageSubscriptions.Contains(message.name))
+                        if (!subscriber.FilterMessage(message.name))
                             continue;
                         AddTask(ref tasks, task);
                     }
@@ -165,7 +173,7 @@ namespace Friflo.Json.Flow.Database.Event
             }
         }
         
-        private DatabaseTask FilterTask (DatabaseTask task, SubscribeChanges subscribe) {
+        private DatabaseTask FilterChanges (DatabaseTask task, SubscribeChanges subscribe) {
             switch (task.TaskType) {
                 
                 case TaskType.create:

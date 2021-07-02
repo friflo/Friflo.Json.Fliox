@@ -92,20 +92,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 
             var subscribeMessage5   = store.SubscribeMessage  (TestRelationPoC.TestRemoveAllHandler, RemovedHandler);
             var unsubscribe2        = store.UnsubscribeMessage(TestRelationPoC.TestRemoveAllHandler, null);
+            
+            var subscribeAllMessages    = store.SubscribeMessage("*", msg => {});
+            var unsubscribeAllMessages  = store.UnsubscribeMessage("*", null);
 
             await store.Sync(); // -------- Sync --------
 
             foreach (var subscription in subscriptions) {
                 IsTrue(subscription.Success);    
             }
-            IsTrue(subscribeMessage. Success);
-            IsTrue(subscribeMessage1.Success);
-            IsTrue(subscribeMessage2.Success);
-            IsTrue(subscribeMessage3.Success);
-            IsTrue(subscribeMessage4.Success);
-            IsTrue(subscribeMessage5.Success);
-            IsTrue(unsubscribe1.     Success);
-            IsTrue(unsubscribe2.     Success);
+            IsTrue(subscribeMessage.        Success);
+            IsTrue(subscribeMessage1.       Success);
+            IsTrue(subscribeMessage2.       Success);
+            IsTrue(subscribeMessage3.       Success);
+            IsTrue(subscribeMessage4.       Success);
+            IsTrue(subscribeMessage5.       Success);
+            IsTrue(unsubscribe1.            Success);
+            IsTrue(unsubscribe2.            Success);
+            IsTrue(subscribeAllMessages.    Success);
+            IsTrue(unsubscribeAllMessages.  Success);
             return subscriber;
         }
         

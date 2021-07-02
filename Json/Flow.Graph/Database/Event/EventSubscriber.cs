@@ -22,8 +22,9 @@ namespace Friflo.Json.Flow.Database.Event
         /// key: <see cref="SubscribeChanges.container"/>
         internal readonly   Dictionary<string, SubscribeChanges>    changeSubscriptions = new Dictionary<string, SubscribeChanges>();
         internal readonly   HashSet<string>                         messageSubscriptions= new  HashSet<string>();
+        internal readonly   HashSet<string>                         messagePrefixSubscriptions= new  HashSet<string>();
         
-        internal            int                                     SubscriptionCount => changeSubscriptions.Count + messageSubscriptions.Count; 
+        internal            int                                     SubscriptionCount => changeSubscriptions.Count + messageSubscriptions.Count + messagePrefixSubscriptions.Count; 
         
         /// lock (<see cref="eventQueue"/>) {
         private             int                                     eventCounter;
@@ -49,6 +50,17 @@ namespace Friflo.Json.Flow.Database.Event
             triggerWriter       = channel.writer;
             var triggerReader   = channel.reader;
             triggerLoop         = TriggerLoop(triggerReader);
+        }
+        
+        internal bool FilterMessage (string messageName) {
+            if (messageSubscriptions.Contains(messageName))
+                return true;
+            foreach (var prefixSub in messagePrefixSubscriptions) {
+                if (messageName.StartsWith(prefixSub)) {
+                    return true;
+                }
+            }
+            return false;
         }
         
         internal void UpdateTarget(IEventTarget eventTarget) {

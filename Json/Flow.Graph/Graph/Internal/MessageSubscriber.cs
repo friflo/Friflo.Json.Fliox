@@ -6,18 +6,26 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map.Val;
+using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
     internal class MessageSubscriber
     {
-        private  readonly   string                  name;
+        internal readonly   bool                    isPrefix;
+        internal readonly   string                  name;
         internal readonly   List<MessageCallback>   callbackHandlers = new List<MessageCallback>();
 
         public   override   string                  ToString() => name;
 
         internal MessageSubscriber (string name) {
-            this.name = name;
+            var prefix = SubscribeMessage.GetPrefix(name);
+            isPrefix = prefix != null;
+            if (isPrefix) {
+                this.name = prefix;
+            } else {
+                this.name = name;
+            }
         }
         
         internal void InvokeCallbacks(ObjectReader reader, JsonValue messageValue) {

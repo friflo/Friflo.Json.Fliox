@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Utils;
+using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
@@ -25,6 +27,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal readonly   Pools                                   contextPools;
         internal readonly   EventTarget                             eventTarget;
         internal readonly   Dictionary<string, MessageSubscriber>   subscriptions;
+        internal readonly   List<MessageSubscriber>                 subscriptionsPrefix;
         internal readonly   ObjectReader                            messageReader;
         
         // --- non readonly
@@ -61,6 +64,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             objectPatcher               = new ObjectPatcher(jsonMapper);
             contextPools                = new Pools(Pools.SharedPools);
             subscriptions               = new Dictionary<string, MessageSubscriber>();
+            subscriptionsPrefix         = new List<MessageSubscriber>();
             messageReader               = new ObjectReader(typeStore);
             tracerLogTask               = null;
             subscriptionHandler         = null;
@@ -72,6 +76,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal void Dispose() {
             disposed = true;
             messageReader.Dispose();
+            subscriptionsPrefix.Clear();
             subscriptions.Clear();
             contextPools.Dispose(); // dispose nothing - LocalPool's are used
             database.RemoveEventTarget(clientId);
@@ -80,7 +85,8 @@ namespace Friflo.Json.Flow.Graph.Internal
             ownedTypeStore?.Dispose();
         }
         
-        internal SubscribeMessageTask AddCallbackHandler(string name, MessageCallback handler) {
+        internal SubscribeMessageTask AddCallbackHandler(MessageCallback handler) {
+            var name = handler.name;
             var task = new SubscribeMessageTask(name, null);
             if (!subscriptions.TryGetValue(name, out var subscriber)) {
                 subscriber = new MessageSubscriber(name);
@@ -89,11 +95,24 @@ namespace Friflo.Json.Flow.Graph.Internal
             } else {
                 task.state.Synced = true;
             }
+            if (subscriber.isPrefix) {
+                subscriptionsPrefix.Add(subscriber);
+            }
             subscriber.callbackHandlers.Add(handler);
             return task;
         }
         
         internal SubscribeMessageTask RemoveCallbackHandler (string name, object handler) {
+            var prefix = SubscribeMessage.GetPrefix(name);
+            if (prefix != null) {
+                if (handler == null) {
+                    subscriptionsPrefix.RemoveAll((sub) => sub.name == prefix);
+                } else {
+                    foreach (var sub in subscriptionsPrefix.Where(sub => sub.name == prefix)) {
+                        sub.callbackHandlers.RemoveAll(callback => callback.HasHandler(handler));
+                    }
+                }
+            }
             var task = new SubscribeMessageTask(name, true);
             if (!subscriptions.TryGetValue(name, out var subscriber)) {
                 task.state.Synced = true;

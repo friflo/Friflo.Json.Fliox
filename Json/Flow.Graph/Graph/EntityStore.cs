@@ -183,7 +183,7 @@ namespace Friflo.Json.Flow.Graph
         public SubscribeMessageTask SubscribeMessage<TValue>    (string name, Handler<TValue> handler) {
             AssertSubscriptionHandler();
             var callbackHandler = new GenericMessageCallback<TValue>(name, handler);
-            var task            = _intern.AddCallbackHandler(name, callbackHandler);
+            var task            = _intern.AddCallbackHandler(callbackHandler);
             AddTask(task);
             return task;
         }
@@ -196,7 +196,7 @@ namespace Friflo.Json.Flow.Graph
         public SubscribeMessageTask SubscribeMessage            (string name, Handler handler) {
             AssertSubscriptionHandler();
             var callbackHandler = new NonGenericMessageCallback(name, handler);
-            var task            = _intern.AddCallbackHandler(name, callbackHandler);
+            var task            = _intern.AddCallbackHandler(callbackHandler);
             AddTask(task);
             return task;
         }

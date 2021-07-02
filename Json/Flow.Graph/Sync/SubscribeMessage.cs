@@ -37,6 +37,10 @@ namespace Friflo.Json.Flow.Sync
             eventBroker.SubscribeMessage(this, messageContext.clientId, eventTarget);
             return Task.FromResult<TaskResult>(new SubscribeMessageResult());
         }
+        
+        internal static string GetPrefix (string name) {
+            return name.EndsWith("*") ? name.Substring(0, name.Length - 1) : null;
+        }
     }
     
     // ----------------------------------- task result -----------------------------------
