@@ -19,7 +19,7 @@ namespace Friflo.Json.Flow.Graph
         Manual
     }
     
-    public delegate void SubscriptionEventHandler (SubscriptionHandler handler);
+    public delegate void SubscriptionEventHandler (SubscriptionHandler handler, SubscriptionEvent ev);
     
     public class SubscriptionHandler
     {
@@ -163,7 +163,7 @@ namespace Friflo.Json.Flow.Graph
                         break;
                 }
             }
-            store._intern.subscriptionEventHandler?.Invoke(this);
+            store._intern.subscriptionEventHandler?.Invoke(this, ev);
         }
         
         private EntityChanges<T> GetChanges<T> () where T : Entity {
@@ -189,7 +189,7 @@ namespace Friflo.Json.Flow.Graph
             return messages;
         }
         
-        protected EntityChanges<T> GetEntityChanges<T>(SubscriptionEvent subscriptionEvent) where T : Entity {
+        public EntityChanges<T> GetEntityChanges<T>(SubscriptionEvent subscriptionEvent) where T : Entity {
             var result  = GetChanges<T>();
             var set     = result.set;
             result.Clear();
