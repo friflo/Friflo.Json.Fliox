@@ -41,7 +41,7 @@ namespace Friflo.Json.Flow.Graph
         /// a <see cref="typeStore"/>. <see cref="TypeStore"/> instances are designed to be reused from multiple threads.
         /// Their creation is expensive compared to the instantiation of an <see cref="EntityStore"/>. 
         /// </summary>
-        protected EntityStore(EntityDatabase database, TypeStore typeStore, string clientId) {
+        public EntityStore(EntityDatabase database, TypeStore typeStore, string clientId) {
             TypeStore owned = null;
             if (typeStore == null) {
                 typeStore = owned = new TypeStore();
