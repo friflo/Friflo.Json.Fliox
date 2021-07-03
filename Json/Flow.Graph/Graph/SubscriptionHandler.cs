@@ -19,7 +19,7 @@ namespace Friflo.Json.Flow.Graph
         Manual
     }
     
-    public delegate void SubscriptionEventHandler (SubscriptionHandler ev);
+    public delegate void SubscriptionEventHandler (SubscriptionHandler handler);
     
     public class SubscriptionHandler
     {
