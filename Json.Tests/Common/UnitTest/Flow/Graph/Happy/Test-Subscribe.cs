@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections;
-using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Event;
@@ -56,8 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         }
         
         private static async Task<PocSubscriptionHandler> CreateSubscriptionHandler (PocStore store, EventAssertion eventAssertion) {
-            var sc = SynchronizationContext.Current;
-            var subscriber = new PocSubscriptionHandler(store, sc, eventAssertion);
+            var subscriber = new PocSubscriptionHandler(store, eventAssertion);
             store.SetSubscriptionHandler(subscriber);
             
             var subscriptions       = store.SubscribeAllChanges(Changes.All);
@@ -152,8 +150,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         private readonly    EventAssertion          eventAssertion;
         
-        internal PocSubscriptionHandler (EntityStore store, SynchronizationContext synchronizationContext, EventAssertion eventAssertion)
-            : base (store, synchronizationContext)
+        internal PocSubscriptionHandler (EntityStore store, EventAssertion eventAssertion)
+            : base (store)
         {
             this.eventAssertion = eventAssertion;
         }

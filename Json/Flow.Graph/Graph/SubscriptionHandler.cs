@@ -12,6 +12,12 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph
 {
+    public enum SubscriptionHandling {
+        /// <summary>
+        /// Used in <see cref="SubscriptionHandler(EntityStore, SubscriptionHandling)"/> to enforce manual handling of subscription events. 
+        /// </summary>
+        Manual
+    }
     public class SubscriptionHandler
     {
         private readonly    EntityStore                         store;
@@ -31,13 +37,16 @@ namespace Friflo.Json.Flow.Graph
         /// The <see cref="synchronizationContext"/> is required to ensure that <see cref="ProcessEvent"/> is called on the
         /// same thread as all other API calls of <see cref="EntityStore"/> and <see cref="EntitySet{T}"/>.
         /// <para>
-        ///   In case of a UI application like WinForms, WPF or Unity <see cref="SynchronizationContext.Current"/> can be used
+        ///   In case of UI applications like WinForms, WPF or Unity <see cref="SynchronizationContext.Current"/> can be used.
+        ///   If <see cref="synchronizationContext"/> is null it defaults to <see cref="SynchronizationContext.Current"/>.
         /// </para> 
         /// <para>
-        ///   In case of a Console application <see cref="SingleThreadSynchronizationContext"/> can be used.
+        ///   In case of a Console application where <see cref="SynchronizationContext.Current"/> is null
+        ///   <see cref="SingleThreadSynchronizationContext"/> can be used.
         /// </para> 
         /// </summary>
-        public SubscriptionHandler (EntityStore store, SynchronizationContext synchronizationContext) {
+        public SubscriptionHandler (EntityStore store, SynchronizationContext synchronizationContext = null) {
+            synchronizationContext      = synchronizationContext ?? SynchronizationContext.Current; 
             this.store                  = store;
             this.synchronizationContext = synchronizationContext ?? throw new ArgumentNullException(nameof(synchronizationContext));
         }
@@ -49,7 +58,7 @@ namespace Friflo.Json.Flow.Graph
         /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="SubscriptionEvent"/>'s
         /// are applied to the <see cref="EntityStore"/>.
         /// </summary>
-        public SubscriptionHandler (EntityStore store) {
+        public SubscriptionHandler (EntityStore store, SubscriptionHandling _) {
             this.store                  = store;
             this.eventQueue             = new ConcurrentQueue <SubscriptionEvent> ();
         }
