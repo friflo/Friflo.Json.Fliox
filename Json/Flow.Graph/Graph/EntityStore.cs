@@ -137,7 +137,18 @@ namespace Friflo.Json.Flow.Graph
         /// Set a custom <see cref="SubscriptionHandler"/> to enable reacting on specific database change events.
         /// E.g. notifying other application modules about created, updated, deleted or patches entities.
         /// To subscribe to database change events <see cref="Graph.EntitySet{T}.SubscribeChanges"/> need to be called before.
-        /// The default <see cref="SubscriptionHandler"/> apply all changes to the <see cref="EntityStore"/> as they arrive. 
+        /// The default <see cref="SubscriptionHandler"/> apply all changes to the <see cref="EntityStore"/> as they arrive.
+        /// <br></br>
+        /// In contrast to <see cref="SetSubscriptionEventHandler"/> this method provide additional possibilities by the
+        /// given <see cref="SubscriptionHandler"/>. These are:
+        /// <para>
+        ///   Defer processing of events by queuing them for later processing.
+        ///   E.g. by doing nothing in an override of <see cref="SubscriptionHandler.ProcessEvent"/>.  
+        /// </para>
+        /// <para>
+        ///   Manipulation of the received <see cref="SubscriptionEvent"/> in an override of
+        ///   <see cref="SubscriptionHandler.ProcessEvent"/> before processing it.
+        /// </para>
         /// </summary>
         public void SetSubscriptionHandler(SubscriptionHandler subscriptionHandler) {
             _intern.subscriptionHandler = subscriptionHandler;
