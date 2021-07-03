@@ -5,8 +5,13 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
 {
+    /// <summary>
+    /// Expose the <see cref="Name"/> and the <see cref="Json"/> value of a received message.
+    /// The methods <see cref="ReadJson{T}"/> and <see cref="TryReadJson{T}"/> provide type safe access to
+    /// the <see cref="Json"/> value of a message. 
+    /// </summary>
     public interface IMessage {
-        /// <summary>Returns the message name</summary>
+        /// <summary>Returns the message name.</summary>
         string              Name    { get; }
         /// <summary>
         /// Returns the message value as JSON.
@@ -15,23 +20,29 @@ namespace Friflo.Json.Flow.Graph
         string              Json    { get; }
         
         /// <summary>
-        /// Read the <see cref="Json"/> value as the given type <see cref="T"/>
+        /// Read the <see cref="Json"/> value as the given type <see cref="T"/>.
         /// Throws a <see cref="JsonReaderException"/> in case <see cref="Json"/> is incompatible to <see cref="T"/></summary>
         T                   ReadJson   <T>();
         
         /// <summary>
-        /// Read the <see cref="Json"/> value as the given type <see cref="T"/>
+        /// Read the <see cref="Json"/> value as the given type <see cref="T"/>.
         /// Return false and set <see cref="error"/> in case <see cref="Json"/> is incompatible to <see cref="T"/>
         /// </summary>
         bool                TryReadJson<T>(out T result, out JsonReaderException error);
     } 
     
+    /// <summary>
+    /// Expose the <see cref="Name"/>, the <see cref="Json"/> value and the type safe <see cref="Value"/> of a received message.
+    /// </summary>
     public readonly struct Message<TValue> : IMessage {
         public              string          Name    { get; }
         public              string          Json    { get; }
         
         private readonly    ObjectReader    reader;
        
+        /// <summary>
+        /// Return the <see cref="Json"/> value as the specified type <see cref="TValue"/>.
+        /// </summary>
         public              TValue          Value => Message.Read<TValue>(Json, reader);
 
         public override string              ToString()  => Name;
@@ -55,6 +66,9 @@ namespace Friflo.Json.Flow.Graph
         }
     }
     
+    /// <summary>
+    /// Expose the <see cref="Name"/> and the <see cref="Json"/> value of a received message.
+    /// </summary>
     public readonly struct Message  : IMessage {
         public              string          Name    { get; }
         public              string          Json    { get; }
