@@ -9,7 +9,8 @@ namespace Friflo.Json.Flow.Graph
         string              Name    { get; }
         string              Json    { get; }
         
-        T                   ReadJson<T>();
+        T                   ReadJson   <T>();
+        bool                TryReadJson<T>(out T result, out JsonReaderException error);
     } 
     
     public readonly struct Message<TValue> : IMessage {
