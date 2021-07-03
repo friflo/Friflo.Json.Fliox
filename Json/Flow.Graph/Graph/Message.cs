@@ -6,10 +6,23 @@ using Friflo.Json.Flow.Sync;
 namespace Friflo.Json.Flow.Graph
 {
     public interface IMessage {
+        /// <summary>Returns the message name</summary>
         string              Name    { get; }
+        /// <summary>
+        /// Returns the message value as JSON.
+        /// Returns "null" when message was sent by <see cref="EntityStore.SendMessage"/>
+        /// </summary>
         string              Json    { get; }
         
+        /// <summary>
+        /// Read the <see cref="Json"/> value as the given type <see cref="T"/>
+        /// Throws a <see cref="JsonReaderException"/> in case <see cref="Json"/> is incompatible to <see cref="T"/></summary>
         T                   ReadJson   <T>();
+        
+        /// <summary>
+        /// Read the <see cref="Json"/> value as the given type <see cref="T"/>
+        /// Return false and set <see cref="error"/> in case <see cref="Json"/> is incompatible to <see cref="T"/>
+        /// </summary>
         bool                TryReadJson<T>(out T result, out JsonReaderException error);
     } 
     
