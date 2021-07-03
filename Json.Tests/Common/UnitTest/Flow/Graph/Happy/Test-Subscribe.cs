@@ -8,6 +8,7 @@ using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Database.Utils;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
 using Friflo.Json.Tests.Common.Utils;
@@ -78,6 +79,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual(42,                            msg.Value);
                 AreEqual("42",                          msg.Json);
                 AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
+                
+                IsTrue(msg.TryReadJson(out int result, out _));
+                AreEqual(42, result);
+                
+                // test reading Json to incompatible types
+                IsFalse(msg.TryReadJson<string>(out _, out var error));
+                AreEqual("JsonReader/error: Cannot assign number to string. Expect: System.String, got: 42 path: '(root)' at position: 2", error.Message);
+                
+                var e = Throws<JsonReaderException> (() => msg.ReadJson<string>());
+                AreEqual("JsonReader/error: Cannot assign number to string. Expect: System.String, got: 42 path: '(root)' at position: 2", e.Message);
             });
             var subscribeMessage3   = store.SubscribeMessage(TestRelationPoC.TestMessageInt, (msg) => {
                 subscriber.testMessageIntCalls++;
@@ -85,6 +96,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual(42,                            val);
                 AreEqual("42",                          msg.Json);
                 AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
+                
+                IsTrue(msg.TryReadJson(out int result, out _));
+                AreEqual(42, result);
+                
+                // test reading Json to incompatible types
+                IsFalse(msg.TryReadJson<string>(out _, out var error));
+                AreEqual("JsonReader/error: Cannot assign number to string. Expect: System.String, got: 42 path: '(root)' at position: 2", error.Message);
+                
+                var e = Throws<JsonReaderException> (() => msg.ReadJson<string>());
+                AreEqual("JsonReader/error: Cannot assign number to string. Expect: System.String, got: 42 path: '(root)' at position: 2", e.Message);
             });
             
             var subscribeMessage4   = store.SubscribeMessage  (TestRelationPoC.TestRemoveHandler, RemovedHandler);
