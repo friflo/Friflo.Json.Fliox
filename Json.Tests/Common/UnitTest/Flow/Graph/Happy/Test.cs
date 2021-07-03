@@ -119,7 +119,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         /// It also ensures that a single <see cref="WebSocketClientDatabase"/> instance can be used by multiple clients
         /// simultaneously. In this case three <see cref="PocStore"/> instances.
         private static async Task WebSocketCreate() {
-            var sc = SynchronizationContext.Current; 
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(false))
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
@@ -129,10 +128,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 fileDatabase.eventBroker = eventBroker;
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
-                    var listenSubscriber    = await CreateSubscriptionHandler(listenDb, sc, EventAssertion.Changes);
+                    var listenSubscriber    = await CreateSubscriptionHandler(listenDb, EventAssertion.Changes);
                     using (var createStore  = new PocStore(remoteDatabase, "createStore"))
                     using (var useStore     = new PocStore(remoteDatabase, "useStore")) {
-                        var createSubscriber = await CreateSubscriptionHandler(createStore, sc, EventAssertion.NoChanges);
+                        var createSubscriber = await CreateSubscriptionHandler(createStore, EventAssertion.NoChanges);
                         await TestRelationPoC.CreateStore(createStore);
                         
                         while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
@@ -153,7 +152,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         /// To ensure all change events arrive at <see cref="SubscriptionHandler"/> <see cref="SyncRequest.eventAck"/>
         /// is used to inform database about arrived events. All not acknowledged events are resent.
         private static async Task WebSocketReconnect() {
-            var sc = SynchronizationContext.Current; 
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(true))
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
@@ -164,7 +162,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 fileDatabase.eventBroker = eventBroker;
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
-                    var listenSubscriber    = await CreateSubscriptionHandler(listenDb, sc, EventAssertion.Changes);
+                    var listenSubscriber    = await CreateSubscriptionHandler(listenDb, EventAssertion.Changes);
                     using (var createStore  = new PocStore(fileDatabase, "createStore")) {
                         await remoteDatabase.Close();
                         // all change events sent by createStore doesnt arrive at listenDb
@@ -193,17 +191,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         [Test]      public void         LoopbackUseSync()     { SingleThreadSynchronizationContext.Run(LoopbackUse); }
         
         private static async Task LoopbackUse() {
-            var sc = SynchronizationContext.Current; 
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(false))
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase))
             using (var listenDb         = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker    = eventBroker;
-                var listenSubscriber        = await CreateSubscriptionHandler(listenDb, sc, EventAssertion.Changes);
+                var listenSubscriber        = await CreateSubscriptionHandler(listenDb, EventAssertion.Changes);
                 using (var createStore      = new PocStore(loopbackDatabase, "createStore"))
                 using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
-                    var createSubscriber        = await CreateSubscriptionHandler(createStore, sc, EventAssertion.NoChanges);
+                    var createSubscriber        = await CreateSubscriptionHandler(createStore, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
                     
                     while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }

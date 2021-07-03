@@ -34,15 +34,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         [Test]      public void         SubscribeSync() { SingleThreadSynchronizationContext.Run(AssertSubscribe); }
         
         private static async Task AssertSubscribe() {
-            var sc = SynchronizationContext.Current;
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var eventBroker  = new EventBroker(false))
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var listenDb     = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker = eventBroker;
-                var pocSubscriber   = await CreateSubscriptionHandler(listenDb, sc, EventAssertion.Changes);
+                var pocSubscriber   = await CreateSubscriptionHandler(listenDb, EventAssertion.Changes);
                 using (var createStore  = new PocStore(fileDatabase, "createStore")) {
-                    var createSubscriber = await CreateSubscriptionHandler(createStore, sc, EventAssertion.NoChanges);
+                    var createSubscriber = await CreateSubscriptionHandler(createStore, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
                     
                     while (!pocSubscriber.receivedAll ) { await Task.Delay(1); }
@@ -56,7 +55,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        private static async Task<PocSubscriptionHandler> CreateSubscriptionHandler (PocStore store, SynchronizationContext sc, EventAssertion eventAssertion) {
+        private static async Task<PocSubscriptionHandler> CreateSubscriptionHandler (PocStore store, EventAssertion eventAssertion) {
+            var sc = SynchronizationContext.Current;
             var subscriber = new PocSubscriptionHandler(store, sc, eventAssertion);
             store.SetSubscriptionHandler(subscriber);
             
