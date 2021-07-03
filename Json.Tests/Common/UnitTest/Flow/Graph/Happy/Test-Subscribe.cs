@@ -56,6 +56,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         private static async Task<PocSubscriptionHandler> CreateSubscriptionHandler (PocStore store, EventAssertion eventAssertion) {
             var subscriber = new PocSubscriptionHandler(store, eventAssertion);
+            store.SetSubscriptionEventHandler(ev => {
+                subscriber.subscribeEventsCalls++;
+                if (ev.EventSequence == 2) {
+                    var articleChanges = ev.GetChangeInfo<Article>();
+                    AreEqual("(creates: 2, updates: 0, deletes: 1, patches: 0)", articleChanges.ToString());
+                }
+            });
             store.SetSubscriptionHandler(subscriber);
             
             var subscriptions       = store.SubscribeAllChanges(Changes.All);
@@ -146,6 +153,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         internal            int                     testMessageCalls;
         internal            int                     testMessageIntCalls;
         internal            int                     testWildcardCalls;
+        internal            int                     subscribeEventsCalls;
         internal            bool                    receivedAll;
         
         private readonly    EventAssertion          eventAssertion;
@@ -230,7 +238,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         /// assert that all database changes by <see cref="TestRelationPoC.CreateStore"/> are reflected
         public void AssertCreateStoreChanges() {
-            AreEqual(8,  EventSequence);
+            AreEqual(8, EventSequence);
+            AreEqual(8, subscribeEventsCalls);
+            
             AreSimilar("(creates: 2, updates: 0, deletes: 0, patches: 0)", orderSum);
             AreSimilar("(creates: 6, updates: 0, deletes: 0, patches: 0)", customerSum);
             AreSimilar("(creates: 9, updates: 0, deletes: 4, patches: 2)", articleSum);

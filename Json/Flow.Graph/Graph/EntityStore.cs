@@ -143,7 +143,23 @@ namespace Friflo.Json.Flow.Graph
             _intern.subscriptionHandler = subscriptionHandler;
         }
         
-        
+        /// <summary>
+        /// Set a <see cref="SubscriptionEventHandler"/> which is called for all events received by the store.
+        /// These events fall in two categories:
+        /// <para>
+        ///   1. change events.
+        ///      To receive change events use <see cref="SubscribeAllChanges"/> or
+        ///      <see cref="Graph.EntitySet{T}.SubscribeChanges"/> and its sibling methods.
+        /// </para>
+        /// <para>
+        ///   2. message events.
+        ///      To receive message events use <see cref="SubscribeMessage"/> or sibling methods.
+        /// </para>
+        /// </summary>
+        public void SetSubscriptionEventHandler(SubscriptionEventHandler handler) {
+            _intern.subscriptionEventHandler = handler;
+        }
+
         // --- SendMessage
         public SendMessageTask SendMessage(string name) {
             var task = new SendMessageTask(name, null, _intern.jsonMapper.reader);

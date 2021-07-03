@@ -34,6 +34,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal            SyncStore                               sync;
         internal            LogTask                                 tracerLogTask;
         internal            SubscriptionHandler                     subscriptionHandler;
+        internal            SubscriptionEventHandler                subscriptionEventHandler;                
         internal            bool                                    disposed;
         internal            int                                     lastEventSeq;
         internal            int                                     syncCount;
@@ -68,6 +69,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             messageReader               = new ObjectReader(typeStore, new NoThrowHandler());
             tracerLogTask               = null;
             subscriptionHandler         = null;
+            subscriptionEventHandler    = null;
             lastEventSeq                = 0;
             disposed                    = false;
             syncCount                   = 0;

@@ -18,6 +18,9 @@ namespace Friflo.Json.Flow.Graph
         /// </summary>
         Manual
     }
+    
+    public delegate void SubscriptionEventHandler (SubscriptionHandler ev);
+    
     public class SubscriptionHandler
     {
         private readonly    EntityStore                         store;
@@ -160,6 +163,7 @@ namespace Friflo.Json.Flow.Graph
                         break;
                 }
             }
+            store._intern.subscriptionEventHandler?.Invoke(this);
         }
         
         private EntityChanges<T> GetChanges<T> () where T : Entity {
