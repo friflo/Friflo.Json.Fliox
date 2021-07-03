@@ -10,7 +10,6 @@ using Friflo.Json.Tests.Common.Utils;
     using NUnit.Framework;
 #endif
 
-// ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 {
     public partial class TestStore

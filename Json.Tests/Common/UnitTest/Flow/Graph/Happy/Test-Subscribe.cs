@@ -17,9 +17,6 @@ using UnityEngine.TestTools;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 
-
-
-// ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 {
     internal enum EventAssertion {
