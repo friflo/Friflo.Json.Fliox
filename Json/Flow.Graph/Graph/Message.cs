@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Graph
         /// <see cref="Json"/> is set to <see cref="SendMessage.value"/> json.
         /// If json is null <see cref="Json"/> is set to "null".
         /// </summary>
-        public Message(string name, string json, ObjectReader reader) {
+        internal Message(string name, string json, ObjectReader reader) {
             Name        = name;
             Json        = json ?? "null";  
             this.reader = reader;
@@ -50,7 +50,7 @@ namespace Friflo.Json.Flow.Graph
         
         public override string              ToString()  => Name;
         
-        public Message(string name, string json, ObjectReader reader) {
+        internal Message(string name, string json, ObjectReader reader) {
             Name        = name;
             Json        = json ?? "null";
             this.reader = reader;

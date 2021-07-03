@@ -166,15 +166,12 @@ namespace Friflo.Json.Flow.Graph
         protected List<Message> GetMessages(SubscriptionEvent subscriptionEvent) {
             messages.Clear();
             foreach (var task in subscriptionEvent.tasks) {
-                switch (task.TaskType) {
-                    
-                    case TaskType.message:
-                        var sendMessage = (SendMessage)task;
-                        var reader = store._intern.messageReader;
-                        var message = new Message(sendMessage.name, sendMessage.value.json, reader);
-                        messages.Add(message);
-                        break;
-                }
+                if (task.TaskType != TaskType.message)
+                    continue;
+                var sendMessage = (SendMessage)task;
+                var reader  = store._intern.messageReader;
+                var message = new Message(sendMessage.name, sendMessage.value.json, reader);
+                messages.Add(message);
             }
             return messages;
         }
