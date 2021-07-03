@@ -318,7 +318,7 @@ namespace Friflo.Json.Flow.Mapper
     public class JsonReaderException : Exception {
         public readonly int position;
         
-        internal JsonReaderException(string message, int position) : base(message) {
+        public JsonReaderException(string message, int position) : base(message) {
             this.position = position;
         }
     }

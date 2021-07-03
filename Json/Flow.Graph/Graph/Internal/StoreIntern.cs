@@ -65,7 +65,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             contextPools                = new Pools(Pools.SharedPools);
             subscriptions               = new Dictionary<string, MessageSubscriber>();
             subscriptionsPrefix         = new List<MessageSubscriber>();
-            messageReader               = new ObjectReader(typeStore);
+            messageReader               = new ObjectReader(typeStore, new NoThrowHandler());
             tracerLogTask               = null;
             subscriptionHandler         = null;
             lastEventSeq                = 0;
