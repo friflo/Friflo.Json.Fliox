@@ -56,14 +56,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         private static async Task<PocSubscriptionHandler> CreateSubscriptionHandler (PocStore store, EventAssertion eventAssertion) {
             var subscriber = new PocSubscriptionHandler(store, eventAssertion);
-            store.SetSubscriptionEventHandler(ev => {
+            store.SetSubscriptionHandler(subscriber);
+            store.SubscribeEvents(handler => {
                 subscriber.subscribeEventsCalls++;
-                if (ev.EventSequence == 2) {
-                    var articleChanges = ev.GetChangeInfo<Article>();
+                if (handler.EventSequence == 2) {
+                    var articleChanges = handler.GetChangeInfo<Article>();
                     AreEqual("(creates: 2, updates: 0, deletes: 1, patches: 0)", articleChanges.ToString());
                 }
             });
-            store.SetSubscriptionHandler(subscriber);
             
             var subscriptions       = store.SubscribeAllChanges(Changes.All);
             var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg) => {

@@ -139,7 +139,7 @@ namespace Friflo.Json.Flow.Graph
         /// To subscribe to database change events <see cref="Graph.EntitySet{T}.SubscribeChanges"/> need to be called before.
         /// The default <see cref="SubscriptionHandler"/> apply all changes to the <see cref="EntityStore"/> as they arrive.
         /// <br></br>
-        /// In contrast to <see cref="SetSubscriptionEventHandler"/> this method provide additional possibilities by the
+        /// In contrast to <see cref="SubscribeEvents"/> this method provide additional possibilities by the
         /// given <see cref="SubscriptionHandler"/>. These are:
         /// <para>
         ///   Defer processing of events by queuing them for later processing.
@@ -167,7 +167,8 @@ namespace Friflo.Json.Flow.Graph
         ///      To receive message events use <see cref="SubscribeMessage"/> or sibling methods.
         /// </para>
         /// </summary>
-        public void SetSubscriptionEventHandler(SubscriptionEventHandler handler) {
+        public void SubscribeEvents(SubscriptionEventHandler handler) {
+            AssertSubscriptionHandler();
             _intern.subscriptionEventHandler = handler;
         }
 
