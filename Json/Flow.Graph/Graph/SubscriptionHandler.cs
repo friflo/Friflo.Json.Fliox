@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Graph
         /// The <see cref="synchronizationContext"/> is required to ensure that <see cref="ProcessEvent"/> is called on the
         /// same thread as all other API calls of <see cref="EntityStore"/> and <see cref="EntitySet{T}"/>.
         /// <para>
-        ///   In case of a UI application like WinForms or WPF <see cref="SynchronizationContext.Current"/> can be used
+        ///   In case of a UI application like WinForms, WPF or Unity <see cref="SynchronizationContext.Current"/> can be used
         /// </para> 
         /// <para>
         ///   In case of a Console application <see cref="SingleThreadSynchronizationContext"/> can be used.
