@@ -278,14 +278,11 @@ namespace Friflo.Json.Flow.Graph
             _intern.sync.appTasks.Add(task);
         }
         
-        internal EntitySet<T> EntitySet<T>() where T : Entity
-        {
+        internal EntitySet<T> GetEntitySet<T>() where T : Entity {
             Type entityType = typeof(T);
             if (_intern.setByType.TryGetValue(entityType, out EntitySet set))
                 return (EntitySet<T>)set;
-            
-            set = new EntitySet<T>(this);
-            return (EntitySet<T>)set;
+            throw new InvalidOperationException($"unknown EntitySet<{entityType.Name}>");
         }
 
         private SyncRequest CreateSyncRequest() {

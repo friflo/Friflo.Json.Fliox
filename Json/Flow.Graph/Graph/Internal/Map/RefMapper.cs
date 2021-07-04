@@ -61,7 +61,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
             if (id == null)
                 return;
             var store = tracer.tracerContext.Store();
-            var set = store.EntitySet<T>();
+            var set = store.GetEntitySet<T>();
             PeerEntity<T> peer = set.GetPeerByRef(value);
             if (peer.assigned)
                 return;
@@ -91,7 +91,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
                 string id = reader.parser.value.ToString();
                 if (reader.tracerContext != null) {
                     var store = reader.tracerContext.Store();
-                    var set = store.EntitySet<T>();
+                    var set = store.GetEntitySet<T>();
                     var peer = set.GetPeerById(id);
                     slot = new Ref<T> (peer);
                     return slot;

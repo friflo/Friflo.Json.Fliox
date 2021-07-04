@@ -102,7 +102,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
                 if (reader.parser.Event == JsonEvent.ValueString) {
                     var id = reader.parser.value.ToString();
                     var store = reader.tracerContext.Store();
-                    var set = store.EntitySet<T>();
+                    var set = store.GetEntitySet<T>();
                     success = true;
                     var peer = set.GetPeerById(id);
                     throw new InvalidOperationException("Currently unused - not sure, if required");

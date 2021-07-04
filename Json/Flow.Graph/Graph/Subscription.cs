@@ -170,7 +170,7 @@ namespace Friflo.Json.Flow.Graph
         
         private EntityChanges<T> GetChanges<T> () where T : Entity {
             if (!results.TryGetValue(typeof(T), out var result)) {
-                var set         = (EntitySet<T>) store._intern.setByType[typeof(T)];
+                var set         = store.GetEntitySet<T>();
                 var resultTyped = new EntityChanges<T>(set);
                 results.Add(typeof(T), resultTyped);
                 return resultTyped;
