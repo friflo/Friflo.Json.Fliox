@@ -14,14 +14,14 @@ namespace Friflo.Json.Flow.Graph
 {
     public enum SubscriptionHandling {
         /// <summary>
-        /// Used in <see cref="SubscriptionHandler(EntityStore, SubscriptionHandling)"/> to enforce manual handling of subscription events. 
+        /// Used in <see cref="SubscriptionProcessor(EntityStore, SubscriptionHandling)"/> to enforce manual handling of subscription events. 
         /// </summary>
         Manual
     }
     
-    public delegate void SubscriptionEventHandler (SubscriptionHandler handler, SubscriptionEvent ev);
+    public delegate void SubscriptionHandler (SubscriptionProcessor processor, SubscriptionEvent ev);
     
-    public class SubscriptionHandler
+    public class SubscriptionProcessor
     {
         private readonly    EntityStore                         store;
         private readonly    Dictionary<Type, EntityChanges>     results   = new Dictionary<Type, EntityChanges>();
@@ -35,7 +35,7 @@ namespace Friflo.Json.Flow.Graph
         public              int                                 EventSequence     { get; private set ;}
         
         /// <summary>
-        /// Creates a <see cref="SubscriptionHandler"/> with the specified <see cref="synchronizationContext"/>
+        /// Creates a <see cref="SubscriptionProcessor"/> with the specified <see cref="synchronizationContext"/>
         /// The <see cref="synchronizationContext"/> is required to ensure that <see cref="ProcessEvent"/> is called on the
         /// same thread as all other API calls of <see cref="EntityStore"/> and <see cref="EntitySet{T}"/>.
         /// <para>
@@ -47,20 +47,20 @@ namespace Friflo.Json.Flow.Graph
         ///   <see cref="SingleThreadSynchronizationContext"/> can be used.
         /// </para> 
         /// </summary>
-        public SubscriptionHandler (EntityStore store, SynchronizationContext synchronizationContext = null) {
+        public SubscriptionProcessor (EntityStore store, SynchronizationContext synchronizationContext = null) {
             synchronizationContext      = synchronizationContext ?? SynchronizationContext.Current; 
             this.store                  = store;
             this.synchronizationContext = synchronizationContext ?? throw new ArgumentNullException(nameof(synchronizationContext));
         }
         
         /// <summary>
-        /// Creates a <see cref="SubscriptionHandler"/> without a <see cref="synchronizationContext"/>
+        /// Creates a <see cref="SubscriptionProcessor"/> without a <see cref="synchronizationContext"/>
         /// In this case the application must frequently call <see cref="ProcessEvents"/> to apply changes to the
         /// <see cref="EntityStore"/>.
         /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="SubscriptionEvent"/>'s
         /// are applied to the <see cref="EntityStore"/>.
         /// </summary>
-        public SubscriptionHandler (EntityStore store, SubscriptionHandling _) {
+        public SubscriptionProcessor (EntityStore store, SubscriptionHandling _) {
             this.store                  = store;
             this.eventQueue             = new ConcurrentQueue <SubscriptionEvent> ();
         }
@@ -76,7 +76,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         /// <summary>
-        /// Need to be called frequently if <see cref="SubscriptionHandler"/> is initialized without a <see cref="SynchronizationContext"/>.
+        /// Need to be called frequently if <see cref="SubscriptionProcessor"/> is initialized without a <see cref="SynchronizationContext"/>.
         /// </summary>
         public void ProcessEvents() {
             if (synchronizationContext != null) {
@@ -92,7 +92,7 @@ namespace Friflo.Json.Flow.Graph
         /// These <see cref="SubscriptionEvent.tasks"/> are "messages" resulting from subscriptions registered by
         /// methods like <see cref="EntitySet{T}.SubscribeChanges"/> or <see cref="EntityStore.SubscribeAllChanges"/>.
         /// <br></br>
-        /// Tasks notifying about database changes are applied to the <see cref="EntityStore"/> the <see cref="SubscriptionHandler"/>
+        /// Tasks notifying about database changes are applied to the <see cref="EntityStore"/> the <see cref="SubscriptionProcessor"/>
         /// is attached to.
         /// Types of database changes refer to <see cref="Change.create"/>ed, <see cref="Change.update"/>ed,
         /// <see cref="Change.delete"/>ed and <see cref="Change.patch"/>ed entities.
@@ -162,7 +162,7 @@ namespace Friflo.Json.Flow.Graph
                         break;
                 }
             }
-            store._intern.subscriptionEventHandler?.Invoke(this, ev);
+            store._intern.subscriptionHandler?.Invoke(this, ev);
         }
         
         private EntityChanges<T> GetChanges<T> () where T : Entity {

@@ -33,7 +33,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (subscriptionEvent == null)
                 return Task.FromResult(true);
 
-            store._intern.subscriptionHandler?.EnqueueEvent(subscriptionEvent);
+            store._intern.subscriptionProcessor?.EnqueueEvent(subscriptionEvent);
 
             return Task.FromResult(true);
         }

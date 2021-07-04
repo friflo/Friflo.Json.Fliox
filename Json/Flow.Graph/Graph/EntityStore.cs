@@ -118,7 +118,7 @@ namespace Friflo.Json.Flow.Graph
         /// <summary>
         /// Subscribe to database changes of all <see cref="EntityContainer"/>'s with the given <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntityStore"/>.
-        /// To react on specific changes use <see cref="SetEventHandler"/>.
+        /// To react on specific changes use <see cref="SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public List<SyncTask> SubscribeAllChanges(IEnumerable<Change> changes) {
@@ -134,28 +134,28 @@ namespace Friflo.Json.Flow.Graph
         }
         
         /// <summary>
-        /// Set a custom <see cref="SubscriptionHandler"/> to enable reacting on specific database change events.
+        /// Set a custom <see cref="SubscriptionProcessor"/> to enable reacting on specific database change events.
         /// E.g. notifying other application modules about created, updated, deleted or patches entities.
         /// To subscribe to database change events <see cref="Graph.EntitySet{T}.SubscribeChanges"/> need to be called before.
-        /// The default <see cref="SubscriptionHandler"/> apply all changes to the <see cref="EntityStore"/> as they arrive.
+        /// The default <see cref="SubscriptionProcessor"/> apply all changes to the <see cref="EntityStore"/> as they arrive.
         /// <br></br>
-        /// In contrast to <see cref="SetEventHandler"/> this method provide additional possibilities by the
-        /// given <see cref="SubscriptionHandler"/>. These are:
+        /// In contrast to <see cref="SetSubscriptionHandler"/> this method provide additional possibilities by the
+        /// given <see cref="SubscriptionProcessor"/>. These are:
         /// <para>
         ///   Defer processing of events by queuing them for later processing.
-        ///   E.g. by doing nothing in an override of <see cref="SubscriptionHandler.ProcessEvent"/>.  
+        ///   E.g. by doing nothing in an override of <see cref="SubscriptionProcessor.ProcessEvent"/>.  
         /// </para>
         /// <para>
         ///   Manipulation of the received <see cref="SubscriptionEvent"/> in an override of
-        ///   <see cref="SubscriptionHandler.ProcessEvent"/> before processing it.
+        ///   <see cref="SubscriptionProcessor.ProcessEvent"/> before processing it.
         /// </para>
         /// </summary>
-        public void SetSubscriptionHandler(SubscriptionHandler subscriptionHandler) {
-            _intern.subscriptionHandler = subscriptionHandler;
+        public void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor) {
+            _intern.subscriptionProcessor = subscriptionProcessor;
         }
         
         /// <summary>
-        /// Set a <see cref="SubscriptionEventHandler"/> which is called for all events received by the store.
+        /// Set a <see cref="SubscriptionHandler"/> which is called for all events received by the store.
         /// These events fall in two categories:
         /// <para>
         ///   1. change events.
@@ -167,9 +167,9 @@ namespace Friflo.Json.Flow.Graph
         ///      To receive message events use <see cref="SubscribeMessage"/> or sibling methods.
         /// </para>
         /// </summary>
-        public void SetEventHandler(SubscriptionEventHandler handler) {
+        public void SetSubscriptionHandler(SubscriptionHandler handler) {
             AssertSubscriptionHandler();
-            _intern.subscriptionEventHandler = handler;
+            _intern.subscriptionHandler = handler;
         }
 
         // --- SendMessage
@@ -245,7 +245,7 @@ namespace Friflo.Json.Flow.Graph
         
         // ------------------------------------------- internals -------------------------------------------
         internal void AssertSubscriptionHandler() {
-            if (_intern.subscriptionHandler == null)
+            if (_intern.subscriptionProcessor == null)
                 throw new InvalidOperationException("subscriptions require a SubscriptionHandler. SetSubscriptionHandler() before");
         }
         

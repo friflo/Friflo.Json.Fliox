@@ -103,7 +103,7 @@ namespace Friflo.Json.Flow.Graph
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{T}"/>.
-        /// To react on specific changes use <see cref="EntityStore.SetEventHandler"/>.
+        /// To react on specific changes use <see cref="EntityStore.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChangesFilter(IEnumerable<Change> changes, Expression<Func<T, bool>> filter) {
@@ -117,7 +117,7 @@ namespace Friflo.Json.Flow.Graph
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{T}"/>.
-        /// To react on specific changes use <see cref="EntityStore.SetEventHandler"/>.
+        /// To react on specific changes use <see cref="EntityStore.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChangesByFilter(IEnumerable<Change> changes, EntityFilter<T> filter) {
@@ -130,7 +130,7 @@ namespace Friflo.Json.Flow.Graph
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{T}"/>.
-        /// To react on specific changes use <see cref="EntityStore.SetEventHandler"/>.
+        /// To react on specific changes use <see cref="EntityStore.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChanges(IEnumerable<Change> changes) {
