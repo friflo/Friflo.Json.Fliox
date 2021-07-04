@@ -190,7 +190,7 @@ namespace Friflo.Json.Flow.Graph
         
         public EntityChanges<T> GetEntityChanges<T>(SubscriptionEvent subscriptionEvent) where T : Entity {
             var result  = GetChanges<T>();
-            var set     = result.set;
+            var set     = result._set;
             result.Clear();
             
             foreach (var task in subscriptionEvent.tasks) {
@@ -266,18 +266,18 @@ namespace Friflo.Json.Flow.Graph
     
     public class EntityChanges<T> : EntityChanges where T : Entity {
         public              ChangeInfo<T>                       Info { get; }
+        // ReSharper disable once InconsistentNaming
+        internal readonly   EntitySet<T>                        _set;
         
         public   readonly   Dictionary<string, T>               creates = new Dictionary<string, T>();
         public   readonly   Dictionary<string, T>               updates = new Dictionary<string, T>();
         public   readonly   HashSet   <string>                  deletes = new HashSet   <string>();
         public   readonly   Dictionary<string, ChangePatch<T>>  patches = new Dictionary<string, ChangePatch<T>>();
-
-        internal readonly   EntitySet<T>                        set;
         
         public override     string                              ToString() => Info.ToString();       
 
         internal EntityChanges(EntitySet<T> set) {
-            this.set = set;
+            this._set = set;
             Info = new ChangeInfo<T>();
         }
 
