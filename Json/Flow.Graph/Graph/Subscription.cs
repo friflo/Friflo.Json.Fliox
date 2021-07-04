@@ -32,8 +32,10 @@ namespace Friflo.Json.Flow.Graph
         /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
         private readonly    ConcurrentQueue <SubscriptionEvent> eventQueue;
         
-        public              int                                 EventSequence     { get; private set ;}
-        
+        public              int                                 EventSequence { get; private set ;}
+
+        public override     string                              ToString() => $"EventSequence: {EventSequence}";
+
         /// <summary>
         /// Creates a <see cref="SubscriptionProcessor"/> with the specified <see cref="synchronizationContext"/>
         /// The <see cref="synchronizationContext"/> is required to ensure that <see cref="ProcessEvent"/> is called on the
@@ -101,9 +103,9 @@ namespace Friflo.Json.Flow.Graph
         /// Tasks notifying "messages" are ignored. These message subscriptions are registered by <see cref="EntityStore.SubscribeMessage"/>.
         /// </summary>
         protected virtual void ProcessEvent(SubscriptionEvent ev) {
-            EventSequence++;
             if (store._intern.disposed)  // store may already be disposed
                 return;
+            EventSequence++;
             
             foreach (var task in ev.tasks) {
                 EntitySet set;
