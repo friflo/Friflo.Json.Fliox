@@ -21,10 +21,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
         private static async Task AssertSyncErrors(PocStore store, TestDatabase testDatabase) {
             testDatabase.ClearErrors();
             // use SendMessage() to simulate error/exception
-            const string echoSyncError = "echo-sync-error";
-            const string echoSyncException      = "echo-sync-exception";
-            testDatabase.syncErrors.Add(echoSyncError,       () => new SyncResponse{error = new ErrorResponse{message = "simulated SyncError"}});
-            testDatabase.syncErrors.Add(echoSyncException,   () => throw new SimulationException ("simulated SyncException"));
+            const string msgSyncError      = "msg-sync-error";
+            const string msgSyncException  = "msg-sync-exception";
+            testDatabase.syncErrors.Add(msgSyncError,       () => new SyncResponse{error = new ErrorResponse{message = "simulated SyncError"}});
+            testDatabase.syncErrors.Add(msgSyncException,   () => throw new SimulationException ("simulated SyncException"));
             
             var helloTask1 = store.SendMessage("HelloMessage", "Hello World 1");
             var helloTask2 = store.SendMessage("HelloMessage", "Hello World 2");
@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
 
             // --- Sync error
             {
-                var syncError = store.SendMessage(echoSyncError);
+                var syncError = store.SendMessage(msgSyncError);
                 
                 // test throwing exception in case of Sync errors
                 try {
@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             }
             // --- Sync exception
             {
-                var syncException = store.SendMessage(echoSyncException);
+                var syncException = store.SendMessage(msgSyncException);
                 
                 var sync = await store.TrySync(); // -------- Sync --------
                 
