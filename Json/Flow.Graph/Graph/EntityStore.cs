@@ -245,8 +245,10 @@ namespace Friflo.Json.Flow.Graph
         
         // ------------------------------------------- internals -------------------------------------------
         internal void AssertSubscriptionHandler() {
-            if (_intern.subscriptionProcessor == null)
-                throw new InvalidOperationException("subscriptions require a SubscriptionHandler. SetSubscriptionHandler() before");
+            if (_intern.subscriptionProcessor != null)
+                return;
+            var msg = $"subscriptions require a {nameof(SubscriptionProcessor)} - {nameof(SetSubscriptionHandler)}() before";
+            throw new InvalidOperationException(msg);
         }
         
         private async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
