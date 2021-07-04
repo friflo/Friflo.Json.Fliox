@@ -158,9 +158,10 @@ content-type: application/json
 ]}
 
 
-### subscribe to message tasks - run only for WebSocket; fails for HTTP POST
-# Filter all messages starting with one of the given "prefixes" strings.
-# "prefixes": [""] => get all message events. "prefixes": [] => unsubscribe message events
+### subscribe to all ("*") messages - run only for WebSocket; fails for HTTP POST
+# Filter all messages matching to "name".
+# "name": "*"                  => subscribe all message events.
+# "name": "*", "remove": true  => unsubscribe all message events
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
@@ -168,7 +169,7 @@ content-type: application/json
   "client": "client-1",
   "tasks": [{
     "task":     "subscribeMessage",
-    "name":     "test",
+    "name":     "*",
     "remove":   false
   }
 ]}
