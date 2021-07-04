@@ -60,9 +60,9 @@ namespace Friflo.Json.Flow.Graph.Internal
     
     internal class NonGenericMessageCallback : MessageCallback
     {
-        private  readonly   Handler   handler;
+        private  readonly   MessageHandler   handler;
         
-        internal NonGenericMessageCallback (string name, Handler handler) : base(name, handler) {
+        internal NonGenericMessageCallback (string name, MessageHandler handler) : base(name, handler) {
             this.handler = handler;
         }
         
@@ -74,9 +74,9 @@ namespace Friflo.Json.Flow.Graph.Internal
     
     internal class GenericMessageCallback<TValue> : MessageCallback
     {
-        private  readonly   Handler<TValue>   handler;
+        private  readonly   MessageHandler<TValue>   handler;
         
-        internal GenericMessageCallback (string name, Handler<TValue> handler) : base(name, handler) {
+        internal GenericMessageCallback (string name, MessageHandler<TValue> handler) : base(name, handler) {
             this.handler = handler;
         }
         

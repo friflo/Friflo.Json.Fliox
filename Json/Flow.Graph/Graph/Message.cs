@@ -112,6 +112,6 @@ namespace Friflo.Json.Flow.Graph
         }
     }
 
-    public delegate void Handler<TValue>(Message<TValue> msg);
-    public delegate void Handler        (Message         msg);
+    public delegate void MessageHandler<TValue>(Message<TValue> msg);
+    public delegate void MessageHandler        (Message         msg);
 }

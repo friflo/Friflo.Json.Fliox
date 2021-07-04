@@ -150,7 +150,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             return processor;
         }
         
-        private static readonly Handler<int> RemovedHandler = (msg) => {
+        private static readonly MessageHandler<int> RemovedHandler = (msg) => {
             Fail("unexpected call");
         };
     }

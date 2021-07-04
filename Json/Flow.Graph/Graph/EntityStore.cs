@@ -208,7 +208,7 @@ namespace Friflo.Json.Flow.Graph
         
         
         // --- SubscribeMessage
-        public SubscribeMessageTask SubscribeMessage<TValue>    (string name, Handler<TValue> handler) {
+        public SubscribeMessageTask SubscribeMessage<TValue>    (string name, MessageHandler<TValue> handler) {
             AssertSubscriptionHandler();
             var callbackHandler = new GenericMessageCallback<TValue>(name, handler);
             var task            = _intern.AddCallbackHandler(name, callbackHandler);
@@ -216,12 +216,12 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public SubscribeMessageTask SubscribeMessage<TValue>    (Handler<TValue> handler) {
+        public SubscribeMessageTask SubscribeMessage<TValue>    (MessageHandler<TValue> handler) {
             var name = typeof(TValue).Name;
             return SubscribeMessage(name, handler);
         }
         
-        public SubscribeMessageTask SubscribeMessage            (string name, Handler handler) {
+        public SubscribeMessageTask SubscribeMessage            (string name, MessageHandler handler) {
             AssertSubscriptionHandler();
             var callbackHandler = new NonGenericMessageCallback(name, handler);
             var task            = _intern.AddCallbackHandler(name, callbackHandler);
@@ -230,13 +230,13 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- UnsubscribeMessage
-        public SubscribeMessageTask UnsubscribeMessage<TValue>  (string name, Handler<TValue> handler) {
+        public SubscribeMessageTask UnsubscribeMessage<TValue>  (string name, MessageHandler<TValue> handler) {
             var task = _intern.RemoveCallbackHandler(name, handler);
             AddTask(task);
             return task;
         }
         
-        public SubscribeMessageTask UnsubscribeMessage          (string name, Handler handler) {
+        public SubscribeMessageTask UnsubscribeMessage          (string name, MessageHandler handler) {
             var task = _intern.RemoveCallbackHandler(name, handler);
             AddTask(task);
             return task;
