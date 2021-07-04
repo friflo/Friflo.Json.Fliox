@@ -15,7 +15,7 @@ namespace Friflo.Json.Flow.Sync
         public  Dictionary<string, EntityPatch> patches;
         
         internal override   TaskType            TaskType => TaskType.patch;
-        public   override   string              ToString() => "container: " + container;
+        public   override   string              TaskName =>  $"container: {container}";
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)

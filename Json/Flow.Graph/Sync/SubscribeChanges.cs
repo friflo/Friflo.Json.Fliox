@@ -16,9 +16,8 @@ namespace Friflo.Json.Flow.Sync
         public List<Change>             changes;
         public FilterOperation          filter;
         
-        internal override   TaskType    TaskType    => TaskType.subscribeChanges;
-
-        public   override   string      ToString()  => container;
+        internal override   TaskType    TaskType  => TaskType.subscribeChanges;
+        public   override   string      TaskName  => $"container: {container}";
 
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             var eventBroker = database.eventBroker;

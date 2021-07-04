@@ -26,13 +26,16 @@ namespace Friflo.Json.Flow.Sync
             
         internal abstract   Task<TaskResult>        Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext);
         internal abstract   TaskType                TaskType { get; }
-        
+        public   abstract   string                  TaskName { get; }
+
+        public   override   string                  ToString() => TaskName;
+
         internal static TaskErrorResult TaskError(CommandError error) {
             return new TaskErrorResult {type = TaskErrorResultType.DatabaseError, message = error.message};   
         }
         
         private TaskErrorResult InvalidTaskError(string error) {
-            var message = $"{error} - tasks[{index}]: {TaskType}";
+            var message = $"{error} - tasks[{index}]: {TaskType}({TaskName})";
             return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = message};   
         }
         
