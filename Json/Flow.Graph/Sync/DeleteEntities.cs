@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Sync
         public              HashSet<string>     ids;
         
         internal override   TaskType            TaskType => TaskType.delete;
-        public   override   string              TaskName => $"container: {container}";
+        public   override   string              TaskName => $"container: '{container}'";
         
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {

@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Sync
         public              JsonValue       value;
             
         internal override   TaskType        TaskType => TaskType.message;
-        public   override   string          TaskName => $"name: {name}";
+        public   override   string          TaskName => $"name: '{name}'";
 
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (name == null)
