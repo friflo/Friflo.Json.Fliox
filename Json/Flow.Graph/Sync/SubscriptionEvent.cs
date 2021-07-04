@@ -22,34 +22,56 @@ namespace Friflo.Json.Flow.Sync
         
         internal override   DatabaseEventType   EventType   => DatabaseEventType.subscription;
         public   override   string              ToString()  => GetChangeInfo().ToString();
-
-        public ChangeInfo GetChangeInfo() {
-            var changeInfo = new ChangeInfo();
+        
+        public EventInfo    GetEventInfo() {
+            var info = new EventInfo(new ChangeInfo());
             foreach (var task in tasks) {
                 switch (task.TaskType) {
                     case TaskType.create:
                         var create = (CreateEntities)task;
-                        changeInfo.creates += create.entities.Count;
+                        info.changes.creates += create.entities.Count;
                         break;
                     case TaskType.update:
                         var update = (UpdateEntities)task;
-                        changeInfo.updates += update.entities.Count;
+                        info.changes.updates += update.entities.Count;
                         break;
                     case TaskType.delete:
                         var delete = (DeleteEntities)task;
-                        changeInfo.deletes += delete.ids.Count;
+                        info.changes.deletes += delete.ids.Count;
                         break;
                     case TaskType.patch:
                         var patch = (PatchEntities)task;
-                        changeInfo.patches += patch.patches.Count;
+                        info.changes.patches += patch.patches.Count;
                         break;
                 }
             }
-            return changeInfo;
+            return info;
+        }
+
+        public ChangeInfo GetChangeInfo() {
+            var eventInfo = GetEventInfo();
+            return eventInfo.changes;
         }
     }
     
-    
+
+    public struct EventInfo {
+        public  ChangeInfo  changes;
+        public  int         messages;
+        
+        public EventInfo(ChangeInfo changes) {
+            this.changes    = changes ?? new ChangeInfo();
+            messages        = 0;
+        }
+        
+        public int Count => changes.Count;
+        
+        public override string ToString() => $"(creates: {changes.creates}, updates: {changes.updates}, deletes: {changes.deletes}, patches: {changes.patches}, messages: {messages})";
+        
+        public void Clear() {
+            changes.Clear();
+        }
+    }
 
     
     /// <summary>
