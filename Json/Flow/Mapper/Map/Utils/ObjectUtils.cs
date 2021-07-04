@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 using Friflo.Json.Burst;
 using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
-
 using Friflo.Json.Flow.Mapper.MapIL.Obj;
 
 // ReSharper disable once CheckNamespace
