@@ -76,6 +76,14 @@ namespace Friflo.Json.Flow.Database.Remote
             }
         }
         
+        private static async Task HandleServerWebSocket (HttpListenerResponse resp) {
+            const string error = "Unity HttpListener doesnt support server WebSockets";
+            byte[]  resultBytes = Encoding.UTF8.GetBytes(error);
+            SetResponseHeader(resp, "text/plain", HttpStatusCode.NotImplemented, resultBytes.Length);
+            await resp.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
+            resp.Close();
+        }
+        
         private async Task HandleListenerContext (HttpListenerContext ctx) {
             HttpListenerRequest  req  = ctx.Request;
             HttpListenerResponse resp = ctx.Response;
@@ -90,6 +98,12 @@ namespace Friflo.Json.Flow.Database.Remote
             // Possible solutions may be like:
             // (MIT License) [ninjasource/Ninja.WebSockets: A c# implementation of System.Net.WebSockets.WebSocket for .Net Standard 2.0] https://github.com/ninjasource/Ninja.WebSockets
             // (MIT License) [sta/websocket-sharp: A C# implementation of the WebSocket protocol client and server] https://github.com/sta/websocket-sharp
+#if UNITY_5_3_OR_NEWER
+            if (req.Headers["Connection"] == "Upgrade" && req.Headers["Upgrade"] != null) {
+                await HandleServerWebSocket(resp);
+                return;
+            }
+#endif
             if (req.IsWebSocketRequest) {
                 await WebSocketHostTarget.AcceptWebSocket (ctx, this).ConfigureAwait(false);
                 return;
