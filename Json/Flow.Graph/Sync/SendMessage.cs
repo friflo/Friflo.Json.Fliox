@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper.Map.Val;
 
 namespace Friflo.Json.Flow.Sync
@@ -18,8 +19,11 @@ namespace Friflo.Json.Flow.Sync
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (name == null)
                 return Task.FromResult<TaskResult>(MissingField(nameof(name)));
-            
-            TaskResult result = new SendMessageResult{ result = value };
+            var messageResult = new SendMessageResult();
+            if (name == StdMessage.Echo) {
+                messageResult.result = value;
+            }
+            TaskResult result = messageResult;
             return Task.FromResult(result);
         }
     }

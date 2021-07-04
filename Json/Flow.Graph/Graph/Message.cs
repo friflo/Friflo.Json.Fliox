@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
@@ -110,6 +111,13 @@ namespace Friflo.Json.Flow.Graph
             error = new JsonReaderException (readError.msg.ToString(), readError.Pos);
             return false;
         }
+    }
+    
+    public static class StdMessage  {
+        /// <summary>
+        /// Echoes the value specified in <see cref="EntityStore.SendMessage{T}(string, T)"/> in <see cref="SendMessageTask.ResultJson"/>
+        /// </summary>
+        public const string Echo = "Echo";
     }
 
     public delegate void MessageHandler<TValue>(Message<TValue> msg);

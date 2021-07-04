@@ -12,7 +12,7 @@ content-type: application/json
   "tasks": [
   {
     "task":  "message",
-    "name":  "test",
+    "name":  "Echo",
     "value": "some value"
   }
 ]}
