@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static async Task<PocSubscriptionHandler> CreateSubscriptionHandler (PocStore store, EventAssertion eventAssertion) {
             var subscriber = new PocSubscriptionHandler(store, eventAssertion);
             store.SetSubscriptionHandler(subscriber);
-            store.SubscribeEvents((handler, ev) => {
+            store.SetEventHandler((handler, ev) => {
                 subscriber.subscribeEventsCalls++;
                 if (handler.EventSequence == 2) {
                     var articleChanges = handler.GetEntityChanges<Article>(ev);
