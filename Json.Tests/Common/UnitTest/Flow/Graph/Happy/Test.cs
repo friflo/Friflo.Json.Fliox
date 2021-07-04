@@ -127,16 +127,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 fileDatabase.eventBroker = eventBroker;
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
-                    var listenSubscriber    = await CreateSubscriptionHandler(listenDb, EventAssertion.Changes);
+                    var listenProcessor     = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
                     using (var createStore  = new PocStore(remoteDatabase, "createStore"))
                     using (var useStore     = new PocStore(remoteDatabase, "useStore")) {
-                        var createSubscriber = await CreateSubscriptionHandler(createStore, EventAssertion.NoChanges);
+                        var createSubscriber = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
                         await TestRelationPoC.CreateStore(createStore);
                         
-                        while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
+                        while (!listenProcessor.receivedAll ) { await Task.Delay(1); }
                         
                         AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
-                        listenSubscriber.AssertCreateStoreChanges();
+                        listenProcessor.AssertCreateStoreChanges();
                         await TestStores(createStore, useStore);
                     }
                     await remoteDatabase.Close();
@@ -161,24 +161,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 fileDatabase.eventBroker = eventBroker;
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
-                    var listenSubscriber    = await CreateSubscriptionHandler(listenDb, EventAssertion.Changes);
+                    var listenProcessor    = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
                     using (var createStore  = new PocStore(fileDatabase, "createStore")) {
                         await remoteDatabase.Close();
                         // all change events sent by createStore doesnt arrive at listenDb
                         await TestRelationPoC.CreateStore(createStore);
-                        AreEqual(0, listenSubscriber.EventSequence);
+                        AreEqual(0, listenProcessor.EventSequence);
                         
                         await remoteDatabase.Connect();
                         
                         AreEqual(0, listenDb.Tasks.Count);
                         await listenDb.Sync();  // an empty Sync() is sufficient initiate re-sending all not-received change events
 
-                        while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
+                        while (!listenProcessor.receivedAll ) { await Task.Delay(1); }
 
-                        listenSubscriber.AssertCreateStoreChanges();
+                        listenProcessor.AssertCreateStoreChanges();
                         
                         await listenDb.Sync();  // all changes are received => state of store remains unchanged
-                        listenSubscriber.AssertCreateStoreChanges();
+                        listenProcessor.AssertCreateStoreChanges();
                     }
                     await remoteDatabase.Close();
                 });
@@ -196,16 +196,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase))
             using (var listenDb         = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker    = eventBroker;
-                var listenSubscriber        = await CreateSubscriptionHandler(listenDb, EventAssertion.Changes);
+                var listenProcessor        = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
                 using (var createStore      = new PocStore(loopbackDatabase, "createStore"))
                 using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
-                    var createSubscriber        = await CreateSubscriptionHandler(createStore, EventAssertion.NoChanges);
+                    var createSubscriber        = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
                     
-                    while (!listenSubscriber.receivedAll ) { await Task.Delay(1); }
+                    while (!listenProcessor.receivedAll ) { await Task.Delay(1); }
                     
                     AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
-                    listenSubscriber.AssertCreateStoreChanges();
+                    listenProcessor.AssertCreateStoreChanges();
                     await TestStores(createStore, useStore);
                 }
                 await eventBroker.FinishQueues();

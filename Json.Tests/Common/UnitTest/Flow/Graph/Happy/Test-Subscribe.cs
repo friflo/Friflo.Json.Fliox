@@ -38,26 +38,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/db"))
             using (var listenDb     = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker = eventBroker;
-                var pocSubscriber   = await CreateSubscriptionHandler(listenDb, EventAssertion.Changes);
+                var listenProcessor   = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
                 using (var createStore  = new PocStore(fileDatabase, "createStore")) {
-                    var createSubscriber = await CreateSubscriptionHandler(createStore, EventAssertion.NoChanges);
+                    var createProcessor = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
                     
-                    while (!pocSubscriber.receivedAll ) { await Task.Delay(1); }
+                    while (!listenProcessor.receivedAll ) { await Task.Delay(1); }
 
-                    AreEqual(1, createSubscriber.EventSequence);  // received no change events for changes done by itself
+                    AreEqual(1, createProcessor.EventSequence);  // received no change events for changes done by itself
                 }
-                pocSubscriber.AssertCreateStoreChanges();
-                AreEqual(8, pocSubscriber.EventSequence);           // non protected access
+                listenProcessor.AssertCreateStoreChanges();
+                AreEqual(8, listenProcessor.EventSequence);           // non protected access
                 await eventBroker.FinishQueues();
             }
         }
         
-        private static async Task<PocSubscriptionProcessor> CreateSubscriptionHandler (PocStore store, EventAssertion eventAssertion) {
-            var subscriber = new PocSubscriptionProcessor(store, eventAssertion);
-            store.SetSubscriptionProcessor(subscriber);
+        private static async Task<PocSubscriptionProcessor> CreateSubscriptionProcessor (PocStore store, EventAssertion eventAssertion) {
+            var processor = new PocSubscriptionProcessor(store, eventAssertion);
+            store.SetSubscriptionProcessor(processor);
             store.SetSubscriptionHandler((handler, ev) => {
-                subscriber.subscribeEventsCalls++;
+                processor.subscribeEventsCalls++;
                 switch (handler.EventSequence) {
                     case 2:
                         var articleChanges = handler.GetEntityChanges<Article>(ev);
@@ -73,17 +73,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             
             var subscriptions       = store.SubscribeAllChanges(Changes.All);
             var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg) => {
-                subscriber.receivedAll = true;
+                processor.receivedAll = true;
                 AreEqual("null",            msg.Json);
             });
             var subscribeMessage1   = store.SubscribeMessage<TestMessage>((msg) => {
-                subscriber.testMessageCalls++;
+                processor.testMessageCalls++;
                 TestMessage value = msg.Value;
                 AreEqual("test message",    value.text);
                 AreEqual("TestMessage",     msg.Name);
             });
             var subscribeMessage2   = store.SubscribeMessage<int>(TestRelationPoC.TestMessageInt, (msg) => {
-                subscriber.testMessageIntCalls++;
+                processor.testMessageIntCalls++;
                 AreEqual(42,                            msg.Value);
                 AreEqual("42",                          msg.Json);
                 AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual("JsonReader/error: Cannot assign number to string. Expect: System.String, got: 42 path: '(root)' at position: 2", e.Message);
             });
             var subscribeMessage3   = store.SubscribeMessage(TestRelationPoC.TestMessageInt, (msg) => {
-                subscriber.testMessageIntCalls++;
+                processor.testMessageIntCalls++;
                 var val = msg.ReadJson<int>();
                 AreEqual(42,                            val);
                 AreEqual("42",                          msg.Json);
@@ -123,7 +123,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             var unsubscribe2        = store.UnsubscribeMessage(TestRelationPoC.TestRemoveAllHandler, null);
             
             var subscribeAllMessages= store.SubscribeMessage  ("Test*", msg => {
-                subscriber.testWildcardCalls++;
+                processor.testWildcardCalls++;
             });
 
             await store.Sync(); // -------- Sync --------
@@ -140,7 +140,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             IsTrue(unsubscribe1.            Success);
             IsTrue(unsubscribe2.            Success);
             IsTrue(subscribeAllMessages.    Success);
-            return subscriber;
+            return processor;
         }
         
         private static readonly Handler<int> RemovedHandler = (msg) => {
