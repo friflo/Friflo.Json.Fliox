@@ -30,7 +30,6 @@ namespace Friflo.Json.Flow.Graph
         public   override   string                  ToString()  => StoreInfo.ToString();
         public              IReadOnlyList<SyncTask> Tasks       => _intern.sync.appTasks;
         
-        public              EntitySet               GetEntitySet(string name)   => _intern.setByName[name];
         public              int                     GetSyncCount()              => _intern.syncCount;
         
         /// <summary>
@@ -278,6 +277,12 @@ namespace Friflo.Json.Flow.Graph
             _intern.sync.appTasks.Add(task);
         }
         
+        internal EntitySet GetEntitySet(string name) {
+            if (_intern.setByName.TryGetValue(name, out var entitySet))
+                return entitySet;
+            throw new InvalidOperationException($"unknown EntitySet. name: {name}");
+        }
+
         internal EntitySet<T> GetEntitySet<T>() where T : Entity {
             Type entityType = typeof(T);
             if (_intern.setByType.TryGetValue(entityType, out EntitySet set))
