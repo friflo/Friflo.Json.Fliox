@@ -64,9 +64,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         AreEqual(6, eventInfo.Count);
                         AreEqual(6, eventInfo.changes.Count);
                         AreEqual("(creates: 6, updates: 0, deletes: 0, patches: 0, messages: 0)", eventInfo.ToString());
-                        var articleChanges = handler.GetEntityChanges<Article>(ev);
+                        var articleChanges  = handler.GetEntityChanges<Article> (ev);
+                        var producerChanges = handler.GetEntityChanges<Producer>(ev);
                         AreEqual(5, articleChanges.creates.Count);
                         AreEqual("(creates: 5, updates: 0, deletes: 0, patches: 0)", articleChanges.ToString());
+                        AreEqual("(creates: 1, updates: 0, deletes: 0, patches: 0)", producerChanges.ToString());
                         break;
                     case 8:
                         AreEqual(6, eventInfo.Count);
