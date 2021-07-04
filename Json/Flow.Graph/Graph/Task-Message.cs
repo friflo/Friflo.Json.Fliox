@@ -22,7 +22,7 @@ namespace Friflo.Json.Flow.Graph
 
         /// <summary>Return the result of a message used as a command as JSON.
         /// JSON is "null" if the message doesnt return a result.
-        /// For type safe access of the result use <see cref="GetResult{T}"/></summary>
+        /// For type safe access of the result use <see cref="ReadResult{T}"/></summary>
         public              string          ResultJson  => IsOk("MessageTask.Result", out Exception e) ? result : throw e;
         
         internal SendMessageTask(string name, string value, ObjectReader reader) {
@@ -31,13 +31,39 @@ namespace Friflo.Json.Flow.Graph
             this.reader = reader;
         }
 
-        /// <summary>Return a type safe result of a message used as a command.
-        /// The result is null if the message doesnt return a result.</summary>
-        public T GetResult<T>() {
+        /// <summary>
+        /// Return a type safe result of a message (message used as a command).
+        /// The result is null if the message doesnt return a result.
+        /// Throws <see cref="JsonReaderException"/> if read fails.
+        /// </summary>
+        public T ReadResult<T>() {
             var ok = IsOk("MessageTask.Result", out Exception e);
             if (ok) {
-                T resultValue = reader.Read<T>(result);
-                return resultValue;
+                var resultValue = reader.Read<T>(result);
+                if (reader.Success)
+                    return resultValue;
+                var error = reader.Error;
+                throw new JsonReaderException (error.msg.ToString(), error.Pos);
+            }
+            throw e;
+        }
+        
+        /// <summary>
+        /// Return a type safe result of a message (message used as a command).
+        /// The result is null if the message doesnt return a result.
+        /// Return false if read fails and set <see cref="error"/>.
+        /// </summary>
+        public bool TryReadResult<T>(out T resultValue, out JsonReaderException error) {
+            var ok = IsOk("MessageTask.Result", out Exception e);
+            if (ok) {
+                resultValue = reader.Read<T>(result);
+                if (reader.Success) {
+                    error = null;
+                    return true;
+                }
+                var readError = reader.Error;
+                error = new JsonReaderException (readError.msg.ToString(), readError.Pos);
+                return false;
             }
             throw e;
         }

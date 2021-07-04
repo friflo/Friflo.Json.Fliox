@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 using static NUnit.Framework.Assert;
 
@@ -36,9 +37,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             await store.Sync(); // -------- Sync --------
             
             AreEqual("\"Hello World 1\"",   helloTask1.ResultJson);
-            AreEqual("Hello World 1",       helloTask1.GetResult<string>());
+            AreEqual("Hello World 1",       helloTask1.ReadResult<string>());
             
-            AreEqual("Hello World 2",       helloTask2.GetResult<string>());
+            IsTrue(helloTask1.TryReadResult<string>(out var helloTask1Result, out _));
+            AreEqual("Hello World 1",       helloTask1Result);
+            
+            var e = Throws<JsonReaderException>(() => helloTask1.ReadResult<int>());
+            AreEqual("JsonReader/error: Cannot assign string to int. Expect: System.Int32, got: 'Hello World 1' path: '(root)' at position: 15", e.Message);
+            
+            helloTask1.TryReadResult<int>(out _, out e);
+            AreEqual("JsonReader/error: Cannot assign string to int. Expect: System.Int32, got: 'Hello World 1' path: '(root)' at position: 15", e.Message);
+
+            AreEqual("Hello World 2",       helloTask2.ReadResult<string>());
             
 
             // --- Sync error
