@@ -33,7 +33,6 @@ namespace Friflo.Json.Flow.Graph
         private readonly    ConcurrentQueue <SubscriptionEvent> eventQueue;
         
         public              int                                 EventSequence     { get; private set ;}
-        public              ChangeInfo<T>                       GetChangeInfo<T>() where T : Entity => GetChanges<T>().sum;
         
         /// <summary>
         /// Creates a <see cref="SubscriptionHandler"/> with the specified <see cref="synchronizationContext"/>
@@ -207,7 +206,7 @@ namespace Friflo.Json.Flow.Graph
                             var     entity  = peer.Entity;
                             result.creates.Add(entity.id, entity);
                         }
-                        result.info.creates += create.entities.Count;
+                        result.Info.creates += create.entities.Count;
                         break;
                     
                     case TaskType.update:
@@ -220,7 +219,7 @@ namespace Friflo.Json.Flow.Graph
                             var     entity  = peer.Entity;
                             result.updates.Add(entity.id, entity);
                         }
-                        result.info.updates += update.entities.Count;
+                        result.Info.updates += update.entities.Count;
                         break;
                     
                     case TaskType.delete:
@@ -230,7 +229,7 @@ namespace Friflo.Json.Flow.Graph
                         foreach (var id in delete.ids) {
                             result.deletes.Add(id);
                         }
-                        result.info.deletes += delete.ids.Count;
+                        result.Info.deletes += delete.ids.Count;
                         break;
                     
                     case TaskType.patch:
@@ -245,11 +244,10 @@ namespace Friflo.Json.Flow.Graph
                             var         changePatch = new ChangePatch<T>(entity, entityPatch.patches);
                             result.patches.Add(id, changePatch);
                         }
-                        result.info.patches += patch.patches.Count;
+                        result.Info.patches += patch.patches.Count;
                         break;
                 }
             }
-            result.sum.Add(result.info);
             return result;
         }
     }
@@ -267,20 +265,20 @@ namespace Friflo.Json.Flow.Graph
     public abstract class EntityChanges { }
     
     public class EntityChanges<T> : EntityChanges where T : Entity {
+        public              ChangeInfo<T>                       Info { get; }
+        
         public   readonly   Dictionary<string, T>               creates = new Dictionary<string, T>();
         public   readonly   Dictionary<string, T>               updates = new Dictionary<string, T>();
         public   readonly   HashSet   <string>                  deletes = new HashSet   <string>();
         public   readonly   Dictionary<string, ChangePatch<T>>  patches = new Dictionary<string, ChangePatch<T>>();
 
-        public   readonly   ChangeInfo<T>                       sum     = new ChangeInfo<T>();
-        public   readonly   ChangeInfo<T>                       info    = new ChangeInfo<T>();
-
         internal readonly   EntitySet<T>                        set;
         
-        public override     string                              ToString() => info.ToString();       
+        public override     string                              ToString() => Info.ToString();       
 
         internal EntityChanges(EntitySet<T> set) {
             this.set = set;
+            Info = new ChangeInfo<T>();
         }
 
         internal void Clear() {
@@ -289,7 +287,7 @@ namespace Friflo.Json.Flow.Graph
             deletes.Clear();
             patches.Clear();
             //
-            info.Clear();
+            Info.Clear();
         }
     }
     

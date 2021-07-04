@@ -49,7 +49,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 }
                 pocSubscriber.AssertCreateStoreChanges();
                 AreEqual(8, pocSubscriber.EventSequence);           // non protected access
-                AreSimilar("(creates: 9, updates: 0, deletes: 4, patches: 2)",  pocSubscriber.GetChangeInfo<Article>());  // non protected access
                 await eventBroker.FinishQueues();
             }
         }
@@ -60,10 +59,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             store.SubscribeEvents((handler, ev) => {
                 subscriber.subscribeEventsCalls++;
                 if (handler.EventSequence == 2) {
-                    // todo
-                    // var articleChanges = handler.GetEntityChanges<Article>(ev);
-                    // AreEqual(5, articleChanges.creates.Count);
-                    // AreEqual("(creates: 5, updates: 0, deletes: 0, patches: 0)", articleChanges.ToString());
+                    var articleChanges = handler.GetEntityChanges<Article>(ev);
+                    AreEqual(5, articleChanges.creates.Count);
+                    AreEqual("(creates: 5, updates: 0, deletes: 0, patches: 0)", articleChanges.ToString());
                 }
             });
             
@@ -222,12 +220,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private  void AssertChangeEvent (EntityChanges<Article> articleChanges) {
             switch (EventSequence) {
                 case 1:
-                    AreEqual("(creates: 2, updates: 0, deletes: 1, patches: 0)", articleChanges.info.ToString());
+                    AreEqual("(creates: 2, updates: 0, deletes: 1, patches: 0)", articleChanges.Info.ToString());
                     AreEqual("iPad Pro", articleChanges.creates["article-ipad"].name);
                     IsTrue(articleChanges.deletes.Contains("article-iphone"));
                     break;
                 case 4:
-                    AreEqual("(creates: 0, updates: 0, deletes: 1, patches: 1)", articleChanges.info.ToString());
+                    AreEqual("(creates: 0, updates: 0, deletes: 1, patches: 1)", articleChanges.Info.ToString());
                     ChangePatch<Article> articlePatch = articleChanges.patches["article-1"];
                     AreEqual("article-1",               articlePatch.ToString());
                     var articlePatch0 = (PatchReplace)  articlePatch.patches[0];
@@ -254,13 +252,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 
             AreEqual(1, testMessageCalls);
             AreEqual(2, testMessageIntCalls);
-            
-            
-            IsTrue(orderSum      .IsEqual(GetChangeInfo<Order>()));
-            IsTrue(customerSum   .IsEqual(GetChangeInfo<Customer>()));
-            IsTrue(articleSum    .IsEqual(GetChangeInfo<Article>()));
-            IsTrue(producerSum   .IsEqual(GetChangeInfo<Producer>()));
-            IsTrue(employeeSum   .IsEqual(GetChangeInfo<Employee>()));
         }
     }
     
