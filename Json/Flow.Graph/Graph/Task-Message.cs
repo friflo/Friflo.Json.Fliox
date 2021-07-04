@@ -20,6 +20,9 @@ namespace Friflo.Json.Flow.Graph
         
         public   override   string          Details     => $"MessageTask (name: {name})";
 
+        /// <summary>Return the result of a message used as a command as JSON.
+        /// JSON is "null" if the message doesnt return a result.
+        /// For type safe access of the result use <see cref="GetResult{T}"/></summary>
         public              string          ResultJson  => IsOk("MessageTask.Result", out Exception e) ? result : throw e;
         
         internal SendMessageTask(string name, string value, ObjectReader reader) {
@@ -27,7 +30,9 @@ namespace Friflo.Json.Flow.Graph
             this.value  = new JsonValue { json = value };
             this.reader = reader;
         }
-        
+
+        /// <summary>Return a type safe result of a message used as a command.
+        /// The result is null if the message doesnt return a result.</summary>
         public T GetResult<T>() {
             var ok = IsOk("MessageTask.Result", out Exception e);
             if (ok) {
