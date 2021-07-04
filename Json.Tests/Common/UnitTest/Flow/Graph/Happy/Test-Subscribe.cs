@@ -58,10 +58,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             store.SetSubscriptionProcessor(subscriber);
             store.SetSubscriptionHandler((handler, ev) => {
                 subscriber.subscribeEventsCalls++;
-                if (handler.EventSequence == 2) {
-                    var articleChanges = handler.GetEntityChanges<Article>(ev);
-                    AreEqual(5, articleChanges.creates.Count);
-                    AreEqual("(creates: 5, updates: 0, deletes: 0, patches: 0)", articleChanges.ToString());
+                switch (handler.EventSequence) {
+                    case 2:
+                        var articleChanges = handler.GetEntityChanges<Article>(ev);
+                        AreEqual(5, articleChanges.creates.Count);
+                        AreEqual("(creates: 5, updates: 0, deletes: 0, patches: 0)", articleChanges.ToString());
+                        break;
+                    case 8:
+                        var messages = handler.GetMessages(ev);
+                        AreEqual(5, messages.Count);
+                        break;
                 }
             });
             

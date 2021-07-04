@@ -175,7 +175,7 @@ namespace Friflo.Json.Flow.Graph
             return (EntityChanges<T>)result;
         }
         
-        protected List<Message> GetMessages(SubscriptionEvent subscriptionEvent) {
+        public List<Message> GetMessages(SubscriptionEvent subscriptionEvent) {
             messages.Clear();
             foreach (var task in subscriptionEvent.tasks) {
                 if (task.TaskType != TaskType.message)
