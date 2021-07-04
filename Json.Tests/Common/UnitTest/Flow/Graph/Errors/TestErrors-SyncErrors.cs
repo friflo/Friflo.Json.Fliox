@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             var helloTask3 = store.SendMessage(StdMessage.Echo);
             // var helloTask3 = store.SendMessage<string, string>("HelloMessage", "Hello back 3");
             
-            AreEqual("MessageTask (name: Echo)", helloTask1.ToString());
+            AreEqual("SendMessageTask (name: Echo)", helloTask1.ToString());
 
             await store.Sync(); // -------- Sync --------
             
