@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Sync
         public              List<DatabaseTask>  tasks;
         
         internal override   DatabaseEventType   EventType   => DatabaseEventType.subscription;
-        public   override   string              ToString()  => GetChangeInfo().ToString();
+        public   override   string              ToString()  => GetEventInfo().ToString();
         
         public EventInfo    GetEventInfo() {
             var info = new EventInfo(new ChangeInfo());
@@ -43,6 +43,9 @@ namespace Friflo.Json.Flow.Sync
                         var patch = (PatchEntities)task;
                         info.changes.patches += patch.patches.Count;
                         break;
+                    case TaskType.message:
+                        info.messages++;
+                        break;
                 }
             }
             return info;
@@ -55,28 +58,33 @@ namespace Friflo.Json.Flow.Sync
     }
     
 
+    /// <summary>
+    /// <see cref="EventInfo"/> is never de-/serialized.
+    /// It purpose is to get all aggregated information about a <see cref="SubscriptionEvent"/> by  by <see cref="SubscriptionEvent.GetEventInfo"/>.
+    /// </summary>
     public struct EventInfo {
-        public  ChangeInfo  changes;
-        public  int         messages;
+        public  readonly    ChangeInfo  changes;
+        public              int         messages;
         
         public EventInfo(ChangeInfo changes) {
             this.changes    = changes ?? new ChangeInfo();
             messages        = 0;
         }
         
-        public int Count => changes.Count;
+        public int Count => changes.Count + messages;
         
         public override string ToString() => $"(creates: {changes.creates}, updates: {changes.updates}, deletes: {changes.deletes}, patches: {changes.patches}, messages: {messages})";
         
         public void Clear() {
             changes.Clear();
+            messages = 0;
         }
     }
 
     
     /// <summary>
     /// <see cref="ChangeInfo"/> is never de-/serialized.
-    /// It purpose is to get aggregated information about a <see cref="SubscriptionEvent"/> by <see cref="SubscriptionEvent.GetChangeInfo"/>
+    /// It purpose is to get aggregated change information about a <see cref="SubscriptionEvent"/> by <see cref="SubscriptionEvent.GetChangeInfo"/>.
     /// </summary>
     public class ChangeInfo {
         public  int creates;
