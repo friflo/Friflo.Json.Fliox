@@ -8,6 +8,16 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- event -----------------------------------
     public class SubscriptionEvent : DatabaseEvent
     {
+        /// <summary>
+        /// Contains the events an application subscribed. These are:
+        /// <list type="bullet">
+        ///   <item><see cref="CreateEntities"/></item>
+        ///   <item><see cref="UpdateEntities"/></item>
+        ///   <item><see cref="DeleteEntities"/></item>
+        ///   <item><see cref="PatchEntities"/></item>
+        ///   <item><see cref="SendMessage"/></item>
+        /// </list>
+        /// </summary>
         public              List<DatabaseTask>  tasks;
         
         internal override   DatabaseEventType   EventType   => DatabaseEventType.subscription;

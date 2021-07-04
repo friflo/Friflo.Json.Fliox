@@ -90,7 +90,8 @@ namespace Friflo.Json.Flow.Graph
         /// <summary>
         /// Process the <see cref="SubscriptionEvent.tasks"/> of the given <see cref="SubscriptionEvent"/>.
         /// These <see cref="SubscriptionEvent.tasks"/> are "messages" resulting from subscriptions registered by
-        /// methods like <see cref="EntitySet{T}.SubscribeChanges"/> or <see cref="EntityStore.SubscribeAllChanges"/>.
+        /// methods like <see cref="EntitySet{T}.SubscribeChanges"/>, <see cref="EntityStore.SubscribeAllChanges"/> or
+        /// <see cref="EntityStore.SubscribeMessage"/>.
         /// <br></br>
         /// Tasks notifying about database changes are applied to the <see cref="EntityStore"/> the <see cref="SubscriptionProcessor"/>
         /// is attached to.
