@@ -26,7 +26,7 @@ namespace Friflo.Json.Flow.Utils
         internal abstract T     GetInstance();
         internal abstract void  Return(T instance);
         public   abstract void  Dispose();
-        public   abstract void  AssertNoLeaks();
+        public   abstract int   Usage { get; }
         
         public Pooled<T>        Get() {
             return new Pooled<T>(this, GetInstance());
@@ -39,8 +39,9 @@ namespace Friflo.Json.Flow.Utils
         private readonly    ConcurrentStack<T>  instances   = new ConcurrentStack<T>();
         private readonly    Func<T>             factory;
         
-        public              int                 Count => stack.Count;
-        public  override    string              ToString() => $"Count: {stack.Count}";
+        public              int                 Count       => stack.Count;
+        public  override    int                 Usage       => 0;
+        public  override    string              ToString()  => $"Count: {stack.Count}";
 
         public SharedPool(Func<T> factory) {
             this.factory = factory;
@@ -65,10 +66,6 @@ namespace Friflo.Json.Flow.Utils
         internal override void Return(T instance) {
             stack.Push(instance);
         }
-
-        public override void AssertNoLeaks() {
-            throw new InvalidOperationException("Dont expect calling SharedPool<>.AssertNoLeaks()");
-        }
     }
     
     public class LocalPool<T> : ObjectPool<T> where T : IDisposable
@@ -77,7 +74,8 @@ namespace Friflo.Json.Flow.Utils
         private readonly    string          field;
         private             int             count;
         
-        public  override    string          ToString() => pool.ToString();
+        public  override    int             Usage       => count;
+        public  override    string          ToString()  => pool.ToString();
 
         public LocalPool(ObjectPool<T> pool, string field) {
             this.pool   = pool;
@@ -94,11 +92,6 @@ namespace Friflo.Json.Flow.Utils
         internal override void Return(T instance) {
             count--;
             pool.Return(instance);
-        }
-
-        public override void AssertNoLeaks() {
-            if (count != 0)
-                throw new InvalidOperationException($"ObjectPool<{typeof(T).Name}> leak detected. Count: {count}, field: {field}");
         }
     }
 }

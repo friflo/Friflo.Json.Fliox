@@ -23,10 +23,12 @@ namespace Friflo.Json.Flow.Database
         public                  string          clientId;
         public  readonly        IPools          pools;
         public  readonly        IEventTarget    eventTarget;
+        private                 PoolUsage       startUsage;
         
         public MessageContext (IPools pools, IEventTarget eventTarget) {
             this.pools          = pools;
             this.eventTarget    = eventTarget;
+            startUsage          = pools.PoolUsage;
         }
         
         public MessageContext (IPools pools, IEventTarget eventTarget, string clientId) {
@@ -36,7 +38,23 @@ namespace Friflo.Json.Flow.Database
         }
         
         public void Release() {
-            pools.AssertNoLeaks();
+            startUsage.AssertEqual(pools.PoolUsage);
+        }
+    }
+    
+    public struct PoolUsage {
+        internal int    patcherCount;
+        internal int    selectorCount;
+        internal int    evaluatorCount;
+        internal int    objectMapperCount;
+        internal int    entityValidatorCount;
+        
+        public void AssertEqual(in PoolUsage other) {
+            if (patcherCount            != other.patcherCount)          throw new InvalidOperationException("detect patcher leak");
+            if (selectorCount           != other.selectorCount)         throw new InvalidOperationException("detect selector leak");
+            if (evaluatorCount          != other.evaluatorCount)        throw new InvalidOperationException("detect evaluator leak");
+            if (objectMapperCount       != other.objectMapperCount)     throw new InvalidOperationException("detect objectMapper leak");
+            if (entityValidatorCount    != other.entityValidatorCount)  throw new InvalidOperationException("detect entityValidator leak");
         }
     }
     
@@ -50,7 +68,7 @@ namespace Friflo.Json.Flow.Database
         ObjectPool<ObjectMapper>    ObjectMapper    { get; }
         ObjectPool<EntityValidator> EntityValidator { get; }
         
-        void                        AssertNoLeaks ();
+        PoolUsage                   PoolUsage       { get; }
     }
     
     public class Pools : IPools, IDisposable 
@@ -87,13 +105,16 @@ namespace Friflo.Json.Flow.Database
             ObjectMapper.   Dispose();
             EntityValidator.Dispose();
         }
-        
-        public void AssertNoLeaks() {
-            JsonPatcher.    AssertNoLeaks();
-            ScalarSelector. AssertNoLeaks();
-            JsonEvaluator.  AssertNoLeaks();
-            ObjectMapper.   AssertNoLeaks();
-            EntityValidator.AssertNoLeaks();
-        }
+
+        public PoolUsage PoolUsage { get {
+            var usage = new PoolUsage {
+                patcherCount            = JsonPatcher       .Usage,
+                selectorCount           = ScalarSelector    .Usage,
+                evaluatorCount          = JsonEvaluator     .Usage,
+                objectMapperCount       = ObjectMapper      .Usage,
+                entityValidatorCount    = EntityValidator   .Usage
+            };
+            return usage;
+        } }
     }
 }
