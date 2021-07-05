@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Burst;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
@@ -25,15 +26,15 @@ namespace Friflo.Json.Flow.Database
         public  readonly        IEventTarget    eventTarget;
         private                 PoolUsage       startUsage;
         
-        public MessageContext (IPools pools, IEventTarget eventTarget) {
+        public MessageContext (IEventTarget eventTarget) {
+            pools               = new Pools(Pools.SharedPools);
             startUsage          = pools.PoolUsage;
-            this.pools          = pools;
             this.eventTarget    = eventTarget;
         }
         
-        public MessageContext (IPools pools, IEventTarget eventTarget, string clientId) {
+        public MessageContext (IEventTarget eventTarget, string clientId) {
+            pools               = new Pools(Pools.SharedPools);
             startUsage          = pools.PoolUsage;
-            this.pools          = pools;
             this.eventTarget    = eventTarget;
             this.clientId       = clientId;
         }
@@ -72,7 +73,7 @@ namespace Friflo.Json.Flow.Database
         PoolUsage                   PoolUsage       { get; }
     }
     
-    public class Pools : IPools, IDisposable 
+    public readonly struct Pools : IPools, IDisposable
     {
         public ObjectPool<JsonPatcher>      JsonPatcher     { get; }
         public ObjectPool<ScalarSelector>   ScalarSelector  { get; }
@@ -80,10 +81,10 @@ namespace Friflo.Json.Flow.Database
         public ObjectPool<ObjectMapper>     ObjectMapper    { get; }
         public ObjectPool<EntityValidator>  EntityValidator { get; }
         
-        public   static readonly    Pools   SharedPools = new Pools();
+        public   static readonly    Pools   SharedPools = new Pools(Default.Constructor);
         
         // constructor present for code navigation
-        private Pools() {
+        private Pools(Default _) {
             JsonPatcher      = new SharedPool<JsonPatcher>      (() => new JsonPatcher());
             ScalarSelector   = new SharedPool<ScalarSelector>   (() => new ScalarSelector());
             JsonEvaluator    = new SharedPool<JsonEvaluator>    (() => new JsonEvaluator());

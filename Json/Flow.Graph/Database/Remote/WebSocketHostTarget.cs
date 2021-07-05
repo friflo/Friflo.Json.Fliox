@@ -96,8 +96,7 @@ namespace Friflo.Json.Flow.Database.Remote
                     
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
                         var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
-                        var contextPools    = new Pools(Pools.SharedPools);
-                        var messageContext  = new MessageContext(contextPools, this);
+                        var messageContext  = new MessageContext(this);
                         var result          = await remoteHost.ExecuteRequestJson(requestContent, messageContext, ProtocolType.BiDirect).ConfigureAwait(false);
                         messageContext.Release();
                         byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);

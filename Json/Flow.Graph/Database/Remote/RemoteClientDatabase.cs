@@ -38,8 +38,7 @@ namespace Friflo.Json.Flow.Database.Remote
         
         protected void ProcessEvent(DatabaseEvent ev) {
             var eventTarget     = clientTargets[ev.targetId];
-            var contextPools    = new Pools(Pools.SharedPools);
-            var messageContext  = new MessageContext(contextPools, eventTarget);
+            var messageContext  = new MessageContext(eventTarget);
             eventTarget.ProcessEvent(ev, messageContext);
             messageContext.Release();
         }

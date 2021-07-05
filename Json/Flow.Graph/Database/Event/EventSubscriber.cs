@@ -117,10 +117,9 @@ namespace Friflo.Json.Flow.Database.Event
             if (!eventTarget.IsOpen())
                 return;
             
-            var contextPools    = new Pools(Pools.SharedPools);
             while (DequeueEvent(out var ev)) {
                 try {
-                    var messageContext = new MessageContext(contextPools, eventTarget);
+                    var messageContext = new MessageContext(eventTarget);
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
                     await eventTarget.ProcessEvent(ev, messageContext).ConfigureAwait(false);
