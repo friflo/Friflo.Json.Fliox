@@ -47,6 +47,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     // --- store containers
     public class PocStore : EntityStore
     {
+        public readonly EntitySet<Order>      orders;
+        public readonly EntitySet<Customer>   customers;
+        public readonly EntitySet<Article>    articles;
+        public readonly EntitySet<Producer>   producers;
+        public readonly EntitySet<Employee>   employees;
+        
         public PocStore(EntityDatabase database, string clientId) : base (database, TestGlobals.typeStore, clientId) {
             orders      = new EntitySet<Order>       (this);
             customers   = new EntitySet<Customer>    (this);
@@ -54,12 +60,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             producers   = new EntitySet<Producer>    (this);
             employees   = new EntitySet<Employee>    (this);
         }
-
-        public readonly EntitySet<Order>      orders;
-        public readonly EntitySet<Customer>   customers;
-        public readonly EntitySet<Article>    articles;
-        public readonly EntitySet<Producer>   producers;
-        public readonly EntitySet<Employee>   employees;
     }
     
     class TestMessage {
