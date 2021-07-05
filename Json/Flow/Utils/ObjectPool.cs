@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Utils
     public abstract class ObjectPool<T> where T : IDisposable
     {
         internal abstract T     GetInstance();
-        internal abstract void  Return(T obj);
+        internal abstract void  Return(T instance);
         public   abstract void  Dispose();
         public   abstract void  AssertNoLeaks();
         
@@ -35,7 +35,8 @@ namespace Friflo.Json.Flow.Utils
     
     public class SharedPool<T> : ObjectPool<T> where T : IDisposable
     {
-        private readonly    ConcurrentStack<T>  stack = new ConcurrentStack<T>();
+        private readonly    ConcurrentStack<T>  stack       = new ConcurrentStack<T>();
+        private readonly    ConcurrentBag<T>    instances   = new ConcurrentBag<T>();
         private readonly    Func<T>             factory;
         
         public              int                 Count => stack.Count;
@@ -46,21 +47,23 @@ namespace Friflo.Json.Flow.Utils
         }
 
         public override void Dispose() {
-            foreach (var obj in stack) {
-                obj.Dispose();
+            foreach (var instance in instances) {
+                instance.Dispose();
             }
             stack.Clear();
+            instances.Clear();
         }
         
         internal override T GetInstance() {
-            if (!stack.TryPop(out T obj)) {
-                obj = factory();
+            if (!stack.TryPop(out T instance)) {
+                instance = factory();
+                instances.Add(instance);
             }
-            return obj;
+            return instance;
         }
         
-        internal override void Return(T obj) {
-            stack.Push(obj);
+        internal override void Return(T instance) {
+            stack.Push(instance);
         }
 
         public override void AssertNoLeaks() {
@@ -88,9 +91,9 @@ namespace Friflo.Json.Flow.Utils
             return pool.GetInstance();
         }
         
-        internal override void Return(T obj) {
+        internal override void Return(T instance) {
             count--;
-            pool.Return(obj);
+            pool.Return(instance);
         }
 
         public override void AssertNoLeaks() {
