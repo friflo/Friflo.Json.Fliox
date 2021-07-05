@@ -71,7 +71,8 @@ namespace Friflo.Json.Flow.Graph
         // --- Sync / TrySync
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest();
-            var messageContext = new MessageContext(_intern.contextPools, _intern.eventTarget, _intern.clientId);
+            var contextPools   = new Pools(Pools.SharedPools);
+            var messageContext = new MessageContext(contextPools, _intern.eventTarget, _intern.clientId);
             SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
             var result = HandleSyncResponse(syncRequest, response);
 
@@ -82,7 +83,8 @@ namespace Friflo.Json.Flow.Graph
         
         public async Task<SyncResult> TrySync() {
             SyncRequest syncRequest = CreateSyncRequest();
-            var messageContext = new MessageContext(_intern.contextPools, _intern.eventTarget, _intern.clientId);
+            var contextPools   = new Pools(Pools.SharedPools);
+            var messageContext = new MessageContext(contextPools, _intern.eventTarget, _intern.clientId);
             SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
             var result = HandleSyncResponse(syncRequest, response);
             messageContext.Release();
@@ -92,7 +94,8 @@ namespace Friflo.Json.Flow.Graph
         /// <see cref="SyncWait"/> is redundant -> made private. Keep it for exploring (Unity)
         private void SyncWait() {
             SyncRequest syncRequest = CreateSyncRequest();
-            var messageContext = new MessageContext(_intern.contextPools, _intern.eventTarget, _intern.clientId);
+            var contextPools   = new Pools(Pools.SharedPools);
+            var messageContext = new MessageContext(contextPools, _intern.eventTarget, _intern.clientId);
             var responseTask = ExecuteSync(syncRequest, messageContext);
             // responseTask.Wait();  
             SyncResponse response = responseTask.Result;  // <--- synchronous Sync point!!

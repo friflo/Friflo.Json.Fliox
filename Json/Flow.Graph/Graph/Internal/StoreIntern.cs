@@ -24,7 +24,6 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal readonly   EntityDatabase                          database;
         internal readonly   Dictionary<Type,   EntitySet>           setByType;
         internal readonly   Dictionary<string, EntitySet>           setByName;
-        internal readonly   Pools                                   contextPools;
         internal readonly   EventTarget                             eventTarget;
         internal readonly   Dictionary<string, MessageSubscriber>   subscriptions;
         internal readonly   List<MessageSubscriber>                 subscriptionsPrefix;
@@ -63,7 +62,6 @@ namespace Friflo.Json.Flow.Graph.Internal
             setByType                   = new Dictionary<Type, EntitySet>();
             setByName                   = new Dictionary<string, EntitySet>();
             objectPatcher               = new ObjectPatcher(jsonMapper);
-            contextPools                = new Pools(Pools.SharedPools);
             subscriptions               = new Dictionary<string, MessageSubscriber>();
             subscriptionsPrefix         = new List<MessageSubscriber>();
             messageReader               = new ObjectReader(typeStore, new NoThrowHandler());
@@ -80,7 +78,6 @@ namespace Friflo.Json.Flow.Graph.Internal
             messageReader.Dispose();
             subscriptionsPrefix.Clear();
             subscriptions.Clear();
-            contextPools.Dispose(); // dispose nothing - LocalPool's are used
             database.RemoveEventTarget(clientId);
             objectPatcher.Dispose();
             jsonMapper.Dispose();
