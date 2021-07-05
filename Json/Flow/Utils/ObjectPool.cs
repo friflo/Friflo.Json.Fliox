@@ -36,7 +36,7 @@ namespace Friflo.Json.Flow.Utils
     public class SharedPool<T> : ObjectPool<T> where T : IDisposable
     {
         private readonly    ConcurrentStack<T>  stack       = new ConcurrentStack<T>();
-        private readonly    ConcurrentBag<T>    instances   = new ConcurrentBag<T>();
+        private readonly    ConcurrentStack<T>  instances   = new ConcurrentStack<T>();
         private readonly    Func<T>             factory;
         
         public              int                 Count => stack.Count;
@@ -57,7 +57,7 @@ namespace Friflo.Json.Flow.Utils
         internal override T GetInstance() {
             if (!stack.TryPop(out T instance)) {
                 instance = factory();
-                instances.Add(instance);
+                instances.Push(instance);
             }
             return instance;
         }
