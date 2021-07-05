@@ -73,7 +73,7 @@ namespace Friflo.Json.Flow.Database
         PoolUsage                   PoolUsage       { get; }
     }
     
-    public readonly struct Pools : IPools, IDisposable
+    public class Pools : IPools, IDisposable
     {
         public ObjectPool<JsonPatcher>      JsonPatcher     { get; }
         public ObjectPool<ScalarSelector>   ScalarSelector  { get; }
