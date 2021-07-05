@@ -121,7 +121,7 @@ namespace Friflo.Json.Flow.Graph
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public List<SyncTask> SubscribeAllChanges(IEnumerable<Change> changes) {
-            AssertSubscriptionHandler();
+            AssertSubscriptionProcessor();
             var tasks = new List<SyncTask>();
             foreach (var setPair in _intern.setByType) {
                 var set = setPair.Value;
@@ -167,7 +167,7 @@ namespace Friflo.Json.Flow.Graph
         /// </para>
         /// </summary>
         public void SetSubscriptionHandler(SubscriptionHandler handler) {
-            AssertSubscriptionHandler();
+            AssertSubscriptionProcessor();
             _intern.subscriptionHandler = handler;
         }
 
@@ -208,7 +208,7 @@ namespace Friflo.Json.Flow.Graph
         
         // --- SubscribeMessage
         public SubscribeMessageTask SubscribeMessage<TValue>    (string name, MessageHandler<TValue> handler) {
-            AssertSubscriptionHandler();
+            AssertSubscriptionProcessor();
             var callbackHandler = new GenericMessageCallback<TValue>(name, handler);
             var task            = _intern.AddCallbackHandler(name, callbackHandler);
             AddTask(task);
@@ -221,7 +221,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public SubscribeMessageTask SubscribeMessage            (string name, MessageHandler handler) {
-            AssertSubscriptionHandler();
+            AssertSubscriptionProcessor();
             var callbackHandler = new NonGenericMessageCallback(name, handler);
             var task            = _intern.AddCallbackHandler(name, callbackHandler);
             AddTask(task);
@@ -243,10 +243,10 @@ namespace Friflo.Json.Flow.Graph
 
         
         // ------------------------------------------- internals -------------------------------------------
-        internal void AssertSubscriptionHandler() {
+        internal void AssertSubscriptionProcessor() {
             if (_intern.subscriptionProcessor != null)
                 return;
-            var msg = $"subscriptions require a {nameof(SubscriptionProcessor)} - {nameof(SetSubscriptionHandler)}() before";
+            var msg = $"subscriptions require a {nameof(SubscriptionProcessor)} - {nameof(SetSubscriptionProcessor)}() before";
             throw new InvalidOperationException(msg);
         }
         

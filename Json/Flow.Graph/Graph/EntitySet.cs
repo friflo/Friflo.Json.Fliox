@@ -107,7 +107,7 @@ namespace Friflo.Json.Flow.Graph
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChangesFilter(IEnumerable<Change> changes, Expression<Func<T, bool>> filter) {
-            intern.store.AssertSubscriptionHandler();
+            intern.store.AssertSubscriptionProcessor();
             var op = Operation.FromFilter(filter);
             var task = sync.SubscribeChangesFilter(changes, op);
             intern.store.AddTask(task);
@@ -121,7 +121,7 @@ namespace Friflo.Json.Flow.Graph
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChangesByFilter(IEnumerable<Change> changes, EntityFilter<T> filter) {
-            intern.store.AssertSubscriptionHandler();
+            intern.store.AssertSubscriptionProcessor();
             var task = sync.SubscribeChangesFilter(changes, filter.op);
             intern.store.AddTask(task);
             return task;
@@ -134,7 +134,7 @@ namespace Friflo.Json.Flow.Graph
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChanges(IEnumerable<Change> changes) {
-            intern.store.AssertSubscriptionHandler();
+            intern.store.AssertSubscriptionProcessor();
             var all = Operation.FilterTrue;
             var task = sync.SubscribeChangesFilter(changes, all);
             intern.store.AddTask(task);
