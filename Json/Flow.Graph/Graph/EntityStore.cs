@@ -70,10 +70,10 @@ namespace Friflo.Json.Flow.Graph
         
         // --- Sync / TrySync
         public async Task Sync() {
-            SyncRequest syncRequest = CreateSyncRequest();
+            SyncRequest syncRequest = CreateSyncRequest(out SyncStore syncReq);
             var messageContext = new MessageContext(_intern.eventTarget, _intern.clientId);
             SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
-            var result = HandleSyncResponse(syncRequest, response);
+            var result = HandleSyncResponse(syncRequest, response, syncReq);
 
             if (!result.Success)
                 throw new SyncResultException(response.error, result.failed);
@@ -81,22 +81,22 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public async Task<SyncResult> TrySync() {
-            SyncRequest syncRequest = CreateSyncRequest();
+            SyncRequest syncRequest = CreateSyncRequest(out SyncStore syncReq);
             var messageContext = new MessageContext(_intern.eventTarget, _intern.clientId);
             SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
-            var result = HandleSyncResponse(syncRequest, response);
+            var result = HandleSyncResponse(syncRequest, response, syncReq);
             messageContext.Release();
             return result;
         }
         
         /// <see cref="SyncWait"/> is redundant -> made private. Keep it for exploring (Unity)
         private void SyncWait() {
-            SyncRequest syncRequest = CreateSyncRequest();
+            SyncRequest syncRequest = CreateSyncRequest(out SyncStore syncReq);
             var messageContext = new MessageContext(_intern.eventTarget, _intern.clientId);
             var responseTask = ExecuteSync(syncRequest, messageContext);
             // responseTask.Wait();  
             SyncResponse response = responseTask.Result;  // <--- synchronous Sync point!!
-            HandleSyncResponse(syncRequest, response);
+            HandleSyncResponse(syncRequest, response, syncReq);
             messageContext.Release();
         }
 
@@ -290,7 +290,10 @@ namespace Friflo.Json.Flow.Graph
             throw new InvalidOperationException($"unknown EntitySet<{entityType.Name}>");
         }
 
-        private SyncRequest CreateSyncRequest() {
+        /// <summary> Returning current <see cref="StoreIntern.sync"/> as <see cref="syncReq"/> enables request handling
+        /// in a worker thread while calling <see cref="SyncStore"/> methods from "main" thread.</summary>
+        private SyncRequest CreateSyncRequest(out SyncStore syncReq) {
+            syncReq = _intern.sync;
             var tasks       = new List<DatabaseTask>();
             var syncRequest = new SyncRequest {
                 tasks       = tasks,
@@ -308,7 +311,8 @@ namespace Friflo.Json.Flow.Graph
                 set.Sync.AddTasks(tasks);
                 AssertTaskCount(setInfo, tasks.Count - curTaskCount);
             }
-            _intern.sync.AddTasks(tasks);
+            syncReq.AddTasks(tasks);
+            _intern.sync = new SyncStore();
             return syncRequest;
         }
 
@@ -354,7 +358,7 @@ namespace Friflo.Json.Flow.Graph
             }
         }
 
-        private SyncResult HandleSyncResponse(SyncRequest syncRequest, SyncResponse response) {
+        private SyncResult HandleSyncResponse(SyncRequest syncRequest, SyncResponse response, SyncStore syncReq) {
             SyncResult      syncResult;
             ErrorResponse   error = response.error;
             try {
@@ -432,7 +436,7 @@ namespace Friflo.Json.Flow.Graph
                             break;
                         case TaskType.message:
                             var message =           (SendMessage) task;
-                            _intern.sync.MessageResult(message, result);
+                            syncReq.MessageResult(message, result);
                             break;
                         case TaskType.subscribeChanges:
                             var subscribeChanges =  (SubscribeChanges) task;
@@ -441,24 +445,23 @@ namespace Friflo.Json.Flow.Graph
                             break;
                         case TaskType.subscribeMessage:
                             var subscribeMessage =  (SubscribeMessage) task;
-                            _intern.sync.SubscribeMessageResult(subscribeMessage, result);
+                            syncReq.SubscribeMessageResult(subscribeMessage, result);
                             break;
                     }
                 }
-                _intern.sync.LogResults();
+                syncReq.LogResults();
             }
             finally {
                 var failed = new List<SyncTask>();
-                foreach (SyncTask task in _intern.sync.appTasks) {
+                foreach (SyncTask task in syncReq.appTasks) {
                     task.AddFailedTask(failed);
                 }
-                syncResult = new SyncResult(_intern.sync.appTasks, failed, error);
+                syncResult = new SyncResult(syncReq.appTasks, failed, error);
                 // new EntitySet task are collected (scheduled) in a new EntitySetSync instance and requested via next Sync() 
                 foreach (var setPair in _intern.setByType) {
                     EntitySet set = setPair.Value;
                     set.ResetSync();
                 }
-                _intern.sync = new SyncStore();
             }
             return syncResult;
         }
