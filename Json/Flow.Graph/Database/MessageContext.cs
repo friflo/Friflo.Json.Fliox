@@ -26,12 +26,13 @@ namespace Friflo.Json.Flow.Database
         private                 PoolUsage       startUsage;
         
         public MessageContext (IPools pools, IEventTarget eventTarget) {
+            startUsage          = pools.PoolUsage;
             this.pools          = pools;
             this.eventTarget    = eventTarget;
-            startUsage          = pools.PoolUsage;
         }
         
         public MessageContext (IPools pools, IEventTarget eventTarget, string clientId) {
+            startUsage          = pools.PoolUsage;
             this.pools          = pools;
             this.eventTarget    = eventTarget;
             this.clientId       = clientId;
