@@ -99,7 +99,7 @@ namespace Friflo.Json.Flow.Database.Remote
                         var contextPools    = new Pools(Pools.SharedPools);
                         var messageContext  = new MessageContext(contextPools, this);
                         var result          = await remoteHost.ExecuteRequestJson(requestContent, messageContext, ProtocolType.BiDirect).ConfigureAwait(false);
-                        messageContext.pools.AssertNoLeaks();
+                        messageContext.Release();
                         byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);
                         var arraySegment    = new ArraySegment<byte>(resultBytes, 0, resultBytes.Length);
                         sendWriter.TryWrite(arraySegment);

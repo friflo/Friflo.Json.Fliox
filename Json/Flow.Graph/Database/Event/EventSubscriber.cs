@@ -125,7 +125,7 @@ namespace Friflo.Json.Flow.Database.Event
                     // The remote target may already be disconnected and this is still not know when sending the event.
                     await eventTarget.ProcessEvent(ev, messageContext).ConfigureAwait(false);
                     
-                    messageContext.pools.AssertNoLeaks();
+                    messageContext.Release();
                 }
                 catch (Exception e) {
                     var error = e.ToString();

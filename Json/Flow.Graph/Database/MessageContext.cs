@@ -34,6 +34,10 @@ namespace Friflo.Json.Flow.Database
             this.eventTarget    = eventTarget;
             this.clientId       = clientId;
         }
+        
+        public void Release() {
+            pools.AssertNoLeaks();
+        }
     }
     
     public interface IPools

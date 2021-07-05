@@ -77,7 +77,7 @@ namespace Friflo.Json.Flow.Graph
 
             if (!result.Success)
                 throw new SyncResultException(response.error, result.failed);
-            messageContext.pools.AssertNoLeaks();
+            messageContext.Release();
         }
         
         public async Task<SyncResult> TrySync() {
@@ -85,7 +85,7 @@ namespace Friflo.Json.Flow.Graph
             var messageContext = new MessageContext(_intern.contextPools, _intern.eventTarget, _intern.clientId);
             SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
             var result = HandleSyncResponse(syncRequest, response);
-            messageContext.pools.AssertNoLeaks();
+            messageContext.Release();
             return result;
         }
         
@@ -97,7 +97,7 @@ namespace Friflo.Json.Flow.Graph
             // responseTask.Wait();  
             SyncResponse response = responseTask.Result;  // <--- synchronous Sync point!!
             HandleSyncResponse(syncRequest, response);
-            messageContext.pools.AssertNoLeaks();
+            messageContext.Release();
         }
 
         

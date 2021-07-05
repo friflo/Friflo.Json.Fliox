@@ -117,7 +117,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 var contextPools    = new Pools(Pools.SharedPools);
                 var messageContext  = new MessageContext(contextPools, null);
                 var result          = await ExecuteRequestJson(requestContent, messageContext, ProtocolType.ReqResp).ConfigureAwait(false);
-                messageContext.pools.AssertNoLeaks();
+                messageContext.Release();
                 byte[]  resultBytes = Encoding.UTF8.GetBytes(result.body);
                 HttpStatusCode statusCode;
                 switch (result.statusType){

@@ -41,6 +41,7 @@ namespace Friflo.Json.Flow.Database.Remote
             var contextPools    = new Pools(Pools.SharedPools);
             var messageContext  = new MessageContext(contextPools, eventTarget);
             eventTarget.ProcessEvent(ev, messageContext);
+            messageContext.Release();
         }
 
         protected abstract Task<JsonResponse> ExecuteRequestJson(int requestId, string jsonRequest, MessageContext messageContext);
