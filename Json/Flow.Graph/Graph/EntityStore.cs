@@ -267,6 +267,10 @@ namespace Friflo.Json.Flow.Graph
             await Task.WhenAll(pendingTasks.Keys);
         }
         
+        public int GetPendingTasksCount() {
+            return pendingTasks.Count;
+        }
+        
         private async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             _intern.syncCount++;
             SyncResponse response;
