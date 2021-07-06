@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -31,6 +32,7 @@ namespace Friflo.Json.Flow.Graph
         public              IReadOnlyList<SyncTask> Tasks       => _intern.sync.appTasks;
         
         public              int                     GetSyncCount()              => _intern.syncCount;
+        public              bool                    Canceled => _intern.disposed;
         
         /// <summary>
         /// Instantiate an <see cref="EntityStore"/> with a given <see cref="database"/> and an optional <see cref="typeStore"/>.
@@ -67,14 +69,19 @@ namespace Friflo.Json.Flow.Graph
         }
 
         // --------------------------------------- public interface ---------------------------------------
+        /// <summary>
+        /// Process continuation of <see cref="ExecuteSync"/> on caller context.
+        /// This ensures modifications to entities are applied on the same context used by the caller. 
+        /// </summary>
+        private const bool OriginalContext = true;
         
         // --- Sync / TrySync
         public async Task Sync() {
             SyncRequest syncRequest = CreateSyncRequest(out SyncStore syncReq);
             var messageContext = new MessageContext(_intern.eventTarget, _intern.clientId);
-            SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
+            SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
             var result = HandleSyncResponse(syncRequest, response, syncReq);
-
+            
             if (!result.Success)
                 throw new SyncResultException(response.error, result.failed);
             messageContext.Release();
@@ -83,7 +90,7 @@ namespace Friflo.Json.Flow.Graph
         public async Task<SyncResult> TrySync() {
             SyncRequest syncRequest = CreateSyncRequest(out SyncStore syncReq);
             var messageContext = new MessageContext(_intern.eventTarget, _intern.clientId);
-            SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
+            SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
             var result = HandleSyncResponse(syncRequest, response, syncReq);
             messageContext.Release();
             return result;
@@ -250,13 +257,28 @@ namespace Friflo.Json.Flow.Graph
             throw new InvalidOperationException(msg);
         }
         
+        private readonly ConcurrentDictionary<Task, MessageContext> pendingTasks = new ConcurrentDictionary<Task, MessageContext>();
+        
+        public async Task AllTasksFinished() {
+            foreach (var pair in pendingTasks) {
+                var messageContext = pair.Value;
+                messageContext.Cancel();
+            }
+            await Task.WhenAll(pendingTasks.Keys);
+        }
+        
         private async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             _intern.syncCount++;
             SyncResponse response;
+            Task<SyncResponse> task = null;
             try {
-                response = await _intern.database.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
+                task = _intern.database.ExecuteSync(syncRequest, messageContext);
+                pendingTasks.TryAdd(task, messageContext);
+                response = await task.ConfigureAwait(false);
+                pendingTasks.TryRemove(task, out _);
             }
             catch (Exception e) {
+                pendingTasks.TryRemove(task, out _);
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
                 response = new SyncResponse{error = new ErrorResponse{message = errorMsg}};
             }

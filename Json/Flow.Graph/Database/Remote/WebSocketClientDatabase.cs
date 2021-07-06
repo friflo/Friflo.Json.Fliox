@@ -18,6 +18,7 @@ namespace Friflo.Json.Flow.Database.Remote
         private  readonly   string                                      endpoint;
         private             ClientWebSocket                             websocket;
         private  readonly   ConcurrentDictionary<int, WebsocketRequest> requests = new ConcurrentDictionary<int, WebsocketRequest>();
+        private  readonly   CancellationTokenSource                     cancellationToken = new CancellationTokenSource();
 
 
         public WebSocketClientDatabase(string endpoint) : base(ProtocolType.BiDirect) {
@@ -56,29 +57,35 @@ namespace Friflo.Json.Flow.Database.Remote
                 while (true) {
                     memoryStream.Position = 0;
                     memoryStream.SetLength(0);
-                    WebSocketReceiveResult wsResult;
-                    
-                    do {
+                    try {
+                        WebSocketReceiveResult wsResult;
+                        do {
+                            if (websocket.State != WebSocketState.Open) {
+                                Console.WriteLine($"Pre-ReceiveAsync. State: {websocket.State}");
+                                return;
+                            }
+                            wsResult = await websocket.ReceiveAsync(buffer, cancellationToken.Token).ConfigureAwait(false);
+                            memoryStream.Write(buffer.Array, buffer.Offset, wsResult.Count);
+                        }
+                        while(!wsResult.EndOfMessage);
+
                         if (websocket.State != WebSocketState.Open) {
-                            Console.WriteLine($"Pre-ReceiveAsync. State: {websocket.State}");
+                            Console.WriteLine($"Post-ReceiveAsync. State: {websocket.State}");
                             return;
                         }
-                        wsResult = await websocket.ReceiveAsync(buffer, CancellationToken.None).ConfigureAwait(false);
-                        memoryStream.Write(buffer.Array, buffer.Offset, wsResult.Count);
+                        var messageType = wsResult.MessageType;
+                        if (messageType != WebSocketMessageType.Text) {
+                            Console.WriteLine($"Expect WebSocket message type text. type: {messageType} {endpoint}");
+                            continue;
+                        }
+                        var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
+                        OnReceive (requestContent);
+                    } catch (Exception) {
+                        foreach (var pair in requests) {
+                            var request = pair.Value;
+                            request.response.SetCanceled();
+                        }
                     }
-                    while(!wsResult.EndOfMessage);
-                    
-                    if (websocket.State != WebSocketState.Open) {
-                        Console.WriteLine($"Post-ReceiveAsync. State: {websocket.State}");
-                        return;
-                    }
-                    var messageType = wsResult.MessageType;
-                    if (messageType != WebSocketMessageType.Text) {
-                        Console.WriteLine($"Expect WebSocket message type text. type: {messageType} {endpoint}");
-                        continue;
-                    }
-                    var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
-                    OnReceive (requestContent); 
                 }
             }
         }
@@ -126,7 +133,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 throw new InvalidOperationException("Expect requestId > 0");
             try {
                 // request need to be queued _before_ sending it to be prepared for handling the response.
-                var request         = new WebsocketRequest(messageContext);
+                var request         = new WebsocketRequest(messageContext, cancellationToken);
                 requests.TryAdd(requestId, request);
                 
                 byte[] requestBytes = Encoding.UTF8.GetBytes(jsonSyncRequest);
@@ -149,9 +156,12 @@ namespace Friflo.Json.Flow.Database.Remote
         internal readonly   MessageContext                      messageContext;
         internal readonly   TaskCompletionSource<JsonResponse>  response;          
         
-        internal WebsocketRequest(MessageContext messageContext) {
-            response            = new TaskCompletionSource<JsonResponse>(); 
+        internal WebsocketRequest(MessageContext messageContext, CancellationTokenSource cancellationToken) {
+            response            = new TaskCompletionSource<JsonResponse>();
             this.messageContext = messageContext;
+            messageContext.canceler = () => {
+                cancellationToken.Cancel();
+            };
         }
     }
 }

@@ -25,7 +25,9 @@ namespace Friflo.Json.Flow.Database
         public  readonly        IPools          pools;
         public  readonly        IEventTarget    eventTarget;
         private                 PoolUsage       startUsage;
+        public                  Action          canceler = () => {};
         
+
         public MessageContext (IEventTarget eventTarget) {
             pools               = new Pools(Pools.SharedPools);
             startUsage          = pools.PoolUsage;
@@ -37,6 +39,10 @@ namespace Friflo.Json.Flow.Database
             startUsage          = pools.PoolUsage;
             this.eventTarget    = eventTarget;
             this.clientId       = clientId;
+        }
+        
+        public void Cancel() {
+            canceler.Invoke();
         }
         
         public void Release() {
