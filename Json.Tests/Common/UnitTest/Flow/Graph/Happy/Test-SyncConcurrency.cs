@@ -3,7 +3,9 @@
 
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Flow.Database.Utils;
+using Friflo.Json.Flow.Graph;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -12,10 +14,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
     public partial class TestStore
     {
         /// <summary>
-        /// Assert that the used <see cref="FileDatabase"/> support multi threaded access when reading and writing
-        /// the same entity. By using <see cref="AsyncReaderWriterLock"/> a multi read / single write lock
-        /// is used for each <see cref="FileContainer"/>. Without this lock it would result in:
-        /// IOException: The process cannot access the file 'path' because it is being used by another process. 
+        /// Test multiple calls of <see cref="EntityStore.Sync()"/> without await-ing each call individually.
+        /// This enables "pipelining" of scheduling <see cref="EntityStore.Sync()"/> calls.
+        /// <br></br>
+        /// Motivation for "pipelining": <br></br>
+        /// Sync() calls are executed in order but overall execution time is improved in scenarios with high latency to a
+        /// <see cref="RemoteHostDatabase"/> because RTT is added only once instead of n times for n awaited Sync() calls. 
         /// </summary>
         [Test] public static void TestSyncConcurrency () {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
@@ -31,11 +35,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         private static async Task SyncConcurrency(PocStore store) {
             var customerPeter   = new Customer{ id = "customer-peter",  name = "Peter"};
-            var createPeter = store.customers.Create(customerPeter);
+            store.customers.Create(customerPeter);
             var sync1 = store.Sync();
             
             var customerPaul    = new Customer{ id = "customer-paul",   name = "Paul"};
-            var createPaul = store.customers.Create(customerPaul);
+            store.customers.Create(customerPaul);
             var sync2 = store.Sync();
             
             await Task.WhenAll(sync1, sync2);  // ------ sync point
