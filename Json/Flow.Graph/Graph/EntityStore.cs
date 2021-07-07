@@ -334,7 +334,7 @@ namespace Friflo.Json.Flow.Graph
                 EntitySet set = setPair.Value;
                 var setInfo = set.SetInfo;
                 var curTaskCount = tasks.Count;
-                set.Sync.AddTasks(tasks);
+                set.SyncSet.AddTasks(tasks);
                 AssertTaskCount(setInfo, tasks.Count - curTaskCount);
             }
             syncReq.AddTasks(tasks);
@@ -355,7 +355,7 @@ namespace Friflo.Json.Flow.Graph
                 foreach (var createError in createErrors) {
                     createError.Value.SetInferredErrorFields();
                     var set = _intern.setByName[createError.Key];
-                    set.Sync.createErrors = createError.Value.errors;
+                    set.SyncSet.createErrors = createError.Value.errors;
                 }
             }
             var updateErrors = response.updateErrors;
@@ -363,7 +363,7 @@ namespace Friflo.Json.Flow.Graph
                 foreach (var updateError in updateErrors) {
                     updateError.Value.SetInferredErrorFields();
                     var set = _intern.setByName[updateError.Key];
-                    set.Sync.updateErrors = updateError.Value.errors;
+                    set.SyncSet.updateErrors = updateError.Value.errors;
                 }
             }
             var patchErrors = response.patchErrors;
@@ -371,7 +371,7 @@ namespace Friflo.Json.Flow.Graph
                 foreach (var patchError in patchErrors) {
                     patchError.Value.SetInferredErrorFields();
                     var set = _intern.setByName[patchError.Key];
-                    set.Sync.patchErrors = patchError.Value.errors;
+                    set.SyncSet.patchErrors = patchError.Value.errors;
                 }
             }
             var deleteErrors = response.deleteErrors;
@@ -379,7 +379,7 @@ namespace Friflo.Json.Flow.Graph
                 foreach (var deleteError in deleteErrors) {
                     deleteError.Value.SetInferredErrorFields();
                     var set = _intern.setByName[deleteError.Key];
-                    set.Sync.deleteErrors = deleteError.Value.errors;
+                    set.SyncSet.deleteErrors = deleteError.Value.errors;
                 }
             }
         }
@@ -431,34 +431,34 @@ namespace Friflo.Json.Flow.Graph
                         case TaskType.create:
                             var create =            (CreateEntities) task;
                             EntitySet set = _intern.setByName[create.container];
-                            set.Sync.CreateEntitiesResult(create, result);
+                            set.SyncSet.CreateEntitiesResult(create, result);
                             break;
                         case TaskType.update:
                             var update =            (UpdateEntities) task;
                             set = _intern.setByName[update.container];
-                            set.Sync.UpdateEntitiesResult(update, result);
+                            set.SyncSet.UpdateEntitiesResult(update, result);
                             break;
                         case TaskType.read:
                             var readList =          (ReadEntitiesList) task;
                             set = _intern.setByName[readList.container];
                             containerResults.TryGetValue(readList.container, out ContainerEntities entities);
-                            set.Sync.ReadEntitiesListResult(readList, result, entities);
+                            set.SyncSet.ReadEntitiesListResult(readList, result, entities);
                             break;
                         case TaskType.query:
                             var query =             (QueryEntities) task;
                             set = _intern.setByName[query.container];
                             containerResults.TryGetValue(query.container, out ContainerEntities queryEntities);
-                            set.Sync.QueryEntitiesResult(query, result, queryEntities);
+                            set.SyncSet.QueryEntitiesResult(query, result, queryEntities);
                             break;
                         case TaskType.patch:
                             var patch =             (PatchEntities) task;
                             set = _intern.setByName[patch.container];
-                            set.Sync.PatchEntitiesResult(patch, result);
+                            set.SyncSet.PatchEntitiesResult(patch, result);
                             break;
                         case TaskType.delete:
                             var delete =            (DeleteEntities) task;
                             set = _intern.setByName[delete.container];
-                            set.Sync.DeleteEntitiesResult(delete, result);
+                            set.SyncSet.DeleteEntitiesResult(delete, result);
                             break;
                         case TaskType.message:
                             var message =           (SendMessage) task;
@@ -467,7 +467,7 @@ namespace Friflo.Json.Flow.Graph
                         case TaskType.subscribeChanges:
                             var subscribeChanges =  (SubscribeChanges) task;
                             set = _intern.setByName[subscribeChanges.container];
-                            set.Sync.SubscribeChangesResult(subscribeChanges, result);
+                            set.SyncSet.SubscribeChangesResult(subscribeChanges, result);
                             break;
                         case TaskType.subscribeMessage:
                             var subscribeMessage =  (SubscribeMessage) task;

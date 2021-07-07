@@ -26,13 +26,13 @@ namespace Friflo.Json.Flow.Graph
         }
 
         public void Add(string id) {
-            set.sync.AddDelete(id);
+            set.syncSet.AddDelete(id);
             ids.Add(id);
         }
         
         public void AddRange(ICollection<string> ids) {
             foreach (var id in ids) {
-                set.sync.AddDelete(id);
+                set.syncSet.AddDelete(id);
             }
             this.ids.AddRange(ids);
         }

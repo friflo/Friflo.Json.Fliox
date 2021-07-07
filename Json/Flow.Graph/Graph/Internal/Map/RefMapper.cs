@@ -69,8 +69,8 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
             var entity = peer.NullableEntity;
             if (entity == null)
                 return;  // todo add test
-            if (set.sync.AddCreate(peer))
-                store._intern.tracerLogTask.AddCreate(set.sync, entity.id);
+            if (set.syncSet.AddCreate(peer))
+                store._intern.tracerLogTask.AddCreate(set.syncSet, entity.id);
             var mapper = GetEntityMapper(tracer.typeCache);
             mapper.Trace(tracer, entity);
         }

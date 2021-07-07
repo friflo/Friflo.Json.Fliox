@@ -18,7 +18,7 @@ namespace Friflo.Json.Flow.Graph
     {
         internal  readonly  string          name;
 
-        internal  abstract  SyncSet         Sync      { get; }
+        internal  abstract  SyncSet         SyncSet      { get; }
         internal  abstract  SetInfo         SetInfo   { get; }
 
         internal static readonly QueryPath RefQueryPath = new RefQueryPath();
@@ -53,14 +53,14 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   EntityContainer                     container; // not used - only for debugging ergonomics
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        internal            SyncSet<T>                          sync;
+        internal            SyncSet<T>                          syncSet;
         
-        internal override   SyncSet                             Sync => sync;
+        internal override   SyncSet                             SyncSet => syncSet;
         public   override   string                              ToString() => SetInfo.ToString();
         
         internal override   SetInfo                             SetInfo { get {
             var info = new SetInfo (name) { peers = peers.Count };
-            sync.SetTaskInfo(ref info);
+            syncSet.SetTaskInfo(ref info);
             return info;
         }}
 
@@ -71,7 +71,7 @@ namespace Friflo.Json.Flow.Graph
             // ReadTasks<> are not added with intern.store.AddTask(task) as it only groups the tasks created via its
             // methods like: Find(), FindRange(), ReadRefTask() & ReadRefsTask().
             // A ReadTask<> its self cannot fail.
-            return sync.Read();
+            return syncSet.Read();
         }
 
         // --- Query
@@ -79,7 +79,7 @@ namespace Friflo.Json.Flow.Graph
             if (filter == null)
                 throw new ArgumentException($"EntitySet.Query() filter must not be null. EntitySet: {name}");
             var op = Operation.FromFilter(filter, RefQueryPath);
-            var task = sync.QueryFilter(op);
+            var task = syncSet.QueryFilter(op);
             intern.store.AddTask(task);
             return task;
         }
@@ -87,14 +87,14 @@ namespace Friflo.Json.Flow.Graph
         public QueryTask<T> QueryByFilter(EntityFilter<T> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.QueryByFilter() filter must not be null. EntitySet: {name}");
-            var task = sync.QueryFilter(filter.op);
+            var task = syncSet.QueryFilter(filter.op);
             intern.store.AddTask(task);
             return task;
         }
         
         public QueryTask<T> QueryAll() {
             var all = Operation.FilterTrue;
-            var task = sync.QueryFilter(all);
+            var task = syncSet.QueryFilter(all);
             intern.store.AddTask(task);
             return task;
         }
@@ -109,7 +109,7 @@ namespace Friflo.Json.Flow.Graph
         public SubscribeChangesTask<T> SubscribeChangesFilter(IEnumerable<Change> changes, Expression<Func<T, bool>> filter) {
             intern.store.AssertSubscriptionProcessor();
             var op = Operation.FromFilter(filter);
-            var task = sync.SubscribeChangesFilter(changes, op);
+            var task = syncSet.SubscribeChangesFilter(changes, op);
             intern.store.AddTask(task);
             return task;
         }
@@ -122,7 +122,7 @@ namespace Friflo.Json.Flow.Graph
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChangesByFilter(IEnumerable<Change> changes, EntityFilter<T> filter) {
             intern.store.AssertSubscriptionProcessor();
-            var task = sync.SubscribeChangesFilter(changes, filter.op);
+            var task = syncSet.SubscribeChangesFilter(changes, filter.op);
             intern.store.AddTask(task);
             return task;
         }
@@ -136,7 +136,7 @@ namespace Friflo.Json.Flow.Graph
         public SubscribeChangesTask<T> SubscribeChanges(IEnumerable<Change> changes) {
             intern.store.AssertSubscriptionProcessor();
             var all = Operation.FilterTrue;
-            var task = sync.SubscribeChangesFilter(changes, all);
+            var task = syncSet.SubscribeChangesFilter(changes, all);
             intern.store.AddTask(task);
             return task;
         }
@@ -147,7 +147,7 @@ namespace Friflo.Json.Flow.Graph
                 throw new ArgumentException($"EntitySet.Create() entity must not be null. EntitySet: {name}");
             if (entity.id == null)
                 throw new ArgumentException($"EntitySet.Create() entity.id must not be null. EntitySet: {name}");
-            var task = sync.Create(entity);
+            var task = syncSet.Create(entity);
             intern.store.AddTask(task);
             return task;
         }
@@ -159,7 +159,7 @@ namespace Friflo.Json.Flow.Graph
                 if (entity.id == null)
                     throw new ArgumentException($"EntitySet.CreateRange() entity.id must not be null. EntitySet: {name}");
             }
-            var task = sync.CreateRange(entities);
+            var task = syncSet.CreateRange(entities);
             intern.store.AddTask(task);
             return task;
         }
@@ -170,7 +170,7 @@ namespace Friflo.Json.Flow.Graph
                 throw new ArgumentException($"EntitySet.Update() entity must not be null. EntitySet: {name}");
             if (entity.id == null)
                 throw new ArgumentException($"EntitySet.Update() entity.id must not be null. EntitySet: {name}");
-            var task = sync.Update(entity);
+            var task = syncSet.Update(entity);
             intern.store.AddTask(task);
             return task;
         }
@@ -182,7 +182,7 @@ namespace Friflo.Json.Flow.Graph
                 if (entity.id == null)
                     throw new ArgumentException($"EntitySet.UpdateRange() entity.id must not be null. EntitySet: {name}");
             }
-            var task = sync.UpdateRange(entities);
+            var task = syncSet.UpdateRange(entities);
             intern.store.AddTask(task);
             return task;
         }
@@ -191,7 +191,7 @@ namespace Friflo.Json.Flow.Graph
         public PatchTask<T> Patch(T entity) {
             var peer = GetPeerById(entity.id);
             peer.SetEntity(entity);
-            var task = sync.Patch(peer);
+            var task = syncSet.Patch(peer);
             intern.store.AddTask(task);
             return task;
         }
@@ -203,7 +203,7 @@ namespace Friflo.Json.Flow.Graph
                 peer.SetEntity(entity);
                 peerList.Add(peer);
             }
-            var task = sync.PatchRange(peerList);
+            var task = syncSet.PatchRange(peerList);
             intern.store.AddTask(task);
             return task;
         }
@@ -214,7 +214,7 @@ namespace Friflo.Json.Flow.Graph
                 throw new ArgumentException($"EntitySet.Delete() entity must not be null. EntitySet: {name}");
             if (entity.id == null)
                 throw new ArgumentException($"EntitySet.Delete() id must not be null. EntitySet: {name}");
-            var task = sync.Delete(entity.id);
+            var task = syncSet.Delete(entity.id);
             intern.store.AddTask(task);
             return task;
         }
@@ -222,7 +222,7 @@ namespace Friflo.Json.Flow.Graph
         public DeleteTask<T> Delete(string id) {
             if (id == null)
                 throw new ArgumentException($"EntitySet.Delete() id must not be null. EntitySet: {name}");
-            var task = sync.Delete(id);
+            var task = syncSet.Delete(id);
             intern.store.AddTask(task);
             return task;
         }
@@ -234,7 +234,7 @@ namespace Friflo.Json.Flow.Graph
             foreach (var id in ids) {
                 if (id == null) throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
             }
-            var task = sync.DeleteRange(ids);
+            var task = syncSet.DeleteRange(ids);
             intern.store.AddTask(task);
             return task;
         }
@@ -245,7 +245,7 @@ namespace Friflo.Json.Flow.Graph
             foreach (var id in ids) {
                 if (id == null) throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
             }
-            var task = sync.DeleteRange(ids);
+            var task = syncSet.DeleteRange(ids);
             intern.store.AddTask(task);
             return task;
         }
@@ -253,7 +253,7 @@ namespace Friflo.Json.Flow.Graph
         // --- Log changes -> create patches
         public LogTask LogSetChanges() {
             var task = intern.store._intern.sync.CreateLog();
-            sync.LogSetChanges(peers, task);
+            syncSet.LogSetChanges(peers, task);
             intern.store.AddTask(task);
             return task;
         }
@@ -264,7 +264,7 @@ namespace Friflo.Json.Flow.Graph
                 throw new ArgumentException($"EntitySet.LogEntityChanges() entity must not be null. EntitySet: {name}");
             if (entity.id == null)
                 throw new ArgumentException($"EntitySet.LogEntityChanges() entity.id must not be null. EntitySet: {name}");
-            sync.LogEntityChanges(entity, task);
+            syncSet.LogEntityChanges(entity, task);
             intern.store.AddTask(task);
             return task;
         }
@@ -282,7 +282,7 @@ namespace Friflo.Json.Flow.Graph
         
         // ------------------------------------------- internals -------------------------------------------
         internal override void LogSetChangesInternal(LogTask logTask) {
-            sync.LogSetChanges(peers, logTask);
+            syncSet.LogSetChanges(peers, logTask);
         }
         
         public EntitySet(EntityStore store) : base (typeof(T).Name) {
@@ -291,7 +291,7 @@ namespace Friflo.Json.Flow.Graph
             store._intern.setByName[type.Name]  = this;
             container   = store._intern.database.GetOrCreateContainer(name);
             intern      = new SetIntern<T>(store);
-            sync        = new SyncSet<T>(this);
+            syncSet     = new SyncSet<T>(this);
         }
 
         internal PeerEntity<T> CreatePeer (T entity) {
@@ -390,7 +390,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         internal override void ResetSync() {
-            sync = new SyncSet<T>(this);
+            syncSet = new SyncSet<T>(this);
         }
         
         internal override SyncTask SubscribeChangesInternal(IEnumerable<Change> changes) {
