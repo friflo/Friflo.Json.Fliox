@@ -257,18 +257,18 @@ namespace Friflo.Json.Flow.Graph
             throw new InvalidOperationException(msg);
         }
         
-        private readonly ConcurrentDictionary<Task, MessageContext> pendingTasks = new ConcurrentDictionary<Task, MessageContext>();
+        private readonly ConcurrentDictionary<Task, MessageContext> pendingSyncs = new ConcurrentDictionary<Task, MessageContext>();
         
-        public async Task AllTasksFinished() {
-            foreach (var pair in pendingTasks) {
+        public async Task CancelPendingSyncs() {
+            foreach (var pair in pendingSyncs) {
                 var messageContext = pair.Value;
                 messageContext.Cancel();
             }
-            await Task.WhenAll(pendingTasks.Keys);
+            await Task.WhenAll(pendingSyncs.Keys);
         }
         
-        public int GetPendingTasksCount() {
-            return pendingTasks.Count;
+        public int GetPendingSyncsCount() {
+            return pendingSyncs.Count;
         }
         
         private async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
@@ -277,12 +277,12 @@ namespace Friflo.Json.Flow.Graph
             Task<SyncResponse> task = null;
             try {
                 task = _intern.database.ExecuteSync(syncRequest, messageContext);
-                pendingTasks.TryAdd(task, messageContext);
+                pendingSyncs.TryAdd(task, messageContext);
                 response = await task.ConfigureAwait(false);
-                pendingTasks.TryRemove(task, out _);
+                pendingSyncs.TryRemove(task, out _);
             }
             catch (Exception e) {
-                pendingTasks.TryRemove(task, out _);
+                pendingSyncs.TryRemove(task, out _);
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
                 response = new SyncResponse{error = new ErrorResponse{message = errorMsg}};
             }
