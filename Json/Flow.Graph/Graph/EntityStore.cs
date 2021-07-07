@@ -54,9 +54,9 @@ namespace Friflo.Json.Flow.Graph
                 TracerContext = this
             };
             var eventTarget = new EventTarget(this);
-            _intern = new StoreIntern(clientId, typeStore, owned, database, jsonMapper, eventTarget);
-            
-            _intern.syncStore = new SyncStore(this);
+            _intern = new StoreIntern(clientId, typeStore, owned, database, jsonMapper, eventTarget) {
+                syncStore = new SyncStore()
+            };
             database.AddEventTarget(clientId, eventTarget);
         }
         
@@ -321,6 +321,8 @@ namespace Friflo.Json.Flow.Graph
         /// in a worker thread while calling <see cref="SyncStore"/> methods from "main" thread.</summary>
         private SyncRequest CreateSyncRequest(out SyncStore syncReq) {
             syncReq = _intern.syncStore;
+            syncReq.SetSyncSets(this);
+            
             var tasks       = new List<DatabaseTask>();
             var syncRequest = new SyncRequest {
                 tasks       = tasks,
@@ -339,7 +341,13 @@ namespace Friflo.Json.Flow.Graph
                 AssertTaskCount(setInfo, tasks.Count - curTaskCount);
             }
             syncReq.AddTasks(tasks);
-            _intern.syncStore = new SyncStore(this);
+            
+            // --- create new SyncStore and SyncSet's to collect future SyncTask's and executed via the next Sync() 
+            foreach (var setPair in _intern.setByType) {
+                EntitySet set = setPair.Value;
+                set.ResetSync();
+            }
+            _intern.syncStore = new SyncStore();
             return syncRequest;
         }
 
@@ -350,37 +358,37 @@ namespace Friflo.Json.Flow.Graph
                 throw new InvalidOperationException($"Unexpected task.Count. expect: {expect}, got: {taskCount}");
         }
 
-        private void SetErrors(SyncResponse response) {
+        private static void SetErrors(SyncResponse response, SyncStore syncReq) {
             var createErrors = response.createErrors;
             if (createErrors != null) {
                 foreach (var createError in createErrors) {
                     createError.Value.SetInferredErrorFields();
-                    var set = _intern.setByName[createError.Key];
-                    set.SyncSet.createErrors = createError.Value.errors;
+                    var syncSet = syncReq.GetSyncSet(createError.Key);
+                    syncSet.createErrors = createError.Value.errors;
                 }
             }
             var updateErrors = response.updateErrors;
             if (updateErrors != null) {
                 foreach (var updateError in updateErrors) {
                     updateError.Value.SetInferredErrorFields();
-                    var set = _intern.setByName[updateError.Key];
-                    set.SyncSet.updateErrors = updateError.Value.errors;
+                    var syncSet = syncReq.GetSyncSet(updateError.Key);
+                    syncSet.updateErrors = updateError.Value.errors;
                 }
             }
             var patchErrors = response.patchErrors;
             if (patchErrors != null) {
                 foreach (var patchError in patchErrors) {
                     patchError.Value.SetInferredErrorFields();
-                    var set = _intern.setByName[patchError.Key];
-                    set.SyncSet.patchErrors = patchError.Value.errors;
+                    var syncSet = syncReq.GetSyncSet(patchError.Key);
+                    syncSet.patchErrors = patchError.Value.errors;
                 }
             }
             var deleteErrors = response.deleteErrors;
             if (deleteErrors != null) {
                 foreach (var deleteError in deleteErrors) {
                     deleteError.Value.SetInferredErrorFields();
-                    var set = _intern.setByName[deleteError.Key];
-                    set.SyncSet.deleteErrors = deleteError.Value.errors;
+                    var syncSet = syncReq.GetSyncSet(deleteError.Key);
+                    syncSet.deleteErrors = deleteError.Value.errors;
                 }
             }
         }
@@ -400,7 +408,7 @@ namespace Friflo.Json.Flow.Graph
                         var set = _intern.setByName[containerResult.Key];
                         set.SyncPeerEntities(containerEntities.entities);
                     }
-                    SetErrors(response);
+                    SetErrors(response, syncReq);
                 } else {
                     syncError = new TaskErrorResult {
                         message = error.message,
@@ -431,35 +439,35 @@ namespace Friflo.Json.Flow.Graph
                     switch (taskType) {
                         case TaskType.create:
                             var create =            (CreateEntities) task;
-                            EntitySet set = _intern.setByName[create.container];
-                            set.SyncSet.CreateEntitiesResult(create, result);
+                            var syncSet = syncReq.GetSyncSet(create.container);
+                            syncSet.CreateEntitiesResult(create, result);
                             break;
                         case TaskType.update:
                             var update =            (UpdateEntities) task;
-                            set = _intern.setByName[update.container];
-                            set.SyncSet.UpdateEntitiesResult(update, result);
+                            syncSet = syncReq.GetSyncSet(update.container);
+                            syncSet.UpdateEntitiesResult(update, result);
                             break;
                         case TaskType.read:
                             var readList =          (ReadEntitiesList) task;
-                            set = _intern.setByName[readList.container];
+                            syncSet = syncReq.GetSyncSet(readList.container);
                             containerResults.TryGetValue(readList.container, out ContainerEntities entities);
-                            set.SyncSet.ReadEntitiesListResult(readList, result, entities);
+                            syncSet.ReadEntitiesListResult(readList, result, entities);
                             break;
                         case TaskType.query:
                             var query =             (QueryEntities) task;
-                            set = _intern.setByName[query.container];
+                            syncSet = syncReq.GetSyncSet(query.container);
                             containerResults.TryGetValue(query.container, out ContainerEntities queryEntities);
-                            set.SyncSet.QueryEntitiesResult(query, result, queryEntities);
+                            syncSet.QueryEntitiesResult(query, result, queryEntities);
                             break;
                         case TaskType.patch:
                             var patch =             (PatchEntities) task;
-                            set = _intern.setByName[patch.container];
-                            set.SyncSet.PatchEntitiesResult(patch, result);
+                            syncSet = syncReq.GetSyncSet(patch.container);
+                            syncSet.PatchEntitiesResult(patch, result);
                             break;
                         case TaskType.delete:
                             var delete =            (DeleteEntities) task;
-                            set = _intern.setByName[delete.container];
-                            set.SyncSet.DeleteEntitiesResult(delete, result);
+                            syncSet = syncReq.GetSyncSet(delete.container);
+                            syncSet.DeleteEntitiesResult(delete, result);
                             break;
                         case TaskType.message:
                             var message =           (SendMessage) task;
@@ -467,8 +475,8 @@ namespace Friflo.Json.Flow.Graph
                             break;
                         case TaskType.subscribeChanges:
                             var subscribeChanges =  (SubscribeChanges) task;
-                            set = _intern.setByName[subscribeChanges.container];
-                            set.SyncSet.SubscribeChangesResult(subscribeChanges, result);
+                            syncSet = syncReq.GetSyncSet(subscribeChanges.container);
+                            syncSet.SubscribeChangesResult(subscribeChanges, result);
                             break;
                         case TaskType.subscribeMessage:
                             var subscribeMessage =  (SubscribeMessage) task;
@@ -484,11 +492,6 @@ namespace Friflo.Json.Flow.Graph
                     task.AddFailedTask(failed);
                 }
                 syncResult = new SyncResult(syncReq.appTasks, failed, error);
-                // new EntitySet task are collected (scheduled) in a new EntitySetSync instance and requested via next Sync() 
-                foreach (var setPair in _intern.setByType) {
-                    EntitySet set = setPair.Value;
-                    set.ResetSync();
-                }
             }
             return syncResult;
         }

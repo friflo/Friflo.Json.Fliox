@@ -8,7 +8,7 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal class SyncStore
     {
-        private  readonly   Dictionary<string, SyncSet> syncSets;
+        private             Dictionary<string, SyncSet> syncSets;
         
         internal readonly   List<SyncTask>              appTasks            = new List<SyncTask>();
         private  readonly   List<LogTask>               logTasks            = new List<LogTask>();
@@ -21,9 +21,10 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal            SyncSet                     GetSyncSet(string name) => syncSets[name];
 
-        internal SyncStore(EntityStore store) {
-            syncSets = new Dictionary<string, SyncSet>(store._intern.setByName.Count);
-            foreach (var pair in store._intern.setByName) {
+        internal void SetSyncSets(EntityStore store) {
+            var setByName = store._intern.setByName;
+            syncSets = new Dictionary<string, SyncSet>(setByName.Count);
+            foreach (var pair in setByName) {
                 string      container   = pair.Key;
                 EntitySet   set         = pair.Value;
                 syncSets.Add(container, set.SyncSet);
