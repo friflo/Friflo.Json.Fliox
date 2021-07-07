@@ -30,7 +30,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal readonly   ObjectReader                            messageReader;
         
         // --- non readonly
-        internal            SyncStore                               sync;
+        internal            SyncStore                               syncStore;
         internal            LogTask                                 tracerLogTask;
         internal            SubscriptionProcessor                   subscriptionProcessor;
         internal            SubscriptionHandler                     subscriptionHandler;                
@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             EntityDatabase          database,
             ObjectMapper            jsonMapper,
             EventTarget             eventTarget,
-            SyncStore               sync)
+            SyncStore               syncStore)
         {
             this.clientId               = clientId;
             this.typeStore              = typeStore;
@@ -58,7 +58,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             this.jsonMapper             = jsonMapper;
             this.typeCache              = jsonMapper.writer.TypeCache;
             this.eventTarget            = eventTarget;
-            this.sync                   = sync;
+            this.syncStore              = syncStore;
             setByType                   = new Dictionary<Type, EntitySet>();
             setByName                   = new Dictionary<string, EntitySet>();
             objectPatcher               = new ObjectPatcher(jsonMapper);
@@ -89,7 +89,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (!subscriptions.TryGetValue(name, out var subscriber)) {
                 subscriber = new MessageSubscriber(name);
                 subscriptions.Add(name, subscriber);
-                sync.subscribeMessage.Add(task);
+                syncStore.subscribeMessage.Add(task);
             } else {
                 task.state.Synced = true;
             }
@@ -123,7 +123,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             if (subscriber.callbackHandlers.Count == 0) {
                 subscriptions.Remove(name);
-                sync.subscribeMessage.Add(task);
+                syncStore.subscribeMessage.Add(task);
             } else {
                 task.state.Synced = true;
             }

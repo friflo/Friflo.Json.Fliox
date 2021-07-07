@@ -252,14 +252,14 @@ namespace Friflo.Json.Flow.Graph
 
         // --- Log changes -> create patches
         public LogTask LogSetChanges() {
-            var task = intern.store._intern.sync.CreateLog();
+            var task = intern.store._intern.syncStore.CreateLog();
             syncSet.LogSetChanges(peers, task);
             intern.store.AddTask(task);
             return task;
         }
 
         public LogTask LogEntityChanges(T entity) {
-            var task = intern.store._intern.sync.CreateLog();
+            var task = intern.store._intern.syncStore.CreateLog();
             if (entity == null)
                 throw new ArgumentException($"EntitySet.LogEntityChanges() entity must not be null. EntitySet: {name}");
             if (entity.id == null)

@@ -27,9 +27,9 @@ namespace Friflo.Json.Flow.Graph
         internal            StoreIntern             _intern;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              TypeStore               TypeStore   => _intern.typeStore;
-        public              StoreInfo               StoreInfo   => new StoreInfo(_intern.sync, _intern.setByType); 
+        public              StoreInfo               StoreInfo   => new StoreInfo(_intern.syncStore, _intern.setByType); 
         public   override   string                  ToString()  => StoreInfo.ToString();
-        public              IReadOnlyList<SyncTask> Tasks       => _intern.sync.appTasks;
+        public              IReadOnlyList<SyncTask> Tasks       => _intern.syncStore.appTasks;
         
         public              int                     GetSyncCount()              => _intern.syncCount;
         public              bool                    Canceled => _intern.disposed;
@@ -110,7 +110,7 @@ namespace Friflo.Json.Flow.Graph
         
         // --- LogChanges
         public LogTask LogChanges() {
-            var task = _intern.sync.CreateLog();
+            var task = _intern.syncStore.CreateLog();
             foreach (var setPair in _intern.setByType) {
                 EntitySet set = setPair.Value;
                 set.LogSetChangesInternal(task);
@@ -181,7 +181,7 @@ namespace Friflo.Json.Flow.Graph
         // --- SendMessage
         public SendMessageTask SendMessage(string name) {
             var task = new SendMessageTask(name, null, _intern.jsonMapper.reader);
-            _intern.sync.messageTasks.Add(task);
+            _intern.syncStore.messageTasks.Add(task);
             AddTask(task);
             return task;
         }
@@ -189,7 +189,7 @@ namespace Friflo.Json.Flow.Graph
         public SendMessageTask SendMessage<TValue>(string name, TValue value) {
             var json           = _intern.jsonMapper.Write(value);
             var task            = new SendMessageTask(name, json, _intern.jsonMapper.reader);
-            _intern.sync.messageTasks.Add(task);
+            _intern.syncStore.messageTasks.Add(task);
             AddTask(task);
             return task;
         }
@@ -300,7 +300,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         internal void AddTask(SyncTask task) {
-            _intern.sync.appTasks.Add(task);
+            _intern.syncStore.appTasks.Add(task);
         }
         
         internal EntitySet GetEntitySet(string name) {
@@ -316,10 +316,10 @@ namespace Friflo.Json.Flow.Graph
             throw new InvalidOperationException($"unknown EntitySet<{entityType.Name}>");
         }
 
-        /// <summary> Returning current <see cref="StoreIntern.sync"/> as <see cref="syncReq"/> enables request handling
+        /// <summary> Returning current <see cref="StoreIntern.syncStore"/> as <see cref="syncReq"/> enables request handling
         /// in a worker thread while calling <see cref="SyncStore"/> methods from "main" thread.</summary>
         private SyncRequest CreateSyncRequest(out SyncStore syncReq) {
-            syncReq = _intern.sync;
+            syncReq = _intern.syncStore;
             var tasks       = new List<DatabaseTask>();
             var syncRequest = new SyncRequest {
                 tasks       = tasks,
@@ -338,7 +338,7 @@ namespace Friflo.Json.Flow.Graph
                 AssertTaskCount(setInfo, tasks.Count - curTaskCount);
             }
             syncReq.AddTasks(tasks);
-            _intern.sync = new SyncStore();
+            _intern.syncStore = new SyncStore();
             return syncRequest;
         }
 
