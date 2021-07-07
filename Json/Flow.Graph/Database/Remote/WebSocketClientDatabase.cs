@@ -39,6 +39,8 @@ namespace Friflo.Json.Flow.Database.Remote
             requests.Clear();
             
             websocket = new ClientWebSocket();
+            // websocket.Options.SetBuffer(4096, 4096);
+            
             await websocket.ConnectAsync(uri, CancellationToken.None).ConfigureAwait(false);
             try {
                 _ = ReceiveLoop();
