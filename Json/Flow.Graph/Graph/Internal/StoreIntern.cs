@@ -48,8 +48,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             TypeStore               owned,
             EntityDatabase          database,
             ObjectMapper            jsonMapper,
-            EventTarget             eventTarget,
-            SyncStore               syncStore)
+            EventTarget             eventTarget)
         {
             this.clientId               = clientId;
             this.typeStore              = typeStore;
@@ -58,7 +57,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             this.jsonMapper             = jsonMapper;
             this.typeCache              = jsonMapper.writer.TypeCache;
             this.eventTarget            = eventTarget;
-            this.syncStore              = syncStore;
+            syncStore                   = null;
             setByType                   = new Dictionary<Type, EntitySet>();
             setByName                   = new Dictionary<string, EntitySet>();
             objectPatcher               = new ObjectPatcher(jsonMapper);

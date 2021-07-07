@@ -54,8 +54,9 @@ namespace Friflo.Json.Flow.Graph
                 TracerContext = this
             };
             var eventTarget = new EventTarget(this);
-            var sync = new SyncStore();
-            _intern = new StoreIntern(clientId, typeStore, owned, database, jsonMapper, eventTarget, sync);
+            _intern = new StoreIntern(clientId, typeStore, owned, database, jsonMapper, eventTarget);
+            
+            _intern.syncStore = new SyncStore(this);
             database.AddEventTarget(clientId, eventTarget);
         }
         
@@ -338,7 +339,7 @@ namespace Friflo.Json.Flow.Graph
                 AssertTaskCount(setInfo, tasks.Count - curTaskCount);
             }
             syncReq.AddTasks(tasks);
-            _intern.syncStore = new SyncStore();
+            _intern.syncStore = new SyncStore(this);
             return syncRequest;
         }
 
