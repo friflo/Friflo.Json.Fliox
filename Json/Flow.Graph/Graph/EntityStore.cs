@@ -358,11 +358,12 @@ namespace Friflo.Json.Flow.Graph
         }
 
         private static void SetErrors(SyncResponse response, SyncStore syncReq) {
+            var syncSets = syncReq.SyncSets;
             var createErrors = response.createErrors;
             if (createErrors != null) {
                 foreach (var createError in createErrors) {
                     createError.Value.SetInferredErrorFields();
-                    var syncSet = syncReq.GetSyncSet(createError.Key);
+                    var syncSet = syncSets[createError.Key];
                     syncSet.createErrors = createError.Value.errors;
                 }
             }
@@ -370,7 +371,7 @@ namespace Friflo.Json.Flow.Graph
             if (updateErrors != null) {
                 foreach (var updateError in updateErrors) {
                     updateError.Value.SetInferredErrorFields();
-                    var syncSet = syncReq.GetSyncSet(updateError.Key);
+                    var syncSet = syncSets[updateError.Key];
                     syncSet.updateErrors = updateError.Value.errors;
                 }
             }
@@ -378,7 +379,7 @@ namespace Friflo.Json.Flow.Graph
             if (patchErrors != null) {
                 foreach (var patchError in patchErrors) {
                     patchError.Value.SetInferredErrorFields();
-                    var syncSet = syncReq.GetSyncSet(patchError.Key);
+                    var syncSet = syncSets[patchError.Key];
                     syncSet.patchErrors = patchError.Value.errors;
                 }
             }
@@ -386,7 +387,7 @@ namespace Friflo.Json.Flow.Graph
             if (deleteErrors != null) {
                 foreach (var deleteError in deleteErrors) {
                     deleteError.Value.SetInferredErrorFields();
-                    var syncSet = syncReq.GetSyncSet(deleteError.Key);
+                    var syncSet = syncSets[deleteError.Key];
                     syncSet.deleteErrors = deleteError.Value.errors;
                 }
             }
@@ -394,7 +395,8 @@ namespace Friflo.Json.Flow.Graph
 
         private SyncResult HandleSyncResponse(SyncRequest syncRequest, SyncResponse response, SyncStore syncReq) {
             SyncResult      syncResult;
-            ErrorResponse   error = response.error;
+            ErrorResponse   error       = response.error;
+            var             syncSets    = syncReq.SyncSets;
             try {
                 TaskErrorResult                         syncError;
                 Dictionary<string, ContainerEntities>   containerResults;
@@ -438,34 +440,34 @@ namespace Friflo.Json.Flow.Graph
                     switch (taskType) {
                         case TaskType.create:
                             var create =            (CreateEntities) task;
-                            var syncSet = syncReq.GetSyncSet(create.container);
+                            var syncSet = syncSets[create.container];
                             syncSet.CreateEntitiesResult(create, result);
                             break;
                         case TaskType.update:
                             var update =            (UpdateEntities) task;
-                            syncSet = syncReq.GetSyncSet(update.container);
+                            syncSet = syncSets[update.container];
                             syncSet.UpdateEntitiesResult(update, result);
                             break;
                         case TaskType.read:
                             var readList =          (ReadEntitiesList) task;
-                            syncSet = syncReq.GetSyncSet(readList.container);
+                            syncSet = syncSets[readList.container];
                             containerResults.TryGetValue(readList.container, out ContainerEntities entities);
                             syncSet.ReadEntitiesListResult(readList, result, entities);
                             break;
                         case TaskType.query:
                             var query =             (QueryEntities) task;
-                            syncSet = syncReq.GetSyncSet(query.container);
+                            syncSet = syncSets[query.container];
                             containerResults.TryGetValue(query.container, out ContainerEntities queryEntities);
                             syncSet.QueryEntitiesResult(query, result, queryEntities);
                             break;
                         case TaskType.patch:
                             var patch =             (PatchEntities) task;
-                            syncSet = syncReq.GetSyncSet(patch.container);
+                            syncSet = syncSets[patch.container];
                             syncSet.PatchEntitiesResult(patch, result);
                             break;
                         case TaskType.delete:
                             var delete =            (DeleteEntities) task;
-                            syncSet = syncReq.GetSyncSet(delete.container);
+                            syncSet = syncSets[delete.container];
                             syncSet.DeleteEntitiesResult(delete, result);
                             break;
                         case TaskType.message:
@@ -474,7 +476,7 @@ namespace Friflo.Json.Flow.Graph
                             break;
                         case TaskType.subscribeChanges:
                             var subscribeChanges =  (SubscribeChanges) task;
-                            syncSet = syncReq.GetSyncSet(subscribeChanges.container);
+                            syncSet = syncSets[subscribeChanges.container];
                             syncSet.SubscribeChangesResult(subscribeChanges, result);
                             break;
                         case TaskType.subscribeMessage:
