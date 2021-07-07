@@ -32,7 +32,6 @@ namespace Friflo.Json.Flow.Graph
         public              IReadOnlyList<SyncTask> Tasks       => _intern.syncStore.appTasks;
         
         public              int                     GetSyncCount()              => _intern.syncCount;
-        public              bool                    Canceled => _intern.disposed;
         
         /// <summary>
         /// Instantiate an <see cref="EntityStore"/> with a given <see cref="database"/> and an optional <see cref="typeStore"/>.
