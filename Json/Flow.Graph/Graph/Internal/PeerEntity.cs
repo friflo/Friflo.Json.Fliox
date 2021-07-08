@@ -53,7 +53,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 return;
             }
             if (this.entity != entity)
-                throw new ArgumentException($"Another entity with same id is already tracked. id: {entity.id}");
+                throw new ArgumentException($"Entity is already tracked by another instance. id: '{entity.id}'");
         }
 
         internal void SetPatchSource(T entity) {

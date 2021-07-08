@@ -37,6 +37,8 @@ namespace Friflo.Json.Flow.Database
             foreach (var entityPair in entities) {
                 string      key      = entityPair.Key;
                 EntityValue payload  = entityPair.Value;
+                if (payloads.TryGetValue(key, out string _))
+                    throw new InvalidOperationException($"Entity with key '{key}' already in DatabaseContainer: {name}");
                 payloads[key] = payload.Json;
             }
             var result = new CreateEntitiesResult();
@@ -48,8 +50,6 @@ namespace Friflo.Json.Flow.Database
             foreach (var entityPair in entities) {
                 string      key      = entityPair.Key;
                 EntityValue payload  = entityPair.Value;
-                if (!payloads.TryGetValue(key, out string _))
-                    throw new InvalidOperationException($"Expect Entity with key {key} in DatabaseContainer: {name}");
                 payloads[key] = payload.Json;
             }
             var result = new UpdateEntitiesResult();

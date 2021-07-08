@@ -26,20 +26,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var database = new MemoryDatabase())
-                    using (var createStore  = new PocStore(database, "createStore")) {
-                        await SyncConcurrency(createStore);
+                    using (var store  = new PocStore(database, "store")) {
+                        await SyncConcurrency(store);
                     }
                 });
             }
         }
         
         private static async Task SyncConcurrency(PocStore store) {
-            var customerPeter   = new Customer{ id = "customer-peter",  name = "Peter"};
-            store.customers.Create(customerPeter);
+            var peter   = new Customer{ id = "customer-peter",  name = "Peter"};
+            var paul    = new Customer{ id = "customer-paul",   name = "Paul"};
+            for (int n = 0; n < 1; n++) {
+                await SyncConcurrencyLoop(store, peter, paul);
+            }
+        }
+        
+        private static async Task SyncConcurrencyLoop(PocStore store, Customer peter, Customer paul) {
+            store.customers.Update(peter);
             var sync1 = store.Sync();
             
-            var customerPaul    = new Customer{ id = "customer-paul",   name = "Paul"};
-            store.customers.Create(customerPaul);
+            store.customers.Update(paul);
             var sync2 = store.Sync();
             
             await Task.WhenAll(sync1, sync2);  // ------ sync point
@@ -55,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             await Task.WhenAll(sync1, sync2);  // ------ sync point
 
             AreEqual("Peter", findPeter.Result.name);
-            AreEqual("Paul", findPaul.Result.name);
+            AreEqual("Paul",  findPaul.Result.name);
         }
     }
 }
