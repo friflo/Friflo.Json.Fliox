@@ -42,31 +42,39 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         }
         
         private static async Task SyncConcurrency(PocStore store, Customer peter, Customer paul) {
-            store.customers.Update(peter);
-            AreEqual(1, store.Tasks.Count);
-            var sync1 = store.Sync();
-            AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting Sync()
-            
-            store.SendMessage("Some message");
-            store.customers.Update(paul);
-            AreEqual(2, store.Tasks.Count);
-            var sync2 = store.Sync();
-            AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting Sync()
-            
-            await Task.WhenAll(sync1, sync2);  // ------ sync point
-            
-            var readCustomers1 = store.customers.Read();
-            var findPeter = readCustomers1.Find("customer-peter");
-            sync1 = store.Sync();
-            
-            var readCustomers2 = store.customers.Read();
-            var findPaul = readCustomers2.Find("customer-paul");
-            sync2 = store.Sync();
-            
-            await Task.WhenAll(sync1, sync2);  // ------ sync point
+            {
+                store.customers.Update(peter);
+                AreEqual(1, store.Tasks.Count);
+                var sync1 = store.Sync();
+                AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting Sync()
+                
+                store.SendMessage("Some message");
+                store.customers.Update(paul);
+                AreEqual(2, store.Tasks.Count);
+                var sync2 = store.Sync();
+                AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting Sync()
+                
+                await Task.WhenAll(sync1, sync2);  // ------ sync point
+                AreEqual(1, sync1.Result.tasks.Count);
+                AreEqual(2, sync2.Result.tasks.Count);
+            } {
+                var readCustomers1 = store.customers.Read();
+                var findPeter = readCustomers1.Find("customer-peter");
+                var sync1 = store.Sync();
+                
+                store.SendMessage("Some message");
+                var readCustomers2 = store.customers.Read();
+                IsFalse(readCustomers1 == readCustomers2);
+                var findPaul = readCustomers2.Find("customer-paul");
+                var sync2 = store.Sync();
+                
+                await Task.WhenAll(sync1, sync2);  // ------ sync point
+                AreEqual(1, sync1.Result.tasks.Count);
+                AreEqual(2, sync2.Result.tasks.Count);
 
-            AreEqual("Peter", findPeter.Result.name);
-            AreEqual("Paul",  findPaul.Result.name);
+                AreEqual("Peter", findPeter.Result.name);
+                AreEqual("Paul",  findPaul.Result.name);
+            }
         }
     }
 }

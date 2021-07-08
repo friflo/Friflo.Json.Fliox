@@ -76,7 +76,7 @@ namespace Friflo.Json.Flow.Graph
         private const bool OriginalContext = true;
         
         // --- Sync / TrySync
-        public async Task Sync() {
+        public async Task<SyncResult> Sync() {
             SyncRequest syncRequest = CreateSyncRequest(out SyncStore syncReq);
             var messageContext = new MessageContext(_intern.eventTarget, _intern.clientId);
             SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
@@ -85,6 +85,7 @@ namespace Friflo.Json.Flow.Graph
             if (!result.Success)
                 throw new SyncResultException(response.error, result.failed);
             messageContext.Release();
+            return result;
         }
         
         public async Task<SyncResult> TrySync() {
