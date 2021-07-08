@@ -55,6 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 var sync2 = store.Sync();
                 AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting Sync()
                 
+                // by using AsyncDatabase Sync() response handling is executed at WhenAll() instead synchronously in Sync()
                 await Task.WhenAll(sync1, sync2);  // ------ sync point
                 AreEqual(1, sync1.Result.tasks.Count);
                 AreEqual(2, sync2.Result.tasks.Count);
@@ -69,6 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 var findPaul = readCustomers2.Find("customer-paul");
                 var sync2 = store.Sync();
                 
+                // by using AsyncDatabase Sync() response handling is executed at WhenAll() instead synchronously in Sync()
                 await Task.WhenAll(sync1, sync2);  // ------ sync point
                 AreEqual(1, sync1.Result.tasks.Count);
                 AreEqual(2, sync2.Result.tasks.Count);
