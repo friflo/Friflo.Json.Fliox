@@ -25,7 +25,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
-                    using (var database = new MemoryDatabase())
+                    using (var memoryDb = new MemoryDatabase())
+                    using (var database = new AsyncDatabase(memoryDb))
                     using (var store  = new PocStore(database, "store")) {
                         await SyncConcurrencyInit(store);
                     }
