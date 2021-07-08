@@ -28,7 +28,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
         
         public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            await Task.Delay(1).ConfigureAwait(true);
+            const bool originalContext = true;
+            // force release the thread back to the caller.
+            await Task.Delay(1).ConfigureAwait(originalContext);
             var response = await local.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
             return response;
         }
