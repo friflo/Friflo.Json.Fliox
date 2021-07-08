@@ -7,6 +7,15 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
 {
+    /// <summary>
+    /// Set of utility methods to guide a graceful shutdown by disposing all resources.
+    /// The intended order for shutdown is:
+    /// <list type="bullet">
+    ///     <item><see cref="DisposeStore"/></item>
+    ///     <item><see cref="DisposeDatabase"/></item>
+    ///     <item><see cref="DisposeCaches"/></item>
+    /// </list>  
+    /// </summary>
     public static class GraphUtils
     {
         public static async Task DisposeStore(EntityStore store) {
