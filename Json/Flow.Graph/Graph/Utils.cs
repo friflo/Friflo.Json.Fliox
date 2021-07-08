@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Graph
     ///     <item><see cref="DisposeCaches"/></item>
     /// </list>  
     /// </summary>
-    public static class GraphUtils
+    public static class GraphDispose
     {
         public static async Task DisposeStore(EntityStore store) {
             if (store == null)
