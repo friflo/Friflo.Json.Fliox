@@ -20,11 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
         
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            if (TryGetContainer(name, out EntityContainer container)) {
-                return container;
-            }
-            EntityContainer localContainer = local.GetOrCreateContainer(name);
-            return localContainer;
+            return local.GetOrCreateContainer(name);
         }
         
         public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
