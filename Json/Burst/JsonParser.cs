@@ -82,6 +82,8 @@ namespace Friflo.Json.Burst
 #endif
     public partial struct JsonParser : IDisposable
     {
+        static JsonParser() { BurstLog.InitialBurstLog(); }
+        
         public const int DefaultMaxDepth = 100;
         
         private     int                 pos;

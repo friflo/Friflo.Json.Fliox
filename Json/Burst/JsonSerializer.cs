@@ -40,6 +40,8 @@ namespace Friflo.Json.Burst
 #endif
     public partial struct JsonSerializer : IDisposable
     {
+        static JsonSerializer() { BurstLog.InitialBurstLog(); }
+        
         /// <summary>Contains the generated JSON document as <see cref="Bytes"/>.</summary>
         public      Bytes                   json;
         private     ValueFormat             format;
