@@ -27,26 +27,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var database = new MemoryDatabase())
                     using (var store  = new PocStore(database, "store")) {
-                        await SyncConcurrency(store);
+                        await SyncConcurrencyInit(store);
                     }
                 });
             }
         }
         
-        private static async Task SyncConcurrency(PocStore store) {
+        private static async Task SyncConcurrencyInit(PocStore store) {
             var peter   = new Customer{ id = "customer-peter",  name = "Peter"};
             var paul    = new Customer{ id = "customer-paul",   name = "Paul"};
             for (int n = 0; n < 1; n++) {
-                await SyncConcurrencyLoop(store, peter, paul);
+                await SyncConcurrency(store, peter, paul);
             }
         }
         
-        private static async Task SyncConcurrencyLoop(PocStore store, Customer peter, Customer paul) {
+        private static async Task SyncConcurrency(PocStore store, Customer peter, Customer paul) {
             store.customers.Update(peter);
+            AreEqual(1, store.Tasks.Count);
             var sync1 = store.Sync();
+            AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting Sync()
             
+            store.SendMessage("Some message");
             store.customers.Update(paul);
+            AreEqual(2, store.Tasks.Count);
             var sync2 = store.Sync();
+            AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting Sync()
             
             await Task.WhenAll(sync1, sync2);  // ------ sync point
             
