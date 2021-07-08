@@ -49,7 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 var sync1 = store.Sync();
                 AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting Sync()
                 
-                store.SendMessage("Some message");
+                store.SendMessage("Some message"); // add additional task to second Sync() to identify the result by task.Count
                 store.customers.Update(paul);
                 AreEqual(2, store.Tasks.Count);
                 var sync2 = store.Sync();
@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 var findPeter = readCustomers1.Find("customer-peter");
                 var sync1 = store.Sync();
                 
-                store.SendMessage("Some message");
+                store.SendMessage("Some message"); // add additional task to second Sync() to identify the result by task.Count
                 var readCustomers2 = store.customers.Read();
                 IsFalse(readCustomers1 == readCustomers2);
                 var findPaul = readCustomers2.Find("customer-paul");
