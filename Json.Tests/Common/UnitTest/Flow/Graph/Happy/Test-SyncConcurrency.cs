@@ -17,6 +17,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         /// Test multiple calls of <see cref="EntityStore.Sync()"/> without await-ing each call individually.
         /// This enables "pipelining" of scheduling <see cref="EntityStore.Sync()"/> calls.
         /// <br></br>
+        /// Doing this erode the performance benefits handling multiple <see cref="SyncTask"/>'s via a single
+        /// <see cref="EntityStore.Sync"/> but the behavior of <see cref="EntityStore.Sync"/> needs to be same -
+        /// if its awaited or not.
+        /// <br></br>
+        /// Note:
+        /// In a game loop it can happen that multiple calls to <see cref="EntityStore.Sync"/> are pending because
+        /// processing them is slower than creating new <see cref="EntityStore.Sync"/> requests.
+        /// <br></br>
         /// Motivation for "pipelining": <br></br>
         /// Sync() calls are executed in order but overall execution time is improved in scenarios with high latency to a
         /// <see cref="RemoteHostDatabase"/> because RTT is added only once instead of n times for n awaited Sync() calls. 
