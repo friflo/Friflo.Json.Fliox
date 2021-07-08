@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Graph
                     _id = value;
                     return;
                 }
-                throw new ArgumentException($"Entity id must not be changed. Type: {GetType().Name}, was: {_id}, set: {value}");
+                throw new ArgumentException($"Entity id must not be changed. Type: {GetType().Name}, was: '{_id}', assigned: '{value}'");
             }
         }
 
