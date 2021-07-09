@@ -80,7 +80,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 }
             });
             
-            var subscriptions       = store.SubscribeAllChanges(Changes.All);
+            var subscriptions   = store.SubscribeAllChanges(Changes.All);
+            // change subscription of specific EntitySet<Article>
+            var articlesSub     = store.articles.SubscribeChanges(Changes.All);
+            
             var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg) => {
                 processor.receivedAll = true;
                 AreEqual("null",            msg.Json);
@@ -140,6 +143,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             foreach (var subscription in subscriptions) {
                 IsTrue(subscription.Success);    
             }
+            IsTrue(articlesSub.Success);
+                
             IsTrue(subscribeMessage.        Success);
             IsTrue(subscribeMessage1.       Success);
             IsTrue(subscribeMessage2.       Success);
