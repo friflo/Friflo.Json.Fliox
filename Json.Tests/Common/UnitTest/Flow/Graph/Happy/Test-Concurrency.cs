@@ -158,10 +158,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static async Task ConcurrentWebSocket(EntityDatabase database, int clientCount, int requestCount)
         {
             // --- prepare
-            var stores = new List<PocStore>();
+            var stores = new List<EntityStore>();
             try {
                 for (int n = 0; n < clientCount; n++) {
-                    stores.Add(new PocStore(database, $"reader-{n}"));
+                    stores.Add(new EntityStore(database, null,$"reader-{n}"));
                 }
                 var tasks = new List<Task>();
                 
