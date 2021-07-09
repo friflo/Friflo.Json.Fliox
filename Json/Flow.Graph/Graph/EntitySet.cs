@@ -50,6 +50,7 @@ namespace Friflo.Json.Flow.Graph
         /// key: <see cref="PeerEntity{T}.entity"/>.id          Note: must be private by all means
         private  readonly   Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
         
+        // ReSharper disable once NotAccessedField.Local
         private  readonly   EntityContainer                     container; // not used - only for debugging ergonomics
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
