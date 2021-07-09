@@ -4,7 +4,8 @@
 # Hint:
 # use with [REST Client - Visual Studio Marketplace] https://marketplace.visualstudio.com/items?itemName=humao.rest-client
 
-### simple message task
+### send message to host
+# "Echo" is known at host as a command message. It simply echos the given value.
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
