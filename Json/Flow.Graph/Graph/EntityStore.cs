@@ -97,17 +97,6 @@ namespace Friflo.Json.Flow.Graph
             return result;
         }
         
-        /// <see cref="SyncWait"/> is redundant -> made private. Keep it for exploring (Unity)
-        private void SyncWait() {
-            SyncRequest syncRequest = CreateSyncRequest(out SyncStore syncReq);
-            var messageContext = new MessageContext(_intern.eventTarget, _intern.clientId);
-            var responseTask = ExecuteSync(syncRequest, messageContext);
-            // responseTask.Wait();  
-            SyncResponse response = responseTask.Result;  // <--- synchronous Sync point!!
-            HandleSyncResponse(syncRequest, response, syncReq);
-            messageContext.Release();
-        }
-
         
         // --- LogChanges
         public LogTask LogChanges() {
