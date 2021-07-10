@@ -15,25 +15,29 @@ namespace Friflo.Json.Flow.Database
         readonly ConcurrentDictionary<IEventTarget, ClientCredentials>  credByTarget    = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
         readonly ConcurrentDictionary<string,       ClientCredentials>  credByClient    = new ConcurrentDictionary<string,       ClientCredentials>();
 
-        public virtual Task<SyncResponse> Authorize(SyncRequest syncRequest, MessageContext messageContext) {
+        public virtual Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
             var clientId = syncRequest.clientId;
             if (clientId == null) {
-                return Error("authorization requires: clientId");
+                messageContext.authenticationError = "authorization requires: clientId";
+                return Task.CompletedTask;
             }
             var eventTarget = messageContext.eventTarget;
             // already authorized?
-            if (credByTarget.ContainsKey(eventTarget)) {
-                return null;
+            if (eventTarget != null && credByTarget.ContainsKey(eventTarget)) {
+                return Task.CompletedTask;
             }
             var token = syncRequest.token;
             if (token == null) {
-                return Error("authorization requires: token");
+                messageContext.authenticationError = "authorization requires: token";
+                return Task.CompletedTask;
             }
             if (!credByClient.TryGetValue(clientId, out var credential)) {
-                return Error($"client not authorized. Invalid token. clientId: '{clientId}'");
+                messageContext.authenticationError = $"client not authorized. Invalid token. clientId: '{clientId}'";
+                return Task.CompletedTask;
             }
             if (token != credential.token) {
-                return Error($"client not authorized. Invalid token. clientId: '{clientId}'");
+                messageContext.authenticationError = $"client not authorized. Invalid token. clientId: '{clientId}'";
+                return Task.CompletedTask;
             }
             // Update target if changed for early out when already authorized.
             if (credential.target != eventTarget) {
@@ -43,12 +47,7 @@ namespace Friflo.Json.Flow.Database
                     credByTarget.TryAdd(eventTarget, credential);
                 }
             }
-            return null;
-        }
-        
-        private static Task<SyncResponse> Error (string message) {
-            var response = new SyncResponse{ error = new ErrorResponse{ message = message }};
-            return Task.FromResult(response);
+            return Task.CompletedTask;
         }
     }
     

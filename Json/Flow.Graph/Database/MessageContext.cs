@@ -24,6 +24,8 @@ namespace Friflo.Json.Flow.Database
         public                  string          clientId;
         public  readonly        IPools          pools;
         public  readonly        IEventTarget    eventTarget;
+        public                  string          authenticationError;
+        
         private                 PoolUsage       startUsage;
         public                  Action          canceler = () => {};
         
