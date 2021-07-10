@@ -313,7 +313,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 
                     // assert no send events are pending which are not acknowledged
                     foreach (var subscriber in eventBroker.GetSubscribers()) {
-                        AreEqual(0, subscriber.SendEventsCount);
+                        AreEqual(0, subscriber.SentEventsCount);
                     }
                 }
             }
