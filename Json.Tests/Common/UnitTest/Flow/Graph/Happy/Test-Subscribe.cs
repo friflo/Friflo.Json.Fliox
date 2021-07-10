@@ -306,8 +306,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     sendStore.SendMessage("Hello", "some text");
                     await sendStore.Sync();
                     
-                    await Task.Delay(1); // release thread to process message event handler
-                    IsTrue(receivedHello);
+                    while (!receivedHello) {
+                        await Task.Delay(1); // release thread to process message event handler
+                    }
                     
                     await listenDb.Sync();
 
