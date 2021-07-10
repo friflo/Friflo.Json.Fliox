@@ -281,6 +281,7 @@ namespace Friflo.Json.Flow.Graph
             return response;
         }
         
+        // ReSharper disable once UnusedMember.Local
         private int GetSubscriptionCount() {
             int count = _intern.subscriptions.Count;
             foreach (var setPair in _intern.setByType) {
@@ -308,8 +309,13 @@ namespace Friflo.Json.Flow.Graph
             throw new InvalidOperationException($"unknown EntitySet<{entityType.Name}>");
         }
 
-        /// <summary> Returning current <see cref="StoreIntern.syncStore"/> as <see cref="syncReq"/> enables request handling
-        /// in a worker thread while calling <see cref="SyncStore"/> methods from "main" thread.</summary>
+        /// <summary>
+        /// Returning current <see cref="StoreIntern.syncStore"/> as <see cref="syncReq"/> enables request handling
+        /// in a worker thread while calling <see cref="SyncStore"/> methods from "main" thread.
+        /// 
+        /// If store has <see cref="StoreIntern.subscriptionProcessor"/> acknowledge received events to clear
+        /// <see cref="Database.Event.EventSubscriber.sentEvents"/>. This avoids resending already received events on reconnect. 
+        /// </summary>
         private SyncRequest CreateSyncRequest(out SyncStore syncReq) {
             syncReq = _intern.syncStore;
             syncReq.SetSyncSets(this);
@@ -319,8 +325,9 @@ namespace Friflo.Json.Flow.Graph
                 tasks       = tasks,
                 clientId    = _intern.clientId
             };
-            var subscriptionCount = GetSubscriptionCount();
-            if (subscriptionCount > 0) {
+
+            // see method docs
+            if (_intern.subscriptionProcessor != null) {
                 syncRequest.eventAck = _intern.lastEventSeq;
             }
 
