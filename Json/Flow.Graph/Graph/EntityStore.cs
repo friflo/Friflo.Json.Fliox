@@ -80,8 +80,8 @@ namespace Friflo.Json.Flow.Graph
             SyncRequest syncRequest = CreateSyncRequest(out SyncStore syncReq);
             var messageContext = new MessageContext(_intern.eventTarget, _intern.clientId);
             SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
-            var result = HandleSyncResponse(syncRequest, response, syncReq);
             
+            var result = HandleSyncResponse(syncRequest, response, syncReq);
             if (!result.Success)
                 throw new SyncResultException(response.error, result.failed);
             messageContext.Release();
@@ -92,6 +92,7 @@ namespace Friflo.Json.Flow.Graph
             SyncRequest syncRequest = CreateSyncRequest(out SyncStore syncReq);
             var messageContext = new MessageContext(_intern.eventTarget, _intern.clientId);
             SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
+            
             var result = HandleSyncResponse(syncRequest, response, syncReq);
             messageContext.Release();
             return result;
@@ -267,6 +268,7 @@ namespace Friflo.Json.Flow.Graph
             Task<SyncResponse> task = null;
             try {
                 task = _intern.database.ExecuteSync(syncRequest, messageContext);
+                
                 pendingSyncs.TryAdd(task, messageContext);
                 response = await task.ConfigureAwait(false);
                 pendingSyncs.TryRemove(task, out _);
@@ -280,7 +282,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         private int GetSubscriptionCount() {
-            int count = 0;
+            int count = _intern.subscriptions.Count;
             foreach (var setPair in _intern.setByType) {
                 var set = setPair.Value;
                 if (set.GetSubscription() != null)

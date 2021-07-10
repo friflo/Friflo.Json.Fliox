@@ -284,4 +284,40 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             sum.patches += changes.patches.Count;
         }
     }
+    
+    public partial class TestStore {
+        [Test]      public void         AcknowledgeMessages() { SingleThreadSynchronizationContext.Run(AssertAcknowledgeMessages); }
+            
+        private static async Task AssertAcknowledgeMessages() {
+            using (var _            = Pools.SharedPools) // for LeakTestsFixture
+            using (var eventBroker  = new EventBroker(false))
+            using (var database     = new MemoryDatabase())
+            using (var listenDb     = new EntityStore(database, null, "listenDb")) {
+                database.eventBroker = eventBroker;
+                var processor = new SubscriptionProcessor(listenDb);
+                listenDb.SetSubscriptionProcessor(processor);
+                bool receivedHello = false;
+                listenDb.SubscribeMessage("Hello", msg => {
+                    receivedHello = true;
+                });
+                await listenDb.Sync();
+
+                using (var sendStore  = new EntityStore(database, null, "sendStore")) {
+                    sendStore.SendMessage("Hello", "some text");
+                    await sendStore.Sync();
+                    
+                    await Task.Delay(1); // release thread to process message event handler
+                    IsTrue(receivedHello);
+                    
+                    await listenDb.Sync();
+
+                    // assert no send events are pending which are not acknowledged
+                    foreach (var subscriber in eventBroker.GetSubscribers()) {
+                        AreEqual(0, subscriber.SendEventsCount);
+                    }
+                }
+            }
+        }
+    }
+
 }

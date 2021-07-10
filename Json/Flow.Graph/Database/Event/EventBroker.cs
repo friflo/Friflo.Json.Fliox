@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
@@ -31,6 +32,9 @@ namespace Friflo.Json.Flow.Database.Event
         public void Dispose() {
             jsonEvaluator.Dispose();
         }
+        
+        /// used for test assertion (returned subscribers cant be manipulated)
+        public ICollection<EventSubscriber> GetSubscribers() => subscribers.Values;
 
         public async Task FinishQueues() {
             if (!background)

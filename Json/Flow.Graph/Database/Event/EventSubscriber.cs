@@ -38,6 +38,9 @@ namespace Friflo.Json.Flow.Database.Event
         private  readonly   DataChannelWriter<TriggerType>          triggerWriter;
 
         public   override   string                                  ToString() => clientId;
+        
+        /// used for test assertion
+        public              int                                     SendEventsCount => sentEvents.Count;
 
         public EventSubscriber (string clientId, IEventTarget eventTarget, bool background) {
             this.clientId       = clientId;
