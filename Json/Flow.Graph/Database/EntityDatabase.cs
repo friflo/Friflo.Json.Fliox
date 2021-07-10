@@ -18,6 +18,7 @@ namespace Friflo.Json.Flow.Database
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         public              EventBroker                         eventBroker;
         public              TaskHandler                         taskHandler;
+        public              ClientAuthentication                clientAuthentication;
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 
@@ -69,6 +70,12 @@ namespace Friflo.Json.Flow.Database
         /// </summary>
         public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.clientId = syncRequest.clientId;
+            if (clientAuthentication != null) {
+                var authResult = await clientAuthentication.Authorize(syncRequest, messageContext);
+                if (authResult != null)
+                    return authResult;
+            }
+            
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null)
                 return new SyncResponse{error = new ErrorResponse{message = "missing field: tasks (array)"}};

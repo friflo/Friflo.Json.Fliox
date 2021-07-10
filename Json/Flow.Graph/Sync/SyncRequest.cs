@@ -23,6 +23,7 @@ namespace Friflo.Json.Flow.Sync
         /// Otherwise <see cref="eventAck"/> is null.
         /// </summary>
         [Fri.Property(Name = "ack")]    public  int?                eventAck;
+                                        public  string              token;
                                         public  List<DatabaseTask>  tasks;
         
         internal override                       RequestType         RequestType => RequestType.sync;
