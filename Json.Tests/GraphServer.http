@@ -187,4 +187,15 @@ content-type: application/json
   }
 ]}
 
+### acknowledge received events - run only for WebSocket
+# "ack": 0 => starts resending all buffered events to the client and remove events with "seq" <= 0.
+POST http://localhost:8081/ HTTP/1.1
+content-type: application/json
+
+{ "type": "sync",
+  "ack": 0,
+  "client": "client-1",
+  "tasks": []
+}
+
 
