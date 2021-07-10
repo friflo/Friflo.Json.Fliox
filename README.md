@@ -1,5 +1,8 @@
 ![.NET Tests](https://github.com/friflo/Friflo.Json.Flow/workflows/.NET/badge.svg)
 
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/friflo/Friflo.Json.Flow)
+
+
 # friflo JSON Flow
 
 A JSON parser/serializer and object mapper trimmed towards performance.  
