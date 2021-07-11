@@ -54,13 +54,8 @@ namespace Friflo.Json.Flow.Database
             canceler.Invoke();
         }
         
-        public async BoolTask Authenticated() {
-            var authResult = authState.result;
-            if (authResult != AuthResult.NotAuthenticated) {
-                return authResult == AuthResult.AuthSuccess; 
-            }
-            await authState.authHandler.Authenticated(authState.syncRequest, this);
-            return authState.result == AuthResult.AuthSuccess;
+        public bool Authenticated() {
+            return authState.Success;
         }
 
         

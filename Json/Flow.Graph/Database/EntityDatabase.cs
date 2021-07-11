@@ -75,10 +75,7 @@ namespace Friflo.Json.Flow.Database
         /// </summary>
         public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.clientId = syncRequest.clientId;
-            messageContext.authState.authHandler    = authHandler;
-            messageContext.authState.syncRequest    = syncRequest;
-            await messageContext.Authenticated();
-            await messageContext.Authenticated();
+            await authHandler.Authenticate(syncRequest, messageContext);
             
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null)

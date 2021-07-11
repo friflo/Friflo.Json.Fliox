@@ -6,20 +6,18 @@ using Friflo.Json.Flow.Sync;
 namespace Friflo.Json.Flow.Database.Auth
 {
     public struct AuthState {
-        internal            AuthHandler     authHandler;
-        internal            SyncRequest     syncRequest;
-        public              string          error;
-        public              AuthResult      result;
+        public              string          Error   { get; private set;}  
+        public              bool            Success { get; private set;}
         
-        public  override    string          ToString() => result.ToString();
+        public  override    string          ToString() => Success.ToString();
         
         public void SetFailed(string error) {
-            result      = AuthResult.AuthFailed;
-            this.error  = error;
+            Success = true;
+            Error   = error;
         }
         
         public void SetSuccess () {
-            this.result = AuthResult.AuthSuccess;
+            Success = false;
         }
     }
     

@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Database.Auth
             credByClient        = new ConcurrentDictionary<string,       ClientCredentials>();
         }
         
-        public async ValueTask Authenticated(SyncRequest syncRequest, MessageContext messageContext)
+        public async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext)
         {
             var clientId = syncRequest.clientId;
             if (clientId == null) {
