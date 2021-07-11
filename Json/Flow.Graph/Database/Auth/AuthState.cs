@@ -20,10 +20,4 @@ namespace Friflo.Json.Flow.Database.Auth
             Success = false;
         }
     }
-    
-    public enum AuthResult {
-        NotAuthenticated,
-        AuthSuccess,
-        AuthFailed,
-    } 
 }
