@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Threading.Tasks;
 using Friflo.Json.Burst;
 using Friflo.Json.Flow.Database.Auth;
 using Friflo.Json.Flow.Database.Event;
@@ -10,6 +9,12 @@ using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
 using Friflo.Json.Flow.Utils;
+
+#if UNITY_5_3_OR_NEWER
+    using BoolTask = System.Threading.Tasks.Task<bool>;
+#else
+    using BoolTask = System.Threading.Tasks.ValueTask<bool>;
+#endif
 
 namespace Friflo.Json.Flow.Database
 {
@@ -49,7 +54,7 @@ namespace Friflo.Json.Flow.Database
             canceler.Invoke();
         }
         
-        public async ValueTask<bool> Authenticated() {
+        public async BoolTask Authenticated() {
             var authResult = authState.result;
             if (authResult != AuthResult.NotAuthenticated) {
                 return authResult == AuthResult.AuthSuccess; 

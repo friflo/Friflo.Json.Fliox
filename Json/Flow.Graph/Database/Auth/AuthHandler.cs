@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Sync;
 
+#if UNITY_5_3_OR_NEWER
+    using ValueTask = System.Threading.Tasks.Task;
+#endif
+
 namespace Friflo.Json.Flow.Database.Auth
 {
     public abstract class Authenticator
