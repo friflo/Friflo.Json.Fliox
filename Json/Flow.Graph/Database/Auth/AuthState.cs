@@ -1,23 +1,25 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database.Auth
 {
     public struct AuthState {
-        public              string          Error   { get; private set;}  
-        public              bool            Success { get; private set;}
+        public      string  Error           { get; private set;}  
+        public      bool    Authenticated   { get; private set;}
+        private     bool    authExecuted;      
         
-        public  override    string          ToString() => Success.ToString();
+        public  override    string          ToString() => authExecuted ? (Authenticated ? "success" : "failed") : "pending";
         
         public void SetFailed(string error) {
-            Success = true;
-            Error   = error;
+            authExecuted    = true;
+            Authenticated   = false;
+            Error           = error;
         }
         
         public void SetSuccess () {
-            Success = false;
+            authExecuted    = true;
+            Authenticated   = true;
         }
     }
 }

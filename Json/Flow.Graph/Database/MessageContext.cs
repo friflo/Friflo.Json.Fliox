@@ -35,7 +35,7 @@ namespace Friflo.Json.Flow.Database
         
         private                 PoolUsage       startUsage;
         public                  Action          canceler = () => {};
-        public override         string          ToString() => $"clientId: {clientId} - {authState}";
+        public override         string          ToString() => $"clientId: {clientId}, auth: {authState}";
 
         public MessageContext (IEventTarget eventTarget) {
             pools               = new Pools(Pools.SharedPools);
@@ -55,7 +55,7 @@ namespace Friflo.Json.Flow.Database
         }
         
         public bool Authenticated() {
-            return authState.Success;
+            return authState.Authenticated;
         }
 
         
