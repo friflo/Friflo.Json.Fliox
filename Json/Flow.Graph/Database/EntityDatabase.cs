@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Database.Auth;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Sync;
 
@@ -18,7 +19,7 @@ namespace Friflo.Json.Flow.Database
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         public              EventBroker                         eventBroker;
         public              TaskHandler                         taskHandler;
-        public              ClientAuthentication                clientAuthentication = new ClientAuthentication();
+        public              ClientAuthenticator                 clientAuthenticator = new ClientAuthenticator();
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 
@@ -70,7 +71,10 @@ namespace Friflo.Json.Flow.Database
         /// </summary>
         public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.clientId = syncRequest.clientId;
-            await clientAuthentication.Authenticate(syncRequest, messageContext);
+            messageContext.authState.authenticator  = clientAuthenticator;
+            messageContext.authState.syncRequest    = syncRequest;
+            await messageContext.Authenticated();
+            await messageContext.Authenticated();
             
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null)

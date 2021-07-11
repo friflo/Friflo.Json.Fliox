@@ -2,7 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Threading.Tasks;
 using Friflo.Json.Burst;
+using Friflo.Json.Flow.Database.Auth;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
@@ -24,7 +26,7 @@ namespace Friflo.Json.Flow.Database
         public                  string          clientId;
         public  readonly        IPools          pools;
         public  readonly        IEventTarget    eventTarget;
-        public                  string          authenticationError;
+        public                  AuthState       authState;
         
         private                 PoolUsage       startUsage;
         public                  Action          canceler = () => {};
@@ -46,6 +48,16 @@ namespace Friflo.Json.Flow.Database
         public void Cancel() {
             canceler.Invoke();
         }
+        
+        public async ValueTask<bool> Authenticated() {
+            var authResult = authState.result;
+            if (authResult != AuthResult.NotAuthenticated) {
+                return authResult == AuthResult.AuthSuccess; 
+            }
+            await authState.authenticator.Authenticated(authState.syncRequest, this);
+            return authState.result == AuthResult.AuthSuccess;
+        }
+
         
         public void Release() {
             startUsage.AssertEqual(pools.PoolUsage);
