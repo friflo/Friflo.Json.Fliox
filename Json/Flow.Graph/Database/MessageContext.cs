@@ -30,7 +30,7 @@ namespace Friflo.Json.Flow.Database
         
         private                 PoolUsage       startUsage;
         public                  Action          canceler = () => {};
-        
+        public override         string          ToString() => $"clientId: {clientId} - {authState}";
 
         public MessageContext (IEventTarget eventTarget) {
             pools               = new Pools(Pools.SharedPools);
