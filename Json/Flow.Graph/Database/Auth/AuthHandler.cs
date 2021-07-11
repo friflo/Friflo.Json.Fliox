@@ -19,7 +19,7 @@ namespace Friflo.Json.Flow.Database.Auth
     
     
     // todo untested
-    public readonly struct AuthHandler
+    internal readonly struct AuthHandler
     {
         private readonly    Authenticator                                           authenticator;
         private readonly    ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
