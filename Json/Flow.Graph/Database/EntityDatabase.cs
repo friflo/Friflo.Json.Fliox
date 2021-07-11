@@ -19,7 +19,7 @@ namespace Friflo.Json.Flow.Database
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         public              EventBroker                         eventBroker;
         public              TaskHandler                         taskHandler;
-        public              ClientAuthenticator                 clientAuthenticator = new ClientAuthenticator();
+        public              AuthHandler                         authHandler = new AuthHandler(null);
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 
@@ -71,7 +71,7 @@ namespace Friflo.Json.Flow.Database
         /// </summary>
         public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.clientId = syncRequest.clientId;
-            messageContext.authState.authenticator  = clientAuthenticator;
+            messageContext.authState.authHandler    = authHandler;
             messageContext.authState.syncRequest    = syncRequest;
             await messageContext.Authenticated();
             await messageContext.Authenticated();

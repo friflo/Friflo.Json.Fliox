@@ -54,7 +54,7 @@ namespace Friflo.Json.Flow.Database
             if (authResult != AuthResult.NotAuthenticated) {
                 return authResult == AuthResult.AuthSuccess; 
             }
-            await authState.authenticator.Authenticated(authState.syncRequest, this);
+            await authState.authHandler.Authenticated(authState.syncRequest, this);
             return authState.result == AuthResult.AuthSuccess;
         }
 

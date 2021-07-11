@@ -8,15 +8,23 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database.Auth
 {
-    // todo untested
-    public class ClientAuthenticator
+    public abstract class Authenticator
     {
-        private readonly ConcurrentDictionary<IEventTarget, ClientCredentials>  credByTarget;
-        private readonly ConcurrentDictionary<string,       ClientCredentials>  credByClient;
+        public abstract Task<string> GetClientToken(string clientId);
+    }
+    
+    
+    // todo untested
+    public readonly struct AuthHandler
+    {
+        private readonly    Authenticator                                           authenticator;
+        private readonly    ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
+        private readonly    ConcurrentDictionary<string,       ClientCredentials>   credByClient;
         
-        public ClientAuthenticator() {
-            credByTarget    = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
-            credByClient    = new ConcurrentDictionary<string,       ClientCredentials>();
+        public AuthHandler(Authenticator authenticator) {
+            this.authenticator  = authenticator;
+            credByTarget        = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
+            credByClient        = new ConcurrentDictionary<string,       ClientCredentials>();
         }
         
         public async ValueTask Authenticated(SyncRequest syncRequest, MessageContext messageContext)
@@ -38,7 +46,9 @@ namespace Friflo.Json.Flow.Database.Auth
                 return;
             }
             if (!credByClient.TryGetValue(clientId, out var credential)) {
-                messageContext.authState.SetFailed($"client not authorized. Invalid token. clientId: '{clientId}'");
+                var refToken = await authenticator.GetClientToken(clientId);
+                var refCred = new ClientCredentials{ token = refToken, target = eventTarget };
+                credByClient.TryAdd(clientId, refCred);
                 return;
             }
             if (token != credential.token) {
