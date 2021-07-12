@@ -18,14 +18,14 @@ namespace Friflo.Json.Flow.Database.Auth
     
     public class AuthenticateNone : Authenticator
     {
-        private readonly Authorizer anonymousAuthorizer;
+        private readonly Authorizer unknown;
 
-        public AuthenticateNone(Authorizer anonymousAuthorizer) {
-            this.anonymousAuthorizer = anonymousAuthorizer ?? throw new NullReferenceException(nameof(anonymousAuthorizer));
+        public AuthenticateNone(Authorizer unknown) {
+            this.unknown = unknown ?? throw new NullReferenceException(nameof(unknown));
         }
         
         public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
-            messageContext.authState.SetFailed("not authenticated", anonymousAuthorizer);
+            messageContext.authState.SetFailed("not authenticated", unknown);
         }
     }
 }

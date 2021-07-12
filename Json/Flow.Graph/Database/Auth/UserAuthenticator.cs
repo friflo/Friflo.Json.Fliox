@@ -55,15 +55,15 @@ namespace Friflo.Json.Flow.Database.Auth
         private   readonly  UserStore                                               userStore;
         private   readonly  ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
         private   readonly  ConcurrentDictionary<string,       ClientCredentials>   credByClient;
-        private   readonly  Authorizer                                              anonymousAuthorizer;
+        private   readonly  Authorizer                                              unknown;
         private   readonly  ConcurrentDictionary<string, Authorizer>                predefinedRoles;
         
-        public UserAuthenticator (UserStore userStore, Authorizer anonymousAuthorizer) {
-            this.userStore              = userStore;
-            credByTarget                = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
-            credByClient                = new ConcurrentDictionary<string,       ClientCredentials>();
-            this.anonymousAuthorizer    = anonymousAuthorizer;
-            predefinedRoles               = new ConcurrentDictionary<string, Authorizer>();
+        public UserAuthenticator (UserStore userStore, Authorizer unknown) {
+            this.userStore  = userStore;
+            credByTarget    = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
+            credByClient    = new ConcurrentDictionary<string,       ClientCredentials>();
+            this.unknown    = unknown ?? throw new NullReferenceException(nameof(unknown));
+            predefinedRoles = new ConcurrentDictionary<string, Authorizer>();
             
             predefinedRoles.TryAdd("authorizeAll",      new AuthorizeAll());
             predefinedRoles.TryAdd("authorizeNone",     new AuthorizeNone());
@@ -74,7 +74,7 @@ namespace Friflo.Json.Flow.Database.Auth
         {
             var clientId = syncRequest.clientId;
             if (clientId == null) {
-                messageContext.authState.SetFailed("user authorization requires: clientId", anonymousAuthorizer);
+                messageContext.authState.SetFailed("user authorization requires clientId", unknown);
                 return;
             }
             var eventTarget = messageContext.eventTarget;
@@ -85,19 +85,19 @@ namespace Friflo.Json.Flow.Database.Auth
             }
             var token = syncRequest.token;
             if (token == null) {
-                messageContext.authState.SetFailed("user authorization requires: token", anonymousAuthorizer);
+                messageContext.authState.SetFailed("user authorization requires token", unknown);
                 return;
             }
             if (!credByClient.TryGetValue(clientId, out credential)) {
                 var authCred    = await GetClientCred(clientId);
                 if (authCred != null) {
-                    var authorizer  = GetAuthorizers(authCred.roles);
-                    credential      = new ClientCredentials (authCred.token, eventTarget, authorizer);
+                    var authorizers = GetAuthorizers(authCred.roles);
+                    credential      = new ClientCredentials (authCred.token, eventTarget, authorizers);
                     credByClient.TryAdd(clientId, credential);
                 }
             }
             if (credential == null || token != credential.token) {
-                messageContext.authState.SetFailed($"user not authorized. Invalid token. clientId: '{clientId}'", anonymousAuthorizer);
+                messageContext.authState.SetFailed($"user not authorized. Invalid token. clientId: '{clientId}', token: '{token}'", unknown);
                 return;
             }
             // Update target if changed for early out when already authorized.
@@ -120,7 +120,7 @@ namespace Friflo.Json.Flow.Database.Auth
                 authorizers.Add(authorizer);
             }
             if (authorizers.Count == 0) {
-                authorizers.Add(anonymousAuthorizer);
+                authorizers.Add(unknown);
             }
             return authorizers;
         }
