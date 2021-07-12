@@ -45,4 +45,18 @@ namespace Friflo.Json.Flow.Database.Auth
             return false;
         }
     }
+    
+    public class AuthorizeReadOnly : Authorizer {
+        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+            switch (task.TaskType) {
+                case TaskType.query:
+                case TaskType.read:
+                case TaskType.message:
+                case TaskType.subscribeChanges:
+                case TaskType.subscribeMessage:
+                    return true;
+            }
+            return false;
+        }
+    }
 }
