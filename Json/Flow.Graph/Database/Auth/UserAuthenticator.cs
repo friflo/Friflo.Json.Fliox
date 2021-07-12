@@ -44,16 +44,16 @@ namespace Friflo.Json.Flow.Database.Auth
     
     public class UserAuthenticator : Authenticator
     {
-        private readonly    UserStore                                               userStore;
-        private readonly    ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
-        private readonly    ConcurrentDictionary<string,       ClientCredentials>   credByClient;
-        private readonly    Authorizer                                              anonymousAuthorizer;
+        private   readonly  UserStore                                               userStore;
+        private   readonly  ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
+        private   readonly  ConcurrentDictionary<string,       ClientCredentials>   credByClient;
+        private   readonly  Authorizer                                              anonymousAuthorizer;
         
-        public UserAuthenticator (UserStore userStore) {
-            this.userStore      = userStore;
-            credByTarget        = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
-            credByClient        = new ConcurrentDictionary<string,       ClientCredentials>();
-            anonymousAuthorizer = new AuthorizeNone();
+        public UserAuthenticator (UserStore userStore, Authorizer anonymousAuthorizer) {
+            this.userStore              = userStore;
+            credByTarget                = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
+            credByClient                = new ConcurrentDictionary<string,       ClientCredentials>();
+            this.anonymousAuthorizer    = anonymousAuthorizer;
         }
         
         public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext)
