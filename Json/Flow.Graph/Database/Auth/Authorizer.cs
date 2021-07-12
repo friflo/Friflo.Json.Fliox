@@ -89,18 +89,18 @@ namespace Friflo.Json.Flow.Database.Auth
         static PredefinedRoles() {
             var roles = new Dictionary<string, Authorizer>();
             //
-            Roles.TryAdd("allow",             new AuthorizeAllow());
-            Roles.TryAdd("deny",              new AuthorizeDeny());
-            Roles.TryAdd("readOnly",          new AuthorizeReadOnly());
+            roles.TryAdd("allow",             new AuthorizeAllow());
+            roles.TryAdd("deny",              new AuthorizeDeny());
+            roles.TryAdd("readOnly",          new AuthorizeReadOnly());
             //
-            Roles.TryAdd("read",              new AuthorizeTaskType(TaskType.read));
-            Roles.TryAdd("query",             new AuthorizeTaskType(TaskType.query));
-            Roles.TryAdd("create",            new AuthorizeTaskType(TaskType.create));
-            Roles.TryAdd("update",            new AuthorizeTaskType(TaskType.update));
-            Roles.TryAdd("patch",             new AuthorizeTaskType(TaskType.patch));
-            Roles.TryAdd("delete",            new AuthorizeTaskType(TaskType.delete));
-            Roles.TryAdd("subscribeChanges",  new AuthorizeTaskType(TaskType.subscribeChanges));
-            Roles.TryAdd("subscribeMessage",  new AuthorizeTaskType(TaskType.subscribeMessage));
+            roles.TryAdd("read",              new AuthorizeTaskType(TaskType.read));
+            roles.TryAdd("query",             new AuthorizeTaskType(TaskType.query));
+            roles.TryAdd("create",            new AuthorizeTaskType(TaskType.create));
+            roles.TryAdd("update",            new AuthorizeTaskType(TaskType.update));
+            roles.TryAdd("patch",             new AuthorizeTaskType(TaskType.patch));
+            roles.TryAdd("delete",            new AuthorizeTaskType(TaskType.delete));
+            roles.TryAdd("subscribeChanges",  new AuthorizeTaskType(TaskType.subscribeChanges));
+            roles.TryAdd("subscribeMessage",  new AuthorizeTaskType(TaskType.subscribeMessage));
             
             Roles = new ReadOnlyDictionary<string, Authorizer>(roles);
         }
