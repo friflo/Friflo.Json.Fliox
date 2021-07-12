@@ -10,6 +10,10 @@ using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
+#if UNITY_5_3_OR_NEWER
+    using ValueTask = System.Threading.Tasks.Task;
+#endif
+
 namespace Friflo.Json.Flow.Database.Auth
 {
     public class UserStore : EntityStore
