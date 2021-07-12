@@ -111,15 +111,15 @@ namespace Friflo.Json.Flow.Database.Auth
         }
         
         protected virtual Authorizer GetAuthorizer(ICollection<string> roles) {
-            var authorizers = new List<Authorizer>();
+            if (roles == null || roles.Count == 0) {
+                return unknown;
+            }
+            var authorizers = new List<Authorizer>(roles.Count);
             foreach (var role in roles) {
                 if (!PredefinedRoles.Roles.TryGetValue(role, out Authorizer authorizer)) {
                     throw new InvalidOperationException($"unknown authorization role: {role}");
                 }
                 authorizers.Add(authorizer);
-            }
-            if (authorizers.Count == 0) {
-                return unknown;
             }
             var any = new AuthorizeAny(authorizers);
             return any;
