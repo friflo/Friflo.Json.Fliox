@@ -6,8 +6,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database.Event;
-using Friflo.Json.Flow.Graph;
-using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 #if UNITY_5_3_OR_NEWER
@@ -16,26 +14,6 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database.Auth
 {
-    public class UserStore : EntityStore
-    {
-        public readonly EntitySet<UserRole>         roles;
-        public readonly EntitySet<UserCredential>   credentials;
-        
-        public UserStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-            roles       = new EntitySet<UserRole>(this);
-            credentials = new EntitySet<UserCredential>(this);
-        }
-    }
-    
-    public class UserRole : Entity {
-        public List<string> roles;
-    }
-    
-    public class UserCredential : Entity {
-        public string       passwordHash;
-        public string       token;
-    }
-    
     internal class AuthCred {
         internal readonly   string          token;
         internal readonly   List<string>    roles;
