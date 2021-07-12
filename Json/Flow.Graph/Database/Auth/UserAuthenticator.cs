@@ -54,14 +54,18 @@ namespace Friflo.Json.Flow.Database.Auth
         private   readonly  ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
         private   readonly  ConcurrentDictionary<string,       ClientCredentials>   credByClient;
         private   readonly  Authorizer                                              anonymousAuthorizer;
-        private   readonly  Authorizer                                              authenticatedAuthorizer;
+        private   readonly  ConcurrentDictionary<string, Authorizer>                authorizers;
         
         public UserAuthenticator (UserStore userStore, Authorizer anonymousAuthorizer) {
-            this.userStore                  = userStore;
-            credByTarget                    = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
-            credByClient                    = new ConcurrentDictionary<string,       ClientCredentials>();
-            this.anonymousAuthorizer        = anonymousAuthorizer;
-            this.authenticatedAuthorizer    = new AuthorizeAll();
+            this.userStore              = userStore;
+            credByTarget                = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
+            credByClient                = new ConcurrentDictionary<string,       ClientCredentials>();
+            this.anonymousAuthorizer    = anonymousAuthorizer;
+            this.authorizers            = new ConcurrentDictionary<string, Authorizer>();
+            
+            authorizers.TryAdd("authorizeAll",      new AuthorizeAll());
+            authorizers.TryAdd("authorizeNone",     new AuthorizeNone());
+            authorizers.TryAdd("authorizeReadOnly", new AuthorizeReadOnly());
         }
         
         public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext)
@@ -106,7 +110,10 @@ namespace Friflo.Json.Flow.Database.Auth
         }
         
         protected virtual Authorizer GetAuthorizer(string role) {
-            return authenticatedAuthorizer;
+            if (role != null && authorizers.TryGetValue(role, out Authorizer authorizer)) {
+                return authorizer;
+            }
+            return anonymousAuthorizer;
         }
         
         private async Task<AuthCred> GetClientCred(string clientId) {
