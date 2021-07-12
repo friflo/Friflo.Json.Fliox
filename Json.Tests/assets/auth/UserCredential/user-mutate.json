@@ -1,0 +1,5 @@
+{
+    "id": "user-mutate",
+    "passwordHash": "123",
+    "token": "user-mutate-token"
+}

@@ -98,7 +98,10 @@ namespace Friflo.Json.Flow.Graph
             return result;
         }
         
-        
+        public void SetToken (string token) {
+            _intern.token = token;
+        }
+
         // --- LogChanges
         public LogTask LogChanges() {
             var task = _intern.syncStore.CreateLog();
@@ -323,7 +326,8 @@ namespace Friflo.Json.Flow.Graph
             var tasks       = new List<DatabaseTask>();
             var syncRequest = new SyncRequest {
                 tasks       = tasks,
-                clientId    = _intern.clientId
+                clientId    = _intern.clientId,
+                token       = _intern.token 
             };
 
             // see method docs

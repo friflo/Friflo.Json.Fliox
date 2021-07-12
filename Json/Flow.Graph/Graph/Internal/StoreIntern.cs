@@ -37,7 +37,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal            bool                                    disposed;
         internal            int                                     lastEventSeq;
         internal            int                                     syncCount;
-        
+        internal            string                                  token;
 
         public   override   string                                  ToString() => clientId;
 
@@ -70,6 +70,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             lastEventSeq                = 0;
             disposed                    = false;
             syncCount                   = 0;
+            token                       = null;
         }
         
         internal void Dispose() {

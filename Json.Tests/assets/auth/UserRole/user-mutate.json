@@ -1,0 +1,4 @@
+{
+    "id": "user-mutate",
+    "roles": ["readOnly", "mutate"]
+}
