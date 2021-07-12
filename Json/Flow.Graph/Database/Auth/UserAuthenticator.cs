@@ -47,11 +47,13 @@ namespace Friflo.Json.Flow.Database.Auth
         private readonly    UserStore                                               userStore;
         private readonly    ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
         private readonly    ConcurrentDictionary<string,       ClientCredentials>   credByClient;
+        private readonly    Authorizer                                              anonymousAuthorizer;
         
         public UserAuthenticator (UserStore userStore) {
-            this.userStore  = userStore;
-            credByTarget    = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
-            credByClient    = new ConcurrentDictionary<string,       ClientCredentials>();
+            this.userStore      = userStore;
+            credByTarget        = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
+            credByClient        = new ConcurrentDictionary<string,       ClientCredentials>();
+            anonymousAuthorizer = new AuthorizeNone();
         }
         
         public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext)

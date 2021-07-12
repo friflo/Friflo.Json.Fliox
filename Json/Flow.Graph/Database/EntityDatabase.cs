@@ -19,7 +19,7 @@ namespace Friflo.Json.Flow.Database
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         public              EventBroker                         eventBroker;
         public              TaskHandler                         taskHandler = new TaskHandler();
-        private             Authenticator                       authenticator = new DefaultAuthenticator();
+        public              Authenticator                       authenticator = new AuthenticateNone(new AuthorizeAll());
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 
@@ -48,10 +48,6 @@ namespace Friflo.Json.Flow.Database
                 return container;
             containers[name] = container = CreateContainer(name, this);
             return container;
-        }
-        
-        public void SetAuthenticator(Authenticator authenticator) {
-            this.authenticator = authenticator;
         }
         
         /// <summary>
