@@ -56,18 +56,18 @@ namespace Friflo.Json.Flow.Database.Auth
         private   readonly  ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
         private   readonly  ConcurrentDictionary<string,       ClientCredentials>   credByClient;
         private   readonly  Authorizer                                              anonymousAuthorizer;
-        private   readonly  ConcurrentDictionary<string, Authorizer>                authorizerMap;
+        private   readonly  ConcurrentDictionary<string, Authorizer>                predefinedRoles;
         
         public UserAuthenticator (UserStore userStore, Authorizer anonymousAuthorizer) {
             this.userStore              = userStore;
             credByTarget                = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
             credByClient                = new ConcurrentDictionary<string,       ClientCredentials>();
             this.anonymousAuthorizer    = anonymousAuthorizer;
-            authorizerMap               = new ConcurrentDictionary<string, Authorizer>();
+            predefinedRoles               = new ConcurrentDictionary<string, Authorizer>();
             
-            authorizerMap.TryAdd("authorizeAll",      new AuthorizeAll());
-            authorizerMap.TryAdd("authorizeNone",     new AuthorizeNone());
-            authorizerMap.TryAdd("authorizeReadOnly", new AuthorizeReadOnly());
+            predefinedRoles.TryAdd("authorizeAll",      new AuthorizeAll());
+            predefinedRoles.TryAdd("authorizeNone",     new AuthorizeNone());
+            predefinedRoles.TryAdd("authorizeReadOnly", new AuthorizeReadOnly());
         }
         
         public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext)
@@ -114,7 +114,7 @@ namespace Friflo.Json.Flow.Database.Auth
         protected virtual List<Authorizer> GetAuthorizers(ICollection<string> roles) {
             var authorizers = new List<Authorizer>();
             foreach (var role in roles) {
-                if (!authorizerMap.TryGetValue(role, out Authorizer authorizer)) {
+                if (!predefinedRoles.TryGetValue(role, out Authorizer authorizer)) {
                     throw new InvalidOperationException($"unknown authorization role: {role}");
                 }
                 authorizers.Add(authorizer);
