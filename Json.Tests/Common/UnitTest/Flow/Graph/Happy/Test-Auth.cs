@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Auth;
 using Friflo.Json.Flow.Database.Utils;
+using Friflo.Json.Flow.Graph;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -19,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var authDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/auth"))
                     using (var userStore        = new UserStore(authDatabase, null, "userStore"))
-                    using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/db")) {
+                    using (var fileDatabase     = new MemoryDatabase()) {
                         fileDatabase.authenticator = new UserAuthenticator(userStore, new AuthorizeDeny());
                         await AssertAuth(fileDatabase);
                     }
@@ -32,17 +33,38 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var mutateUser       = new PocStore(database, "user-mutate"))
             using (var readOnlyUser     = new PocStore(database, "user-readOnly"))
             {
+                Tasks tasks;
+                
                 mutateUser.    SetToken("user-mutate-token");
                 readOnlyUser.  SetToken("user-readOnly-token");
+                tasks = new Tasks(unknownUser);
                     
                 var sync = await unknownUser.TrySync();
-                AreEqual(0, sync.failed.Count);
+                AreEqual(2, sync.failed.Count);
+                AreEqual("PermissionDenied ~ not authorized - tasks[1]", tasks.findArticle.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized - tasks[0]", tasks.createArticles.Error.Message);
 
+                var _ = new Tasks(mutateUser);
                 sync = await mutateUser.TrySync();
                 AreEqual(0, sync.failed.Count);
-                
+
+                tasks = new Tasks(readOnlyUser);
                 sync = await readOnlyUser.TrySync();
-                AreEqual(0, sync.failed.Count);
+                AreEqual(1, sync.failed.Count);
+                AreEqual("PermissionDenied ~ not authorized - tasks[0]", tasks.createArticles.Error.Message);
+            }
+        }
+        
+        
+        public class Tasks {
+            public  ReadTask<Article>       readArticles;
+            public  Find<Article>           findArticle;
+            public  CreateTask<Article>     createArticles;
+            
+            public Tasks (PocStore store) {
+                readArticles    = store.articles.Read();
+                findArticle     = readArticles.Find("some-id");
+                createArticles  = store.articles.Create(new Article{ id="new-article" });
             }
         }
     }
