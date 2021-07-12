@@ -39,14 +39,14 @@ namespace Friflo.Json.Flow.Database.Auth
     }
     
     internal class ClientCredentials {
-        internal readonly   string              token;
-        internal            IEventTarget        target;
-        internal readonly   List<Authorizer>    authorizers;
+        internal readonly   string          token;
+        internal            IEventTarget    target;
+        internal readonly   Authorizer      authorizer;
         
-        internal ClientCredentials (string token, IEventTarget target, List<Authorizer> authorizers) {
+        internal ClientCredentials (string token, IEventTarget target, Authorizer authorizer) {
             this.token          = token;
             this.target         = target;
-            this.authorizers    = authorizers;
+            this.authorizer    = authorizer;
         }
     }
     
@@ -65,8 +65,8 @@ namespace Friflo.Json.Flow.Database.Auth
             this.unknown    = unknown ?? throw new NullReferenceException(nameof(unknown));
             predefinedRoles = new ConcurrentDictionary<string, Authorizer>();
             
-            predefinedRoles.TryAdd("authorizeAll",      new AuthorizeAll());
-            predefinedRoles.TryAdd("authorizeNone",     new AuthorizeNone());
+            predefinedRoles.TryAdd("authorizeAll",      new AuthorizeAllow());
+            predefinedRoles.TryAdd("authorizeNone",     new AuthorizeDeny());
             predefinedRoles.TryAdd("authorizeReadOnly", new AuthorizeReadOnly());
         }
         
@@ -80,7 +80,7 @@ namespace Friflo.Json.Flow.Database.Auth
             var eventTarget = messageContext.eventTarget;
             // already authorized?
             if (eventTarget != null && credByTarget.TryGetValue(eventTarget, out ClientCredentials credential)) {
-                messageContext.authState.SetSuccess(credential.authorizers);
+                messageContext.authState.SetSuccess(credential.authorizer);
                 return;
             }
             var token = syncRequest.token;
@@ -91,8 +91,8 @@ namespace Friflo.Json.Flow.Database.Auth
             if (!credByClient.TryGetValue(clientId, out credential)) {
                 var authCred    = await GetClientCred(clientId);
                 if (authCred != null) {
-                    var authorizers = GetAuthorizers(authCred.roles);
-                    credential      = new ClientCredentials (authCred.token, eventTarget, authorizers);
+                    var authorizer  = GetAuthorizer(authCred.roles);
+                    credential      = new ClientCredentials (authCred.token, eventTarget, authorizer);
                     credByClient.TryAdd(clientId, credential);
                 }
             }
@@ -108,10 +108,10 @@ namespace Friflo.Json.Flow.Database.Auth
                     credByTarget.TryAdd(eventTarget, credential);
                 }
             }
-            messageContext.authState.SetSuccess(credential.authorizers);
+            messageContext.authState.SetSuccess(credential.authorizer);
         }
         
-        protected virtual List<Authorizer> GetAuthorizers(ICollection<string> roles) {
+        protected virtual Authorizer GetAuthorizer(ICollection<string> roles) {
             var authorizers = new List<Authorizer>();
             foreach (var role in roles) {
                 if (!predefinedRoles.TryGetValue(role, out Authorizer authorizer)) {
@@ -120,9 +120,10 @@ namespace Friflo.Json.Flow.Database.Auth
                 authorizers.Add(authorizer);
             }
             if (authorizers.Count == 0) {
-                authorizers.Add(unknown);
+                return unknown;
             }
-            return authorizers;
+            var any = new AuthorizeAny(authorizers);
+            return any;
         }
         
         private async Task<AuthCred> GetClientCred(string clientId) {
