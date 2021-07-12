@@ -18,18 +18,22 @@ namespace Friflo.Json.Flow.Database.Auth
 {
     public class UserStore : EntityStore
     {
-        public readonly EntitySet<UserProfile> users;
+        public readonly EntitySet<UserRole>         roles;
+        public readonly EntitySet<UserCredential>   credentials;
         
         public UserStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-            users = new EntitySet<UserProfile>(this);
+            roles       = new EntitySet<UserRole>(this);
+            credentials = new EntitySet<UserCredential>(this);
         }
     }
     
-    public class UserProfile : Entity {
-        public string       name;
+    public class UserRole : Entity {
+        public List<string> roles;
+    }
+    
+    public class UserCredential : Entity {
         public string       passwordHash;
         public string       token;
-        public List<string> roles;
     }
     
     internal class AuthCred {
@@ -126,15 +130,20 @@ namespace Friflo.Json.Flow.Database.Auth
         }
         
         private async Task<AuthCred> GetClientCred(string clientId) {
-            var readUser = userStore.users.Read();
-            var findUserProfile = readUser.Find(clientId);
+            var readRoles       = userStore.roles.Read();
+            var findRole        = readRoles.Find(clientId);
+            var readCredentials = userStore.credentials.Read();
+            var findCred        = readCredentials.Find(clientId);
             await userStore.Sync();
             
-            UserProfile userProfile = findUserProfile.Result;
-            if (userProfile == null)
+            UserRole        role = findRole.Result;
+            UserCredential  cred = findCred.Result;
+
+            if (role == null || cred == null)
                 return null;
-            var cred = new AuthCred(userProfile.token, userProfile.roles);
-            return cred;
+            
+            var authCred = new AuthCred(cred.token, role.roles);
+            return authCred;
         }
     }
 }
