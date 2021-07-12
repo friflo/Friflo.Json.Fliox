@@ -59,7 +59,7 @@ namespace Friflo.Json.Flow.Database
         }
         
         public bool Authorize(DatabaseTask task, MessageContext messageContext) {
-            var authorizers = authState.authorizers;
+            var authorizers = authState.Authorizers;
             if (authorizers.Count == 0) {
                 throw new InvalidOperationException("Expect at least one element in authorizers");
             }

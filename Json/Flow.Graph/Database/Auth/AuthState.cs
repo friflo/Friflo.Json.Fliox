@@ -9,7 +9,7 @@ namespace Friflo.Json.Flow.Database.Auth
     public struct AuthState {
         public              string                  Error           { get; private set;}  
         public              bool                    Authenticated   { get; private set;}
-        internal            ICollection<Authorizer> authorizers;
+        public              ICollection<Authorizer> Authorizers     { get; private set;}
         private             bool                    authExecuted;
         
         public  override    string      ToString() => authExecuted ? Authenticated ? "success" : "failed" : "pending";
@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Database.Auth
         public void SetFailed(string error, Authorizer authorizer) {
             authExecuted        = true;
             Authenticated       = false;
-            authorizers         = new List<Authorizer> { authorizer }; // performance: could use a SingleItemList<>
+            Authorizers         = new List<Authorizer> { authorizer }; // performance: could use a SingleItemList<>
             Error               = error;
         }
         
@@ -26,7 +26,7 @@ namespace Friflo.Json.Flow.Database.Auth
                 throw new InvalidOperationException("Expect at least one element in authorizers");
             authExecuted        = true;
             Authenticated       = true;
-            this.authorizers    = authorizers;
+            this.Authorizers    = authorizers;
         }
     }
 }
