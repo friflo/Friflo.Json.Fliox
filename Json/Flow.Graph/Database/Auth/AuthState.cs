@@ -18,6 +18,9 @@ namespace Friflo.Json.Flow.Database.Auth
         public  override    string      ToString() => authExecuted ? Authenticated ? "success" : "failed" : "pending";
         
         public bool Authorize(DatabaseTask task, MessageContext messageContext) {
+            if (authorizers.Count == 0) {
+                throw new InvalidOperationException("Expect at least one element in authorizers");
+            }
             foreach (var authorizer in authorizers) {
                 if (!authorizer.Authorize(task, messageContext))
                     return false;
