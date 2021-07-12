@@ -82,6 +82,19 @@ namespace Friflo.Json.Flow.Database.Auth
         }
     }
     
+    public class AuthorizeMutate : Authorizer {
+        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+            switch (task.TaskType) {
+                case TaskType.create:
+                case TaskType.update:
+                case TaskType.patch:
+                case TaskType.delete:
+                    return true;
+            }
+            return false;
+        }
+    }
+    
     public static class PredefinedRoles
     {
         public static readonly  ReadOnlyDictionary<string, Authorizer> Roles;
@@ -92,6 +105,7 @@ namespace Friflo.Json.Flow.Database.Auth
             roles.TryAdd("allow",             new AuthorizeAllow());
             roles.TryAdd("deny",              new AuthorizeDeny());
             roles.TryAdd("readOnly",          new AuthorizeReadOnly());
+            roles.TryAdd("mutate",            new AuthorizeMutate());
             //
             roles.TryAdd("read",              new AuthorizeTaskType(TaskType.read));
             roles.TryAdd("query",             new AuthorizeTaskType(TaskType.query));
