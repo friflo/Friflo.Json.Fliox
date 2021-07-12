@@ -55,6 +55,18 @@ namespace Friflo.Json.Flow.Database.Auth
         }
     }
     
+    public class AuthorizeTaskType : Authorizer {
+        private readonly TaskType type;
+        
+        public AuthorizeTaskType(TaskType type) {
+            this.type = type;    
+        }
+        
+        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+            return task.TaskType == type;
+        }
+    }
+    
     public class AuthorizeReadOnly : Authorizer {
         public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
             switch (task.TaskType) {

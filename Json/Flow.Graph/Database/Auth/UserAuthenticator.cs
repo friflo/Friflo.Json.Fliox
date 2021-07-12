@@ -56,18 +56,31 @@ namespace Friflo.Json.Flow.Database.Auth
         private   readonly  ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
         private   readonly  ConcurrentDictionary<string,       ClientCredentials>   credByClient;
         private   readonly  Authorizer                                              unknown;
-        private   readonly  ConcurrentDictionary<string, Authorizer>                predefinedRoles;
+        
+        private   static readonly  ConcurrentDictionary<string, Authorizer>         PredefinedRoles;
         
         public UserAuthenticator (UserStore userStore, Authorizer unknown) {
             this.userStore  = userStore;
             credByTarget    = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
             credByClient    = new ConcurrentDictionary<string,       ClientCredentials>();
             this.unknown    = unknown ?? throw new NullReferenceException(nameof(unknown));
-            predefinedRoles = new ConcurrentDictionary<string, Authorizer>();
-            
-            predefinedRoles.TryAdd("authorizeAll",      new AuthorizeAllow());
-            predefinedRoles.TryAdd("authorizeNone",     new AuthorizeDeny());
-            predefinedRoles.TryAdd("authorizeReadOnly", new AuthorizeReadOnly());
+        }
+        
+        static UserAuthenticator() {
+            PredefinedRoles = new ConcurrentDictionary<string, Authorizer>();
+            //
+            PredefinedRoles.TryAdd("allow",             new AuthorizeAllow());
+            PredefinedRoles.TryAdd("deny",              new AuthorizeDeny());
+            PredefinedRoles.TryAdd("readOnly",          new AuthorizeReadOnly());
+            //
+            PredefinedRoles.TryAdd("read",              new AuthorizeTaskType(TaskType.read));
+            PredefinedRoles.TryAdd("query",             new AuthorizeTaskType(TaskType.query));
+            PredefinedRoles.TryAdd("create",            new AuthorizeTaskType(TaskType.create));
+            PredefinedRoles.TryAdd("update",            new AuthorizeTaskType(TaskType.update));
+            PredefinedRoles.TryAdd("patch",             new AuthorizeTaskType(TaskType.patch));
+            PredefinedRoles.TryAdd("delete",            new AuthorizeTaskType(TaskType.delete));
+            PredefinedRoles.TryAdd("subscribeChanges",  new AuthorizeTaskType(TaskType.subscribeChanges));
+            PredefinedRoles.TryAdd("subscribeMessage",  new AuthorizeTaskType(TaskType.subscribeMessage));
         }
         
         public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext)
@@ -114,7 +127,7 @@ namespace Friflo.Json.Flow.Database.Auth
         protected virtual Authorizer GetAuthorizer(ICollection<string> roles) {
             var authorizers = new List<Authorizer>();
             foreach (var role in roles) {
-                if (!predefinedRoles.TryGetValue(role, out Authorizer authorizer)) {
+                if (!PredefinedRoles.TryGetValue(role, out Authorizer authorizer)) {
                     throw new InvalidOperationException($"unknown authorization role: {role}");
                 }
                 authorizers.Add(authorizer);
