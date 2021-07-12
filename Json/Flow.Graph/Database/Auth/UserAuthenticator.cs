@@ -60,7 +60,7 @@ namespace Friflo.Json.Flow.Database.Auth
         {
             var clientId = syncRequest.clientId;
             if (clientId == null) {
-                messageContext.authState.SetFailed("authorization requires: clientId", anonymousAuthorizer);
+                messageContext.authState.SetFailed("user authorization requires: clientId", anonymousAuthorizer);
                 return;
             }
             var eventTarget = messageContext.eventTarget;
@@ -71,7 +71,7 @@ namespace Friflo.Json.Flow.Database.Auth
             }
             var token = syncRequest.token;
             if (token == null) {
-                messageContext.authState.SetFailed("authorization requires: token", anonymousAuthorizer);
+                messageContext.authState.SetFailed("user authorization requires: token", anonymousAuthorizer);
                 return;
             }
             if (!credByClient.TryGetValue(clientId, out credential)) {
@@ -81,7 +81,7 @@ namespace Friflo.Json.Flow.Database.Auth
                 credByClient.TryAdd(clientId, credential);
             }
             if (token != credential.token) {
-                messageContext.authState.SetFailed($"client not authorized. Invalid token. clientId: '{clientId}'", anonymousAuthorizer);
+                messageContext.authState.SetFailed($"user not authorized. Invalid token. clientId: '{clientId}'", anonymousAuthorizer);
                 return;
             }
             // Update target if changed for early out when already authorized.
