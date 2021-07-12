@@ -27,8 +27,8 @@ namespace Friflo.Json.Flow.Database.Auth
     }
     
     internal class AuthCred {
-        internal readonly string token;
-        internal readonly string role;
+        internal readonly   string token;
+        internal readonly   string role;
         
         internal AuthCred (string token, string role) {
             this.token  = token;
@@ -37,9 +37,15 @@ namespace Friflo.Json.Flow.Database.Auth
     }
     
     internal class ClientCredentials {
-        internal string         token;
-        internal IEventTarget   target;
-        internal Authorizer     authorizer;
+        internal readonly   string         token;
+        internal            IEventTarget   target;
+        internal readonly   Authorizer     authorizer;
+        
+        internal ClientCredentials (string token, IEventTarget target, Authorizer authorizer) {
+            this.token      = token;
+            this.target     = target;
+            this.authorizer = authorizer;
+        }
     }
     
     public class UserAuthenticator : Authenticator
@@ -48,12 +54,14 @@ namespace Friflo.Json.Flow.Database.Auth
         private   readonly  ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
         private   readonly  ConcurrentDictionary<string,       ClientCredentials>   credByClient;
         private   readonly  Authorizer                                              anonymousAuthorizer;
+        private   readonly  Authorizer                                              authenticatedAuthorizer;
         
         public UserAuthenticator (UserStore userStore, Authorizer anonymousAuthorizer) {
-            this.userStore              = userStore;
-            credByTarget                = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
-            credByClient                = new ConcurrentDictionary<string,       ClientCredentials>();
-            this.anonymousAuthorizer    = anonymousAuthorizer;
+            this.userStore                  = userStore;
+            credByTarget                    = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
+            credByClient                    = new ConcurrentDictionary<string,       ClientCredentials>();
+            this.anonymousAuthorizer        = anonymousAuthorizer;
+            this.authenticatedAuthorizer    = new AuthorizeAll();
         }
         
         public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext)
@@ -76,11 +84,13 @@ namespace Friflo.Json.Flow.Database.Auth
             }
             if (!credByClient.TryGetValue(clientId, out credential)) {
                 var authCred    = await GetClientCred(clientId);
-                var authorizer  = GetAuthorizer(authCred.token);
-                credential      = new ClientCredentials{ token = authCred.token, target = eventTarget, authorizer = authorizer };
-                credByClient.TryAdd(clientId, credential);
+                if (authCred != null) {
+                    var authorizer  = GetAuthorizer(authCred.role);
+                    credential      = new ClientCredentials (authCred.token, eventTarget, authorizer);
+                    credByClient.TryAdd(clientId, credential);
+                }
             }
-            if (token != credential.token) {
+            if (credential == null || token != credential.token) {
                 messageContext.authState.SetFailed($"user not authorized. Invalid token. clientId: '{clientId}'", anonymousAuthorizer);
                 return;
             }
@@ -96,7 +106,7 @@ namespace Friflo.Json.Flow.Database.Auth
         }
         
         protected virtual Authorizer GetAuthorizer(string role) {
-            return anonymousAuthorizer;
+            return authenticatedAuthorizer;
         }
         
         private async Task<AuthCred> GetClientCred(string clientId) {
