@@ -18,8 +18,8 @@ namespace Friflo.Json.Flow.Database
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         public              EventBroker                         eventBroker;
-        public              TaskHandler                         taskHandler;
-        private             AuthHandler                         authHandler = new AuthHandler(null);
+        public              TaskHandler                         taskHandler = new TaskHandler();
+        private             Authenticator                       authenticator = new DefaultAuthenticator();
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 
@@ -51,7 +51,7 @@ namespace Friflo.Json.Flow.Database
         }
         
         public void SetAuthenticator(Authenticator authenticator) {
-            authHandler = new AuthHandler(authenticator);
+            this.authenticator = authenticator;
         }
         
         /// <summary>
@@ -75,7 +75,7 @@ namespace Friflo.Json.Flow.Database
         /// </summary>
         public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.clientId = syncRequest.clientId;
-            await authHandler.Authenticate(syncRequest, messageContext);
+            await authenticator.Authenticate(syncRequest, messageContext);
             
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null)
@@ -99,12 +99,7 @@ namespace Friflo.Json.Flow.Database
                 task.index = index;
                     
                 try {
-                    TaskResult result;
-                    if (taskHandler != null) {
-                        result = await taskHandler.ExecuteTask(task, this, response, messageContext).ConfigureAwait(false);
-                    } else {
-                        result = await task.Execute(this, response, messageContext).ConfigureAwait(false);
-                    }
+                    TaskResult result = await taskHandler.ExecuteTask(task, this, response, messageContext).ConfigureAwait(false);
                     tasks.Add(result);
                 }
                 catch (Exception e) {
@@ -137,6 +132,10 @@ namespace Friflo.Json.Flow.Database
     public class TaskHandler
     {
         public virtual Task<TaskResult> ExecuteTask (DatabaseTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+            if (!messageContext.authState.Authorize(task, messageContext)) {
+                var resultError = task.PermissionDenied("not authorized");
+                return Task.FromResult<TaskResult>(resultError);
+            }
             Task<TaskResult> result = task.Execute(database, response, messageContext);
             return result;
         }
