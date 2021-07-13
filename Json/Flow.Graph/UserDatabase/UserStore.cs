@@ -9,7 +9,7 @@ using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.UserDatabase
 {
-    public class UserStore : EntityStore
+    public class UserStore : EntityStore, ITokenValidator
     {
         public readonly EntitySet<UserRole>         roles;
         public readonly EntitySet<UserCredential>   credentials;
