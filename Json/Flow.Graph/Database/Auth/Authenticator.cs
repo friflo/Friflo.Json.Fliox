@@ -24,9 +24,9 @@ namespace Friflo.Json.Flow.Database.Auth
             this.unknown = unknown ?? throw new NullReferenceException(nameof(unknown));
         }
         
-        public override ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
+#pragma warning disable 1998 -> This async method lacks 'await' operators and will run synchronously. ....
+        public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.authState.SetFailed("not authenticated", unknown);
-            return default;
         }
     }
 }
