@@ -31,33 +31,30 @@ namespace Friflo.Json.Flow.Sync
         public   override   string                  ToString() => TaskName;
 
         internal static TaskErrorResult TaskError(CommandError error) {
-            return new TaskErrorResult {type = TaskErrorResultType.DatabaseError, message = error.message};   
+            var message = error.message;
+            return new TaskErrorResult {type = TaskErrorResultType.DatabaseError, message = message};   
         }
         
-        private TaskErrorResult InvalidTaskError(string error) {
-            var message = $"{error} - tasks[{index}]: {TaskType}({TaskName})";
-            return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = message};   
+        private static TaskErrorResult InvalidTaskError(string error) {
+            // error = $"{message} {TaskType} ({TaskName})";
+            return new TaskErrorResult {type = TaskErrorResultType.InvalidTask, message = error};   
         }
         
-        internal TaskErrorResult MissingField(string field) {
+        internal static TaskErrorResult MissingField(string field) {
             return InvalidTaskError($"missing field: {field}");   
         }
         
-        internal TaskErrorResult MissingContainer() {
+        internal static TaskErrorResult MissingContainer() {
             return InvalidTaskError($"missing field: container");   
         }
         
-        internal TaskErrorResult InvalidTask(string error) {
+        internal static TaskErrorResult InvalidTask(string error) {
             return InvalidTaskError(error);
         }
         
-        public TaskErrorResult PermissionDenied(string message) {
-            message = message ?? "permission denied";
-            var taskResult = new TaskErrorResult{
-                type        = TaskErrorResultType.PermissionDenied,
-                message     = $"{message} - tasks[{index}]"
-            };
-            return taskResult;
+        public static TaskErrorResult PermissionDenied(string message) {
+            // message = $"{message} {TaskType} ({TaskName})";
+            return new TaskErrorResult{ type = TaskErrorResultType.PermissionDenied, message = message };
         }
 
         internal bool ValidReferences(List<References> references, out TaskErrorResult error) {

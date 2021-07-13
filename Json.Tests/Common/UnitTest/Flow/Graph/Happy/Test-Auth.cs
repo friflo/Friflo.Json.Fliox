@@ -41,8 +41,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     
                 var sync = await unknownUser.TrySync();
                 AreEqual(2, sync.failed.Count);
-                AreEqual("PermissionDenied ~ not authorized - tasks[1]", tasks.findArticle.Error.Message);
-                AreEqual("PermissionDenied ~ not authorized - tasks[0]", tasks.createArticles.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized", tasks.findArticle.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized", tasks.createArticles.Error.Message);
 
                 var _ = new Tasks(mutateUser);
                 sync = await mutateUser.TrySync();
@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 tasks = new Tasks(readOnlyUser);
                 sync = await readOnlyUser.TrySync();
                 AreEqual(1, sync.failed.Count);
-                AreEqual("PermissionDenied ~ not authorized - tasks[0]", tasks.createArticles.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized", tasks.createArticles.Error.Message);
             }
         }
         
