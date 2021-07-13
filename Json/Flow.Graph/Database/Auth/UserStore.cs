@@ -18,7 +18,7 @@ namespace Friflo.Json.Flow.Database.Auth
         public UserStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
             roles       = new EntitySet<UserRole>(this);
             credentials = new EntitySet<UserCredential>(this);
-            database.taskHandler = new UserTaskHandler(this);
+            database.taskHandler = new UserTaskHandler(this); // todo move to appropriate place
         }
         
         public SendMessageTask<bool> ValidateTokenTask(string clientId, string token) {
