@@ -127,15 +127,23 @@ namespace Friflo.Json.Flow.Database
     
     public class TaskHandler
     {
+        private static bool AuthorizeTask(DatabaseTask task, MessageContext messageContext, out TaskResult error) {
+            if (messageContext.Authorize(task, messageContext)) {
+                error = null;
+                return true;
+            }
+            var message = "not authorized";
+            var authError = messageContext.authState.Error; 
+            if (authError != null) {
+                message = $"{message} ({authError})";
+            }
+            error = DatabaseTask.PermissionDenied(message);
+            return false;
+        }
+        
         public virtual Task<TaskResult> ExecuteTask (DatabaseTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
-            if (!messageContext.Authorize(task, messageContext)) {
-                var message = "not authorized";
-                var authError = messageContext.authState.Error; 
-                if (authError != null) {
-                    message = $"{message} ({authError})";
-                }
-                var resultError = DatabaseTask.PermissionDenied(message);
-                return Task.FromResult<TaskResult>(resultError);
+            if (!AuthorizeTask(task, messageContext, out var error)) {
+                return Task.FromResult(error);
             }
             Task<TaskResult> result = task.Execute(database, response, messageContext);
             return result;
