@@ -24,8 +24,9 @@ namespace Friflo.Json.Flow.Database.Auth
             this.unknown = unknown ?? throw new NullReferenceException(nameof(unknown));
         }
         
-        public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
+        public override ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.authState.SetFailed("not authenticated", unknown);
+            return default;
         }
     }
 }
