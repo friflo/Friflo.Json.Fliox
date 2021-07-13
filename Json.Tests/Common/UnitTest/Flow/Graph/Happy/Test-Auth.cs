@@ -41,16 +41,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 tasks = new Tasks(nullUser, newArticle);
                 var sync = await nullUser.TrySync();
                 AreEqual(2, sync.failed.Count);
-                AreEqual("PermissionDenied ~ not authorized (user authorization requires clientId)", tasks.findArticle.Error.Message);
-                AreEqual("PermissionDenied ~ not authorized (user authorization requires clientId)", tasks.updateArticles.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized (user authentication requires clientId)", tasks.findArticle.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized (user authentication requires clientId)", tasks.updateArticles.Error.Message);
                 
                 // test: unknown user
                 unknownUser.SetToken(null);
                 tasks = new Tasks(unknownUser, newArticle);
                 sync = await unknownUser.TrySync();
                 AreEqual(2, sync.failed.Count);
-                AreEqual("PermissionDenied ~ not authorized (user authorization requires token)", tasks.findArticle.Error.Message);
-                AreEqual("PermissionDenied ~ not authorized (user authorization requires token)", tasks.updateArticles.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized (user authentication requires token)", tasks.findArticle.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized (user authentication requires token)", tasks.updateArticles.Error.Message);
                 
                 // test: allow readOnly & mutate 
                 unknownUser.SetToken("some token");

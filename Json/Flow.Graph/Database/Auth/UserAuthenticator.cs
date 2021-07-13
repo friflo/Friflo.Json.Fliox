@@ -55,7 +55,7 @@ namespace Friflo.Json.Flow.Database.Auth
         {
             var clientId = syncRequest.clientId;
             if (clientId == null) {
-                messageContext.authState.SetFailed("user authorization requires clientId", unknown);
+                messageContext.authState.SetFailed("user authentication requires clientId", unknown);
                 return;
             }
             var eventTarget = messageContext.eventTarget;
@@ -66,7 +66,7 @@ namespace Friflo.Json.Flow.Database.Auth
             }
             var token = syncRequest.token;
             if (token == null) {
-                messageContext.authState.SetFailed("user authorization requires token", unknown);
+                messageContext.authState.SetFailed("user authentication requires token", unknown);
                 return;
             }
             if (!credByClient.TryGetValue(clientId, out credential)) {
