@@ -95,6 +95,22 @@ namespace Friflo.Json.Flow.Database.Auth
         }
     }
     
+    public class AuthorizeMessage : Authorizer {
+        private readonly    string  messageName;
+        public  override    string  ToString() => messageName;
+
+        public AuthorizeMessage (string message) {
+            messageName = message;
+        }
+        
+        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+            if (task is SendMessage message) {
+                return messageName == message.name;
+            }
+            return false;
+        }
+    }
+    
     public static class PredefinedRoles
     {
         public static readonly  ReadOnlyDictionary<string, Authorizer> Roles;
