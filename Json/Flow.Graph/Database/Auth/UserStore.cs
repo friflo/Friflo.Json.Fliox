@@ -24,12 +24,12 @@ namespace Friflo.Json.Flow.Database.Auth
         
         private async Task<bool> ValidateTokenHandler (Command<ValidateToken> command) {
             var validateToken   = command.Value;
-            var client          = validateToken.clientId;
+            var clientId        = validateToken.clientId;
             var readCredentials = credentials.Read();
-            var findCred        = readCredentials.Find(client);
+            var findCred        = readCredentials.Find(clientId);
             await Sync();
                 
-            UserCredential  cred = findCred.Result;
+            UserCredential cred = findCred.Result;
             bool isValid = cred != null && cred.token == validateToken.token;
             return isValid;
         }
