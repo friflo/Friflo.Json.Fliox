@@ -33,6 +33,7 @@ namespace Friflo.Json.Flow.Sync
                 _singleton.GetTypeMapper(typeof(DatabaseMessage));
                 _singleton.GetTypeMapper(typeof(ErrorResponse));
                 _singleton.GetTypeMapper(typeof(ValidateToken));
+                _singleton.GetTypeMapper(typeof(ValidateTokenResult));
             }
             return _singleton;
         }

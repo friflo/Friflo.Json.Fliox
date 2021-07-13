@@ -19,24 +19,28 @@ namespace Friflo.Json.Flow.Database.Auth
         }
         
         public void AddCommandHandler (TaskHandler taskHandler) {
-            taskHandler.AddCommandHandlerAsync<ValidateToken, bool>(ValidateTokenHandler); 
+            taskHandler.AddCommandHandlerAsync<ValidateToken, ValidateTokenResult>(ValidateTokenHandler); 
         }
         
-        private async Task<bool> ValidateTokenHandler (Command<ValidateToken> command) {
+        private async Task<ValidateTokenResult> ValidateTokenHandler (Command<ValidateToken> command) {
             var validateToken   = command.Value;
             var clientId        = validateToken.clientId;
             var readCredentials = credentials.Read();
             var findCred        = readCredentials.Find(clientId);
+            var readRoles       = roles.Read();
+            var findRole        = readRoles.Find(clientId);
+            
             await Sync();
                 
-            UserCredential cred = findCred.Result;
-            bool isValid = cred != null && cred.token == validateToken.token;
-            return isValid;
+            UserCredential  cred = findCred.Result;
+            UserRole        role = findRole.Result;
+            bool            isValid = cred != null && cred.token == validateToken.token;
+            return new ValidateTokenResult { isValid = isValid, roles = role?.roles };
         }
         
-        public SendMessageTask<bool> ValidateTokenTask(string clientId, string token) {
+        public SendMessageTask<ValidateTokenResult> ValidateTokenTask(string clientId, string token) {
             var command = new ValidateToken { clientId = clientId, token = token };
-            return SendMessage<ValidateToken, bool>(command);
+            return SendMessage<ValidateToken, ValidateTokenResult>(command);
         }
     }
 
@@ -54,5 +58,10 @@ namespace Friflo.Json.Flow.Database.Auth
         public          string  token;
 
         public override string  ToString() => clientId;
+    }
+    
+    public class ValidateTokenResult {
+        public          bool            isValid;
+        public          List<string>    roles;
     }
 }

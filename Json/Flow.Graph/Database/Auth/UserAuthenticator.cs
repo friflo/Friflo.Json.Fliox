@@ -70,15 +70,12 @@ namespace Friflo.Json.Flow.Database.Auth
                 return;
             }
             if (!credByClient.TryGetValue(clientId, out credential)) {
-                var isValidTask = userStore.ValidateTokenTask(clientId, token);
-                var readRoles   = userStore.roles.Read();
-                var findRole    = readRoles.Find(clientId);
+                var validateTask = userStore.ValidateTokenTask(clientId, token);
                 await userStore.Sync();
-                var role        = findRole.Result;
-                bool isValid    = isValidTask.Result;
+                var result      = validateTask.Result;
                 
-                if (isValid && role != null) {
-                    var authCred = new AuthCred(token, role.roles);
+                if (result.isValid && result.roles != null) {
+                    var authCred = new AuthCred(token, result.roles);
                     var authorizer  = GetAuthorizer(authCred.roles);
                     credential      = new ClientCredentials (authCred.token, eventTarget, authorizer);
                     credByClient.TryAdd(clientId,    credential);
