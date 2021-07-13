@@ -50,20 +50,17 @@ namespace Friflo.Json.Flow.Database
         }
         
         public virtual async Task<TaskResult> ExecuteTask (DatabaseTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+            if (!AuthorizeTask(task, messageContext, out var error)) {
+                return error;
+            }
             if (task is SendMessage message) {
                 var commandName = message.name;
                 if (commands.TryGetValue(commandName, out CommandCallback callback)) {
                     using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
-                        var mapper      = pooledMapper.instance;
-                        var jsonResult  = await callback.InvokeCallback(mapper, commandName, message.value);
-                        var value       = new JsonValue { json = jsonResult };
-                        var sendResult  = new SendMessageResult { result = value };
-                        return sendResult;
+                        var jsonResult  = await callback.InvokeCallback(pooledMapper.instance, commandName, message.value);
+                        return new SendMessageResult { result = new JsonValue { json = jsonResult } };
                     }
                 }
-            }
-            if (!AuthorizeTask(task, messageContext, out var error)) {
-                return error;
             }
             var result = await task.Execute(database, response, messageContext);
             return result;
