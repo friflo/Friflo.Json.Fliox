@@ -20,10 +20,10 @@ namespace Friflo.Json.Flow.UserDatabase
         }
         
         public void AddCommandHandler (TaskHandler taskHandler) {
-            taskHandler.AddCommandHandlerAsync<ValidateToken, ValidateTokenResult>(ValidateToken); 
+            taskHandler.AddCommandHandlerAsync<ValidateToken, ValidateTokenResult>(ValidateTokenHandler); 
         }
         
-        private async Task<ValidateTokenResult> ValidateToken (Command<ValidateToken> command) {
+        private async Task<ValidateTokenResult> ValidateTokenHandler (Command<ValidateToken> command) {
             var validateToken   = command.Value;
             var clientId        = validateToken.clientId;
             var readCredentials = credentials.Read();
@@ -39,9 +39,11 @@ namespace Friflo.Json.Flow.UserDatabase
             return new ValidateTokenResult { isValid = isValid, roles = role?.roles };
         }
         
-        public SendMessageTask<ValidateTokenResult> ValidateTokenTask(string clientId, string token) {
+        public async Task<ValidateTokenResult> ValidateToken(string clientId, string token) {
             var command = new ValidateToken { clientId = clientId, token = token };
-            return SendMessage<ValidateToken, ValidateTokenResult>(command);
+            var commandTask = SendMessage<ValidateToken, ValidateTokenResult>(command);
+            await Sync();
+            return commandTask.Result;
         }
     }
 

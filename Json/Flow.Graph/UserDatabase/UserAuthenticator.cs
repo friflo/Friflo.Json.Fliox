@@ -72,9 +72,7 @@ namespace Friflo.Json.Flow.UserDatabase
                 return;
             }
             if (!credByClient.TryGetValue(clientId, out credential)) {
-                var validateTask = userStore.ValidateTokenTask(clientId, token);
-                await userStore.Sync();
-                var result      = validateTask.Result;
+                var result = await userStore.ValidateToken(clientId, token);
                 
                 if (result.isValid && result.roles != null) {
                     var authCred = new AuthCred(token, result.roles);
