@@ -9,7 +9,7 @@ using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.UserAuth
 {
-    public class UserStore : EntityStore, ITokenValidator
+    public class UserStore : EntityStore, IUserValidator
     {
         public readonly EntitySet<UserRole>         roles;
         public readonly EntitySet<UserCredential>   credentials;
@@ -19,8 +19,9 @@ namespace Friflo.Json.Flow.UserAuth
             credentials = new EntitySet<UserCredential> (this);
         }
         
-        public void AddCommandHandler (TaskHandler taskHandler) {
-            taskHandler.AddCommandHandlerAsync<ValidateToken, ValidateTokenResult>(ValidateTokenHandler); 
+        public void InitUserDatabase (EntityDatabase database) {
+            database.authenticator = new ValidationAuthenticator();
+            database.taskHandler.AddCommandHandlerAsync<ValidateToken, ValidateTokenResult>(ValidateTokenHandler); 
         }
         
         private async Task<ValidateTokenResult> ValidateTokenHandler (Command<ValidateToken> command) {

@@ -38,20 +38,20 @@ namespace Friflo.Json.Flow.UserAuth
         }
     }
     
-    public interface ITokenValidator {
+    public interface IUserValidator {
         Task<ValidateTokenResult> ValidateToken(string clientId, string token);
     }
     
     public class UserAuthenticator : Authenticator
     {
-        private   readonly  ITokenValidator                                         tokenValidator;
+        private   readonly  IUserValidator                                          userValidator;
         private   readonly  ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
         private   readonly  ConcurrentDictionary<string,       ClientCredentials>   credByClient;
         private   readonly  Authorizer                                              unknown;
         
         
-        public UserAuthenticator (ITokenValidator tokenValidator, Authorizer unknown) {
-            this.tokenValidator = tokenValidator;
+        public UserAuthenticator (IUserValidator userValidator, Authorizer unknown) {
+            this.userValidator  = userValidator;
             credByTarget        = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
             credByClient        = new ConcurrentDictionary<string,       ClientCredentials>();
             this.unknown        = unknown ?? throw new NullReferenceException(nameof(unknown));
@@ -76,7 +76,7 @@ namespace Friflo.Json.Flow.UserAuth
                 return;
             }
             if (!credByClient.TryGetValue(clientId, out credential)) {
-                var result = await tokenValidator.ValidateToken(clientId, token);
+                var result = await userValidator.ValidateToken(clientId, token);
                 
                 if (result.isValid && result.roles != null) {
                     var authCred = new AuthCred(token, result.roles);
