@@ -12,8 +12,8 @@ namespace Friflo.Json.Flow.Database
     {
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
         
-        public void AddMessageHandler<TValue>(string name, CommandHandler<TValue> handler) {
-            var command = new CommandCallback<TValue>(name, handler);
+        public void AddMessageHandler<TValue, TResult>(string name, CommandHandler<TValue, TResult> handler) {
+            var command = new CommandCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }
         

@@ -21,25 +21,26 @@ namespace Friflo.Json.Flow.Database
         }
     }
     
-    public delegate void CommandHandler<TValue>(Command<TValue> command);
+    public delegate TResult CommandHandler<TValue, out TResult>(Command<TValue> command);
     
     internal abstract class CommandCallback
     {
         internal abstract string InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue);
     }
     
-    internal class CommandCallback<TValue> : CommandCallback
+    internal class CommandCallback<TValue, TResult> : CommandCallback
     {
-        private  readonly   CommandHandler<TValue>   handler;
+        private  readonly   CommandHandler<TValue, TResult>   handler;
         
-        internal CommandCallback (string name, CommandHandler<TValue> handler) {
+        internal CommandCallback (string name, CommandHandler<TValue, TResult> handler) {
             this.handler = handler;
         }
         
         internal override string InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue) {
-            var cmd = new Command<TValue>(messageName, messageValue.json, mapper.reader);
-            handler(cmd);
-            return "null";
+            var     cmd     = new Command<TValue>(messageName, messageValue.json, mapper.reader);
+            TResult result  = handler(cmd);
+            var jsonResult  = mapper.Write(result);
+            return jsonResult;
         }
     }
 }
