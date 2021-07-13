@@ -79,7 +79,7 @@ namespace Friflo.Json.Flow.Database.Auth
                 }
             }
             if (credential == null || token != credential.token) {
-                messageContext.authState.SetFailed($"user not authorized. Invalid token. clientId: '{clientId}', token: '{token}'", unknown);
+                messageContext.authState.SetFailed("invalid user token", unknown);
                 return;
             }
             // Update target if changed for early out when already authorized.
