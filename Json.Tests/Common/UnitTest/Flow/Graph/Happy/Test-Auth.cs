@@ -6,6 +6,7 @@ using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Auth;
 using Friflo.Json.Flow.Database.Utils;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.UserAuth;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
@@ -20,8 +21,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var authDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/auth"))
-                    using (var userStore        = new UserStore(authDatabase, null, "server"))
-                    using (var validationStore  = new UserStore(authDatabase, null, "public"))
+                    using (var userStore        = new UserStore(authDatabase, "server"))
+                    using (var validationStore  = new UserStore(authDatabase, "public"))
                     using (var fileDatabase     = new MemoryDatabase()) {
                         userStore.InitUserDatabase(authDatabase);
                         fileDatabase.authenticator = new UserAuthenticator(validationStore, new AuthorizeDeny());

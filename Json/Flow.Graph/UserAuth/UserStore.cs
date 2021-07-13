@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
-using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.UserAuth
 {
@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.UserAuth
         public readonly EntitySet<UserRole>         roles;
         public readonly EntitySet<UserCredential>   credentials;
         
-        public UserStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
+        public UserStore(EntityDatabase database, string clientId) : base(database, SyncTypeStore.Get(), clientId) {
             roles       = new EntitySet<UserRole>       (this);
             credentials = new EntitySet<UserCredential> (this);
         }

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using Friflo.Json.Flow.Database.Auth;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.UserAuth;
 
@@ -26,13 +25,16 @@ namespace Friflo.Json.Flow.Sync
             s.Dispose();
         }
         
-        private static TypeStore Get() {
+        internal static TypeStore Get() {
             if (_singleton == null) {
                 _singleton = new TypeStore();
                 _singleton.GetTypeMapper(typeof(DatabaseRequest));
                 _singleton.GetTypeMapper(typeof(DatabaseResponse));
                 _singleton.GetTypeMapper(typeof(DatabaseMessage));
                 _singleton.GetTypeMapper(typeof(ErrorResponse));
+                
+                _singleton.GetTypeMapper(typeof(UserRole));
+                _singleton.GetTypeMapper(typeof(UserCredential));
                 _singleton.GetTypeMapper(typeof(ValidateToken));
                 _singleton.GetTypeMapper(typeof(ValidateTokenResult));
             }
