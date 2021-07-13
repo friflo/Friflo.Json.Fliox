@@ -43,12 +43,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual("PermissionDenied ~ not authorized", tasks.findArticle.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized", tasks.createArticles.Error.Message);
                 
-                /* unknownUser.SetToken("some token");
+                unknownUser.SetToken("some token");
                 tasks = new Tasks(unknownUser, newArticle);
                 sync = await unknownUser.TrySync();
                 AreEqual(2, sync.failed.Count);
                 AreEqual("PermissionDenied ~ not authorized", tasks.findArticle.Error.Message);
-                AreEqual("PermissionDenied ~ not authorized", tasks.createArticles.Error.Message); */
+                AreEqual("PermissionDenied ~ not authorized", tasks.createArticles.Error.Message);
                 
                 mutateUser.SetToken("user-mutate-token");
                 var _ = new Tasks(mutateUser, newArticle);
