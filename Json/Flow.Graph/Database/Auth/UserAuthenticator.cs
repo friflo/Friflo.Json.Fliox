@@ -74,7 +74,8 @@ namespace Friflo.Json.Flow.Database.Auth
                 if (authCred != null) {
                     var authorizer  = GetAuthorizer(authCred.roles);
                     credential      = new ClientCredentials (authCred.token, eventTarget, authorizer);
-                    credByClient.TryAdd(clientId, credential);
+                    credByClient.TryAdd(clientId,    credential);
+                    credByTarget.TryAdd(eventTarget, credential);
                 }
             }
             if (credential == null || token != credential.token) {

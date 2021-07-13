@@ -29,6 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         }
 
         private static async Task AssertAuth(EntityDatabase database) {
+            using (var nullUser         = new PocStore(database, null))
             using (var unknownUser      = new PocStore(database, "unknown"))
             using (var mutateUser       = new PocStore(database, "user-mutate"))
             using (var readOnlyUser     = new PocStore(database, "user-readOnly"))
@@ -36,30 +37,49 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 Tasks tasks;
                 var newArticle = new Article{ id="new-article" };
                 
-                unknownUser.SetToken(null);
-                tasks = new Tasks(unknownUser, newArticle);
-                var sync = await unknownUser.TrySync();
+                // test: token == null
+                nullUser.SetToken(null);
+                tasks = new Tasks(nullUser, newArticle);
+                var sync = await nullUser.TrySync();
                 AreEqual(2, sync.failed.Count);
                 AreEqual("PermissionDenied ~ not authorized", tasks.findArticle.Error.Message);
-                AreEqual("PermissionDenied ~ not authorized", tasks.createArticles.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized", tasks.updateArticles.Error.Message);
                 
+                // test: unknown user
+                unknownUser.SetToken(null);
+                tasks = new Tasks(unknownUser, newArticle);
+                sync = await unknownUser.TrySync();
+                AreEqual(2, sync.failed.Count);
+                AreEqual("PermissionDenied ~ not authorized", tasks.findArticle.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized", tasks.updateArticles.Error.Message);
+                
+                // test: allow readOnly & mutate 
                 unknownUser.SetToken("some token");
                 tasks = new Tasks(unknownUser, newArticle);
                 sync = await unknownUser.TrySync();
                 AreEqual(2, sync.failed.Count);
                 AreEqual("PermissionDenied ~ not authorized", tasks.findArticle.Error.Message);
-                AreEqual("PermissionDenied ~ not authorized", tasks.createArticles.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized", tasks.updateArticles.Error.Message);
                 
+                // test: allow readOnly & mutate 
                 mutateUser.SetToken("user-mutate-token");
-                var _ = new Tasks(mutateUser, newArticle);
+                tasks = new Tasks(mutateUser, newArticle);
                 sync = await mutateUser.TrySync();
                 AreEqual(0, sync.failed.Count);
+                IsTrue(tasks.Success);
+                
+                // test: store already authorized 
+                tasks = new Tasks(mutateUser, newArticle);
+                sync = await mutateUser.TrySync();
+                AreEqual(0, sync.failed.Count);
+                IsTrue(tasks.Success);
 
+                // test: allow read only
                 readOnlyUser.SetToken("user-readOnly-token");
                 tasks = new Tasks(readOnlyUser, newArticle);
                 sync = await readOnlyUser.TrySync();
                 AreEqual(1, sync.failed.Count);
-                AreEqual("PermissionDenied ~ not authorized", tasks.createArticles.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized", tasks.updateArticles.Error.Message);
             }
         }
         
@@ -67,13 +87,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         public class Tasks {
             public  ReadTask<Article>       readArticles;
             public  Find<Article>           findArticle;
-            public  CreateTask<Article>     createArticles;
+            public  UpdateTask<Article>     updateArticles;
             
             public Tasks (PocStore store, Article newArticle) {
                 readArticles    = store.articles.Read();
                 findArticle     = readArticles.Find("some-id");
-                createArticles  = store.articles.Create(newArticle);
+                updateArticles  = store.articles.Update(newArticle);
             }
+            
+            public bool Success => findArticle.Success && updateArticles.Success;
         }
     }
 }
