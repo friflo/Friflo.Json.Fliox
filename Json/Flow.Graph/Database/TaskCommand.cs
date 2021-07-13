@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Threading.Tasks;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map.Val;
 
@@ -25,20 +26,20 @@ namespace Friflo.Json.Flow.Database
     
     internal abstract class CommandCallback
     {
-        internal abstract string InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue);
+        internal abstract Task<string> InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue);
     }
     
     internal class CommandCallback<TValue, TResult> : CommandCallback
     {
-        private  readonly   CommandHandler<TValue, TResult>   handler;
+        private  readonly   CommandHandler<TValue, Task<TResult>>   handler;
         
-        internal CommandCallback (string name, CommandHandler<TValue, TResult> handler) {
+        internal CommandCallback (string name, CommandHandler<TValue, Task<TResult>> handler) {
             this.handler = handler;
         }
         
-        internal override string InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue) {
+        internal override async Task<string> InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue) {
             var     cmd     = new Command<TValue>(messageName, messageValue.json, mapper.reader);
-            TResult result  = handler(cmd);
+            TResult result  = await handler(cmd);
             var jsonResult  = mapper.Write(result);
             return jsonResult;
         }

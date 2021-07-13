@@ -12,7 +12,13 @@ namespace Friflo.Json.Flow.Database
     {
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
         
-        public void AddMessageHandler<TValue, TResult>(string name, CommandHandler<TValue, TResult> handler) {
+        public void AddCommandHandler<TValue, TResult>(string name, CommandHandler<TValue, Task<TResult>> handler) {
+            var command = new CommandCallback<TValue, TResult>(name, handler);
+            commands.Add(name, command);
+        }
+        
+        public void AddCommandHandler<TValue, TResult>(CommandHandler<TValue, Task<TResult>> handler) {
+            var name = typeof(TValue).Name;
             var command = new CommandCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }
@@ -31,24 +37,23 @@ namespace Friflo.Json.Flow.Database
             return false;
         }
         
-        public virtual Task<TaskResult> ExecuteTask (DatabaseTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+        public virtual async Task<TaskResult> ExecuteTask (DatabaseTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (task is SendMessage message) {
                 var commandName = message.name;
                 if (commands.TryGetValue(commandName, out CommandCallback callback)) {
                     using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                         var mapper      = pooledMapper.instance;
-                        var jsonResult  = callback.InvokeCallback(mapper, commandName, message.value);
+                        var jsonResult  = await callback.InvokeCallback(mapper, commandName, message.value);
                         var value       = new JsonValue { json = jsonResult };
                         var sendResult  = new SendMessageResult { result = value };
-                        return Task.FromResult<TaskResult>(sendResult);
+                        return sendResult;
                     }
                 }
             }
-            
             if (!AuthorizeTask(task, messageContext, out var error)) {
-                return Task.FromResult(error);
+                return error;
             }
-            Task<TaskResult> result = task.Execute(database, response, messageContext);
+            var result = await task.Execute(database, response, messageContext);
             return result;
         }
     }
