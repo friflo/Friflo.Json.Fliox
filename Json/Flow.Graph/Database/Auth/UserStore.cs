@@ -19,10 +19,10 @@ namespace Friflo.Json.Flow.Database.Auth
         }
         
         public void AddCommandHandler (TaskHandler taskHandler) {
-            taskHandler.AddCommandHandlerAsync<ValidateToken, ValidateTokenResult>(ValidateTokenHandler); 
+            taskHandler.AddCommandHandlerAsync<ValidateToken, ValidateTokenResult>(ValidateToken); 
         }
         
-        private async Task<ValidateTokenResult> ValidateTokenHandler (Command<ValidateToken> command) {
+        private async Task<ValidateTokenResult> ValidateToken (Command<ValidateToken> command) {
             var validateToken   = command.Value;
             var clientId        = validateToken.clientId;
             var readCredentials = credentials.Read();
