@@ -34,21 +34,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var readOnlyUser     = new PocStore(database, "user-readOnly"))
             {
                 Tasks tasks;
+                var newArticle = new Article{ id="new-article" };
                 
-                mutateUser.    SetToken("user-mutate-token");
-                readOnlyUser.  SetToken("user-readOnly-token");
-                tasks = new Tasks(unknownUser);
-                    
+                unknownUser.SetToken(null);
+                tasks = new Tasks(unknownUser, newArticle);
                 var sync = await unknownUser.TrySync();
                 AreEqual(2, sync.failed.Count);
                 AreEqual("PermissionDenied ~ not authorized", tasks.findArticle.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized", tasks.createArticles.Error.Message);
-
-                var _ = new Tasks(mutateUser);
+                
+                /* unknownUser.SetToken("some token");
+                tasks = new Tasks(unknownUser, newArticle);
+                sync = await unknownUser.TrySync();
+                AreEqual(2, sync.failed.Count);
+                AreEqual("PermissionDenied ~ not authorized", tasks.findArticle.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized", tasks.createArticles.Error.Message); */
+                
+                mutateUser.SetToken("user-mutate-token");
+                var _ = new Tasks(mutateUser, newArticle);
                 sync = await mutateUser.TrySync();
                 AreEqual(0, sync.failed.Count);
 
-                tasks = new Tasks(readOnlyUser);
+                readOnlyUser.SetToken("user-readOnly-token");
+                tasks = new Tasks(readOnlyUser, newArticle);
                 sync = await readOnlyUser.TrySync();
                 AreEqual(1, sync.failed.Count);
                 AreEqual("PermissionDenied ~ not authorized", tasks.createArticles.Error.Message);
@@ -61,10 +69,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             public  Find<Article>           findArticle;
             public  CreateTask<Article>     createArticles;
             
-            public Tasks (PocStore store) {
+            public Tasks (PocStore store, Article newArticle) {
                 readArticles    = store.articles.Read();
                 findArticle     = readArticles.Find("some-id");
-                createArticles  = store.articles.Create(new Article{ id="new-article" });
+                createArticles  = store.articles.Create(newArticle);
             }
         }
     }
