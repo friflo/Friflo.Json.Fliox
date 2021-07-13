@@ -25,20 +25,39 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     using (var fileDatabase     = new MemoryDatabase()) {
                         userStore.InitUserDatabase(authDatabase);
                         fileDatabase.authenticator = new UserAuthenticator(validationStore, new AuthorizeDeny());
-                        await AssertUserStore(userStore);
-                        await AssertValidationStore(userStore);
+                        await AssertNotAuthorized   (userStore);
+                        await AssertNotAuthorized   (validationStore);
+                        await AssertUserStore       (userStore);
+                        await AssertValidationStore (validationStore);
                         await AssertAuth(fileDatabase);
                     }
                 });
             }
         }
         
+        private static async Task AssertNotAuthorized(UserStore store) {
+            var allCredentials  = store.credentials.QueryAll();
+            var createTask      = store.credentials.Create(new UserCredential{ id="some-id" });
+            await store.TrySync();
+            
+            AreEqual("PermissionDenied ~ not authorized", allCredentials.Error.Message);
+            AreEqual("PermissionDenied ~ not authorized", createTask.Error.Message);
+        }
+        
         private static async Task AssertUserStore(UserStore store) {
+            var credTask        = store.credentials.Read().Find("user-mutate");
+            await store.TrySync();
+            
+            var cred = credTask.Result;
+            AreEqual("user-mutate-token", cred.token);
         }
         
         private static async Task AssertValidationStore(UserStore store) {
+            var credTask        = store.credentials.Read().Find("user-mutate");
+            await store.TrySync();
+            
+            AreEqual("PermissionDenied ~ not authorized", credTask.Error.Message);
         }
-
 
         private static async Task AssertAuth(EntityDatabase database) {
             using (var nullUser         = new PocStore(database, null))
