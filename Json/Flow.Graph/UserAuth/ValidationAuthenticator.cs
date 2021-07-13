@@ -6,6 +6,10 @@ using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Auth;
 using Friflo.Json.Flow.Sync;
 
+#if UNITY_5_3_OR_NEWER
+    using ValueTask = System.Threading.Tasks.Task;
+#endif
+
 namespace Friflo.Json.Flow.UserAuth
 {
     public class ValidationAuthenticator : Authenticator
@@ -14,6 +18,7 @@ namespace Friflo.Json.Flow.UserAuth
         private readonly Authorizer publicUser = new AuthorizeMessage(nameof(ValidateToken));
         private readonly Authorizer serverUser = new AuthorizeTaskType(TaskType.read);
         
+#pragma warning disable 1998   // This async method lacks 'await' operators and will run synchronously. ....
         public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
             var clientId = syncRequest.clientId;
             switch (clientId) {
