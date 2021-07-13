@@ -1,5 +1,5 @@
 {
     "id": "user-mutate",
-    "passwordHash": "123",
+    "passHash": "123",
     "token": "user-mutate-token"
 }

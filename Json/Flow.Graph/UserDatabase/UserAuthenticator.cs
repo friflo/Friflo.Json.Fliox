@@ -5,6 +5,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Database.Auth;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Sync;
 
@@ -12,7 +14,7 @@ using Friflo.Json.Flow.Sync;
     using ValueTask = System.Threading.Tasks.Task;
 #endif
 
-namespace Friflo.Json.Flow.Database.Auth
+namespace Friflo.Json.Flow.UserDatabase
 {
     internal class AuthCred {
         internal readonly   string          token;

@@ -6,6 +6,7 @@ using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Auth;
 using Friflo.Json.Flow.Database.Utils;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.UserDatabase;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;

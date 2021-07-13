@@ -1,5 +1,5 @@
 {
     "id": "user-readOnly",
-    "passwordHash": "123",
+    "passHash": "123",
     "token": "user-readOnly-token"
 }

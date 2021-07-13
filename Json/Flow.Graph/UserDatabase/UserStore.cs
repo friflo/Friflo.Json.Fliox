@@ -3,10 +3,11 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 
-namespace Friflo.Json.Flow.Database.Auth
+namespace Friflo.Json.Flow.UserDatabase
 {
     public class UserStore : EntityStore
     {
@@ -44,15 +45,17 @@ namespace Friflo.Json.Flow.Database.Auth
         }
     }
 
+    // -------------------------------------- models ---------------------------------------
     public class UserRole : Entity {
         public  List<string> roles;
     }
     
     public class UserCredential : Entity {
-        public  string      passwordHash;
+        public  string      passHash;
         public  string      token;
-        }
-        
+    }
+    
+    // -------------------------------------- commands -------------------------------------
     public class ValidateToken {
         public          string  clientId;
         public          string  token;
