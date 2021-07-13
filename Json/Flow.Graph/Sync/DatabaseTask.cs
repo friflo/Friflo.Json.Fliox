@@ -57,7 +57,7 @@ namespace Friflo.Json.Flow.Sync
             return new TaskErrorResult{ type = TaskErrorResultType.PermissionDenied, message = message };
         }
 
-        internal bool ValidReferences(List<References> references, out TaskErrorResult error) {
+        internal static bool ValidReferences(List<References> references, out TaskErrorResult error) {
             if (references == null) {
                 error = null;
                 return true;
