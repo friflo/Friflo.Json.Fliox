@@ -1,13 +1,22 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Mapper.Map.Val;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database
 {
     public class TaskHandler
     {
+        private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
+        
+        public void AddMessageHandler<TValue>(string name, CommandHandler<TValue> handler) {
+            var command = new CommandCallback<TValue>(name, handler);
+            commands.Add(name, command);
+        }
+        
         private static bool AuthorizeTask(DatabaseTask task, MessageContext messageContext, out TaskResult error) {
             if (messageContext.Authorize(task, messageContext)) {
                 error = null;
@@ -23,6 +32,19 @@ namespace Friflo.Json.Flow.Database
         }
         
         public virtual Task<TaskResult> ExecuteTask (DatabaseTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+            if (task is SendMessage message) {
+                var commandName = message.name;
+                if (commands.TryGetValue(commandName, out CommandCallback callback)) {
+                    using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
+                        var mapper      = pooledMapper.instance;
+                        var jsonResult  = callback.InvokeCallback(mapper, commandName, message.value);
+                        var value       = new JsonValue { json = jsonResult };
+                        var sendResult  = new SendMessageResult { result = value };
+                        return Task.FromResult<TaskResult>(sendResult);
+                    }
+                }
+            }
+            
             if (!AuthorizeTask(task, messageContext, out var error)) {
                 return Task.FromResult(error);
             }
