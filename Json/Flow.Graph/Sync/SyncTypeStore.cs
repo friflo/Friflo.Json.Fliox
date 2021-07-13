@@ -3,7 +3,7 @@
 
 using Friflo.Json.Flow.Database.Auth;
 using Friflo.Json.Flow.Mapper;
-using Friflo.Json.Flow.UserDatabase;
+using Friflo.Json.Flow.UserAuth;
 
 namespace Friflo.Json.Flow.Sync
 {

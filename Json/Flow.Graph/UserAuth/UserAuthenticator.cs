@@ -14,7 +14,7 @@ using Friflo.Json.Flow.Sync;
     using ValueTask = System.Threading.Tasks.Task;
 #endif
 
-namespace Friflo.Json.Flow.UserDatabase
+namespace Friflo.Json.Flow.UserAuth
 {
     internal class AuthCred {
         internal readonly   string          token;

@@ -7,7 +7,7 @@ using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 
-namespace Friflo.Json.Flow.UserDatabase
+namespace Friflo.Json.Flow.UserAuth
 {
     public class UserStore : EntityStore, ITokenValidator
     {
