@@ -34,7 +34,6 @@ namespace Friflo.Json.Flow.Database
             commands.Add(name, command);
         }
 
-        
         private static bool AuthorizeTask(DatabaseTask task, MessageContext messageContext, out TaskResult error) {
             if (messageContext.Authorize(task, messageContext)) {
                 error = null;
@@ -53,11 +52,10 @@ namespace Friflo.Json.Flow.Database
             if (!AuthorizeTask(task, messageContext, out var error)) {
                 return error;
             }
-            if (task is SendMessage message) {
-                var commandName = message.name;
-                if (commands.TryGetValue(commandName, out CommandCallback callback)) {
+            if (task is SendMessage cmd) {
+                if (commands.TryGetValue(cmd.name, out CommandCallback callback)) {
                     using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
-                        var jsonResult  = await callback.InvokeCallback(pooledMapper.instance, commandName, message.value);
+                        var jsonResult  = await callback.InvokeCallback(pooledMapper.instance, cmd.name, cmd.value);
                         return new SendMessageResult { result = new JsonValue { json = jsonResult } };
                     }
                 }
