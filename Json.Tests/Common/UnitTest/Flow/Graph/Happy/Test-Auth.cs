@@ -21,6 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     using (var authDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/auth"))
                     using (var userStore        = new UserStore(authDatabase, null, "userStore"))
                     using (var fileDatabase     = new MemoryDatabase()) {
+                        userStore.AddCommandHandler(authDatabase.taskHandler);
                         fileDatabase.authenticator = new UserAuthenticator(userStore, new AuthorizeDeny());
                         await AssertAuth(fileDatabase);
                     }

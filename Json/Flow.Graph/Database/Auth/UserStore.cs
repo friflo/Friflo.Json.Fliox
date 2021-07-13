@@ -15,9 +15,10 @@ namespace Friflo.Json.Flow.Database.Auth
         public UserStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
             roles       = new EntitySet<UserRole>       (this);
             credentials = new EntitySet<UserCredential> (this);
-            
-            // todo move handler to appropriate place
-            database.taskHandler.AddCommandHandlerAsync<ValidateToken, bool>(async (command) => {
+        }
+        
+        public void AddCommandHandler (TaskHandler taskHandler) {
+            taskHandler.AddCommandHandlerAsync<ValidateToken, bool>(async (command) => {
                 var validateToken   = command.Value;
                 var client          = validateToken.clientId;
                 var readCredentials = credentials.Read();
