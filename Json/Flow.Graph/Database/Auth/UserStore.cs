@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 
@@ -18,17 +19,19 @@ namespace Friflo.Json.Flow.Database.Auth
         }
         
         public void AddCommandHandler (TaskHandler taskHandler) {
-            taskHandler.AddCommandHandlerAsync<ValidateToken, bool>(async (command) => {
-                var validateToken   = command.Value;
-                var client          = validateToken.clientId;
-                var readCredentials = credentials.Read();
-                var findCred        = readCredentials.Find(client);
-                await Sync();
+            taskHandler.AddCommandHandlerAsync<ValidateToken, bool>(ValidateTokenHandler); 
+        }
+        
+        private async Task<bool> ValidateTokenHandler (Command<ValidateToken> command) {
+            var validateToken   = command.Value;
+            var client          = validateToken.clientId;
+            var readCredentials = credentials.Read();
+            var findCred        = readCredentials.Find(client);
+            await Sync();
                 
-                UserCredential  cred = findCred.Result;
-                bool isValid = cred != null && cred.token == validateToken.token;
-                return isValid;
-            }); 
+            UserCredential  cred = findCred.Result;
+            bool isValid = cred != null && cred.token == validateToken.token;
+            return isValid;
         }
         
         public SendMessageTask<bool> ValidateTokenTask(string clientId, string token) {
