@@ -193,10 +193,10 @@ namespace Friflo.Json.Flow.Graph
             return SendMessage(name, value);
         }
         
-        /* public SendMessageTask<TResult> SendMessage<TValue, TResult>(string name, TValue value) {
+        public SendMessageTask<TResult> SendMessage<TValue, TResult>(string name, TValue value) {
             var json           = _intern.jsonMapper.Write(value);
             var task            = new SendMessageTask<TResult>(name, json, _intern.jsonMapper.reader);
-            _intern.sync.messageTasks.Add(name, task);
+            _intern.syncStore.messageTasks.Add(task);
             AddTask(task);
             return task;
         }
@@ -204,7 +204,7 @@ namespace Friflo.Json.Flow.Graph
         public SendMessageTask<TResult> SendMessage<TValue, TResult>(TValue value) {
             var name = typeof(TValue).Name;
             return SendMessage<TValue, TResult>(name, value);
-        } */
+        }
         
         
         // --- SubscribeMessage

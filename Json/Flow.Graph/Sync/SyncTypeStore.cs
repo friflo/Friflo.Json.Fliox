@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Flow.Database.Auth;
 using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
@@ -31,6 +32,7 @@ namespace Friflo.Json.Flow.Sync
                 _singleton.GetTypeMapper(typeof(DatabaseResponse));
                 _singleton.GetTypeMapper(typeof(DatabaseMessage));
                 _singleton.GetTypeMapper(typeof(ErrorResponse));
+                _singleton.GetTypeMapper(typeof(ValidateToken));
             }
             return _singleton;
         }

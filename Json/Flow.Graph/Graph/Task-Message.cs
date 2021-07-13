@@ -69,15 +69,13 @@ namespace Friflo.Json.Flow.Graph
         }
     }
     
-    /*
-    // Could be an alternative solution to get a type safe Result.
-    // But using it is cumbersome as it requires to specify Request & Response types as generic parameter.
+    
     public class SendMessageTask<TResult> : SendMessageTask
     {
-        public              TResult          Result2 => GetResult<TResult>();
+        public              TResult          Result => ReadResult<TResult>();
         
         internal SendMessageTask(string name, string value, ObjectReader reader) : base (name, value, reader) {
         }
-    } */
+    }
 }
 

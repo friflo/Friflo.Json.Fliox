@@ -70,7 +70,10 @@ namespace Friflo.Json.Flow.Database.Auth
                 return;
             }
             if (!credByClient.TryGetValue(clientId, out credential)) {
+                var isValidTask = userStore.ValidateTokenTask(clientId, token);
                 var authCred    = await GetClientCred(clientId);
+                bool isValid    = isValidTask.Result;
+                
                 if (authCred != null) {
                     var authorizer  = GetAuthorizer(authCred.roles);
                     credential      = new ClientCredentials (authCred.token, eventTarget, authorizer);
