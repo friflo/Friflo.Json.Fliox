@@ -12,16 +12,28 @@ namespace Friflo.Json.Flow.Database
     {
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
         
-        public void AddCommandHandler<TValue, TResult>(string name, CommandHandler<TValue, Task<TResult>> handler) {
+        public void AddCommandHandler<TValue, TResult>(string name, CommandHandler<TValue, TResult> handler) {
             var command = new CommandCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }
         
-        public void AddCommandHandler<TValue, TResult>(CommandHandler<TValue, Task<TResult>> handler) {
+        public void AddCommandHandler<TValue, TResult>(CommandHandler<TValue, TResult> handler) {
             var name = typeof(TValue).Name;
             var command = new CommandCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }
+        
+        public void AddCommandHandlerAsync<TValue, TResult>(string name, CommandHandler<TValue, Task<TResult>> handler) {
+            var command = new CommandAsyncCallback<TValue, TResult>(name, handler);
+            commands.Add(name, command);
+        }
+        
+        public void AddCommandHandlerAsync<TValue, TResult>(CommandHandler<TValue, Task<TResult>> handler) {
+            var name = typeof(TValue).Name;
+            var command = new CommandAsyncCallback<TValue, TResult>(name, handler);
+            commands.Add(name, command);
+        }
+
         
         private static bool AuthorizeTask(DatabaseTask task, MessageContext messageContext, out TaskResult error) {
             if (messageContext.Authorize(task, messageContext)) {

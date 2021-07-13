@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Database.Auth
             credentials = new EntitySet<UserCredential> (this);
             
             // todo move handler to appropriate place
-            database.taskHandler.AddCommandHandler<ValidateToken, bool>(async (command) => {
+            database.taskHandler.AddCommandHandlerAsync<ValidateToken, bool>(async (command) => {
                 var validateToken   = command.Value;
                 var client          = validateToken.clientId;
                 var readCredentials = credentials.Read();

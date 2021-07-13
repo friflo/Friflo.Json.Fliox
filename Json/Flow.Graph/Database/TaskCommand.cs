@@ -31,10 +31,34 @@ namespace Friflo.Json.Flow.Database
     
     internal class CommandCallback<TValue, TResult> : CommandCallback
     {
-        private  readonly   CommandHandler<TValue, Task<TResult>>   handler;
+        private  readonly   string                                  name;
+        private  readonly   CommandHandler<TValue, TResult>         handler;
+
+        public   override   string                                  ToString() => name;
+
+        internal CommandCallback (string name, CommandHandler<TValue, TResult> handler) {
+            this.name       = name;
+            this.handler    = handler;
+        }
         
-        internal CommandCallback (string name, CommandHandler<TValue, Task<TResult>> handler) {
-            this.handler = handler;
+        internal override Task<string> InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue) {
+            var     cmd     = new Command<TValue>(messageName, messageValue.json, mapper.reader);
+            TResult result  = handler(cmd);
+            var jsonResult  = mapper.Write(result);
+            return Task.FromResult(jsonResult);
+        }
+    }
+    
+    internal class CommandAsyncCallback<TValue, TResult> : CommandCallback
+    {
+        private  readonly   string                                  name;
+        private  readonly   CommandHandler<TValue, Task<TResult>>   handler;
+
+        public   override   string                                  ToString() => name;
+
+        internal CommandAsyncCallback (string name, CommandHandler<TValue, Task<TResult>> handler) {
+            this.name       = name;
+            this.handler    = handler;
         }
         
         internal override async Task<string> InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue) {
