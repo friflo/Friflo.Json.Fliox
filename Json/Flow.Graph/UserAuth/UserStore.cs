@@ -19,27 +19,6 @@ namespace Friflo.Json.Flow.UserAuth
             credentials = new EntitySet<UserCredential> (this);
         }
         
-        public void InitUserDatabase (EntityDatabase database) {
-            database.authenticator = new ValidationAuthenticator();
-            database.taskHandler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(ValidateTokenHandler); 
-        }
-        
-        private async Task<AuthenticateUserResult> ValidateTokenHandler (Command<AuthenticateUser> command) {
-            var validateToken   = command.Value;
-            var clientId        = validateToken.clientId;
-            var readCredentials = credentials.Read();
-            var findCred        = readCredentials.Find(clientId);
-            var readRoles       = roles.Read();
-            var findRole        = readRoles.Find(clientId);
-            
-            await Sync();
-                
-            UserCredential  cred = findCred.Result;
-            UserRole        role = findRole.Result;
-            bool            isValid = cred != null && cred.token == validateToken.token;
-            return new AuthenticateUserResult { isValid = isValid, roles = role?.roles };
-        }
-        
         internal async Task<AuthenticateUserResult> AuthenticateUser(AuthenticateUser command) {
             var commandTask = SendMessage<AuthenticateUser, AuthenticateUserResult>(command);
             await Sync();
