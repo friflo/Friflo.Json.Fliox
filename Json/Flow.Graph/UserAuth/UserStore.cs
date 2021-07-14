@@ -16,6 +16,9 @@ namespace Friflo.Json.Flow.UserAuth
     /// </summary>
     public class UserStore : EntityStore, IUserAuth
     {
+        public const string Server      = "Server";
+        public const string AuthUser    = "AuthUser";
+        
         public readonly EntitySet<UserRole>         roles;
         public readonly EntitySet<UserCredential>   credentials;
         
