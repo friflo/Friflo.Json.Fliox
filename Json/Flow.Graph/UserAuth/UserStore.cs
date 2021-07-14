@@ -9,7 +9,12 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.UserAuth
 {
-    public class UserStore : EntityStore
+    /// <summary>
+    /// Provide access to an <see cref="EntityDatabase"/> storing user credentials ands roles.
+    /// It can also be used as a non thread safe <see cref="IUserAuth"/> implementation.
+    /// For a thread safe <see cref="IUserAuth"/> implementation use <see cref="UserAuth"/>.
+    /// </summary>
+    public class UserStore : EntityStore, IUserAuth
     {
         public readonly EntitySet<UserRole>         roles;
         public readonly EntitySet<UserCredential>   credentials;
@@ -19,7 +24,7 @@ namespace Friflo.Json.Flow.UserAuth
             credentials = new EntitySet<UserCredential> (this);
         }
         
-        internal async Task<AuthenticateUserResult> AuthenticateUser(AuthenticateUser command) {
+        public async Task<AuthenticateUserResult> AuthenticateUser(AuthenticateUser command) {
             var commandTask = SendMessage<AuthenticateUser, AuthenticateUserResult>(command);
             await Sync();
             return commandTask.Result;

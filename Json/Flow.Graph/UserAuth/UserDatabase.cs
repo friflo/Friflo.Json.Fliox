@@ -8,21 +8,26 @@ using Friflo.Json.Flow.Utils;
 
 namespace Friflo.Json.Flow.UserAuth
 {
+    /// <summary>
+    /// Used to authenticate users stored in the given user <see cref="EntityDatabase"/>.
+    /// If user authentication succeed it returns also the roles attached to a user. 
+    /// The schema of the user database is defined in <see cref="UserStore"/>.
+    /// </summary>
     public class UserDatabase : IDisposable
     {
         private readonly SharedPool<UserStore>   storePool;
         
         public UserDatabase(EntityDatabase authDatabase, string clientId) {
             storePool = new SharedPool<UserStore>      (() => new UserStore(authDatabase, clientId));
-            authDatabase.authenticator = new ValidationAuthenticator();
-            authDatabase.taskHandler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(ValidateTokenHandler); 
+            authDatabase.authenticator = new UserDatabaseAuthenticator();
+            authDatabase.taskHandler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(AuthenticateUserHandler); 
         }
         
         public void Dispose() {
             storePool.Dispose();
         }
         
-        private async Task<AuthenticateUserResult> ValidateTokenHandler (Command<AuthenticateUser> command) {
+        private async Task<AuthenticateUserResult> AuthenticateUserHandler (Command<AuthenticateUser> command) {
             using (var pooledStore = storePool.Get()) {
                 var store = pooledStore.instance;
                 var validateToken   = command.Value;

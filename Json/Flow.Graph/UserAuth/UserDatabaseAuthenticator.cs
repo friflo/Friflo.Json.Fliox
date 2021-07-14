@@ -12,7 +12,12 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.UserAuth
 {
-    public class ValidationAuthenticator : Authenticator
+    /// <summary>
+    /// Control the access to a <see cref="UserDatabase"/> by "clientId" ("public" | "server") of a user.
+    /// A "public" user is only able to <see cref="Authenticate"/> itself.
+    /// A "server" user is able to read credentials and roles stored in a <see cref="UserDatabase"/>.
+    /// </summary>
+    public class UserDatabaseAuthenticator : Authenticator
     {
         private readonly Authorizer otherUser  = new AuthorizeDeny();
         private readonly Authorizer publicUser = new AuthorizeMessage(nameof(AuthenticateUser));
