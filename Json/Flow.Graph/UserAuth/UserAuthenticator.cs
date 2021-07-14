@@ -114,7 +114,7 @@ namespace Friflo.Json.Flow.UserAuth
             }
             var authorizers = new List<Authorizer>(roles.Count);
             foreach (var role in roles) {
-                if (!PredefinedRoles.Roles.TryGetValue(role, out Authorizer authorizer)) {
+                if (!Authorizer.GetAuthorizerByRole(role, out Authorizer authorizer)) {
                     throw new InvalidOperationException($"unknown authorization role: {role}");
                 }
                 authorizers.Add(authorizer);

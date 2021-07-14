@@ -17,6 +17,35 @@ namespace Friflo.Json.Flow.Database.Auth
     public abstract class Authorizer
     {
         public abstract bool Authorize(DatabaseTask task, MessageContext messageContext);
+        
+        private static readonly  ReadOnlyDictionary<string, Authorizer> Roles;
+        
+        static Authorizer() {
+            var roles = new Dictionary<string, Authorizer>();
+            //
+            roles.TryAdd("allow",             new AuthorizeAllow());
+            roles.TryAdd("deny",              new AuthorizeDeny());
+            roles.TryAdd("readOnly",          new AuthorizeReadOnly());
+            roles.TryAdd("mutate",            new AuthorizeMutate());
+            //
+            roles.TryAdd("read",              new AuthorizeTaskType(TaskType.read));
+            roles.TryAdd("query",             new AuthorizeTaskType(TaskType.query));
+            roles.TryAdd("create",            new AuthorizeTaskType(TaskType.create));
+            roles.TryAdd("update",            new AuthorizeTaskType(TaskType.update));
+            roles.TryAdd("patch",             new AuthorizeTaskType(TaskType.patch));
+            roles.TryAdd("delete",            new AuthorizeTaskType(TaskType.delete));
+            roles.TryAdd("subscribeChanges",  new AuthorizeTaskType(TaskType.subscribeChanges));
+            roles.TryAdd("subscribeMessage",  new AuthorizeTaskType(TaskType.subscribeMessage));
+            
+            Roles = new ReadOnlyDictionary<string, Authorizer>(roles);
+        }
+        
+        public static bool GetAuthorizerByRole(string role, out Authorizer authorizer) {
+            if (Roles.TryGetValue(role, out authorizer)) {
+                return true;
+            }
+            return false;
+        }
     }
     
     public class AuthorizeAllow : Authorizer {
@@ -118,28 +147,4 @@ namespace Friflo.Json.Flow.Database.Auth
         }
     }
     
-    public static class PredefinedRoles
-    {
-        public static readonly  ReadOnlyDictionary<string, Authorizer> Roles;
-        
-        static PredefinedRoles() {
-            var roles = new Dictionary<string, Authorizer>();
-            //
-            roles.TryAdd("allow",             new AuthorizeAllow());
-            roles.TryAdd("deny",              new AuthorizeDeny());
-            roles.TryAdd("readOnly",          new AuthorizeReadOnly());
-            roles.TryAdd("mutate",            new AuthorizeMutate());
-            //
-            roles.TryAdd("read",              new AuthorizeTaskType(TaskType.read));
-            roles.TryAdd("query",             new AuthorizeTaskType(TaskType.query));
-            roles.TryAdd("create",            new AuthorizeTaskType(TaskType.create));
-            roles.TryAdd("update",            new AuthorizeTaskType(TaskType.update));
-            roles.TryAdd("patch",             new AuthorizeTaskType(TaskType.patch));
-            roles.TryAdd("delete",            new AuthorizeTaskType(TaskType.delete));
-            roles.TryAdd("subscribeChanges",  new AuthorizeTaskType(TaskType.subscribeChanges));
-            roles.TryAdd("subscribeMessage",  new AuthorizeTaskType(TaskType.subscribeMessage));
-            
-            Roles = new ReadOnlyDictionary<string, Authorizer>(roles);
-        }
-    }
 }
