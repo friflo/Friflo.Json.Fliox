@@ -11,6 +11,10 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database.Auth
 {
+    /// <summary>
+    /// Performs authentication and authorization by checking <see cref="SyncRequest.clientId"/> and <see cref="SyncRequest.token"/>
+    /// in every <see cref="EntityDatabase.ExecuteSync"/> call.
+    /// </summary>
     public abstract class Authenticator
     {
         public abstract ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext);

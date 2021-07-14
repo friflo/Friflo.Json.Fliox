@@ -3,6 +3,10 @@
 
 namespace Friflo.Json.Flow.Database.Auth
 {
+    /// <summary>
+    /// Contains the authentication and authorization result of <see cref="Authenticator.Authenticate"/>.
+    /// The authentication is performed for every <see cref="EntityDatabase.ExecuteSync"/> call. 
+    /// </summary>
     public struct AuthState {
         public              string      Error           { get; private set;}  
         public              bool        Authenticated   { get; private set;}

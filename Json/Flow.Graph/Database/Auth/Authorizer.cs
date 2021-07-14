@@ -7,6 +7,13 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database.Auth
 {
+    /// <summary>
+    /// Authorize a given task.
+    /// <br></br>
+    /// This <see cref="Authorizer"/> it stored at <see cref="AuthState.Authorizer"/>.
+    /// The <see cref="AuthState.Authorizer"/> is set via <see cref="Authenticator.Authenticate"/> for
+    /// <see cref="AuthState.Authenticated"/> and for not <see cref="AuthState.Authenticated"/> users.  
+    /// </summary>
     public abstract class Authorizer
     {
         public abstract bool Authorize(DatabaseTask task, MessageContext messageContext);

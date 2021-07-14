@@ -16,7 +16,9 @@ namespace Friflo.Json.Flow.UserAuth
     /// </summary>
     public class UserStore : EntityStore, IUserAuth
     {
+        /// <summary>"clientId" used for a <see cref="UserStore"/> to perform user authentication.</summary>
         public const string Server      = "Server";
+        /// <summary>"clientId" used for a <see cref="UserStore"/> to request a user authentication with its token</summary>
         public const string AuthUser    = "AuthUser";
         
         public readonly EntitySet<UserRole>         roles;
