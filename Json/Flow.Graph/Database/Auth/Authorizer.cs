@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Friflo.Json.Flow.Sync;
@@ -191,15 +192,25 @@ namespace Friflo.Json.Flow.Database.Auth
 
         public AuthorizeContainer (string container, ICollection<string> types) {
             this.container = container;
-            create  = types.Contains("create");
-            update  = types.Contains("update");
-            delete  = types.Contains("delete");
-            patch   = types.Contains("patch");
-            if (types.Contains("mutate")) {
-                create  = true; update  = true; delete  = true; patch   = true;
+            SetRoles(types, ref create, ref update, ref delete, ref patch, ref read, ref query);
+        }
+        
+        private static void SetRoles (ICollection<string> types, ref bool create, ref bool update, ref bool delete, ref bool patch, ref bool read, ref bool query) {
+            foreach (var type in types) {
+                switch (type) {
+                    case "create":  create  = true;   break;
+                    case "update":  update  = true;   break;
+                    case "delete":  delete  = true;   break;
+                    case "patch":   patch   = true;   break;
+                    case "read":    read    = true;   break;
+                    case "query":   query   = true;   break;
+                    case "mutate":
+                        create  = true; update  = true; delete  = true; patch   = true;
+                        break;
+                    default:
+                        throw new InvalidOperationException($"Invalid container role: {type}");
+                }
             }
-            read    = types.Contains("read");
-            query   = types.Contains("query");
         }
         
         public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
