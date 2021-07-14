@@ -40,8 +40,7 @@ namespace Friflo.Json.Flow.UserAuth
             return new ValidateTokenResult { isValid = isValid, roles = role?.roles };
         }
         
-        public async Task<ValidateTokenResult> ValidateToken(string clientId, string token) {
-            var command = new ValidateToken { clientId = clientId, token = token };
+        public async Task<ValidateTokenResult> ValidateToken(ValidateToken command) {
             var commandTask = SendMessage<ValidateToken, ValidateTokenResult>(command);
             await Sync();
             return commandTask.Result;

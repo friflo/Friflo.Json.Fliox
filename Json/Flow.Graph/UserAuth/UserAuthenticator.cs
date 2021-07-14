@@ -39,7 +39,7 @@ namespace Friflo.Json.Flow.UserAuth
     }
     
     public interface IUserValidator {
-        Task<ValidateTokenResult> ValidateToken(string clientId, string token);
+        Task<ValidateTokenResult> ValidateToken(ValidateToken value);
     }
     
     public class UserAuthenticator : Authenticator
@@ -76,7 +76,8 @@ namespace Friflo.Json.Flow.UserAuth
                 return;
             }
             if (!credByClient.TryGetValue(clientId, out credential)) {
-                var result = await userValidator.ValidateToken(clientId, token);
+                var command = new ValidateToken { clientId = clientId, token = token };
+                var result  = await userValidator.ValidateToken(command);
                 
                 if (result.isValid && result.roles != null) {
                     var authCred = new AuthCred(token, result.roles);
