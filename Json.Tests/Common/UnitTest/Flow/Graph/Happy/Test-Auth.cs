@@ -19,13 +19,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/auth"))
-                    using (var serverStore      = new UserStore             (userDatabase, UserStore.Server))
-                    using (var publicStore      = new UserStore             (userDatabase, UserStore.AuthUser))
                     using (var userAuth         = new UserAuth              (userDatabase))
                     using (                       new UserDatabaseHandler   (userDatabase))
                     using (var database         = new MemoryDatabase()) {
                         database.authenticator  = new UserAuthenticator(userAuth);
                         await AssertAuth(database);
+                    }
+                });
+            }
+        }
+        
+        [Test] public static void TestAuthAccess () {
+            using (var _                = Pools.SharedPools) // for LeakTestsFixture
+            {
+                SingleThreadSynchronizationContext.Run(async () => {
+                    using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/auth"))
+                    using (var serverStore      = new UserStore             (userDatabase, UserStore.Server))
+                    using (var publicStore      = new UserStore             (userDatabase, UserStore.AuthUser))
+                    using (                       new UserDatabaseHandler   (userDatabase)) {
                         // assert access to user database with different users: "Server" & "AuthUser"
                         await AssertNotAuthorized   (serverStore);
                         await AssertNotAuthorized   (publicStore);
