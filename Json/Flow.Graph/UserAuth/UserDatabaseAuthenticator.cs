@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Auth;
@@ -23,7 +24,10 @@ namespace Friflo.Json.Flow.UserAuth
     {
         private readonly Authorizer otherUser           = new AuthorizeDeny();
         private readonly Authorizer authenticatorUser   = new AuthorizeMessage(nameof(AuthenticateUser));
-        private readonly Authorizer serverUser          = new AuthorizeTaskType(TaskType.read);
+        private readonly Authorizer serverUser          = new AuthorizeAny(new [] {
+            new AuthorizeContainer(nameof(UserRole),        new []{"read"}),
+            new AuthorizeContainer(nameof(UserCredential),  new []{"read"})
+        });
         
 #pragma warning disable 1998   // This async method lacks 'await' operators and will run synchronously. ....
         public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
