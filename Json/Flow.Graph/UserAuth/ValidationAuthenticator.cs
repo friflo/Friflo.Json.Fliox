@@ -15,7 +15,7 @@ namespace Friflo.Json.Flow.UserAuth
     public class ValidationAuthenticator : Authenticator
     {
         private readonly Authorizer otherUser  = new AuthorizeDeny();
-        private readonly Authorizer publicUser = new AuthorizeMessage(nameof(ValidateToken));
+        private readonly Authorizer publicUser = new AuthorizeMessage(nameof(AuthenticateUser));
         private readonly Authorizer serverUser = new AuthorizeTaskType(TaskType.read);
         
 #pragma warning disable 1998   // This async method lacks 'await' operators and will run synchronously. ....

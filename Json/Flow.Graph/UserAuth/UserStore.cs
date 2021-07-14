@@ -9,7 +9,7 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.UserAuth
 {
-    public class UserStore : EntityStore, IUserValidator
+    public class UserStore : EntityStore, IUserAuth
     {
         public readonly EntitySet<UserRole>         roles;
         public readonly EntitySet<UserCredential>   credentials;
@@ -21,10 +21,10 @@ namespace Friflo.Json.Flow.UserAuth
         
         public void InitUserDatabase (EntityDatabase database) {
             database.authenticator = new ValidationAuthenticator();
-            database.taskHandler.AddCommandHandlerAsync<ValidateToken, ValidateTokenResult>(ValidateTokenHandler); 
+            database.taskHandler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(ValidateTokenHandler); 
         }
         
-        private async Task<ValidateTokenResult> ValidateTokenHandler (Command<ValidateToken> command) {
+        private async Task<AuthenticateUserResult> ValidateTokenHandler (Command<AuthenticateUser> command) {
             var validateToken   = command.Value;
             var clientId        = validateToken.clientId;
             var readCredentials = credentials.Read();
@@ -37,11 +37,11 @@ namespace Friflo.Json.Flow.UserAuth
             UserCredential  cred = findCred.Result;
             UserRole        role = findRole.Result;
             bool            isValid = cred != null && cred.token == validateToken.token;
-            return new ValidateTokenResult { isValid = isValid, roles = role?.roles };
+            return new AuthenticateUserResult { isValid = isValid, roles = role?.roles };
         }
         
-        public async Task<ValidateTokenResult> ValidateToken(ValidateToken command) {
-            var commandTask = SendMessage<ValidateToken, ValidateTokenResult>(command);
+        public async Task<AuthenticateUserResult> AuthenticateUser(AuthenticateUser command) {
+            var commandTask = SendMessage<AuthenticateUser, AuthenticateUserResult>(command);
             await Sync();
             return commandTask.Result;
         }
@@ -58,14 +58,14 @@ namespace Friflo.Json.Flow.UserAuth
     }
     
     // -------------------------------------- commands -------------------------------------
-    public class ValidateToken {
+    public class AuthenticateUser {
         public          string  clientId;
         public          string  token;
 
         public override string  ToString() => clientId;
     }
     
-    public class ValidateTokenResult {
+    public class AuthenticateUserResult {
         public          bool            isValid;
         public          List<string>    roles;
     }

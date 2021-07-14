@@ -35,8 +35,8 @@ namespace Friflo.Json.Flow.Sync
                 
                 _singleton.GetTypeMapper(typeof(UserRole));
                 _singleton.GetTypeMapper(typeof(UserCredential));
-                _singleton.GetTypeMapper(typeof(ValidateToken));
-                _singleton.GetTypeMapper(typeof(ValidateTokenResult));
+                _singleton.GetTypeMapper(typeof(AuthenticateUser));
+                _singleton.GetTypeMapper(typeof(AuthenticateUserResult));
             }
             return _singleton;
         }

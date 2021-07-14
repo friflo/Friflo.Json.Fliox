@@ -38,23 +38,23 @@ namespace Friflo.Json.Flow.UserAuth
         }
     }
     
-    public interface IUserValidator {
-        Task<ValidateTokenResult> ValidateToken(ValidateToken value);
+    public interface IUserAuth {
+        Task<AuthenticateUserResult> AuthenticateUser(AuthenticateUser value);
     }
     
     public class UserAuthenticator : Authenticator
     {
-        private   readonly  IUserValidator                                          userValidator;
+        private   readonly  IUserAuth                                               userAuth;
         private   readonly  ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
         private   readonly  ConcurrentDictionary<string,       ClientCredentials>   credByClient;
         private   readonly  Authorizer                                              unknown;
         
         
-        public UserAuthenticator (IUserValidator userValidator, Authorizer unknown) {
-            this.userValidator  = userValidator;
-            credByTarget        = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
-            credByClient        = new ConcurrentDictionary<string,       ClientCredentials>();
-            this.unknown        = unknown ?? throw new NullReferenceException(nameof(unknown));
+        public UserAuthenticator (IUserAuth userAuth, Authorizer unknown) {
+            this.userAuth   = userAuth;
+            credByTarget    = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
+            credByClient    = new ConcurrentDictionary<string,       ClientCredentials>();
+            this.unknown    = unknown ?? throw new NullReferenceException(nameof(unknown));
         }
         
         public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext)
@@ -76,8 +76,8 @@ namespace Friflo.Json.Flow.UserAuth
                 return;
             }
             if (!credByClient.TryGetValue(clientId, out credential)) {
-                var command = new ValidateToken { clientId = clientId, token = token };
-                var result  = await userValidator.ValidateToken(command);
+                var command = new AuthenticateUser { clientId = clientId, token = token };
+                var result  = await userAuth.AuthenticateUser(command);
                 
                 if (result.isValid && result.roles != null) {
                     var authCred = new AuthCred(token, result.roles);
