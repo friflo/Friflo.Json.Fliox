@@ -9,7 +9,7 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.UserAuth
 {
-    public class UserStore : EntityStore, IUserAuth
+    public class UserStore : EntityStore
     {
         public readonly EntitySet<UserRole>         roles;
         public readonly EntitySet<UserCredential>   credentials;
@@ -40,7 +40,7 @@ namespace Friflo.Json.Flow.UserAuth
             return new AuthenticateUserResult { isValid = isValid, roles = role?.roles };
         }
         
-        public async Task<AuthenticateUserResult> AuthenticateUser(AuthenticateUser command) {
+        internal async Task<AuthenticateUserResult> AuthenticateUser(AuthenticateUser command) {
             var commandTask = SendMessage<AuthenticateUser, AuthenticateUserResult>(command);
             await Sync();
             return commandTask.Result;
