@@ -17,8 +17,8 @@ namespace Friflo.Json.Flow.UserAuth
     {
         private readonly SharedPool<UserStore>   storePool;
         
-        public UserAuth(EntityDatabase authDatabase, string clientId) {
-            storePool = new SharedPool<UserStore>      (() => new UserStore(authDatabase, clientId));
+        public UserAuth(EntityDatabase authDatabase) {
+            storePool = new SharedPool<UserStore>      (() => new UserStore(authDatabase, UserStore.AuthUser));
         }
 
         public async Task<AuthenticateUserResult> AuthenticateUser(AuthenticateUser value) {
