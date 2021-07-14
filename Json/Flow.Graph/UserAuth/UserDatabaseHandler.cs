@@ -13,11 +13,11 @@ namespace Friflo.Json.Flow.UserAuth
     /// If user authentication succeed it returns also the roles attached to a user. 
     /// The schema of the user database is defined in <see cref="UserStore"/>.
     /// </summary>
-    public class UserDatabase : IDisposable
+    public class UserDatabaseHandler : IDisposable
     {
         private readonly SharedPool<UserStore>   storePool;
         
-        public UserDatabase(EntityDatabase authDatabase) {
+        public UserDatabaseHandler(EntityDatabase authDatabase) {
             storePool = new SharedPool<UserStore>      (() => new UserStore(authDatabase, UserStore.Server));
             authDatabase.authenticator = new UserDatabaseAuthenticator();
             authDatabase.taskHandler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(AuthenticateUserHandler); 

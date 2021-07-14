@@ -13,11 +13,11 @@ using Friflo.Json.Flow.Sync;
 namespace Friflo.Json.Flow.UserAuth
 {
     /// <summary>
-    /// Control the access to a <see cref="UserDatabase"/> by "clientId" (<see cref="UserStore.AuthUser"/> |
+    /// Control the access to a <see cref="UserDatabaseHandler"/> by "clientId" (<see cref="UserStore.AuthUser"/> |
     /// <see cref="UserStore.Server"/>) of a user.
     /// <br></br>
     /// A <see cref="UserStore.AuthUser"/> user is only able to <see cref="Authenticate"/> itself.
-    /// A <see cref="UserStore.Server"/> user is able to read credentials and roles stored in a <see cref="UserDatabase"/>.
+    /// A <see cref="UserStore.Server"/> user is able to read credentials and roles stored in a <see cref="UserDatabaseHandler"/>.
     /// </summary>
     public class UserDatabaseAuthenticator : Authenticator
     {
