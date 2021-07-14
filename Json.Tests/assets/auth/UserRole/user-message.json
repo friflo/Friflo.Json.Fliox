@@ -1,4 +1,4 @@
 {
     "id": "user-message",
-    "roles": ["message"]
+    "roles": ["message:test-message"]
 }

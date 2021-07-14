@@ -47,8 +47,26 @@ namespace Friflo.Json.Flow.Database.Auth
             }
             var compoundCommand = role.Split('/');
             var compoundElements = compoundCommand[0].Split(':');
-            
-            
+            var name = compoundElements[0];
+            switch (name) {
+                case "message":
+                    if (compoundElements.Length < 2)
+                        return false;
+                    var messageName = compoundElements[1];
+                    authorizer = new AuthorizeMessage(messageName);
+                    return true;
+                case "container":
+                    if (compoundElements.Length < 2)
+                        return false;
+                    var container   = compoundElements[1];
+                    if (compoundCommand.Length < 2) {
+                        authorizer = new AuthorizeContainer(container);
+                        return true;
+                    }
+                    var types       = compoundCommand[1].Split(',');
+                    authorizer      = new AuthorizeContainer(container, types);
+                    return true;
+            }
             return false;
         }
     }
@@ -147,6 +165,54 @@ namespace Friflo.Json.Flow.Database.Auth
         public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
             if (task is SendMessage message) {
                 return messageName == message.name;
+            }
+            return false;
+        }
+    }
+    
+    public class AuthorizeContainer : Authorizer {
+        private readonly    string  container;
+        
+        private readonly    bool    create;
+        private readonly    bool    update;
+        private readonly    bool    delete;
+        private readonly    bool    patch;
+        
+        private readonly    bool    read;
+        private readonly    bool    query;
+
+        public  override    string  ToString() => container;
+        
+        public AuthorizeContainer (string container) {
+            this.container = container;
+            create  = true;
+            update  = true;
+            delete  = true;
+            patch   = true;
+            read    = true;
+            query   = true;
+        }
+
+        public AuthorizeContainer (string container, ICollection<string> types) {
+            this.container = container;
+            create  = types.Contains("create");
+            update  = types.Contains("update");
+            delete  = types.Contains("delete");
+            patch   = types.Contains("patch");
+            
+            read    = types.Contains("read");
+            query   = types.Contains("query");
+        }
+        
+        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+            switch (task.TaskType) {
+                case TaskType.create:   return create && ((CreateEntities)  task).container == container;
+                case TaskType.update:   return update && ((UpdateEntities)  task).container == container;
+                case TaskType.delete:   return delete && ((DeleteEntities)  task).container == container;
+                case TaskType.patch:    return patch  && ((PatchEntities)   task).container == container;
+                
+                case TaskType.read:     return read   && ((ReadEntitiesList)task).container == container;
+                case TaskType.query:    return query  && ((QueryEntities)   task).container == container;
             }
             return false;
         }

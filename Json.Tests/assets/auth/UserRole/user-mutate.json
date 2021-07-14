@@ -1,4 +1,4 @@
 {
     "id": "user-mutate",
-    "roles": ["read", "mutate"]
+    "roles": ["container:Article/read,update"]
 }
