@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.UserAuth
         private readonly Authorizer otherUser           = new AuthorizeDeny();
         private readonly Authorizer authenticatorUser   = new AuthorizeMessage(nameof(AuthenticateUser));
         private readonly Authorizer serverUser          = new AuthorizeAny(new [] {
-            new AuthorizeContainer(nameof(UserRole),        new []{"read"}),
+            new AuthorizeContainer(nameof(UserPermission),  new []{"read"}),
             new AuthorizeContainer(nameof(UserCredential),  new []{"read"})
         });
         
