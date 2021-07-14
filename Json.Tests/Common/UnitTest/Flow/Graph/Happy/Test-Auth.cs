@@ -35,13 +35,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/auth"))
                     using (var serverStore      = new UserStore             (userDatabase, UserStore.Server))
-                    using (var publicStore      = new UserStore             (userDatabase, UserStore.AuthUser))
+                    using (var authUserStore    = new UserStore             (userDatabase, UserStore.AuthUser))
                     using (                       new UserDatabaseHandler   (userDatabase)) {
                         // assert access to user database with different users: "Server" & "AuthUser"
                         await AssertNotAuthorized   (serverStore);
-                        await AssertNotAuthorized   (publicStore);
-                        await AssertUserStore       (serverStore);
-                        await AssertValidationStore (publicStore);
+                        await AssertNotAuthorized   (authUserStore);
+                        await AssertServerStore     (serverStore);
+                        await AssertAuthUserStore   (authUserStore);
                     }
                 });
             }
@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             AreEqual("PermissionDenied ~ not authorized", updateTask.Error.Message);
         }
         
-        private static async Task AssertUserStore(UserStore store) {
+        private static async Task AssertServerStore(UserStore store) {
             var credTask        = store.credentials.Read().Find("user-mutate");
             await store.TrySync();
             
@@ -66,7 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             AreEqual("user-mutate-token", cred.token);
         }
         
-        private static async Task AssertValidationStore(UserStore store) {
+        private static async Task AssertAuthUserStore(UserStore store) {
             var credTask        = store.credentials.Read().Find("user-mutate");
             await store.TrySync();
             
