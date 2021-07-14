@@ -12,9 +12,10 @@ namespace Friflo.Json.Flow.Database
         public              TValue          Value   => reader.Read<TValue>(json);
         
         private readonly    string          json;
-        
         private readonly    ObjectReader    reader;
-        
+
+        public  override    string          ToString() => Name;
+
         internal Command(string name, string json, ObjectReader reader) {
             Name        = name;
             this.json   = json;  
