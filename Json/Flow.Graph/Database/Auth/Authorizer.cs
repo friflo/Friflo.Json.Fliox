@@ -178,7 +178,7 @@ namespace Friflo.Json.Flow.Database.Auth
         private readonly    bool    update;
         private readonly    bool    delete;
         private readonly    bool    patch;
-        
+        //
         private readonly    bool    read;
         private readonly    bool    query;
 
@@ -195,13 +195,16 @@ namespace Friflo.Json.Flow.Database.Auth
             SetRoles(types, ref create, ref update, ref delete, ref patch, ref read, ref query);
         }
         
-        private static void SetRoles (ICollection<string> types, ref bool create, ref bool update, ref bool delete, ref bool patch, ref bool read, ref bool query) {
+        private static void SetRoles (ICollection<string> types,
+                ref bool create, ref bool update, ref bool delete, ref bool patch,
+                ref bool read,   ref bool query) {
             foreach (var type in types) {
                 switch (type) {
                     case "create":  create  = true;   break;
                     case "update":  update  = true;   break;
                     case "delete":  delete  = true;   break;
                     case "patch":   patch   = true;   break;
+                    //
                     case "read":    read    = true;   break;
                     case "query":   query   = true;   break;
                     case "mutate":
@@ -219,7 +222,7 @@ namespace Friflo.Json.Flow.Database.Auth
                 case TaskType.update:   return update && ((UpdateEntities)  task).container == container;
                 case TaskType.delete:   return delete && ((DeleteEntities)  task).container == container;
                 case TaskType.patch:    return patch  && ((PatchEntities)   task).container == container;
-                
+                //
                 case TaskType.read:     return read   && ((ReadEntitiesList)task).container == container;
                 case TaskType.query:    return query  && ((QueryEntities)   task).container == container;
             }
