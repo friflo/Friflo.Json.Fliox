@@ -20,15 +20,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var authDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/auth"))
-                    using (var userStore        = new UserStore(authDatabase, "server"))
-                    using (var userAuth         = new UserStore(authDatabase, "public"))
+                    using (var serverStore      = new UserStore(authDatabase, "server"))
+                    using (var publicStore      = new UserStore(authDatabase, "public")) // test access with user: "public"
+                    using (var userAuth         = new UserAuth (authDatabase, "public"))
                     using (var fileDatabase     = new MemoryDatabase()) {
-                        userStore.InitUserDatabase(authDatabase);
+                        serverStore.InitUserDatabase(authDatabase);
                         fileDatabase.authenticator = new UserAuthenticator(userAuth, new AuthorizeDeny());
-                        await AssertNotAuthorized   (userStore);
-                        await AssertNotAuthorized   (userAuth);
-                        await AssertUserStore       (userStore);
-                        await AssertValidationStore (userAuth);
+                        await AssertNotAuthorized   (serverStore);
+                        await AssertNotAuthorized   (publicStore);
+                        await AssertUserStore       (serverStore);
+                        await AssertValidationStore (publicStore);
                         await AssertAuth(fileDatabase);
                     }
                 });
