@@ -33,6 +33,8 @@ namespace Friflo.Json.Flow.Database.Auth
             roles.TryAdd("update",            new AuthorizeTaskType(TaskType.update));
             roles.TryAdd("patch",             new AuthorizeTaskType(TaskType.patch));
             roles.TryAdd("delete",            new AuthorizeTaskType(TaskType.delete));
+            roles.TryAdd("message",           new AuthorizeTaskType(TaskType.message));
+            //
             roles.TryAdd("subscribeChanges",  new AuthorizeTaskType(TaskType.subscribeChanges));
             roles.TryAdd("subscribeMessage",  new AuthorizeTaskType(TaskType.subscribeMessage));
             

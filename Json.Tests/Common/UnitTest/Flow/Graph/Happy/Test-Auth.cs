@@ -77,7 +77,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var nullUser         = new PocStore(database, null))
             using (var unknownUser      = new PocStore(database, "unknown"))
             using (var mutateUser       = new PocStore(database, "user-mutate"))
-            using (var readOnlyUser     = new PocStore(database, "user-read"))
+            using (var readUser         = new PocStore(database, "user-read"))
+            using (var messageUser      = new PocStore(database, "user-message"))
             {
                 Tasks tasks;
                 var newArticle = new Article{ id="new-article" };
@@ -118,12 +119,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual(0, sync.failed.Count);
                 IsTrue(tasks.Success);
 
-                // test: allow read only
-                readOnlyUser.SetToken("user-read-token");
-                tasks = new Tasks(readOnlyUser, newArticle);
-                sync = await readOnlyUser.TrySync();
-                AreEqual(1, sync.failed.Count);
+                // test: allow read
+                readUser.SetToken("user-read-token");
+                tasks = new Tasks(readUser, newArticle);
+                var message = readUser.SendMessage("test-message");
+                sync = await readUser.TrySync();
+                AreEqual(2, sync.failed.Count);
                 AreEqual("PermissionDenied ~ not authorized", tasks.updateArticles.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized", message.Error.Message);
+
+                // test: allow message
+                messageUser.SetToken("user-message-token");
+                message = messageUser.SendMessage("test-message");
+                sync = await messageUser.TrySync();
+                AreEqual(0, sync.failed.Count);
+                IsTrue(message.Success);
+
             }
         }
         
