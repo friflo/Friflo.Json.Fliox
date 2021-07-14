@@ -25,7 +25,6 @@ namespace Friflo.Json.Flow.Database.Auth
             //
             roles.TryAdd("allow",             new AuthorizeAllow());
             roles.TryAdd("deny",              new AuthorizeDeny());
-            roles.TryAdd("readOnly",          new AuthorizeReadOnly());
             roles.TryAdd("mutate",            new AuthorizeMutate());
             //
             roles.TryAdd("read",              new AuthorizeTaskType(TaskType.read));
@@ -44,6 +43,10 @@ namespace Friflo.Json.Flow.Database.Auth
             if (Roles.TryGetValue(role, out authorizer)) {
                 return true;
             }
+            var compoundCommand = role.Split('/');
+            var compoundElements = compoundCommand[0].Split(':');
+            
+            
             return false;
         }
     }

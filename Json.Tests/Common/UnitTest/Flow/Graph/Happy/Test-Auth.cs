@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var nullUser         = new PocStore(database, null))
             using (var unknownUser      = new PocStore(database, "unknown"))
             using (var mutateUser       = new PocStore(database, "user-mutate"))
-            using (var readOnlyUser     = new PocStore(database, "user-readOnly"))
+            using (var readOnlyUser     = new PocStore(database, "user-read"))
             {
                 Tasks tasks;
                 var newArticle = new Article{ id="new-article" };
@@ -119,7 +119,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 IsTrue(tasks.Success);
 
                 // test: allow read only
-                readOnlyUser.SetToken("user-readOnly-token");
+                readOnlyUser.SetToken("user-read-token");
                 tasks = new Tasks(readOnlyUser, newArticle);
                 sync = await readOnlyUser.TrySync();
                 AreEqual(1, sync.failed.Count);

@@ -1,4 +1,4 @@
 {
     "id": "user-mutate",
-    "roles": ["readOnly", "mutate"]
+    "roles": ["read", "mutate"]
 }

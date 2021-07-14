@@ -1,0 +1,5 @@
+{
+    "id": "user-read",
+    "passHash": "123",
+    "token": "user-read-token"
+}
