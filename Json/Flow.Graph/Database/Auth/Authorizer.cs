@@ -185,12 +185,8 @@ namespace Friflo.Json.Flow.Database.Auth
         
         public AuthorizeContainer (string container) {
             this.container = container;
-            create  = true;
-            update  = true;
-            delete  = true;
-            patch   = true;
-            read    = true;
-            query   = true;
+            create  = true; update  = true; delete  = true; patch   = true;
+            read    = true; query   = true;
         }
 
         public AuthorizeContainer (string container, ICollection<string> types) {
@@ -199,7 +195,9 @@ namespace Friflo.Json.Flow.Database.Auth
             update  = types.Contains("update");
             delete  = types.Contains("delete");
             patch   = types.Contains("patch");
-            
+            if (types.Contains("mutate")) {
+                create  = true; update  = true; delete  = true; patch   = true;
+            }
             read    = types.Contains("read");
             query   = types.Contains("query");
         }
