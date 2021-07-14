@@ -9,6 +9,10 @@ using Friflo.Json.Flow.Utils;
 
 namespace Friflo.Json.Flow.UserAuth
 {
+    /// <summary>
+    /// Multi thread safe implementation of <see cref="IUserAuth"/> using a <see cref="EntityDatabase"/> for
+    /// storing user tokens and roles.
+    /// </summary>
     public class UserAuth : IUserAuth, IDisposable
     {
         private readonly SharedPool<UserStore>   storePool;
