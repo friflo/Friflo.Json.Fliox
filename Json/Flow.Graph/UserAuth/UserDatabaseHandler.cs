@@ -20,14 +20,14 @@ namespace Friflo.Json.Flow.UserAuth
         public UserDatabaseHandler(EntityDatabase authDatabase) {
             storePool = new SharedPool<UserStore>      (() => new UserStore(authDatabase, UserStore.Server));
             authDatabase.authenticator = new UserDatabaseAuthenticator();
-            authDatabase.taskHandler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(AuthenticateUserHandler); 
+            authDatabase.taskHandler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(AuthenticateUser); 
         }
         
         public void Dispose() {
             storePool.Dispose();
         }
         
-        private async Task<AuthenticateUserResult> AuthenticateUserHandler (Command<AuthenticateUser> command) {
+        private async Task<AuthenticateUserResult> AuthenticateUser (Command<AuthenticateUser> command) {
             using (var pooledStore = storePool.Get()) {
                 var store = pooledStore.instance;
                 var validateToken   = command.Value;
