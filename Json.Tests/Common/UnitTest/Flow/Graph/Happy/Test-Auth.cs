@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     using (var userAuth         = new UserAuth      (userDatabase, UserStore.AuthUser))
                     using (                       new UserDatabase  (userDatabase, UserStore.Server))
                     using (var fileDatabase     = new MemoryDatabase()) {
-                        fileDatabase.authenticator = new UserAuthenticator(userAuth, new AuthorizeDeny());
+                        fileDatabase.authenticator = new UserAuthenticator(userAuth);
                         await AssertAuth(fileDatabase);
                         // assert access to user database with different users: "Server" & "AuthUser"
                         await AssertNotAuthorized   (serverStore);

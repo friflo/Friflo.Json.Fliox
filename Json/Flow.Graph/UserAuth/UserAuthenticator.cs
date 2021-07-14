@@ -53,14 +53,13 @@ namespace Friflo.Json.Flow.UserAuth
         private   readonly  IUserAuth                                               userAuth;
         private   readonly  ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
         private   readonly  ConcurrentDictionary<string,       ClientCredentials>   credByClient;
-        private   readonly  Authorizer                                              unknown;
+        private   readonly  Authorizer                                              unknown = new AuthorizeDeny();
         
         
-        public UserAuthenticator (IUserAuth userAuth, Authorizer unknown) {
+        public UserAuthenticator (IUserAuth userAuth) {
             this.userAuth   = userAuth;
             credByTarget    = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
             credByClient    = new ConcurrentDictionary<string,       ClientCredentials>();
-            this.unknown    = unknown ?? throw new NullReferenceException(nameof(unknown));
         }
         
         public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext)
