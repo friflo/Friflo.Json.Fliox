@@ -120,10 +120,22 @@ namespace Friflo.Json.Flow.Database.Auth
     
     public class ContainerAccess
     {
-        public          List<string>            access;
+        public          List<AccessType>            access;
     }
+    
+    
 
     // ReSharper disable InconsistentNaming
+    public enum AccessType {
+        create,
+        update,
+        delete,
+        patch, 
+        read,  
+        query, 
+        mutate,
+    }
+    
     public enum RightType {
         allow,
         tasks,
