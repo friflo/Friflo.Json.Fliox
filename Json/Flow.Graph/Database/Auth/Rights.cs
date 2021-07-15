@@ -37,7 +37,7 @@ namespace Friflo.Json.Flow.Database.Auth
     
     public class RightTasks : Right
     {
-        public          List<string>            tasks;
+        public          List<TaskType>          tasks;
         public override RightType               RightType => RightType.tasks;
         
         private static readonly Authorizer Read             = new AuthorizeTaskType(TaskType.read);
@@ -46,7 +46,6 @@ namespace Friflo.Json.Flow.Database.Auth
         private static readonly Authorizer Update           = new AuthorizeTaskType(TaskType.update);
         private static readonly Authorizer Patch            = new AuthorizeTaskType(TaskType.patch);
         private static readonly Authorizer Delete           = new AuthorizeTaskType(TaskType.delete);
-        private static readonly Authorizer Mutate           = new AuthorizeMutate();
         //
         private static readonly Authorizer Message          = new AuthorizeTaskType(TaskType.message);
         private static readonly Authorizer SubscribeChanges = new AuthorizeTaskType(TaskType.subscribeChanges);
@@ -63,21 +62,20 @@ namespace Friflo.Json.Flow.Database.Auth
             return new AuthorizeAny(list);
         }
         
-        private static Authorizer GetAuthorizer(string name) {
-            switch (name) {
-                case "read":                return Read;
-                case "query":               return Query;
-                case "create":              return Create;
-                case "update":              return Update;
-                case "patch":               return Patch;
-                case "delete":              return Delete;
-                case "mutate":              return Mutate;
+        private static Authorizer GetAuthorizer(TaskType taskType) {
+            switch (taskType) {
+                case TaskType.read:                return Read;
+                case TaskType.query:               return Query;
+                case TaskType.create:              return Create;
+                case TaskType.update:              return Update;
+                case TaskType.patch:               return Patch;
+                case TaskType.delete:              return Delete;
                 //
-                case "message":             return Message;
-                case "subscribeChanges":    return SubscribeChanges;
-                case "subscribeMessage":    return SubscribeMessage;
+                case TaskType.message:             return Message;
+                case TaskType.subscribeChanges:    return SubscribeChanges;
+                case TaskType.subscribeMessage:    return SubscribeMessage;
             }
-            throw new InvalidOperationException($"unknown authorization task name: {name}");
+            throw new InvalidOperationException($"unknown authorization taskType: {taskType}");
         }
 
     }
