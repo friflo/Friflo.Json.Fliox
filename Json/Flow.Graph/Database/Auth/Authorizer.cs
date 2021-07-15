@@ -42,11 +42,11 @@ namespace Friflo.Json.Flow.Database.Auth
             Roles = new ReadOnlyDictionary<string, Authorizer>(roles);
         }
         
-        public static bool GetAuthorizerByRole(string role, out Authorizer authorizer) {
-            if (Roles.TryGetValue(role, out authorizer)) {
+        public static bool GetAuthorizerByRight(string right, out Authorizer authorizer) {
+            if (Roles.TryGetValue(right, out authorizer)) {
                 return true;
             }
-            var compoundCommand = role.Split('/');
+            var compoundCommand = right.Split('/');
             var compoundElements = compoundCommand[0].Split(':');
             var name = compoundElements[0];
             switch (name) {
