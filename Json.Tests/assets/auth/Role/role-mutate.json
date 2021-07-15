@@ -2,7 +2,7 @@
     "id": "role-mutate",
     "rights": [
         { "type": "containers", "containers": {
-			"Article": { "access": ["read", "update"] }
-		}}
+            "Article": { "access": ["read", "update"] }
+        }}
     ]
 }

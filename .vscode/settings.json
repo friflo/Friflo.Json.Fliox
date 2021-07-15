@@ -14,5 +14,6 @@
     "cSpell.enableFiletypes": [
         "http"
     ],
-    "dotnet-test-explorer.testProjectPath": "Json.Tests"
+    "dotnet-test-explorer.testProjectPath": "Json.Tests",
+    "editor.detectIndentation": false
 }
