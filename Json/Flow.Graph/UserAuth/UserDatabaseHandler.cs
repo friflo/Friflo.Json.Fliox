@@ -34,15 +34,12 @@ namespace Friflo.Json.Flow.UserAuth
                 var clientId        = validateToken.clientId;
                 var readCredentials = store.credentials.Read();
                 var findCred        = readCredentials.Find(clientId);
-                var readRoles       = store.permissions.Read();
-                var findRole        = readRoles.Find(clientId);
                 
                 await store.Sync();
 
                 UserCredential  cred        = findCred.Result;
-                UserPermission  permission  = findRole.Result;
                 bool            isValid = cred != null && cred.token == validateToken.token;
-                return new AuthenticateUserResult { isValid = isValid, roles = permission?.roles };
+                return new AuthenticateUserResult { isValid = isValid };
             }
         }
     }

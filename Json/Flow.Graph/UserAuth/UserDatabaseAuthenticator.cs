@@ -23,9 +23,12 @@ namespace Friflo.Json.Flow.UserAuth
     public class UserDatabaseAuthenticator : Authenticator
     {
         private readonly Authorizer otherUser           = new AuthorizeDeny();
-        private readonly Authorizer authenticatorUser   = new AuthorizeMessage(nameof(AuthenticateUser));
-        private readonly Authorizer serverUser          = new AuthorizeAny(new [] {
+        private readonly Authorizer authenticatorUser   = new AuthorizeAny(new Authorizer[] {
+            new AuthorizeMessage(nameof(AuthenticateUser)),
             new AuthorizeContainer(nameof(UserPermission),  new []{"read"}),
+            new AuthorizeContainer(nameof(Role),            new []{"read"}),
+        });
+        private readonly Authorizer serverUser          = new AuthorizeAny(new Authorizer[] {
             new AuthorizeContainer(nameof(UserCredential),  new []{"read"})
         });
         

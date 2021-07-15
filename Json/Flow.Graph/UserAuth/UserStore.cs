@@ -23,6 +23,7 @@ namespace Friflo.Json.Flow.UserAuth
         
         public readonly EntitySet<UserPermission>   permissions;
         public readonly EntitySet<UserCredential>   credentials;
+        public readonly EntitySet<Role>             roles;
         
         public UserStore(EntityDatabase database, string clientId) : base(database, SyncTypeStore.Get(), clientId) {
             permissions = new EntitySet<UserPermission> (this);
@@ -46,6 +47,10 @@ namespace Friflo.Json.Flow.UserAuth
         public  string      token;
     }
     
+    public class Role : Entity {
+        public  string[]    rights;  // todo check using a type
+    }
+    
     // -------------------------------------- commands -------------------------------------
     public class AuthenticateUser {
         public          string  clientId;
@@ -56,6 +61,5 @@ namespace Friflo.Json.Flow.UserAuth
     
     public class AuthenticateUserResult {
         public          bool            isValid;
-        public          List<string>    roles;
     }
 }

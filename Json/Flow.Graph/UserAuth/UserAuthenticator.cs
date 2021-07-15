@@ -18,11 +18,9 @@ namespace Friflo.Json.Flow.UserAuth
 {
     internal class AuthCred {
         internal readonly   string          token;
-        internal readonly   List<string>    roles;
         
-        internal AuthCred (string token, List<string> roles) {
+        internal AuthCred (string token) {
             this.token  = token;
-            this.roles  = roles;
         }
     }
     
@@ -48,21 +46,29 @@ namespace Friflo.Json.Flow.UserAuth
     /// If authentication succeed it set the <see cref="AuthState.Authorizer"/> derived from the roles assigned to the user.
     /// If authentication fails the given default <see cref="Authorizer"/> is used for the user.
     /// </summary>
-    public class UserAuthenticator : Authenticator
+    public class UserAuthenticator : Authenticator, IDisposable
     {
         private   readonly  IUserAuth                                               userAuth;
+        private   readonly  UserStore                                               userStore;
         private   readonly  ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
         private   readonly  ConcurrentDictionary<string,       ClientCredentials>   credByClient;
         private   readonly  Authorizer                                              unknown;
+        private   readonly  ConcurrentDictionary<string,       Authorizer>          authorizerByRole;
         
         
-        public UserAuthenticator (IUserAuth userAuth, Authorizer unknown = null) {
-            this.userAuth   = userAuth;
-            credByTarget    = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
-            credByClient    = new ConcurrentDictionary<string,       ClientCredentials>();
-            this.unknown    = unknown ?? new AuthorizeDeny();
+        public UserAuthenticator (EntityDatabase userDatabase, IUserAuth userAuth, Authorizer unknown = null) {
+            this.userAuth       = userAuth;
+            userStore           = new UserStore(userDatabase, UserStore.AuthUser);
+            credByTarget        = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
+            credByClient        = new ConcurrentDictionary<string,       ClientCredentials>();
+            this.unknown        = unknown ?? new AuthorizeDeny();
+            authorizerByRole    = new ConcurrentDictionary<string,       Authorizer>();
         }
-        
+
+        public void Dispose() {
+            userStore.Dispose();
+        }
+
         public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext)
         {
             var clientId = syncRequest.clientId;
@@ -85,9 +91,9 @@ namespace Friflo.Json.Flow.UserAuth
                 var command = new AuthenticateUser { clientId = clientId, token = token };
                 var result  = await userAuth.AuthenticateUser(command);
                 
-                if (result.isValid && result.roles != null) {
-                    var authCred = new AuthCred(token, result.roles);
-                    var authorizer  = GetAuthorizer(authCred.roles);
+                if (result.isValid) {
+                    var authCred    = new AuthCred(token);
+                    var authorizer  = await GetAuthorizer(clientId);
                     credential      = new ClientCredentials (authCred.token, eventTarget, authorizer);
                     credByClient.TryAdd(clientId,    credential);
                     credByTarget.TryAdd(eventTarget, credential);
@@ -108,10 +114,19 @@ namespace Friflo.Json.Flow.UserAuth
             messageContext.authState.SetSuccess(credential.authorizer);
         }
         
-        protected virtual Authorizer GetAuthorizer(ICollection<string> roles) {
+        protected virtual async Task<Authorizer> GetAuthorizer(string clientId) {
+            var readPermission = userStore.permissions.Read().Find(clientId);
+            await userStore.Sync();
+            UserPermission permission = readPermission.Result;
+            var roles = permission.roles;
             if (roles == null || roles.Count == 0) {
                 return unknown;
             }
+            /* foreach (var role in roles) {
+                if (!authorizerByRole.TryGetValue(role, out var roleAuthorizer)) {
+                    userAuth.
+                }
+            } */
             var authorizers = new List<Authorizer>(roles.Count);
             foreach (var role in roles) {
                 if (!Authorizer.GetAuthorizerByRole(role, out Authorizer authorizer)) {
