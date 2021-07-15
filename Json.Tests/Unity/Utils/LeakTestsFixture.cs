@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using Friflo.Json.Burst;
@@ -60,9 +61,10 @@ namespace Friflo.Json.Tests.Unity.Utils
             
             if (DebugUtils.Allocations.Count > 0) {
                 StringBuilder msg = new StringBuilder();
-                foreach (var allocation in DebugUtils.Allocations) {
-                    StackFrame[] frames = allocation.Value.stackTrace.GetFrames();
-                    allocation.Value.stackTrace.GetFrames();
+                foreach (var pair in DebugUtils.Allocations) {
+                    var allocation = pair.Value;
+                    StackFrame[] frames = allocation.stackTrace.GetFrames();
+                    allocation.stackTrace.GetFrames();
                     /* int lastFrameIndex;
                     for (int i = frames.Length - 1; i > 0; i--) {
                         StackFrame frame = frames[i];
@@ -72,7 +74,19 @@ namespace Friflo.Json.Tests.Unity.Utils
                             lastFrameIndex = i;
                         }
                     } */
-
+                    var resource = allocation.resource;
+                    if (resource.GetType() == typeof(byte[])) {
+                        var bytes = (byte[])resource;
+                        var last = Array.IndexOf(bytes, (byte)0);
+                        if (last > 0) {
+                            string value = Encoding.UTF8.GetString(bytes, 0, last);
+                            msg.Append("Value: '");
+                            msg.Append(value);
+                            msg.Append("'\n");
+                        } else {
+                            msg.Append("Value: <empty>\n");
+                        }
+                    }
                     for (int n = 1; n <= frames.Length - currentFrameCount + 1; n++) {
                         StackFrame f = frames[n];
                         msg.Append("  ");
