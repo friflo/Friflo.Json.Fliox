@@ -6,6 +6,10 @@ using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnassignedField.Global
+// ReSharper disable CollectionNeverUpdated.Global
 namespace Friflo.Json.Flow.Database.Auth
 {
     [Fri.Discriminator("type")]
@@ -27,8 +31,8 @@ namespace Friflo.Json.Flow.Database.Auth
 
         public override string                  ToString() => allow.ToString();
 
-        private static readonly Authorizer Allow = new AuthorizeAllow();
-        private static readonly Authorizer Deny  = new AuthorizeDeny();
+        private  static readonly Authorizer Allow = new AuthorizeAllow();
+        internal static readonly Authorizer Deny  = new AuthorizeDeny();
         
         public override Authorizer ToAuthorizer() {
             return allow ? Allow : Deny;
@@ -107,7 +111,7 @@ namespace Friflo.Json.Flow.Database.Auth
             foreach (var (name, container) in containers) {
                 var access = container.access;
                 if (access == null || access.Count == 0) {
-                    list.Add(new AuthorizeContainer(name));
+                    list.Add(RightAllow.Deny);
                 } else {
                     list.Add(new AuthorizeContainer(name, access));
                 }
@@ -132,6 +136,7 @@ namespace Friflo.Json.Flow.Database.Auth
         read,  
         query, 
         mutate,
+        full
     }
     
     public enum RightType {

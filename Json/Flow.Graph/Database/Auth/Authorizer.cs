@@ -104,12 +104,6 @@ namespace Friflo.Json.Flow.Database.Auth
 
         public  override    string  ToString() => container;
         
-        public AuthorizeContainer (string container) {
-            this.container = container;
-            create  = true; update  = true; delete  = true; patch   = true;
-            read    = true; query   = true;
-        }
-
         public AuthorizeContainer (string container, ICollection<AccessType> types) {
             this.container = container;
             SetRoles(types, ref create, ref update, ref delete, ref patch, ref read, ref query);
@@ -129,6 +123,10 @@ namespace Friflo.Json.Flow.Database.Auth
                     case AccessType.query:   query   = true;   break;
                     case AccessType.mutate:
                         create  = true; update  = true; delete  = true; patch   = true;
+                        break;
+                    case AccessType.full:
+                        create  = true; update  = true; delete  = true; patch   = true;
+                        read    = true; query   = true;
                         break;
                     default:
                         throw new InvalidOperationException($"Invalid container role: {type}");
