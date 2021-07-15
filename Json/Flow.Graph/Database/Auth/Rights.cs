@@ -113,10 +113,12 @@ namespace Friflo.Json.Flow.Database.Auth
                 var name        = pair.Key;
                 var container   = pair.Value;
                 var access      = container.access;
-                if (access == null || access.Count == 0) {
-                    list.Add(RightAllow.Deny);
-                } else {
+                if (access != null && access.Count > 0) {
                     list.Add(new AuthorizeContainer(name, access));
+                }
+                var subscribeChanges   = container.subscribeChanges;
+                if (subscribeChanges != null && subscribeChanges.Count > 0) {
+                    list.Add(new AuthorizeSubscribeChanges(name, subscribeChanges));
                 }
             }
             return new AuthorizeAny(list);
@@ -125,7 +127,8 @@ namespace Friflo.Json.Flow.Database.Auth
     
     public class ContainerAccess
     {
-        public          List<AccessType>            access;
+        public          List<AccessType>        access;
+        public          List<Change>            subscribeChanges;
     }
     
     public class RightPredicates : Right

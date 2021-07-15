@@ -158,6 +158,44 @@ namespace Friflo.Json.Flow.Database.Auth
         }
     }
     
+    public class AuthorizeSubscribeChanges : Authorizer {
+        private readonly    string  container;
+        
+        private readonly    bool    create;
+        private readonly    bool    update;
+        private readonly    bool    delete;
+        private readonly    bool    patch;
+        
+        public  override    string  ToString() => container;
+        
+        public AuthorizeSubscribeChanges (string container, ICollection<Change> changes) {
+            this.container = container;
+            foreach (var change in changes) {
+                switch (change) {
+                    case Change.create: create = true; break;
+                    case Change.update: update = true; break;
+                    case Change.delete: delete = true; break;
+                    case Change.patch:  patch  = true; break;
+                }
+            }
+        }
+        
+        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+            if (!(task is SubscribeChanges subscribe))
+                return false;
+            var authorize = false;
+            foreach (var change in subscribe.changes) {
+                switch (change) {
+                    case Change.create:     authorize |= create;    break;
+                    case Change.update:     authorize |= update;    break;
+                    case Change.delete:     authorize |= delete;    break;
+                    case Change.patch:      authorize |= patch;     break;
+                }
+            }
+            return authorize;
+        }
+    }
+    
     public delegate bool AuthPredicate (DatabaseTask task, MessageContext messageContext);
     
     public class AuthorizePredicate : Authorizer {
