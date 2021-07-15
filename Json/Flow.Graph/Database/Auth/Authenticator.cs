@@ -23,7 +23,7 @@ namespace Friflo.Json.Flow.Database.Auth
         public abstract ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext);
         
         public void RegisterPredicate(string name, AuthPredicate predicate) {
-            var authorizer = new AuthorizePredicate (predicate);
+            var authorizer = new AuthorizePredicate (name, predicate);
             registeredPredicates.Add(name, authorizer);
         } 
     }

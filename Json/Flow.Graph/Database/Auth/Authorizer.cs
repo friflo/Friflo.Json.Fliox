@@ -64,8 +64,9 @@ namespace Friflo.Json.Flow.Database.Auth
     }
     
     public class AuthorizeTaskType : Authorizer {
-        private readonly TaskType type;
-        
+        private readonly TaskType   type;
+        public  override string     ToString() => type.ToString();
+
         public AuthorizeTaskType(TaskType type) {
             this.type = type;    
         }
@@ -160,10 +161,13 @@ namespace Friflo.Json.Flow.Database.Auth
     public delegate bool AuthPredicate (DatabaseTask task, MessageContext messageContext);
     
     public class AuthorizePredicate : Authorizer {
-        private readonly AuthPredicate predicate;
-        
-        public AuthorizePredicate (AuthPredicate predicate) {
-            this.predicate = predicate;    
+        private readonly string         name;
+        private readonly AuthPredicate  predicate;
+        public  override string         ToString() => name;
+
+        public AuthorizePredicate (string name, AuthPredicate predicate) {
+            this.name       = name;
+            this.predicate  = predicate;    
         }
             
         public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
