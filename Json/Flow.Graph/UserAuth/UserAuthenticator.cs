@@ -122,44 +122,47 @@ namespace Friflo.Json.Flow.UserAuth
             if (roles == null || roles.Count == 0) {
                 return unknown;
             }
+            await AddNewRoles(roles);
+            var authorizers = new List<Authorizer>(roles.Count);
+            foreach (var role in roles) {
+                if (!authorizerByRole.TryGetValue(role, out Authorizer authorizer)) {
+                    throw new InvalidOperationException($"unknown authorization role: {role}");
+                }
+                authorizers.Add(authorizer);
+            }
+            if (authorizers.Count == 1)
+                return authorizers[0];
+            var any = new AuthorizeAny(authorizers);
+            return any;
+        }
+        
+        private async Task AddNewRoles(List<string> roles) {
             var newRoles = new List<string>();
             foreach (var role in roles) {
                 if (!authorizerByRole.TryGetValue(role, out _)) {
                     newRoles.Add(role);
                 }
             }
-            if (newRoles.Count > 0) {
-                var readRoles = userStore.roles.Read().FindRange(newRoles);
-                await userStore.Sync();
-                foreach (var newRolePair in readRoles.Results) {
-                    Role newRole    = newRolePair.Value;
-                    var role        = newRolePair.Key;
-                    var authorizers = new List<Authorizer>(newRole.rights.Count);
-                    foreach (var right in newRole.rights) {
-                        if (!Authorizer.GetAuthorizerByRight(right, out Authorizer authorizer)) {
-                            throw new InvalidOperationException($"unknown authorization right: {right}");
-                        }
-                        authorizers.Add(authorizer);
-                    }
-                    if (authorizers.Count == 1) {
-                        authorizerByRole.TryAdd(role, authorizers[0]);
-                    } else {
-                        var any = new AuthorizeAny(authorizers);
-                        authorizerByRole.TryAdd(role, any);
-                    }
-                }
-            } {
-                var authorizers = new List<Authorizer>(roles.Count);
-                foreach (var role in roles) {
-                    if (!authorizerByRole.TryGetValue(role, out Authorizer authorizer)) {
-                        throw new InvalidOperationException($"unknown authorization role: {role}");
+            if (newRoles.Count == 0)
+                return;
+            var readRoles = userStore.roles.Read().FindRange(newRoles);
+            await userStore.Sync();
+            foreach (var newRolePair in readRoles.Results) {
+                Role newRole    = newRolePair.Value;
+                var role        = newRolePair.Key;
+                var authorizers = new List<Authorizer>(newRole.rights.Count);
+                foreach (var right in newRole.rights) {
+                    if (!Authorizer.GetAuthorizerByRight(right, out Authorizer authorizer)) {
+                        throw new InvalidOperationException($"unknown authorization right: {right}");
                     }
                     authorizers.Add(authorizer);
                 }
-                if (authorizers.Count == 1)
-                    return authorizers[0];
-                var any = new AuthorizeAny(authorizers);
-                return any;
+                if (authorizers.Count == 1) {
+                    authorizerByRole.TryAdd(role, authorizers[0]);
+                } else {
+                    var any = new AuthorizeAny(authorizers);
+                    authorizerByRole.TryAdd(role, any);
+                }
             }
         }
     }
