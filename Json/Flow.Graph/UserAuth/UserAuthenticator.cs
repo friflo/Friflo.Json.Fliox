@@ -122,20 +122,45 @@ namespace Friflo.Json.Flow.UserAuth
             if (roles == null || roles.Count == 0) {
                 return unknown;
             }
-            /* foreach (var role in roles) {
-                if (!authorizerByRole.TryGetValue(role, out var roleAuthorizer)) {
-                    userAuth.
-                }
-            } */
-            var authorizers = new List<Authorizer>(roles.Count);
+            var newRoles = new List<string>();
             foreach (var role in roles) {
-                if (!Authorizer.GetAuthorizerByRole(role, out Authorizer authorizer)) {
-                    throw new InvalidOperationException($"unknown authorization role: {role}");
+                if (!authorizerByRole.TryGetValue(role, out _)) {
+                    newRoles.Add(role);
                 }
-                authorizers.Add(authorizer);
             }
-            var any = new AuthorizeAny(authorizers);
-            return any;
+            if (newRoles.Count > 0) {
+                var readRoles = userStore.roles.Read().FindRange(newRoles);
+                await userStore.Sync();
+                foreach (var newRolePair in readRoles.Results) {
+                    Role newRole    = newRolePair.Value;
+                    var role        = newRolePair.Key;
+                    var authorizers = new List<Authorizer>(newRole.rights.Count);
+                    foreach (var right in newRole.rights) {
+                        if (!Authorizer.GetAuthorizerByRole(right, out Authorizer authorizer)) {
+                            throw new InvalidOperationException($"unknown authorization role: {role}");
+                        }
+                        authorizers.Add(authorizer);
+                    }
+                    if (authorizers.Count == 1) {
+                        authorizerByRole.TryAdd(role, authorizers[0]);
+                    } else {
+                        var any = new AuthorizeAny(authorizers);
+                        authorizerByRole.TryAdd(role, any);
+                    }
+                }
+            } {
+                var authorizers = new List<Authorizer>(roles.Count);
+                foreach (var role in roles) {
+                    if (!authorizerByRole.TryGetValue(role, out Authorizer authorizer)) {
+                        throw new InvalidOperationException($"unknown authorization role: {role}");
+                    }
+                    authorizers.Add(authorizer);
+                }
+                if (authorizers.Count == 1)
+                    return authorizers[0];
+                var any = new AuthorizeAny(authorizers);
+                return any;
+            }
         }
     }
 }

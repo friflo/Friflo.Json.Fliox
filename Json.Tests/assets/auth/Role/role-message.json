@@ -1,0 +1,4 @@
+{
+    "id": "role-message",
+    "rights": ["message:test-message"]
+}

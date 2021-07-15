@@ -1,0 +1,4 @@
+{
+    "id": "role-read",
+    "rights": ["read"]
+}

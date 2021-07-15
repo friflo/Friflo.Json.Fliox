@@ -1,4 +1,4 @@
 {
     "id": "user-read",
-    "roles": ["read"]
+    "roles": ["role-read"]
 }

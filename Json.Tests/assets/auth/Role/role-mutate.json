@@ -1,0 +1,4 @@
+{
+    "id": "role-mutate",
+    "rights": ["container:Article/read,update"]
+}
