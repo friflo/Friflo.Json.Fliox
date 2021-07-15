@@ -120,9 +120,8 @@ namespace Friflo.Json.Flow.UserAuth
             await AddNewRoles(roles);
             var authorizers = new List<Authorizer>(roles.Count);
             foreach (var role in roles) {
-                if (!authorizerByRole.TryGetValue(role, out Authorizer authorizer)) {
-                    throw new InvalidOperationException($"unknown authorization role: {role}");
-                }
+                // existence is checked already in AddNewRoles()
+                authorizerByRole.TryGetValue(role, out Authorizer authorizer);
                 authorizers.Add(authorizer);
             }
             if (authorizers.Count == 1)
@@ -143,8 +142,10 @@ namespace Friflo.Json.Flow.UserAuth
             var readRoles = userStore.roles.Read().FindRange(newRoles);
             await userStore.Sync();
             foreach (var newRolePair in readRoles.Results) {
-                Role newRole    = newRolePair.Value;
                 var role        = newRolePair.Key;
+                Role newRole    = newRolePair.Value;
+                if (newRole == null)
+                    throw new InvalidOperationException($"authorization role not found: '{role}'");
                 var authorizers = new List<Authorizer>(newRole.rights.Count);
                 foreach (var right in newRole.rights) {
                     var authorizer = right.ToAuthorizer();
