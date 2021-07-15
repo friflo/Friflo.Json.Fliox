@@ -77,15 +77,24 @@ namespace Friflo.Json.Flow.Database.Auth
     
     public class AuthorizeMessage : Authorizer {
         private readonly    string  messageName;
-        public  override    string  ToString() => messageName;
+        private readonly    bool    prefix;
+        public  override    string  ToString() => prefix ? $"{messageName}*" : messageName;
 
         public AuthorizeMessage (string message) {
+            if (message.EndsWith("*")) {
+                prefix = true;
+                messageName = message.Substring(0, message.Length - 1);
+                return;
+            }
             messageName = message;
         }
         
         public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
             if (task is SendMessage message) {
-                return messageName == message.name;
+                if (prefix) {
+                    return message.name.StartsWith(messageName);
+                }
+                return message.name == messageName;
             }
             return false;
         }
