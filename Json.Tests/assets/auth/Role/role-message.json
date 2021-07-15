@@ -1,7 +1,7 @@
 {
     "id": "role-message",
     "rights": [
-        { "type": "messages",           "messages":   ["test-mess*"] },
-        { "type": "subscribeMessages",  "messages":   ["test-mess*"] }
+        { "type": "messages",           "names":   ["test-mess*"] },
+        { "type": "subscribeMessages",  "names":   ["test-mess*"] }
     ]
 }

@@ -88,15 +88,15 @@ namespace Friflo.Json.Flow.Database.Auth
     
     public class RightMessages : Right
     {
-        public          List<string>            messages;
+        public          List<string>            names;
         public override RightType               RightType => RightType.messages;
         
         public override Authorizer ToAuthorizer() {
-            if (messages.Count == 1) {
-                return new AuthorizeMessage(messages[0]);
+            if (names.Count == 1) {
+                return new AuthorizeMessage(names[0]);
             }
-            var list = new List<Authorizer>(messages.Count);
-            foreach (var message in messages) {
+            var list = new List<Authorizer>(names.Count);
+            foreach (var message in names) {
                 list.Add(new AuthorizeMessage(message));
             }
             return new AuthorizeAny(list);
@@ -105,15 +105,15 @@ namespace Friflo.Json.Flow.Database.Auth
     
     public class RightSubscribeMessages : Right
     {
-        public          List<string>            messages;
+        public          List<string>            names;
         public override RightType               RightType => RightType.subscribeMessages;
         
         public override Authorizer ToAuthorizer() {
-            if (messages.Count == 1) {
-                return new AuthorizeSubscribeMessage(messages[0]);
+            if (names.Count == 1) {
+                return new AuthorizeSubscribeMessage(names[0]);
             }
-            var list = new List<Authorizer>(messages.Count);
-            foreach (var message in messages) {
+            var list = new List<Authorizer>(names.Count);
+            foreach (var message in names) {
                 list.Add(new AuthorizeSubscribeMessage(message));
             }
             return new AuthorizeAny(list);
