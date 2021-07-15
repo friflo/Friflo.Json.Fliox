@@ -45,7 +45,8 @@ namespace Friflo.Json.Flow.UserAuth
                 messageContext.authState.SetSuccess(rights);
                 return;
             }
-            messageContext.authState.SetSuccess(UnknownRights);
+            // authState.SetFailed() is not called to avoid giving a hint for a valid clientId (user)
+            messageContext.authState.SetSuccess(UnknownRights); 
         }
     }
 }
