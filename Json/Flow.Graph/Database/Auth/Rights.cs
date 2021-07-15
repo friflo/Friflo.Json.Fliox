@@ -17,6 +17,7 @@ namespace Friflo.Json.Flow.Database.Auth
     [Fri.Polymorph(typeof(RightTasks),      Discriminant = "tasks")]
     [Fri.Polymorph(typeof(RightMessages),   Discriminant = "messages")]
     [Fri.Polymorph(typeof(RightContainers), Discriminant = "containers")]
+    [Fri.Polymorph(typeof(RightPredicates), Discriminant = "predicates")]
     public abstract class Right {
         
         public abstract RightType       RightType { get; }
@@ -125,7 +126,16 @@ namespace Friflo.Json.Flow.Database.Auth
         public          List<AccessType>            access;
     }
     
-    
+    public class RightPredicates : Right
+    {
+        public          List<string>            predicates;
+        public override RightType               RightType => RightType.predicates;
+        
+        public override Authorizer ToAuthorizer() {
+            throw new NotImplementedException();
+        }
+    }
+
 
     // ReSharper disable InconsistentNaming
     public enum AccessType {
@@ -144,5 +154,6 @@ namespace Friflo.Json.Flow.Database.Auth
         tasks,
         messages,
         containers,
+        predicates
     }
 }

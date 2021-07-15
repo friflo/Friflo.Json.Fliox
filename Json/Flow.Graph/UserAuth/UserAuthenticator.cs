@@ -148,7 +148,12 @@ namespace Friflo.Json.Flow.UserAuth
                     throw new InvalidOperationException($"authorization role not found: '{role}'");
                 var authorizers = new List<Authorizer>(newRole.rights.Count);
                 foreach (var right in newRole.rights) {
-                    var authorizer = right.ToAuthorizer();
+                    Authorizer authorizer;
+                    if (right is RightPredicates predicates) {
+                        authorizer = GetPredicatesAuthorizer(predicates);
+                    } else {
+                        authorizer = right.ToAuthorizer();
+                    }
                     authorizers.Add(authorizer);
                 }
                 if (authorizers.Count == 1) {
@@ -158,6 +163,20 @@ namespace Friflo.Json.Flow.UserAuth
                     authorizerByRole.TryAdd(role, any);
                 }
             }
+        }
+        
+        private Authorizer GetPredicatesAuthorizer(RightPredicates right) {
+            var authorizers = new List<Authorizer>(right.predicates.Count);
+            foreach (var predicateName in right.predicates) {
+                if (!registeredPredicates.TryGetValue(predicateName, out var predicate)) {
+                    throw new InvalidOperationException($"unknown authorization predicate: {predicateName}");
+                }
+                authorizers.Add(predicate);
+            }
+            if (authorizers.Count == 1) {
+                return authorizers[0];
+            }
+            return new AuthorizeAny(authorizers);
         }
     }
 }

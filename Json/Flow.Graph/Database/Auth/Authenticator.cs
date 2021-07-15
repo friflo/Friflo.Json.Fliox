@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Sync;
 
@@ -17,7 +18,14 @@ namespace Friflo.Json.Flow.Database.Auth
     /// </summary>
     public abstract class Authenticator
     {
+        protected readonly Dictionary<string, AuthorizePredicate> registeredPredicates = new Dictionary<string, AuthorizePredicate>();
+            
         public abstract ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext);
+        
+        public void RegisterPredicate(string name, AuthPredicate predicate) {
+            var authorizer = new AuthorizePredicate (predicate);
+            registeredPredicates.Add(name, authorizer);
+        } 
     }
     
     public class AuthenticateNone : Authenticator

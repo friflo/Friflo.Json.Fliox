@@ -157,4 +157,18 @@ namespace Friflo.Json.Flow.Database.Auth
         }
     }
     
+    public delegate bool AuthPredicate (DatabaseTask task, MessageContext messageContext);
+    
+    public class AuthorizePredicate : Authorizer {
+        private readonly AuthPredicate predicate;
+        
+        public AuthorizePredicate (AuthPredicate predicate) {
+            this.predicate = predicate;    
+        }
+            
+        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+            return predicate(task, messageContext);
+        }
+    }
+    
 }

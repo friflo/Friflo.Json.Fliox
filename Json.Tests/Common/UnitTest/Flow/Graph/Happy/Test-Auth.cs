@@ -23,6 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     using (var userStore        = new UserStore(userDatabase, UserStore.AuthUser))
                     using (var database         = new MemoryDatabase()) {
                         database.authenticator  = new UserAuthenticator(userStore, userStore);
+                        database.authenticator.RegisterPredicate("testPredicate", (task, context) => false);
                         await AssertAuth(database);
                     }
                 });
