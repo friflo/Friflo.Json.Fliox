@@ -2,6 +2,6 @@
     "id": "role-read",
     "rights": [
         { "type": "tasks", 		"tasks":      ["read"] },
-        { "type": "predicates", "predicates": ["testPredicate"] }
+        { "type": "predicates", "predicates": ["TestPredicate"] }
     ]
 }

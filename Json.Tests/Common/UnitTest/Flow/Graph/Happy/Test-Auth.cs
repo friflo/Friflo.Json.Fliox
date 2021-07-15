@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Utils;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.UserAuth;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
@@ -23,11 +24,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     using (var userStore        = new UserStore(userDatabase, UserStore.AuthUser))
                     using (var database         = new MemoryDatabase()) {
                         database.authenticator  = new UserAuthenticator(userStore, userStore);
-                        database.authenticator.RegisterPredicate("testPredicate", (task, context) => false);
+                        database.authenticator.RegisterPredicate(nameof(TestPredicate), TestPredicate);
                         await AssertAuth(database);
                     }
                 });
             }
+        }
+        
+        private static bool TestPredicate (DatabaseTask task, MessageContext messageContext) {
+            return false;
         }
         
         [Test] public static void TestAuthAccess () {
