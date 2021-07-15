@@ -109,8 +109,10 @@ namespace Friflo.Json.Flow.Database.Auth
         
         public override Authorizer ToAuthorizer() {
             var list = new List<Authorizer>(containers.Count);
-            foreach (var (name, container) in containers) {
-                var access = container.access;
+            foreach (var pair in containers) {
+                var name        = pair.Key;
+                var container   = pair.Value;
+                var access      = container.access;
                 if (access == null || access.Count == 0) {
                     list.Add(RightAllow.Deny);
                 } else {
