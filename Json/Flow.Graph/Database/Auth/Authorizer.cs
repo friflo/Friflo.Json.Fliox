@@ -183,6 +183,8 @@ namespace Friflo.Json.Flow.Database.Auth
         public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
             if (!(task is SubscribeChanges subscribe))
                 return false;
+            if (subscribe.container != container)
+                return false;
             var authorize = false;
             foreach (var change in subscribe.changes) {
                 switch (change) {
