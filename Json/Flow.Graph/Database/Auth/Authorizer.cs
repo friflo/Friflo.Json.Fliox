@@ -91,13 +91,36 @@ namespace Friflo.Json.Flow.Database.Auth
         }
         
         public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
-            if (task is SendMessage message) {
-                if (prefix) {
-                    return message.name.StartsWith(messageName);
-                }
-                return message.name == messageName;
+            if (!(task is SendMessage message))
+                return false;
+            if (prefix) {
+                return message.name.StartsWith(messageName);
             }
-            return false;
+            return message.name == messageName;
+        }
+    }
+    
+    public class AuthorizeSubscribeMessage : Authorizer {
+        private readonly    string  messageName;
+        private readonly    bool    prefix;
+        public  override    string  ToString() => prefix ? $"{messageName}*" : messageName;
+
+        public AuthorizeSubscribeMessage (string message) {
+            if (message.EndsWith("*")) {
+                prefix = true;
+                messageName = message.Substring(0, message.Length - 1);
+                return;
+            }
+            messageName = message;
+        }
+        
+        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+            if (!(task is SubscribeMessage subscribe))
+                return false;
+            if (prefix) {
+                return subscribe.name.StartsWith(messageName);
+            }
+            return subscribe.name == messageName;
         }
     }
     
@@ -121,7 +144,8 @@ namespace Friflo.Json.Flow.Database.Auth
         
         private static void SetRoles (ICollection<AccessType> types,
                 ref bool create, ref bool update, ref bool delete, ref bool patch,
-                ref bool read,   ref bool query) {
+                ref bool read,   ref bool query)
+        {
             foreach (var type in types) {
                 switch (type) {
                     case AccessType.create:  create  = true;   break;

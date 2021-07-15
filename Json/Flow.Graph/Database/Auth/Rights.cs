@@ -13,11 +13,12 @@ using Friflo.Json.Flow.Sync;
 namespace Friflo.Json.Flow.Database.Auth
 {
     [Fri.Discriminator("type")]
-    [Fri.Polymorph(typeof(RightAllow),      Discriminant = "allow")]
-    [Fri.Polymorph(typeof(RightTasks),      Discriminant = "tasks")]
-    [Fri.Polymorph(typeof(RightMessages),   Discriminant = "messages")]
-    [Fri.Polymorph(typeof(RightContainers), Discriminant = "containers")]
-    [Fri.Polymorph(typeof(RightPredicates), Discriminant = "predicates")]
+    [Fri.Polymorph(typeof(RightAllow),              Discriminant = "allow")]
+    [Fri.Polymorph(typeof(RightTasks),              Discriminant = "tasks")]
+    [Fri.Polymorph(typeof(RightMessages),           Discriminant = "messages")]
+    [Fri.Polymorph(typeof(RightSubscribeMessages),  Discriminant = "subscribeMessages")]
+    [Fri.Polymorph(typeof(RightContainers),         Discriminant = "containers")]
+    [Fri.Polymorph(typeof(RightPredicates),         Discriminant = "predicates")]
     public abstract class Right {
         
         public abstract RightType       RightType { get; }
@@ -102,6 +103,23 @@ namespace Friflo.Json.Flow.Database.Auth
         }
     }
     
+    public class RightSubscribeMessages : Right
+    {
+        public          List<string>            messages;
+        public override RightType               RightType => RightType.subscribeMessages;
+        
+        public override Authorizer ToAuthorizer() {
+            if (messages.Count == 1) {
+                return new AuthorizeSubscribeMessage(messages[0]);
+            }
+            var list = new List<Authorizer>(messages.Count);
+            foreach (var message in messages) {
+                list.Add(new AuthorizeSubscribeMessage(message));
+            }
+            return new AuthorizeAny(list);
+        }
+    }
+    
     public class RightContainers : Right
     {
         public          Dictionary<string, ContainerAccess> containers;
@@ -158,6 +176,7 @@ namespace Friflo.Json.Flow.Database.Auth
         allow,
         tasks,
         messages,
+        subscribeMessages,
         containers,
         predicates
     }
