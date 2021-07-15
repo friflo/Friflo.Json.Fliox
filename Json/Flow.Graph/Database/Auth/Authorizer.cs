@@ -185,13 +185,13 @@ namespace Friflo.Json.Flow.Database.Auth
                 return false;
             if (subscribe.container != container)
                 return false;
-            var authorize = false;
+            var authorize = true;
             foreach (var change in subscribe.changes) {
                 switch (change) {
-                    case Change.create:     authorize |= create;    break;
-                    case Change.update:     authorize |= update;    break;
-                    case Change.delete:     authorize |= delete;    break;
-                    case Change.patch:      authorize |= patch;     break;
+                    case Change.create:     authorize &= create;    break;
+                    case Change.update:     authorize &= update;    break;
+                    case Change.delete:     authorize &= delete;    break;
+                    case Change.patch:      authorize &= patch;     break;
                 }
             }
             return authorize;
