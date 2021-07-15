@@ -63,6 +63,24 @@ namespace Friflo.Json.Flow.UserAuth
             this.unknown        = unknown ?? new AuthorizeDeny();
             authorizerByRole    = new ConcurrentDictionary<string,       Authorizer>();
         }
+        
+        public async Task ValidateRoles() {
+            var queryRoles = userStore.roles.QueryAll();
+            await userStore.TrySync();
+            Dictionary<string, Role> roles = queryRoles.Results;
+            foreach (var pair in roles) {
+                var role     = pair.Value;
+                foreach (var right in role.rights) {
+                    if (!(right is RightPredicates rightPredicates))
+                        break;
+                    foreach (var predicateName in rightPredicates.predicates) {
+                        if (!registeredPredicates.ContainsKey(predicateName)) {
+                            throw new InvalidOperationException($"unknown authorization predicate: {predicateName}");
+                        }
+                    }
+                }
+            }
+        }
 
         public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext)
         {
