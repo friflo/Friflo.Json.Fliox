@@ -46,27 +46,22 @@ namespace Friflo.Json.Flow.UserAuth
     /// If authentication succeed it set the <see cref="AuthState.Authorizer"/> derived from the roles assigned to the user.
     /// If authentication fails the given default <see cref="Authorizer"/> is used for the user.
     /// </summary>
-    public class UserAuthenticator : Authenticator, IDisposable
+    public class UserAuthenticator : Authenticator
     {
-        private   readonly  IUserAuth                                               userAuth;
         private   readonly  UserStore                                               userStore;
+        private   readonly  IUserAuth                                               userAuth;
         private   readonly  ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
         private   readonly  ConcurrentDictionary<string,       ClientCredentials>   credByClient;
         private   readonly  Authorizer                                              unknown;
         private   readonly  ConcurrentDictionary<string,       Authorizer>          authorizerByRole;
-        
-        
-        public UserAuthenticator (EntityDatabase userDatabase, IUserAuth userAuth, Authorizer unknown = null) {
+
+        public UserAuthenticator (UserStore userStore, IUserAuth userAuth, Authorizer unknown = null) {
+            this.userStore      = userStore;
             this.userAuth       = userAuth;
-            userStore           = new UserStore(userDatabase, UserStore.AuthUser);
             credByTarget        = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
             credByClient        = new ConcurrentDictionary<string,       ClientCredentials>();
             this.unknown        = unknown ?? new AuthorizeDeny();
             authorizerByRole    = new ConcurrentDictionary<string,       Authorizer>();
-        }
-
-        public void Dispose() {
-            userStore.Dispose();
         }
 
         public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext)

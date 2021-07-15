@@ -19,11 +19,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/auth"))
-                    using (var userAuth         = new UserAuth              (userDatabase))
                     using (                       new UserDatabaseHandler   (userDatabase))
-                    using (var authenticator    = new UserAuthenticator     (userDatabase, userAuth))
+                    using (var userStore        = new UserStore(userDatabase, UserStore.AuthUser))
                     using (var database         = new MemoryDatabase()) {
-                        database.authenticator  = authenticator;
+                        database.authenticator  = new UserAuthenticator(userStore, userStore);
                         await AssertAuth(database);
                     }
                 });
