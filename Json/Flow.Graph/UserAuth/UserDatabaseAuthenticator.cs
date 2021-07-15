@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Auth;
@@ -10,6 +11,7 @@ using Friflo.Json.Flow.Sync;
     using ValueTask = System.Threading.Tasks.Task;
 #endif
 
+// ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Flow.UserAuth
 {
     /// <summary>
@@ -21,31 +23,29 @@ namespace Friflo.Json.Flow.UserAuth
     /// </summary>
     public class UserDatabaseAuthenticator : Authenticator
     {
-        private readonly Authorizer otherUser           = new AuthorizeDeny();
-        private readonly Authorizer authenticatorUser   = new AuthorizeAny(new Authorizer[] {
+        public  readonly    Dictionary<string, Authorizer>  userRights = new Dictionary<string, Authorizer> {
+            { UserStore.AuthUser,   AuthUserRights },
+            { UserStore.Server,     ServerRights   },
+        };
+            
+        public static readonly    Authorizer   UnknownRights    = new AuthorizeDeny();
+        public static readonly    Authorizer   AuthUserRights   = new AuthorizeAny(new Authorizer[] {
             new AuthorizeMessage(nameof(AuthenticateUser)),
             new AuthorizeContainer(nameof(UserPermission),  new []{AccessType.read}),
             new AuthorizeContainer(nameof(Role),            new []{AccessType.read, AccessType.query}),
         });
-        private readonly Authorizer serverUser          = new AuthorizeAny(new Authorizer[] {
+        public static readonly    Authorizer   ServerRights     = new AuthorizeAny(new Authorizer[] {
             new AuthorizeContainer(nameof(UserCredential),  new []{AccessType.read})
         });
         
 #pragma warning disable 1998   // This async method lacks 'await' operators and will run synchronously. ....
         public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
             var clientId = syncRequest.clientId;
-            switch (clientId) {
-                case UserStore.AuthUser: 
-                    messageContext.authState.SetSuccess(authenticatorUser);
-                    break;
-                case UserStore.Server: 
-                    // todo validate with secret
-                    messageContext.authState.SetSuccess(serverUser);
-                    break;
-                default:
-                    messageContext.authState.SetSuccess(otherUser);
-                    break;
+            if (userRights.TryGetValue(clientId, out Authorizer rights)) {
+                messageContext.authState.SetSuccess(rights);
+                return;
             }
+            messageContext.authState.SetSuccess(UnknownRights);
         }
     }
 }
