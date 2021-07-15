@@ -18,58 +18,6 @@ namespace Friflo.Json.Flow.Database.Auth
     public abstract class Authorizer
     {
         public abstract bool Authorize(DatabaseTask task, MessageContext messageContext);
-        
-        private static readonly  ReadOnlyDictionary<string, Authorizer> Roles;
-        
-        static Authorizer() {
-            var roles = new Dictionary<string, Authorizer>();
-            //
-            roles.TryAdd("allow",             new AuthorizeAllow());
-            roles.TryAdd("deny",              new AuthorizeDeny());
-            roles.TryAdd("mutate",            new AuthorizeMutate());
-            //
-            roles.TryAdd("read",              new AuthorizeTaskType(TaskType.read));
-            roles.TryAdd("query",             new AuthorizeTaskType(TaskType.query));
-            roles.TryAdd("create",            new AuthorizeTaskType(TaskType.create));
-            roles.TryAdd("update",            new AuthorizeTaskType(TaskType.update));
-            roles.TryAdd("patch",             new AuthorizeTaskType(TaskType.patch));
-            roles.TryAdd("delete",            new AuthorizeTaskType(TaskType.delete));
-            roles.TryAdd("message",           new AuthorizeTaskType(TaskType.message));
-            //
-            roles.TryAdd("subscribeChanges",  new AuthorizeTaskType(TaskType.subscribeChanges));
-            roles.TryAdd("subscribeMessage",  new AuthorizeTaskType(TaskType.subscribeMessage));
-            
-            Roles = new ReadOnlyDictionary<string, Authorizer>(roles);
-        }
-        
-        public static bool GetAuthorizerByRight(string right, out Authorizer authorizer) {
-            if (Roles.TryGetValue(right, out authorizer)) {
-                return true;
-            }
-            var compoundCommand = right.Split('/');
-            var compoundElements = compoundCommand[0].Split(':');
-            var name = compoundElements[0];
-            switch (name) {
-                case "message":
-                    if (compoundElements.Length < 2)
-                        return false;
-                    var messageName = compoundElements[1];
-                    authorizer = new AuthorizeMessage(messageName);
-                    return true;
-                case "container":
-                    if (compoundElements.Length < 2)
-                        return false;
-                    var container   = compoundElements[1];
-                    if (compoundCommand.Length < 2) {
-                        authorizer = new AuthorizeContainer(container);
-                        return true;
-                    }
-                    var types       = compoundCommand[1].Split(',');
-                    authorizer      = new AuthorizeContainer(container, types);
-                    return true;
-            }
-            return false;
-        }
     }
     
     public class AuthorizeAllow : Authorizer {

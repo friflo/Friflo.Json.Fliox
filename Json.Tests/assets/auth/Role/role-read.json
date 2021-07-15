@@ -1,4 +1,6 @@
 {
     "id": "role-read",
-    "rights": ["read"]
+    "rights": [
+        { "type": "tasks", 		"tasks":      ["read"] }
+    ]
 }

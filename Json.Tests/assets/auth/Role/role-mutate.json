@@ -1,4 +1,8 @@
 {
     "id": "role-mutate",
-    "rights": ["container:Article/read,update"]
+    "rights": [
+        { "type": "containers", "containers": {
+			"Article": { "access": ["read", "update"] }
+		}}
+    ]
 }

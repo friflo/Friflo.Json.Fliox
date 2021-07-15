@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Database.Auth;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Sync;
 
@@ -49,7 +50,7 @@ namespace Friflo.Json.Flow.UserAuth
     }
     
     public class Role : Entity {
-        public  List<string>    rights;  // todo check using a type
+        public  List<Right>     rights;
     }
     
     // -------------------------------------- commands -------------------------------------

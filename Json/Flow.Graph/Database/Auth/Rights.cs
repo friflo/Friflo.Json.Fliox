@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Database.Auth
     public abstract class Right {
         
         public abstract RightType       RightType { get; }
-        
+
         public abstract Authorizer      ToAuthorizer();
     }
     
@@ -24,7 +24,9 @@ namespace Friflo.Json.Flow.Database.Auth
     {
         public          bool                    allow;
         public override RightType               RightType => RightType.allow;
-        
+
+        public override string                  ToString() => allow.ToString();
+
         private static readonly Authorizer Allow = new AuthorizeAllow();
         private static readonly Authorizer Deny  = new AuthorizeDeny();
         
@@ -38,14 +40,17 @@ namespace Friflo.Json.Flow.Database.Auth
         public          List<string>            tasks;
         public override RightType               RightType => RightType.tasks;
         
-        private static readonly Authorizer Read     = new AuthorizeTaskType(TaskType.read);
-        private static readonly Authorizer Query    = new AuthorizeTaskType(TaskType.query);
-        private static readonly Authorizer Create   = new AuthorizeTaskType(TaskType.create);
-        private static readonly Authorizer Update   = new AuthorizeTaskType(TaskType.update);
-        private static readonly Authorizer Patch    = new AuthorizeTaskType(TaskType.patch);
-        private static readonly Authorizer Delete   = new AuthorizeTaskType(TaskType.delete);
-        private static readonly Authorizer Mutate   = new AuthorizeMutate();
-        private static readonly Authorizer Message  = new AuthorizeTaskType(TaskType.message);
+        private static readonly Authorizer Read             = new AuthorizeTaskType(TaskType.read);
+        private static readonly Authorizer Query            = new AuthorizeTaskType(TaskType.query);
+        private static readonly Authorizer Create           = new AuthorizeTaskType(TaskType.create);
+        private static readonly Authorizer Update           = new AuthorizeTaskType(TaskType.update);
+        private static readonly Authorizer Patch            = new AuthorizeTaskType(TaskType.patch);
+        private static readonly Authorizer Delete           = new AuthorizeTaskType(TaskType.delete);
+        private static readonly Authorizer Mutate           = new AuthorizeMutate();
+        //
+        private static readonly Authorizer Message          = new AuthorizeTaskType(TaskType.message);
+        private static readonly Authorizer SubscribeChanges = new AuthorizeTaskType(TaskType.subscribeChanges);
+        private static readonly Authorizer SubscribeMessage = new AuthorizeTaskType(TaskType.subscribeMessage);
         
         public override Authorizer ToAuthorizer() {
             if (tasks.Count == 1) {
@@ -60,14 +65,17 @@ namespace Friflo.Json.Flow.Database.Auth
         
         private static Authorizer GetAuthorizer(string name) {
             switch (name) {
-                case "read":    return Read;
-                case "query":   return Query;
-                case "create":  return Create;
-                case "update":  return Update;
-                case "patch":   return Patch;
-                case "delete":  return Delete;
-                case "mutate":  return Mutate;
-                case "message": return Message;
+                case "read":                return Read;
+                case "query":               return Query;
+                case "create":              return Create;
+                case "update":              return Update;
+                case "patch":               return Patch;
+                case "delete":              return Delete;
+                case "mutate":              return Mutate;
+                //
+                case "message":             return Message;
+                case "subscribeChanges":    return SubscribeChanges;
+                case "subscribeMessage":    return SubscribeMessage;
             }
             throw new InvalidOperationException($"unknown authorization task name: {name}");
         }

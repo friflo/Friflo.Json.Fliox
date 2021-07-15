@@ -1,4 +1,6 @@
 {
     "id": "role-message",
-    "rights": ["message:test-message"]
+    "rights": [
+        { "type": "messages", 	"messages":   ["test-message"] }
+    ]
 }
