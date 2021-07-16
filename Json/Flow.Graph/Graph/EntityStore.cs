@@ -150,8 +150,8 @@ namespace Friflo.Json.Flow.Graph
         ///   <see cref="SubscriptionProcessor.ProcessEvent"/> before processing it.
         /// </para>
         /// </summary>
-        public void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor) {
-            _intern.subscriptionProcessor = subscriptionProcessor;
+        public void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor = null) {
+            _intern.subscriptionProcessor = subscriptionProcessor ?? new SubscriptionProcessor(this);
         }
         
         /// <summary>

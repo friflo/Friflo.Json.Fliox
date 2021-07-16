@@ -92,7 +92,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static async Task AssertNotAuthenticated(EntityDatabase database) {
             var newArticle = new Article{ id="new-article" };
             using (var nullUser         = new PocStore(database, null)) {
-                nullUser.SetSubscriptionProcessor(new SubscriptionProcessor(nullUser));
+                nullUser.SetSubscriptionProcessor();
                 // test: clientId == null
                 var tasks = new ReadWriteTasks(nullUser, newArticle);
                 var sync = await nullUser.TrySync();
@@ -101,7 +101,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual("PermissionDenied ~ not authorized (user authentication requires clientId)", tasks.updateArticles.Error.Message);
             }
             using (var unknownUser      = new PocStore(database, "unknown")) {
-                unknownUser.SetSubscriptionProcessor(new SubscriptionProcessor(unknownUser));
+                unknownUser.SetSubscriptionProcessor();
                 // test: token ==  null
                 unknownUser.SetToken(null);
                 
@@ -126,7 +126,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static async Task AssertAuthContainer(EntityDatabase database) {
             var newArticle = new Article{ id="new-article" };
             using (var mutateUser       = new PocStore(database, "user-container")) {
-                mutateUser.SetSubscriptionProcessor(new SubscriptionProcessor(mutateUser));
+                mutateUser.SetSubscriptionProcessor();
                 // test: allow readOnly & mutate 
                 mutateUser.SetToken("user-container-token");
                 await mutateUser.TrySync(); // authenticate to simplify debugging below
@@ -143,7 +143,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 IsTrue(tasks.Success);
             }
             using (var readUser         = new PocStore(database, "user-tasks")) {
-                readUser.SetSubscriptionProcessor(new SubscriptionProcessor(readUser));
+                readUser.SetSubscriptionProcessor();
                 // test: allow read
                 readUser.SetToken("user-tasks-token");
                 await readUser.TrySync(); // authenticate to simplify debugging below
@@ -161,7 +161,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             {
                 // test: deny message
                 denyUser.SetToken("user-deny-token");
-                denyUser.SetSubscriptionProcessor(new SubscriptionProcessor(denyUser));
+                denyUser.SetSubscriptionProcessor();
                 await denyUser.TrySync(); // authenticate to simplify debugging below
                 
                 var message     = denyUser.SendMessage("test-message");
@@ -173,7 +173,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var messageUser   = new PocStore(database, "user-message")){
                 // test: allow message
                 messageUser.SetToken("user-message-token");
-                messageUser.SetSubscriptionProcessor(new SubscriptionProcessor(messageUser));
+                messageUser.SetSubscriptionProcessor();
                 await messageUser.TrySync(); // authenticate to simplify debugging below
                 
                 var message     = messageUser.SendMessage("test-message");

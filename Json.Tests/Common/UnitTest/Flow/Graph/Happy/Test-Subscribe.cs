@@ -294,8 +294,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var database     = new MemoryDatabase())
             using (var listenDb     = new EntityStore(database, null, "listenDb")) {
                 database.eventBroker = eventBroker;
-                var processor = new SubscriptionProcessor(listenDb);
-                listenDb.SetSubscriptionProcessor(processor);
+                listenDb.SetSubscriptionProcessor();
                 bool receivedHello = false;
                 listenDb.SubscribeMessage("Hello", msg => {
                     receivedHello = true;
