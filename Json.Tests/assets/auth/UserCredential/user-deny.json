@@ -1,0 +1,5 @@
+{
+    "id": "user-deny",
+    "passHash": "123",
+    "token": "user-deny-token"
+}

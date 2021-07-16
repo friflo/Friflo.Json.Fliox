@@ -1,0 +1,4 @@
+{
+    "id": "user-deny",
+    "roles": ["role-deny"]
+}
