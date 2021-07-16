@@ -141,15 +141,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var messageUser   = new PocStore(database, "user-message")) {
                 // test: deny message
                 denyUser.SetToken("user-deny-token");
-                var message = denyUser.SendMessage("test-message");
+                denyUser.SetSubscriptionProcessor(new SubscriptionProcessor(denyUser));
+                var message     = denyUser.SendMessage("test-message");
+                var subscribe   = denyUser.SubscribeMessage("test-message", msg => {});
                 await denyUser.TrySync();
                 AreEqual("PermissionDenied ~ not authorized", message.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized", subscribe.Error.Message);
                 
                 // test: allow message
                 messageUser.SetToken("user-message-token");
-                message = messageUser.SendMessage("test-message");
+                messageUser.SetSubscriptionProcessor(new SubscriptionProcessor(denyUser));
+                message     = messageUser.SendMessage("test-message");
+                subscribe   = denyUser.SubscribeMessage("test-message", msg => {});
                 await messageUser.TrySync();
-                IsTrue(message.Success);                
+                IsTrue(message.Success);
+                IsTrue(subscribe.Success);
             }
         }
         
