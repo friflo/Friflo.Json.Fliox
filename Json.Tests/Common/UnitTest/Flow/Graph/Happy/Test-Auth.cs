@@ -70,15 +70,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         }
         
         private static async Task AssertServerStore(UserStore store) {
-            var credTask        = store.credentials.Read().Find("user-containers");
+            var credTask        = store.credentials.Read().Find("user-container");
             await store.TrySync();
             
             var cred = credTask.Result;
-            AreEqual("user-containers-token", cred.token);
+            AreEqual("user-container-token", cred.token);
         }
         
         private static async Task AssertAuthUserStore(UserStore store) {
-            var credTask        = store.credentials.Read().Find("user-containers");
+            var credTask        = store.credentials.Read().Find("user-container");
             await store.TrySync();
             
             AreEqual("PermissionDenied ~ not authorized", credTask.Error.Message);
@@ -119,14 +119,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         }
 
         private static async Task AssertAuthReadWrite(EntityDatabase database) {
-            using (var mutateUser       = new PocStore(database, "user-containers"))
+            using (var mutateUser       = new PocStore(database, "user-container"))
             using (var readUser         = new PocStore(database, "user-tasks"))
             {
                 ReadWriteTasks tasks;
                 var newArticle = new Article{ id="new-article" };
 
                 // test: allow readOnly & mutate 
-                mutateUser.SetToken("user-containers-token");
+                mutateUser.SetToken("user-container-token");
                 tasks = new ReadWriteTasks(mutateUser, newArticle);
                 var sync = await mutateUser.TrySync();
                 AreEqual(0, sync.failed.Count);

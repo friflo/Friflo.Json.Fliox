@@ -1,5 +1,5 @@
 {
-    "id": "role-predicates",
+    "id": "role-predicate",
     "rights": [
         { "type": "predicates", "predicates": ["TestPredicate"] }
     ]

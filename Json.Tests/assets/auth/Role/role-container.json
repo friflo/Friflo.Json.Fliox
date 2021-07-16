@@ -1,5 +1,5 @@
 {
-    "id": "role-containers",
+    "id": "role-container",
     "rights": [
         { "type": "containers", "containers": {
             "Article": { "access": ["read", "update"], "subscribeChanges": ["update"] }

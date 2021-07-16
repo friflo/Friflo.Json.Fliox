@@ -1,0 +1,5 @@
+{
+    "id": "user-container",
+    "passHash": "123",
+    "token": "user-container-token"
+}
