@@ -33,6 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         await authenticator.ValidateRoles();
                         await AssertNotAuthenticated    (database);
                         await AssertAuthContainer       (database);
+                        await AssertAuthSubscribeChange (database);
                         await AssertAuthMessage         (database);
                     }
                 });
@@ -92,22 +93,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static async Task AssertNotAuthenticated(EntityDatabase database) {
             var newArticle = new Article{ id="new-article" };
             using (var nullUser         = new PocStore(database, null)) {
-                nullUser.SetSubscriptionProcessor();
                 // test: clientId == null
                 var tasks = new ReadWriteTasks(nullUser, newArticle);
                 var sync = await nullUser.TrySync();
-                AreEqual(3, sync.failed.Count);
+                AreEqual(2, sync.failed.Count);
                 AreEqual("PermissionDenied ~ not authorized (user authentication requires clientId)", tasks.findArticle.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized (user authentication requires clientId)", tasks.updateArticles.Error.Message);
             }
             using (var unknownUser      = new PocStore(database, "unknown")) {
-                unknownUser.SetSubscriptionProcessor();
                 // test: token ==  null
                 unknownUser.SetToken(null);
                 
                 var tasks = new ReadWriteTasks(unknownUser, newArticle);
                 var sync = await unknownUser.TrySync();
-                AreEqual(3, sync.failed.Count);
+                AreEqual(2, sync.failed.Count);
                 AreEqual("PermissionDenied ~ not authorized (user authentication requires token)", tasks.findArticle.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized (user authentication requires token)", tasks.updateArticles.Error.Message);
                 
@@ -117,7 +116,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     
                 tasks = new ReadWriteTasks(unknownUser, newArticle);
                 sync = await unknownUser.TrySync();
-                AreEqual(3, sync.failed.Count);
+                AreEqual(2, sync.failed.Count);
                 AreEqual("PermissionDenied ~ not authorized (invalid user token)", tasks.findArticle.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized (invalid user token)", tasks.updateArticles.Error.Message);
             }
@@ -126,7 +125,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static async Task AssertAuthContainer(EntityDatabase database) {
             var newArticle = new Article{ id="new-article" };
             using (var mutateUser       = new PocStore(database, "user-container")) {
-                mutateUser.SetSubscriptionProcessor();
                 // test: allow readOnly & mutate 
                 mutateUser.SetToken("user-container-token");
                 await mutateUser.TrySync(); // authenticate to simplify debugging below
@@ -143,6 +141,33 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 IsTrue(tasks.Success);
             }
             using (var readUser         = new PocStore(database, "user-tasks")) {
+                // test: allow read
+                readUser.SetToken("user-tasks-token");
+                await readUser.TrySync(); // authenticate to simplify debugging below
+                
+                var tasks = new ReadWriteTasks(readUser, newArticle);
+                var sync = await readUser.TrySync();
+                AreEqual(1, sync.failed.Count);
+                AreEqual("PermissionDenied ~ not authorized", tasks.updateArticles.Error.Message);
+            }
+        }
+        
+        private static async Task AssertAuthSubscribeChange(EntityDatabase database) {
+            using (var mutateUser       = new PocStore(database, "user-container")) {
+                mutateUser.SetSubscriptionProcessor();
+                mutateUser.SetToken("user-container-token");
+                await mutateUser.TrySync(); // authenticate to simplify debugging below
+
+                var articleChanges = mutateUser.articles.SubscribeChanges(new [] {Change.update});
+                var sync = await mutateUser.TrySync();
+                AreEqual(0, sync.failed.Count);
+                IsTrue(articleChanges.Success);
+                
+                var articleDeletes = mutateUser.articles.SubscribeChanges(new [] {Change.delete});
+                await mutateUser.TrySync();
+                AreEqual("PermissionDenied ~ not authorized", articleDeletes.Error.Message);
+            }
+            /* using (var readUser         = new PocStore(database, "user-tasks")) {
                 readUser.SetSubscriptionProcessor();
                 // test: allow read
                 readUser.SetToken("user-tasks-token");
@@ -150,10 +175,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 
                 var tasks = new ReadWriteTasks(readUser, newArticle);
                 var sync = await readUser.TrySync();
-                AreEqual(2, sync.failed.Count);
+                AreEqual(1, sync.failed.Count);
                 AreEqual("PermissionDenied ~ not authorized", tasks.updateArticles.Error.Message);
-                AreEqual("PermissionDenied ~ not authorized", tasks.articleChanges.Error.Message);
-            }
+            } */
         }
         
         private static async Task AssertAuthMessage(EntityDatabase database) {
@@ -187,16 +211,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         public class ReadWriteTasks {
             public readonly     Find<Article>                   findArticle;
             public readonly     UpdateTask<Article>             updateArticles;
-            public readonly     SubscribeChangesTask<Article>   articleChanges;
+
             
             public ReadWriteTasks (PocStore store, Article newArticle) {
                 var readArticles    = store.articles.Read();
                 findArticle         = readArticles.Find("some-id");
                 updateArticles      = store.articles.Update(newArticle);
-                articleChanges      = store.articles.SubscribeChanges(new [] {Change.update});
             }
             
-            public bool Success => findArticle.Success && updateArticles.Success && articleChanges.Success;
+            public bool Success => findArticle.Success && updateArticles.Success;
         }
     }
 }
