@@ -11,6 +11,7 @@ using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
+// ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 {
     public partial class TestStore
@@ -27,6 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         database.authenticator = authenticator;
                         database.authenticator.RegisterPredicate(nameof(TestPredicate), TestPredicate);
                         await authenticator.ValidateRoles();
+                        await AssertNotAuthorized   (database);
                         await AssertAuthReadWrite   (database);
                         await AssertAuthMessage     (database);
                     }
@@ -47,8 +49,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     using (var authUserStore    = new UserStore             (userDatabase, UserStore.AuthUser))
                     using (                       new UserDatabaseHandler   (userDatabase)) {
                         // assert access to user database with different users: "Server" & "AuthUser"
-                        await AssertNotAuthorized   (serverStore);
-                        await AssertNotAuthorized   (authUserStore);
+                        await AssertUserStore       (serverStore);
+                        await AssertUserStore       (authUserStore);
                         await AssertServerStore     (serverStore);
                         await AssertAuthUserStore   (authUserStore);
                     }
@@ -56,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        private static async Task AssertNotAuthorized(UserStore store) {
+        private static async Task AssertUserStore(UserStore store) {
             var allCredentials  = store.credentials.QueryAll();
             var createTask      = store.credentials.Create(new UserCredential{ id="create-id" });
             var updateTask      = store.credentials.Update(new UserCredential{ id="update-id" });
@@ -81,12 +83,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             
             AreEqual("PermissionDenied ~ not authorized", credTask.Error.Message);
         }
-
-        private static async Task AssertAuthReadWrite(EntityDatabase database) {
+        
+        private static async Task AssertNotAuthorized(EntityDatabase database) {
             using (var nullUser         = new PocStore(database, null))
             using (var unknownUser      = new PocStore(database, "unknown"))
-            using (var mutateUser       = new PocStore(database, "user-mutate"))
-            using (var readUser         = new PocStore(database, "user-read"))
             {
                 ReadWriteTasks tasks;
                 var newArticle = new Article{ id="new-article" };
@@ -113,11 +113,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual(2, sync.failed.Count);
                 AreEqual("PermissionDenied ~ not authorized (invalid user token)", tasks.findArticle.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized (invalid user token)", tasks.updateArticles.Error.Message);
-                
+            }
+        }
+
+        private static async Task AssertAuthReadWrite(EntityDatabase database) {
+            using (var mutateUser       = new PocStore(database, "user-mutate"))
+            using (var readUser         = new PocStore(database, "user-read"))
+            {
+                ReadWriteTasks tasks;
+                var newArticle = new Article{ id="new-article" };
+
                 // test: allow readOnly & mutate 
                 mutateUser.SetToken("user-mutate-token");
                 tasks = new ReadWriteTasks(mutateUser, newArticle);
-                sync = await mutateUser.TrySync();
+                var sync = await mutateUser.TrySync();
                 AreEqual(0, sync.failed.Count);
                 IsTrue(tasks.Success);
                 
@@ -161,14 +170,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         
         public class ReadWriteTasks {
-            public  ReadTask<Article>       readArticles;
-            public  Find<Article>           findArticle;
-            public  UpdateTask<Article>     updateArticles;
+            public readonly     Find<Article>           findArticle;
+            public readonly     UpdateTask<Article>     updateArticles;
             
             public ReadWriteTasks (PocStore store, Article newArticle) {
-                readArticles    = store.articles.Read();
-                findArticle     = readArticles.Find("some-id");
-                updateArticles  = store.articles.Update(newArticle);
+                var readArticles    = store.articles.Read();
+                findArticle         = readArticles.Find("some-id");
+                updateArticles      = store.articles.Update(newArticle);
             }
             
             public bool Success => findArticle.Success && updateArticles.Success;
