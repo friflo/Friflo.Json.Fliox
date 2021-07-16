@@ -28,9 +28,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         database.authenticator = authenticator;
                         database.authenticator.RegisterPredicate(nameof(TestPredicate), TestPredicate);
                         await authenticator.ValidateRoles();
-                        await AssertNotAuthorized   (database);
-                        await AssertAuthReadWrite   (database);
-                        await AssertAuthMessage     (database);
+                        await AssertNotAuthenticated    (database);
+                        await AssertAuthReadWrite       (database);
+                        await AssertAuthMessage         (database);
                     }
                 });
             }
@@ -84,7 +84,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             AreEqual("PermissionDenied ~ not authorized", credTask.Error.Message);
         }
         
-        private static async Task AssertNotAuthorized(EntityDatabase database) {
+        // Test cases where authentication failed.
+        // In these cases error messages contain details about authentication problems. 
+        private static async Task AssertNotAuthenticated(EntityDatabase database) {
             using (var nullUser         = new PocStore(database, null))
             using (var unknownUser      = new PocStore(database, "unknown"))
             {
