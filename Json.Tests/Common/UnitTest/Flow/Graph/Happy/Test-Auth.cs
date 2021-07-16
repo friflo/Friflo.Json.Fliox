@@ -102,6 +102,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var unknownUser      = new PocStore(database, "unknown")) {
                 // test: token ==  null
                 unknownUser.SetToken(null);
+                await unknownUser.TrySync(); // authenticate to simplify debugging below
+                
                 var tasks = new ReadWriteTasks(unknownUser, newArticle);
                 var sync = await unknownUser.TrySync();
                 AreEqual(2, sync.failed.Count);
@@ -110,6 +112,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 
                 // test: invalid token 
                 unknownUser.SetToken("some token");
+                    
                 tasks = new ReadWriteTasks(unknownUser, newArticle);
                 sync = await unknownUser.TrySync();
                 AreEqual(2, sync.failed.Count);
@@ -123,6 +126,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var mutateUser       = new PocStore(database, "user-container")) {
                 // test: allow readOnly & mutate 
                 mutateUser.SetToken("user-container-token");
+                await mutateUser.TrySync(); // authenticate to simplify debugging below
+                
                 var tasks = new ReadWriteTasks(mutateUser, newArticle);
                 var sync = await mutateUser.TrySync();
                 AreEqual(0, sync.failed.Count);
@@ -137,6 +142,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var readUser         = new PocStore(database, "user-tasks")) {
                 // test: allow read
                 readUser.SetToken("user-tasks-token");
+                await readUser.TrySync(); // authenticate to simplify debugging below
+                
                 var tasks = new ReadWriteTasks(readUser, newArticle);
                 var sync = await readUser.TrySync();
                 AreEqual(1, sync.failed.Count);
@@ -170,10 +177,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 IsTrue(message.Success);
                 IsTrue(subscribe.Success);
             }
-
         }
-        
-        
+
         public class ReadWriteTasks {
             public readonly     Find<Article>           findArticle;
             public readonly     UpdateTask<Article>     updateArticles;
