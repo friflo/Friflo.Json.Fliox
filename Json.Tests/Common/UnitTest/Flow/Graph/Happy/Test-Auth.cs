@@ -120,7 +120,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 
         private static async Task AssertAuthReadWrite(EntityDatabase database) {
             using (var mutateUser       = new PocStore(database, "user-containers"))
-            using (var readUser         = new PocStore(database, "user-read"))
+            using (var readUser         = new PocStore(database, "user-tasks"))
             {
                 ReadWriteTasks tasks;
                 var newArticle = new Article{ id="new-article" };
@@ -139,7 +139,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 IsTrue(tasks.Success);
 
                 // test: allow read
-                readUser.SetToken("user-read-token");
+                readUser.SetToken("user-tasks-token");
                 tasks = new ReadWriteTasks(readUser, newArticle);
                 sync = await readUser.TrySync();
                 AreEqual(1, sync.failed.Count);
