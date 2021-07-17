@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     using (                       new UserDatabaseHandler   (userDatabase))
                     using (var userStore        = new UserStore(userDatabase, UserStore.AuthUser))
                     using (var database         = new MemoryDatabase())
-                    using (var eventBroker      = new EventBroker(false)) // require for SubscribeMessage()
+                    using (var eventBroker      = new EventBroker(false)) // require for SubscribeMessage() and SubscribeChanges()
                     {
                         var authenticator = new UserAuthenticator(userStore, userStore);
                         authenticator.RegisterPredicate(TestPredicate);
