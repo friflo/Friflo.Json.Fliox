@@ -31,11 +31,11 @@ namespace Friflo.Json.Flow.UserAuth
         public static readonly    Authorizer   UnknownRights    = new AuthorizeDeny();
         public static readonly    Authorizer   AuthUserRights   = new AuthorizeAny(new Authorizer[] {
             new AuthorizeMessage(nameof(AuthenticateUser)),
-            new AuthorizeContainer(nameof(UserPermission),  new []{AccessType.read}),
-            new AuthorizeContainer(nameof(Role),            new []{AccessType.read, AccessType.query}),
+            new AuthorizeContainer(nameof(UserPermission),  new []{OperationType.read}),
+            new AuthorizeContainer(nameof(Role),            new []{OperationType.read, OperationType.query}),
         });
         public static readonly    Authorizer   ServerRights     = new AuthorizeAny(new Authorizer[] {
-            new AuthorizeContainer(nameof(UserCredential),  new []{AccessType.read})
+            new AuthorizeContainer(nameof(UserCredential),  new []{OperationType.read})
         });
         
 #pragma warning disable 1998   // This async method lacks 'await' operators and will run synchronously. ....

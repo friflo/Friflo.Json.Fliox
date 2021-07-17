@@ -11,12 +11,12 @@ Alternative user authentication systems can be implemented and used. E.g. by fac
 By default the user database access is set to the minimum required permissions.
 The user database enables executing the listed tasks depending on the user (clientId's).
 
-- "AuthUser"
+- `AuthUser`
     - command:   "AuthenticateUser"
-    - container: "UserPermission": read
-    - container: "Role":           read, query
+    - container: "UserPermission": `read`
+    - container: "Role":           `read`, `query`
 
-- "Server"
+- `Server`
     - container: "UserCredential": read
 
 These rights given at: 

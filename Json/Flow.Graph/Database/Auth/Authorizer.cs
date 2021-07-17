@@ -137,28 +137,28 @@ namespace Friflo.Json.Flow.Database.Auth
 
         public  override    string  ToString() => container;
         
-        public AuthorizeContainer (string container, ICollection<AccessType> types) {
+        public AuthorizeContainer (string container, ICollection<OperationType> types) {
             this.container = container;
             SetRoles(types, ref create, ref update, ref delete, ref patch, ref read, ref query);
         }
         
-        private static void SetRoles (ICollection<AccessType> types,
+        private static void SetRoles (ICollection<OperationType> types,
                 ref bool create, ref bool update, ref bool delete, ref bool patch,
                 ref bool read,   ref bool query)
         {
             foreach (var type in types) {
                 switch (type) {
-                    case AccessType.create:  create  = true;   break;
-                    case AccessType.update:  update  = true;   break;
-                    case AccessType.delete:  delete  = true;   break;
-                    case AccessType.patch:   patch   = true;   break;
+                    case OperationType.create:  create  = true;   break;
+                    case OperationType.update:  update  = true;   break;
+                    case OperationType.delete:  delete  = true;   break;
+                    case OperationType.patch:   patch   = true;   break;
                     //
-                    case AccessType.read:    read    = true;   break;
-                    case AccessType.query:   query   = true;   break;
-                    case AccessType.mutate:
+                    case OperationType.read:    read    = true;   break;
+                    case OperationType.query:   query   = true;   break;
+                    case OperationType.mutate:
                         create  = true; update  = true; delete  = true; patch   = true;
                         break;
-                    case AccessType.full:
+                    case OperationType.full:
                         create  = true; update  = true; delete  = true; patch   = true;
                         read    = true; query   = true;
                         break;

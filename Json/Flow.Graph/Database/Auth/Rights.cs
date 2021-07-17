@@ -145,7 +145,7 @@ namespace Friflo.Json.Flow.Database.Auth
     
     public class ContainerAccess
     {
-        public          List<AccessType>        operations;
+        public          List<OperationType>     operations;
         public          List<Change>            subscribeChanges;
     }
     
@@ -161,7 +161,7 @@ namespace Friflo.Json.Flow.Database.Auth
 
 
     // ReSharper disable InconsistentNaming
-    public enum AccessType {
+    public enum OperationType {
         create,
         update,
         delete,
