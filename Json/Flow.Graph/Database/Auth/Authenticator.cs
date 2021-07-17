@@ -25,7 +25,13 @@ namespace Friflo.Json.Flow.Database.Auth
         public void RegisterPredicate(string name, AuthPredicate predicate) {
             var authorizer = new AuthorizePredicate (name, predicate);
             registeredPredicates.Add(name, authorizer);
-        } 
+        }
+        
+        public void RegisterPredicate(AuthPredicate predicate) {
+            var name = predicate.Method.Name;
+            var authorizer = new AuthorizePredicate (name, predicate);
+            registeredPredicates.Add(name, authorizer);
+        }
     }
     
     public class AuthenticateNone : Authenticator

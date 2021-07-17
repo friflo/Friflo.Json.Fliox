@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     using (var eventBroker      = new EventBroker(false)) // require for SubscribeMessage()
                     {
                         var authenticator = new UserAuthenticator(userStore, userStore);
-                        authenticator.RegisterPredicate(nameof(TestPredicate), TestPredicate);
+                        authenticator.RegisterPredicate(TestPredicate);
                         database.authenticator  = authenticator;
                         database.eventBroker    = eventBroker;
                         await authenticator.ValidateRoles();
