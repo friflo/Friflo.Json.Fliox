@@ -109,11 +109,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual("PermissionDenied ~ not authorized", tasks.updateArticles.Error.Message);
             }
             using (var readPredicate         = new PocStore(database, "user-predicate")) {
-                // test: allow read
+                // test: allow by predicate function
                 readPredicate.SetToken("user-predicate-token");
                 await readPredicate.TrySync(); // authenticate to simplify debugging below
                 
-                var tasks = new ReadWriteTasks(readPredicate, newArticle);
+                _ = new ReadWriteTasks(readPredicate, newArticle);
                 var sync = await readPredicate.TrySync();
                 AreEqual(0, sync.failed.Count);
             }
