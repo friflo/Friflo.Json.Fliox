@@ -42,6 +42,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         }
         
         private static bool TestPredicate (DatabaseTask task, MessageContext messageContext) {
+            switch (task) {
+                case ReadEntitiesList read:
+                    return read.container   == nameof(Article);
+                case UpdateEntities   update:
+                    return update.container == nameof(Article);
+            }
             return false;
         }
 
@@ -101,6 +107,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 var sync = await readUser.TrySync();
                 AreEqual(1, sync.failed.Count);
                 AreEqual("PermissionDenied ~ not authorized", tasks.updateArticles.Error.Message);
+            }
+            using (var readPredicate         = new PocStore(database, "user-predicate")) {
+                // test: allow read
+                readPredicate.SetToken("user-predicate-token");
+                await readPredicate.TrySync(); // authenticate to simplify debugging below
+                
+                var tasks = new ReadWriteTasks(readPredicate, newArticle);
+                var sync = await readPredicate.TrySync();
+                AreEqual(0, sync.failed.Count);
             }
         }
         
