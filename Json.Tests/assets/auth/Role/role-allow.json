@@ -1,0 +1,6 @@
+{
+    "id": "role-allow",
+    "rights": [
+        { "type": "allow", "grant": true }
+    ]
+}
