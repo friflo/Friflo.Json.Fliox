@@ -34,7 +34,7 @@ The value of each entry authorize container specific tasks by `operations` and `
 
 ## `message`
 
-A message can be authorized by its name listed in `names`.  
+Sending a message to the database can be authorized by its name listed in `names`.  
 Alternatively a group of messages can authorized by prefix filter using `*` in `names`. E.g. `"names": ["Command*"]`
 
 
@@ -47,7 +47,7 @@ Alternatively a group of message subscriptions can authorized by a prefix filter
 ## `task`
 
 The `task` `Right` contains an array of task `types`.
-Task execution of a specific type is allowed in case it is listed inside `types`.
+Task execution of a specific task type is allowed in case it is listed inside `types`.
 
 The following task types can be used:
 
@@ -57,7 +57,9 @@ The following task types can be used:
 ## `predicate`
 
 Predicates are registered functions performing authorization via code and returning true to allow task execution.  
-In contrast to all other `Right` types they enable filtering tasks by type and their specific properties.
+In contrast to all other `Right` types they enable filtering tasks by type and their specific properties.  
+`predicate` rights are required if task authorization cannot be expressed by the common Rights like: `database`, 
+`message`, `subscribeMessage` or `task`.
 
 Examples:
 - message / command tasks and their specific values
