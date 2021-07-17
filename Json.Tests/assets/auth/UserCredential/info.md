@@ -8,15 +8,15 @@ Note:
 Performing user authentication is an optional feature.
 Alternative user authentication systems can be implemented and used. E.g. by facebook, Google, Amazon, Microsoft, ...
 
-By default the database access a set to the minimum required permissions.
+By default the user database access is set to the minimum required permissions.
 The user database enables executing the listed tasks depending on the user (clientId's).
 
-- "Server"
+- "AuthUser"
     - command:   "AuthenticateUser"
     - container: "UserPermission": read
     - container: "Role":           read, query
 
-- "AuthUser"
+- "Server"
     - container: "UserCredential": read
 
 These rights given at: 
