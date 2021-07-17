@@ -16,7 +16,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 {
     public partial class TestStore
     {
-        [Test] public static void TestAuth () {
+        // ----------------------------- Test authorization rights to a database -----------------------------
+        [Test] public static void TestAuthRights () {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
@@ -31,10 +32,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         database.authenticator  = authenticator;
                         database.eventBroker    = eventBroker;
                         await authenticator.ValidateRoles();
-                        await AssertNotAuthenticated    (database);
-                        await AssertAuthAccess          (database);
-                        await AssertAuthSubscribeChange (database);
-                        await AssertAuthMessage         (database);
+                        await AssertNotAuthenticated        (database);
+                        await AssertAuthAccessOperations    (database);
+                        await AssertAuthAccessSubscriptions (database);
+                        await AssertAuthMessage             (database);
                     }
                 });
             }
@@ -44,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             return false;
         }
 
-        // Test cases where authentication failed.
+        // Test cases where authentication fails.
         // In these cases error messages contain details about authentication problems. 
         private static async Task AssertNotAuthenticated(EntityDatabase database) {
             var newArticle = new Article{ id="new-article" };
@@ -78,7 +79,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
 
-        private static async Task AssertAuthAccess(EntityDatabase database) {
+        /// test authorization of read and write operations on a container
+        private static async Task AssertAuthAccessOperations(EntityDatabase database) {
             var newArticle = new Article{ id="new-article" };
             using (var mutateUser       = new PocStore(database, "user-access")) {
                 // test: allow read & mutate 
@@ -102,7 +104,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        private static async Task AssertAuthSubscribeChange(EntityDatabase database) {
+        /// test authorization of subscribing to container changes. E.g. create, update, delete & patch.
+        private static async Task AssertAuthAccessSubscriptions(EntityDatabase database) {
             using (var mutateUser       = new PocStore(database, "user-deny")) {
                 mutateUser.SetSubscriptionProcessor();
                 mutateUser.SetToken("user-deny-token");
@@ -132,6 +135,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
+        /// test authorization of sending messages and subscriptions to messages. commands are messages too.
         private static async Task AssertAuthMessage(EntityDatabase database) {
             using (var denyUser      = new PocStore(database, "user-deny"))
             {
@@ -160,6 +164,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
 
+        /// Composition of read and write tasks
         public class ReadWriteTasks {
             public readonly     Find<Article>                   findArticle;
             public readonly     UpdateTask<Article>             updateArticles;
