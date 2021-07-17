@@ -98,9 +98,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual(0, sync.failed.Count);
                 IsTrue(tasks.Success);
             }
-            using (var readUser         = new PocStore(database, "user-tasks")) {
+            using (var readUser         = new PocStore(database, "user-task")) {
                 // test: allow read
-                readUser.SetToken("user-tasks-token");
+                readUser.SetToken("user-task-token");
                 await readUser.TrySync(); // authenticate to simplify debugging below
                 
                 var tasks = new ReadWriteTasks(readUser, newArticle);
