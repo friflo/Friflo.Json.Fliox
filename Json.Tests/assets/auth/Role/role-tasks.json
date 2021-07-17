@@ -1,6 +1,6 @@
 {
     "id": "role-tasks",
     "rights": [
-        { "type": "tasks",      "tasks":      ["read"] }
+        { "type": "task",      "types":      ["read"] }
     ]
 }

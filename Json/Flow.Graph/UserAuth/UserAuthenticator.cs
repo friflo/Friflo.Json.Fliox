@@ -71,9 +71,9 @@ namespace Friflo.Json.Flow.UserAuth
             foreach (var pair in roles) {
                 var role     = pair.Value;
                 foreach (var right in role.rights) {
-                    if (!(right is RightPredicates rightPredicates))
+                    if (!(right is RightPredicate rightPredicates))
                         break;
-                    foreach (var predicateName in rightPredicates.predicates) {
+                    foreach (var predicateName in rightPredicates.names) {
                         if (!registeredPredicates.ContainsKey(predicateName)) {
                             throw new InvalidOperationException($"unknown authorization predicate: {predicateName}");
                         }
@@ -167,7 +167,7 @@ namespace Friflo.Json.Flow.UserAuth
                 var authorizers = new List<Authorizer>(newRole.rights.Count);
                 foreach (var right in newRole.rights) {
                     Authorizer authorizer;
-                    if (right is RightPredicates predicates) {
+                    if (right is RightPredicate predicates) {
                         authorizer = GetPredicatesAuthorizer(predicates);
                     } else {
                         authorizer = right.ToAuthorizer();
@@ -183,9 +183,9 @@ namespace Friflo.Json.Flow.UserAuth
             }
         }
         
-        private Authorizer GetPredicatesAuthorizer(RightPredicates right) {
-            var authorizers = new List<Authorizer>(right.predicates.Count);
-            foreach (var predicateName in right.predicates) {
+        private Authorizer GetPredicatesAuthorizer(RightPredicate right) {
+            var authorizers = new List<Authorizer>(right.names.Count);
+            foreach (var predicateName in right.names) {
                 if (!registeredPredicates.TryGetValue(predicateName, out var predicate)) {
                     throw new InvalidOperationException($"unknown authorization predicate: {predicateName}");
                 }

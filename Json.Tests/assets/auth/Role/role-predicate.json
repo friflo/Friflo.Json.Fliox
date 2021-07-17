@@ -1,6 +1,6 @@
 {
     "id": "role-predicate",
     "rights": [
-        { "type": "predicates", "predicates": ["TestPredicate"] }
+        { "type": "predicate", "names": ["TestPredicate"] }
     ]
 }

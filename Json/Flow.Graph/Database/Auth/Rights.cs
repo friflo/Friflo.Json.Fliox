@@ -14,11 +14,11 @@ namespace Friflo.Json.Flow.Database.Auth
 {
     [Fri.Discriminator("type")]
     [Fri.Polymorph(typeof(RightAllow),              Discriminant = "allow")]
-    [Fri.Polymorph(typeof(RightTasks),              Discriminant = "tasks")]
-    [Fri.Polymorph(typeof(RightMessages),           Discriminant = "messages")]
-    [Fri.Polymorph(typeof(RightSubscribeMessages),  Discriminant = "subscribeMessages")]
-    [Fri.Polymorph(typeof(RightContainers),         Discriminant = "containers")]
-    [Fri.Polymorph(typeof(RightPredicates),         Discriminant = "predicates")]
+    [Fri.Polymorph(typeof(RightTask),               Discriminant = "task")]
+    [Fri.Polymorph(typeof(RightMessage),            Discriminant = "message")]
+    [Fri.Polymorph(typeof(RightSubscribeMessage),   Discriminant = "subscribeMessage")]
+    [Fri.Polymorph(typeof(RightAccess),             Discriminant = "access")]
+    [Fri.Polymorph(typeof(RightPredicate),          Discriminant = "predicate")]
     public abstract class Right {
         
         public abstract RightType       RightType { get; }
@@ -41,9 +41,9 @@ namespace Friflo.Json.Flow.Database.Auth
         }
     }
     
-    public class RightTasks : Right
+    public class RightTask : Right
     {
-        public          List<TaskType>          tasks;
+        public          List<TaskType>          types;
         public override RightType               RightType => RightType.tasks;
         
         private static readonly Authorizer Read             = new AuthorizeTaskType(TaskType.read);
@@ -58,11 +58,11 @@ namespace Friflo.Json.Flow.Database.Auth
         private static readonly Authorizer SubscribeMessage = new AuthorizeTaskType(TaskType.subscribeMessage);
         
         public override Authorizer ToAuthorizer() {
-            if (tasks.Count == 1) {
-                return GetAuthorizer(tasks[0]);
+            if (types.Count == 1) {
+                return GetAuthorizer(types[0]);
             }
-            var list = new List<Authorizer>(tasks.Count);
-            foreach (var task in tasks) {
+            var list = new List<Authorizer>(types.Count);
+            foreach (var task in types) {
                 list.Add(GetAuthorizer(task));
             }
             return new AuthorizeAny(list);
@@ -86,10 +86,10 @@ namespace Friflo.Json.Flow.Database.Auth
 
     }
     
-    public class RightMessages : Right
+    public class RightMessage : Right
     {
         public          List<string>            names;
-        public override RightType               RightType => RightType.messages;
+        public override RightType               RightType => RightType.message;
         
         public override Authorizer ToAuthorizer() {
             if (names.Count == 1) {
@@ -103,10 +103,10 @@ namespace Friflo.Json.Flow.Database.Auth
         }
     }
     
-    public class RightSubscribeMessages : Right
+    public class RightSubscribeMessage : Right
     {
         public          List<string>            names;
-        public override RightType               RightType => RightType.subscribeMessages;
+        public override RightType               RightType => RightType.subscribeMessage;
         
         public override Authorizer ToAuthorizer() {
             if (names.Count == 1) {
@@ -120,17 +120,17 @@ namespace Friflo.Json.Flow.Database.Auth
         }
     }
     
-    public class RightContainers : Right
+    public class RightAccess : Right
     {
         public          Dictionary<string, ContainerAccess> containers;
-        public override RightType                           RightType => RightType.containers;
+        public override RightType                           RightType => RightType.access;
         
         public override Authorizer ToAuthorizer() {
             var list = new List<Authorizer>(containers.Count);
             foreach (var pair in containers) {
                 var name        = pair.Key;
                 var container   = pair.Value;
-                var access      = container.access;
+                var access      = container.operations;
                 if (access != null && access.Count > 0) {
                     list.Add(new AuthorizeContainer(name, access));
                 }
@@ -145,14 +145,14 @@ namespace Friflo.Json.Flow.Database.Auth
     
     public class ContainerAccess
     {
-        public          List<AccessType>        access;
+        public          List<AccessType>        operations;
         public          List<Change>            subscribeChanges;
     }
     
-    public class RightPredicates : Right
+    public class RightPredicate : Right
     {
-        public          List<string>            predicates;
-        public override RightType               RightType => RightType.predicates;
+        public          List<string>            names;
+        public override RightType               RightType => RightType.predicate;
         
         public override Authorizer ToAuthorizer() {
             throw new NotImplementedException();
@@ -175,9 +175,9 @@ namespace Friflo.Json.Flow.Database.Auth
     public enum RightType {
         allow,
         tasks,
-        messages,
-        subscribeMessages,
-        containers,
-        predicates
+        message,
+        subscribeMessage,
+        access,
+        predicate
     }
 }
