@@ -48,7 +48,8 @@ namespace Friflo.Json.Flow.Graph.Internal
             TypeStore               owned,
             EntityDatabase          database,
             ObjectMapper            jsonMapper,
-            EventTarget             eventTarget)
+            EventTarget             eventTarget,
+            SubscriptionProcessor   subscriptionProcessor)
         {
             this.clientId               = clientId;
             this.typeStore              = typeStore;
@@ -57,6 +58,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             this.jsonMapper             = jsonMapper;
             this.typeCache              = jsonMapper.writer.TypeCache;
             this.eventTarget            = eventTarget;
+            this.subscriptionProcessor  = subscriptionProcessor;
             syncStore                   = null;
             setByType                   = new Dictionary<Type, EntitySet>();
             setByName                   = new Dictionary<string, EntitySet>();
@@ -65,7 +67,6 @@ namespace Friflo.Json.Flow.Graph.Internal
             subscriptionsPrefix         = new List<MessageSubscriber>();
             messageReader               = new ObjectReader(typeStore, new NoThrowHandler());
             tracerLogTask               = null;
-            subscriptionProcessor       = null;
             subscriptionHandler         = null;
             lastEventSeq                = 0;
             disposed                    = false;

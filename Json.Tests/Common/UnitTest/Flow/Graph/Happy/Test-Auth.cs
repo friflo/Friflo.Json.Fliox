@@ -107,7 +107,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         /// test authorization of subscribing to container changes. E.g. create, update, delete & patch.
         private static async Task AssertAuthAccessSubscriptions(EntityDatabase database) {
             using (var mutateUser       = new PocStore(database, "user-deny")) {
-                mutateUser.SetSubscriptionProcessor();
                 mutateUser.SetToken("user-deny-token");
                 await mutateUser.TrySync(); // authenticate to simplify debugging below
 
@@ -120,7 +119,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual("PermissionDenied ~ not authorized", articleDeletes.Error.Message);
             }
             using (var mutateUser       = new PocStore(database, "user-database")) {
-                mutateUser.SetSubscriptionProcessor();
                 mutateUser.SetToken("user-database-token");
                 await mutateUser.TrySync(); // authenticate to simplify debugging below
 
@@ -141,7 +139,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             {
                 // test: deny message
                 denyUser.SetToken("user-deny-token");
-                denyUser.SetSubscriptionProcessor();
                 await denyUser.TrySync(); // authenticate to simplify debugging below
                 
                 var message     = denyUser.SendMessage("test-message");
@@ -153,7 +150,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var messageUser   = new PocStore(database, "user-message")){
                 // test: allow message
                 messageUser.SetToken("user-message-token");
-                messageUser.SetSubscriptionProcessor();
                 await messageUser.TrySync(); // authenticate to simplify debugging below
                 
                 var message     = messageUser.SendMessage("test-message");

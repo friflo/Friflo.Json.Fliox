@@ -76,8 +76,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             // LeakTestsFixture requires to register all types used by TypeStore before leak tracking starts 
             typeStore = new TypeStore();
             typeStore.GetTypeMapper(typeof(TestMessage));
-            // by new PocStore() all TypeMappers for model classes are created before leak tracking of LeakTestsFixture starts. 
-            using (var _= new PocStore(new MemoryDatabase(), "TestGlobals")) { }
+            
+            // create all TypeMappers required by PocStore model classes before leak tracking of LeakTestsFixture starts.
+            EntityStore.AddTypeMappers(typeStore);
+            typeStore.GetTypeMapper(typeof(Order));
+            typeStore.GetTypeMapper(typeof(Customer));
+            typeStore.GetTypeMapper(typeof(Article));
+            typeStore.GetTypeMapper(typeof(Producer));
+            typeStore.GetTypeMapper(typeof(Employee));
         }
         
         public static void Dispose() {

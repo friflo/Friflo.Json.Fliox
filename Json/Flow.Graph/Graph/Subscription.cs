@@ -52,7 +52,7 @@ namespace Friflo.Json.Flow.Graph
         public SubscriptionProcessor (EntityStore store, SynchronizationContext synchronizationContext = null) {
             synchronizationContext      = synchronizationContext ?? SynchronizationContext.Current; 
             this.store                  = store;
-            this.synchronizationContext = synchronizationContext ?? throw new ArgumentNullException(nameof(synchronizationContext));
+            this.synchronizationContext = synchronizationContext;
         }
         
         /// <summary>

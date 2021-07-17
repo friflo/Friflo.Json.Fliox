@@ -52,8 +52,9 @@ namespace Friflo.Json.Flow.Graph
             var jsonMapper = new ObjectMapper(typeStore, new NoThrowHandler()) {
                 TracerContext = this
             };
-            var eventTarget = new EventTarget(this);
-            _intern = new StoreIntern(clientId, typeStore, owned, database, jsonMapper, eventTarget) {
+            var eventTarget             = new EventTarget(this);
+            var subscriptionProcessor   = new SubscriptionProcessor(this);
+            _intern = new StoreIntern(clientId, typeStore, owned, database, jsonMapper, eventTarget, subscriptionProcessor) {
                 syncStore = new SyncStore()
             };
             database.AddEventTarget(clientId, eventTarget);
@@ -63,7 +64,7 @@ namespace Friflo.Json.Flow.Graph
             _intern.Dispose();
         }
         
-        private static void AddTypeMappers (TypeStore typeStore) {
+        public static void AddTypeMappers (TypeStore typeStore) {
             typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
             typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
         }
@@ -134,8 +135,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         /// <summary>
-        /// Set a custom or a default (<see cref="subscriptionProcessor"/> == null) <see cref="SubscriptionProcessor"/>
-        /// to enable reacting on specific database change events or messages (commands are messages too).
+        /// Set a custom <see cref="SubscriptionProcessor"/> to enable reacting on specific database change or message (or command) events.
         /// E.g. notifying other application modules about created, updated, deleted or patches entities.
         /// To subscribe to database change events use <see cref="Graph.EntitySet{T}.SubscribeChanges"/>.
         /// The default <see cref="SubscriptionProcessor"/> apply all changes to the <see cref="EntityStore"/> as they arrive.
@@ -152,8 +152,8 @@ namespace Friflo.Json.Flow.Graph
         ///   <see cref="SubscriptionProcessor.ProcessEvent"/> before processing it.
         /// </para>
         /// </summary>
-        public void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor = null) {
-            _intern.subscriptionProcessor = subscriptionProcessor ?? new SubscriptionProcessor(this);
+        public void SetSubscriptionProcessor(SubscriptionProcessor subscriptionProcessor) {
+            _intern.subscriptionProcessor = subscriptionProcessor ?? throw new NullReferenceException(nameof(subscriptionProcessor));
         }
         
         /// <summary>
