@@ -26,10 +26,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     using (var database         = new MemoryDatabase())
                     using (var eventBroker      = new EventBroker(false)) // require for SubscribeMessage()
                     {
-                        database.eventBroker = eventBroker;
                         var authenticator = new UserAuthenticator(userStore, userStore);
+                        authenticator.RegisterPredicate(nameof(TestPredicate), TestPredicate);
                         database.authenticator = authenticator;
-                        database.authenticator.RegisterPredicate(nameof(TestPredicate), TestPredicate);
+                        database.eventBroker = eventBroker;
                         await authenticator.ValidateRoles();
                         await AssertNotAuthenticated    (database);
                         await AssertAuthContainer       (database);
@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static async Task AssertAuthContainer(EntityDatabase database) {
             var newArticle = new Article{ id="new-article" };
             using (var mutateUser       = new PocStore(database, "user-container")) {
-                // test: allow readOnly & mutate 
+                // test: allow read & mutate 
                 mutateUser.SetToken("user-container-token");
                 await mutateUser.TrySync(); // authenticate to simplify debugging below
                 

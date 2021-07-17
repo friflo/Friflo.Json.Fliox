@@ -35,7 +35,8 @@ namespace Friflo.Json.Flow.Database
         }
 
         private static bool AuthorizeTask(DatabaseTask task, MessageContext messageContext, out TaskResult error) {
-            if (messageContext.Authorize(task, messageContext)) {
+            var authorizer = messageContext.authState.Authorizer;
+            if (authorizer.Authorize(task, messageContext)) {
                 error = null;
                 return true;
             }
