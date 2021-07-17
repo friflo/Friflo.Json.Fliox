@@ -3,6 +3,7 @@
 
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Database.Auth;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Database.Utils;
 using Friflo.Json.Flow.Graph;
@@ -41,6 +42,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
+        /// <summary>
+        /// A predicate function enables custom authorization via code, which cannot be expressed by one of the
+        /// provided <see cref="Right"/> implementations.
+        /// If called its parameters are intended to filter the aspired condition and return true if task execution is granted.
+        /// To reject task execution it returns false.
+        /// </summary>
         private static bool TestPredicate (DatabaseTask task, MessageContext messageContext) {
             switch (task) {
                 case ReadEntitiesList read:
