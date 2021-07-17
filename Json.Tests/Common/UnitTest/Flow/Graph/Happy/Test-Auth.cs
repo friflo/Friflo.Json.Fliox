@@ -82,9 +82,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         /// test authorization of read and write operations on a container
         private static async Task AssertAuthAccessOperations(EntityDatabase database) {
             var newArticle = new Article{ id="new-article" };
-            using (var mutateUser       = new PocStore(database, "user-access")) {
+            using (var mutateUser       = new PocStore(database, "user-database")) {
                 // test: allow read & mutate 
-                mutateUser.SetToken("user-access-token");
+                mutateUser.SetToken("user-database-token");
                 await mutateUser.TrySync(); // authenticate to simplify debugging below
                 
                 var tasks = new ReadWriteTasks(mutateUser, newArticle);
@@ -119,9 +119,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 await mutateUser.TrySync();
                 AreEqual("PermissionDenied ~ not authorized", articleDeletes.Error.Message);
             }
-            using (var mutateUser       = new PocStore(database, "user-access")) {
+            using (var mutateUser       = new PocStore(database, "user-database")) {
                 mutateUser.SetSubscriptionProcessor();
-                mutateUser.SetToken("user-access-token");
+                mutateUser.SetToken("user-database-token");
                 await mutateUser.TrySync(); // authenticate to simplify debugging below
 
                 var articleChanges = mutateUser.articles.SubscribeChanges(new [] {Change.update});
@@ -135,7 +135,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        /// test authorization of sending messages and subscriptions to messages. commands are messages too.
+        /// test authorization of sending messages and subscriptions to messages. Commands are messages too.
         private static async Task AssertAuthMessage(EntityDatabase database) {
             using (var denyUser      = new PocStore(database, "user-deny"))
             {
@@ -210,15 +210,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         }
         
         private static async Task AssertServerStore(UserStore store) {
-            var credTask        = store.credentials.Read().Find("user-access");
+            var credTask        = store.credentials.Read().Find("user-database");
             await store.TrySync();
             
             var cred = credTask.Result;
-            AreEqual("user-access-token", cred.token);
+            AreEqual("user-database-token", cred.token);
         }
         
         private static async Task AssertAuthUserStore(UserStore store) {
-            var credTask        = store.credentials.Read().Find("user-access");
+            var credTask        = store.credentials.Read().Find("user-database");
             await store.TrySync();
             
             AreEqual("PermissionDenied ~ not authorized", credTask.Error.Message);

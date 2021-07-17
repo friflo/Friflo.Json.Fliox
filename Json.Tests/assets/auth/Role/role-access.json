@@ -1,8 +1,0 @@
-{
-    "id": "role-access",
-    "rights": [
-        { "type": "access", "containers": {
-            "Article": { "operations": ["read", "update"], "subscribeChanges": ["update"] }
-        }}
-    ]
-}

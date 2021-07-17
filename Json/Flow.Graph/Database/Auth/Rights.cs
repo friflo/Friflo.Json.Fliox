@@ -17,10 +17,10 @@ namespace Friflo.Json.Flow.Database.Auth
     [Fri.Polymorph(typeof(RightTask),               Discriminant = "task")]
     [Fri.Polymorph(typeof(RightMessage),            Discriminant = "message")]
     [Fri.Polymorph(typeof(RightSubscribeMessage),   Discriminant = "subscribeMessage")]
-    [Fri.Polymorph(typeof(RightAccess),             Discriminant = "access")]
+    [Fri.Polymorph(typeof(RightDatabase),           Discriminant = "database")]
     [Fri.Polymorph(typeof(RightPredicate),          Discriminant = "predicate")]
     public abstract class Right {
-        
+        public          string          description;
         public abstract RightType       RightType { get; }
 
         public abstract Authorizer      ToAuthorizer();
@@ -120,7 +120,7 @@ namespace Friflo.Json.Flow.Database.Auth
         }
     }
     
-    public class RightAccess : Right
+    public class RightDatabase : Right
     {
         public          Dictionary<string, ContainerAccess> containers;
         public override RightType                           RightType => RightType.access;

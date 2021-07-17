@@ -1,0 +1,5 @@
+{
+    "id": "user-database",
+    "passHash": "123",
+    "token": "user-database-token"
+}

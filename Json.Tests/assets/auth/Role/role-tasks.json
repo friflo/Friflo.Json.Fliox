@@ -1,5 +1,6 @@
 {
     "id": "role-tasks",
+    "description": "Allow execution of the specified task types. E.g. 'read' enables reads on all containers.",
     "rights": [
         { "type": "task",      "types":      ["read"] }
     ]

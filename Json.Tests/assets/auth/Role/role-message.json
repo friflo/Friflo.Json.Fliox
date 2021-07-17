@@ -1,5 +1,6 @@
 {
     "id": "role-message",
+    "description": "Allow sending the specified messages and subscriptions to messages. Commands are messages too",
     "rights": [
         { "type": "message",           "names":   ["test-mess*"] },
         { "type": "subscribeMessage",  "names":   ["test-sub*"] }
