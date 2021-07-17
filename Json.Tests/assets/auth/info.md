@@ -1,6 +1,6 @@
 
 
-This folder contains an example database used to configure user authentication and authorization by utilizing
+This folder contains an example user database used to configure user authentication and authorization by utilizing
 [UserAuthenticator.cs](../../../Json/Flow.Graph/UserAuth/UserDatabaseAuthenticator.cs) instance.
 
 folders (containers):
