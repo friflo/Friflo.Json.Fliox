@@ -28,11 +28,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     {
                         var authenticator = new UserAuthenticator(userStore, userStore);
                         authenticator.RegisterPredicate(nameof(TestPredicate), TestPredicate);
-                        database.authenticator = authenticator;
-                        database.eventBroker = eventBroker;
+                        database.authenticator  = authenticator;
+                        database.eventBroker    = eventBroker;
                         await authenticator.ValidateRoles();
                         await AssertNotAuthenticated    (database);
-                        await AssertAuthContainer       (database);
+                        await AssertAuthAccess          (database);
                         await AssertAuthSubscribeChange (database);
                         await AssertAuthMessage         (database);
                     }
@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
 
-        private static async Task AssertAuthContainer(EntityDatabase database) {
+        private static async Task AssertAuthAccess(EntityDatabase database) {
             var newArticle = new Article{ id="new-article" };
             using (var mutateUser       = new PocStore(database, "user-access")) {
                 // test: allow read & mutate 
@@ -87,12 +87,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 
                 var tasks = new ReadWriteTasks(mutateUser, newArticle);
                 var sync = await mutateUser.TrySync();
-                AreEqual(0, sync.failed.Count);
-                IsTrue(tasks.Success);
-                
-                // test: store already authorized 
-                tasks = new ReadWriteTasks(mutateUser, newArticle);
-                sync = await mutateUser.TrySync();
                 AreEqual(0, sync.failed.Count);
                 IsTrue(tasks.Success);
             }
