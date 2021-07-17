@@ -31,7 +31,21 @@ The value of each entry authorize container specific tasks by `operations` and `
                         Allow subscription to entity changes in a container. These change types are:  
                         `create`, `update`, `delete`, `patch`
 
+
+## `message`
+
+A message can be authorized by its name listed in `names`.  
+Alternatively a group of messages can authorized by prefix filter using `*` in `names`. E.g. `"names": ["Command*"]`
+
+
+## `subscribeMessage`
+
+A message subscription can be authorized by its message name listed in `names`.  
+Alternatively a group of message subscriptions can authorized by a prefix filter using `*` in `names`. E.g. `"names": ["Event*"]`
+
+
 ## `task`
+
 The `task` `Right` contains an array of task `types`.
 Task execution of a specific type is allowed in case it is listed inside `types`.
 
