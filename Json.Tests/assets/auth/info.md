@@ -1,6 +1,6 @@
 
 
-This folder contains an example user database used to configure user authentication and authorization by utilizing
+This folder contains an example user database used to configure user authentication and authorization by utilizing a
 [UserAuthenticator.cs](../../../Json/Flow.Graph/UserAuth/UserDatabaseAuthenticator.cs) instance.
 
 folders (containers):
@@ -17,7 +17,7 @@ Used to store data for each user to enable user authentication.
 
 ## [`UserPermission`](./UserPermission)
 
-Store a set of `roles` for each user. Is a user aspire to run a task the applied `rules` are checked
+Store a set of `roles` for each user. If a user aspire to run a task the specified `rules` are evaluated
 and if authorization is successful the task is executed.
 
 
