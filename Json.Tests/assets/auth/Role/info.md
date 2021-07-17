@@ -12,7 +12,8 @@ The following `Right` types are available:
 | `database`         | Allow read / write operations and change subscriptions to the specified `containers`     |
 | `message`          | Allow sending the specified messages to a database by their `names`                      |
 | `subscribeMessage` | Allow subscribing to the specified messages sent to a database by their `names`          |
-| `predicate`        | Allow execution of arbitrary tasks by the given list of predicate function `names`.          |
+| `task`             | Allow task execution of the specified task `types`.                                      |
+| `predicate`        | Allow execution of arbitrary tasks by the given list of predicate function `names`.      |
 
 
 ## `database`
@@ -30,6 +31,13 @@ The value of each entry authorize container specific tasks by `operations` and `
                         Allow subscription to entity changes in a container. These change types are:  
                         `create`, `update`, `delete`, `patch`
 
+## `task`
+The `task` `Right` contains an array of task `types`.
+Task execution of a specific type is allowed in case it is listed inside `types`.
+
+The following task types can be used:
+
+`read`, `query`, `create`, `update`, `delete`, `patch`, `message`, `subscribeChanges`, `subscribeMessage`
 
 
 ## `predicate`

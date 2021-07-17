@@ -44,7 +44,7 @@ namespace Friflo.Json.Flow.Database.Auth
     public class RightTask : Right
     {
         public          List<TaskType>          types;
-        public override RightType               RightType => RightType.tasks;
+        public override RightType               RightType => RightType.task;
         
         private static readonly Authorizer Read             = new AuthorizeTaskType(TaskType.read);
         private static readonly Authorizer Query            = new AuthorizeTaskType(TaskType.query);
@@ -123,7 +123,7 @@ namespace Friflo.Json.Flow.Database.Auth
     public class RightDatabase : Right
     {
         public          Dictionary<string, ContainerAccess> containers;
-        public override RightType                           RightType => RightType.access;
+        public override RightType                           RightType => RightType.database;
         
         public override Authorizer ToAuthorizer() {
             var list = new List<Authorizer>(containers.Count);
@@ -174,10 +174,10 @@ namespace Friflo.Json.Flow.Database.Auth
     
     public enum RightType {
         allow,
-        tasks,
+        task,
         message,
         subscribeMessage,
-        access,
+        database,
         predicate
     }
 }
