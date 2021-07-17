@@ -22,11 +22,24 @@ namespace Friflo.Json.Flow.Database.Auth
             
         public abstract ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext);
         
+        /// <summary>
+        /// Register a predicate function by the given <see cref="name"/> which enables custom authorization via code,
+        /// which cannot be expressed by one of the provided <see cref="Right"/> implementations.
+        /// If called its parameters are intended to filter the aspired condition and return true if task execution is granted.
+        /// To reject task execution it returns false.
+        /// </summary>
         public void RegisterPredicate(string name, AuthPredicate predicate) {
             var authorizer = new AuthorizePredicate (name, predicate);
             registeredPredicates.Add(name, authorizer);
         }
         
+        /// <summary>
+        /// Register a predicate function which enables custom authorization via code, which cannot be expressed by one of the
+        /// provided <see cref="Right"/> implementations.
+        /// The <see cref="predicate"/> is registered by its delegate name.
+        /// If called its parameters are intended to filter the aspired condition and return true if task execution is granted.
+        /// To reject task execution it returns false.
+        /// </summary>
         public void RegisterPredicate(AuthPredicate predicate) {
             var name = predicate.Method.Name;
             var authorizer = new AuthorizePredicate (name, predicate);
