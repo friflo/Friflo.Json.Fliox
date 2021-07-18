@@ -17,8 +17,8 @@
     "dotnet-test-explorer.testProjectPath": "Json.Tests",
     "editor.detectIndentation": false,
     "json.schemas": [
-        { "fileMatch": ["/Json.Tests/assets/Graph/auth/Role/*.json"],           "url": "./Json.Tests/assets/schema/UserAuth/Role.json" },
-        { "fileMatch": ["/Json.Tests/assets/Graph/auth/UserCredential/*.json"], "url": "./Json.Tests/assets/schema/UserAuth/UserCredential.json" },
-        { "fileMatch": ["/Json.Tests/assets/Graph/auth/UserPermission/*.json"], "url": "./Json.Tests/assets/schema/UserAuth/UserPermission.json" }
+        { "fileMatch": ["/Json.Tests/assets/Graph/auth/Role/*.json"],           "url": "./Json.Tests/assets/Schema/JSON/UserAuth/Role.json" },
+        { "fileMatch": ["/Json.Tests/assets/Graph/auth/UserCredential/*.json"], "url": "./Json.Tests/assets/Schema/JSON/UserAuth/UserCredential.json" },
+        { "fileMatch": ["/Json.Tests/assets/Graph/auth/UserPermission/*.json"], "url": "./Json.Tests/assets/Schema/JSON/UserAuth/UserPermission.json" }
     ]
 }
