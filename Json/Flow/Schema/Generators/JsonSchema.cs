@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Schema.Generators
@@ -10,9 +11,8 @@ namespace Friflo.Json.Flow.Schema.Generators
     {
         private readonly    Generator   generator;
 
-
-        public JsonSchema (Type type, string folder, TypeStore typeStore) {
-            generator = new Generator(type, folder, typeStore);
+        public JsonSchema (ICollection<Type> types, string folder, TypeStore typeStore) {
+            generator = new Generator(types, folder, typeStore);
         }
         
         public void GenerateSchema() {
