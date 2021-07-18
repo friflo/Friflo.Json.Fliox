@@ -15,5 +15,11 @@
         "http"
     ],
     "dotnet-test-explorer.testProjectPath": "Json.Tests",
-    "editor.detectIndentation": false
+    "editor.detectIndentation": false,
+    "json.schemas": [
+        {
+            "fileMatch": ["/Json.Tests/assets/Graph/auth/Role/*.json"],
+            "url": "./Json.Tests/assets/Graph/auth/Role.schema.json"
+        }
+    ]
 }
