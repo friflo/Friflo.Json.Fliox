@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Schema
             var typescript = new Typescript(type, $"{folder}/Typescript", typeStore);
             typescript.GenerateSchema();
             
-            var jsonSchema = new JsonSchema(type, $"{folder}/Typescript", typeStore);
+            var jsonSchema = new JsonSchema(type, $"{folder}/JSON", typeStore);
             jsonSchema.GenerateSchema();
         }
     }
