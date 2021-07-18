@@ -12,15 +12,15 @@ namespace Friflo.Json.Flow.Schema
     {
         public readonly TypeStore typeStore = new TypeStore();
             
-        public void CreateSchema (ICollection<Type> types, string folder) {
-            foreach (var type in types) {
+        public void CreateSchema (ICollection<Type> rootTypes, string folder) {
+            foreach (var type in rootTypes) {
                 typeStore.GetTypeMapper(type);
             }
             
-            var typescript = new Typescript(types, $"{folder}/Typescript", typeStore);
+            var typescript = new Typescript(rootTypes, $"{folder}/Typescript", typeStore);
             typescript.GenerateSchema();
             
-            var jsonSchema = new JsonSchema(types, $"{folder}/JSON", typeStore);
+            var jsonSchema = new JsonSchema(rootTypes, $"{folder}/JSON", typeStore);
             jsonSchema.GenerateSchema();
         }
     }

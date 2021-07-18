@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Mapper.Map;
 
 namespace Friflo.Json.Flow.Schema.Generators
 {
@@ -16,6 +17,13 @@ namespace Friflo.Json.Flow.Schema.Generators
         }
         
         public void GenerateSchema() {
+            foreach (var pair in generator.typeMappers) {
+                var mapper = pair.Value;
+                EmitType(mapper);
+            }
+        }
+        
+        private void EmitType(TypeMapper mapper) {
             
         }
     }
