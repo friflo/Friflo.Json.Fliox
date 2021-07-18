@@ -28,11 +28,11 @@ namespace Friflo.Json.Flow.Sync
         internal static TypeStore Get() {
             if (_singleton == null) {
                 _singleton = new TypeStore();
-                _singleton.GetTypeMapper(typeof(DatabaseRequest));
-                _singleton.GetTypeMapper(typeof(DatabaseResponse));
+                // Sync models
                 _singleton.GetTypeMapper(typeof(DatabaseMessage));
                 _singleton.GetTypeMapper(typeof(ErrorResponse));
                 
+                // UserStore models & commands
                 _singleton.GetTypeMapper(typeof(Role));
                 _singleton.GetTypeMapper(typeof(UserPermission));
                 _singleton.GetTypeMapper(typeof(UserCredential));
