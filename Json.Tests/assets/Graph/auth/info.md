@@ -24,7 +24,7 @@ and if authorization is successful the task is executed.
 
 
 ### VSCode
-To simplify manual editing of entities (files) in VSCode three **JSON Schema** files are used: `Role.json`, `UserCredential.json`, `UserPermission.json`  
+To simplify manual editing of entities (files) in VSCode [JSON Schema - UserAuth](../../Schema/JSON/UserAuth) is used
 The mapping of **JSON Schema** files via VSCode is explained here:
 [Mapping to a schema in the workspace](https://code.visualstudio.com/docs/languages/json#_mapping-to-a-schema-in-the-workspace)
 
