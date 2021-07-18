@@ -26,16 +26,16 @@
         "RightAllow": {
             "type": "object",
             "properties": {
-                "type":          { "enum": [ "allow" ] },
-                "grant":         { "type": "boolean" }
+                "type":         { "enum": [ "allow" ] },
+                "grant":        { "type": "boolean" }
             },
             "additionalProperties": false
         },
         "RightDatabase": {
             "type": "object",
             "properties": {
-                "type":          { "enum": [ "database" ] },
-                "containers":    { "type": "object",
+                "type":         { "enum": [ "database" ] },
+                "containers":   { "type": "object",
                     "additionalProperties": { "$ref": "#/definitions/ContainerAccess" }
                 }
             },
@@ -44,16 +44,20 @@
         "ContainerAccess": {
             "type": "object",
             "properties": {
-                "operations":       { "enum": [ "create", "update", "delete", "patch", "read", "query", "mutate", "full" ] },
-                "subscribeChanges": { "enum": [ "create", "update", "delete", "patch" ] }
+                "operations":   { "type": "array",
+                    "items": { "enum": [ "create", "update", "delete", "patch", "read", "query", "mutate", "full" ] }
+                },
+                "subscribeChanges": { "type": "array",
+                    "items": { "enum": [ "create", "update", "delete", "patch" ] }
+                }
             },
             "additionalProperties": false
         },
         "RightMessage": {
             "type": "object",
             "properties": {
-                "type":          { "enum": [ "message" ] },
-                "names":         { "type": "array",
+                "type":         { "enum": [ "message" ] },
+                "names":        { "type": "array",
                     "items":        { "type": "string" }
                 }
             },
