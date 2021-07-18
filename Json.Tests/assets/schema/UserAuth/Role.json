@@ -1,14 +1,14 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$ref": "#/definitions/UserAuth.Role",
+    "$ref": "#/definitions/Role",
     "definitions": {
-        "UserAuth.Role": {
+        "Role": {
             "type": "object",
             "properties": {
                 "id":           { "type": "string" },
                 "description":  { "type": "string" },
                 "rights":       { "type": "array",
-                    "items":        { "$ref": "./Right.json#/definitions/Database.Auth.Right" }
+                    "items":        { "$ref": "../Database.Auth/Right.json#/definitions/Right" }
                 }
             },
             "additionalProperties": false

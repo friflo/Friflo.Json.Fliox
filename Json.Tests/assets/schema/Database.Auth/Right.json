@@ -2,17 +2,17 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$ref": "#/definitions/Role",
     "definitions": {
-        "Database.Auth.Right": {
+        "Right": {
             "oneOf": [
-                { "$ref": "#/definitions/Database.Auth.RightAllow" },
-                { "$ref": "#/definitions/Database.Auth.RightDatabase" },
-                { "$ref": "#/definitions/Database.Auth.RightMessage" },
-                { "$ref": "#/definitions/Database.Auth.RightSubscribeMessage" },
-                { "$ref": "#/definitions/Database.Auth.RightPredicate" },
-                { "$ref": "#/definitions/Database.Auth.RightTask" }
+                { "$ref": "#/definitions/RightAllow" },
+                { "$ref": "#/definitions/RightDatabase" },
+                { "$ref": "#/definitions/RightMessage" },
+                { "$ref": "#/definitions/RightSubscribeMessage" },
+                { "$ref": "#/definitions/RightPredicate" },
+                { "$ref": "#/definitions/RightTask" }
             ]
         },
-        "Database.Auth.RightAllow": {
+        "RightAllow": {
             "type": "object",
             "properties": {
                 "type":         { "enum": [ "allow" ] },
@@ -20,17 +20,17 @@
             },
             "additionalProperties": false
         },
-        "Database.Auth.RightDatabase": {
+        "RightDatabase": {
             "type": "object",
             "properties": {
                 "type":         { "enum": [ "database" ] },
                 "containers":   { "type": "object",
-                    "additionalProperties": { "$ref": "#/definitions/Database.Auth.ContainerAccess" }
+                    "additionalProperties": { "$ref": "#/definitions/ContainerAccess" }
                 }
             },
             "additionalProperties": false
         },
-        "Database.Auth.ContainerAccess": {
+        "ContainerAccess": {
             "type": "object",
             "properties": {
                 "operations":   { "type": "array",
@@ -42,7 +42,7 @@
             },
             "additionalProperties": false
         },
-        "Database.Auth.RightMessage": {
+        "RightMessage": {
             "type": "object",
             "properties": {
                 "type":         { "enum": [ "message" ] },
@@ -52,7 +52,7 @@
             },
             "additionalProperties": false
         },
-        "Database.Auth.RightSubscribeMessage": {
+        "RightSubscribeMessage": {
             "type": "object",
             "properties": {
                 "type":         { "enum": [ "subscribeMessage" ] },
@@ -62,7 +62,7 @@
             },
             "additionalProperties": false
         },
-        "Database.Auth.RightPredicate": {
+        "RightPredicate": {
             "type": "object",
             "properties": {
                 "type":         { "enum": [ "predicate" ] },
@@ -72,7 +72,7 @@
             },
             "additionalProperties": false
         },
-        "Database.Auth.RightTask": {
+        "RightTask": {
             "type": "object",
             "properties": {
                 "type":         { "enum": [ "task" ] },
