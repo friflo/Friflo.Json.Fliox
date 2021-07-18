@@ -1,8 +1,8 @@
 
 
-This folder contains the database used by the unit tests located in [Flow/Graph unit tests](../../Common/UnitTest/Flow/Graph).
+This folder contains the database used by the unit tests located in [Flow/Graph unit tests](../../../Common/UnitTest/Flow/Graph).
 
-The schema of the database is defined via the models in [PocStore.cs](../../Common/UnitTest/Flow/Graph/PocStore.cs).
+The schema of the database is defined via the models in [PocStore.cs](../../../Common/UnitTest/Flow/Graph/PocStore.cs).
 
 Each `EntitySet<>` field in `PocStore` describe the model used for the entities (files) in each container (folder).
 This means that all payloads in a container folder are of a specific type.  
