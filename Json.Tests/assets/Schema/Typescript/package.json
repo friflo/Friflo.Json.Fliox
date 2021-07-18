@@ -1,0 +1,9 @@
+{
+  "name": "friflo-typescript-schema",
+  "version": "0.1.0",
+  "main": "index.js",
+  "author": "Ullrich Praetz",
+  "devDependencies": {
+    "typescript": "^4.3.5"
+  }
+}
