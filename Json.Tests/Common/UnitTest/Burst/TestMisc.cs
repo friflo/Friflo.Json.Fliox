@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
     {
         [Test]
         public void TestUtf8() {
-            Bytes src = CommonUtils.FromFile ("assets/EuroSign.txt");
+            Bytes src = CommonUtils.FromFile ("assets/Burst/EuroSign.txt");
             String str = src.ToString();
             AreEqual("€", str);
 

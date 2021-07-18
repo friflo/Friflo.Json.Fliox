@@ -243,13 +243,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         public void Pretty () {
             using (var parser = new Local<JsonParser>())
             using (var ser = new JsonSerializer())
-            using (Bytes bytes = CommonUtils.FromFile("assets/codec/complex.json")) {
+            using (Bytes bytes = CommonUtils.FromFile("assets/Burst/codec/complex.json")) {
                 ser.SetPretty(true);
                 parser.value.InitParser(bytes);
                 ser.InitSerializer();
                 parser.value.NextEvent();
                 ser.WriteTree(ref parser.value);
-                CommonUtils.ToFile("assets/output/complexPrettySerializer.json", ser.json);
+                CommonUtils.ToFile("assets/Burst/output/complexPrettySerializer.json", ser.json);
             }
         }
     }
