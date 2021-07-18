@@ -5,5 +5,9 @@
   "author": "Ullrich Praetz",
   "devDependencies": {
     "typescript": "^4.3.5"
+  },
+  "scripts": {
+    "tsc-init": "tsc --init"
   }
+  
 }
