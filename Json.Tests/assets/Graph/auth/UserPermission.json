@@ -1,0 +1,16 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$ref": "#/definitions/UserPermission",
+    "definitions": {
+        "UserPermission": {
+            "type": "object",
+            "properties": {
+                "id":           { "type": "string" },
+                "roles":        { "type": "array",
+                    "items":        { "type": "string" }
+                }
+            },
+            "additionalProperties": false
+        }
+    }
+}
