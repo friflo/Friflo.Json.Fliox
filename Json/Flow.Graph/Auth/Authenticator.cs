@@ -4,13 +4,15 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Auth.Rights;
+using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Sync;
 
 #if UNITY_5_3_OR_NEWER
     using ValueTask = System.Threading.Tasks.Task;
 #endif
 
-namespace Friflo.Json.Flow.Database.Auth
+namespace Friflo.Json.Flow.Auth
 {
     /// <summary>
     /// Performs authentication and authorization by checking <see cref="SyncRequest.clientId"/> and <see cref="SyncRequest.token"/>

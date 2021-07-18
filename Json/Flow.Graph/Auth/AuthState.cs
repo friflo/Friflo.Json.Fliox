@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-namespace Friflo.Json.Flow.Database.Auth
+using Friflo.Json.Flow.Database;
+
+namespace Friflo.Json.Flow.Auth
 {
     /// <summary>
     /// Contains the authentication and authorization result of <see cref="Authenticator.Authenticate"/>.

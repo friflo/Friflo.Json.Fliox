@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Auth.Rights;
 using Friflo.Json.Flow.Database;
-using Friflo.Json.Flow.Database.Auth;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Database.Utils;
 using Friflo.Json.Flow.Graph;

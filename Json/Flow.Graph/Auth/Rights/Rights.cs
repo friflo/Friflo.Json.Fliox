@@ -10,7 +10,7 @@ using Friflo.Json.Flow.Sync;
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnassignedField.Global
 // ReSharper disable CollectionNeverUpdated.Global
-namespace Friflo.Json.Flow.Database.Auth
+namespace Friflo.Json.Flow.Auth.Rights
 {
     [Fri.Discriminator("type")]
     [Fri.Polymorph(typeof(RightAllow),              Discriminant = "allow")]

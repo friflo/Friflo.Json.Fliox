@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Auth.Rights;
+using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Sync;
 
-namespace Friflo.Json.Flow.Database.Auth
+namespace Friflo.Json.Flow.Auth
 {
     /// <summary>
     /// Authorize a given task.

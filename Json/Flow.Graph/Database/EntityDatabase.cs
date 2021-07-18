@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Flow.Database.Auth;
+using Friflo.Json.Flow.Auth;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Sync;
 
