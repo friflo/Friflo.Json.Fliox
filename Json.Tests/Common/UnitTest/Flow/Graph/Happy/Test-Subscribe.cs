@@ -91,8 +91,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             var subscribeMessage1   = store.SubscribeMessage<TestMessage>((msg) => {
                 processor.testMessageCalls++;
                 TestMessage value = msg.Value;
-                AreEqual("test message",    value.text);
-                AreEqual("TestMessage",     msg.Name);
+                AreEqual("test message",        value.text);
+                AreEqual(nameof(TestMessage),   msg.Name);
             });
             var subscribeMessage2   = store.SubscribeMessage<int>(TestRelationPoC.TestMessageInt, (msg) => {
                 processor.testMessageIntCalls++;
