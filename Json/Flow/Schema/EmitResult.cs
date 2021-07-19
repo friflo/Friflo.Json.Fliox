@@ -11,14 +11,14 @@ namespace Friflo.Json.Flow.Schema
     {
         internal readonly   TypeMapper      mapper;
         internal readonly   string          content;
-        internal readonly   HashSet<Type>   customTypes;
+        internal readonly   HashSet<Type>   imports;
 
         public   override   string      ToString() => mapper.type.Name;
 
-        public EmitResult(TypeMapper mapper, string content, HashSet<Type> customTypes) {
-            this.mapper         = mapper;
-            this.content        = content;
-            this.customTypes    = customTypes;
+        public EmitResult(TypeMapper mapper, string content, HashSet<Type> imports) {
+            this.mapper     = mapper;
+            this.content    = content;
+            this.imports    = imports;
         }
     }
 }

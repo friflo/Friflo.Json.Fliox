@@ -13,12 +13,11 @@ namespace Friflo.Json.Flow.Schema
     public class Package
     {
         public  readonly   List<EmitResult> emitResults = new List<EmitResult>();
-        public  readonly   HashSet<Type>    customTypes = new HashSet<Type>();
+        public  readonly   HashSet<Type>    imports = new HashSet<Type>();
     }
     
     public class Generator
     {
-        internal readonly    TypeStore                              typeStore;
         public   readonly    IReadOnlyDictionary<Type, TypeMapper>  typeMappers;
         public   readonly    string                                 folder;
         
@@ -28,7 +27,6 @@ namespace Friflo.Json.Flow.Schema
 
         public Generator (string folder, TypeStore typeStore) {
             this.folder     = folder;
-            this.typeStore  = typeStore;
             typeMappers     = typeStore.GetTypeMappers();
         }
 
@@ -44,7 +42,7 @@ namespace Friflo.Json.Flow.Schema
                     packages.Add(ns, package = new Package());
                 }
                 package.emitResults.Add(emit);
-                package.customTypes.UnionWith(emit.customTypes);
+                package.imports.UnionWith(emit.imports);
             }
         }
         
@@ -54,7 +52,7 @@ namespace Friflo.Json.Flow.Schema
                 Package     package = pair.Value;
                 sb.Clear();
                 
-                foreach (var customType in package.customTypes) {
+                foreach (var customType in package.imports) {
                     if (customType.Namespace == ns)
                         continue;
                     sb.AppendLine($"import {{ {customType.Name} }} from \"./{customType.Namespace}\"");

@@ -101,7 +101,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             return null;
         }
         
-        private static string GetFieldType(TypeMapper mapper, HashSet<Type> customTypes) {
+        private static string GetFieldType(TypeMapper mapper, HashSet<Type> imports) {
             var type = mapper.type;
             if (type == typeof(JsonValue)) {
                 return "object";
@@ -121,16 +121,16 @@ namespace Friflo.Json.Flow.Schema.Generators
             }
             if (mapper.IsArray) {
                 var elementMapper = mapper.GetElementMapper();
-                var elementTypeName = GetFieldType(elementMapper, customTypes);
+                var elementTypeName = GetFieldType(elementMapper, imports);
                 return $"{elementTypeName}[]";
             }
             var isDictionary = type.GetInterfaces().Contains(typeof(IDictionary));
             if (isDictionary) {
                 var valueMapper = mapper.GetElementMapper();
-                var valueTypeName = GetFieldType(valueMapper, customTypes);
+                var valueTypeName = GetFieldType(valueMapper, imports);
                 return $"{{ string: {valueTypeName} }}";
             }
-            customTypes.Add(type);
+            imports.Add(type);
             return type.Name;
         }
     }
