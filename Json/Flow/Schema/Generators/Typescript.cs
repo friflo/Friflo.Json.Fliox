@@ -14,11 +14,12 @@ namespace Friflo.Json.Flow.Schema.Generators
         private readonly    Generator   generator;
 
         public Typescript (ICollection<Type> types, string folder, TypeStore typeStore) {
-            generator = new Generator(types, folder, typeStore);
+            generator       = new Generator(types, folder, typeStore);
         }
         
         public void GenerateSchema() {
             var sb = new StringBuilder();
+            // emit custom types
             foreach (var pair in generator.typeMappers) {
                 var mapper = pair.Value;
                 sb.Clear();
@@ -27,6 +28,10 @@ namespace Friflo.Json.Flow.Schema.Generators
                     continue;
                 generator.AddEmitType(result);
             }
+            
+            generator.GroupTypesByNamespace();
+            generator.CreateFiles(sb, ns => $"{ns}.ts");
+            generator.WriteFiles();
         }
         
         private static EmitResult EmitType(TypeMapper mapper, StringBuilder sb) {
@@ -38,12 +43,30 @@ namespace Friflo.Json.Flow.Schema.Generators
                 var fields = mapper.propFields.fields;
                 sb.AppendLine($"class {mapper.type.Name} {{");
                 foreach (var field in fields) {
-                    sb.AppendLine($"    {field} : {field.fieldType.type.Name}");
+                    var fieldType = GetFieldType(field.fieldType);
+                    sb.AppendLine($"    {field} : {fieldType};");
                 }
                 sb.AppendLine("}");
                 return new EmitResult(mapper, sb.ToString());
             }
             return null;
+        }
+        
+        private static string GetFieldType(TypeMapper mapper) {
+            var type = mapper.type;
+            if (type == typeof(string)) {
+                return "string";
+            }
+            if (type == typeof(byte) || type == typeof(short) || type == typeof(int) || type == typeof(long)
+                || type == typeof(float) || type == typeof(double)) {
+                return "number";
+            }
+            if (mapper.IsArray) {
+                var elementMapper = mapper.GetElementMapper();
+                var elementTypeName = GetFieldType(elementMapper);
+                return $"{elementTypeName}[]";
+            }
+            return type.Name;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var generator = new SchemaGenerator();
             var types = new [] { typeof(Role), typeof(UserCredential), typeof(UserCredential) };
             EntityStore.AddTypeMappers(generator.typeStore);
-            generator.CreateSchema(types, CommonUtils.GetBasePath() + "assets/Schema/Typescript/PocStore");
+            generator.CreateSchema(types, CommonUtils.GetBasePath() + "assets/Schema");
         }
     }
 }

@@ -7,8 +7,10 @@ namespace Friflo.Json.Flow.Schema
 {
     public class EmitResult
     {
-        internal    readonly    TypeMapper  mapper;
-        internal    readonly    string      content;
+        internal readonly   TypeMapper  mapper;
+        internal readonly   string      content;
+
+        public   override   string      ToString() => mapper.type.Name;
 
         public EmitResult(TypeMapper mapper, string content) {
             this.mapper     = mapper;

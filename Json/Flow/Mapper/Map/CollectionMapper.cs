@@ -14,16 +14,17 @@ namespace Friflo.Json.Flow.Mapper.Map
     {
         // ReSharper disable once UnassignedReadonlyField
         // field ist set via reflection below to enable using a readonly field
-        public      readonly   TypeMapper<TElm>    elementType;
-        private     readonly   Type                elementTypeNative;
-        protected   readonly   ConstructorInfo     constructor;
-        private     readonly   Func<int, TElm[]>   createArray;
+        public      readonly    TypeMapper<TElm>    elementType;
+        private     readonly    Type                elementTypeNative;
+        protected   readonly    ConstructorInfo     constructor;
+        private     readonly    Func<int, TElm[]>   createArray;
         
         // ReSharper disable NotAccessedField.Local
-        private  readonly   int                 rank;
-        private  readonly   Type                keyType;
+        private     readonly    int                 rank;
+        private     readonly    Type                keyType;
         
-        public  override    bool                IsArray => true;
+        public      override    bool                IsArray => true;
+        public      override    TypeMapper          GetElementMapper()    { return elementType; }
         
 
         internal CollectionMapper (

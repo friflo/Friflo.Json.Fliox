@@ -80,6 +80,7 @@ namespace Friflo.Json.Flow.Mapper.Map
             return value == null;
         }
         
+        public virtual  TypeMapper      GetElementMapper()    { return null; }
         public virtual  TypeMapper      GetUnderlyingMapper() { return null; }
 
     }
