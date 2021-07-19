@@ -8,7 +8,7 @@
                 "id":           { "type": "string" },
                 "description":  { "type": "string" },
                 "rights":       { "type": "array",
-                    "items":        { "$ref": "../Auth.Rights.json#/definitions/Right" }
+                    "items":        { "$ref": "./Auth.Rights.json#/definitions/Right" }
                 }
             },
             "additionalProperties": false
