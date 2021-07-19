@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Mapper.Map.Val;
 
 namespace Friflo.Json.Flow.Schema.Generators
 {
@@ -105,6 +106,9 @@ namespace Friflo.Json.Flow.Schema.Generators
         
         private static string GetFieldType(TypeMapper mapper, HashSet<Type> customTypes) {
             var type = mapper.type;
+            if (type == typeof(JsonValue)) {
+                return "object";
+            }
             if (mapper.isValueType && mapper.isNullable) {
                 type = mapper.nullableUnderlyingType;
             }
