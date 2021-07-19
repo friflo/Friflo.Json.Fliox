@@ -12,15 +12,17 @@ namespace Friflo.Json.Flow.Schema
 {
     public class Generator
     {
-        public  readonly    IReadOnlyDictionary<Type, TypeMapper>   typeMappers;
-        public  readonly    string                                  folder;
+        internal readonly    TypeStore                              typeStore;
+        public   readonly    IReadOnlyDictionary<Type, TypeMapper>  typeMappers;
+        public   readonly    string                                 folder;
         
-        public  readonly    Dictionary<TypeMapper, EmitResult>      emitTypes       = new Dictionary<TypeMapper, EmitResult>();
-        public  readonly    Dictionary<string, List<EmitResult>>    namespaceTypes  = new Dictionary<string, List<EmitResult>>();
-        public  readonly    Dictionary<string, string>              files           = new Dictionary<string, string>();
+        public   readonly    Dictionary<TypeMapper, EmitResult>     emitTypes       = new Dictionary<TypeMapper, EmitResult>();
+        public   readonly    Dictionary<string, List<EmitResult>>   namespaceTypes  = new Dictionary<string, List<EmitResult>>();
+        public   readonly    Dictionary<string, string>             files           = new Dictionary<string, string>();
 
         public Generator (string folder, TypeStore typeStore) {
             this.folder     = folder;
+            this.typeStore  = typeStore;
             typeMappers     = typeStore.GetTypeMappers();
         }
 

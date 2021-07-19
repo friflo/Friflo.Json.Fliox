@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
@@ -16,9 +15,9 @@ namespace Friflo.Json.Flow.Schema.Generators
         private readonly    Generator   generator;
         private readonly    TypeStore   typeStore;
 
-        public Typescript (string folder, TypeStore typeStore) {
-            this.typeStore  = typeStore;
-            generator       = new Generator(folder, typeStore);
+        public Typescript (Generator generator) {
+            this.typeStore  = generator.typeStore;
+            this.generator  = generator;
         }
         
         public void GenerateSchema() {

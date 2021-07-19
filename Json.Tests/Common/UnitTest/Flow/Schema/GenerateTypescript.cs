@@ -13,10 +13,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
     public static class GenerateTypescript
     {
         [Test] public static void TestTypescript () {
-            var generator = new SchemaGenerator();
             var types = new [] { typeof(Role), typeof(UserCredential), typeof(UserCredential) };
+            var generator = new SchemaGenerator(types);
             EntityStore.AddTypeMappers(generator.typeStore);
-            generator.CreateSchema(types, CommonUtils.GetBasePath() + "assets/Schema");
+            generator.Typescript(CommonUtils.GetBasePath() + "assets/Schema/Typescript/UserStore");
         }
     }
 }

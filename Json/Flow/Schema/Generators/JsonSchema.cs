@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Schema.Generators
 {
@@ -11,8 +8,8 @@ namespace Friflo.Json.Flow.Schema.Generators
     {
         private readonly    Generator   generator;
 
-        public JsonSchema (string folder, TypeStore typeStore) {
-            generator = new Generator(folder, typeStore);
+        public JsonSchema (Generator generator) {
+            this.generator = generator;
         }
         
         public void GenerateSchema() {
