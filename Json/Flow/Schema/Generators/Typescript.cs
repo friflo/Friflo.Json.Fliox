@@ -105,6 +105,9 @@ namespace Friflo.Json.Flow.Schema.Generators
         
         private static string GetFieldType(TypeMapper mapper, HashSet<Type> customTypes) {
             var type = mapper.type;
+            if (mapper.isValueType && mapper.isNullable) {
+                type = mapper.nullableUnderlyingType;
+            }
             if (type == typeof(string)) {
                 return "string";
             }
