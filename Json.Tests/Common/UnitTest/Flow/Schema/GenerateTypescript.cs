@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Schema;
+using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.UserAuth;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
@@ -12,11 +13,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 {
     public static class GenerateTypescript
     {
-        [Test] public static void TestTypescript () {
+        [Test]
+        public static void TestTypescriptUserStore () {
             var types = new [] { typeof(Role), typeof(UserCredential), typeof(UserCredential) };
             var generator = new SchemaGenerator(types);
             EntityStore.AddTypeMappers(generator.typeStore);
             generator.Typescript(CommonUtils.GetBasePath() + "assets/Schema/Typescript/UserStore");
+        }
+        
+        [Test]
+        public static void TestTypescriptSync () {
+            var types = new [] { typeof(DatabaseMessage) };
+            var generator = new SchemaGenerator(types);
+            EntityStore.AddTypeMappers(generator.typeStore);
+            generator.Typescript(CommonUtils.GetBasePath() + "assets/Schema/Typescript/Sync");
         }
     }
 }

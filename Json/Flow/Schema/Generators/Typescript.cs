@@ -53,16 +53,15 @@ namespace Friflo.Json.Flow.Schema.Generators
             }
             if (mapper.IsComplex) {
                 var fields          = mapper.propFields.fields;
-                int maxFieldName    = fields.Max(field => field.name.Length);
+                int maxFieldName    = fields.Length > 0 ? fields.Max(field => field.name.Length) : 0;
                 
                 string  discriminator = null;
                 var     discriminant = mapper.discriminant;
                 var extendsStr = "";
                 if (discriminant != null) {
-                    var baseType    = type.BaseType;
-                    var baseMapper  = typeStore.GetTypeMapper(baseType);
+                    var baseMapper  = generator.GetPolymorphBaseMapper(type);
                     discriminator   = baseMapper.instanceFactory.discriminator;
-                    extendsStr = $"extends {baseType?.Name} ";
+                    extendsStr = $"extends {baseMapper.type.Name} ";
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                 }
                 var abstractStr = "";
