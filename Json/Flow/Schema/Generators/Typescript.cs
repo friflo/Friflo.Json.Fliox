@@ -16,9 +16,9 @@ namespace Friflo.Json.Flow.Schema.Generators
         private readonly    Generator   generator;
         private readonly    TypeStore   typeStore;
 
-        public Typescript (ICollection<Type> types, string folder, TypeStore typeStore) {
+        public Typescript (string folder, TypeStore typeStore) {
             this.typeStore  = typeStore;
-            generator       = new Generator(types, folder, typeStore);
+            generator       = new Generator(folder, typeStore);
         }
         
         public void GenerateSchema() {
@@ -34,8 +34,8 @@ namespace Friflo.Json.Flow.Schema.Generators
             }
             
             generator.GroupTypesByNamespace();
-            // generator.CreateFiles(sb, ns => $"{ns}.ts");
-            generator.CreateFiles(sb, ns => $"{ns.Replace(".", "/")}.ts");
+            generator.CreateFiles(sb, ns => $"{ns}.ts");
+            // generator.CreateFiles(sb, ns => $"{ns.Replace(".", "/")}.ts");
             generator.WriteFiles();
         }
         
@@ -67,7 +67,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                 if (instanceFactory != null) {
                     abstractStr = "abstract ";
                 }
-                sb.AppendLine($"{abstractStr}class {mapper.type.Name} {extendsStr}{{");
+                sb.AppendLine($"export {abstractStr}class {mapper.type.Name} {extendsStr}{{");
                 if (instanceFactory != null) {
                     sb.AppendLine($"    abstract {instanceFactory.discriminator}:");
                     foreach (var polyType in instanceFactory.polyTypes) {
@@ -91,7 +91,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             }
             if (mapper.type.IsEnum) {
                 var enumValues = mapper.GetEnumValues();
-                sb.AppendLine($"type {mapper.type.Name} =");
+                sb.AppendLine($"export type {mapper.type.Name} =");
                 foreach (var enumValue in enumValues) {
                     sb.AppendLine($"    | \"{enumValue}\"");
                 }

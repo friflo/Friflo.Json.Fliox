@@ -11,8 +11,8 @@ namespace Friflo.Json.Flow.Schema.Generators
     {
         private readonly    Generator   generator;
 
-        public JsonSchema (ICollection<Type> rootTypes, string folder, TypeStore typeStore) {
-            generator = new Generator(rootTypes, folder, typeStore);
+        public JsonSchema (string folder, TypeStore typeStore) {
+            generator = new Generator(folder, typeStore);
         }
         
         public void GenerateSchema() {

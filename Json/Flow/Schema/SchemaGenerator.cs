@@ -17,10 +17,10 @@ namespace Friflo.Json.Flow.Schema
                 typeStore.GetTypeMapper(type);
             }
             
-            var typescript = new Typescript(rootTypes, $"{folder}/Typescript", typeStore);
+            var typescript = new Typescript($"{folder}/Typescript", typeStore);
             typescript.GenerateSchema();
             
-            var jsonSchema = new JsonSchema(rootTypes, $"{folder}/JSON", typeStore);
+            var jsonSchema = new JsonSchema($"{folder}/JSON", typeStore);
             jsonSchema.GenerateSchema();
         }
     }
