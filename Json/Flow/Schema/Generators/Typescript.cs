@@ -43,11 +43,28 @@ namespace Friflo.Json.Flow.Schema.Generators
                 mapper = underlyingMapper;
             }
             if (mapper.IsComplex) {
+                var discriminant = mapper.discriminant;
+                var extendsStr = "";
+                if (discriminant != null) {
+                    var baseType = mapper.type.BaseType;
+                    extendsStr = $"extends {baseType?.Name} ";
+                }
+                var abstractStr = "";
+                var instanceFactory = mapper.instanceFactory;
+                if (instanceFactory != null) {
+                    abstractStr = "abstract ";
+                    sb.AppendLine($"type {instanceFactory}");
+                }
+                sb.AppendLine($"{abstractStr}class {mapper.type.Name} {extendsStr}{{");
+                if (instanceFactory != null) {
+                    sb.AppendLine($"    abstract {instanceFactory.discriminator}: string;");
+                }
+                
+                // fields                
                 var fields = mapper.propFields.fields;
-                sb.AppendLine($"class {mapper.type.Name} {{");
                 foreach (var field in fields) {
                     var fieldType = GetFieldType(field.fieldType);
-                    sb.AppendLine($"    {field} : {fieldType};");
+                    sb.AppendLine($"    {field}: {fieldType};");
                 }
                 sb.AppendLine("}");
                 return new EmitResult(mapper, sb.ToString());
@@ -68,6 +85,9 @@ namespace Friflo.Json.Flow.Schema.Generators
             var type = mapper.type;
             if (type == typeof(string)) {
                 return "string";
+            }
+            if (type == typeof(bool)) {
+                return "boolean";
             }
             if (type == typeof(byte) || type == typeof(short) || type == typeof(int) || type == typeof(long)
                 || type == typeof(float) || type == typeof(double)) {

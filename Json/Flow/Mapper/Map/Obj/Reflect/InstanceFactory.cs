@@ -17,15 +17,22 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
 
     internal class InstanceFactory {  // todo internal
         internal readonly   string                          discriminator;
+        internal readonly   Type                            discriminatorType;
         private  readonly   Type                            instanceType;
         private  readonly   PolyType[]                      polyTypes;
         private             TypeMapper                      instanceMapper;
         private  readonly   Dictionary<string, TypeMapper>  polymorphMapper = new Dictionary<string, TypeMapper>();
 
-        private InstanceFactory(string discriminator, Type instanceType, PolyType[] polyTypes) {
+        private InstanceFactory(Type type, string discriminator, Type instanceType, PolyType[] polyTypes) {
             this.discriminator = discriminator;
             this.instanceType = instanceType;
             this.polyTypes = polyTypes;
+            if(discriminator != null) {
+                var property = type.GetProperty(discriminator);
+                if (property != null) {
+                    discriminatorType = property.GetType();
+                }
+            }
         }
 
         internal void InitFactory(TypeStore typeStore) {
@@ -92,7 +99,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
                 throw new InvalidOperationException($"specified [Fri.Polymorph] attribute require [Fri.Discriminator] on: {type}");
 
             if (instanceType != null || typeList.Count > 0)
-                return new InstanceFactory(discriminator, instanceType, typeList.ToArray());
+                return new InstanceFactory(type, discriminator, instanceType, typeList.ToArray());
             return null;
         }
 
