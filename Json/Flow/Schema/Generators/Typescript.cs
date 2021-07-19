@@ -2,7 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
@@ -30,7 +32,8 @@ namespace Friflo.Json.Flow.Schema.Generators
             }
             
             generator.GroupTypesByNamespace();
-            generator.CreateFiles(sb, ns => $"{ns}.ts");
+            // generator.CreateFiles(sb, ns => $"{ns}.ts");
+            generator.CreateFiles(sb, ns => $"{ns.Replace(".", "/")}.ts");
             generator.WriteFiles();
         }
         
@@ -74,6 +77,12 @@ namespace Friflo.Json.Flow.Schema.Generators
                 var elementMapper = mapper.GetElementMapper();
                 var elementTypeName = GetFieldType(elementMapper);
                 return $"{elementTypeName}[]";
+            }
+            var isDictionary = type.GetInterfaces().Contains(typeof(IDictionary));
+            if (isDictionary) {
+                var valueMapper = mapper.GetElementMapper();
+                var valueTypeName = GetFieldType(valueMapper);
+                return $"{{ string: {valueTypeName} }}";
             }
             return type.Name;
         }

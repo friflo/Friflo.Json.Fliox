@@ -58,7 +58,9 @@ namespace Friflo.Json.Flow.Schema
                 var filename    = file.Key;
                 var content     = file.Value;
                 var path = $"{folder}/{filename}";
-                Directory.CreateDirectory(folder);
+                var lastSlash = path.LastIndexOf("/", StringComparison.InvariantCulture);
+                var fileFolder = lastSlash == -1 ? folder : path.Substring(0, lastSlash);
+                Directory.CreateDirectory(fileFolder);
                 File.WriteAllText(path, content, Encoding.UTF8);
             }
         }
