@@ -49,6 +49,15 @@ namespace Friflo.Json.Flow.Schema.Generators
                 sb.AppendLine("}");
                 return new EmitResult(mapper, sb.ToString());
             }
+            if (mapper.type.IsEnum) {
+                var enumValues = mapper.GetEnumValues();
+                sb.AppendLine($"type {mapper.type.Name} =");
+                foreach (var enumValue in enumValues) {
+                    sb.AppendLine($"    | \"{enumValue}\"");
+                }
+                sb.AppendLine($";");
+                return new EmitResult(mapper, sb.ToString());
+            }
             return null;
         }
         

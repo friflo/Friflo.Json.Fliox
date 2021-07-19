@@ -59,10 +59,10 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
 #endif
     public class EnumMapper<T> : TypeMapper<T>
     {
-        private   readonly Dictionary<BytesString, object> stringToEnum = new Dictionary<BytesString, object>();
-        private   readonly Dictionary<object, BytesString> enumToString = new Dictionary<object, BytesString>();
+        private     readonly Dictionary<BytesString, object> stringToEnum   = new Dictionary<BytesString, object>();
+        private     readonly Dictionary<object, BytesString> enumToString   = new Dictionary<object, BytesString>();
         //
-        private readonly Dictionary<long, object>        integralToEnum = new Dictionary<long, object>();
+        private     readonly Dictionary<long, object>        integralToEnum = new Dictionary<long, object>();
         
         public override string DataTypeName() { return "enum"; }
         
@@ -104,6 +104,16 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
         public override void Dispose() {
             foreach (var key in stringToEnum.Keys)
                 key.value.Dispose();
+        }
+        
+        public override  List<string>    GetEnumValues() {
+            var enumValues = new List<string>();
+            foreach (var pair in stringToEnum) {
+                BytesString enumValueBytes  = pair.Key;
+                string      enumValue       = enumValueBytes.ToString();
+                enumValues.Add(enumValue);
+            }
+            return enumValues;
         }
 
         public override void InitTypeMapper(TypeStore typeStore) {
