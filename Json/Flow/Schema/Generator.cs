@@ -12,7 +12,8 @@ namespace Friflo.Json.Flow.Schema
 {
     public class Package
     {
-        public List<EmitResult>    emitResults = new List<EmitResult>();
+        public  readonly   List<EmitResult> emitResults = new List<EmitResult>();
+        public  readonly   HashSet<Type>    customTypes = new HashSet<Type>();
     }
     
     public class Generator
@@ -43,20 +44,23 @@ namespace Friflo.Json.Flow.Schema
                     packages.Add(ns, package = new Package());
                 }
                 package.emitResults.Add(emit);
-            }
-
-            foreach (var namespaceType in packages) {
-                
-
+                package.customTypes.UnionWith(emit.customTypes);
             }
         }
         
         public void CreateFiles(StringBuilder sb, Func<string, string> toFilename) {
             foreach (var pair in packages) {
                 string      ns      = pair.Key;
-                Package     results = pair.Value;
+                Package     package = pair.Value;
                 sb.Clear();
-                foreach (var result in results.emitResults) {
+                
+                foreach (var customType in package.customTypes) {
+                    if (customType.Namespace == ns)
+                        continue;
+                    sb.AppendLine($"import {{ {customType.Name} }} from \"./{customType.Namespace}\"");
+                }
+                sb.AppendLine();
+                foreach (var result in package.emitResults) {
                     sb.AppendLine(result.content);
                 }
                 var filename = toFilename(ns);
