@@ -53,11 +53,20 @@ namespace Friflo.Json.Flow.Schema.Generators
                 var instanceFactory = mapper.instanceFactory;
                 if (instanceFactory != null) {
                     abstractStr = "abstract ";
-                    sb.AppendLine($"type {instanceFactory}");
                 }
                 sb.AppendLine($"{abstractStr}class {mapper.type.Name} {extendsStr}{{");
                 if (instanceFactory != null) {
-                    sb.AppendLine($"    abstract {instanceFactory.discriminator}: string;");
+                    sb.AppendLine($"    abstract {instanceFactory.discriminator}:");
+                    foreach (var polyType in instanceFactory.polyTypes) {
+                        sb.AppendLine($"    | \"{polyType.name}\"");
+                    }
+                    sb.AppendLine($"    ;");
+                }
+                if (discriminant != null) {
+                    var baseType = mapper.type.BaseType;
+                    // todo get discriminator from baseType
+                    var discriminator = "type";
+                    sb.AppendLine($"    {discriminator}: \"{discriminant}\";");
                 }
                 
                 // fields                
