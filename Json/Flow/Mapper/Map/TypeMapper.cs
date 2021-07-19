@@ -68,8 +68,7 @@ namespace Friflo.Json.Flow.Mapper.Map
         public abstract bool            IsValueNullIL(ClassMirror mirror, int primPos, int objPos);
         public abstract void            WriteValueIL(ref Writer writer, ClassMirror mirror, int primPos, int objPos);
         public abstract bool            ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos);
-
-
+        
         public abstract object CreateInstance();
         
         public bool IsNull<T>(ref T value) {
@@ -80,6 +79,9 @@ namespace Friflo.Json.Flow.Mapper.Map
             }
             return value == null;
         }
+        
+        public virtual  TypeMapper      GetUnderlyingMapper() { return null; }
+
     }
     
 #if !UNITY_5_3_OR_NEWER

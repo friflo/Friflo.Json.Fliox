@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
 
@@ -17,14 +18,32 @@ namespace Friflo.Json.Flow.Schema.Generators
         }
         
         public void GenerateSchema() {
+            var sb = new StringBuilder();
             foreach (var pair in generator.typeMappers) {
                 var mapper = pair.Value;
-                EmitType(mapper);
+                sb.Clear();
+                var result = EmitType(mapper, sb);
+                if (result == null)
+                    continue;
+                generator.AddEmitType(result);
             }
         }
         
-        private void EmitType(TypeMapper mapper) {
-            
+        private static EmitResult EmitType(TypeMapper mapper, StringBuilder sb) {
+            var underlyingMapper = mapper.GetUnderlyingMapper();
+            if (underlyingMapper != null) {
+                mapper = underlyingMapper;
+            }
+            if (mapper.IsComplex) {
+                var fields = mapper.propFields.fields;
+                sb.AppendLine($"class {mapper.type.Name} {{");
+                foreach (var field in fields) {
+                    sb.AppendLine($"    {field} : {field.fieldType.type.Name}");
+                }
+                sb.AppendLine("}");
+                return new EmitResult(mapper, sb.ToString());
+            }
+            return null;
         }
     }
 }

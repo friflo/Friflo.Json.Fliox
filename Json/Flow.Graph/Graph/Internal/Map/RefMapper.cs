@@ -36,7 +36,8 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
     {
         private TypeMapper<T> entityMapper;
         
-        public override string DataTypeName() { return "Ref<>"; }
+        public override string      DataTypeName()          { return "Ref<>"; }
+        public override TypeMapper  GetUnderlyingMapper()   { return entityMapper; }
 
         // ReSharper disable once UnusedParameter.Local
         public RefMapper(StoreConfig config, Type type, ConstructorInfo constructor) :

@@ -12,15 +12,17 @@ namespace Friflo.Json.Flow.Schema
     {
         public  readonly    ICollection<Type>                       rootTypes;
         public  readonly    string                                  folder;
-        public  readonly    TypeStore                               typeStore;
         public  readonly    IReadOnlyDictionary<Type, TypeMapper>   typeMappers;
-        
-        
+        public  readonly    Dictionary<TypeMapper, EmitResult>      emitTypes = new Dictionary<TypeMapper, EmitResult>();
+
         public Generator (ICollection<Type> rootTypes, string folder, TypeStore typeStore) {
             this.rootTypes  = rootTypes;
             this.folder     = folder;
-            this.typeStore  = typeStore;
             typeMappers     = typeStore.GetTypeMappers();
+        }
+
+        public void AddEmitType(EmitResult emit) {
+            emitTypes.Add(emit.mapper, emit);
         }
     }
 }
