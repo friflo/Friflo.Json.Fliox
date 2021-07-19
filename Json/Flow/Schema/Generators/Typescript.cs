@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
@@ -34,6 +35,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             
             generator.GroupTypesByNamespace();
             generator.CreateFiles(sb, ns => $"{ns}.ts");
+            
             // generator.CreateFiles(sb, ns => $"{ns.Replace(".", "/")}.ts");
             generator.WriteFiles();
         }
@@ -43,7 +45,9 @@ namespace Friflo.Json.Flow.Schema.Generators
         } 
         
         private EmitResult EmitType(TypeMapper mapper, StringBuilder sb) {
-            var underlyingMapper = mapper.GetUnderlyingMapper();
+            var customTypes         = new HashSet<Type>(); 
+            var underlyingMapper    = mapper.GetUnderlyingMapper();
+            var type = mapper.type;
             if (underlyingMapper != null) {
                 mapper = underlyingMapper;
             }
@@ -55,9 +59,9 @@ namespace Friflo.Json.Flow.Schema.Generators
                 var     discriminant = mapper.discriminant;
                 var extendsStr = "";
                 if (discriminant != null) {
-                    var baseType = mapper.type.BaseType;
+                    var baseType    = type.BaseType;
                     var baseMapper  = typeStore.GetTypeMapper(baseType);
-                    discriminator = baseMapper.instanceFactory.discriminator;
+                    discriminator   = baseMapper.instanceFactory.discriminator;
                     extendsStr = $"extends {baseType?.Name} ";
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                 }
@@ -66,7 +70,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                 if (instanceFactory != null) {
                     abstractStr = "abstract ";
                 }
-                sb.AppendLine($"export {abstractStr}class {mapper.type.Name} {extendsStr}{{");
+                sb.AppendLine($"export {abstractStr}class {type.Name} {extendsStr}{{");
                 if (instanceFactory != null) {
                     sb.AppendLine($"    abstract {instanceFactory.discriminator}:");
                     foreach (var polyType in instanceFactory.polyTypes) {
@@ -81,26 +85,26 @@ namespace Friflo.Json.Flow.Schema.Generators
                 
                 // fields                
                 foreach (var field in fields) {
-                    var fieldType = GetFieldType(field.fieldType);
+                    var fieldType = GetFieldType(field.fieldType, customTypes);
                     var indent = Indent(maxFieldName, field.name);
                     sb.AppendLine($"    {field.name}:{indent} {fieldType};");
                 }
                 sb.AppendLine("}");
-                return new EmitResult(mapper, sb.ToString());
+                return new EmitResult(mapper, sb.ToString(), customTypes);
             }
-            if (mapper.type.IsEnum) {
+            if (type.IsEnum) {
                 var enumValues = mapper.GetEnumValues();
-                sb.AppendLine($"export type {mapper.type.Name} =");
+                sb.AppendLine($"export type {type.Name} =");
                 foreach (var enumValue in enumValues) {
                     sb.AppendLine($"    | \"{enumValue}\"");
                 }
                 sb.AppendLine($";");
-                return new EmitResult(mapper, sb.ToString());
+                return new EmitResult(mapper, sb.ToString(), new HashSet<Type>());
             }
             return null;
         }
         
-        private static string GetFieldType(TypeMapper mapper) {
+        private static string GetFieldType(TypeMapper mapper, HashSet<Type> customTypes) {
             var type = mapper.type;
             if (type == typeof(string)) {
                 return "string";
@@ -114,15 +118,16 @@ namespace Friflo.Json.Flow.Schema.Generators
             }
             if (mapper.IsArray) {
                 var elementMapper = mapper.GetElementMapper();
-                var elementTypeName = GetFieldType(elementMapper);
+                var elementTypeName = GetFieldType(elementMapper, customTypes);
                 return $"{elementTypeName}[]";
             }
             var isDictionary = type.GetInterfaces().Contains(typeof(IDictionary));
             if (isDictionary) {
                 var valueMapper = mapper.GetElementMapper();
-                var valueTypeName = GetFieldType(valueMapper);
+                var valueTypeName = GetFieldType(valueMapper, customTypes);
                 return $"{{ string: {valueTypeName} }}";
             }
+            customTypes.Add(type);
             return type.Name;
         }
     }

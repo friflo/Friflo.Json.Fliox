@@ -10,15 +10,20 @@ using Friflo.Json.Flow.Mapper.Map;
 
 namespace Friflo.Json.Flow.Schema
 {
+    public class Package
+    {
+        public List<EmitResult>    emitResults = new List<EmitResult>();
+    }
+    
     public class Generator
     {
         internal readonly    TypeStore                              typeStore;
         public   readonly    IReadOnlyDictionary<Type, TypeMapper>  typeMappers;
         public   readonly    string                                 folder;
         
-        public   readonly    Dictionary<TypeMapper, EmitResult>     emitTypes       = new Dictionary<TypeMapper, EmitResult>();
-        public   readonly    Dictionary<string, List<EmitResult>>   namespaceTypes  = new Dictionary<string, List<EmitResult>>();
-        public   readonly    Dictionary<string, string>             files           = new Dictionary<string, string>();
+        public   readonly    Dictionary<TypeMapper, EmitResult>     emitTypes   = new Dictionary<TypeMapper, EmitResult>();
+        public   readonly    Dictionary<string, Package>            packages    = new Dictionary<string, Package>();
+        public   readonly    Dictionary<string, string>             files       = new Dictionary<string, string>();
 
         public Generator (string folder, TypeStore typeStore) {
             this.folder     = folder;
@@ -34,19 +39,24 @@ namespace Friflo.Json.Flow.Schema
             foreach (var pair in emitTypes) {
                 EmitResult  emit    = pair.Value;
                 var         ns      = emit.mapper.type.Namespace;
-                if (!namespaceTypes.TryGetValue(ns, out var list)) {
-                    namespaceTypes.Add(ns, list = new List<EmitResult>());
+                if (!packages.TryGetValue(ns, out var package)) {
+                    packages.Add(ns, package = new Package());
                 }
-                list.Add(emit);
+                package.emitResults.Add(emit);
+            }
+
+            foreach (var namespaceType in packages) {
+                
+
             }
         }
         
         public void CreateFiles(StringBuilder sb, Func<string, string> toFilename) {
-            foreach (var pair in namespaceTypes) {
-                string              ns      = pair.Key;
-                List<EmitResult>    results = pair.Value;
+            foreach (var pair in packages) {
+                string      ns      = pair.Key;
+                Package     results = pair.Value;
                 sb.Clear();
-                foreach (var result in results) {
+                foreach (var result in results.emitResults) {
                     sb.AppendLine(result.content);
                 }
                 var filename = toFilename(ns);
