@@ -14,8 +14,10 @@ namespace Friflo.Json.Flow.Schema.Generators
     public class Typescript
     {
         private readonly    Generator   generator;
+        private readonly    TypeStore   typeStore;
 
         public Typescript (ICollection<Type> types, string folder, TypeStore typeStore) {
+            this.typeStore  = typeStore;
             generator       = new Generator(types, folder, typeStore);
         }
         
@@ -37,17 +39,28 @@ namespace Friflo.Json.Flow.Schema.Generators
             generator.WriteFiles();
         }
         
-        private static EmitResult EmitType(TypeMapper mapper, StringBuilder sb) {
+        public static string Indent(int max, string str) {
+            return new string(' ', max - str.Length);
+        } 
+        
+        private EmitResult EmitType(TypeMapper mapper, StringBuilder sb) {
             var underlyingMapper = mapper.GetUnderlyingMapper();
             if (underlyingMapper != null) {
                 mapper = underlyingMapper;
             }
             if (mapper.IsComplex) {
-                var discriminant = mapper.discriminant;
+                var fields          = mapper.propFields.fields;
+                int maxFieldName    = fields.Max(field => field.name.Length);
+                
+                string  discriminator = null;
+                var     discriminant = mapper.discriminant;
                 var extendsStr = "";
                 if (discriminant != null) {
                     var baseType = mapper.type.BaseType;
+                    var baseMapper  = typeStore.GetTypeMapper(baseType);
+                    discriminator = baseMapper.instanceFactory.discriminator;
                     extendsStr = $"extends {baseType?.Name} ";
+                    maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                 }
                 var abstractStr = "";
                 var instanceFactory = mapper.instanceFactory;
@@ -58,22 +71,20 @@ namespace Friflo.Json.Flow.Schema.Generators
                 if (instanceFactory != null) {
                     sb.AppendLine($"    abstract {instanceFactory.discriminator}:");
                     foreach (var polyType in instanceFactory.polyTypes) {
-                        sb.AppendLine($"    | \"{polyType.name}\"");
+                        sb.AppendLine($"        | \"{polyType.name}\"");
                     }
                     sb.AppendLine($"    ;");
                 }
                 if (discriminant != null) {
-                    var baseType = mapper.type.BaseType;
-                    // todo get discriminator from baseType
-                    var discriminator = "type";
-                    sb.AppendLine($"    {discriminator}: \"{discriminant}\";");
+                    var indent = Indent(maxFieldName, discriminator);
+                    sb.AppendLine($"    {discriminator}:{indent} \"{discriminant}\";");
                 }
                 
                 // fields                
-                var fields = mapper.propFields.fields;
                 foreach (var field in fields) {
                     var fieldType = GetFieldType(field.fieldType);
-                    sb.AppendLine($"    {field}: {fieldType};");
+                    var indent = Indent(maxFieldName, field.name);
+                    sb.AppendLine($"    {field.name}:{indent} {fieldType};");
                 }
                 sb.AppendLine("}");
                 return new EmitResult(mapper, sb.ToString());
