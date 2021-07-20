@@ -13,7 +13,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 {
     public static class GenerateSchema
     {
-        private static readonly Type[] UserStoreTypes = { typeof(Role), typeof(UserCredential), typeof(UserPermission) };
+        private static readonly Type[] UserStoreTypes   = { typeof(Role), typeof(UserCredential), typeof(UserPermission) };
+        private static readonly Type[] SyncTypes        = { typeof(DatabaseMessage) };
 
         [Test]
         public static void TypescriptUserStore () {
@@ -25,7 +26,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         
         [Test]
         public static void JsonSchemaUserStore () {
-            var types = new [] { typeof(Role), typeof(UserCredential), typeof(UserPermission) };
             var schema = new SchemaGenerator(UserStoreTypes);
             EntityStore.AddTypeMappers(schema.typeStore);
             var generator = schema.JsonSchema();
@@ -34,8 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         
         [Test]
         public static void TypescriptSync () {
-            var types = new [] { typeof(DatabaseMessage) };
-            var schema = new SchemaGenerator(types);
+            var schema = new SchemaGenerator(SyncTypes);
             EntityStore.AddTypeMappers(schema.typeStore);
             var generator = schema.Typescript();
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/Sync");
