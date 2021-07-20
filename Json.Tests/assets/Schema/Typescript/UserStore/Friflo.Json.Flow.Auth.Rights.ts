@@ -1,5 +1,14 @@
 ﻿import { TaskType } from "./Friflo.Json.Flow.Sync"
-import { Change } from "./Friflo.Json.Flow.Sync"
+import { Change }   from "./Friflo.Json.Flow.Sync"
+
+type Right_Union =
+    | RightAllow
+    | RightTask
+    | RightMessage
+    | RightSubscribeMessage
+    | RightDatabase
+    | RightPredicate
+;
 
 export abstract class Right {
     abstract type:

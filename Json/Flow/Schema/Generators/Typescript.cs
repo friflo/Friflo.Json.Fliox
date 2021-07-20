@@ -38,14 +38,10 @@ namespace Friflo.Json.Flow.Schema.Generators
             generator.WriteFiles();
         }
         
-        public static string Indent(int max, string str) {
-            return new string(' ', max - str.Length);
-        } 
-        
         private EmitResult EmitType(TypeMapper mapper, StringBuilder sb) {
-            var customTypes         = new HashSet<Type>(); 
+            var imports             = new HashSet<Type>(); 
             var underlyingMapper    = mapper.GetUnderlyingMapper();
-            var type = mapper.type;
+            var type                = mapper.type;
             if (underlyingMapper != null) {
                 mapper = underlyingMapper;
             }
@@ -62,13 +58,18 @@ namespace Friflo.Json.Flow.Schema.Generators
                     extendsStr = $"extends {baseMapper.type.Name} ";
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                 }
-                var abstractStr = "";
                 var instanceFactory = mapper.instanceFactory;
-                if (instanceFactory != null) {
-                    abstractStr = "abstract ";
-                }
-                sb.AppendLine($"export {abstractStr}class {type.Name} {extendsStr}{{");
-                if (instanceFactory != null) {
+                if (instanceFactory == null) {
+                    sb.AppendLine($"export class {type.Name} {extendsStr}{{");
+                } else {
+                    sb.AppendLine($"type {type.Name}_Union =");
+                    foreach (var polyType in instanceFactory.polyTypes) {
+                        sb.AppendLine($"    | {polyType.type.Name}");
+                        imports.Add(polyType.type);
+                    }
+                    sb.AppendLine($";");
+                    sb.AppendLine();
+                    sb.AppendLine($"export abstract class {type.Name} {extendsStr}{{");
                     sb.AppendLine($"    abstract {instanceFactory.discriminator}:");
                     foreach (var polyType in instanceFactory.polyTypes) {
                         sb.AppendLine($"        | \"{polyType.name}\"");
@@ -76,18 +77,18 @@ namespace Friflo.Json.Flow.Schema.Generators
                     sb.AppendLine($"    ;");
                 }
                 if (discriminant != null) {
-                    var indent = Indent(maxFieldName, discriminator);
+                    var indent = Generator.Indent(maxFieldName, discriminator);
                     sb.AppendLine($"    {discriminator}:{indent} \"{discriminant}\";");
                 }
                 
                 // fields                
                 foreach (var field in fields) {
-                    var fieldType = GetFieldType(field.fieldType, customTypes);
-                    var indent = Indent(maxFieldName, field.name);
+                    var fieldType = GetFieldType(field.fieldType, imports);
+                    var indent = Generator.Indent(maxFieldName, field.name);
                     sb.AppendLine($"    {field.name}:{indent} {fieldType};");
                 }
                 sb.AppendLine("}");
-                return new EmitResult(mapper, sb.ToString(), customTypes);
+                return new EmitResult(mapper, sb.ToString(), imports);
             }
             if (type.IsEnum) {
                 var enumValues = mapper.GetEnumValues();

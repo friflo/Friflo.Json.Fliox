@@ -1,11 +1,15 @@
 ﻿import { FilterOperation } from "./Friflo.Json.Flow.Transform"
-import { JsonPatch } from "./Friflo.Json.Flow.Transform"
+import { JsonPatch }       from "./Friflo.Json.Flow.Transform"
 
 export class DatabaseMessage {
     req:  DatabaseRequest;
     resp: DatabaseResponse;
     ev:   DatabaseEvent;
 }
+
+type DatabaseRequest_Union =
+    | SyncRequest
+;
 
 export abstract class DatabaseRequest {
     abstract type:
@@ -22,6 +26,18 @@ export class SyncRequest extends DatabaseRequest {
     token:    string;
     tasks:    DatabaseTask[];
 }
+
+type DatabaseTask_Union =
+    | CreateEntities
+    | UpdateEntities
+    | ReadEntitiesList
+    | QueryEntities
+    | PatchEntities
+    | DeleteEntities
+    | SendMessage
+    | SubscribeChanges
+    | SubscribeMessage
+;
 
 export abstract class DatabaseTask {
     abstract task:
@@ -135,6 +151,11 @@ export class SubscribeMessage extends DatabaseTask {
     remove: boolean;
 }
 
+type DatabaseResponse_Union =
+    | SyncResponse
+    | ErrorResponse
+;
+
 export abstract class DatabaseResponse {
     abstract type:
         | "sync"
@@ -160,6 +181,19 @@ export class ErrorResponse extends DatabaseResponse {
     reqId:   number;
     message: string;
 }
+
+type TaskResult_Union =
+    | CreateEntitiesResult
+    | UpdateEntitiesResult
+    | ReadEntitiesListResult
+    | QueryEntitiesResult
+    | PatchEntitiesResult
+    | DeleteEntitiesResult
+    | SendMessageResult
+    | SubscribeChangesResult
+    | SubscribeMessageResult
+    | TaskErrorResult
+;
 
 export abstract class TaskResult {
     abstract task:
@@ -265,6 +299,10 @@ export class EntityErrors {
     container: string;
     errors:    { string: EntityError };
 }
+
+type DatabaseEvent_Union =
+    | SubscriptionEvent
+;
 
 export abstract class DatabaseEvent {
     abstract type:

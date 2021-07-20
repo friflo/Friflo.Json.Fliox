@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
@@ -29,6 +30,10 @@ namespace Friflo.Json.Flow.Schema
             this.folder     = folder;
             typeMappers     = typeStore.GetTypeMappers();
         }
+        
+        public static string Indent(int max, string str) {
+            return new string(' ', max - str.Length);
+        } 
 
         public void AddEmitType(EmitResult emit) {
             emitTypes.Add(emit.mapper, emit);
@@ -52,10 +57,15 @@ namespace Friflo.Json.Flow.Schema
                 Package     package = pair.Value;
                 sb.Clear();
                 
-                foreach (var customType in package.imports) {
-                    if (customType.Namespace == ns)
+                var max = 0;
+                if (package.imports.Count > 0) {
+                    max = package.imports.Max(import => import.Namespace == ns ? 0 : import.Name.Length);
+                }
+                foreach (var import in package.imports) {
+                    if (import.Namespace == ns)
                         continue;
-                    sb.AppendLine($"import {{ {customType.Name} }} from \"./{customType.Namespace}\"");
+                    var indent = Indent(max, import.Name);
+                    sb.AppendLine($"import {{ {import.Name} }}{indent} from \"./{import.Namespace}\"");
                 }
                 sb.AppendLine();
                 foreach (var result in package.emitResults) {
