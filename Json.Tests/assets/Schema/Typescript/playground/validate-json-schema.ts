@@ -6,25 +6,24 @@ function run() {
     const ajv = new Ajv({allErrors: true}) // options can be passed, e.g. {allErrors: true}
     // runTest(ajv);
 
-    // var jsonSchemaString: string = fs.readFileSync("../JSON/json-schema.org/schema.json", "utf8");
-    // var jsonSchema = JSON.parse(jsonSchemaString);
-
-
     const validate = ajv.getSchema("http://json-schema.org/draft-07/schema#") as ValidateFunction;
 
-    const schema = {
-        type: "object",
-        properties: {
-          foo: {type: "integer"},
-          bar: {type: "string"}
-        },
-        required: ["foo"],
-        additionalProperties: false,
-    }  
+    const schemas : string[] = [
+        "../JSON/Auth.Rights.json",
+        "../JSON/UserAuth.Role.json",
+        "../JSON/UserAuth.UserCredential.json",
+        "../JSON/UserAuth.UserPermission.json",
+    ];
 
-    const valid = validate(schema);
-    if (!valid)
-        console.log(validate.errors)    
+    for (var path of schemas) {
+        console.log("validate: ", path);
+        var json: string = fs.readFileSync(path, "utf8");
+        var jsonSchema = JSON.parse(json);
+
+        const valid = validate(jsonSchema);
+        if (!valid)
+            console.log(validate.errors)    
+    }
 }
 
 function runTest(ajv: Ajv) {
