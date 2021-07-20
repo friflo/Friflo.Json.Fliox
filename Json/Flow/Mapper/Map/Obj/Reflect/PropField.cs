@@ -18,6 +18,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
         public   readonly   TypeMapper      fieldType;          // never null
         public   readonly   int             primIndex;
         public   readonly   int             objIndex;
+        public   readonly   bool            required;
         internal            Bytes           nameBytes;          // dont mutate
         public              Bytes           firstMember;        // dont mutate
         public              Bytes           subSeqMember;       // dont mutate
@@ -28,7 +29,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
         private  readonly   MethodInfo      setMethod;
 
         internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
-            int primIndex, int objIndex)
+            int primIndex, int objIndex, bool required)
         {
             this.name       = name;
             this.fieldType  = fieldType;
@@ -42,6 +43,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
             this.setMethod  = property != null ? property.GetSetMethod(true) : null;
             this.primIndex  = primIndex;
             this.objIndex   = objIndex;
+            this.required   = required;
         }
 
         public void Dispose() {

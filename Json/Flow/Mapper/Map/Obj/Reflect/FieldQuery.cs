@@ -24,13 +24,14 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
             // getter have higher priority than fields with the same fieldName. Same behavior as other serialization libs
             Type            memberType;
             string          jsonName;
+            bool            required;
             if (property != null) {
                 memberType   = property.PropertyType;
-                AttributeUtils.Property(property.CustomAttributes, out jsonName);
+                AttributeUtils.Property(property.CustomAttributes, out jsonName, out required);
 
             } else {
                 memberType   = field.FieldType;
-                AttributeUtils.Property(field.CustomAttributes, out jsonName);
+                AttributeUtils.Property(field.CustomAttributes, out jsonName, out required);
             }
             if (memberType == null)
                 throw new InvalidOperationException("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
@@ -50,12 +51,12 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
                 
                 PropField pf;
                 if (memberType.IsEnum || memberType.IsPrimitive || isNullablePrimitive || isNullableEnum) {
-                    pf =     new PropField(fieldName, jsonName, mapper, field, property, primCount,    -9999); // force index exception in case of buggy impl.
+                    pf =     new PropField(fieldName, jsonName, mapper, field, property, primCount,    -9999, required); // force index exception in case of buggy impl.
                 } else {
                     if (mapper.isValueType)
-                        pf = new PropField(fieldName, jsonName, mapper, field, property, primCount, objCount);
+                        pf = new PropField(fieldName, jsonName, mapper, field, property, primCount, objCount, required);
                     else
-                        pf = new PropField(fieldName, jsonName, mapper, field, property, -9999,     objCount); // force index exception in case of buggy impl.
+                        pf = new PropField(fieldName, jsonName, mapper, field, property, -9999,     objCount, required); // force index exception in case of buggy impl.
                 }
 
                 fieldList.Add(pf);
@@ -135,8 +136,9 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
     
     public static class AttributeUtils {
                 
-        public static void Property(IEnumerable<CustomAttributeData> attributes, out string name) {
-            name = null;
+        public static void Property(IEnumerable<CustomAttributeData> attributes, out string name, out bool required) {
+            name        = null;
+            required    = false;
             foreach (var attr in attributes) {
                 if (attr.AttributeType != typeof(Fri.PropertyAttribute))
                     continue;
@@ -147,6 +149,10 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
                         case nameof(Fri.PropertyAttribute.Name):
                             if (args.TypedValue.Value != null)
                                 name = args.TypedValue.Value as string;
+                            break;
+                        case nameof(Fri.PropertyAttribute.Required):
+                            if (args.TypedValue.Value != null)
+                                required = (bool)args.TypedValue.Value;
                             break;
                     }
                 }
