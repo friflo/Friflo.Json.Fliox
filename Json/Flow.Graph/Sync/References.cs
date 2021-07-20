@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System.Collections.Generic;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
 {
@@ -10,7 +11,9 @@ namespace Friflo.Json.Flow.Sync
     {
         /// Path to a <see cref="Ref{T}"/> field referencing an <see cref="Entity"/>.
         /// These referenced entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
+        [Fri.Property(Required = true)]
         public  string                  selector; // e.g. ".items[*].article"
+        [Fri.Property(Required = true)]
         public  string                  container;
         public  List<References>        references;
     }

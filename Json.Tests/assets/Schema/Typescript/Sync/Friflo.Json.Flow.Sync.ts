@@ -97,8 +97,8 @@ export class ReadEntities {
 }
 
 export class References {
-    selector?:   string;
-    container?:  string;
+    selector:   string;
+    container:  string;
     references?: References[];
 }
 
