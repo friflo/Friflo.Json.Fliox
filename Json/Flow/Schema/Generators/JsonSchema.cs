@@ -46,17 +46,16 @@ namespace Friflo.Json.Flow.Schema.Generators
             if (underlyingMapper != null) {
                 mapper = underlyingMapper;
             }
+            bool first = true;
             if (mapper.IsComplex) {
                 var fields          = mapper.propFields.fields;
                 int maxFieldName    = fields.MaxLength(field => field.name.Length);
                 
                 string  discriminator = null;
                 var     discriminant = mapper.discriminant;
-                var extendsStr = "";
                 if (discriminant != null) {
                     var baseMapper  = generator.GetPolymorphBaseMapper(type);
                     discriminator   = baseMapper.instanceFactory.discriminator;
-                    extendsStr = $"extends {baseMapper.type.Name} ";
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                 }
                 var instanceFactory = mapper.instanceFactory;
@@ -65,16 +64,19 @@ namespace Friflo.Json.Flow.Schema.Generators
                     sb.AppendLine($"            \"type\": \"object\",");
                 } else {
                     sb.AppendLine($"            \"oneOf\": [");
+                    bool firstElem = true;
                     foreach (var polyType in instanceFactory.polyTypes) {
-                        sb.AppendLine($"                {{ \"$ref\": \"{polyType.name}\" }},");
+                        Generator.Delimiter(sb, ",\n", ref firstElem);
+                        sb.Append($"                {{ \"$ref\": \"{polyType.name}\" }}");
                     }
-                    sb.AppendLine($"            ]");
+                    sb.AppendLine();
+                    sb.AppendLine($"            ],");
                 }
+                sb.AppendLine($"            \"properties\": {{");
                 if (discriminant != null) {
                     var indent = Generator.Indent(maxFieldName, discriminator);
-                    sb.AppendLine($"    {discriminator}:{indent} \"{discriminant}\";");
+                    sb.AppendLine($"                \"{discriminator}\":{indent} {{ \"enum\": [\"{discriminant}\"] }}");
                 }
-                
                 // fields                
                 /* foreach (var field in fields) {
                     if (generator.IsDerivedField(type, field))
@@ -85,7 +87,8 @@ namespace Friflo.Json.Flow.Schema.Generators
                     sb.AppendLine($"    {field.name}{optStr}:{indent} {fieldType};");
                 } */
                 
-                sb.Append("        }");
+                sb.AppendLine("            }");
+                sb.Append    ("        }");
                 return new EmitType(mapper, sb.ToString(), imports);
             }
             if (type.IsEnum) {
@@ -150,7 +153,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                 sb.Clear();
                 sb.AppendLine("{");
                 sb.AppendLine("    \"$schema\": \"http://json-schema.org/draft-07/schema#\",");
-                sb.AppendLine("    \"definitions\": {");
+                sb.Append    ("    \"definitions\": {");
                 package.header = sb.ToString();
             }
         }

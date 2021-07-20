@@ -1,0 +1,28 @@
+﻿{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "TaskType": {
+            "enum": [
+                "read",
+                "query",
+                "create",
+                "update",
+                "patch",
+                "delete",
+                "message",
+                "subscribeChanges",
+                "subscribeMessage",
+                "error"
+            ]
+        },
+        "Change": {
+            "enum": [
+                "create",
+                "update",
+                "patch",
+                "delete"
+            ]
+        }
+    }
+}
+

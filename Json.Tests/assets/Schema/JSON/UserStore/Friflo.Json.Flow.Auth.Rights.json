@@ -1,0 +1,71 @@
+﻿{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "Right": {
+            "oneOf": [
+                { "$ref": "allow" },
+                { "$ref": "task" },
+                { "$ref": "message" },
+                { "$ref": "subscribeMessage" },
+                { "$ref": "database" },
+                { "$ref": "predicate" }
+            ],
+            "properties": {
+            }
+        },
+        "RightAllow": {
+            "type": "object",
+            "properties": {
+                "type":        { "enum": ["allow"] }
+            }
+        },
+        "RightTask": {
+            "type": "object",
+            "properties": {
+                "type":        { "enum": ["task"] }
+            }
+        },
+        "RightMessage": {
+            "type": "object",
+            "properties": {
+                "type":        { "enum": ["message"] }
+            }
+        },
+        "RightSubscribeMessage": {
+            "type": "object",
+            "properties": {
+                "type":        { "enum": ["subscribeMessage"] }
+            }
+        },
+        "RightDatabase": {
+            "type": "object",
+            "properties": {
+                "type":        { "enum": ["database"] }
+            }
+        },
+        "ContainerAccess": {
+            "type": "object",
+            "properties": {
+            }
+        },
+        "OperationType": {
+            "enum": [
+                "create",
+                "update",
+                "delete",
+                "patch",
+                "read",
+                "query",
+                "mutate",
+                "full"
+            ]
+        },
+        "RightPredicate": {
+            "type": "object",
+            "properties": {
+                "type":        { "enum": ["predicate"] }
+            }
+        }
+    }
+}
+
