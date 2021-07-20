@@ -40,7 +40,8 @@ namespace Friflo.Json.Flow.Schema.Generators
             var underlyingMapper    = mapper.GetUnderlyingMapper();
             var type                = mapper.type;
             if (underlyingMapper != null) {
-                mapper = underlyingMapper;
+                mapper  = underlyingMapper;
+                type    = mapper.type;
             }
             if (mapper.IsComplex) {
                 var fields          = mapper.propFields.fields;

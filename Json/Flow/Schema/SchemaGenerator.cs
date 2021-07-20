@@ -10,9 +10,10 @@ namespace Friflo.Json.Flow.Schema
 {
     public class SchemaGenerator
     {
-        public readonly TypeStore typeStore = new TypeStore();
+        private readonly TypeStore typeStore;
         
-        public SchemaGenerator (ICollection<Type> rootTypes) {
+        public SchemaGenerator (TypeStore typeStore, ICollection<Type> rootTypes) {
+            this.typeStore = typeStore;
             foreach (var type in rootTypes) {
                 typeStore.GetTypeMapper(type);
             }

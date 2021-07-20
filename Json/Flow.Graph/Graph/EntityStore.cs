@@ -64,9 +64,10 @@ namespace Friflo.Json.Flow.Graph
             _intern.Dispose();
         }
         
-        public static void AddTypeMappers (TypeStore typeStore) {
+        public static TypeStore AddTypeMappers (TypeStore typeStore) {
             typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
             typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
+            return typeStore;
         }
 
         // --------------------------------------- public interface ---------------------------------------
