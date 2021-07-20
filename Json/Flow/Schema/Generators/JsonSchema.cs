@@ -23,7 +23,6 @@ namespace Friflo.Json.Flow.Schema.Generators
         
         public void GenerateSchema() {
             var sb = new StringBuilder();
-
             // emit custom types
             foreach (var pair in generator.typeMappers) {
                 var mapper = pair.Value;
@@ -161,15 +160,6 @@ namespace Friflo.Json.Flow.Schema.Generators
             return Ref(type, owner);
         }
         
-        private static string Ref(Type type, TypeMapper owner) {
-            var name = type.Name;
-            // if (generator.IsUnionType(type))
-            //    name = $"{type.Name}_Union";
-            bool samePackage = type.Namespace == owner.type.Namespace;
-            var prefix = samePackage ? "" : $"./{type.Namespace}.json";
-            return $"\"$ref\": \"{prefix}#/definitions/{name}\"";
-        }
-        
         private void EmitPackageHeaders(StringBuilder sb) {
             foreach (var pair in generator.packages) {
                 var package = pair.Value;
@@ -191,6 +181,15 @@ namespace Friflo.Json.Flow.Schema.Generators
                 sb.AppendLine("}");
                 package.footer = sb.ToString();
             }
+        }
+        
+        private static string Ref(Type type, TypeMapper owner) {
+            var name = type.Name;
+            // if (generator.IsUnionType(type))
+            //    name = $"{type.Name}_Union";
+            bool samePackage = type.Namespace == owner.type.Namespace;
+            var prefix = samePackage ? "" : $"./{type.Namespace}.json";
+            return $"\"$ref\": \"{prefix}#/definitions/{name}\"";
         }
     }
 }
