@@ -88,6 +88,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                     sb.AppendLine($"    {field.name}{optStr}:{indent} {fieldType};");
                 }
                 sb.AppendLine("}");
+                sb.AppendLine();
                 return new EmitType(mapper, sb.ToString(), imports);
             }
             if (type.IsEnum) {
@@ -97,6 +98,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                     sb.AppendLine($"    | \"{enumValue}\"");
                 }
                 sb.AppendLine($";");
+                sb.AppendLine();
                 return new EmitType(mapper, sb.ToString(), new HashSet<Type>());
             }
             return null;

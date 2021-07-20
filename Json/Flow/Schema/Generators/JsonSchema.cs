@@ -34,8 +34,9 @@ namespace Friflo.Json.Flow.Schema.Generators
             sb.AppendLine("}");
             generator.GroupTypesByNamespace();
             EmitPackageHeaders(sb);
+            EmitPackageFooters(sb);
 
-            generator.CreateFiles(sb, ns => $"{ns}.json"); // $"{ns.Replace(".", "/")}.ts");
+            generator.CreateFiles(sb, ns => $"{ns}.json", ",\n"); // $"{ns.Replace(".", "/")}.ts");
         }
         
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {
@@ -84,16 +85,21 @@ namespace Friflo.Json.Flow.Schema.Generators
                     sb.AppendLine($"    {field.name}{optStr}:{indent} {fieldType};");
                 } */
                 
-                sb.AppendLine("        }");
+                sb.Append("        }");
                 return new EmitType(mapper, sb.ToString(), imports);
             }
             if (type.IsEnum) {
                 var enumValues = mapper.GetEnumValues();
-                sb.AppendLine($"export type {type.Name} =");
+                sb.AppendLine($"        \"{type.Name}\": {{");
+                sb.AppendLine($"            \"enum\": [");
+                bool firstValue = true;
                 foreach (var enumValue in enumValues) {
-                    sb.AppendLine($"    | \"{enumValue}\"");
+                    Generator.Delimiter(sb, ",\n", ref firstValue);
+                    sb.Append($"                \"{enumValue}\"");
                 }
-                sb.AppendLine($";");
+                sb.AppendLine();
+                sb.AppendLine("            ]");
+                sb.Append    ("        }");
                 return new EmitType(mapper, sb.ToString(), new HashSet<Type>());
             }
             return null;
@@ -146,6 +152,17 @@ namespace Friflo.Json.Flow.Schema.Generators
                 sb.AppendLine("    \"$schema\": \"http://json-schema.org/draft-07/schema#\",");
                 sb.AppendLine("    \"definitions\": {");
                 package.header = sb.ToString();
+            }
+        }
+        
+        private void EmitPackageFooters(StringBuilder sb) {
+            foreach (var pair in generator.packages) {
+                var package = pair.Value;
+                sb.Clear();
+                sb.AppendLine();
+                sb.AppendLine("    }");
+                sb.AppendLine("}");
+                package.footer = sb.ToString();
             }
         }
     }

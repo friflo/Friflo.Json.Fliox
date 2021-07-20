@@ -75,14 +75,25 @@ namespace Friflo.Json.Flow.Schema
             }
         }
         
-        public void CreateFiles(StringBuilder sb, Func<string, string> toFilename) {
+        public static void Delimiter (StringBuilder sb, string delimiter, ref bool first) {
+            if (first) {
+                first = false;
+                return;
+            }
+            sb.Append(delimiter);
+        }
+        
+        public void CreateFiles(StringBuilder sb, Func<string, string> toFilename, string delimiter = null) {
             foreach (var pair in packages) {
                 string      ns      = pair.Key;
                 Package     package = pair.Value;
                 sb.Clear();
                 sb.AppendLine(package.header);
+                bool first = true;
                 foreach (var result in package.emitTypes) {
-                    sb.AppendLine(result.content);
+                    if (delimiter != null)
+                        Delimiter(sb, delimiter, ref first);
+                    sb.Append(result.content);
                 }
                 if (package.footer != null)
                     sb.AppendLine(package.footer);
