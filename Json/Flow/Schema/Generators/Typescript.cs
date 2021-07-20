@@ -75,7 +75,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                 }
                 if (discriminant != null) {
                     var indent = Generator.Indent(maxFieldName, discriminator);
-                    sb.AppendLine($"    {discriminator}:{indent} \"{discriminant}\";");
+                    sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
                 }
                 
                 // fields                
@@ -84,8 +84,8 @@ namespace Friflo.Json.Flow.Schema.Generators
                         continue;
                     var fieldType = GetFieldType(field.fieldType, imports, out var isOptional);
                     var indent = Generator.Indent(maxFieldName, field.name);
-                    var optStr = field.required || !isOptional ? "" : "?";
-                    sb.AppendLine($"    {field.name}{optStr}:{indent} {fieldType};");
+                    var optStr = field.required || !isOptional ? " " : "?";
+                    sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType};");
                 }
                 sb.AppendLine("}");
                 sb.AppendLine();
