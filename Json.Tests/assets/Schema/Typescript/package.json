@@ -8,7 +8,10 @@
   },
   "scripts": {
     "tsc-init": "tsc --init",
-    "tsc":      "tsc"
+    "tsc": "tsc",
+    "validate": "node ./dist/playground/validate-json-schema.js"
+  },
+  "dependencies": {
+    "ajv": "^8.6.2"
   }
-  
 }
