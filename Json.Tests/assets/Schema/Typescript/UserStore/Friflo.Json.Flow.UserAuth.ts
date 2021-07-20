@@ -13,3 +13,8 @@ export class UserCredential {
     token?:    string;
 }
 
+export class UserPermission {
+    id?:    string;
+    roles?: string[];
+}
+

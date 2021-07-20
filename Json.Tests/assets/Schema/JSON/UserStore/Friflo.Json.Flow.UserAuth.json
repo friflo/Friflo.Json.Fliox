@@ -19,6 +19,13 @@
                 "passHash": { "type": "string" },
                 "token":    { "type": "string" }
             }
+        },
+        "UserPermission": {
+            "type": "object",
+            "properties": {
+                "id":    { "type": "string" },
+                "roles": { "type": "array", "items": { "type": "string" } }
+            }
         }
     }
 }

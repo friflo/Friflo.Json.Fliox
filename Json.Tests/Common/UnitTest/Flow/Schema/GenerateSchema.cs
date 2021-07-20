@@ -14,7 +14,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
     {
         [Test]
         public static void TypescriptUserStore () {
-            var types = new [] { typeof(Role), typeof(UserCredential), typeof(UserCredential) };
+            var types = new [] { typeof(Role), typeof(UserCredential), typeof(UserPermission) };
             var schema = new SchemaGenerator(types);
             EntityStore.AddTypeMappers(schema.typeStore);
             var generator = schema.Typescript();
@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         
         [Test]
         public static void JsonSchemaUserStore () {
-            var types = new [] { typeof(Role), typeof(UserCredential), typeof(UserCredential) };
+            var types = new [] { typeof(Role), typeof(UserCredential), typeof(UserPermission) };
             var schema = new SchemaGenerator(types);
             EntityStore.AddTypeMappers(schema.typeStore);
             var generator = schema.JsonSchema();
