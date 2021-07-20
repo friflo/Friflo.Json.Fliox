@@ -10,27 +10,22 @@ var exampleRole: Role = {
         },
         {
             type:           "database",
-            containers:     { "Article": { operations:["read", "query", "update"], subscribeChanges: ["update"] }},
-            description:    "test"
+            containers:     { "Article": { operations:["read", "query", "update"], subscribeChanges: ["update"] }}
         },
         {
             type:           "message",
-            description:    "some text",
             names:          ["test-mess*"]
         },
         {
             type:           "subscribeMessage",
-            description:    "some text",
             names:          ["test-sub*"]
         },
         { 
             type:           "predicate",
-            description:    "some text",
             names:          ["TestPredicate"]
         },
         {
             type:           "task",
-            description:    "some text",
             types:          ["read"]
         }
     ]

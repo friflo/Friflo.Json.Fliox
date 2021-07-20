@@ -19,7 +19,7 @@ export abstract class Right {
         | "database"
         | "predicate"
     ;
-    description: string;
+    description?: string;
 }
 
 export class RightAllow extends Right {
@@ -29,27 +29,27 @@ export class RightAllow extends Right {
 
 export class RightTask extends Right {
     type:        "task";
-    types:       TaskType[];
+    types?:       TaskType[];
 }
 
 export class RightMessage extends Right {
     type:        "message";
-    names:       string[];
+    names?:       string[];
 }
 
 export class RightSubscribeMessage extends Right {
     type:        "subscribeMessage";
-    names:       string[];
+    names?:       string[];
 }
 
 export class RightDatabase extends Right {
     type:        "database";
-    containers:  { [key: string]: ContainerAccess };
+    containers?:  { [key: string]: ContainerAccess };
 }
 
 export class ContainerAccess {
-    operations:       OperationType[];
-    subscribeChanges: Change[];
+    operations?:       OperationType[];
+    subscribeChanges?: Change[];
 }
 
 export type OperationType =
@@ -65,6 +65,6 @@ export type OperationType =
 
 export class RightPredicate extends Right {
     type:        "predicate";
-    names:       string[];
+    names?:       string[];
 }
 

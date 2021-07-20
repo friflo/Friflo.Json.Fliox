@@ -180,36 +180,36 @@ export abstract class JsonPatch {
 
 export class PatchReplace extends JsonPatch {
     op:    "replace";
-    path:  string;
-    value: object;
+    path?:  string;
+    value?: object;
 }
 
 export class PatchAdd extends JsonPatch {
     op:    "add";
-    path:  string;
-    value: object;
+    path?:  string;
+    value?: object;
 }
 
 export class PatchRemove extends JsonPatch {
     op:   "remove";
-    path: string;
+    path?: string;
 }
 
 export class PatchCopy extends JsonPatch {
     op:   "copy";
-    path: string;
-    from: string;
+    path?: string;
+    from?: string;
 }
 
 export class PatchMove extends JsonPatch {
     op:   "move";
-    path: string;
-    from: string;
+    path?: string;
+    from?: string;
 }
 
 export class PatchTest extends JsonPatch {
     op:    "test";
-    path:  string;
-    value: object;
+    path?:  string;
+    value?: object;
 }
 

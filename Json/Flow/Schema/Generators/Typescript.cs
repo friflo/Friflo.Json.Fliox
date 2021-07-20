@@ -82,9 +82,10 @@ namespace Friflo.Json.Flow.Schema.Generators
                 foreach (var field in fields) {
                     if (generator.IsDerivedField(type, field))
                         continue;
-                    var fieldType = GetFieldType(field.fieldType, imports);
+                    var fieldType = GetFieldType(field.fieldType, imports, out var isOptional);
                     var indent = Generator.Indent(maxFieldName, field.name);
-                    sb.AppendLine($"    {field.name}:{indent} {fieldType};");
+                    var nullStr = isOptional ? "?" : "";
+                    sb.AppendLine($"    {field.name}{nullStr}:{indent} {fieldType};");
                 }
                 sb.AppendLine("}");
                 return new EmitType(mapper, sb.ToString(), imports);
@@ -101,33 +102,37 @@ namespace Friflo.Json.Flow.Schema.Generators
             return null;
         }
         
-        private string GetFieldType(TypeMapper mapper, HashSet<Type> imports) {
+        private string GetFieldType(TypeMapper mapper, HashSet<Type> imports, out bool isOptional) {
             var type = mapper.type;
+            isOptional = true;
             if (type == typeof(JsonValue)) {
                 return "object";
-            }
-            if (mapper.isValueType && mapper.isNullable) {
-                type = mapper.nullableUnderlyingType;
             }
             if (type == typeof(string)) {
                 return "string";
             }
-            if (type == typeof(bool)) {
-                return "boolean";
-            }
-            if (type == typeof(byte) || type == typeof(short) || type == typeof(int) || type == typeof(long)
-                || type == typeof(float) || type == typeof(double)) {
-                return "number";
+            if (mapper.isValueType) { 
+                isOptional = mapper.isNullable;
+                if (isOptional) {
+                    type = mapper.nullableUnderlyingType;
+                }
+                if (type == typeof(bool)) {
+                    return "boolean";
+                }
+                if (type == typeof(byte) || type == typeof(short) || type == typeof(int) || type == typeof(long)
+                    || type == typeof(float) || type == typeof(double)) {
+                    return "number";
+                }
             }
             if (mapper.IsArray) {
                 var elementMapper = mapper.GetElementMapper();
-                var elementTypeName = GetFieldType(elementMapper, imports);
+                var elementTypeName = GetFieldType(elementMapper, imports, out isOptional);
                 return $"{elementTypeName}[]";
             }
             var isDictionary = type.GetInterfaces().Contains(typeof(IDictionary));
             if (isDictionary) {
                 var valueMapper = mapper.GetElementMapper();
-                var valueTypeName = GetFieldType(valueMapper, imports);
+                var valueTypeName = GetFieldType(valueMapper, imports, out isOptional);
                 return $"{{ [key: string]: {valueTypeName} }}";
             }
             imports.Add(type);
