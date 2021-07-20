@@ -133,7 +133,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                 return $"{{ [key: string]: {valueTypeName} }}";
             }
             imports.Add(type);
-            if (IsUnionType(type))
+            if (generator.IsUnionType(type))
                 return $"{type.Name}_Union";
             return type.Name;
         }
@@ -153,17 +153,12 @@ namespace Friflo.Json.Flow.Schema.Generators
                     var typeName = import.Name;
                     var indent = Generator.Indent(max, typeName);
                     sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.Namespace}\"");
-                    if (IsUnionType(import)) {
+                    if (generator.IsUnionType(import)) {
                         sb.AppendLine($"import {{ {typeName}_Union }}{indent} from \"./{import.Namespace}\"");
                     }
                 }
                 package.header = sb.ToString();
             }
-        }
-        
-        private bool IsUnionType (Type type) {
-            var instanceFactory = generator.typeMappers[type].instanceFactory;
-            return instanceFactory != null;
         }
     }
 }

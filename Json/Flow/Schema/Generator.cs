@@ -33,7 +33,12 @@ namespace Friflo.Json.Flow.Schema
         
         public static string Indent(int max, string str) {
             return new string(' ', Math.Max(max - str.Length, 0));
-        } 
+        }
+        
+        public bool IsUnionType (Type type) {
+            var instanceFactory = typeMappers[type].instanceFactory;
+            return instanceFactory != null;
+        }
 
         public void AddEmitType(EmitResult emit) {
             emitTypes.Add(emit.mapper, emit);
