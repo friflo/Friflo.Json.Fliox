@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Transform.Query.Arity;
 
 namespace Friflo.Json.Flow.Transform.Query.Ops
@@ -9,7 +10,9 @@ namespace Friflo.Json.Flow.Transform.Query.Ops
     // ------------------------------------ binary arithmetic operations ------------------------------------
     public abstract class BinaryArithmeticOp : Operation
     {
+        [Fri.Property(Required = true)]
         public              Operation   left;
+        [Fri.Property(Required = true)]
         public              Operation   right;
         internal readonly   EvalResult  evalResult = new EvalResult(new List<Scalar>());
 

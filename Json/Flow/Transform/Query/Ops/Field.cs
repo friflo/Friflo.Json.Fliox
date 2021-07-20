@@ -23,6 +23,7 @@ namespace Friflo.Json.Flow.Transform.Query.Ops
     // ------------------------------------- unary operations -------------------------------------
     public class Field : Operation
     {
+        [Fri.Property(Required = true)]
         public          string                  name;
         
         [Fri.Ignore]

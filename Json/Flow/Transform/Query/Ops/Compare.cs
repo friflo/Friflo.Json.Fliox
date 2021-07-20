@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Transform.Query.Arity;
 
 namespace Friflo.Json.Flow.Transform.Query.Ops
@@ -8,7 +9,9 @@ namespace Friflo.Json.Flow.Transform.Query.Ops
     // -------------------------------------- comparison operations --------------------------------------
     public abstract class BinaryBoolOp : FilterOperation
     {
+        [Fri.Property(Required = true)]
         public              Operation            left;
+        [Fri.Property(Required = true)]
         public              Operation            right;
         
         protected BinaryBoolOp() { }

@@ -43,6 +43,7 @@ namespace Friflo.Json.Flow.Transform.Query.Ops
     // ----------------------------------- (n-ary) logical group operations -----------------------------------
     public abstract class BinaryLogicalOp : FilterOperation
     {
+        [Fri.Property(Required = true)]
         public              List<FilterOperation>   operands;
         [Fri.Ignore]
         internal readonly   List<EvalResult>        evalList        = new List<EvalResult>();

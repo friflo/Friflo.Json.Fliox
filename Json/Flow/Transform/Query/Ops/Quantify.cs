@@ -1,12 +1,17 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Flow.Mapper;
+
 namespace Friflo.Json.Flow.Transform.Query.Ops
 {
     public abstract class BinaryQuantifyOp : FilterOperation
     {
+        [Fri.Property(Required = true)]
         public      Field           field;
+        [Fri.Property(Required = true)]
         public      string          arg;
+        [Fri.Property(Required = true)]
         public      FilterOperation predicate;  // e.g.   i => i.amount < 1
 
         protected BinaryQuantifyOp() { }

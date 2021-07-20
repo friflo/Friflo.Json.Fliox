@@ -18,6 +18,7 @@ namespace Friflo.Json.Flow.Transform.Query.Ops
         
     public class StringLiteral : Literal
     {
+        [Fri.Property(Required = true)]
         public              string      value;
         
         public override     string      Linq => $"'{value}'";
