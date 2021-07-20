@@ -48,7 +48,6 @@ namespace Friflo.Json.Flow.Schema.Generators
             if (underlyingMapper != null) {
                 mapper = underlyingMapper;
             }
-            bool first = true;
             if (mapper.IsComplex) {
                 var fields          = mapper.propFields.fields;
                 int maxFieldName    = fields.MaxLength(field => field.name.Length);
@@ -164,7 +163,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             return Ref(type, owner);
         }
         
-        private string Ref(Type type, TypeMapper owner) {
+        private static string Ref(Type type, TypeMapper owner) {
             var name = type.Name;
             // if (generator.IsUnionType(type))
             //    name = $"{type.Name}_Union";
