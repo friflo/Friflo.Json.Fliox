@@ -1,17 +1,17 @@
 import { Role } from "../UserStore/Friflo.Json.Flow.UserAuth"
 
-var xxx: Role = {
+var exampleRole: Role = {
     id: "some-id",
     rights: [
-        {
+        /* {
             type: "allow",
-            // grant: true,
+            grant: true,
             description: "allow description"
         },
         {
             type: "database",
-            // containers: { },
+            containers: { string: ""},
             description: "test"
-        }
+        } */
     ]
 }
