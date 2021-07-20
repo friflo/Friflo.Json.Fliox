@@ -42,11 +42,8 @@ namespace Friflo.Json.Flow.Schema.Generators
         }
         
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {
-            var imports             = new HashSet<Type>(); 
-            var underlyingMapper    = mapper.GetUnderlyingMapper();
-            if (underlyingMapper != null) {
-                mapper = underlyingMapper;
-            }
+            var imports = new HashSet<Type>(); 
+            mapper      = Generator.GetUnderlyingTypeMapper(mapper);
             var type                = mapper.type;
             if (mapper.IsComplex) {
                 var fields          = mapper.propFields.fields;
@@ -127,10 +124,7 @@ namespace Friflo.Json.Flow.Schema.Generators
         }
         
         private string GetFieldType(TypeMapper mapper, HashSet<Type> imports, out bool isOptional, TypeMapper owner) {
-            var underlyingMapper    = mapper.GetUnderlyingMapper();
-            if (underlyingMapper != null) {
-                mapper = underlyingMapper;
-            }
+            mapper = Generator.GetUnderlyingFieldMapper(mapper);
             var type = mapper.type;
             isOptional = true;
             if (type == typeof(JsonValue)) {

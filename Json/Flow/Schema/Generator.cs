@@ -59,6 +59,21 @@ namespace Friflo.Json.Flow.Schema
             return false;
         }
 
+        public static TypeMapper GetUnderlyingTypeMapper (TypeMapper mapper) {
+            var underlyingMapper    = mapper.GetUnderlyingMapper();
+            if (underlyingMapper != null)
+                return underlyingMapper;
+            return mapper;
+        }
+        
+        /// <summary>Same as <see cref="GetUnderlyingTypeMapper"/> - keep two equal version for debugging</summary>
+        public static TypeMapper GetUnderlyingFieldMapper (TypeMapper mapper) {
+            var underlyingMapper    = mapper.GetUnderlyingMapper();
+            if (underlyingMapper != null)
+                return underlyingMapper;
+            return mapper;
+        }
+        
         public void AddEmitType(EmitType emit) {
             emitTypes.Add(emit.mapper, emit);
         }
