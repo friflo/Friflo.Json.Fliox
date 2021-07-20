@@ -5,14 +5,16 @@
             "type": "object",
             "properties": {
                 "id":     { "type": "string" },
-                "rights": { "type": "array", "items": { "$ref": "Right_Union" } }            }
+                "rights": { "type": "array", "items": { "$ref": "Right_Union" } }
+            }
         },
         "UserCredential": {
             "type": "object",
             "properties": {
                 "id":       { "type": "string" },
                 "passHash": { "type": "string" },
-                "token":    { "type": "string" }            }
+                "token":    { "type": "string" }
+            }
         }
     }
 }

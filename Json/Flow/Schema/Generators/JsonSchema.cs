@@ -36,7 +36,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             EmitPackageHeaders(sb);
             EmitPackageFooters(sb);
 
-            generator.CreateFiles(sb, ns => $"{ns}.json", ",\n"); // $"{ns.Replace(".", "/")}.ts");
+            generator.CreateFiles(sb, ns => $"{ns}.json", ",\r\n"); // $"{ns.Replace(".", "/")}.ts");
         }
         
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {
@@ -66,29 +66,30 @@ namespace Friflo.Json.Flow.Schema.Generators
                     sb.AppendLine($"            \"oneOf\": [");
                     bool firstElem = true;
                     foreach (var polyType in instanceFactory.polyTypes) {
-                        Generator.Delimiter(sb, ",\n", ref firstElem);
+                        Generator.Delimiter(sb, ",\r\n", ref firstElem);
                         sb.Append($"                {{ \"$ref\": \"{polyType.name}\" }}");
                     }
                     sb.AppendLine();
                     sb.AppendLine($"            ],");
                 }
                 sb.AppendLine($"            \"properties\": {{");
+                bool firstField = true;
                 if (discriminant != null) {
                     var indent = Generator.Indent(maxFieldName, discriminator);
-                    sb.AppendLine($"                \"{discriminator}\":{indent} {{ \"enum\": [\"{discriminant}\"] }}");
+                    sb.Append($"                \"{discriminator}\":{indent} {{ \"enum\": [\"{discriminant}\"] }}");
+                    firstField = false;
                 }
                 // fields
-                bool firstField = true;
                 foreach (var field in fields) {
                     if (generator.IsDerivedField(type, field))
                         continue;
                     var fieldType = GetFieldType(field.fieldType, imports, out var isOptional);
                     var indent = Generator.Indent(maxFieldName, field.name);
-                    var optStr = field.required || !isOptional ? "" : "?";
-                    Generator.Delimiter(sb, ",\n", ref firstField);
+                    // var optStr = field.required || !isOptional ? "" : "?";
+                    Generator.Delimiter(sb, ",\r\n", ref firstField);
                     sb.Append($"                \"{field.name}\":{indent} {{ {fieldType} }}");
                 }
-                
+                sb.AppendLine();
                 sb.AppendLine("            }");
                 sb.Append    ("        }");
                 return new EmitType(mapper, sb.ToString(), imports);
@@ -99,7 +100,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                 sb.AppendLine($"            \"enum\": [");
                 bool firstValue = true;
                 foreach (var enumValue in enumValues) {
-                    Generator.Delimiter(sb, ",\n", ref firstValue);
+                    Generator.Delimiter(sb, ",\r\n", ref firstValue);
                     sb.Append($"                \"{enumValue}\"");
                 }
                 sb.AppendLine();

@@ -11,43 +11,50 @@
                 { "$ref": "predicate" }
             ],
             "properties": {
-                "description": { "type": "string" }            }
+                "description": { "type": "string" }
+            }
         },
         "RightAllow": {
             "type": "object",
             "properties": {
-                "type":        { "enum": ["allow"] }
-                "grant":       { "type": "boolean" }            }
+                "type":        { "enum": ["allow"] },
+                "grant":       { "type": "boolean" }
+            }
         },
         "RightTask": {
             "type": "object",
             "properties": {
-                "type":        { "enum": ["task"] }
-                "types":       { "type": "array", "items": { "$ref": "TaskType" } }            }
+                "type":        { "enum": ["task"] },
+                "types":       { "type": "array", "items": { "$ref": "TaskType" } }
+            }
         },
         "RightMessage": {
             "type": "object",
             "properties": {
-                "type":        { "enum": ["message"] }
-                "names":       { "type": "array", "items": { "type": "string" } }            }
+                "type":        { "enum": ["message"] },
+                "names":       { "type": "array", "items": { "type": "string" } }
+            }
         },
         "RightSubscribeMessage": {
             "type": "object",
             "properties": {
-                "type":        { "enum": ["subscribeMessage"] }
-                "names":       { "type": "array", "items": { "type": "string" } }            }
+                "type":        { "enum": ["subscribeMessage"] },
+                "names":       { "type": "array", "items": { "type": "string" } }
+            }
         },
         "RightDatabase": {
             "type": "object",
             "properties": {
-                "type":        { "enum": ["database"] }
-                "containers":  { "type": "object", "additionalProperties": { "$ref": "ContainerAccess" } }            }
+                "type":        { "enum": ["database"] },
+                "containers":  { "type": "object", "additionalProperties": { "$ref": "ContainerAccess" } }
+            }
         },
         "ContainerAccess": {
             "type": "object",
             "properties": {
                 "operations":       { "type": "array", "items": { "$ref": "OperationType" } },
-                "subscribeChanges": { "type": "array", "items": { "$ref": "Change" } }            }
+                "subscribeChanges": { "type": "array", "items": { "$ref": "Change" } }
+            }
         },
         "OperationType": {
             "enum": [
@@ -64,8 +71,9 @@
         "RightPredicate": {
             "type": "object",
             "properties": {
-                "type":        { "enum": ["predicate"] }
-                "names":       { "type": "array", "items": { "type": "string" } }            }
+                "type":        { "enum": ["predicate"] },
+                "names":       { "type": "array", "items": { "type": "string" } }
+            }
         }
     }
 }
