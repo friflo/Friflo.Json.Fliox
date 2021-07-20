@@ -30,12 +30,9 @@ namespace Friflo.Json.Flow.Schema.Generators
                     continue;
                 generator.AddEmitType(result);
             }
-            
             generator.GroupTypesByNamespace();
-            EmitHeader(sb);
-            generator.CreateFiles(sb, ns => $"{ns}.ts");
-            
-            // generator.CreateFiles(sb, ns => $"{ns.Replace(".", "/")}.ts");
+            EmitPackageHeaders(sb);
+            generator.CreateFiles(sb, ns => $"{ns}.ts"); // $"{ns.Replace(".", "/")}.ts");
             generator.WriteFiles();
         }
         
@@ -138,7 +135,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             return type.Name;
         }
         
-        private void EmitHeader(StringBuilder sb) {
+        private void EmitPackageHeaders(StringBuilder sb) {
             foreach (var pair in generator.packages) {
                 sb.Clear();
                 string  ns      = pair.Key;
