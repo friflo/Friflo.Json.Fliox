@@ -19,6 +19,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             EntityStore.AddTypeMappers(schema.typeStore);
             var generator = schema.Typescript();
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/UserStore");
+            
+            generator = schema.JsonSchema();
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore");
         }
         
         [Test]
