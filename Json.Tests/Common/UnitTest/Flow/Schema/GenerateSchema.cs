@@ -31,7 +31,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         public static void JsonSchemaUserStore () {
             var typeStore = EntityStore.AddTypeMappers(new TypeStore());
             var schema = new SchemaGenerator(typeStore, UserStoreTypes);
-            
             var generator = schema.JsonSchema();
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore");
         }
@@ -50,6 +49,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var schema = new SchemaGenerator(typeStore, PocStoreTypes);
             var generator = schema.Typescript();
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/PocStore");
+        }
+        
+        // [Test]
+        public static void JsonSchemaPocStore () {
+            var typeStore = EntityStore.AddTypeMappers(new TypeStore());
+            var schema = new SchemaGenerator(typeStore, PocStoreTypes);
+            var generator = schema.JsonSchema();
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JSON/PocStore");
         }
     }
 }
