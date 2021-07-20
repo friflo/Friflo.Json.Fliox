@@ -26,11 +26,11 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
             string          jsonName;
             if (property != null) {
                 memberType   = property.PropertyType;
-                jsonName = AttributeUtils.PropertyName(property.CustomAttributes);
+                AttributeUtils.Property(property.CustomAttributes, out jsonName);
 
             } else {
                 memberType   = field.FieldType;
-                jsonName = AttributeUtils.PropertyName(field.CustomAttributes);
+                AttributeUtils.Property(field.CustomAttributes, out jsonName);
             }
             if (memberType == null)
                 throw new InvalidOperationException("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
@@ -135,20 +135,22 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
     
     public static class AttributeUtils {
                 
-        public static string PropertyName(IEnumerable<CustomAttributeData> attributes) {
+        public static void Property(IEnumerable<CustomAttributeData> attributes, out string name) {
+            name = null;
             foreach (var attr in attributes) {
-                if (attr.AttributeType == typeof(Fri.PropertyAttribute)) {
-                    if (attr.NamedArguments != null) {
-                        foreach (var args in attr.NamedArguments) {
-                            if (args.MemberName == nameof(Fri.PropertyAttribute.Name)) {
-                                if (args.TypedValue.Value != null)
-                                    return args.TypedValue.Value as string;
-                            }
-                        }
+                if (attr.AttributeType != typeof(Fri.PropertyAttribute))
+                    continue;
+                if (attr.NamedArguments == null)
+                    continue;
+                foreach (var args in attr.NamedArguments) {
+                    switch (args.MemberName) {
+                        case nameof(Fri.PropertyAttribute.Name):
+                            if (args.TypedValue.Value != null)
+                                name = args.TypedValue.Value as string;
+                            break;
                     }
                 }
             }
-            return null;
         }
     }
 }

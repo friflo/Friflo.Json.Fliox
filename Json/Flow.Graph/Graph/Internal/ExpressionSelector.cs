@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 case MemberExpression member:
                     MemberInfo memberInfo = member.Member;
                     var name = memberInfo.Name;
-                    var customName = AttributeUtils.PropertyName(memberInfo.CustomAttributes);
+                    AttributeUtils.Property(memberInfo.CustomAttributes, out var customName);
                     if (customName != null)
                         name = customName;
                     
