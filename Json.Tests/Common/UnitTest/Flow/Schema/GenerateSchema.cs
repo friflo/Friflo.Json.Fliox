@@ -10,22 +10,28 @@ using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 {
-    public static class GenerateTypescript
+    public static class GenerateSchema
     {
         [Test]
-        public static void TestTypescriptUserStore () {
+        public static void TypescriptUserStore () {
             var types = new [] { typeof(Role), typeof(UserCredential), typeof(UserCredential) };
             var schema = new SchemaGenerator(types);
             EntityStore.AddTypeMappers(schema.typeStore);
             var generator = schema.Typescript();
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/UserStore");
-            
-            generator = schema.JsonSchema();
+        }
+        
+        [Test]
+        public static void JsonSchemaUserStore () {
+            var types = new [] { typeof(Role), typeof(UserCredential), typeof(UserCredential) };
+            var schema = new SchemaGenerator(types);
+            EntityStore.AddTypeMappers(schema.typeStore);
+            var generator = schema.JsonSchema();
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore");
         }
         
         [Test]
-        public static void TestTypescriptSync () {
+        public static void TypescriptSync () {
             var types = new [] { typeof(DatabaseMessage) };
             var schema = new SchemaGenerator(types);
             EntityStore.AddTypeMappers(schema.typeStore);

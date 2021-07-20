@@ -20,6 +20,7 @@ namespace Friflo.Json.Flow.Schema
         public  readonly    HashSet<Type>   imports     = new HashSet<Type>();
         /// the generated code used as package header. Typically all imports (using statements)
         public              string          header;
+        public              string          footer;
     }
     
     public class Generator
@@ -83,6 +84,8 @@ namespace Friflo.Json.Flow.Schema
                 foreach (var result in package.emitTypes) {
                     sb.AppendLine(result.content);
                 }
+                if (package.footer != null)
+                    sb.AppendLine(package.footer);
                 var filename = toFilename(ns);
                 files.Add(filename, sb.ToString());
             }
