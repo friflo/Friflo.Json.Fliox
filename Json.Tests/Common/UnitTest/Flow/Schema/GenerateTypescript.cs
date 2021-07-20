@@ -15,17 +15,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         [Test]
         public static void TestTypescriptUserStore () {
             var types = new [] { typeof(Role), typeof(UserCredential), typeof(UserCredential) };
-            var generator = new SchemaGenerator(types);
-            EntityStore.AddTypeMappers(generator.typeStore);
-            generator.Typescript(CommonUtils.GetBasePath() + "assets/Schema/Typescript/UserStore");
+            var schema = new SchemaGenerator(types);
+            EntityStore.AddTypeMappers(schema.typeStore);
+            var generator = schema.Typescript();
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/UserStore");
         }
         
         [Test]
         public static void TestTypescriptSync () {
             var types = new [] { typeof(DatabaseMessage) };
-            var generator = new SchemaGenerator(types);
-            EntityStore.AddTypeMappers(generator.typeStore);
-            generator.Typescript(CommonUtils.GetBasePath() + "assets/Schema/Typescript/Sync");
+            var schema = new SchemaGenerator(types);
+            EntityStore.AddTypeMappers(schema.typeStore);
+            var generator = schema.Typescript();
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/Sync");
         }
     }
 }

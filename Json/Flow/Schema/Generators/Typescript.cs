@@ -33,7 +33,6 @@ namespace Friflo.Json.Flow.Schema.Generators
             generator.GroupTypesByNamespace();
             EmitPackageHeaders(sb);
             generator.CreateFiles(sb, ns => $"{ns}.ts"); // $"{ns.Replace(".", "/")}.ts");
-            generator.WriteFiles();
         }
         
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {

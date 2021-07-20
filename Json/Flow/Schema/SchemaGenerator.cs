@@ -18,15 +18,15 @@ namespace Friflo.Json.Flow.Schema
             }
         }
         
-        public Generator Typescript(string folder) {
-            var generator = new Generator(folder, typeStore);
+        public Generator Typescript() {
+            var generator = new Generator(typeStore);
             var typescript = new Typescript(generator);
             typescript.GenerateSchema();
             return generator;
         }
             
         public Generator JsonSchema (string folder) {
-            var generator = new Generator(folder, typeStore);
+            var generator = new Generator(typeStore);
             var jsonSchema = new JsonSchema(generator);
             jsonSchema.GenerateSchema();
             return generator;

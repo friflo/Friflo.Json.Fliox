@@ -25,8 +25,6 @@ namespace Friflo.Json.Flow.Schema
     {
         /// map of all <see cref="TypeMapper"/>'s required by the types provided for schema generation
         public   readonly    IReadOnlyDictionary<Type, TypeMapper>  typeMappers;
-        /// destination folder of generated files
-        public   readonly    string                                 folder;
         /// map of all emitted types and their emitted code 
         public   readonly    Dictionary<TypeMapper, EmitType>       emitTypes   = new Dictionary<TypeMapper, EmitType>();
         /// map of all generated packages. key: namespace  
@@ -34,8 +32,7 @@ namespace Friflo.Json.Flow.Schema
         /// set of generated files and their source content. key: file name
         public   readonly    Dictionary<string, string>             files       = new Dictionary<string, string>();
 
-        public Generator (string folder, TypeStore typeStore) {
-            this.folder     = folder;
+        public Generator (TypeStore typeStore) {
             typeMappers     = typeStore.GetTypeMappers();
         }
         
@@ -78,7 +75,7 @@ namespace Friflo.Json.Flow.Schema
             }
         }
         
-        public void WriteFiles() {
+        public void WriteFiles(string folder) {
             foreach (var file in files) {
                 var filename    = file.Key;
                 var content     = file.Value;
