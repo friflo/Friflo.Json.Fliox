@@ -3,12 +3,12 @@
     "definitions": {
         "Right": {
             "oneOf": [
-                { "$ref": "allow" },
-                { "$ref": "task" },
-                { "$ref": "message" },
-                { "$ref": "subscribeMessage" },
-                { "$ref": "database" },
-                { "$ref": "predicate" }
+                { "$ref": "RightAllow" },
+                { "$ref": "RightTask" },
+                { "$ref": "RightMessage" },
+                { "$ref": "RightSubscribeMessage" },
+                { "$ref": "RightDatabase" },
+                { "$ref": "RightPredicate" }
             ],
             "properties": {
                 "description": { "type": "string" }

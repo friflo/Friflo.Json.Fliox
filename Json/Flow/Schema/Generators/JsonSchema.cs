@@ -69,7 +69,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                     bool firstElem = true;
                     foreach (var polyType in instanceFactory.polyTypes) {
                         Generator.Delimiter(sb, Next, ref firstElem);
-                        sb.Append($"                {{ \"$ref\": \"{polyType.name}\" }}");
+                        sb.Append($"                {{ {Ref(polyType.type, mapper)} }}");
                     }
                     sb.AppendLine();
                     sb.AppendLine($"            ],");
@@ -85,7 +85,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                 foreach (var field in fields) {
                     if (generator.IsDerivedField(type, field))
                         continue;
-                    var fieldType = GetFieldType(field.fieldType, imports, out var isOptional);
+                    var fieldType = GetFieldType(field.fieldType, imports, out var isOptional, mapper);
                     var indent = Generator.Indent(maxFieldName, field.name);
                     // var optStr = field.required || !isOptional ? "" : "?";
                     Generator.Delimiter(sb, Next, ref firstField);
@@ -113,7 +113,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             return null;
         }
         
-        private string GetFieldType(TypeMapper mapper, HashSet<Type> imports, out bool isOptional) {
+        private string GetFieldType(TypeMapper mapper, HashSet<Type> imports, out bool isOptional, TypeMapper owner) {
             var type = mapper.type;
             isOptional = true;
             if (type == typeof(JsonValue)) {
@@ -137,16 +137,20 @@ namespace Friflo.Json.Flow.Schema.Generators
             }
             if (mapper.IsArray) {
                 var elementMapper = mapper.GetElementMapper();
-                var elementTypeName = GetFieldType(elementMapper, imports, out isOptional);
+                var elementTypeName = GetFieldType(elementMapper, imports, out isOptional, owner);
                 return $"\"type\": \"array\", \"items\": {{ {elementTypeName} }}";
             }
             var isDictionary = type.GetInterfaces().Contains(typeof(IDictionary));
             if (isDictionary) {
                 var valueMapper = mapper.GetElementMapper();
-                var valueTypeName = GetFieldType(valueMapper, imports, out isOptional);
+                var valueTypeName = GetFieldType(valueMapper, imports, out isOptional, owner);
                 return $"\"type\": \"object\", \"additionalProperties\": {{ {valueTypeName} }}";
             }
             imports.Add(type);
+            return Ref(type, owner);
+        }
+        
+        private string Ref(Type type, TypeMapper owner) {
             var name = type.Name;
             if (generator.IsUnionType(type))
                 name = $"{type.Name}_Union";
