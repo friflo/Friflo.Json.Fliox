@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 // ReSharper disable CollectionNeverUpdated.Global
@@ -12,6 +13,7 @@ namespace Friflo.Json.Flow.Auth.Rights
 {
     public class RightTask : Right
     {
+        [Fri.Property(Required = true)]
         public          List<TaskType>          types;
         public override RightType               RightType => RightType.task;
         

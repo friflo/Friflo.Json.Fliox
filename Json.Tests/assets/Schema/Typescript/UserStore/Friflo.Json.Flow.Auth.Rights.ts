@@ -29,22 +29,22 @@ export class RightAllow extends Right {
 
 export class RightTask extends Right {
     type:        "task";
-    types?:       TaskType[];
+    types:       TaskType[];
 }
 
 export class RightMessage extends Right {
     type:        "message";
-    names?:       string[];
+    names:       string[];
 }
 
 export class RightSubscribeMessage extends Right {
     type:        "subscribeMessage";
-    names?:       string[];
+    names:       string[];
 }
 
 export class RightDatabase extends Right {
     type:        "database";
-    containers?:  { [key: string]: ContainerAccess };
+    containers:  { [key: string]: ContainerAccess };
 }
 
 export class ContainerAccess {
@@ -65,6 +65,6 @@ export type OperationType =
 
 export class RightPredicate extends Right {
     type:        "predicate";
-    names?:       string[];
+    names:       string[];
 }
 

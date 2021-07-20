@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Mapper;
 
 // ReSharper disable CollectionNeverUpdated.Global
 // ReSharper disable MemberCanBePrivate.Global
@@ -11,6 +12,7 @@ namespace Friflo.Json.Flow.Auth.Rights
 {
     public class RightPredicate : Right
     {
+        [Fri.Property(Required = true)]
         public          List<string>            names;
         public override RightType               RightType => RightType.predicate;
         

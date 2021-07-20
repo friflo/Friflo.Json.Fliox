@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 // ReSharper disable CollectionNeverUpdated.Global
@@ -11,6 +12,7 @@ namespace Friflo.Json.Flow.Auth.Rights
 {
     public class RightDatabase : Right
     {
+        [Fri.Property(Required = true)]
         public          Dictionary<string, ContainerAccess> containers;
         public override RightType                           RightType => RightType.database;
         

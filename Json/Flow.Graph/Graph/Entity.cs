@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Diagnostics;
+using Friflo.Json.Flow.Mapper;
 
 #if !UNITY_5_3_OR_NEWER
 [assembly: CLSCompliant(true)]
@@ -16,6 +17,7 @@ namespace Friflo.Json.Flow.Graph
     public abstract class Entity
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        [Fri.Property(Required = true)]  // todo
         private string _id;
         
         public string id {
