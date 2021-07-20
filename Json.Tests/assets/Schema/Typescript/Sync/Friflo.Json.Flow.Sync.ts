@@ -1,13 +1,13 @@
-﻿import { FilterOperation } from "./Friflo.Json.Flow.Transform"
-import { JsonPatch }       from "./Friflo.Json.Flow.Transform"
+﻿import { FilterOperation_Union } from "./Friflo.Json.Flow.Transform"
+import { JsonPatch_Union } from "./Friflo.Json.Flow.Transform"
 
 export class DatabaseMessage {
-    req:  DatabaseRequest;
-    resp: DatabaseResponse;
-    ev:   DatabaseEvent;
+    req:  DatabaseRequest_Union;
+    resp: DatabaseResponse_Union;
+    ev:   DatabaseEvent_Union;
 }
 
-type DatabaseRequest_Union =
+export type DatabaseRequest_Union =
     | SyncRequest
 ;
 
@@ -24,10 +24,10 @@ export class SyncRequest extends DatabaseRequest {
     clientId: string;
     eventAck: number;
     token:    string;
-    tasks:    DatabaseTask[];
+    tasks:    DatabaseTask_Union[];
 }
 
-type DatabaseTask_Union =
+export type DatabaseTask_Union =
     | CreateEntities
     | UpdateEntities
     | ReadEntitiesList
@@ -105,7 +105,7 @@ export class QueryEntities extends DatabaseTask {
     task:       "query";
     container:  string;
     filterLinq: string;
-    filter:     FilterOperation;
+    filter:     FilterOperation_Union;
     references: References[];
 }
 
@@ -116,7 +116,7 @@ export class PatchEntities extends DatabaseTask {
 }
 
 export class EntityPatch {
-    patches: JsonPatch[];
+    patches: JsonPatch_Union[];
 }
 
 export class DeleteEntities extends DatabaseTask {
@@ -135,7 +135,7 @@ export class SubscribeChanges extends DatabaseTask {
     task:      "subscribeChanges";
     container: string;
     changes:   Change[];
-    filter:    FilterOperation;
+    filter:    FilterOperation_Union;
 }
 
 export type Change =
@@ -151,7 +151,7 @@ export class SubscribeMessage extends DatabaseTask {
     remove: boolean;
 }
 
-type DatabaseResponse_Union =
+export type DatabaseResponse_Union =
     | SyncResponse
     | ErrorResponse
 ;
@@ -168,7 +168,7 @@ export class SyncResponse extends DatabaseResponse {
     type:         "sync";
     reqId:        number;
     error:        ErrorResponse;
-    tasks:        TaskResult[];
+    tasks:        TaskResult_Union[];
     results:      { string: ContainerEntities };
     createErrors: { string: EntityErrors };
     updateErrors: { string: EntityErrors };
@@ -182,7 +182,7 @@ export class ErrorResponse extends DatabaseResponse {
     message: string;
 }
 
-type TaskResult_Union =
+export type TaskResult_Union =
     | CreateEntitiesResult
     | UpdateEntitiesResult
     | ReadEntitiesListResult
@@ -300,7 +300,7 @@ export class EntityErrors {
     errors:    { string: EntityError };
 }
 
-type DatabaseEvent_Union =
+export type DatabaseEvent_Union =
     | SubscriptionEvent
 ;
 
@@ -318,6 +318,6 @@ export class SubscriptionEvent extends DatabaseEvent {
     seq:      number;
     targetId: string;
     clientId: string;
-    tasks:    DatabaseTask[];
+    tasks:    DatabaseTask_Union[];
 }
 

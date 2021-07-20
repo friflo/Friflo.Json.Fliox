@@ -32,7 +32,7 @@ namespace Friflo.Json.Flow.Schema
         }
         
         public static string Indent(int max, string str) {
-            return new string(' ', max - str.Length);
+            return new string(' ', Math.Max(max - str.Length, 0));
         } 
 
         public void AddEmitType(EmitResult emit) {

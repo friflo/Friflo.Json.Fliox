@@ -1,10 +1,10 @@
-﻿import { Operation }       from "./Friflo.Json.Flow.Transform"
-import { FilterOperation } from "./Friflo.Json.Flow.Transform"
+﻿import { Operation_Union } from "./Friflo.Json.Flow.Transform"
+import { FilterOperation_Union } from "./Friflo.Json.Flow.Transform"
 
 export class Equal extends FilterOperation {
     op:    "equal";
-    left:  Operation;
-    right: Operation;
+    left:  Operation_Union;
+    right: Operation_Union;
 }
 
 export class Field extends Operation {
@@ -33,89 +33,89 @@ export class NullLiteral extends Operation {
 
 export class Abs extends Operation {
     op:    "abs";
-    value: Operation;
+    value: Operation_Union;
 }
 
 export class Ceiling extends Operation {
     op:    "ceiling";
-    value: Operation;
+    value: Operation_Union;
 }
 
 export class Floor extends Operation {
     op:    "floor";
-    value: Operation;
+    value: Operation_Union;
 }
 
 export class Exp extends Operation {
     op:    "exp";
-    value: Operation;
+    value: Operation_Union;
 }
 
 export class Log extends Operation {
     op:    "log";
-    value: Operation;
+    value: Operation_Union;
 }
 
 export class Sqrt extends Operation {
     op:    "sqrt";
-    value: Operation;
+    value: Operation_Union;
 }
 
 export class Negate extends Operation {
     op:    "negate";
-    value: Operation;
+    value: Operation_Union;
 }
 
 export class Add extends Operation {
     op:    "add";
-    left:  Operation;
-    right: Operation;
+    left:  Operation_Union;
+    right: Operation_Union;
 }
 
 export class Subtract extends Operation {
     op:    "subtract";
-    left:  Operation;
-    right: Operation;
+    left:  Operation_Union;
+    right: Operation_Union;
 }
 
 export class Multiply extends Operation {
     op:    "multiply";
-    left:  Operation;
-    right: Operation;
+    left:  Operation_Union;
+    right: Operation_Union;
 }
 
 export class Divide extends Operation {
     op:    "divide";
-    left:  Operation;
-    right: Operation;
+    left:  Operation_Union;
+    right: Operation_Union;
 }
 
 export class Min extends Operation {
     op:    "min";
     field: Field;
     arg:   string;
-    array: Operation;
+    array: Operation_Union;
 }
 
 export class Max extends Operation {
     op:    "max";
     field: Field;
     arg:   string;
-    array: Operation;
+    array: Operation_Union;
 }
 
 export class Sum extends Operation {
     op:    "sum";
     field: Field;
     arg:   string;
-    array: Operation;
+    array: Operation_Union;
 }
 
 export class Average extends Operation {
     op:    "average";
     field: Field;
     arg:   string;
-    array: Operation;
+    array: Operation_Union;
 }
 
 export class Count extends Operation {
@@ -125,42 +125,42 @@ export class Count extends Operation {
 
 export class NotEqual extends FilterOperation {
     op:    "notEqual";
-    left:  Operation;
-    right: Operation;
+    left:  Operation_Union;
+    right: Operation_Union;
 }
 
 export class LessThan extends FilterOperation {
     op:    "lessThan";
-    left:  Operation;
-    right: Operation;
+    left:  Operation_Union;
+    right: Operation_Union;
 }
 
 export class LessThanOrEqual extends FilterOperation {
     op:    "lessThanOrEqual";
-    left:  Operation;
-    right: Operation;
+    left:  Operation_Union;
+    right: Operation_Union;
 }
 
 export class GreaterThan extends FilterOperation {
     op:    "greaterThan";
-    left:  Operation;
-    right: Operation;
+    left:  Operation_Union;
+    right: Operation_Union;
 }
 
 export class GreaterThanOrEqual extends FilterOperation {
     op:    "greaterThanOrEqual";
-    left:  Operation;
-    right: Operation;
+    left:  Operation_Union;
+    right: Operation_Union;
 }
 
 export class And extends FilterOperation {
     op:       "and";
-    operands: FilterOperation[];
+    operands: FilterOperation_Union[];
 }
 
 export class Or extends FilterOperation {
     op:       "or";
-    operands: FilterOperation[];
+    operands: FilterOperation_Union[];
 }
 
 export class TrueLiteral extends FilterOperation {
@@ -173,38 +173,38 @@ export class FalseLiteral extends FilterOperation {
 
 export class Not extends FilterOperation {
     op:      "not";
-    operand: FilterOperation;
+    operand: FilterOperation_Union;
 }
 
 export class Any extends FilterOperation {
     op:        "any";
     field:     Field;
     arg:       string;
-    predicate: FilterOperation;
+    predicate: FilterOperation_Union;
 }
 
 export class All extends FilterOperation {
     op:        "all";
     field:     Field;
     arg:       string;
-    predicate: FilterOperation;
+    predicate: FilterOperation_Union;
 }
 
 export class Contains extends FilterOperation {
     op:    "contains";
-    left:  Operation;
-    right: Operation;
+    left:  Operation_Union;
+    right: Operation_Union;
 }
 
 export class StartsWith extends FilterOperation {
     op:    "startsWith";
-    left:  Operation;
-    right: Operation;
+    left:  Operation_Union;
+    right: Operation_Union;
 }
 
 export class EndsWith extends FilterOperation {
     op:    "endsWith";
-    left:  Operation;
-    right: Operation;
+    left:  Operation_Union;
+    right: Operation_Union;
 }
 

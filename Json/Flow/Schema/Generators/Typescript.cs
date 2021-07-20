@@ -63,7 +63,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                 if (instanceFactory == null) {
                     sb.AppendLine($"export class {type.Name} {extendsStr}{{");
                 } else {
-                    sb.AppendLine($"type {type.Name}_Union =");
+                    sb.AppendLine($"export type {type.Name}_Union =");
                     foreach (var polyType in instanceFactory.polyTypes) {
                         sb.AppendLine($"    | {polyType.type.Name}");
                         imports.Add(polyType.type);
@@ -103,7 +103,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             return null;
         }
         
-        private static string GetFieldType(TypeMapper mapper, HashSet<Type> imports) {
+        private string GetFieldType(TypeMapper mapper, HashSet<Type> imports) {
             var type = mapper.type;
             if (type == typeof(JsonValue)) {
                 return "object";
@@ -133,7 +133,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                 return $"{{ string: {valueTypeName} }}";
             }
             imports.Add(type);
-            return type.Name;
+            return GetTypeName(type);
         }
         
         private void EmitHeader(StringBuilder sb) {
@@ -148,11 +148,20 @@ namespace Friflo.Json.Flow.Schema.Generators
                 foreach (var import in package.imports) {
                     if (import.Namespace == ns)
                         continue;
-                    var indent = Generator.Indent(max, import.Name);
-                    sb.AppendLine($"import {{ {import.Name} }}{indent} from \"./{import.Namespace}\"");
+                    var typeName = GetTypeName(import);
+                    var indent = Generator.Indent(max, typeName);
+                    sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.Namespace}\"");
                 }
                 package.header = sb.ToString();
             }
+        }
+        
+        private string GetTypeName (Type type) {
+            var instanceFactory = generator.typeMappers[type].instanceFactory;
+            if (instanceFactory == null) {
+                return type.Name;
+            }
+            return type.Name + "_Union";
         }
     }
 }

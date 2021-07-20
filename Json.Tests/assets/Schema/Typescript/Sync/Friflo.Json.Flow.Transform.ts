@@ -36,7 +36,7 @@ import { Sum }                from "./Friflo.Json.Flow.Transform.Query.Ops"
 import { Average }            from "./Friflo.Json.Flow.Transform.Query.Ops"
 import { Count }              from "./Friflo.Json.Flow.Transform.Query.Ops"
 
-type FilterOperation_Union =
+export type FilterOperation_Union =
     | Equal
     | NotEqual
     | LessThan
@@ -76,7 +76,7 @@ export abstract class FilterOperation {
     ;
 }
 
-type Operation_Union =
+export type Operation_Union =
     | Field
     | StringLiteral
     | DoubleLiteral
@@ -158,7 +158,7 @@ export abstract class Operation {
     ;
 }
 
-type JsonPatch_Union =
+export type JsonPatch_Union =
     | PatchReplace
     | PatchAdd
     | PatchRemove
