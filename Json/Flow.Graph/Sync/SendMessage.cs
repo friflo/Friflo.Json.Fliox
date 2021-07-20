@@ -3,6 +3,7 @@
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map.Val;
 
 namespace Friflo.Json.Flow.Sync
@@ -10,7 +11,9 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task -----------------------------------
     public class SendMessage : DatabaseTask
     {
+        [Fri.Property(Required = true)]
         public              string          name;
+        [Fri.Property(Required = true)]
         public              JsonValue       value;
             
         internal override   TaskType        TaskType => TaskType.message;

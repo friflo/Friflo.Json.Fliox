@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Sync
@@ -12,7 +13,9 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task -----------------------------------
     public class SubscribeChanges : DatabaseTask
     {
+        [Fri.Property(Required = true)]
         public string                   container;
+        [Fri.Property(Required = true)]
         public List<Change>             changes;
         public FilterOperation          filter;
         

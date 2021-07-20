@@ -3,6 +3,7 @@
 
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
 {
@@ -14,6 +15,7 @@ namespace Friflo.Json.Flow.Sync
         ///   <para><see cref="name"/> = {""} => subscribe all message events.</para>
         ///   <para><see cref="name"/> = {} => unsubscribe message events.</para>
         /// </summary>
+        [Fri.Property(Required = true)]
         public              string          name;
         public              bool?           remove;
         

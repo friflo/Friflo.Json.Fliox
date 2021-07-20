@@ -3,13 +3,16 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
 {
     // ----------------------------------- task -----------------------------------
     public class ReadEntitiesList : DatabaseTask
     {
+        [Fri.Property(Required = true)]
         public  string                  container;
+        [Fri.Property(Required = true)]
         public  List<ReadEntities>      reads;
         
         internal override   TaskType    TaskType => TaskType.read;

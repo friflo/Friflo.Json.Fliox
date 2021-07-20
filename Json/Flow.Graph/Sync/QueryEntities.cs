@@ -12,6 +12,7 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task -----------------------------------
     public class QueryEntities : DatabaseTask
     {
+        [Fri.Property(Required = true)]
         public  string                      container;
         public  string                      filterLinq;
         public  FilterOperation             filter;

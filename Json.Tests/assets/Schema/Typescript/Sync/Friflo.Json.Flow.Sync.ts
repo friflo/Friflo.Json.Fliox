@@ -56,8 +56,8 @@ export abstract class DatabaseTask {
 
 export class CreateEntities extends DatabaseTask {
     task:      "create";
-    container?: string;
-    entities?:  { [key: string]: EntityValue };
+    container: string;
+    entities:  { [key: string]: EntityValue };
 }
 
 export class EntityValue {
@@ -81,18 +81,18 @@ export type EntityErrorType =
 
 export class UpdateEntities extends DatabaseTask {
     task:      "update";
-    container?: string;
-    entities?:  { [key: string]: EntityValue };
+    container: string;
+    entities:  { [key: string]: EntityValue };
 }
 
 export class ReadEntitiesList extends DatabaseTask {
     task:      "read";
-    container?: string;
-    reads?:     ReadEntities[];
+    container: string;
+    reads:     ReadEntities[];
 }
 
 export class ReadEntities {
-    ids?:        string[];
+    ids:        string[];
     references?: References[];
 }
 
@@ -104,7 +104,7 @@ export class References {
 
 export class QueryEntities extends DatabaseTask {
     task:       "query";
-    container?:  string;
+    container:  string;
     filterLinq?: string;
     filter?:     FilterOperation_Union;
     references?: References[];
@@ -112,30 +112,30 @@ export class QueryEntities extends DatabaseTask {
 
 export class PatchEntities extends DatabaseTask {
     task:      "patch";
-    container?: string;
-    patches?:   { [key: string]: EntityPatch };
+    container: string;
+    patches:   { [key: string]: EntityPatch };
 }
 
 export class EntityPatch {
-    patches?: JsonPatch_Union[];
+    patches: JsonPatch_Union[];
 }
 
 export class DeleteEntities extends DatabaseTask {
     task:      "delete";
-    container?: string;
-    ids?:       string[];
+    container: string;
+    ids:       string[];
 }
 
 export class SendMessage extends DatabaseTask {
     task:  "message";
-    name?:  string;
-    value?: object;
+    name:  string;
+    value: object;
 }
 
 export class SubscribeChanges extends DatabaseTask {
     task:      "subscribeChanges";
-    container?: string;
-    changes?:   Change[];
+    container: string;
+    changes:   Change[];
     filter?:    FilterOperation_Union;
 }
 
@@ -148,7 +148,7 @@ export type Change =
 
 export class SubscribeMessage extends DatabaseTask {
     task:   "subscribeMessage";
-    name?:   string;
+    name:   string;
     remove?: boolean;
 }
 

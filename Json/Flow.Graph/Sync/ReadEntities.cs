@@ -9,6 +9,7 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- sub task -----------------------------------
     public class ReadEntities
     {
+        [Fri.Property(Required = true)]
         public  HashSet<string>                 ids;
         public  List<References>                references;
     }

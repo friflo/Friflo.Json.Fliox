@@ -11,7 +11,9 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task -----------------------------------
     public class PatchEntities : DatabaseTask
     {
+        [Fri.Property(Required = true)]
         public  string                          container;
+        [Fri.Property(Required = true)]
         public  Dictionary<string, EntityPatch> patches;
         
         internal override   TaskType            TaskType => TaskType.patch;
@@ -37,6 +39,7 @@ namespace Friflo.Json.Flow.Sync
 
     public class EntityPatch
     {
+        [Fri.Property(Required = true)]
         public List<JsonPatch>                  patches;
     }
 

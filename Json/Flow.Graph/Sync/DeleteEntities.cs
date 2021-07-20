@@ -10,7 +10,9 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task -----------------------------------
     public class DeleteEntities : DatabaseTask
     {
+        [Fri.Property(Required = true)]
         public              string              container;
+        [Fri.Property(Required = true)]
         public              HashSet<string>     ids;
         
         internal override   TaskType            TaskType => TaskType.delete;

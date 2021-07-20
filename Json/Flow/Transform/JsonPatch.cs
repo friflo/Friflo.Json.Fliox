@@ -24,7 +24,9 @@ namespace Friflo.Json.Flow.Transform
 
     public class PatchReplace : JsonPatch
     {
+        [Fri.Property(Required = true)]
         public string       path;
+        [Fri.Property(Required = true)]
         public JsonValue    value;
 
         public override PatchType   PatchType   => PatchType.Replace;
@@ -33,7 +35,9 @@ namespace Friflo.Json.Flow.Transform
     
     public class PatchAdd : JsonPatch
     {
+        [Fri.Property(Required = true)]
         public string       path;
+        [Fri.Property(Required = true)]
         public JsonValue    value;
 
         public override PatchType   PatchType   => PatchType.Add;
@@ -42,6 +46,7 @@ namespace Friflo.Json.Flow.Transform
     
     public class PatchRemove : JsonPatch
     {
+        [Fri.Property(Required = true)]
         public string       path;
 
         public override PatchType   PatchType   => PatchType.Remove;
@@ -50,6 +55,7 @@ namespace Friflo.Json.Flow.Transform
     
     public class PatchCopy : JsonPatch
     {
+        [Fri.Property(Required = true)]
         public string       path;
         public string       from;
 
@@ -59,6 +65,7 @@ namespace Friflo.Json.Flow.Transform
     
     public class PatchMove : JsonPatch
     {
+        [Fri.Property(Required = true)]
         public string       path;
         public string       from;
 
@@ -69,6 +76,7 @@ namespace Friflo.Json.Flow.Transform
     
     public class PatchTest : JsonPatch
     {
+        [Fri.Property(Required = true)]
         public string       path;
         public JsonValue    value;
 
