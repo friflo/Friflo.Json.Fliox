@@ -22,7 +22,6 @@ export abstract class DatabaseRequest {
 
 export class SyncRequest extends DatabaseRequest {
     type:     "sync";
-    reqId:    number;
     clientId: string;
     eventAck: number;
     token:    string;
@@ -168,7 +167,6 @@ export abstract class DatabaseResponse {
 
 export class SyncResponse extends DatabaseResponse {
     type:         "sync";
-    reqId:        number;
     error:        ErrorResponse;
     tasks:        TaskResult_Union[];
     results:      { [key: string]: ContainerEntities };
@@ -180,7 +178,6 @@ export class SyncResponse extends DatabaseResponse {
 
 export class ErrorResponse extends DatabaseResponse {
     type:    "error";
-    reqId:   number;
     message: string;
 }
 
@@ -317,9 +314,6 @@ export abstract class DatabaseEvent {
 
 export class SubscriptionEvent extends DatabaseEvent {
     type:     "subscription";
-    seq:      number;
-    targetId: string;
-    clientId: string;
     tasks:    DatabaseTask_Union[];
 }
 

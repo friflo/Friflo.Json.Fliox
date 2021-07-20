@@ -25,31 +25,26 @@ export abstract class Right {
 export class RightAllow extends Right {
     type:        "allow";
     grant:       boolean;
-    description: string;
 }
 
 export class RightTask extends Right {
     type:        "task";
     types:       TaskType[];
-    description: string;
 }
 
 export class RightMessage extends Right {
     type:        "message";
     names:       string[];
-    description: string;
 }
 
 export class RightSubscribeMessage extends Right {
     type:        "subscribeMessage";
     names:       string[];
-    description: string;
 }
 
 export class RightDatabase extends Right {
     type:        "database";
     containers:  { [key: string]: ContainerAccess };
-    description: string;
 }
 
 export class ContainerAccess {
@@ -71,6 +66,5 @@ export type OperationType =
 export class RightPredicate extends Right {
     type:        "predicate";
     names:       string[];
-    description: string;
 }
 

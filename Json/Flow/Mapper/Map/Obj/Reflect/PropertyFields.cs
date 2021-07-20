@@ -14,19 +14,19 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
 #endif
     public sealed class PropertyFields : IDisposable
     {
-        public  readonly    PropField []                    fields;
-        public  readonly    Bytes32 []                      names32;
-        public  readonly    int                             num;
-        public  readonly    int                             primCount;
-        public  readonly    int                             objCount;
+        public   readonly   PropField []                    fields;
+        public   readonly   Bytes32 []                      names32;
+        public   readonly   int                             num;
+        public   readonly   int                             primCount;
+        public   readonly   int                             objCount;
 
         // ReSharper disable once NotAccessedField.Local
-        private readonly    string                          typeName;
+        private  readonly   string                          typeName;
         
-        private readonly    Dictionary <string, PropField>  strMap      = new Dictionary <string, PropField>(13);
-        private readonly    HashMapOpen<Bytes,  PropField>  fieldMap;
+        private  readonly   Dictionary <string, PropField>  strMap      = new Dictionary <string, PropField>(13);
+        private  readonly   HashMapOpen<Bytes,  PropField>  fieldMap;
         
-        private   readonly Bytes                          removedKey;
+        private  readonly   Bytes                           removedKey;
 
         public PropertyFields (Type type, TypeStore typeStore)
         {
@@ -52,6 +52,10 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
                 names32[n].FromBytes(ref field.nameBytes);
             }
             fieldList. Clear();
+        }
+        
+        public bool Contains(string fieldName) {
+            return strMap.ContainsKey(fieldName);
         }
         
         public PropField GetField (ref Bytes fieldName) {

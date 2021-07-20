@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Flow.Schema
 {
@@ -43,6 +44,18 @@ namespace Friflo.Json.Flow.Schema
         public bool IsUnionType (Type type) {
             var instanceFactory = typeMappers[type].instanceFactory;
             return instanceFactory != null;
+        }
+        
+        public bool IsDerivedField(Type type, PropField field) {
+            var baseType = type.BaseType;
+            while (baseType != null) {
+                if (typeMappers.TryGetValue(baseType, out var mapper)) {
+                    if (mapper.propFields.Contains(field.name))
+                        return true;
+                }
+                baseType = baseType.BaseType;
+            }
+            return false;
         }
 
         public void AddEmitType(EmitType emit) {

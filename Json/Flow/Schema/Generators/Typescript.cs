@@ -80,6 +80,8 @@ namespace Friflo.Json.Flow.Schema.Generators
                 
                 // fields                
                 foreach (var field in fields) {
+                    if (generator.IsDerivedField(type, field))
+                        continue;
                     var fieldType = GetFieldType(field.fieldType, imports);
                     var indent = Generator.Indent(maxFieldName, field.name);
                     sb.AppendLine($"    {field.name}:{indent} {fieldType};");
