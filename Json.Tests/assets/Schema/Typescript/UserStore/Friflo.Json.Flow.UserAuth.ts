@@ -3,7 +3,7 @@ import { Right_Union } from "./Friflo.Json.Flow.Auth.Rights"
 
 export class Role {
     id?:     string;
-    rights?: Right_Union[];
+    rights: Right_Union[];
 }
 
 export class UserCredential {

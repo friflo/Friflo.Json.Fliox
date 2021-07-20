@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Auth.Rights;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.UserAuth
@@ -50,6 +51,7 @@ namespace Friflo.Json.Flow.UserAuth
     }
     
     public class Role : Entity {
+        [Fri.Property(Required = true)]
         public  List<Right>     rights;
     }
     
