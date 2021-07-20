@@ -6,7 +6,7 @@
             "type": "object",
             "properties": {
                 "id":     { "type": "string" },
-                "rights": { "type": "array", "items": { "$ref": "./Friflo.Json.Flow.Auth.Rights.json#/definitions/Right_Union" } }
+                "rights": { "type": "array", "items": { "$ref": "./Friflo.Json.Flow.Auth.Rights.json#/definitions/Right" } }
             },
             "required": [
                 "rights"

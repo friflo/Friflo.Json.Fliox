@@ -166,8 +166,8 @@ namespace Friflo.Json.Flow.Schema.Generators
         
         private string Ref(Type type, TypeMapper owner) {
             var name = type.Name;
-            if (generator.IsUnionType(type))
-                name = $"{type.Name}_Union";
+            // if (generator.IsUnionType(type))
+            //    name = $"{type.Name}_Union";
             bool samePackage = type.Namespace == owner.type.Namespace;
             var prefix = samePackage ? "" : $"./{type.Namespace}.json";
             return $"\"$ref\": \"{prefix}#/definitions/{name}\"";
