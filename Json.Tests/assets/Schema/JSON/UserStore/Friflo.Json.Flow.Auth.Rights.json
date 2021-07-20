@@ -20,35 +20,55 @@
             "properties": {
                 "type":        { "enum": ["allow"] },
                 "grant":       { "type": "boolean" }
-            }
+            },
+            "required": [
+                "type",
+                "grant"
+            ]
         },
         "RightTask": {
             "type": "object",
             "properties": {
                 "type":        { "enum": ["task"] },
                 "types":       { "type": "array", "items": { "$ref": "./Friflo.Json.Flow.Sync.json#/definitions/TaskType" } }
-            }
+            },
+            "required": [
+                "type",
+                "types"
+            ]
         },
         "RightMessage": {
             "type": "object",
             "properties": {
                 "type":        { "enum": ["message"] },
                 "names":       { "type": "array", "items": { "type": "string" } }
-            }
+            },
+            "required": [
+                "type",
+                "names"
+            ]
         },
         "RightSubscribeMessage": {
             "type": "object",
             "properties": {
                 "type":        { "enum": ["subscribeMessage"] },
                 "names":       { "type": "array", "items": { "type": "string" } }
-            }
+            },
+            "required": [
+                "type",
+                "names"
+            ]
         },
         "RightDatabase": {
             "type": "object",
             "properties": {
                 "type":        { "enum": ["database"] },
                 "containers":  { "type": "object", "additionalProperties": { "$ref": "#/definitions/ContainerAccess" } }
-            }
+            },
+            "required": [
+                "type",
+                "containers"
+            ]
         },
         "ContainerAccess": {
             "type": "object",
@@ -74,7 +94,11 @@
             "properties": {
                 "type":        { "enum": ["predicate"] },
                 "names":       { "type": "array", "items": { "type": "string" } }
-            }
+            },
+            "required": [
+                "type",
+                "names"
+            ]
         }
     }
 }

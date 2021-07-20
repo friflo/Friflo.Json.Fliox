@@ -76,10 +76,12 @@ namespace Friflo.Json.Flow.Schema.Generators
                 }
                 sb.AppendLine($"            \"properties\": {{");
                 bool firstField = true;
+                var required = new List<string>();
                 if (discriminant != null) {
                     var indent = Generator.Indent(maxFieldName, discriminator);
                     sb.Append($"                \"{discriminator}\":{indent} {{ \"enum\": [\"{discriminant}\"] }}");
                     firstField = false;
+                    required.Add(discriminator);
                 }
                 // fields
                 foreach (var field in fields) {
@@ -87,12 +89,26 @@ namespace Friflo.Json.Flow.Schema.Generators
                         continue;
                     var fieldType = GetFieldType(field.fieldType, imports, out var isOptional, mapper);
                     var indent = Generator.Indent(maxFieldName, field.name);
-                    // var optStr = field.required || !isOptional ? "" : "?";
+                    if (field.required || !isOptional)
+                        required.Add(field.name);
                     Generator.Delimiter(sb, Next, ref firstField);
                     sb.Append($"                \"{field.name}\":{indent} {{ {fieldType} }}");
                 }
                 sb.AppendLine();
-                sb.AppendLine("            }");
+                sb.Append("            }");
+                if (required.Count == 0 ) {
+                    sb.AppendLine();
+                } else {
+                    sb.AppendLine(",");
+                    bool firstReq = true;
+                    sb.AppendLine("            \"required\": [");
+                    foreach (var item in required) {
+                        Generator.Delimiter(sb, Next, ref firstReq);
+                        sb.Append ($"                \"{item}\"");
+                    }
+                    sb.AppendLine();
+                    sb.AppendLine("            ]");
+                }
                 sb.Append    ("        }");
                 return new EmitType(mapper, sb.ToString(), imports);
             }
