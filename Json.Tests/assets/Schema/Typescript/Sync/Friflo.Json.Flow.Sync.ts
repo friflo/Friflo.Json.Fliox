@@ -1,5 +1,7 @@
-﻿import { FilterOperation_Union } from "./Friflo.Json.Flow.Transform"
-import { JsonPatch_Union } from "./Friflo.Json.Flow.Transform"
+﻿import { FilterOperation } from "./Friflo.Json.Flow.Transform"
+import { FilterOperation_Union } from "./Friflo.Json.Flow.Transform"
+import { JsonPatch }       from "./Friflo.Json.Flow.Transform"
+import { JsonPatch_Union }       from "./Friflo.Json.Flow.Transform"
 
 export class DatabaseMessage {
     req:  DatabaseRequest_Union;

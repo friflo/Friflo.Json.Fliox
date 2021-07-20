@@ -1,4 +1,6 @@
-﻿import { Operation_Union } from "./Friflo.Json.Flow.Transform"
+﻿import { Operation }       from "./Friflo.Json.Flow.Transform"
+import { Operation_Union }       from "./Friflo.Json.Flow.Transform"
+import { FilterOperation } from "./Friflo.Json.Flow.Transform"
 import { FilterOperation_Union } from "./Friflo.Json.Flow.Transform"
 
 export class Equal extends FilterOperation {
