@@ -58,7 +58,7 @@ export abstract class DatabaseTask {
 export class CreateEntities extends DatabaseTask {
     task:      "create";
     container: string;
-    entities:  { string: EntityValue };
+    entities:  { [key: string]: EntityValue };
 }
 
 export class EntityValue {
@@ -83,7 +83,7 @@ export type EntityErrorType =
 export class UpdateEntities extends DatabaseTask {
     task:      "update";
     container: string;
-    entities:  { string: EntityValue };
+    entities:  { [key: string]: EntityValue };
 }
 
 export class ReadEntitiesList extends DatabaseTask {
@@ -114,7 +114,7 @@ export class QueryEntities extends DatabaseTask {
 export class PatchEntities extends DatabaseTask {
     task:      "patch";
     container: string;
-    patches:   { string: EntityPatch };
+    patches:   { [key: string]: EntityPatch };
 }
 
 export class EntityPatch {
@@ -171,11 +171,11 @@ export class SyncResponse extends DatabaseResponse {
     reqId:        number;
     error:        ErrorResponse;
     tasks:        TaskResult_Union[];
-    results:      { string: ContainerEntities };
-    createErrors: { string: EntityErrors };
-    updateErrors: { string: EntityErrors };
-    patchErrors:  { string: EntityErrors };
-    deleteErrors: { string: EntityErrors };
+    results:      { [key: string]: ContainerEntities };
+    createErrors: { [key: string]: EntityErrors };
+    updateErrors: { [key: string]: EntityErrors };
+    patchErrors:  { [key: string]: EntityErrors };
+    deleteErrors: { [key: string]: EntityErrors };
 }
 
 export class ErrorResponse extends DatabaseResponse {
@@ -294,12 +294,12 @@ export type TaskErrorResultType =
 
 export class ContainerEntities {
     container: string;
-    entities:  { string: EntityValue };
+    entities:  { [key: string]: EntityValue };
 }
 
 export class EntityErrors {
     container: string;
-    errors:    { string: EntityError };
+    errors:    { [key: string]: EntityError };
 }
 
 export type DatabaseEvent_Union =

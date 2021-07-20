@@ -130,7 +130,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             if (isDictionary) {
                 var valueMapper = mapper.GetElementMapper();
                 var valueTypeName = GetFieldType(valueMapper, imports);
-                return $"{{ string: {valueTypeName} }}";
+                return $"{{ [key: string]: {valueTypeName} }}";
             }
             imports.Add(type);
             if (IsUnionType(type))

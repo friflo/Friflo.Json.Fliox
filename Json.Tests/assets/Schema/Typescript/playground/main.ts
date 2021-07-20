@@ -8,10 +8,10 @@ var exampleRole: Role = {
             grant: true,
             description: "allow description"
         },
-        /* {
+        {
             type: "database",
-            containers: { string: ""},
+            containers: { "Article": { operations:["read", "query", "update"], subscribeChanges: ["update"] }},
             description: "test"
-        } */
+        }
     ]
 }

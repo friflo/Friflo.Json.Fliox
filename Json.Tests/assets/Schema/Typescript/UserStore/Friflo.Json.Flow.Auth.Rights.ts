@@ -48,7 +48,7 @@ export class RightSubscribeMessage extends Right {
 
 export class RightDatabase extends Right {
     type:        "database";
-    containers:  { string: ContainerAccess };
+    containers:  { [key: string]: ContainerAccess };
     description: string;
 }
 
