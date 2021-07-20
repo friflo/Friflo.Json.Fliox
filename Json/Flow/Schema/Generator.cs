@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
@@ -97,6 +98,14 @@ namespace Friflo.Json.Flow.Schema
             }
             return mapper;
         }
-        
+    }
+    
+    public static class GeneratorExtension
+    {
+        public static int MaxLength<TSource>(this ICollection<TSource> source, Func<TSource, int> selector) {
+            if (source.Count == 0)
+                return 0;
+            return source.Max(selector); 
+        }
     }
 }
