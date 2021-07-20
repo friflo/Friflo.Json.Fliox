@@ -154,7 +154,9 @@ namespace Friflo.Json.Flow.Schema.Generators
             var name = type.Name;
             if (generator.IsUnionType(type))
                 name = $"{type.Name}_Union";
-            return $"\"$ref\": \"{name}\"";
+            bool samePackage = type.Namespace == owner.type.Namespace;
+            var prefix = samePackage ? "" : $"./{type.Namespace}.json";
+            return $"\"$ref\": \"{prefix}#/definitions/{name}\"";
         }
         
         private void EmitPackageHeaders(StringBuilder sb) {

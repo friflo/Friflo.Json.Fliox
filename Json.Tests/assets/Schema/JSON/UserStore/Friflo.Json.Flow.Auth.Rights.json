@@ -3,12 +3,12 @@
     "definitions": {
         "Right": {
             "oneOf": [
-                { "$ref": "RightAllow" },
-                { "$ref": "RightTask" },
-                { "$ref": "RightMessage" },
-                { "$ref": "RightSubscribeMessage" },
-                { "$ref": "RightDatabase" },
-                { "$ref": "RightPredicate" }
+                { "$ref": "#/definitions/RightAllow" },
+                { "$ref": "#/definitions/RightTask" },
+                { "$ref": "#/definitions/RightMessage" },
+                { "$ref": "#/definitions/RightSubscribeMessage" },
+                { "$ref": "#/definitions/RightDatabase" },
+                { "$ref": "#/definitions/RightPredicate" }
             ],
             "properties": {
                 "description": { "type": "string" }
@@ -25,7 +25,7 @@
             "type": "object",
             "properties": {
                 "type":        { "enum": ["task"] },
-                "types":       { "type": "array", "items": { "$ref": "TaskType" } }
+                "types":       { "type": "array", "items": { "$ref": "./Friflo.Json.Flow.Sync.json#/definitions/TaskType" } }
             }
         },
         "RightMessage": {
@@ -46,14 +46,14 @@
             "type": "object",
             "properties": {
                 "type":        { "enum": ["database"] },
-                "containers":  { "type": "object", "additionalProperties": { "$ref": "ContainerAccess" } }
+                "containers":  { "type": "object", "additionalProperties": { "$ref": "#/definitions/ContainerAccess" } }
             }
         },
         "ContainerAccess": {
             "type": "object",
             "properties": {
-                "operations":       { "type": "array", "items": { "$ref": "OperationType" } },
-                "subscribeChanges": { "type": "array", "items": { "$ref": "Change" } }
+                "operations":       { "type": "array", "items": { "$ref": "#/definitions/OperationType" } },
+                "subscribeChanges": { "type": "array", "items": { "$ref": "./Friflo.Json.Flow.Sync.json#/definitions/Change" } }
             }
         },
         "OperationType": {
