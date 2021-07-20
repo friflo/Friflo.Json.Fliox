@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Sync
         /// </summary>
         [Fri.Property(Name = "ack")]    public  int?                eventAck;
                                         public  string              token;
-                                        public  List<DatabaseTask>  tasks;
+        [Fri.Property(Required = true)] public  List<DatabaseTask>  tasks;
         
         internal override                       RequestType         RequestType => RequestType.sync;
     }

@@ -25,7 +25,7 @@ export class SyncRequest extends DatabaseRequest {
     clientId?: string;
     eventAck?: number;
     token?:    string;
-    tasks?:    DatabaseTask_Union[];
+    tasks:    DatabaseTask_Union[];
 }
 
 export type DatabaseTask_Union =
