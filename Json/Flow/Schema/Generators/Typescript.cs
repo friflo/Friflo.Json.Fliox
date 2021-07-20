@@ -84,8 +84,8 @@ namespace Friflo.Json.Flow.Schema.Generators
                         continue;
                     var fieldType = GetFieldType(field.fieldType, imports, out var isOptional);
                     var indent = Generator.Indent(maxFieldName, field.name);
-                    var nullStr = isOptional ? "?" : "";
-                    sb.AppendLine($"    {field.name}{nullStr}:{indent} {fieldType};");
+                    var optStr = isOptional ? "?" : "";
+                    sb.AppendLine($"    {field.name}{optStr}:{indent} {fieldType};");
                 }
                 sb.AppendLine("}");
                 return new EmitType(mapper, sb.ToString(), imports);
