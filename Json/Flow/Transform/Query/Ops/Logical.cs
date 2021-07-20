@@ -10,6 +10,7 @@ namespace Friflo.Json.Flow.Transform.Query.Ops
     // ----------------------------------- unary logical operations -----------------------------------
     public abstract class UnaryLogicalOp : FilterOperation
     {
+        [Fri.Property(Required = true)]
         public           FilterOperation            operand;     // e.g.   i => i.amount < 1
 
         protected UnaryLogicalOp() { }

@@ -123,7 +123,7 @@ export class Average extends Operation {
 
 export class Count extends Operation {
     op     : "count";
-    field? : Field;
+    field  : Field;
 }
 
 export class NotEqual extends FilterOperation {
@@ -176,7 +176,7 @@ export class FalseLiteral extends FilterOperation {
 
 export class Not extends FilterOperation {
     op       : "not";
-    operand? : FilterOperation_Union;
+    operand  : FilterOperation_Union;
 }
 
 export class Any extends FilterOperation {
