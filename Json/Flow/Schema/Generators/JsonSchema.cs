@@ -95,11 +95,8 @@ namespace Friflo.Json.Flow.Schema.Generators
                     sb.Append($"                \"{field.name}\":{indent} {{ {fieldType} }}");
                 }
                 sb.AppendLine();
-                sb.Append("            }");
-                if (required.Count == 0 ) {
-                    sb.AppendLine();
-                } else {
-                    sb.AppendLine(",");
+                sb.AppendLine("            },");
+                if (required.Count > 0 ) {
                     bool firstReq = true;
                     sb.AppendLine("            \"required\": [");
                     foreach (var item in required) {
@@ -107,8 +104,9 @@ namespace Friflo.Json.Flow.Schema.Generators
                         sb.Append ($"                \"{item}\"");
                     }
                     sb.AppendLine();
-                    sb.AppendLine("            ]");
+                    sb.AppendLine("            ],");
                 }
+                sb.AppendLine("            \"additionalProperties\": false");
                 sb.Append    ("        }");
                 return new EmitType(mapper, sb.ToString(), imports);
             }

@@ -10,7 +10,8 @@
             },
             "required": [
                 "rights"
-            ]
+            ],
+            "additionalProperties": false
         },
         "UserCredential": {
             "type": "object",
@@ -18,14 +19,16 @@
                 "id":       { "type": "string" },
                 "passHash": { "type": "string" },
                 "token":    { "type": "string" }
-            }
+            },
+            "additionalProperties": false
         },
         "UserPermission": {
             "type": "object",
             "properties": {
                 "id":    { "type": "string" },
                 "roles": { "type": "array", "items": { "type": "string" } }
-            }
+            },
+            "additionalProperties": false
         }
     }
 }
