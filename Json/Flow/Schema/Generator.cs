@@ -13,18 +13,25 @@ namespace Friflo.Json.Flow.Schema
 {
     public class Package
     {
-        public  readonly    List<EmitResult>    emitResults = new List<EmitResult>();
-        public  readonly    HashSet<Type>       imports = new HashSet<Type>();
-        public              string              header;
+        /// contain all types and their generated piece of code for each type
+        public  readonly    List<EmitType>  emitTypes   = new List<EmitType>();
+        /// contain all imports used by all types in a package
+        public  readonly    HashSet<Type>   imports     = new HashSet<Type>();
+        /// the generated code used as package header. Typically all imports (using statements)
+        public              string          header;
     }
     
     public class Generator
     {
+        /// map of all <see cref="TypeMapper"/>'s required by the types provided for schema generation
         public   readonly    IReadOnlyDictionary<Type, TypeMapper>  typeMappers;
+        /// destination folder of generated files
         public   readonly    string                                 folder;
-        
-        public   readonly    Dictionary<TypeMapper, EmitResult>     emitTypes   = new Dictionary<TypeMapper, EmitResult>();
+        /// map of all emitted types and their emitted code 
+        public   readonly    Dictionary<TypeMapper, EmitType>       emitTypes   = new Dictionary<TypeMapper, EmitType>();
+        /// map of all generated packages. key: namespace  
         public   readonly    Dictionary<string, Package>            packages    = new Dictionary<string, Package>();
+        /// set of generated files and their source content. key: file name
         public   readonly    Dictionary<string, string>             files       = new Dictionary<string, string>();
 
         public Generator (string folder, TypeStore typeStore) {
@@ -41,18 +48,18 @@ namespace Friflo.Json.Flow.Schema
             return instanceFactory != null;
         }
 
-        public void AddEmitType(EmitResult emit) {
+        public void AddEmitType(EmitType emit) {
             emitTypes.Add(emit.mapper, emit);
         }
         
         public void GroupTypesByNamespace() {
             foreach (var pair in emitTypes) {
-                EmitResult  emit    = pair.Value;
+                EmitType    emit    = pair.Value;
                 var         ns      = emit.mapper.type.Namespace;
                 if (!packages.TryGetValue(ns, out var package)) {
                     packages.Add(ns, package = new Package());
                 }
-                package.emitResults.Add(emit);
+                package.emitTypes.Add(emit);
                 package.imports.UnionWith(emit.imports);
             }
         }
@@ -63,7 +70,7 @@ namespace Friflo.Json.Flow.Schema
                 Package     package = pair.Value;
                 sb.Clear();
                 sb.AppendLine(package.header);
-                foreach (var result in package.emitResults) {
+                foreach (var result in package.emitTypes) {
                     sb.AppendLine(result.content);
                 }
                 var filename = toFilename(ns);
