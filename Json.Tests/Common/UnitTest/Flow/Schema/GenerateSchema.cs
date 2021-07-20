@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Schema;
 using Friflo.Json.Flow.Sync;
@@ -12,10 +13,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 {
     public static class GenerateSchema
     {
+        private static readonly Type[] UserStoreTypes = { typeof(Role), typeof(UserCredential), typeof(UserPermission) };
+
         [Test]
         public static void TypescriptUserStore () {
-            var types = new [] { typeof(Role), typeof(UserCredential), typeof(UserPermission) };
-            var schema = new SchemaGenerator(types);
+            var schema = new SchemaGenerator(UserStoreTypes);
             EntityStore.AddTypeMappers(schema.typeStore);
             var generator = schema.Typescript();
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/UserStore");
@@ -24,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         [Test]
         public static void JsonSchemaUserStore () {
             var types = new [] { typeof(Role), typeof(UserCredential), typeof(UserPermission) };
-            var schema = new SchemaGenerator(types);
+            var schema = new SchemaGenerator(UserStoreTypes);
             EntityStore.AddTypeMappers(schema.typeStore);
             var generator = schema.JsonSchema();
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore");
