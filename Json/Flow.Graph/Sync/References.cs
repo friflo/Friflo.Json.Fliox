@@ -23,6 +23,7 @@ namespace Friflo.Json.Flow.Sync
     {
         public  string                  error;
         public  string                  container;
+        [Fri.Property(Required = true)]
         public  HashSet<string>         ids;
         public  List<ReferencesResult>  references;
     }

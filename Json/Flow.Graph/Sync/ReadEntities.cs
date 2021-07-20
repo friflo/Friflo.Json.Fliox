@@ -18,6 +18,7 @@ namespace Friflo.Json.Flow.Sync
     /// The data of requested entities are added to <see cref="ContainerEntities.entities"/> 
     public class ReadEntitiesResult: ICommandResult
     {
+        [Fri.Property(Required = true)]
         public  List<ReferencesResult>          references;
         public  CommandError                    Error { get; set; }
 

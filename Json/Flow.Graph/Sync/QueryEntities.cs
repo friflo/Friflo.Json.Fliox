@@ -58,6 +58,7 @@ namespace Friflo.Json.Flow.Sync
     {
         public  string                          container;  // only for debugging ergonomics
         public  string                          filterLinq;
+        [Fri.Property(Required = true)]
         public  HashSet<string>                 ids;
         public  List<ReferencesResult>          references;
         [Fri.Ignore]

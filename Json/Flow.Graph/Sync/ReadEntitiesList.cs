@@ -78,6 +78,7 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task result -----------------------------------
     public class ReadEntitiesListResult : TaskResult
     {
+        [Fri.Property(Required = true)]
         public              List<ReadEntitiesResult>    reads;
         
         internal override   TaskType                    TaskType => TaskType.read;

@@ -79,6 +79,7 @@ namespace Friflo.Json.Flow.Sync
     public class ContainerEntities
     {
         public  string                                  container; // only for debugging
+        [Fri.Property(Required = true)]
         public  Dictionary<string, EntityValue>         entities;
         
         internal void AddEntities(Dictionary<string, EntityValue> add) {
@@ -91,6 +92,7 @@ namespace Friflo.Json.Flow.Sync
     public class EntityErrors
     {
         public  string                                  container; // only for debugging
+        [Fri.Property(Required = true)]
         public  Dictionary<string, EntityError>         errors;
         
         public EntityErrors() {} // required for TypeMapper

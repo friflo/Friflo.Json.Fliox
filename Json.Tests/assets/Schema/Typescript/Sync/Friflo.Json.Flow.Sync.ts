@@ -66,7 +66,7 @@ export class EntityValue {
 }
 
 export class EntityError {
-    type?:    EntityErrorType;
+    type:    EntityErrorType;
     message?: string;
 }
 
@@ -225,18 +225,18 @@ export class UpdateEntitiesResult extends TaskResult {
 
 export class ReadEntitiesListResult extends TaskResult {
     task:  "read";
-    reads?: ReadEntitiesResult[];
+    reads: ReadEntitiesResult[];
 }
 
 export class ReadEntitiesResult {
     Error?:      CommandError;
-    references?: ReferencesResult[];
+    references: ReferencesResult[];
 }
 
 export class ReferencesResult {
     error?:      string;
     container?:  string;
-    ids?:        string[];
+    ids:        string[];
     references?: ReferencesResult[];
 }
 
@@ -245,7 +245,7 @@ export class QueryEntitiesResult extends TaskResult {
     Error?:      CommandError;
     container?:  string;
     filterLinq?: string;
-    ids?:        string[];
+    ids:        string[];
     references?: ReferencesResult[];
 }
 
@@ -275,7 +275,7 @@ export class SubscribeMessageResult extends TaskResult {
 
 export class TaskErrorResult extends TaskResult {
     task:       "error";
-    type?:       TaskErrorResultType;
+    type:       TaskErrorResultType;
     message?:    string;
     stacktrace?: string;
 }
@@ -291,12 +291,12 @@ export type TaskErrorResultType =
 
 export class ContainerEntities {
     container?: string;
-    entities?:  { [key: string]: EntityValue };
+    entities:  { [key: string]: EntityValue };
 }
 
 export class EntityErrors {
     container?: string;
-    errors?:    { [key: string]: EntityError };
+    errors:    { [key: string]: EntityError };
 }
 
 export type DatabaseEvent_Union =

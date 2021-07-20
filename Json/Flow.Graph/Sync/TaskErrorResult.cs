@@ -2,12 +2,14 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Sync
 {
     // ----------------------------------- task result -----------------------------------
     public class TaskErrorResult : TaskResult
     {
+        [Fri.Property(Required = true)]
         public              TaskErrorResultType type;
         public              string              message;
         public              string              stacktrace;
