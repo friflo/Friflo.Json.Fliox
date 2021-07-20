@@ -14,6 +14,8 @@ namespace Friflo.Json.Flow.Schema.Generators
     public class JsonSchema
     {
         private readonly    Generator   generator;
+        private const       string      Next = ",\r\n";
+        
 
         public JsonSchema (Generator generator) {
             this.generator = generator;
@@ -36,7 +38,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             EmitPackageHeaders(sb);
             EmitPackageFooters(sb);
 
-            generator.CreateFiles(sb, ns => $"{ns}.json", ",\r\n"); // $"{ns.Replace(".", "/")}.ts");
+            generator.CreateFiles(sb, ns => $"{ns}.json", Next); // $"{ns.Replace(".", "/")}.ts");
         }
         
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {
@@ -66,7 +68,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                     sb.AppendLine($"            \"oneOf\": [");
                     bool firstElem = true;
                     foreach (var polyType in instanceFactory.polyTypes) {
-                        Generator.Delimiter(sb, ",\r\n", ref firstElem);
+                        Generator.Delimiter(sb, Next, ref firstElem);
                         sb.Append($"                {{ \"$ref\": \"{polyType.name}\" }}");
                     }
                     sb.AppendLine();
@@ -86,7 +88,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                     var fieldType = GetFieldType(field.fieldType, imports, out var isOptional);
                     var indent = Generator.Indent(maxFieldName, field.name);
                     // var optStr = field.required || !isOptional ? "" : "?";
-                    Generator.Delimiter(sb, ",\r\n", ref firstField);
+                    Generator.Delimiter(sb, Next, ref firstField);
                     sb.Append($"                \"{field.name}\":{indent} {{ {fieldType} }}");
                 }
                 sb.AppendLine();
@@ -100,7 +102,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                 sb.AppendLine($"            \"enum\": [");
                 bool firstValue = true;
                 foreach (var enumValue in enumValues) {
-                    Generator.Delimiter(sb, ",\r\n", ref firstValue);
+                    Generator.Delimiter(sb, Next, ref firstValue);
                     sb.Append($"                \"{enumValue}\"");
                 }
                 sb.AppendLine();
