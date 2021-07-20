@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Schema
 {
     public class Package
     {
-        /// contain all types and their generated piece of code for each type
+        /// contain all types of a namespace (package) and their generated piece of code for each type
         public  readonly    List<EmitType>  emitTypes   = new List<EmitType>();
         /// contain all imports used by all types in a package
         public  readonly    HashSet<Type>   imports     = new HashSet<Type>();
