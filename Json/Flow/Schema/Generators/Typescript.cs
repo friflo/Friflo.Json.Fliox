@@ -41,7 +41,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             var type                = mapper.type;
             if (underlyingMapper != null) {
                 mapper  = underlyingMapper;
-                type    = mapper.type;
+                // type    = mapper.type;
             }
             if (mapper.IsComplex) {
                 var fields          = mapper.propFields.fields;
@@ -106,6 +106,10 @@ namespace Friflo.Json.Flow.Schema.Generators
         }
         
         private string GetFieldType(TypeMapper mapper, HashSet<Type> imports, out bool isOptional) {
+            var underlyingMapper    = mapper.GetUnderlyingMapper();
+            if (underlyingMapper != null) {
+                mapper = underlyingMapper;
+            }
             var type = mapper.type;
             isOptional = true;
             if (type == typeof(JsonValue)) {

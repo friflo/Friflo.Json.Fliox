@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/Sync");
         }
         
-        // [Test]
+        [Test]
         public static void TypescriptPocStore () {
             var typeStore = EntityStore.AddTypeMappers(new TypeStore());
             var schema = new SchemaGenerator(typeStore, PocStoreTypes);
