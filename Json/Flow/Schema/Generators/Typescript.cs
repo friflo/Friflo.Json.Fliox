@@ -32,6 +32,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             }
             
             generator.GroupTypesByNamespace();
+            EmitHeader(sb);
             generator.CreateFiles(sb, ns => $"{ns}.ts");
             
             // generator.CreateFiles(sb, ns => $"{ns.Replace(".", "/")}.ts");
@@ -133,6 +134,25 @@ namespace Friflo.Json.Flow.Schema.Generators
             }
             imports.Add(type);
             return type.Name;
+        }
+        
+        private void EmitHeader(StringBuilder sb) {
+            foreach (var pair in generator.packages) {
+                sb.Clear();
+                string      ns      = pair.Key;
+                Package     package = pair.Value;
+                var max = 0;
+                if (package.imports.Count > 0) {
+                    max = package.imports.Max(import => import.Namespace == ns ? 0 : import.Name.Length);
+                }
+                foreach (var import in package.imports) {
+                    if (import.Namespace == ns)
+                        continue;
+                    var indent = Generator.Indent(max, import.Name);
+                    sb.AppendLine($"import {{ {import.Name} }}{indent} from \"./{import.Namespace}\"");
+                }
+                package.header = sb.ToString();
+            }
         }
     }
 }
