@@ -24,7 +24,9 @@ and if authorization is successful the task is executed.
 
 
 ### VSCode
-To simplify manual editing of entities (files) in VSCode [JSON Schema - UserAuth](../../Schema/JSON/UserAuth) is used
+To simplify manual editing of entities (files) in VSCode [UserStore - JSON Schema](../../Schema/JSON/UserStore) is used.
+The JSON Schema files in this folder are generated from the models by the [Schema Generator](../../../Common/UnitTest/Flow/Schema).
+
 The mapping of **JSON Schema** files via VSCode is explained here:
 [Mapping to a schema in the workspace](https://code.visualstudio.com/docs/languages/json#_mapping-to-a-schema-in-the-workspace)
 
