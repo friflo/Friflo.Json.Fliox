@@ -3,16 +3,18 @@
   "version": "0.1.0",
   "main": "index.js",
   "author": "Ullrich Praetz",
-  "devDependencies": {
-    "typescript": "^4.3.5"
-  },
   "scripts": {
     "tsc-init": "tsc --init",
     "tsc": "tsc",
-    "validate": "node ./dist/playground/validate-json-schema.js"
+    "validate": "node ./dist/playground/validate-json-schema.js",
+    "dbg": "ts-node ./playground/validate-json-schema.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^16.3.3",
+    "typescript": "^4.3.5",
+    "ts-node": "^10.1.0"
   },
   "dependencies": {
-    "ajv": "^8.6.2",
-    "@types/node": "^16.3.3"
+    "ajv": "^8.6.2"
   }
 }
