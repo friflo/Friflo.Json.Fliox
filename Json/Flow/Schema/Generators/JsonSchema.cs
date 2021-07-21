@@ -42,8 +42,9 @@ namespace Friflo.Json.Flow.Schema.Generators
         
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {
             var imports = new HashSet<Type>(); 
+            var context = new SchemaContext (imports, mapper, mapper.GetTypeSemantic());
             mapper      = Generator.GetUnderlyingTypeMapper(mapper);
-            var type                = mapper.type;
+            var type    = mapper.type;
             if (mapper.IsComplex) {
                 var fields          = mapper.propFields.fields;
                 int maxFieldName    = fields.MaxLength(field => field.name.Length);
@@ -64,7 +65,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                     bool firstElem = true;
                     foreach (var polyType in instanceFactory.polyTypes) {
                         Generator.Delimiter(sb, Next, ref firstElem);
-                        sb.Append($"                {{ {Ref(polyType.type, mapper)} }}");
+                        sb.Append($"                {{ {Ref(polyType.type, context)} }}");
                     }
                     sb.AppendLine();
                     sb.AppendLine($"            ],");
@@ -82,7 +83,6 @@ namespace Friflo.Json.Flow.Schema.Generators
                 foreach (var field in fields) {
                     if (generator.IsDerivedField(type, field))
                         continue;
-                    var context = new FieldContext (imports, mapper, mapper.GetTypeSemantic());
                     var fieldType = GetFieldType(field.fieldType, context, out var isOptional);
                     var indent = Generator.Indent(maxFieldName, field.name);
                     if (field.required || !isOptional)
@@ -123,7 +123,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             return null;
         }
         
-        private string GetFieldType(TypeMapper mapper, FieldContext context, out bool isOptional) {
+        private string GetFieldType(TypeMapper mapper, SchemaContext context, out bool isOptional) {
             mapper = Generator.GetUnderlyingFieldMapper(mapper);
             var type = mapper.type;
             isOptional = true;
@@ -158,7 +158,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                 return $"\"type\": \"object\", \"additionalProperties\": {{ {valueTypeName} }}";
             }
             context.imports.Add(type);
-            return Ref(type, context.owner);
+            return Ref(type, context);
         }
         
         private void EmitPackageHeaders(StringBuilder sb) {
@@ -184,11 +184,11 @@ namespace Friflo.Json.Flow.Schema.Generators
             }
         }
         
-        private static string Ref(Type type, TypeMapper owner) {
+        private static string Ref(Type type, SchemaContext context) {
             var name = type.Name;
             // if (generator.IsUnionType(type))
             //    name = $"{type.Name}_Union";
-            bool samePackage = type.Namespace == owner.type.Namespace;
+            bool samePackage = type.Namespace == context.owner.type.Namespace;
             var prefix = samePackage ? "" : $"./{type.Namespace}.json";
             return $"\"$ref\": \"{prefix}#/definitions/{name}\"";
         }

@@ -25,13 +25,13 @@ namespace Friflo.Json.Flow.Schema
         }
     }
     
-    public class FieldContext
+    public class SchemaContext
     {
         public readonly     HashSet<Type>   imports;
         public readonly     TypeMapper      owner;
         public readonly     TypeSemantic    semantic;
         
-        public FieldContext (HashSet<Type> imports, TypeMapper owner, TypeSemantic semantic) {
+        public SchemaContext (HashSet<Type> imports, TypeMapper owner, TypeSemantic semantic) {
             this.imports    = imports;
             this.owner      = owner;
             this.semantic   = semantic;
