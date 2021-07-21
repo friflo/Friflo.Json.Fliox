@@ -4,15 +4,14 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper;
-using Friflo.Json.Flow.Schema.Generators;
 
 namespace Friflo.Json.Flow.Schema
 {
-    public class SchemaGenerator
+    public class GeneratorSchema
     {
         private readonly TypeStore typeStore;
         
-        public SchemaGenerator (TypeStore typeStore, ICollection<Type> rootTypes) {
+        public GeneratorSchema (TypeStore typeStore, ICollection<Type> rootTypes) {
             this.typeStore = typeStore;
             foreach (var type in rootTypes) {
                 typeStore.GetTypeMapper(type);

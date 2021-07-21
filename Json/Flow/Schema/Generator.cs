@@ -9,6 +9,7 @@ using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Flow.Schema.Utils;
 
 namespace Friflo.Json.Flow.Schema
 {

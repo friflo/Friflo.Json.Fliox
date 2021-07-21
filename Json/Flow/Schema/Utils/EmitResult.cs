@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper.Map;
 
-namespace Friflo.Json.Flow.Schema
+namespace Friflo.Json.Flow.Schema.Utils
 {
     public class EmitType
     {
@@ -22,19 +22,6 @@ namespace Friflo.Json.Flow.Schema
             this.mapper     = mapper;
             this.content    = content;
             this.imports    = imports;
-        }
-    }
-    
-    public class SchemaContext
-    {
-        public readonly     HashSet<Type>   imports;
-        public readonly     TypeMapper      owner;
-        public readonly     TypeSemantic    semantic;
-        
-        public SchemaContext (HashSet<Type> imports, TypeMapper owner, TypeSemantic semantic) {
-            this.imports    = imports;
-            this.owner      = owner;
-            this.semantic   = semantic;
         }
     }
 }

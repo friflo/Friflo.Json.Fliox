@@ -8,8 +8,9 @@ using System.Linq;
 using System.Text;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Map.Val;
+using Friflo.Json.Flow.Schema.Utils;
 
-namespace Friflo.Json.Flow.Schema.Generators
+namespace Friflo.Json.Flow.Schema
 {
     public class JsonSchema
     {
@@ -42,7 +43,7 @@ namespace Friflo.Json.Flow.Schema.Generators
         
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {
             var imports = new HashSet<Type>(); 
-            var context = new SchemaContext (imports, mapper, mapper.GetTypeSemantic());
+            var context = new TypeContext (imports, mapper, mapper.GetTypeSemantic());
             mapper      = Generator.GetUnderlyingTypeMapper(mapper);
             var type    = mapper.type;
             if (mapper.IsComplex) {
@@ -123,7 +124,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             return null;
         }
         
-        private string GetFieldType(TypeMapper mapper, SchemaContext context, out bool isOptional) {
+        private string GetFieldType(TypeMapper mapper, TypeContext context, out bool isOptional) {
             mapper = Generator.GetUnderlyingFieldMapper(mapper);
             var type = mapper.type;
             isOptional = true;
@@ -184,7 +185,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             }
         }
         
-        private static string Ref(Type type, SchemaContext context) {
+        private static string Ref(Type type, TypeContext context) {
             var name = type.Name;
             // if (generator.IsUnionType(type))
             //    name = $"{type.Name}_Union";
