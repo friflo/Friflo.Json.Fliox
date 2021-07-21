@@ -28,10 +28,12 @@ namespace Friflo.Json.Flow.Schema
         /// Return a package name for the given type. By Default it is <see cref="Type.Namespace"/>
         private             Func<Type, string>                      getPackageName  = type => type.Namespace;
         private  readonly   Dictionary<Type, string>                packageCache    = new Dictionary<Type, string>();
+        private  readonly   string                                  stripNamespace;
 
-        public Generator (TypeStore typeStore, string fileExtension) {
-            fileExt     = fileExtension;
-            typeMappers = typeStore.GetTypeMappers();
+        public Generator (TypeStore typeStore, string stripNamespace, string fileExtension) {
+            fileExt             = fileExtension;
+            typeMappers         = typeStore.GetTypeMappers();
+            this.stripNamespace = stripNamespace;
         }
         
         public static string Indent(int max, string str) {

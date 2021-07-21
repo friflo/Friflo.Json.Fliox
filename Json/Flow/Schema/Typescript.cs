@@ -17,8 +17,8 @@ namespace Friflo.Json.Flow.Schema
     {
         internal readonly    Generator  generator;
 
-        public Typescript (TypeStore typeStore) {
-            generator = new Generator(typeStore, ".ts");
+        public Typescript (TypeStore typeStore, string stripNamespace) {
+            generator = new Generator(typeStore, stripNamespace, ".ts");
         }
         
         public void GenerateSchema() {

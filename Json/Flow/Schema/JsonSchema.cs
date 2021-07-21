@@ -19,8 +19,8 @@ namespace Friflo.Json.Flow.Schema
         private  readonly   bool        separateEntities;
         private  const      string      Next = ",\r\n";
         
-        public JsonSchema (TypeStore typeStore, bool separateEntities) {
-            generator               = new Generator(typeStore, ".json");
+        public JsonSchema (TypeStore typeStore, string stripNamespace, bool separateEntities) {
+            generator               = new Generator(typeStore, stripNamespace, ".json");
             this.separateEntities   = separateEntities;
             if (separateEntities) {
                 generator.SetPackageNameCallback(type => {
