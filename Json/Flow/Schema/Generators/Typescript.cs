@@ -79,7 +79,8 @@ namespace Friflo.Json.Flow.Schema.Generators
                 foreach (var field in fields) {
                     if (generator.IsDerivedField(type, field))
                         continue;
-                    var fieldType = GetFieldType(field.fieldType, imports, out var isOptional);
+                    var context = new FieldContext (imports, mapper);
+                    var fieldType = GetFieldType(field.fieldType, context, out var isOptional);
                     var indent = Generator.Indent(maxFieldName, field.name);
                     var optStr = field.required || !isOptional ? " " : "?";
                     sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType};");
@@ -101,7 +102,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             return null;
         }
         
-        private string GetFieldType(TypeMapper mapper, HashSet<Type> imports, out bool isOptional) {
+        private string GetFieldType(TypeMapper mapper, FieldContext context, out bool isOptional) {
             mapper = Generator.GetUnderlyingFieldMapper(mapper, out _);
             var type = mapper.type;
             isOptional = true;
@@ -126,16 +127,16 @@ namespace Friflo.Json.Flow.Schema.Generators
             }
             if (mapper.IsArray) {
                 var elementMapper = mapper.GetElementMapper();
-                var elementTypeName = GetFieldType(elementMapper, imports, out isOptional);
+                var elementTypeName = GetFieldType(elementMapper, context, out isOptional);
                 return $"{elementTypeName}[]";
             }
             var isDictionary = type.GetInterfaces().Contains(typeof(IDictionary));
             if (isDictionary) {
                 var valueMapper = mapper.GetElementMapper();
-                var valueTypeName = GetFieldType(valueMapper, imports, out isOptional);
+                var valueTypeName = GetFieldType(valueMapper, context, out isOptional);
                 return $"{{ [key: string]: {valueTypeName} }}";
             }
-            imports.Add(type);
+            context.imports.Add(type);
             if (generator.IsUnionType(type))
                 return $"{type.Name}_Union";
             return type.Name;

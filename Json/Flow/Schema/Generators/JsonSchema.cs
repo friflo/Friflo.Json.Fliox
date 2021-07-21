@@ -82,7 +82,8 @@ namespace Friflo.Json.Flow.Schema.Generators
                 foreach (var field in fields) {
                     if (generator.IsDerivedField(type, field))
                         continue;
-                    var fieldType = GetFieldType(field.fieldType, imports, out var isOptional, mapper);
+                    var context = new FieldContext (imports, mapper);
+                    var fieldType = GetFieldType(field.fieldType, context, out var isOptional);
                     var indent = Generator.Indent(maxFieldName, field.name);
                     if (field.required || !isOptional)
                         required.Add(field.name);
@@ -122,7 +123,7 @@ namespace Friflo.Json.Flow.Schema.Generators
             return null;
         }
         
-        private string GetFieldType(TypeMapper mapper, HashSet<Type> imports, out bool isOptional, TypeMapper owner) {
+        private string GetFieldType(TypeMapper mapper, FieldContext context, out bool isOptional) {
             mapper = Generator.GetUnderlyingFieldMapper(mapper, out _);
             var type = mapper.type;
             isOptional = true;
@@ -147,17 +148,17 @@ namespace Friflo.Json.Flow.Schema.Generators
             }
             if (mapper.IsArray) {
                 var elementMapper = mapper.GetElementMapper();
-                var elementTypeName = GetFieldType(elementMapper, imports, out isOptional, owner);
+                var elementTypeName = GetFieldType(elementMapper, context, out isOptional);
                 return $"\"type\": \"array\", \"items\": {{ {elementTypeName} }}";
             }
             var isDictionary = type.GetInterfaces().Contains(typeof(IDictionary));
             if (isDictionary) {
                 var valueMapper = mapper.GetElementMapper();
-                var valueTypeName = GetFieldType(valueMapper, imports, out isOptional, owner);
+                var valueTypeName = GetFieldType(valueMapper, context, out isOptional);
                 return $"\"type\": \"object\", \"additionalProperties\": {{ {valueTypeName} }}";
             }
-            imports.Add(type);
-            return Ref(type, owner);
+            context.imports.Add(type);
+            return Ref(type, context.owner);
         }
         
         private void EmitPackageHeaders(StringBuilder sb) {

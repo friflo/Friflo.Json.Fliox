@@ -24,4 +24,15 @@ namespace Friflo.Json.Flow.Schema
             this.imports    = imports;
         }
     }
+    
+    public class FieldContext
+    {
+        public readonly     HashSet<Type>   imports;
+        public readonly     TypeMapper      owner;
+        
+        public FieldContext (HashSet<Type> imports, TypeMapper owner) {
+            this.imports    = imports;
+            this.owner      = owner;
+        }
+    }
 }
