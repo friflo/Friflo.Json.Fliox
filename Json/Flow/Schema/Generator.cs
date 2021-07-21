@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Schema
         
         // --- private
         /// map of all emitted types and their emitted code 
-        private  readonly    Dictionary<TypeMapper, EmitType>       emitTypes   = new Dictionary<TypeMapper, EmitType>();
+        private  readonly    Dictionary<Type, EmitType>             emitTypes   = new Dictionary<Type, EmitType>();
         /// set of generated files and their source content. key: file name
         private  readonly    Dictionary<string, string>             files       = new Dictionary<string, string>();
 
@@ -66,15 +66,15 @@ namespace Friflo.Json.Flow.Schema
         }
         
         public void AddEmitType(EmitType emit) {
-            emitTypes.Add(emit.mapper, emit);
+            emitTypes.Add(emit.mapper.type, emit);
         }
         
-        public void GroupTypesByNamespace() {
+        public void GroupTypesByPackage() {
             foreach (var pair in emitTypes) {
-                EmitType    emit    = pair.Value;
-                var         ns      = emit.mapper.type.Namespace;
-                if (!packages.TryGetValue(ns, out var package)) {
-                    packages.Add(ns, package = new Package());
+                EmitType    emit        = pair.Value;
+                var         packageName = emit.package;
+                if (!packages.TryGetValue(packageName, out var package)) {
+                    packages.Add(packageName, package = new Package());
                 }
                 package.emitTypes.Add(emit);
                 foreach (var type in emit.imports) {

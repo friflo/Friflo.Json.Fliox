@@ -11,6 +11,9 @@ namespace Friflo.Json.Flow.Schema.Utils
     {
         /// the mapper assigned to the type
         internal readonly   TypeMapper      mapper;
+        /// the mapper assigned to the type
+        internal readonly   string          package;
+
         /// the piece of code to define the type
         internal readonly   string          content;
         /// contain type imports directly used by this type / mapper. 
@@ -18,8 +21,9 @@ namespace Friflo.Json.Flow.Schema.Utils
 
         public   override   string      ToString() => mapper.type.Name;
 
-        public EmitType(TypeMapper mapper, string content, HashSet<Type> imports) {
+        public EmitType(TypeMapper mapper, string package, string content, HashSet<Type> imports) {
             this.mapper     = mapper;
+            this.package    = package ?? mapper.type.Namespace;
             this.content    = content;
             this.imports    = imports;
         }

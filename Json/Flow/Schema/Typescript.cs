@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Schema
                     continue;
                 generator.AddEmitType(result);
             }
-            generator.GroupTypesByNamespace();
+            generator.GroupTypesByPackage();
             EmitPackageHeaders(sb);
             generator.CreateFiles(sb, ns => $"{ns}.ts"); // $"{ns.Replace(".", "/")}.ts");
         }
@@ -88,7 +88,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 sb.AppendLine("}");
                 sb.AppendLine();
-                return new EmitType(mapper, sb.ToString(), imports);
+                return new EmitType(mapper, null, sb.ToString(), imports);
             }
             if (type.IsEnum) {
                 var enumValues = mapper.GetEnumValues();
@@ -98,7 +98,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 sb.AppendLine($";");
                 sb.AppendLine();
-                return new EmitType(mapper, sb.ToString(), new HashSet<Type>());
+                return new EmitType(mapper, null, sb.ToString(), new HashSet<Type>());
             }
             return null;
         }
