@@ -41,7 +41,7 @@ namespace Friflo.Json.Flow.Schema
             var semantic= mapper.GetTypeSemantic();
             var imports = new HashSet<Type>();
             var context = new TypeContext (generator, imports, mapper);
-            mapper      = Generator.GetUnderlyingTypeMapper(mapper);
+            mapper      = mapper.GetUnderlyingMapper();
             var type    = mapper.type;
             if (mapper.IsComplex) {
                 var fields          = mapper.propFields.fields;
@@ -107,9 +107,9 @@ namespace Friflo.Json.Flow.Schema
         
         // Note: static by intention
         private static string GetFieldType(TypeMapper mapper, TypeContext context, out bool isOptional) {
-            mapper = Generator.GetUnderlyingFieldMapper(mapper);
-            var type = mapper.type;
-            isOptional = true;
+            mapper      = mapper.GetUnderlyingMapper();
+            var type    = mapper.type;
+            isOptional  = true;
             if (type == typeof(JsonValue)) {
                 return "object";
             }

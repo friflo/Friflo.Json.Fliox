@@ -82,7 +82,7 @@ namespace Friflo.Json.Flow.Mapper.Map
         // --- Schema / Code generation related methods --- 
         public virtual  TypeMapper      GetElementMapper    ()  => null;
         public virtual  List<string>    GetEnumValues       ()  => null;
-        public virtual  TypeMapper      GetUnderlyingMapper ()  => null;
+        public virtual  TypeMapper      GetUnderlyingMapper ()  => this;
         public virtual  TypeSemantic    GetTypeSemantic     ()  => TypeSemantic.None;
     }
     
