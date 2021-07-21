@@ -21,9 +21,9 @@ namespace Friflo.Json.Flow.Schema.Utils
 
         public   override   string      ToString() => mapper.type.Name;
 
-        public EmitType(TypeMapper mapper, string package, string content, HashSet<Type> imports) {
+        public EmitType(TypeMapper mapper, Generator generator, string content, HashSet<Type> imports) {
             this.mapper     = mapper;
-            this.package    = package ?? mapper.type.Namespace;
+            this.package    = generator.GetPackageName(mapper.type);
             this.content    = content;
             this.imports    = imports;
         }

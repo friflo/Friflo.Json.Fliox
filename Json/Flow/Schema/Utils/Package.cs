@@ -21,9 +21,11 @@ namespace Friflo.Json.Flow.Schema.Utils
     public readonly struct Import
     {
         public readonly Type    type;
+        public readonly string  package;
         
-        public Import (Type type) {
-            this.type = type;
+        internal Import (Type type, string package) {
+            this.type       = type;
+            this.package    = package;
         }
     }
     

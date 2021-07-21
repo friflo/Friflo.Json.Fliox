@@ -106,7 +106,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 sb.AppendLine("            \"additionalProperties\": false");
                 sb.Append    ("        }");
-                return new EmitType(mapper, null, sb.ToString(), imports);
+                return new EmitType(mapper, generator, sb.ToString(), imports);
             }
             if (type.IsEnum) {
                 var enumValues = mapper.GetEnumValues();
@@ -120,7 +120,7 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine();
                 sb.AppendLine("            ]");
                 sb.Append    ("        }");
-                return new EmitType(mapper, null, sb.ToString(), new HashSet<Type>());
+                return new EmitType(mapper, generator, sb.ToString(), new HashSet<Type>());
             }
             return null;
         }
@@ -191,8 +191,11 @@ namespace Friflo.Json.Flow.Schema
             var name = type.Name;
             // if (generator.IsUnionType(type))
             //    name = $"{type.Name}_Union";
-            bool samePackage = type.Namespace == context.owner.type.Namespace;
-            var prefix = samePackage ? "" : $"./{type.Namespace}.json";
+            var generator       = context.generator;
+            var typePackage     = generator.GetPackageName(type);
+            var ownerPackage    = generator.GetPackageName(context.owner.type);
+            bool samePackage    = typePackage == ownerPackage;
+            var prefix          = samePackage ? "" : $"./{typePackage}.json";
             return $"\"$ref\": \"{prefix}#/definitions/{name}\"";
         }
     }

@@ -15,15 +15,17 @@ namespace Friflo.Json.Flow.Schema
     public class Generator
     {
         /// map of all <see cref="TypeMapper"/>'s required by the types provided for schema generation
-        public   readonly    IReadOnlyDictionary<Type, TypeMapper>  typeMappers;
-        /// map of all generated packages. key: namespace  
-        public   readonly    Dictionary<string, Package>            packages    = new Dictionary<string, Package>();
+        public   readonly   IReadOnlyDictionary<Type, TypeMapper>   typeMappers;
+        /// map of all generated packages. key: package name  
+        public   readonly   Dictionary<string, Package>             packages    = new Dictionary<string, Package>();
         
         // --- private
         /// map of all emitted types and their emitted code 
-        private  readonly    Dictionary<Type, EmitType>             emitTypes   = new Dictionary<Type, EmitType>();
+        private  readonly   Dictionary<Type, EmitType>              emitTypes   = new Dictionary<Type, EmitType>();
         /// set of generated files and their source content. key: file name
-        private  readonly    Dictionary<string, string>             files       = new Dictionary<string, string>();
+        private  readonly   Dictionary<string, string>              files       = new Dictionary<string, string>();
+        /// Return a package name for the given type. By Default it is <see cref="Type.Namespace"/>
+        private             Func<Type, string>                      getPackageName = type => type.Namespace;    
 
         public Generator (TypeStore typeStore) {
             typeMappers     = typeStore.GetTypeMappers();
@@ -31,6 +33,17 @@ namespace Friflo.Json.Flow.Schema
         
         public static string Indent(int max, string str) {
             return new string(' ', Math.Max(max - str.Length, 0));
+        }
+        
+        public string GetPackageName (Type type) {
+            return getPackageName(type);
+        }
+        
+        /// <summary>
+        /// Enables customizing package names for types. By Default it is <see cref="Type.Namespace"/>
+        /// </summary> 
+        public void SetPackageNameCallback (Func<Type, string> callback) {
+            getPackageName = callback;
         }
         
         public bool IsUnionType (Type type) {
@@ -80,7 +93,8 @@ namespace Friflo.Json.Flow.Schema
                 foreach (var type in emit.imports) {
                     if (package.imports.ContainsKey(type))
                         continue;
-                    var import = new Import(type);  
+                    var typePackage = GetPackageName(type); 
+                    var import = new Import(type, typePackage);  
                     package.imports.Add(type, import);
                 }
             }
