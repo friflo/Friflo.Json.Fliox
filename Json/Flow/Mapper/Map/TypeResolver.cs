@@ -13,9 +13,9 @@ namespace Friflo.Json.Flow.Mapper.Map
     [CLSCompliant(true)]
 #endif
     public interface ITypeResolver {
-        TypeMapper          CreateTypeMapper(StoreConfig config, Type type);
-        void                AddTypeMapper(TypeMapper mapper);
-        void                AddGenericTypeMapper(ITypeMatcher matcher);
+        TypeMapper          CreateTypeMapper        (StoreConfig config, Type type);
+        void                AddTypeMapper           (TypeMapper mapper);
+        void                AddGenericTypeMatcher   (ITypeMatcher matcher);
         List<ITypeMatcher>  TypeMatcher { get; }
     }
     
@@ -95,7 +95,7 @@ namespace Friflo.Json.Flow.Mapper.Map
             UpdateMapperList();
         }
         
-        public void AddGenericTypeMapper(ITypeMatcher matcher) {
+        public void AddGenericTypeMatcher(ITypeMatcher matcher) {
             if (genericTypeMatcher.IndexOf(matcher) != -1)
                 return;
             genericTypeMatcher.Add(matcher);

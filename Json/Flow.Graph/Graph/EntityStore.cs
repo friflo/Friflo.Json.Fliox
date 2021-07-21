@@ -46,7 +46,7 @@ namespace Friflo.Json.Flow.Graph
             if (typeStore == null) {
                 typeStore = owned = new TypeStore();
             }
-            AddTypeMappers(typeStore);
+            AddTypeMatchers(typeStore);
             
             // throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 
             var jsonMapper = new ObjectMapper(typeStore, new NoThrowHandler()) {
@@ -64,9 +64,9 @@ namespace Friflo.Json.Flow.Graph
             _intern.Dispose();
         }
         
-        public static TypeStore AddTypeMappers (TypeStore typeStore) {
-            typeStore.typeResolver.AddGenericTypeMapper(RefMatcher.Instance);
-            typeStore.typeResolver.AddGenericTypeMapper(EntityMatcher.Instance);
+        public static TypeStore AddTypeMatchers (TypeStore typeStore) {
+            typeStore.typeResolver.AddGenericTypeMatcher(RefMatcher.Instance);
+            typeStore.typeResolver.AddGenericTypeMatcher(EntityMatcher.Instance);
             return typeStore;
         }
 
