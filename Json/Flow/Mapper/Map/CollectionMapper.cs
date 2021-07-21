@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Mapper.Map
         private     readonly    Type                keyType;
         
         public      override    bool                IsArray => true;
-        public      override    TypeMapper          GetElementMapper()    { return elementType; }
+        public      override    TypeMapper          GetElementMapper() => elementType;
         
 
         internal CollectionMapper (

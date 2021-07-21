@@ -80,12 +80,10 @@ namespace Friflo.Json.Flow.Mapper.Map
             return value == null;
         }
         // --- Schema / Code generation related methods --- 
-        public virtual  TypeMapper      GetElementMapper    ()     { return null; }
-        public virtual  List<string>    GetEnumValues       ()     { return null; }
-        public virtual  TypeMapper      GetUnderlyingMapper (out TypeSemantic typeSemantic) {
-            typeSemantic = TypeSemantic.None;
-            return null;
-        }
+        public virtual  TypeMapper      GetElementMapper    ()  => null;
+        public virtual  List<string>    GetEnumValues       ()  => null;
+        public virtual  TypeMapper      GetUnderlyingMapper ()  => null;
+        public virtual  TypeSemantic    GetTypeSemantic     ()  => TypeSemantic.None;
     }
     
 public enum TypeSemantic {

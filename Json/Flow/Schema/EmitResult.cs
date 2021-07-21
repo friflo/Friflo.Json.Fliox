@@ -29,10 +29,12 @@ namespace Friflo.Json.Flow.Schema
     {
         public readonly     HashSet<Type>   imports;
         public readonly     TypeMapper      owner;
+        public readonly     TypeSemantic    semantic;
         
-        public FieldContext (HashSet<Type> imports, TypeMapper owner) {
+        public FieldContext (HashSet<Type> imports, TypeMapper owner, TypeSemantic semantic) {
             this.imports    = imports;
             this.owner      = owner;
+            this.semantic   = semantic;
         }
     }
 }

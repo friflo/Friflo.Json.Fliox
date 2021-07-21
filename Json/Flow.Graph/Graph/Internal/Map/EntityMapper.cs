@@ -39,8 +39,9 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
     {
         private readonly TypeMapper<T> mapper;
         
-        public override             string DataTypeName()                               { return "Entity"; }
-        public override TypeMapper  GetUnderlyingMapper(out TypeSemantic typeSemantic)  { typeSemantic = TypeSemantic.Entity; return mapper; }
+        public override string          DataTypeName()   { return "Entity"; }
+        public override TypeMapper      GetUnderlyingMapper()   => mapper;
+        public override TypeSemantic    GetTypeSemantic     ()  => TypeSemantic.Entity;
 
         // ReSharper disable once UnusedParameter.Local
         public EntityMapper(StoreConfig config, Type type, ConstructorInfo constructor) :

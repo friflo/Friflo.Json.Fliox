@@ -42,7 +42,7 @@ namespace Friflo.Json.Flow.Schema.Generators
         
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {
             var imports = new HashSet<Type>(); 
-            mapper      = Generator.GetUnderlyingTypeMapper(mapper, out _);
+            mapper      = Generator.GetUnderlyingTypeMapper(mapper);
             var type                = mapper.type;
             if (mapper.IsComplex) {
                 var fields          = mapper.propFields.fields;
@@ -82,7 +82,7 @@ namespace Friflo.Json.Flow.Schema.Generators
                 foreach (var field in fields) {
                     if (generator.IsDerivedField(type, field))
                         continue;
-                    var context = new FieldContext (imports, mapper);
+                    var context = new FieldContext (imports, mapper, mapper.GetTypeSemantic());
                     var fieldType = GetFieldType(field.fieldType, context, out var isOptional);
                     var indent = Generator.Indent(maxFieldName, field.name);
                     if (field.required || !isOptional)
@@ -124,7 +124,7 @@ namespace Friflo.Json.Flow.Schema.Generators
         }
         
         private string GetFieldType(TypeMapper mapper, FieldContext context, out bool isOptional) {
-            mapper = Generator.GetUnderlyingFieldMapper(mapper, out _);
+            mapper = Generator.GetUnderlyingFieldMapper(mapper);
             var type = mapper.type;
             isOptional = true;
             if (type == typeof(JsonValue)) {
