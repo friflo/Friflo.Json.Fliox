@@ -9,10 +9,11 @@ function run() {
     const validate = ajv.getSchema("http://json-schema.org/draft-07/schema#") as ValidateFunction;
 
     const schemas : string[] = [
-        "../JSON/Auth.Rights.json",
-        "../JSON/UserAuth.Role.json",
-        "../JSON/UserAuth.UserCredential.json",
-        "../JSON/UserAuth.UserPermission.json",
+        "../JSON/UserStore/Friflo.Json.Flow.Auth.Rights.json",
+        "../JSON/UserStore/Friflo.Json.Flow.Sync.json",
+        "../JSON/UserStore/Friflo.Json.Flow.UserAuth.Role.json",
+        "../JSON/UserStore/Friflo.Json.Flow.UserAuth.UserCredential.json",
+        "../JSON/UserStore/Friflo.Json.Flow.UserAuth.UserPermission.json",
     ];
 
     for (var path of schemas) {
