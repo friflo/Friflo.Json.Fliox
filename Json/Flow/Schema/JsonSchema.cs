@@ -15,7 +15,7 @@ namespace Friflo.Json.Flow.Schema
 {
     public class JsonSchema
     {
-        internal readonly   Generator   generator;
+        public   readonly   Generator   generator;
         private  readonly   bool        separateEntities;
         private  const      string      Next = ",\r\n";
         
