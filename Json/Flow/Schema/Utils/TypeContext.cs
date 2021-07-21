@@ -9,11 +9,13 @@ namespace Friflo.Json.Flow.Schema.Utils
 {
     public class TypeContext
     {
+        public readonly     Generator       generator;
         public readonly     HashSet<Type>   imports;
         public readonly     TypeMapper      owner;
         public readonly     TypeSemantic    semantic;
         
-        public TypeContext (HashSet<Type> imports, TypeMapper owner, TypeSemantic semantic) {
+        public TypeContext (Generator generator, HashSet<Type> imports, TypeMapper owner, TypeSemantic semantic) {
+            this.generator  = generator;
             this.imports    = imports;
             this.owner      = owner;
             this.semantic   = semantic;
