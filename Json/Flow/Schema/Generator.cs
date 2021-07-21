@@ -14,6 +14,7 @@ namespace Friflo.Json.Flow.Schema
 {
     public class Generator
     {
+        public   readonly   string                                  extension;
         /// map of all <see cref="TypeMapper"/>'s required by the types provided for schema generation
         public   readonly   IReadOnlyDictionary<Type, TypeMapper>   typeMappers;
         /// map of all generated packages. key: package name  
@@ -25,9 +26,10 @@ namespace Friflo.Json.Flow.Schema
         /// set of generated files and their source content. key: file name
         private  readonly   Dictionary<string, string>              files       = new Dictionary<string, string>();
         /// Return a package name for the given type. By Default it is <see cref="Type.Namespace"/>
-        private             Func<Type, string>                      getPackageName = type => type.Namespace;    
+        private             Func<Type, string>                      getPackageName = type => type.Namespace;
 
-        public Generator (TypeStore typeStore) {
+        public Generator (TypeStore typeStore, string extension) {
+            this.extension  = extension;
             typeMappers     = typeStore.GetTypeMappers();
         }
         

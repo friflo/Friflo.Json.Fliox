@@ -19,17 +19,15 @@ namespace Friflo.Json.Flow.Schema
         }
         
         public Generator Typescript() {
-            var generator = new Generator(typeStore);
-            var typescript = new Typescript(generator);
+            var typescript = new Typescript(typeStore);
             typescript.GenerateSchema();
-            return generator;
+            return typescript.generator;
         }
             
         public Generator JsonSchema (bool separateEntities) {
-            var generator = new Generator(typeStore);
-            var jsonSchema = new JsonSchema(generator, separateEntities);
+            var jsonSchema = new JsonSchema(typeStore, separateEntities);
             jsonSchema.GenerateSchema();
-            return generator;
+            return jsonSchema.generator;
         }
     }
 }

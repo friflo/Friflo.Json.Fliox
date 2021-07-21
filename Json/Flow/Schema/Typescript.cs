@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Map.Val;
 using Friflo.Json.Flow.Schema.Utils;
@@ -14,10 +15,10 @@ namespace Friflo.Json.Flow.Schema
 {
     public class Typescript
     {
-        private readonly    Generator   generator;
+        internal readonly    Generator  generator;
 
-        public Typescript (Generator generator) {
-            this.generator  = generator;
+        public Typescript (TypeStore typeStore) {
+            generator = new Generator(typeStore, ".ts");
         }
         
         public void GenerateSchema() {
@@ -33,7 +34,7 @@ namespace Friflo.Json.Flow.Schema
             }
             generator.GroupTypesByPackage();
             EmitPackageHeaders(sb);
-            generator.CreateFiles(sb, ns => $"{ns}.ts"); // $"{ns.Replace(".", "/")}.ts");
+            generator.CreateFiles(sb, ns => $"{ns}{generator.extension}"); // $"{ns.Replace(".", "/")}{generator.extension}");
         }
         
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {

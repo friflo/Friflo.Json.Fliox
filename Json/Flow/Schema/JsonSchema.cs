@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Map.Val;
 using Friflo.Json.Flow.Schema.Utils;
@@ -14,12 +15,12 @@ namespace Friflo.Json.Flow.Schema
 {
     public class JsonSchema
     {
-        private readonly    Generator   generator;
-        private readonly    bool        separateEntities;
-        private const       string      Next = ",\r\n";
+        internal readonly   Generator   generator;
+        private  readonly   bool        separateEntities;
+        private  const      string      Next = ",\r\n";
         
-        public JsonSchema (Generator generator, bool separateEntities) {
-            this.generator          = generator;
+        public JsonSchema (TypeStore typeStore, bool separateEntities) {
+            generator               = new Generator(typeStore, ".json");
             this.separateEntities   = separateEntities;
             if (separateEntities) {
                 generator.SetPackageNameCallback(type => {
@@ -47,7 +48,7 @@ namespace Friflo.Json.Flow.Schema
             EmitPackageHeaders(sb);
             EmitPackageFooters(sb);
 
-            generator.CreateFiles(sb, ns => $"{ns}.json", Next); // $"{ns.Replace(".", "/")}.ts");
+            generator.CreateFiles(sb, ns => $"{ns}{generator.extension}", Next); // $"{ns.Replace(".", "/")}.ts");
         }
         
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {
@@ -203,7 +204,7 @@ namespace Friflo.Json.Flow.Schema
             var typePackage     = generator.GetPackageName(type);
             var ownerPackage    = generator.GetPackageName(context.owner.type);
             bool samePackage    = typePackage == ownerPackage;
-            var prefix          = samePackage ? "" : $"./{typePackage}.json";
+            var prefix          = samePackage ? "" : $"./{typePackage}{generator.extension}";
             return $"\"$ref\": \"{prefix}#/definitions/{name}\"";
         }
     }
