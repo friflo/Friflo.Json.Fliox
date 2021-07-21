@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
@@ -13,17 +12,6 @@ using Friflo.Json.Flow.Schema.Utils;
 
 namespace Friflo.Json.Flow.Schema
 {
-    public class Package
-    {
-        /// contain all types of a namespace (package) and their generated piece of code for each type
-        internal readonly   List<EmitType>  emitTypes   = new List<EmitType>();
-        /// contain all imports used by all types in a package
-        public   readonly   HashSet<Type>   imports     = new HashSet<Type>();
-        /// the generated code used as package header. Typically all imports (using statements)
-        public              string          header;
-        public              string          footer;
-    }
-    
     public class Generator
     {
         /// map of all <see cref="TypeMapper"/>'s required by the types provided for schema generation
@@ -89,7 +77,12 @@ namespace Friflo.Json.Flow.Schema
                     packages.Add(ns, package = new Package());
                 }
                 package.emitTypes.Add(emit);
-                package.imports.UnionWith(emit.imports);
+                foreach (var type in emit.imports) {
+                    if (package.imports.ContainsKey(type))
+                        continue;
+                    var import = new Import(type);  
+                    package.imports.Add(type, import);
+                }
             }
         }
         
@@ -146,15 +139,6 @@ namespace Friflo.Json.Flow.Schema
                     throw new InvalidOperationException("");
             }
             return mapper;
-        }
-    }
-    
-    public static class GeneratorExtension
-    {
-        public static int MaxLength<TSource>(this ICollection<TSource> source, Func<TSource, int> selector) {
-            if (source.Count == 0)
-                return 0;
-            return source.Max(selector); 
         }
     }
 }
