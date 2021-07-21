@@ -38,6 +38,7 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {
+            var semantic= mapper.GetTypeSemantic();
             var imports = new HashSet<Type>();
             var context = new TypeContext (generator, imports, mapper);
             mapper      = Generator.GetUnderlyingTypeMapper(mapper);
@@ -89,7 +90,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 sb.AppendLine("}");
                 sb.AppendLine();
-                return new EmitType(mapper, generator, sb.ToString(), imports);
+                return new EmitType(mapper, semantic, generator, sb.ToString(), imports);
             }
             if (type.IsEnum) {
                 var enumValues = mapper.GetEnumValues();
@@ -99,7 +100,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 sb.AppendLine($";");
                 sb.AppendLine();
-                return new EmitType(mapper, generator, sb.ToString(), new HashSet<Type>());
+                return new EmitType(mapper, semantic, generator, sb.ToString(), new HashSet<Type>());
             }
             return null;
         }

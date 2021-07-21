@@ -18,10 +18,13 @@ namespace Friflo.Json.Flow.Schema.Utils
         internal readonly   string          content;
         /// contain type imports directly used by this type / mapper. 
         internal readonly   HashSet<Type>   imports;
+        
+        internal readonly   TypeSemantic    semantic;
 
         public   override   string      ToString() => mapper.type.Name;
 
-        public EmitType(TypeMapper mapper, Generator generator, string content, HashSet<Type> imports) {
+        public EmitType(TypeMapper mapper, TypeSemantic semantic, Generator generator, string content, HashSet<Type> imports) {
+            this.semantic   = semantic;
             this.mapper     = mapper;
             this.package    = generator.GetPackageName(mapper.type);
             this.content    = content;
