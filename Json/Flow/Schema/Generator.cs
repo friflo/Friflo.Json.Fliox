@@ -16,9 +16,9 @@ namespace Friflo.Json.Flow.Schema
     public class Package
     {
         /// contain all types of a namespace (package) and their generated piece of code for each type
-        public  readonly    List<EmitType>  emitTypes   = new List<EmitType>();
+        internal readonly   List<EmitType>  emitTypes   = new List<EmitType>();
         /// contain all imports used by all types in a package
-        public  readonly    HashSet<Type>   imports     = new HashSet<Type>();
+        public   readonly   HashSet<Type>   imports     = new HashSet<Type>();
         /// the generated code used as package header. Typically all imports (using statements)
         public              string          header;
         public              string          footer;
@@ -28,12 +28,14 @@ namespace Friflo.Json.Flow.Schema
     {
         /// map of all <see cref="TypeMapper"/>'s required by the types provided for schema generation
         public   readonly    IReadOnlyDictionary<Type, TypeMapper>  typeMappers;
-        /// map of all emitted types and their emitted code 
-        public   readonly    Dictionary<TypeMapper, EmitType>       emitTypes   = new Dictionary<TypeMapper, EmitType>();
         /// map of all generated packages. key: namespace  
         public   readonly    Dictionary<string, Package>            packages    = new Dictionary<string, Package>();
+        
+        // --- private
+        /// map of all emitted types and their emitted code 
+        private  readonly    Dictionary<TypeMapper, EmitType>       emitTypes   = new Dictionary<TypeMapper, EmitType>();
         /// set of generated files and their source content. key: file name
-        public   readonly    Dictionary<string, string>             files       = new Dictionary<string, string>();
+        private  readonly    Dictionary<string, string>             files       = new Dictionary<string, string>();
 
         public Generator (TypeStore typeStore) {
             typeMappers     = typeStore.GetTypeMappers();
