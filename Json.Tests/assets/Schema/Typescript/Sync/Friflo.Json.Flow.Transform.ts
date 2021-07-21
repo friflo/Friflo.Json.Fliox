@@ -182,13 +182,13 @@ export abstract class JsonPatch {
 export class PatchReplace extends JsonPatch {
     op     : "replace";
     path   : string;
-    value  : object;
+    value  : {} | null;
 }
 
 export class PatchAdd extends JsonPatch {
     op     : "add";
     path   : string;
-    value  : object;
+    value  : {} | null;
 }
 
 export class PatchRemove extends JsonPatch {
@@ -211,6 +211,6 @@ export class PatchMove extends JsonPatch {
 export class PatchTest extends JsonPatch {
     op     : "test";
     path   : string;
-    value? : object;
+    value? : {} | null;
 }
 

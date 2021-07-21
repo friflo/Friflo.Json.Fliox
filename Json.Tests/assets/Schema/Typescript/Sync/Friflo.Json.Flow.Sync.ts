@@ -62,7 +62,7 @@ export class CreateEntities extends DatabaseTask {
 }
 
 export class EntityValue {
-    value? : object;
+    value? : {} | null;
     error? : EntityError;
 }
 
@@ -130,7 +130,7 @@ export class DeleteEntities extends DatabaseTask {
 export class SendMessage extends DatabaseTask {
     task   : "message";
     name   : string;
-    value  : object;
+    value  : {} | null;
 }
 
 export class SubscribeChanges extends DatabaseTask {
@@ -263,7 +263,7 @@ export class DeleteEntitiesResult extends TaskResult {
 export class SendMessageResult extends TaskResult {
     task    : "message";
     Error?  : CommandError;
-    result? : object;
+    result? : {} | null;
 }
 
 export class SubscribeChangesResult extends TaskResult {

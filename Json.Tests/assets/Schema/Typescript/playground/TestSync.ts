@@ -10,7 +10,7 @@ var exampleSync: DatabaseMessage = {
             {
                 "task":         "message",
                 "name":         "Echo",
-                "value":        "some value"
+                "value":        { "some": "data" }
             },
             {
                 "task":         "read",
@@ -94,7 +94,7 @@ var exampleSync: DatabaseMessage = {
                             {
                                 "op":"replace",
                                 "path": ".name",
-                                "value": "patched Name"
+                                "value": null
                             }
                         ]
                     }

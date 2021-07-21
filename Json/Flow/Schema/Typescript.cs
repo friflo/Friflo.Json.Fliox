@@ -111,7 +111,7 @@ namespace Friflo.Json.Flow.Schema
             var type    = mapper.type;
             isOptional  = true;
             if (type == typeof(JsonValue)) {
-                return "object";
+                return "{} | null";
             }
             if (type == typeof(string)) {
                 return "string";
