@@ -21,6 +21,14 @@ namespace Friflo.Json.Flow.Schema
         public JsonSchema (Generator generator, bool separateEntities) {
             this.generator          = generator;
             this.separateEntities   = separateEntities;
+            if (separateEntities) {
+                generator.SetPackageNameCallback(type => {
+                    var mapper = generator.typeMappers[type];
+                    if (mapper.GetTypeSemantic() == TypeSemantic.Entity)
+                        return $"{type.Namespace}.{type.Name}";
+                    return type.Namespace;
+                });
+            }
         }
         
         public void GenerateSchema() {
