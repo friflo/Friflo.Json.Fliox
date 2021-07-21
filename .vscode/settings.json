@@ -21,11 +21,11 @@
         { "fileMatch": ["/Json.Tests/assets/Graph/auth/UserCredential/*.json"], "url": "./Json.Tests/assets/Schema/JSON/UserStore/Friflo.Json.Flow.UserAuth.UserCredential.json" },
         { "fileMatch": ["/Json.Tests/assets/Graph/auth/UserPermission/*.json"], "url": "./Json.Tests/assets/Schema/JSON/UserStore/Friflo.Json.Flow.UserAuth.UserPermission.json" },
 
-        { "fileMatch": ["/Json.Tests/assets/Graph/db/Article/*.json"],  "url": "./Json.Tests/assets/Schema/JSON/PocStore/Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Article.json" },
-        { "fileMatch": ["/Json.Tests/assets/Graph/db/Customer/*.json"], "url": "./Json.Tests/assets/Schema/JSON/PocStore/Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Customer.json" },
-        { "fileMatch": ["/Json.Tests/assets/Graph/db/Employee/*.json"], "url": "./Json.Tests/assets/Schema/JSON/PocStore/Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Employee.json" },
-        { "fileMatch": ["/Json.Tests/assets/Graph/db/Order/*.json"],    "url": "./Json.Tests/assets/Schema/JSON/PocStore/Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Order.json" },
-        { "fileMatch": ["/Json.Tests/assets/Graph/db/Producer/*.json"], "url": "./Json.Tests/assets/Schema/JSON/PocStore/Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Producer.json" }
+        { "fileMatch": ["/Json.Tests/assets/Graph/db/Article/*.json"],  "url": "./Json.Tests/assets/Schema/JSON/PocStore/UnitTest.Flow.Graph.Article.json" },
+        { "fileMatch": ["/Json.Tests/assets/Graph/db/Customer/*.json"], "url": "./Json.Tests/assets/Schema/JSON/PocStore/UnitTest.Flow.Graph.Customer.json" },
+        { "fileMatch": ["/Json.Tests/assets/Graph/db/Employee/*.json"], "url": "./Json.Tests/assets/Schema/JSON/PocStore/UnitTest.Flow.Graph.Employee.json" },
+        { "fileMatch": ["/Json.Tests/assets/Graph/db/Order/*.json"],    "url": "./Json.Tests/assets/Schema/JSON/PocStore/UnitTest.Flow.Graph.Order.json" },
+        { "fileMatch": ["/Json.Tests/assets/Graph/db/Producer/*.json"], "url": "./Json.Tests/assets/Schema/JSON/PocStore/UnitTest.Flow.Graph.Producer.json" }
         
     ]
 }
