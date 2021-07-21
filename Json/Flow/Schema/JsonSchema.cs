@@ -15,10 +15,12 @@ namespace Friflo.Json.Flow.Schema
     public class JsonSchema
     {
         private readonly    Generator   generator;
+        private readonly    bool        separateEntities;
         private const       string      Next = ",\r\n";
         
-        public JsonSchema (Generator generator) {
-            this.generator = generator;
+        public JsonSchema (Generator generator, bool separateEntities) {
+            this.generator          = generator;
+            this.separateEntities   = separateEntities;
         }
         
         public void GenerateSchema() {

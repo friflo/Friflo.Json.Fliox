@@ -25,9 +25,9 @@ namespace Friflo.Json.Flow.Schema
             return generator;
         }
             
-        public Generator JsonSchema () {
+        public Generator JsonSchema (bool separateEntities) {
             var generator = new Generator(typeStore);
-            var jsonSchema = new JsonSchema(generator);
+            var jsonSchema = new JsonSchema(generator, separateEntities);
             jsonSchema.GenerateSchema();
             return generator;
         }
