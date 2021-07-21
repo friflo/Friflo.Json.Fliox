@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JsonSchemaMappingsProjectConfiguration">
+    <state>
+      <map>
+        <entry key="UserStore.Role">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="UserStore.Role" />
+              <option name="relativePathToSchema" value="Json.Tests/assets/Schema/JSON/UserStore/Friflo.Json.Flow.UserAuth.Role.json" />
+              <option name="schemaVersion" value="JSON Schema version 7" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="directory" value="true" />
+                    <option name="path" value="Json.Tests/assets/Graph/UserStore/Role" />
+                    <option name="mappingKind" value="Directory" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
+      </map>
+    </state>
+  </component>
+</project>
