@@ -68,6 +68,15 @@ namespace Friflo.Json.Flow.Mapper
                     mapper.Dispose();
             }
         }
+        
+        public List<TypeMapper> AddMappers (ICollection<Type> types) {
+            var list = new List<TypeMapper>();
+            foreach (var type in types) {
+                var mapper = GetTypeMapper(type);
+                list.Add(mapper);
+            }
+            return list;
+        }
 
         public TypeMapper GetTypeMapper (Type type)
         {

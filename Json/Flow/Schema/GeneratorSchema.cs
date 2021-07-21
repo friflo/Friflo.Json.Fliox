@@ -13,9 +13,7 @@ namespace Friflo.Json.Flow.Schema
         
         public GeneratorSchema (TypeStore typeStore, ICollection<Type> rootTypes) {
             this.typeStore = typeStore;
-            foreach (var type in rootTypes) {
-                typeStore.GetTypeMapper(type);
-            }
+            typeStore.AddMappers(rootTypes);
         }
         
         public Generator Typescript(string stripNamespace) {
