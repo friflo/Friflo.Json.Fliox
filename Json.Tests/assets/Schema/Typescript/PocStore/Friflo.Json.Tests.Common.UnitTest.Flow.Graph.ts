@@ -24,9 +24,9 @@ export class Article {
 }
 
 export class Producer {
-    id            : string;
-    name?         : string;
-    employeeList? : string[];
+    id         : string;
+    name?      : string;
+    employees? : string[];
 }
 
 export class Employee {

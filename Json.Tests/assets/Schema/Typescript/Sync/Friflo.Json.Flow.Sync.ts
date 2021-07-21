@@ -22,11 +22,11 @@ export abstract class DatabaseRequest {
 }
 
 export class SyncRequest extends DatabaseRequest {
-    type      : "sync";
-    clientId? : string;
-    eventAck? : number;
-    token?    : string;
-    tasks     : DatabaseTask_Union[];
+    type    : "sync";
+    client? : string;
+    ack?    : number;
+    token?  : string;
+    tasks   : DatabaseTask_Union[];
 }
 
 export type DatabaseTask_Union =
@@ -308,13 +308,13 @@ export abstract class DatabaseEvent {
     abstract type:
         | "subscription"
     ;
-    seq       : number;
-    targetId? : string;
-    clientId? : string;
+    seq     : number;
+    target? : string;
+    client? : string;
 }
 
 export class SubscriptionEvent extends DatabaseEvent {
-    type      : "subscription";
-    tasks?    : DatabaseTask_Union[];
+    type    : "subscription";
+    tasks?  : DatabaseTask_Union[];
 }
 

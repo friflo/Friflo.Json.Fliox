@@ -6,9 +6,9 @@
         "Producer": {
             "type": "object",
             "properties": {
-                "id":           { "type": "string" },
-                "name":         { "type": "string" },
-                "employeeList": { "type": "array", "items": { "type": "string" } }
+                "id":        { "type": "string" },
+                "name":      { "type": "string" },
+                "employees": { "type": "array", "items": { "type": "string" } }
             },
             "required": [
                 "id"

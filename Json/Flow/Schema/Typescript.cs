@@ -45,7 +45,7 @@ namespace Friflo.Json.Flow.Schema
             var type    = mapper.type;
             if (mapper.IsComplex) {
                 var fields          = mapper.propFields.fields;
-                int maxFieldName    = fields.MaxLength(field => field.name.Length);
+                int maxFieldName    = fields.MaxLength(field => field.jsonName.Length);
                 
                 string  discriminator = null;
                 var     discriminant = mapper.discriminant;
@@ -84,9 +84,9 @@ namespace Friflo.Json.Flow.Schema
                     if (generator.IsDerivedField(type, field))
                         continue;
                     var fieldType = GetFieldType(field.fieldType, context, out var isOptional);
-                    var indent = Generator.Indent(maxFieldName, field.name);
+                    var indent = Generator.Indent(maxFieldName, field.jsonName);
                     var optStr = field.required || !isOptional ? " " : "?";
-                    sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType};");
+                    sb.AppendLine($"    {field.jsonName}{optStr}{indent} : {fieldType};");
                 }
                 sb.AppendLine("}");
                 sb.AppendLine();
