@@ -1,4 +1,5 @@
 
+# UserStore database
 
 This folder contains an example user database used to configure user authentication and authorization by utilizing a
 [UserAuthenticator.cs](../../../../Json/Flow.Graph/UserAuth/UserDatabaseAuthenticator.cs) instance.
@@ -23,7 +24,7 @@ Store a set of `roles` for each user. If a user aspire to run a task the specifi
 and if authorization is successful the task is executed.
 
 
-### VSCode
+## VSCode
 To simplify manual editing of entities (files) in VSCode [UserStore - JSON Schema](../../Schema/JSON/UserStore) is used.
 The JSON Schema files in this folder are generated from the models by the [Schema Generator](../../../Common/UnitTest/Flow/Schema).
 
