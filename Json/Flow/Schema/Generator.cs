@@ -134,6 +134,7 @@ namespace Friflo.Json.Flow.Schema
         /// </summary>
         public void WriteFiles(string folder) {
             folder = folder.Replace('\\', '/');
+            Directory.CreateDirectory(folder);
             string[] fileNames = Directory.GetFiles(folder, $"*{extension}", SearchOption.TopDirectoryOnly);
             for (int i = 0; i < fileNames.Length; i++) {
                 fileNames[i] = fileNames[i].Replace('\\', '/');

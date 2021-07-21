@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/PocStore");
         }
         
-        // [Test]
+        [Test]
         public static void JsonSchemaPocStore () {
             var typeStore = EntityStore.AddTypeMappers(new TypeStore());
             var schema = new GeneratorSchema(typeStore, PocStoreTypes);
