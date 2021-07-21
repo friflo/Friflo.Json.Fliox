@@ -17,9 +17,9 @@ namespace Friflo.Json.Flow.Graph
     public abstract class Entity
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        [Fri.Property(Required = true)]  // todo
         private string _id;
         
+        [Fri.Property(Required = true)]
         public string id {
             get => _id;
             set {

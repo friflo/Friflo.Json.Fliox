@@ -9,6 +9,7 @@
                 "rights": { "type": "array", "items": { "$ref": "./Friflo.Json.Flow.Auth.Rights.json#/definitions/Right" } }
             },
             "required": [
+                "id",
                 "rights"
             ],
             "additionalProperties": false
@@ -20,6 +21,9 @@
                 "passHash": { "type": "string" },
                 "token":    { "type": "string" }
             },
+            "required": [
+                "id"
+            ],
             "additionalProperties": false
         },
         "UserPermission": {
@@ -28,6 +32,9 @@
                 "id":    { "type": "string" },
                 "roles": { "type": "array", "items": { "type": "string" } }
             },
+            "required": [
+                "id"
+            ],
             "additionalProperties": false
         }
     }
