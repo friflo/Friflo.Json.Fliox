@@ -93,8 +93,6 @@ namespace Friflo.Json.Flow.Schema
                 }
                 // fields
                 foreach (var field in fields) {
-                    if (generator.IsDerivedField(type, field))
-                        continue;
                     var fieldType = GetFieldType(field.fieldType, context, out var isOptional);
                     var indent = Generator.Indent(maxFieldName, field.name);
                     if (field.required || !isOptional)

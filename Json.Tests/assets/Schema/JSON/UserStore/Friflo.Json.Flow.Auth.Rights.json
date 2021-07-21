@@ -20,7 +20,8 @@
             "type": "object",
             "properties": {
                 "type":        { "enum": ["allow"] },
-                "grant":       { "type": "boolean" }
+                "grant":       { "type": "boolean" },
+                "description": { "type": "string" }
             },
             "required": [
                 "type",
@@ -32,7 +33,8 @@
             "type": "object",
             "properties": {
                 "type":        { "enum": ["task"] },
-                "types":       { "type": "array", "items": { "$ref": "./Friflo.Json.Flow.Sync.json#/definitions/TaskType" } }
+                "types":       { "type": "array", "items": { "$ref": "./Friflo.Json.Flow.Sync.json#/definitions/TaskType" } },
+                "description": { "type": "string" }
             },
             "required": [
                 "type",
@@ -44,7 +46,8 @@
             "type": "object",
             "properties": {
                 "type":        { "enum": ["message"] },
-                "names":       { "type": "array", "items": { "type": "string" } }
+                "names":       { "type": "array", "items": { "type": "string" } },
+                "description": { "type": "string" }
             },
             "required": [
                 "type",
@@ -56,7 +59,8 @@
             "type": "object",
             "properties": {
                 "type":        { "enum": ["subscribeMessage"] },
-                "names":       { "type": "array", "items": { "type": "string" } }
+                "names":       { "type": "array", "items": { "type": "string" } },
+                "description": { "type": "string" }
             },
             "required": [
                 "type",
@@ -68,7 +72,8 @@
             "type": "object",
             "properties": {
                 "type":        { "enum": ["database"] },
-                "containers":  { "type": "object", "additionalProperties": { "$ref": "#/definitions/ContainerAccess" } }
+                "containers":  { "type": "object", "additionalProperties": { "$ref": "#/definitions/ContainerAccess" } },
+                "description": { "type": "string" }
             },
             "required": [
                 "type",
@@ -100,7 +105,8 @@
             "type": "object",
             "properties": {
                 "type":        { "enum": ["predicate"] },
-                "names":       { "type": "array", "items": { "type": "string" } }
+                "names":       { "type": "array", "items": { "type": "string" } },
+                "description": { "type": "string" }
             },
             "required": [
                 "type",
