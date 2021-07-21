@@ -6,8 +6,9 @@
         "Role": {
             "type": "object",
             "properties": {
-                "id":     { "type": "string" },
-                "rights": { "type": "array", "items": { "$ref": "./Friflo.Json.Flow.Auth.Rights.json#/definitions/Right" } }
+                "id":          { "type": "string" },
+                "rights":      { "type": "array", "items": { "$ref": "./Friflo.Json.Flow.Auth.Rights.json#/definitions/Right" } },
+                "description": { "type": "string" }
             },
             "required": [
                 "id",

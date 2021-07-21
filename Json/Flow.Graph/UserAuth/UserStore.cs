@@ -53,6 +53,7 @@ namespace Friflo.Json.Flow.UserAuth
     public class Role : Entity {
         [Fri.Property(Required = true)]
         public  List<Right>     rights;
+        public  string          description;
     }
     
     // -------------------------------------- commands -------------------------------------
