@@ -139,6 +139,7 @@ namespace Friflo.Json.Flow.Schema
                 fileNames[i] = fileNames[i].Replace('\\', '/');
             }
             var fileSet = new HashSet<string>(fileNames);
+            var utf8 = new UTF8Encoding(false);
             foreach (var file in files) {
                 var filename    = file.Key;
                 var content     = file.Value;
@@ -147,7 +148,7 @@ namespace Friflo.Json.Flow.Schema
                 var lastSlash = path.LastIndexOf("/", StringComparison.InvariantCulture);
                 var fileFolder = lastSlash == -1 ? folder : path.Substring(0, lastSlash);
                 Directory.CreateDirectory(fileFolder);
-                File.WriteAllText(path, content, Encoding.UTF8);
+                File.WriteAllText(path, content, utf8);
             }
             foreach (var fileName in fileSet) {
                 File.Delete(fileName);
