@@ -10,7 +10,7 @@ namespace Friflo.Json.Flow.Schema.Utils
     public class EmitType
     {
         /// the mapper assigned to the type
-        internal readonly   TypeMapper      mapper;
+        public   readonly   TypeMapper      mapper;
         /// the mapper assigned to the type
         internal readonly   string          package;
 
@@ -19,7 +19,7 @@ namespace Friflo.Json.Flow.Schema.Utils
         /// contain type imports directly used by this type / mapper. 
         internal readonly   HashSet<Type>   imports;
         
-        internal readonly   TypeSemantic    semantic;
+        public   readonly   TypeSemantic    semantic;
 
         public   override   string      ToString() => mapper.type.Name;
 
