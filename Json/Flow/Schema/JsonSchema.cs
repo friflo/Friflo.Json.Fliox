@@ -52,7 +52,7 @@ namespace Friflo.Json.Flow.Schema
         
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {
             var imports = new HashSet<Type>(); 
-            var context = new TypeContext (generator, imports, mapper, mapper.GetTypeSemantic());
+            var context = new TypeContext (generator, imports, mapper);
             mapper      = Generator.GetUnderlyingTypeMapper(mapper);
             var type    = mapper.type;
             if (mapper.IsComplex) {
