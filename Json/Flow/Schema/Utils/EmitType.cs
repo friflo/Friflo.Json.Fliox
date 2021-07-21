@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Schema.Utils
         
         public   readonly   TypeSemantic    semantic;
 
-        public   override   string      ToString() => mapper.type.Name;
+        public   override   string          ToString() => mapper.type.Name;
 
         public EmitType(TypeMapper mapper, TypeSemantic semantic, Generator generator, string content, HashSet<Type> imports) {
             this.semantic   = semantic;

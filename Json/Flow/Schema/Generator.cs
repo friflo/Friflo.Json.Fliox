@@ -79,7 +79,7 @@ namespace Friflo.Json.Flow.Schema
                 EmitType    emit        = pair.Value;
                 var         packageName = emit.package;
                 if (!packages.TryGetValue(packageName, out var package)) {
-                    packages.Add(packageName, package = new Package());
+                    packages.Add(packageName, package = new Package(packageName));
                 }
                 package.emitTypes.Add(emit);
                 foreach (var type in emit.imports) {
