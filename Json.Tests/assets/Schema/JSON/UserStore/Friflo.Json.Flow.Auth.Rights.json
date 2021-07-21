@@ -14,7 +14,7 @@
             "properties": {
                 "description": { "type": "string" }
             },
-            "additionalProperties": false
+            "additionalProperties": true
         },
         "RightAllow": {
             "type": "object",

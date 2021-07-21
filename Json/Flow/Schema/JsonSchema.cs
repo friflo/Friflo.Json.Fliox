@@ -112,8 +112,9 @@ namespace Friflo.Json.Flow.Schema
                     sb.AppendLine();
                     sb.AppendLine("            ],");
                 }
-                sb.AppendLine("            \"additionalProperties\": false");
-                sb.Append    ("        }");
+                var additionalProperties = instanceFactory != null ? "true" : "false"; 
+                sb.AppendLine($"            \"additionalProperties\": {additionalProperties}");
+                sb.Append     ("        }");
                 return new EmitType(mapper, semantic, generator, sb.ToString(), imports);
             }
             if (type.IsEnum) {
