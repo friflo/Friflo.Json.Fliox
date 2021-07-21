@@ -1,6 +1,4 @@
-import { DatabaseMessage, SyncRequest } from "../Sync/Friflo.Json.Flow.Sync"
-import { Right, Right_Union } from "../UserStore/Friflo.Json.Flow.Auth.Rights"
-import { Role } from "../UserStore/Friflo.Json.Flow.UserAuth"
+import { DatabaseMessage } from "../Sync/Friflo.Json.Flow.Sync"
 
 // check assignment with using a type compiles successful
 var exampleSync: DatabaseMessage = {

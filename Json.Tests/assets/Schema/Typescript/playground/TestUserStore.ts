@@ -1,4 +1,4 @@
-import { Right, Right_Union } from "../UserStore/Friflo.Json.Flow.Auth.Rights"
+import { Right_Union } from "../UserStore/Friflo.Json.Flow.Auth.Rights"
 import { Role } from "../UserStore/Friflo.Json.Flow.UserAuth"
 
 // check assignment with using a type compiles successful
