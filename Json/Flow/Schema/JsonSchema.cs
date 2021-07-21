@@ -48,7 +48,7 @@ namespace Friflo.Json.Flow.Schema
             EmitPackageHeaders(sb);
             EmitPackageFooters(sb);
 
-            generator.CreateFiles(sb, ns => $"{ns}{generator.extension}", Next); // $"{ns.Replace(".", "/")}.ts");
+            generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}", Next); // $"{ns.Replace(".", "/")}.ts");
         }
         
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {
@@ -211,7 +211,7 @@ namespace Friflo.Json.Flow.Schema
             var typePackage     = generator.GetPackageName(type);
             var ownerPackage    = generator.GetPackageName(context.owner.type);
             bool samePackage    = typePackage == ownerPackage;
-            var prefix          = samePackage ? "" : $"./{typePackage}{generator.extension}";
+            var prefix          = samePackage ? "" : $"./{typePackage}{generator.fileExt}";
             return $"\"$ref\": \"{prefix}#/definitions/{name}\"";
         }
     }

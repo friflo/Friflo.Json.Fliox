@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Schema
 {
     public class Generator
     {
-        public   readonly   string                                  extension;
+        public   readonly   string                                  fileExt;
         /// map of all <see cref="TypeMapper"/>'s required by the types provided for schema generation
         public   readonly   IReadOnlyDictionary<Type, TypeMapper>   typeMappers;
         /// map of all generated packages. key: package name  
@@ -29,9 +29,9 @@ namespace Friflo.Json.Flow.Schema
         private             Func<Type, string>                      getPackageName  = type => type.Namespace;
         private  readonly   Dictionary<Type, string>                packageCache    = new Dictionary<Type, string>();
 
-        public Generator (TypeStore typeStore, string extension) {
-            this.extension  = extension;
-            typeMappers     = typeStore.GetTypeMappers();
+        public Generator (TypeStore typeStore, string fileExtension) {
+            fileExt     = fileExtension;
+            typeMappers = typeStore.GetTypeMappers();
         }
         
         public static string Indent(int max, string str) {
@@ -120,12 +120,12 @@ namespace Friflo.Json.Flow.Schema
         }
         
         /// <summary>
-        /// Write the generated file to the given folder and remove all others file with the used <see cref="extension"/>
+        /// Write the generated file to the given folder and remove all others file with the used <see cref="fileExt"/>
         /// </summary>
         public void WriteFiles(string folder) {
             folder = folder.Replace('\\', '/');
             Directory.CreateDirectory(folder);
-            string[] fileNames = Directory.GetFiles(folder, $"*{extension}", SearchOption.TopDirectoryOnly);
+            string[] fileNames = Directory.GetFiles(folder, $"*{fileExt}", SearchOption.TopDirectoryOnly);
             for (int i = 0; i < fileNames.Length; i++) {
                 fileNames[i] = fileNames[i].Replace('\\', '/');
             }
