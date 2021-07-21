@@ -21,6 +21,40 @@
             </SchemaInfo>
           </value>
         </entry>
+        <entry key="UserStore.UserCredential">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="UserStore.UserCredential" />
+              <option name="relativePathToSchema" value="Json.Tests/assets/Schema/JSON/UserStore/Friflo.Json.Flow.UserAuth.UserCredential.json" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="directory" value="true" />
+                    <option name="path" value="Json.Tests/assets/Graph/UserStore/UserCredential" />
+                    <option name="mappingKind" value="Directory" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
+        <entry key="UserStore.UserPermission">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="UserStore.UserPermission" />
+              <option name="relativePathToSchema" value="Json.Tests/assets/Schema/JSON/UserStore/Friflo.Json.Flow.UserAuth.UserPermission.json" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="directory" value="true" />
+                    <option name="path" value="Json.Tests/assets/Graph/UserStore/UserPermission" />
+                    <option name="mappingKind" value="Directory" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
       </map>
     </state>
   </component>
