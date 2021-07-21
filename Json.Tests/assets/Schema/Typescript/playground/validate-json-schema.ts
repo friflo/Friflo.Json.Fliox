@@ -8,13 +8,10 @@ function run() {
 
     const validate = ajv.getSchema("http://json-schema.org/draft-07/schema#") as ValidateFunction;
 
-    const schemas : string[] = [
-        "../JSON/UserStore/Friflo.Json.Flow.Auth.Rights.json",
-        "../JSON/UserStore/Friflo.Json.Flow.Sync.json",
-        "../JSON/UserStore/Friflo.Json.Flow.UserAuth.Role.json",
-        "../JSON/UserStore/Friflo.Json.Flow.UserAuth.UserCredential.json",
-        "../JSON/UserStore/Friflo.Json.Flow.UserAuth.UserPermission.json",
-    ];
+    const userStoreFiles = getFiles("../JSON/UserStore/");
+    const pocStoreFiles  = getFiles("../JSON/PocStore/");
+
+    const schemas : string[] = userStoreFiles.concat(pocStoreFiles);
 
     for (var path of schemas) {
         console.log("validate: ", path);
@@ -25,6 +22,11 @@ function run() {
         if (!valid)
             console.log(validate.errors)    
     }
+}
+
+function getFiles(folder: string) : string[] {
+    const fileNames = fs.readdirSync(folder);
+    return fileNames.map(name => folder + name);
 }
 
 function runTest(ajv: Ajv) {
