@@ -8,7 +8,7 @@
             "properties": {
                 "id":       { "type": "string" },
                 "customer": { "type": "string" },
-                "items":    { "type": "array", "items": { "$ref": "./Friflo.Json.Tests.Common.UnitTest.Flow.Graph.json#/definitions/OrderItem" } }
+                "items":    { "type": "array", "items": { "$ref": "./UnitTest.Flow.Graph.json#/definitions/OrderItem" } }
             },
             "required": [
                 "id"

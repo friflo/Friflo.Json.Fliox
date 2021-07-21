@@ -31,8 +31,8 @@ namespace Friflo.Json.Flow.Schema
         private  readonly   string                                  stripNamespace;
 
         public Generator (TypeStore typeStore, string stripNamespace, string fileExtension) {
-            fileExt             = fileExtension;
-            typeMappers         = typeStore.GetTypeMappers();
+            fileExt         = fileExtension;
+            typeMappers     = typeStore.GetTypeMappers();
             this.stripNamespace = stripNamespace;
         }
         
@@ -40,10 +40,23 @@ namespace Friflo.Json.Flow.Schema
             return new string(' ', Math.Max(max - str.Length, 0));
         }
         
+        private string Strip (string ns) {
+            if (stripNamespace == null)
+                return ns ?? "default";
+            if (ns != null) {
+                var pos = ns.IndexOf(stripNamespace, StringComparison.InvariantCulture);
+                if (pos == 0) {
+                    return ns.Substring(stripNamespace.Length);
+                }
+            }
+            throw new InvalidOperationException($"stripNamespace expect type with namespace: {stripNamespace}, was: {ns}");
+        }
+        
         public string GetPackageName (Type type) {
             if (packageCache.TryGetValue(type, out var packageName))
                 return packageName;
             packageName = getPackageName(type);
+            packageName = Strip(packageName);
             packageCache.Add(type, packageName);
             return packageName;
         }
