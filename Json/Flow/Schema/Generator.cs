@@ -18,15 +18,16 @@ namespace Friflo.Json.Flow.Schema
         /// map of all <see cref="TypeMapper"/>'s required by the types provided for schema generation
         public   readonly   IReadOnlyDictionary<Type, TypeMapper>   typeMappers;
         /// map of all generated packages. key: package name  
-        public   readonly   Dictionary<string, Package>             packages    = new Dictionary<string, Package>();
+        public   readonly   Dictionary<string, Package>             packages        = new Dictionary<string, Package>();
         
         // --- private
         /// map of all emitted types and their emitted code 
-        private  readonly   Dictionary<Type, EmitType>              emitTypes   = new Dictionary<Type, EmitType>();
+        private  readonly   Dictionary<Type, EmitType>              emitTypes       = new Dictionary<Type, EmitType>();
         /// set of generated files and their source content. key: file name
-        private  readonly   Dictionary<string, string>              files       = new Dictionary<string, string>();
+        private  readonly   Dictionary<string, string>              files           = new Dictionary<string, string>();
         /// Return a package name for the given type. By Default it is <see cref="Type.Namespace"/>
-        private             Func<Type, string>                      getPackageName = type => type.Namespace;
+        private             Func<Type, string>                      getPackageName  = type => type.Namespace;
+        private  readonly   Dictionary<Type, string>                packageCache    = new Dictionary<Type, string>();
 
         public Generator (TypeStore typeStore, string extension) {
             this.extension  = extension;
@@ -38,7 +39,11 @@ namespace Friflo.Json.Flow.Schema
         }
         
         public string GetPackageName (Type type) {
-            return getPackageName(type);
+            if (packageCache.TryGetValue(type, out var packageName))
+                return packageName;
+            packageName = getPackageName(type);
+            packageCache.Add(type, packageName);
+            return packageName;
         }
         
         /// <summary>
