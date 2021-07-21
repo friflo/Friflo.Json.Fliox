@@ -22,6 +22,14 @@
             "type": "coreclr",
             "request": "attach",
             "processId": "${command:pickProcess}"
-        }
+        },
+        {
+            "name": "TS playground",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/Json.Tests/assets/Schema/Typescript",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run", "dbg"]
+          }
     ]
 }
