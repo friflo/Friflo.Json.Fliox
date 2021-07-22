@@ -44,6 +44,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public  string              firstName;
         public  string              lastName;
     }
+    
+    public class TestType : Entity {
+        public  DateTime            dateTime;
+        public  BigInteger?         bigIntNull; // Nullable<BigInteger>
+    }
 
     // --- store containers
     public class PocStore : EntityStore
@@ -53,6 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public readonly EntitySet<Article>    articles;
         public readonly EntitySet<Producer>   producers;
         public readonly EntitySet<Employee>   employees;
+        public readonly EntitySet<TestType>   types;
         
         public PocStore(EntityDatabase database, string clientId) : base (database, TestGlobals.typeStore, clientId) {
             orders      = new EntitySet<Order>       (this);
@@ -60,6 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             articles    = new EntitySet<Article>     (this);
             producers   = new EntitySet<Producer>    (this);
             employees   = new EntitySet<Employee>    (this);
+            types       = new EntitySet<TestType>    (this);
         }
     }
     

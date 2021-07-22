@@ -39,3 +39,9 @@ export class Employee {
     lastName?  : string;
 }
 
+export class TestType {
+    id          : string;
+    dateTime    : DateTime;
+    bigIntNull? : BigInteger;
+}
+

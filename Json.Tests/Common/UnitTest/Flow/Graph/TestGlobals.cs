@@ -23,6 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             typeStore.GetTypeMapper(typeof(Article));
             typeStore.GetTypeMapper(typeof(Producer));
             typeStore.GetTypeMapper(typeof(Employee));
+            typeStore.GetTypeMapper(typeof(TestType));
         }
         
         public static void Dispose() {
