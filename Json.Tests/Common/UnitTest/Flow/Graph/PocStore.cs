@@ -46,7 +46,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     
     public class TestType : Entity {
         public  DateTime            dateTime;
-        public  BigInteger?         bigIntNull; // Nullable<BigInteger>
+        public  DateTime?           dateTimeNull;
+        public  BigInteger?         bigIntNull;
     }
 
     // --- store containers

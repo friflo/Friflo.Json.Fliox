@@ -6,9 +6,10 @@
         "TestType": {
             "type": "object",
             "properties": {
-                "id":         { "type": "string" },
-                "dateTime":   { "type": "string", "format": "date-time" },
-                "bigIntNull": { "$ref": "./System.Numerics.json#/definitions/BigInteger" }
+                "id":           { "type": "string" },
+                "dateTime":     { "type": "string", "format": "date-time" },
+                "dateTimeNull": { "type": "string", "format": "date-time" },
+                "bigIntNull":   { "$ref": "./System.Numerics.json#/definitions/BigInteger" }
             },
             "required": [
                 "id",

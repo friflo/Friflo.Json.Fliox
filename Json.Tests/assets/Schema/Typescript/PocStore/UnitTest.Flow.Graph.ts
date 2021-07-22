@@ -39,8 +39,9 @@ export class Employee {
 }
 
 export class TestType {
-    id          : string;
-    dateTime    : DateTime;
-    bigIntNull? : BigInteger;
+    id            : string;
+    dateTime      : DateTime;
+    dateTimeNull? : DateTime;
+    bigIntNull?   : BigInteger;
 }
 

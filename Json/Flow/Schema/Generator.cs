@@ -95,7 +95,7 @@ namespace Friflo.Json.Flow.Schema
         }
         
         public void AddEmitType(EmitType emit) {
-            emitTypes.Add(emit.type, emit);
+            emitTypes.TryAdd(emit.type, emit);
         }
         
         public void GroupTypesByPackage() {
