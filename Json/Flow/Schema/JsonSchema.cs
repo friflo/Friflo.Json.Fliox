@@ -169,7 +169,7 @@ namespace Friflo.Json.Flow.Schema
                 var elementMapper = mapper.GetElementMapper();
                 bool isOpt = false;
                 var elementTypeName = GetFieldType(elementMapper, context, ref isOpt);
-                return $"\"type\": \"array\", \"items\": {{ {elementTypeName} }}";
+                return $"\"type\": {Opt(isOptional, "array")}, \"items\": {{ {elementTypeName} }}";
             }
             var isDictionary = type.GetInterfaces().Contains(typeof(IDictionary));
             if (isDictionary) {

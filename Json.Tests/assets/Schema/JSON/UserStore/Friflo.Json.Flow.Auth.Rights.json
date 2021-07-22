@@ -84,8 +84,8 @@
         "ContainerAccess": {
             "type": "object",
             "properties": {
-                "operations":       { "type": "array", "items": { "$ref": "#/definitions/OperationType" } },
-                "subscribeChanges": { "type": "array", "items": { "$ref": "./Friflo.Json.Flow.Sync.json#/definitions/Change" } }
+                "operations":       { "type": ["array", "null"], "items": { "$ref": "#/definitions/OperationType" } },
+                "subscribeChanges": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Flow.Sync.json#/definitions/Change" } }
             },
             "additionalProperties": false
         },

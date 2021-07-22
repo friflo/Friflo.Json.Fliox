@@ -8,7 +8,7 @@
             "properties": {
                 "id":        { "type": "string" },
                 "name":      { "type": ["string", "null"] },
-                "employees": { "type": "array", "items": { "type": "string" } }
+                "employees": { "type": ["array", "null"], "items": { "type": "string" } }
             },
             "required": [
                 "id"

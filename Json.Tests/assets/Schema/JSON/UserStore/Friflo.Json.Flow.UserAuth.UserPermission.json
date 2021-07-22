@@ -7,7 +7,7 @@
             "type": "object",
             "properties": {
                 "id":    { "type": "string" },
-                "roles": { "type": "array", "items": { "type": "string" } }
+                "roles": { "type": ["array", "null"], "items": { "type": "string" } }
             },
             "required": [
                 "id"

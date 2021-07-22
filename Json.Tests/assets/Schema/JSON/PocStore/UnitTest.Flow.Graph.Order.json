@@ -9,7 +9,7 @@
                 "id":       { "type": "string" },
                 "customer": { "type": ["string", "null"] },
                 "created":  { "type": "string", "format": "date-time" },
-                "items":    { "type": "array", "items": { "$ref": "./UnitTest.Flow.Graph.json#/definitions/OrderItem" } }
+                "items":    { "type": ["array", "null"], "items": { "$ref": "./UnitTest.Flow.Graph.json#/definitions/OrderItem" } }
             },
             "required": [
                 "id",
