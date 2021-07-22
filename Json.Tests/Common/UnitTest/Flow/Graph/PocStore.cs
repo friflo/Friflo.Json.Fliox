@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
@@ -12,7 +13,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     // ------------------------------ models ------------------------------
     public class Order : Entity {
         public  Ref<Customer>       customer;
-        public  DateTime            created; 
+        public  DateTime            created;
+        public  BigInteger          bigInt;
         public  List<OrderItem>     items = new List<OrderItem>();
     }
 

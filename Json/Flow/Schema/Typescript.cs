@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
@@ -104,6 +105,11 @@ namespace Friflo.Json.Flow.Schema
             }
             if (type == typeof(DateTime)) {
                 sb.AppendLine($"export type DateTime = string;");
+                sb.AppendLine();
+                return new EmitType(mapper, semantic, generator, sb.ToString(), new HashSet<Type>());
+            }
+            if (type == typeof(BigInteger)) {
+                sb.AppendLine($"export type BigInteger = string;");
                 sb.AppendLine();
                 return new EmitType(mapper, semantic, generator, sb.ToString(), new HashSet<Type>());
             }

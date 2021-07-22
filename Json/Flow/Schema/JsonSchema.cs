@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
@@ -147,6 +148,9 @@ namespace Friflo.Json.Flow.Schema
             }
             if (type == typeof(DateTime)) {
                 return "\"type\": \"string\", \"format\": \"date-time\"";
+            }
+            if (type == typeof(BigInteger)) {
+                return "\"type\": \"string\"";
             }
             if (mapper.isValueType) { 
                 isOptional = mapper.isNullable;
