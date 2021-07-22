@@ -10,9 +10,11 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
         public static readonly BigIntMatcher Instance = new BigIntMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
-            if (type != typeof(BigInteger))
-                return null;
-            return new BigIntMapper (config, type);
+            if (type == typeof(BigInteger))
+                return new BigIntMapper (config, type);
+            if (type == typeof(BigInteger?))
+                return new NullableBigIntMapper (config, type);
+            return null;
         }
         
         internal static BigInteger Read<TVal>(TypeMapper<TVal> mapper, ref Reader reader, out bool success) {
@@ -58,6 +60,24 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
         }
 
         public override BigInteger Read(ref Reader reader, BigInteger slot, out bool success) {
+            return BigIntMatcher.Read(this, ref reader, out success);
+        }
+    }
+    
+    public class NullableBigIntMapper : TypeMapper<BigInteger?>
+    {
+        public override string DataTypeName() { return "BigInteger?"; }
+
+        public NullableBigIntMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
+
+        public override void Write(ref Writer writer, BigInteger? value) {
+            if (value.HasValue)
+                writer.WriteString(value.Value.ToString());
+            else
+                writer.AppendNull();
+        }
+
+        public override BigInteger? Read(ref Reader reader, BigInteger? slot, out bool success) {
             return BigIntMatcher.Read(this, ref reader, out success);
         }
     }

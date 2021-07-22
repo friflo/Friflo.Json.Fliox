@@ -480,6 +480,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                         
                         var result = write.Write(expect);
                         AreEqual(bigIntStr, result);
+                        
+                        // Nullable
+                        BigInteger? nullExpect = BigInteger.Parse(bigInt);
+                        BigInteger? nullValue = Read<BigInteger?>(bigIntStr);
+                        AreEqual(expect, nullValue);
+                        
+                        result = write.Write(nullExpect);
+                        AreEqual(bigIntStr, result);
                     }
                     enc.Read<BigInteger>(hello);
                     StringAssert.Contains("Failed parsing BigInt. value:", enc.Error.msg.ToString());
@@ -493,6 +501,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                         var result = write.Write(expect);
                         AreEqual(dateTimeStr, result);
                         
+                        // Nullable
                         DateTime? nullExpect = DateTime.Parse(dateTime);
                         DateTime? nullValue = Read<DateTime?>(dateTimeStr);
                         AreEqual(expect, nullValue);
@@ -505,9 +514,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
 
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual(129, enc.TypeCache.LookupCount);
-                        AreEqual( 0,  enc.TypeCache.StoreLookupCount);
-                        AreEqual( 0,  enc.TypeCache.TypeCreationCount);
+                        AreEqual(130, enc.TypeCache.LookupCount);
+                        AreEqual(  0, enc.TypeCache.StoreLookupCount);
+                        AreEqual(  0, enc.TypeCache.TypeCreationCount);
                     }
                     enc.TypeCache.ClearCounts();
                 }
