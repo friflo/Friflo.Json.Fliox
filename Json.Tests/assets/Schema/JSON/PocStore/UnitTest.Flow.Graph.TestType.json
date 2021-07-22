@@ -6,19 +6,21 @@
         "TestType": {
             "type": "object",
             "properties": {
-                "id":           { "type": "string" },
-                "dateTime":     { "type": "string", "format": "date-time" },
-                "dateTimeNull": { "type": ["string", "null"], "format": "date-time" },
-                "bigInt":       { "$ref": "./System.Numerics.json#/definitions/BigInteger" },
-                "bigIntNull":   { "oneOf": [{"type": "null"}, { "$ref": "./System.Numerics.json#/definitions/BigInteger" }] },
-                "uint8":        { "type": "number" },
-                "uint8Null":    { "type": ["number", "null"] },
-                "int16":        { "type": "number" },
-                "int16Null":    { "type": ["number", "null"] },
-                "int32":        { "type": "number" },
-                "int32Null":    { "type": ["number", "null"] },
-                "int64":        { "type": "number" },
-                "int64Null":    { "type": ["number", "null"] }
+                "id":            { "type": "string" },
+                "dateTime":      { "type": "string", "format": "date-time" },
+                "dateTimeNull":  { "type": ["string", "null"], "format": "date-time" },
+                "bigInt":        { "$ref": "./System.Numerics.json#/definitions/BigInteger" },
+                "bigIntNull":    { "oneOf": [{"type": "null"}, { "$ref": "./System.Numerics.json#/definitions/BigInteger" }] },
+                "uint8":         { "type": "number" },
+                "uint8Null":     { "type": ["number", "null"] },
+                "int16":         { "type": "number" },
+                "int16Null":     { "type": ["number", "null"] },
+                "int32":         { "type": "number" },
+                "int32Null":     { "type": ["number", "null"] },
+                "int64":         { "type": "number" },
+                "int64Null":     { "type": ["number", "null"] },
+                "pocStruct":     { "$ref": "./UnitTest.Flow.Graph.json#/definitions/PocStruct" },
+                "pocStructNull": { "oneOf": [{"type": "null"}, { "$ref": "./UnitTest.Flow.Graph.json#/definitions/PocStruct" }] }
             },
             "required": [
                 "id",
@@ -27,7 +29,8 @@
                 "uint8",
                 "int16",
                 "int32",
-                "int64"
+                "int64",
+                "pocStruct"
             ],
             "additionalProperties": false
         }

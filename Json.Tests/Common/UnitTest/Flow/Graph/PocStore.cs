@@ -61,7 +61,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         public  long                int64;
         public  long?               int64Null;
-
+        
+        public  PocStruct           pocStruct;
+        public  PocStruct?          pocStructNull;
+    }
+    
+    public struct PocStruct {
+        public  int                 val;
     }
 
     // --- store containers

@@ -11,5 +11,9 @@
     "int32": 0,
     "int32Null": null,
     "int64": 0,
-    "int64Null": null
+    "int64Null": null,
+    "pocStruct": {
+        "val": 0
+    },
+    "pocStructNull": null
 }

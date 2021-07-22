@@ -13,6 +13,16 @@
                 "amount"
             ],
             "additionalProperties": false
+        },
+        "PocStruct": {
+            "type": "object",
+            "properties": {
+                "val": { "type": "number" }
+            },
+            "required": [
+                "val"
+            ],
+            "additionalProperties": false
         }
     }
 }
