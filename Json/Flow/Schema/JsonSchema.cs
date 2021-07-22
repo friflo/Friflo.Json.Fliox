@@ -150,7 +150,7 @@ namespace Friflo.Json.Flow.Schema
             isOptional  = isOptional && mapper.isNullable;
             var type    = Generator.GetType(mapper);
             if (type == typeof(JsonValue)) {
-                return "\"type\": \"object\"";
+                return ""; // allow any type
             }
             if (type == typeof(string)) {
                 return $"\"type\": {Opt(isOptional, "string")}";
