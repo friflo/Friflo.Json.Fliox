@@ -42,6 +42,7 @@ export class TestType {
     id            : string;
     dateTime      : DateTime;
     dateTimeNull? : DateTime;
+    bigInt        : BigInteger;
     bigIntNull?   : BigInteger;
 }
 

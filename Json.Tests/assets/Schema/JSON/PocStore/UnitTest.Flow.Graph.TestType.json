@@ -9,11 +9,13 @@
                 "id":           { "type": "string" },
                 "dateTime":     { "type": "string", "format": "date-time" },
                 "dateTimeNull": { "type": "string", "format": "date-time" },
+                "bigInt":       { "$ref": "./System.Numerics.json#/definitions/BigInteger" },
                 "bigIntNull":   { "$ref": "./System.Numerics.json#/definitions/BigInteger" }
             },
             "required": [
                 "id",
-                "dateTime"
+                "dateTime",
+                "bigInt"
             ],
             "additionalProperties": false
         }

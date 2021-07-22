@@ -2,5 +2,6 @@
     "id": "type-1",
     "dateTime": "2021-07-22T06:00:00.000Z",
     "dateTimeNull": null,
+    "bigInt": "0",
     "bigIntNull": null
 }
