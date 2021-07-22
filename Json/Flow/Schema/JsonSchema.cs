@@ -86,7 +86,7 @@ namespace Friflo.Json.Flow.Schema
                     bool firstElem = true;
                     foreach (var polyType in instanceFactory.polyTypes) {
                         Generator.Delimiter(sb, Next, ref firstElem);
-                        sb.Append($"                {{ {Ref(polyType.type, context)} }}");
+                        sb.Append($"                {{ {Ref(polyType.type, false, context)} }}");
                     }
                     sb.AppendLine();
                     sb.AppendLine($"            ],");
@@ -179,7 +179,7 @@ namespace Friflo.Json.Flow.Schema
                 return $"\"type\": \"object\", \"additionalProperties\": {{ {valueTypeName} }}";
             }
             context.imports.Add(type);
-            return Ref(type, context);
+            return Ref(type, isOptional, context);
         }
         
         private void EmitPackageHeaders(StringBuilder sb) {
@@ -212,7 +212,7 @@ namespace Friflo.Json.Flow.Schema
             }
         }
         
-        private static string Ref(Type type, TypeContext context) {
+        private static string Ref(Type type, bool isOptional, TypeContext context) {
             var name = type.Name;
             // if (generator.IsUnionType(type))
             //    name = $"{type.Name}_Union";
@@ -221,7 +221,10 @@ namespace Friflo.Json.Flow.Schema
             var ownerPackage    = generator.GetPackageName(context.owner.type);
             bool samePackage    = typePackage == ownerPackage;
             var prefix          = samePackage ? "" : $"./{typePackage}{generator.fileExt}";
-            return $"\"$ref\": \"{prefix}#/definitions/{name}\"";
+            var refType = $"\"$ref\": \"{prefix}#/definitions/{name}\"";
+            if (isOptional)
+                return $"\"oneOf\": [{{\"type\": \"null\"}}, {{ {refType} }}]";
+            return refType;
         }
         
         private static string Opt (bool isOptional, string name) {

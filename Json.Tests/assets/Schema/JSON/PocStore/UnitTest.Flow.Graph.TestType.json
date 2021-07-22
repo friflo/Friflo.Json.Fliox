@@ -10,7 +10,7 @@
                 "dateTime":     { "type": "string", "format": "date-time" },
                 "dateTimeNull": { "type": ["string", "null"], "format": "date-time" },
                 "bigInt":       { "$ref": "./System.Numerics.json#/definitions/BigInteger" },
-                "bigIntNull":   { "$ref": "./System.Numerics.json#/definitions/BigInteger" },
+                "bigIntNull":   { "oneOf": [{"type": "null"}, { "$ref": "./System.Numerics.json#/definitions/BigInteger" }] },
                 "int32":        { "type": "number" },
                 "int32Null":    { "type": ["number", "null"] }
             },
