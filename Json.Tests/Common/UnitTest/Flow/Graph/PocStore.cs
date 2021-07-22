@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
@@ -9,35 +11,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     // ------------------------------ models ------------------------------
     public class Order : Entity {
-        public Ref<Customer>        customer;
-        public List<OrderItem>      items = new List<OrderItem>();
+        public  Ref<Customer>       customer;
+        public  DateTime            created; 
+        public  List<OrderItem>     items = new List<OrderItem>();
     }
 
     public class OrderItem {
-        public Ref<Article>         article;
-        public int                  amount;
-        public string               name;
+        public  Ref<Article>        article;
+        public  int                 amount;
+        public  string              name;
     }
 
     public class Article : Entity
     {
-        public string               name;
-        public Ref<Producer>        producer;
+        public  string              name;
+        public  Ref<Producer>       producer;
     }
 
     public class Customer : Entity {
-        public string               name;
+        public  string              name;
     }
     
     public class Producer : Entity {
-        public string               name;
+        public  string              name;
         [Fri.Property(Name = "employees")]
-        public List<Ref<Employee>>  employeeList;
+        public  List<Ref<Employee>> employeeList;
     }
     
     public class Employee : Entity {
-        public string               firstName;
-        public string               lastName;
+        public  string              firstName;
+        public  string              lastName;
     }
 
     // --- store containers

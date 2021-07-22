@@ -8,6 +8,7 @@
             "properties": {
                 "id":       { "type": "string" },
                 "customer": { "type": "string" },
+                "created":  { "type": "string", "format": "date-time" },
                 "items":    { "type": "array", "items": { "$ref": "./UnitTest.Flow.Graph.json#/definitions/OrderItem" } }
             },
             "required": [

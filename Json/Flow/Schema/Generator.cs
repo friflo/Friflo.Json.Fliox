@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Schema
                     return ns.Substring(stripNamespace.Length);
                 }
             }
-            throw new InvalidOperationException($"stripNamespace expect type with namespace: {stripNamespace}, was: {ns}");
+            return ns;
         }
         
         public string GetPackageName (Type type) {

@@ -116,6 +116,9 @@ namespace Friflo.Json.Flow.Schema
             if (type == typeof(string)) {
                 return "string";
             }
+            if (type == typeof(DateTime)) {
+                return "string";
+            }
             if (mapper.isValueType) { 
                 isOptional = mapper.isNullable;
                 if (isOptional) {

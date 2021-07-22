@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Graph;
@@ -59,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             
             var canon           = new Producer { id = "producer-canon", name = "Canon"};
             var createCanon     = producers.Create(canon);
-            var order           = new Order { id = "order-1" };
+            var order           = new Order { id = "order-1", created = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc)};
             var cameraCreate    = new Article { id = "article-1", name = "Camera", producer = canon };
             var notebook        = new Article { id = "article-3", name = "Notebook", producer = samsung };
             var createCam1      = articles.Create(cameraCreate);
@@ -207,7 +208,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await store.Sync();
             
             var errorRefTask = new Customer{ id = "read-task-error" };
-            var order2 = new Order{id = "order-2", customer = errorRefTask};
+            var order2 = new Order{id = "order-2", customer = errorRefTask, created = new DateTime(2021, 7, 22, 6, 1, 0, DateTimeKind.Utc)};
             orders.Create(order2);
             
             var testMessage = new TestMessage{ text = "test message" };

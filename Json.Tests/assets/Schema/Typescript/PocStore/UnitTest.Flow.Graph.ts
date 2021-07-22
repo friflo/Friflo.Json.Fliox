@@ -3,6 +3,7 @@
 export class Order {
     id        : string;
     customer? : string;
+    created?  : string;
     items?    : OrderItem[];
 }
 
