@@ -61,7 +61,6 @@ namespace Friflo.Json.Flow.Schema
             mapper      = mapper.GetUnderlyingMapper();
             var type    = Generator.GetType(mapper);
             if (type == typeof(BigInteger)) {
-                // todo - wrong package
                 sb.AppendLine("        \"BigInteger\": {");
                 sb.AppendLine("            \"type\": \"string\"");
                 sb.Append    ("        }");
@@ -158,14 +157,12 @@ namespace Friflo.Json.Flow.Schema
             if (type == typeof(DateTime)) {
                 return "\"type\": \"string\", \"format\": \"date-time\"";
             }
-            if (mapper.isValueType) {
-                if (type == typeof(bool)) {
-                    return "\"type\": \"boolean\"";
-                }
-                if (type == typeof(byte) || type == typeof(short) || type == typeof(int) || type == typeof(long)
-                    || type == typeof(float) || type == typeof(double)) {
-                    return "\"type\": \"number\"";
-                }
+            if (type == typeof(bool)) {
+                return "\"type\": \"boolean\"";
+            }
+            if (type == typeof(byte) || type == typeof(short) || type == typeof(int) || type == typeof(long)
+                || type == typeof(float) || type == typeof(double)) {
+                return "\"type\": \"number\"";
             }
             if (mapper.IsArray) {
                 var elementMapper = mapper.GetElementMapper();

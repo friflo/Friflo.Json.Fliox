@@ -127,14 +127,12 @@ namespace Friflo.Json.Flow.Schema
             if (type == typeof(string)) {
                 return "string";
             }
-            if (mapper.isValueType) {
-                if (type == typeof(bool)) {
-                    return "boolean";
-                }
-                if (type == typeof(byte) || type == typeof(short) || type == typeof(int) || type == typeof(long)
-                    || type == typeof(float) || type == typeof(double)) {
-                    return "number";
-                }
+            if (type == typeof(bool)) {
+                return "boolean";
+            }
+            if (type == typeof(byte) || type == typeof(short) || type == typeof(int) || type == typeof(long)
+                || type == typeof(float) || type == typeof(double)) {
+                return "number";
             }
             if (mapper.IsArray) {
                 var elementMapper = mapper.GetElementMapper();
