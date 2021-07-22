@@ -102,6 +102,11 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine();
                 return new EmitType(mapper, semantic, generator, sb.ToString(), new HashSet<Type>());
             }
+            if (type == typeof(DateTime)) {
+                sb.AppendLine($"export type DateTime = string;");
+                sb.AppendLine();
+                return new EmitType(mapper, semantic, generator, sb.ToString(), new HashSet<Type>());
+            }
             return null;
         }
         
@@ -114,9 +119,6 @@ namespace Friflo.Json.Flow.Schema
                 return "{} | null";
             }
             if (type == typeof(string)) {
-                return "string";
-            }
-            if (type == typeof(DateTime)) {
                 return "string";
             }
             if (mapper.isValueType) { 
