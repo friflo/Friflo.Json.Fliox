@@ -9,13 +9,12 @@
                 "id":       { "type": "string" },
                 "customer": { "type": "string" },
                 "created":  { "type": "string", "format": "date-time" },
-                "bigInt":   { "type": "string" },
+                "bigInt":   { "$ref": "./System.Numerics.json#/definitions/BigInteger" },
                 "items":    { "type": "array", "items": { "$ref": "./UnitTest.Flow.Graph.json#/definitions/OrderItem" } }
             },
             "required": [
                 "id",
-                "created",
-                "bigInt"
+                "created"
             ],
             "additionalProperties": false
         }

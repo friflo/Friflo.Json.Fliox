@@ -3,14 +3,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Friflo.Json.Flow.Mapper.Map;
 
 namespace Friflo.Json.Flow.Schema.Utils
 {
     public class EmitType
     {
-        /// the mapper assigned to the type
-        public   readonly   TypeMapper      mapper;
+        public   readonly   Type            type;
         /// the mapper assigned to the type
         internal readonly   string          package;
 
@@ -21,17 +21,13 @@ namespace Friflo.Json.Flow.Schema.Utils
         
         public   readonly   TypeSemantic    semantic;
 
-        public   override   string          ToString() => mapper.type.Name;
+        public   override   string          ToString() => type.Name;
 
-        public EmitType(TypeMapper mapper, TypeSemantic semantic, Generator generator, string content, HashSet<Type> imports) {
-            var type = mapper.type;
-            if (mapper.isValueType && mapper.isNullable) {
-                type = mapper.nullableUnderlyingType;
-            }
+        public EmitType(Type type, TypeSemantic semantic, Generator generator, StringBuilder sb, HashSet<Type> imports) {
             this.semantic   = semantic;
-            this.mapper     = mapper;
+            this.type       = type;
             this.package    = generator.GetPackageName(type);
-            this.content    = content;
+            this.content    = sb.ToString();
             this.imports    = imports;
         }
     }

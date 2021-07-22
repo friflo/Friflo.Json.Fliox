@@ -43,19 +43,16 @@ namespace Friflo.Json.Flow.Schema
             var imports = new HashSet<Type>();
             var context = new TypeContext (generator, imports, mapper);
             mapper      = mapper.GetUnderlyingMapper();
-            var type    = mapper.type;
-            if (mapper.isValueType && mapper.isNullable) {
-                type = mapper.nullableUnderlyingType;
-            }
+            var type    = Generator.GetType(mapper);
             if (type == typeof(DateTime)) {
                 sb.AppendLine($"export type DateTime = string;");
                 sb.AppendLine();
-                return new EmitType(mapper, semantic, generator, sb.ToString(), new HashSet<Type>());
+                return new EmitType(type, semantic, generator, sb, new HashSet<Type>());
             }
             if (type == typeof(BigInteger)) {
                 sb.AppendLine($"export type BigInteger = string;");
                 sb.AppendLine();
-                return new EmitType(mapper, semantic, generator, sb.ToString(), new HashSet<Type>());
+                return new EmitType(type, semantic, generator, sb, new HashSet<Type>());
             }
             if (mapper.IsComplex) {
                 var fields          = mapper.propFields.fields;
@@ -104,7 +101,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 sb.AppendLine("}");
                 sb.AppendLine();
-                return new EmitType(mapper, semantic, generator, sb.ToString(), imports);
+                return new EmitType(type, semantic, generator, sb, imports);
             }
             if (type.IsEnum) {
                 var enumValues = mapper.GetEnumValues();
@@ -114,7 +111,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 sb.AppendLine($";");
                 sb.AppendLine();
-                return new EmitType(mapper, semantic, generator, sb.ToString(), new HashSet<Type>());
+                return new EmitType(type, semantic, generator, sb, new HashSet<Type>());
             }
             return null;
         }
@@ -122,18 +119,15 @@ namespace Friflo.Json.Flow.Schema
         // Note: static by intention
         private static string GetFieldType(TypeMapper mapper, TypeContext context, out bool isOptional) {
             mapper      = mapper.GetUnderlyingMapper();
-            var type    = mapper.type;
             isOptional  = mapper.isNullable;
+            var type    = Generator.GetType(mapper);
             if (type == typeof(JsonValue)) {
                 return "{} | null";
             }
             if (type == typeof(string)) {
                 return "string";
             }
-            if (mapper.isValueType) { 
-                if (isOptional) {
-                    type = mapper.nullableUnderlyingType;
-                }
+            if (mapper.isValueType) {
                 if (type == typeof(bool)) {
                     return "boolean";
                 }

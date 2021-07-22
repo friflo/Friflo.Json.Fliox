@@ -68,6 +68,13 @@ namespace Friflo.Json.Flow.Schema
             getPackageName = callback;
         }
         
+        public static Type GetType(TypeMapper mapper) {
+            if (mapper.isNullable && mapper.nullableUnderlyingType != null) {
+                return mapper.nullableUnderlyingType;
+            }
+            return mapper.type;
+        }
+        
         public bool IsUnionType (Type type) {
             if (!typeMappers.TryGetValue(type, out var mapper))
                 return false;
@@ -88,7 +95,7 @@ namespace Friflo.Json.Flow.Schema
         }
         
         public void AddEmitType(EmitType emit) {
-            emitTypes.Add(emit.mapper.type, emit);
+            emitTypes.Add(emit.type, emit);
         }
         
         public void GroupTypesByPackage() {
