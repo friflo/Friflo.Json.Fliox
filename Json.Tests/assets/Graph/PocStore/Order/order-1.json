@@ -2,7 +2,6 @@
     "id": "order-1",
     "customer": "customer-1",
     "created": "2021-07-22T06:00:00.000Z",
-    "bigInt": null,
     "items": [
         {
             "article": "article-1",

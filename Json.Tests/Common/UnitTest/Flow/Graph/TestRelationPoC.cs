@@ -212,7 +212,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             await store.Sync();
             
             var errorRefTask = new Customer{ id = "read-task-error" };
-            var order2 = new Order{id = "order-2", customer = errorRefTask, created = new DateTime(2021, 7, 22, 6, 1, 0, DateTimeKind.Utc), bigInt = new BigInteger(1234)};
+            var order2 = new Order{id = "order-2", customer = errorRefTask, created = new DateTime(2021, 7, 22, 6, 1, 0, DateTimeKind.Utc)};
             orders.Create(order2);
             
             var testMessage = new TestMessage{ text = "test message" };

@@ -2,7 +2,6 @@
     "id": "order-2",
     "customer": "read-task-error",
     "created": "2021-07-22T06:01:00.000Z",
-    "bigInt": "1234",
     "items": [
     ]
 }

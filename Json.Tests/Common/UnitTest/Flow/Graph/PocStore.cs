@@ -14,7 +14,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     public class Order : Entity {
         public  Ref<Customer>       customer;
         public  DateTime            created;
-        public  BigInteger?         bigInt; // Nullable<BigInteger>
         public  List<OrderItem>     items = new List<OrderItem>();
     }
 
