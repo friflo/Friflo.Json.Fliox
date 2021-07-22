@@ -44,6 +44,19 @@ namespace Friflo.Json.Flow.Schema
             var context = new TypeContext (generator, imports, mapper);
             mapper      = mapper.GetUnderlyingMapper();
             var type    = mapper.type;
+            if (mapper.isValueType && mapper.isNullable) {
+                type = mapper.nullableUnderlyingType;
+            }
+            if (type == typeof(DateTime)) {
+                sb.AppendLine($"export type DateTime = string;");
+                sb.AppendLine();
+                return new EmitType(mapper, semantic, generator, sb.ToString(), new HashSet<Type>());
+            }
+            if (type == typeof(BigInteger)) {
+                sb.AppendLine($"export type BigInteger = string;");
+                sb.AppendLine();
+                return new EmitType(mapper, semantic, generator, sb.ToString(), new HashSet<Type>());
+            }
             if (mapper.IsComplex) {
                 var fields          = mapper.propFields.fields;
                 int maxFieldName    = fields.MaxLength(field => field.jsonName.Length);
@@ -100,16 +113,6 @@ namespace Friflo.Json.Flow.Schema
                     sb.AppendLine($"    | \"{enumValue}\"");
                 }
                 sb.AppendLine($";");
-                sb.AppendLine();
-                return new EmitType(mapper, semantic, generator, sb.ToString(), new HashSet<Type>());
-            }
-            if (type == typeof(DateTime)) {
-                sb.AppendLine($"export type DateTime = string;");
-                sb.AppendLine();
-                return new EmitType(mapper, semantic, generator, sb.ToString(), new HashSet<Type>());
-            }
-            if (type == typeof(BigInteger)) {
-                sb.AppendLine($"export type BigInteger = string;");
                 sb.AppendLine();
                 return new EmitType(mapper, semantic, generator, sb.ToString(), new HashSet<Type>());
             }

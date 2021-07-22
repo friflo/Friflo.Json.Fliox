@@ -25,9 +25,11 @@ namespace Friflo.Json.Flow.Schema
             this.separateEntities   = separateEntities;
             if (separateEntities) {
                 generator.SetPackageNameCallback(type => {
-                    var mapper = generator.typeMappers[type];
-                    if (mapper.GetTypeSemantic() == TypeSemantic.Entity)
-                        return $"{type.Namespace}.{type.Name}";
+                    // todo add Generator method
+                    if (generator.typeMappers.TryGetValue(type, out var mapper)) {
+                        if (mapper.GetTypeSemantic() == TypeSemantic.Entity)
+                            return $"{type.Namespace}.{type.Name}";
+                    }
                     return type.Namespace;
                 });
             }
@@ -58,6 +60,16 @@ namespace Friflo.Json.Flow.Schema
             var context = new TypeContext (generator, imports, mapper);
             mapper      = mapper.GetUnderlyingMapper();
             var type    = mapper.type;
+            if (mapper.isValueType && mapper.isNullable) {
+                type = mapper.nullableUnderlyingType;
+            }
+            if (type == typeof(BigInteger)) {
+                // todo - wrong package
+                sb.AppendLine("        \"BigInteger\": {");
+                sb.AppendLine("            \"type\": \"string\"");
+                sb.Append    ("        }");
+                return new EmitType(mapper, semantic, generator, sb.ToString(), new HashSet<Type>());
+            }
             if (mapper.IsComplex) {
                 var fields          = mapper.propFields.fields;
                 int maxFieldName    = fields.MaxLength(field => field.jsonName.Length);

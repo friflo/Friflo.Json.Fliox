@@ -69,7 +69,9 @@ namespace Friflo.Json.Flow.Schema
         }
         
         public bool IsUnionType (Type type) {
-            var instanceFactory = typeMappers[type].instanceFactory;
+            if (!typeMappers.TryGetValue(type, out var mapper))
+                return false;
+            var instanceFactory = mapper.instanceFactory;
             return instanceFactory != null;
         }
         
