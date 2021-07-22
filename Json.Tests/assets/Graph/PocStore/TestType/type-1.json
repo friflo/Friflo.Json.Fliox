@@ -4,6 +4,12 @@
     "dateTimeNull": null,
     "bigInt": "0",
     "bigIntNull": null,
+    "uint8": 0,
+    "uint8Null": null,
+    "int16": 0,
+    "int16Null": null,
     "int32": 0,
-    "int32Null": null
+    "int32Null": null,
+    "int64": 0,
+    "int64Null": null
 }

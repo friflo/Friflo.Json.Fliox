@@ -11,14 +11,23 @@
                 "dateTimeNull": { "type": ["string", "null"], "format": "date-time" },
                 "bigInt":       { "$ref": "./System.Numerics.json#/definitions/BigInteger" },
                 "bigIntNull":   { "oneOf": [{"type": "null"}, { "$ref": "./System.Numerics.json#/definitions/BigInteger" }] },
+                "uint8":        { "type": "number" },
+                "uint8Null":    { "type": ["number", "null"] },
+                "int16":        { "type": "number" },
+                "int16Null":    { "type": ["number", "null"] },
                 "int32":        { "type": "number" },
-                "int32Null":    { "type": ["number", "null"] }
+                "int32Null":    { "type": ["number", "null"] },
+                "int64":        { "type": "number" },
+                "int64Null":    { "type": ["number", "null"] }
             },
             "required": [
                 "id",
                 "dateTime",
                 "bigInt",
-                "int32"
+                "uint8",
+                "int16",
+                "int32",
+                "int64"
             ],
             "additionalProperties": false
         }

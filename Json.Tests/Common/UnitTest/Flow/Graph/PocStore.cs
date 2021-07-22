@@ -49,8 +49,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public  DateTime?           dateTimeNull;
         public  BigInteger          bigInt;
         public  BigInteger?         bigIntNull;
+        
+        public  byte                uint8;
+        public  byte?               uint8Null;
+        
+        public  short               int16;
+        public  short?              int16Null;
+        
         public  int                 int32;
         public  int?                int32Null;
+        
+        public  long                int64;
+        public  long?               int64Null;
+
     }
 
     // --- store containers

@@ -44,7 +44,13 @@ export class TestType {
     dateTimeNull? : DateTime | null;
     bigInt        : BigInteger;
     bigIntNull?   : BigInteger | null;
+    uint8         : number;
+    uint8Null?    : number | null;
+    int16         : number;
+    int16Null?    : number | null;
     int32         : number;
     int32Null?    : number | null;
+    int64         : number;
+    int64Null?    : number | null;
 }
 
