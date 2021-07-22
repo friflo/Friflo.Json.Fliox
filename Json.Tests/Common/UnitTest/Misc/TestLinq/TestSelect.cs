@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
@@ -65,6 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
                     select new Flow.Graph.Order {
                         id = order.id,
                         created = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc),
+                        bigInt = new BigInteger(0),
                         customer =  order.customer,
                         items = order.items
                     };
