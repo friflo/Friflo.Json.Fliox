@@ -14,6 +14,34 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
                 return null;
             return new BigIntMapper (config, type);
         }
+        
+        internal static BigInteger Read<TVal>(TypeMapper<TVal> mapper, ref Reader reader, out bool success) {
+            ref var value = ref reader.parser.value;
+            switch (reader.parser.Event) {
+                case JsonEvent.ValueString:
+                    if (value.Len > 0 && value.buffer.array[value.Len - 1] == 'n')
+                        value.end--;
+                    if (!BigInteger.TryParse(value.ToString(), out BigInteger ret))
+                        return reader.ErrorMsg<BigInteger>("Failed parsing BigInt. value: ", value.ToString(), out success);
+                    success = true;
+                    return ret;
+                case  JsonEvent.ValueNumber:
+                    if (!BigInteger.TryParse(value.ToString(), out BigInteger ret2))
+                        return reader.ErrorMsg<BigInteger>("Failed parsing BigInt. value: ", value.ToString(), out success);
+                    success = true;
+                    return ret2;
+                case JsonEvent.ValueNull:
+                    if (!mapper.isNullable) {
+                        reader.ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
+                        return default;
+                    }
+                    success = true;
+                    return default;
+                default:
+                    reader.ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
+                    return default;
+            }
+        }
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -30,23 +58,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
         }
 
         public override BigInteger Read(ref Reader reader, BigInteger slot, out bool success) {
-            ref var value = ref reader.parser.value;
-            switch (reader.parser.Event) {
-                case JsonEvent.ValueString:
-                    if (value.Len > 0 && value.buffer.array[value.Len - 1] == 'n')
-                        value.end--;
-                    if (!BigInteger.TryParse(value.ToString(), out BigInteger ret))
-                        return reader.ErrorMsg<BigInteger>("Failed parsing BigInt. value: ", value.ToString(), out success);
-                    success = true;
-                    return ret;
-                case  JsonEvent.ValueNumber:
-                    if (!BigInteger.TryParse(value.ToString(), out BigInteger ret2))
-                        return reader.ErrorMsg<BigInteger>("Failed parsing BigInt. value: ", value.ToString(), out success);
-                    success = true;
-                    return ret2;
-                default:
-                    return reader.HandleEvent(this, out success);
-            }
+            return BigIntMatcher.Read(this, ref reader, out success);
         }
     }
 }
