@@ -13,7 +13,9 @@
                 "items":    { "type": "array", "items": { "$ref": "./UnitTest.Flow.Graph.json#/definitions/OrderItem" } }
             },
             "required": [
-                "id"
+                "id",
+                "created",
+                "bigInt"
             ],
             "additionalProperties": false
         }

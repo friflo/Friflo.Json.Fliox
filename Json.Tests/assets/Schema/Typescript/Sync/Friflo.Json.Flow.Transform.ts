@@ -211,6 +211,6 @@ export class PatchMove extends JsonPatch {
 export class PatchTest extends JsonPatch {
     op     : "test";
     path   : string;
-    value? : {} | null;
+    value  : {} | null;
 }
 

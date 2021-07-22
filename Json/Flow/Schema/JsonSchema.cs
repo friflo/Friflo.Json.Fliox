@@ -139,7 +139,7 @@ namespace Friflo.Json.Flow.Schema
         private static string GetFieldType(TypeMapper mapper, TypeContext context, out bool isOptional) {
             mapper      = mapper.GetUnderlyingMapper();
             var type    = mapper.type;
-            isOptional  = true;
+            isOptional  = mapper.isNullable;
             if (type == typeof(JsonValue)) {
                 return "\"type\": \"object\"";
             }
@@ -153,7 +153,6 @@ namespace Friflo.Json.Flow.Schema
                 return "\"type\": \"string\"";
             }
             if (mapper.isValueType) { 
-                isOptional = mapper.isNullable;
                 if (isOptional) {
                     type = mapper.nullableUnderlyingType;
                 }
@@ -167,13 +166,13 @@ namespace Friflo.Json.Flow.Schema
             }
             if (mapper.IsArray) {
                 var elementMapper = mapper.GetElementMapper();
-                var elementTypeName = GetFieldType(elementMapper, context, out isOptional);
+                var elementTypeName = GetFieldType(elementMapper, context, out _);
                 return $"\"type\": \"array\", \"items\": {{ {elementTypeName} }}";
             }
             var isDictionary = type.GetInterfaces().Contains(typeof(IDictionary));
             if (isDictionary) {
                 var valueMapper = mapper.GetElementMapper();
-                var valueTypeName = GetFieldType(valueMapper, context, out isOptional);
+                var valueTypeName = GetFieldType(valueMapper, context, out _);
                 return $"\"type\": \"object\", \"additionalProperties\": {{ {valueTypeName} }}";
             }
             context.imports.Add(type);

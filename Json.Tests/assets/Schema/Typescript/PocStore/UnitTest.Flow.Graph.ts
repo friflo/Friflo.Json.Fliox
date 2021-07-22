@@ -5,8 +5,8 @@ import { BigInteger } from "./System.Numerics"
 export class Order {
     id        : string;
     customer? : string;
-    created?  : DateTime;
-    bigInt?   : BigInteger;
+    created   : DateTime;
+    bigInt    : BigInteger;
     items?    : OrderItem[];
 }
 
