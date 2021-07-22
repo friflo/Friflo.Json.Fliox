@@ -5,17 +5,17 @@ import { Right_Union } from "./Friflo.Json.Flow.Auth.Rights"
 export class Role {
     id           : string;
     rights       : Right_Union[];
-    description? : string;
+    description? : string | null;
 }
 
 export class UserCredential {
     id        : string;
-    passHash? : string;
-    token?    : string;
+    passHash? : string | null;
+    token?    : string | null;
 }
 
 export class UserPermission {
     id     : string;
-    roles? : string[];
+    roles? : string[] | null;
 }
 

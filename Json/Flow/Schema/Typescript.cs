@@ -94,10 +94,12 @@ namespace Friflo.Json.Flow.Schema
                 foreach (var field in fields) {
                     if (generator.IsDerivedField(type, field))
                         continue;
-                    var fieldType = GetFieldType(field.fieldType, context, out var isOptional);
+                    bool isOptional = !field.required;
+                    var fieldType = GetFieldType(field.fieldType, context, ref isOptional);
                     var indent = Generator.Indent(maxFieldName, field.jsonName);
-                    var optStr = field.required || !isOptional ? " " : "?";
-                    sb.AppendLine($"    {field.jsonName}{optStr}{indent} : {fieldType};");
+                    var optStr = isOptional ? "?" : " ";
+                    var nullStr = isOptional ? " | null" : "";
+                    sb.AppendLine($"    {field.jsonName}{optStr}{indent} : {fieldType}{nullStr};");
                 }
                 sb.AppendLine("}");
                 sb.AppendLine();
@@ -117,9 +119,9 @@ namespace Friflo.Json.Flow.Schema
         }
         
         // Note: static by intention
-        private static string GetFieldType(TypeMapper mapper, TypeContext context, out bool isOptional) {
+        private static string GetFieldType(TypeMapper mapper, TypeContext context, ref bool isOptional) {
             mapper      = mapper.GetUnderlyingMapper();
-            isOptional  = mapper.isNullable;
+            isOptional  = isOptional && mapper.isNullable;
             var type    = Generator.GetType(mapper);
             if (type == typeof(JsonValue)) {
                 return "{} | null";
@@ -136,13 +138,15 @@ namespace Friflo.Json.Flow.Schema
             }
             if (mapper.IsArray) {
                 var elementMapper = mapper.GetElementMapper();
-                var elementTypeName = GetFieldType(elementMapper, context, out _);
+                var isOpt = false;
+                var elementTypeName = GetFieldType(elementMapper, context, ref isOpt);
                 return $"{elementTypeName}[]";
             }
             var isDictionary = type.GetInterfaces().Contains(typeof(IDictionary));
             if (isDictionary) {
                 var valueMapper = mapper.GetElementMapper();
-                var valueTypeName = GetFieldType(valueMapper, context, out _);
+                var isOpt = false;
+                var valueTypeName = GetFieldType(valueMapper, context, ref isOpt);
                 return $"{{ [key: string]: {valueTypeName} }}";
             }
             context.imports.Add(type);

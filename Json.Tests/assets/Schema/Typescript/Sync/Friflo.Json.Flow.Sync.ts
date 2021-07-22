@@ -5,9 +5,9 @@ import { JsonPatch }       from "./Friflo.Json.Flow.Transform"
 import { JsonPatch_Union }       from "./Friflo.Json.Flow.Transform"
 
 export class DatabaseMessage {
-    req?  : DatabaseRequest_Union;
-    resp? : DatabaseResponse_Union;
-    ev?   : DatabaseEvent_Union;
+    req?  : DatabaseRequest_Union | null;
+    resp? : DatabaseResponse_Union | null;
+    ev?   : DatabaseEvent_Union | null;
 }
 
 export type DatabaseRequest_Union =
@@ -18,14 +18,14 @@ export abstract class DatabaseRequest {
     abstract type:
         | "sync"
     ;
-    reqId? : number;
+    reqId? : number | null;
 }
 
 export class SyncRequest extends DatabaseRequest {
     type    : "sync";
-    client? : string;
-    ack?    : number;
-    token?  : string;
+    client? : string | null;
+    ack?    : number | null;
+    token?  : string | null;
     tasks   : DatabaseTask_Union[];
 }
 
@@ -63,12 +63,12 @@ export class CreateEntities extends DatabaseTask {
 
 export class EntityValue {
     value  : {} | null;
-    error? : EntityError;
+    error? : EntityError | null;
 }
 
 export class EntityError {
     type     : EntityErrorType;
-    message? : string;
+    message? : string | null;
 }
 
 export type EntityErrorType =
@@ -94,21 +94,21 @@ export class ReadEntitiesList extends DatabaseTask {
 
 export class ReadEntities {
     ids         : string[];
-    references? : References[];
+    references? : References[] | null;
 }
 
 export class References {
     selector    : string;
     container   : string;
-    references? : References[];
+    references? : References[] | null;
 }
 
 export class QueryEntities extends DatabaseTask {
     task        : "query";
     container   : string;
-    filterLinq? : string;
-    filter?     : FilterOperation_Union;
-    references? : References[];
+    filterLinq? : string | null;
+    filter?     : FilterOperation_Union | null;
+    references? : References[] | null;
 }
 
 export class PatchEntities extends DatabaseTask {
@@ -137,7 +137,7 @@ export class SubscribeChanges extends DatabaseTask {
     task       : "subscribeChanges";
     container  : string;
     changes    : Change[];
-    filter?    : FilterOperation_Union;
+    filter?    : FilterOperation_Union | null;
 }
 
 export type Change =
@@ -150,7 +150,7 @@ export type Change =
 export class SubscribeMessage extends DatabaseTask {
     task    : "subscribeMessage";
     name    : string;
-    remove? : boolean;
+    remove? : boolean | null;
 }
 
 export type DatabaseResponse_Union =
@@ -163,23 +163,23 @@ export abstract class DatabaseResponse {
         | "sync"
         | "error"
     ;
-    reqId? : number;
+    reqId? : number | null;
 }
 
 export class SyncResponse extends DatabaseResponse {
     type          : "sync";
-    error?        : ErrorResponse;
-    tasks?        : TaskResult_Union[];
-    results?      : { [key: string]: ContainerEntities };
-    createErrors? : { [key: string]: EntityErrors };
-    updateErrors? : { [key: string]: EntityErrors };
-    patchErrors?  : { [key: string]: EntityErrors };
-    deleteErrors? : { [key: string]: EntityErrors };
+    error?        : ErrorResponse | null;
+    tasks?        : TaskResult_Union[] | null;
+    results?      : { [key: string]: ContainerEntities } | null;
+    createErrors? : { [key: string]: EntityErrors } | null;
+    updateErrors? : { [key: string]: EntityErrors } | null;
+    patchErrors?  : { [key: string]: EntityErrors } | null;
+    deleteErrors? : { [key: string]: EntityErrors } | null;
 }
 
 export class ErrorResponse extends DatabaseResponse {
     type     : "error";
-    message? : string;
+    message? : string | null;
 }
 
 export type TaskResult_Union =
@@ -212,16 +212,16 @@ export abstract class TaskResult {
 
 export class CreateEntitiesResult extends TaskResult {
     task   : "create";
-    Error? : CommandError;
+    Error? : CommandError | null;
 }
 
 export class CommandError {
-    message? : string;
+    message? : string | null;
 }
 
 export class UpdateEntitiesResult extends TaskResult {
     task   : "update";
-    Error? : CommandError;
+    Error? : CommandError | null;
 }
 
 export class ReadEntitiesListResult extends TaskResult {
@@ -230,39 +230,39 @@ export class ReadEntitiesListResult extends TaskResult {
 }
 
 export class ReadEntitiesResult {
-    Error?      : CommandError;
+    Error?      : CommandError | null;
     references  : ReferencesResult[];
 }
 
 export class ReferencesResult {
-    error?      : string;
-    container?  : string;
+    error?      : string | null;
+    container?  : string | null;
     ids         : string[];
-    references? : ReferencesResult[];
+    references? : ReferencesResult[] | null;
 }
 
 export class QueryEntitiesResult extends TaskResult {
     task        : "query";
-    Error?      : CommandError;
-    container?  : string;
-    filterLinq? : string;
+    Error?      : CommandError | null;
+    container?  : string | null;
+    filterLinq? : string | null;
     ids         : string[];
-    references? : ReferencesResult[];
+    references? : ReferencesResult[] | null;
 }
 
 export class PatchEntitiesResult extends TaskResult {
     task   : "patch";
-    Error? : CommandError;
+    Error? : CommandError | null;
 }
 
 export class DeleteEntitiesResult extends TaskResult {
     task   : "delete";
-    Error? : CommandError;
+    Error? : CommandError | null;
 }
 
 export class SendMessageResult extends TaskResult {
     task    : "message";
-    Error?  : CommandError;
+    Error?  : CommandError | null;
     result  : {} | null;
 }
 
@@ -277,8 +277,8 @@ export class SubscribeMessageResult extends TaskResult {
 export class TaskErrorResult extends TaskResult {
     task        : "error";
     type        : TaskErrorResultType;
-    message?    : string;
-    stacktrace? : string;
+    message?    : string | null;
+    stacktrace? : string | null;
 }
 
 export type TaskErrorResultType =
@@ -291,12 +291,12 @@ export type TaskErrorResultType =
 ;
 
 export class ContainerEntities {
-    container? : string;
+    container? : string | null;
     entities   : { [key: string]: EntityValue };
 }
 
 export class EntityErrors {
-    container? : string;
+    container? : string | null;
     errors     : { [key: string]: EntityError };
 }
 
@@ -309,12 +309,12 @@ export abstract class DatabaseEvent {
         | "subscription"
     ;
     seq     : number;
-    target? : string;
-    client? : string;
+    target? : string | null;
+    client? : string | null;
 }
 
 export class SubscriptionEvent extends DatabaseEvent {
     type    : "subscription";
-    tasks?  : DatabaseTask_Union[];
+    tasks?  : DatabaseTask_Union[] | null;
 }
 

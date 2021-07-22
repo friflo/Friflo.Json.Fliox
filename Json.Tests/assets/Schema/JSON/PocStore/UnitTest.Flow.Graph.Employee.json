@@ -7,8 +7,8 @@
             "type": "object",
             "properties": {
                 "id":        { "type": "string" },
-                "firstName": { "type": "string" },
-                "lastName":  { "type": "string" }
+                "firstName": { "type": ["string", "null"] },
+                "lastName":  { "type": ["string", "null"] }
             },
             "required": [
                 "id"

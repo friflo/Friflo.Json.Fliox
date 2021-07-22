@@ -20,7 +20,7 @@ export abstract class Right {
         | "database"
         | "predicate"
     ;
-    description? : string;
+    description? : string | null;
 }
 
 export class RightAllow extends Right {
@@ -49,8 +49,8 @@ export class RightDatabase extends Right {
 }
 
 export class ContainerAccess {
-    operations?       : OperationType[];
-    subscribeChanges? : Change[];
+    operations?       : OperationType[] | null;
+    subscribeChanges? : Change[] | null;
 }
 
 export type OperationType =

@@ -8,7 +8,7 @@
             "properties": {
                 "id":          { "type": "string" },
                 "rights":      { "type": "array", "items": { "$ref": "./Friflo.Json.Flow.Auth.Rights.json#/definitions/Right" } },
-                "description": { "type": "string" }
+                "description": { "type": ["string", "null"] }
             },
             "required": [
                 "id",

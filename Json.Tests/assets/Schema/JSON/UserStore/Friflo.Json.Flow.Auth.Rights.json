@@ -12,7 +12,7 @@
                 { "$ref": "#/definitions/RightPredicate" }
             ],
             "properties": {
-                "description": { "type": "string" }
+                "description": { "type": ["string", "null"] }
             },
             "additionalProperties": true
         },
@@ -21,7 +21,7 @@
             "properties": {
                 "type":        { "enum": ["allow"] },
                 "grant":       { "type": "boolean" },
-                "description": { "type": "string" }
+                "description": { "type": ["string", "null"] }
             },
             "required": [
                 "type",
@@ -34,7 +34,7 @@
             "properties": {
                 "type":        { "enum": ["task"] },
                 "types":       { "type": "array", "items": { "$ref": "./Friflo.Json.Flow.Sync.json#/definitions/TaskType" } },
-                "description": { "type": "string" }
+                "description": { "type": ["string", "null"] }
             },
             "required": [
                 "type",
@@ -47,7 +47,7 @@
             "properties": {
                 "type":        { "enum": ["message"] },
                 "names":       { "type": "array", "items": { "type": "string" } },
-                "description": { "type": "string" }
+                "description": { "type": ["string", "null"] }
             },
             "required": [
                 "type",
@@ -60,7 +60,7 @@
             "properties": {
                 "type":        { "enum": ["subscribeMessage"] },
                 "names":       { "type": "array", "items": { "type": "string" } },
-                "description": { "type": "string" }
+                "description": { "type": ["string", "null"] }
             },
             "required": [
                 "type",
@@ -73,7 +73,7 @@
             "properties": {
                 "type":        { "enum": ["database"] },
                 "containers":  { "type": "object", "additionalProperties": { "$ref": "#/definitions/ContainerAccess" } },
-                "description": { "type": "string" }
+                "description": { "type": ["string", "null"] }
             },
             "required": [
                 "type",
@@ -106,7 +106,7 @@
             "properties": {
                 "type":        { "enum": ["predicate"] },
                 "names":       { "type": "array", "items": { "type": "string" } },
-                "description": { "type": "string" }
+                "description": { "type": ["string", "null"] }
             },
             "required": [
                 "type",

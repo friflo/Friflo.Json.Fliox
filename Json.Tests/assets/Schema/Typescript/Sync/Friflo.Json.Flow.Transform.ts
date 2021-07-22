@@ -199,13 +199,13 @@ export class PatchRemove extends JsonPatch {
 export class PatchCopy extends JsonPatch {
     op    : "copy";
     path  : string;
-    from? : string;
+    from? : string | null;
 }
 
 export class PatchMove extends JsonPatch {
     op    : "move";
     path  : string;
-    from? : string;
+    from? : string | null;
 }
 
 export class PatchTest extends JsonPatch {

@@ -102,9 +102,10 @@ namespace Friflo.Json.Flow.Schema
                 }
                 // fields
                 foreach (var field in fields) {
-                    var fieldType = GetFieldType(field.fieldType, context, out var isOptional);
+                    bool isOptional = !field.required;
+                    var fieldType = GetFieldType(field.fieldType, context, ref isOptional);
                     var indent = Generator.Indent(maxFieldName, field.jsonName);
-                    if (field.required || !isOptional)
+                    if (!isOptional)
                         required.Add(field.jsonName);
                     Generator.Delimiter(sb, Next, ref firstField);
                     sb.Append($"                \"{field.jsonName}\":{indent} {{ {fieldType} }}");
@@ -144,35 +145,37 @@ namespace Friflo.Json.Flow.Schema
         }
         
         // Note: static by intention
-        private static string GetFieldType(TypeMapper mapper, TypeContext context, out bool isOptional) {
+        private static string GetFieldType(TypeMapper mapper, TypeContext context, ref bool isOptional) {
             mapper      = mapper.GetUnderlyingMapper();
-            isOptional  = mapper.isNullable;
+            isOptional  = isOptional && mapper.isNullable;
             var type    = Generator.GetType(mapper);
             if (type == typeof(JsonValue)) {
                 return "\"type\": \"object\"";
             }
             if (type == typeof(string)) {
-                return "\"type\": \"string\"";
+                return $"\"type\": {Opt(isOptional, "string")}";
             }
             if (type == typeof(DateTime)) {
-                return "\"type\": \"string\", \"format\": \"date-time\"";
+                return $"\"type\": {Opt(isOptional, "string")}, \"format\": \"date-time\"";
             }
             if (type == typeof(bool)) {
                 return "\"type\": \"boolean\"";
             }
             if (type == typeof(byte) || type == typeof(short) || type == typeof(int) || type == typeof(long)
                 || type == typeof(float) || type == typeof(double)) {
-                return "\"type\": \"number\"";
+                return $"\"type\": {Opt(isOptional, "number")}";
             }
             if (mapper.IsArray) {
                 var elementMapper = mapper.GetElementMapper();
-                var elementTypeName = GetFieldType(elementMapper, context, out _);
+                bool isOpt = false;
+                var elementTypeName = GetFieldType(elementMapper, context, ref isOpt);
                 return $"\"type\": \"array\", \"items\": {{ {elementTypeName} }}";
             }
             var isDictionary = type.GetInterfaces().Contains(typeof(IDictionary));
             if (isDictionary) {
                 var valueMapper = mapper.GetElementMapper();
-                var valueTypeName = GetFieldType(valueMapper, context, out _);
+                bool isOpt = false;
+                var valueTypeName = GetFieldType(valueMapper, context, ref isOpt);
                 return $"\"type\": \"object\", \"additionalProperties\": {{ {valueTypeName} }}";
             }
             context.imports.Add(type);
@@ -219,6 +222,12 @@ namespace Friflo.Json.Flow.Schema
             bool samePackage    = typePackage == ownerPackage;
             var prefix          = samePackage ? "" : $"./{typePackage}{generator.fileExt}";
             return $"\"$ref\": \"{prefix}#/definitions/{name}\"";
+        }
+        
+        private static string Opt (bool isOptional, string name) {
+            if (isOptional)
+                return $"[\"{name}\", \"null\"]";
+            return $"\"{name}\"";
         }
     }
 }

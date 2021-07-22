@@ -7,8 +7,8 @@
             "type": "object",
             "properties": {
                 "id":       { "type": "string" },
-                "name":     { "type": "string" },
-                "producer": { "type": "string" }
+                "name":     { "type": ["string", "null"] },
+                "producer": { "type": ["string", "null"] }
             },
             "required": [
                 "id"
