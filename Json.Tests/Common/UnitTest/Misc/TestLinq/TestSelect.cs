@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Flow.Database;
@@ -63,6 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
                     // where order.id == "order-1"
                     select new Flow.Graph.Order {
                         id = order.id,
+                        created = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc),
                         customer =  order.customer,
                         items = order.items
                     };
