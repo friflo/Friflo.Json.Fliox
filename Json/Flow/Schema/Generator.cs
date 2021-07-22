@@ -22,13 +22,20 @@ namespace Friflo.Json.Flow.Schema
     ///     Schema / code generators are forced to use <see cref="StringBuilder"/> like in <see cref="Typescript"/>     
     ///   </item>
     ///   <item>
-    ///     As a template <see cref="Typescript"/> or <see cref="JsonSchema"/> need to be used to ensure the resulting
-    ///     generator can be compared to their originals with tools like WinMerge. In particular these as the methods
-    ///     and their order <see cref="Typescript.GenerateSchema"/>, 
-    ///     <see cref="Typescript.GetFieldType"/> and <see cref="Typescript.EmitPackageHeaders"/>
+    ///     A code generator must not have any mutable state. All used properties must be readonly immutables. 
     ///   </item>
     ///   <item>
-    ///     A code generator must not have any mutable state. All used properties must be readonly immutables. 
+    ///     Avoid virtual methods or interfaces to establish simplicity. 
+    ///   </item>
+    ///   <item>
+    ///     As a template <see cref="Typescript"/> or <see cref="JsonSchema"/> need to be used to ensure the resulting
+    ///     generator can be compared to their originals with tools like WinMerge. In particular these as the methods
+    ///     and their order <see cref="Typescript.GenerateSchema"/>,   <see cref="Typescript.EmitType"/>,
+    ///     <see cref="Typescript.GetFieldType"/> and <see cref="Typescript.EmitPackageHeaders"/>.
+    ///     Helper methods need to be added on the bottom.
+    ///   </item>
+    ///   <item>
+    ///     The implementation should be small similar to <see cref="Typescript"/> and <see cref="JsonSchema"/>
     ///   </item>
     /// </list>
     /// </summary>
