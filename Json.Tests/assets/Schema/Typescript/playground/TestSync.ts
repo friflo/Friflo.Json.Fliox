@@ -111,3 +111,6 @@ var exampleSync: DatabaseMessage = {
         ]
     }
 }
+
+export function testSync() {
+}

@@ -11,7 +11,6 @@ var exampleOrder: Order = {
     id: "order-id",
     customer: "customer-id",
     created: "2021-07-22T06:00:00.000Z",
-    bigInt: "1234",
     items: [
         {
             amount: 1, 
@@ -19,4 +18,7 @@ var exampleOrder: Order = {
             name: "Article Name",
         }
     ]
+}
+
+export function testPocStore() {
 }

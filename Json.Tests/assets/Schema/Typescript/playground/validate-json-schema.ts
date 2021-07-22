@@ -2,7 +2,7 @@ import Ajv, { ValidateFunction } from "ajv"
 import fs from 'fs';
 
 
-function run() {
+export function validateSchemas() {
     const ajv = new Ajv({allErrors: true}) // options can be passed, e.g. {allErrors: true}
     // runTest(ajv);
 
@@ -52,7 +52,6 @@ function runTest(ajv: Ajv) {
         console.log(validate.errors)
 }
 
-run();
 
 
 

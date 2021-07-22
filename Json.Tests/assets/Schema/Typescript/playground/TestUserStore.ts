@@ -47,3 +47,7 @@ function usePolymorphType (right: Right_Union) {
             break;
     }
 }
+
+export function testUserStore() {
+}
+
