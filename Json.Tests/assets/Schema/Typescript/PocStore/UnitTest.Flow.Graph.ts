@@ -56,6 +56,7 @@ export class TestType {
     pocStructNull? : PocStruct | null;
     intArray       : number[];
     intArrayNull?  : number[] | null;
+    jsonValue      : {} | null;
 }
 
 export class PocStruct {

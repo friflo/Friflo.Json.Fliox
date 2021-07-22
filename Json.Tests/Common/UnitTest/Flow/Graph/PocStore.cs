@@ -7,6 +7,7 @@ using System.Numerics;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Mapper.Map.Val;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
@@ -68,6 +69,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         [Fri.Property(Required = true)]
         public  List<int>           intArray = new List<int>();
         public  List<int>           intArrayNull;
+        
+        public  JsonValue           jsonValue;
     }
     
     public struct PocStruct {

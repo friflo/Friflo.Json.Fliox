@@ -22,7 +22,8 @@
                 "pocStruct":     { "$ref": "./UnitTest.Flow.Graph.json#/definitions/PocStruct" },
                 "pocStructNull": { "oneOf": [{"type": "null"}, { "$ref": "./UnitTest.Flow.Graph.json#/definitions/PocStruct" }] },
                 "intArray":      { "type": "array", "items": { "type": "number" } },
-                "intArrayNull":  { "type": ["array", "null"], "items": { "type": "number" } }
+                "intArrayNull":  { "type": ["array", "null"], "items": { "type": "number" } },
+                "jsonValue":     { "type": "object" }
             },
             "required": [
                 "id",
@@ -33,7 +34,8 @@
                 "int32",
                 "int64",
                 "pocStruct",
-                "intArray"
+                "intArray",
+                "jsonValue"
             ],
             "additionalProperties": false
         }
