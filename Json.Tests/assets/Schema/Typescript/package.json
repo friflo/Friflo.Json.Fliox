@@ -7,7 +7,11 @@
     "tsc-init": "tsc --init",
     "tsc": "tsc",
     "validate": "node ./dist/playground/validate-json-schema.js",
-    "dbg": "ts-node ./playground/validate-json-schema.ts"
+    "dbg": "npm run dbg-validate && npm run dbg-PocStore && npm run dbg-UserStore && npm run dbg-Sync",
+    "dbg-validate": "ts-node ./playground/validate-json-schema.ts",
+    "dbg-PocStore": "ts-node ./playground/TestPocStore.ts",
+    "dbg-UserStore": "ts-node ./playground/TestUserStore.ts",
+    "dbg-Sync": "ts-node ./playground/TestSync.ts"
   },
   "devDependencies": {
     "@types/node": "^16.3.3",
