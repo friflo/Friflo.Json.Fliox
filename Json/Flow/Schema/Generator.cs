@@ -12,6 +12,26 @@ using Friflo.Json.Flow.Schema.Utils;
 
 namespace Friflo.Json.Flow.Schema
 {
+    /// <summary>
+    /// A context class required to be used for all code / schema generators.
+    /// If case of adding an additional code generator which should be part of this project.
+    /// The following requirements must be met:
+    /// <list type="bullet">
+    ///   <item>
+    ///     No dependencies to third party libraries. E.g. Serializer libraries to create a specific format (YAML, ...)
+    ///     Schema / code generators are forced to use <see cref="StringBuilder"/> like in <see cref="Typescript"/>     
+    ///   </item>
+    ///   <item>
+    ///     As a template <see cref="Typescript"/> or <see cref="JsonSchema"/> need to be used to ensure the resulting
+    ///     generator can be compared to their originals with tools like WinMerge. In particular these as the methods
+    ///     and their order <see cref="Typescript.GenerateSchema"/>, 
+    ///     <see cref="Typescript.GetFieldType"/> and <see cref="Typescript.EmitPackageHeaders"/>
+    ///   </item>
+    ///   <item>
+    ///     A code generator must not have any mutable state. All used properties must be readonly immutables. 
+    ///   </item>
+    /// </list>
+    /// </summary>
     public class Generator
     {
         public   readonly   string                                  fileExt;
