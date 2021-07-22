@@ -20,7 +20,9 @@
                 "int64":         { "type": "number" },
                 "int64Null":     { "type": ["number", "null"] },
                 "pocStruct":     { "$ref": "./UnitTest.Flow.Graph.json#/definitions/PocStruct" },
-                "pocStructNull": { "oneOf": [{"type": "null"}, { "$ref": "./UnitTest.Flow.Graph.json#/definitions/PocStruct" }] }
+                "pocStructNull": { "oneOf": [{"type": "null"}, { "$ref": "./UnitTest.Flow.Graph.json#/definitions/PocStruct" }] },
+                "intArray":      { "type": "array", "items": { "type": "number" } },
+                "intArrayNull":  { "type": ["array", "null"], "items": { "type": "number" } }
             },
             "required": [
                 "id",
@@ -30,7 +32,8 @@
                 "int16",
                 "int32",
                 "int64",
-                "pocStruct"
+                "pocStruct",
+                "intArray"
             ],
             "additionalProperties": false
         }

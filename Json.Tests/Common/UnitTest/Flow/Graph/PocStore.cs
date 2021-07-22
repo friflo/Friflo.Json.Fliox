@@ -64,6 +64,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         public  PocStruct           pocStruct;
         public  PocStruct?          pocStructNull;
+
+        [Fri.Property(Required = true)]
+        public  List<int>           intArray = new List<int>();
+        public  List<int>           intArrayNull;
     }
     
     public struct PocStruct {

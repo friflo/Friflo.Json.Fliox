@@ -15,5 +15,8 @@
     "pocStruct": {
         "val": 0
     },
-    "pocStructNull": null
+    "pocStructNull": null,
+    "intArray": [
+    ],
+    "intArrayNull": null
 }

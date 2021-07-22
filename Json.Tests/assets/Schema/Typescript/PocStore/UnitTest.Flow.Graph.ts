@@ -54,6 +54,8 @@ export class TestType {
     int64Null?     : number | null;
     pocStruct      : PocStruct;
     pocStructNull? : PocStruct | null;
+    intArray       : number[];
+    intArrayNull?  : number[] | null;
 }
 
 export class PocStruct {
