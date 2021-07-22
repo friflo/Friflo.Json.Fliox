@@ -90,7 +90,6 @@ namespace Friflo.Json.Flow.Schema
                     var indent = Generator.Indent(maxFieldName, discriminator);
                     sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
                 }
-                
                 // fields                
                 foreach (var field in fields) {
                     if (generator.IsDerivedField(type, field))

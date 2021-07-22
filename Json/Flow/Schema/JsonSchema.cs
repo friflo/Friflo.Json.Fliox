@@ -46,7 +46,6 @@ namespace Friflo.Json.Flow.Schema
                     continue;
                 generator.AddEmitType(result);
             }
-            sb.AppendLine("}");
             generator.GroupTypesByPackage();
             EmitPackageHeaders(sb);
             EmitPackageFooters(sb);
