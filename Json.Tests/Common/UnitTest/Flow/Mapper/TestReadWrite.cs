@@ -468,7 +468,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                     AreEqual(default(TestStruct),               enc.Read<TestStruct>(@null));
                     StringAssert.Contains("Cannot assign null to class. Expect: Friflo.Json.Tests.Common.UnitTest.Flow.Mapper.TestStruct, got: null path: '(root)'", enc.Error.msg.ToString());
                     {
-                        BigInteger expect = BigInteger.Parse(bigInt.ToString());
+                        BigInteger expect = BigInteger.Parse(bigInt);
                         AreEqual(expect, Read<BigInteger>(bigIntStr));
                         AreEqual(JsonEvent.EOF, enc.JsonEvent);
                         
@@ -479,26 +479,33 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                         AreEqual(JsonEvent.EOF, enc.JsonEvent);
                         
                         var result = write.Write(expect);
-                        AreEqual(bigIntStr.ToString(), result);
+                        AreEqual(bigIntStr, result);
                     }
                     enc.Read<BigInteger>(hello);
                     StringAssert.Contains("Failed parsing BigInt. value:", enc.Error.msg.ToString());
                     
                     // --- DateTime ---
                     {
-                        DateTime expect = DateTime.Parse(dateTime.ToString());
+                        DateTime expect = DateTime.Parse(dateTime);
                         DateTime value = Read<DateTime>(dateTimeStr);
                         AreEqual(expect, value);
                         
                         var result = write.Write(expect);
-                        AreEqual(dateTimeStr.ToString(), result);   
+                        AreEqual(dateTimeStr, result);
+                        
+                        DateTime? nullExpect = DateTime.Parse(dateTime);
+                        DateTime? nullValue = Read<DateTime?>(dateTimeStr);
+                        AreEqual(expect, nullValue);
+                        
+                        result = write.Write(nullExpect);
+                        AreEqual(dateTimeStr, result);
                     }
                     enc.Read<DateTime>(hello);
                     StringAssert.Contains("Failed parsing DateTime. value:", enc.Error.msg.ToString());
 
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual(128, enc.TypeCache.LookupCount);
+                        AreEqual(129, enc.TypeCache.LookupCount);
                         AreEqual( 0,  enc.TypeCache.StoreLookupCount);
                         AreEqual( 0,  enc.TypeCache.TypeCreationCount);
                     }

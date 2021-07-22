@@ -10,9 +10,11 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
         public static readonly DateTimeMatcher Instance = new DateTimeMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
-            if (type != typeof(DateTime))
-                return null;
-            return new DateTimeMapper (config, type);
+            if (type == typeof(DateTime))
+                return new DateTimeMapper (config, type);
+            if (type == typeof(DateTime?))
+                return new NullableDateTimeMapper (config, type);
+            return null;
         }
     }
     
@@ -40,6 +42,33 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
                 return reader.ErrorMsg<DateTime>("Failed parsing DateTime. value: ", value.ToString(), out success);
             success = true;
             return slot;
+        }
+    }
+    
+    public class NullableDateTimeMapper : TypeMapper<DateTime?>
+    {
+        public override string DataTypeName() { return "DateTime?"; }
+        
+        public NullableDateTimeMapper(StoreConfig config, Type type) :
+            base (config, type, true, false) {
+        }
+
+        public override void Write(ref Writer writer, DateTime? value) {
+            if (value.HasValue)
+                writer.WriteString(value.Value.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffZ"));
+            else
+                writer.AppendNull();
+        }
+
+        // ReSharper disable once RedundantAssignment
+        public override DateTime? Read(ref Reader reader, DateTime? slot, out bool success) {
+            if (reader.parser.Event != JsonEvent.ValueString)
+                return reader.HandleEvent(this, out success);
+            ref var value = ref reader.parser.value;
+            if (!DateTime.TryParse(value.ToString(), out var dateTime))     
+                return reader.ErrorMsg<DateTime?>("Failed parsing DateTime. value: ", value.ToString(), out success);
+            success = true;
+            return dateTime;
         }
     }
 }
