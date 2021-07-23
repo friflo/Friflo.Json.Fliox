@@ -10,7 +10,7 @@ namespace Friflo.Json.Flow.Schema.Utils
     public class Package
     {
         /// contain all types of a namespace (package) and their generated piece of code for each type
-        internal readonly   List<EmitType>              emitTypes   = new List<EmitType>();
+        public   readonly   List<EmitType>              emitTypes   = new List<EmitType>();
         /// contain all imports used by all types in a package
         public   readonly   Dictionary<Type, Import>    imports     = new Dictionary<Type, Import>();
         /// the generated code used as package header. Typically all imports (using statements)
