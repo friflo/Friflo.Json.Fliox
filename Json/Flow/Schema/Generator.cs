@@ -13,7 +13,9 @@ using Friflo.Json.Flow.Schema.Utils;
 namespace Friflo.Json.Flow.Schema
 {
     /// <summary>
-    /// A context class required to be used for all code / schema generators.
+    /// A context class required to be used for all code / schema generators.<br></br>
+    /// Examples available at:
+    /// <see href="https://github.com/friflo/Friflo.Json.Flow/blob/main/Json.Tests/Common/UnitTest/Flow/Schema/GenerateSchema.cs"/>
     /// <br></br>
     /// 
     /// It contains the configuration for schema generation and the result after schema generation was executed.
