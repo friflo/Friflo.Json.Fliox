@@ -97,6 +97,7 @@ namespace Friflo.Json.Flow.Schema
             getPackageName = callback;
         }
         
+        // ---------------------------------- retrieve type information ---------------------------------- 
         public static Type GetType(TypeMapper mapper) {
             if (mapper.isNullable && mapper.nullableUnderlyingType != null) {
                 return mapper.nullableUnderlyingType;
@@ -123,6 +124,23 @@ namespace Friflo.Json.Flow.Schema
             return false;
         }
         
+        public TypeMapper GetPolymorphBaseMapper(Type type) {
+            var baseType = type.BaseType;
+            if (baseType == null)
+                throw new InvalidOperationException("");
+            TypeMapper mapper;
+            
+            // When searching for polymorph base class there may be are classes in this hierarchy. E.g. BinaryBoolOp. 
+            // If these classes may have a protected constructor they need to be skipped. These classes have no TypeMapper. 
+            while (!typeMappers.TryGetValue(baseType, out mapper)) {
+                baseType = baseType.BaseType;
+                if (baseType == null)
+                    throw new InvalidOperationException("");
+            }
+            return mapper;
+        }
+        
+        // ---------------------------------- output generation  ---------------------------------- 
         public void AddEmitType(EmitType emit) {
             emitTypes.TryAdd(emit.type, emit);
         }
@@ -197,22 +215,6 @@ namespace Friflo.Json.Flow.Schema
             foreach (var fileName in fileSet) {
                 File.Delete(fileName);
             }
-        }
-        
-        public TypeMapper GetPolymorphBaseMapper(Type type) {
-            var baseType = type.BaseType;
-            if (baseType == null)
-                throw new InvalidOperationException("");
-            TypeMapper mapper;
-            
-            // When searching for polymorph base class there may be are classes in this hierarchy. E.g. BinaryBoolOp. 
-            // If these classes may have a protected constructor they need to be skipped. These classes have no TypeMapper. 
-            while (!typeMappers.TryGetValue(baseType, out mapper)) {
-                baseType = baseType.BaseType;
-                if (baseType == null)
-                    throw new InvalidOperationException("");
-            }
-            return mapper;
         }
     }
 }
