@@ -66,7 +66,7 @@ namespace Friflo.Json.Flow.Schema
             typeMappers         = typeStore.GetTypeMappers();
             this.stripNamespace = stripNamespace;
             this.separateTypes  = separateTypes ?? new List<Type>();
-            getPackageName      = GetPackNameCallback;
+            getPackageName      = GetPackageNameCallback;
         }
         
         public static string Indent(int max, string str) {
@@ -85,7 +85,7 @@ namespace Friflo.Json.Flow.Schema
             return ns;
         }
         
-        private string GetPackNameCallback(Type type) {
+        private string GetPackageNameCallback(Type type) {
             if (separateTypes.Contains(type)) {
                 return $"{type.Namespace}.{type.Name}";
             }
