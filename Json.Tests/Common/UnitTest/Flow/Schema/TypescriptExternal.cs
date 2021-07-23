@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         public  readonly    Generator  generator;
 
         public TypescriptExternal (TypeStore typeStore, string stripNamespace) {
-            generator = new Generator(typeStore, stripNamespace, ".ts");
+            generator = new Generator(typeStore, stripNamespace, ".ts", null);
         }
         
         public void GenerateSchema() {

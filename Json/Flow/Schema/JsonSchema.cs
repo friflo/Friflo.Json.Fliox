@@ -17,18 +17,10 @@ namespace Friflo.Json.Flow.Schema
     public class JsonSchema
     {
         public   readonly   Generator           generator;
-        private  readonly   ICollection<Type>   separateTypes;
         private  const      string              Next = ",\r\n";
         
         public JsonSchema (TypeStore typeStore, string stripNamespace, ICollection<Type> separateTypes) {
-            generator               = new Generator(typeStore, stripNamespace, ".json");
-            this.separateTypes   = separateTypes;
-            generator.SetPackageNameCallback(type => {
-                if (separateTypes.Contains(type)) {
-                    return $"{type.Namespace}.{type.Name}";
-                }
-                return type.Namespace;
-            });
+            generator               = new Generator(typeStore, stripNamespace, ".json", separateTypes);
         }
         
         public void GenerateSchema() {
@@ -186,7 +178,7 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine( "    \"$schema\": \"http://json-schema.org/draft-07/schema#\",");
                 sb.AppendLine($"    \"$comment\": \"{Generator.Note}\",");
                 var first = package.emitTypes.FirstOrDefault();
-                if (first != null && separateTypes.Contains(first.type)) {
+                if (first != null && generator.separateTypes.Contains(first.type)) {
                     var entityName = first.type.Name;
                     sb.AppendLine($"    \"$ref\": \"#/definitions/{entityName}\",");
                 }
