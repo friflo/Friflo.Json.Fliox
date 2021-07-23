@@ -16,23 +16,19 @@ namespace Friflo.Json.Flow.Schema
 {
     public class JsonSchema
     {
-        public   readonly   Generator   generator;
-        private  readonly   bool        separateEntities;
-        private  const      string      Next = ",\r\n";
+        public   readonly   Generator           generator;
+        private  readonly   ICollection<Type>   separateTypes;
+        private  const      string              Next = ",\r\n";
         
-        public JsonSchema (TypeStore typeStore, string stripNamespace, bool separateEntities) {
+        public JsonSchema (TypeStore typeStore, string stripNamespace, ICollection<Type> separateTypes) {
             generator               = new Generator(typeStore, stripNamespace, ".json");
-            this.separateEntities   = separateEntities;
-            if (separateEntities) {
-                generator.SetPackageNameCallback(type => {
-                    // todo add Generator method
-                    if (generator.typeMappers.TryGetValue(type, out var mapper)) {
-                        if (mapper.GetTypeSemantic() == TypeSemantic.Entity)
-                            return $"{type.Namespace}.{type.Name}";
-                    }
-                    return type.Namespace;
-                });
-            }
+            this.separateTypes   = separateTypes;
+            generator.SetPackageNameCallback(type => {
+                if (separateTypes.Contains(type)) {
+                    return $"{type.Namespace}.{type.Name}";
+                }
+                return type.Namespace;
+            });
         }
         
         public void GenerateSchema() {
@@ -189,12 +185,10 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine("{");
                 sb.AppendLine( "    \"$schema\": \"http://json-schema.org/draft-07/schema#\",");
                 sb.AppendLine($"    \"$comment\": \"{Generator.Note}\",");
-                if (separateEntities) {
-                    var first = package.emitTypes.FirstOrDefault();
-                    if (first != null && first.semantic == TypeSemantic.Entity) {
-                        var entityName = first.type.Name;
-                        sb.AppendLine($"    \"$ref\": \"#/definitions/{entityName}\",");
-                    }
+                var first = package.emitTypes.FirstOrDefault();
+                if (first != null && separateTypes.Contains(first.type)) {
+                    var entityName = first.type.Name;
+                    sb.AppendLine($"    \"$ref\": \"#/definitions/{entityName}\",");
                 }
                 sb.Append    ("    \"definitions\": {");
                 package.header = sb.ToString();
