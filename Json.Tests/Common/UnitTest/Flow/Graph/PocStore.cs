@@ -71,10 +71,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public  List<int>           intArrayNull;
         
         public  JsonValue           jsonValue;
+        
+        public  DerivedClass        derivedClass;
     }
     
     public struct PocStruct {
         public  int                 val;
+    }
+    
+    public class DerivedClass : OrderItem {
+        public int derivedVal;
     }
 
     // --- store containers

@@ -23,6 +23,20 @@
                 "val"
             ],
             "additionalProperties": false
+        },
+        "DerivedClass": {
+            "type": "object",
+            "properties": {
+                "derivedVal": { "type": "number" },
+                "article":    { "type": ["string", "null"] },
+                "amount":     { "type": "number" },
+                "name":       { "type": ["string", "null"] }
+            },
+            "required": [
+                "derivedVal",
+                "amount"
+            ],
+            "additionalProperties": false
         }
     }
 }

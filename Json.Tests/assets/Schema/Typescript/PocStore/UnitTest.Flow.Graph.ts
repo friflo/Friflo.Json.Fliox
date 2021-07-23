@@ -57,9 +57,14 @@ export class TestType {
     intArray       : number[];
     intArrayNull?  : number[] | null;
     jsonValue      : {} | null;
+    derivedClass?  : DerivedClass | null;
 }
 
 export class PocStruct {
     val  : number;
+}
+
+export class DerivedClass {
+    derivedVal  : number;
 }
 

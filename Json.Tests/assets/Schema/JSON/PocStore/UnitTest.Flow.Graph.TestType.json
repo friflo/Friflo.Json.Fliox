@@ -23,7 +23,8 @@
                 "pocStructNull": { "oneOf": [{"type": "null"}, { "$ref": "./UnitTest.Flow.Graph.json#/definitions/PocStruct" }] },
                 "intArray":      { "type": "array", "items": { "type": "number" } },
                 "intArrayNull":  { "type": ["array", "null"], "items": { "type": "number" } },
-                "jsonValue":     {  }
+                "jsonValue":     {  },
+                "derivedClass":  { "oneOf": [{"type": "null"}, { "$ref": "./UnitTest.Flow.Graph.json#/definitions/DerivedClass" }] }
             },
             "required": [
                 "id",
