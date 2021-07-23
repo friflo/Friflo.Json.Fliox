@@ -16,8 +16,8 @@ namespace Friflo.Json.Flow.Schema
             typeStore.AddMappers(rootTypes);
         }
         
-        public Generator Typescript(string stripNamespace) {
-            var typescript = new Typescript(typeStore, stripNamespace);
+        public Generator Typescript(string stripNamespace, ICollection<Type> separateTypes) {
+            var typescript = new Typescript(typeStore, stripNamespace, separateTypes);
             typescript.GenerateSchema();
             return typescript.generator;
         }
