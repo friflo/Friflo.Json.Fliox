@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             // Use code generator directly
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             typeStore.AddMappers(PocStoreTypes);
-            var typescript = new Typescript(typeStore, "Friflo.Json.Tests.Common.", null);
+            var typescript = new Typescript(typeStore, new[]{"Friflo.Json.Tests.Common."}, null);
             typescript.GenerateSchema();
             typescript.generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/PocStore");
         }
@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             // Use code generator directly
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             typeStore.AddMappers(PocStoreTypes);
-            var jsonSchema = new JsonSchema(typeStore, "Friflo.Json.Tests.Common.", PocStoreTypes);
+            var jsonSchema = new JsonSchema(typeStore, new[]{"Friflo.Json.Tests.Common."}, PocStoreTypes);
             jsonSchema.GenerateSchema();
             jsonSchema.generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JSON/PocStore");
         }
