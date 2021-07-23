@@ -14,6 +14,14 @@ namespace Friflo.Json.Flow.Schema
 {
     /// <summary>
     /// A context class required to be used for all code / schema generators.
+    /// <br></br>
+    /// 
+    /// It contains the configuration for schema generation and the result after schema generation was executed.
+    /// The main configuration consists of the types to be generated and the file extension for generated files.
+    /// The result consists of the generated source available via <see cref="files"/>.
+    /// The utility method <see cref="WriteFiles"/> enables writing these files to a folder.
+    /// 
+    /// <br></br>
     /// In case of adding an additional code generator which should be part of this project the following
     /// requirements must be met:
     /// <list type="bullet">
@@ -51,7 +59,7 @@ namespace Friflo.Json.Flow.Schema
         /// map of all emitted types and their emitted code 
         private  readonly   Dictionary<Type, EmitType>              emitTypes       = new Dictionary<Type, EmitType>();
         /// set of generated files and their source content. key: file name
-        private  readonly   Dictionary<string, string>              files           = new Dictionary<string, string>();
+        public   readonly   Dictionary<string, string>              files           = new Dictionary<string, string>();
         /// Return a package name for the given type. By Default it is <see cref="Type.Namespace"/>
         private             Func<Type, string>                      getPackageName;
         private  readonly   Dictionary<Type, string>                packageCache    = new Dictionary<Type, string>();
