@@ -37,46 +37,6 @@ import { Sum }                from "./Friflo.Json.Flow.Transform.Query.Ops"
 import { Average }            from "./Friflo.Json.Flow.Transform.Query.Ops"
 import { Count }              from "./Friflo.Json.Flow.Transform.Query.Ops"
 
-export type FilterOperation_Union =
-    | Equal
-    | NotEqual
-    | LessThan
-    | LessThanOrEqual
-    | GreaterThan
-    | GreaterThanOrEqual
-    | And
-    | Or
-    | TrueLiteral
-    | FalseLiteral
-    | Not
-    | Any
-    | All
-    | Contains
-    | StartsWith
-    | EndsWith
-;
-
-export abstract class FilterOperation extends Operation {
-    abstract op:
-        | "equal"
-        | "notEqual"
-        | "lessThan"
-        | "lessThanOrEqual"
-        | "greaterThan"
-        | "greaterThanOrEqual"
-        | "and"
-        | "or"
-        | "true"
-        | "false"
-        | "not"
-        | "any"
-        | "all"
-        | "contains"
-        | "startsWith"
-        | "endsWith"
-    ;
-}
-
 export type Operation_Union =
     | Field
     | StringLiteral
@@ -140,6 +100,46 @@ export abstract class Operation {
         | "sum"
         | "average"
         | "count"
+        | "equal"
+        | "notEqual"
+        | "lessThan"
+        | "lessThanOrEqual"
+        | "greaterThan"
+        | "greaterThanOrEqual"
+        | "and"
+        | "or"
+        | "true"
+        | "false"
+        | "not"
+        | "any"
+        | "all"
+        | "contains"
+        | "startsWith"
+        | "endsWith"
+    ;
+}
+
+export type FilterOperation_Union =
+    | Equal
+    | NotEqual
+    | LessThan
+    | LessThanOrEqual
+    | GreaterThan
+    | GreaterThanOrEqual
+    | And
+    | Or
+    | TrueLiteral
+    | FalseLiteral
+    | Not
+    | Any
+    | All
+    | Contains
+    | StartsWith
+    | EndsWith
+;
+
+export abstract class FilterOperation extends Operation {
+    abstract op:
         | "equal"
         | "notEqual"
         | "lessThan"

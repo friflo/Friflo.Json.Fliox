@@ -10,25 +10,29 @@ namespace Friflo.Json.Flow.Schema.Utils
 {
     public class EmitType
     {
-        public   readonly   Type            type;
+        public   readonly   Type                    type;
         /// the mapper assigned to the type
-        internal readonly   string          package;
+        internal readonly   string                  package;
 
         /// the piece of code to define the type
-        internal readonly   string          content;
+        internal readonly   string                  content;
         /// contain type imports directly used by this type / mapper. 
-        internal readonly   HashSet<Type>   imports;
+        internal readonly   HashSet<Type>           imports;
         
-        public   readonly   TypeSemantic    semantic;
+        internal readonly   ICollection<Type>       typeDependencies;
+        internal readonly   ICollection<EmitType>   emitDependencies = new List<EmitType>();
+        
+        public   readonly   TypeSemantic            semantic;
 
-        public   override   string          ToString() => type.Name;
+        public   override   string                  ToString() => type.Name;
 
-        public EmitType(Type type, TypeSemantic semantic, Generator generator, StringBuilder sb, HashSet<Type> imports) {
-            this.semantic   = semantic;
-            this.type       = type;
-            this.package    = generator.GetPackageName(type);
-            this.content    = sb.ToString();
-            this.imports    = imports;
+        public EmitType(Type type, TypeSemantic semantic, Generator generator, StringBuilder sb, HashSet<Type> imports, List<Type> dependencies = null) {
+            this.semantic           = semantic;
+            this.type               = type;
+            this.package            = generator.GetPackageName(type);
+            this.content            = sb.ToString();
+            this.imports            = imports;
+            this.typeDependencies   = dependencies ?? new List<Type>();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Friflo.Json.Flow.Schema.Utils
     // [Topological Sorting in C# - CodeProject] https://www.codeproject.com/articles/869059/topological-sorting-in-csharp
     public static class TopologicalSort
     {
-        public static IList<T> Sort<T>(IEnumerable<T> source, Func<T, IEnumerable<T>> getDependencies)
+        public static List<T> Sort<T>(IEnumerable<T> source, Func<T, IEnumerable<T>> getDependencies)
         {
             var sorted  = new List<T>();
             var visited = new Dictionary<T, bool>();

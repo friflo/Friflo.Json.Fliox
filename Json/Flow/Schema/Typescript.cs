@@ -34,6 +34,7 @@ namespace Friflo.Json.Flow.Schema
                 generator.AddEmitType(result);
             }
             generator.GroupTypesByPackage();
+            generator.SortPackageDependencies(); // otherwise possible error TS2449: Class '...' used before its declaration.
             EmitPackageHeaders(sb);
             // EmitPackageFooters(sb);  no TS footer
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}"); // $"{ns.Replace(".", "/")}{generator.extension}");
@@ -56,6 +57,7 @@ namespace Friflo.Json.Flow.Schema
                 return new EmitType(type, semantic, generator, sb, new HashSet<Type>());
             }
             if (mapper.IsComplex) {
+                var dependencies = new List<Type>();
                 var fields          = mapper.propFields.fields;
                 int maxFieldName    = fields.MaxLength(field => field.jsonName.Length);
                 
@@ -72,6 +74,7 @@ namespace Friflo.Json.Flow.Schema
                     if (baseMapper != null) {
                         extendsStr = $"extends {baseMapper.type.Name} ";
                         imports.Add(baseMapper.type);
+                        dependencies.Add(baseMapper.type);
                     }
                 }
                 var instanceFactory = mapper.InstanceFactory;
@@ -109,7 +112,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 sb.AppendLine("}");
                 sb.AppendLine();
-                return new EmitType(type, semantic, generator, sb, imports);
+                return new EmitType(type, semantic, generator, sb, imports, dependencies);
             }
             if (type.IsEnum) {
                 var enumValues = mapper.GetEnumValues();
