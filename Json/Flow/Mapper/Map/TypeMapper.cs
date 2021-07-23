@@ -25,8 +25,10 @@ namespace Friflo.Json.Flow.Mapper.Map
         internal            InstanceFactory instanceFactory;
         internal            string          discriminant;
 
-        public virtual      bool            IsComplex => false;
-        public virtual      bool            IsArray => false;
+        public              InstanceFactory InstanceFactory => instanceFactory;
+        public              string          Discriminant    => discriminant;
+        public virtual      bool            IsComplex       => false;
+        public virtual      bool            IsArray         => false;
         public virtual      int             Count(object array) => throw new InvalidOperationException("Count not applicable");
 
 

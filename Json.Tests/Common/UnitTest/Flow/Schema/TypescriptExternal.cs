@@ -10,15 +10,18 @@ using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Map.Val;
+using Friflo.Json.Flow.Schema;
 using Friflo.Json.Flow.Schema.Utils;
 
-namespace Friflo.Json.Flow.Schema
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 {
-    public class Typescript
+    /// The code generator is not used anywhere. Its purpose is only to ensure all required APIs are accessible.
+    /// It is a 1:1 copy of <see cref="Typescript"/>.
+    public class TypescriptExternal
     {
         public  readonly    Generator  generator;
 
-        public Typescript (TypeStore typeStore, string stripNamespace) {
+        public TypescriptExternal (TypeStore typeStore, string stripNamespace) {
             generator = new Generator(typeStore, stripNamespace, ".ts");
         }
         

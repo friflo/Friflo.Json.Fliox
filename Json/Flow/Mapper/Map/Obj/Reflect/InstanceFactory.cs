@@ -5,20 +5,22 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
 {
-    internal class PolyType
+    // Is public to support external schema / code generators
+    public class PolyType
     {
         internal PolyType(Type type, string name) {
             this.type = type;
             this.name = name;
         }
-        internal readonly Type   type;
-        internal readonly string name;
+        public   readonly Type   type;
+        public   readonly string name;
     }
 
-    internal class InstanceFactory {  // todo internal
-        internal readonly   string                          discriminator;
+    // Is public to support external schema / code generators
+    public class InstanceFactory {
+        public   readonly   string                          discriminator;
         private  readonly   Type                            instanceType;
-        internal readonly   PolyType[]                      polyTypes;
+        public   readonly   PolyType[]                      polyTypes;
         private             TypeMapper                      instanceMapper;
         private  readonly   Dictionary<string, TypeMapper>  polymorphMapper = new Dictionary<string, TypeMapper>();
 

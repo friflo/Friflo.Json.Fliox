@@ -69,13 +69,13 @@ namespace Friflo.Json.Flow.Schema
                 int maxFieldName    = fields.MaxLength(field => field.jsonName.Length);
                 
                 string  discriminator = null;
-                var     discriminant = mapper.discriminant;
+                var     discriminant = mapper.Discriminant;
                 if (discriminant != null) {
                     var baseMapper  = generator.GetPolymorphBaseMapper(type);
-                    discriminator   = baseMapper.instanceFactory.discriminator;
+                    discriminator   = baseMapper.InstanceFactory.discriminator;
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                 }
-                var instanceFactory = mapper.instanceFactory;
+                var instanceFactory = mapper.InstanceFactory;
                 sb.AppendLine($"        \"{type.Name}\": {{");
                 if (instanceFactory == null) {
                     sb.AppendLine($"            \"type\": \"object\",");

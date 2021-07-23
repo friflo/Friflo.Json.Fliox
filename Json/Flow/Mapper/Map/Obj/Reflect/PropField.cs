@@ -11,8 +11,8 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
 #endif
     public class PropField : IDisposable
     {
-        internal readonly   string          name;
-        internal readonly   string          jsonName;
+        public   readonly   string          name;
+        public   readonly   string          jsonName;
 
         // ReSharper disable once UnassignedReadonlyField
         // field ist set via reflection to enable using a readonly field
