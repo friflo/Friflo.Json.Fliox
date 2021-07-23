@@ -169,10 +169,15 @@ namespace Friflo.Json.Flow.Schema
             emitTypes.TryAdd(emit.type, emit);
         }
         
-        public void GroupTypesByPackage() {
-            foreach (var pair in emitTypes) {
-                EmitType    emit        = pair.Value;
-                var         packageName = emit.package;
+        public void GroupTypesByPackage(bool sortDependencies) {
+            ICollection<EmitType> emits;
+            if (sortDependencies) {
+                emits = SortDependencies();
+            } else {
+                emits = emitTypes.Values;
+            }
+            foreach (var emit in emits) {
+                var packageName = emit.package;
                 if (!packages.TryGetValue(packageName, out var package)) {
                     packages.Add(packageName, package = new Package(packageName));
                 }
@@ -187,7 +192,7 @@ namespace Friflo.Json.Flow.Schema
             }
         }
         
-        public void SortPackageDependencies() {
+        private ICollection<EmitType> SortDependencies() {
             foreach (var pair in emitTypes) {
                 var emitType = pair.Value;
                 foreach (var type in emitType.typeDependencies) {
@@ -195,12 +200,7 @@ namespace Friflo.Json.Flow.Schema
                     emitType.emitDependencies.Add(emitDependency);
                 }
             }
-            foreach (var pair in packages) {
-                Package     package = pair.Value;
-                var sorted = TopologicalSort.Sort(package.emitTypes, x => x.emitDependencies);
-                package.emitTypes.Clear();
-                package.emitTypes.AddRange(sorted);
-            }
+            return TopologicalSort.Sort(emitTypes.Values, x => x.emitDependencies);
         }
         
         public static void Delimiter (StringBuilder sb, string delimiter, ref bool first) {

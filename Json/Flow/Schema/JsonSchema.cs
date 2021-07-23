@@ -34,7 +34,7 @@ namespace Friflo.Json.Flow.Schema
                     continue;
                 generator.AddEmitType(result);
             }
-            generator.GroupTypesByPackage();
+            generator.GroupTypesByPackage(false);
             EmitPackageHeaders(sb);
             EmitPackageFooters(sb);
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}", Next); // $"{ns.Replace(".", "/")}.ts");

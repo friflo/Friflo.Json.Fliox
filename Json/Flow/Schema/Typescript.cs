@@ -33,8 +33,7 @@ namespace Friflo.Json.Flow.Schema
                     continue;
                 generator.AddEmitType(result);
             }
-            generator.GroupTypesByPackage();
-            generator.SortPackageDependencies(); // otherwise possible error TS2449: Class '...' used before its declaration.
+            generator.GroupTypesByPackage(true); // sort dependencies - otherwise possible error TS2449: Class '...' used before its declaration.
             EmitPackageHeaders(sb);
             // EmitPackageFooters(sb);  no TS footer
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}"); // $"{ns.Replace(".", "/")}{generator.extension}");
@@ -69,6 +68,7 @@ namespace Friflo.Json.Flow.Schema
                     discriminator   = baseMapper.InstanceFactory.discriminator;
                     extendsStr = $"extends {baseMapper.type.Name} ";
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
+                    dependencies.Add(baseMapper.type);
                 } else {
                     var baseMapper = generator.GetBaseMapper(type);
                     if (baseMapper != null) {
