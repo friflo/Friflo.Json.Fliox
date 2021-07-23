@@ -18,7 +18,7 @@ namespace Friflo.Json.Flow.Schema
     /// 
     /// It contains the configuration for schema generation and the result after schema generation was executed.
     /// The main configuration consists of the types to be generated and the file extension for generated files.
-    /// The result consists of the generated source available via <see cref="files"/>.
+    /// The result consists of the generated source <see cref="files"/>.
     /// The utility method <see cref="WriteFiles"/> enables writing these files to a folder.
     /// 
     /// <br></br>
@@ -44,6 +44,10 @@ namespace Friflo.Json.Flow.Schema
     ///   </item>
     ///   <item>
     ///     The implementation should be small similar to <see cref="Typescript"/> and <see cref="JsonSchema"/>
+    ///   </item>
+    ///   <item>
+    ///     The generated files (PocStore and Sync) must be committed to a folder in 'assets/Schema' and
+    ///     a lean setup should be added ensuring the generated files are valid / compile successful.
     ///   </item>
     /// </list>
     /// </summary>
