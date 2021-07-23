@@ -7,10 +7,15 @@ using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Schema
 {
+    /// <summary>
+    /// Utility class to generate a schema or code from the given rootTypes/>
+    /// Examples available at:
+    /// <see href="https://github.com/friflo/Friflo.Json.Flow/blob/main/Json.Tests/Common/UnitTest/Flow/Schema/GenerateSchema.cs"/>
+    /// </summary>
     public class GeneratorSchema
     {
         private readonly TypeStore typeStore;
-        
+
         public GeneratorSchema (TypeStore typeStore, ICollection<Type> rootTypes) {
             this.typeStore = typeStore;
             typeStore.AddMappers(rootTypes);
