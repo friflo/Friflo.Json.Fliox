@@ -59,7 +59,7 @@ namespace Friflo.Json.Flow.Schema
                 string  discriminator = null;
                 var     discriminant = mapper.Discriminant;
                 if (discriminant != null) {
-                    var baseMapper  = generator.GetPolymorphBaseMapper(type);
+                    var baseMapper  = generator.GetBaseMapper(type);
                     discriminator   = baseMapper.InstanceFactory.discriminator;
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                 }

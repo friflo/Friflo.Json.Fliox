@@ -146,10 +146,10 @@ namespace Friflo.Json.Flow.Schema
             return false;
         }
         
-        public TypeMapper GetPolymorphBaseMapper(Type type) {
+        public TypeMapper GetBaseMapper(Type type) {
             var baseType = type.BaseType;
             if (baseType == null)
-                throw new InvalidOperationException("");
+                return null;
             TypeMapper mapper;
             
             // When searching for polymorph base class there may be are classes in this hierarchy. E.g. BinaryBoolOp. 
@@ -157,7 +157,7 @@ namespace Friflo.Json.Flow.Schema
             while (!typeMappers.TryGetValue(baseType, out mapper)) {
                 baseType = baseType.BaseType;
                 if (baseType == null)
-                    throw new InvalidOperationException("");
+                    return null;
             }
             return mapper;
         }

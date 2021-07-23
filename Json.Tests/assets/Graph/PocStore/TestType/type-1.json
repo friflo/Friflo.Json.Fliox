@@ -19,5 +19,6 @@
     "intArray": [
     ],
     "intArrayNull": null,
-    "jsonValue": null
+    "jsonValue": null,
+    "derivedClass": null
 }

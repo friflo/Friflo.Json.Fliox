@@ -64,7 +64,7 @@ export class PocStruct {
     val  : number;
 }
 
-export class DerivedClass {
+export class DerivedClass extends OrderItem {
     derivedVal  : number;
 }
 

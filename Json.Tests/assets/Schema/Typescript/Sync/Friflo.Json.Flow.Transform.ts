@@ -56,7 +56,7 @@ export type FilterOperation_Union =
     | EndsWith
 ;
 
-export abstract class FilterOperation {
+export abstract class FilterOperation extends Operation {
     abstract op:
         | "equal"
         | "notEqual"
