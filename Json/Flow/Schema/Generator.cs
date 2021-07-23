@@ -218,12 +218,11 @@ namespace Friflo.Json.Flow.Schema
         /// Write the generated file to the given folder and remove all others file with the used <see cref="fileExt"/>
         /// </summary>
         public void WriteFiles(string folder) {
-            folder = folder.Replace('\\', '/');
+            folder = Path.GetFullPath (folder);
+            // folder = folder.Replace('\\', '/');
             Directory.CreateDirectory(folder);
             string[] fileNames = Directory.GetFiles(folder, $"*{fileExt}", SearchOption.TopDirectoryOnly);
-            for (int i = 0; i < fileNames.Length; i++) {
-                fileNames[i] = fileNames[i].Replace('\\', '/');
-            }
+            // for (int i = 0; i < fileNames.Length; i++) { fileNames[i] = fileNames[i].Replace('\\', '/'); }
             var fileSet = new HashSet<string>(fileNames);
             var utf8 = new UTF8Encoding(false);
             foreach (var file in files) {
