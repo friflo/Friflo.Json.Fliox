@@ -50,7 +50,7 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine("        \"BigInteger\": {");
                 sb.AppendLine("            \"type\": \"string\"");
                 sb.Append    ("        }");
-                return new EmitType(type, semantic, generator, sb, new HashSet<Type>());
+                return new EmitType(type, semantic, generator, sb);
             }
             if (mapper.IsComplex) {
                 var fields          = mapper.propFields.fields;
@@ -127,7 +127,7 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine();
                 sb.AppendLine("            ]");
                 sb.Append    ("        }");
-                return new EmitType(type, semantic, generator, sb, new HashSet<Type>());
+                return new EmitType(type, semantic, generator, sb);
             }
             return null;
         }

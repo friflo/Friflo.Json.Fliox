@@ -48,12 +48,12 @@ namespace Friflo.Json.Flow.Schema
             if (type == typeof(DateTime)) {
                 sb.AppendLine($"export type DateTime = string;");
                 sb.AppendLine();
-                return new EmitType(type, semantic, generator, sb, new HashSet<Type>());
+                return new EmitType(type, semantic, generator, sb);
             }
             if (type == typeof(BigInteger)) {
                 sb.AppendLine($"export type BigInteger = string;");
                 sb.AppendLine();
-                return new EmitType(type, semantic, generator, sb, new HashSet<Type>());
+                return new EmitType(type, semantic, generator, sb);
             }
             if (mapper.IsComplex) {
                 var dependencies = new List<Type>();
@@ -122,7 +122,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 sb.AppendLine($";");
                 sb.AppendLine();
-                return new EmitType(type, semantic, generator, sb, new HashSet<Type>());
+                return new EmitType(type, semantic, generator, sb);
             }
             return null;
         }
