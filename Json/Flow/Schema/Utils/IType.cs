@@ -13,16 +13,15 @@ namespace Friflo.Json.Flow.Schema.Utils
     
     public class NativeType : ITyp
     {
-        public readonly Type    native;
-        public readonly ITyp    baseType;
+        public   readonly   Type    native;
+        internal            ITyp    baseType;
         
-        public          string  Name      => native.Name;
-        public          string  Namespace => native.Namespace;
-        public          ITyp    BaseType  => baseType;
+        public              string  Name      => native.Name;
+        public              string  Namespace => native.Namespace;
+        public              ITyp    BaseType  => baseType;
         
-        public NativeType (Type type, ITyp baseType) {
+        public NativeType (Type type) {
             this.native     = type;
-            this.baseType   = baseType; 
         }
 
         public override bool Equals(object obj) {

@@ -2,12 +2,17 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Numerics;
+using Friflo.Json.Flow.Mapper.Map;
 
 namespace Friflo.Json.Flow.Schema.Utils
 {
     public interface ITypeSystem
     {
+        IReadOnlyDictionary<ITyp, TypeMapper> TypeMappers { get;}
+        
         ITyp   Boolean     { get; }
         ITyp   String      { get; }
         
@@ -25,18 +30,20 @@ namespace Friflo.Json.Flow.Schema.Utils
     
     public class NativeTypeSystem : ITypeSystem
     {
-        private readonly NativeType boolean     = new NativeType(typeof(bool),          null);
-        private readonly NativeType @string     = new NativeType(typeof(string),        null);
-        private readonly NativeType uint8       = new NativeType(typeof(byte),          null);
-        private readonly NativeType int16       = new NativeType(typeof(short),         null);
-        private readonly NativeType int32       = new NativeType(typeof(int),           null);
-        private readonly NativeType int64       = new NativeType(typeof(long),          null);
-        private readonly NativeType flt32       = new NativeType(typeof(float),         null);
-        private readonly NativeType flt64       = new NativeType(typeof(double),        null);
-        private readonly NativeType bigInteger  = new NativeType(typeof(BigInteger),    null);
-        private readonly NativeType dateTime    = new NativeType(typeof(DateTime),      null);
+        private readonly IReadOnlyDictionary<ITyp, TypeMapper> typeMappers;
         
-        
+        private readonly NativeType boolean;
+        private readonly NativeType @string;
+        private readonly NativeType uint8;
+        private readonly NativeType int16;
+        private readonly NativeType int32;
+        private readonly NativeType int64;
+        private readonly NativeType flt32;
+        private readonly NativeType flt64;
+        private readonly NativeType bigInteger;
+        private readonly NativeType dateTime;
+
+        public IReadOnlyDictionary<ITyp, TypeMapper> TypeMappers => typeMappers;
         public ITyp Boolean    => boolean;
         public ITyp String     => @string;
         public ITyp Unit8      => uint8;
@@ -47,5 +54,32 @@ namespace Friflo.Json.Flow.Schema.Utils
         public ITyp Double     => flt64;
         public ITyp BigInteger => bigInteger;
         public ITyp DateTime   => dateTime;
+        
+        public NativeTypeSystem (IReadOnlyDictionary<Type, TypeMapper> typeMappers) {
+            var nativeMap   = new Dictionary<Type, NativeType>(typeMappers.Count);
+            var map         = new Dictionary<ITyp, TypeMapper>(typeMappers.Count);
+            foreach (var pair in typeMappers) {
+                var type    = pair.Key; 
+                var mapper  = pair.Value;
+                var iTyp = new NativeType(type);
+                map.      Add(iTyp, mapper);
+                nativeMap.Add(type, iTyp);
+            }
+            this.typeMappers = new ReadOnlyDictionary<ITyp, TypeMapper>(map);
+            boolean     = nativeMap[typeof(bool)];
+            @string     = nativeMap[typeof(string)];
+            uint8       = nativeMap[typeof(byte)];
+            int16       = nativeMap[typeof(short)];
+            int32       = nativeMap[typeof(int)];
+            int64       = nativeMap[typeof(long)];
+            flt32       = nativeMap[typeof(float)];
+            flt64       = nativeMap[typeof(double)];
+            bigInteger  = nativeMap[typeof(BigInteger)];
+            dateTime    = nativeMap[typeof(DateTime)];
+            foreach (var pair in nativeMap) {
+                var type  = pair.Value;
+                type.baseType = nativeMap[type.native].BaseType;
+            }
+        }
     }
 }
