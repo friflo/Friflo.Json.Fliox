@@ -45,11 +45,12 @@ namespace Friflo.Json.Flow.Schema.Utils.Mapper
             var map     = new Dictionary<ITyp, TypeMapper>(typeMappers.Count);
             foreach (var pair in typeMappers) {
                 TypeMapper  mapper  = pair.Value;
-                mapper              = mapper.GetUnderlyingMapper();
-                Type type           = mapper.type;        
-                var         iTyp    = new NativeType(mapper);
-                map.      Add(iTyp, mapper);
-                nativeMap.Add(type, iTyp);
+                var underMapper     = mapper.GetUnderlyingMapper();
+                Type type           = underMapper.type;        
+                var  iTyp           = new NativeType(underMapper);
+                if (!nativeMap.TryAdd(type, iTyp))
+                    continue;
+                map.      TryAdd(iTyp, underMapper);
             }
             this.types = map.Keys;
             nativeMap.TryGetValue(typeof(bool),         out boolean);
@@ -84,16 +85,18 @@ namespace Friflo.Json.Flow.Schema.Utils.Mapper
                 TypeMapper  mapper  = type.mapper;
                 var elementMapper = mapper.GetElementMapper();
                 if (elementMapper != null) {
-                    type.ElementType    = nativeMap[mapper.GetElementMapper().type];
+                    elementMapper = elementMapper.GetUnderlyingMapper();
+                    type.ElementType    = nativeMap[elementMapper.type];
                 }
                 var  propFields = mapper.propFields;
                 if (propFields != null) {
                     type.fields = new List<Field>(propFields.fields.Length);
                     foreach (var propField in propFields.fields) {
+                        var fieldMapper = propField.fieldType.GetUnderlyingMapper();
                         var field = new Field {
                             jsonName    = propField.jsonName,
                             required    = propField.required,
-                            fieldType   = nativeMap[propField.fieldType.type]
+                            fieldType   = nativeMap[fieldMapper.type]
                         };
                         type.Fields.Add(field);
                     }
