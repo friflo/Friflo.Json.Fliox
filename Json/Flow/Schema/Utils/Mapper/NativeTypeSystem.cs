@@ -9,29 +9,6 @@ using Friflo.Json.Flow.Mapper.Map.Val;
 
 namespace Friflo.Json.Flow.Schema.Utils.Mapper
 {
-    public interface ITypeSystem
-    {
-        ICollection<ITyp> Types { get;}
-        
-        ITyp   Boolean     { get; }
-        ITyp   String      { get; }
-        
-        ITyp   Unit8       { get; }
-        ITyp   Int16       { get; }
-        ITyp   Int32       { get; }
-        ITyp   Int64       { get; }
-        
-        ITyp   Float       { get; }
-        ITyp   Double      { get; }
-        
-        ITyp   BigInteger  { get; }
-        ITyp   DateTime    { get; }
-        
-        ITyp   JsonValue   { get; }
-        
-        ICollection<ITyp> GetTypes(ICollection<Type> separateTypes);
-    }
-    
     public class NativeTypeSystem : ITypeSystem
     {
         private  readonly   ICollection<ITyp> types;
