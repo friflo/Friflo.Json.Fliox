@@ -46,6 +46,12 @@ namespace Friflo.Json.Flow.Schema
             var context = new TypeContext (generator, imports, mapper);
             mapper      = mapper.GetUnderlyingMapper();
             var type    = Generator.GetType(mapper);
+            if (type == typeof(DateTime)) {
+                sb.AppendLine("        \"DateTime\": {");
+                sb.AppendLine("            \"type\": \"string\", \"format\": \"date-time\"");
+                sb.Append    ("        }");
+                return new EmitType(type, semantic, generator, sb);
+            }
             if (type == typeof(BigInteger)) {
                 sb.AppendLine("        \"BigInteger\": {");
                 sb.AppendLine("            \"type\": \"string\"");
@@ -142,9 +148,6 @@ namespace Friflo.Json.Flow.Schema
             }
             if (type == typeof(string)) {
                 return $"\"type\": {Opt(isOptional, "string")}";
-            }
-            if (type == typeof(DateTime)) {
-                return $"\"type\": {Opt(isOptional, "string")}, \"format\": \"date-time\"";
             }
             if (type == typeof(bool)) {
                 return "\"type\": \"boolean\"";

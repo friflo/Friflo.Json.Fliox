@@ -7,8 +7,8 @@
             "type": "object",
             "properties": {
                 "id":            { "type": "string" },
-                "dateTime":      { "type": "string", "format": "date-time" },
-                "dateTimeNull":  { "type": ["string", "null"], "format": "date-time" },
+                "dateTime":      { "$ref": "./Standard.json#/definitions/DateTime" },
+                "dateTimeNull":  { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/DateTime" }] },
                 "bigInt":        { "$ref": "./Standard.json#/definitions/BigInteger" },
                 "bigIntNull":    { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/BigInteger" }] },
                 "uint8":         { "type": "number" },
