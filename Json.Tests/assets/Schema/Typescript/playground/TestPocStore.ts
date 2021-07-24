@@ -21,6 +21,7 @@ var exampleOrder: Order = {
 }
 
 var exampleDerivedClass: DerivedClass = {
+    article: "DerivedClass",
     amount:     1, // ensure access to derived property
     derivedVal: 2
 }

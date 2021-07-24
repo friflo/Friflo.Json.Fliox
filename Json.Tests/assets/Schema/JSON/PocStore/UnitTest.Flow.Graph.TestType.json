@@ -6,25 +6,26 @@
         "TestType": {
             "type": "object",
             "properties": {
-                "id":            { "type": "string" },
-                "dateTime":      { "$ref": "./Standard.json#/definitions/DateTime" },
-                "dateTimeNull":  { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/DateTime" }] },
-                "bigInt":        { "$ref": "./Standard.json#/definitions/BigInteger" },
-                "bigIntNull":    { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/BigInteger" }] },
-                "uint8":         { "$ref": "./Standard.json#/definitions/uint8" },
-                "uint8Null":     { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/uint8" }] },
-                "int16":         { "$ref": "./Standard.json#/definitions/int16" },
-                "int16Null":     { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int16" }] },
-                "int32":         { "$ref": "./Standard.json#/definitions/int32" },
-                "int32Null":     { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
-                "int64":         { "$ref": "./Standard.json#/definitions/int64" },
-                "int64Null":     { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int64" }] },
-                "pocStruct":     { "$ref": "./UnitTest.Flow.Graph.json#/definitions/PocStruct" },
-                "pocStructNull": { "oneOf": [{"type": "null"}, { "$ref": "./UnitTest.Flow.Graph.json#/definitions/PocStruct" }] },
-                "intArray":      { "type": "array", "items": { "$ref": "./Standard.json#/definitions/int32" } },
-                "intArrayNull":  { "type": ["array", "null"], "items": { "$ref": "./Standard.json#/definitions/int32" } },
-                "jsonValue":     {  },
-                "derivedClass":  { "oneOf": [{"type": "null"}, { "$ref": "./UnitTest.Flow.Graph.json#/definitions/DerivedClass" }] }
+                "id":               { "type": "string" },
+                "dateTime":         { "$ref": "./Standard.json#/definitions/DateTime" },
+                "dateTimeNull":     { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/DateTime" }] },
+                "bigInt":           { "$ref": "./Standard.json#/definitions/BigInteger" },
+                "bigIntNull":       { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/BigInteger" }] },
+                "uint8":            { "$ref": "./Standard.json#/definitions/uint8" },
+                "uint8Null":        { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/uint8" }] },
+                "int16":            { "$ref": "./Standard.json#/definitions/int16" },
+                "int16Null":        { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int16" }] },
+                "int32":            { "$ref": "./Standard.json#/definitions/int32" },
+                "int32Null":        { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
+                "int64":            { "$ref": "./Standard.json#/definitions/int64" },
+                "int64Null":        { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int64" }] },
+                "pocStruct":        { "$ref": "./UnitTest.Flow.Graph.json#/definitions/PocStruct" },
+                "pocStructNull":    { "oneOf": [{"type": "null"}, { "$ref": "./UnitTest.Flow.Graph.json#/definitions/PocStruct" }] },
+                "intArray":         { "type": "array", "items": { "$ref": "./Standard.json#/definitions/int32" } },
+                "intArrayNull":     { "type": ["array", "null"], "items": { "$ref": "./Standard.json#/definitions/int32" } },
+                "jsonValue":        {  },
+                "derivedClass":     { "$ref": "./UnitTest.Flow.Graph.json#/definitions/DerivedClass" },
+                "derivedClassNull": { "oneOf": [{"type": "null"}, { "$ref": "./UnitTest.Flow.Graph.json#/definitions/DerivedClass" }] }
             },
             "required": [
                 "id",
@@ -36,7 +37,8 @@
                 "int64",
                 "pocStruct",
                 "intArray",
-                "jsonValue"
+                "jsonValue",
+                "derivedClass"
             ],
             "additionalProperties": false
         }

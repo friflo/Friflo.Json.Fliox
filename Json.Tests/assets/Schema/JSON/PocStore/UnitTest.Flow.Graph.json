@@ -5,11 +5,12 @@
         "OrderItem": {
             "type": "object",
             "properties": {
-                "article": { "type": ["string", "null"] },
+                "article": { "type": "string" },
                 "amount":  { "$ref": "./Standard.json#/definitions/int32" },
                 "name":    { "type": ["string", "null"] }
             },
             "required": [
+                "article",
                 "amount"
             ],
             "additionalProperties": false
@@ -28,12 +29,13 @@
             "type": "object",
             "properties": {
                 "derivedVal": { "$ref": "./Standard.json#/definitions/int32" },
-                "article":    { "type": ["string", "null"] },
+                "article":    { "type": "string" },
                 "amount":     { "$ref": "./Standard.json#/definitions/int32" },
                 "name":       { "type": ["string", "null"] }
             },
             "required": [
                 "derivedVal",
+                "article",
                 "amount"
             ],
             "additionalProperties": false

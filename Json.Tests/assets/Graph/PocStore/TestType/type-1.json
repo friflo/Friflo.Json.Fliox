@@ -20,5 +20,11 @@
     ],
     "intArrayNull": null,
     "jsonValue": null,
-    "derivedClass": null
+    "derivedClass": {
+        "derivedVal": 0,
+        "article": "article-1",
+        "amount": 0,
+        "name": null
+    },
+    "derivedClassNull": null
 }

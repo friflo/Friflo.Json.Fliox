@@ -7,11 +7,12 @@
             "type": "object",
             "properties": {
                 "id":        { "type": "string" },
-                "firstName": { "type": ["string", "null"] },
+                "firstName": { "type": "string" },
                 "lastName":  { "type": ["string", "null"] }
             },
             "required": [
-                "id"
+                "id",
+                "firstName"
             ],
             "additionalProperties": false
         }

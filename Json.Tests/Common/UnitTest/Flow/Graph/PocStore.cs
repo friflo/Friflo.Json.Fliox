@@ -19,6 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     }
 
     public class OrderItem {
+        [Fri.Property(Required = true)]
         public  Ref<Article>        article;
         public  int                 amount;
         public  string              name;
@@ -26,21 +27,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
     public class Article : Entity
     {
+        [Fri.Property(Required = true)]
         public  string              name;
         public  Ref<Producer>       producer;
     }
 
     public class Customer : Entity {
+        [Fri.Property(Required = true)]
         public  string              name;
     }
     
     public class Producer : Entity {
+        [Fri.Property(Required = true)]
         public  string              name;
         [Fri.Property(Name = "employees")]
         public  List<Ref<Employee>> employeeList;
     }
     
     public class Employee : Entity {
+        [Fri.Property(Required = true)]
         public  string              firstName;
         public  string              lastName;
     }
@@ -72,7 +77,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         public  JsonValue           jsonValue;
         
+        [Fri.Property(Required = true)]
         public  DerivedClass        derivedClass;
+        public  DerivedClass        derivedClassNull;
     }
     
     public struct PocStruct {

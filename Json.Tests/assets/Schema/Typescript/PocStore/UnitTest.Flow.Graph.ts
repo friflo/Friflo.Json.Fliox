@@ -14,54 +14,55 @@ export class Order {
 }
 
 export class OrderItem {
-    article? : string | null;
+    article  : string;
     amount   : int32;
     name?    : string | null;
 }
 
 export class Customer {
     id    : string;
-    name? : string | null;
+    name  : string;
 }
 
 export class Article {
     id        : string;
-    name?     : string | null;
+    name      : string;
     producer? : string | null;
 }
 
 export class Producer {
     id         : string;
-    name?      : string | null;
+    name       : string;
     employees? : string[] | null;
 }
 
 export class Employee {
     id         : string;
-    firstName? : string | null;
+    firstName  : string;
     lastName?  : string | null;
 }
 
 export class TestType {
-    id             : string;
-    dateTime       : DateTime;
-    dateTimeNull?  : DateTime | null;
-    bigInt         : BigInteger;
-    bigIntNull?    : BigInteger | null;
-    uint8          : uint8;
-    uint8Null?     : uint8 | null;
-    int16          : int16;
-    int16Null?     : int16 | null;
-    int32          : int32;
-    int32Null?     : int32 | null;
-    int64          : int64;
-    int64Null?     : int64 | null;
-    pocStruct      : PocStruct;
-    pocStructNull? : PocStruct | null;
-    intArray       : int32[];
-    intArrayNull?  : int32[] | null;
-    jsonValue      : {} | null;
-    derivedClass?  : DerivedClass | null;
+    id                : string;
+    dateTime          : DateTime;
+    dateTimeNull?     : DateTime | null;
+    bigInt            : BigInteger;
+    bigIntNull?       : BigInteger | null;
+    uint8             : uint8;
+    uint8Null?        : uint8 | null;
+    int16             : int16;
+    int16Null?        : int16 | null;
+    int32             : int32;
+    int32Null?        : int32 | null;
+    int64             : int64;
+    int64Null?        : int64 | null;
+    pocStruct         : PocStruct;
+    pocStructNull?    : PocStruct | null;
+    intArray          : int32[];
+    intArrayNull?     : int32[] | null;
+    jsonValue         : {} | null;
+    derivedClass      : DerivedClass;
+    derivedClassNull? : DerivedClass | null;
 }
 
 export class PocStruct {

@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Graph;
 using static NUnit.Framework.Assert;
@@ -63,9 +62,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var canon           = new Producer { id = "producer-canon", name = "Canon"};
             var createCanon     = producers.Create(canon);
             var order           = new Order { id = "order-1", created = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc)};
-            var type1           = new TestType { id = "type-1", dateTime = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc), bigIntNull = null };
             var cameraCreate    = new Article { id = "article-1", name = "Camera", producer = canon };
             var notebook        = new Article { id = "article-3", name = "Notebook", producer = samsung };
+            var derivedClass    = new DerivedClass{ article = cameraCreate };
+            var type1           = new TestType { id = "type-1", dateTime = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc), derivedClass = derivedClass };
             var createCam1      = articles.Create(cameraCreate);
                                   articles.Create(notebook);
             var createCam2      = articles.Create(cameraCreate);   // Create new CreateTask for same entity
