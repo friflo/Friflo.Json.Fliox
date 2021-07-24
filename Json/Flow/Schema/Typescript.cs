@@ -195,7 +195,7 @@ namespace Friflo.Json.Flow.Schema
             context.imports.Add(type);
             if (context.generator.IsUnionType(type))
                 return $"{type.Name}_Union";
-            return type.Name;
+            return Generator.GetTypeName(type);
         }
         
         private void EmitPackageHeaders(StringBuilder sb) {
@@ -210,7 +210,7 @@ namespace Friflo.Json.Flow.Schema
                     var import = importPair.Value;
                     if (import.package == packageName)
                         continue;
-                    var typeName = import.type.Name;
+                    var typeName = Generator.GetTypeName(import.type);
                     var indent = Generator.Indent(max, typeName);
                     sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.package}\"");
                     if (generator.IsUnionType(import.type)) {

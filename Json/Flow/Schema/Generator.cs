@@ -109,7 +109,7 @@ namespace Friflo.Json.Flow.Schema
         public string GetPackageName (Type type) {
             if (packageCache.TryGetValue(type, out var packageName))
                 return packageName;
-            if (StandardTypes.Contains(type)) {
+            if (StandardTypes.ContainsKey(type)) {
                 packageName = "Standard";
             } else {
                 packageName = getPackageName(type);
@@ -119,17 +119,23 @@ namespace Friflo.Json.Flow.Schema
             return packageName;
         }
         
-        private static readonly List<Type> StandardTypes = new List<Type> {
-            typeof(byte),
-            typeof(short),
-            typeof(int),
-            typeof(long),
+        public static string GetTypeName (Type type) {
+            if (StandardTypes.TryGetValue(type, out string typeName))
+                return typeName;
+            return type.Name;
+        }
+        
+        private static readonly Dictionary<Type, string> StandardTypes = new Dictionary<Type, string> {
+            { typeof(byte),         "uint8" },
+            { typeof(short),        "int16" },
+            { typeof(int),          "int32" },
+            { typeof(long),         "int64" },
             
-            typeof(double),
-            typeof(float),
+            { typeof(double),       "double" },
+            { typeof(float),        "float" },
             
-            typeof(BigInteger),
-            typeof(DateTime)
+            { typeof(BigInteger),   "BigInteger" },
+            { typeof(DateTime),     "DateTime" }
         }; 
         
         /// <summary>
