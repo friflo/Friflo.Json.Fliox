@@ -119,13 +119,13 @@ namespace Friflo.Json.Flow.Schema
             return packageName;
         }
         
-        public static string GetTypeName (Type type) {
+        public string GetTypeName (Type type) {
             if (StandardTypes.TryGetValue(type, out string typeName))
                 return typeName;
             return type.Name;
         }
         
-        private static readonly Dictionary<Type, string> StandardTypes = new Dictionary<Type, string> {
+        private readonly Dictionary<Type, string> StandardTypes = new Dictionary<Type, string> {
             { typeof(byte),         "uint8" },
             { typeof(short),        "int16" },
             { typeof(int),          "int32" },

@@ -39,7 +39,7 @@ namespace Friflo.Json.Flow.Schema
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}"); // $"{ns.Replace(".", "/")}{generator.extension}");
         }
         
-        private static readonly Dictionary<Type, string> StandardTypes = new Dictionary<Type, string> {
+        private readonly Dictionary<Type, string> standardTypes = new Dictionary<Type, string> {
             { typeof(byte),         "uint8 = number" },
             { typeof(short),        "int16 = number" },
             { typeof(int),          "int32 = number" },
@@ -52,8 +52,8 @@ namespace Friflo.Json.Flow.Schema
             { typeof(DateTime),     "DateTime = string" }
         }; 
 
-        private static EmitType EmitStandardType(Type type, StringBuilder sb, Generator generator) {
-            if (!StandardTypes.TryGetValue(type, out var definition))
+        private EmitType EmitStandardType(Type type, StringBuilder sb, Generator generator) {
+            if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
             sb.Append("export type ");
             sb.Append(definition);
@@ -144,8 +144,7 @@ namespace Friflo.Json.Flow.Schema
             return null;
         }
         
-        // Note: static by intention
-        private static string GetFieldType(TypeMapper mapper, TypeContext context, ref bool isOptional) {
+        private string GetFieldType(TypeMapper mapper, TypeContext context, ref bool isOptional) {
             mapper      = mapper.GetUnderlyingMapper();
             isOptional  = isOptional && mapper.isNullable;
             var type    = Generator.GetType(mapper);
@@ -174,7 +173,7 @@ namespace Friflo.Json.Flow.Schema
             context.imports.Add(type);
             if (context.generator.IsUnionType(type))
                 return $"{type.Name}_Union";
-            return Generator.GetTypeName(type);
+            return generator.GetTypeName(type);
         }
         
         private void EmitPackageHeaders(StringBuilder sb) {
@@ -189,7 +188,7 @@ namespace Friflo.Json.Flow.Schema
                     var import = importPair.Value;
                     if (import.package == packageName)
                         continue;
-                    var typeName = Generator.GetTypeName(import.type);
+                    var typeName = generator.GetTypeName(import.type);
                     var indent = Generator.Indent(max, typeName);
                     sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.package}\"");
                     if (generator.IsUnionType(import.type)) {

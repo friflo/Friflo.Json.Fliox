@@ -40,7 +40,7 @@ namespace Friflo.Json.Flow.Schema
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}", Next); // $"{ns.Replace(".", "/")}.ts");
         }
         
-        private static readonly Dictionary<Type, string> StandardTypes = new Dictionary<Type, string> {
+        private readonly Dictionary<Type, string> standardTypes = new Dictionary<Type, string> {
             { typeof(byte),         "\"type\": \"number\", \"minimum\": 0, \"maximum\": 255" },
             { typeof(short),        "\"type\": \"number\", \"minimum\": -32768, \"maximum\": 32767" },
             { typeof(int),          "\"type\": \"number\", \"minimum\": -2147483648, \"maximum\": 2147483647" },
@@ -53,10 +53,10 @@ namespace Friflo.Json.Flow.Schema
             { typeof(DateTime),     "\"type\": \"string\", \"format\": \"date-time\"" }
         }; 
         
-        private static EmitType EmitStandardType(Type type, StringBuilder sb, Generator generator) {
-            if (!StandardTypes.TryGetValue(type, out var definition))
+        private EmitType EmitStandardType(Type type, StringBuilder sb, Generator generator) {
+            if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
-            var typeName = Generator.GetTypeName(type);
+            var typeName = generator.GetTypeName(type);
             sb.AppendLine($"        \"{typeName}\": {{");
             sb.AppendLine($"            {definition}");
             sb.Append    ( "        }");
@@ -213,10 +213,10 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private static string Ref(Type type, bool isOptional, TypeContext context) {
-            var name = Generator.GetTypeName(type);
+            var generator       = context.generator;
+            var name = context.generator.GetTypeName(type);
             // if (generator.IsUnionType(type))
             //    name = $"{type.Name}_Union";
-            var generator       = context.generator;
             var typePackage     = generator.GetPackageName(type);
             var ownerPackage    = generator.GetPackageName(context.owner.type);
             bool samePackage    = typePackage == ownerPackage;
