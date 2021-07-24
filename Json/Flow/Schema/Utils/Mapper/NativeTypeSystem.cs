@@ -26,6 +26,7 @@ namespace Friflo.Json.Flow.Schema.Utils.Mapper
         private  readonly   NativeType  jsonValue;
 
         public              ICollection<ITyp>               Types => types;
+        /// Contains only non nullable Type's
         private  readonly   Dictionary<Type, NativeType>    nativeMap;
         
         public              ITyp    Boolean    => boolean;
@@ -46,14 +47,13 @@ namespace Friflo.Json.Flow.Schema.Utils.Mapper
             foreach (var pair in typeMappers) {
                 TypeMapper  mapper  = pair.Value;
                 var underMapper     = mapper.GetUnderlyingMapper();
-                Type type           = underMapper.type;
-                /* if (underMapper.isNullable && underMapper.nullableUnderlyingType != null) {
-                    type = mapper.nullableUnderlyingType;
-                } */
-                var  iTyp           = new NativeType(underMapper);
-                if (!nativeMap.TryAdd(type, iTyp))
+                IsNullableMapper(typeMappers, underMapper, out var nonNullableMapper);
+                Type type           = nonNullableMapper.type;
+                if (nativeMap.ContainsKey(type))
                     continue;
-                map.      TryAdd(iTyp, underMapper);
+                var  iTyp           = new NativeType(underMapper);
+                nativeMap.Add(type, iTyp);
+                map.      Add(iTyp, underMapper);
             }
             this.types = map.Keys;
             nativeMap.TryGetValue(typeof(bool),         out boolean);
@@ -96,10 +96,11 @@ namespace Friflo.Json.Flow.Schema.Utils.Mapper
                     type.fields = new List<Field>(propFields.fields.Length);
                     foreach (var propField in propFields.fields) {
                         var fieldMapper = propField.fieldType.GetUnderlyingMapper();
+                        var isNullable = IsNullableMapper(typeMappers, fieldMapper, out var nonNullableMapper);
                         var field = new Field {
                             jsonName    = propField.jsonName,
-                            required    = propField.required,
-                            fieldType   = nativeMap[fieldMapper.type]
+                            required    = propField.required || !isNullable,
+                            fieldType   = nativeMap[nonNullableMapper.type]
                         };
                         type.Fields.Add(field);
                     }
@@ -118,6 +119,17 @@ namespace Friflo.Json.Flow.Schema.Utils.Mapper
                     }
                 }
             }
+        }
+   
+        private static bool IsNullableMapper(IReadOnlyDictionary<Type, TypeMapper> typeMappers, TypeMapper mapper, out TypeMapper nonNullableMapper) {
+            var isNullable = mapper.isNullable;
+            if (isNullable && mapper.nullableUnderlyingType != null) {
+                var type = mapper.nullableUnderlyingType;
+                nonNullableMapper = typeMappers[type];
+                return true;
+            }
+            nonNullableMapper = mapper;
+            return isNullable;
         }
         
         public ICollection<ITyp> GetTypes(ICollection<Type> nativeTypes) {

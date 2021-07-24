@@ -125,7 +125,7 @@ namespace Friflo.Json.Flow.Schema
                     if (type.IsDerivedField(field))
                         continue;
                     bool isOptional = !field.required;
-                    var fieldType = GetFieldType(field.fieldType, context, ref isOptional);
+                    var fieldType = GetFieldType(field.fieldType, context);
                     var indent = Indent(maxFieldName, field.jsonName);
                     var optStr = isOptional ? "?" : " ";
                     var nullStr = isOptional ? " | null" : "";
@@ -148,9 +148,8 @@ namespace Friflo.Json.Flow.Schema
             return null;
         }
         
-        private string GetFieldType(ITyp type, TypeContext context, ref bool isOptional) {
+        private string GetFieldType(ITyp type, TypeContext context) {
             var system  = context.generator.system;
-            isOptional  = isOptional && type.IsNullable;
             // mapper      = mapper.GetUnderlyingMapper();
             // var type    = Generator.GetType(mapper);
             if (type == system.JsonValue) {
@@ -164,15 +163,13 @@ namespace Friflo.Json.Flow.Schema
             }
             if (type.IsArray) {
                 var elementMapper = type.ElementType;
-                var isOpt = false;
-                var elementTypeName = GetFieldType(elementMapper, context, ref isOpt);
+                var elementTypeName = GetFieldType(elementMapper, context);
                 return $"{elementTypeName}[]";
             }
             var isDictionary = type.IsDictionary;
             if (isDictionary) {
                 var valueMapper = type.ElementType;
-                var isOpt = false;
-                var valueTypeName = GetFieldType(valueMapper, context, ref isOpt);
+                var valueTypeName = GetFieldType(valueMapper, context);
                 return $"{{ [key: string]: {valueTypeName} }}";
             }
             context.imports.Add(type);

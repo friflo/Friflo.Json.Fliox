@@ -118,7 +118,7 @@ namespace Friflo.Json.Flow.Schema
                     // if (generator.IsDerivedField(type, field))  JSON Schema list all properties
                     //    continue;
                     bool isOptional = !field.required;
-                    var fieldType = GetFieldType(field.fieldType, context, ref isOptional);
+                    var fieldType = GetFieldType(field.fieldType, context, isOptional);
                     var indent = Indent(maxFieldName, field.jsonName);
                     if (!isOptional)
                         requiredFields.Add(field.jsonName);
@@ -160,9 +160,8 @@ namespace Friflo.Json.Flow.Schema
         }
         
         // Note: static by intention
-        private static string GetFieldType(ITyp type, TypeContext context, ref bool isOptional) {
+        private static string GetFieldType(ITyp type, TypeContext context, bool isOptional) {
             var system  = context.generator.system;
-            isOptional  = isOptional && type.IsNullable;
             // mapper      = mapper.GetUnderlyingMapper();
             // var type    = Generator.GetType(mapper);
             if (type == system.JsonValue) {
@@ -176,15 +175,13 @@ namespace Friflo.Json.Flow.Schema
             }
             if (type.IsArray) {
                 var elementMapper = type.ElementType;
-                bool isOpt = false;
-                var elementTypeName = GetFieldType(elementMapper, context, ref isOpt);
+                var elementTypeName = GetFieldType(elementMapper, context, false);
                 return $"\"type\": {Opt(isOptional, "array")}, \"items\": {{ {elementTypeName} }}";
             }
             var isDictionary = type.IsDictionary;
             if (isDictionary) {
                 var valueMapper = type.ElementType;
-                bool isOpt = false;
-                var valueTypeName = GetFieldType(valueMapper, context, ref isOpt);
+                var valueTypeName = GetFieldType(valueMapper, context, false);
                 return $"\"type\": \"object\", \"additionalProperties\": {{ {valueTypeName} }}";
             }
             context.imports.Add(type);
