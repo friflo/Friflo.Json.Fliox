@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Schema
             { typeof(double),       "\"type\": \"number\"" },
             { typeof(float),        "\"type\": \"number\"" },
             
-            { typeof(BigInteger),   "\"type\": \"string\"" },
+            { typeof(BigInteger),   "\"type\": \"string\", \"pattern\": \"^-?[0-9]+$\"" }, // https://www.regextester.com/
             { typeof(DateTime),     "\"type\": \"string\", \"format\": \"date-time\"" }
         }; 
         

@@ -9,7 +9,7 @@
             "type": "number", "minimum": -2147483648, "maximum": 2147483647
         },
         "BigInteger": {
-            "type": "string"
+            "type": "string", "pattern": "^-?[0-9]+$"
         },
         "uint8": {
             "type": "number", "minimum": 0, "maximum": 255
