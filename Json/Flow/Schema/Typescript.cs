@@ -38,49 +38,28 @@ namespace Friflo.Json.Flow.Schema
             // EmitPackageFooters(sb);  no TS footer
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}"); // $"{ns.Replace(".", "/")}{generator.extension}");
         }
+        
+        private static readonly Dictionary<Type, string> StandardTypes = new Dictionary<Type, string> {
+            { typeof(byte),         "uint8 = number" },
+            { typeof(short),        "int16 = number" },
+            { typeof(int),          "int32 = number" },
+            { typeof(long),         "int64 = number" },
+            
+            { typeof(double),       "double = number" },
+            { typeof(float),        "float = number" },
+            
+            { typeof(BigInteger),   "BigInteger = string" },
+            { typeof(DateTime),     "DateTime = string" }
+        }; 
 
         private static EmitType EmitStandardType(Type type, StringBuilder sb, Generator generator) {
-            if (type == typeof(byte)) {
-                sb.AppendLine($"export type uint8 = number;");
-                sb.AppendLine();
-                return new EmitType(type, TypeSemantic.None, generator, sb);
-            }
-            if (type == typeof(short)) {
-                sb.AppendLine($"export type int16 = number;");
-                sb.AppendLine();
-                return new EmitType(type, TypeSemantic.None, generator, sb);
-            }
-            if (type == typeof(int)) {
-                sb.AppendLine($"export type int32 = number;");
-                sb.AppendLine();
-                return new EmitType(type, TypeSemantic.None, generator, sb);
-            }
-            if (type == typeof(long)) {
-                sb.AppendLine($"export type int64 = number;");
-                sb.AppendLine();
-                return new EmitType(type, TypeSemantic.None, generator, sb);
-            }
-            if (type == typeof(float)) {
-                sb.AppendLine($"export type float = number;");
-                sb.AppendLine();
-                return new EmitType(type, TypeSemantic.None, generator, sb);
-            }
-            if (type == typeof(double)) {
-                sb.AppendLine($"export type double = number;");
-                sb.AppendLine();
-                return new EmitType(type, TypeSemantic.None, generator, sb);
-            }
-            if (type == typeof(DateTime)) {
-                sb.AppendLine($"export type DateTime = string;");
-                sb.AppendLine();
-                return new EmitType(type, TypeSemantic.None, generator, sb);
-            }
-            if (type == typeof(BigInteger)) {
-                sb.AppendLine($"export type BigInteger = string;");
-                sb.AppendLine();
-                return new EmitType(type, TypeSemantic.None, generator, sb);
-            }
-            return null;
+            if (!StandardTypes.TryGetValue(type, out var definition))
+                return null;
+            sb.Append("export type ");
+            sb.Append(definition);
+            sb.AppendLine(";");
+            sb.AppendLine();
+            return new EmitType(type, TypeSemantic.None, generator, sb);
         }
         
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {

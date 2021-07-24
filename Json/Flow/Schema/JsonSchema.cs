@@ -40,56 +40,27 @@ namespace Friflo.Json.Flow.Schema
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}", Next); // $"{ns.Replace(".", "/")}.ts");
         }
         
+        private static readonly Dictionary<Type, string> StandardTypes = new Dictionary<Type, string> {
+            { typeof(byte),         "\"type\": \"number\"" },
+            { typeof(short),        "\"type\": \"number\"" },
+            { typeof(int),          "\"type\": \"number\"" },
+            { typeof(long),         "\"type\": \"number\"" },
+            
+            { typeof(double),       "\"type\": \"number\"" },
+            { typeof(float),        "\"type\": \"number\"" },
+            
+            { typeof(BigInteger),   "\"type\": \"string\"" },
+            { typeof(DateTime),     "\"type\": \"string\", \"format\": \"date-time\"" }
+        }; 
+        
         private static EmitType EmitStandardType(Type type, StringBuilder sb, Generator generator) {
-            if (type == typeof(byte)) {
-                sb.AppendLine("        \"uint8\": {");
-                sb.AppendLine("            \"type\": \"number\"");
-                sb.Append    ("        }");
-                return new EmitType(type, TypeSemantic.None, generator, sb);
-            }
-            if (type == typeof(short)) {
-                sb.AppendLine("        \"int16\": {");
-                sb.AppendLine("            \"type\": \"number\"");
-                sb.Append    ("        }");
-                return new EmitType(type, TypeSemantic.None, generator, sb);
-            }
-            if (type == typeof(int)) {
-                sb.AppendLine("        \"int32\": {");
-                sb.AppendLine("            \"type\": \"number\"");
-                sb.Append    ("        }");
-                return new EmitType(type, TypeSemantic.None, generator, sb);
-            }
-            if (type == typeof(long)) {
-                sb.AppendLine("        \"int64\": {");
-                sb.AppendLine("            \"type\": \"number\"");
-                sb.Append    ("        }");
-                return new EmitType(type, TypeSemantic.None, generator, sb);
-            }
-            if (type == typeof(float)) {
-                sb.AppendLine("        \"float\": {");
-                sb.AppendLine("            \"type\": \"number\"");
-                sb.Append    ("        }");
-                return new EmitType(type, TypeSemantic.None, generator, sb);
-            }
-            if (type == typeof(double)) {
-                sb.AppendLine("        \"double\": {");
-                sb.AppendLine("            \"type\": \"number\"");
-                sb.Append    ("        }");
-                return new EmitType(type, TypeSemantic.None, generator, sb);
-            }
-            if (type == typeof(DateTime)) {
-                sb.AppendLine("        \"DateTime\": {");
-                sb.AppendLine("            \"type\": \"string\", \"format\": \"date-time\"");
-                sb.Append    ("        }");
-                return new EmitType(type, TypeSemantic.None, generator, sb);
-            }
-            if (type == typeof(BigInteger)) {
-                sb.AppendLine("        \"BigInteger\": {");
-                sb.AppendLine("            \"type\": \"string\"");
-                sb.Append    ("        }");
-                return new EmitType(type, TypeSemantic.None, generator, sb);
-            }
-            return null;
+            if (!StandardTypes.TryGetValue(type, out var definition))
+                return null;
+            var typeName = Generator.GetTypeName(type);
+            sb.AppendLine($"        \"{typeName}\": {{");
+            sb.AppendLine($"            {definition}");
+            sb.Append    ( "        }");
+            return new EmitType(type, TypeSemantic.None, generator, sb);
         }
         
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {
