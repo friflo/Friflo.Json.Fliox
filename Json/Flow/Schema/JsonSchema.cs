@@ -17,9 +17,8 @@ namespace Friflo.Json.Flow.Schema
     public class JsonSchema
     {
         public   readonly   Generator                   generator;
-        private  const      string                      Next = ",\r\n";
         private  readonly   Dictionary<ITyp, string>    standardTypes;
-
+        private  const      string                      Next = ",\r\n";
         
         public JsonSchema (TypeStore typeStore, ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
             var system      = new NativeTypeSystem(typeStore);
@@ -46,10 +45,10 @@ namespace Friflo.Json.Flow.Schema
         
         private static Dictionary<ITyp, string> GetStandardTypes(ITypeSystem system) {
             var map = new Dictionary<ITyp, string>();
-            AddType (map, system.Unit8,         "\"type\": \"number\", \"minimum\": 0, \"maximum\": 255" );
-            AddType (map, system.Int16,         "\"type\": \"number\", \"minimum\": -32768, \"maximum\": 32767" );
-            AddType (map, system.Int32,         "\"type\": \"number\", \"minimum\": -2147483648, \"maximum\": 2147483647" );
-            AddType (map, system.Int64,         "\"type\": \"number\", \"minimum\": -9223372036854775808, \"maximum\": 9223372036854775807" );
+            AddType (map,  system.Unit8,         "\"type\": \"number\", \"minimum\": 0, \"maximum\": 255" );
+            AddType (map,  system.Int16,         "\"type\": \"number\", \"minimum\": -32768, \"maximum\": 32767" );
+            AddType (map,  system.Int32,         "\"type\": \"number\", \"minimum\": -2147483648, \"maximum\": 2147483647" );
+            AddType (map,  system.Int64,         "\"type\": \"number\", \"minimum\": -9223372036854775808, \"maximum\": 9223372036854775807" );
                 
             AddType (map,  system.Double,        "\"type\": \"number\"" );
             AddType (map,  system.Float,         "\"type\": \"number\"" );
@@ -70,12 +69,10 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private EmitType EmitType(ITyp type, StringBuilder sb) {
-            var semantic= type.TypeSemantic;
-            var imports = new HashSet<ITyp>(); 
-            var context = new TypeContext (generator, imports, type);
-            // mapper      = mapper.GetUnderlyingMapper();
-            // type        = mapper.GetUnderlyingMapper();
-            var standardType = EmitStandardType(type, sb, generator);
+            var semantic        = type.TypeSemantic;
+            var imports         = new HashSet<ITyp>(); 
+            var context         = new TypeContext (generator, imports, type);
+            var standardType    = EmitStandardType(type, sb, generator);
             if (standardType != null ) {
                 return standardType;
             }
@@ -162,8 +159,6 @@ namespace Friflo.Json.Flow.Schema
         // Note: static by intention
         private static string GetFieldType(ITyp type, TypeContext context, bool isOptional) {
             var system  = context.generator.system;
-            // mapper      = mapper.GetUnderlyingMapper();
-            // var type    = Generator.GetType(mapper);
             if (type == system.JsonValue) {
                 return ""; // allow any type
             }

@@ -18,6 +18,7 @@ namespace Friflo.Json.Flow.Schema
         public  readonly    Generator                   generator;
         private readonly    Dictionary<ITyp, string>    standardTypes;
 
+
         public Typescript (TypeStore typeStore, ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
             var system      = new NativeTypeSystem(typeStore);
             var sepTypes    = system.GetTypes(separateTypes);
@@ -67,12 +68,10 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private EmitType EmitType(ITyp type, StringBuilder sb) {
-            var semantic= type.TypeSemantic;
-            var imports = new HashSet<ITyp>();
-            var context = new TypeContext (generator, imports, type);
-            // mapper      = mapper.GetUnderlyingMapper();
-            // var type    = Generator.GetType(mapper);
-            var standardType = EmitStandardType(type, sb, generator);
+            var semantic        = type.TypeSemantic;
+            var imports         = new HashSet<ITyp>();
+            var context         = new TypeContext (generator, imports, type);
+            var standardType    = EmitStandardType(type, sb, generator);
             if (standardType != null ) {
                 return standardType;
             }
@@ -148,10 +147,9 @@ namespace Friflo.Json.Flow.Schema
             return null;
         }
         
-        private string GetFieldType(ITyp type, TypeContext context) {
+        // Note: static by intention
+        private static string GetFieldType(ITyp type, TypeContext context) {
             var system  = context.generator.system;
-            // mapper      = mapper.GetUnderlyingMapper();
-            // var type    = Generator.GetType(mapper);
             if (type == system.JsonValue) {
                 return "{} | null";
             }
@@ -175,7 +173,7 @@ namespace Friflo.Json.Flow.Schema
             context.imports.Add(type);
             if (type.UnionType != null)
                 return $"{type.Name}_Union";
-            return generator.GetTypeName(type);
+            return context.generator.GetTypeName(type);
         }
         
         private void EmitPackageHeaders(StringBuilder sb) {
