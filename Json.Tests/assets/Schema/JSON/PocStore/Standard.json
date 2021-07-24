@@ -5,8 +5,20 @@
         "DateTime": {
             "type": "string", "format": "date-time"
         },
+        "int32": {
+            "type": "number"
+        },
         "BigInteger": {
             "type": "string"
+        },
+        "uint8": {
+            "type": "number"
+        },
+        "int16": {
+            "type": "number"
+        },
+        "int64": {
+            "type": "number"
         }
     }
 }

@@ -6,7 +6,7 @@
             "type": "object",
             "properties": {
                 "article": { "type": ["string", "null"] },
-                "amount":  { "type": "number" },
+                "amount":  { "$ref": "./Standard.json#/definitions/int32" },
                 "name":    { "type": ["string", "null"] }
             },
             "required": [
@@ -17,7 +17,7 @@
         "PocStruct": {
             "type": "object",
             "properties": {
-                "val": { "type": "number" }
+                "val": { "$ref": "./Standard.json#/definitions/int32" }
             },
             "required": [
                 "val"
@@ -27,9 +27,9 @@
         "DerivedClass": {
             "type": "object",
             "properties": {
-                "derivedVal": { "type": "number" },
+                "derivedVal": { "$ref": "./Standard.json#/definitions/int32" },
                 "article":    { "type": ["string", "null"] },
-                "amount":     { "type": "number" },
+                "amount":     { "$ref": "./Standard.json#/definitions/int32" },
                 "name":       { "type": ["string", "null"] }
             },
             "required": [

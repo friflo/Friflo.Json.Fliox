@@ -41,6 +41,42 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private static EmitType EmitStandardType(Type type, StringBuilder sb, Generator generator) {
+            if (type == typeof(byte)) {
+                sb.AppendLine("        \"uint8\": {");
+                sb.AppendLine("            \"type\": \"number\"");
+                sb.Append    ("        }");
+                return new EmitType(type, TypeSemantic.None, generator, sb);
+            }
+            if (type == typeof(short)) {
+                sb.AppendLine("        \"int16\": {");
+                sb.AppendLine("            \"type\": \"number\"");
+                sb.Append    ("        }");
+                return new EmitType(type, TypeSemantic.None, generator, sb);
+            }
+            if (type == typeof(int)) {
+                sb.AppendLine("        \"int32\": {");
+                sb.AppendLine("            \"type\": \"number\"");
+                sb.Append    ("        }");
+                return new EmitType(type, TypeSemantic.None, generator, sb);
+            }
+            if (type == typeof(long)) {
+                sb.AppendLine("        \"int64\": {");
+                sb.AppendLine("            \"type\": \"number\"");
+                sb.Append    ("        }");
+                return new EmitType(type, TypeSemantic.None, generator, sb);
+            }
+            if (type == typeof(float)) {
+                sb.AppendLine("        \"float\": {");
+                sb.AppendLine("            \"type\": \"number\"");
+                sb.Append    ("        }");
+                return new EmitType(type, TypeSemantic.None, generator, sb);
+            }
+            if (type == typeof(double)) {
+                sb.AppendLine("        \"double\": {");
+                sb.AppendLine("            \"type\": \"number\"");
+                sb.Append    ("        }");
+                return new EmitType(type, TypeSemantic.None, generator, sb);
+            }
             if (type == typeof(DateTime)) {
                 sb.AppendLine("        \"DateTime\": {");
                 sb.AppendLine("            \"type\": \"string\", \"format\": \"date-time\"");
@@ -160,10 +196,6 @@ namespace Friflo.Json.Flow.Schema
             if (type == typeof(bool)) {
                 return "\"type\": \"boolean\"";
             }
-            if (type == typeof(byte) || type == typeof(short) || type == typeof(int) || type == typeof(long)
-                || type == typeof(float) || type == typeof(double)) {
-                return $"\"type\": {Opt(isOptional, "number")}";
-            }
             if (mapper.IsArray) {
                 var elementMapper = mapper.GetElementMapper();
                 bool isOpt = false;
@@ -210,7 +242,7 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private static string Ref(Type type, bool isOptional, TypeContext context) {
-            var name = type.Name;
+            var name = Generator.GetTypeName(type);
             // if (generator.IsUnionType(type))
             //    name = $"{type.Name}_Union";
             var generator       = context.generator;
