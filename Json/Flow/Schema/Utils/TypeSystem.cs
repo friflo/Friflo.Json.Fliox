@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Numerics;
 using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Mapper.Map.Val;
 
 namespace Friflo.Json.Flow.Schema.Utils
 {
@@ -26,6 +27,8 @@ namespace Friflo.Json.Flow.Schema.Utils
         
         ITyp   BigInteger  { get; }
         ITyp   DateTime    { get; }
+        
+        ITyp   JsonValue   { get; }
     }
     
     public class NativeTypeSystem : ITypeSystem
@@ -42,6 +45,7 @@ namespace Friflo.Json.Flow.Schema.Utils
         private readonly NativeType flt64;
         private readonly NativeType bigInteger;
         private readonly NativeType dateTime;
+        private readonly NativeType jsonValue;
 
         public IReadOnlyDictionary<ITyp, TypeMapper> TypeMappers => typeMappers;
         public ITyp Boolean    => boolean;
@@ -54,6 +58,7 @@ namespace Friflo.Json.Flow.Schema.Utils
         public ITyp Double     => flt64;
         public ITyp BigInteger => bigInteger;
         public ITyp DateTime   => dateTime;
+        public ITyp JsonValue  => jsonValue;
         
         public NativeTypeSystem (IReadOnlyDictionary<Type, TypeMapper> typeMappers) {
             var nativeMap   = new Dictionary<Type, NativeType>(typeMappers.Count);
@@ -61,7 +66,7 @@ namespace Friflo.Json.Flow.Schema.Utils
             foreach (var pair in typeMappers) {
                 var type    = pair.Key; 
                 var mapper  = pair.Value;
-                var iTyp = new NativeType(type);
+                var iTyp = new NativeType(mapper);
                 map.      Add(iTyp, mapper);
                 nativeMap.Add(type, iTyp);
             }
@@ -76,6 +81,7 @@ namespace Friflo.Json.Flow.Schema.Utils
             flt64       = nativeMap[typeof(double)];
             bigInteger  = nativeMap[typeof(BigInteger)];
             dateTime    = nativeMap[typeof(DateTime)];
+            jsonValue   = nativeMap[typeof(JsonValue)];
             foreach (var pair in nativeMap) {
                 var type  = pair.Value;
                 type.baseType = nativeMap[type.native].BaseType;

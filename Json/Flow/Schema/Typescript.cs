@@ -4,22 +4,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
-using Friflo.Json.Flow.Mapper.Map.Val;
 using Friflo.Json.Flow.Schema.Utils;
 
 namespace Friflo.Json.Flow.Schema
 {
     public class Typescript
     {
-        public  readonly    Generator  generator;
+        public  readonly    Generator                   generator;
+        private readonly    Dictionary<ITyp, string>    standardTypes;
 
         public Typescript (TypeStore typeStore, ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
             generator = new Generator(typeStore, stripNamespaces, ".ts", separateTypes);
+            standardTypes = GetStandardTypes(generator.system);
         }
         
         public void GenerateSchema() {
@@ -39,20 +38,23 @@ namespace Friflo.Json.Flow.Schema
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}"); // $"{ns.Replace(".", "/")}{generator.extension}");
         }
         
-        private readonly Dictionary<Type, string> standardTypes = new Dictionary<Type, string> {
-            { typeof(byte),         "uint8 = number" },
-            { typeof(short),        "int16 = number" },
-            { typeof(int),          "int32 = number" },
-            { typeof(long),         "int64 = number" },
-            
-            { typeof(double),       "double = number" },
-            { typeof(float),        "float = number" },
-            
-            { typeof(BigInteger),   "BigInteger = string" },
-            { typeof(DateTime),     "DateTime = string" }
-        }; 
+        private static Dictionary<ITyp, string> GetStandardTypes(ITypeSystem system) {
+            var map = new Dictionary<ITyp, string> {
+                { system.Unit8,         "uint8 = number" },
+                { system.Int16,         "int16 = number" },
+                { system.Int32,         "int32 = number" },
+                { system.Int64,         "int64 = number" },
+                
+                { system.Double,        "double = number" },
+                { system.Float,         "float = number" },
+                
+                { system.BigInteger,    "BigInteger = string" },
+                { system.DateTime,      "DateTime = string" }
+            };
+            return map;
+        }
 
-        private EmitType EmitStandardType(Type type, StringBuilder sb, Generator generator) {
+        private EmitType EmitStandardType(ITyp type, StringBuilder sb, Generator generator) {
             if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
             sb.Append("export type ");
@@ -62,36 +64,36 @@ namespace Friflo.Json.Flow.Schema
             return new EmitType(type, TypeSemantic.None, generator, sb);
         }
         
-        private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {
-            var semantic= mapper.GetTypeSemantic();
-            var imports = new HashSet<Type>();
-            var context = new TypeContext (generator, imports, mapper);
-            mapper      = mapper.GetUnderlyingMapper();
-            var type    = Generator.GetType(mapper);
+        private EmitType EmitType(ITyp type, StringBuilder sb) {
+            var semantic= type.TypeSemantic;
+            var imports = new HashSet<ITyp>();
+            var context = new TypeContext (generator, imports, type);
+            // mapper      = mapper.GetUnderlyingMapper();
+            // var type    = Generator.GetType(mapper);
             var standardType = EmitStandardType(type, sb, generator);
             if (standardType != null ) {
                 return standardType;
             }
-            if (mapper.IsComplex) {
-                var dependencies = new List<Type>();
-                var fields          = mapper.propFields.fields;
+            if (type.IsComplex) {
+                var dependencies = new List<ITyp>();
+                var fields          = type.Fields;
                 int maxFieldName    = fields.MaxLength(field => field.jsonName.Length);
                 
                 string  discriminator = null;
-                var     discriminant = mapper.Discriminant;
+                var     discriminant = type.Discriminant;
                 var extendsStr = "";
                 if (discriminant != null) {
-                    var baseMapper  = generator.GetBaseMapper(type);
-                    discriminator   = baseMapper.InstanceFactory.discriminator;
-                    extendsStr = $"extends {baseMapper.type.Name} ";
+                    var baseType    = type.BaseType;
+                    discriminator   = baseType.InstanceFactory.discriminator;
+                    extendsStr = $"extends {baseType.Name} ";
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
-                    dependencies.Add(baseMapper.type);
+                    dependencies.Add(baseType);
                 } else {
-                    var baseMapper = generator.GetBaseMapper(type);
-                    if (baseMapper != null) {
-                        extendsStr = $"extends {baseMapper.type.Name} ";
-                        imports.Add(baseMapper.type);
-                        dependencies.Add(baseMapper.type);
+                    var baseType = type.BaseType;
+                    if (baseType != null) {
+                        extendsStr = $"extends {baseType.Name} ";
+                        imports.Add(baseType);
+                        dependencies.Add(baseType);
                     }
                 }
                 var instanceFactory = mapper.InstanceFactory;
@@ -132,7 +134,7 @@ namespace Friflo.Json.Flow.Schema
                 return new EmitType(type, semantic, generator, sb, imports, dependencies);
             }
             if (type.IsEnum) {
-                var enumValues = mapper.GetEnumValues();
+                var enumValues = type.GetEnumValues();
                 sb.AppendLine($"export type {type.Name} =");
                 foreach (var enumValue in enumValues) {
                     sb.AppendLine($"    | \"{enumValue}\"");
@@ -144,28 +146,29 @@ namespace Friflo.Json.Flow.Schema
             return null;
         }
         
-        private string GetFieldType(TypeMapper mapper, TypeContext context, ref bool isOptional) {
-            mapper      = mapper.GetUnderlyingMapper();
-            isOptional  = isOptional && mapper.isNullable;
-            var type    = Generator.GetType(mapper);
-            if (type == typeof(JsonValue)) {
+        private string GetFieldType(ITyp type, TypeContext context, ref bool isOptional) {
+            var system  = context.generator.system;
+            isOptional  = isOptional && type.IsNullable;
+            // mapper      = mapper.GetUnderlyingMapper();
+            // var type    = Generator.GetType(mapper);
+            if (type == system.JsonValue) {
                 return "{} | null";
             }
-            if (type == typeof(string)) {
+            if (type == system.String) {
                 return "string";
             }
-            if (type == typeof(bool)) {
+            if (type == system.Boolean) {
                 return "boolean";
             }
-            if (mapper.IsArray) {
-                var elementMapper = mapper.GetElementMapper();
+            if (type.IsArray) {
+                var elementMapper = type.ElementType;
                 var isOpt = false;
                 var elementTypeName = GetFieldType(elementMapper, context, ref isOpt);
                 return $"{elementTypeName}[]";
             }
-            var isDictionary = type.GetInterfaces().Contains(typeof(IDictionary));
+            var isDictionary = type.IsDictionary;
             if (isDictionary) {
-                var valueMapper = mapper.GetElementMapper();
+                var valueMapper = type.ElementType;
                 var isOpt = false;
                 var valueTypeName = GetFieldType(valueMapper, context, ref isOpt);
                 return $"{{ [key: string]: {valueTypeName} }}";

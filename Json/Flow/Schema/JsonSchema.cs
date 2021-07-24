@@ -2,34 +2,34 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
-using Friflo.Json.Flow.Mapper.Map.Val;
 using Friflo.Json.Flow.Schema.Utils;
 
 namespace Friflo.Json.Flow.Schema
 {
     public class JsonSchema
     {
-        public   readonly   Generator           generator;
-        private  const      string              Next = ",\r\n";
+        public   readonly   Generator                   generator;
+        private  const      string                      Next = ",\r\n";
+        private  readonly   Dictionary<ITyp, string>    standardTypes;
+
         
         public JsonSchema (TypeStore typeStore, ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
             generator               = new Generator(typeStore, stripNamespaces, ".json", separateTypes);
+            standardTypes = GetStandardTypes(generator.system);
         }
         
         public void GenerateSchema() {
             var sb = new StringBuilder();
             // emit custom types
             foreach (var pair in generator.typeMappers) {
-                var mapper = pair.Value;
+                var type = pair.Key;
                 sb.Clear();
-                var result = EmitType(mapper, sb);
+                var result = EmitType(type, sb);
                 if (result == null)
                     continue;
                 generator.AddEmitType(result);
@@ -40,20 +40,23 @@ namespace Friflo.Json.Flow.Schema
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}", Next); // $"{ns.Replace(".", "/")}.ts");
         }
         
-        private readonly Dictionary<Type, string> standardTypes = new Dictionary<Type, string> {
-            { typeof(byte),         "\"type\": \"number\", \"minimum\": 0, \"maximum\": 255" },
-            { typeof(short),        "\"type\": \"number\", \"minimum\": -32768, \"maximum\": 32767" },
-            { typeof(int),          "\"type\": \"number\", \"minimum\": -2147483648, \"maximum\": 2147483647" },
-            { typeof(long),         "\"type\": \"number\", \"minimum\": -9223372036854775808, \"maximum\": 9223372036854775807" },
-            
-            { typeof(double),       "\"type\": \"number\"" },
-            { typeof(float),        "\"type\": \"number\"" },
-            
-            { typeof(BigInteger),   "\"type\": \"string\", \"pattern\": \"^-?[0-9]+$\"" }, // https://www.regextester.com/
-            { typeof(DateTime),     "\"type\": \"string\", \"format\": \"date-time\"" }
-        }; 
+        private static Dictionary<ITyp, string> GetStandardTypes(ITypeSystem system) {
+            var map = new Dictionary<ITyp, string>() {
+                { system.Unit8,         "\"type\": \"number\", \"minimum\": 0, \"maximum\": 255" },
+                { system.Int16,         "\"type\": \"number\", \"minimum\": -32768, \"maximum\": 32767" },
+                { system.Int32,         "\"type\": \"number\", \"minimum\": -2147483648, \"maximum\": 2147483647" },
+                { system.Int64,         "\"type\": \"number\", \"minimum\": -9223372036854775808, \"maximum\": 9223372036854775807" },
+                
+                { system.Double,        "\"type\": \"number\"" },
+                { system.Float,         "\"type\": \"number\"" },
+                
+                { system.BigInteger,    "\"type\": \"string\", \"pattern\": \"^-?[0-9]+$\"" }, // https://www.regextester.com/
+                { system.DateTime,      "\"type\": \"string\", \"format\": \"date-time\"" }
+            };
+            return map;
+        }
         
-        private EmitType EmitStandardType(Type type, StringBuilder sb, Generator generator) {
+        private EmitType EmitStandardType(ITyp type, StringBuilder sb, Generator generator) {
             if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
             var typeName = generator.GetTypeName(type);
@@ -63,24 +66,24 @@ namespace Friflo.Json.Flow.Schema
             return new EmitType(type, TypeSemantic.None, generator, sb);
         }
         
-        private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {
-            var semantic= mapper.GetTypeSemantic();
-            var imports = new HashSet<Type>(); 
-            var context = new TypeContext (generator, imports, mapper);
-            mapper      = mapper.GetUnderlyingMapper();
-            var type    = Generator.GetType(mapper);
+        private EmitType EmitType(ITyp type, StringBuilder sb) {
+            var semantic= type.TypeSemantic;
+            var imports = new HashSet<ITyp>(); 
+            var context = new TypeContext (generator, imports, type);
+            // mapper      = mapper.GetUnderlyingMapper();
+            // type        = mapper.GetUnderlyingMapper();
             var standardType = EmitStandardType(type, sb, generator);
             if (standardType != null ) {
                 return standardType;
             }
-            if (mapper.IsComplex) {
-                var fields          = mapper.propFields.fields;
+            if (type.IsComplex) {
+                var fields          = type.Fields;
                 int maxFieldName    = fields.MaxLength(field => field.jsonName.Length);
                 
                 string  discriminator = null;
-                var     discriminant = mapper.Discriminant;
+                var     discriminant = type.Discriminant;
                 if (discriminant != null) {
-                    var baseMapper  = generator.GetBaseMapper(type);
+                    var baseMapper  = type.BaseType;
                     discriminator   = baseMapper.InstanceFactory.discriminator;
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                 }
@@ -137,7 +140,7 @@ namespace Friflo.Json.Flow.Schema
                 return new EmitType(type, semantic, generator, sb, imports);
             }
             if (type.IsEnum) {
-                var enumValues = mapper.GetEnumValues();
+                var enumValues = type.GetEnumValues();
                 sb.AppendLine($"        \"{type.Name}\": {{");
                 sb.AppendLine($"            \"enum\": [");
                 bool firstValue = true;
@@ -154,28 +157,29 @@ namespace Friflo.Json.Flow.Schema
         }
         
         // Note: static by intention
-        private static string GetFieldType(TypeMapper mapper, TypeContext context, ref bool isOptional) {
-            mapper      = mapper.GetUnderlyingMapper();
-            isOptional  = isOptional && mapper.isNullable;
-            var type    = Generator.GetType(mapper);
-            if (type == typeof(JsonValue)) {
+        private static string GetFieldType(ITyp type, TypeContext context, ref bool isOptional) {
+            var system  = context.generator.system;
+            isOptional  = isOptional && type.IsNullable;
+            // mapper      = mapper.GetUnderlyingMapper();
+            // var type    = Generator.GetType(mapper);
+            if (type == system.JsonValue) {
                 return ""; // allow any type
             }
-            if (type == typeof(string)) {
+            if (type == system.String) {
                 return $"\"type\": {Opt(isOptional, "string")}";
             }
-            if (type == typeof(bool)) {
+            if (type == system.Boolean) {
                 return "\"type\": \"boolean\"";
             }
-            if (mapper.IsArray) {
-                var elementMapper = mapper.GetElementMapper();
+            if (type.IsArray) {
+                var elementMapper = type.ElementType;
                 bool isOpt = false;
                 var elementTypeName = GetFieldType(elementMapper, context, ref isOpt);
                 return $"\"type\": {Opt(isOptional, "array")}, \"items\": {{ {elementTypeName} }}";
             }
-            var isDictionary = type.GetInterfaces().Contains(typeof(IDictionary));
+            var isDictionary = type.IsDictionary;
             if (isDictionary) {
-                var valueMapper = mapper.GetElementMapper();
+                var valueMapper = type.ElementType;
                 bool isOpt = false;
                 var valueTypeName = GetFieldType(valueMapper, context, ref isOpt);
                 return $"\"type\": \"object\", \"additionalProperties\": {{ {valueTypeName} }}";
@@ -212,13 +216,13 @@ namespace Friflo.Json.Flow.Schema
             }
         }
         
-        private static string Ref(Type type, bool isOptional, TypeContext context) {
+        private static string Ref(ITyp type, bool isOptional, TypeContext context) {
             var generator       = context.generator;
             var name = context.generator.GetTypeName(type);
             // if (generator.IsUnionType(type))
             //    name = $"{type.Name}_Union";
             var typePackage     = generator.GetPackageName(type);
-            var ownerPackage    = generator.GetPackageName(context.owner.type);
+            var ownerPackage    = generator.GetPackageName(context.owner);
             bool samePackage    = typePackage == ownerPackage;
             var prefix          = samePackage ? "" : $"./{typePackage}{generator.fileExt}";
             var refType = $"\"$ref\": \"{prefix}#/definitions/{name}\"";

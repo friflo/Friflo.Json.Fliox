@@ -10,16 +10,16 @@ namespace Friflo.Json.Flow.Schema.Utils
 {
     public class EmitType
     {
-        public   readonly   Type                    type;
+        public   readonly   ITyp                    type;
         /// the mapper assigned to the type
         internal readonly   string                  package;
 
         /// the piece of code to define the type
         internal readonly   string                  content;
         /// contain type imports directly used by this type / mapper. 
-        internal readonly   HashSet<Type>           imports;
+        internal readonly   HashSet<ITyp>           imports;
         
-        internal readonly   ICollection<Type>       typeDependencies;
+        internal readonly   ICollection<ITyp>       typeDependencies;
         internal readonly   ICollection<EmitType>   emitDependencies = new List<EmitType>();
         
         public   readonly   TypeSemantic            semantic;
@@ -27,19 +27,19 @@ namespace Friflo.Json.Flow.Schema.Utils
         public   override   string                  ToString() => type.Name;
 
         public EmitType(
-            Type            type,
+            ITyp            type,
             TypeSemantic    semantic,
             Generator       generator,
             StringBuilder   sb,
-            HashSet<Type>   imports         = null,
-            List<Type>      dependencies    = null)
+            HashSet<ITyp>   imports         = null,
+            List<ITyp>      dependencies    = null)
         {
             this.semantic           = semantic;
             this.type               = type;
             this.package            = generator.GetPackageName(type);
             this.content            = sb.ToString();
-            this.imports            = imports       ?? new HashSet<Type>();
-            this.typeDependencies   = dependencies  ?? new List<Type>();
+            this.imports            = imports       ?? new HashSet<ITyp>();
+            this.typeDependencies   = dependencies  ?? new List<ITyp>();
         }
     }
 }

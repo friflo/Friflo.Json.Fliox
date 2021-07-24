@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Schema.Utils
         /// contain all types of a namespace (package) and their generated piece of code for each type
         public   readonly   List<EmitType>              emitTypes   = new List<EmitType>();
         /// contain all imports used by all types in a package
-        public   readonly   Dictionary<Type, Import>    imports     = new Dictionary<Type, Import>();
+        public   readonly   Dictionary<ITyp, Import>    imports     = new Dictionary<ITyp, Import>();
         /// the generated code used as package header. Typically all imports (using statements)
         public              string                      header;
         public              string                      footer;
@@ -27,12 +27,12 @@ namespace Friflo.Json.Flow.Schema.Utils
     
     public readonly struct Import
     {
-        public readonly Type    type;
+        public readonly ITyp    type;
         public readonly string  package;
 
         public override string  ToString() => $"{package}.{type.Name}";
 
-        internal Import (Type type, string package) {
+        internal Import (ITyp type, string package) {
             this.type       = type;
             this.package    = package;
         }
