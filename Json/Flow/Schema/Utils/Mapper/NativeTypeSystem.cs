@@ -46,7 +46,10 @@ namespace Friflo.Json.Flow.Schema.Utils.Mapper
             foreach (var pair in typeMappers) {
                 TypeMapper  mapper  = pair.Value;
                 var underMapper     = mapper.GetUnderlyingMapper();
-                Type type           = underMapper.type;        
+                Type type           = underMapper.type;
+                /* if (underMapper.isNullable && underMapper.nullableUnderlyingType != null) {
+                    type = mapper.nullableUnderlyingType;
+                } */
                 var  iTyp           = new NativeType(underMapper);
                 if (!nativeMap.TryAdd(type, iTyp))
                     continue;

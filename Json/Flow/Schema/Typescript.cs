@@ -112,7 +112,7 @@ namespace Friflo.Json.Flow.Schema
                     sb.AppendLine($"export abstract class {type.Name} {extendsStr}{{");
                     sb.AppendLine($"    abstract {instanceFactory.discriminator}:");
                     foreach (var polyType in instanceFactory.polyTypes) {
-                        sb.AppendLine($"        | \"{polyType.Name}\"");
+                        sb.AppendLine($"        | \"{polyType.Discriminant}\"");
                     }
                     sb.AppendLine($"    ;");
                 }
