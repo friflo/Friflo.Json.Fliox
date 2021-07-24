@@ -30,7 +30,7 @@ namespace Friflo.Json.Flow.Schema.Utils
         public readonly Type    type;
         public readonly string  package;
 
-        public override string  ToString() => package;
+        public override string  ToString() => $"{package}.{type.Name}";
 
         internal Import (Type type, string package) {
             this.type       = type;

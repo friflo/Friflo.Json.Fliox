@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
@@ -108,10 +109,21 @@ namespace Friflo.Json.Flow.Schema
         public string GetPackageName (Type type) {
             if (packageCache.TryGetValue(type, out var packageName))
                 return packageName;
-            packageName = getPackageName(type);
-            packageName = Strip(packageName);
+            packageName = GetStandardPackage(type);
+            if (packageName == null) {
+                packageName = getPackageName(type);
+                packageName = Strip(packageName);
+            }
             packageCache.Add(type, packageName);
             return packageName;
+        }
+        
+        private static string GetStandardPackage(Type type) {
+            if (type == typeof(BigInteger))
+                return "Standard";
+            if (type == typeof(DateTime))
+                return "Standard";
+            return null;
         }
         
         /// <summary>
