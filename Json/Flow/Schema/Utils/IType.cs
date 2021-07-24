@@ -4,9 +4,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Friflo.Json.Flow.Mapper.Map;
-// ReSharper disable ConvertToAutoProperty
 
+// ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Flow.Schema.Utils
 {
     // ReSharper disable once InconsistentNaming
@@ -21,15 +22,18 @@ namespace Friflo.Json.Flow.Schema.Utils
         public  abstract    TypeSemantic        TypeSemantic { get; }
         public  abstract    bool                IsNullable   { get; }
         public  abstract    bool                IsArray      { get; }
-        public  abstract    ITyp                ElementType  { get; }
+        public  abstract    ITyp                ElementType  { get; internal set; }
         public  abstract    bool                IsDictionary { get; }
+        public  abstract    UnionType           UnionType    { get; }
+        
         public  abstract    ICollection<string> GetEnumValues();
+        public  abstract    bool                IsDerivedField(Field field);
     }
     
     public class Field {
-        public  string      jsonName;
-        public  bool        required;
-        public  ITyp        fieldType;
+        public   string     jsonName;
+        public   bool       required;
+        internal ITyp       fieldType;
     }
     
     public class NativeType : ITyp
@@ -37,8 +41,9 @@ namespace Friflo.Json.Flow.Schema.Utils
         internal readonly   Type                native;
         private  readonly   TypeMapper          mapper;
         internal            ITyp                baseType;
-        private  readonly   ICollection<Field>  fields;
+        private  readonly   List<Field>         fields;
         private             ITyp                elementType;
+        private             UnionType           unionType;
         
         public   override   string              Name            => native.Name;
         public   override   string              Namespace       => native.Namespace;
@@ -50,14 +55,29 @@ namespace Friflo.Json.Flow.Schema.Utils
         public   override   TypeSemantic        TypeSemantic    => mapper.GetTypeSemantic();
         public   override   bool                IsNullable      => mapper.isNullable;
         public   override   bool                IsArray         => mapper.IsArray;
-        public   override   ITyp                ElementType     => elementType;
+        public   override   UnionType           UnionType       => UnionType;
+        
+        public   override   ITyp                ElementType {   get          => elementType;
+                                                                internal set => elementType = value;  }
+
         public   override   bool                IsDictionary    => mapper.type.GetInterfaces().Contains(typeof(IDictionary));
         
         public   override   ICollection<string> GetEnumValues() => mapper.GetEnumValues();
+        
+        public   override   bool                IsDerivedField(Field field) {
+            var parent = native.BaseType;
+            while (parent != null) {
+                if (fields.Find(f => f.jsonName == field.jsonName) != null)
+                    return true;
+                parent = parent.BaseType;
+            }
+            return false;    
+        }
            
         public NativeType (TypeMapper mapper) {
             this.native     = mapper.type;
             this.mapper     = mapper;
+            fields          = new List<Field>(mapper.propFields.fields.Length);
         }
 
         public override bool Equals(object obj) {
@@ -70,5 +90,10 @@ namespace Friflo.Json.Flow.Schema.Utils
         public override int GetHashCode() {
             return (native != null ? native.GetHashCode() : 0);
         }
+    }
+    
+    public class UnionType {
+        public  string      discriminator;
+        public  List<ITyp>  polyTypes;
     }
 }

@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Numerics;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Map.Val;
@@ -12,7 +11,7 @@ namespace Friflo.Json.Flow.Schema.Utils
 {
     public interface ITypeSystem
     {
-        IReadOnlyDictionary<ITyp, TypeMapper> TypeMappers { get;}
+        ICollection<ITyp> Types { get;}
         
         ITyp   Boolean     { get; }
         ITyp   String      { get; }
@@ -29,40 +28,44 @@ namespace Friflo.Json.Flow.Schema.Utils
         ITyp   DateTime    { get; }
         
         ITyp   JsonValue   { get; }
+        
+        ICollection<ITyp> GetTypes(ICollection<Type> separateTypes);
     }
     
     public class NativeTypeSystem : ITypeSystem
     {
-        private readonly IReadOnlyDictionary<ITyp, TypeMapper> typeMappers;
+        private  readonly   ICollection<ITyp> types;
         
-        private readonly NativeType boolean;
-        private readonly NativeType @string;
-        private readonly NativeType uint8;
-        private readonly NativeType int16;
-        private readonly NativeType int32;
-        private readonly NativeType int64;
-        private readonly NativeType flt32;
-        private readonly NativeType flt64;
-        private readonly NativeType bigInteger;
-        private readonly NativeType dateTime;
-        private readonly NativeType jsonValue;
+        private  readonly   NativeType  boolean;
+        private  readonly   NativeType  @string;
+        private  readonly   NativeType  uint8;
+        private  readonly   NativeType  int16;
+        private  readonly   NativeType  int32;
+        private  readonly   NativeType  int64;
+        private  readonly   NativeType  flt32;
+        private  readonly   NativeType  flt64;
+        private  readonly   NativeType  bigInteger;
+        private  readonly   NativeType  dateTime;
+        private  readonly   NativeType  jsonValue;
 
-        public IReadOnlyDictionary<ITyp, TypeMapper> TypeMappers => typeMappers;
-        public ITyp Boolean    => boolean;
-        public ITyp String     => @string;
-        public ITyp Unit8      => uint8;
-        public ITyp Int16      => int16;
-        public ITyp Int32      => int32;
-        public ITyp Int64      => int64;
-        public ITyp Float      => flt32;
-        public ITyp Double     => flt64;
-        public ITyp BigInteger => bigInteger;
-        public ITyp DateTime   => dateTime;
-        public ITyp JsonValue  => jsonValue;
+        public              ICollection<ITyp>               Types => types;
+        private  readonly   Dictionary<Type, NativeType>    nativeMap;
+        
+        public              ITyp    Boolean    => boolean;
+        public              ITyp    String     => @string;
+        public              ITyp    Unit8      => uint8;
+        public              ITyp    Int16      => int16;
+        public              ITyp    Int32      => int32;
+        public              ITyp    Int64      => int64;
+        public              ITyp    Float      => flt32;
+        public              ITyp    Double     => flt64;
+        public              ITyp    BigInteger => bigInteger;
+        public              ITyp    DateTime   => dateTime;
+        public              ITyp    JsonValue  => jsonValue;
         
         public NativeTypeSystem (IReadOnlyDictionary<Type, TypeMapper> typeMappers) {
-            var nativeMap   = new Dictionary<Type, NativeType>(typeMappers.Count);
-            var map         = new Dictionary<ITyp, TypeMapper>(typeMappers.Count);
+            nativeMap   = new Dictionary<Type, NativeType>(typeMappers.Count);
+            var map     = new Dictionary<ITyp, TypeMapper>(typeMappers.Count);
             foreach (var pair in typeMappers) {
                 var type    = pair.Key; 
                 var mapper  = pair.Value;
@@ -70,7 +73,7 @@ namespace Friflo.Json.Flow.Schema.Utils
                 map.      Add(iTyp, mapper);
                 nativeMap.Add(type, iTyp);
             }
-            this.typeMappers = new ReadOnlyDictionary<ITyp, TypeMapper>(map);
+            this.types = map.Keys;
             boolean     = nativeMap[typeof(bool)];
             @string     = nativeMap[typeof(string)];
             uint8       = nativeMap[typeof(byte)];
@@ -86,6 +89,29 @@ namespace Friflo.Json.Flow.Schema.Utils
                 var type  = pair.Value;
                 type.baseType = nativeMap[type.native].BaseType;
             }
+            foreach (var pair in map) {
+                var type    = pair.Key;
+                var mapper  = pair.Value;
+                type.ElementType = nativeMap[mapper.GetElementMapper().type]; 
+
+                foreach (var propField in mapper.propFields.fields) {
+                    var field = new Field {
+                        jsonName    = propField.jsonName,
+                        required    = propField.required,
+                        fieldType   = nativeMap[propField.fieldType.type]
+                    };
+                    type.Fields.Add(field);
+                }                
+            }
+        }
+        
+        public ICollection<ITyp> GetTypes(ICollection<Type> nativeTypes) {
+            var list = new List<ITyp> (nativeTypes.Count);
+            foreach (var nativeType in nativeTypes) {
+                var type = nativeMap[nativeType];
+                list.Add(type);
+            }
+            return list;
         }
     }
 }

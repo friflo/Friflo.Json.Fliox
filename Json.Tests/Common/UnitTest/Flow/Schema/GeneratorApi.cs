@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         private static void EnsureApiAccess() {
             EnsureSymbol(nameof(Generator.files));
             EnsureSymbol(nameof(Generator.packages));
-            EnsureSymbol(nameof(Generator.typeMappers));
+            EnsureSymbol(nameof(Generator.types));
             EnsureSymbol(nameof(Generator.fileExt));
             
             EnsureSymbol(nameof(EmitType.type));

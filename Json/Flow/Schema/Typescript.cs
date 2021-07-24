@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
@@ -17,17 +16,18 @@ namespace Friflo.Json.Flow.Schema
         private readonly    Dictionary<ITyp, string>    standardTypes;
 
         public Typescript (TypeStore typeStore, ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
-            generator = new Generator(typeStore, stripNamespaces, ".ts", separateTypes);
-            standardTypes = GetStandardTypes(generator.system);
+            var system      = new NativeTypeSystem(typeStore.GetTypeMappers());
+            var sepTypes    = system.GetTypes(separateTypes);
+            generator       = new Generator(typeStore, stripNamespaces, ".ts", sepTypes);
+            standardTypes   = GetStandardTypes(generator.system);
         }
         
         public void GenerateSchema() {
             var sb = new StringBuilder();
             // emit custom types
-            foreach (var pair in generator.typeMappers) {
-                var mapper = pair.Value;
+            foreach (var type in generator.types) {
                 sb.Clear();
-                var result = EmitType(mapper, sb);
+                var result = EmitType(type, sb);
                 if (result == null)
                     continue;
                 generator.AddEmitType(result);
@@ -84,7 +84,7 @@ namespace Friflo.Json.Flow.Schema
                 var extendsStr = "";
                 if (discriminant != null) {
                     var baseType    = type.BaseType;
-                    discriminator   = baseType.InstanceFactory.discriminator;
+                    discriminator   = baseType.UnionType.discriminator;
                     extendsStr = $"extends {baseType.Name} ";
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                     dependencies.Add(baseType);
@@ -96,21 +96,21 @@ namespace Friflo.Json.Flow.Schema
                         dependencies.Add(baseType);
                     }
                 }
-                var instanceFactory = mapper.InstanceFactory;
+                var instanceFactory = type.UnionType;
                 if (instanceFactory == null) {
                     sb.AppendLine($"export class {type.Name} {extendsStr}{{");
                 } else {
                     sb.AppendLine($"export type {type.Name}_Union =");
                     foreach (var polyType in instanceFactory.polyTypes) {
-                        sb.AppendLine($"    | {polyType.type.Name}");
-                        imports.Add(polyType.type);
+                        sb.AppendLine($"    | {polyType.Name}");
+                        imports.Add(polyType);
                     }
                     sb.AppendLine($";");
                     sb.AppendLine();
                     sb.AppendLine($"export abstract class {type.Name} {extendsStr}{{");
                     sb.AppendLine($"    abstract {instanceFactory.discriminator}:");
                     foreach (var polyType in instanceFactory.polyTypes) {
-                        sb.AppendLine($"        | \"{polyType.name}\"");
+                        sb.AppendLine($"        | \"{polyType.Name}\"");
                     }
                     sb.AppendLine($"    ;");
                 }
@@ -120,7 +120,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 // fields                
                 foreach (var field in fields) {
-                    if (generator.IsDerivedField(type, field))
+                    if (type.IsDerivedField(field))
                         continue;
                     bool isOptional = !field.required;
                     var fieldType = GetFieldType(field.fieldType, context, ref isOptional);
@@ -174,7 +174,7 @@ namespace Friflo.Json.Flow.Schema
                 return $"{{ [key: string]: {valueTypeName} }}";
             }
             context.imports.Add(type);
-            if (context.generator.IsUnionType(type))
+            if (type.UnionType != null)
                 return $"{type.Name}_Union";
             return generator.GetTypeName(type);
         }
@@ -194,7 +194,7 @@ namespace Friflo.Json.Flow.Schema
                     var typeName = generator.GetTypeName(import.type);
                     var indent = Generator.Indent(max, typeName);
                     sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.package}\"");
-                    if (generator.IsUnionType(import.type)) {
+                    if (import.type.UnionType != null) {
                         sb.AppendLine($"import {{ {typeName}_Union }}{indent} from \"./{import.package}\"");
                     }
                 }

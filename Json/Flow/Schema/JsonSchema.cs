@@ -19,15 +19,16 @@ namespace Friflo.Json.Flow.Schema
 
         
         public JsonSchema (TypeStore typeStore, ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
-            generator               = new Generator(typeStore, stripNamespaces, ".json", separateTypes);
-            standardTypes = GetStandardTypes(generator.system);
+            var system      = new NativeTypeSystem(typeStore.GetTypeMappers());
+            var sepTypes    = system.GetTypes(separateTypes);
+            generator       = new Generator(typeStore, stripNamespaces, ".json", sepTypes);
+            standardTypes   = GetStandardTypes(generator.system);
         }
         
         public void GenerateSchema() {
             var sb = new StringBuilder();
             // emit custom types
-            foreach (var pair in generator.typeMappers) {
-                var type = pair.Key;
+            foreach (var type in generator.types) {
                 sb.Clear();
                 var result = EmitType(type, sb);
                 if (result == null)
@@ -83,11 +84,11 @@ namespace Friflo.Json.Flow.Schema
                 string  discriminator = null;
                 var     discriminant = type.Discriminant;
                 if (discriminant != null) {
-                    var baseMapper  = type.BaseType;
-                    discriminator   = baseMapper.InstanceFactory.discriminator;
+                    var baseType    = type.BaseType;
+                    discriminator   = baseType.UnionType.discriminator;
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                 }
-                var instanceFactory = mapper.InstanceFactory;
+                var instanceFactory = type.UnionType;
                 sb.AppendLine($"        \"{type.Name}\": {{");
                 if (instanceFactory == null) {
                     sb.AppendLine($"            \"type\": \"object\",");
@@ -96,7 +97,7 @@ namespace Friflo.Json.Flow.Schema
                     bool firstElem = true;
                     foreach (var polyType in instanceFactory.polyTypes) {
                         Generator.Delimiter(sb, Next, ref firstElem);
-                        sb.Append($"                {{ {Ref(polyType.type, false, context)} }}");
+                        sb.Append($"                {{ {Ref(polyType, false, context)} }}");
                     }
                     sb.AppendLine();
                     sb.AppendLine($"            ],");

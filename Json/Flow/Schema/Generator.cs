@@ -7,7 +7,6 @@ using System.IO;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
-using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Flow.Schema.Utils;
 
 namespace Friflo.Json.Flow.Schema
@@ -58,10 +57,10 @@ namespace Friflo.Json.Flow.Schema
         public   readonly   string                                  fileExt;
         
         public   readonly   ITypeSystem                             system;
-        private  readonly   Dictionary<ITyp, string>                StandardTypes;
+        private  readonly   Dictionary<ITyp, string>                standardTypes;
 
         /// map of all <see cref="TypeMapper"/>'s required by the types provided for schema generation
-        public   readonly   IReadOnlyDictionary<ITyp, TypeMapper>   typeMappers;
+        public   readonly   ICollection<ITyp>                       types;
         /// map of all generated packages. key: package name  
         public   readonly   Dictionary<string, Package>             packages        = new Dictionary<string, Package>();
         
@@ -82,11 +81,11 @@ namespace Friflo.Json.Flow.Schema
         public Generator (TypeStore typeStore, ICollection<string> stripNamespaces, string fileExtension, ICollection<ITyp> separateTypes) {
             system                  = new NativeTypeSystem(typeStore.GetTypeMappers());
             fileExt                 = fileExtension;
-            typeMappers             = system.TypeMappers;
+            types                   = system.Types;
             this.stripNamespaces    = stripNamespaces ?? new List<string>();
             this.separateTypes      = separateTypes ?? new List<ITyp>();
             getPackageName          = GetPackageNameCallback;
-            StandardTypes           = GetStandardTypes(system);
+            standardTypes           = GetStandardTypes(system);
         }
         
         public static string Indent(int max, string str) {
@@ -114,7 +113,7 @@ namespace Friflo.Json.Flow.Schema
         public string GetPackageName (ITyp type) {
             if (packageCache.TryGetValue(type, out var packageName))
                 return packageName;
-            if (StandardTypes.ContainsKey(type)) {
+            if (standardTypes.ContainsKey(type)) {
                 packageName = "Standard";
             } else {
                 packageName = getPackageName(type);
@@ -125,7 +124,7 @@ namespace Friflo.Json.Flow.Schema
         }
         
         public string GetTypeName (ITyp type) {
-            if (StandardTypes.TryGetValue(type, out string typeName))
+            if (standardTypes.TryGetValue(type, out string typeName))
                 return typeName;
             return type.Name;
         }
@@ -154,7 +153,7 @@ namespace Friflo.Json.Flow.Schema
         }
         
         // ---------------------------------- retrieve type information ---------------------------------- 
-        public static ITyp GetType(TypeMapper mapper) {
+        /* public static ITyp GetType(TypeMapper mapper) {
             if (mapper.isNullable && mapper.nullableUnderlyingType != null) {
                 return mapper.nullableUnderlyingType;
             }
@@ -194,7 +193,7 @@ namespace Friflo.Json.Flow.Schema
                     return null;
             }
             return mapper;
-        }
+        } */
         
         // ---------------------------------- output generation  ---------------------------------- 
         public void AddEmitType(EmitType emit) {
