@@ -38,6 +38,20 @@ namespace Friflo.Json.Flow.Schema
             // EmitPackageFooters(sb);  no TS footer
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}"); // $"{ns.Replace(".", "/")}{generator.extension}");
         }
+
+        private static EmitType EmitStandardType(Type type, StringBuilder sb, Generator generator) {
+            if (type == typeof(DateTime)) {
+                sb.AppendLine($"export type DateTime = string;");
+                sb.AppendLine();
+                return new EmitType(type, TypeSemantic.None, generator, sb);
+            }
+            if (type == typeof(BigInteger)) {
+                sb.AppendLine($"export type BigInteger = string;");
+                sb.AppendLine();
+                return new EmitType(type, TypeSemantic.None, generator, sb);
+            }
+            return null;
+        }
         
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {
             var semantic= mapper.GetTypeSemantic();
@@ -45,15 +59,9 @@ namespace Friflo.Json.Flow.Schema
             var context = new TypeContext (generator, imports, mapper);
             mapper      = mapper.GetUnderlyingMapper();
             var type    = Generator.GetType(mapper);
-            if (type == typeof(DateTime)) {
-                sb.AppendLine($"export type DateTime = string;");
-                sb.AppendLine();
-                return new EmitType(type, semantic, generator, sb);
-            }
-            if (type == typeof(BigInteger)) {
-                sb.AppendLine($"export type BigInteger = string;");
-                sb.AppendLine();
-                return new EmitType(type, semantic, generator, sb);
+            var standardType = EmitStandardType(type, sb, generator);
+            if (standardType != null ) {
+                return standardType;
             }
             if (mapper.IsComplex) {
                 var dependencies = new List<Type>();

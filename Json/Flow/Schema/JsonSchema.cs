@@ -40,23 +40,31 @@ namespace Friflo.Json.Flow.Schema
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}", Next); // $"{ns.Replace(".", "/")}.ts");
         }
         
+        private static EmitType EmitStandardType(Type type, StringBuilder sb, Generator generator) {
+            if (type == typeof(DateTime)) {
+                sb.AppendLine("        \"DateTime\": {");
+                sb.AppendLine("            \"type\": \"string\", \"format\": \"date-time\"");
+                sb.Append    ("        }");
+                return new EmitType(type, TypeSemantic.None, generator, sb);
+            }
+            if (type == typeof(BigInteger)) {
+                sb.AppendLine("        \"BigInteger\": {");
+                sb.AppendLine("            \"type\": \"string\"");
+                sb.Append    ("        }");
+                return new EmitType(type, TypeSemantic.None, generator, sb);
+            }
+            return null;
+        }
+        
         private EmitType EmitType(TypeMapper mapper, StringBuilder sb) {
             var semantic= mapper.GetTypeSemantic();
             var imports = new HashSet<Type>(); 
             var context = new TypeContext (generator, imports, mapper);
             mapper      = mapper.GetUnderlyingMapper();
             var type    = Generator.GetType(mapper);
-            if (type == typeof(DateTime)) {
-                sb.AppendLine("        \"DateTime\": {");
-                sb.AppendLine("            \"type\": \"string\", \"format\": \"date-time\"");
-                sb.Append    ("        }");
-                return new EmitType(type, semantic, generator, sb);
-            }
-            if (type == typeof(BigInteger)) {
-                sb.AppendLine("        \"BigInteger\": {");
-                sb.AppendLine("            \"type\": \"string\"");
-                sb.Append    ("        }");
-                return new EmitType(type, semantic, generator, sb);
+            var standardType = EmitStandardType(type, sb, generator);
+            if (standardType != null ) {
+                return standardType;
             }
             if (mapper.IsComplex) {
                 var fields          = mapper.propFields.fields;
