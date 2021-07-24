@@ -43,7 +43,7 @@ namespace Friflo.Json.Flow.Schema
         private static readonly Dictionary<Type, string> StandardTypes = new Dictionary<Type, string> {
             { typeof(byte),         "\"type\": \"number\", \"minimum\": 0, \"maximum\": 255" },
             { typeof(short),        "\"type\": \"number\", \"minimum\": -32768, \"maximum\": 32767" },
-            { typeof(int),          "\"type\": \"number\", \"minimum\": 2147483648, \"maximum\": 2147483647" },
+            { typeof(int),          "\"type\": \"number\", \"minimum\": -2147483648, \"maximum\": 2147483647" },
             { typeof(long),         "\"type\": \"number\", \"minimum\": -9223372036854775808, \"maximum\": 9223372036854775807" },
             
             { typeof(double),       "\"type\": \"number\"" },

@@ -6,7 +6,7 @@
             "type": "string", "format": "date-time"
         },
         "int32": {
-            "type": "number", "minimum": 2147483648, "maximum": 2147483647
+            "type": "number", "minimum": -2147483648, "maximum": 2147483647
         },
         "BigInteger": {
             "type": "string"
