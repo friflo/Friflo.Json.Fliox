@@ -22,7 +22,7 @@ namespace Friflo.Json.Flow.Schema
 
         
         public JsonSchema (TypeStore typeStore, ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
-            var system      = new NativeTypeSystem(typeStore.GetTypeMappers());
+            var system      = new NativeTypeSystem(typeStore);
             var sepTypes    = system.GetTypes(separateTypes);
             generator       = new Generator(system, stripNamespaces, ".json", sepTypes);
             standardTypes   = GetStandardTypes(generator.system);

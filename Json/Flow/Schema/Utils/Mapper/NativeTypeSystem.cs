@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Map.Val;
 
@@ -41,21 +42,26 @@ namespace Friflo.Json.Flow.Schema.Utils.Mapper
         public              ITyp    DateTime   => dateTime;
         public              ITyp    JsonValue  => jsonValue;
         
-        public NativeTypeSystem (IReadOnlyDictionary<Type, TypeMapper> typeMappers) {
+        public NativeTypeSystem (TypeStore typeStore) {
+            var typeMappers = new Dictionary<Type, TypeMapper>(typeStore.GetTypeMappers());
             nativeMap   = new Dictionary<Type, NativeType>(typeMappers.Count);
             var map     = new Dictionary<ITyp, TypeMapper>(typeMappers.Count);
             foreach (var pair in typeMappers) {
                 TypeMapper  mapper  = pair.Value;
                 var underMapper     = mapper.GetUnderlyingMapper();
-                IsNullableMapper(typeMappers, underMapper, out var nonNullableMapper);
-                Type type           = nonNullableMapper.type;
-                if (nativeMap.ContainsKey(type))
+                if (IsNullableMapper(underMapper, out var nonNullableType)) {
+                    typeStore.GetTypeMapper(nonNullableType);
+                }
+                if (nativeMap.ContainsKey(nonNullableType))
                     continue;
-                var  iTyp           = new NativeType(underMapper);
-                nativeMap.Add(type, iTyp);
+                var  iTyp = new NativeType(underMapper);
+                nativeMap.Add(nonNullableType, iTyp);
                 map.      Add(iTyp, underMapper);
             }
-            this.types = map.Keys;
+            // in case a Nullable<> was found - typeStore contain now also their non-nullable counterparts.
+            typeMappers =  new Dictionary<Type, TypeMapper>(typeStore.GetTypeMappers());
+            
+            types = map.Keys;
             nativeMap.TryGetValue(typeof(bool),         out boolean);
             nativeMap.TryGetValue(typeof(string),       out @string);
             nativeMap.TryGetValue(typeof(byte),         out uint8);
@@ -96,11 +102,11 @@ namespace Friflo.Json.Flow.Schema.Utils.Mapper
                     type.fields = new List<Field>(propFields.fields.Length);
                     foreach (var propField in propFields.fields) {
                         var fieldMapper = propField.fieldType.GetUnderlyingMapper();
-                        var isNullable = IsNullableMapper(typeMappers, fieldMapper, out var nonNullableMapper);
+                        var isNullable = IsNullableMapper(fieldMapper, out var nonNullableType);
                         var field = new Field {
                             jsonName    = propField.jsonName,
                             required    = propField.required || !isNullable,
-                            fieldType   = nativeMap[nonNullableMapper.type]
+                            fieldType   = nativeMap[nonNullableType]
                         };
                         type.Fields.Add(field);
                     }
@@ -121,14 +127,13 @@ namespace Friflo.Json.Flow.Schema.Utils.Mapper
             }
         }
    
-        private static bool IsNullableMapper(IReadOnlyDictionary<Type, TypeMapper> typeMappers, TypeMapper mapper, out TypeMapper nonNullableMapper) {
+        private static bool IsNullableMapper(TypeMapper mapper, out Type nonNullableType) {
             var isNullable = mapper.isNullable;
             if (isNullable && mapper.nullableUnderlyingType != null) {
-                var type = mapper.nullableUnderlyingType;
-                nonNullableMapper = typeMappers[type];
+                nonNullableType = mapper.nullableUnderlyingType;
                 return true;
             }
-            nonNullableMapper = mapper;
+            nonNullableType = mapper.type;
             return isNullable;
         }
         
