@@ -1,5 +1,6 @@
 import Ajv, { ValidateFunction } from "ajv"
 import fs from 'fs';
+import path from 'path';
 
 
 export function validateSchemas() {
@@ -25,7 +26,8 @@ export function validateSchemas() {
 }
 
 function getFiles(folder: string) : string[] {
-    const fileNames = fs.readdirSync(folder);
+    var fileNames = fs.readdirSync(folder);
+    fileNames = fileNames.filter(name => path.extname(name) === ".json");
     return fileNames.map(name => folder + name);
 }
 
