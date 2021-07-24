@@ -117,7 +117,7 @@ namespace Friflo.Json.Flow.Schema
                     sb.AppendLine($"    ;");
                 }
                 if (discriminant != null) {
-                    var indent = Generator.Indent(maxFieldName, discriminator);
+                    var indent = Indent(maxFieldName, discriminator);
                     sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
                 }
                 // fields                
@@ -126,7 +126,7 @@ namespace Friflo.Json.Flow.Schema
                         continue;
                     bool isOptional = !field.required;
                     var fieldType = GetFieldType(field.fieldType, context, ref isOptional);
-                    var indent = Generator.Indent(maxFieldName, field.jsonName);
+                    var indent = Indent(maxFieldName, field.jsonName);
                     var optStr = isOptional ? "?" : " ";
                     var nullStr = isOptional ? " | null" : "";
                     sb.AppendLine($"    {field.jsonName}{optStr}{indent} : {fieldType}{nullStr};");
@@ -186,7 +186,7 @@ namespace Friflo.Json.Flow.Schema
                 Package package     = pair.Value;
                 string  packageName = pair.Key;
                 sb.Clear();
-                sb.AppendLine($"// {Generator.Note}");
+                sb.AppendLine($"// {Note}");
                 var     max         = package.imports.MaxLength(import => import.Value.package == packageName ? 0 : import.Key.Name.Length);
 
                 foreach (var importPair in package.imports) {
@@ -194,7 +194,7 @@ namespace Friflo.Json.Flow.Schema
                     if (import.package == packageName)
                         continue;
                     var typeName = generator.GetTypeName(import.type);
-                    var indent = Generator.Indent(max, typeName);
+                    var indent = Indent(max, typeName);
                     sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.package}\"");
                     if (import.type.UnionType != null) {
                         sb.AppendLine($"import {{ {typeName}_Union }}{indent} from \"./{import.package}\"");

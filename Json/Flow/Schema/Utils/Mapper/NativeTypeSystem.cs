@@ -65,8 +65,19 @@ namespace Friflo.Json.Flow.Schema.Utils.Mapper
             nativeMap.TryGetValue(typeof(JsonValue),    out jsonValue);
             
             foreach (var pair in nativeMap) {
-                NativeType type  = pair.Value;
-                type.baseType = nativeMap[type.native].BaseType;
+                NativeType  type        = pair.Value;
+                Type        baseType    = type.native.BaseType;
+                TypeMapper  mapper;
+                // When searching for polymorph base class there may be are classes in this hierarchy. E.g. BinaryBoolOp. 
+                // If these classes may have a protected constructor they need to be skipped. These classes have no TypeMapper. 
+                while (!typeMappers.TryGetValue(baseType, out  mapper)) {
+                    baseType = baseType.BaseType;
+                    if (baseType == null)
+                        break;
+                }
+                if (mapper != null) {
+                    type.baseType = nativeMap[mapper.type];
+                }
             }
             foreach (var pair in nativeMap) {
                 NativeType  type    = pair.Value;

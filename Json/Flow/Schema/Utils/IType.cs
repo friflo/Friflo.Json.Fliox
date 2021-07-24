@@ -28,13 +28,17 @@ namespace Friflo.Json.Flow.Schema.Utils
     }
     
     public class Field {
-        public   string     jsonName;
-        public   bool       required;
-        internal ITyp       fieldType;
+        public              string      jsonName;
+        public              bool        required;
+        internal            ITyp        fieldType;
+
+        public   override   string      ToString() => jsonName;
     }
 
     public class UnionType {
-        public  string      discriminator;
-        public  List<ITyp>  polyTypes;
+        public              string      discriminator;
+        public              List<ITyp>  polyTypes;
+        
+        public   override   string      ToString() => discriminator;
     }
 }

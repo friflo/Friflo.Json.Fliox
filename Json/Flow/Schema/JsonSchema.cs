@@ -98,7 +98,7 @@ namespace Friflo.Json.Flow.Schema
                     sb.AppendLine($"            \"oneOf\": [");
                     bool firstElem = true;
                     foreach (var polyType in instanceFactory.polyTypes) {
-                        Generator.Delimiter(sb, Next, ref firstElem);
+                        Delimiter(sb, Next, ref firstElem);
                         sb.Append($"                {{ {Ref(polyType, false, context)} }}");
                     }
                     sb.AppendLine();
@@ -108,7 +108,7 @@ namespace Friflo.Json.Flow.Schema
                 bool firstField = true;
                 var requiredFields = new List<string>();
                 if (discriminant != null) {
-                    var indent = Generator.Indent(maxFieldName, discriminator);
+                    var indent = Indent(maxFieldName, discriminator);
                     sb.Append($"                \"{discriminator}\":{indent} {{ \"enum\": [\"{discriminant}\"] }}");
                     firstField = false;
                     requiredFields.Add(discriminator);
@@ -119,10 +119,10 @@ namespace Friflo.Json.Flow.Schema
                     //    continue;
                     bool isOptional = !field.required;
                     var fieldType = GetFieldType(field.fieldType, context, ref isOptional);
-                    var indent = Generator.Indent(maxFieldName, field.jsonName);
+                    var indent = Indent(maxFieldName, field.jsonName);
                     if (!isOptional)
                         requiredFields.Add(field.jsonName);
-                    Generator.Delimiter(sb, Next, ref firstField);
+                    Delimiter(sb, Next, ref firstField);
                     sb.Append($"                \"{field.jsonName}\":{indent} {{ {fieldType} }}");
                 }
                 sb.AppendLine();
@@ -131,7 +131,7 @@ namespace Friflo.Json.Flow.Schema
                     bool firstReq = true;
                     sb.AppendLine("            \"required\": [");
                     foreach (var item in requiredFields) {
-                        Generator.Delimiter(sb, Next, ref firstReq);
+                        Delimiter(sb, Next, ref firstReq);
                         sb.Append ($"                \"{item}\"");
                     }
                     sb.AppendLine();
@@ -148,7 +148,7 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine($"            \"enum\": [");
                 bool firstValue = true;
                 foreach (var enumValue in enumValues) {
-                    Generator.Delimiter(sb, Next, ref firstValue);
+                    Delimiter(sb, Next, ref firstValue);
                     sb.Append($"                \"{enumValue}\"");
                 }
                 sb.AppendLine();
@@ -197,7 +197,7 @@ namespace Friflo.Json.Flow.Schema
                 sb.Clear();
                 sb.AppendLine("{");
                 sb.AppendLine( "    \"$schema\": \"http://json-schema.org/draft-07/schema#\",");
-                sb.AppendLine($"    \"$comment\": \"{Generator.Note}\",");
+                sb.AppendLine($"    \"$comment\": \"{Note}\",");
                 var first = package.emitTypes.FirstOrDefault();
                 if (first != null && generator.separateTypes.Contains(first.type)) {
                     var entityName = first.type.Name;

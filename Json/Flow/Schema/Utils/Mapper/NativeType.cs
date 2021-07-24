@@ -35,12 +35,12 @@ public class NativeType : ITyp
                                                                 internal set => elementType = value;  }
 
         public   override   bool                IsDictionary    => mapper.type.GetInterfaces().Contains(typeof(IDictionary));
-        public   override   string              ToString()      => mapper.ToString();
+        public   override   string              ToString()      => mapper.type.ToString();
         
         public   override   ICollection<string> GetEnumValues() => mapper.GetEnumValues();
         
         public   override   bool                IsDerivedField(Field field) {
-            var parent = native.BaseType;
+            var parent = BaseType;
             while (parent != null) {
                 if (fields.Find(f => f.jsonName == field.jsonName) != null)
                     return true;
