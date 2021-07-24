@@ -11,6 +11,25 @@ using Friflo.Json.Flow.Mapper.Map.Val;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
+    public class PocStore : EntityStore
+    {
+        public readonly EntitySet<Order>      orders;
+        public readonly EntitySet<Customer>   customers;
+        public readonly EntitySet<Article>    articles;
+        public readonly EntitySet<Producer>   producers;
+        public readonly EntitySet<Employee>   employees;
+        public readonly EntitySet<TestType>   types;
+        
+        public PocStore(EntityDatabase database, string clientId) : base (database, TestGlobals.typeStore, clientId) {
+            orders      = new EntitySet<Order>       (this);
+            customers   = new EntitySet<Customer>    (this);
+            articles    = new EntitySet<Article>     (this);
+            producers   = new EntitySet<Producer>    (this);
+            employees   = new EntitySet<Employee>    (this);
+            types       = new EntitySet<TestType>    (this);
+        }
+    }
+    
     // ------------------------------ models ------------------------------
     public class Order : Entity {
         public  Ref<Customer>       customer;
@@ -90,26 +109,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public int derivedVal;
     }
 
-    // --- store containers
-    public class PocStore : EntityStore
-    {
-        public readonly EntitySet<Order>      orders;
-        public readonly EntitySet<Customer>   customers;
-        public readonly EntitySet<Article>    articles;
-        public readonly EntitySet<Producer>   producers;
-        public readonly EntitySet<Employee>   employees;
-        public readonly EntitySet<TestType>   types;
-        
-        public PocStore(EntityDatabase database, string clientId) : base (database, TestGlobals.typeStore, clientId) {
-            orders      = new EntitySet<Order>       (this);
-            customers   = new EntitySet<Customer>    (this);
-            articles    = new EntitySet<Article>     (this);
-            producers   = new EntitySet<Producer>    (this);
-            employees   = new EntitySet<Employee>    (this);
-            types       = new EntitySet<TestType>    (this);
-        }
-    }
-    
     // ------------------------------ messages ------------------------------
     class TestMessage {
         public          string  text;
