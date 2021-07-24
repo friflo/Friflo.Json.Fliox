@@ -7,7 +7,7 @@ using System.Numerics;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Map.Val;
 
-namespace Friflo.Json.Flow.Schema.Utils
+namespace Friflo.Json.Flow.Schema.Utils.Mapper
 {
     public interface ITypeSystem
     {
@@ -67,45 +67,68 @@ namespace Friflo.Json.Flow.Schema.Utils
             nativeMap   = new Dictionary<Type, NativeType>(typeMappers.Count);
             var map     = new Dictionary<ITyp, TypeMapper>(typeMappers.Count);
             foreach (var pair in typeMappers) {
-                var type    = pair.Key; 
-                var mapper  = pair.Value;
-                var iTyp = new NativeType(mapper);
+                TypeMapper  mapper  = pair.Value;
+                mapper              = mapper.GetUnderlyingMapper();
+                Type type           = mapper.type;        
+                var         iTyp    = new NativeType(mapper);
                 map.      Add(iTyp, mapper);
                 nativeMap.Add(type, iTyp);
             }
             this.types = map.Keys;
-            boolean     = nativeMap[typeof(bool)];
-            @string     = nativeMap[typeof(string)];
-            uint8       = nativeMap[typeof(byte)];
-            int16       = nativeMap[typeof(short)];
-            int32       = nativeMap[typeof(int)];
-            int64       = nativeMap[typeof(long)];
-            flt32       = nativeMap[typeof(float)];
-            flt64       = nativeMap[typeof(double)];
-            bigInteger  = nativeMap[typeof(BigInteger)];
-            dateTime    = nativeMap[typeof(DateTime)];
-            jsonValue   = nativeMap[typeof(JsonValue)];
+            nativeMap.TryGetValue(typeof(bool),         out boolean);
+            nativeMap.TryGetValue(typeof(string),       out @string);
+            nativeMap.TryGetValue(typeof(byte),         out uint8);
+            nativeMap.TryGetValue(typeof(short),        out int16);
+            nativeMap.TryGetValue(typeof(int),          out int32);
+            nativeMap.TryGetValue(typeof(long),         out int64);
+            nativeMap.TryGetValue(typeof(float),        out flt32);
+            nativeMap.TryGetValue(typeof(double),       out flt64);
+            nativeMap.TryGetValue(typeof(BigInteger),   out bigInteger);
+            nativeMap.TryGetValue(typeof(DateTime),     out dateTime);
+            nativeMap.TryGetValue(typeof(JsonValue),    out jsonValue);
+            
             foreach (var pair in nativeMap) {
-                var type  = pair.Value;
+                NativeType type  = pair.Value;
                 type.baseType = nativeMap[type.native].BaseType;
             }
-            foreach (var pair in map) {
-                var type    = pair.Key;
-                var mapper  = pair.Value;
-                type.ElementType = nativeMap[mapper.GetElementMapper().type]; 
-
-                foreach (var propField in mapper.propFields.fields) {
-                    var field = new Field {
-                        jsonName    = propField.jsonName,
-                        required    = propField.required,
-                        fieldType   = nativeMap[propField.fieldType.type]
+            foreach (var pair in nativeMap) {
+                NativeType  type    = pair.Value;
+                TypeMapper  mapper  = type.mapper;
+                var elementMapper = mapper.GetElementMapper();
+                if (elementMapper != null) {
+                    type.ElementType    = nativeMap[mapper.GetElementMapper().type];
+                }
+                var  propFields = mapper.propFields;
+                if (propFields != null) {
+                    type.fields = new List<Field>(propFields.fields.Length);
+                    foreach (var propField in propFields.fields) {
+                        var field = new Field {
+                            jsonName    = propField.jsonName,
+                            required    = propField.required,
+                            fieldType   = nativeMap[propField.fieldType.type]
+                        };
+                        type.Fields.Add(field);
+                    }
+                }
+                
+                var instanceFactory = mapper.instanceFactory;
+                if (instanceFactory != null) {
+                    var polyTypes = instanceFactory.polyTypes;
+                    type.unionType = new UnionType {
+                        discriminator = instanceFactory.discriminator,
+                        polyTypes = new List<ITyp>(polyTypes.Length)
                     };
-                    type.Fields.Add(field);
-                }                
+                    foreach (var polyType in polyTypes) {
+                        ITyp element = nativeMap[polyType.type];
+                        type.unionType.polyTypes.Add(element);
+                    }
+                }
             }
         }
         
         public ICollection<ITyp> GetTypes(ICollection<Type> nativeTypes) {
+            if (nativeTypes == null)
+                return null;
             var list = new List<ITyp> (nativeTypes.Count);
             foreach (var nativeType in nativeTypes) {
                 var type = nativeMap[nativeType];

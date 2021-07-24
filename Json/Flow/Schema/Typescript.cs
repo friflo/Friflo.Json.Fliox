@@ -7,6 +7,9 @@ using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Schema.Utils;
+using Friflo.Json.Flow.Schema.Utils.Mapper;
+
+using static Friflo.Json.Flow.Schema.Generator;
 
 namespace Friflo.Json.Flow.Schema
 {
@@ -18,7 +21,7 @@ namespace Friflo.Json.Flow.Schema
         public Typescript (TypeStore typeStore, ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
             var system      = new NativeTypeSystem(typeStore.GetTypeMappers());
             var sepTypes    = system.GetTypes(separateTypes);
-            generator       = new Generator(typeStore, stripNamespaces, ".ts", sepTypes);
+            generator       = new Generator(system, stripNamespaces, ".ts", sepTypes);
             standardTypes   = GetStandardTypes(generator.system);
         }
         
@@ -39,18 +42,17 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private static Dictionary<ITyp, string> GetStandardTypes(ITypeSystem system) {
-            var map = new Dictionary<ITyp, string> {
-                { system.Unit8,         "uint8 = number" },
-                { system.Int16,         "int16 = number" },
-                { system.Int32,         "int32 = number" },
-                { system.Int64,         "int64 = number" },
-                
-                { system.Double,        "double = number" },
-                { system.Float,         "float = number" },
-                
-                { system.BigInteger,    "BigInteger = string" },
-                { system.DateTime,      "DateTime = string" }
-            };
+            var map = new Dictionary<ITyp, string>();
+            AddType(map, system.Unit8,         "uint8 = number" );
+            AddType(map, system.Int16,         "int16 = number" );
+            AddType(map, system.Int32,         "int32 = number" );
+            AddType(map, system.Int64,         "int64 = number" );
+               
+            AddType(map, system.Double,        "double = number" );
+            AddType(map, system.Float,         "float = number" );
+               
+            AddType(map, system.BigInteger,    "BigInteger = string" );
+            AddType(map, system.DateTime,      "DateTime = string" );
             return map;
         }
 
