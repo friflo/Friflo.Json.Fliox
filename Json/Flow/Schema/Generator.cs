@@ -109,8 +109,9 @@ namespace Friflo.Json.Flow.Schema
         public string GetPackageName (Type type) {
             if (packageCache.TryGetValue(type, out var packageName))
                 return packageName;
-            packageName = GetStandardPackage(type);
-            if (packageName == null) {
+            if (StandardTypes.Contains(type)) {
+                packageName = "Standard";
+            } else {
                 packageName = getPackageName(type);
                 packageName = Strip(packageName);
             }
@@ -118,13 +119,18 @@ namespace Friflo.Json.Flow.Schema
             return packageName;
         }
         
-        private static string GetStandardPackage(Type type) {
-            if (type == typeof(BigInteger))
-                return "Standard";
-            if (type == typeof(DateTime))
-                return "Standard";
-            return null;
-        }
+        private static readonly List<Type> StandardTypes = new List<Type> {
+            typeof(byte),
+            typeof(short),
+            typeof(int),
+            typeof(long),
+            
+            typeof(double),
+            typeof(float),
+            
+            typeof(BigInteger),
+            typeof(DateTime)
+        }; 
         
         /// <summary>
         /// Enables customizing package names for types. By Default it is <see cref="Type.Namespace"/>

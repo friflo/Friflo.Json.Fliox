@@ -40,6 +40,36 @@ namespace Friflo.Json.Flow.Schema
         }
 
         private static EmitType EmitStandardType(Type type, StringBuilder sb, Generator generator) {
+            if (type == typeof(byte)) {
+                sb.AppendLine($"export type uint8 = number;");
+                sb.AppendLine();
+                return new EmitType(type, TypeSemantic.None, generator, sb);
+            }
+            if (type == typeof(short)) {
+                sb.AppendLine($"export type int16 = number;");
+                sb.AppendLine();
+                return new EmitType(type, TypeSemantic.None, generator, sb);
+            }
+            if (type == typeof(int)) {
+                sb.AppendLine($"export type int32 = number;");
+                sb.AppendLine();
+                return new EmitType(type, TypeSemantic.None, generator, sb);
+            }
+            if (type == typeof(long)) {
+                sb.AppendLine($"export type int64 = number;");
+                sb.AppendLine();
+                return new EmitType(type, TypeSemantic.None, generator, sb);
+            }
+            if (type == typeof(float)) {
+                sb.AppendLine($"export type float = number;");
+                sb.AppendLine();
+                return new EmitType(type, TypeSemantic.None, generator, sb);
+            }
+            if (type == typeof(double)) {
+                sb.AppendLine($"export type double = number;");
+                sb.AppendLine();
+                return new EmitType(type, TypeSemantic.None, generator, sb);
+            }
             if (type == typeof(DateTime)) {
                 sb.AppendLine($"export type DateTime = string;");
                 sb.AppendLine();
@@ -148,10 +178,6 @@ namespace Friflo.Json.Flow.Schema
             }
             if (type == typeof(bool)) {
                 return "boolean";
-            }
-            if (type == typeof(byte) || type == typeof(short) || type == typeof(int) || type == typeof(long)
-                || type == typeof(float) || type == typeof(double)) {
-                return "number";
             }
             if (mapper.IsArray) {
                 var elementMapper = mapper.GetElementMapper();
