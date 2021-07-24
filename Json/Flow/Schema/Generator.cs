@@ -5,10 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Friflo.Json.Flow.Mapper;
-using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Schema.Utils;
-using Friflo.Json.Flow.Schema.Utils.Mapper;
 
 namespace Friflo.Json.Flow.Schema
 {
@@ -60,7 +57,7 @@ namespace Friflo.Json.Flow.Schema
         public   readonly   ITypeSystem                             system;
         private  readonly   Dictionary<ITyp, string>                standardTypes;
 
-        /// map of all <see cref="TypeMapper"/>'s required by the types provided for schema generation
+        /// map of all <see cref="ITyp"/>'s required by the types provided for schema generation
         public   readonly   ICollection<ITyp>                       types;
         /// map of all generated packages. key: package name  
         public   readonly   Dictionary<string, Package>             packages        = new Dictionary<string, Package>();

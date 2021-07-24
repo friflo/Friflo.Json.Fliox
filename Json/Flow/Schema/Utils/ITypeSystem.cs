@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 
 namespace Friflo.Json.Flow.Schema.Utils
@@ -25,7 +24,5 @@ namespace Friflo.Json.Flow.Schema.Utils
         ITyp   DateTime    { get; }
         
         ITyp   JsonValue   { get; }
-        
-        ICollection<ITyp> GetTypes(ICollection<Type> separateTypes);
     }
 }
