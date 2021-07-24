@@ -155,49 +155,6 @@ namespace Friflo.Json.Flow.Schema
             getPackageName = callback;
         }
         
-        // ---------------------------------- retrieve type information ---------------------------------- 
-        /* public static ITyp GetType(TypeMapper mapper) {
-            if (mapper.isNullable && mapper.nullableUnderlyingType != null) {
-                return mapper.nullableUnderlyingType;
-            }
-            return mapper.type;
-        }
-        
-        public bool IsUnionType (ITyp type) {
-            if (!typeMappers.TryGetValue(type, out var mapper))
-                return false;
-            var instanceFactory = mapper.InstanceFactory;
-            return instanceFactory != null;
-        }
-        
-        public bool IsDerivedField(ITyp type, PropField field) {
-            var baseType = type.BaseType;
-            while (baseType != null) {
-                if (typeMappers.TryGetValue(baseType, out var mapper)) {
-                    if (mapper.propFields.Contains(field.name))
-                        return true;
-                }
-                baseType = baseType.BaseType;
-            }
-            return false;
-        }
-        
-        public TypeMapper GetBaseMapper(ITyp type) {
-            var baseType = type.BaseType;
-            if (baseType == null)
-                return null;
-            TypeMapper mapper;
-            
-            // When searching for polymorph base class there may be are classes in this hierarchy. E.g. BinaryBoolOp. 
-            // If these classes may have a protected constructor they need to be skipped. These classes have no TypeMapper. 
-            while (!typeMappers.TryGetValue(baseType, out mapper)) {
-                baseType = baseType.BaseType;
-                if (baseType == null)
-                    return null;
-            }
-            return mapper;
-        } */
-        
         // ---------------------------------- output generation  ---------------------------------- 
         public void AddEmitType(EmitType emit) {
             emitTypes.TryAdd(emit.type, emit);
