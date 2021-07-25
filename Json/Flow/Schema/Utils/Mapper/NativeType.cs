@@ -26,7 +26,6 @@ public class NativeType : ITyp
         public   override   List<Field>         Fields          => fields;
         public   override   string              Discriminant    => mapper.Discriminant;
         public   override   TypeSemantic        TypeSemantic    => mapper.GetTypeSemantic();
-        public   override   bool                IsNullable      => mapper.isNullable;
         public   override   bool                IsArray         => mapper.IsArray;
         public   override   UnionType           UnionType       => unionType;
 

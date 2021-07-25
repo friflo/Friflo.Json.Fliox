@@ -4,10 +4,9 @@
 using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper.Map;
 
-// ReSharper disable ConvertToAutoProperty
+
 namespace Friflo.Json.Flow.Schema.Utils
 {
-    // ReSharper disable once InconsistentNaming
     public abstract class ITyp {
         public  abstract    string              Name         { get; }
         public  abstract    string              Namespace    { get; }
@@ -17,7 +16,6 @@ namespace Friflo.Json.Flow.Schema.Utils
         public  abstract    List<Field>         Fields       { get; }
         public  abstract    string              Discriminant { get; }
         public  abstract    TypeSemantic        TypeSemantic { get; }
-        public  abstract    bool                IsNullable   { get; }
         public  abstract    bool                IsArray      { get; }
         public  abstract    ITyp                ElementType  { get; internal set; }
         public  abstract    bool                IsDictionary { get; }
