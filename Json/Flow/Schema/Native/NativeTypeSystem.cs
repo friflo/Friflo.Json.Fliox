@@ -13,35 +13,21 @@ namespace Friflo.Json.Flow.Schema.Native
 {
     public class NativeTypeSystem : ITypeSystem
     {
-        private  readonly   ICollection<TypeDef> types;
+        public              ICollection<TypeDef>    Types       { get; }
+        public              TypeDef                 Boolean     { get; }
+        public              TypeDef                 String      { get; }
+        public              TypeDef                 Unit8       { get; }
+        public              TypeDef                 Int16       { get; }
+        public              TypeDef                 Int32       { get; }
+        public              TypeDef                 Int64       { get; }
+        public              TypeDef                 Float       { get; }
+        public              TypeDef                 Double      { get; }
+        public              TypeDef                 BigInteger  { get; }
+        public              TypeDef                 DateTime    { get; }
+        public              TypeDef                 JsonValue   { get; }
         
-        private  readonly   NativeType  boolean;
-        private  readonly   NativeType  @string;
-        private  readonly   NativeType  uint8;
-        private  readonly   NativeType  int16;
-        private  readonly   NativeType  int32;
-        private  readonly   NativeType  int64;
-        private  readonly   NativeType  flt32;
-        private  readonly   NativeType  flt64;
-        private  readonly   NativeType  bigInteger;
-        private  readonly   NativeType  dateTime;
-        private  readonly   NativeType  jsonValue;
-
-        public              ICollection<TypeDef>            Types => types;
         /// Contains only non nullable Type's
         private  readonly   Dictionary<Type, NativeType>    nativeMap;
-        
-        public              TypeDef     Boolean    => boolean;
-        public              TypeDef     String     => @string;
-        public              TypeDef     Unit8      => uint8;
-        public              TypeDef     Int16      => int16;
-        public              TypeDef     Int32      => int32;
-        public              TypeDef     Int64      => int64;
-        public              TypeDef     Float      => flt32;
-        public              TypeDef     Double     => flt64;
-        public              TypeDef     BigInteger => bigInteger;
-        public              TypeDef     DateTime   => dateTime;
-        public              TypeDef     JsonValue  => jsonValue;
         
         public NativeTypeSystem (TypeStore typeStore) {
             var typeMappers = new Dictionary<Type, TypeMapper>(typeStore.GetTypeMappers());
@@ -62,18 +48,18 @@ namespace Friflo.Json.Flow.Schema.Native
             // in case a Nullable<> was found - typeStore contain now also their non-nullable counterparts.
             typeMappers =  new Dictionary<Type, TypeMapper>(typeStore.GetTypeMappers());
             
-            types = map.Keys;
-            nativeMap.TryGetValue(typeof(bool),         out boolean);
-            nativeMap.TryGetValue(typeof(string),       out @string);
-            nativeMap.TryGetValue(typeof(byte),         out uint8);
-            nativeMap.TryGetValue(typeof(short),        out int16);
-            nativeMap.TryGetValue(typeof(int),          out int32);
-            nativeMap.TryGetValue(typeof(long),         out int64);
-            nativeMap.TryGetValue(typeof(float),        out flt32);
-            nativeMap.TryGetValue(typeof(double),       out flt64);
-            nativeMap.TryGetValue(typeof(BigInteger),   out bigInteger);
-            nativeMap.TryGetValue(typeof(DateTime),     out dateTime);
-            nativeMap.TryGetValue(typeof(JsonValue),    out jsonValue);
+            Types = map.Keys;
+            Boolean     = FindTypeDef(typeof(bool));
+            String      = FindTypeDef(typeof(string));
+            Unit8       = FindTypeDef(typeof(byte));
+            Int16       = FindTypeDef(typeof(short));
+            Int32       = FindTypeDef(typeof(int));
+            Int64       = FindTypeDef(typeof(long));
+            Float       = FindTypeDef(typeof(float));
+            Double      = FindTypeDef(typeof(double));
+            BigInteger  = FindTypeDef(typeof(BigInteger));
+            DateTime    = FindTypeDef(typeof(DateTime));
+            JsonValue   = FindTypeDef(typeof(JsonValue));
             
             foreach (var pair in nativeMap) {
                 NativeType  type        = pair.Value;
@@ -126,6 +112,12 @@ namespace Friflo.Json.Flow.Schema.Native
                     }
                 }
             }
+        }
+        
+        private TypeDef FindTypeDef (Type type) {
+            if (nativeMap.TryGetValue(type, out var typeDef))
+                return typeDef;
+            return null;
         }
    
         private static bool IsNullableMapper(TypeMapper mapper, out Type nonNullableType) {
