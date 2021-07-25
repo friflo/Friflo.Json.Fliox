@@ -35,5 +35,12 @@ namespace Friflo.Json.Flow.Schema
             var _           = new JsonSchema(generator);
             return generator;
         }
+        
+        public Generator JsonTypeDefinition (string name, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
+            var schema      = new NativeTypeSchema(typeStore, separateTypes);
+            var generator   = new Generator(schema, stripNamespaces, ".json");
+            var _           = new JsonTypeDefinition(generator, name);
+            return generator;
+        }
     }
 }

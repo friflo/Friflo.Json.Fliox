@@ -184,6 +184,15 @@ namespace Friflo.Json.Flow.Schema
             }
         }
         
+        public void GroupToSinglePackage(string name) {
+            ICollection<EmitType> emits = emitTypes.Values;
+            var package = new Package($"{name}{fileExt}");
+            packages.Add(name, package);
+            foreach (var emit in emits) {
+                package.emitTypes.Add(emit);
+            }
+        }
+        
         private ICollection<EmitType> SortDependencies() {
             foreach (var pair in emitTypes) {
                 var emitType = pair.Value;
@@ -225,7 +234,7 @@ namespace Friflo.Json.Flow.Schema
         /// <summary>
         /// Write the generated file to the given folder and remove all others file with the used <see cref="fileExt"/>
         /// </summary>
-        public void WriteFiles(string folder) {
+        public void WriteFiles(string folder, bool cleanFolder = true) {
             // folder = Path.GetFullPath (folder);
             folder = folder.Replace('\\', '/');
             Directory.CreateDirectory(folder);
@@ -243,6 +252,8 @@ namespace Friflo.Json.Flow.Schema
                 Directory.CreateDirectory(fileFolder);
                 File.WriteAllText(path, content, utf8);
             }
+            if (!cleanFolder)
+                return;
             foreach (var fileName in fileSet) {
                 File.Delete(fileName);
             }

@@ -37,6 +37,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         }
         
         [Test]
+        public static void JTD_UserStore () {
+            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
+            var schema = new GeneratorSchema(typeStore, UserStoreTypes);
+            var generator = schema.JsonTypeDefinition("UserStore", null, UserStoreTypes);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JTD/", false);
+        }
+        
+        [Test]
         public static void TypescriptSync () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var schema = new GeneratorSchema(typeStore, SyncTypes);
