@@ -14,13 +14,14 @@ namespace Friflo.Json.Flow.Schema.Definition
         public  abstract    bool                IsComplex    { get; }
         public  abstract    List<Field>         Fields       { get; }
         public  abstract    string              Discriminant { get; }
-        public  abstract    TypeSemantic        TypeSemantic { get; }
         public  abstract    bool                IsArray      { get; }
         public  abstract    TypeDef             ElementType  { get; internal set; }
         public  abstract    bool                IsDictionary { get; }
         public  abstract    UnionType           UnionType    { get; }
-        
         public  abstract    ICollection<string> EnumValues   { get; }
+        /// currently not used
+        public  abstract    TypeSemantic        TypeSemantic { get; }
+
         public  abstract    bool                IsDerivedField(Field field);
     }
     
