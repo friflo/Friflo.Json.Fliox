@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         private static readonly Type[] PocStoreTypes    = { typeof(Order), typeof(Customer), typeof(Article), typeof(Producer), typeof(Employee), typeof(TestType) };
 
         [Test]
-        public static void TypescriptUserStore () {
+        public static void Typescript_UserStore () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var schema = new GeneratorSchema(typeStore, UserStoreTypes);
             var generator = schema.Typescript();
@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         }
         
         [Test]
-        public static void JsonSchemaUserStore () {
+        public static void JsonSchema_UserStore () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var schema = new GeneratorSchema(typeStore, UserStoreTypes);
             var generator = schema.JsonSchema(null, UserStoreTypes);
@@ -45,15 +45,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         }
         
         [Test]
-        public static void TypescriptSync () {
+        public static void Typescript_Sync () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var schema = new GeneratorSchema(typeStore, SyncTypes);
             var generator = schema.Typescript();
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/Sync");
         }
         
+        // [Test]
+        public static void JTD_Sync () {
+            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
+            var schema = new GeneratorSchema(typeStore, SyncTypes);
+            var generator = schema.JsonTypeDefinition("Sync", null, UserStoreTypes);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JTD/", false);
+        }
+        
         [Test]
-        public static void TypescriptPocStore () {
+        public static void Typescript_PocStore () {
             // Use code generator directly
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             typeStore.AddMappers(PocStoreTypes);
@@ -64,7 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         }
         
         [Test]
-        public static void JsonSchemaPocStore () {
+        public static void JsonSchema_PocStore () {
             // Use code generator directly
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             typeStore.AddMappers(PocStoreTypes);
