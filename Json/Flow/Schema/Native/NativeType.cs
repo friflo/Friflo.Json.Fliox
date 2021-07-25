@@ -6,8 +6,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Schema.Definition;
 
-namespace Friflo.Json.Flow.Schema.Utils.Mapper
+namespace Friflo.Json.Flow.Schema.Native
 {
 public class NativeType : TypeDef
     {

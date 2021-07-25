@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Schema.Definition;
+using Friflo.Json.Flow.Schema.Native;
 using Friflo.Json.Flow.Schema.Utils;
-using Friflo.Json.Flow.Schema.Utils.Mapper;
-
 using static Friflo.Json.Flow.Schema.Generator;
 
 namespace Friflo.Json.Flow.Schema

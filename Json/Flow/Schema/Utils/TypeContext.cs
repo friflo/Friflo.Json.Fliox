@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Flow.Schema.Definition;
 
 namespace Friflo.Json.Flow.Schema.Utils
 {

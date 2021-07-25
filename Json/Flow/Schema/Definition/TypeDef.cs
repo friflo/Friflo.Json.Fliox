@@ -4,8 +4,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper.Map;
 
-
-namespace Friflo.Json.Flow.Schema.Utils
+namespace Friflo.Json.Flow.Schema.Definition
 {
     public abstract class TypeDef {
         public  abstract    string              Name         { get; }

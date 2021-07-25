@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Friflo.Json.Flow.Schema.Definition;
 using Friflo.Json.Flow.Schema.Utils;
 
 namespace Friflo.Json.Flow.Schema

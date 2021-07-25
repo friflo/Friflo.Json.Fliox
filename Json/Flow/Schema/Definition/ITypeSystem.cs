@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace Friflo.Json.Flow.Schema.Utils
+namespace Friflo.Json.Flow.Schema.Definition
 {
     public interface ITypeSystem
     {
