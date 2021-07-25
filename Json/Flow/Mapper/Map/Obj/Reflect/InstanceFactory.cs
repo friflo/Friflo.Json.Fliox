@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
 {
-    // Is public to support external schema / code generators
     public class PolyType
     {
         internal PolyType(Type type, string name) {

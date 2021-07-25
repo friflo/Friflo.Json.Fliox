@@ -25,7 +25,6 @@ namespace Friflo.Json.Flow.Mapper.Map
         internal            InstanceFactory instanceFactory;
         internal            string          discriminant;
 
-        public              InstanceFactory InstanceFactory => instanceFactory;
         public              string          Discriminant    => discriminant;
         public virtual      bool            IsComplex       => false;
         public virtual      bool            IsArray         => false;
