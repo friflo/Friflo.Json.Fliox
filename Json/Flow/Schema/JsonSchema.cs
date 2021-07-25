@@ -140,7 +140,7 @@ namespace Friflo.Json.Flow.Schema
                 return new EmitType(type, semantic, generator, sb, imports);
             }
             if (type.IsEnum) {
-                var enumValues = type.GetEnumValues();
+                var enumValues = type.EnumValues;
                 sb.AppendLine($"        \"{type.Name}\": {{");
                 sb.AppendLine($"            \"enum\": [");
                 bool firstValue = true;

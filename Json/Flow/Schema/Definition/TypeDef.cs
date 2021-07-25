@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Schema.Definition
         public  abstract    bool                IsDictionary { get; }
         public  abstract    UnionType           UnionType    { get; }
         
-        public  abstract    ICollection<string> GetEnumValues();
+        public  abstract    ICollection<string> EnumValues   { get; }
         public  abstract    bool                IsDerivedField(Field field);
     }
     

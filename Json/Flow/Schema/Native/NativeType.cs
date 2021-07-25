@@ -37,7 +37,7 @@ public class NativeType : TypeDef
         public   override   bool                IsDictionary    => mapper.type.GetInterfaces().Contains(typeof(IDictionary));
         public   override   string              ToString()      => mapper.type.ToString();
         
-        public   override   ICollection<string> GetEnumValues() => mapper.GetEnumValues();
+        public   override   ICollection<string> EnumValues      => mapper.GetEnumValues();
         
         public   override   bool                IsDerivedField(Field field) {
             var parent = BaseType;

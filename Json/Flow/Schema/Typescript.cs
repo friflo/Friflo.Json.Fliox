@@ -135,7 +135,7 @@ namespace Friflo.Json.Flow.Schema
                 return new EmitType(type, semantic, generator, sb, imports, dependencies);
             }
             if (type.IsEnum) {
-                var enumValues = type.GetEnumValues();
+                var enumValues = type.EnumValues;
                 sb.AppendLine($"export type {type.Name} =");
                 foreach (var enumValue in enumValues) {
                     sb.AppendLine($"    | \"{enumValue}\"");
