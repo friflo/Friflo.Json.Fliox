@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Schema.Definition;
 using Friflo.Json.Flow.Schema.Utils;
 using static Friflo.Json.Flow.Schema.Generator;
@@ -59,11 +58,10 @@ namespace Friflo.Json.Flow.Schema
             sb.Append(definition);
             sb.AppendLine(";");
             sb.AppendLine();
-            return new EmitType(type, TypeSemantic.None, generator, sb);
+            return new EmitType(type, generator, sb);
         }
         
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
-            var semantic        = type.TypeSemantic;
             var imports         = new HashSet<TypeDef>();
             var context         = new TypeContext (generator, imports, type);
             var standardType    = EmitStandardType(type, sb, generator);
@@ -127,7 +125,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 sb.AppendLine("}");
                 sb.AppendLine();
-                return new EmitType(type, semantic, generator, sb, imports, dependencies);
+                return new EmitType(type, generator, sb, imports, dependencies);
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
@@ -137,7 +135,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 sb.AppendLine($";");
                 sb.AppendLine();
-                return new EmitType(type, semantic, generator, sb);
+                return new EmitType(type, generator, sb);
             }
             return null;
         }

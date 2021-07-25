@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Schema.Definition;
 using Friflo.Json.Flow.Schema.Utils;
 using static Friflo.Json.Flow.Schema.Generator;
@@ -61,11 +60,10 @@ namespace Friflo.Json.Flow.Schema
             sb.AppendLine($"        \"{typeName}\": {{");
             sb.AppendLine($"            {definition}");
             sb.Append    ( "        }");
-            return new EmitType(type, TypeSemantic.None, generator, sb);
+            return new EmitType(type, generator, sb);
         }
         
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
-            var semantic        = type.TypeSemantic;
             var imports         = new HashSet<TypeDef>(); 
             var context         = new TypeContext (generator, imports, type);
             var standardType    = EmitStandardType(type, sb, generator);
@@ -133,7 +131,7 @@ namespace Friflo.Json.Flow.Schema
                 var additionalProperties = unionType != null ? "true" : "false"; 
                 sb.AppendLine($"            \"additionalProperties\": {additionalProperties}");
                 sb.Append     ("        }");
-                return new EmitType(type, semantic, generator, sb, imports);
+                return new EmitType(type, generator, sb, imports);
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
@@ -147,7 +145,7 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine();
                 sb.AppendLine("            ]");
                 sb.Append    ("        }");
-                return new EmitType(type, semantic, generator, sb);
+                return new EmitType(type, generator, sb);
             }
             return null;
         }

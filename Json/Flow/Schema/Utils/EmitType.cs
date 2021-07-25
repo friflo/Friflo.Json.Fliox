@@ -21,18 +21,20 @@ namespace Friflo.Json.Flow.Schema.Utils
         
         internal readonly   ICollection<TypeDef>    typeDependencies;
         internal readonly   ICollection<EmitType>   emitDependencies = new List<EmitType>();
-        
-        public   readonly   TypeSemantic            semantic;
+
+        /// currently not used
+        //  ReSharper disable once NotAccessedField.Local
+        private  readonly   TypeSemantic            semantic;
 
         public   override   string                  ToString() => type.Name;
 
         public EmitType(
             TypeDef             type,
-            TypeSemantic        semantic,
             Generator           generator,
             StringBuilder       sb,
             HashSet<TypeDef>    imports         = null,
-            List<TypeDef>       dependencies    = null)
+            List<TypeDef>       dependencies    = null,
+            TypeSemantic        semantic        = TypeSemantic.None)
         {
             this.semantic           = semantic;
             this.type               = type;
