@@ -48,11 +48,9 @@ namespace Friflo.Json.Flow.Schema.Native
     
     public class NativeTypeSchema : TypeSchema
     {
-        public   override   ICollection<TypeDef>    Types           { get; }
-        public   override   StandardTypes           StandardTypes   { get; }
-        public   override   ICollection<TypeDef>    SeparateTypes    { get; }
-
-        
+        public   override   ICollection<TypeDef>            Types           { get; }
+        public   override   StandardTypes                   StandardTypes   { get; }
+        public   override   ICollection<TypeDef>            SeparateTypes   { get; }
         /// Contains only non nullable Type's
         private  readonly   Dictionary<Type, NativeType>    nativeMap;
         

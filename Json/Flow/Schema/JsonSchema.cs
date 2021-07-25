@@ -13,16 +13,17 @@ namespace Friflo.Json.Flow.Schema
 {
     public class JsonSchema
     {
-        public   readonly   Generator                   generator;
+        private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardTypes;
         private  const      string                      Next = ",\r\n";
         
         public JsonSchema (Generator generator) {
             this.generator  = generator;
             standardTypes   = GetStandardTypes(generator.schema.StandardTypes);
+            GenerateSchema();
         }
         
-        public void GenerateSchema() {
+        private void GenerateSchema() {
             var sb = new StringBuilder();
             // emit custom types
             foreach (var type in generator.types) {
