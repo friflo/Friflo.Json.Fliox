@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Utils;
@@ -134,8 +133,8 @@ namespace Friflo.Json.Flow.Mapper
             return null;
         }
 
-        public IReadOnlyDictionary<Type, TypeMapper> GetTypeMappers() {
-            return typeMap;
+        public Dictionary<Type, TypeMapper> GetTypeMappers() {
+            return new Dictionary<Type, TypeMapper>(typeMap);
         }
     }
 }

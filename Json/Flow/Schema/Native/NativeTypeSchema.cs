@@ -55,9 +55,9 @@ namespace Friflo.Json.Flow.Schema.Native
         private  readonly   Dictionary<Type, NativeType>    nativeTypes;
         
         public NativeTypeSchema (TypeStore typeStore, ICollection<Type> separateTypes) {
-            var typeMappers = new Dictionary<Type, TypeMapper>(typeStore.GetTypeMappers());
-            nativeTypes   = new Dictionary<Type,    NativeType>(typeMappers.Count);
-            var map     = new Dictionary<TypeDef, TypeMapper>(typeMappers.Count);
+            var typeMappers = typeStore.GetTypeMappers();
+            nativeTypes     = new Dictionary<Type,    NativeType>(typeMappers.Count);
+            var map         = new Dictionary<TypeDef, TypeMapper>(typeMappers.Count);
             foreach (var pair in typeMappers) {
                 TypeMapper  mapper  = pair.Value;
                 var underMapper     = mapper.GetUnderlyingMapper();
@@ -70,8 +70,8 @@ namespace Friflo.Json.Flow.Schema.Native
                 nativeTypes.Add(nonNullableType, iTyp);
                 map.      Add(iTyp, underMapper);
             }
-            // in case a Nullable<> was found - typeStore contain now also their non-nullable counterparts.
-            typeMappers =  new Dictionary<Type, TypeMapper>(typeStore.GetTypeMappers());
+            // in case any Nullable<> was found - typeStore contain now also their non-nullable counterparts.
+            typeMappers = typeStore.GetTypeMappers();
             
             Types = map.Keys;
             StandardTypes   = new NativeStandardTypes(nativeTypes);
