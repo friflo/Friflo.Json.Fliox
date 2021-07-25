@@ -4,7 +4,7 @@
         "Role": {
             "properties": {
                 "id":          { "type": "string" },
-                "rights":      { "elements": { "ref": "Right" } },
+                "rights":      { "elements": { "ref":  "Right" } },
                 "description": { "type": "string" }
             },
             "required": [
@@ -16,12 +16,12 @@
         "Right": {
             "discriminator": "type",
             "mapping": {
-                "allow":            { "ref": "RightAllow" },
-                "task":             { "ref": "RightTask" },
-                "message":          { "ref": "RightMessage" },
-                "subscribeMessage": { "ref": "RightSubscribeMessage" },
-                "database":         { "ref": "RightDatabase" },
-                "predicate":        { "ref": "RightPredicate" }
+                "allow":            { "ref":  "RightAllow" },
+                "task":             { "ref":  "RightTask" },
+                "message":          { "ref":  "RightMessage" },
+                "subscribeMessage": { "ref":  "RightSubscribeMessage" },
+                "database":         { "ref":  "RightDatabase" },
+                "predicate":        { "ref":  "RightPredicate" }
             },
             "properties": {
                 "description": { "type": "string" }
@@ -40,7 +40,7 @@
         },
         "RightTask": {
             "properties": {
-                "types":       { "elements": { "ref": "TaskType" } },
+                "types":       { "elements": { "ref":  "TaskType" } },
                 "description": { "type": "string" }
             },
             "required": [
@@ -84,7 +84,7 @@
         },
         "RightDatabase": {
             "properties": {
-                "containers":  { "type": "object", "additionalProperties": { "ref": "ContainerAccess" } },
+                "containers":  { "type": "object", "additionalProperties": { "ref":  "ContainerAccess" } },
                 "description": { "type": "string" }
             },
             "required": [
@@ -94,8 +94,8 @@
         },
         "ContainerAccess": {
             "properties": {
-                "operations":       { "elements": { "ref": "OperationType" } },
-                "subscribeChanges": { "elements": { "ref": "Change" } }
+                "operations":       { "elements": { "ref":  "OperationType" } },
+                "subscribeChanges": { "elements": { "ref":  "Change" } }
             },
             "additionalProperties": false
         },

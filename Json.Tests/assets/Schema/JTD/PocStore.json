@@ -5,8 +5,8 @@
             "properties": {
                 "id":       { "type": "string" },
                 "customer": { "type": "string" },
-                "created":  { "ref": "DateTime" },
-                "items":    { "elements": { "ref": "OrderItem" } }
+                "created":  { "ref":  "DateTime" },
+                "items":    { "elements": { "ref":  "OrderItem" } }
             },
             "required": [
                 "id",
@@ -17,7 +17,7 @@
         "OrderItem": {
             "properties": {
                 "article": { "type": "string" },
-                "amount":  { "ref": "int32" },
+                "amount":  { "ref":  "int32" },
                 "name":    { "type": "string" }
             },
             "required": [
@@ -76,25 +76,25 @@
         "TestType": {
             "properties": {
                 "id":               { "type": "string" },
-                "dateTime":         { "ref": "DateTime" },
-                "dateTimeNull":     { "ref": "DateTime", "nullable": true },
-                "bigInt":           { "ref": "BigInteger" },
-                "bigIntNull":       { "ref": "BigInteger", "nullable": true },
-                "uint8":            { "ref": "uint8" },
-                "uint8Null":        { "ref": "uint8", "nullable": true },
-                "int16":            { "ref": "int16" },
-                "int16Null":        { "ref": "int16", "nullable": true },
-                "int32":            { "ref": "int32" },
-                "int32Null":        { "ref": "int32", "nullable": true },
-                "int64":            { "ref": "int64" },
-                "int64Null":        { "ref": "int64", "nullable": true },
-                "pocStruct":        { "ref": "PocStruct" },
-                "pocStructNull":    { "ref": "PocStruct", "nullable": true },
-                "intArray":         { "elements": { "ref": "int32" } },
-                "intArrayNull":     { "elements": { "ref": "int32" } },
+                "dateTime":         { "ref":  "DateTime" },
+                "dateTimeNull":     { "ref":  "DateTime", "nullable": true },
+                "bigInt":           { "ref":  "BigInteger" },
+                "bigIntNull":       { "ref":  "BigInteger", "nullable": true },
+                "uint8":            { "ref":  "uint8" },
+                "uint8Null":        { "ref":  "uint8", "nullable": true },
+                "int16":            { "ref":  "int16" },
+                "int16Null":        { "ref":  "int16", "nullable": true },
+                "int32":            { "ref":  "int32" },
+                "int32Null":        { "ref":  "int32", "nullable": true },
+                "int64":            { "ref":  "int64" },
+                "int64Null":        { "ref":  "int64", "nullable": true },
+                "pocStruct":        { "ref":  "PocStruct" },
+                "pocStructNull":    { "ref":  "PocStruct", "nullable": true },
+                "intArray":         { "elements": { "ref":  "int32" } },
+                "intArrayNull":     { "elements": { "ref":  "int32" } },
                 "jsonValue":        {  },
-                "derivedClass":     { "ref": "DerivedClass" },
-                "derivedClassNull": { "ref": "DerivedClass", "nullable": true }
+                "derivedClass":     { "ref":  "DerivedClass" },
+                "derivedClassNull": { "ref":  "DerivedClass", "nullable": true }
             },
             "required": [
                 "id",
@@ -114,7 +114,7 @@
         "System.Numerics.BigInteger": { "BigInteger": "string" },
         "PocStruct": {
             "properties": {
-                "val": { "ref": "int32" }
+                "val": { "ref":  "int32" }
             },
             "required": [
                 "val"
@@ -123,9 +123,9 @@
         },
         "DerivedClass": {
             "properties": {
-                "derivedVal": { "ref": "int32" },
+                "derivedVal": { "ref":  "int32" },
                 "article":    { "type": "string" },
-                "amount":     { "ref": "int32" },
+                "amount":     { "ref":  "int32" },
                 "name":       { "type": "string" }
             },
             "required": [

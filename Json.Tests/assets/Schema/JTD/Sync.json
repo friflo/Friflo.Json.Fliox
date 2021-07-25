@@ -3,29 +3,29 @@
     "definitions": {
         "DatabaseMessage": {
             "properties": {
-                "req":  { "ref": "DatabaseRequest", "nullable": true },
-                "resp": { "ref": "DatabaseResponse", "nullable": true },
-                "ev":   { "ref": "DatabaseEvent", "nullable": true }
+                "req":  { "ref":  "DatabaseRequest", "nullable": true },
+                "resp": { "ref":  "DatabaseResponse", "nullable": true },
+                "ev":   { "ref":  "DatabaseEvent", "nullable": true }
             },
             "additionalProperties": false
         },
         "DatabaseRequest": {
             "discriminator": "type",
             "mapping": {
-                "sync": { "ref": "SyncRequest" }
+                "sync": { "ref":  "SyncRequest" }
             },
             "properties": {
-                "reqId": { "ref": "int32", "nullable": true }
+                "reqId": { "ref":  "int32", "nullable": true }
             },
             "additionalProperties": true
         },
         "SyncRequest": {
             "properties": {
-                "reqId":  { "ref": "int32", "nullable": true },
+                "reqId":  { "ref":  "int32", "nullable": true },
                 "client": { "type": "string" },
-                "ack":    { "ref": "int32", "nullable": true },
+                "ack":    { "ref":  "int32", "nullable": true },
                 "token":  { "type": "string" },
-                "tasks":  { "elements": { "ref": "DatabaseTask" } }
+                "tasks":  { "elements": { "ref":  "DatabaseTask" } }
             },
             "required": [
                 "tasks"
@@ -35,15 +35,15 @@
         "DatabaseTask": {
             "discriminator": "task",
             "mapping": {
-                "create":           { "ref": "CreateEntities" },
-                "update":           { "ref": "UpdateEntities" },
-                "read":             { "ref": "ReadEntitiesList" },
-                "query":            { "ref": "QueryEntities" },
-                "patch":            { "ref": "PatchEntities" },
-                "delete":           { "ref": "DeleteEntities" },
-                "message":          { "ref": "SendMessage" },
-                "subscribeChanges": { "ref": "SubscribeChanges" },
-                "subscribeMessage": { "ref": "SubscribeMessage" }
+                "create":           { "ref":  "CreateEntities" },
+                "update":           { "ref":  "UpdateEntities" },
+                "read":             { "ref":  "ReadEntitiesList" },
+                "query":            { "ref":  "QueryEntities" },
+                "patch":            { "ref":  "PatchEntities" },
+                "delete":           { "ref":  "DeleteEntities" },
+                "message":          { "ref":  "SendMessage" },
+                "subscribeChanges": { "ref":  "SubscribeChanges" },
+                "subscribeMessage": { "ref":  "SubscribeMessage" }
             },
             "properties": {
 
@@ -53,7 +53,7 @@
         "CreateEntities": {
             "properties": {
                 "container": { "type": "string" },
-                "entities":  { "type": "object", "additionalProperties": { "ref": "EntityValue" } }
+                "entities":  { "type": "object", "additionalProperties": { "ref":  "EntityValue" } }
             },
             "required": [
                 "container",
@@ -64,7 +64,7 @@
         "EntityValue": {
             "properties": {
                 "value": {  },
-                "error": { "ref": "EntityError", "nullable": true }
+                "error": { "ref":  "EntityError", "nullable": true }
             },
             "required": [
                 "value"
@@ -73,7 +73,7 @@
         },
         "EntityError": {
             "properties": {
-                "type":    { "ref": "EntityErrorType" },
+                "type":    { "ref":  "EntityErrorType" },
                 "message": { "type": "string" }
             },
             "required": [
@@ -94,7 +94,7 @@
         "UpdateEntities": {
             "properties": {
                 "container": { "type": "string" },
-                "entities":  { "type": "object", "additionalProperties": { "ref": "EntityValue" } }
+                "entities":  { "type": "object", "additionalProperties": { "ref":  "EntityValue" } }
             },
             "required": [
                 "container",
@@ -105,7 +105,7 @@
         "ReadEntitiesList": {
             "properties": {
                 "container": { "type": "string" },
-                "reads":     { "elements": { "ref": "ReadEntities" } }
+                "reads":     { "elements": { "ref":  "ReadEntities" } }
             },
             "required": [
                 "container",
@@ -116,7 +116,7 @@
         "ReadEntities": {
             "properties": {
                 "ids":        { "elements": { "type": "string" } },
-                "references": { "elements": { "ref": "References" } }
+                "references": { "elements": { "ref":  "References" } }
             },
             "required": [
                 "ids"
@@ -127,7 +127,7 @@
             "properties": {
                 "selector":   { "type": "string" },
                 "container":  { "type": "string" },
-                "references": { "elements": { "ref": "References" } }
+                "references": { "elements": { "ref":  "References" } }
             },
             "required": [
                 "selector",
@@ -139,8 +139,8 @@
             "properties": {
                 "container":  { "type": "string" },
                 "filterLinq": { "type": "string" },
-                "filter":     { "ref": "FilterOperation", "nullable": true },
-                "references": { "elements": { "ref": "References" } }
+                "filter":     { "ref":  "FilterOperation", "nullable": true },
+                "references": { "elements": { "ref":  "References" } }
             },
             "required": [
                 "container"
@@ -150,22 +150,22 @@
         "FilterOperation": {
             "discriminator": "op",
             "mapping": {
-                "equal":              { "ref": "Equal" },
-                "notEqual":           { "ref": "NotEqual" },
-                "lessThan":           { "ref": "LessThan" },
-                "lessThanOrEqual":    { "ref": "LessThanOrEqual" },
-                "greaterThan":        { "ref": "GreaterThan" },
-                "greaterThanOrEqual": { "ref": "GreaterThanOrEqual" },
-                "and":                { "ref": "And" },
-                "or":                 { "ref": "Or" },
-                "true":               { "ref": "TrueLiteral" },
-                "false":              { "ref": "FalseLiteral" },
-                "not":                { "ref": "Not" },
-                "any":                { "ref": "Any" },
-                "all":                { "ref": "All" },
-                "contains":           { "ref": "Contains" },
-                "startsWith":         { "ref": "StartsWith" },
-                "endsWith":           { "ref": "EndsWith" }
+                "equal":              { "ref":  "Equal" },
+                "notEqual":           { "ref":  "NotEqual" },
+                "lessThan":           { "ref":  "LessThan" },
+                "lessThanOrEqual":    { "ref":  "LessThanOrEqual" },
+                "greaterThan":        { "ref":  "GreaterThan" },
+                "greaterThanOrEqual": { "ref":  "GreaterThanOrEqual" },
+                "and":                { "ref":  "And" },
+                "or":                 { "ref":  "Or" },
+                "true":               { "ref":  "TrueLiteral" },
+                "false":              { "ref":  "FalseLiteral" },
+                "not":                { "ref":  "Not" },
+                "any":                { "ref":  "Any" },
+                "all":                { "ref":  "All" },
+                "contains":           { "ref":  "Contains" },
+                "startsWith":         { "ref":  "StartsWith" },
+                "endsWith":           { "ref":  "EndsWith" }
             },
             "properties": {
 
@@ -174,8 +174,8 @@
         },
         "Equal": {
             "properties": {
-                "left":  { "ref": "Operation" },
-                "right": { "ref": "Operation" }
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
             },
             "required": [
                 "left",
@@ -186,43 +186,43 @@
         "Operation": {
             "discriminator": "op",
             "mapping": {
-                "field":              { "ref": "Field" },
-                "string":             { "ref": "StringLiteral" },
-                "double":             { "ref": "DoubleLiteral" },
-                "int64":              { "ref": "LongLiteral" },
-                "null":               { "ref": "NullLiteral" },
-                "abs":                { "ref": "Abs" },
-                "ceiling":            { "ref": "Ceiling" },
-                "floor":              { "ref": "Floor" },
-                "exp":                { "ref": "Exp" },
-                "log":                { "ref": "Log" },
-                "sqrt":               { "ref": "Sqrt" },
-                "negate":             { "ref": "Negate" },
-                "add":                { "ref": "Add" },
-                "subtract":           { "ref": "Subtract" },
-                "multiply":           { "ref": "Multiply" },
-                "divide":             { "ref": "Divide" },
-                "min":                { "ref": "Min" },
-                "max":                { "ref": "Max" },
-                "sum":                { "ref": "Sum" },
-                "average":            { "ref": "Average" },
-                "count":              { "ref": "Count" },
-                "equal":              { "ref": "Equal" },
-                "notEqual":           { "ref": "NotEqual" },
-                "lessThan":           { "ref": "LessThan" },
-                "lessThanOrEqual":    { "ref": "LessThanOrEqual" },
-                "greaterThan":        { "ref": "GreaterThan" },
-                "greaterThanOrEqual": { "ref": "GreaterThanOrEqual" },
-                "and":                { "ref": "And" },
-                "or":                 { "ref": "Or" },
-                "true":               { "ref": "TrueLiteral" },
-                "false":              { "ref": "FalseLiteral" },
-                "not":                { "ref": "Not" },
-                "any":                { "ref": "Any" },
-                "all":                { "ref": "All" },
-                "contains":           { "ref": "Contains" },
-                "startsWith":         { "ref": "StartsWith" },
-                "endsWith":           { "ref": "EndsWith" }
+                "field":              { "ref":  "Field" },
+                "string":             { "ref":  "StringLiteral" },
+                "double":             { "ref":  "DoubleLiteral" },
+                "int64":              { "ref":  "LongLiteral" },
+                "null":               { "ref":  "NullLiteral" },
+                "abs":                { "ref":  "Abs" },
+                "ceiling":            { "ref":  "Ceiling" },
+                "floor":              { "ref":  "Floor" },
+                "exp":                { "ref":  "Exp" },
+                "log":                { "ref":  "Log" },
+                "sqrt":               { "ref":  "Sqrt" },
+                "negate":             { "ref":  "Negate" },
+                "add":                { "ref":  "Add" },
+                "subtract":           { "ref":  "Subtract" },
+                "multiply":           { "ref":  "Multiply" },
+                "divide":             { "ref":  "Divide" },
+                "min":                { "ref":  "Min" },
+                "max":                { "ref":  "Max" },
+                "sum":                { "ref":  "Sum" },
+                "average":            { "ref":  "Average" },
+                "count":              { "ref":  "Count" },
+                "equal":              { "ref":  "Equal" },
+                "notEqual":           { "ref":  "NotEqual" },
+                "lessThan":           { "ref":  "LessThan" },
+                "lessThanOrEqual":    { "ref":  "LessThanOrEqual" },
+                "greaterThan":        { "ref":  "GreaterThan" },
+                "greaterThanOrEqual": { "ref":  "GreaterThanOrEqual" },
+                "and":                { "ref":  "And" },
+                "or":                 { "ref":  "Or" },
+                "true":               { "ref":  "TrueLiteral" },
+                "false":              { "ref":  "FalseLiteral" },
+                "not":                { "ref":  "Not" },
+                "any":                { "ref":  "Any" },
+                "all":                { "ref":  "All" },
+                "contains":           { "ref":  "Contains" },
+                "startsWith":         { "ref":  "StartsWith" },
+                "endsWith":           { "ref":  "EndsWith" }
             },
             "properties": {
 
@@ -249,7 +249,7 @@
         },
         "DoubleLiteral": {
             "properties": {
-                "value": { "ref": "double" }
+                "value": { "ref":  "double" }
             },
             "required": [
                 "value"
@@ -258,7 +258,7 @@
         },
         "LongLiteral": {
             "properties": {
-                "value": { "ref": "int64" }
+                "value": { "ref":  "int64" }
             },
             "required": [
                 "value"
@@ -273,7 +273,7 @@
         },
         "Abs": {
             "properties": {
-                "value": { "ref": "Operation" }
+                "value": { "ref":  "Operation" }
             },
             "required": [
                 "value"
@@ -282,7 +282,7 @@
         },
         "Ceiling": {
             "properties": {
-                "value": { "ref": "Operation" }
+                "value": { "ref":  "Operation" }
             },
             "required": [
                 "value"
@@ -291,7 +291,7 @@
         },
         "Floor": {
             "properties": {
-                "value": { "ref": "Operation" }
+                "value": { "ref":  "Operation" }
             },
             "required": [
                 "value"
@@ -300,7 +300,7 @@
         },
         "Exp": {
             "properties": {
-                "value": { "ref": "Operation" }
+                "value": { "ref":  "Operation" }
             },
             "required": [
                 "value"
@@ -309,7 +309,7 @@
         },
         "Log": {
             "properties": {
-                "value": { "ref": "Operation" }
+                "value": { "ref":  "Operation" }
             },
             "required": [
                 "value"
@@ -318,7 +318,7 @@
         },
         "Sqrt": {
             "properties": {
-                "value": { "ref": "Operation" }
+                "value": { "ref":  "Operation" }
             },
             "required": [
                 "value"
@@ -327,7 +327,7 @@
         },
         "Negate": {
             "properties": {
-                "value": { "ref": "Operation" }
+                "value": { "ref":  "Operation" }
             },
             "required": [
                 "value"
@@ -336,8 +336,8 @@
         },
         "Add": {
             "properties": {
-                "left":  { "ref": "Operation" },
-                "right": { "ref": "Operation" }
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
             },
             "required": [
                 "left",
@@ -347,8 +347,8 @@
         },
         "Subtract": {
             "properties": {
-                "left":  { "ref": "Operation" },
-                "right": { "ref": "Operation" }
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
             },
             "required": [
                 "left",
@@ -358,8 +358,8 @@
         },
         "Multiply": {
             "properties": {
-                "left":  { "ref": "Operation" },
-                "right": { "ref": "Operation" }
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
             },
             "required": [
                 "left",
@@ -369,8 +369,8 @@
         },
         "Divide": {
             "properties": {
-                "left":  { "ref": "Operation" },
-                "right": { "ref": "Operation" }
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
             },
             "required": [
                 "left",
@@ -380,9 +380,9 @@
         },
         "Min": {
             "properties": {
-                "field": { "ref": "Field" },
+                "field": { "ref":  "Field" },
                 "arg":   { "type": "string" },
-                "array": { "ref": "Operation" }
+                "array": { "ref":  "Operation" }
             },
             "required": [
                 "field",
@@ -393,9 +393,9 @@
         },
         "Max": {
             "properties": {
-                "field": { "ref": "Field" },
+                "field": { "ref":  "Field" },
                 "arg":   { "type": "string" },
-                "array": { "ref": "Operation" }
+                "array": { "ref":  "Operation" }
             },
             "required": [
                 "field",
@@ -406,9 +406,9 @@
         },
         "Sum": {
             "properties": {
-                "field": { "ref": "Field" },
+                "field": { "ref":  "Field" },
                 "arg":   { "type": "string" },
-                "array": { "ref": "Operation" }
+                "array": { "ref":  "Operation" }
             },
             "required": [
                 "field",
@@ -419,9 +419,9 @@
         },
         "Average": {
             "properties": {
-                "field": { "ref": "Field" },
+                "field": { "ref":  "Field" },
                 "arg":   { "type": "string" },
-                "array": { "ref": "Operation" }
+                "array": { "ref":  "Operation" }
             },
             "required": [
                 "field",
@@ -432,7 +432,7 @@
         },
         "Count": {
             "properties": {
-                "field": { "ref": "Field" }
+                "field": { "ref":  "Field" }
             },
             "required": [
                 "field"
@@ -441,8 +441,8 @@
         },
         "NotEqual": {
             "properties": {
-                "left":  { "ref": "Operation" },
-                "right": { "ref": "Operation" }
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
             },
             "required": [
                 "left",
@@ -452,8 +452,8 @@
         },
         "LessThan": {
             "properties": {
-                "left":  { "ref": "Operation" },
-                "right": { "ref": "Operation" }
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
             },
             "required": [
                 "left",
@@ -463,8 +463,8 @@
         },
         "LessThanOrEqual": {
             "properties": {
-                "left":  { "ref": "Operation" },
-                "right": { "ref": "Operation" }
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
             },
             "required": [
                 "left",
@@ -474,8 +474,8 @@
         },
         "GreaterThan": {
             "properties": {
-                "left":  { "ref": "Operation" },
-                "right": { "ref": "Operation" }
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
             },
             "required": [
                 "left",
@@ -485,8 +485,8 @@
         },
         "GreaterThanOrEqual": {
             "properties": {
-                "left":  { "ref": "Operation" },
-                "right": { "ref": "Operation" }
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
             },
             "required": [
                 "left",
@@ -496,7 +496,7 @@
         },
         "And": {
             "properties": {
-                "operands": { "elements": { "ref": "FilterOperation" } }
+                "operands": { "elements": { "ref":  "FilterOperation" } }
             },
             "required": [
                 "operands"
@@ -505,7 +505,7 @@
         },
         "Or": {
             "properties": {
-                "operands": { "elements": { "ref": "FilterOperation" } }
+                "operands": { "elements": { "ref":  "FilterOperation" } }
             },
             "required": [
                 "operands"
@@ -526,7 +526,7 @@
         },
         "Not": {
             "properties": {
-                "operand": { "ref": "FilterOperation" }
+                "operand": { "ref":  "FilterOperation" }
             },
             "required": [
                 "operand"
@@ -535,9 +535,9 @@
         },
         "Any": {
             "properties": {
-                "field":     { "ref": "Field" },
+                "field":     { "ref":  "Field" },
                 "arg":       { "type": "string" },
-                "predicate": { "ref": "FilterOperation" }
+                "predicate": { "ref":  "FilterOperation" }
             },
             "required": [
                 "field",
@@ -548,9 +548,9 @@
         },
         "All": {
             "properties": {
-                "field":     { "ref": "Field" },
+                "field":     { "ref":  "Field" },
                 "arg":       { "type": "string" },
-                "predicate": { "ref": "FilterOperation" }
+                "predicate": { "ref":  "FilterOperation" }
             },
             "required": [
                 "field",
@@ -561,8 +561,8 @@
         },
         "Contains": {
             "properties": {
-                "left":  { "ref": "Operation" },
-                "right": { "ref": "Operation" }
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
             },
             "required": [
                 "left",
@@ -572,8 +572,8 @@
         },
         "StartsWith": {
             "properties": {
-                "left":  { "ref": "Operation" },
-                "right": { "ref": "Operation" }
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
             },
             "required": [
                 "left",
@@ -583,8 +583,8 @@
         },
         "EndsWith": {
             "properties": {
-                "left":  { "ref": "Operation" },
-                "right": { "ref": "Operation" }
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
             },
             "required": [
                 "left",
@@ -595,7 +595,7 @@
         "PatchEntities": {
             "properties": {
                 "container": { "type": "string" },
-                "patches":   { "type": "object", "additionalProperties": { "ref": "EntityPatch" } }
+                "patches":   { "type": "object", "additionalProperties": { "ref":  "EntityPatch" } }
             },
             "required": [
                 "container",
@@ -605,7 +605,7 @@
         },
         "EntityPatch": {
             "properties": {
-                "patches": { "elements": { "ref": "JsonPatch" } }
+                "patches": { "elements": { "ref":  "JsonPatch" } }
             },
             "required": [
                 "patches"
@@ -615,12 +615,12 @@
         "JsonPatch": {
             "discriminator": "op",
             "mapping": {
-                "replace": { "ref": "PatchReplace" },
-                "add":     { "ref": "PatchAdd" },
-                "remove":  { "ref": "PatchRemove" },
-                "copy":    { "ref": "PatchCopy" },
-                "move":    { "ref": "PatchMove" },
-                "test":    { "ref": "PatchTest" }
+                "replace": { "ref":  "PatchReplace" },
+                "add":     { "ref":  "PatchAdd" },
+                "remove":  { "ref":  "PatchRemove" },
+                "copy":    { "ref":  "PatchCopy" },
+                "move":    { "ref":  "PatchMove" },
+                "test":    { "ref":  "PatchTest" }
             },
             "properties": {
 
@@ -714,8 +714,8 @@
         "SubscribeChanges": {
             "properties": {
                 "container": { "type": "string" },
-                "changes":   { "elements": { "ref": "Change" } },
-                "filter":    { "ref": "FilterOperation", "nullable": true }
+                "changes":   { "elements": { "ref":  "Change" } },
+                "filter":    { "ref":  "FilterOperation", "nullable": true }
             },
             "required": [
                 "container",
@@ -744,30 +744,30 @@
         "DatabaseResponse": {
             "discriminator": "type",
             "mapping": {
-                "sync":  { "ref": "SyncResponse" },
-                "error": { "ref": "ErrorResponse" }
+                "sync":  { "ref":  "SyncResponse" },
+                "error": { "ref":  "ErrorResponse" }
             },
             "properties": {
-                "reqId": { "ref": "int32", "nullable": true }
+                "reqId": { "ref":  "int32", "nullable": true }
             },
             "additionalProperties": true
         },
         "SyncResponse": {
             "properties": {
-                "reqId":        { "ref": "int32", "nullable": true },
-                "error":        { "ref": "ErrorResponse", "nullable": true },
-                "tasks":        { "elements": { "ref": "TaskResult" } },
-                "results":      { "type": "object", "additionalProperties": { "ref": "ContainerEntities" } },
-                "createErrors": { "type": "object", "additionalProperties": { "ref": "EntityErrors" } },
-                "updateErrors": { "type": "object", "additionalProperties": { "ref": "EntityErrors" } },
-                "patchErrors":  { "type": "object", "additionalProperties": { "ref": "EntityErrors" } },
-                "deleteErrors": { "type": "object", "additionalProperties": { "ref": "EntityErrors" } }
+                "reqId":        { "ref":  "int32", "nullable": true },
+                "error":        { "ref":  "ErrorResponse", "nullable": true },
+                "tasks":        { "elements": { "ref":  "TaskResult" } },
+                "results":      { "type": "object", "additionalProperties": { "ref":  "ContainerEntities" } },
+                "createErrors": { "type": "object", "additionalProperties": { "ref":  "EntityErrors" } },
+                "updateErrors": { "type": "object", "additionalProperties": { "ref":  "EntityErrors" } },
+                "patchErrors":  { "type": "object", "additionalProperties": { "ref":  "EntityErrors" } },
+                "deleteErrors": { "type": "object", "additionalProperties": { "ref":  "EntityErrors" } }
             },
             "additionalProperties": false
         },
         "ErrorResponse": {
             "properties": {
-                "reqId":   { "ref": "int32", "nullable": true },
+                "reqId":   { "ref":  "int32", "nullable": true },
                 "message": { "type": "string" }
             },
             "additionalProperties": false
@@ -775,16 +775,16 @@
         "TaskResult": {
             "discriminator": "task",
             "mapping": {
-                "create":           { "ref": "CreateEntitiesResult" },
-                "update":           { "ref": "UpdateEntitiesResult" },
-                "read":             { "ref": "ReadEntitiesListResult" },
-                "query":            { "ref": "QueryEntitiesResult" },
-                "patch":            { "ref": "PatchEntitiesResult" },
-                "delete":           { "ref": "DeleteEntitiesResult" },
-                "message":          { "ref": "SendMessageResult" },
-                "subscribeChanges": { "ref": "SubscribeChangesResult" },
-                "subscribeMessage": { "ref": "SubscribeMessageResult" },
-                "error":            { "ref": "TaskErrorResult" }
+                "create":           { "ref":  "CreateEntitiesResult" },
+                "update":           { "ref":  "UpdateEntitiesResult" },
+                "read":             { "ref":  "ReadEntitiesListResult" },
+                "query":            { "ref":  "QueryEntitiesResult" },
+                "patch":            { "ref":  "PatchEntitiesResult" },
+                "delete":           { "ref":  "DeleteEntitiesResult" },
+                "message":          { "ref":  "SendMessageResult" },
+                "subscribeChanges": { "ref":  "SubscribeChangesResult" },
+                "subscribeMessage": { "ref":  "SubscribeMessageResult" },
+                "error":            { "ref":  "TaskErrorResult" }
             },
             "properties": {
 
@@ -793,7 +793,7 @@
         },
         "CreateEntitiesResult": {
             "properties": {
-                "Error": { "ref": "CommandError", "nullable": true }
+                "Error": { "ref":  "CommandError", "nullable": true }
             },
             "additionalProperties": false
         },
@@ -805,13 +805,13 @@
         },
         "UpdateEntitiesResult": {
             "properties": {
-                "Error": { "ref": "CommandError", "nullable": true }
+                "Error": { "ref":  "CommandError", "nullable": true }
             },
             "additionalProperties": false
         },
         "ReadEntitiesListResult": {
             "properties": {
-                "reads": { "elements": { "ref": "ReadEntitiesResult" } }
+                "reads": { "elements": { "ref":  "ReadEntitiesResult" } }
             },
             "required": [
                 "reads"
@@ -820,8 +820,8 @@
         },
         "ReadEntitiesResult": {
             "properties": {
-                "Error":      { "ref": "CommandError", "nullable": true },
-                "references": { "elements": { "ref": "ReferencesResult" } }
+                "Error":      { "ref":  "CommandError", "nullable": true },
+                "references": { "elements": { "ref":  "ReferencesResult" } }
             },
             "required": [
                 "references"
@@ -833,7 +833,7 @@
                 "error":      { "type": "string" },
                 "container":  { "type": "string" },
                 "ids":        { "elements": { "type": "string" } },
-                "references": { "elements": { "ref": "ReferencesResult" } }
+                "references": { "elements": { "ref":  "ReferencesResult" } }
             },
             "required": [
                 "ids"
@@ -842,11 +842,11 @@
         },
         "QueryEntitiesResult": {
             "properties": {
-                "Error":      { "ref": "CommandError", "nullable": true },
+                "Error":      { "ref":  "CommandError", "nullable": true },
                 "container":  { "type": "string" },
                 "filterLinq": { "type": "string" },
                 "ids":        { "elements": { "type": "string" } },
-                "references": { "elements": { "ref": "ReferencesResult" } }
+                "references": { "elements": { "ref":  "ReferencesResult" } }
             },
             "required": [
                 "ids"
@@ -855,19 +855,19 @@
         },
         "PatchEntitiesResult": {
             "properties": {
-                "Error": { "ref": "CommandError", "nullable": true }
+                "Error": { "ref":  "CommandError", "nullable": true }
             },
             "additionalProperties": false
         },
         "DeleteEntitiesResult": {
             "properties": {
-                "Error": { "ref": "CommandError", "nullable": true }
+                "Error": { "ref":  "CommandError", "nullable": true }
             },
             "additionalProperties": false
         },
         "SendMessageResult": {
             "properties": {
-                "Error":  { "ref": "CommandError", "nullable": true },
+                "Error":  { "ref":  "CommandError", "nullable": true },
                 "result": {  }
             },
             "required": [
@@ -889,7 +889,7 @@
         },
         "TaskErrorResult": {
             "properties": {
-                "type":       { "ref": "TaskErrorResultType" },
+                "type":       { "ref":  "TaskErrorResultType" },
                 "message":    { "type": "string" },
                 "stacktrace": { "type": "string" }
             },
@@ -911,7 +911,7 @@
         "ContainerEntities": {
             "properties": {
                 "container": { "type": "string" },
-                "entities":  { "type": "object", "additionalProperties": { "ref": "EntityValue" } }
+                "entities":  { "type": "object", "additionalProperties": { "ref":  "EntityValue" } }
             },
             "required": [
                 "entities"
@@ -921,7 +921,7 @@
         "EntityErrors": {
             "properties": {
                 "container": { "type": "string" },
-                "errors":    { "type": "object", "additionalProperties": { "ref": "EntityError" } }
+                "errors":    { "type": "object", "additionalProperties": { "ref":  "EntityError" } }
             },
             "required": [
                 "errors"
@@ -931,10 +931,10 @@
         "DatabaseEvent": {
             "discriminator": "type",
             "mapping": {
-                "subscription": { "ref": "SubscriptionEvent" }
+                "subscription": { "ref":  "SubscriptionEvent" }
             },
             "properties": {
-                "seq":    { "ref": "int32" },
+                "seq":    { "ref":  "int32" },
                 "target": { "type": "string" },
                 "client": { "type": "string" }
             },
@@ -945,10 +945,10 @@
         },
         "SubscriptionEvent": {
             "properties": {
-                "seq":    { "ref": "int32" },
+                "seq":    { "ref":  "int32" },
                 "target": { "type": "string" },
                 "client": { "type": "string" },
-                "tasks":  { "elements": { "ref": "DatabaseTask" } }
+                "tasks":  { "elements": { "ref":  "DatabaseTask" } }
             },
             "required": [
                 "seq"

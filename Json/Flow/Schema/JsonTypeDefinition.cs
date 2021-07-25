@@ -191,7 +191,7 @@ namespace Friflo.Json.Flow.Schema
             // bool samePackage    = typePackage == ownerPackage;
             // var prefix          = samePackage ? "" : $"./{typePackage}{generator.fileExt}";
             var nullableStr = required ? "" : ", \"nullable\": true";
-            var refType = $"\"ref\": \"{name}\"{nullableStr}";
+            var refType = $"\"ref\":  \"{name}\"{nullableStr}";
             return refType;
         }
     }
