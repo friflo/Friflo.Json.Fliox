@@ -20,10 +20,10 @@ namespace Friflo.Json.Flow.Schema
 
 
         public Typescript (TypeStore typeStore, ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
-            var system      = new NativeTypeSystem(typeStore);
-            var sepTypes    = system.GetTypes(separateTypes);
-            generator       = new Generator(system, stripNamespaces, ".ts", sepTypes);
-            standardTypes   = GetStandardTypes(generator.system);
+            var schema      = new NativeTypeSchema(typeStore);
+            var sepTypes    = schema.GetTypes(separateTypes);
+            generator       = new Generator(schema, stripNamespaces, ".ts", sepTypes);
+            standardTypes   = GetStandardTypes(generator.schema);
         }
         
         public void GenerateSchema() {
@@ -42,18 +42,18 @@ namespace Friflo.Json.Flow.Schema
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}"); // $"{ns.Replace(".", "/")}{generator.extension}");
         }
         
-        private static Dictionary<TypeDef, string> GetStandardTypes(ITypeSystem system) {
+        private static Dictionary<TypeDef, string> GetStandardTypes(TypeSchema schema) {
             var map = new Dictionary<TypeDef, string>();
-            AddType(map, system.Unit8,         "uint8 = number" );
-            AddType(map, system.Int16,         "int16 = number" );
-            AddType(map, system.Int32,         "int32 = number" );
-            AddType(map, system.Int64,         "int64 = number" );
+            AddType (map, schema.Unit8,         "uint8 = number" );
+            AddType (map, schema.Int16,         "int16 = number" );
+            AddType (map, schema.Int32,         "int32 = number" );
+            AddType (map, schema.Int64,         "int64 = number" );
                
-            AddType(map, system.Double,        "double = number" );
-            AddType(map, system.Float,         "float = number" );
+            AddType (map, schema.Double,        "double = number" );
+            AddType (map, schema.Float,         "float = number" );
                
-            AddType(map, system.BigInteger,    "BigInteger = string" );
-            AddType(map, system.DateTime,      "DateTime = string" );
+            AddType (map, schema.BigInteger,    "BigInteger = string" );
+            AddType (map, schema.DateTime,      "DateTime = string" );
             return map;
         }
 
@@ -149,7 +149,7 @@ namespace Friflo.Json.Flow.Schema
         
         // Note: static by intention
         private static string GetFieldType(TypeDef type, TypeContext context) {
-            var system  = context.generator.system;
+            var system  = context.generator.schema;
             if (type == system.JsonValue) {
                 return "{} | null";
             }

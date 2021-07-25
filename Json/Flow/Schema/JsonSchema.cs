@@ -21,10 +21,10 @@ namespace Friflo.Json.Flow.Schema
         private  const      string                      Next = ",\r\n";
         
         public JsonSchema (TypeStore typeStore, ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
-            var system      = new NativeTypeSystem(typeStore);
-            var sepTypes    = system.GetTypes(separateTypes);
-            generator       = new Generator(system, stripNamespaces, ".json", sepTypes);
-            standardTypes   = GetStandardTypes(generator.system);
+            var schema      = new NativeTypeSchema(typeStore);
+            var sepTypes    = schema.GetTypes(separateTypes);
+            generator       = new Generator(schema, stripNamespaces, ".json", sepTypes);
+            standardTypes   = GetStandardTypes(generator.schema);
         }
         
         public void GenerateSchema() {
@@ -43,18 +43,18 @@ namespace Friflo.Json.Flow.Schema
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}", Next); // $"{ns.Replace(".", "/")}.ts");
         }
         
-        private static Dictionary<TypeDef, string> GetStandardTypes(ITypeSystem system) {
+        private static Dictionary<TypeDef, string> GetStandardTypes(TypeSchema schema) {
             var map = new Dictionary<TypeDef, string>();
-            AddType (map,  system.Unit8,         "\"type\": \"number\", \"minimum\": 0, \"maximum\": 255" );
-            AddType (map,  system.Int16,         "\"type\": \"number\", \"minimum\": -32768, \"maximum\": 32767" );
-            AddType (map,  system.Int32,         "\"type\": \"number\", \"minimum\": -2147483648, \"maximum\": 2147483647" );
-            AddType (map,  system.Int64,         "\"type\": \"number\", \"minimum\": -9223372036854775808, \"maximum\": 9223372036854775807" );
+            AddType (map, schema.Unit8,         "\"type\": \"number\", \"minimum\": 0, \"maximum\": 255" );
+            AddType (map, schema.Int16,         "\"type\": \"number\", \"minimum\": -32768, \"maximum\": 32767" );
+            AddType (map, schema.Int32,         "\"type\": \"number\", \"minimum\": -2147483648, \"maximum\": 2147483647" );
+            AddType (map, schema.Int64,         "\"type\": \"number\", \"minimum\": -9223372036854775808, \"maximum\": 9223372036854775807" );
                 
-            AddType (map,  system.Double,        "\"type\": \"number\"" );
-            AddType (map,  system.Float,         "\"type\": \"number\"" );
+            AddType (map, schema.Double,        "\"type\": \"number\"" );
+            AddType (map, schema.Float,         "\"type\": \"number\"" );
                 
-            AddType (map,  system.BigInteger,    "\"type\": \"string\", \"pattern\": \"^-?[0-9]+$\"" ); // https://www.regextester.com/
-            AddType (map,  system.DateTime,      "\"type\": \"string\", \"format\": \"date-time\"" );
+            AddType (map, schema.BigInteger,    "\"type\": \"string\", \"pattern\": \"^-?[0-9]+$\"" ); // https://www.regextester.com/
+            AddType (map, schema.DateTime,      "\"type\": \"string\", \"format\": \"date-time\"" );
             return map;
         }
         
@@ -158,7 +158,7 @@ namespace Friflo.Json.Flow.Schema
         
         // Note: static by intention
         private static string GetFieldType(TypeDef type, TypeContext context, bool required) {
-            var system  = context.generator.system;
+            var system  = context.generator.schema;
             if (type == system.JsonValue) {
                 return ""; // allow any type
             }

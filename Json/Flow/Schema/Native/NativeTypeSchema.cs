@@ -11,25 +11,25 @@ using Friflo.Json.Flow.Schema.Definition;
 
 namespace Friflo.Json.Flow.Schema.Native
 {
-    public class NativeTypeSystem : ITypeSystem
+    public class NativeTypeSchema : TypeSchema
     {
-        public              ICollection<TypeDef>    Types       { get; }
-        public              TypeDef                 Boolean     { get; }
-        public              TypeDef                 String      { get; }
-        public              TypeDef                 Unit8       { get; }
-        public              TypeDef                 Int16       { get; }
-        public              TypeDef                 Int32       { get; }
-        public              TypeDef                 Int64       { get; }
-        public              TypeDef                 Float       { get; }
-        public              TypeDef                 Double      { get; }
-        public              TypeDef                 BigInteger  { get; }
-        public              TypeDef                 DateTime    { get; }
-        public              TypeDef                 JsonValue   { get; }
+        public   override   ICollection<TypeDef>    Types       { get; }
+        public   override   TypeDef                 Boolean     { get; }
+        public   override   TypeDef                 String      { get; }
+        public   override   TypeDef                 Unit8       { get; }
+        public   override   TypeDef                 Int16       { get; }
+        public   override   TypeDef                 Int32       { get; }
+        public   override   TypeDef                 Int64       { get; }
+        public   override   TypeDef                 Float       { get; }
+        public   override   TypeDef                 Double      { get; }
+        public   override   TypeDef                 BigInteger  { get; }
+        public   override   TypeDef                 DateTime    { get; }
+        public   override   TypeDef                 JsonValue   { get; }
         
         /// Contains only non nullable Type's
         private  readonly   Dictionary<Type, NativeType>    nativeMap;
         
-        public NativeTypeSystem (TypeStore typeStore) {
+        public NativeTypeSchema (TypeStore typeStore) {
             var typeMappers = new Dictionary<Type, TypeMapper>(typeStore.GetTypeMappers());
             nativeMap   = new Dictionary<Type,    NativeType>(typeMappers.Count);
             var map     = new Dictionary<TypeDef, TypeMapper>(typeMappers.Count);
