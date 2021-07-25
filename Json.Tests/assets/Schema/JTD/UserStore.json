@@ -30,24 +30,20 @@
         },
         "RightAllow": {
             "properties": {
-                "type":        { "enum": ["allow"] },
                 "grant":       { "type": "boolean" },
                 "description": { "type": "string" }
             },
             "required": [
-                "type",
                 "grant"
             ],
             "additionalProperties": false
         },
         "RightTask": {
             "properties": {
-                "type":        { "enum": ["task"] },
                 "types":       { "elements": { "ref": "TaskType" } },
                 "description": { "type": "string" }
             },
             "required": [
-                "type",
                 "types"
             ],
             "additionalProperties": false
@@ -68,36 +64,30 @@
         },
         "RightMessage": {
             "properties": {
-                "type":        { "enum": ["message"] },
                 "names":       { "elements": { "type": "string" } },
                 "description": { "type": "string" }
             },
             "required": [
-                "type",
                 "names"
             ],
             "additionalProperties": false
         },
         "RightSubscribeMessage": {
             "properties": {
-                "type":        { "enum": ["subscribeMessage"] },
                 "names":       { "elements": { "type": "string" } },
                 "description": { "type": "string" }
             },
             "required": [
-                "type",
                 "names"
             ],
             "additionalProperties": false
         },
         "RightDatabase": {
             "properties": {
-                "type":        { "enum": ["database"] },
                 "containers":  { "type": "object", "additionalProperties": { "ref": "ContainerAccess" } },
                 "description": { "type": "string" }
             },
             "required": [
-                "type",
                 "containers"
             ],
             "additionalProperties": false
@@ -131,12 +121,10 @@
         },
         "RightPredicate": {
             "properties": {
-                "type":        { "enum": ["predicate"] },
                 "names":       { "elements": { "type": "string" } },
                 "description": { "type": "string" }
             },
             "required": [
-                "type",
                 "names"
             ],
             "additionalProperties": false

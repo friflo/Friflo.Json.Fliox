@@ -72,11 +72,10 @@ namespace Friflo.Json.Flow.Schema
                 var fields          = type.Fields;
                 int maxFieldName    = fields.MaxLength(field => field.name.Length);
                 
-                string  discriminator   = null;
                 var     discriminant    = type.Discriminant;
                 if (discriminant != null) {
                     var baseType    = type.BaseType;
-                    discriminator   = baseType.UnionType.discriminator;
+                    var discriminator   = baseType.UnionType.discriminator;
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                 }
                 var unionType = type.UnionType;
@@ -99,12 +98,6 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine($"            \"properties\": {{");
                 bool firstField     = true;
                 var requiredFields  = new List<string>();
-                if (discriminant != null) {
-                    var indent = Indent(maxFieldName, discriminator);
-                    sb.Append($"                \"{discriminator}\":{indent} {{ \"enum\": [\"{discriminant}\"] }}");
-                    firstField = false;
-                    requiredFields.Add(discriminator);
-                }
                 // fields
                 foreach (var field in fields) {
                     // if (generator.IsDerivedField(type, field))  JSON Schema list all properties
