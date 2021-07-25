@@ -148,6 +148,9 @@ namespace Friflo.Json.Flow.Schema
             if (type == standard.Boolean) {
                 return $"\"type\": \"boolean\"";
             }
+            if (type == standard.DateTime) {
+                return $"\"type\": \"timestamp\"";
+            }
             if (type.IsArray) {
                 var elementMapper = type.ElementType;
                 var elementTypeName = GetFieldType(elementMapper, context);

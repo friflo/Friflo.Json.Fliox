@@ -5,7 +5,7 @@
             "properties": {
                 "id":       { "type": "string" },
                 "customer": { "type": "string", "nullable": true },
-                "created":  { "ref":  "DateTime" },
+                "created":  { "type": "timestamp" },
                 "items":    { "elements": { "ref":  "OrderItem" }, "nullable": true }
             },
             "required": [
@@ -76,8 +76,8 @@
         "TestType": {
             "properties": {
                 "id":               { "type": "string" },
-                "dateTime":         { "ref":  "DateTime" },
-                "dateTimeNull":     { "ref":  "DateTime", "nullable": true },
+                "dateTime":         { "type": "timestamp" },
+                "dateTimeNull":     { "type": "timestamp", "nullable": true },
                 "bigInt":           { "ref":  "BigInteger" },
                 "bigIntNull":       { "ref":  "BigInteger", "nullable": true },
                 "uint8":            { "ref":  "uint8" },
