@@ -7,13 +7,13 @@ namespace Friflo.Json.Flow.Schema.Utils
 {
     public class TypeContext
     {
-        public readonly     Generator       generator;
-        public readonly     HashSet<ITyp>   imports;
-        public readonly     ITyp            owner;
+        public readonly     Generator           generator;
+        public readonly     HashSet<TypeDef>    imports;
+        public readonly     TypeDef             owner;
 
-        public override     string          ToString() => owner.Name;
+        public override     string              ToString() => owner.Name;
 
-        public TypeContext (Generator generator, HashSet<ITyp> imports, ITyp owner) {
+        public TypeContext (Generator generator, HashSet<TypeDef> imports, TypeDef owner) {
             this.generator      = generator;
             this.imports        = imports;
             this.owner          = owner;

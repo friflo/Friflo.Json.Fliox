@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Schema
     public class JsonSchema
     {
         public   readonly   Generator                   generator;
-        private  readonly   Dictionary<ITyp, string>    standardTypes;
+        private  readonly   Dictionary<TypeDef, string> standardTypes;
         private  const      string                      Next = ",\r\n";
         
         public JsonSchema (TypeStore typeStore, ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
@@ -43,8 +43,8 @@ namespace Friflo.Json.Flow.Schema
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}", Next); // $"{ns.Replace(".", "/")}.ts");
         }
         
-        private static Dictionary<ITyp, string> GetStandardTypes(ITypeSystem system) {
-            var map = new Dictionary<ITyp, string>();
+        private static Dictionary<TypeDef, string> GetStandardTypes(ITypeSystem system) {
+            var map = new Dictionary<TypeDef, string>();
             AddType (map,  system.Unit8,         "\"type\": \"number\", \"minimum\": 0, \"maximum\": 255" );
             AddType (map,  system.Int16,         "\"type\": \"number\", \"minimum\": -32768, \"maximum\": 32767" );
             AddType (map,  system.Int32,         "\"type\": \"number\", \"minimum\": -2147483648, \"maximum\": 2147483647" );
@@ -58,7 +58,7 @@ namespace Friflo.Json.Flow.Schema
             return map;
         }
         
-        private EmitType EmitStandardType(ITyp type, StringBuilder sb, Generator generator) {
+        private EmitType EmitStandardType(TypeDef type, StringBuilder sb, Generator generator) {
             if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
             var typeName = generator.GetTypeName(type);
@@ -68,9 +68,9 @@ namespace Friflo.Json.Flow.Schema
             return new EmitType(type, TypeSemantic.None, generator, sb);
         }
         
-        private EmitType EmitType(ITyp type, StringBuilder sb) {
+        private EmitType EmitType(TypeDef type, StringBuilder sb) {
             var semantic        = type.TypeSemantic;
-            var imports         = new HashSet<ITyp>(); 
+            var imports         = new HashSet<TypeDef>(); 
             var context         = new TypeContext (generator, imports, type);
             var standardType    = EmitStandardType(type, sb, generator);
             if (standardType != null ) {
@@ -157,7 +157,7 @@ namespace Friflo.Json.Flow.Schema
         }
         
         // Note: static by intention
-        private static string GetFieldType(ITyp type, TypeContext context, bool isOptional) {
+        private static string GetFieldType(TypeDef type, TypeContext context, bool isOptional) {
             var system  = context.generator.system;
             if (type == system.JsonValue) {
                 return ""; // allow any type
@@ -211,7 +211,7 @@ namespace Friflo.Json.Flow.Schema
             }
         }
         
-        private static string Ref(ITyp type, bool isOptional, TypeContext context) {
+        private static string Ref(TypeDef type, bool isOptional, TypeContext context) {
             var generator       = context.generator;
             var name = context.generator.GetTypeName(type);
             // if (generator.IsUnionType(type))

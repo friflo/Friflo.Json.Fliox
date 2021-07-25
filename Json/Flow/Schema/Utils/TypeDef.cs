@@ -7,17 +7,17 @@ using Friflo.Json.Flow.Mapper.Map;
 
 namespace Friflo.Json.Flow.Schema.Utils
 {
-    public abstract class ITyp {
+    public abstract class TypeDef {
         public  abstract    string              Name         { get; }
         public  abstract    string              Namespace    { get; }
-        public  abstract    ITyp                BaseType     { get; }
+        public  abstract    TypeDef             BaseType     { get; }
         public  abstract    bool                IsEnum       { get; }
         public  abstract    bool                IsComplex    { get; }
         public  abstract    List<Field>         Fields       { get; }
         public  abstract    string              Discriminant { get; }
         public  abstract    TypeSemantic        TypeSemantic { get; }
         public  abstract    bool                IsArray      { get; }
-        public  abstract    ITyp                ElementType  { get; internal set; }
+        public  abstract    TypeDef             ElementType  { get; internal set; }
         public  abstract    bool                IsDictionary { get; }
         public  abstract    UnionType           UnionType    { get; }
         
@@ -26,17 +26,17 @@ namespace Friflo.Json.Flow.Schema.Utils
     }
     
     public class Field {
-        public              string      jsonName;
-        public              bool        required;
-        internal            ITyp        fieldType;
+        public              string          jsonName;
+        public              bool            required;
+        internal            TypeDef         fieldType;
 
-        public   override   string      ToString() => jsonName;
+        public   override   string          ToString() => jsonName;
     }
 
     public class UnionType {
-        public              string      discriminator;
-        public              List<ITyp>  polyTypes;
+        public              string          discriminator;
+        public              List<TypeDef>   polyTypes;
         
-        public   override   string      ToString() => discriminator;
+        public   override   string          ToString() => discriminator;
     }
 }

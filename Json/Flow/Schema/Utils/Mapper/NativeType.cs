@@ -9,18 +9,18 @@ using Friflo.Json.Flow.Mapper.Map;
 
 namespace Friflo.Json.Flow.Schema.Utils.Mapper
 {
-public class NativeType : ITyp
+public class NativeType : TypeDef
     {
         internal readonly   Type                native;
         internal readonly   TypeMapper          mapper;
-        internal            ITyp                baseType;
+        internal            TypeDef             baseType;
         internal            List<Field>         fields;
-        private             ITyp                elementType;
+        private             TypeDef             elementType;
         internal            UnionType           unionType;
         
         public   override   string              Name            => native.Name;
         public   override   string              Namespace       => native.Namespace;
-        public   override   ITyp                BaseType        => baseType;
+        public   override   TypeDef             BaseType        => baseType;
         public   override   bool                IsEnum          => native.IsEnum;
         public   override   bool                IsComplex       => mapper.IsComplex;
         public   override   List<Field>         Fields          => fields;
@@ -30,7 +30,7 @@ public class NativeType : ITyp
         public   override   UnionType           UnionType       => unionType;
 
 
-        public   override   ITyp                ElementType {   get          => elementType;
+        public   override   TypeDef             ElementType {   get          => elementType;
                                                                 internal set => elementType = value;  }
 
         public   override   bool                IsDictionary    => mapper.type.GetInterfaces().Contains(typeof(IDictionary));

@@ -7,22 +7,22 @@ namespace Friflo.Json.Flow.Schema.Utils
 {
     public interface ITypeSystem
     {
-        ICollection<ITyp> Types { get;}
+        ICollection<TypeDef> Types { get;}
         
-        ITyp   Boolean     { get; }
-        ITyp   String      { get; }
+        TypeDef     Boolean     { get; }
+        TypeDef     String      { get; }
         
-        ITyp   Unit8       { get; }
-        ITyp   Int16       { get; }
-        ITyp   Int32       { get; }
-        ITyp   Int64       { get; }
+        TypeDef     Unit8       { get; }
+        TypeDef     Int16       { get; }
+        TypeDef     Int32       { get; }
+        TypeDef     Int64       { get; }
         
-        ITyp   Float       { get; }
-        ITyp   Double      { get; }
+        TypeDef     Float       { get; }
+        TypeDef     Double      { get; }
         
-        ITyp   BigInteger  { get; }
-        ITyp   DateTime    { get; }
+        TypeDef     BigInteger  { get; }
+        TypeDef     DateTime    { get; }
         
-        ITyp   JsonValue   { get; }
+        TypeDef     JsonValue   { get; }
     }
 }

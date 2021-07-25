@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Schema
     public class Typescript
     {
         public  readonly    Generator                   generator;
-        private readonly    Dictionary<ITyp, string>    standardTypes;
+        private readonly    Dictionary<TypeDef, string> standardTypes;
 
 
         public Typescript (TypeStore typeStore, ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
@@ -42,8 +42,8 @@ namespace Friflo.Json.Flow.Schema
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}"); // $"{ns.Replace(".", "/")}{generator.extension}");
         }
         
-        private static Dictionary<ITyp, string> GetStandardTypes(ITypeSystem system) {
-            var map = new Dictionary<ITyp, string>();
+        private static Dictionary<TypeDef, string> GetStandardTypes(ITypeSystem system) {
+            var map = new Dictionary<TypeDef, string>();
             AddType(map, system.Unit8,         "uint8 = number" );
             AddType(map, system.Int16,         "int16 = number" );
             AddType(map, system.Int32,         "int32 = number" );
@@ -57,7 +57,7 @@ namespace Friflo.Json.Flow.Schema
             return map;
         }
 
-        private EmitType EmitStandardType(ITyp type, StringBuilder sb, Generator generator) {
+        private EmitType EmitStandardType(TypeDef type, StringBuilder sb, Generator generator) {
             if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
             sb.Append("export type ");
@@ -67,16 +67,16 @@ namespace Friflo.Json.Flow.Schema
             return new EmitType(type, TypeSemantic.None, generator, sb);
         }
         
-        private EmitType EmitType(ITyp type, StringBuilder sb) {
+        private EmitType EmitType(TypeDef type, StringBuilder sb) {
             var semantic        = type.TypeSemantic;
-            var imports         = new HashSet<ITyp>();
+            var imports         = new HashSet<TypeDef>();
             var context         = new TypeContext (generator, imports, type);
             var standardType    = EmitStandardType(type, sb, generator);
             if (standardType != null ) {
                 return standardType;
             }
             if (type.IsComplex) {
-                var dependencies = new List<ITyp>();
+                var dependencies = new List<TypeDef>();
                 var fields          = type.Fields;
                 int maxFieldName    = fields.MaxLength(field => field.jsonName.Length);
                 
@@ -148,7 +148,7 @@ namespace Friflo.Json.Flow.Schema
         }
         
         // Note: static by intention
-        private static string GetFieldType(ITyp type, TypeContext context) {
+        private static string GetFieldType(TypeDef type, TypeContext context) {
             var system  = context.generator.system;
             if (type == system.JsonValue) {
                 return "{} | null";

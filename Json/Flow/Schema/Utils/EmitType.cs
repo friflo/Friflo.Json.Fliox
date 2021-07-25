@@ -9,16 +9,16 @@ namespace Friflo.Json.Flow.Schema.Utils
 {
     public class EmitType
     {
-        public   readonly   ITyp                    type;
+        public   readonly   TypeDef                 type;
         /// the mapper assigned to the type
         internal readonly   string                  package;
 
         /// the piece of code to define the type
         internal readonly   string                  content;
         /// contain type imports directly used by this type / mapper. 
-        internal readonly   HashSet<ITyp>           imports;
+        internal readonly   HashSet<TypeDef>        imports;
         
-        internal readonly   ICollection<ITyp>       typeDependencies;
+        internal readonly   ICollection<TypeDef>    typeDependencies;
         internal readonly   ICollection<EmitType>   emitDependencies = new List<EmitType>();
         
         public   readonly   TypeSemantic            semantic;
@@ -26,19 +26,19 @@ namespace Friflo.Json.Flow.Schema.Utils
         public   override   string                  ToString() => type.Name;
 
         public EmitType(
-            ITyp            type,
-            TypeSemantic    semantic,
-            Generator       generator,
-            StringBuilder   sb,
-            HashSet<ITyp>   imports         = null,
-            List<ITyp>      dependencies    = null)
+            TypeDef             type,
+            TypeSemantic        semantic,
+            Generator           generator,
+            StringBuilder       sb,
+            HashSet<TypeDef>    imports         = null,
+            List<TypeDef>       dependencies    = null)
         {
             this.semantic           = semantic;
             this.type               = type;
             this.package            = generator.GetPackageName(type);
             this.content            = sb.ToString();
-            this.imports            = imports       ?? new HashSet<ITyp>();
-            this.typeDependencies   = dependencies  ?? new List<ITyp>();
+            this.imports            = imports       ?? new HashSet<TypeDef>();
+            this.typeDependencies   = dependencies  ?? new List<TypeDef>();
         }
     }
 }

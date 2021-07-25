@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Schema.Utils.Mapper
 {
     public class NativeTypeSystem : ITypeSystem
     {
-        private  readonly   ICollection<ITyp> types;
+        private  readonly   ICollection<TypeDef> types;
         
         private  readonly   NativeType  boolean;
         private  readonly   NativeType  @string;
@@ -26,26 +26,26 @@ namespace Friflo.Json.Flow.Schema.Utils.Mapper
         private  readonly   NativeType  dateTime;
         private  readonly   NativeType  jsonValue;
 
-        public              ICollection<ITyp>               Types => types;
+        public              ICollection<TypeDef>            Types => types;
         /// Contains only non nullable Type's
         private  readonly   Dictionary<Type, NativeType>    nativeMap;
         
-        public              ITyp    Boolean    => boolean;
-        public              ITyp    String     => @string;
-        public              ITyp    Unit8      => uint8;
-        public              ITyp    Int16      => int16;
-        public              ITyp    Int32      => int32;
-        public              ITyp    Int64      => int64;
-        public              ITyp    Float      => flt32;
-        public              ITyp    Double     => flt64;
-        public              ITyp    BigInteger => bigInteger;
-        public              ITyp    DateTime   => dateTime;
-        public              ITyp    JsonValue  => jsonValue;
+        public              TypeDef     Boolean    => boolean;
+        public              TypeDef     String     => @string;
+        public              TypeDef     Unit8      => uint8;
+        public              TypeDef     Int16      => int16;
+        public              TypeDef     Int32      => int32;
+        public              TypeDef     Int64      => int64;
+        public              TypeDef     Float      => flt32;
+        public              TypeDef     Double     => flt64;
+        public              TypeDef     BigInteger => bigInteger;
+        public              TypeDef     DateTime   => dateTime;
+        public              TypeDef     JsonValue  => jsonValue;
         
         public NativeTypeSystem (TypeStore typeStore) {
             var typeMappers = new Dictionary<Type, TypeMapper>(typeStore.GetTypeMappers());
-            nativeMap   = new Dictionary<Type, NativeType>(typeMappers.Count);
-            var map     = new Dictionary<ITyp, TypeMapper>(typeMappers.Count);
+            nativeMap   = new Dictionary<Type,    NativeType>(typeMappers.Count);
+            var map     = new Dictionary<TypeDef, TypeMapper>(typeMappers.Count);
             foreach (var pair in typeMappers) {
                 TypeMapper  mapper  = pair.Value;
                 var underMapper     = mapper.GetUnderlyingMapper();
@@ -117,10 +117,10 @@ namespace Friflo.Json.Flow.Schema.Utils.Mapper
                     var polyTypes = instanceFactory.polyTypes;
                     type.unionType = new UnionType {
                         discriminator = instanceFactory.discriminator,
-                        polyTypes = new List<ITyp>(polyTypes.Length)
+                        polyTypes = new List<TypeDef>(polyTypes.Length)
                     };
                     foreach (var polyType in polyTypes) {
-                        ITyp element = nativeMap[polyType.type];
+                        TypeDef element = nativeMap[polyType.type];
                         type.unionType.polyTypes.Add(element);
                     }
                 }
@@ -137,10 +137,10 @@ namespace Friflo.Json.Flow.Schema.Utils.Mapper
             return isNullable;
         }
         
-        public ICollection<ITyp> GetTypes(ICollection<Type> nativeTypes) {
+        public ICollection<TypeDef> GetTypes(ICollection<Type> nativeTypes) {
             if (nativeTypes == null)
                 return null;
-            var list = new List<ITyp> (nativeTypes.Count);
+            var list = new List<TypeDef> (nativeTypes.Count);
             foreach (var nativeType in nativeTypes) {
                 var type = nativeMap[nativeType];
                 list.Add(type);
