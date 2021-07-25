@@ -13,17 +13,17 @@ namespace Friflo.Json.Flow.Schema.Native
 {
     public class NativeStandardTypes : StandardTypes
     {
-        public   override   TypeDef                 Boolean     { get; }
-        public   override   TypeDef                 String      { get; }
-        public   override   TypeDef                 Unit8       { get; }
-        public   override   TypeDef                 Int16       { get; }
-        public   override   TypeDef                 Int32       { get; }
-        public   override   TypeDef                 Int64       { get; }
-        public   override   TypeDef                 Float       { get; }
-        public   override   TypeDef                 Double      { get; }
-        public   override   TypeDef                 BigInteger  { get; }
-        public   override   TypeDef                 DateTime    { get; }
-        public   override   TypeDef                 JsonValue   { get; }
+        public   override   TypeDef     Boolean     { get; }
+        public   override   TypeDef     String      { get; }
+        public   override   TypeDef     Unit8       { get; }
+        public   override   TypeDef     Int16       { get; }
+        public   override   TypeDef     Int32       { get; }
+        public   override   TypeDef     Int64       { get; }
+        public   override   TypeDef     Float       { get; }
+        public   override   TypeDef     Double      { get; }
+        public   override   TypeDef     BigInteger  { get; }
+        public   override   TypeDef     DateTime    { get; }
+        public   override   TypeDef     JsonValue   { get; }
         
         internal NativeStandardTypes (Dictionary<Type, NativeType> types) {
             Boolean     = Find(types, typeof(bool));

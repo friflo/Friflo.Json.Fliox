@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Security;
 using System.Text;
 using Friflo.Json.Flow.Schema.Definition;
 using Friflo.Json.Flow.Schema.Utils;
@@ -108,34 +107,21 @@ namespace Friflo.Json.Flow.Schema
                 }
                 sb.AppendLine($"            \"properties\": {{");
                 bool firstField     = true;
-                var requiredFields  = new List<string>();
+
                 // fields
                 foreach (var field in fields) {
-                    // if (generator.IsDerivedField(type, field))  JTD list all properties
-                    //    continue;
                     bool required = field.required;
                     var fieldType = GetFieldType(field.type, context);
                     var indent = Indent(maxFieldName, field.name);
-                    if (required)
-                        requiredFields.Add(field.name);
                     Delimiter(sb, Next, ref firstField);
                     var nullableStr = required ? "" : ", \"nullable\": true";
                     sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{nullableStr} }}");
                 }
                 sb.AppendLine();
-                sb.AppendLine("            },");
-                if (requiredFields.Count > 0 ) {
-                    bool firstReq = true;
-                    sb.AppendLine("            \"required\": [");
-                    foreach (var item in requiredFields) {
-                        Delimiter(sb, Next, ref firstReq);
-                        sb.Append ($"                \"{item}\"");
-                    }
-                    sb.AppendLine();
-                    sb.AppendLine("            ],");
-                }
-                var additionalProperties = unionType != null ? "true" : "false"; 
-                sb.AppendLine($"            \"additionalProperties\": {additionalProperties}");
+                sb.AppendLine("            }");
+
+                // var additionalProperties = unionType != null ? "true" : "false"; 
+                // sb.AppendLine($"            \"additionalProperties\": {additionalProperties}");
                 sb.Append     ("        }");
                 return new EmitType(type, generator, sb, imports);
             }

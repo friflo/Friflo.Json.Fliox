@@ -6,8 +6,7 @@
                 "req":  { "ref":  "DatabaseRequest", "nullable": true },
                 "resp": { "ref":  "DatabaseResponse", "nullable": true },
                 "ev":   { "ref":  "DatabaseEvent", "nullable": true }
-            },
-            "additionalProperties": false
+            }
         },
         "DatabaseRequest": {
             "discriminator": "type",
@@ -16,8 +15,7 @@
             },
             "properties": {
                 "reqId": { "type": "int32", "nullable": true }
-            },
-            "additionalProperties": true
+            }
         },
         "SyncRequest": {
             "properties": {
@@ -26,11 +24,7 @@
                 "ack":    { "type": "int32", "nullable": true },
                 "token":  { "type": "string", "nullable": true },
                 "tasks":  { "elements": { "ref":  "DatabaseTask" } }
-            },
-            "required": [
-                "tasks"
-            ],
-            "additionalProperties": false
+            }
         },
         "DatabaseTask": {
             "discriminator": "task",
@@ -47,39 +41,25 @@
             },
             "properties": {
 
-            },
-            "additionalProperties": true
+            }
         },
         "CreateEntities": {
             "properties": {
                 "container": { "type": "string" },
                 "entities":  { "values": { "ref":  "EntityValue" } }
-            },
-            "required": [
-                "container",
-                "entities"
-            ],
-            "additionalProperties": false
+            }
         },
         "EntityValue": {
             "properties": {
                 "value": {  },
                 "error": { "ref":  "EntityError", "nullable": true }
-            },
-            "required": [
-                "value"
-            ],
-            "additionalProperties": false
+            }
         },
         "EntityError": {
             "properties": {
                 "type":    { "ref":  "EntityErrorType" },
                 "message": { "type": "string", "nullable": true }
-            },
-            "required": [
-                "type"
-            ],
-            "additionalProperties": false
+            }
         },
         "EntityErrorType": {
             "enum": [
@@ -95,45 +75,26 @@
             "properties": {
                 "container": { "type": "string" },
                 "entities":  { "values": { "ref":  "EntityValue" } }
-            },
-            "required": [
-                "container",
-                "entities"
-            ],
-            "additionalProperties": false
+            }
         },
         "ReadEntitiesList": {
             "properties": {
                 "container": { "type": "string" },
                 "reads":     { "elements": { "ref":  "ReadEntities" } }
-            },
-            "required": [
-                "container",
-                "reads"
-            ],
-            "additionalProperties": false
+            }
         },
         "ReadEntities": {
             "properties": {
                 "ids":        { "elements": { "type": "string" } },
                 "references": { "elements": { "ref":  "References" }, "nullable": true }
-            },
-            "required": [
-                "ids"
-            ],
-            "additionalProperties": false
+            }
         },
         "References": {
             "properties": {
                 "selector":   { "type": "string" },
                 "container":  { "type": "string" },
                 "references": { "elements": { "ref":  "References" }, "nullable": true }
-            },
-            "required": [
-                "selector",
-                "container"
-            ],
-            "additionalProperties": false
+            }
         },
         "QueryEntities": {
             "properties": {
@@ -141,11 +102,7 @@
                 "filterLinq": { "type": "string", "nullable": true },
                 "filter":     { "ref":  "FilterOperation", "nullable": true },
                 "references": { "elements": { "ref":  "References" }, "nullable": true }
-            },
-            "required": [
-                "container"
-            ],
-            "additionalProperties": false
+            }
         },
         "FilterOperation": {
             "discriminator": "op",
@@ -169,19 +126,13 @@
             },
             "properties": {
 
-            },
-            "additionalProperties": true
+            }
         },
         "Equal": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }
-            },
-            "required": [
-                "left",
-                "right"
-            ],
-            "additionalProperties": false
+            }
         },
         "Operation": {
             "discriminator": "op",
@@ -226,391 +177,222 @@
             },
             "properties": {
 
-            },
-            "additionalProperties": true
+            }
         },
         "Field": {
             "properties": {
                 "name": { "type": "string" }
-            },
-            "required": [
-                "name"
-            ],
-            "additionalProperties": false
+            }
         },
         "StringLiteral": {
             "properties": {
                 "value": { "type": "string" }
-            },
-            "required": [
-                "value"
-            ],
-            "additionalProperties": false
+            }
         },
         "DoubleLiteral": {
             "properties": {
                 "value": { "type": "double" }
-            },
-            "required": [
-                "value"
-            ],
-            "additionalProperties": false
+            }
         },
         "LongLiteral": {
             "properties": {
                 "value": { "type": "int64" }
-            },
-            "required": [
-                "value"
-            ],
-            "additionalProperties": false
+            }
         },
         "NullLiteral": {
             "properties": {
 
-            },
-            "additionalProperties": false
+            }
         },
         "Abs": {
             "properties": {
                 "value": { "ref":  "Operation" }
-            },
-            "required": [
-                "value"
-            ],
-            "additionalProperties": false
+            }
         },
         "Ceiling": {
             "properties": {
                 "value": { "ref":  "Operation" }
-            },
-            "required": [
-                "value"
-            ],
-            "additionalProperties": false
+            }
         },
         "Floor": {
             "properties": {
                 "value": { "ref":  "Operation" }
-            },
-            "required": [
-                "value"
-            ],
-            "additionalProperties": false
+            }
         },
         "Exp": {
             "properties": {
                 "value": { "ref":  "Operation" }
-            },
-            "required": [
-                "value"
-            ],
-            "additionalProperties": false
+            }
         },
         "Log": {
             "properties": {
                 "value": { "ref":  "Operation" }
-            },
-            "required": [
-                "value"
-            ],
-            "additionalProperties": false
+            }
         },
         "Sqrt": {
             "properties": {
                 "value": { "ref":  "Operation" }
-            },
-            "required": [
-                "value"
-            ],
-            "additionalProperties": false
+            }
         },
         "Negate": {
             "properties": {
                 "value": { "ref":  "Operation" }
-            },
-            "required": [
-                "value"
-            ],
-            "additionalProperties": false
+            }
         },
         "Add": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }
-            },
-            "required": [
-                "left",
-                "right"
-            ],
-            "additionalProperties": false
+            }
         },
         "Subtract": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }
-            },
-            "required": [
-                "left",
-                "right"
-            ],
-            "additionalProperties": false
+            }
         },
         "Multiply": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }
-            },
-            "required": [
-                "left",
-                "right"
-            ],
-            "additionalProperties": false
+            }
         },
         "Divide": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }
-            },
-            "required": [
-                "left",
-                "right"
-            ],
-            "additionalProperties": false
+            }
         },
         "Min": {
             "properties": {
                 "field": { "ref":  "Field" },
                 "arg":   { "type": "string" },
                 "array": { "ref":  "Operation" }
-            },
-            "required": [
-                "field",
-                "arg",
-                "array"
-            ],
-            "additionalProperties": false
+            }
         },
         "Max": {
             "properties": {
                 "field": { "ref":  "Field" },
                 "arg":   { "type": "string" },
                 "array": { "ref":  "Operation" }
-            },
-            "required": [
-                "field",
-                "arg",
-                "array"
-            ],
-            "additionalProperties": false
+            }
         },
         "Sum": {
             "properties": {
                 "field": { "ref":  "Field" },
                 "arg":   { "type": "string" },
                 "array": { "ref":  "Operation" }
-            },
-            "required": [
-                "field",
-                "arg",
-                "array"
-            ],
-            "additionalProperties": false
+            }
         },
         "Average": {
             "properties": {
                 "field": { "ref":  "Field" },
                 "arg":   { "type": "string" },
                 "array": { "ref":  "Operation" }
-            },
-            "required": [
-                "field",
-                "arg",
-                "array"
-            ],
-            "additionalProperties": false
+            }
         },
         "Count": {
             "properties": {
                 "field": { "ref":  "Field" }
-            },
-            "required": [
-                "field"
-            ],
-            "additionalProperties": false
+            }
         },
         "NotEqual": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }
-            },
-            "required": [
-                "left",
-                "right"
-            ],
-            "additionalProperties": false
+            }
         },
         "LessThan": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }
-            },
-            "required": [
-                "left",
-                "right"
-            ],
-            "additionalProperties": false
+            }
         },
         "LessThanOrEqual": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }
-            },
-            "required": [
-                "left",
-                "right"
-            ],
-            "additionalProperties": false
+            }
         },
         "GreaterThan": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }
-            },
-            "required": [
-                "left",
-                "right"
-            ],
-            "additionalProperties": false
+            }
         },
         "GreaterThanOrEqual": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }
-            },
-            "required": [
-                "left",
-                "right"
-            ],
-            "additionalProperties": false
+            }
         },
         "And": {
             "properties": {
                 "operands": { "elements": { "ref":  "FilterOperation" } }
-            },
-            "required": [
-                "operands"
-            ],
-            "additionalProperties": false
+            }
         },
         "Or": {
             "properties": {
                 "operands": { "elements": { "ref":  "FilterOperation" } }
-            },
-            "required": [
-                "operands"
-            ],
-            "additionalProperties": false
+            }
         },
         "TrueLiteral": {
             "properties": {
 
-            },
-            "additionalProperties": false
+            }
         },
         "FalseLiteral": {
             "properties": {
 
-            },
-            "additionalProperties": false
+            }
         },
         "Not": {
             "properties": {
                 "operand": { "ref":  "FilterOperation" }
-            },
-            "required": [
-                "operand"
-            ],
-            "additionalProperties": false
+            }
         },
         "Any": {
             "properties": {
                 "field":     { "ref":  "Field" },
                 "arg":       { "type": "string" },
                 "predicate": { "ref":  "FilterOperation" }
-            },
-            "required": [
-                "field",
-                "arg",
-                "predicate"
-            ],
-            "additionalProperties": false
+            }
         },
         "All": {
             "properties": {
                 "field":     { "ref":  "Field" },
                 "arg":       { "type": "string" },
                 "predicate": { "ref":  "FilterOperation" }
-            },
-            "required": [
-                "field",
-                "arg",
-                "predicate"
-            ],
-            "additionalProperties": false
+            }
         },
         "Contains": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }
-            },
-            "required": [
-                "left",
-                "right"
-            ],
-            "additionalProperties": false
+            }
         },
         "StartsWith": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }
-            },
-            "required": [
-                "left",
-                "right"
-            ],
-            "additionalProperties": false
+            }
         },
         "EndsWith": {
             "properties": {
                 "left":  { "ref":  "Operation" },
                 "right": { "ref":  "Operation" }
-            },
-            "required": [
-                "left",
-                "right"
-            ],
-            "additionalProperties": false
+            }
         },
         "PatchEntities": {
             "properties": {
                 "container": { "type": "string" },
                 "patches":   { "values": { "ref":  "EntityPatch" } }
-            },
-            "required": [
-                "container",
-                "patches"
-            ],
-            "additionalProperties": false
+            }
         },
         "EntityPatch": {
             "properties": {
                 "patches": { "elements": { "ref":  "JsonPatch" } }
-            },
-            "required": [
-                "patches"
-            ],
-            "additionalProperties": false
+            }
         },
         "JsonPatch": {
             "discriminator": "op",
@@ -624,104 +406,61 @@
             },
             "properties": {
 
-            },
-            "additionalProperties": true
+            }
         },
         "PatchReplace": {
             "properties": {
                 "path":  { "type": "string" },
                 "value": {  }
-            },
-            "required": [
-                "path",
-                "value"
-            ],
-            "additionalProperties": false
+            }
         },
         "PatchAdd": {
             "properties": {
                 "path":  { "type": "string" },
                 "value": {  }
-            },
-            "required": [
-                "path",
-                "value"
-            ],
-            "additionalProperties": false
+            }
         },
         "PatchRemove": {
             "properties": {
                 "path": { "type": "string" }
-            },
-            "required": [
-                "path"
-            ],
-            "additionalProperties": false
+            }
         },
         "PatchCopy": {
             "properties": {
                 "path": { "type": "string" },
                 "from": { "type": "string", "nullable": true }
-            },
-            "required": [
-                "path"
-            ],
-            "additionalProperties": false
+            }
         },
         "PatchMove": {
             "properties": {
                 "path": { "type": "string" },
                 "from": { "type": "string", "nullable": true }
-            },
-            "required": [
-                "path"
-            ],
-            "additionalProperties": false
+            }
         },
         "PatchTest": {
             "properties": {
                 "path":  { "type": "string" },
                 "value": {  }
-            },
-            "required": [
-                "path",
-                "value"
-            ],
-            "additionalProperties": false
+            }
         },
         "DeleteEntities": {
             "properties": {
                 "container": { "type": "string" },
                 "ids":       { "elements": { "type": "string" } }
-            },
-            "required": [
-                "container",
-                "ids"
-            ],
-            "additionalProperties": false
+            }
         },
         "SendMessage": {
             "properties": {
                 "name":  { "type": "string" },
                 "value": {  }
-            },
-            "required": [
-                "name",
-                "value"
-            ],
-            "additionalProperties": false
+            }
         },
         "SubscribeChanges": {
             "properties": {
                 "container": { "type": "string" },
                 "changes":   { "elements": { "ref":  "Change" } },
                 "filter":    { "ref":  "FilterOperation", "nullable": true }
-            },
-            "required": [
-                "container",
-                "changes"
-            ],
-            "additionalProperties": false
+            }
         },
         "Change": {
             "enum": [
@@ -735,11 +474,7 @@
             "properties": {
                 "name":   { "type": "string" },
                 "remove": { "type": "boolean", "nullable": true }
-            },
-            "required": [
-                "name"
-            ],
-            "additionalProperties": false
+            }
         },
         "DatabaseResponse": {
             "discriminator": "type",
@@ -749,8 +484,7 @@
             },
             "properties": {
                 "reqId": { "type": "int32", "nullable": true }
-            },
-            "additionalProperties": true
+            }
         },
         "SyncResponse": {
             "properties": {
@@ -762,15 +496,13 @@
                 "updateErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
                 "patchErrors":  { "values": { "ref":  "EntityErrors" }, "nullable": true },
                 "deleteErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true }
-            },
-            "additionalProperties": false
+            }
         },
         "ErrorResponse": {
             "properties": {
                 "reqId":   { "type": "int32", "nullable": true },
                 "message": { "type": "string", "nullable": true }
-            },
-            "additionalProperties": false
+            }
         },
         "TaskResult": {
             "discriminator": "task",
@@ -788,45 +520,33 @@
             },
             "properties": {
 
-            },
-            "additionalProperties": true
+            }
         },
         "CreateEntitiesResult": {
             "properties": {
                 "Error": { "ref":  "CommandError", "nullable": true }
-            },
-            "additionalProperties": false
+            }
         },
         "CommandError": {
             "properties": {
                 "message": { "type": "string", "nullable": true }
-            },
-            "additionalProperties": false
+            }
         },
         "UpdateEntitiesResult": {
             "properties": {
                 "Error": { "ref":  "CommandError", "nullable": true }
-            },
-            "additionalProperties": false
+            }
         },
         "ReadEntitiesListResult": {
             "properties": {
                 "reads": { "elements": { "ref":  "ReadEntitiesResult" } }
-            },
-            "required": [
-                "reads"
-            ],
-            "additionalProperties": false
+            }
         },
         "ReadEntitiesResult": {
             "properties": {
                 "Error":      { "ref":  "CommandError", "nullable": true },
                 "references": { "elements": { "ref":  "ReferencesResult" } }
-            },
-            "required": [
-                "references"
-            ],
-            "additionalProperties": false
+            }
         },
         "ReferencesResult": {
             "properties": {
@@ -834,11 +554,7 @@
                 "container":  { "type": "string", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
-            },
-            "required": [
-                "ids"
-            ],
-            "additionalProperties": false
+            }
         },
         "QueryEntitiesResult": {
             "properties": {
@@ -847,56 +563,40 @@
                 "filterLinq": { "type": "string", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
-            },
-            "required": [
-                "ids"
-            ],
-            "additionalProperties": false
+            }
         },
         "PatchEntitiesResult": {
             "properties": {
                 "Error": { "ref":  "CommandError", "nullable": true }
-            },
-            "additionalProperties": false
+            }
         },
         "DeleteEntitiesResult": {
             "properties": {
                 "Error": { "ref":  "CommandError", "nullable": true }
-            },
-            "additionalProperties": false
+            }
         },
         "SendMessageResult": {
             "properties": {
                 "Error":  { "ref":  "CommandError", "nullable": true },
                 "result": {  }
-            },
-            "required": [
-                "result"
-            ],
-            "additionalProperties": false
+            }
         },
         "SubscribeChangesResult": {
             "properties": {
 
-            },
-            "additionalProperties": false
+            }
         },
         "SubscribeMessageResult": {
             "properties": {
 
-            },
-            "additionalProperties": false
+            }
         },
         "TaskErrorResult": {
             "properties": {
                 "type":       { "ref":  "TaskErrorResultType" },
                 "message":    { "type": "string", "nullable": true },
                 "stacktrace": { "type": "string", "nullable": true }
-            },
-            "required": [
-                "type"
-            ],
-            "additionalProperties": false
+            }
         },
         "TaskErrorResultType": {
             "enum": [
@@ -912,21 +612,13 @@
             "properties": {
                 "container": { "type": "string", "nullable": true },
                 "entities":  { "values": { "ref":  "EntityValue" } }
-            },
-            "required": [
-                "entities"
-            ],
-            "additionalProperties": false
+            }
         },
         "EntityErrors": {
             "properties": {
                 "container": { "type": "string", "nullable": true },
                 "errors":    { "values": { "ref":  "EntityError" } }
-            },
-            "required": [
-                "errors"
-            ],
-            "additionalProperties": false
+            }
         },
         "DatabaseEvent": {
             "discriminator": "type",
@@ -937,11 +629,7 @@
                 "seq":    { "type": "int32" },
                 "target": { "type": "string", "nullable": true },
                 "client": { "type": "string", "nullable": true }
-            },
-            "required": [
-                "seq"
-            ],
-            "additionalProperties": true
+            }
         },
         "SubscriptionEvent": {
             "properties": {
@@ -949,11 +637,7 @@
                 "target": { "type": "string", "nullable": true },
                 "client": { "type": "string", "nullable": true },
                 "tasks":  { "elements": { "ref":  "DatabaseTask" }, "nullable": true }
-            },
-            "required": [
-                "seq"
-            ],
-            "additionalProperties": false
+            }
         }
     }
 }

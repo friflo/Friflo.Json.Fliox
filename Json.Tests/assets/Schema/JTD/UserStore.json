@@ -6,12 +6,7 @@
                 "id":          { "type": "string" },
                 "rights":      { "elements": { "ref":  "Right" } },
                 "description": { "type": "string", "nullable": true }
-            },
-            "required": [
-                "id",
-                "rights"
-            ],
-            "additionalProperties": false
+            }
         },
         "Right": {
             "discriminator": "type",
@@ -25,28 +20,19 @@
             },
             "properties": {
                 "description": { "type": "string", "nullable": true }
-            },
-            "additionalProperties": true
+            }
         },
         "RightAllow": {
             "properties": {
                 "grant":       { "type": "boolean" },
                 "description": { "type": "string", "nullable": true }
-            },
-            "required": [
-                "grant"
-            ],
-            "additionalProperties": false
+            }
         },
         "RightTask": {
             "properties": {
                 "types":       { "elements": { "ref":  "TaskType" } },
                 "description": { "type": "string", "nullable": true }
-            },
-            "required": [
-                "types"
-            ],
-            "additionalProperties": false
+            }
         },
         "TaskType": {
             "enum": [
@@ -66,38 +52,25 @@
             "properties": {
                 "names":       { "elements": { "type": "string" } },
                 "description": { "type": "string", "nullable": true }
-            },
-            "required": [
-                "names"
-            ],
-            "additionalProperties": false
+            }
         },
         "RightSubscribeMessage": {
             "properties": {
                 "names":       { "elements": { "type": "string" } },
                 "description": { "type": "string", "nullable": true }
-            },
-            "required": [
-                "names"
-            ],
-            "additionalProperties": false
+            }
         },
         "RightDatabase": {
             "properties": {
                 "containers":  { "values": { "ref":  "ContainerAccess" } },
                 "description": { "type": "string", "nullable": true }
-            },
-            "required": [
-                "containers"
-            ],
-            "additionalProperties": false
+            }
         },
         "ContainerAccess": {
             "properties": {
                 "operations":       { "elements": { "ref":  "OperationType" }, "nullable": true },
                 "subscribeChanges": { "elements": { "ref":  "Change" }, "nullable": true }
-            },
-            "additionalProperties": false
+            }
         },
         "OperationType": {
             "enum": [
@@ -123,32 +96,20 @@
             "properties": {
                 "names":       { "elements": { "type": "string" } },
                 "description": { "type": "string", "nullable": true }
-            },
-            "required": [
-                "names"
-            ],
-            "additionalProperties": false
+            }
         },
         "UserCredential": {
             "properties": {
                 "id":       { "type": "string" },
                 "passHash": { "type": "string", "nullable": true },
                 "token":    { "type": "string", "nullable": true }
-            },
-            "required": [
-                "id"
-            ],
-            "additionalProperties": false
+            }
         },
         "UserPermission": {
             "properties": {
                 "id":    { "type": "string" },
                 "roles": { "elements": { "type": "string" }, "nullable": true }
-            },
-            "required": [
-                "id"
-            ],
-            "additionalProperties": false
+            }
         }
     }
 }

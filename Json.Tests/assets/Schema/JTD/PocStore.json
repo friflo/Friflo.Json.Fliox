@@ -7,71 +7,41 @@
                 "customer": { "type": "string", "nullable": true },
                 "created":  { "type": "timestamp" },
                 "items":    { "elements": { "ref":  "OrderItem" }, "nullable": true }
-            },
-            "required": [
-                "id",
-                "created"
-            ],
-            "additionalProperties": false
+            }
         },
         "OrderItem": {
             "properties": {
                 "article": { "type": "string" },
                 "amount":  { "type": "int32" },
                 "name":    { "type": "string", "nullable": true }
-            },
-            "required": [
-                "article",
-                "amount"
-            ],
-            "additionalProperties": false
+            }
         },
         "Customer": {
             "properties": {
                 "id":   { "type": "string" },
                 "name": { "type": "string" }
-            },
-            "required": [
-                "id",
-                "name"
-            ],
-            "additionalProperties": false
+            }
         },
         "Article": {
             "properties": {
                 "id":       { "type": "string" },
                 "name":     { "type": "string" },
                 "producer": { "type": "string", "nullable": true }
-            },
-            "required": [
-                "id",
-                "name"
-            ],
-            "additionalProperties": false
+            }
         },
         "Producer": {
             "properties": {
                 "id":        { "type": "string" },
                 "name":      { "type": "string" },
                 "employees": { "elements": { "type": "string" }, "nullable": true }
-            },
-            "required": [
-                "id",
-                "name"
-            ],
-            "additionalProperties": false
+            }
         },
         "Employee": {
             "properties": {
                 "id":        { "type": "string" },
                 "firstName": { "type": "string" },
                 "lastName":  { "type": "string", "nullable": true }
-            },
-            "required": [
-                "id",
-                "firstName"
-            ],
-            "additionalProperties": false
+            }
         },
         "TestType": {
             "properties": {
@@ -95,31 +65,13 @@
                 "jsonValue":        {  },
                 "derivedClass":     { "ref":  "DerivedClass" },
                 "derivedClassNull": { "ref":  "DerivedClass", "nullable": true }
-            },
-            "required": [
-                "id",
-                "dateTime",
-                "bigInt",
-                "uint8",
-                "int16",
-                "int32",
-                "int64",
-                "pocStruct",
-                "intArray",
-                "jsonValue",
-                "derivedClass"
-            ],
-            "additionalProperties": false
+            }
         },
         "BigInteger": "string",
         "PocStruct": {
             "properties": {
                 "val": { "type": "int32" }
-            },
-            "required": [
-                "val"
-            ],
-            "additionalProperties": false
+            }
         },
         "DerivedClass": {
             "properties": {
@@ -127,13 +79,7 @@
                 "article":    { "type": "string" },
                 "amount":     { "type": "int32" },
                 "name":       { "type": "string", "nullable": true }
-            },
-            "required": [
-                "derivedVal",
-                "article",
-                "amount"
-            ],
-            "additionalProperties": false
+            }
         }
     }
 }
