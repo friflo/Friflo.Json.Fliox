@@ -178,7 +178,7 @@ namespace Friflo.Json.Flow.Schema
                     if (package.imports.ContainsKey(type))
                         continue;
                     var typePackage = GetPackageName(type); 
-                    var import = new Import(type, typePackage);  
+                    var import      = new Import(type, typePackage);  
                     package.imports.Add(type, import);
                 }
             }
@@ -241,14 +241,14 @@ namespace Friflo.Json.Flow.Schema
             string[] fileNames = Directory.GetFiles(folder, $"*{fileExt}", SearchOption.TopDirectoryOnly);
             for (int i = 0; i < fileNames.Length; i++) { fileNames[i] = fileNames[i].Replace('\\', '/'); }
             var fileSet = new HashSet<string>(fileNames);
-            var utf8 = new UTF8Encoding(false);
+            var utf8    = new UTF8Encoding(false);
             foreach (var file in files) {
                 var filename    = file.Key;
                 var content     = file.Value;
-                var path = $"{folder}/{filename}";
+                var path        = $"{folder}/{filename}";
                 fileSet.Remove(path);
-                var lastSlash = path.LastIndexOf("/", StringComparison.InvariantCulture);
-                var fileFolder = lastSlash == -1 ? folder : path.Substring(0, lastSlash);
+                var lastSlash   = path.LastIndexOf("/", StringComparison.InvariantCulture);
+                var fileFolder  = lastSlash == -1 ? folder : path.Substring(0, lastSlash);
                 Directory.CreateDirectory(fileFolder);
                 File.WriteAllText(path, content, utf8);
             }

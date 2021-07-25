@@ -73,7 +73,7 @@ namespace Friflo.Json.Flow.Schema.Native
             // in case any Nullable<> was found - typeStore contain now also their non-nullable counterparts.
             typeMappers = typeStore.GetTypeMappers();
             
-            Types = map.Keys;
+            Types           = map.Keys;
             StandardTypes   = new NativeStandardTypes(nativeTypes);
             SeparateTypes   = GetTypes(separateTypes);
 
@@ -105,8 +105,8 @@ namespace Friflo.Json.Flow.Schema.Native
                     type.fields = new List<Field>(propFields.fields.Length);
                     foreach (var propField in propFields.fields) {
                         var fieldMapper = propField.fieldType.GetUnderlyingMapper();
-                        var isNullable = IsNullableMapper(fieldMapper, out var nonNullableType);
-                        var field = new Field {
+                        var isNullable  = IsNullableMapper(fieldMapper, out var nonNullableType);
+                        var field   = new Field {
                             name        = propField.jsonName,
                             required    = propField.required || !isNullable,
                             type        = nativeTypes[nonNullableType]
@@ -118,9 +118,9 @@ namespace Friflo.Json.Flow.Schema.Native
                 var instanceFactory = mapper.instanceFactory;
                 if (instanceFactory != null) {
                     var polyTypes = instanceFactory.polyTypes;
-                    type.unionType = new UnionType {
-                        discriminator = instanceFactory.discriminator,
-                        types = new List<TypeDef>(polyTypes.Length)
+                    type.unionType  = new UnionType {
+                        discriminator   = instanceFactory.discriminator,
+                        types           = new List<TypeDef>(polyTypes.Length)
                     };
                     foreach (var polyType in polyTypes) {
                         TypeDef element = nativeTypes[polyType.type];
