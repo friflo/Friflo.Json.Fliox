@@ -111,7 +111,7 @@
             ],
             "additionalProperties": false
         },
-        "System.Numerics.BigInteger": { "BigInteger": "string" },
+        "BigInteger": "string",
         "PocStruct": {
             "properties": {
                 "val": { "ref":  "int32" }

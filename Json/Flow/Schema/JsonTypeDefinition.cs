@@ -41,14 +41,14 @@ namespace Friflo.Json.Flow.Schema
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
-            AddType (map, standard.BigInteger,    "\"BigInteger\": \"string\"" ); // https://www.regextester.com/   ^-?[0-9]+$
+            AddType (map, standard.BigInteger,    "\"string\"" ); // https://www.regextester.com/   ^-?[0-9]+$
             return map;
         }
         
         private EmitType EmitStandardType(TypeDef type, StringBuilder sb, Generator generator) {
             if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
-            sb.Append($"        \"{type}\": {{ {definition} }}");
+            sb.Append($"        \"{type.Name}\": {definition}");
             return new EmitType(type, generator, sb);
         }
         
