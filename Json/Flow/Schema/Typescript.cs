@@ -73,9 +73,9 @@ namespace Friflo.Json.Flow.Schema
                 var fields          = type.Fields;
                 int maxFieldName    = fields.MaxLength(field => field.name.Length);
                 
-                string  discriminator = null;
-                var     discriminant = type.Discriminant;
-                var extendsStr = "";
+                string  discriminator   = null;
+                var     discriminant    = type.Discriminant;
+                var     extendsStr      = "";
                 if (discriminant != null) {
                     var baseType    = type.BaseType;
                     discriminator   = baseType.UnionType.discriminator;
@@ -157,8 +157,7 @@ namespace Friflo.Json.Flow.Schema
                 var elementTypeName = GetFieldType(elementMapper, context);
                 return $"{elementTypeName}[]";
             }
-            var isDictionary = type.IsDictionary;
-            if (isDictionary) {
+            if (type.IsDictionary) {
                 var valueMapper = type.ElementType;
                 var valueTypeName = GetFieldType(valueMapper, context);
                 return $"{{ [key: string]: {valueTypeName} }}";

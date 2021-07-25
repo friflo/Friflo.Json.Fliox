@@ -74,8 +74,8 @@ namespace Friflo.Json.Flow.Schema
                 var fields          = type.Fields;
                 int maxFieldName    = fields.MaxLength(field => field.name.Length);
                 
-                string  discriminator = null;
-                var     discriminant = type.Discriminant;
+                string  discriminator   = null;
+                var     discriminant    = type.Discriminant;
                 if (discriminant != null) {
                     var baseType    = type.BaseType;
                     discriminator   = baseType.UnionType.discriminator;
@@ -96,8 +96,8 @@ namespace Friflo.Json.Flow.Schema
                     sb.AppendLine($"            ],");
                 }
                 sb.AppendLine($"            \"properties\": {{");
-                bool firstField = true;
-                var requiredFields = new List<string>();
+                bool firstField     = true;
+                var requiredFields  = new List<string>();
                 if (discriminant != null) {
                     var indent = Indent(maxFieldName, discriminator);
                     sb.Append($"                \"{discriminator}\":{indent} {{ \"enum\": [\"{discriminant}\"] }}");
@@ -167,8 +167,7 @@ namespace Friflo.Json.Flow.Schema
                 var elementTypeName = GetFieldType(elementMapper, context, true);
                 return $"\"type\": {Opt(required, "array")}, \"items\": {{ {elementTypeName} }}";
             }
-            var isDictionary = type.IsDictionary;
-            if (isDictionary) {
+            if (type.IsDictionary) {
                 var valueMapper = type.ElementType;
                 var valueTypeName = GetFieldType(valueMapper, context, true);
                 return $"\"type\": \"object\", \"additionalProperties\": {{ {valueTypeName} }}";
