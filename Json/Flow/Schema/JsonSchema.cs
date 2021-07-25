@@ -5,10 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Schema.Definition;
-using Friflo.Json.Flow.Schema.Native;
 using Friflo.Json.Flow.Schema.Utils;
 using static Friflo.Json.Flow.Schema.Generator;
 
@@ -20,9 +18,8 @@ namespace Friflo.Json.Flow.Schema
         private  readonly   Dictionary<TypeDef, string> standardTypes;
         private  const      string                      Next = ",\r\n";
         
-        public JsonSchema (TypeStore typeStore, ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
-            var schema      = new NativeTypeSchema(typeStore, separateTypes);
-            generator       = new Generator(schema, stripNamespaces, ".json");
+        public JsonSchema (Generator generator) {
+            this.generator  = generator;
             standardTypes   = GetStandardTypes(generator.schema.StandardTypes);
         }
         

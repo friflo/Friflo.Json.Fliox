@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Schema.Native;
 
 namespace Friflo.Json.Flow.Schema
 {
@@ -22,13 +23,17 @@ namespace Friflo.Json.Flow.Schema
         }
         
         public Generator Typescript(ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
-            var typescript = new Typescript(typeStore, stripNamespaces, separateTypes);
+            var schema      = new NativeTypeSchema(typeStore, separateTypes);
+            var generator   = new Generator(schema, stripNamespaces, ".ts");
+            var typescript = new Typescript(generator);
             typescript.GenerateSchema();
             return typescript.generator;
         }
             
         public Generator JsonSchema (ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
-            var jsonSchema = new JsonSchema(typeStore, stripNamespaces, separateTypes);
+            var schema      = new NativeTypeSchema(typeStore, separateTypes);
+            var generator   = new Generator(schema, stripNamespaces, ".json");
+            var jsonSchema  = new JsonSchema(generator);
             jsonSchema.GenerateSchema();
             return jsonSchema.generator;
         }
