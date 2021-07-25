@@ -123,11 +123,11 @@ namespace Friflo.Json.Flow.Schema
                 foreach (var field in fields) {
                     if (type.IsDerivedField(field))
                         continue;
-                    bool isOptional = !field.required;
+                    bool required = field.required;
                     var fieldType = GetFieldType(field.fieldType, context);
-                    var indent = Indent(maxFieldName, field.name);
-                    var optStr = isOptional ? "?" : " ";
-                    var nullStr = isOptional ? " | null" : "";
+                    var indent  = Indent(maxFieldName, field.name);
+                    var optStr  = required ? " ": "?";
+                    var nullStr = required ? "" : " | null";
                     sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}{nullStr};");
                 }
                 sb.AppendLine("}");

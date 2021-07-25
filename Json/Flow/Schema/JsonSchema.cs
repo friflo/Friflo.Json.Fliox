@@ -96,7 +96,7 @@ namespace Friflo.Json.Flow.Schema
                     bool firstElem = true;
                     foreach (var polyType in unionType.types) {
                         Delimiter(sb, Next, ref firstElem);
-                        sb.Append($"                {{ {Ref(polyType, false, context)} }}");
+                        sb.Append($"                {{ {Ref(polyType, true, context)} }}");
                     }
                     sb.AppendLine();
                     sb.AppendLine($"            ],");
@@ -114,10 +114,10 @@ namespace Friflo.Json.Flow.Schema
                 foreach (var field in fields) {
                     // if (generator.IsDerivedField(type, field))  JSON Schema list all properties
                     //    continue;
-                    bool isOptional = !field.required;
-                    var fieldType = GetFieldType(field.fieldType, context, isOptional);
+                    bool required = field.required;
+                    var fieldType = GetFieldType(field.fieldType, context, required);
                     var indent = Indent(maxFieldName, field.name);
-                    if (!isOptional)
+                    if (required)
                         requiredFields.Add(field.name);
                     Delimiter(sb, Next, ref firstField);
                     sb.Append($"                \"{field.name}\":{indent} {{ {fieldType} }}");
@@ -157,30 +157,30 @@ namespace Friflo.Json.Flow.Schema
         }
         
         // Note: static by intention
-        private static string GetFieldType(TypeDef type, TypeContext context, bool isOptional) {
+        private static string GetFieldType(TypeDef type, TypeContext context, bool required) {
             var system  = context.generator.system;
             if (type == system.JsonValue) {
                 return ""; // allow any type
             }
             if (type == system.String) {
-                return $"\"type\": {Opt(isOptional, "string")}";
+                return $"\"type\": {Opt(required, "string")}";
             }
             if (type == system.Boolean) {
                 return "\"type\": \"boolean\"";
             }
             if (type.IsArray) {
                 var elementMapper = type.ElementType;
-                var elementTypeName = GetFieldType(elementMapper, context, false);
-                return $"\"type\": {Opt(isOptional, "array")}, \"items\": {{ {elementTypeName} }}";
+                var elementTypeName = GetFieldType(elementMapper, context, true);
+                return $"\"type\": {Opt(required, "array")}, \"items\": {{ {elementTypeName} }}";
             }
             var isDictionary = type.IsDictionary;
             if (isDictionary) {
                 var valueMapper = type.ElementType;
-                var valueTypeName = GetFieldType(valueMapper, context, false);
+                var valueTypeName = GetFieldType(valueMapper, context, true);
                 return $"\"type\": \"object\", \"additionalProperties\": {{ {valueTypeName} }}";
             }
             context.imports.Add(type);
-            return Ref(type, isOptional, context);
+            return Ref(type, required, context);
         }
         
         private void EmitPackageHeaders(StringBuilder sb) {
@@ -211,7 +211,7 @@ namespace Friflo.Json.Flow.Schema
             }
         }
         
-        private static string Ref(TypeDef type, bool isOptional, TypeContext context) {
+        private static string Ref(TypeDef type, bool required, TypeContext context) {
             var generator       = context.generator;
             var name = context.generator.GetTypeName(type);
             // if (generator.IsUnionType(type))
@@ -221,15 +221,15 @@ namespace Friflo.Json.Flow.Schema
             bool samePackage    = typePackage == ownerPackage;
             var prefix          = samePackage ? "" : $"./{typePackage}{generator.fileExt}";
             var refType = $"\"$ref\": \"{prefix}#/definitions/{name}\"";
-            if (isOptional)
+            if (!required)
                 return $"\"oneOf\": [{{\"type\": \"null\"}}, {{ {refType} }}]";
             return refType;
         }
         
-        private static string Opt (bool isOptional, string name) {
-            if (isOptional)
-                return $"[\"{name}\", \"null\"]";
-            return $"\"{name}\"";
+        private static string Opt (bool required, string name) {
+            if (required)
+                return $"\"{name}\"";
+            return $"[\"{name}\", \"null\"]";
         }
     }
 }
