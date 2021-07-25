@@ -16,7 +16,6 @@ public class NativeType : TypeDef
         internal readonly   TypeMapper          mapper;
         internal            TypeDef             baseType;
         internal            List<Field>         fields;
-        private             TypeDef             elementType;
         internal            UnionType           unionType;
         
         public   override   string              Name            => native.Name;
@@ -29,10 +28,7 @@ public class NativeType : TypeDef
         public   override   TypeSemantic        TypeSemantic    => mapper.GetTypeSemantic();
         public   override   bool                IsArray         => mapper.IsArray;
         public   override   UnionType           UnionType       => unionType;
-
-
-        public   override   TypeDef             ElementType {   get          => elementType;
-                                                                internal set => elementType = value;  }
+        public   override   TypeDef             ElementType     { get; internal set; }
 
         public   override   bool                IsDictionary    => mapper.type.GetInterfaces().Contains(typeof(IDictionary));
         public   override   string              ToString()      => mapper.type.ToString();
