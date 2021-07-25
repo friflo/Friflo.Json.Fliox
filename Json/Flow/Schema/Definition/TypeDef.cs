@@ -25,11 +25,11 @@ namespace Friflo.Json.Flow.Schema.Definition
     }
     
     public class Field {
-        public              string          jsonName;
+        public              string          name;
         public              bool            required;
         internal            TypeDef         fieldType;
 
-        public   override   string          ToString() => jsonName;
+        public   override   string          ToString() => name;
     }
 
     public class UnionType {

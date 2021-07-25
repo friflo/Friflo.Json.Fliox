@@ -42,7 +42,7 @@ public class NativeType : TypeDef
         public   override   bool                IsDerivedField(Field field) {
             var parent = BaseType;
             while (parent != null) {
-                if (parent.Fields.Find(f => f.jsonName == field.jsonName) != null)
+                if (parent.Fields.Find(f => f.name == field.name) != null)
                     return true;
                 parent = parent.BaseType;
             }
