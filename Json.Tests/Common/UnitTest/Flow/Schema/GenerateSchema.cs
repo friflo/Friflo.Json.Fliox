@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         public static void TypescriptUserStore () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var schema = new GeneratorSchema(typeStore, UserStoreTypes);
-            var generator = schema.Typescript(null, null);
+            var generator = schema.Typescript();
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/UserStore");
         }
         
@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         public static void TypescriptSync () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var schema = new GeneratorSchema(typeStore, SyncTypes);
-            var generator = schema.Typescript(null, null);
+            var generator = schema.Typescript();
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/Sync");
         }
         
@@ -49,7 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             // Use code generator directly
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             typeStore.AddMappers(PocStoreTypes);
-            var schema      = new NativeTypeSchema(typeStore, null);
+            var schema      = new NativeTypeSchema(typeStore);
             var generator   = new Generator(schema, new[]{"Friflo.Json.Tests.Common."}, ".ts");
             var _           = new Typescript(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/PocStore");

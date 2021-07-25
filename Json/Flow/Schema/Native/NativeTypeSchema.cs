@@ -54,7 +54,7 @@ namespace Friflo.Json.Flow.Schema.Native
         /// Contains only non nullable Type's
         private  readonly   Dictionary<Type, NativeType>    nativeTypes;
         
-        public NativeTypeSchema (TypeStore typeStore, ICollection<Type> separateTypes) {
+        public NativeTypeSchema (TypeStore typeStore, ICollection<Type> separateTypes = null) {
             var typeMappers = typeStore.GetTypeMappers();
             nativeTypes     = new Dictionary<Type,    NativeType>(typeMappers.Count);
             var map         = new Dictionary<TypeDef, TypeMapper>(typeMappers.Count);

@@ -22,14 +22,14 @@ namespace Friflo.Json.Flow.Schema
             typeStore.AddMappers(rootTypes);
         }
         
-        public Generator Typescript(ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
+        public Generator Typescript(ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
             var schema      = new NativeTypeSchema(typeStore, separateTypes);
             var generator   = new Generator(schema, stripNamespaces, ".ts");
             var _           = new Typescript(generator);
             return generator;
         }
             
-        public Generator JsonSchema (ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
+        public Generator JsonSchema (ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
             var schema      = new NativeTypeSchema(typeStore, separateTypes);
             var generator   = new Generator(schema, stripNamespaces, ".json");
             var _           = new JsonSchema(generator);

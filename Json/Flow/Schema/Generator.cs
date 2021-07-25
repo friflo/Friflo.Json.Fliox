@@ -82,7 +82,7 @@ namespace Friflo.Json.Flow.Schema
             fileExt                 = fileExtension;
             types                   = schema.Types;
             this.stripNamespaces    = stripNamespaces       ?? new List<string>();
-            separateTypes           = schema.SeparateTypes   ?? new List<TypeDef>();
+            separateTypes           = schema.SeparateTypes  ?? new List<TypeDef>();
             getPackageName          = GetPackageNameCallback;
             standardTypes           = GetStandardTypes(schema.StandardTypes);
         }
