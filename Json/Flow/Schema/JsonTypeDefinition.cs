@@ -94,12 +94,13 @@ namespace Friflo.Json.Flow.Schema
                     // if (generator.IsDerivedField(type, field))  JSON Schema list all properties
                     //    continue;
                     bool required = field.required;
-                    var fieldType = GetFieldType(field.type, context, required);
+                    var fieldType = GetFieldType(field.type, context);
                     var indent = Indent(maxFieldName, field.name);
                     if (required)
                         requiredFields.Add(field.name);
                     Delimiter(sb, Next, ref firstField);
-                    sb.Append($"                \"{field.name}\":{indent} {{ {fieldType} }}");
+                    var nullableStr = required ? "" : ", \"nullable\": true";
+                    sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{nullableStr} }}");
                 }
                 sb.AppendLine();
                 sb.AppendLine("            },");
@@ -136,30 +137,29 @@ namespace Friflo.Json.Flow.Schema
         }
         
         // Note: static by intention
-        private static string GetFieldType(TypeDef type, TypeContext context, bool required) {
+        private static string GetFieldType(TypeDef type, TypeContext context) {
             var standard = context.generator.schema.StandardTypes;
-            var nullableStr = required ? "" : ", \"nullable\": true";
             if (type == standard.JsonValue) {
                 return ""; // allow any type
             }
             if (type == standard.String) {
-                return $"\"type\": \"string\"{nullableStr}";
+                return $"\"type\": \"string\"";
             }
             if (type == standard.Boolean) {
-                return $"\"type\": \"boolean\"{nullableStr}";
+                return $"\"type\": \"boolean\"";
             }
             if (type.IsArray) {
                 var elementMapper = type.ElementType;
-                var elementTypeName = GetFieldType(elementMapper, context, true);
-                return $"\"elements\": {{ {elementTypeName} }}{nullableStr}";
+                var elementTypeName = GetFieldType(elementMapper, context);
+                return $"\"elements\": {{ {elementTypeName} }}";
             }
             if (type.IsDictionary) {
                 var valueMapper = type.ElementType;
-                var valueTypeName = GetFieldType(valueMapper, context, true);
-                return $"\"values\": {{ {valueTypeName} }}{nullableStr}";
+                var valueTypeName = GetFieldType(valueMapper, context);
+                return $"\"values\": {{ {valueTypeName} }}";
             }
             context.imports.Add(type);
-            return $"{Ref(type, context)}{nullableStr}";
+            return $"{Ref(type, context)}";
         }
         
         private void EmitPackageHeaders(StringBuilder sb) {
