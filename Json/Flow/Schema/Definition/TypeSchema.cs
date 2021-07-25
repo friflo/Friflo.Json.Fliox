@@ -7,8 +7,12 @@ namespace Friflo.Json.Flow.Schema.Definition
 {
     public abstract class TypeSchema
     {
-        public abstract     ICollection<TypeDef> Types { get;}
-        
+        public abstract     ICollection<TypeDef>    Types           { get; }
+        public abstract     StandardTypes           StandardTypes   { get; }
+    }
+    
+    public abstract class StandardTypes
+    {
         public abstract     TypeDef     Boolean     { get; }
         public abstract     TypeDef     String      { get; }
         

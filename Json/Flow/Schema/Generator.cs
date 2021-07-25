@@ -84,7 +84,7 @@ namespace Friflo.Json.Flow.Schema
             this.stripNamespaces    = stripNamespaces ?? new List<string>();
             this.separateTypes      = separateTypes ?? new List<TypeDef>();
             getPackageName          = GetPackageNameCallback;
-            standardTypes           = GetStandardTypes(schema);
+            standardTypes           = GetStandardTypes(schema.StandardTypes);
         }
         
         public static string Indent(int max, string str) {
@@ -134,18 +134,18 @@ namespace Friflo.Json.Flow.Schema
             types.Add(type, value);
         }
         
-        private static Dictionary<TypeDef, string> GetStandardTypes(TypeSchema schema) {
+        private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var types = new Dictionary<TypeDef, string>();
-            AddType(types, schema.Unit8,         "uint8" );
-            AddType(types, schema.Int16,         "int16" );
-            AddType(types, schema.Int32,         "int32" );
-            AddType(types, schema.Int64,         "int64" );
+            AddType(types, standard.Unit8,         "uint8" );
+            AddType(types, standard.Int16,         "int16" );
+            AddType(types, standard.Int32,         "int32" );
+            AddType(types, standard.Int64,         "int64" );
                 
-            AddType(types, schema.Double,        "double" );
-            AddType(types, schema.Float,         "float" );
+            AddType(types, standard.Double,        "double" );
+            AddType(types, standard.Float,         "float" );
                 
-            AddType(types, schema.BigInteger,    "BigInteger" );
-            AddType(types, schema.DateTime,      "DateTime" );
+            AddType(types, standard.BigInteger,    "BigInteger" );
+            AddType(types, standard.DateTime,      "DateTime" );
             return types;
         }
         

@@ -23,7 +23,7 @@ namespace Friflo.Json.Flow.Schema
             var schema      = new NativeTypeSchema(typeStore);
             var sepTypes    = schema.GetTypes(separateTypes);
             generator       = new Generator(schema, stripNamespaces, ".ts", sepTypes);
-            standardTypes   = GetStandardTypes(generator.schema);
+            standardTypes   = GetStandardTypes(generator.schema.StandardTypes);
         }
         
         public void GenerateSchema() {
@@ -42,18 +42,18 @@ namespace Friflo.Json.Flow.Schema
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}"); // $"{ns.Replace(".", "/")}{generator.extension}");
         }
         
-        private static Dictionary<TypeDef, string> GetStandardTypes(TypeSchema schema) {
+        private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
-            AddType (map, schema.Unit8,         "uint8 = number" );
-            AddType (map, schema.Int16,         "int16 = number" );
-            AddType (map, schema.Int32,         "int32 = number" );
-            AddType (map, schema.Int64,         "int64 = number" );
+            AddType (map, standard.Unit8,         "uint8 = number" );
+            AddType (map, standard.Int16,         "int16 = number" );
+            AddType (map, standard.Int32,         "int32 = number" );
+            AddType (map, standard.Int64,         "int64 = number" );
                
-            AddType (map, schema.Double,        "double = number" );
-            AddType (map, schema.Float,         "float = number" );
+            AddType (map, standard.Double,        "double = number" );
+            AddType (map, standard.Float,         "float = number" );
                
-            AddType (map, schema.BigInteger,    "BigInteger = string" );
-            AddType (map, schema.DateTime,      "DateTime = string" );
+            AddType (map, standard.BigInteger,    "BigInteger = string" );
+            AddType (map, standard.DateTime,      "DateTime = string" );
             return map;
         }
 
@@ -149,14 +149,14 @@ namespace Friflo.Json.Flow.Schema
         
         // Note: static by intention
         private static string GetFieldType(TypeDef type, TypeContext context) {
-            var system  = context.generator.schema;
-            if (type == system.JsonValue) {
+            var standard = context.generator.schema.StandardTypes;
+            if (type == standard.JsonValue) {
                 return "{} | null";
             }
-            if (type == system.String) {
+            if (type == standard.String) {
                 return "string";
             }
-            if (type == system.Boolean) {
+            if (type == standard.Boolean) {
                 return "boolean";
             }
             if (type.IsArray) {
