@@ -4,9 +4,9 @@
         "Order": {
             "properties": {
                 "id":       { "type": "string" },
-                "customer": { "type": "string" },
+                "customer": { "type": "string", "nullable": true },
                 "created":  { "ref":  "DateTime" },
-                "items":    { "elements": { "ref":  "OrderItem" } }
+                "items":    { "elements": { "ref":  "OrderItem" }, "nullable": true }
             },
             "required": [
                 "id",
@@ -18,7 +18,7 @@
             "properties": {
                 "article": { "type": "string" },
                 "amount":  { "ref":  "int32" },
-                "name":    { "type": "string" }
+                "name":    { "type": "string", "nullable": true }
             },
             "required": [
                 "article",
@@ -41,7 +41,7 @@
             "properties": {
                 "id":       { "type": "string" },
                 "name":     { "type": "string" },
-                "producer": { "type": "string" }
+                "producer": { "type": "string", "nullable": true }
             },
             "required": [
                 "id",
@@ -53,7 +53,7 @@
             "properties": {
                 "id":        { "type": "string" },
                 "name":      { "type": "string" },
-                "employees": { "elements": { "type": "string" } }
+                "employees": { "elements": { "type": "string" }, "nullable": true }
             },
             "required": [
                 "id",
@@ -65,7 +65,7 @@
             "properties": {
                 "id":        { "type": "string" },
                 "firstName": { "type": "string" },
-                "lastName":  { "type": "string" }
+                "lastName":  { "type": "string", "nullable": true }
             },
             "required": [
                 "id",
@@ -91,7 +91,7 @@
                 "pocStruct":        { "ref":  "PocStruct" },
                 "pocStructNull":    { "ref":  "PocStruct", "nullable": true },
                 "intArray":         { "elements": { "ref":  "int32" } },
-                "intArrayNull":     { "elements": { "ref":  "int32" } },
+                "intArrayNull":     { "elements": { "ref":  "int32" }, "nullable": true },
                 "jsonValue":        {  },
                 "derivedClass":     { "ref":  "DerivedClass" },
                 "derivedClassNull": { "ref":  "DerivedClass", "nullable": true }
@@ -126,7 +126,7 @@
                 "derivedVal": { "ref":  "int32" },
                 "article":    { "type": "string" },
                 "amount":     { "ref":  "int32" },
-                "name":       { "type": "string" }
+                "name":       { "type": "string", "nullable": true }
             },
             "required": [
                 "derivedVal",

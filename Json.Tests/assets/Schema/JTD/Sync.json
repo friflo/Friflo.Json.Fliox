@@ -22,9 +22,9 @@
         "SyncRequest": {
             "properties": {
                 "reqId":  { "ref":  "int32", "nullable": true },
-                "client": { "type": "string" },
+                "client": { "type": "string", "nullable": true },
                 "ack":    { "ref":  "int32", "nullable": true },
-                "token":  { "type": "string" },
+                "token":  { "type": "string", "nullable": true },
                 "tasks":  { "elements": { "ref":  "DatabaseTask" } }
             },
             "required": [
@@ -74,7 +74,7 @@
         "EntityError": {
             "properties": {
                 "type":    { "ref":  "EntityErrorType" },
-                "message": { "type": "string" }
+                "message": { "type": "string", "nullable": true }
             },
             "required": [
                 "type"
@@ -116,7 +116,7 @@
         "ReadEntities": {
             "properties": {
                 "ids":        { "elements": { "type": "string" } },
-                "references": { "elements": { "ref":  "References" } }
+                "references": { "elements": { "ref":  "References" }, "nullable": true }
             },
             "required": [
                 "ids"
@@ -127,7 +127,7 @@
             "properties": {
                 "selector":   { "type": "string" },
                 "container":  { "type": "string" },
-                "references": { "elements": { "ref":  "References" } }
+                "references": { "elements": { "ref":  "References" }, "nullable": true }
             },
             "required": [
                 "selector",
@@ -138,9 +138,9 @@
         "QueryEntities": {
             "properties": {
                 "container":  { "type": "string" },
-                "filterLinq": { "type": "string" },
+                "filterLinq": { "type": "string", "nullable": true },
                 "filter":     { "ref":  "FilterOperation", "nullable": true },
-                "references": { "elements": { "ref":  "References" } }
+                "references": { "elements": { "ref":  "References" }, "nullable": true }
             },
             "required": [
                 "container"
@@ -661,7 +661,7 @@
         "PatchCopy": {
             "properties": {
                 "path": { "type": "string" },
-                "from": { "type": "string" }
+                "from": { "type": "string", "nullable": true }
             },
             "required": [
                 "path"
@@ -671,7 +671,7 @@
         "PatchMove": {
             "properties": {
                 "path": { "type": "string" },
-                "from": { "type": "string" }
+                "from": { "type": "string", "nullable": true }
             },
             "required": [
                 "path"
@@ -734,7 +734,7 @@
         "SubscribeMessage": {
             "properties": {
                 "name":   { "type": "string" },
-                "remove": { "type": "boolean" }
+                "remove": { "type": "boolean", "nullable": true }
             },
             "required": [
                 "name"
@@ -756,19 +756,19 @@
             "properties": {
                 "reqId":        { "ref":  "int32", "nullable": true },
                 "error":        { "ref":  "ErrorResponse", "nullable": true },
-                "tasks":        { "elements": { "ref":  "TaskResult" } },
-                "results":      { "values": { "ref":  "ContainerEntities" } },
-                "createErrors": { "values": { "ref":  "EntityErrors" } },
-                "updateErrors": { "values": { "ref":  "EntityErrors" } },
-                "patchErrors":  { "values": { "ref":  "EntityErrors" } },
-                "deleteErrors": { "values": { "ref":  "EntityErrors" } }
+                "tasks":        { "elements": { "ref":  "TaskResult" }, "nullable": true },
+                "results":      { "values": { "ref":  "ContainerEntities" }, "nullable": true },
+                "createErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
+                "updateErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
+                "patchErrors":  { "values": { "ref":  "EntityErrors" }, "nullable": true },
+                "deleteErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true }
             },
             "additionalProperties": false
         },
         "ErrorResponse": {
             "properties": {
                 "reqId":   { "ref":  "int32", "nullable": true },
-                "message": { "type": "string" }
+                "message": { "type": "string", "nullable": true }
             },
             "additionalProperties": false
         },
@@ -799,7 +799,7 @@
         },
         "CommandError": {
             "properties": {
-                "message": { "type": "string" }
+                "message": { "type": "string", "nullable": true }
             },
             "additionalProperties": false
         },
@@ -830,10 +830,10 @@
         },
         "ReferencesResult": {
             "properties": {
-                "error":      { "type": "string" },
-                "container":  { "type": "string" },
+                "error":      { "type": "string", "nullable": true },
+                "container":  { "type": "string", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
-                "references": { "elements": { "ref":  "ReferencesResult" } }
+                "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
             },
             "required": [
                 "ids"
@@ -843,10 +843,10 @@
         "QueryEntitiesResult": {
             "properties": {
                 "Error":      { "ref":  "CommandError", "nullable": true },
-                "container":  { "type": "string" },
-                "filterLinq": { "type": "string" },
+                "container":  { "type": "string", "nullable": true },
+                "filterLinq": { "type": "string", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
-                "references": { "elements": { "ref":  "ReferencesResult" } }
+                "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
             },
             "required": [
                 "ids"
@@ -890,8 +890,8 @@
         "TaskErrorResult": {
             "properties": {
                 "type":       { "ref":  "TaskErrorResultType" },
-                "message":    { "type": "string" },
-                "stacktrace": { "type": "string" }
+                "message":    { "type": "string", "nullable": true },
+                "stacktrace": { "type": "string", "nullable": true }
             },
             "required": [
                 "type"
@@ -910,7 +910,7 @@
         },
         "ContainerEntities": {
             "properties": {
-                "container": { "type": "string" },
+                "container": { "type": "string", "nullable": true },
                 "entities":  { "values": { "ref":  "EntityValue" } }
             },
             "required": [
@@ -920,7 +920,7 @@
         },
         "EntityErrors": {
             "properties": {
-                "container": { "type": "string" },
+                "container": { "type": "string", "nullable": true },
                 "errors":    { "values": { "ref":  "EntityError" } }
             },
             "required": [
@@ -935,8 +935,8 @@
             },
             "properties": {
                 "seq":    { "ref":  "int32" },
-                "target": { "type": "string" },
-                "client": { "type": "string" }
+                "target": { "type": "string", "nullable": true },
+                "client": { "type": "string", "nullable": true }
             },
             "required": [
                 "seq"
@@ -946,9 +946,9 @@
         "SubscriptionEvent": {
             "properties": {
                 "seq":    { "ref":  "int32" },
-                "target": { "type": "string" },
-                "client": { "type": "string" },
-                "tasks":  { "elements": { "ref":  "DatabaseTask" } }
+                "target": { "type": "string", "nullable": true },
+                "client": { "type": "string", "nullable": true },
+                "tasks":  { "elements": { "ref":  "DatabaseTask" }, "nullable": true }
             },
             "required": [
                 "seq"

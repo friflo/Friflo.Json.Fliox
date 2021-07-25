@@ -81,7 +81,7 @@ namespace Friflo.Json.Flow.Schema
                         Delimiter(sb, Next, ref firstElem);
                         var discName = polyType.Discriminant;
                         var indent = Indent(maxDiscriminant, discName);
-                        sb.Append($"                \"{discName}\": {indent}{{ {Ref(polyType, true, context)} }}");
+                        sb.Append($"                \"{discName}\": {indent}{{ {Ref(polyType, context)} }}");
                     }
                     sb.AppendLine();
                     sb.AppendLine("            },");
@@ -138,27 +138,28 @@ namespace Friflo.Json.Flow.Schema
         // Note: static by intention
         private static string GetFieldType(TypeDef type, TypeContext context, bool required) {
             var standard = context.generator.schema.StandardTypes;
+            var nullableStr = required ? "" : ", \"nullable\": true";
             if (type == standard.JsonValue) {
                 return ""; // allow any type
             }
             if (type == standard.String) {
-                return "\"type\": \"string\"";
+                return $"\"type\": \"string\"{nullableStr}";
             }
             if (type == standard.Boolean) {
-                return "\"type\": \"boolean\"";
+                return $"\"type\": \"boolean\"{nullableStr}";
             }
             if (type.IsArray) {
                 var elementMapper = type.ElementType;
                 var elementTypeName = GetFieldType(elementMapper, context, true);
-                return $"\"elements\": {{ {elementTypeName} }}";
+                return $"\"elements\": {{ {elementTypeName} }}{nullableStr}";
             }
             if (type.IsDictionary) {
                 var valueMapper = type.ElementType;
                 var valueTypeName = GetFieldType(valueMapper, context, true);
-                return $"\"values\": {{ {valueTypeName} }}";
+                return $"\"values\": {{ {valueTypeName} }}{nullableStr}";
             }
             context.imports.Add(type);
-            return Ref(type, required, context);
+            return $"{Ref(type, context)}{nullableStr}";
         }
         
         private void EmitPackageHeaders(StringBuilder sb) {
@@ -184,14 +185,13 @@ namespace Friflo.Json.Flow.Schema
             }
         }
         
-        private static string Ref(TypeDef type, bool required, TypeContext context) {
+        private static string Ref(TypeDef type, TypeContext context) {
             var name = context.generator.GetTypeName(type);
             // var typePackage     = generator.GetPackageName(type);
             // var ownerPackage    = generator.GetPackageName(context.owner);
             // bool samePackage    = typePackage == ownerPackage;
             // var prefix          = samePackage ? "" : $"./{typePackage}{generator.fileExt}";
-            var nullableStr = required ? "" : ", \"nullable\": true";
-            var refType = $"\"ref\":  \"{name}\"{nullableStr}";
+            var refType = $"\"ref\":  \"{name}\"";
             return refType;
         }
     }
