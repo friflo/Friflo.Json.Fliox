@@ -35,7 +35,7 @@ namespace Friflo.Json.Flow.Schema.Utils
 
     public class UnionType {
         public              string          discriminator;
-        public              List<TypeDef>   polyTypes;
+        public              List<TypeDef>   types;
         
         public   override   string          ToString() => discriminator;
     }

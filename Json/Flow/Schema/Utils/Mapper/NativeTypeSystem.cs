@@ -117,11 +117,11 @@ namespace Friflo.Json.Flow.Schema.Utils.Mapper
                     var polyTypes = instanceFactory.polyTypes;
                     type.unionType = new UnionType {
                         discriminator = instanceFactory.discriminator,
-                        polyTypes = new List<TypeDef>(polyTypes.Length)
+                        types = new List<TypeDef>(polyTypes.Length)
                     };
                     foreach (var polyType in polyTypes) {
                         TypeDef element = nativeMap[polyType.type];
-                        type.unionType.polyTypes.Add(element);
+                        type.unionType.types.Add(element);
                     }
                 }
             }

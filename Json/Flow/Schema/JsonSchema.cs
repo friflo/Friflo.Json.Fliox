@@ -87,14 +87,14 @@ namespace Friflo.Json.Flow.Schema
                     discriminator   = baseType.UnionType.discriminator;
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                 }
-                var instanceFactory = type.UnionType;
+                var unionType = type.UnionType;
                 sb.AppendLine($"        \"{type.Name}\": {{");
-                if (instanceFactory == null) {
+                if (unionType == null) {
                     sb.AppendLine($"            \"type\": \"object\",");
                 } else {
                     sb.AppendLine($"            \"oneOf\": [");
                     bool firstElem = true;
-                    foreach (var polyType in instanceFactory.polyTypes) {
+                    foreach (var polyType in unionType.types) {
                         Delimiter(sb, Next, ref firstElem);
                         sb.Append($"                {{ {Ref(polyType, false, context)} }}");
                     }
@@ -134,7 +134,7 @@ namespace Friflo.Json.Flow.Schema
                     sb.AppendLine();
                     sb.AppendLine("            ],");
                 }
-                var additionalProperties = instanceFactory != null ? "true" : "false"; 
+                var additionalProperties = unionType != null ? "true" : "false"; 
                 sb.AppendLine($"            \"additionalProperties\": {additionalProperties}");
                 sb.Append     ("        }");
                 return new EmitType(type, semantic, generator, sb, imports);

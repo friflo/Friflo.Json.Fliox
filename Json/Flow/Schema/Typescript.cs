@@ -97,20 +97,20 @@ namespace Friflo.Json.Flow.Schema
                         dependencies.Add(baseType);
                     }
                 }
-                var instanceFactory = type.UnionType;
-                if (instanceFactory == null) {
+                var unionType = type.UnionType;
+                if (unionType == null) {
                     sb.AppendLine($"export class {type.Name} {extendsStr}{{");
                 } else {
                     sb.AppendLine($"export type {type.Name}_Union =");
-                    foreach (var polyType in instanceFactory.polyTypes) {
+                    foreach (var polyType in unionType.types) {
                         sb.AppendLine($"    | {polyType.Name}");
                         imports.Add(polyType);
                     }
                     sb.AppendLine($";");
                     sb.AppendLine();
                     sb.AppendLine($"export abstract class {type.Name} {extendsStr}{{");
-                    sb.AppendLine($"    abstract {instanceFactory.discriminator}:");
-                    foreach (var polyType in instanceFactory.polyTypes) {
+                    sb.AppendLine($"    abstract {unionType.discriminator}:");
+                    foreach (var polyType in unionType.types) {
                         sb.AppendLine($"        | \"{polyType.Discriminant}\"");
                     }
                     sb.AppendLine($"    ;");
