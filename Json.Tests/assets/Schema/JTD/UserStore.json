@@ -84,7 +84,7 @@
         },
         "RightDatabase": {
             "properties": {
-                "containers":  { "type": "object", "additionalProperties": { "ref":  "ContainerAccess" } },
+                "containers":  { "values": { "ref":  "ContainerAccess" } },
                 "description": { "type": "string" }
             },
             "required": [

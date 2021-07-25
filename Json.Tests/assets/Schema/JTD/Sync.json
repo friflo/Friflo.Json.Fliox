@@ -53,7 +53,7 @@
         "CreateEntities": {
             "properties": {
                 "container": { "type": "string" },
-                "entities":  { "type": "object", "additionalProperties": { "ref":  "EntityValue" } }
+                "entities":  { "values": { "ref":  "EntityValue" } }
             },
             "required": [
                 "container",
@@ -94,7 +94,7 @@
         "UpdateEntities": {
             "properties": {
                 "container": { "type": "string" },
-                "entities":  { "type": "object", "additionalProperties": { "ref":  "EntityValue" } }
+                "entities":  { "values": { "ref":  "EntityValue" } }
             },
             "required": [
                 "container",
@@ -595,7 +595,7 @@
         "PatchEntities": {
             "properties": {
                 "container": { "type": "string" },
-                "patches":   { "type": "object", "additionalProperties": { "ref":  "EntityPatch" } }
+                "patches":   { "values": { "ref":  "EntityPatch" } }
             },
             "required": [
                 "container",
@@ -757,11 +757,11 @@
                 "reqId":        { "ref":  "int32", "nullable": true },
                 "error":        { "ref":  "ErrorResponse", "nullable": true },
                 "tasks":        { "elements": { "ref":  "TaskResult" } },
-                "results":      { "type": "object", "additionalProperties": { "ref":  "ContainerEntities" } },
-                "createErrors": { "type": "object", "additionalProperties": { "ref":  "EntityErrors" } },
-                "updateErrors": { "type": "object", "additionalProperties": { "ref":  "EntityErrors" } },
-                "patchErrors":  { "type": "object", "additionalProperties": { "ref":  "EntityErrors" } },
-                "deleteErrors": { "type": "object", "additionalProperties": { "ref":  "EntityErrors" } }
+                "results":      { "values": { "ref":  "ContainerEntities" } },
+                "createErrors": { "values": { "ref":  "EntityErrors" } },
+                "updateErrors": { "values": { "ref":  "EntityErrors" } },
+                "patchErrors":  { "values": { "ref":  "EntityErrors" } },
+                "deleteErrors": { "values": { "ref":  "EntityErrors" } }
             },
             "additionalProperties": false
         },
@@ -911,7 +911,7 @@
         "ContainerEntities": {
             "properties": {
                 "container": { "type": "string" },
-                "entities":  { "type": "object", "additionalProperties": { "ref":  "EntityValue" } }
+                "entities":  { "values": { "ref":  "EntityValue" } }
             },
             "required": [
                 "entities"
@@ -921,7 +921,7 @@
         "EntityErrors": {
             "properties": {
                 "container": { "type": "string" },
-                "errors":    { "type": "object", "additionalProperties": { "ref":  "EntityError" } }
+                "errors":    { "values": { "ref":  "EntityError" } }
             },
             "required": [
                 "errors"

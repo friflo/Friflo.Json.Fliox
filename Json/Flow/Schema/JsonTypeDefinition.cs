@@ -155,7 +155,7 @@ namespace Friflo.Json.Flow.Schema
             if (type.IsDictionary) {
                 var valueMapper = type.ElementType;
                 var valueTypeName = GetFieldType(valueMapper, context, true);
-                return $"\"type\": \"object\", \"additionalProperties\": {{ {valueTypeName} }}";
+                return $"\"values\": {{ {valueTypeName} }}";
             }
             context.imports.Add(type);
             return Ref(type, required, context);
