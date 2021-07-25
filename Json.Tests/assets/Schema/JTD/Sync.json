@@ -15,15 +15,15 @@
                 "sync": { "ref":  "SyncRequest" }
             },
             "properties": {
-                "reqId": { "ref":  "int32", "nullable": true }
+                "reqId": { "type": "int32", "nullable": true }
             },
             "additionalProperties": true
         },
         "SyncRequest": {
             "properties": {
-                "reqId":  { "ref":  "int32", "nullable": true },
+                "reqId":  { "type": "int32", "nullable": true },
                 "client": { "type": "string", "nullable": true },
-                "ack":    { "ref":  "int32", "nullable": true },
+                "ack":    { "type": "int32", "nullable": true },
                 "token":  { "type": "string", "nullable": true },
                 "tasks":  { "elements": { "ref":  "DatabaseTask" } }
             },
@@ -249,7 +249,7 @@
         },
         "DoubleLiteral": {
             "properties": {
-                "value": { "ref":  "double" }
+                "value": { "type": "double" }
             },
             "required": [
                 "value"
@@ -258,7 +258,7 @@
         },
         "LongLiteral": {
             "properties": {
-                "value": { "ref":  "int64" }
+                "value": { "type": "int64" }
             },
             "required": [
                 "value"
@@ -748,13 +748,13 @@
                 "error": { "ref":  "ErrorResponse" }
             },
             "properties": {
-                "reqId": { "ref":  "int32", "nullable": true }
+                "reqId": { "type": "int32", "nullable": true }
             },
             "additionalProperties": true
         },
         "SyncResponse": {
             "properties": {
-                "reqId":        { "ref":  "int32", "nullable": true },
+                "reqId":        { "type": "int32", "nullable": true },
                 "error":        { "ref":  "ErrorResponse", "nullable": true },
                 "tasks":        { "elements": { "ref":  "TaskResult" }, "nullable": true },
                 "results":      { "values": { "ref":  "ContainerEntities" }, "nullable": true },
@@ -767,7 +767,7 @@
         },
         "ErrorResponse": {
             "properties": {
-                "reqId":   { "ref":  "int32", "nullable": true },
+                "reqId":   { "type": "int32", "nullable": true },
                 "message": { "type": "string", "nullable": true }
             },
             "additionalProperties": false
@@ -934,7 +934,7 @@
                 "subscription": { "ref":  "SubscriptionEvent" }
             },
             "properties": {
-                "seq":    { "ref":  "int32" },
+                "seq":    { "type": "int32" },
                 "target": { "type": "string", "nullable": true },
                 "client": { "type": "string", "nullable": true }
             },
@@ -945,7 +945,7 @@
         },
         "SubscriptionEvent": {
             "properties": {
-                "seq":    { "ref":  "int32" },
+                "seq":    { "type": "int32" },
                 "target": { "type": "string", "nullable": true },
                 "client": { "type": "string", "nullable": true },
                 "tasks":  { "elements": { "ref":  "DatabaseTask" }, "nullable": true }

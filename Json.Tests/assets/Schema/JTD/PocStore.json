@@ -17,7 +17,7 @@
         "OrderItem": {
             "properties": {
                 "article": { "type": "string" },
-                "amount":  { "ref":  "int32" },
+                "amount":  { "type": "int32" },
                 "name":    { "type": "string", "nullable": true }
             },
             "required": [
@@ -80,18 +80,18 @@
                 "dateTimeNull":     { "type": "timestamp", "nullable": true },
                 "bigInt":           { "ref":  "BigInteger" },
                 "bigIntNull":       { "ref":  "BigInteger", "nullable": true },
-                "uint8":            { "ref":  "uint8" },
-                "uint8Null":        { "ref":  "uint8", "nullable": true },
-                "int16":            { "ref":  "int16" },
-                "int16Null":        { "ref":  "int16", "nullable": true },
-                "int32":            { "ref":  "int32" },
-                "int32Null":        { "ref":  "int32", "nullable": true },
-                "int64":            { "ref":  "int64" },
-                "int64Null":        { "ref":  "int64", "nullable": true },
+                "uint8":            { "type": "uint8" },
+                "uint8Null":        { "type": "uint8", "nullable": true },
+                "int16":            { "type": "int16" },
+                "int16Null":        { "type": "int16", "nullable": true },
+                "int32":            { "type": "int32" },
+                "int32Null":        { "type": "int32", "nullable": true },
+                "int64":            { "type": "int64" },
+                "int64Null":        { "type": "int64", "nullable": true },
                 "pocStruct":        { "ref":  "PocStruct" },
                 "pocStructNull":    { "ref":  "PocStruct", "nullable": true },
-                "intArray":         { "elements": { "ref":  "int32" } },
-                "intArrayNull":     { "elements": { "ref":  "int32" }, "nullable": true },
+                "intArray":         { "elements": { "type": "int32" } },
+                "intArrayNull":     { "elements": { "type": "int32" }, "nullable": true },
                 "jsonValue":        {  },
                 "derivedClass":     { "ref":  "DerivedClass" },
                 "derivedClassNull": { "ref":  "DerivedClass", "nullable": true }
@@ -114,7 +114,7 @@
         "BigInteger": "string",
         "PocStruct": {
             "properties": {
-                "val": { "ref":  "int32" }
+                "val": { "type": "int32" }
             },
             "required": [
                 "val"
@@ -123,9 +123,9 @@
         },
         "DerivedClass": {
             "properties": {
-                "derivedVal": { "ref":  "int32" },
+                "derivedVal": { "type": "int32" },
                 "article":    { "type": "string" },
-                "amount":     { "ref":  "int32" },
+                "amount":     { "type": "int32" },
                 "name":       { "type": "string", "nullable": true }
             },
             "required": [

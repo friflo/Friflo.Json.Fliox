@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Security;
 using System.Text;
 using Friflo.Json.Flow.Schema.Definition;
 using Friflo.Json.Flow.Schema.Utils;
@@ -15,11 +16,13 @@ namespace Friflo.Json.Flow.Schema
     {
         private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardTypes;
+        private  readonly   Dictionary<TypeDef, string> primitiveTypes;
         private  const      string                      Next = ",\r\n";
         
         public JsonTypeDefinition (Generator generator, string name) {
             this.generator  = generator;
-            standardTypes   = GetStandardTypes(generator.schema.StandardTypes);
+            standardTypes   = GetStandardTypes (generator.schema.StandardTypes);
+            primitiveTypes  = GetPrimitiveTypes(generator.schema.StandardTypes);
             GenerateSchema(name);
         }
         
@@ -42,6 +45,23 @@ namespace Friflo.Json.Flow.Schema
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
             AddType (map, standard.BigInteger,    "\"string\"" ); // https://www.regextester.com/   ^-?[0-9]+$
+            return map;
+        }
+        
+        private static Dictionary<TypeDef, string> GetPrimitiveTypes(StandardTypes standard) {
+            var map = new Dictionary<TypeDef, string>();
+            AddType (map, standard.Boolean,       "boolean" );
+            AddType (map, standard.String,        "string" );
+            
+            AddType (map, standard.Unit8,         "uint8" );
+            AddType (map, standard.Int16,         "int16" );
+            AddType (map, standard.Int32,         "int32" );
+            AddType (map, standard.Int64,         "int64" );
+               
+            AddType (map, standard.Double,        "double" );
+            AddType (map, standard.Float,         "float" );
+               
+            AddType (map, standard.DateTime,      "timestamp" );
             return map;
         }
         
@@ -137,19 +157,13 @@ namespace Friflo.Json.Flow.Schema
         }
         
         // Note: static by intention
-        private static string GetFieldType(TypeDef type, TypeContext context) {
+        private string GetFieldType(TypeDef type, TypeContext context) {
             var standard = context.generator.schema.StandardTypes;
             if (type == standard.JsonValue) {
                 return ""; // allow any type
             }
-            if (type == standard.String) {
-                return $"\"type\": \"string\"";
-            }
-            if (type == standard.Boolean) {
-                return $"\"type\": \"boolean\"";
-            }
-            if (type == standard.DateTime) {
-                return $"\"type\": \"timestamp\"";
+            if (primitiveTypes.TryGetValue(type, out var definition)) {
+                return $"\"type\": \"{definition}\"";
             }
             if (type.IsArray) {
                 var elementMapper = type.ElementType;
