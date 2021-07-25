@@ -105,9 +105,9 @@ namespace Friflo.Json.Flow.Schema.Native
                         var fieldMapper = propField.fieldType.GetUnderlyingMapper();
                         var isNullable = IsNullableMapper(fieldMapper, out var nonNullableType);
                         var field = new Field {
-                            name    = propField.jsonName,
+                            name        = propField.jsonName,
                             required    = propField.required || !isNullable,
-                            fieldType   = nativeMap[nonNullableType]
+                            type        = nativeMap[nonNullableType]
                         };
                         type.Fields.Add(field);
                     }

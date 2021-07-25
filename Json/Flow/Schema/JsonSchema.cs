@@ -115,7 +115,7 @@ namespace Friflo.Json.Flow.Schema
                     // if (generator.IsDerivedField(type, field))  JSON Schema list all properties
                     //    continue;
                     bool required = field.required;
-                    var fieldType = GetFieldType(field.fieldType, context, required);
+                    var fieldType = GetFieldType(field.type, context, required);
                     var indent = Indent(maxFieldName, field.name);
                     if (required)
                         requiredFields.Add(field.name);

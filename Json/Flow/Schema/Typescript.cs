@@ -124,7 +124,7 @@ namespace Friflo.Json.Flow.Schema
                     if (type.IsDerivedField(field))
                         continue;
                     bool required = field.required;
-                    var fieldType = GetFieldType(field.fieldType, context);
+                    var fieldType = GetFieldType(field.type, context);
                     var indent  = Indent(maxFieldName, field.name);
                     var optStr  = required ? " ": "?";
                     var nullStr = required ? "" : " | null";
