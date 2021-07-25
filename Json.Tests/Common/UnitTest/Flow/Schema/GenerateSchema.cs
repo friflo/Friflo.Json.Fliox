@@ -52,11 +52,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/Sync");
         }
         
-        // [Test]
+        [Test]
         public static void JTD_Sync () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var schema = new GeneratorSchema(typeStore, SyncTypes);
-            var generator = schema.JsonTypeDefinition("Sync", null, UserStoreTypes);
+            var generator = schema.JsonTypeDefinition("Sync");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JTD/", false);
+        }
+        
+        [Test]
+        public static void JTD_PocStore () {
+            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
+            var schema = new GeneratorSchema(typeStore, PocStoreTypes);
+            var generator = schema.JsonTypeDefinition("PocStore");
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JTD/", false);
         }
         
