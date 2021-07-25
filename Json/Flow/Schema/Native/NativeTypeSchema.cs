@@ -11,7 +11,7 @@ using Friflo.Json.Flow.Schema.Definition;
 
 namespace Friflo.Json.Flow.Schema.Native
 {
-    public class NativesStandardTypes : StandardTypes
+    public class NativeStandardTypes : StandardTypes
     {
         public   override   TypeDef                 Boolean     { get; }
         public   override   TypeDef                 String      { get; }
@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Schema.Native
         public   override   TypeDef                 DateTime    { get; }
         public   override   TypeDef                 JsonValue   { get; }
         
-        internal NativesStandardTypes (Dictionary<Type, NativeType> types) {
+        internal NativeStandardTypes (Dictionary<Type, NativeType> types) {
             Boolean     = Find(types, typeof(bool));
             String      = Find(types, typeof(string));
             Unit8       = Find(types, typeof(byte));
@@ -76,8 +76,8 @@ namespace Friflo.Json.Flow.Schema.Native
             typeMappers =  new Dictionary<Type, TypeMapper>(typeStore.GetTypeMappers());
             
             Types = map.Keys;
-            StandardTypes   = new NativesStandardTypes(nativeMap);
-            SeparateTypes    = GetTypes(separateTypes);
+            StandardTypes   = new NativeStandardTypes(nativeMap);
+            SeparateTypes   = GetTypes(separateTypes);
 
             foreach (var pair in nativeMap) {
                 NativeType  type        = pair.Value;
