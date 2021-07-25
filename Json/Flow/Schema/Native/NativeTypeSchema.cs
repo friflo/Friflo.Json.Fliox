@@ -48,14 +48,15 @@ namespace Friflo.Json.Flow.Schema.Native
     
     public class NativeTypeSchema : TypeSchema
     {
-        public   override   ICollection<TypeDef>    Types       { get; }
-        public   override   StandardTypes           StandardTypes   { get;}
+        public   override   ICollection<TypeDef>    Types           { get; }
+        public   override   StandardTypes           StandardTypes   { get; }
+        public   override   ICollection<TypeDef>    SeparateTypes    { get; }
 
         
         /// Contains only non nullable Type's
         private  readonly   Dictionary<Type, NativeType>    nativeMap;
         
-        public NativeTypeSchema (TypeStore typeStore) {
+        public NativeTypeSchema (TypeStore typeStore, ICollection<Type> separateTypes) {
             var typeMappers = new Dictionary<Type, TypeMapper>(typeStore.GetTypeMappers());
             nativeMap   = new Dictionary<Type,    NativeType>(typeMappers.Count);
             var map     = new Dictionary<TypeDef, TypeMapper>(typeMappers.Count);
@@ -75,8 +76,9 @@ namespace Friflo.Json.Flow.Schema.Native
             typeMappers =  new Dictionary<Type, TypeMapper>(typeStore.GetTypeMappers());
             
             Types = map.Keys;
-            StandardTypes = new NativesStandardTypes(nativeMap);
-            
+            StandardTypes   = new NativesStandardTypes(nativeMap);
+            SeparateTypes    = GetTypes(separateTypes);
+
             foreach (var pair in nativeMap) {
                 NativeType  type        = pair.Value;
                 Type        baseType    = type.native.BaseType;

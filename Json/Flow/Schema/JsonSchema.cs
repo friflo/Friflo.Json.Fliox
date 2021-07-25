@@ -21,9 +21,8 @@ namespace Friflo.Json.Flow.Schema
         private  const      string                      Next = ",\r\n";
         
         public JsonSchema (TypeStore typeStore, ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
-            var schema      = new NativeTypeSchema(typeStore);
-            var sepTypes    = schema.GetTypes(separateTypes);
-            generator       = new Generator(schema, stripNamespaces, ".json", sepTypes);
+            var schema      = new NativeTypeSchema(typeStore, separateTypes);
+            generator       = new Generator(schema, stripNamespaces, ".json");
             standardTypes   = GetStandardTypes(generator.schema.StandardTypes);
         }
         

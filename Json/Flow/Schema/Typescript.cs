@@ -20,9 +20,8 @@ namespace Friflo.Json.Flow.Schema
 
 
         public Typescript (TypeStore typeStore, ICollection<string> stripNamespaces, ICollection<Type> separateTypes) {
-            var schema      = new NativeTypeSchema(typeStore);
-            var sepTypes    = schema.GetTypes(separateTypes);
-            generator       = new Generator(schema, stripNamespaces, ".ts", sepTypes);
+            var schema      = new NativeTypeSchema(typeStore, separateTypes);
+            generator       = new Generator(schema, stripNamespaces, ".ts");
             standardTypes   = GetStandardTypes(generator.schema.StandardTypes);
         }
         
