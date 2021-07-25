@@ -91,7 +91,7 @@ namespace Friflo.Json.Flow.Schema
                 var requiredFields  = new List<string>();
                 // fields
                 foreach (var field in fields) {
-                    // if (generator.IsDerivedField(type, field))  JSON Schema list all properties
+                    // if (generator.IsDerivedField(type, field))  JTD list all properties
                     //    continue;
                     bool required = field.required;
                     var fieldType = GetFieldType(field.type, context);
@@ -187,12 +187,7 @@ namespace Friflo.Json.Flow.Schema
         
         private static string Ref(TypeDef type, TypeContext context) {
             var name = context.generator.GetTypeName(type);
-            // var typePackage     = generator.GetPackageName(type);
-            // var ownerPackage    = generator.GetPackageName(context.owner);
-            // bool samePackage    = typePackage == ownerPackage;
-            // var prefix          = samePackage ? "" : $"./{typePackage}{generator.fileExt}";
-            var refType = $"\"ref\":  \"{name}\"";
-            return refType;
+            return $"\"ref\":  \"{name}\"";
         }
     }
 }
