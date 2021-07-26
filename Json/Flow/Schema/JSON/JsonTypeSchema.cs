@@ -42,18 +42,22 @@ namespace Friflo.Json.Flow.Schema.JSON
                             };
                             typeDef.fields.Add(field);
                             if (fieldType.reference != null) {
-                                field.type = Find(fieldType.reference, schema, globalSchemas);
+                                field.type = FindRef(fieldType.reference, schema, globalSchemas);
                             }
                             var items = fieldType.items;
                             if (items != null && items.reference != null) {
                                 typeDef.isArray = true;
-                                field.type = Find(items.reference, schema, globalSchemas);
+                                field.type = FindRef(items.reference, schema, globalSchemas);
+                            }
+                            var type = fieldType.type;
+                            if (type.json != null) {
+                                field.type = FindType(type.json, schema, globalSchemas, null);
                             }
                             var addProps = fieldType.additionalProperties;
                             if (addProps != null) {
                                 typeDef.isDictionary = true;
                                 if (addProps.reference != null) {
-                                    field.type = Find(addProps.reference, schema, globalSchemas);
+                                    field.type = FindRef(addProps.reference, schema, globalSchemas);
                                 }
                             }
                             if (fieldType.discriminant != null) {
@@ -68,7 +72,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                             discriminator   = typeDef.type.discriminator
                         };
                         foreach (var item in oneOf) {
-                            var type = Find(item.reference, schema, globalSchemas);
+                            var type = FindRef(item.reference, schema, globalSchemas);
                             unionType.types.Add(type);
                         }
                     }
@@ -76,7 +80,23 @@ namespace Friflo.Json.Flow.Schema.JSON
             }
         }
         
-        private static TypeDef Find (string reference, JsonSchemaType schema, Dictionary<string, JsonTypeDef> schemas) {
+        private static TypeDef FindType (string type, JsonSchemaType schema, Dictionary<string, JsonTypeDef> schemas, StandardTypes types) {
+            var standardType = StandardType(type, types);
+            return standardType;
+        }
+        
+        private static TypeDef StandardType (string type, StandardTypes types) {
+            switch (type) {
+                case "\"boolean\"": return null; // types.Boolean;
+                case "\"string\"":  return null; // types.String;
+                case "\"integer\"": return null; // types.Int32;     // todo
+                case "\"number\"":  return null; // types.Double;    // todo
+                case "\"array\"":   return null; // types.Double;    // todo
+            }
+            return null;
+        }
+
+        private static TypeDef FindRef (string reference, JsonSchemaType schema, Dictionary<string, JsonTypeDef> schemas) {
             if (reference.StartsWith("#/definitions/")) {
                 return schema.typeDefs[reference];
             }

@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Schema.Definition
         public abstract     TypeDef     Boolean     { get; }
         public abstract     TypeDef     String      { get; }
         
-        public abstract     TypeDef     Unit8       { get; }
+        public abstract     TypeDef     Uint8       { get; }
         public abstract     TypeDef     Int16       { get; }
         public abstract     TypeDef     Int32       { get; }
         public abstract     TypeDef     Int64       { get; }
@@ -43,7 +43,7 @@ namespace Friflo.Json.Flow.Schema.Definition
             SetName(Boolean,       "boolean" );
             SetName(String,        "string" );
 
-            SetName(Unit8,         "uint8" );
+            SetName(Uint8,         "uint8" );
             SetName(Int16,         "int16" );
             SetName(Int32,         "int32" );
             SetName(Int64,         "int64" );

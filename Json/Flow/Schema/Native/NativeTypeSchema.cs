@@ -15,7 +15,7 @@ namespace Friflo.Json.Flow.Schema.Native
     {
         public   override   TypeDef     Boolean     { get; }
         public   override   TypeDef     String      { get; }
-        public   override   TypeDef     Unit8       { get; }
+        public   override   TypeDef     Uint8       { get; }
         public   override   TypeDef     Int16       { get; }
         public   override   TypeDef     Int32       { get; }
         public   override   TypeDef     Int64       { get; }
@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Schema.Native
         internal NativeStandardTypes (Dictionary<Type, NativeType> types) {
             Boolean     = Find(types, typeof(bool));
             String      = Find(types, typeof(string));
-            Unit8       = Find(types, typeof(byte));
+            Uint8       = Find(types, typeof(byte));
             Int16       = Find(types, typeof(short));
             Int32       = Find(types, typeof(int));
             Int64       = Find(types, typeof(long));

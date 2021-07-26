@@ -39,7 +39,7 @@ namespace Friflo.Json.Flow.Schema
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
-            AddType (map, standard.Unit8,         "uint8 = number" );
+            AddType (map, standard.Uint8,         "uint8 = number" );
             AddType (map, standard.Int16,         "int16 = number" );
             AddType (map, standard.Int32,         "int32 = number" );
             AddType (map, standard.Int64,         "int64 = number" );

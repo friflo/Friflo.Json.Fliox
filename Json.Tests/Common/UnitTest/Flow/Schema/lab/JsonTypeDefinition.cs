@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
             AddType (map, standard.Boolean,       "boolean" );
             AddType (map, standard.String,        "string" );
             
-            AddType (map, standard.Unit8,         "uint8" );
+            AddType (map, standard.Uint8,         "uint8" );
             AddType (map, standard.Int16,         "int16" );
             AddType (map, standard.Int32,         "int32" );
             AddType (map, standard.Int64,         "int64" );
