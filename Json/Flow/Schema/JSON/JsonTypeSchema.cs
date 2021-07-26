@@ -30,7 +30,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                     JsonTypeDef    typeDef = pair.Value;
                     var properties      = typeDef.type.properties;
                     if (properties != null) {
-                        typeDef.fields.Capacity = properties.Count;
+                        typeDef.fields = new List<Field>(properties.Count);
                         foreach (var propPair in properties) {
                             string      fieldName   = propPair.Key;
                             FieldType   fieldType   = propPair.Value;
@@ -44,6 +44,32 @@ namespace Friflo.Json.Flow.Schema.JSON
                             if (fieldType.reference != null) {
                                 field.type = Find(fieldType.reference, schema, globalSchemas);
                             }
+                            var items = fieldType.items;
+                            if (items != null && items.reference != null) {
+                                typeDef.isArray = true;
+                                field.type = Find(items.reference, schema, globalSchemas);
+                            }
+                            var addProps = fieldType.additionalProperties;
+                            if (addProps != null) {
+                                typeDef.isDictionary = true;
+                                if (addProps.reference != null) {
+                                    field.type = Find(addProps.reference, schema, globalSchemas);
+                                }
+                            }
+                            if (fieldType.discriminant != null) {
+                                typeDef.discriminant = fieldType.discriminant[0];
+                            }
+                        }
+                    }
+                    var oneOf = typeDef.type.oneOf;
+                    if (oneOf != null) {
+                        var unionType = typeDef.unionType = new UnionType {
+                            types           = new List<TypeDef>(oneOf.Count),
+                            discriminator   = typeDef.type.discriminator
+                        };
+                        foreach (var item in oneOf) {
+                            var type = Find(item.reference, schema, globalSchemas);
+                            unionType.types.Add(type);
                         }
                     }
                 }
@@ -52,8 +78,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         
         private static TypeDef Find (string reference, JsonSchemaType schema, Dictionary<string, JsonTypeDef> schemas) {
             if (reference.StartsWith("#/definitions/")) {
-                var typeName = reference.Substring("#/definitions/".Length);
-                return schema.typeDefs[typeName];
+                return schema.typeDefs[reference];
             }
             return schemas[reference];
         }

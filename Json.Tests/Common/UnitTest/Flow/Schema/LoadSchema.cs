@@ -13,5 +13,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         public static void UserStore () {
             JsonTypeSchema.FromFolder(CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore");
         }
+        
+        [Test]
+        public static void PocStore () {
+            JsonTypeSchema.FromFolder(CommonUtils.GetBasePath() + "assets/Schema/JSON/PocStore");
+        }
     }
 }
