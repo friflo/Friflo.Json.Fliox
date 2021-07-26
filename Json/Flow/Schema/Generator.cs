@@ -89,10 +89,6 @@ namespace Friflo.Json.Flow.Schema
             }
         }
         
-        public static string Indent(int max, string str) {
-            return new string(' ', Math.Max(max - str.Length, 0));
-        }
-        
         private string Strip (string ns) {
             ns  = ns ?? "default";
             foreach (var stripNamespace in stripNamespaces) {
@@ -117,7 +113,7 @@ namespace Friflo.Json.Flow.Schema
             types.Add(type, value);
         }
         
-        // ---------------------------------- output generation  ---------------------------------- 
+        // ---------------------------------- output generation  ----------------------------------
         public void AddEmitType(EmitType emit) {
             emitTypes.TryAdd(emit.type, emit);
         }
@@ -161,6 +157,10 @@ namespace Friflo.Json.Flow.Schema
                 }
             }
             return TopologicalSort.Sort(emitTypes.Values, x => x.emitDependencies);
+        }
+        
+        public static string Indent(int max, string str) {
+            return new string(' ', Math.Max(max - str.Length, 0));
         }
         
         public static void Delimiter (StringBuilder sb, string delimiter, ref bool first) {
