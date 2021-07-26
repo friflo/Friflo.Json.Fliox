@@ -9,7 +9,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 {
     public static class LoadSchema
     {
-        // [Test]
+        [Test]
         public static void UserStore () {
             JsonTypeSchema.FromFolder(CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore");
         }

@@ -17,8 +17,8 @@ namespace Friflo.Json.Flow.Schema.JSON
                     var typeName    = pair.Key;
                     var type        = pair.Value;
                     var typeDef     = new JsonTypeDef (type, typeName);
-                    var key = $"{schema.name}-{typeName}";
-                    schemas.Add(key, typeDef);
+                    var schemaId = $"./{schema.name}#definitions/{typeName}";
+                    schemas.Add(schemaId, typeDef);
                 }
             }
         }
@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
             var jsonSchemas = new Dictionary<string, string>(fileNames.Length);
             foreach (var fileName in fileNames) {
-                var schemaName = fileName;
+                var schemaName = fileName.Substring(folder.Length + 1);
                 var schema = File.ReadAllText(fileName, Encoding.UTF8);
                 jsonSchemas.Add(schemaName, schema);
             }
