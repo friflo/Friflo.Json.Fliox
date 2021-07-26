@@ -117,10 +117,6 @@ namespace Friflo.Json.Flow.Schema
             return packageName;
         }
         
-        public string GetTypeName (TypeDef type) {
-            return type.Name;
-        }
-        
         public static void AddType (Dictionary<TypeDef, string> types, TypeDef type, string value) {
             if (type == null)
                 return;

@@ -57,7 +57,7 @@ namespace Friflo.Json.Flow.Schema
         private EmitType EmitStandardType(TypeDef type, StringBuilder sb, Generator generator) {
             if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
-            var typeName = generator.GetTypeName(type);
+            var typeName = type.Name;
             sb.AppendLine($"        \"{typeName}\": {{");
             sb.AppendLine($"            {definition}");
             sb.Append    ( "        }");
@@ -207,7 +207,7 @@ namespace Friflo.Json.Flow.Schema
         
         private static string Ref(TypeDef type, bool required, TypeContext context) {
             var generator       = context.generator;
-            var name = context.generator.GetTypeName(type);
+            var name            = type.Name;
             // if (generator.IsUnionType(type))
             //    name = $"{type.Name}_Union";
             var typePackage     = generator.GetPackageName(type);

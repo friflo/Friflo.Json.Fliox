@@ -103,7 +103,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
                         Delimiter(sb, Next, ref firstElem);
                         var discName = polyType.Discriminant;
                         var indent = Indent(maxDiscriminant, discName);
-                        sb.Append($"                \"{discName}\": {indent}{{ {Ref(polyType, context)} }}");
+                        sb.Append($"                \"{discName}\": {indent}{{ {Ref(polyType)} }}");
                     }
                     sb.AppendLine();
                     sb.AppendLine("            },");
@@ -165,7 +165,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
                 return $"\"values\": {{ {valueTypeName} }}";
             }
             context.imports.Add(type);
-            return $"{Ref(type, context)}";
+            return $"{Ref(type)}";
         }
         
         private void EmitPackageHeaders(StringBuilder sb) {
@@ -191,8 +191,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
             }
         }
         
-        private static string Ref(TypeDef type, TypeContext context) {
-            var name = context.generator.GetTypeName(type);
+        private static string Ref(TypeDef type) {
+            var name = type.Name;
             return $"\"ref\":  \"{name}\"";
         }
         
