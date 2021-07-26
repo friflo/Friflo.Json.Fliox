@@ -8,7 +8,15 @@ namespace Friflo.Json.Flow.Schema.Definition
 {
     public abstract class TypeDef {
         public              string              Name         { get; set; }
-        /// <summary>Namespace of a type.</summary>
+        /// <summary>
+        /// Namespace of a type. Depending on the generated language / schema is has the following meaning:
+        /// <list type="bullet">
+        ///   <item>The <see cref="System.Type.Namespace"/> of a <see cref="System.Type"/>in C#</item>
+        ///   <item>The module (file) in Typescript (Javascript)</item>
+        ///   <item>The schema file in JSON Schema</item>
+        ///   <item>The package folder in Java</item>
+        /// </list> 
+        /// </summary>
         public              string              Namespace    { get; set; }
         /// <summary>The path of the file a type is generated.
         /// <br></br>
