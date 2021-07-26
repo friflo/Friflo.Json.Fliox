@@ -30,10 +30,10 @@ namespace Friflo.Json.Flow.Schema.JSON
         public  List<string>                    required;
         public  bool                            additionalProperties;
         //
-        [Fri.Property(Name = "$ref")]
+        [Fri.Property(Name =                   "$ref")]
         public  JsonType                        reference;
         //
-        [Fri.Property(Name = "enum")]
+        [Fri.Property(Name =                   "enum")]
         public  List<string>                    enums;
 
         public override string                  ToString() => name;
@@ -46,12 +46,18 @@ namespace Friflo.Json.Flow.Schema.JSON
         
         public  JsonValue       type;           // SchemaType or SchemaType[]
         
-        [Fri.Property(Name = "enum")]
+        [Fri.Property(Name =   "enum")]
         public  List<string>    discriminant;   // contains exactly one element
         
         public  FieldType       items;
         
-        [Fri.Property(Name = "$ref")]
+        public  long            minimum;
+        public  long            maximum;
+        
+        public  string          pattern;
+        public  string          format;  // "date-time"
+
+        [Fri.Property(Name =   "$ref")]
         public  string          reference;
 
         public  FieldType       additionalProperties;

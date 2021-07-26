@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                     var typeName    = pair.Key;
                     var type        = pair.Value;
                     var typeDef     = new JsonTypeDef (type, typeName);
-                    var schemaId = $"./{schema.name}#definitions/{typeName}";
+                    var schemaId = $"./{schema.name}#/definitions/{typeName}";
                     schemas.Add(schemaId, typeDef);
                 }
             }
