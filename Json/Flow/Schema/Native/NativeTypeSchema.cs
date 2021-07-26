@@ -51,13 +51,14 @@ namespace Friflo.Json.Flow.Schema.Native
         public   override   ICollection<TypeDef>            Types           { get; }
         public   override   StandardTypes                   StandardTypes   { get; }
         public   override   ICollection<TypeDef>            SeparateTypes   { get; }
-        /// Contains only non nullable Type's
+        /// Contains only non <see cref="Nullable"/> Type's
         private  readonly   Dictionary<Type, NativeType>    nativeTypes;
         
         public NativeTypeSchema (TypeStore typeStore, ICollection<Type> separateTypes = null) {
             var typeMappers = typeStore.GetTypeMappers();
-            nativeTypes     = new Dictionary<Type,    NativeType>(typeMappers.Count);
-            var map         = new Dictionary<TypeDef, TypeMapper>(typeMappers.Count);
+            // Collect all types into containers to simplify further processing
+            nativeTypes     = new Dictionary<Type, NativeType>(typeMappers.Count);
+            var types       = new HashSet<TypeDef>            (typeMappers.Count);
             foreach (var pair in typeMappers) {
                 TypeMapper  mapper  = pair.Value;
                 var underMapper     = mapper.GetUnderlyingMapper();
@@ -68,13 +69,13 @@ namespace Friflo.Json.Flow.Schema.Native
                     continue;
                 var  iTyp = new NativeType(underMapper);
                 nativeTypes.Add(nonNullableType, iTyp);
-                map.      Add(iTyp, underMapper);
+                types.      Add(iTyp);
             }
             // in case any Nullable<> was found - typeStore contain now also their non-nullable counterparts.
             typeMappers = typeStore.GetTypeMappers();
             
             var standardTypes = new NativeStandardTypes(nativeTypes);
-            Types           = map.Keys;
+            Types           = types;
             StandardTypes   = standardTypes;
             SeparateTypes   = GetTypes(separateTypes);
 
@@ -86,6 +87,7 @@ namespace Friflo.Json.Flow.Schema.Native
             }
             standardTypes.SetStandardNames();
 
+            // set the base type (base class or parent class) for all types. 
             foreach (var pair in nativeTypes) {
                 NativeType  type        = pair.Value;
                 Type        baseType    = type.native.BaseType;
@@ -104,11 +106,13 @@ namespace Friflo.Json.Flow.Schema.Native
             foreach (var pair in nativeTypes) {
                 NativeType  type    = pair.Value;
                 TypeMapper  mapper  = type.mapper;
+                // set the element type for arrays or the value type for dictionaries
                 var elementMapper = mapper.GetElementMapper();
                 if (elementMapper != null) {
                     elementMapper = elementMapper.GetUnderlyingMapper();
                     type.ElementType    = nativeTypes[elementMapper.type];
                 }
+                // set the fields for classes or structs
                 var  propFields = mapper.propFields;
                 if (propFields != null) {
                     type.fields = new List<Field>(propFields.fields.Length);
@@ -120,10 +124,10 @@ namespace Friflo.Json.Flow.Schema.Native
                             required    = propField.required || !isNullable,
                             type        = nativeTypes[nonNullableType]
                         };
-                        type.Fields.Add(field);
+                        type.fields.Add(field);
                     }
                 }
-                
+                // set the unionType if a class is a discriminated union
                 var instanceFactory = mapper.instanceFactory;
                 if (instanceFactory != null) {
                     var polyTypes = instanceFactory.polyTypes;
