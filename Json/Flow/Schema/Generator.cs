@@ -135,11 +135,9 @@ namespace Friflo.Json.Flow.Schema
                 }
                 package.emitTypes.Add(emit);
                 foreach (var type in emit.imports) {
-                    if (package.imports.ContainsKey(type))
+                    if (package.imports.Contains(type))
                         continue;
-                    var typePackage = type.PackageName; 
-                    var import      = new Import(type, typePackage);  
-                    package.imports.Add(type, import);
+                    package.imports.Add(type);
                 }
             }
         }

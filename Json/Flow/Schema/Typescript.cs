@@ -175,17 +175,16 @@ namespace Friflo.Json.Flow.Schema
                 string  packageName = pair.Key;
                 sb.Clear();
                 sb.AppendLine($"// {Note}");
-                var     max         = package.imports.MaxLength(import => import.Value.package == packageName ? 0 : import.Key.Name.Length);
+                var     max         = package.imports.MaxLength(import => import.PackageName == packageName ? 0 : import.Name.Length);
 
-                foreach (var importPair in package.imports) {
-                    var import = importPair.Value;
-                    if (import.package == packageName)
+                foreach (var import in package.imports) {
+                    if (import.PackageName == packageName)
                         continue;
-                    var typeName    = import.type.Name;
+                    var typeName    = import.Name;
                     var indent      = Indent(max, typeName);
-                    sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.package}\"");
-                    if (import.type.UnionType != null) {
-                        sb.AppendLine($"import {{ {typeName}_Union }}{indent} from \"./{import.package}\"");
+                    sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.PackageName}\"");
+                    if (import.UnionType != null) {
+                        sb.AppendLine($"import {{ {typeName}_Union }}{indent} from \"./{import.PackageName}\"");
                     }
                 }
                 package.header = sb.ToString();
