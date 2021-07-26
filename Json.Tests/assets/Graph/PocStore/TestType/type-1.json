@@ -4,6 +4,8 @@
     "dateTimeNull": null,
     "bigInt": "0",
     "bigIntNull": null,
+    "boolean": false,
+    "booleanNull": null,
     "uint8": 0,
     "uint8Null": null,
     "int16": 0,
