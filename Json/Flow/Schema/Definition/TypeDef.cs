@@ -27,15 +27,27 @@ namespace Friflo.Json.Flow.Schema.Definition
         /// used by multiple types. But each type has its individual file <see cref="Path"/>.
         /// </summary>
         public              string              Path         { get; internal set; }
+        
+        /// The class this type extends. In other words its base or parent class.  
         public  abstract    TypeDef             BaseType     { get; }
-        public  abstract    bool                IsEnum       { get; }
+        
+        /// If <see cref="IsComplex"/> is true it has <see cref="Fields"/>
         public  abstract    bool                IsComplex    { get; }
         public  abstract    List<Field>         Fields       { get; }
-        public  abstract    string              Discriminant { get; }
+        
+        /// If <see cref="IsArray"/> is true <see cref="ElementType"/> contains the element type.
         public  abstract    bool                IsArray      { get; }
-        public              TypeDef             ElementType  { get; set; }
+        /// If <see cref="IsDictionary"/> is true <see cref="ElementType"/> contains the value type.
         public  abstract    bool                IsDictionary { get; }
+        public              TypeDef             ElementType  { get; set; }
+        
+        /// <see cref="UnionType"/> is not null, if the type is as discriminated union.
         public  abstract    UnionType           UnionType    { get; }
+        /// <see cref="Discriminant"/> is not null, if the type is an element of a <see cref="UnionType"/>
+        public  abstract    string              Discriminant { get; }
+        
+        /// If <see cref="IsEnum"/> is true it has <see cref="EnumValues"/>
+        public  abstract    bool                IsEnum       { get; }
         public  abstract    ICollection<string> EnumValues   { get; }
         /// currently not used
         public  abstract    TypeSemantic        TypeSemantic { get; }
