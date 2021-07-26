@@ -10,14 +10,15 @@ namespace Friflo.Json.Flow.Schema.Utils
     {
         public readonly     Generator           generator;
         public readonly     HashSet<TypeDef>    imports;
-        public readonly     TypeDef             owner;
+        /// <summary>The <see cref="type"/> the context was created for. Each type gets its own context.</summary>
+        public readonly     TypeDef             type;
 
-        public override     string              ToString() => owner.Name;
+        public override     string              ToString() => type.Name;
 
-        public TypeContext (Generator generator, HashSet<TypeDef> imports, TypeDef owner) {
+        public TypeContext (Generator generator, HashSet<TypeDef> imports, TypeDef type) {
             this.generator      = generator;
             this.imports        = imports;
-            this.owner          = owner;
+            this.type           = type;
         }
     }
 }

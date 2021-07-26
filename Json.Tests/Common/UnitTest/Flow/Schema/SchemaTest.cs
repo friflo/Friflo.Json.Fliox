@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             
             EnsureSymbol(nameof(TypeContext.generator));
             EnsureSymbol(nameof(TypeContext.imports));
-            EnsureSymbol(nameof(TypeContext.owner));
+            EnsureSymbol(nameof(TypeContext.type));
         }
     }
 }

@@ -16,7 +16,9 @@ namespace Friflo.Json.Flow.Schema.Utils
         public   readonly   HashSet<TypeDef>    imports     = new HashSet<TypeDef>();
         /// the generated code used as file header. Typically all imports (using statements)
         public              string              header;
+        /// the generated code used as file footer. E.g. the closing brackets in case of JSON
         public              string              footer;
+        /// The path of the file
         private  readonly   string              path;
 
         public  override    string              ToString() => path;

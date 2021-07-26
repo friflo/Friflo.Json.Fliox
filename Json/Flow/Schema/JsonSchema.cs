@@ -209,8 +209,8 @@ namespace Friflo.Json.Flow.Schema
             // if (generator.IsUnionType(type))
             //    name = $"{type.Name}_Union";
             var typePath    = type.Path;
-            var ownerPath   = context.owner.Path;
-            bool samePath   = typePath == ownerPath;
+            var contextPath = context.type.Path;
+            bool samePath   = typePath == contextPath;
             var prefix      = samePath ? "" : $"./{typePath}{generator.fileExt}";
             var refType = $"\"$ref\": \"{prefix}#/definitions/{name}\"";
             if (!required)
