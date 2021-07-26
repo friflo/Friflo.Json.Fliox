@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map.Val;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnassignedField.Global
+// ReSharper disable CollectionNeverUpdated.Global
 namespace Friflo.Json.Flow.Schema.JSON
 {
     public class JsonSchemaType
