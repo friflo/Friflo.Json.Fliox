@@ -7,6 +7,15 @@ using Friflo.Json.Flow.Mapper.Map.Val;
 
 namespace Friflo.Json.Flow.Schema.JSON
 {
+    public class JsonSchemaType
+    {
+        [Fri.Ignore]
+        public  string                          name;
+        public  Dictionary<string, JsonType>    definitions;
+        
+        public override string                  ToString() => name;
+    }
+    
     public class JsonType
     {
         [Fri.Ignore]
@@ -33,17 +42,17 @@ namespace Friflo.Json.Flow.Schema.JSON
     public class FieldType
     {
         [Fri.Ignore]
-        public  string                          name;
+        public  string          name;
         
         public  JsonValue       type;           // SchemaType or SchemaType[]
         
         [Fri.Property(Name = "enum")]
         public  List<string>    discriminant;   // contains exactly one element
         
-        public  List<FieldType> items;
+        public  FieldType       items;
         
         [Fri.Property(Name = "$ref")]
-        public  FieldType       reference;
+        public  string          reference;
 
         public  FieldType       additionalProperties;
         
