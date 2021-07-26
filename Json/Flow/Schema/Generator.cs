@@ -56,7 +56,7 @@ namespace Friflo.Json.Flow.Schema
         public   readonly   string                          fileExt;
         
         public   readonly   TypeSchema                      schema;
-        private  readonly   Dictionary<TypeDef, string>     standardTypes;
+
 
         /// map of all <see cref="TypeDef"/>'s required by the types provided for schema generation
         public   readonly   ICollection<TypeDef>            types;
@@ -84,7 +84,6 @@ namespace Friflo.Json.Flow.Schema
             this.stripNamespaces    = stripNamespaces       ?? new List<string>();
             separateTypes           = schema.SeparateTypes  ?? new List<TypeDef>();
             getPackageName          = GetPackageNameCallback;
-            standardTypes           = GetStandardTypes(schema.StandardTypes);
         }
         
         public static string Indent(int max, string str) {
@@ -112,19 +111,13 @@ namespace Friflo.Json.Flow.Schema
         public string GetPackageName (TypeDef type) {
             if (packageCache.TryGetValue(type, out var packageName))
                 return packageName;
-            if (standardTypes.ContainsKey(type)) {
-                packageName = "Standard";
-            } else {
-                packageName = getPackageName(type);
-                packageName = Strip(packageName);
-            }
+            packageName = getPackageName(type);
+            packageName = Strip(packageName);
             packageCache.Add(type, packageName);
             return packageName;
         }
         
         public string GetTypeName (TypeDef type) {
-            if (standardTypes.TryGetValue(type, out string typeName))
-                return typeName;
             return type.Name;
         }
         
@@ -132,21 +125,6 @@ namespace Friflo.Json.Flow.Schema
             if (type == null)
                 return;
             types.Add(type, value);
-        }
-        
-        private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
-            var types = new Dictionary<TypeDef, string>();
-            AddType(types, standard.Unit8,         "uint8" );
-            AddType(types, standard.Int16,         "int16" );
-            AddType(types, standard.Int32,         "int32" );
-            AddType(types, standard.Int64,         "int64" );
-                
-            AddType(types, standard.Double,        "double" );
-            AddType(types, standard.Float,         "float" );
-                
-            AddType(types, standard.BigInteger,    "BigInteger" );
-            AddType(types, standard.DateTime,      "DateTime" );
-            return types;
         }
         
         /// <summary>

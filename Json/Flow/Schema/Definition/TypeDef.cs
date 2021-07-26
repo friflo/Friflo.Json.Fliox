@@ -7,8 +7,8 @@ using Friflo.Json.Flow.Mapper.Map;
 namespace Friflo.Json.Flow.Schema.Definition
 {
     public abstract class TypeDef {
-        public  abstract    string              Name         { get; }
-        public  abstract    string              Namespace    { get; }
+        public              string              Name;
+        public              string              Namespace;
         public  abstract    TypeDef             BaseType     { get; }
         public  abstract    bool                IsEnum       { get; }
         public  abstract    bool                IsComplex    { get; }

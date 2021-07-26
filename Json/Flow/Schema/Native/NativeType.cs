@@ -18,8 +18,6 @@ public class NativeType : TypeDef
         internal            List<Field>         fields;
         internal            UnionType           unionType;
         
-        public   override   string              Name            => native.Name;
-        public   override   string              Namespace       => native.Namespace;
         public   override   TypeDef             BaseType        => baseType;
         public   override   bool                IsEnum          => native.IsEnum;
         public   override   bool                IsComplex       => mapper.IsComplex;

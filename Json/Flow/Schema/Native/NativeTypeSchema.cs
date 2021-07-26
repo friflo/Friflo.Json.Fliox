@@ -73,9 +73,17 @@ namespace Friflo.Json.Flow.Schema.Native
             // in case any Nullable<> was found - typeStore contain now also their non-nullable counterparts.
             typeMappers = typeStore.GetTypeMappers();
             
+            var standardTypes = new NativeStandardTypes(nativeTypes);
             Types           = map.Keys;
-            StandardTypes   = new NativeStandardTypes(nativeTypes);
+            StandardTypes   = standardTypes;
             SeparateTypes   = GetTypes(separateTypes);
+
+            foreach (var pair in nativeTypes) {
+                var type        = pair.Value;
+                type.Name       = type.mapper.type.Name;
+                type.Namespace  = type.mapper.type.Namespace;
+            }
+            standardTypes.SetStandardNames();
 
             foreach (var pair in nativeTypes) {
                 NativeType  type        = pair.Value;
