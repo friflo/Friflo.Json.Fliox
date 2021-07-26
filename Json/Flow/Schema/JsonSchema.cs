@@ -65,8 +65,7 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
-            var imports         = new HashSet<TypeDef>(); 
-            var context         = new TypeContext (generator, imports, type);
+            var context         = new TypeContext (generator, null, type);
             var standardType    = EmitStandardType(type, sb);
             if (standardType != null ) {
                 return standardType;
@@ -132,7 +131,7 @@ namespace Friflo.Json.Flow.Schema
                 var additionalProperties = unionType != null ? "true" : "false"; 
                 sb.AppendLine($"            \"additionalProperties\": {additionalProperties}");
                 sb.Append     ("        }");
-                return new EmitType(type, sb, imports);
+                return new EmitType(type, sb);
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
@@ -173,7 +172,6 @@ namespace Friflo.Json.Flow.Schema
                 var valueTypeName = GetFieldType(valueMapper, context, true);
                 return $"\"type\": \"object\", \"additionalProperties\": {{ {valueTypeName} }}";
             }
-            context.imports.Add(type);
             return Ref(type, required, context);
         }
         
