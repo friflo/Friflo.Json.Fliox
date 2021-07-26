@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         public  string                          discriminator;
         public  List<FieldType>                 oneOf;
         //
-        public  string                          type; // null, "null", "object", "string", "number", "integer", "array", []
+        public  string                          type; // null, "null", "object", "string", "number", "integer", "array"
         public  Dictionary<string, FieldType>   properties;
         public  List<string>                    required;
         public  bool                            additionalProperties;
@@ -25,13 +25,13 @@ namespace Friflo.Json.Flow.Schema.JSON
     
     public class FieldType
     {
-        public  string                          type; // "object", "string", "number", "integer", "array"
+        public  string          type; // "object", "string", "number", "integer", "array", []
         
-        public  List<FieldType>                 items;
+        public  List<FieldType> items;
         
         [Fri.Property(Name = "$ref")]
-        public  FieldType                       reference;
+        public  FieldType       reference;
 
-        public  JsonType                        additionalProperties;
+        public  FieldType       additionalProperties;
     }
 }
