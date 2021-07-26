@@ -22,7 +22,9 @@ namespace Friflo.Json.Flow.Schema.JSON
         public  override    bool                IsEnum          => type.enums != null;
         public  override    ICollection<string> EnumValues      => type.enums;
         public  override    TypeSemantic        TypeSemantic    => TypeSemantic.None;
-        
+
+        public  override    string              ToString()      => type.name; 
+
         // --- private
         private readonly    List<Field>         fields;
 

@@ -9,6 +9,9 @@ namespace Friflo.Json.Flow.Schema.JSON
 {
     public class JsonType
     {
+        [Fri.Ignore]
+        public  string                          name;
+        
         public  string                          discriminator;
         public  List<FieldType>                 oneOf;
         //
@@ -23,10 +26,15 @@ namespace Friflo.Json.Flow.Schema.JSON
         //
         [Fri.Property(Name = "enum")]
         public  List<string>                    enums;
+
+        public override string                  ToString() => name;
     }
     
     public class FieldType
     {
+        [Fri.Ignore]
+        public  string                          name;
+        
         public  JsonValue       type;           // SchemaType or SchemaType[]
         
         [Fri.Property(Name = "enum")]
@@ -38,6 +46,8 @@ namespace Friflo.Json.Flow.Schema.JSON
         public  FieldType       reference;
 
         public  FieldType       additionalProperties;
+        
+        public override string  ToString() => name;
     }
     
     public enum SchemaType {
