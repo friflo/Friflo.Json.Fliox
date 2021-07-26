@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
             return map;
         }
         
-        private EmitType EmitStandardType(TypeDef type, StringBuilder sb, Generator generator) {
+        private EmitType EmitStandardType(TypeDef type, StringBuilder sb) {
             if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
             sb.Append($"        \"{type.Name}\": {definition}");
@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
             var imports         = new HashSet<TypeDef>(); 
             var context         = new TypeContext (generator, imports, type);
-            var standardType    = EmitStandardType(type, sb, generator);
+            var standardType    = EmitStandardType(type, sb);
             if (standardType != null ) {
                 return standardType;
             }
