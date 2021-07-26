@@ -61,7 +61,7 @@ namespace Friflo.Json.Flow.Schema
             sb.AppendLine($"        \"{typeName}\": {{");
             sb.AppendLine($"            {definition}");
             sb.Append    ( "        }");
-            return new EmitType(type, generator, sb);
+            return new EmitType(type, sb);
         }
         
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
@@ -132,7 +132,7 @@ namespace Friflo.Json.Flow.Schema
                 var additionalProperties = unionType != null ? "true" : "false"; 
                 sb.AppendLine($"            \"additionalProperties\": {additionalProperties}");
                 sb.Append     ("        }");
-                return new EmitType(type, generator, sb, imports);
+                return new EmitType(type, sb, imports);
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
@@ -146,7 +146,7 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine();
                 sb.AppendLine("            ]");
                 sb.Append    ("        }");
-                return new EmitType(type, generator, sb);
+                return new EmitType(type, sb);
             }
             return null;
         }
@@ -210,8 +210,8 @@ namespace Friflo.Json.Flow.Schema
             var name            = type.Name;
             // if (generator.IsUnionType(type))
             //    name = $"{type.Name}_Union";
-            var typePackage     = generator.GetPackageName(type);
-            var ownerPackage    = generator.GetPackageName(context.owner);
+            var typePackage     = type.PackageName;
+            var ownerPackage    = context.owner.PackageName;
             bool samePackage    = typePackage == ownerPackage;
             var prefix          = samePackage ? "" : $"./{typePackage}{generator.fileExt}";
             var refType = $"\"$ref\": \"{prefix}#/definitions/{name}\"";

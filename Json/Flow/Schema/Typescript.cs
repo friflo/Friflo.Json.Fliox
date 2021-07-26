@@ -59,7 +59,7 @@ namespace Friflo.Json.Flow.Schema
             sb.Append(definition);
             sb.AppendLine(";");
             sb.AppendLine();
-            return new EmitType(type, generator, sb);
+            return new EmitType(type, sb);
         }
         
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
@@ -126,7 +126,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 sb.AppendLine("}");
                 sb.AppendLine();
-                return new EmitType(type, generator, sb, imports, dependencies);
+                return new EmitType(type, sb, imports, dependencies);
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
@@ -136,7 +136,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 sb.AppendLine($";");
                 sb.AppendLine();
-                return new EmitType(type, generator, sb);
+                return new EmitType(type, sb);
             }
             return null;
         }

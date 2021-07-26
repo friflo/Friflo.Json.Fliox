@@ -28,9 +28,7 @@ namespace Friflo.Json.Flow.Schema.Utils
 
         public   override   string                  ToString() => type.Name;
 
-        public EmitType(
-            TypeDef             type,
-            Generator           generator,
+        public EmitType(TypeDef type,
             StringBuilder       sb,
             HashSet<TypeDef>    imports         = null,
             List<TypeDef>       dependencies    = null,
@@ -38,7 +36,7 @@ namespace Friflo.Json.Flow.Schema.Utils
         {
             this.semantic           = semantic;
             this.type               = type;
-            this.package            = generator.GetPackageName(type);
+            this.package            = type.PackageName;
             this.content            = sb.ToString();
             this.imports            = imports       ?? new HashSet<TypeDef>();
             this.typeDependencies   = dependencies  ?? new List<TypeDef>();

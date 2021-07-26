@@ -71,7 +71,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
             if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
             sb.Append($"        \"{type.Name}\": {definition}");
-            return new EmitType(type, generator, sb);
+            return new EmitType(type, sb);
         }
         
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
@@ -126,7 +126,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
                 // var additionalProperties = unionType != null ? "true" : "false"; 
                 // sb.AppendLine($"            \"additionalProperties\": {additionalProperties}");
                 sb.Append     ("        }");
-                return new EmitType(type, generator, sb, imports);
+                return new EmitType(type, sb, imports);
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
@@ -140,7 +140,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
                 sb.AppendLine();
                 sb.AppendLine("            ]");
                 sb.Append    ("        }");
-                return new EmitType(type, generator, sb);
+                return new EmitType(type, sb);
             }
             return null;
         }
