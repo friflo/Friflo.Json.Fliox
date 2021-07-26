@@ -8,7 +8,7 @@ using Friflo.Json.Flow.Schema.Definition;
 
 namespace Friflo.Json.Flow.Schema.Utils
 {
-    public class Package
+    public class EmitFile
     {
         /// contain all types of a namespace (package) and their generated piece of code for each type
         public   readonly   List<EmitType>      emitTypes   = new List<EmitType>();
@@ -17,12 +17,12 @@ namespace Friflo.Json.Flow.Schema.Utils
         /// the generated code used as package header. Typically all imports (using statements)
         public              string              header;
         public              string              footer;
-        private  readonly   string              name;
+        private  readonly   string              path;
 
-        public  override    string              ToString() => name;
+        public  override    string              ToString() => path;
 
-        public Package (string name) {
-            this.name = name;
+        public EmitFile (string path) {
+            this.path = path;
         }
     }
         

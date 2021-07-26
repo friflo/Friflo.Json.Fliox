@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Schema.Utils
     {
         public   readonly   TypeDef                 type;
         /// the mapper assigned to the type
-        internal readonly   string                  package;
+        internal readonly   string                  path;
 
         /// the piece of code to define the type
         internal readonly   string                  content;
@@ -36,7 +36,7 @@ namespace Friflo.Json.Flow.Schema.Utils
         {
             this.semantic           = semantic;
             this.type               = type;
-            this.package            = type.PackageName;
+            this.path               = type.Path;
             this.content            = sb.ToString();
             this.imports            = imports       ?? new HashSet<TypeDef>();
             this.typeDependencies   = dependencies  ?? new List<TypeDef>();

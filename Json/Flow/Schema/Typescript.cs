@@ -32,7 +32,7 @@ namespace Friflo.Json.Flow.Schema
                 generator.AddEmitType(result);
             }
             generator.GroupTypesByPackage(true); // sort dependencies - otherwise possible error TS2449: Class '...' used before its declaration.
-            EmitPackageHeaders(sb);
+            EmitFileHeaders(sb);
             // EmitPackageFooters(sb);  no TS footer
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}"); // $"{ns.Replace(".", "/")}{generator.extension}");
         }
@@ -169,25 +169,25 @@ namespace Friflo.Json.Flow.Schema
             return type.Name;
         }
         
-        private void EmitPackageHeaders(StringBuilder sb) {
-            foreach (var pair in generator.packages) {
-                Package package     = pair.Value;
-                string  packageName = pair.Key;
+        private void EmitFileHeaders(StringBuilder sb) {
+            foreach (var pair in generator.emitFiles) {
+                EmitFile    emitFile    = pair.Value;
+                string      filePath    = pair.Key;
                 sb.Clear();
                 sb.AppendLine($"// {Note}");
-                var     max         = package.imports.MaxLength(import => import.PackageName == packageName ? 0 : import.Name.Length);
+                var     max         = emitFile.imports.MaxLength(import => import.Path == filePath ? 0 : import.Name.Length);
 
-                foreach (var import in package.imports) {
-                    if (import.PackageName == packageName)
+                foreach (var import in emitFile.imports) {
+                    if (import.Path == filePath)
                         continue;
                     var typeName    = import.Name;
                     var indent      = Indent(max, typeName);
-                    sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.PackageName}\"");
+                    sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.Path}\"");
                     if (import.UnionType != null) {
-                        sb.AppendLine($"import {{ {typeName}_Union }}{indent} from \"./{import.PackageName}\"");
+                        sb.AppendLine($"import {{ {typeName}_Union }}{indent} from \"./{import.Path}\"");
                     }
                 }
-                package.header = sb.ToString();
+                emitFile.header = sb.ToString();
             }
         }
     }

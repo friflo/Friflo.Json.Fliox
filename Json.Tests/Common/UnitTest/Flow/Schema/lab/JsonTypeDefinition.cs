@@ -39,8 +39,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
                 generator.AddEmitType(result);
             }
             generator.GroupToSinglePackage(name);
-            EmitPackageHeaders(sb);
-            EmitPackageFooters(sb);
+            EmitFileHeaders(sb);
+            EmitFileFooters(sb);
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}", Next); // $"{ns.Replace(".", "/")}.ts");
         }
         
@@ -166,8 +166,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
             return $"{Ref(type)}";
         }
         
-        private void EmitPackageHeaders(StringBuilder sb) {
-            foreach (var pair in generator.packages) {
+        private void EmitFileHeaders(StringBuilder sb) {
+            foreach (var pair in generator.emitFiles) {
                 var package = pair.Value;
                 sb.Clear();
                 sb.AppendLine("{");
@@ -178,8 +178,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
             }
         }
         
-        private void EmitPackageFooters(StringBuilder sb) {
-            foreach (var pair in generator.packages) {
+        private void EmitFileFooters(StringBuilder sb) {
+            foreach (var pair in generator.emitFiles) {
                 var package = pair.Value;
                 sb.Clear();
                 sb.AppendLine();

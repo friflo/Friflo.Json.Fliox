@@ -9,7 +9,7 @@ namespace Friflo.Json.Flow.Schema.Definition
     public abstract class TypeDef {
         public              string              Name         { get; set; }
         public              string              Namespace    { get; set; }
-        public              string              PackageName  { get; internal set; }
+        public              string              Path         { get; internal set; }
         public  abstract    TypeDef             BaseType     { get; }
         public  abstract    bool                IsEnum       { get; }
         public  abstract    bool                IsComplex    { get; }

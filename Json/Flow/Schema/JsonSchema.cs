@@ -34,8 +34,8 @@ namespace Friflo.Json.Flow.Schema
                 generator.AddEmitType(result);
             }
             generator.GroupTypesByPackage(false);
-            EmitPackageHeaders(sb);
-            EmitPackageFooters(sb);
+            EmitFileHeaders(sb);
+            EmitFileFooters(sb);
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}", Next); // $"{ns.Replace(".", "/")}.ts");
         }
         
@@ -175,8 +175,8 @@ namespace Friflo.Json.Flow.Schema
             return Ref(type, required, context);
         }
         
-        private void EmitPackageHeaders(StringBuilder sb) {
-            foreach (var pair in generator.packages) {
+        private void EmitFileHeaders(StringBuilder sb) {
+            foreach (var pair in generator.emitFiles) {
                 var package = pair.Value;
                 sb.Clear();
                 sb.AppendLine("{");
@@ -192,8 +192,8 @@ namespace Friflo.Json.Flow.Schema
             }
         }
         
-        private void EmitPackageFooters(StringBuilder sb) {
-            foreach (var pair in generator.packages) {
+        private void EmitFileFooters(StringBuilder sb) {
+            foreach (var pair in generator.emitFiles) {
                 var package = pair.Value;
                 sb.Clear();
                 sb.AppendLine();
@@ -208,10 +208,10 @@ namespace Friflo.Json.Flow.Schema
             var name            = type.Name;
             // if (generator.IsUnionType(type))
             //    name = $"{type.Name}_Union";
-            var typePackage     = type.PackageName;
-            var ownerPackage    = context.owner.PackageName;
-            bool samePackage    = typePackage == ownerPackage;
-            var prefix          = samePackage ? "" : $"./{typePackage}{generator.fileExt}";
+            var typePath        = type.Path;
+            var ownerPath       = context.owner.Path;
+            bool samePackage    = typePath == ownerPath;
+            var prefix          = samePackage ? "" : $"./{typePath}{generator.fileExt}";
             var refType = $"\"$ref\": \"{prefix}#/definitions/{name}\"";
             if (!required)
                 return $"\"oneOf\": [{{\"type\": \"null\"}}, {{ {refType} }}]";
