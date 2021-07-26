@@ -8,27 +8,27 @@ using Friflo.Json.Flow.Schema.Definition;
 namespace Friflo.Json.Flow.Schema.JSON
 {
     public class JsonTypeDef : TypeDef {
-        private readonly    string              name;
-        private readonly    JsonType            type;
-        private readonly    FieldType           fieldType;
+        private  readonly   string              name;
+        internal readonly   JsonType            type;
+        // private readonly    FieldType           fieldType;
         
         // --- TypeDef
-        public  override    TypeDef             BaseType        => baseType;
-        public  override    bool                IsComplex       => fields != null;
-        public  override    List<Field>         Fields          => fields;
-        public  override    bool                IsArray         { get; }
-        public  override    bool                IsDictionary    { get; }
-        public  override    UnionType           UnionType       { get; }
-        public  override    string              Discriminant    { get; }
-        public  override    bool                IsEnum          => EnumValues != null;
-        public  override    ICollection<string> EnumValues      { get; }
-        public  override    TypeSemantic        TypeSemantic    => TypeSemantic.None;
+        public   override   TypeDef             BaseType        => baseType;
+        public   override   bool                IsComplex       => fields != null;
+        public   override   List<Field>         Fields          => fields;
+        public   override   bool                IsArray         { get; }
+        public   override   bool                IsDictionary    { get; }
+        public   override   UnionType           UnionType       { get; }
+        public   override   string              Discriminant    { get; }
+        public   override   bool                IsEnum          => EnumValues != null;
+        public   override   ICollection<string> EnumValues      { get; }
+        public   override   TypeSemantic        TypeSemantic    => TypeSemantic.None;
 
-        public  override    string              ToString()      => name; 
+        public   override   string              ToString()      => name; 
 
         // --- private
         private             TypeDef             baseType;
-        private readonly    List<Field>         fields;
+        internal readonly   List<Field>         fields;
 
         public JsonTypeDef (JsonType type, string name) {
             this.name = name;
@@ -36,16 +36,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             var properties = type.properties;
             if (properties != null) {
                 fields = new List<Field>(properties.Count);
-                foreach (var property in properties) {
-                    string  fieldName       = property.Key;
-                    bool    requiredField   = type.required?.Contains(fieldName) ?? false;  
-                    var field = new Field {
-                        name        = fieldName,
-                        required    = requiredField,
-                        // type =  todo  
-                    };
-                    fields.Add(field);
-                }
+
             }
             if (type.enums != null) {
                 EnumValues = type.enums; 
@@ -62,6 +53,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             }
         }
         
+        /*
         public JsonTypeDef (FieldType type, string name) {
             this.name = name;
             fieldType = type;
@@ -74,7 +66,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             if (type.discriminant != null) {
                 Discriminant = type.discriminant[0];
             }
-        }
+        } */
 
         public override bool IsDerivedField(Field field) {
             throw new System.NotImplementedException();

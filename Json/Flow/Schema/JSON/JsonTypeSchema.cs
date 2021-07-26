@@ -5,24 +5,59 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Schema.Definition;
 
 namespace Friflo.Json.Flow.Schema.JSON
 {
     public class JsonTypeSchema
     {
         public JsonTypeSchema(List<JsonSchemaType> schemaList) {
-            var schemas = new Dictionary<string, JsonTypeDef>(schemaList.Count);
-            foreach (var schema in schemaList) {
+            var globalSchemas = new Dictionary<string, JsonTypeDef>(schemaList.Count);
+            foreach (JsonSchemaType schema in schemaList) {
+                schema.typeDefs = new Dictionary<string, JsonTypeDef>(schema.definitions.Count);
                 foreach (var pair in schema.definitions) {
                     var typeName    = pair.Key;
                     var type        = pair.Value;
                     var typeDef     = new JsonTypeDef (type, typeName);
                     var schemaId = $"./{schema.name}#/definitions/{typeName}";
-                    schemas.Add(schemaId, typeDef);
+                    globalSchemas.Add(schemaId, typeDef);
+                    var localId = $"#/definitions/{typeName}";
+                    schema.typeDefs.Add(localId, typeDef);
+                }
+            }
+            foreach (JsonSchemaType schema in schemaList) {
+                foreach (var pair in schema.typeDefs) {
+                    JsonTypeDef    typeDef = pair.Value;
+                    var properties      = typeDef.type.properties;
+                    if (properties != null) {
+                        typeDef.fields.Capacity = properties.Count;
+                        foreach (var propPair in properties) {
+                            string      fieldName   = propPair.Key;
+                            FieldType   fieldType   = propPair.Value;
+                            fieldType.name          = fieldName;
+                            bool        requiredField   = typeDef.type.required?.Contains(fieldName) ?? false;
+                            var field = new Field {
+                                name        = fieldName,
+                                required    = requiredField
+                            };
+                            typeDef.fields.Add(field);
+                            if (fieldType.reference != null) {
+                                field.type = Find(fieldType.reference, schema, globalSchemas);
+                            }
+                        }
+                    }
                 }
             }
         }
         
+        private static TypeDef Find (string reference, JsonSchemaType schema, Dictionary<string, JsonTypeDef> schemas) {
+            if (reference.StartsWith("#/definitions/")) {
+                var typeName = reference.Substring("#/definitions/".Length);
+                return schema.typeDefs[typeName];
+            }
+            return schemas[reference];
+        }
+
         public static JsonTypeSchema FromFolder(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
             var jsonSchemas = new Dictionary<string, string>(fileNames.Length);

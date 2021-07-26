@@ -12,7 +12,9 @@ namespace Friflo.Json.Flow.Schema.JSON
         [Fri.Ignore]
         public  string                          name;
         public  Dictionary<string, JsonType>    definitions;
-        
+        [Fri.Ignore]
+        public  Dictionary<string, JsonTypeDef> typeDefs;
+
         public override string                  ToString() => name;
     }
     
