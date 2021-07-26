@@ -6,6 +6,10 @@ using Friflo.Json.Flow.Mapper.Map;
 
 namespace Friflo.Json.Flow.Schema.Definition
 {
+    /// <summary>
+    /// Contains the all required data to generate code for a type.
+    /// Note: This file does and must not have any dependency to <see cref="System.Type"/>.
+    /// </summary>
     public abstract class TypeDef {
         public              string              Name         { get; set; }
         /// <summary>
