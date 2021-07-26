@@ -26,8 +26,6 @@ public class NativeType : TypeDef
         public   override   TypeSemantic        TypeSemantic    => mapper.GetTypeSemantic();
         public   override   bool                IsArray         => mapper.IsArray;
         public   override   UnionType           UnionType       => unionType;
-        public   override   TypeDef             ElementType     { get; internal set; }
-
         public   override   bool                IsDictionary    => mapper.type.GetInterfaces().Contains(typeof(IDictionary));
         public   override   string              ToString()      => mapper.type.ToString();
         

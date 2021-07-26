@@ -7,15 +7,15 @@ using Friflo.Json.Flow.Mapper.Map;
 namespace Friflo.Json.Flow.Schema.Definition
 {
     public abstract class TypeDef {
-        public              string              Name;
-        public              string              Namespace;
+        public              string              Name         { get; set; }
+        public              string              Namespace    { get; set; }
         public  abstract    TypeDef             BaseType     { get; }
         public  abstract    bool                IsEnum       { get; }
         public  abstract    bool                IsComplex    { get; }
         public  abstract    List<Field>         Fields       { get; }
         public  abstract    string              Discriminant { get; }
         public  abstract    bool                IsArray      { get; }
-        public  abstract    TypeDef             ElementType  { get; internal set; }
+        public              TypeDef             ElementType  { get; set; }
         public  abstract    bool                IsDictionary { get; }
         public  abstract    UnionType           UnionType    { get; }
         public  abstract    ICollection<string> EnumValues   { get; }

@@ -12,6 +12,10 @@ namespace Friflo.Json.Flow.Schema.Definition
         public abstract     ICollection<TypeDef>    SeparateTypes   { get; }
     }
     
+    /// <summary>
+    /// Contain all standard types used by a <see cref="TypeSchema"/>.
+    /// Unused standard types are null.
+    /// </summary>
     public abstract class StandardTypes
     {
         public abstract     TypeDef     Boolean     { get; }
@@ -32,16 +36,21 @@ namespace Friflo.Json.Flow.Schema.Definition
         
                 
         public void SetStandardNames() {
+            SetName(Boolean,       "boolean" );
+            SetName(String,        "string" );
+
             SetName(Unit8,         "uint8" );
             SetName(Int16,         "int16" );
             SetName(Int32,         "int32" );
             SetName(Int64,         "int64" );
                 
-            SetName(Double,        "double" );
             SetName(Float,         "float" );
+            SetName(Double,        "double" );
                 
             SetName(BigInteger,    "BigInteger" );
             SetName(DateTime,      "DateTime" );
+            
+            SetName(JsonValue,     "JsonValue" );
         }
         
         private static void SetName (TypeDef type, string name) {

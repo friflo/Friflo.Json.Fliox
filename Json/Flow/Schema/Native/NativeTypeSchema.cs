@@ -78,8 +78,9 @@ namespace Friflo.Json.Flow.Schema.Native
             StandardTypes   = standardTypes;
             SeparateTypes   = GetTypes(separateTypes);
 
+            // Set the type Name and Namespace of all TypeDefs 
             foreach (var pair in nativeTypes) {
-                var type        = pair.Value;
+                NativeType type = pair.Value;
                 type.Name       = type.mapper.type.Name;
                 type.Namespace  = type.mapper.type.Namespace;
             }
