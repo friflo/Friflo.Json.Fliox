@@ -12,3 +12,7 @@ export type int16 = number;
 
 export type int64 = number;
 
+export type float = number;
+
+export type double = number;
+

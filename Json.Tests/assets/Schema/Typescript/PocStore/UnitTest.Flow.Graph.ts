@@ -5,6 +5,8 @@ import { BigInteger } from "./Standard"
 import { uint8 }      from "./Standard"
 import { int16 }      from "./Standard"
 import { int64 }      from "./Standard"
+import { float }      from "./Standard"
+import { double }     from "./Standard"
 
 export class Order {
     id        : string;
@@ -58,6 +60,10 @@ export class TestType {
     int32Null?        : int32 | null;
     int64             : int64;
     int64Null?        : int64 | null;
+    float32           : float;
+    float32Null?      : float | null;
+    float64           : double;
+    float64Null?      : double | null;
     pocStruct         : PocStruct;
     pocStructNull?    : PocStruct | null;
     intArray          : int32[];

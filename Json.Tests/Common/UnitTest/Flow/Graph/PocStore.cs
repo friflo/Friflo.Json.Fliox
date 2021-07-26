@@ -90,6 +90,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public  long                int64;
         public  long?               int64Null;
         
+        public  float               float32;
+        public  float?              float32Null;
+        
+        public  double              float64;
+        public  double?             float64Null;
+
         public  PocStruct           pocStruct;
         public  PocStruct?          pocStructNull;
 
