@@ -39,6 +39,11 @@ namespace Friflo.Json.Flow.Mapper
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
         public sealed class IgnoreAttribute : Attribute {
         }
+        
+        [AttributeUsage(AttributeTargets.Field)]  // enum fields
+        public sealed class EnumValueAttribute : Attribute {
+            public string       Name        { get; set; }
+        }
     }
     
 

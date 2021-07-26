@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Mapper.Map.Val;
 
 namespace Friflo.Json.Flow.Schema.JSON
 {
@@ -11,7 +12,8 @@ namespace Friflo.Json.Flow.Schema.JSON
         public  string                          discriminator;
         public  List<FieldType>                 oneOf;
         //
-        public  string                          type; // null, "null", "object", "string", "number", "integer", "array"
+        // public  SchemaType?                  type; // todo use this
+        public  string                          type;
         public  Dictionary<string, FieldType>   properties;
         public  List<string>                    required;
         public  bool                            additionalProperties;
@@ -25,7 +27,10 @@ namespace Friflo.Json.Flow.Schema.JSON
     
     public class FieldType
     {
-        public  string          type; // "object", "string", "number", "integer", "array", []
+        public  JsonValue       type; // SchemaType or SchemaType[]
+        
+        [Fri.Property(Name = "enum")]
+        public  List<string>    discriminant;
         
         public  List<FieldType> items;
         
@@ -33,5 +38,22 @@ namespace Friflo.Json.Flow.Schema.JSON
         public  FieldType       reference;
 
         public  FieldType       additionalProperties;
+    }
+    
+    public enum SchemaType {
+        [Fri.EnumValue(Name = "null")]
+        Null,
+        [Fri.EnumValue(Name = "object")]
+        Object,
+        [Fri.EnumValue(Name = "string")]
+        String,
+        [Fri.EnumValue(Name = "boolean")]
+        Boolean,
+        [Fri.EnumValue(Name = "number")]
+        Number,
+        [Fri.EnumValue(Name = "integer")]
+        Integer,
+        [Fri.EnumValue(Name = "array")]
+        Array
     }
 }

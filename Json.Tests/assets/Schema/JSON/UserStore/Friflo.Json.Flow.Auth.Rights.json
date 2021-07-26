@@ -17,7 +17,7 @@
             "additionalProperties": true
         },
         "RightAllow": {
-            "type": "null",
+            "type": "object",
             "properties": {
                 "type":        { "enum": ["allow"] },
                 "grant":       { "type": "boolean" },
