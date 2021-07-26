@@ -33,7 +33,7 @@ namespace Friflo.Json.Flow.Schema
                     continue;
                 generator.AddEmitType(result);
             }
-            generator.GroupTypesByPackage(false);
+            generator.GroupTypesByPath(false);
             EmitFileHeaders(sb);
             EmitFileFooters(sb);
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}", Next); // $"{ns.Replace(".", "/")}.ts");
@@ -177,41 +177,41 @@ namespace Friflo.Json.Flow.Schema
         
         private void EmitFileHeaders(StringBuilder sb) {
             foreach (var pair in generator.emitFiles) {
-                var package = pair.Value;
+                var emitFile = pair.Value;
                 sb.Clear();
                 sb.AppendLine("{");
                 sb.AppendLine( "    \"$schema\": \"http://json-schema.org/draft-07/schema#\",");
                 sb.AppendLine($"    \"$comment\": \"{Note}\",");
-                var first = package.emitTypes.FirstOrDefault();
+                var first = emitFile.emitTypes.FirstOrDefault();
                 if (first != null && generator.separateTypes.Contains(first.type)) {
                     var entityName = first.type.Name;
                     sb.AppendLine($"    \"$ref\": \"#/definitions/{entityName}\",");
                 }
                 sb.Append    ("    \"definitions\": {");
-                package.header = sb.ToString();
+                emitFile.header = sb.ToString();
             }
         }
         
         private void EmitFileFooters(StringBuilder sb) {
             foreach (var pair in generator.emitFiles) {
-                var package = pair.Value;
+                var emitFile = pair.Value;
                 sb.Clear();
                 sb.AppendLine();
                 sb.AppendLine("    }");
                 sb.AppendLine("}");
-                package.footer = sb.ToString();
+                emitFile.footer = sb.ToString();
             }
         }
         
         private static string Ref(TypeDef type, bool required, TypeContext context) {
-            var generator       = context.generator;
-            var name            = type.Name;
+            var generator   = context.generator;
+            var name        = type.Name;
             // if (generator.IsUnionType(type))
             //    name = $"{type.Name}_Union";
-            var typePath        = type.Path;
-            var ownerPath       = context.owner.Path;
-            bool samePackage    = typePath == ownerPath;
-            var prefix          = samePackage ? "" : $"./{typePath}{generator.fileExt}";
+            var typePath    = type.Path;
+            var ownerPath   = context.owner.Path;
+            bool samePath   = typePath == ownerPath;
+            var prefix      = samePath ? "" : $"./{typePath}{generator.fileExt}";
             var refType = $"\"$ref\": \"{prefix}#/definitions/{name}\"";
             if (!required)
                 return $"\"oneOf\": [{{\"type\": \"null\"}}, {{ {refType} }}]";

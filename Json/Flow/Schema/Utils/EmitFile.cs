@@ -10,11 +10,11 @@ namespace Friflo.Json.Flow.Schema.Utils
 {
     public class EmitFile
     {
-        /// contain all types of a namespace (package) and their generated piece of code for each type
+        /// contain all types of a file and their generated piece of code for each type
         public   readonly   List<EmitType>      emitTypes   = new List<EmitType>();
-        /// contain all imports used by all types in a package
+        /// contain all imports used by all types in a file
         public   readonly   HashSet<TypeDef>    imports     = new HashSet<TypeDef>();
-        /// the generated code used as package header. Typically all imports (using statements)
+        /// the generated code used as file header. Typically all imports (using statements)
         public              string              header;
         public              string              footer;
         private  readonly   string              path;

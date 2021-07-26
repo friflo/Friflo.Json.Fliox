@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
                     continue;
                 generator.AddEmitType(result);
             }
-            generator.GroupToSinglePackage(name);
+            generator.GroupToSingleFile(name);
             EmitFileHeaders(sb);
             EmitFileFooters(sb);
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}", Next); // $"{ns.Replace(".", "/")}.ts");
@@ -168,24 +168,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
         
         private void EmitFileHeaders(StringBuilder sb) {
             foreach (var pair in generator.emitFiles) {
-                var package = pair.Value;
+                var emitFile = pair.Value;
                 sb.Clear();
                 sb.AppendLine("{");
                 // sb.AppendLine( "    \"$schema\": \"http://json-schema.org/draft-07/schema#\",");
                 sb.AppendLine($"    \"$comment\": \"{Note}\",");
                 sb.Append    ("    \"definitions\": {");
-                package.header = sb.ToString();
+                emitFile.header = sb.ToString();
             }
         }
         
         private void EmitFileFooters(StringBuilder sb) {
             foreach (var pair in generator.emitFiles) {
-                var package = pair.Value;
+                var emitFile = pair.Value;
                 sb.Clear();
                 sb.AppendLine();
                 sb.AppendLine("    }");
                 sb.AppendLine("}");
-                package.footer = sb.ToString();
+                emitFile.footer = sb.ToString();
             }
         }
         

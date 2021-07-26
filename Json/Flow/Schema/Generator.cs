@@ -64,7 +64,7 @@ namespace Friflo.Json.Flow.Schema
         public   readonly   Dictionary<string, EmitFile>    emitFiles       = new Dictionary<string, EmitFile>();
         /// set of generated files and their source content. key: file name
         public   readonly   Dictionary<string, string>      files           = new Dictionary<string, string>();
-        /// set of files where each type is generated into s separate package (file)
+        /// set of files where each type is generated into a separate file
         public   readonly   ICollection<TypeDef>            separateTypes;
         
         // --- private
@@ -122,7 +122,7 @@ namespace Friflo.Json.Flow.Schema
             emitTypes.TryAdd(emit.type, emit);
         }
         
-        public void GroupTypesByPackage(bool sortDependencies) {
+        public void GroupTypesByPath(bool sortDependencies) {
             ICollection<EmitType> emits;
             if (sortDependencies) {
                 emits = SortDependencies();
@@ -130,9 +130,9 @@ namespace Friflo.Json.Flow.Schema
                 emits = emitTypes.Values;
             }
             foreach (var emit in emits) {
-                var packageName = emit.path;
-                if (!emitFiles.TryGetValue(packageName, out var emitFile)) {
-                    emitFiles.Add(packageName, emitFile = new EmitFile(packageName));
+                var filePath = emit.path;
+                if (!emitFiles.TryGetValue(filePath, out var emitFile)) {
+                    emitFiles.Add(filePath, emitFile = new EmitFile(filePath));
                 }
                 emitFile.emitTypes.Add(emit);
                 foreach (var type in emit.imports) {
@@ -143,7 +143,7 @@ namespace Friflo.Json.Flow.Schema
             }
         }
         
-        public void GroupToSinglePackage(string name) {
+        public void GroupToSingleFile(string name) {
             ICollection<EmitType> emits = emitTypes.Values;
             var emitFile = new EmitFile($"{name}{fileExt}");
             emitFiles.Add(name, emitFile);
