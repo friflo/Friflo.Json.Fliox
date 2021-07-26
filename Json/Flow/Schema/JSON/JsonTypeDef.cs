@@ -26,7 +26,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         public   override   string              ToString()      => name; 
 
         // --- private
-        private             TypeDef             baseType;
+        internal            TypeDef             baseType;
         internal            List<Field>         fields;
         internal            UnionType           unionType;
         internal            bool                isArray;

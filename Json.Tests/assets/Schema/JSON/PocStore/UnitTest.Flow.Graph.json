@@ -27,6 +27,7 @@
         },
         "DerivedClass": {
             "type": "object",
+            "extends": { "$ref": "#/definitions/OrderItem" },
             "properties": {
                 "derivedVal": { "$ref": "./Standard.json#/definitions/int32" },
                 "article":    { "type": "string" },

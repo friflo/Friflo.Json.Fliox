@@ -76,16 +76,19 @@ namespace Friflo.Json.Flow.Schema
                 
                 string  discriminator   = null;
                 var     discriminant    = type.Discriminant;
+                sb.AppendLine($"        \"{type.Name}\": {{");
+                var baseType    = type.BaseType;
                 if (discriminant != null) {
-                    var baseType    = type.BaseType;
                     discriminator   = baseType.UnionType.discriminator;
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                 }
                 var unionType = type.UnionType;
-                sb.AppendLine($"        \"{type.Name}\": {{");
                 if (unionType == null) {
                     sb.AppendLine($"            \"type\": \"object\",");
+                    if (baseType != null)
+                        sb.AppendLine($"            \"extends\": {{ {Ref(baseType, true, context)} }},");
                 } else {
+                    sb.AppendLine($"            \"discriminator\": \"{unionType.discriminator}\",");
                     sb.AppendLine($"            \"oneOf\": [");
                     bool firstElem = true;
                     foreach (var polyType in unionType.types) {

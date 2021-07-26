@@ -23,6 +23,8 @@ namespace Friflo.Json.Flow.Schema.JSON
         [Fri.Ignore]
         public  string                          name;
         
+        public  RefType                         extends;
+        
         public  string                          discriminator;
         public  List<FieldType>                 oneOf;
         //
@@ -39,6 +41,11 @@ namespace Friflo.Json.Flow.Schema.JSON
         public  List<string>                    enums;
 
         public override string                  ToString() => name;
+    }
+    
+    public class RefType {
+        [Fri.Property(Name =   "$ref")]
+        public  string          reference;
     }
     
     public class FieldType
