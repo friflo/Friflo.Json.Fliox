@@ -48,6 +48,8 @@ export class TestType {
     dateTimeNull?     : DateTime | null;
     bigInt            : BigInteger;
     bigIntNull?       : BigInteger | null;
+    boolean           : boolean;
+    booleanNull?      : boolean | null;
     uint8             : uint8;
     uint8Null?        : uint8 | null;
     int16             : int16;

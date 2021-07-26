@@ -74,7 +74,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public  DateTime?           dateTimeNull;
         public  BigInteger          bigInt;
         public  BigInteger?         bigIntNull;
-        
+
+        public  bool                boolean;
+        public  bool?               booleanNull;
+
         public  byte                uint8;
         public  byte?               uint8Null;
         

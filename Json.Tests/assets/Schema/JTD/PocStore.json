@@ -50,6 +50,8 @@
                 "dateTimeNull":     { "type": "timestamp", "nullable": true },
                 "bigInt":           { "ref":  "BigInteger" },
                 "bigIntNull":       { "ref":  "BigInteger", "nullable": true },
+                "boolean":          { "type": "boolean" },
+                "booleanNull":      { "type": "boolean", "nullable": true },
                 "uint8":            { "type": "uint8" },
                 "uint8Null":        { "type": "uint8", "nullable": true },
                 "int16":            { "type": "int16" },

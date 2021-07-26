@@ -161,7 +161,7 @@ namespace Friflo.Json.Flow.Schema
                 return $"\"type\": {Opt(required, "string")}";
             }
             if (type == standard.Boolean) {
-                return "\"type\": \"boolean\"";
+                return $"\"type\": {Opt(required, "boolean")}";
             }
             if (type.IsArray) {
                 var elementMapper = type.ElementType;
