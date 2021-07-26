@@ -9,6 +9,7 @@ using Friflo.Json.Flow.Schema.Native;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.UserAuth;
 using Friflo.Json.Tests.Common.UnitTest.Flow.Graph;
+using Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
@@ -23,48 +24,42 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         [Test]
         public static void Typescript_UserStore () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var schema = new GeneratorSchema(typeStore, UserStoreTypes);
-            var generator = schema.Typescript();
+            var generator = Typescript.Generate(typeStore, UserStoreTypes);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/UserStore");
         }
         
         [Test]
         public static void JsonSchema_UserStore () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var schema = new GeneratorSchema(typeStore, UserStoreTypes);
-            var generator = schema.JsonSchema(null, UserStoreTypes);
+            var generator = JsonSchema.Generate(typeStore, UserStoreTypes, null, UserStoreTypes);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore");
         }
         
         [Test]
         public static void JTD_UserStore () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var schema = new GeneratorSchema(typeStore, UserStoreTypes);
-            var generator = schema.JsonTypeDefinition("UserStore", null, UserStoreTypes);
+            var generator = JsonTypeDefinition.Generate(typeStore, UserStoreTypes, "UserStore", null, UserStoreTypes);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JTD/", false);
         }
         
         [Test]
         public static void Typescript_Sync () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var schema = new GeneratorSchema(typeStore, SyncTypes);
-            var generator = schema.Typescript();
+            var generator = Typescript.Generate(typeStore, SyncTypes);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/Sync");
         }
         
         [Test]
         public static void JTD_Sync () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var schema = new GeneratorSchema(typeStore, SyncTypes);
-            var generator = schema.JsonTypeDefinition("Sync");
+            var generator = JsonTypeDefinition.Generate(typeStore, SyncTypes, "Sync");
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JTD/", false);
         }
         
         [Test]
         public static void JTD_PocStore () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var schema = new GeneratorSchema(typeStore, PocStoreTypes);
-            var generator = schema.JsonTypeDefinition("PocStore");
+            var generator = JsonTypeDefinition.Generate(typeStore, PocStoreTypes, "PocStore");
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JTD/", false);
         }
         

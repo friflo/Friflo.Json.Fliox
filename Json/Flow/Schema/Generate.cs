@@ -9,37 +9,33 @@ using Friflo.Json.Flow.Schema.Native;
 namespace Friflo.Json.Flow.Schema
 {
     /// <summary>
-    /// Utility class to generate a schema or code from the given rootTypes/>
+    /// Generate Typescript from the given rootTypes/>
     /// Examples available at:
     /// <see href="https://github.com/friflo/Friflo.Json.Flow/blob/main/Json.Tests/Common/UnitTest/Flow/Schema/GenerateSchema.cs"/>
     /// </summary>
-    public class GeneratorSchema
+    public partial class Typescript
     {
-        private readonly TypeStore typeStore;
-
-        public GeneratorSchema (TypeStore typeStore, ICollection<Type> rootTypes) {
-            this.typeStore = typeStore;
+        public static Generator Generate(TypeStore typeStore, ICollection<Type> rootTypes, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
             typeStore.AddMappers(rootTypes);
-        }
-        
-        public Generator Typescript(ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
             var schema      = new NativeTypeSchema(typeStore, separateTypes);
             var generator   = new Generator(schema, stripNamespaces, ".ts");
             var _           = new Typescript(generator);
             return generator;
         }
-            
-        public Generator JsonSchema (ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
+    }
+    
+    /// <summary>
+    /// Generate JSON Schema from the given rootTypes/>
+    /// Examples available at:
+    /// <see href="https://github.com/friflo/Friflo.Json.Flow/blob/main/Json.Tests/Common/UnitTest/Flow/Schema/GenerateSchema.cs"/>
+    /// </summary>
+    public partial class JsonSchema
+    {
+        public static Generator Generate (TypeStore typeStore, ICollection<Type> rootTypes, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
+            typeStore.AddMappers(rootTypes);
             var schema      = new NativeTypeSchema(typeStore, separateTypes);
             var generator   = new Generator(schema, stripNamespaces, ".json");
             var _           = new JsonSchema(generator);
-            return generator;
-        }
-        
-        public Generator JsonTypeDefinition (string name, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
-            var schema      = new NativeTypeSchema(typeStore, separateTypes);
-            var generator   = new Generator(schema, stripNamespaces, ".json");
-            var _           = new JsonTypeDefinition(generator, name);
             return generator;
         }
     }

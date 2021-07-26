@@ -4,11 +4,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Schema;
 using Friflo.Json.Flow.Schema.Definition;
+using Friflo.Json.Flow.Schema.Native;
 using Friflo.Json.Flow.Schema.Utils;
 using static Friflo.Json.Flow.Schema.Generator;
 
-namespace Friflo.Json.Flow.Schema
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
 {
     /// [RFC 8927 - JSON Type Definition] https://datatracker.ietf.org/doc/rfc8927/
     public class JsonTypeDefinition
@@ -191,6 +194,14 @@ namespace Friflo.Json.Flow.Schema
         private static string Ref(TypeDef type, TypeContext context) {
             var name = context.generator.GetTypeName(type);
             return $"\"ref\":  \"{name}\"";
+        }
+        
+        public static Generator Generate (TypeStore typeStore, ICollection<Type> rootTypes, string name, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
+            typeStore.AddMappers(rootTypes);
+            var schema      = new NativeTypeSchema(typeStore, separateTypes);
+            var generator   = new Generator(schema, stripNamespaces, ".json");
+            var _           = new JsonTypeDefinition(generator, name);
+            return generator;
         }
     }
 }

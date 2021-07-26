@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Schema.Definition
     public class Field {
         public              string          name;
         public              bool            required;
-        internal            TypeDef         type;
+        public              TypeDef         type;
 
         public   override   string          ToString() => name;
     }

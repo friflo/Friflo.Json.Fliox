@@ -10,7 +10,7 @@ using static Friflo.Json.Flow.Schema.Generator;
 
 namespace Friflo.Json.Flow.Schema
 {
-    public class Typescript
+    public partial class Typescript
     {
         private readonly    Generator                   generator;
         private readonly    Dictionary<TypeDef, string> standardTypes;
