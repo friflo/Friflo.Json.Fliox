@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         public  List<FieldType>                 oneOf;
         //
         // public  SchemaType?                  type; // todo use this
-        public  string                          type;
+        public  string                          type; // null or SchemaType
         public  Dictionary<string, FieldType>   properties;
         public  List<string>                    required;
         public  bool                            additionalProperties;
@@ -27,10 +27,10 @@ namespace Friflo.Json.Flow.Schema.JSON
     
     public class FieldType
     {
-        public  JsonValue       type; // SchemaType or SchemaType[]
+        public  JsonValue       type;           // SchemaType or SchemaType[]
         
         [Fri.Property(Name = "enum")]
-        public  List<string>    discriminant;
+        public  List<string>    discriminant;   // contains exactly one element
         
         public  List<FieldType> items;
         
