@@ -51,11 +51,12 @@ namespace Friflo.Json.Flow.Schema.Native
         public   override   ICollection<TypeDef>            Types           { get; }
         public   override   StandardTypes                   StandardTypes   { get; }
         public   override   ICollection<TypeDef>            SeparateTypes   { get; }
-        /// Contains only non <see cref="Nullable"/> Type's
+        /// <summary>Contains only non <see cref="Nullable"/> Type's</summary>
         private  readonly   Dictionary<Type, NativeType>    nativeTypes;
         
         public NativeTypeSchema (TypeStore typeStore, ICollection<Type> separateTypes = null) {
             var typeMappers = typeStore.GetTypeMappers();
+            
             // Collect all types into containers to simplify further processing
             nativeTypes     = new Dictionary<Type, NativeType>(typeMappers.Count);
             var types       = new HashSet<TypeDef>            (typeMappers.Count);
@@ -79,7 +80,7 @@ namespace Friflo.Json.Flow.Schema.Native
             StandardTypes   = standardTypes;
             SeparateTypes   = GetTypes(separateTypes);
 
-            // Set the type Name and Namespace of all TypeDefs 
+            // Set the Name and Namespace of all TypeDefs 
             foreach (var pair in nativeTypes) {
                 NativeType type = pair.Value;
                 type.Name       = type.mapper.type.Name;
@@ -106,12 +107,14 @@ namespace Friflo.Json.Flow.Schema.Native
             foreach (var pair in nativeTypes) {
                 NativeType  type    = pair.Value;
                 TypeMapper  mapper  = type.mapper;
+                
                 // set the element type for arrays or the value type for dictionaries
                 var elementMapper = mapper.GetElementMapper();
                 if (elementMapper != null) {
                     elementMapper = elementMapper.GetUnderlyingMapper();
                     type.ElementType    = nativeTypes[elementMapper.type];
                 }
+                
                 // set the fields for classes or structs
                 var  propFields = mapper.propFields;
                 if (propFields != null) {
@@ -127,6 +130,7 @@ namespace Friflo.Json.Flow.Schema.Native
                         type.fields.Add(field);
                     }
                 }
+                
                 // set the unionType if a class is a discriminated union
                 var instanceFactory = mapper.instanceFactory;
                 if (instanceFactory != null) {
