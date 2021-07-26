@@ -8,7 +8,16 @@ namespace Friflo.Json.Flow.Schema.Definition
 {
     public abstract class TypeDef {
         public              string              Name         { get; set; }
+        /// <summary>Namespace of a type.</summary>
         public              string              Namespace    { get; set; }
+        /// <summary>The path of the file a type is generated.
+        /// <br></br>
+        /// In Typescript or JSON Schema a file can contain multiple types.
+        /// These types have the same file <see cref="Path"/> and the same <see cref="Namespace"/>.
+        /// <br></br>
+        /// In Java each type require its own file. The <see cref="Namespace"/> is the Java package name which can be
+        /// used by multiple types. But each type has its individual file <see cref="Path"/>.
+        /// </summary>
         public              string              Path         { get; internal set; }
         public  abstract    TypeDef             BaseType     { get; }
         public  abstract    bool                IsEnum       { get; }
