@@ -53,19 +53,18 @@ namespace Friflo.Json.Flow.Schema.JSON
                         typeDef.baseType = FindRef(extends.reference, context);
                     }
                     var typeType = type.type;
-                    if (typeType != null) {
-                        FindType(typeType, context);
-                    }
-                    var properties      = typeDef.type.properties;
-                    if (properties != null) {
-                        typeDef.fields = new List<FieldDef>(properties.Count);
-                        foreach (var propPair in properties) {
-                            string      fieldName   = propPair.Key;
-                            FieldType   field       = propPair.Value;
-                            SetField(typeDef, fieldName, field, context);
+                    var oneOf = type.oneOf;
+                    if (oneOf != null || typeType == "object") {
+                        var properties      = typeDef.type.properties;
+                        if (properties != null) {
+                            typeDef.fields = new List<FieldDef>(properties.Count);
+                            foreach (var propPair in properties) {
+                                string      fieldName   = propPair.Key;
+                                FieldType   field       = propPair.Value;
+                                SetField(typeDef, fieldName, field, context);
+                            }
                         }
                     }
-                    var oneOf = type.oneOf;
                     if (oneOf != null) {
                         var types = new List<TypeDef>(oneOf.Count);
                         foreach (var item in oneOf) {
@@ -144,9 +143,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                     if (itemType == "null")
                         continue;
                     if (itemType == "array") {
-                        // elementType = FindType(items.reference, context);
-                        elementType = context.standardTypes.String; // todo to find type by items
-                        continue;
+                        return FindItemType (items, context);
                     }
                     var elementTypeDef = FindType(itemType, context);
                     if (elementTypeDef != null) {
@@ -172,23 +169,23 @@ namespace Friflo.Json.Flow.Schema.JSON
                 case "integer": return types.Int32;
                 case "number":  return types.Double;
                 // case "array":   return null;
-                case "object":  return null;
+                // case "object":  return null;
             }
             return null; // todo throw exception
         }
         
         private static TypeDef FindItemType (FieldType itemType, in JsonTypeContext context) {
             var reference = itemType.reference;
-            var jsonType =  itemType.type.json;
             if (reference != null) {
                 if (reference.StartsWith("#/definitions/")) {
                     return context.schema.typeDefs[reference];
                 }
                 return context.schemas[reference];
             }
+            var jsonType =  itemType.type.json;
             if (jsonType != null) {
-                // return FindType(type, context);
-                return context.standardTypes.String; // todo to find type by items
+                bool isArray = true;
+                return FindTypeFromJson(jsonType, itemType.items, context, ref isArray);
             }
             throw new InvalidOperationException($"no type given for field: {itemType.name}");
         }
