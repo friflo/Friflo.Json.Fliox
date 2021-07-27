@@ -32,23 +32,24 @@ namespace Friflo.Json.Flow.Schema.JSON
                 }
 
                 foreach (var pair in schema.typeDefs) {
-                    JsonTypeDef    typeDef = pair.Value;
-                    var extends = typeDef.type.extends;
+                    JsonTypeDef typeDef = pair.Value;
+                    JsonType    type    = typeDef.type;
+                    var         extends = typeDef.type.extends;
                     if (extends != null) {
                         typeDef.baseType = FindRef(extends.reference, schema, globalSchemas);
                     }
-                    var typeType = typeDef.type.type;
+                    var typeType = type.type;
                     if (typeType != null) {
                         FindType(typeType, schema, globalSchemas, null);
                     }
-                    var properties      = typeDef.type.properties;
+                    var properties      = type.properties;
                     if (properties != null) {
                         typeDef.fields = new List<FieldDef>(properties.Count);
                         foreach (var propPair in properties) {
                             string      fieldName   = propPair.Key;
                             FieldType   field       = propPair.Value;
                             field.name              = fieldName;
-                            bool        requiredField   = typeDef.type.required?.Contains(fieldName) ?? false;
+                            bool        requiredField   = type.required?.Contains(fieldName) ?? false;
                             var fieldDef = new FieldDef {
                                 name        = fieldName,
                                 required    = requiredField
@@ -78,11 +79,11 @@ namespace Friflo.Json.Flow.Schema.JSON
                             }
                         }
                     }
-                    var oneOf = typeDef.type.oneOf;
+                    var oneOf = type.oneOf;
                     if (oneOf != null) {
                         var unionType = typeDef.unionType = new UnionType {
                             types           = new List<TypeDef>(oneOf.Count),
-                            discriminator   = typeDef.type.discriminator
+                            discriminator   = type.discriminator
                         };
                         foreach (var item in oneOf) {
                             var itemRef = FindRef(item.reference, schema, globalSchemas);
