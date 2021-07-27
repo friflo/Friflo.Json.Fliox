@@ -1,4 +1,4 @@
-![.NET Tests](https://github.com/friflo/Friflo.Json.Flow/workflows/.NET/badge.svg)
+[![.NET Tests](https://github.com/friflo/Friflo.Json.Flow/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Flow/actions)
 [![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/friflo/Friflo.Json.Flow)
 
 
