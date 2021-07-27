@@ -1,12 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
-using System.Numerics;
-using Friflo.Json.Flow.Mapper.Map.Val;
 using Friflo.Json.Flow.Schema.Definition;
-using Friflo.Json.Flow.Schema.Native;
 
 namespace Friflo.Json.Flow.Schema.JSON
 {
@@ -24,21 +20,21 @@ namespace Friflo.Json.Flow.Schema.JSON
         public   override   TypeDef     DateTime    { get; }
         public   override   TypeDef     JsonValue   { get; }
         
-        internal JsonStandardTypes (Dictionary<Type, NativeTypeDef> types) {
-            Boolean     = Find(types, typeof(bool));
-            String      = Find(types, typeof(string));
-            Uint8       = Find(types, typeof(byte));
-            Int16       = Find(types, typeof(short));
-            Int32       = Find(types, typeof(int));
-            Int64       = Find(types, typeof(long));
-            Float       = Find(types, typeof(float));
-            Double      = Find(types, typeof(double));
-            BigInteger  = Find(types, typeof(BigInteger));
-            DateTime    = Find(types, typeof(DateTime));
-            JsonValue   = Find(types, typeof(JsonValue));
+        internal JsonStandardTypes (Dictionary<string, JsonTypeDef> types) {
+            // Boolean  = Find(types, "./Standard.json#/definitions/xxx");
+            // String   = Find(types, "./Standard.json#/definitions/xxx");
+            Uint8       = Find(types, "./Standard.json#/definitions/uint8");
+            Int16       = Find(types, "./Standard.json#/definitions/int16");
+            Int32       = Find(types, "./Standard.json#/definitions/int32");
+            Int64       = Find(types, "./Standard.json#/definitions/int64");
+            Float       = Find(types, "./Standard.json#/definitions/float");
+            Double      = Find(types, "./Standard.json#/definitions/double");
+            BigInteger  = Find(types, "./Standard.json#/definitions/BigInteger");
+            DateTime    = Find(types, "./Standard.json#/definitions/DateTime");
+            // JsonValue= Find(types, "./Standard.json#/definitions/xxx");
         }
         
-        private static TypeDef Find (Dictionary<Type, NativeTypeDef> types, Type type) {
+        private static TypeDef Find (Dictionary<string, JsonTypeDef> types, string type) {
             if (types.TryGetValue(type, out var typeDef))
                 return typeDef;
             return null;

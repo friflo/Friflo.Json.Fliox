@@ -29,12 +29,16 @@ namespace Friflo.Json.Flow.Schema.JSON
                     schema.typeDefs.Add(localId, typeDef);
                 }
             }
-            Types = new List<TypeDef>(globalSchemas.Values);
+            
+            Types               = new List<TypeDef>(globalSchemas.Values);
+            var standardTypes   = new JsonStandardTypes(globalSchemas);
+            StandardTypes       = standardTypes;
             
             foreach (JsonSchema schema in schemaList) {
+                var context = new JsonTypeContext(schema, globalSchemas, standardTypes);
                 var rootRef = schema.rootRef;
                 if (rootRef != null) {
-                    FindRef(schema.rootRef, schema, globalSchemas);
+                    FindRef(schema.rootRef, context);
                 }
                 foreach (var pair in schema.typeDefs) {
                     JsonTypeDef typeDef = pair.Value;
@@ -42,13 +46,13 @@ namespace Friflo.Json.Flow.Schema.JSON
                     var         extends = typeDef.type.extends;
                     type.name           = pair.Key;
                     if (extends != null) {
-                        typeDef.baseType = FindRef(extends.reference, schema, globalSchemas);
+                        typeDef.baseType = FindRef(extends.reference, context);
                     }
                     var typeType = type.type;
                     if (typeType != null) {
-                        FindType(typeType, schema, globalSchemas, null);
+                        FindType(typeType, context);
                     }
-                    AssignProperties(typeDef, type, schema, globalSchemas);
+                    AssignProperties(typeDef, type, context);
                     
                     var oneOf = type.oneOf;
                     if (oneOf != null) {
@@ -57,7 +61,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                             discriminator   = type.discriminator
                         };
                         foreach (var item in oneOf) {
-                            var itemRef = FindRef(item.reference, schema, globalSchemas);
+                            var itemRef = FindRef(item.reference, context);
                             unionType.types.Add(itemRef);
                         }
                     }
@@ -65,7 +69,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             }
         }
         
-        private static bool AssignProperties (JsonTypeDef typeDef, JsonType type, JsonSchema schema, Dictionary<string, JsonTypeDef> schemas) {
+        private static bool AssignProperties (JsonTypeDef typeDef, JsonType type, in JsonTypeContext context) {
             var properties      = type.properties;
             if (properties == null)
                 return false;
@@ -82,22 +86,22 @@ namespace Friflo.Json.Flow.Schema.JSON
                 };
                 typeDef.fields.Add(fieldDef);
                 if (field.reference != null) {
-                    fieldDef.type = FindRef(field.reference, schema, schemas);
+                    fieldDef.type = FindRef(field.reference, context);
                 }
                 var items = field.items;
                 if (items != null && items.reference != null) {
                     typeDef.isArray = true;
-                    fieldDef.type = FindRef(items.reference, schema, schemas);
+                    fieldDef.type = FindRef(items.reference, context);
                 }
                 var fieldType = field.type;
                 if (fieldType.json != null) {
-                    fieldDef.type = FindType(fieldType.json, schema, schemas, null);
+                    fieldDef.type = FindType(fieldType.json, context);
                 }
                 var addProps = field.additionalProperties;
                 if (addProps != null) {
                     typeDef.isDictionary = true;
                     if (addProps.reference != null) {
-                        fieldDef.type = FindRef(addProps.reference, schema, schemas);
+                        fieldDef.type = FindRef(addProps.reference, context);
                     }
                 }
                 if (field.discriminant != null) {
@@ -107,8 +111,8 @@ namespace Friflo.Json.Flow.Schema.JSON
             return true;
         }
         
-        private static TypeDef FindType (string type, JsonSchema schema, Dictionary<string, JsonTypeDef> schemas, StandardTypes types) {
-            var standardType = StandardType(type, types);
+        private static TypeDef FindType (string type, in JsonTypeContext context) {
+            var standardType = StandardType(type, context.standardTypes);
             return standardType;
         }
         
@@ -123,11 +127,11 @@ namespace Friflo.Json.Flow.Schema.JSON
             return null;
         }
 
-        private static TypeDef FindRef (string reference, JsonSchema schema, Dictionary<string, JsonTypeDef> schemas) {
+        private static TypeDef FindRef (string reference, in JsonTypeContext context) {
             if (reference.StartsWith("#/definitions/")) {
-                return schema.typeDefs[reference];
+                return context.schema.typeDefs[reference];
             }
-            return schemas[reference];
+            return context.schemas[reference];
         }
 
         public static TypeSchema FromFolder(string folder) {
@@ -151,6 +155,19 @@ namespace Friflo.Json.Flow.Schema.JSON
             }
             var typeSchema = new JsonTypeSchema(schemas);
             return typeSchema;
+        }
+    }
+    
+    internal readonly struct JsonTypeContext
+    {
+        internal readonly   JsonSchema                      schema;
+        internal readonly   Dictionary<string, JsonTypeDef> schemas;
+        internal readonly   StandardTypes                   standardTypes;
+        
+        internal JsonTypeContext(JsonSchema schema, Dictionary<string, JsonTypeDef> schemas, StandardTypes standardTypes) {
+            this.schema         = schema;
+            this.schemas        = schemas;
+            this.standardTypes  = standardTypes;
         }
     }
 }
