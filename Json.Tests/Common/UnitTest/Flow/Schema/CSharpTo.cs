@@ -21,6 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         public static readonly Type[] SyncTypes        = { typeof(DatabaseMessage) };
         public static readonly Type[] PocStoreTypes    = { typeof(Order), typeof(Customer), typeof(Article), typeof(Producer), typeof(Employee), typeof(TestType) };
 
+        /// <summary>C# -> Typescript - model: <see cref="UserStore"/></summary>
         [Test]
         public static void Typescript_UserStore () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
@@ -28,6 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/UserStore");
         }
         
+        /// <summary>C# -> JSON Schema - model: <see cref="UserStore"/></summary>
         [Test]
         public static void JsonSchema_UserStore () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
@@ -35,6 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore");
         }
         
+        /// <summary>C# -> JTD - model: <see cref="UserStore"/></summary>
         [Test]
         public static void JTD_UserStore () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
@@ -42,6 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JTD/", false);
         }
         
+        /// <summary>C# -> Typescript - protocol: <see cref="DatabaseMessage"/></summary>
         [Test]
         public static void Typescript_Sync () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
@@ -49,6 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/Sync");
         }
         
+        /// <summary>C# -> JTD - protocol: <see cref="DatabaseMessage"/></summary>
         [Test]
         public static void JTD_Sync () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
@@ -56,6 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JTD/", false);
         }
         
+        /// <summary>C# -> JTD - model: <see cref="PocStore"/></summary>
         [Test]
         public static void JTD_PocStore () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
@@ -63,6 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JTD/", false);
         }
         
+        /// <summary>C# -> Typescript - model: <see cref="PocStore"/></summary>
         [Test]
         public static void Typescript_PocStore () {
             // Use code generator directly
@@ -74,6 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/PocStore");
         }
         
+        /// <summary>C# -> JSON Schema - model: <see cref="PocStore"/></summary>
         [Test]
         public static void JsonSchema_PocStore () {
             // Use code generator directly

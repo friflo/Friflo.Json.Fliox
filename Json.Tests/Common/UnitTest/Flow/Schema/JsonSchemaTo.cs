@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Schema;
 using Friflo.Json.Flow.Schema.JSON;
+using Friflo.Json.Flow.UserAuth;
+using Friflo.Json.Tests.Common.UnitTest.Flow.Graph;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
@@ -12,6 +14,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 {
     public static class JsonSchemaTo
     {
+        /// <summary>JSON Schema -> Typescript - model: <see cref="UserStore"/></summary>
         [Test]
         public static void Typescript_UserStore () {
             var schema      = JsonTypeSchema.FromFolder(CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore");
@@ -20,6 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema-Loop/Typescript/UserStore");
         }
         
+        /// <summary>JSON Schema -> Typescript - model: <see cref="PocStore"/></summary>
         [Test]
         public static void Typescript_PocStore () {
             var schema      = JsonTypeSchema.FromFolder(CommonUtils.GetBasePath() + "assets/Schema/JSON/PocStore");
@@ -28,6 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema-Loop/Typescript/PocStore");
         }
         
+        /// <summary>JSON Schema -> JSON Schema - model: <see cref="UserStore"/></summary>
         [Test]
         public static void JSON_UserStore () {
             var schema      = JsonTypeSchema.FromFolder(CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore");
@@ -36,6 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema-Loop/JSON/UserStore");
         }
         
+        /// <summary>JSON Schema -> JSON Schema - model: <see cref="PocStore"/></summary>
         [Test]
         public static void JSON_PocStore () {
             var schema      = JsonTypeSchema.FromFolder(CommonUtils.GetBasePath() + "assets/Schema/JSON/PocStore");
