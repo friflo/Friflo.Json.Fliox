@@ -1,12 +1,10 @@
-<img src="docs/images/friflo-json-flow.svg" alt="logo" style="display:block; float:auto; margin-left:auto; margin-right:0;">
-
 ![.NET Tests](https://github.com/friflo/Friflo.Json.Flow/workflows/.NET/badge.svg)
 [![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/friflo/Friflo.Json.Flow)
 
 
+# friflo JSON Flow ![logo](docs/images/friflo-json-flow.svg) 
 
 
-# friflo JSON Flow
 
 A JSON parser/serializer and object mapper trimmed towards performance.  
 The implementation strives towards maximizing CPU utilization and minimizing memory footprint.  
