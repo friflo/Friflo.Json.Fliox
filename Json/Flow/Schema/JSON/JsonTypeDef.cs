@@ -30,6 +30,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         internal            string              discriminant;
 
         public JsonTypeDef (JsonType type, string name) {
+            Name = name;
             this.name = name;
             this.type = type;
             if (type.enums != null) {
