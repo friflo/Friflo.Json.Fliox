@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var schema      = JsonTypeSchema.FromFolder(CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore");
             var jsonTypes   = JsonTypesFromTypes (GenerateSchema.UserStoreTypes, "Friflo.Json.Flow.UserAuth.");
             var generator   = TypescriptGenerator.Generate(schema, jsonTypes);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/SchemaLoop/Typescript/UserStore");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema-Loop/Typescript/UserStore");
         }
         
         [Test]
@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var schema      = JsonTypeSchema.FromFolder(CommonUtils.GetBasePath() + "assets/Schema/JSON/PocStore");
             var jsonTypes   = JsonTypesFromTypes (GenerateSchema.PocStoreTypes, "UnitTest.Flow.Graph.");
             var generator   = TypescriptGenerator.Generate(schema, jsonTypes);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/SchemaLoop/Typescript/PocStore");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema-Loop/Typescript/PocStore");
         }
         
         [Test]
@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var schema      = JsonTypeSchema.FromFolder(CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore");
             var jsonTypes   = JsonTypesFromTypes (GenerateSchema.UserStoreTypes, "Friflo.Json.Flow.UserAuth.");
             var generator   = JsonSchemaGenerator.Generate(schema, jsonTypes);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/SchemaLoop/JSON/UserStore");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema-Loop/JSON/UserStore");
         }
         
         [Test]
@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var schema      = JsonTypeSchema.FromFolder(CommonUtils.GetBasePath() + "assets/Schema/JSON/PocStore");
             var jsonTypes   = JsonTypesFromTypes (GenerateSchema.PocStoreTypes, "UnitTest.Flow.Graph.");
             var generator   = JsonSchemaGenerator.Generate(schema, jsonTypes);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/SchemaLoop/JSON/PocStore");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema-Loop/JSON/PocStore");
         }
 
         private static List<string> JsonTypesFromTypes(ICollection<Type> types, string package) {
