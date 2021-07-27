@@ -15,7 +15,7 @@ using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 {
-    public static class GenerateSchema
+    public static class CSharpTo
     {
         public static readonly Type[] UserStoreTypes   = { typeof(Role), typeof(UserCredential), typeof(UserPermission) };
         public static readonly Type[] SyncTypes        = { typeof(DatabaseMessage) };
