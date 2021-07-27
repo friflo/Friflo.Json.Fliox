@@ -77,7 +77,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             }
         }
         
-        private static bool SetField (JsonTypeDef typeDef, string fieldName, FieldType field, in JsonTypeContext context) {
+        private static void SetField (JsonTypeDef typeDef, string fieldName, FieldType field, in JsonTypeContext context) {
             field.name              = fieldName;
             TypeDef fieldType; // not initialized by intention
             bool    isArray         = false;
@@ -119,8 +119,8 @@ namespace Friflo.Json.Flow.Schema.JSON
                 fieldType = FindTypeFromJson (jsonType, items, context, ref isArray);
             }
             else if (field.discriminant != null) {
-                typeDef.discriminant = field.discriminant[0];
-                return false;
+                typeDef.discriminant = field.discriminant[0]; // a discriminant has no FieldDef
+                return;
             }
             else {
                 fieldType = context.standardTypes.JsonValue;
@@ -128,7 +128,6 @@ namespace Friflo.Json.Flow.Schema.JSON
             }
             var fieldDef = new FieldDef (fieldName, required, fieldType, isArray, isDictionary);
             typeDef.fields.Add(fieldDef);
-            return true;
         }
         
         private static TypeDef FindTypeFromJson (string json, FieldType  items, in JsonTypeContext context, ref bool isArray) {
@@ -175,10 +174,11 @@ namespace Friflo.Json.Flow.Schema.JSON
                 case "string":  return types.String;
                 case "integer": return types.Int32;
                 case "number":  return types.Double;
+                // case "null":    return null;
                 // case "array":   return null;
                 // case "object":  return null;
             }
-            return null; // todo throw exception
+            throw new InvalidOperationException($"unexpected standard type: {type}");
         }
         
         // return null if optional
