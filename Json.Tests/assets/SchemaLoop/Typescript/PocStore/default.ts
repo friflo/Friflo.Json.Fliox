@@ -63,29 +63,29 @@ export class Producer {
 export class TestType {
     id                : string;
     dateTime          : DateTime;
-    dateTimeNull?     : string | null;
+    dateTimeNull?     : DateTime | null;
     bigInt            : BigInteger;
-    bigIntNull?       : string | null;
+    bigIntNull?       : BigInteger | null;
     boolean           : boolean;
     booleanNull?      : boolean | null;
     uint8             : uint8;
-    uint8Null?        : string | null;
+    uint8Null?        : uint8 | null;
     int16             : int16;
-    int16Null?        : string | null;
+    int16Null?        : int16 | null;
     int32             : int32;
-    int32Null?        : string | null;
+    int32Null?        : int32 | null;
     int64             : int64;
-    int64Null?        : string | null;
+    int64Null?        : int64 | null;
     float32           : float;
-    float32Null?      : string | null;
+    float32Null?      : float | null;
     float64           : double;
-    float64Null?      : string | null;
+    float64Null?      : double | null;
     pocStruct         : PocStruct;
-    pocStructNull?    : string | null;
+    pocStructNull?    : PocStruct | null;
     intArray          : int32[];
     intArrayNull?     : int32[] | null;
     jsonValue         : {} | null;
     derivedClass      : DerivedClass;
-    derivedClassNull? : string | null;
+    derivedClassNull? : DerivedClass | null;
 }
 

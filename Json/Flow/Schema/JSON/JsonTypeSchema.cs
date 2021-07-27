@@ -93,14 +93,19 @@ namespace Friflo.Json.Flow.Schema.JSON
             }
             else if (items?.reference != null) {
                 isArray = true;
-                fieldType = FindItemType(items, context);
+                fieldType = FindFieldType(items, context);
             }
             else if (field.oneOf != null) {
+                TypeDef oneOfType = null; 
                 foreach (var item in field.oneOf) {
-                    
+                    var itemType = FindFieldType(item, context);
+                    if (itemType == null)
+                        continue;
+                    oneOfType = itemType;
                 }
-                fieldType = context.standardTypes.String;
-                // todo determine field type by oneOf
+                if (oneOfType == null)
+                    throw new InvalidOperationException($"\"oneOf\" array without a type: {field.oneOf}");
+                fieldType = oneOfType;
             }
             else if (addProps != null) {
                 isDictionary = true;
@@ -131,8 +136,10 @@ namespace Friflo.Json.Flow.Schema.JSON
                 var jsonValue = json.Substring(1, json.Length - 2);
                 if (jsonValue == "array") {
                     isArray = true;
-                    return FindItemType (items, context);
+                    return FindFieldType (items, context);
                 }
+                if (jsonValue == "null")
+                    return null;
                 return FindType(jsonValue, context);
             }
             if (json.StartsWith('[')) {
@@ -143,7 +150,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                     if (itemType == "null")
                         continue;
                     if (itemType == "array") {
-                        return FindItemType (items, context);
+                        return FindFieldType (items, context);
                     }
                     var elementTypeDef = FindType(itemType, context);
                     if (elementTypeDef != null) {
@@ -174,7 +181,8 @@ namespace Friflo.Json.Flow.Schema.JSON
             return null; // todo throw exception
         }
         
-        private static TypeDef FindItemType (FieldType itemType, in JsonTypeContext context) {
+        // return null if optional
+        private static TypeDef FindFieldType (FieldType itemType, in JsonTypeContext context) {
             var reference = itemType.reference;
             if (reference != null) {
                 if (reference.StartsWith("#/definitions/")) {
