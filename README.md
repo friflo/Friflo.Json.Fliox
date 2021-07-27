@@ -1,5 +1,9 @@
+<img src="docs/images/friflo-json-flow.svg" alt="logo" style="display:block; float:auto; margin-left:auto; margin-right:0;">
+
 ![.NET Tests](https://github.com/friflo/Friflo.Json.Flow/workflows/.NET/badge.svg)
 [![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/friflo/Friflo.Json.Flow)
+
+
 
 
 # friflo JSON Flow
@@ -11,9 +15,6 @@ An **unique feature** is to enable the JSON parsing / serializing in
 As of now no other JSON library provide this possibility.  
 This supports running the parser/serializer within a separate thread of a bursted Job while leaving
 CPU/memory resources to the main thread being the critical path in game loops.
-
-![Logo](docs/images/friflo-json-flow.svg?sanitize=true) 
- 
 
 
 ## Content
