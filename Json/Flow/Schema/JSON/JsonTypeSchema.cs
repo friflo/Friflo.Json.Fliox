@@ -9,8 +9,12 @@ using Friflo.Json.Flow.Schema.Definition;
 
 namespace Friflo.Json.Flow.Schema.JSON
 {
-    public class JsonTypeSchema
+    public class JsonTypeSchema : TypeSchema
     {
+        public  override    ICollection<TypeDef>    Types           { get; }
+        public  override    StandardTypes           StandardTypes   { get; }
+        public  override    ICollection<TypeDef>    SeparateTypes   { get; }
+        
         public JsonTypeSchema(List<JsonSchema> schemaList) {
             var globalSchemas = new Dictionary<string, JsonTypeDef>(schemaList.Count);
             foreach (JsonSchema schema in schemaList) {
@@ -25,6 +29,8 @@ namespace Friflo.Json.Flow.Schema.JSON
                     schema.typeDefs.Add(localId, typeDef);
                 }
             }
+            Types = new List<TypeDef>(globalSchemas.Values);
+            
             foreach (JsonSchema schema in schemaList) {
                 var rootRef = schema.rootRef;
                 if (rootRef != null) {
@@ -124,7 +130,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             return schemas[reference];
         }
 
-        public static JsonTypeSchema FromFolder(string folder) {
+        public static TypeSchema FromFolder(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
             var jsonSchemas = new Dictionary<string, string>(fileNames.Length);
             foreach (var fileName in fileNames) {
@@ -135,7 +141,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             return FromSchemas(jsonSchemas);
         }
         
-        public static JsonTypeSchema FromSchemas(Dictionary<string, string> jsonSchemas) {
+        public static TypeSchema FromSchemas(Dictionary<string, string> jsonSchemas) {
             var schemas = new List<JsonSchema>(jsonSchemas.Count);
             var reader = new ObjectReader(new TypeStore());
             foreach (var jsonSchema in jsonSchemas) {
