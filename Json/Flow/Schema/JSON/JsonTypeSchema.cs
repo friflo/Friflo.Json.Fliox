@@ -85,25 +85,38 @@ namespace Friflo.Json.Flow.Schema.JSON
             bool    isDictionary    = false;
             bool    required        = typeDef.type.required?.Contains(fieldName) ?? false;
 
-            var     items       = field.items;
-            var     jsonType    = field.type.json;
-            var     addProps    = field.additionalProperties;
+            FieldType   items       = field.items;
+            string      jsonType    = field.type.json;
+            FieldType   addProps    = field.additionalProperties;
             
             if (field.reference != null) {
                 fieldType = FindRef(field.reference, context);
             }
             else if (items?.reference != null) {
                 isArray = true;
-                fieldType = FindRef(items.reference, context);
+                fieldType = FindItemType(items, context);
             }
             else if (field.oneOf != null) {
                 fieldType = context.standardTypes.String;
                 // todo determine field type by oneOf
             }
+            else if (addProps != null) {
+                isDictionary = true;
+                if (addProps.reference != null) {
+                    fieldType = FindRef(addProps.reference, context);
+                } else {
+                    throw new InvalidOperationException("additionalProperties requires \"$ref\"");
+                }
+            }
             else if (jsonType != null) {
                 if     (jsonType.StartsWith('\"')) {
-                    var jsonValue = jsonType.Substring(1, jsonType.Length - 2); 
-                    fieldType = FindType(jsonValue, context);
+                    var jsonValue = jsonType.Substring(1, jsonType.Length - 2);
+                    if (jsonValue == "array") {
+                        isArray = true;
+                        fieldType = FindItemType (items, context);
+                    } else {
+                        fieldType = FindType(jsonValue, context);
+                    }
                 }
                 else if (jsonType.StartsWith('[')) {
                     // handle nullable field types
@@ -127,14 +140,6 @@ namespace Friflo.Json.Flow.Schema.JSON
                     fieldType = elementType;
                 } else {
                     throw new InvalidOperationException($"Unexpected type: {jsonType}");
-                }
-            }
-            else if (addProps != null) {
-                isDictionary = true;
-                if (addProps.reference != null) {
-                    fieldType = FindRef(addProps.reference, context);
-                } else {
-                    throw new InvalidOperationException("additionalProperties requires \"$ref\"");
                 }
             }
             else if (field.discriminant != null) {
@@ -161,10 +166,26 @@ namespace Friflo.Json.Flow.Schema.JSON
                 case "string":  return types.String;
                 case "integer": return types.Int32;
                 case "number":  return types.Double;
-                case "array":   return null;
+                // case "array":   return null;
                 case "object":  return null;
             }
-            return null;
+            return null; // todo throw exception
+        }
+        
+        private static TypeDef FindItemType (FieldType itemType, in JsonTypeContext context) {
+            var reference = itemType.reference;
+            var jsonType =  itemType.type.json;
+            if (reference != null) {
+                if (reference.StartsWith("#/definitions/")) {
+                    return context.schema.typeDefs[reference];
+                }
+                return context.schemas[reference];
+            }
+            if (jsonType != null) {
+                // return FindType(type, context);
+                return context.standardTypes.String; // todo to find type by items
+            }
+            throw new InvalidOperationException($"no type given for field: {itemType.name}");
         }
 
         private static TypeDef FindRef (string reference, in JsonTypeContext context) {
