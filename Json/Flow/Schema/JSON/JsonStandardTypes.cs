@@ -21,8 +21,8 @@ namespace Friflo.Json.Flow.Schema.JSON
         public   override   TypeDef     JsonValue   { get; }
         
         internal JsonStandardTypes (Dictionary<string, JsonTypeDef> types) {
-            // Boolean  = Find(types, "./Standard.json#/definitions/xxx");
-            // String   = Find(types, "./Standard.json#/definitions/xxx");
+            Boolean     = new JsonTypeDef("boolean");
+            String      = new JsonTypeDef("string");
             Uint8       = Find(types, "./Standard.json#/definitions/uint8");
             Int16       = Find(types, "./Standard.json#/definitions/int16");
             Int32       = Find(types, "./Standard.json#/definitions/int32");
@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             Double      = Find(types, "./Standard.json#/definitions/double");
             BigInteger  = Find(types, "./Standard.json#/definitions/BigInteger");
             DateTime    = Find(types, "./Standard.json#/definitions/DateTime");
-            // JsonValue= Find(types, "./Standard.json#/definitions/xxx");
+            JsonValue   = new JsonTypeDef("{ }");
         }
         
         private static TypeDef Find (Dictionary<string, JsonTypeDef> types, string type) {

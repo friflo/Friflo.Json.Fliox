@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         public  override    ICollection<TypeDef>    SeparateTypes   { get; }
         
         public JsonTypeSchema(List<JsonSchema> schemaList) {
-            var globalSchemas = new Dictionary<string, JsonTypeDef>(schemaList.Count);
+            var allSchemas = new Dictionary<string, JsonTypeDef>(schemaList.Count);
             foreach (JsonSchema schema in schemaList) {
                 schema.typeDefs = new Dictionary<string, JsonTypeDef>(schema.definitions.Count);
                 foreach (var pair in schema.definitions) {
@@ -24,18 +24,18 @@ namespace Friflo.Json.Flow.Schema.JSON
                     var type        = pair.Value;
                     var typeDef     = new JsonTypeDef (type, typeName);
                     var schemaId = $"./{schema.name}#/definitions/{typeName}";
-                    globalSchemas.Add(schemaId, typeDef);
+                    allSchemas.Add(schemaId, typeDef);
                     var localId = $"#/definitions/{typeName}";
                     schema.typeDefs.Add(localId, typeDef);
                 }
             }
             
-            Types               = new List<TypeDef>(globalSchemas.Values);
-            var standardTypes   = new JsonStandardTypes(globalSchemas);
+            Types               = new List<TypeDef>(allSchemas.Values);
+            var standardTypes   = new JsonStandardTypes(allSchemas);
             StandardTypes       = standardTypes;
             
             foreach (JsonSchema schema in schemaList) {
-                var context = new JsonTypeContext(schema, globalSchemas, standardTypes);
+                var context = new JsonTypeContext(schema, allSchemas, standardTypes);
                 var rootRef = schema.rootRef;
                 if (rootRef != null) {
                     FindRef(schema.rootRef, context);
@@ -93,9 +93,12 @@ namespace Friflo.Json.Flow.Schema.JSON
                     typeDef.isArray = true;
                     fieldDef.type = FindRef(items.reference, context);
                 }
-                var fieldType = field.type;
-                if (fieldType.json != null) {
-                    fieldDef.type = FindType(fieldType.json, context);
+                var jsonType = field.type.json;
+                if (jsonType != null) {
+                    if (jsonType.StartsWith('\"')) {
+                        var jsonValue = jsonType.Substring(1, jsonType.Length - 2); 
+                        fieldDef.type = FindType(jsonValue, context);
+                    }
                 }
                 var addProps = field.additionalProperties;
                 if (addProps != null) {
@@ -116,13 +119,14 @@ namespace Friflo.Json.Flow.Schema.JSON
             return standardType;
         }
         
-        private static TypeDef StandardType (string type, StandardTypes types) {
+        private static TypeDef StandardType (string type, JsonStandardTypes types) {
             switch (type) {
-                case "\"boolean\"": return null; // types.Boolean;
-                case "\"string\"":  return null; // types.String;
-                case "\"integer\"": return null; // types.Int32;     // todo
-                case "\"number\"":  return null; // types.Double;    // todo
-                case "\"array\"":   return null; // types.Double;    // todo
+                case "boolean": return types.Boolean;
+                case "string":  return types.String;
+                case "integer": return types.Int32;
+                case "number":  return types.Double;
+                case "array":   return null;
+                case "object":  return null;
             }
             return null;
         }
@@ -162,9 +166,9 @@ namespace Friflo.Json.Flow.Schema.JSON
     {
         internal readonly   JsonSchema                      schema;
         internal readonly   Dictionary<string, JsonTypeDef> schemas;
-        internal readonly   StandardTypes                   standardTypes;
+        internal readonly   JsonStandardTypes               standardTypes;
         
-        internal JsonTypeContext(JsonSchema schema, Dictionary<string, JsonTypeDef> schemas, StandardTypes standardTypes) {
+        internal JsonTypeContext(JsonSchema schema, Dictionary<string, JsonTypeDef> schemas, JsonStandardTypes standardTypes) {
             this.schema         = schema;
             this.schemas        = schemas;
             this.standardTypes  = standardTypes;

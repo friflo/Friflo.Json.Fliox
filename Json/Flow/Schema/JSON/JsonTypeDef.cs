@@ -40,6 +40,10 @@ namespace Friflo.Json.Flow.Schema.JSON
                 EnumValues = type.enums; 
             }
         }
+        
+        public JsonTypeDef (string name) {
+            this.name = name;
+        }
 
         public override bool IsDerivedField(FieldDef fieldDef) {
             throw new System.NotImplementedException();
