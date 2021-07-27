@@ -12,24 +12,38 @@ namespace Friflo.Json.Flow.Schema.Native
 {
 public class NativeTypeDef : TypeDef
     {
+        // --- internal
         internal readonly   Type                native;
         internal readonly   TypeMapper          mapper;
         internal            TypeDef             baseType;
         internal            List<FieldDef>      fields;
         internal            UnionType           unionType;
         
+        // --- TypeDef
         public   override   TypeDef             BaseType        => baseType;
-        public   override   bool                IsEnum          => native.IsEnum;
-        public   override   bool                IsComplex       => mapper.IsComplex;
+        public   override   bool                IsEnum          { get; }
+        public   override   bool                IsComplex       { get; }
         public   override   List<FieldDef>      Fields          => fields;
-        public   override   string              Discriminant    => mapper.Discriminant;
-        public   override   TypeSemantic        TypeSemantic    => mapper.GetTypeSemantic();
-        public   override   bool                IsArray         => mapper.IsArray;
+        public   override   string              Discriminant    { get; }
+        public   override   TypeSemantic        TypeSemantic    { get; }
+        public   override   bool                IsArray         { get; }
         public   override   UnionType           UnionType       => unionType;
-        public   override   bool                IsDictionary    => mapper.type.GetInterfaces().Contains(typeof(IDictionary));
-        public   override   string              ToString()      => mapper.type.ToString();
+        public   override   bool                IsDictionary    { get; }
+        public   override   ICollection<string> EnumValues      { get; }
         
-        public   override   ICollection<string> EnumValues      => mapper.GetEnumValues();
+        public   override   string              ToString()      => mapper.type.ToString();
+
+        public NativeTypeDef (TypeMapper mapper) {
+            this.native     = mapper.type;
+            this.mapper     = mapper;
+            IsEnum          = native.IsEnum;
+            IsComplex       = mapper.IsComplex;
+            Discriminant    = mapper.Discriminant;
+            TypeSemantic    = mapper.GetTypeSemantic();
+            IsArray         = mapper.IsArray;
+            IsDictionary    = mapper.type.GetInterfaces().Contains(typeof(IDictionary));
+            EnumValues      = mapper.GetEnumValues();
+        }
         
         public   override   bool                IsDerivedField(FieldDef fieldDef) {
             var parent = BaseType;
@@ -39,11 +53,6 @@ public class NativeTypeDef : TypeDef
                 parent = parent.BaseType;
             }
             return false;    
-        }
-           
-        public NativeTypeDef (TypeMapper mapper) {
-            this.native     = mapper.type;
-            this.mapper     = mapper;
         }
 
         public override bool Equals(object obj) {
