@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Schema
     /// <summary>
     /// Generate Typescript from the given rootTypes/>
     /// Examples available at:
-    /// <see href="https://github.com/friflo/Friflo.Json.Flow/blob/main/Json.Tests/Common/UnitTest/Flow/Schema/GenerateSchema.cs"/>
+    /// <see href="https://github.com/friflo/Friflo.Json.Flow/tree/main/Json.Tests/Common/UnitTest/Flow/Schema"/>
     /// </summary>
     public partial class TypescriptGenerator
     {
@@ -35,7 +35,7 @@ namespace Friflo.Json.Flow.Schema
     /// <summary>
     /// Generate JSON Schema from the given rootTypes/>
     /// Examples available at:
-    /// <see href="https://github.com/friflo/Friflo.Json.Flow/blob/main/Json.Tests/Common/UnitTest/Flow/Schema/GenerateSchema.cs"/>
+    /// <see href="https://github.com/friflo/Friflo.Json.Flow/tree/main/Json.Tests/Common/UnitTest/Flow/Schema"/>
     /// </summary>
     public partial class JsonSchemaGenerator
     {
