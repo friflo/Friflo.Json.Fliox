@@ -156,16 +156,13 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private static string GetType(TypeDef type, TypeContext context) {
-            var standard = context.generator.schema.StandardTypes;
-            if (type == standard.JsonValue) {
+            var standard = context.standardTypes;
+            if (type == standard.JsonValue)
                 return "{} | null";
-            }
-            if (type == standard.String) {
+            if (type == standard.String)
                 return "string";
-            }
-            if (type == standard.Boolean) {
+            if (type == standard.Boolean)
                 return "boolean";
-            }
             context.imports.Add(type);
             if (type.UnionType != null)
                 return $"{type.Name}_Union";

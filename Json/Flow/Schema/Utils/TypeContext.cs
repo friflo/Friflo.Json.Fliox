@@ -12,6 +12,7 @@ namespace Friflo.Json.Flow.Schema.Utils
         public readonly     HashSet<TypeDef>    imports;
         /// <summary>The <see cref="type"/> the context was created for. Each type gets its own context.</summary>
         public readonly     TypeDef             type;
+        public readonly     StandardTypes       standardTypes;
 
         public override     string              ToString() => type.Name;
 
@@ -19,6 +20,7 @@ namespace Friflo.Json.Flow.Schema.Utils
             this.generator      = generator;
             this.imports        = imports;
             this.type           = type;
+            standardTypes       = generator.schema.StandardTypes;
         }
     }
 }

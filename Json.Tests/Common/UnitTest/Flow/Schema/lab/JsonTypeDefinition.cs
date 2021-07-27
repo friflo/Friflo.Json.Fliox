@@ -159,13 +159,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
         }
         
         private string GetType(TypeDef type, TypeContext context) {
-            var standard = context.generator.schema.StandardTypes;
-            if (type == standard.JsonValue) {
+            var standard = context.standardTypes;
+            if (type == standard.JsonValue)
                 return ""; // allow any type
-            }
-            if (primitiveTypes.TryGetValue(type, out var definition)) {
+            if (primitiveTypes.TryGetValue(type, out var definition))
                 return $"\"type\": \"{definition}\"";
-            }
             return $"{Ref(type)}";
         }
         

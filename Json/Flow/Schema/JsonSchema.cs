@@ -168,16 +168,13 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private static string GetType(TypeDef type, TypeContext context, bool required) {
-            var standard = context.generator.schema.StandardTypes;
-            if (type == standard.JsonValue) {
+            var standard = context.standardTypes;
+            if (type == standard.JsonValue)
                 return ""; // allow any type
-            }
-            if (type == standard.String) {
+            if (type == standard.String)
                 return $"\"type\": {Opt(required, "string")}";
-            }
-            if (type == standard.Boolean) {
+            if (type == standard.Boolean)
                 return $"\"type\": {Opt(required, "boolean")}";
-            }
             return Ref(type, required, context);
         }
         
