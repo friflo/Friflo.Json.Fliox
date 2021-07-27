@@ -113,7 +113,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
                 // fields
                 foreach (var field in fields) {
                     bool required = field.required;
-                    var fieldType = GetFieldType(field.type, context);
+                    var fieldType = GetFieldType(field, context);
                     var indent = Indent(maxFieldName, field.name);
                     Delimiter(sb, Next, ref firstField);
                     var nullableStr = required ? "" : ", \"nullable\": true";
@@ -145,23 +145,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
         }
         
         // Note: static by intention
-        private string GetFieldType(TypeDef type, TypeContext context) {
+        private string GetFieldType(FieldDef field, TypeContext context) {
+            var type = field.type;
+            if (field.isArray) {
+                var elementTypeName = GetType(type, context);
+                return $"\"elements\": {{ {elementTypeName} }}";
+            }
+            if (field.isDictionary) {
+                var valueTypeName = GetType(type, context);
+                return $"\"values\": {{ {valueTypeName} }}";
+            }
+            return GetType(type, context);
+        }
+        
+        private string GetType(TypeDef type, TypeContext context) {
             var standard = context.generator.schema.StandardTypes;
             if (type == standard.JsonValue) {
                 return ""; // allow any type
             }
             if (primitiveTypes.TryGetValue(type, out var definition)) {
                 return $"\"type\": \"{definition}\"";
-            }
-            if (type.IsArray) {
-                var elementMapper = type.ElementType;
-                var elementTypeName = GetFieldType(elementMapper, context);
-                return $"\"elements\": {{ {elementTypeName} }}";
-            }
-            if (type.IsDictionary) {
-                var valueMapper = type.ElementType;
-                var valueTypeName = GetFieldType(valueMapper, context);
-                return $"\"values\": {{ {valueTypeName} }}";
             }
             return $"{Ref(type)}";
         }

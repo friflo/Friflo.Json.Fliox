@@ -2,9 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Schema.Definition;
 
@@ -26,9 +24,7 @@ public class NativeTypeDef : TypeDef
         public   override   List<FieldDef>      Fields          => fields;
         public   override   string              Discriminant    { get; }
         public   override   TypeSemantic        TypeSemantic    { get; }
-        public   override   bool                IsArray         { get; }
         public   override   UnionType           UnionType       => unionType;
-        public   override   bool                IsDictionary    { get; }
         public   override   ICollection<string> EnumValues      { get; }
         
         public   override   string              ToString()      => mapper.type.ToString();
@@ -40,8 +36,6 @@ public class NativeTypeDef : TypeDef
             IsComplex       = mapper.IsComplex;
             Discriminant    = mapper.Discriminant;
             TypeSemantic    = mapper.GetTypeSemantic();
-            IsArray         = mapper.IsArray;
-            IsDictionary    = mapper.type.GetInterfaces().Contains(typeof(IDictionary));
             EnumValues      = mapper.GetEnumValues();
         }
         

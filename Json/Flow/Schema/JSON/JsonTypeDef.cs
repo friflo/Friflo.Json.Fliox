@@ -15,8 +15,6 @@ namespace Friflo.Json.Flow.Schema.JSON
         public   override   TypeDef             BaseType        => baseType;
         public   override   bool                IsComplex       => fields != null;
         public   override   List<FieldDef>      Fields          => fields;
-        public   override   bool                IsArray         => isArray;
-        public   override   bool                IsDictionary    => isDictionary;
         public   override   UnionType           UnionType       => unionType;
         public   override   string              Discriminant    => discriminant;
         public   override   bool                IsEnum          => EnumValues != null;
@@ -29,8 +27,6 @@ namespace Friflo.Json.Flow.Schema.JSON
         internal            TypeDef             baseType;
         internal            List<FieldDef>      fields;
         internal            UnionType           unionType;
-        internal            bool                isArray;
-        internal            bool                isDictionary;
         internal            string              discriminant;
 
         public JsonTypeDef (JsonType type, string name) {

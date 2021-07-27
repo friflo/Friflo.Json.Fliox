@@ -93,7 +93,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                 }
                 var items = field.items;
                 if (items != null && items.reference != null) {
-                    typeDef.isArray = true;
+                    fieldDef.isArray = true;
                     fieldDef.type = FindRef(items.reference, context);
                 }
                 var jsonType = field.type.json;
@@ -109,7 +109,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                                 continue;
                             var elementTypeDef = FindType(fieldType, context);
                             if (elementTypeDef != null) {
-                                typeDef.ElementType = elementTypeDef;
+                                fieldDef.type = elementTypeDef;
                             }
                         }
                     } else {
@@ -118,7 +118,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                 }
                 var addProps = field.additionalProperties;
                 if (addProps != null) {
-                    typeDef.isDictionary = true;
+                    fieldDef.isDictionary = true;
                     if (addProps.reference != null) {
                         fieldDef.type = FindRef(addProps.reference, context);
                     }

@@ -118,7 +118,7 @@ namespace Friflo.Json.Flow.Schema
                     if (type.IsDerivedField(field))
                         continue;
                     bool required = field.required;
-                    var fieldType = GetFieldType(field.type, context);
+                    var fieldType = GetFieldType(field, context);
                     var indent  = Indent(maxFieldName, field.name);
                     var optStr  = required ? " ": "?";
                     var nullStr = required ? "" : " | null";
@@ -142,7 +142,20 @@ namespace Friflo.Json.Flow.Schema
         }
         
         // Note: static by intention
-        private static string GetFieldType(TypeDef type, TypeContext context) {
+        private static string GetFieldType(FieldDef field, TypeContext context) {
+            var type = field.type;
+            if (field.isArray) {
+                var elementTypeName = GetType(type, context);
+                return $"{elementTypeName}[]";
+            }
+            if (field.isDictionary) {
+                var valueTypeName = GetType(type, context);
+                return $"{{ [key: string]: {valueTypeName} }}";
+            }
+            return GetType(type, context);
+        }
+        
+        private static string GetType(TypeDef type, TypeContext context) {
             var standard = context.generator.schema.StandardTypes;
             if (type == standard.JsonValue) {
                 return "{} | null";
@@ -152,16 +165,6 @@ namespace Friflo.Json.Flow.Schema
             }
             if (type == standard.Boolean) {
                 return "boolean";
-            }
-            if (type.IsArray) {
-                var elementMapper = type.ElementType;
-                var elementTypeName = GetFieldType(elementMapper, context);
-                return $"{elementTypeName}[]";
-            }
-            if (type.IsDictionary) {
-                var valueMapper = type.ElementType;
-                var valueTypeName = GetFieldType(valueMapper, context);
-                return $"{{ [key: string]: {valueTypeName} }}";
             }
             context.imports.Add(type);
             if (type.UnionType != null)

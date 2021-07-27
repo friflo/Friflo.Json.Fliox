@@ -39,12 +39,6 @@ namespace Friflo.Json.Flow.Schema.Definition
         public  abstract    bool                IsComplex    { get; }
         public  abstract    List<FieldDef>      Fields       { get; }
         
-        /// If <see cref="IsArray"/> is true <see cref="ElementType"/> contains the element type.
-        public  abstract    bool                IsArray      { get; }
-        /// If <see cref="IsDictionary"/> is true <see cref="ElementType"/> contains the value type.
-        public  abstract    bool                IsDictionary { get; }
-        public              TypeDef             ElementType  { get; set; }
-        
         /// <see cref="UnionType"/> is not null, if the type is as discriminated union.
         public  abstract    UnionType           UnionType    { get; }
         /// <see cref="Discriminant"/> is not null, if the type is an element of a <see cref="UnionType"/>
@@ -63,6 +57,10 @@ namespace Friflo.Json.Flow.Schema.Definition
         public              string          name;
         public              bool            required;
         public              TypeDef         type;
+        /// if <see cref="isArray"/> is true <see cref="type"/> contains the element type.
+        public              bool            isArray;
+        /// if <see cref="isDictionary"/> is true <see cref="type"/> contains the value type.
+        public              bool            isDictionary;
 
         public   override   string          ToString() => name;
     }

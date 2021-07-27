@@ -112,7 +112,7 @@ namespace Friflo.Json.Flow.Schema
                     // if (generator.IsDerivedField(type, field))  JSON Schema list all properties
                     //    continue;
                     bool required = field.required;
-                    var fieldType = GetFieldType(field.type, context, required);
+                    var fieldType = GetFieldType(field, context, required);
                     var indent = Indent(maxFieldName, field.name);
                     if (required)
                         requiredFields.Add(field.name);
@@ -154,7 +154,20 @@ namespace Friflo.Json.Flow.Schema
         }
         
         // Note: static by intention
-        private static string GetFieldType(TypeDef type, TypeContext context, bool required) {
+        private static string GetFieldType(FieldDef field, TypeContext context, bool required) {
+            var type = field.type;
+            if (field.isArray) {
+                var elementTypeName = GetType(type, context, true);
+                return $"\"type\": {Opt(required, "array")}, \"items\": {{ {elementTypeName} }}";
+            }
+            if (field.isDictionary) {
+                var valueTypeName = GetType(type, context, true);
+                return $"\"type\": \"object\", \"additionalProperties\": {{ {valueTypeName} }}";
+            }
+            return GetType(type, context, required);
+        }
+        
+        private static string GetType(TypeDef type, TypeContext context, bool required) {
             var standard = context.generator.schema.StandardTypes;
             if (type == standard.JsonValue) {
                 return ""; // allow any type
@@ -164,16 +177,6 @@ namespace Friflo.Json.Flow.Schema
             }
             if (type == standard.Boolean) {
                 return $"\"type\": {Opt(required, "boolean")}";
-            }
-            if (type.IsArray) {
-                var elementMapper = type.ElementType;
-                var elementTypeName = GetFieldType(elementMapper, context, true);
-                return $"\"type\": {Opt(required, "array")}, \"items\": {{ {elementTypeName} }}";
-            }
-            if (type.IsDictionary) {
-                var valueMapper = type.ElementType;
-                var valueTypeName = GetFieldType(valueMapper, context, true);
-                return $"\"type\": \"object\", \"additionalProperties\": {{ {valueTypeName} }}";
             }
             return Ref(type, required, context);
         }

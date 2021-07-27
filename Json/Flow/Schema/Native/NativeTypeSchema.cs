@@ -2,7 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Schema.Definition;
@@ -71,24 +73,28 @@ namespace Friflo.Json.Flow.Schema.Native
                 NativeTypeDef   typeDef = pair.Value;
                 TypeMapper      mapper  = typeDef.mapper;
                 
-                // set the element type for arrays or the value type for dictionaries
-                var elementMapper = mapper.GetElementMapper();
-                if (elementMapper != null) {
-                    elementMapper = elementMapper.GetUnderlyingMapper();
-                    typeDef.ElementType    = nativeTypes[elementMapper.type];
-                }
-                
                 // set the fields for classes or structs
                 var  propFields = mapper.propFields;
                 if (propFields != null) {
                     typeDef.fields = new List<FieldDef>(propFields.fields.Length);
                     foreach (var propField in propFields.fields) {
-                        var fieldMapper = propField.fieldType.GetUnderlyingMapper();
-                        var isNullable  = IsNullableMapper(fieldMapper, out var nonNullableType);
-                        var fieldDef   = new FieldDef {
-                            name        = propField.jsonName,
-                            required    = propField.required || !isNullable,
-                            type        = nativeTypes[nonNullableType]
+                        var fieldMapper     = propField.fieldType.GetUnderlyingMapper();
+                        var isNullable      = IsNullableMapper(fieldMapper, out var nonNullableType);
+                        var isArray         = fieldMapper.IsArray;
+                        var isDictionary    = fieldMapper.type.GetInterfaces().Contains(typeof(IDictionary));
+                        NativeTypeDef type;
+                        if (isArray || isDictionary) {
+                            var elementMapper = fieldMapper.GetElementMapper().GetUnderlyingMapper();
+                            type = nativeTypes[elementMapper.type];
+                        } else {
+                            type            = nativeTypes[nonNullableType];
+                        }
+                        var fieldDef = new FieldDef {
+                            name            = propField.jsonName,
+                            required        = propField.required || !isNullable,
+                            type            = type,
+                            isArray         = isArray,
+                            isDictionary    = isDictionary
                         };
                         typeDef.fields.Add(fieldDef);
                     }
