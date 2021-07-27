@@ -35,6 +35,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                     JsonTypeDef typeDef = pair.Value;
                     JsonType    type    = typeDef.type;
                     var         extends = typeDef.type.extends;
+                    type.name           = pair.Key;
                     if (extends != null) {
                         typeDef.baseType = FindRef(extends.reference, schema, globalSchemas);
                     }

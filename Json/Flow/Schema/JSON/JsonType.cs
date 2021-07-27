@@ -50,6 +50,8 @@ namespace Friflo.Json.Flow.Schema.JSON
     public class TypeRef {
         [Fri.Property(Name =   "$ref")]
         public  string          reference;
+
+        public override string  ToString() => reference;
     }
     
     public class FieldType
