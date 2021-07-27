@@ -26,8 +26,10 @@ namespace Friflo.Json.Flow.Schema
     /// requirements must be met:
     /// <list type="bullet">
     ///   <item>
-    ///     No dependencies to third party libraries. E.g. Serializer libraries to create a specific format (YAML, ...)
-    ///     Schema / code generators are forced to use <see cref="StringBuilder"/> like in <see cref="TypescriptGenerator"/>     
+    ///     In case a code generator is added to the library Friflo.Json.Flow no dependencies to third party libraries
+    ///     must be added. E.g. Serializer libraries to create a specific format (YAML, ...).
+    ///     In case of third party dependencies the implementation requires a separate library. 
+    ///     Schema / code generators are forced to use <see cref="StringBuilder"/> like in <see cref="TypescriptGenerator"/>.
     ///   </item>
     ///   <item>
     ///     A code generator must not have any mutable state. All used properties must be readonly immutables.
