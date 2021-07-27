@@ -47,15 +47,15 @@ namespace Friflo.Json.Flow.Schema.JSON
                 foreach (var pair in schema.typeDefs) {
                     JsonTypeDef typeDef = pair.Value;
                     JsonType    type    = typeDef.type;
-                    var         extends = typeDef.type.extends;
+                    var         extends = type.extends;
                     type.name           = pair.Key;
                     if (extends != null) {
                         typeDef.baseType = FindRef(extends.reference, context);
                     }
-                    var typeType = type.type;
-                    var oneOf = type.oneOf;
+                    var typeType    = type.type;
+                    var oneOf       = type.oneOf;
                     if (oneOf != null || typeType == "object") {
-                        var properties      = typeDef.type.properties;
+                        var properties      = type.properties;
                         if (properties != null) {
                             typeDef.fields = new List<FieldDef>(properties.Count);
                             foreach (var propPair in properties) {
