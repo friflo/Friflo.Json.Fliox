@@ -37,7 +37,7 @@ namespace Friflo.Json.Flow.Schema.Definition
         
         /// If <see cref="IsComplex"/> is true it has <see cref="Fields"/>
         public  abstract    bool                IsComplex    { get; }
-        public  abstract    List<Field>         Fields       { get; }
+        public  abstract    List<FieldDef>      Fields       { get; }
         
         /// If <see cref="IsArray"/> is true <see cref="ElementType"/> contains the element type.
         public  abstract    bool                IsArray      { get; }
@@ -56,10 +56,10 @@ namespace Friflo.Json.Flow.Schema.Definition
         /// currently not used
         public  abstract    TypeSemantic        TypeSemantic { get; }
 
-        public  abstract    bool                IsDerivedField(Field field);
+        public  abstract    bool                IsDerivedField(FieldDef fieldDef);
     }
     
-    public class Field {
+    public class FieldDef {
         public              string          name;
         public              bool            required;
         public              TypeDef         type;

@@ -26,46 +26,55 @@ namespace Friflo.Json.Flow.Schema.JSON
                 }
             }
             foreach (JsonSchemaType schema in schemaList) {
+                var rootRef = schema.rootRef;
+                if (rootRef != null) {
+                    FindRef(schema.rootRef, schema, globalSchemas);
+                }
+
                 foreach (var pair in schema.typeDefs) {
                     JsonTypeDef    typeDef = pair.Value;
                     var extends = typeDef.type.extends;
                     if (extends != null) {
                         typeDef.baseType = FindRef(extends.reference, schema, globalSchemas);
                     }
+                    var typeType = typeDef.type.type;
+                    if (typeType != null) {
+                        FindType(typeType, schema, globalSchemas, null);
+                    }
                     var properties      = typeDef.type.properties;
                     if (properties != null) {
-                        typeDef.fields = new List<Field>(properties.Count);
+                        typeDef.fields = new List<FieldDef>(properties.Count);
                         foreach (var propPair in properties) {
                             string      fieldName   = propPair.Key;
-                            FieldType   fieldType   = propPair.Value;
-                            fieldType.name          = fieldName;
+                            FieldType   field       = propPair.Value;
+                            field.name              = fieldName;
                             bool        requiredField   = typeDef.type.required?.Contains(fieldName) ?? false;
-                            var field = new Field {
+                            var fieldDef = new FieldDef {
                                 name        = fieldName,
                                 required    = requiredField
                             };
-                            typeDef.fields.Add(field);
-                            if (fieldType.reference != null) {
-                                field.type = FindRef(fieldType.reference, schema, globalSchemas);
+                            typeDef.fields.Add(fieldDef);
+                            if (field.reference != null) {
+                                fieldDef.type = FindRef(field.reference, schema, globalSchemas);
                             }
-                            var items = fieldType.items;
+                            var items = field.items;
                             if (items != null && items.reference != null) {
                                 typeDef.isArray = true;
-                                field.type = FindRef(items.reference, schema, globalSchemas);
+                                fieldDef.type = FindRef(items.reference, schema, globalSchemas);
                             }
-                            var type = fieldType.type;
-                            if (type.json != null) {
-                                field.type = FindType(type.json, schema, globalSchemas, null);
+                            var fieldType = field.type;
+                            if (fieldType.json != null) {
+                                fieldDef.type = FindType(fieldType.json, schema, globalSchemas, null);
                             }
-                            var addProps = fieldType.additionalProperties;
+                            var addProps = field.additionalProperties;
                             if (addProps != null) {
                                 typeDef.isDictionary = true;
                                 if (addProps.reference != null) {
-                                    field.type = FindRef(addProps.reference, schema, globalSchemas);
+                                    fieldDef.type = FindRef(addProps.reference, schema, globalSchemas);
                                 }
                             }
-                            if (fieldType.discriminant != null) {
-                                typeDef.discriminant = fieldType.discriminant[0];
+                            if (field.discriminant != null) {
+                                typeDef.discriminant = field.discriminant[0];
                             }
                         }
                     }
@@ -76,8 +85,8 @@ namespace Friflo.Json.Flow.Schema.JSON
                             discriminator   = typeDef.type.discriminator
                         };
                         foreach (var item in oneOf) {
-                            var type = FindRef(item.reference, schema, globalSchemas);
-                            unionType.types.Add(type);
+                            var itemRef = FindRef(item.reference, schema, globalSchemas);
+                            unionType.types.Add(itemRef);
                         }
                     }
                 }

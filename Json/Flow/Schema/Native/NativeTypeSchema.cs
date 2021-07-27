@@ -118,16 +118,16 @@ namespace Friflo.Json.Flow.Schema.Native
                 // set the fields for classes or structs
                 var  propFields = mapper.propFields;
                 if (propFields != null) {
-                    type.fields = new List<Field>(propFields.fields.Length);
+                    type.fields = new List<FieldDef>(propFields.fields.Length);
                     foreach (var propField in propFields.fields) {
                         var fieldMapper = propField.fieldType.GetUnderlyingMapper();
                         var isNullable  = IsNullableMapper(fieldMapper, out var nonNullableType);
-                        var field   = new Field {
+                        var fieldDef   = new FieldDef {
                             name        = propField.jsonName,
                             required    = propField.required || !isNullable,
                             type        = nativeTypes[nonNullableType]
                         };
-                        type.fields.Add(field);
+                        type.fields.Add(fieldDef);
                     }
                 }
                 

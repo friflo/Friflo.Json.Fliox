@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         // --- TypeDef
         public   override   TypeDef             BaseType        => baseType;
         public   override   bool                IsComplex       => fields != null;
-        public   override   List<Field>         Fields          => fields;
+        public   override   List<FieldDef>      Fields          => fields;
         public   override   bool                IsArray         => isArray;
         public   override   bool                IsDictionary    => isDictionary;
         public   override   UnionType           UnionType       => unionType;
@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Schema.JSON
 
         // --- private
         internal            TypeDef             baseType;
-        internal            List<Field>         fields;
+        internal            List<FieldDef>      fields;
         internal            UnionType           unionType;
         internal            bool                isArray;
         internal            bool                isDictionary;
@@ -41,7 +41,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             }
         }
 
-        public override bool IsDerivedField(Field field) {
+        public override bool IsDerivedField(FieldDef fieldDef) {
             throw new System.NotImplementedException();
         }
     }

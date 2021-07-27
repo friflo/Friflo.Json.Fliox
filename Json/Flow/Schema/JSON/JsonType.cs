@@ -12,9 +12,13 @@ namespace Friflo.Json.Flow.Schema.JSON
 {
     public class JsonSchemaType
     {
+        [Fri.Property(Name =                   "$ref")]
+        public  string                          rootRef;
+        
+        public  Dictionary<string, JsonType>    definitions;
+        
         [Fri.Ignore]
         public  string                          name;
-        public  Dictionary<string, JsonType>    definitions;
         [Fri.Ignore]
         public  Dictionary<string, JsonTypeDef> typeDefs;
 
@@ -23,9 +27,6 @@ namespace Friflo.Json.Flow.Schema.JSON
     
     public class JsonType
     {
-        [Fri.Ignore]
-        public  string                          name;
-        
         public  RefType                         extends;
         
         public  string                          discriminator;
@@ -37,11 +38,11 @@ namespace Friflo.Json.Flow.Schema.JSON
         public  List<string>                    required;
         public  bool                            additionalProperties;
         //
-        [Fri.Property(Name =                   "$ref")]
-        public  JsonType                        reference;
-        //
         [Fri.Property(Name =                   "enum")]
         public  List<string>                    enums;
+        
+        [Fri.Ignore]
+        public  string                          name;
 
         public override string                  ToString() => name;
     }
@@ -53,9 +54,6 @@ namespace Friflo.Json.Flow.Schema.JSON
     
     public class FieldType
     {
-        [Fri.Ignore]
-        public  string          name;
-        
         public  JsonValue       type;           // SchemaType or SchemaType[]
         
         [Fri.Property(Name =   "enum")]
@@ -73,6 +71,9 @@ namespace Friflo.Json.Flow.Schema.JSON
         public  string          reference;
 
         public  FieldType       additionalProperties;
+        
+        [Fri.Ignore]
+        public  string          name;
         
         public override string  ToString() => name;
     }

@@ -15,13 +15,13 @@ public class NativeType : TypeDef
         internal readonly   Type                native;
         internal readonly   TypeMapper          mapper;
         internal            TypeDef             baseType;
-        internal            List<Field>         fields;
+        internal            List<FieldDef>      fields;
         internal            UnionType           unionType;
         
         public   override   TypeDef             BaseType        => baseType;
         public   override   bool                IsEnum          => native.IsEnum;
         public   override   bool                IsComplex       => mapper.IsComplex;
-        public   override   List<Field>         Fields          => fields;
+        public   override   List<FieldDef>      Fields          => fields;
         public   override   string              Discriminant    => mapper.Discriminant;
         public   override   TypeSemantic        TypeSemantic    => mapper.GetTypeSemantic();
         public   override   bool                IsArray         => mapper.IsArray;
@@ -31,10 +31,10 @@ public class NativeType : TypeDef
         
         public   override   ICollection<string> EnumValues      => mapper.GetEnumValues();
         
-        public   override   bool                IsDerivedField(Field field) {
+        public   override   bool                IsDerivedField(FieldDef fieldDef) {
             var parent = BaseType;
             while (parent != null) {
-                if (parent.Fields.Find(f => f.name == field.name) != null)
+                if (parent.Fields.Find(f => f.name == fieldDef.name) != null)
                     return true;
                 parent = parent.BaseType;
             }
