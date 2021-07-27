@@ -97,6 +97,9 @@ namespace Friflo.Json.Flow.Schema.JSON
                 fieldType = FindItemType(items, context);
             }
             else if (field.oneOf != null) {
+                foreach (var item in field.oneOf) {
+                    
+                }
                 fieldType = context.standardTypes.String;
                 // todo determine field type by oneOf
             }
@@ -109,38 +112,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                 }
             }
             else if (jsonType != null) {
-                if     (jsonType.StartsWith('\"')) {
-                    var jsonValue = jsonType.Substring(1, jsonType.Length - 2);
-                    if (jsonValue == "array") {
-                        isArray = true;
-                        fieldType = FindItemType (items, context);
-                    } else {
-                        fieldType = FindType(jsonValue, context);
-                    }
-                }
-                else if (jsonType.StartsWith('[')) {
-                    // handle nullable field types
-                    TypeDef elementType = null;
-                    var fieldTypes = context.reader.Read<List<string>>(jsonType);
-                    foreach (var itemType in fieldTypes) {
-                        if (itemType == "null")
-                            continue;
-                        if (itemType == "array") {
-                            // elementType = FindType(items.reference, context);
-                            elementType = context.standardTypes.String; // todo to find type by items
-                            continue;
-                        }
-                        var elementTypeDef = FindType(itemType, context);
-                        if (elementTypeDef != null) {
-                            elementType = elementTypeDef;
-                        }
-                    }
-                    if (elementType == null)
-                        throw new InvalidOperationException("additionalProperties requires \"$ref\"");
-                    fieldType = elementType;
-                } else {
-                    throw new InvalidOperationException($"Unexpected type: {jsonType}");
-                }
+                fieldType = FindTypeFromJson (jsonType, items, context, ref isArray);
             }
             else if (field.discriminant != null) {
                 typeDef.discriminant = field.discriminant[0];
@@ -153,6 +125,39 @@ namespace Friflo.Json.Flow.Schema.JSON
             var fieldDef = new FieldDef (fieldName, required, fieldType, isArray, isDictionary);
             typeDef.fields.Add(fieldDef);
             return true;
+        }
+        
+        private static TypeDef FindTypeFromJson (string json, FieldType  items, in JsonTypeContext context, ref bool isArray) {
+            if     (json.StartsWith('\"')) {
+                var jsonValue = json.Substring(1, json.Length - 2);
+                if (jsonValue == "array") {
+                    isArray = true;
+                    return FindItemType (items, context);
+                }
+                return FindType(jsonValue, context);
+            }
+            if (json.StartsWith('[')) {
+                // handle nullable field types
+                TypeDef elementType = null;
+                var fieldTypes = context.reader.Read<List<string>>(json);
+                foreach (var itemType in fieldTypes) {
+                    if (itemType == "null")
+                        continue;
+                    if (itemType == "array") {
+                        // elementType = FindType(items.reference, context);
+                        elementType = context.standardTypes.String; // todo to find type by items
+                        continue;
+                    }
+                    var elementTypeDef = FindType(itemType, context);
+                    if (elementTypeDef != null) {
+                        elementType = elementTypeDef;
+                    }
+                }
+                if (elementType == null)
+                    throw new InvalidOperationException("additionalProperties requires \"$ref\"");
+                return elementType;
+            }
+            throw new InvalidOperationException($"Unexpected type: {json}");
         }
         
         private static TypeDef FindType (string type, in JsonTypeContext context) {

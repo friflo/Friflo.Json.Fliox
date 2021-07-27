@@ -10,6 +10,7 @@ using Friflo.Json.Flow.Mapper.Map.Val;
 // ReSharper disable CollectionNeverUpdated.Global
 namespace Friflo.Json.Flow.Schema.JSON
 {
+    /// [JSON Schema | The home of JSON Schema] https://json-schema.org/
     public class JsonSchema
     {
         [Fri.Property(Name =                   "$ref")]
