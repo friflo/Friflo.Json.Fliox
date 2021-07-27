@@ -40,9 +40,5 @@ namespace Friflo.Json.Flow.Schema.JSON
         public JsonTypeDef (string name) {
             this.name = name;
         }
-
-        public override bool IsDerivedField(FieldDef fieldDef) {
-            throw new System.NotImplementedException();
-        }
     }
 }

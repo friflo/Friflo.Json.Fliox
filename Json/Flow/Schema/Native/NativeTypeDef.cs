@@ -39,16 +39,6 @@ public class NativeTypeDef : TypeDef
             EnumValues      = mapper.GetEnumValues();
         }
         
-        public   override   bool                IsDerivedField(FieldDef fieldDef) {
-            var parent = BaseType;
-            while (parent != null) {
-                if (parent.Fields.Find(f => f.name == fieldDef.name) != null)
-                    return true;
-                parent = parent.BaseType;
-            }
-            return false;    
-        }
-
         public override bool Equals(object obj) {
             if (obj == null)
                 throw new NullReferenceException();

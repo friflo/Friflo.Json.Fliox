@@ -17,9 +17,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 {
     public static class GenerateSchema
     {
-        private static readonly Type[] UserStoreTypes   = { typeof(Role), typeof(UserCredential), typeof(UserPermission) };
-        private static readonly Type[] SyncTypes        = { typeof(DatabaseMessage) };
-        private static readonly Type[] PocStoreTypes    = { typeof(Order), typeof(Customer), typeof(Article), typeof(Producer), typeof(Employee), typeof(TestType) };
+        public static readonly Type[] UserStoreTypes   = { typeof(Role), typeof(UserCredential), typeof(UserPermission) };
+        public static readonly Type[] SyncTypes        = { typeof(DatabaseMessage) };
+        public static readonly Type[] PocStoreTypes    = { typeof(Order), typeof(Customer), typeof(Article), typeof(Producer), typeof(Employee), typeof(TestType) };
 
         [Test]
         public static void Typescript_UserStore () {

@@ -7,8 +7,8 @@ using System.IO;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Schema.Definition;
-// ReSharper disable JoinNullCheckWithUsage
 
+// ReSharper disable JoinNullCheckWithUsage
 namespace Friflo.Json.Flow.Schema.JSON
 {
     public class JsonTypeSchema : TypeSchema
@@ -204,8 +204,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         internal readonly   Dictionary<string, JsonTypeDef> schemas;
         internal readonly   JsonStandardTypes               standardTypes;
         internal readonly   ObjectReader                    reader;
-        
-        
+
         internal JsonTypeContext(
             JsonSchema                      schema,
             Dictionary<string, JsonTypeDef> schemas,

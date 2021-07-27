@@ -50,7 +50,15 @@ namespace Friflo.Json.Flow.Schema.Definition
         /// currently not used
         public  abstract    TypeSemantic        TypeSemantic { get; }
 
-        public  abstract    bool                IsDerivedField(FieldDef fieldDef);
+        public bool IsDerivedField(FieldDef fieldDef) {
+            var parent = BaseType;
+            while (parent != null) {
+                if (parent.Fields.Find(f => f.name == fieldDef.name) != null)
+                    return true;
+                parent = parent.BaseType;
+            }
+            return false;
+        }
     }
     
     public class FieldDef {
