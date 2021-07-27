@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Schema
     /// <list type="bullet">
     ///   <item>
     ///     No dependencies to third party libraries. E.g. Serializer libraries to create a specific format (YAML, ...)
-    ///     Schema / code generators are forced to use <see cref="StringBuilder"/> like in <see cref="Typescript"/>     
+    ///     Schema / code generators are forced to use <see cref="StringBuilder"/> like in <see cref="TypescriptGenerator"/>     
     ///   </item>
     ///   <item>
     ///     A code generator must not have any mutable state. All used properties must be readonly immutables.
@@ -36,14 +36,15 @@ namespace Friflo.Json.Flow.Schema
     ///     Avoid virtual methods or interfaces to establish simplicity. 
     ///   </item>
     ///   <item>
-    ///     As initial template <see cref="Typescript"/> or <see cref="JsonSchema"/> need to be used to ensure the resulting
-    ///     generator can be compared to their originals with tools like WinMerge.
-    ///     In particular the methods and their order <see cref="Typescript.GenerateSchema"/>, <see cref="Typescript.EmitType"/>,
-    ///     <see cref="Typescript.GetFieldType"/> and <see cref="Typescript.EmitFileHeaders"/>.
+    ///     As initial template <see cref="TypescriptGenerator"/> or <see cref="JsonSchemaGenerator"/> need to be used
+    ///     to ensure the resulting generator can be compared to their originals with tools like WinMerge.
+    ///     In particular the methods and their order <see cref="TypescriptGenerator.Generate"/>,
+    ///     <see cref="TypescriptGenerator.EmitType"/>, <see cref="TypescriptGenerator.GetFieldType"/> and
+    ///     <see cref="TypescriptGenerator.EmitFileHeaders"/>.
     ///     Helper methods need to be added on the bottom.
     ///   </item>
     ///   <item>
-    ///     The implementation should be small similar to <see cref="Typescript"/> and <see cref="JsonSchema"/>
+    ///     The implementation should be small similar to <see cref="TypescriptGenerator"/> and <see cref="JsonSchemaGenerator"/>
     ///   </item>
     ///   <item>
     ///     The generated files (PocStore and Sync) must be committed to a folder in 'assets/Schema' and

@@ -13,13 +13,13 @@ namespace Friflo.Json.Flow.Schema
     /// Examples available at:
     /// <see href="https://github.com/friflo/Friflo.Json.Flow/blob/main/Json.Tests/Common/UnitTest/Flow/Schema/GenerateSchema.cs"/>
     /// </summary>
-    public partial class Typescript
+    public partial class TypescriptGenerator
     {
         public static Generator Generate(TypeStore typeStore, ICollection<Type> rootTypes, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
             typeStore.AddMappers(rootTypes);
             var schema      = new NativeTypeSchema(typeStore, separateTypes);
             var generator   = new Generator(schema, stripNamespaces, ".ts");
-            var _           = new Typescript(generator);
+            var _           = new TypescriptGenerator(generator);
             return generator;
         }
     }
@@ -29,13 +29,13 @@ namespace Friflo.Json.Flow.Schema
     /// Examples available at:
     /// <see href="https://github.com/friflo/Friflo.Json.Flow/blob/main/Json.Tests/Common/UnitTest/Flow/Schema/GenerateSchema.cs"/>
     /// </summary>
-    public partial class JsonSchema
+    public partial class JsonSchemaGenerator
     {
         public static Generator Generate (TypeStore typeStore, ICollection<Type> rootTypes, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
             typeStore.AddMappers(rootTypes);
             var schema      = new NativeTypeSchema(typeStore, separateTypes);
             var generator   = new Generator(schema, stripNamespaces, ".json");
-            var _           = new JsonSchema(generator);
+            var _           = new JsonSchemaGenerator(generator);
             return generator;
         }
     }

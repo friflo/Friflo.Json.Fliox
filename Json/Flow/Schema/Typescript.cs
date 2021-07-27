@@ -10,12 +10,12 @@ using static Friflo.Json.Flow.Schema.Generator;
 
 namespace Friflo.Json.Flow.Schema
 {
-    public partial class Typescript
+    public partial class TypescriptGenerator
     {
         private readonly    Generator                   generator;
         private readonly    Dictionary<TypeDef, string> standardTypes;
 
-        public Typescript (Generator generator) {
+        public TypescriptGenerator (Generator generator) {
             this.generator  = generator;
             standardTypes   = GetStandardTypes(generator.schema.StandardTypes);
             GenerateSchema();

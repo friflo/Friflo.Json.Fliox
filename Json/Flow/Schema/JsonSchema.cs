@@ -11,13 +11,13 @@ using static Friflo.Json.Flow.Schema.Generator;
 
 namespace Friflo.Json.Flow.Schema
 {
-    public partial class JsonSchema
+    public partial class JsonSchemaGenerator
     {
         private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardTypes;
         private  const      string                      Next = ",\r\n";
         
-        public JsonSchema (Generator generator) {
+        public JsonSchemaGenerator (Generator generator) {
             this.generator  = generator;
             standardTypes   = GetStandardTypes(generator.schema.StandardTypes);
             GenerateSchema();
