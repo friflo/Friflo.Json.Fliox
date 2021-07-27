@@ -7,6 +7,7 @@ using System.IO;
 using System.Text;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Schema.Definition;
+// ReSharper disable JoinNullCheckWithUsage
 
 namespace Friflo.Json.Flow.Schema.JSON
 {
@@ -82,50 +83,72 @@ namespace Friflo.Json.Flow.Schema.JSON
                 string      fieldName   = propPair.Key;
                 FieldType   field       = propPair.Value;
                 field.name              = fieldName;
-                bool        requiredField   = type.required?.Contains(fieldName) ?? false;
-                var fieldDef = new FieldDef {
-                    name        = fieldName,
-                    required    = requiredField
-                };
-                typeDef.fields.Add(fieldDef);
-                if (field.reference != null) {
-                    fieldDef.type = FindRef(field.reference, context);
-                }
-                var items = field.items;
-                if (items != null && items.reference != null) {
-                    fieldDef.isArray = true;
-                    fieldDef.type = FindRef(items.reference, context);
-                }
+                TypeDef     fieldType;
+                bool        isArray         = false;
+                bool        isDictionary    = false;
+                bool        required        = type.required?.Contains(fieldName) ?? false;
+
+                var items    = field.items;
                 var jsonType = field.type.json;
-                if (jsonType != null) {
+                var addProps = field.additionalProperties;
+                
+                if (field.reference != null) {
+                    fieldType = FindRef(field.reference, context);
+                }
+                else if (items?.reference != null) {
+                    isArray = true;
+                    fieldType = FindRef(items.reference, context);
+                }
+                else if (field.oneOf != null) {
+                    fieldType = context.standardTypes.String;
+                    // todo determine field type by oneOf
+                }
+                else if (jsonType != null) {
                     if (jsonType.StartsWith('\"')) {
                         var jsonValue = jsonType.Substring(1, jsonType.Length - 2); 
-                        fieldDef.type = FindType(jsonValue, context);
+                        fieldType = FindType(jsonValue, context);
                     } else if (jsonType.StartsWith('[')) {
                         // handle nullable field types
+                        TypeDef elementType = null;
                         var fieldTypes = context.reader.Read<List<string>>(jsonType);
-                        foreach (var fieldType in fieldTypes) {
-                            if (fieldType == "null")
+                        foreach (var itemType in fieldTypes) {
+                            if (itemType == "null")
                                 continue;
-                            var elementTypeDef = FindType(fieldType, context);
+                            if (itemType == "array") {
+                                // elementType = FindType(items.reference, context);
+                                elementType = context.standardTypes.String; // todo to find type by items
+                                continue;
+                            }
+                            var elementTypeDef = FindType(itemType, context);
                             if (elementTypeDef != null) {
-                                fieldDef.type = elementTypeDef;
+                                elementType = elementTypeDef;
                             }
                         }
+                        if (elementType == null)
+                            throw new InvalidOperationException("additionalProperties requires \"$ref\"");
+                        fieldType = elementType;
                     } else {
                         throw new InvalidOperationException($"Unexpected type: {jsonType}");
                     }
                 }
-                var addProps = field.additionalProperties;
-                if (addProps != null) {
-                    fieldDef.isDictionary = true;
+                else if (addProps != null) {
+                    isDictionary = true;
                     if (addProps.reference != null) {
-                        fieldDef.type = FindRef(addProps.reference, context);
+                        fieldType = FindRef(addProps.reference, context);
+                    } else {
+                        throw new InvalidOperationException("additionalProperties requires \"$ref\"");
                     }
                 }
-                if (field.discriminant != null) {
+                else if (field.discriminant != null) {
                     typeDef.discriminant = field.discriminant[0];
+                    return false;
                 }
+                else {
+                    fieldType = context.standardTypes.JsonValue;
+                    // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
+                }
+                var fieldDef = new FieldDef (fieldName, required, fieldType, isArray, isDictionary);
+                typeDef.fields.Add(fieldDef);
             }
             return true;
         }

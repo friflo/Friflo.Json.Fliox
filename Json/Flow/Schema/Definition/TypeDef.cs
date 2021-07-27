@@ -54,15 +54,24 @@ namespace Friflo.Json.Flow.Schema.Definition
     }
     
     public class FieldDef {
-        public              string          name;
-        public              bool            required;
-        public              TypeDef         type;
+        public  readonly    string          name;
+        public  readonly    bool            required;
+        public  readonly    TypeDef         type;
         /// if <see cref="isArray"/> is true <see cref="type"/> contains the element type.
-        public              bool            isArray;
+        public  readonly    bool            isArray;
         /// if <see cref="isDictionary"/> is true <see cref="type"/> contains the value type.
-        public              bool            isDictionary;
+        public  readonly    bool            isDictionary;
 
-        public   override   string          ToString() => name;
+        public  override    string          ToString() => name;
+        
+        public FieldDef(string name, bool required, TypeDef type, bool isArray, bool isDictionary) {
+            this.name           = name;
+            this.required       = required;
+            this.type           = type;
+            this.isArray        = isArray;
+            this.isDictionary   = isDictionary;
+        }
+        
     }
 
     public class UnionType {

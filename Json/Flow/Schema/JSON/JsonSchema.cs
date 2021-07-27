@@ -63,6 +63,8 @@ namespace Friflo.Json.Flow.Schema.JSON
         
         public  FieldType       items;
         
+        public  List<FieldType> oneOf;
+        
         public  long            minimum;
         public  long            maximum;
         
