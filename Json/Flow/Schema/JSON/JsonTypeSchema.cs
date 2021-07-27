@@ -56,8 +56,15 @@ namespace Friflo.Json.Flow.Schema.JSON
                     if (typeType != null) {
                         FindType(typeType, context);
                     }
-                    AssignProperties(typeDef, type, context);
-                    
+                    var properties      = typeDef.type.properties;
+                    if (properties != null) {
+                        typeDef.fields = new List<FieldDef>(properties.Count);
+                        foreach (var propPair in properties) {
+                            string      fieldName   = propPair.Key;
+                            FieldType   field       = propPair.Value;
+                            SetField(typeDef, fieldName, field, context);
+                        }
+                    }
                     var oneOf = type.oneOf;
                     if (oneOf != null) {
                         var unionType = typeDef.unionType = new UnionType {
@@ -73,83 +80,75 @@ namespace Friflo.Json.Flow.Schema.JSON
             }
         }
         
-        private static bool AssignProperties (JsonTypeDef typeDef, JsonType type, in JsonTypeContext context) {
-            var properties      = type.properties;
-            if (properties == null)
-                return false;
-            
-            typeDef.fields = new List<FieldDef>(properties.Count);
-            foreach (var propPair in properties) {
-                string      fieldName   = propPair.Key;
-                FieldType   field       = propPair.Value;
-                field.name              = fieldName;
-                TypeDef     fieldType;
-                bool        isArray         = false;
-                bool        isDictionary    = false;
-                bool        required        = type.required?.Contains(fieldName) ?? false;
+        private static bool SetField (JsonTypeDef typeDef, string fieldName, FieldType field, in JsonTypeContext context) {
+            field.name              = fieldName;
+            TypeDef fieldType; // not initialized by intention
+            bool    isArray         = false;
+            bool    isDictionary    = false;
+            bool    required        = typeDef.type.required?.Contains(fieldName) ?? false;
 
-                var items    = field.items;
-                var jsonType = field.type.json;
-                var addProps = field.additionalProperties;
-                
-                if (field.reference != null) {
-                    fieldType = FindRef(field.reference, context);
-                }
-                else if (items?.reference != null) {
-                    isArray = true;
-                    fieldType = FindRef(items.reference, context);
-                }
-                else if (field.oneOf != null) {
-                    fieldType = context.standardTypes.String;
-                    // todo determine field type by oneOf
-                }
-                else if (jsonType != null) {
-                    if (jsonType.StartsWith('\"')) {
-                        var jsonValue = jsonType.Substring(1, jsonType.Length - 2); 
-                        fieldType = FindType(jsonValue, context);
-                    } else if (jsonType.StartsWith('[')) {
-                        // handle nullable field types
-                        TypeDef elementType = null;
-                        var fieldTypes = context.reader.Read<List<string>>(jsonType);
-                        foreach (var itemType in fieldTypes) {
-                            if (itemType == "null")
-                                continue;
-                            if (itemType == "array") {
-                                // elementType = FindType(items.reference, context);
-                                elementType = context.standardTypes.String; // todo to find type by items
-                                continue;
-                            }
-                            var elementTypeDef = FindType(itemType, context);
-                            if (elementTypeDef != null) {
-                                elementType = elementTypeDef;
-                            }
-                        }
-                        if (elementType == null)
-                            throw new InvalidOperationException("additionalProperties requires \"$ref\"");
-                        fieldType = elementType;
-                    } else {
-                        throw new InvalidOperationException($"Unexpected type: {jsonType}");
-                    }
-                }
-                else if (addProps != null) {
-                    isDictionary = true;
-                    if (addProps.reference != null) {
-                        fieldType = FindRef(addProps.reference, context);
-                    } else {
-                        throw new InvalidOperationException("additionalProperties requires \"$ref\"");
-                    }
-                }
-                else if (field.discriminant != null) {
-                    typeDef.discriminant = field.discriminant[0];
-                    return false;
-                }
-                else {
-                    fieldType = context.standardTypes.JsonValue;
-                    // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
-                }
-                var fieldDef = new FieldDef (fieldName, required, fieldType, isArray, isDictionary);
-                typeDef.fields.Add(fieldDef);
+            var     items       = field.items;
+            var     jsonType    = field.type.json;
+            var     addProps    = field.additionalProperties;
+            
+            if (field.reference != null) {
+                fieldType = FindRef(field.reference, context);
             }
+            else if (items?.reference != null) {
+                isArray = true;
+                fieldType = FindRef(items.reference, context);
+            }
+            else if (field.oneOf != null) {
+                fieldType = context.standardTypes.String;
+                // todo determine field type by oneOf
+            }
+            else if (jsonType != null) {
+                if     (jsonType.StartsWith('\"')) {
+                    var jsonValue = jsonType.Substring(1, jsonType.Length - 2); 
+                    fieldType = FindType(jsonValue, context);
+                }
+                else if (jsonType.StartsWith('[')) {
+                    // handle nullable field types
+                    TypeDef elementType = null;
+                    var fieldTypes = context.reader.Read<List<string>>(jsonType);
+                    foreach (var itemType in fieldTypes) {
+                        if (itemType == "null")
+                            continue;
+                        if (itemType == "array") {
+                            // elementType = FindType(items.reference, context);
+                            elementType = context.standardTypes.String; // todo to find type by items
+                            continue;
+                        }
+                        var elementTypeDef = FindType(itemType, context);
+                        if (elementTypeDef != null) {
+                            elementType = elementTypeDef;
+                        }
+                    }
+                    if (elementType == null)
+                        throw new InvalidOperationException("additionalProperties requires \"$ref\"");
+                    fieldType = elementType;
+                } else {
+                    throw new InvalidOperationException($"Unexpected type: {jsonType}");
+                }
+            }
+            else if (addProps != null) {
+                isDictionary = true;
+                if (addProps.reference != null) {
+                    fieldType = FindRef(addProps.reference, context);
+                } else {
+                    throw new InvalidOperationException("additionalProperties requires \"$ref\"");
+                }
+            }
+            else if (field.discriminant != null) {
+                typeDef.discriminant = field.discriminant[0];
+                return false;
+            }
+            else {
+                fieldType = context.standardTypes.JsonValue;
+                // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
+            }
+            var fieldDef = new FieldDef (fieldName, required, fieldType, isArray, isDictionary);
+            typeDef.fields.Add(fieldDef);
             return true;
         }
         
