@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -34,8 +35,10 @@ namespace Friflo.Json.Flow.Schema.JSON
             var standardTypes   = new JsonStandardTypes(allSchemas);
             StandardTypes       = standardTypes;
             
+            var reader          = new ObjectReader(new TypeStore());
+            
             foreach (JsonSchema schema in schemaList) {
-                var context = new JsonTypeContext(schema, allSchemas, standardTypes);
+                var context = new JsonTypeContext(schema, allSchemas, standardTypes, reader);
                 var rootRef = schema.rootRef;
                 if (rootRef != null) {
                     FindRef(schema.rootRef, context);
@@ -98,6 +101,19 @@ namespace Friflo.Json.Flow.Schema.JSON
                     if (jsonType.StartsWith('\"')) {
                         var jsonValue = jsonType.Substring(1, jsonType.Length - 2); 
                         fieldDef.type = FindType(jsonValue, context);
+                    } else if (jsonType.StartsWith('[')) {
+                        // handle nullable field types
+                        var fieldTypes = context.reader.Read<List<string>>(jsonType);
+                        foreach (var fieldType in fieldTypes) {
+                            if (fieldType == "null")
+                                continue;
+                            var elementTypeDef = FindType(fieldType, context);
+                            if (elementTypeDef != null) {
+                                typeDef.ElementType = elementTypeDef;
+                            }
+                        }
+                    } else {
+                        throw new InvalidOperationException($"Unexpected type: {jsonType}");
                     }
                 }
                 var addProps = field.additionalProperties;
@@ -167,11 +183,19 @@ namespace Friflo.Json.Flow.Schema.JSON
         internal readonly   JsonSchema                      schema;
         internal readonly   Dictionary<string, JsonTypeDef> schemas;
         internal readonly   JsonStandardTypes               standardTypes;
+        internal readonly   ObjectReader                    reader;
         
-        internal JsonTypeContext(JsonSchema schema, Dictionary<string, JsonTypeDef> schemas, JsonStandardTypes standardTypes) {
+        
+        internal JsonTypeContext(
+            JsonSchema                      schema,
+            Dictionary<string, JsonTypeDef> schemas,
+            JsonStandardTypes               standardTypes,
+            ObjectReader                    reader)
+        {
             this.schema         = schema;
             this.schemas        = schemas;
             this.standardTypes  = standardTypes;
+            this.reader         = reader;
         }
     }
 }
