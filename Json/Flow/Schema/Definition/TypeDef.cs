@@ -49,16 +49,6 @@ namespace Friflo.Json.Flow.Schema.Definition
         public  abstract    ICollection<string> EnumValues   { get; }
         /// currently not used
         public  abstract    TypeSemantic        TypeSemantic { get; }
-
-        public bool IsDerivedField(FieldDef fieldDef) {
-            var parent = BaseType;
-            while (parent != null) {
-                if (parent.Fields.Find(f => f.name == fieldDef.name) != null)
-                    return true;
-                parent = parent.BaseType;
-            }
-            return false;
-        }
     }
     
     public class FieldDef {
@@ -69,16 +59,28 @@ namespace Friflo.Json.Flow.Schema.Definition
         public  readonly    bool            isArray;
         /// if <see cref="isDictionary"/> is true <see cref="type"/> contains the value type.
         public  readonly    bool            isDictionary;
+        public  readonly    TypeDef         ownerType;
 
         public  override    string          ToString() => name;
         
-        public FieldDef(string name, bool required, TypeDef type, bool isArray, bool isDictionary) {
+        public FieldDef(string name, bool required, TypeDef type, bool isArray, bool isDictionary, TypeDef ownerType) {
             this.name           = name;
             this.required       = required;
             this.type           = type;
             this.isArray        = isArray;
             this.isDictionary   = isDictionary;
+            this.ownerType      = ownerType;
         }
+        
+        public bool IsDerivedField { get {
+            var parent = ownerType.BaseType;
+            while (parent != null) {
+                if (parent.Fields.Find(f => f.name == name) != null)
+                    return true;
+                parent = parent.BaseType;
+            }
+            return false;
+        }}
     }
 
     public class UnionType {

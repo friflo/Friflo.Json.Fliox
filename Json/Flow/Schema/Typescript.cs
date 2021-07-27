@@ -115,7 +115,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 // fields                
                 foreach (var field in fields) {
-                    if (type.IsDerivedField(field))
+                    if (field.IsDerivedField)
                         continue;
                     bool required = field.required;
                     var fieldType = GetFieldType(field, context);

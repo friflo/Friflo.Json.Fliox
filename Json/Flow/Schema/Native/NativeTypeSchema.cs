@@ -90,7 +90,7 @@ namespace Friflo.Json.Flow.Schema.Native
                             type            = nativeTypes[nonNullableType];
                         }
                         var required = propField.required || !isNullable;
-                        var fieldDef = new FieldDef (propField.jsonName, required, type, isArray, isDictionary);
+                        var fieldDef = new FieldDef (propField.jsonName, required, type, isArray, isDictionary, typeDef);
                         typeDef.fields.Add(fieldDef);
                     }
                 }
