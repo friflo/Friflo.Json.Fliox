@@ -10,7 +10,7 @@ using Friflo.Json.Flow.Schema.Definition;
 
 namespace Friflo.Json.Flow.Schema.Native
 {
-public class NativeType : TypeDef
+public class NativeTypeDef : TypeDef
     {
         internal readonly   Type                native;
         internal readonly   TypeMapper          mapper;
@@ -41,7 +41,7 @@ public class NativeType : TypeDef
             return false;    
         }
            
-        public NativeType (TypeMapper mapper) {
+        public NativeTypeDef (TypeMapper mapper) {
             this.native     = mapper.type;
             this.mapper     = mapper;
         }
@@ -49,7 +49,7 @@ public class NativeType : TypeDef
         public override bool Equals(object obj) {
             if (obj == null)
                 throw new NullReferenceException();
-            var other = (NativeType)obj;
+            var other = (NativeTypeDef)obj;
             return native == other.native;
         }
 

@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Schema.JSON
     
     public class JsonType
     {
-        public  RefType                         extends;
+        public  TypeRef                         extends;
         
         public  string                          discriminator;
         public  List<FieldType>                 oneOf;
@@ -47,7 +47,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         public override string                  ToString() => name;
     }
     
-    public class RefType {
+    public class TypeRef {
         [Fri.Property(Name =   "$ref")]
         public  string          reference;
     }
