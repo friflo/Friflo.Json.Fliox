@@ -157,17 +157,17 @@ namespace Friflo.Json.Flow.Schema
         private static string GetFieldType(FieldDef field, TypeContext context, bool required) {
             var type = field.type;
             if (field.isArray) {
-                var elementTypeName = GetType(type, context, true);
+                var elementTypeName = GetTypeName(type, context, true);
                 return $"\"type\": {Opt(required, "array")}, \"items\": {{ {elementTypeName} }}";
             }
             if (field.isDictionary) {
-                var valueTypeName = GetType(type, context, true);
+                var valueTypeName = GetTypeName(type, context, true);
                 return $"\"type\": \"object\", \"additionalProperties\": {{ {valueTypeName} }}";
             }
-            return GetType(type, context, required);
+            return GetTypeName(type, context, required);
         }
         
-        private static string GetType(TypeDef type, TypeContext context, bool required) {
+        private static string GetTypeName(TypeDef type, TypeContext context, bool required) {
             var standard = context.standardTypes;
             if (type == standard.JsonValue)
                 return ""; // allow any type

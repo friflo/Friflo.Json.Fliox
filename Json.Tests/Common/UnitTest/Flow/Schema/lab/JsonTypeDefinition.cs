@@ -148,17 +148,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
         private string GetFieldType(FieldDef field, TypeContext context) {
             var type = field.type;
             if (field.isArray) {
-                var elementTypeName = GetType(type, context);
+                var elementTypeName = GetTypeName(type, context);
                 return $"\"elements\": {{ {elementTypeName} }}";
             }
             if (field.isDictionary) {
-                var valueTypeName = GetType(type, context);
+                var valueTypeName = GetTypeName(type, context);
                 return $"\"values\": {{ {valueTypeName} }}";
             }
-            return GetType(type, context);
+            return GetTypeName(type, context);
         }
         
-        private string GetType(TypeDef type, TypeContext context) {
+        private string GetTypeName(TypeDef type, TypeContext context) {
             var standard = context.standardTypes;
             if (type == standard.JsonValue)
                 return ""; // allow any type

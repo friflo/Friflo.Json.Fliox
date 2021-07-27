@@ -38,9 +38,16 @@ namespace Friflo.Json.Flow.Schema
     ///   <item>
     ///     As initial template <see cref="TypescriptGenerator"/> or <see cref="JsonSchemaGenerator"/> need to be used
     ///     to ensure the resulting generator can be compared to their originals with tools like WinMerge.
-    ///     In particular the methods and their order <see cref="TypescriptGenerator.Generate"/>,
-    ///     <see cref="TypescriptGenerator.EmitType"/>, <see cref="TypescriptGenerator.GetFieldType"/> and
-    ///     <see cref="TypescriptGenerator.EmitFileHeaders"/>.
+    ///     In particular the methods and their order:
+    ///     <list type="bullet">
+    ///       <item><see cref="TypescriptGenerator.GenerateSchema"/></item>
+    ///       <item><see cref="TypescriptGenerator.GetStandardTypes"/></item>
+    ///       <item><see cref="TypescriptGenerator.EmitStandardType"/></item>
+    ///       <item><see cref="TypescriptGenerator.EmitType"/></item>
+    ///       <item><see cref="TypescriptGenerator.GetFieldType"/></item>
+    ///       <item><see cref="TypescriptGenerator.GetTypeName"/></item>
+    ///       <item><see cref="TypescriptGenerator.EmitFileHeaders"/></item>
+    ///     </list>
     ///     Helper methods need to be added on the bottom.
     ///   </item>
     ///   <item>
