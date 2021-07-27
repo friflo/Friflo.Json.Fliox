@@ -98,15 +98,13 @@ namespace Friflo.Json.Flow.Schema.Native
                 // set the unionType if a class is a discriminated union
                 var instanceFactory = mapper.instanceFactory;
                 if (instanceFactory != null) {
-                    var polyTypes = instanceFactory.polyTypes;
-                    typeDef.unionType  = new UnionType {
-                        discriminator   = instanceFactory.discriminator,
-                        types           = new List<TypeDef>(polyTypes.Length)
-                    };
+                    var polyTypes   = instanceFactory.polyTypes;
+                    var unionTypes  = new List<TypeDef>(polyTypes.Length);
                     foreach (var polyType in polyTypes) {
                         TypeDef element = nativeTypes[polyType.type];
-                        typeDef.unionType.types.Add(element);
+                        unionTypes.Add(element);
                     }
+                    typeDef.unionType  = new UnionType (instanceFactory.discriminator, unionTypes);
                 }
             }
         }

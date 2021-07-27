@@ -71,13 +71,17 @@ namespace Friflo.Json.Flow.Schema.Definition
             this.isArray        = isArray;
             this.isDictionary   = isDictionary;
         }
-        
     }
 
     public class UnionType {
-        public              string          discriminator;
-        public              List<TypeDef>   types;
+        public  readonly    string          discriminator;
+        public  readonly    List<TypeDef>   types;
         
         public   override   string          ToString() => discriminator;
+        
+        public UnionType(string discriminator, List<TypeDef> types) {
+            this.discriminator  = discriminator;
+            this.types          = types;
+        }
     }
 }

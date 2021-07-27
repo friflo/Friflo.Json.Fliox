@@ -67,14 +67,12 @@ namespace Friflo.Json.Flow.Schema.JSON
                     }
                     var oneOf = type.oneOf;
                     if (oneOf != null) {
-                        var unionType = typeDef.unionType = new UnionType {
-                            types           = new List<TypeDef>(oneOf.Count),
-                            discriminator   = type.discriminator
-                        };
+                        var types = new List<TypeDef>(oneOf.Count);
                         foreach (var item in oneOf) {
                             var itemRef = FindRef(item.reference, context);
-                            unionType.types.Add(itemRef);
+                            types.Add(itemRef);
                         }
+                        typeDef.unionType = new UnionType (type.discriminator, types);
                     }
                 }
             }
