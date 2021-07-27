@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Schema.Native
             
             // Collect all types into containers to simplify further processing
             nativeTypes     = new Dictionary<Type, NativeTypeDef>(typeMappers.Count);
-            var types       = new HashSet<TypeDef>               (typeMappers.Count);
+            var types       = new List<TypeDef>                  (typeMappers.Count);
             foreach (var pair in typeMappers) {
                 TypeMapper  mapper  = pair.Value;
                 var underMapper     = mapper.GetUnderlyingMapper();

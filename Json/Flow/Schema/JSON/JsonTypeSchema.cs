@@ -131,7 +131,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         }
         
         private static TypeDef FindTypeFromJson (string json, FieldType  items, in JsonTypeContext context, ref bool isArray) {
-            if     (json.StartsWith('\"')) {
+            if     (json.StartsWith("\"")) {
                 var jsonValue = json.Substring(1, json.Length - 2);
                 if (jsonValue == "array") {
                     isArray = true;
@@ -141,7 +141,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                     return null;
                 return FindType(jsonValue, context);
             }
-            if (json.StartsWith('[')) {
+            if (json.StartsWith("[")) {
                 // handle nullable field types
                 TypeDef elementType = null;
                 var fieldTypes = context.reader.Read<List<string>>(json);
