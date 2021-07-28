@@ -20,13 +20,13 @@ namespace Friflo.Json.Flow.Schema
         public static Generator Generate(TypeStore typeStore, ICollection<Type> rootTypes, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
             typeStore.AddMappers(rootTypes);
             var schema      = new NativeTypeSchema(typeStore, separateTypes);
-            var generator   = new Generator(schema, stripNamespaces, ".ts");
+            var generator   = new Generator(schema, ".ts", stripNamespaces);
             var _           = new TypescriptGenerator(generator);
             return generator;
         }
         
         public static Generator Generate(TypeSchema schema, ICollection<string> rootTypes, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
-            var generator   = new Generator(schema, stripNamespaces, ".ts");
+            var generator   = new Generator(schema, ".ts", stripNamespaces);
             var _           = new TypescriptGenerator(generator);
             return generator;
         }
@@ -42,13 +42,13 @@ namespace Friflo.Json.Flow.Schema
         public static Generator Generate (TypeStore typeStore, ICollection<Type> rootTypes, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
             typeStore.AddMappers(rootTypes);
             var schema      = new NativeTypeSchema(typeStore, separateTypes);
-            var generator   = new Generator(schema, stripNamespaces, ".json");
+            var generator   = new Generator(schema, ".json", stripNamespaces);
             var _           = new JsonSchemaGenerator(generator);
             return generator;
         }
         
         public static Generator Generate(TypeSchema schema, ICollection<string> rootTypes, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
-            var generator   = new Generator(schema, stripNamespaces, ".json");
+            var generator   = new Generator(schema, ".json", stripNamespaces);
             var _           = new JsonSchemaGenerator(generator);
             return generator;
         }
