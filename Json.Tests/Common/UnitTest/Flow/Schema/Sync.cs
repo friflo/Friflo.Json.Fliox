@@ -12,6 +12,10 @@ using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 {
+    /// <summary>
+    /// The sync models define a protocol. The generated Typescript are useful for client applications.
+    /// JSON Schema files are not generated as the Graph host / server validate protocol messages by code.  
+    /// </summary>
     public static class SyncSchema
     {
         private static readonly Type[] SyncTypes        = { typeof(DatabaseMessage) };
