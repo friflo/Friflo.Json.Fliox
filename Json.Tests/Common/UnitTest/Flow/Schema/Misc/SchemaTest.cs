@@ -3,11 +3,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using Friflo.Json.Flow.Schema;
 using Friflo.Json.Flow.Schema.Utils;
 using NUnit.Framework;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
+
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
 {
     public static class SchemaTest
     {
@@ -42,14 +46,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             }
         }
 
-        public static List<string> JsonTypesFromTypes(ICollection<Type> types, string package) {
-            var list = new List<string>();
-            foreach (var type in types) {
-                list.Add($"./{package}{type.Name}.json#/definitions/{type.Name}");
-            }
-            return list;
-        }
-
         // ReSharper disable once UnusedParameter.Local
         private static void EnsureSymbol(string _) {}
         
@@ -70,6 +66,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             EnsureSymbol(nameof(TypeContext.generator));
             EnsureSymbol(nameof(TypeContext.imports));
             EnsureSymbol(nameof(TypeContext.type));
+        }
+        
+        // ------------------------------------ utilities ------------------------------------ 
+        public static List<string> JsonTypesFromTypes(ICollection<Type> types, string package) {
+            var list = new List<string>();
+            foreach (var type in types) {
+                list.Add($"./{package}{type.Name}.json#/definitions/{type.Name}");
+            }
+            return list;
+        }
+        
+        public static void AssertFoldersAreEqual(string expectFolder, string otherFolder) {
+            var expectFiles = Directory.GetFiles(expectFolder, "*.json", SearchOption.TopDirectoryOnly);
+            var otherFiles  = Directory.GetFiles(otherFolder,  "*.json", SearchOption.TopDirectoryOnly);
+            
+            var expectNames = expectFiles.Select(name => name.Substring(expectFolder.Length));
+            var otherNames  = otherFiles. Select(name => name.Substring(otherFolder.Length));
+
+            Assert.AreEqual (expectNames, otherNames);
+            foreach (var expectName in expectNames) {
+                var expectContent = File.ReadAllText(expectFolder + expectName, Encoding.UTF8);
+                var otherContent  = File.ReadAllText(otherFolder  + expectName, Encoding.UTF8);
+                Assert.AreEqual (expectContent, otherContent);
+            }
         }
     }
 }

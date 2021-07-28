@@ -6,7 +6,7 @@ using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Schema;
 using Friflo.Json.Flow.Sync;
-using Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab;
+using Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 

@@ -11,7 +11,7 @@ using Friflo.Json.Flow.Schema.Native;
 using Friflo.Json.Flow.Schema.Utils;
 using static Friflo.Json.Flow.Schema.Generator;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
+namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
 {
     /// [RFC 8927 - JSON Type Definition] https://datatracker.ietf.org/doc/rfc8927/
     public class JsonTypeDefinition
@@ -21,14 +21,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
         private  readonly   Dictionary<TypeDef, string> primitiveTypes;
         private  const      string                      Next = ",\r\n";
         
-        private JsonTypeDefinition (Generator generator, string name) {
+        private JsonTypeDefinition (Generator generator) {
             this.generator  = generator;
             standardTypes   = GetStandardTypes (generator.standardTypes);
             primitiveTypes  = GetPrimitiveTypes(generator.standardTypes);
         }
         
         public static void Generate(Generator generator, string name) {
-            var emitter = new JsonTypeDefinition(generator, name);
+            var emitter = new JsonTypeDefinition(generator);
             var sb = new StringBuilder();
             // emit custom types
             foreach (var type in generator.types) {

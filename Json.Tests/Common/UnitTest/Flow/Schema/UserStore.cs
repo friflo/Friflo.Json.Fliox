@@ -7,7 +7,7 @@ using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Schema;
 using Friflo.Json.Flow.Schema.JSON;
 using Friflo.Json.Flow.UserAuth;
-using Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab;
+using Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         public static void CS_JSON () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var generator = JsonSchemaGenerator.Generate(typeStore, UserStoreTypes, null, UserStoreTypes);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore");
+            generator.WriteFiles(JsonSchemaFolder);
         }
         
         /// <summary>C# -> JTD - model: <see cref="UserStore"/></summary>
@@ -45,10 +45,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         
         // ---------------------------------- input: JSON Schema ----------------------------------
         
+        static readonly string JsonSchemaFolder = CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore";
+        
+        
         /// <summary>JSON Schema -> Typescript - model: <see cref="UserStore"/></summary>
-        [Test, Order(2)]
+        [Test]
         public static void JSON_Typescript () {
-            var schemas     = JsonTypeSchema.FromFolder(CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore");
+            var schemas     = JsonTypeSchema.FromFolder(JsonSchemaFolder);
             var schema      = new JsonTypeSchema(schemas);
             var jsonTypes   = SchemaTest.JsonTypesFromTypes (UserStoreTypes, "Friflo.Json.Flow.UserAuth.");
             var generator   = TypescriptGenerator.Generate(schema, jsonTypes);
@@ -56,14 +59,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         }
         
         /// <summary>JSON Schema -> JSON Schema - model: <see cref="UserStore"/></summary>
-        [Test]
+        [Test, Order(2)]
         public static void JSON_JSON () {
-            var schemas     = JsonTypeSchema.FromFolder(CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore");
+            var schemas     = JsonTypeSchema.FromFolder(JsonSchemaFolder);
             var schema      = new JsonTypeSchema(schemas);
             var jsonTypes   = SchemaTest.JsonTypesFromTypes (UserStoreTypes, "Friflo.Json.Flow.UserAuth.");
             var typeDefs    = schema.TypesAsTypeDefs(jsonTypes);
             var generator   = JsonSchemaGenerator.Generate(schema, jsonTypes, typeDefs);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema-Loop/JSON/UserStore");
+            
+            var loopFolder = CommonUtils.GetBasePath() + "assets/Schema-Loop/JSON/UserStore";
+            generator.WriteFiles(loopFolder, false);
+            SchemaTest.AssertFoldersAreEqual(JsonSchemaFolder, loopFolder);
         }
     }
 }
