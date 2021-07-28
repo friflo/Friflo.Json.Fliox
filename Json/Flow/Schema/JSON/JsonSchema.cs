@@ -18,6 +18,8 @@ namespace Friflo.Json.Flow.Schema.JSON
         
         public  Dictionary<string, JsonType>    definitions;
         
+        /// <summary>file name is <see cref="name"/> + ".json".
+        /// E.g. <see cref="name"/>: Standard.json, <see cref="name"/>: "Standard</summary>
         [Fri.Ignore]
         public  string                          fileName;
         [Fri.Ignore]
