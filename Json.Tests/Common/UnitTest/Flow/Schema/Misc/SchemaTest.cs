@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
 using Friflo.Json.Flow.Schema;
 using Friflo.Json.Flow.Schema.Utils;
 using NUnit.Framework;
@@ -40,6 +42,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             }
         }
 
+        public static List<string> JsonTypesFromTypes(ICollection<Type> types, string package) {
+            var list = new List<string>();
+            foreach (var type in types) {
+                list.Add($"./{package}{type.Name}.json#/definitions/{type.Name}");
+            }
+            return list;
+        }
 
         // ReSharper disable once UnusedParameter.Local
         private static void EnsureSymbol(string _) {}
