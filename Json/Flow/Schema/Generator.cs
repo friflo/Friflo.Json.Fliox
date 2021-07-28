@@ -86,7 +86,7 @@ namespace Friflo.Json.Flow.Schema
 
         /// <summary>
         /// The generator context class used for specific code generators like <see cref="TypescriptGenerator"/>.
-        /// This class contains also general configuration for for generations. 
+        /// This class contains also general configuration for code generation. 
         /// </summary>
         /// <param name="schema">
         ///   The schema containing the types used to generate code. The library itself provide
@@ -100,11 +100,11 @@ namespace Friflo.Json.Flow.Schema
         /// </param>
         /// <param name="separateTypes">
         ///   Optional list of types enabling each listed type is generated in its own file.
-        ///   JSON Schema related tools often expect exactly this schema structure like VSCode. See:
+        ///   JSON Schema related tools often expect this schema structure like VSCode. See:
         ///   [JSON editing in Visual Studio Code] https://code.visualstudio.com/docs/languages/json#_mapping-in-the-user-settings
         /// </param>
         /// <param name="getPath">
-        ///   An optional callback function to customize the path of generated file.
+        ///   An optional callback function used to customize the path of generated files.
         ///   E.g. in case of Java it would be: <code>type => $"{type.Namespace}.{type.Name}"</code> to generate
         ///   each type in its own file.
         /// </param>
