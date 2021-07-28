@@ -14,7 +14,7 @@ using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 {
-    public static class CSharpTo
+    public static class PocStoreSchema
     {
         private static readonly Type[] PocStoreTypes    = { typeof(Order), typeof(Customer), typeof(Article), typeof(Producer), typeof(Employee), typeof(TestType) };
         

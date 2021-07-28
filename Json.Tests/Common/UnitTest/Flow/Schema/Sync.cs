@@ -12,7 +12,7 @@ using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 {
-    public static class Sync
+    public static class SyncSchema
     {
         private static readonly Type[] SyncTypes        = { typeof(DatabaseMessage) };
 

@@ -13,7 +13,7 @@ using NUnit.Framework;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 {
-    public static class JsonSchemaTo
+    public static class UserStoreSchema
     {
         private static readonly Type[] UserStoreTypes   = { typeof(Role), typeof(UserCredential), typeof(UserPermission) };
 
