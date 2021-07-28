@@ -118,7 +118,7 @@ namespace Friflo.Json.Flow.Schema.Native
             return isNullable;
         }
         
-        public ICollection<TypeDef> GetTypes(ICollection<Type> types) {
+        public ICollection<TypeDef> TypesAsTypeDefs(ICollection<Type> types) {
             if (types == null)
                 return null;
             var list = new List<TypeDef> (types.Count);

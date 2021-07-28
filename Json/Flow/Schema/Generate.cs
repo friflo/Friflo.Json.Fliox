@@ -19,7 +19,7 @@ namespace Friflo.Json.Flow.Schema
         public static Generator Generate(TypeStore typeStore, ICollection<Type> rootTypes, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
             typeStore.AddMappers(rootTypes);
             var schema      = new NativeTypeSchema(typeStore);
-            var sepTypes    = schema.GetTypes(separateTypes);
+            var sepTypes    = schema.TypesAsTypeDefs(separateTypes);
             var generator   = new Generator(schema, ".ts", stripNamespaces, sepTypes);
             Generate(generator);
             return generator;
@@ -42,7 +42,7 @@ namespace Friflo.Json.Flow.Schema
         public static Generator Generate (TypeStore typeStore, ICollection<Type> rootTypes, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
             typeStore.AddMappers(rootTypes);
             var schema      = new NativeTypeSchema(typeStore);
-            var sepTypes    = schema.GetTypes(separateTypes);
+            var sepTypes    = schema.TypesAsTypeDefs(separateTypes);
             var generator   = new Generator(schema, ".json", stripNamespaces, sepTypes);
             Generate(generator);
             return generator;

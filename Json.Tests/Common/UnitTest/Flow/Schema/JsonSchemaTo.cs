@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var schemas     = JsonTypeSchema.FromFolder(CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore");
             var schema      = new JsonTypeSchema(schemas);
             var jsonTypes   = JsonTypesFromTypes (CSharpTo.UserStoreTypes, "Friflo.Json.Flow.UserAuth.");
-            var typeDefs    = schema.GetTypes(jsonTypes);
+            var typeDefs    = schema.TypesAsTypeDefs(jsonTypes);
             var generator   = JsonSchemaGenerator.Generate(schema, jsonTypes, typeDefs);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema-Loop/JSON/UserStore");
         }
@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var schemas     = JsonTypeSchema.FromFolder(CommonUtils.GetBasePath() + "assets/Schema/JSON/PocStore");
             var schema      = new JsonTypeSchema(schemas);
             var jsonTypes   = JsonTypesFromTypes (CSharpTo.PocStoreTypes, "UnitTest.Flow.Graph.");
-            var typeDefs    = schema.GetTypes(jsonTypes);
+            var typeDefs    = schema.TypesAsTypeDefs(jsonTypes);
             var generator   = JsonSchemaGenerator.Generate(schema, jsonTypes, typeDefs);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema-Loop/JSON/PocStore");
         }

@@ -249,7 +249,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             return schemas;
         }
         
-        public ICollection<TypeDef> GetTypes(ICollection<string> types) {
+        public ICollection<TypeDef> TypesAsTypeDefs(ICollection<string> types) {
             if (types == null)
                 return null;
             var list = new List<TypeDef> (types.Count);
