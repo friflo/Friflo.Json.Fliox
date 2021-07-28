@@ -197,8 +197,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
         
         public static Generator Generate (TypeStore typeStore, ICollection<Type> rootTypes, string name, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
             typeStore.AddMappers(rootTypes);
-            var schema      = new NativeTypeSchema(typeStore, separateTypes);
-            var generator   = new Generator(schema, ".json", stripNamespaces);
+            var schema      = new NativeTypeSchema(typeStore);
+            var sepTypes    = schema.GetTypes(separateTypes);
+            var generator   = new Generator(schema, ".json", sepTypes, stripNamespaces);
             var _           = new JsonTypeDefinition(generator, name);
             return generator;
         }

@@ -13,12 +13,11 @@ namespace Friflo.Json.Flow.Schema.JSON
 {
     public class JsonTypeSchema : TypeSchema
     {
-        public  override    ICollection<TypeDef>    Types           { get; }
-        public  override    StandardTypes           StandardTypes   { get; }
-        public  override    ICollection<TypeDef>    SeparateTypes   { get; }
+        public  override    ICollection<TypeDef>            Types           { get; }
+        public  override    StandardTypes                   StandardTypes   { get; }
         
         public JsonTypeSchema(List<JsonSchema> schemaList) {
-            var allSchemas = new Dictionary<string, JsonTypeDef>(schemaList.Count);
+            var typeMap = new Dictionary<string, JsonTypeDef>(schemaList.Count);
             foreach (JsonSchema schema in schemaList) {
                 schema.typeDefs = new Dictionary<string, JsonTypeDef>(schema.definitions.Count);
                 foreach (var pair in schema.definitions) {
@@ -26,20 +25,20 @@ namespace Friflo.Json.Flow.Schema.JSON
                     var type        = pair.Value;
                     var typeDef     = new JsonTypeDef (type, typeName);
                     var schemaId = $"./{schema.name}#/definitions/{typeName}";
-                    allSchemas.Add(schemaId, typeDef);
+                    typeMap.Add(schemaId, typeDef);
                     var localId = $"#/definitions/{typeName}";
                     schema.typeDefs.Add(localId, typeDef);
                 }
             }
             
-            Types               = new List<TypeDef>(allSchemas.Values);
-            var standardTypes   = new JsonStandardTypes(allSchemas);
+            Types               = new List<TypeDef>(typeMap.Values);
+            var standardTypes   = new JsonStandardTypes(typeMap);
             StandardTypes       = standardTypes;
             
             var reader          = new ObjectReader(new TypeStore());
             
             foreach (JsonSchema schema in schemaList) {
-                var context = new JsonTypeContext(schema, allSchemas, standardTypes, reader);
+                var context = new JsonTypeContext(schema, typeMap, standardTypes, reader);
                 var rootRef = schema.rootRef;
                 if (rootRef != null) {
                     FindRef(schema.rootRef, context);
@@ -66,12 +65,12 @@ namespace Friflo.Json.Flow.Schema.JSON
                         }
                     }
                     if (oneOf != null) {
-                        var types = new List<TypeDef>(oneOf.Count);
+                        var unionTypes = new List<TypeDef>(oneOf.Count);
                         foreach (var item in oneOf) {
                             var itemRef = FindRef(item.reference, context);
-                            types.Add(itemRef);
+                            unionTypes.Add(itemRef);
                         }
-                        typeDef.unionType = new UnionType (type.discriminator, types);
+                        typeDef.unionType = new UnionType (type.discriminator, unionTypes);
                     }
                 }
             }
@@ -216,7 +215,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             return jsonSchemas;
         }
         
-        public static TypeSchema FromSchemas(Dictionary<string, string> jsonSchemas) {
+        public static JsonTypeSchema FromSchemas(Dictionary<string, string> jsonSchemas) {
             var schemas = new List<JsonSchema>(jsonSchemas.Count);
             var reader = new ObjectReader(new TypeStore());
             foreach (var jsonSchema in jsonSchemas) {
@@ -227,6 +226,18 @@ namespace Friflo.Json.Flow.Schema.JSON
             var typeSchema = new JsonTypeSchema(schemas);
             return typeSchema;
         }
+        
+        /* public ICollection<TypeDef> GetTypes(ICollection<Type> types) {
+            if (types == null)
+                return null;
+            var list = new List<TypeDef> (types.Count);
+            foreach (var nativeType in types) {
+                var fullName = $"./{nativeType.Namespace}.{nativeType.Name}.json#/definitions/{nativeType.Name}";
+                var type = typeMap[fullName];
+                list.Add(type);
+            }
+            return list;
+        } */
     }
     
     internal readonly struct JsonTypeContext

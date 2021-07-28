@@ -13,6 +13,5 @@ namespace Friflo.Json.Flow.Schema.Definition
     {
         public abstract     ICollection<TypeDef>    Types           { get; }
         public abstract     StandardTypes           StandardTypes   { get; }
-        public abstract     ICollection<TypeDef>    SeparateTypes   { get; }
     }
 }

@@ -15,11 +15,11 @@ namespace Friflo.Json.Flow.Schema.Native
     {
         public   override   ICollection<TypeDef>            Types           { get; }
         public   override   StandardTypes                   StandardTypes   { get; }
-        public   override   ICollection<TypeDef>            SeparateTypes   { get; }
+
         /// <summary>Contains only non <see cref="Nullable"/> Type's</summary>
         private  readonly   Dictionary<Type, NativeTypeDef> nativeTypes;
         
-        public NativeTypeSchema (TypeStore typeStore, ICollection<Type> separateTypes = null) {
+        public NativeTypeSchema (TypeStore typeStore) {
             var typeMappers = typeStore.GetTypeMappers();
             
             // Collect all types into containers to simplify further processing
@@ -43,7 +43,6 @@ namespace Friflo.Json.Flow.Schema.Native
             var standardTypes = new NativeStandardTypes(nativeTypes);
             Types           = types;
             StandardTypes   = standardTypes;
-            SeparateTypes   = GetTypes(separateTypes);
 
             // Set the Name and Namespace of all TypeDefs 
             foreach (var pair in nativeTypes) {
@@ -119,7 +118,7 @@ namespace Friflo.Json.Flow.Schema.Native
             return isNullable;
         }
         
-        private ICollection<TypeDef> GetTypes(ICollection<Type> types) {
+        public ICollection<TypeDef> GetTypes(ICollection<Type> types) {
             if (types == null)
                 return null;
             var list = new List<TypeDef> (types.Count);
