@@ -34,7 +34,7 @@ namespace Friflo.Json.Flow.Schema
             generator.GroupTypesByPath(true); // sort dependencies - otherwise possible error TS2449: Class '...' used before its declaration.
             emitter.EmitFileHeaders(sb);
             // EmitFileFooters(sb);  no TS footer
-            generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}"); // $"{ns.Replace(".", "/")}{generator.extension}");
+            generator.EmitFiles(sb, ns => $"{ns}{generator.fileExt}");
         }
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {

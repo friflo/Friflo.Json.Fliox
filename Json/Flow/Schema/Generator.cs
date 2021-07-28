@@ -181,7 +181,7 @@ namespace Friflo.Json.Flow.Schema
             sb.Append(delimiter);
         }
         
-        public void CreateFiles(StringBuilder sb, Func<string, string> toFilename, string delimiter = null) {
+        public void EmitFiles(StringBuilder sb, Func<string, string> toFilename, string delimiter = null) {
             foreach (var pair in emitFiles) {
                 string      path        = pair.Key;
                 EmitFile    emitFile    = pair.Value;

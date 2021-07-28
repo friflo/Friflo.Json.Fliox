@@ -36,7 +36,7 @@ namespace Friflo.Json.Flow.Schema
             generator.GroupTypesByPath(false);
             emitter.EmitFileHeaders(sb);
             emitter.EmitFileFooters(sb);
-            generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}", Next); // $"{ns.Replace(".", "/")}.ts");
+            generator.EmitFiles(sb, ns => $"{ns}{generator.fileExt}", Next);
         }
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
