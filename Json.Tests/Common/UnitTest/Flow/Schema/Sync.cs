@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
     {
         private static readonly Type[] SyncTypes        = { typeof(DatabaseMessage) };
 
-        // ---------------------------------------- C# ----------------------------------------
+        // -------------------------------------- input: C# --------------------------------------
         
         /// <summary>C# -> Typescript - protocol: <see cref="DatabaseMessage"/></summary>
         [Test]
