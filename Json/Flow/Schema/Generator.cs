@@ -42,7 +42,6 @@ namespace Friflo.Json.Flow.Schema
     ///     to ensure the resulting generator can be compared to their originals with tools like WinMerge.
     ///     In particular the methods and their order:
     ///     <list type="bullet">
-    ///       <item><see cref="TypescriptGenerator.GenerateSchema"/></item>
     ///       <item><see cref="TypescriptGenerator.GetStandardTypes"/></item>
     ///       <item><see cref="TypescriptGenerator.EmitStandardType"/></item>
     ///       <item><see cref="TypescriptGenerator.EmitType"/></item>
