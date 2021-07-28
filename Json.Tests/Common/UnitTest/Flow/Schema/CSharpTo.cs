@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             typeStore.AddMappers(PocStoreTypes);
             var schema      = new NativeTypeSchema(typeStore);
             var generator   = new Generator(schema, ".ts", null, new[]{"Friflo.Json.Tests.Common."});
-            var _           = new TypescriptGenerator(generator);
+            TypescriptGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/PocStore");
         }
         
@@ -90,7 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var schema      = new NativeTypeSchema(typeStore);
             var sepTypes    = schema.GetTypes(PocStoreTypes);
             var generator   = new Generator(schema, ".json", sepTypes, new[]{"Friflo.Json.Tests.Common."});
-            var _           = new JsonSchemaGenerator(generator);
+            JsonSchemaGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JSON/PocStore");
         }
     }

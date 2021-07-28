@@ -15,24 +15,24 @@ namespace Friflo.Json.Flow.Schema
         private readonly    Generator                   generator;
         private readonly    Dictionary<TypeDef, string> standardTypes;
 
-        public TypescriptGenerator (Generator generator) {
+        private TypescriptGenerator (Generator generator) {
             this.generator  = generator;
             standardTypes   = GetStandardTypes(generator.standardTypes);
-            GenerateSchema();
         }
         
-        private void GenerateSchema() {
+        public static void Generate(Generator generator) {
+            var emitter = new TypescriptGenerator(generator);
             var sb = new StringBuilder();
             // emit custom types
             foreach (var type in generator.types) {
                 sb.Clear();
-                var result = EmitType(type, sb);
+                var result = emitter.EmitType(type, sb);
                 if (result == null)
                     continue;
                 generator.AddEmitType(result);
             }
             generator.GroupTypesByPath(true); // sort dependencies - otherwise possible error TS2449: Class '...' used before its declaration.
-            EmitFileHeaders(sb);
+            emitter.EmitFileHeaders(sb);
             // EmitFileFooters(sb);  no TS footer
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}"); // $"{ns.Replace(".", "/")}{generator.extension}");
         }

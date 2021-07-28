@@ -21,13 +21,13 @@ namespace Friflo.Json.Flow.Schema
             var schema      = new NativeTypeSchema(typeStore);
             var sepTypes    = schema.GetTypes(separateTypes);
             var generator   = new Generator(schema, ".ts", sepTypes, stripNamespaces);
-            var _           = new TypescriptGenerator(generator);
+            Generate(generator);
             return generator;
         }
         
         public static Generator Generate(TypeSchema schema, ICollection<string> stripNamespaces = null, ICollection<TypeDef> separateTypes = null) {
             var generator   = new Generator(schema, ".ts", separateTypes, stripNamespaces);
-            var _           = new TypescriptGenerator(generator);
+            Generate(generator);
             return generator;
         }
     }
@@ -44,13 +44,13 @@ namespace Friflo.Json.Flow.Schema
             var schema      = new NativeTypeSchema(typeStore);
             var sepTypes    = schema.GetTypes(separateTypes);
             var generator   = new Generator(schema, ".json", sepTypes, stripNamespaces);
-            var _           = new JsonSchemaGenerator(generator);
+            Generate(generator);
             return generator;
         }
         
         public static Generator Generate(TypeSchema schema, ICollection<string> stripNamespaces = null, ICollection<TypeDef> separateTypes = null) {
             var generator   = new Generator(schema, ".json", separateTypes, stripNamespaces);
-            var _           = new JsonSchemaGenerator(generator);
+            Generate(generator);
             return generator;
         }
     }

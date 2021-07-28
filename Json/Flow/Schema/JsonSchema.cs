@@ -17,25 +17,25 @@ namespace Friflo.Json.Flow.Schema
         private  readonly   Dictionary<TypeDef, string> standardTypes;
         private  const      string                      Next = ",\r\n";
         
-        public JsonSchemaGenerator (Generator generator) {
+        private JsonSchemaGenerator (Generator generator) {
             this.generator  = generator;
             standardTypes   = GetStandardTypes(generator.standardTypes);
-            GenerateSchema();
         }
         
-        private void GenerateSchema() {
+        public static void Generate(Generator generator) {
+            var emitter = new JsonSchemaGenerator(generator);
             var sb = new StringBuilder();
             // emit custom types
             foreach (var type in generator.types) {
                 sb.Clear();
-                var result = EmitType(type, sb);
+                var result = emitter.EmitType(type, sb);
                 if (result == null)
                     continue;
                 generator.AddEmitType(result);
             }
             generator.GroupTypesByPath(false);
-            EmitFileHeaders(sb);
-            EmitFileFooters(sb);
+            emitter.EmitFileHeaders(sb);
+            emitter.EmitFileFooters(sb);
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}", Next); // $"{ns.Replace(".", "/")}.ts");
         }
         

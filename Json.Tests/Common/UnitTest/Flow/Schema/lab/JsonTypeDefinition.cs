@@ -21,26 +21,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
         private  readonly   Dictionary<TypeDef, string> primitiveTypes;
         private  const      string                      Next = ",\r\n";
         
-        public JsonTypeDefinition (Generator generator, string name) {
+        private JsonTypeDefinition (Generator generator, string name) {
             this.generator  = generator;
             standardTypes   = GetStandardTypes (generator.standardTypes);
             primitiveTypes  = GetPrimitiveTypes(generator.standardTypes);
-            GenerateSchema(name);
         }
         
-        private void GenerateSchema(string name) {
+        public static void Generate(Generator generator, string name) {
+            var emitter = new JsonTypeDefinition(generator, name);
             var sb = new StringBuilder();
             // emit custom types
             foreach (var type in generator.types) {
                 sb.Clear();
-                var result = EmitType(type, sb);
+                var result = emitter.EmitType(type, sb);
                 if (result == null)
                     continue;
                 generator.AddEmitType(result);
             }
             generator.GroupToSingleFile(name);
-            EmitFileHeaders(sb);
-            EmitFileFooters(sb);
+            emitter.EmitFileHeaders(sb);
+            emitter.EmitFileFooters(sb);
             generator.CreateFiles(sb, ns => $"{ns}{generator.fileExt}", Next); // $"{ns.Replace(".", "/")}.ts");
         }
         
@@ -200,7 +200,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
             var schema      = new NativeTypeSchema(typeStore);
             var sepTypes    = schema.GetTypes(separateTypes);
             var generator   = new Generator(schema, ".json", sepTypes, stripNamespaces);
-            var _           = new JsonTypeDefinition(generator, name);
+            Generate(generator, name);
             return generator;
         }
     }
