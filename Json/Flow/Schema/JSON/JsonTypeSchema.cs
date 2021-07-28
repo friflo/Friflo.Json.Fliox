@@ -23,9 +23,12 @@ namespace Friflo.Json.Flow.Schema.JSON
             foreach (JsonSchema schema in schemaList) {
                 schema.typeDefs = new Dictionary<string, JsonTypeDef>(schema.definitions.Count);
                 foreach (var pair in schema.definitions) {
+                    if (!schema.name.EndsWith(".json"))
+                        throw new InvalidOperationException($"Expect schema file name ends with .json: name: {schema.name}");
+                    var packageName = schema.name.Substring(0, schema.name.Length - ".json".Length);
                     var typeName    = pair.Key;
                     var type        = pair.Value;
-                    var typeDef     = new JsonTypeDef (type, typeName);
+                    var typeDef     = new JsonTypeDef (type, typeName, packageName);
                     var schemaId = $"./{schema.name}#/definitions/{typeName}";
                     typeMap.Add(schemaId, typeDef);
                     var localId = $"#/definitions/{typeName}";
