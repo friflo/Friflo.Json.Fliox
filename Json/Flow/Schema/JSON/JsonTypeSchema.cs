@@ -208,10 +208,10 @@ namespace Friflo.Json.Flow.Schema.JSON
         }
         
         private static string GetNamespace (JsonSchema schema, string typeName) {
-            var ns = schema.fileName;
-            if (!ns.EndsWith(".json"))
-                throw new InvalidOperationException($"Expect schema file name ends with .json: name: {ns}");
-            var name = ns.Substring(0, ns.Length - ".json".Length);
+            var name = schema.fileName;
+            if (name.EndsWith(".json")) {
+                name = name.Substring(0, name.Length - ".json".Length);
+            }
             var rootRef = schema.rootRef;
             if (rootRef != null) {
                 if (!rootRef.StartsWith("#/definitions/"))
