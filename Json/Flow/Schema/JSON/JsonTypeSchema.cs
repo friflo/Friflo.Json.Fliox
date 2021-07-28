@@ -205,7 +205,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             return context.schemas[reference];
         }
 
-        public static TypeSchema FromFolder(string folder) {
+        public static Dictionary<string, string> FromFolder(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
             var jsonSchemas = new Dictionary<string, string>(fileNames.Length);
             foreach (var fileName in fileNames) {
@@ -213,7 +213,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                 var schema = File.ReadAllText(fileName, Encoding.UTF8);
                 jsonSchemas.Add(schemaName, schema);
             }
-            return FromSchemas(jsonSchemas);
+            return jsonSchemas;
         }
         
         public static TypeSchema FromSchemas(Dictionary<string, string> jsonSchemas) {
