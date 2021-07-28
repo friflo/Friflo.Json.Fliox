@@ -16,6 +16,6 @@ export class UserCredential {
 
 export class UserPermission {
     id     : string;
-    roles? : string | null;
+    roles? : string[] | null;
 }
 

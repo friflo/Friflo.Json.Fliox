@@ -49,7 +49,7 @@ export class Order {
 export class Producer {
     id         : string;
     name       : string;
-    employees? : string | null;
+    employees? : string[] | null;
 }
 
 export class TestType {

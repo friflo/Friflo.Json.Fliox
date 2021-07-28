@@ -151,6 +151,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                     if (itemType == "null")
                         continue;
                     if (itemType == "array") {
+                        isArray = true;
                         return FindFieldType (items, context);
                     }
                     var elementTypeDef = FindType(itemType, context);
