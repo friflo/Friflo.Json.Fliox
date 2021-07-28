@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Friflo.Json.Burst.Utils;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Schema.Definition;
 
@@ -23,11 +24,9 @@ namespace Friflo.Json.Flow.Schema.JSON
             foreach (JsonSchema schema in schemaList) {
                 schema.typeDefs = new Dictionary<string, JsonTypeDef>(schema.definitions.Count);
                 foreach (var pair in schema.definitions) {
-                    if (!schema.name.EndsWith(".json"))
-                        throw new InvalidOperationException($"Expect schema file name ends with .json: name: {schema.name}");
-                    var packageName = schema.name.Substring(0, schema.name.Length - ".json".Length);
                     var typeName    = pair.Key;
                     var type        = pair.Value;
+                    var packageName = GetNamespace(schema, typeName, type);
                     var typeDef     = new JsonTypeDef (type, typeName, packageName);
                     var schemaId = $"./{schema.name}#/definitions/{typeName}";
                     typeMap.Add(schemaId, typeDef);
@@ -207,6 +206,23 @@ namespace Friflo.Json.Flow.Schema.JSON
                 return context.schema.typeDefs[reference];
             }
             return context.schemas[reference];
+        }
+        
+        private static string GetNamespace (JsonSchema schema, string typeName, JsonType jsonType) {
+            var ns = schema.name;
+            if (!ns.EndsWith(".json"))
+                throw new InvalidOperationException($"Expect schema file name ends with .json: name: {ns}");
+            var name = ns.Substring(0, ns.Length - ".json".Length);
+            var rootRef = schema.rootRef;
+            if (rootRef != null) {
+                if (!rootRef.StartsWith("#/definitions/"))
+                    throw new InvalidOperationException($"Expect root \"$ref\" starts with: #/definitions/. was: {rootRef}");
+                var rootTypeName = rootRef.Substring("#/definitions/".Length);
+                if (rootTypeName == typeName) {
+                    name = name.Substring(0, name.Length - typeName.Length - 1); // -1 => '.'
+                }
+            }
+            return name;
         }
 
         public static Dictionary<string, string> FromFolder(string folder) {

@@ -8,3 +8,14 @@ export class Role {
     description? : string | null;
 }
 
+export class UserCredential {
+    id        : string;
+    passHash? : string | null;
+    token?    : string | null;
+}
+
+export class UserPermission {
+    id     : string;
+    roles? : string | null;
+}
+
