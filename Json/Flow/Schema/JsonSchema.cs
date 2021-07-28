@@ -107,7 +107,6 @@ namespace Friflo.Json.Flow.Schema
                     firstField = false;
                     requiredFields.Add(discriminator);
                 }
-                // fields
                 foreach (var field in fields) {
                     // if (generator.IsDerivedField(type, field))  JSON Schema list all properties
                     //    continue;

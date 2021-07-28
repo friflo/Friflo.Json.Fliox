@@ -12,8 +12,9 @@ namespace Friflo.Json.Flow.Schema
 {
     public partial class TypescriptGenerator
     {
-        private readonly    Generator                   generator;
-        private readonly    Dictionary<TypeDef, string> standardTypes;
+        private  readonly   Generator                   generator;
+        private  readonly   Dictionary<TypeDef, string> standardTypes;
+
 
         private TypescriptGenerator (Generator generator) {
             this.generator  = generator;
@@ -77,14 +78,13 @@ namespace Friflo.Json.Flow.Schema
                 string  discriminator   = null;
                 var     discriminant    = type.Discriminant;
                 var     extendsStr      = "";
+                var baseType    = type.BaseType;
                 if (discriminant != null) {
-                    var baseType    = type.BaseType;
                     discriminator   = baseType.UnionType.discriminator;
                     extendsStr = $"extends {baseType.Name} ";
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                     dependencies.Add(baseType);
                 } else {
-                    var baseType = type.BaseType;
                     if (baseType != null) {
                         extendsStr = $"extends {baseType.Name} ";
                         imports.Add(baseType);
@@ -113,7 +113,6 @@ namespace Friflo.Json.Flow.Schema
                     var indent = Indent(maxFieldName, discriminator);
                     sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
                 }
-                // fields                
                 foreach (var field in fields) {
                     if (field.IsDerivedField)
                         continue;
