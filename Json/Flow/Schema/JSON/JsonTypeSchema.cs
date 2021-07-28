@@ -208,10 +208,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         }
         
         private static string GetNamespace (JsonSchema schema, string typeName) {
-            var name = schema.fileName;
-            if (name.EndsWith(".json")) {
-                name = name.Substring(0, name.Length - ".json".Length);
-            }
+            var name = schema.name;
             var rootRef = schema.rootRef;
             if (rootRef != null) {
                 if (!rootRef.StartsWith("#/definitions/"))
@@ -228,11 +225,13 @@ namespace Friflo.Json.Flow.Schema.JSON
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
             var schemas = new List<JsonSchema>();
             var reader = new ObjectReader(new TypeStore());
-            foreach (var fileName in fileNames) {
-                var schemaName = fileName.Substring(folder.Length + 1);
-                var jsonSchema = File.ReadAllText(fileName, Encoding.UTF8);
+            foreach (var path in fileNames) {
+                var fileName = path.Substring(folder.Length + 1);
+                var name = fileName.Substring(0, fileName.Length - ".json".Length);
+                var jsonSchema = File.ReadAllText(path, Encoding.UTF8);
                 var schema = reader.Read<JsonSchema>(jsonSchema);
-                schema.fileName = schemaName;
+                schema.fileName = fileName;
+                schema.name = name;
                 schemas.Add(schema);
             }
             return schemas;

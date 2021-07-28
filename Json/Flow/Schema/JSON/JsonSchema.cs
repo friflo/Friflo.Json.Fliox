@@ -21,6 +21,8 @@ namespace Friflo.Json.Flow.Schema.JSON
         [Fri.Ignore]
         public  string                          fileName;
         [Fri.Ignore]
+        public  string                          name;
+        [Fri.Ignore]
         public  Dictionary<string, JsonTypeDef> typeDefs;
 
         public override string                  ToString() => fileName;
