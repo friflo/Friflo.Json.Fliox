@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                     var type        = pair.Value;
                     var packageName = GetNamespace(schema, typeName);
                     var typeDef     = new JsonTypeDef (type, typeName, packageName);
-                    var schemaId = $"./{schema.name}#/definitions/{typeName}";
+                    var schemaId = $"./{schema.fileName}#/definitions/{typeName}";
                     typeMap.Add(schemaId, typeDef);
                     var localId = $"#/definitions/{typeName}";
                     schema.typeDefs.Add(localId, typeDef);
@@ -208,7 +208,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         }
         
         private static string GetNamespace (JsonSchema schema, string typeName) {
-            var ns = schema.name;
+            var ns = schema.fileName;
             if (!ns.EndsWith(".json"))
                 throw new InvalidOperationException($"Expect schema file name ends with .json: name: {ns}");
             var name = ns.Substring(0, ns.Length - ".json".Length);
@@ -232,7 +232,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                 var schemaName = fileName.Substring(folder.Length + 1);
                 var jsonSchema = File.ReadAllText(fileName, Encoding.UTF8);
                 var schema = reader.Read<JsonSchema>(jsonSchema);
-                schema.name = schemaName;
+                schema.fileName = schemaName;
                 schemas.Add(schema);
             }
             return schemas;
@@ -243,7 +243,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             var reader = new ObjectReader(new TypeStore());
             foreach (var jsonSchema in jsonSchemas) {
                 var schema = reader.Read<JsonSchema>(jsonSchema.Value);
-                schema.name = jsonSchema.Key;
+                schema.fileName = jsonSchema.Key;
                 schemas.Add(schema);
             }
             return schemas;
