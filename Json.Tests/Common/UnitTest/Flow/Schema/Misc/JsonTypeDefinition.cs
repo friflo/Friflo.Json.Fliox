@@ -14,6 +14,9 @@ using static Friflo.Json.Flow.Schema.Generator;
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
 {
     /// [RFC 8927 - JSON Type Definition] https://datatracker.ietf.org/doc/rfc8927/
+    /// Using JsonTypeDefinition was discarded as polymorphic cannot represented by tagged unions without violation
+    /// the specification. Because "Properties forms inside mapping cannot be nullable ..." but this is required. See:
+    /// [JSON Type Definition | Ajv JSON schema validator] https://ajv.js.org/json-type-definition.html#discriminator-form
     public class JsonTypeDefinition
     {
         private  readonly   Generator                   generator;
