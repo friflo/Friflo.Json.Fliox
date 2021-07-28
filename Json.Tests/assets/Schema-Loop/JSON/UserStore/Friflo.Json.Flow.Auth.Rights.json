@@ -36,7 +36,7 @@
             "extends": { "$ref": "#/definitions/Right" },
             "properties": {
                 "type":        { "enum": ["task"] },
-                "types":       { "type": "array", "items": { "$ref": "#/definitions/TaskType" } },
+                "types":       { "type": "array", "items": { "$ref": "./Friflo.Json.Flow.Sync.json#/definitions/TaskType" } },
                 "description": { "type": ["string", "null"] }
             },
             "required": [
@@ -91,7 +91,7 @@
             "type": "object",
             "properties": {
                 "operations":       { "type": ["array", "null"], "items": { "$ref": "#/definitions/OperationType" } },
-                "subscribeChanges": { "type": ["array", "null"], "items": { "$ref": "#/definitions/Change" } }
+                "subscribeChanges": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Flow.Sync.json#/definitions/Change" } }
             },
             "additionalProperties": false
         },
@@ -118,64 +118,6 @@
             "required": [
                 "type",
                 "names"
-            ],
-            "additionalProperties": false
-        },
-        "TaskType": {
-            "enum": [
-                "read",
-                "query",
-                "create",
-                "update",
-                "patch",
-                "delete",
-                "message",
-                "subscribeChanges",
-                "subscribeMessage",
-                "error"
-            ]
-        },
-        "Change": {
-            "enum": [
-                "create",
-                "update",
-                "patch",
-                "delete"
-            ]
-        },
-        "Role": {
-            "type": "object",
-            "properties": {
-                "id":          { "type": "string" },
-                "rights":      { "type": "array", "items": { "$ref": "#/definitions/Right" } },
-                "description": { "type": ["string", "null"] }
-            },
-            "required": [
-                "id",
-                "rights"
-            ],
-            "additionalProperties": false
-        },
-        "UserCredential": {
-            "type": "object",
-            "properties": {
-                "id":       { "type": "string" },
-                "passHash": { "type": ["string", "null"] },
-                "token":    { "type": ["string", "null"] }
-            },
-            "required": [
-                "id"
-            ],
-            "additionalProperties": false
-        },
-        "UserPermission": {
-            "type": "object",
-            "properties": {
-                "id":    { "type": "string" },
-                "roles": { "type": ["string", "null"] }
-            },
-            "required": [
-                "id"
             ],
             "additionalProperties": false
         }
