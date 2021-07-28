@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Schema.Utils
             this.generator      = generator;
             this.imports        = imports;
             this.type           = type;
-            standardTypes       = generator.schema.StandardTypes;
+            standardTypes       = generator.standardTypes;
         }
     }
 }

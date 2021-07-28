@@ -23,8 +23,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
         
         public JsonTypeDefinition (Generator generator, string name) {
             this.generator  = generator;
-            standardTypes   = GetStandardTypes (generator.schema.StandardTypes);
-            primitiveTypes  = GetPrimitiveTypes(generator.schema.StandardTypes);
+            standardTypes   = GetStandardTypes (generator.standardTypes);
+            primitiveTypes  = GetPrimitiveTypes(generator.standardTypes);
             GenerateSchema(name);
         }
         

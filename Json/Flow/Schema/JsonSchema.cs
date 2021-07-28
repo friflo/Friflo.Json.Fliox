@@ -19,7 +19,7 @@ namespace Friflo.Json.Flow.Schema
         
         public JsonSchemaGenerator (Generator generator) {
             this.generator  = generator;
-            standardTypes   = GetStandardTypes(generator.schema.StandardTypes);
+            standardTypes   = GetStandardTypes(generator.standardTypes);
             GenerateSchema();
         }
         
