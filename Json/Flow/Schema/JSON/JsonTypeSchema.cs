@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Friflo.Json.Burst.Utils;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Schema.Definition;
 
@@ -26,7 +25,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                 foreach (var pair in schema.definitions) {
                     var typeName    = pair.Key;
                     var type        = pair.Value;
-                    var packageName = GetNamespace(schema, typeName, type);
+                    var packageName = GetNamespace(schema, typeName);
                     var typeDef     = new JsonTypeDef (type, typeName, packageName);
                     var schemaId = $"./{schema.name}#/definitions/{typeName}";
                     typeMap.Add(schemaId, typeDef);
@@ -208,7 +207,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             return context.schemas[reference];
         }
         
-        private static string GetNamespace (JsonSchema schema, string typeName, JsonType jsonType) {
+        private static string GetNamespace (JsonSchema schema, string typeName) {
             var ns = schema.name;
             if (!ns.EndsWith(".json"))
                 throw new InvalidOperationException($"Expect schema file name ends with .json: name: {ns}");
@@ -225,18 +224,21 @@ namespace Friflo.Json.Flow.Schema.JSON
             return name;
         }
 
-        public static Dictionary<string, string> FromFolder(string folder) {
+        public static List<JsonSchema> FromFolder(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
-            var jsonSchemas = new Dictionary<string, string>(fileNames.Length);
+            var schemas = new List<JsonSchema>();
+            var reader = new ObjectReader(new TypeStore());
             foreach (var fileName in fileNames) {
                 var schemaName = fileName.Substring(folder.Length + 1);
-                var schema = File.ReadAllText(fileName, Encoding.UTF8);
-                jsonSchemas.Add(schemaName, schema);
+                var jsonSchema = File.ReadAllText(fileName, Encoding.UTF8);
+                var schema = reader.Read<JsonSchema>(jsonSchema);
+                schema.name = schemaName;
+                schemas.Add(schema);
             }
-            return jsonSchemas;
+            return schemas;
         }
         
-        public static JsonTypeSchema FromSchemas(Dictionary<string, string> jsonSchemas) {
+        private static List<JsonSchema> FromSchemas(Dictionary<string, string> jsonSchemas) {
             var schemas = new List<JsonSchema>(jsonSchemas.Count);
             var reader = new ObjectReader(new TypeStore());
             foreach (var jsonSchema in jsonSchemas) {
@@ -244,8 +246,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                 schema.name = jsonSchema.Key;
                 schemas.Add(schema);
             }
-            var typeSchema = new JsonTypeSchema(schemas);
-            return typeSchema;
+            return schemas;
         }
         
         public ICollection<TypeDef> GetTypes(ICollection<string> types) {
