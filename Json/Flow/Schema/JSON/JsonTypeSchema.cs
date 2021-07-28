@@ -16,8 +16,10 @@ namespace Friflo.Json.Flow.Schema.JSON
         public  override    ICollection<TypeDef>            Types           { get; }
         public  override    StandardTypes                   StandardTypes   { get; }
         
+        private readonly    Dictionary<string, JsonTypeDef> typeMap;
+        
         public JsonTypeSchema(List<JsonSchema> schemaList) {
-            var typeMap = new Dictionary<string, JsonTypeDef>(schemaList.Count);
+            typeMap = new Dictionary<string, JsonTypeDef>(schemaList.Count);
             foreach (JsonSchema schema in schemaList) {
                 schema.typeDefs = new Dictionary<string, JsonTypeDef>(schema.definitions.Count);
                 foreach (var pair in schema.definitions) {
@@ -227,17 +229,16 @@ namespace Friflo.Json.Flow.Schema.JSON
             return typeSchema;
         }
         
-        /* public ICollection<TypeDef> GetTypes(ICollection<Type> types) {
+        public ICollection<TypeDef> GetTypes(ICollection<string> types) {
             if (types == null)
                 return null;
             var list = new List<TypeDef> (types.Count);
-            foreach (var nativeType in types) {
-                var fullName = $"./{nativeType.Namespace}.{nativeType.Name}.json#/definitions/{nativeType.Name}";
-                var type = typeMap[fullName];
-                list.Add(type);
+            foreach (var type in types) {
+                var typeDef = typeMap[type];
+                list.Add(typeDef);
             }
             return list;
-        } */
+        }
     }
     
     internal readonly struct JsonTypeContext
