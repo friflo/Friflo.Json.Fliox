@@ -70,7 +70,7 @@ namespace Friflo.Json.Flow.Schema
         /// map of all <see cref="TypeDef"/>'s required by the types provided for schema generation
         public   readonly   ICollection<TypeDef>            types;
         /// map of all generated files. key: file path  
-        public   readonly   Dictionary<string, EmitFile>    emitFiles       = new Dictionary<string, EmitFile>();
+        public   readonly   Dictionary<string, EmitFile>    fileEmits       = new Dictionary<string, EmitFile>();
         /// set of generated files and their source content. key: file name
         public   readonly   Dictionary<string, string>      files           = new Dictionary<string, string>();
         /// set of files where each type is generated into a separate file
@@ -166,8 +166,8 @@ namespace Friflo.Json.Flow.Schema
             }
             foreach (var emit in emits) {
                 var filePath = emit.path;
-                if (!emitFiles.TryGetValue(filePath, out var emitFile)) {
-                    emitFiles.Add(filePath, emitFile = new EmitFile(filePath));
+                if (!this.fileEmits.TryGetValue(filePath, out var emitFile)) {
+                    this.fileEmits.Add(filePath, emitFile = new EmitFile(filePath));
                 }
                 emitFile.emitTypes.Add(emit);
                 foreach (var type in emit.imports) {
@@ -181,7 +181,7 @@ namespace Friflo.Json.Flow.Schema
         public void GroupToSingleFile(string name) {
             ICollection<EmitType> emits = emitTypes.Values;
             var emitFile = new EmitFile($"{name}{fileExt}");
-            emitFiles.Add(name, emitFile);
+            this.fileEmits.Add(name, emitFile);
             foreach (var emit in emits) {
                 emitFile.emitTypes.Add(emit);
             }
@@ -211,7 +211,7 @@ namespace Friflo.Json.Flow.Schema
         }
         
         public void EmitFiles(StringBuilder sb, Func<string, string> toFilename, string delimiter = null) {
-            foreach (var pair in emitFiles) {
+            foreach (var pair in fileEmits) {
                 string      path        = pair.Key;
                 EmitFile    emitFile    = pair.Value;
                 sb.Clear();

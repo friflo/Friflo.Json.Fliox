@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         // ReSharper disable once UnusedMember.Local
         private static void EnsureApiAccess() {
             EnsureSymbol(nameof(Generator.files));
-            EnsureSymbol(nameof(Generator.emitFiles));
+            EnsureSymbol(nameof(Generator.fileEmits));
             EnsureSymbol(nameof(Generator.types));
             EnsureSymbol(nameof(Generator.fileExt));
             

@@ -168,7 +168,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
         }
         
         private void EmitFileHeaders(StringBuilder sb) {
-            foreach (var pair in generator.emitFiles) {
+            foreach (var pair in generator.fileEmits) {
                 var emitFile = pair.Value;
                 sb.Clear();
                 sb.AppendLine("{");
@@ -180,7 +180,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.lab
         }
         
         private void EmitFileFooters(StringBuilder sb) {
-            foreach (var pair in generator.emitFiles) {
+            foreach (var pair in generator.fileEmits) {
                 var emitFile = pair.Value;
                 sb.Clear();
                 sb.AppendLine();

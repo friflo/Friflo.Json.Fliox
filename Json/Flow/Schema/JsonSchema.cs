@@ -179,7 +179,7 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private void EmitFileHeaders(StringBuilder sb) {
-            foreach (var pair in generator.emitFiles) {
+            foreach (var pair in generator.fileEmits) {
                 var emitFile = pair.Value;
                 sb.Clear();
                 sb.AppendLine("{");
@@ -196,7 +196,7 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private void EmitFileFooters(StringBuilder sb) {
-            foreach (var pair in generator.emitFiles) {
+            foreach (var pair in generator.fileEmits) {
                 var emitFile = pair.Value;
                 sb.Clear();
                 sb.AppendLine();

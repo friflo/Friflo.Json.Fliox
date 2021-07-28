@@ -170,7 +170,7 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private void EmitFileHeaders(StringBuilder sb) {
-            foreach (var pair in generator.emitFiles) {
+            foreach (var pair in generator.fileEmits) {
                 EmitFile    emitFile    = pair.Value;
                 string      filePath    = pair.Key;
                 sb.Clear();
