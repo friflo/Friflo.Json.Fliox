@@ -2,7 +2,7 @@
 [![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/friflo/Friflo.Json.Flow)
 
 
-# ![logo](docs/images/friflo-json-flow.svg)          **friflo JSON Flow**
+# ![logo](docs/images/friflo-json-flow.svg)        ***friflo*** **JSON Flow**
 
 
 
