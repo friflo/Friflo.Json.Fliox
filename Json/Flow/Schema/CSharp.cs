@@ -125,16 +125,17 @@ namespace Friflo.Json.Flow.Schema
                 foreach (var field in fields) {
                     if (field.IsDerivedField)
                         continue;
-                    bool notNull = field.required || field.isArray || field.isDictionary || !field.type.IsStruct;
                     var fieldType = GetFieldType(field, context);
-                    var emitField = new EmitField(fieldType, field.name, notNull);
+                    var emitField = new EmitField(fieldType, field);
                     emitFields.Add(emitField);
                 }
                 int maxFieldName    = emitFields.MaxLength(field => field.type.Length);
                 foreach (var field in emitFields) {
-                    var indent  = Indent(maxFieldName, field.type);
-                    var nullStr = field.notNull ? " " : "?";
-                    sb.AppendLine($"    {field.type}{nullStr}{indent} {field.name};");
+                    var indent   = Indent(maxFieldName, field.type);
+                    var def      = field.def;
+                    bool notNull = def.required || def.isArray || def.isDictionary || !def.type.IsStruct;
+                    var nullStr = notNull ? " " : "?";
+                    sb.AppendLine($"    {field.type}{nullStr}{indent} {def.name};");
                 }
                 sb.AppendLine("}");
                 sb.AppendLine();
@@ -215,14 +216,12 @@ namespace Friflo.Json.Flow.Schema
     }
     
     internal readonly struct EmitField {
-        internal readonly   string  type;
-        internal readonly   string  name;
-        internal readonly   bool    notNull;
+        internal readonly   string      type;
+        internal readonly   FieldDef    def;
         
-        internal EmitField (string type, string name, bool notNull) {
-            this.type       = type;
-            this.name       = name;
-            this.notNull   = notNull;
+        internal EmitField (string type, FieldDef def) {
+            this.type   = type;
+            this.def    = def;
         }
     }
 }
