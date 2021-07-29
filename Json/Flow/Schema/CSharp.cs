@@ -67,7 +67,6 @@ namespace Friflo.Json.Flow.Schema
             var context         = new TypeContext (generator, imports, type);
             if (type.IsComplex) {
                 var fields          = type.Fields;
-                var discriminant    = type.Discriminant;
                 var extendsStr      = "";
                 var baseType    = type.BaseType;
                 if (baseType != null) {
@@ -88,10 +87,6 @@ namespace Friflo.Json.Flow.Schema
                         imports.Add(polyType);
                     }
                     sb.AppendLine($"public abstract class {type.Name} {extendsStr}{{");
-                }
-                if (discriminant != null) {
-                    // var indent = Indent(maxFieldName, discriminator);
-                    // sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
                 }
                 var emitFields = new List<EmitField>();
                 foreach (var field in fields) {
