@@ -104,7 +104,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 sb.AppendLine($"public abstract class {type.Name} {extendsStr}{{");
             }
-            var emitFields = new List<EmitField>();
+            var emitFields = new List<EmitField>(fields.Count);
             foreach (var field in fields) {
                 if (field.IsDerivedField)
                     continue;

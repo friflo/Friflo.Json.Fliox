@@ -90,11 +90,11 @@ namespace Friflo.Json.Flow.Schema
         private EmitType EmitComplexType(TypeDef type, StringBuilder sb) {
             var imports         = new HashSet<TypeDef>();
             var context         = new TypeContext (generator, imports, type);
-            var dependencies = new List<TypeDef>();
+            var dependencies    = new List<TypeDef>();
             var fields          = type.Fields;
             int maxFieldName    = fields.MaxLength(field => field.name.Length);
             var extendsStr      = "";
-            var baseType    = type.BaseType;
+            var baseType        = type.BaseType;
             if (baseType != null) {
                 extendsStr = $"extends {baseType.Name} ";
                 dependencies.Add(baseType);

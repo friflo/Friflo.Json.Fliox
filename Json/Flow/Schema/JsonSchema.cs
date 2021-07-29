@@ -118,7 +118,7 @@ namespace Friflo.Json.Flow.Schema
             }
             sb.AppendLine($"            \"properties\": {{");
             bool    firstField      = true;
-            var     requiredFields  = new List<string>();
+            var     requiredFields  = new List<string>(fields.Count);
             string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
             if (discriminant != null) {
