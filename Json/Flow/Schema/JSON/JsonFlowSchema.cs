@@ -9,8 +9,22 @@ using Friflo.Json.Flow.Mapper;
 // ReSharper disable CollectionNeverUpdated.Global
 namespace Friflo.Json.Flow.Schema.JSON
 {
-    /// [JSON Schema | The home of JSON Schema] https://json-schema.org/
-    public class JsonSchema
+    /// Compatible subset of JSON Schema with some extensions required for code generation.
+    /// JSON Schema specification: https://json-schema.org/specification.html
+    /// 
+    /// Following extensions are added to JSON Schema:
+    /// <list type="bullet">
+    ///     <item><see cref="JsonType.extends"/></item>
+    ///     <item><see cref="JsonType.discriminator"/></item>
+    ///     <item><see cref="JsonType.isStruct"/></item>
+    /// </list>
+    /// The restriction of <see cref="JsonFlowSchema"/> is:
+    /// <br></br> 
+    /// A schema property cannot nest another "type": "object" with "properties": { ... }
+    /// The property type needs to be a known type like "string", ... or a referenced ("$ref") type.
+    /// Allowed are also arrays and dictionaries with exactly one element or value type.
+    /// These element / value types needs to be a known type like "string", ... or a referenced ("$ref") type.
+    public class JsonFlowSchema
     {
         [Fri.Property(Name =                   "$ref")]
         public  string                          rootRef;

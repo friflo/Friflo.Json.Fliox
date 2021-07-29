@@ -18,9 +18,9 @@ namespace Friflo.Json.Flow.Schema.JSON
         
         private readonly    Dictionary<string, JsonTypeDef> typeMap;
         
-        public JsonTypeSchema(List<JsonSchema> schemaList) {
+        public JsonTypeSchema(List<JsonFlowSchema> schemaList) {
             typeMap = new Dictionary<string, JsonTypeDef>(schemaList.Count);
-            foreach (JsonSchema schema in schemaList) {
+            foreach (JsonFlowSchema schema in schemaList) {
                 schema.typeDefs = new Dictionary<string, JsonTypeDef>(schema.definitions.Count);
                 foreach (var pair in schema.definitions) {
                     var typeName    = pair.Key;
@@ -40,7 +40,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             
             var reader          = new ObjectReader(new TypeStore());
             
-            foreach (JsonSchema schema in schemaList) {
+            foreach (JsonFlowSchema schema in schemaList) {
                 var context = new JsonTypeContext(schema, typeMap, standardTypes, reader);
                 var rootRef = schema.rootRef;
                 if (rootRef != null) {
@@ -209,7 +209,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             return context.schemas[reference];
         }
         
-        private static string GetNamespace (JsonSchema schema, string typeName) {
+        private static string GetNamespace (JsonFlowSchema schema, string typeName) {
             var name = schema.name;
             var rootRef = schema.rootRef;
             if (rootRef != null) {
@@ -223,15 +223,15 @@ namespace Friflo.Json.Flow.Schema.JSON
             return name;
         }
 
-        public static List<JsonSchema> FromFolder(string folder) {
+        public static List<JsonFlowSchema> FromFolder(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
-            var schemas = new List<JsonSchema>();
+            var schemas = new List<JsonFlowSchema>();
             var reader = new ObjectReader(new TypeStore());
             foreach (var path in fileNames) {
                 var fileName = path.Substring(folder.Length + 1);
                 var name = fileName.Substring(0, fileName.Length - ".json".Length);
                 var jsonSchema = File.ReadAllText(path, Encoding.UTF8);
-                var schema = reader.Read<JsonSchema>(jsonSchema);
+                var schema = reader.Read<JsonFlowSchema>(jsonSchema);
                 schema.fileName = fileName;
                 schema.name = name;
                 schemas.Add(schema);
@@ -239,11 +239,11 @@ namespace Friflo.Json.Flow.Schema.JSON
             return schemas;
         }
         
-        private static List<JsonSchema> FromSchemas(Dictionary<string, string> jsonSchemas) {
-            var schemas = new List<JsonSchema>(jsonSchemas.Count);
+        private static List<JsonFlowSchema> FromSchemas(Dictionary<string, string> jsonSchemas) {
+            var schemas = new List<JsonFlowSchema>(jsonSchemas.Count);
             var reader = new ObjectReader(new TypeStore());
             foreach (var jsonSchema in jsonSchemas) {
-                var schema = reader.Read<JsonSchema>(jsonSchema.Value);
+                var schema = reader.Read<JsonFlowSchema>(jsonSchema.Value);
                 schema.fileName = jsonSchema.Key;
                 schemas.Add(schema);
             }
@@ -264,13 +264,13 @@ namespace Friflo.Json.Flow.Schema.JSON
     
     internal readonly struct JsonTypeContext
     {
-        internal readonly   JsonSchema                      schema;
+        internal readonly   JsonFlowSchema                      schema;
         internal readonly   Dictionary<string, JsonTypeDef> schemas;
         internal readonly   JsonStandardTypes               standardTypes;
         internal readonly   ObjectReader                    reader;
 
         internal JsonTypeContext(
-            JsonSchema                      schema,
+            JsonFlowSchema                      schema,
             Dictionary<string, JsonTypeDef> schemas,
             JsonStandardTypes               standardTypes,
             ObjectReader                    reader)
