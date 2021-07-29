@@ -175,7 +175,7 @@ namespace Friflo.Json.Flow.Schema
                     sb.AppendLine($"using {ns};");
                 }
                 sb.AppendLine();
-                sb.AppendLine("#pragma warning disable 0169");
+                sb.AppendLine("#pragma warning disable 0169 // [CS0169] The field '...' is never used");
                 sb.AppendLine();
                 sb.AppendLine($"namespace {emitFile.@namespace} {{");
 

@@ -4,7 +4,7 @@ using Friflo.Json.Flow.Mapper;
 using System;
 using System.Numerics;
 
-#pragma warning disable 0169
+#pragma warning disable 0169 // [CS0169] The field '...' is never used
 
 namespace UnitTest.Flow.Graph {
 

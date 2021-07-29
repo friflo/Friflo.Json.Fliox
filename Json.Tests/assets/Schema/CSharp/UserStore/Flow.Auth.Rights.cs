@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper;
 using Flow.Sync;
 
-#pragma warning disable 0169
+#pragma warning disable 0169 // [CS0169] The field '...' is never used
 
 namespace Flow.Auth.Rights {
 
