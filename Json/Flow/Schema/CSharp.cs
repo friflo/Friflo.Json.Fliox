@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Flow.Schema.Definition;
@@ -15,11 +14,12 @@ namespace Friflo.Json.Flow.Schema
     {
         private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardTypes;
-
+        private  readonly   Dictionary<TypeDef, string> customTypes;
 
         private CSharpGenerator (Generator generator) {
             this.generator  = generator;
             standardTypes   = GetStandardTypes(generator.standardTypes);
+            customTypes     = GetCustomTypes  (generator.standardTypes);
         }
         
         public static void Generate(Generator generator) {
@@ -51,9 +51,14 @@ namespace Friflo.Json.Flow.Schema
                
             AddType (map, standard.Double,        "double" );
             AddType (map, standard.Float,         "float" );
-               
-            AddType (map, standard.BigInteger,    "BigInteger" );
-            AddType (map, standard.DateTime,      "DateTime" );
+            return map;
+        }
+        
+        private static Dictionary<TypeDef, string> GetCustomTypes(StandardTypes standard) {
+            var map = new Dictionary<TypeDef, string>();
+            AddType (map, standard.BigInteger,      "System.Numerics" );
+            AddType (map, standard.DateTime,        "System" );
+            AddType (map, standard.JsonValue,       "Friflo.Json.Flow.Mapper.Map.Val" );
             return map;
         }
 
@@ -162,13 +167,8 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private string GetTypeName(TypeDef type, TypeContext context) {
-            var standard = context.standardTypes;
             if (standardTypes.TryGetValue(type, out string name))
                 return name;
-            /* if (type == standard.String)
-                return "string";
-            if (type == standard.Boolean)
-                return "bool"; */
             context.imports.Add(type);
             return type.Name;
         }
@@ -179,16 +179,14 @@ namespace Friflo.Json.Flow.Schema
                 string      filePath    = pair.Key;
                 sb.Clear();
                 sb.AppendLine($"// {Note}");
-                sb.AppendLine("using System;");
                 sb.AppendLine("using System.Collections.Generic;");
-                sb.AppendLine("using System.Numerics;");
                 var namespaces = new HashSet<string>();
                 foreach (var importPair in emitFile.imports) {
                     var import = importPair.Value;
                     if (import.type.Path == filePath)
                         continue;
-                    if (import.type == generator.standardTypes.JsonValue) {
-                        namespaces.Add("Friflo.Json.Flow.Mapper.Map.Val");
+                    if (customTypes.TryGetValue(import.type, out var @namespace)) {
+                        namespaces.Add(@namespace);
                         continue;
                     }
                     namespaces.Add(import.@namespace);
