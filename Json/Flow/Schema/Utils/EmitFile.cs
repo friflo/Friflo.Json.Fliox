@@ -21,14 +21,14 @@ namespace Friflo.Json.Flow.Schema.Utils
         /// The path of the file
         private  readonly   string                      path;
         
-        public   readonly   string                      package;
+        public   readonly   string                      @namespace;
         
 
         public  override    string                      ToString() => path;
 
-        public EmitFile (string path, string package) {
+        public EmitFile (string path, string @namespace) {
             this.path       = path;
-            this.package    = package;
+            this.@namespace = @namespace;
         }
     }
     

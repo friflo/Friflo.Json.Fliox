@@ -69,10 +69,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
         }
         
         // ------------------------------------ utilities ------------------------------------ 
-        public static List<string> JsonTypesFromTypes(ICollection<Type> types, string package) {
+        public static List<string> JsonTypesFromTypes(ICollection<Type> types, string @namespace) {
             var list = new List<string>();
             foreach (var type in types) {
-                list.Add($"./{package}{type.Name}.json#/definitions/{type.Name}");
+                list.Add($"./{@namespace}{type.Name}.json#/definitions/{type.Name}");
             }
             return list;
         }

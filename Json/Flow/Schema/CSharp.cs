@@ -199,7 +199,7 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine();
                 sb.AppendLine("#pragma warning disable 0169");
                 sb.AppendLine();
-                sb.AppendLine($"namespace {emitFile.package} {{");
+                sb.AppendLine($"namespace {emitFile.@namespace} {{");
 
                 emitFile.header = sb.ToString();
             }

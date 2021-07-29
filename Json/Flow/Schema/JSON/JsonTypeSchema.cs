@@ -25,8 +25,8 @@ namespace Friflo.Json.Flow.Schema.JSON
                 foreach (var pair in schema.definitions) {
                     var typeName    = pair.Key;
                     var type        = pair.Value;
-                    var packageName = GetNamespace(schema, typeName);
-                    var typeDef     = new JsonTypeDef (type, typeName, packageName);
+                    var @namespace  = GetNamespace(schema, typeName);
+                    var typeDef     = new JsonTypeDef (type, typeName, @namespace);
                     var schemaId = $"./{schema.fileName}#/definitions/{typeName}";
                     typeMap.Add(schemaId, typeDef);
                     var localId = $"#/definitions/{typeName}";
