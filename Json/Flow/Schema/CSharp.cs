@@ -125,8 +125,7 @@ namespace Friflo.Json.Flow.Schema
                 foreach (var field in fields) {
                     if (field.IsDerivedField)
                         continue;
-                    bool notNull = field.required || field.isArray || field.isDictionary || !field.type.IsStruct ||
-                                   field.type == context.standardTypes.String;
+                    bool notNull = field.required || field.isArray || field.isDictionary || !field.type.IsStruct;
                     var fieldType = GetFieldType(field, context);
                     var emitField = new EmitField(fieldType, field.name, notNull);
                     emitFields.Add(emitField);
