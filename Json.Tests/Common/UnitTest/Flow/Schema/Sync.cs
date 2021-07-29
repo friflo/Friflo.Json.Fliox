@@ -37,5 +37,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var generator = JsonTypeDefinition.Generate(typeStore, SyncTypes, "Sync");
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JTD/", false);
         }
+        
+        /// C# -> C#
+        // [Test]
+        public static void CS_CS () {
+            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
+            var generator = CSharpGenerator.Generate(typeStore, SyncTypes, new[]{"Friflo.Json."});
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/Sync");
+        }
     }
 }
