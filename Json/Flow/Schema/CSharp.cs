@@ -63,53 +63,8 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
-            var imports         = new HashSet<TypeDef>();
-            var context         = new TypeContext (generator, imports, type);
             if (type.IsComplex) {
-                var fields          = type.Fields;
-                var extendsStr      = "";
-                var baseType    = type.BaseType;
-                if (baseType != null) {
-                    extendsStr = $": {baseType.Name} ";
-                    imports.Add(baseType);
-                }
-                var unionType = type.UnionType;
-                if (unionType == null) {
-                    var classType = type.IsStruct ? "struct" : "class";
-                    var abstractStr = type.IsAbstract ? "abstract " : "";
-                    sb.AppendLine($"{abstractStr}public {classType} {type.Name} {extendsStr}{{");
-                } else {
-                    sb.AppendLine($"[Fri.Discriminator(\"{unionType.discriminator}\")]");
-                    int max    = unionType.types.MaxLength(polyType => polyType.Name.Length);
-                    foreach (var polyType in unionType.types) {
-                        var indent   = Indent(max, polyType.Name);
-                        sb.AppendLine($"[Fri.Polymorph(typeof({polyType.Name}),{indent} Discriminant = \"{polyType.Discriminant}\")]");
-                        imports.Add(polyType);
-                    }
-                    sb.AppendLine($"public abstract class {type.Name} {extendsStr}{{");
-                }
-                var emitFields = new List<EmitField>();
-                foreach (var field in fields) {
-                    if (field.IsDerivedField)
-                        continue;
-                    var fieldType = GetFieldType(field, context);
-                    var emitField = new EmitField(fieldType, field);
-                    emitFields.Add(emitField);
-                }
-                int maxFieldName    = emitFields.MaxLength(field => field.type.Length);
-                foreach (var field in emitFields) {
-                    var indent   = Indent(maxFieldName, field.type);
-                    var def      = field.def;
-                    var isReferenceType = def.isArray || def.isDictionary || !def.type.IsStruct;
-                    bool notNull        = def.required || isReferenceType;
-                    var nullStr         = notNull ? " " : "?";
-                    if (def.required && isReferenceType)
-                        sb.AppendLine("    [Fri.Property(Required = true)]");
-                    sb.AppendLine($"    {field.type}{nullStr}{indent} {def.name};");
-                }
-                sb.AppendLine("}");
-                sb.AppendLine();
-                return new EmitType(type, sb, imports);
+                return EmitComplexType(type, sb);
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
@@ -124,7 +79,55 @@ namespace Friflo.Json.Flow.Schema
             return null;
         }
         
-        // Note: static by intention
+        private EmitType EmitComplexType(TypeDef type, StringBuilder sb) {
+            var imports     = new HashSet<TypeDef>();
+            var context     = new TypeContext (generator, imports, type);
+            var fields      = type.Fields;
+            var extendsStr  = "";
+            var baseType    = type.BaseType;
+            if (baseType != null) {
+                extendsStr = $": {baseType.Name} ";
+                imports.Add(baseType);
+            }
+            var unionType = type.UnionType;
+            if (unionType == null) {
+                var classType = type.IsStruct ? "struct" : "class";
+                var abstractStr = type.IsAbstract ? "abstract " : "";
+                sb.AppendLine($"{abstractStr}public {classType} {type.Name} {extendsStr}{{");
+            } else {
+                sb.AppendLine($"[Fri.Discriminator(\"{unionType.discriminator}\")]");
+                int max    = unionType.types.MaxLength(polyType => polyType.Name.Length);
+                foreach (var polyType in unionType.types) {
+                    var indent   = Indent(max, polyType.Name);
+                    sb.AppendLine($"[Fri.Polymorph(typeof({polyType.Name}),{indent} Discriminant = \"{polyType.Discriminant}\")]");
+                    imports.Add(polyType);
+                }
+                sb.AppendLine($"public abstract class {type.Name} {extendsStr}{{");
+            }
+            var emitFields = new List<EmitField>();
+            foreach (var field in fields) {
+                if (field.IsDerivedField)
+                    continue;
+                var fieldType = GetFieldType(field, context);
+                var emitField = new EmitField(fieldType, field);
+                emitFields.Add(emitField);
+            }
+            int maxFieldName    = emitFields.MaxLength(field => field.type.Length);
+            foreach (var field in emitFields) {
+                var indent   = Indent(maxFieldName, field.type);
+                var def      = field.def;
+                var isReferenceType = def.isArray || def.isDictionary || !def.type.IsStruct;
+                bool notNull        = def.required || isReferenceType;
+                var nullStr         = notNull ? " " : "?";
+                if (def.required && isReferenceType)
+                    sb.AppendLine("    [Fri.Property(Required = true)]");
+                sb.AppendLine($"    {field.type}{nullStr}{indent} {def.name};");
+            }
+            sb.AppendLine("}");
+            sb.AppendLine();
+            return new EmitType(type, sb, imports);
+        }
+        
         private string GetFieldType(FieldDef field, TypeContext context) {
             var type = field.type;
             if (field.isArray) {

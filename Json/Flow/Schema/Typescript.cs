@@ -66,62 +66,13 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
-            var imports         = new HashSet<TypeDef>();
-            var context         = new TypeContext (generator, imports, type);
+
             var standardType    = EmitStandardType(type, sb);
             if (standardType != null ) {
                 return standardType;
             }
             if (type.IsComplex) {
-                var dependencies = new List<TypeDef>();
-                var fields          = type.Fields;
-                int maxFieldName    = fields.MaxLength(field => field.name.Length);
-                var     extendsStr      = "";
-                var baseType    = type.BaseType;
-                if (baseType != null) {
-                    extendsStr = $"extends {baseType.Name} ";
-                    dependencies.Add(baseType);
-                    imports.Add(baseType);
-                }
-                var unionType = type.UnionType;
-                if (unionType == null) {
-                    var abstractStr = type.IsAbstract ? "abstract " : "";
-                    sb.AppendLine($"export {abstractStr}class {type.Name} {extendsStr}{{");
-                } else {
-                    sb.AppendLine($"export type {type.Name}{Union} =");
-                    foreach (var polyType in unionType.types) {
-                        sb.AppendLine($"    | {polyType.Name}");
-                        imports.Add(polyType);
-                    }
-                    sb.AppendLine($";");
-                    sb.AppendLine();
-                    sb.AppendLine($"export abstract class {type.Name} {extendsStr}{{");
-                    sb.AppendLine($"    abstract {unionType.discriminator}:");
-                    foreach (var polyType in unionType.types) {
-                        sb.AppendLine($"        | \"{polyType.Discriminant}\"");
-                    }
-                    sb.AppendLine($"    ;");
-                }
-                string  discriminant    = type.Discriminant;
-                string  discriminator   = type.Discriminator;
-                if (discriminant != null) {
-                    maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
-                    var indent      = Indent(maxFieldName, discriminator);
-                    sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
-                }
-                foreach (var field in fields) {
-                    if (field.IsDerivedField)
-                        continue;
-                    bool required = field.required;
-                    var fieldType = GetFieldType(field, context);
-                    var indent  = Indent(maxFieldName, field.name);
-                    var optStr  = required ? " ": "?";
-                    var nullStr = required ? "" : " | null";
-                    sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}{nullStr};");
-                }
-                sb.AppendLine("}");
-                sb.AppendLine();
-                return new EmitType(type, sb, imports, dependencies);
+                return EmitComplexType(type, sb);
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
@@ -136,7 +87,60 @@ namespace Friflo.Json.Flow.Schema
             return null;
         }
         
-        // Note: static by intention
+        private EmitType EmitComplexType(TypeDef type, StringBuilder sb) {
+            var imports         = new HashSet<TypeDef>();
+            var context         = new TypeContext (generator, imports, type);
+            var dependencies = new List<TypeDef>();
+            var fields          = type.Fields;
+            int maxFieldName    = fields.MaxLength(field => field.name.Length);
+            var extendsStr      = "";
+            var baseType    = type.BaseType;
+            if (baseType != null) {
+                extendsStr = $"extends {baseType.Name} ";
+                dependencies.Add(baseType);
+                imports.Add(baseType);
+            }
+            var unionType = type.UnionType;
+            if (unionType == null) {
+                var abstractStr = type.IsAbstract ? "abstract " : "";
+                sb.AppendLine($"export {abstractStr}class {type.Name} {extendsStr}{{");
+            } else {
+                sb.AppendLine($"export type {type.Name}{Union} =");
+                foreach (var polyType in unionType.types) {
+                    sb.AppendLine($"    | {polyType.Name}");
+                    imports.Add(polyType);
+                }
+                sb.AppendLine($";");
+                sb.AppendLine();
+                sb.AppendLine($"export abstract class {type.Name} {extendsStr}{{");
+                sb.AppendLine($"    abstract {unionType.discriminator}:");
+                foreach (var polyType in unionType.types) {
+                    sb.AppendLine($"        | \"{polyType.Discriminant}\"");
+                }
+                sb.AppendLine($"    ;");
+            }
+            string  discriminant    = type.Discriminant;
+            string  discriminator   = type.Discriminator;
+            if (discriminant != null) {
+                maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
+                var indent      = Indent(maxFieldName, discriminator);
+                sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
+            }
+            foreach (var field in fields) {
+                if (field.IsDerivedField)
+                    continue;
+                bool required = field.required;
+                var fieldType = GetFieldType(field, context);
+                var indent  = Indent(maxFieldName, field.name);
+                var optStr  = required ? " ": "?";
+                var nullStr = required ? "" : " | null";
+                sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}{nullStr};");
+            }
+            sb.AppendLine("}");
+            sb.AppendLine();
+            return new EmitType(type, sb, imports, dependencies);
+        }
+        
         private static string GetFieldType(FieldDef field, TypeContext context) {
             var type = field.type;
             if (field.isArray) {

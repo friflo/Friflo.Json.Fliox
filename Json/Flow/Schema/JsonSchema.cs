@@ -66,77 +66,12 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
-            var context         = new TypeContext (generator, null, type);
             var standardType    = EmitStandardType(type, sb);
             if (standardType != null ) {
                 return standardType;
             }
             if (type.IsComplex) {
-                var fields          = type.Fields;
-                int maxFieldName    = fields.MaxLength(field => field.name.Length);
-                
-                sb.AppendLine($"        \"{type.Name}\": {{");
-                var baseType    = type.BaseType;
-                
-                var unionType = type.UnionType;
-                if (unionType == null) {
-                    sb.AppendLine($"            \"type\": \"object\",");
-                    if (baseType != null)
-                        sb.AppendLine($"            \"extends\": {{ {Ref(baseType, true, context)} }},");
-                    if (type.IsStruct)
-                        sb.AppendLine($"            \"isStruct\": true,");
-                    if (type.IsAbstract)
-                        sb.AppendLine($"            \"isAbstract\": true,");
-                } else {
-                    sb.AppendLine($"            \"discriminator\": \"{unionType.discriminator}\",");
-                    sb.AppendLine($"            \"oneOf\": [");
-                    bool firstElem = true;
-                    foreach (var polyType in unionType.types) {
-                        Delimiter(sb, Next, ref firstElem);
-                        sb.Append($"                {{ {Ref(polyType, true, context)} }}");
-                    }
-                    sb.AppendLine();
-                    sb.AppendLine($"            ],");
-                }
-                sb.AppendLine($"            \"properties\": {{");
-                bool firstField     = true;
-                var requiredFields  = new List<string>();
-                string  discriminant    = type.Discriminant;
-                string  discriminator   = type.Discriminator;
-                if (discriminant != null) {
-                    maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
-                    var indent      = Indent(maxFieldName, discriminator);
-                    sb.Append($"                \"{discriminator}\":{indent} {{ \"enum\": [\"{discriminant}\"] }}");
-                    firstField = false;
-                    requiredFields.Add(discriminator);
-                }
-                foreach (var field in fields) {
-                    // if (generator.IsDerivedField(type, field))  JSON Schema list all properties
-                    //    continue;
-                    bool required = field.required;
-                    var fieldType = GetFieldType(field, context, required);
-                    var indent = Indent(maxFieldName, field.name);
-                    if (required)
-                        requiredFields.Add(field.name);
-                    Delimiter(sb, Next, ref firstField);
-                    sb.Append($"                \"{field.name}\":{indent} {{ {fieldType} }}");
-                }
-                sb.AppendLine();
-                sb.AppendLine("            },");
-                if (requiredFields.Count > 0 ) {
-                    bool firstReq = true;
-                    sb.AppendLine("            \"required\": [");
-                    foreach (var item in requiredFields) {
-                        Delimiter(sb, Next, ref firstReq);
-                        sb.Append ($"                \"{item}\"");
-                    }
-                    sb.AppendLine();
-                    sb.AppendLine("            ],");
-                }
-                var additionalProperties = unionType != null ? "true" : "false"; 
-                sb.AppendLine($"            \"additionalProperties\": {additionalProperties}");
-                sb.Append     ("        }");
-                return new EmitType(type, sb);
+                return EmitComplexType(type, sb);
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
@@ -155,7 +90,73 @@ namespace Friflo.Json.Flow.Schema
             return null;
         }
         
-        // Note: static by intention
+        private EmitType EmitComplexType(TypeDef type, StringBuilder sb) {
+            var context         = new TypeContext (generator, null, type);
+            var fields          = type.Fields;
+            int maxFieldName    = fields.MaxLength(field => field.name.Length);
+            sb.AppendLine($"        \"{type.Name}\": {{");
+            var baseType    = type.BaseType;
+            var unionType   = type.UnionType;
+            if (unionType == null) {
+                sb.AppendLine($"            \"type\": \"object\",");
+                if (baseType != null)
+                    sb.AppendLine($"            \"extends\": {{ {Ref(baseType, true, context)} }},");
+                if (type.IsStruct)
+                    sb.AppendLine($"            \"isStruct\": true,");
+                if (type.IsAbstract)
+                    sb.AppendLine($"            \"isAbstract\": true,");
+            } else {
+                sb.AppendLine($"            \"discriminator\": \"{unionType.discriminator}\",");
+                sb.AppendLine($"            \"oneOf\": [");
+                bool firstElem = true;
+                foreach (var polyType in unionType.types) {
+                    Delimiter(sb, Next, ref firstElem);
+                    sb.Append($"                {{ {Ref(polyType, true, context)} }}");
+                }
+                sb.AppendLine();
+                sb.AppendLine($"            ],");
+            }
+            sb.AppendLine($"            \"properties\": {{");
+            bool    firstField      = true;
+            var     requiredFields  = new List<string>();
+            string  discriminant    = type.Discriminant;
+            string  discriminator   = type.Discriminator;
+            if (discriminant != null) {
+                maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
+                var indent      = Indent(maxFieldName, discriminator);
+                sb.Append($"                \"{discriminator}\":{indent} {{ \"enum\": [\"{discriminant}\"] }}");
+                firstField = false;
+                requiredFields.Add(discriminator);
+            }
+            foreach (var field in fields) {
+                // if (generator.IsDerivedField(type, field))  JSON Schema list all properties
+                //    continue;
+                bool required = field.required;
+                var fieldType = GetFieldType(field, context, required);
+                var indent = Indent(maxFieldName, field.name);
+                if (required)
+                    requiredFields.Add(field.name);
+                Delimiter(sb, Next, ref firstField);
+                sb.Append($"                \"{field.name}\":{indent} {{ {fieldType} }}");
+            }
+            sb.AppendLine();
+            sb.AppendLine("            },");
+            if (requiredFields.Count > 0 ) {
+                bool firstReq = true;
+                sb.AppendLine("            \"required\": [");
+                foreach (var item in requiredFields) {
+                    Delimiter(sb, Next, ref firstReq);
+                    sb.Append ($"                \"{item}\"");
+                }
+                sb.AppendLine();
+                sb.AppendLine("            ],");
+            }
+            var additionalProperties = unionType != null ? "true" : "false"; 
+            sb.AppendLine($"            \"additionalProperties\": {additionalProperties}");
+            sb.Append     ("        }");
+            return new EmitType(type, sb);
+        }
+        
         private static string GetFieldType(FieldDef field, TypeContext context, bool required) {
             var type = field.type;
             if (field.isArray) {

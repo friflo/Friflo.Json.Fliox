@@ -78,55 +78,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
         }
         
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
-            var context         = new TypeContext (generator, null, type);
             var standardType    = EmitStandardType(type, sb);
             if (standardType != null ) {
                 return standardType;
             }
             if (type.IsComplex) {
-                var fields          = type.Fields;
-                int maxFieldName    = fields.MaxLength(field => field.name.Length);
-                
-                var unionType = type.UnionType;
-                sb.AppendLine($"        \"{type.Name}\": {{");
-                if (unionType == null) {
-                } else {
-                    sb.AppendLine($"            \"discriminator\": \"{unionType.discriminator}\",");
-                    sb.AppendLine( "            \"mapping\": {");
-                    bool firstElem = true;
-                    int maxDiscriminant = unionType.types.MaxLength(t => t.Discriminant.Length);
-                    foreach (var polyType in unionType.types) {
-                        Delimiter(sb, Next, ref firstElem);
-                        var discName = polyType.Discriminant;
-                        var indent = Indent(maxDiscriminant, discName);
-                        sb.Append($"                \"{discName}\": {indent}{{ {Ref(polyType)} }}");
-                    }
-                    sb.AppendLine();
-                    sb.AppendLine("            },");
-                }
-                sb.AppendLine($"            \"properties\": {{");
-                bool firstField     = true;
-                string  discriminant    = type.Discriminant;
-                string  discriminator   = type.Discriminator;
-                if (discriminant != null) {
-                    maxFieldName = Math.Max(maxFieldName, discriminator.Length);
-                }
-                // fields
-                foreach (var field in fields) {
-                    bool required = field.required;
-                    var fieldType = GetFieldType(field, context);
-                    var indent = Indent(maxFieldName, field.name);
-                    Delimiter(sb, Next, ref firstField);
-                    var nullableStr = required ? "" : ", \"nullable\": true";
-                    sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{nullableStr} }}");
-                }
-                sb.AppendLine();
-                sb.AppendLine("            }");
-
-                // var additionalProperties = unionType != null ? "true" : "false"; 
-                // sb.AppendLine($"            \"additionalProperties\": {additionalProperties}");
-                sb.Append     ("        }");
-                return new EmitType(type, sb);
+                return EmitComplexType(type, sb);
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
@@ -145,7 +102,50 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
             return null;
         }
         
-        // Note: static by intention
+        private EmitType EmitComplexType(TypeDef type, StringBuilder sb) {
+            var context         = new TypeContext (generator, null, type);
+            var fields          = type.Fields;
+            int maxFieldName    = fields.MaxLength(field => field.name.Length);
+            var unionType       = type.UnionType;
+            sb.AppendLine($"        \"{type.Name}\": {{");
+            if (unionType == null) {
+            } else {
+                sb.AppendLine($"            \"discriminator\": \"{unionType.discriminator}\",");
+                sb.AppendLine( "            \"mapping\": {");
+                bool firstElem = true;
+                int maxDiscriminant = unionType.types.MaxLength(t => t.Discriminant.Length);
+                foreach (var polyType in unionType.types) {
+                    Delimiter(sb, Next, ref firstElem);
+                    var discName = polyType.Discriminant;
+                    var indent = Indent(maxDiscriminant, discName);
+                    sb.Append($"                \"{discName}\": {indent}{{ {Ref(polyType)} }}");
+                }
+                sb.AppendLine();
+                sb.AppendLine("            },");
+            }
+            sb.AppendLine($"            \"properties\": {{");
+            bool firstField     = true;
+            string  discriminant    = type.Discriminant;
+            string  discriminator   = type.Discriminator;
+            if (discriminant != null) {
+                maxFieldName = Math.Max(maxFieldName, discriminator.Length);
+            }
+            foreach (var field in fields) {
+                bool required = field.required;
+                var fieldType = GetFieldType(field, context);
+                var indent = Indent(maxFieldName, field.name);
+                Delimiter(sb, Next, ref firstField);
+                var nullableStr = required ? "" : ", \"nullable\": true";
+                sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{nullableStr} }}");
+            }
+            sb.AppendLine();
+            sb.AppendLine("            }");
+            // var additionalProperties = unionType != null ? "true" : "false"; 
+            // sb.AppendLine($"            \"additionalProperties\": {additionalProperties}");
+            sb.Append     ("        }");
+            return new EmitType(type, sb);
+        }
+        
         private string GetFieldType(FieldDef field, TypeContext context) {
             var type = field.type;
             if (field.isArray) {
