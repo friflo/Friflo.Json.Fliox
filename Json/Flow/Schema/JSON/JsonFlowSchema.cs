@@ -19,11 +19,18 @@ namespace Friflo.Json.Flow.Schema.JSON
     ///     <item><see cref="JsonType.isStruct"/></item>
     /// </list>
     /// The restriction of <see cref="JsonFlowSchema"/> is:
-    /// <br></br> 
-    /// A schema property cannot nest another "type": "object" with "properties": { ... }
-    /// The property type needs to be a known type like "string", ... or a referenced ("$ref") type.
-    /// Allowed are also arrays and dictionaries with exactly one element or value type.
-    /// These element / value types needs to be a known type like "string", ... or a referenced ("$ref") type.
+    /// <list type="bullet">
+    ///   <item>
+    ///     A schema property cannot nest another "type": "object" with "properties": { ... }
+    ///     The property type needs to be a known type like "string", ... or a referenced ("$ref") type.
+    ///     Allowed are also arrays and dictionaries with exactly one element or value type.
+    ///     These element / value types needs to be a known type like "string", ... or a referenced ("$ref") type.
+    ///   </item>
+    ///   <item>
+    ///     On root level are only "$ref": "..." and "definitions": [...] allowed.
+    ///   </item>
+    /// </list>
+
     public class JsonFlowSchema
     {
         [Fri.Property(Name =                   "$ref")]
