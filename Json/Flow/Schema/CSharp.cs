@@ -61,33 +61,16 @@ namespace Friflo.Json.Flow.Schema
             AddType (map, standard.JsonValue,       "Friflo.Json.Flow.Mapper" );
             return map;
         }
-
-        /* private EmitType EmitStandardType(TypeDef type, StringBuilder sb) {
-            if (!standardTypes.TryGetValue(type, out var definition))
-                return null;
-            sb.Append("export type ");
-            sb.Append(definition);
-            sb.AppendLine(";");
-            sb.AppendLine();
-            return new EmitType(type, sb);
-        } */
         
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
             var imports         = new HashSet<TypeDef>();
             var context         = new TypeContext (generator, imports, type);
-            /* var standardType    = EmitStandardType(type, sb);
-            if (standardType != null ) {
-                return standardType;
-            } */
             if (type.IsComplex) {
                 var fields          = type.Fields;
-
-                string  discriminator   = null;
-                var     discriminant    = type.Discriminant;
-                var     extendsStr      = "";
+                var discriminant    = type.Discriminant;
+                var extendsStr      = "";
                 var baseType    = type.BaseType;
                 if (discriminant != null) {
-                    discriminator   = baseType.UnionType.discriminator;
                     extendsStr = $": {baseType.Name} ";
                 } else {
                     if (baseType != null) {
@@ -100,19 +83,14 @@ namespace Friflo.Json.Flow.Schema
                     var classType = type.IsStruct ? "struct" : "class";
                     sb.AppendLine($"public {classType} {type.Name} {extendsStr}{{");
                 } else {
-                    /* sb.AppendLine($"export type {type.Name}_Union =");
+                    sb.AppendLine($"[Fri.Discriminator(\"{unionType.discriminator}\")]");
+                    int max    = unionType.types.MaxLength(polyType => polyType.Name.Length);
                     foreach (var polyType in unionType.types) {
-                        sb.AppendLine($"    | {polyType.Name}");
+                        var indent   = Indent(max, polyType.Name);
+                        sb.AppendLine($"[Fri.Polymorph(typeof({polyType.Name}),{indent} Discriminant = \"{polyType.Discriminant}\")]");
                         imports.Add(polyType);
                     }
-                    sb.AppendLine($";");
-                    sb.AppendLine(); */
                     sb.AppendLine($"public  abstract class {type.Name} {extendsStr}{{");
-                    /* sb.AppendLine($"    abstract {unionType.discriminator}:");
-                    foreach (var polyType in unionType.types) {
-                        sb.AppendLine($"        | \"{polyType.Discriminant}\"");
-                    }
-                    sb.AppendLine($"    ;"); */
                 }
                 if (discriminant != null) {
                     // var indent = Indent(maxFieldName, discriminator);
