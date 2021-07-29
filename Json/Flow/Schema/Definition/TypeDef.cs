@@ -41,10 +41,11 @@ namespace Friflo.Json.Flow.Schema.Definition
         public  abstract    bool                IsStruct     { get; }
         public  abstract    List<FieldDef>      Fields       { get; }
         
-        /// <see cref="UnionType"/> is not null, if the type is as discriminated union.
+        /// <summary><see cref="UnionType"/> is not null, if the type is as discriminated union.</summary>
         public  abstract    UnionType           UnionType    { get; }
         public  abstract    bool                IsAbstract   { get; }
-        /// <see cref="Discriminant"/> is not null, if the type is an element of a <see cref="UnionType"/>
+        /// <summary><see cref="Discriminant"/> is not null if the type is an element of a <see cref="UnionType"/>
+        /// Either both <see cref="Discriminant"/> and <see cref="Discriminator"/> are not null or both are null</summary>
         public  abstract    string              Discriminant { get; }
         public  abstract    string              Discriminator{ get; }
         
