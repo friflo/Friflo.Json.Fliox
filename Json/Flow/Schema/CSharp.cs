@@ -80,7 +80,6 @@ namespace Friflo.Json.Flow.Schema
                 return standardType;
             } */
             if (type.IsComplex) {
-                var dependencies = new List<TypeDef>();
                 var fields          = type.Fields;
 
                 string  discriminator   = null;
@@ -90,12 +89,10 @@ namespace Friflo.Json.Flow.Schema
                 if (discriminant != null) {
                     discriminator   = baseType.UnionType.discriminator;
                     extendsStr = $": {baseType.Name} ";
-                    dependencies.Add(baseType);
                 } else {
                     if (baseType != null) {
                         extendsStr = $": {baseType.Name} ";
                         imports.Add(baseType);
-                        dependencies.Add(baseType);
                     }
                 }
                 var unionType = type.UnionType;
@@ -142,7 +139,7 @@ namespace Friflo.Json.Flow.Schema
                 }
                 sb.AppendLine("}");
                 sb.AppendLine();
-                return new EmitType(type, sb, imports, dependencies);
+                return new EmitType(type, sb, imports);
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
