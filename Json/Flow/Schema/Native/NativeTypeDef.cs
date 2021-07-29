@@ -29,7 +29,9 @@ public class NativeTypeDef : TypeDef
         
         public   override   string              ToString()      => mapper.type.ToString();
 
-        public NativeTypeDef (TypeMapper mapper) {
+        public NativeTypeDef (TypeMapper mapper, string name, string @namespace) {
+            Name            = name;
+            Namespace       = @namespace;
             this.native     = mapper.type;
             this.mapper     = mapper;
             IsEnum          = native.IsEnum;

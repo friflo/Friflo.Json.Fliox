@@ -24,31 +24,5 @@ namespace Friflo.Json.Flow.Schema.Definition
         public abstract     TypeDef     DateTime    { get; }
         
         public abstract     TypeDef     JsonValue   { get; }
-        
-                
-        public void SetStandardNames() {
-            SetName(Boolean,       "boolean" );
-            SetName(String,        "string" );
-
-            SetName(Uint8,         "uint8" );
-            SetName(Int16,         "int16" );
-            SetName(Int32,         "int32" );
-            SetName(Int64,         "int64" );
-                
-            SetName(Float,         "float" );
-            SetName(Double,        "double" );
-                
-            SetName(BigInteger,    "BigInteger" );
-            SetName(DateTime,      "DateTime" );
-            
-            SetName(JsonValue,     "JsonValue" );
-        }
-        
-        private static void SetName (TypeDef type, string name) {
-            if (type == null)
-                return;
-            type.Name       = name;
-            type.Namespace  = "Standard";
-        }
     }
 }

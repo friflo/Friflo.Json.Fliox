@@ -33,7 +33,12 @@ namespace Friflo.Json.Flow.Schema.Native
                 }
                 if (nativeTypes.ContainsKey(nonNullableType))
                     continue;
-                var  typeDef = new NativeTypeDef(underMapper);
+                NativeTypeDef typeDef;
+                if (NativeStandardTypes.Types.TryGetValue(nonNullableType, out string name)) {
+                    typeDef = new NativeTypeDef(underMapper, name, "Standard");
+                } else {
+                    typeDef = new NativeTypeDef(underMapper, underMapper.type.Name, underMapper.type.Namespace);
+                }
                 nativeTypes.Add(nonNullableType, typeDef);
                 types.      Add(typeDef);
             }
@@ -43,14 +48,6 @@ namespace Friflo.Json.Flow.Schema.Native
             var standardTypes = new NativeStandardTypes(nativeTypes);
             Types           = types;
             StandardTypes   = standardTypes;
-
-            // Set the Name and Namespace of all TypeDefs 
-            foreach (var pair in nativeTypes) {
-                NativeTypeDef typeDef = pair.Value;
-                typeDef.Name       = typeDef.mapper.type.Name;
-                typeDef.Namespace  = typeDef.mapper.type.Namespace;
-            }
-            standardTypes.SetStandardNames();
 
             // set the base type (base class or parent class) for all types. 
             foreach (var pair in nativeTypes) {

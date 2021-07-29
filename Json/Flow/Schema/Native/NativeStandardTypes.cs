@@ -37,6 +37,25 @@ namespace Friflo.Json.Flow.Schema.Native
             JsonValue   = Find(types, typeof(JsonValue));
         }
         
+        private static Dictionary<Type, string> GetTypes() {
+            var map = new Dictionary<Type, string> {
+                { typeof(bool),         "boolean"},
+                { typeof(string),       "string"},
+                { typeof(byte),         "uint8"},
+                { typeof(short),        "int16"},
+                { typeof(int),          "int32"},
+                { typeof(long),         "int64"},
+                { typeof(float),        "float"},
+                { typeof(double),       "double"},
+                { typeof(BigInteger),   "BigInteger"},
+                { typeof(DateTime),     "DateTime"},
+                { typeof(JsonValue),    "JsonValue"}
+            };
+            return map;
+        }
+        
+        internal static readonly Dictionary<Type, string> Types = GetTypes();
+
         private static TypeDef Find (Dictionary<Type, NativeTypeDef> types, Type type) {
             if (types.TryGetValue(type, out var typeDef))
                 return typeDef;
