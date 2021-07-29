@@ -15,6 +15,7 @@ namespace Friflo.Json.Flow.Schema
     {
         private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardTypes;
+        private  const      string                      Union = "_Union";
 
 
         private TypescriptGenerator (Generator generator) {
@@ -93,7 +94,7 @@ namespace Friflo.Json.Flow.Schema
                     var abstractStr = type.IsAbstract ? "abstract " : "";
                     sb.AppendLine($"export {abstractStr}class {type.Name} {extendsStr}{{");
                 } else {
-                    sb.AppendLine($"export type {type.Name}_Union =");
+                    sb.AppendLine($"export type {type.Name}{Union} =");
                     foreach (var polyType in unionType.types) {
                         sb.AppendLine($"    | {polyType.Name}");
                         imports.Add(polyType);
@@ -162,7 +163,7 @@ namespace Friflo.Json.Flow.Schema
                 return "boolean";
             context.imports.Add(type);
             if (type.UnionType != null)
-                return $"{type.Name}_Union";
+                return $"{type.Name}{Union}";
             return type.Name;
         }
         
@@ -172,8 +173,11 @@ namespace Friflo.Json.Flow.Schema
                 string      filePath    = pair.Key;
                 sb.Clear();
                 sb.AppendLine($"// {Note}");
-                var max = emitFile.imports.MaxLength(imp => imp.Value.type.Path == filePath ? 0 : imp.Value.type.Name.Length);
-
+                var max = emitFile.imports.MaxLength(imp => {
+                    var typeDef = imp.Value.type;
+                    var len = typeDef.UnionType != null ? typeDef.Name.Length + Union.Length : typeDef.Name.Length;
+                    return typeDef.Path == filePath ? 0 : len;
+                });
                 foreach (var importPair in emitFile.imports) {
                     var import = importPair.Value.type;
                     if (import.Path == filePath)
@@ -182,7 +186,9 @@ namespace Friflo.Json.Flow.Schema
                     var indent      = Indent(max, typeName);
                     sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.Path}\"");
                     if (import.UnionType != null) {
-                        sb.AppendLine($"import {{ {typeName}_Union }}{indent} from \"./{import.Path}\"");
+                        var unionName = $"{typeName}{Union}";
+                        indent      = Indent(max, unionName);
+                        sb.AppendLine($"import {{ {unionName} }}{indent} from \"./{import.Path}\"");
                     }
                 }
                 emitFile.header = sb.ToString();
