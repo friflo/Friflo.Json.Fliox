@@ -124,16 +124,16 @@ namespace Friflo.Json.Flow.Schema
                 foreach (var field in fields) {
                     if (field.IsDerivedField)
                         continue;
-                    bool required = field.required;
+                    bool notNull = field.required || field.isArray || field.type == context.standardTypes.String || !standardTypes.ContainsKey(field.type);
                     var fieldType = GetFieldType(field, context);
-                    var optStr  = required ? " ": "?";
-                    var nullStr = required ? "" : " | null";
-                    emitFields.Add(new EmitField(fieldType, field.name));
+                    var emitField = new EmitField(fieldType, field.name, notNull);
+                    emitFields.Add(emitField);
                 }
                 int maxFieldName    = emitFields.MaxLength(field => field.type.Length);
                 foreach (var field in emitFields) {
                     var indent  = Indent(maxFieldName, field.type);
-                    sb.AppendLine($"    {field.type}{indent} {field.name};");
+                    var nullStr = field.notNull ? " " : "?";
+                    sb.AppendLine($"    {field.type}{nullStr}{indent} {field.name};");
                 }
                 sb.AppendLine("}");
                 sb.AppendLine();
@@ -214,12 +214,14 @@ namespace Friflo.Json.Flow.Schema
     }
     
     internal readonly struct EmitField {
-        internal readonly   string type;
-        internal readonly   string name;
+        internal readonly   string  type;
+        internal readonly   string  name;
+        internal readonly   bool    notNull;
         
-        internal EmitField (string type, string name) {
-            this.type = type;
-            this.name = name;
+        internal EmitField (string type, string name, bool notNull) {
+            this.type       = type;
+            this.name       = name;
+            this.notNull   = notNull;
         }
     }
 }

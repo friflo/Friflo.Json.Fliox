@@ -7,20 +7,20 @@ using Flow.Auth.Rights;
 namespace Flow.UserAuth {
 
 public class Role {
-    string      id;
-    List<Right> rights;
-    string      description;
+    string       id;
+    List<Right>  rights;
+    string       description;
 }
 
 public class UserCredential {
-    string id;
-    string passHash;
-    string token;
+    string  id;
+    string  passHash;
+    string  token;
 }
 
 public class UserPermission {
-    string       id;
-    List<string> roles;
+    string        id;
+    List<string>  roles;
 }
 
 }
