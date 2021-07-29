@@ -45,6 +45,7 @@ namespace Friflo.Json.Flow.Schema
     ///       <item><see cref="TypescriptGenerator.GetStandardTypes"/></item>
     ///       <item><see cref="TypescriptGenerator.EmitStandardType"/></item>
     ///       <item><see cref="TypescriptGenerator.EmitType"/></item>
+    ///       <item><see cref="TypescriptGenerator.EmitComplexType"/></item>
     ///       <item><see cref="TypescriptGenerator.GetFieldType"/></item>
     ///       <item><see cref="TypescriptGenerator.GetTypeName"/></item>
     ///       <item><see cref="TypescriptGenerator.EmitFileHeaders"/></item>
