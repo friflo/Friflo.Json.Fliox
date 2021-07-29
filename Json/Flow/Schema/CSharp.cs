@@ -133,8 +133,11 @@ namespace Friflo.Json.Flow.Schema
                 foreach (var field in emitFields) {
                     var indent   = Indent(maxFieldName, field.type);
                     var def      = field.def;
-                    bool notNull = def.required || def.isArray || def.isDictionary || !def.type.IsStruct;
-                    var nullStr = notNull ? " " : "?";
+                    var isReferenceType = def.isArray || def.isDictionary || !def.type.IsStruct;
+                    bool notNull        = def.required || isReferenceType;
+                    var nullStr         = notNull ? " " : "?";
+                    if (def.required && isReferenceType)
+                        sb.AppendLine("    [Fri.Property(Required = true)]");
                     sb.AppendLine($"    {field.type}{nullStr}{indent} {def.name};");
                 }
                 sb.AppendLine("}");
@@ -182,7 +185,7 @@ namespace Friflo.Json.Flow.Schema
                 sb.Clear();
                 sb.AppendLine($"// {Note}");
                 sb.AppendLine("using System.Collections.Generic;");
-                var namespaces = new HashSet<string>();
+                var namespaces = new HashSet<string> {"Friflo.Json.Flow.Mapper"};
                 foreach (var importPair in emitFile.imports) {
                     var import = importPair.Value;
                     if (import.type.Path == filePath)
@@ -218,6 +221,8 @@ namespace Friflo.Json.Flow.Schema
     internal readonly struct EmitField {
         internal readonly   string      type;
         internal readonly   FieldDef    def;
+        
+        public override string ToString() => def.name;
         
         internal EmitField (string type, FieldDef def) {
             this.type   = type;
