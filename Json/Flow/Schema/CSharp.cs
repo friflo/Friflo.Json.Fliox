@@ -179,22 +179,27 @@ namespace Friflo.Json.Flow.Schema
                 string      filePath    = pair.Key;
                 sb.Clear();
                 sb.AppendLine($"// {Note}");
-                sb.AppendLine($"using System;");
-                sb.AppendLine($"using System.Collections.Generic;");
-                sb.AppendLine($"using System.Numerics;");
-                sb.AppendLine($"using Friflo.Json.Flow.Mapper.Map.Val;");
-                sb.AppendLine();
-                sb.AppendLine("#pragma warning disable 0169");
-                sb.AppendLine($"namespace {emitFile.package} {{");
-
-                var     max         = emitFile.imports.MaxLength(import => import.Path == filePath ? 0 : import.Name.Length);
-                /* foreach (var import in emitFile.imports) {
+                sb.AppendLine("using System;");
+                sb.AppendLine("using System.Collections.Generic;");
+                sb.AppendLine("using System.Numerics;");
+                var namespaces = new HashSet<string>();
+                foreach (var import in emitFile.imports) {
                     if (import.Path == filePath)
                         continue;
-                    var typeName    = import.Name;
-                    var indent      = Indent(max, typeName);
-                    sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.Path}\"");
-                } */
+                    if (import == generator.standardTypes.JsonValue) {
+                        namespaces.Add("Friflo.Json.Flow.Mapper.Map.Val");
+                        continue;
+                    }
+                    namespaces.Add(import.Namespace);
+                }
+                foreach (var ns in namespaces) {
+                    sb.AppendLine($"using {ns};");
+                }
+                sb.AppendLine();
+                sb.AppendLine("#pragma warning disable 0169");
+                sb.AppendLine();
+                sb.AppendLine($"namespace {emitFile.package} {{");
+
                 emitFile.header = sb.ToString();
             }
         }

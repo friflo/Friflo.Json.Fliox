@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         }
         
         /// C# -> C#
-        // [Test]
+        [Test]
         public static void CS_CS () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var generator = CSharpGenerator.Generate(typeStore, UserStoreTypes, new[]{"Friflo.Json."});

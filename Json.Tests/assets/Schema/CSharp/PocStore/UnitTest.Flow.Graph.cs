@@ -5,6 +5,7 @@ using System.Numerics;
 using Friflo.Json.Flow.Mapper.Map.Val;
 
 #pragma warning disable 0169
+
 namespace UnitTest.Flow.Graph {
 
 public class Order {
