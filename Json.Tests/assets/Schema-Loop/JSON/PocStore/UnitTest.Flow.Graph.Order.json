@@ -5,6 +5,7 @@
     "definitions": {
         "Order": {
             "type": "object",
+            "extends": { "$ref": "./Friflo.Json.Flow.Graph.json#/definitions/Entity" },
             "properties": {
                 "id":       { "type": "string" },
                 "customer": { "type": ["string", "null"] },

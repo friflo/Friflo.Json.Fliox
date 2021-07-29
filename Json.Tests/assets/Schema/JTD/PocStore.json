@@ -9,6 +9,11 @@
                 "items":    { "elements": { "ref":  "OrderItem" }, "nullable": true }
             }
         },
+        "Entity": {
+            "properties": {
+                "id": { "type": "string" }
+            }
+        },
         "OrderItem": {
             "properties": {
                 "article": { "type": "string" },

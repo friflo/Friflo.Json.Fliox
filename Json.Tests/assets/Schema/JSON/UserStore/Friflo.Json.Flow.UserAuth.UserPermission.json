@@ -5,6 +5,7 @@
     "definitions": {
         "UserPermission": {
             "type": "object",
+            "extends": { "$ref": "./Friflo.Json.Flow.Graph.json#/definitions/Entity" },
             "properties": {
                 "id":    { "type": "string" },
                 "roles": { "type": ["array", "null"], "items": { "type": "string" } }

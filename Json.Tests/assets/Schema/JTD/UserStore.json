@@ -8,6 +8,11 @@
                 "description": { "type": "string", "nullable": true }
             }
         },
+        "Entity": {
+            "properties": {
+                "id": { "type": "string" }
+            }
+        },
         "Right": {
             "discriminator": "type",
             "mapping": {

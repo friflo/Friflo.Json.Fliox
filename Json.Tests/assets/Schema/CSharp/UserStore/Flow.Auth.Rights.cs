@@ -14,7 +14,7 @@ namespace Flow.Auth.Rights {
 [Fri.Polymorph(typeof(RightSubscribeMessage), Discriminant = "subscribeMessage")]
 [Fri.Polymorph(typeof(RightDatabase),         Discriminant = "database")]
 [Fri.Polymorph(typeof(RightPredicate),        Discriminant = "predicate")]
-public  abstract class Right {
+public abstract class Right {
     string  description;
 }
 

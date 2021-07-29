@@ -128,12 +128,6 @@
 
             }
         },
-        "Equal": {
-            "properties": {
-                "left":  { "ref":  "Operation" },
-                "right": { "ref":  "Operation" }
-            }
-        },
         "Operation": {
             "discriminator": "op",
             "mapping": {
@@ -179,6 +173,18 @@
 
             }
         },
+        "Equal": {
+            "properties": {
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
+            }
+        },
+        "BinaryBoolOp": {
+            "properties": {
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
+            }
+        },
         "Field": {
             "properties": {
                 "name": { "type": "string" }
@@ -187,6 +193,11 @@
         "StringLiteral": {
             "properties": {
                 "value": { "type": "string" }
+            }
+        },
+        "Literal": {
+            "properties": {
+
             }
         },
         "DoubleLiteral": {
@@ -205,6 +216,11 @@
             }
         },
         "Abs": {
+            "properties": {
+                "value": { "ref":  "Operation" }
+            }
+        },
+        "UnaryArithmeticOp": {
             "properties": {
                 "value": { "ref":  "Operation" }
             }
@@ -245,6 +261,12 @@
                 "right": { "ref":  "Operation" }
             }
         },
+        "BinaryArithmeticOp": {
+            "properties": {
+                "left":  { "ref":  "Operation" },
+                "right": { "ref":  "Operation" }
+            }
+        },
         "Subtract": {
             "properties": {
                 "left":  { "ref":  "Operation" },
@@ -264,6 +286,13 @@
             }
         },
         "Min": {
+            "properties": {
+                "field": { "ref":  "Field" },
+                "arg":   { "type": "string" },
+                "array": { "ref":  "Operation" }
+            }
+        },
+        "BinaryAggregateOp": {
             "properties": {
                 "field": { "ref":  "Field" },
                 "arg":   { "type": "string" },
@@ -292,6 +321,11 @@
             }
         },
         "Count": {
+            "properties": {
+                "field": { "ref":  "Field" }
+            }
+        },
+        "UnaryAggregateOp": {
             "properties": {
                 "field": { "ref":  "Field" }
             }
@@ -331,6 +365,11 @@
                 "operands": { "elements": { "ref":  "FilterOperation" } }
             }
         },
+        "BinaryLogicalOp": {
+            "properties": {
+                "operands": { "elements": { "ref":  "FilterOperation" } }
+            }
+        },
         "Or": {
             "properties": {
                 "operands": { "elements": { "ref":  "FilterOperation" } }
@@ -351,7 +390,19 @@
                 "operand": { "ref":  "FilterOperation" }
             }
         },
+        "UnaryLogicalOp": {
+            "properties": {
+                "operand": { "ref":  "FilterOperation" }
+            }
+        },
         "Any": {
+            "properties": {
+                "field":     { "ref":  "Field" },
+                "arg":       { "type": "string" },
+                "predicate": { "ref":  "FilterOperation" }
+            }
+        },
+        "BinaryQuantifyOp": {
             "properties": {
                 "field":     { "ref":  "Field" },
                 "arg":       { "type": "string" },
