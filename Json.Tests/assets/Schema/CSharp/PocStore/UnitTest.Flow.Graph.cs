@@ -8,15 +8,15 @@ using Friflo.Json.Flow.Mapper.Map.Val;
 namespace UnitTest.Flow.Graph {
 
 public class Order {
-    string id;
-    string customer;
-    DateTime created;
+    string          id;
+    string          customer;
+    DateTime        created;
     List<OrderItem> items;
 }
 
 public class OrderItem {
     string article;
-    int amount;
+    int    amount;
     string name;
 }
 
@@ -32,8 +32,8 @@ public class Article {
 }
 
 public class Producer {
-    string id;
-    string name;
+    string       id;
+    string       name;
     List<string> employees;
 }
 
@@ -44,30 +44,30 @@ public class Employee {
 }
 
 public class TestType {
-    string id;
-    DateTime dateTime;
-    DateTime dateTimeNull;
-    BigInteger bigInt;
-    BigInteger bigIntNull;
-    bool boolean;
-    bool booleanNull;
-    byte uint8;
-    byte uint8Null;
-    short int16;
-    short int16Null;
-    int int32;
-    int int32Null;
-    long int64;
-    long int64Null;
-    float float32;
-    float float32Null;
-    double float64;
-    double float64Null;
-    PocStruct pocStruct;
-    PocStruct pocStructNull;
-    List<int> intArray;
-    List<int> intArrayNull;
-    JsonValue jsonValue;
+    string       id;
+    DateTime     dateTime;
+    DateTime     dateTimeNull;
+    BigInteger   bigInt;
+    BigInteger   bigIntNull;
+    bool         boolean;
+    bool         booleanNull;
+    byte         uint8;
+    byte         uint8Null;
+    short        int16;
+    short        int16Null;
+    int          int32;
+    int          int32Null;
+    long         int64;
+    long         int64Null;
+    float        float32;
+    float        float32Null;
+    double       float64;
+    double       float64Null;
+    PocStruct    pocStruct;
+    PocStruct    pocStructNull;
+    List<int>    intArray;
+    List<int>    intArrayNull;
+    JsonValue    jsonValue;
     DerivedClass derivedClass;
     DerivedClass derivedClassNull;
 }

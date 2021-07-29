@@ -77,8 +77,7 @@ namespace Friflo.Json.Flow.Schema
             if (type.IsComplex) {
                 var dependencies = new List<TypeDef>();
                 var fields          = type.Fields;
-                int maxFieldName    = fields.MaxLength(field => field.name.Length);
-                
+
                 string  discriminator   = null;
                 var     discriminant    = type.Discriminant;
                 var     extendsStr      = "";
@@ -86,7 +85,6 @@ namespace Friflo.Json.Flow.Schema
                 if (discriminant != null) {
                     discriminator   = baseType.UnionType.discriminator;
                     extendsStr = $": {baseType.Name} ";
-                    maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                     dependencies.Add(baseType);
                 } else {
                     if (baseType != null) {
@@ -117,16 +115,20 @@ namespace Friflo.Json.Flow.Schema
                     // var indent = Indent(maxFieldName, discriminator);
                     // sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
                 }
+                var emitFields = new List<EmitField>();
                 foreach (var field in fields) {
                     if (field.IsDerivedField)
                         continue;
                     bool required = field.required;
                     var fieldType = GetFieldType(field, context);
-                    var indent  = Indent(maxFieldName, field.name);
                     var optStr  = required ? " ": "?";
                     var nullStr = required ? "" : " | null";
-                    // sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}{nullStr};");
-                    sb.AppendLine($"    {fieldType} {field.name};");
+                    emitFields.Add(new EmitField(fieldType, field.name));
+                }
+                int maxFieldName    = emitFields.MaxLength(field => field.type.Length);
+                foreach (var field in emitFields) {
+                    var indent  = Indent(maxFieldName, field.type);
+                    sb.AppendLine($"    {field.type}{indent} {field.name};");
                 }
                 sb.AppendLine("}");
                 sb.AppendLine();
@@ -204,6 +206,16 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine("}");
                 emitFile.footer = sb.ToString();
             }
+        }
+    }
+    
+    internal readonly struct EmitField {
+        internal readonly   string type;
+        internal readonly   string name;
+        
+        internal EmitField (string type, string name) {
+            this.type = type;
+            this.name = name;
         }
     }
 }
