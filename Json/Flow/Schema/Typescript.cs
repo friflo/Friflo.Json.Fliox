@@ -87,7 +87,7 @@ namespace Friflo.Json.Flow.Schema
                 if (baseType != null) {
                     extendsStr = $"extends {baseType.Name} ";
                     dependencies.Add(baseType);
-                    imports.Add(baseType);;
+                    imports.Add(baseType);
                 }
                 var unionType = type.UnionType;
                 if (unionType == null) {
