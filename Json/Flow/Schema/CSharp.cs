@@ -181,7 +181,8 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine($"using System.Collections.Generic;");
                 sb.AppendLine($"using System.Numerics;");
                 sb.AppendLine($"using Friflo.Json.Flow.Mapper.Map.Val;");
-                
+                sb.AppendLine();
+                sb.AppendLine("#pragma warning disable 0169");
                 sb.AppendLine($"namespace {emitFile.package} {{");
 
                 var     max         = emitFile.imports.MaxLength(import => import.Path == filePath ? 0 : import.Name.Length);
@@ -197,7 +198,12 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private void EmitFileFooters(StringBuilder sb) {
-            sb.AppendLine("}");
+            foreach (var pair in generator.fileEmits) {
+                EmitFile    emitFile    = pair.Value;
+                sb.Clear();
+                sb.AppendLine("}");
+                emitFile.footer = sb.ToString();
+            }
         }
     }
 }

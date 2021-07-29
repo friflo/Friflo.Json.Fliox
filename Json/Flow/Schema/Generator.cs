@@ -167,7 +167,8 @@ namespace Friflo.Json.Flow.Schema
             foreach (var emit in emits) {
                 var filePath = emit.path;
                 if (!fileEmits.TryGetValue(filePath, out var emitFile)) {
-                    fileEmits.Add(filePath, emitFile = new EmitFile(filePath, emit.type.Namespace));
+                    var package = Strip(emit.type.Namespace);
+                    fileEmits.Add(filePath, emitFile = new EmitFile(filePath, package));
                 }
                 emitFile.emitTypes.Add(emit);
                 foreach (var type in emit.imports) {
@@ -180,7 +181,8 @@ namespace Friflo.Json.Flow.Schema
         
         public void GroupToSingleFile(string name) {
             ICollection<EmitType> emits = emitTypes.Values;
-            var emitFile = new EmitFile($"{name}{fileExt}", name);
+            var package = Strip(name);
+            var emitFile = new EmitFile($"{name}{fileExt}", package);
             fileEmits.Add(name, emitFile);
             foreach (var emit in emits) {
                 emitFile.emitTypes.Add(emit);

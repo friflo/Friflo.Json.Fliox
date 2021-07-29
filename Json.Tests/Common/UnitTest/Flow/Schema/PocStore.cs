@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         }
         
         /// C# -> C#
-        // [Test]
+        [Test]
         public static void CS_CS () {
             // Use code generator directly
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
