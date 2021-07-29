@@ -87,11 +87,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
                 var fields          = type.Fields;
                 int maxFieldName    = fields.MaxLength(field => field.name.Length);
                 
-                string  discriminant    = type.Discriminant;
-                string  discriminator   = type.Discriminator;
-                if (discriminant != null) {
-                    maxFieldName = Math.Max(maxFieldName, discriminator.Length);
-                }
                 var unionType = type.UnionType;
                 sb.AppendLine($"        \"{type.Name}\": {{");
                 if (unionType == null) {
@@ -111,7 +106,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
                 }
                 sb.AppendLine($"            \"properties\": {{");
                 bool firstField     = true;
-
+                string  discriminant    = type.Discriminant;
+                string  discriminator   = type.Discriminator;
+                if (discriminant != null) {
+                    maxFieldName = Math.Max(maxFieldName, discriminator.Length);
+                }
                 // fields
                 foreach (var field in fields) {
                     bool required = field.required;
