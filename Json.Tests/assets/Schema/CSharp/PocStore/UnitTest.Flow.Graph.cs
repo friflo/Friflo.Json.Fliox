@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System;
 using System.Numerics;
-using Friflo.Json.Flow.Mapper.Map.Val;
+using Friflo.Json.Flow.Mapper;
 
 #pragma warning disable 0169
 

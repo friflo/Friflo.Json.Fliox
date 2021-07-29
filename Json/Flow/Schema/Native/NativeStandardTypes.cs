@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Friflo.Json.Flow.Mapper.Map.Val;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Schema.Definition;
 
 namespace Friflo.Json.Flow.Schema.Native

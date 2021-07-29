@@ -4,13 +4,6 @@ using System;
 
 namespace Friflo.Json.Flow.Mapper.Map.Val
 {
-    public struct JsonValue
-    {
-        public string       json;
-        
-        public override string ToString() => json ?? "null";
-    }
-    
     // ------------------------- PatchValueMatcher / PatchValueMapper -------------------------
     public class JsonValueMatcher : ITypeMatcher {
         public static readonly JsonValueMatcher Instance = new JsonValueMatcher();
