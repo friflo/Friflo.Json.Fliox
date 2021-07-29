@@ -183,14 +183,15 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine("using System.Collections.Generic;");
                 sb.AppendLine("using System.Numerics;");
                 var namespaces = new HashSet<string>();
-                foreach (var import in emitFile.imports) {
-                    if (import.Path == filePath)
+                foreach (var importPair in emitFile.imports) {
+                    var import = importPair.Value;
+                    if (import.type.Path == filePath)
                         continue;
-                    if (import == generator.standardTypes.JsonValue) {
+                    if (import.type == generator.standardTypes.JsonValue) {
                         namespaces.Add("Friflo.Json.Flow.Mapper.Map.Val");
                         continue;
                     }
-                    namespaces.Add(import.Namespace);
+                    namespaces.Add(import.@namespace);
                 }
                 foreach (var ns in namespaces) {
                     sb.AppendLine($"using {ns};");

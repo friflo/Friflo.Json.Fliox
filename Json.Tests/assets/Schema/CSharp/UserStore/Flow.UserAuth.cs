@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Friflo.Json.Flow.Auth.Rights;
+using Flow.Auth.Rights;
 
 #pragma warning disable 0169
 

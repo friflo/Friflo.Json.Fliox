@@ -175,9 +175,10 @@ namespace Friflo.Json.Flow.Schema
                 string      filePath    = pair.Key;
                 sb.Clear();
                 sb.AppendLine($"// {Note}");
-                var     max         = emitFile.imports.MaxLength(import => import.Path == filePath ? 0 : import.Name.Length);
+                var max = emitFile.imports.MaxLength(imp => imp.Value.type.Path == filePath ? 0 : imp.Value.type.Name.Length);
 
-                foreach (var import in emitFile.imports) {
+                foreach (var importPair in emitFile.imports) {
+                    var import = importPair.Value.type;
                     if (import.Path == filePath)
                         continue;
                     var typeName    = import.Name;

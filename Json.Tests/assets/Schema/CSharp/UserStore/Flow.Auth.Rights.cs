@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Friflo.Json.Flow.Sync;
+using Flow.Sync;
 
 #pragma warning disable 0169
 
