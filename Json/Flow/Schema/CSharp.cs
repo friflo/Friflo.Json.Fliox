@@ -41,20 +41,23 @@ namespace Friflo.Json.Flow.Schema
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
-            AddType (map, standard.Uint8,         "uint8 = number" );
-            AddType (map, standard.Int16,         "int16 = number" );
-            AddType (map, standard.Int32,         "int32 = number" );
-            AddType (map, standard.Int64,         "int64 = number" );
+            AddType (map, standard.Boolean,       "bool" );
+            AddType (map, standard.String,        "string" );
+
+            AddType (map, standard.Uint8,         "byte" );
+            AddType (map, standard.Int16,         "short" );
+            AddType (map, standard.Int32,         "int" );
+            AddType (map, standard.Int64,         "long" );
                
-            AddType (map, standard.Double,        "double = number" );
-            AddType (map, standard.Float,         "float = number" );
+            AddType (map, standard.Double,        "double" );
+            AddType (map, standard.Float,         "float" );
                
-            AddType (map, standard.BigInteger,    "BigInteger = string" );
-            AddType (map, standard.DateTime,      "DateTime = string" );
+            AddType (map, standard.BigInteger,    "BigInteger" );
+            AddType (map, standard.DateTime,      "DateTime" );
             return map;
         }
 
-        private EmitType EmitStandardType(TypeDef type, StringBuilder sb) {
+        /* private EmitType EmitStandardType(TypeDef type, StringBuilder sb) {
             if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
             sb.Append("export type ");
@@ -62,15 +65,15 @@ namespace Friflo.Json.Flow.Schema
             sb.AppendLine(";");
             sb.AppendLine();
             return new EmitType(type, sb);
-        }
+        } */
         
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
             var imports         = new HashSet<TypeDef>();
             var context         = new TypeContext (generator, imports, type);
-            var standardType    = EmitStandardType(type, sb);
+            /* var standardType    = EmitStandardType(type, sb);
             if (standardType != null ) {
                 return standardType;
-            }
+            } */
             if (type.IsComplex) {
                 var dependencies = new List<TypeDef>();
                 var fields          = type.Fields;
@@ -82,37 +85,37 @@ namespace Friflo.Json.Flow.Schema
                 var baseType    = type.BaseType;
                 if (discriminant != null) {
                     discriminator   = baseType.UnionType.discriminator;
-                    extendsStr = $"extends {baseType.Name} ";
+                    extendsStr = $": {baseType.Name} ";
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                     dependencies.Add(baseType);
                 } else {
                     if (baseType != null) {
-                        extendsStr = $"extends {baseType.Name} ";
+                        extendsStr = $": {baseType.Name} ";
                         imports.Add(baseType);
                         dependencies.Add(baseType);
                     }
                 }
                 var unionType = type.UnionType;
                 if (unionType == null) {
-                    sb.AppendLine($"export class {type.Name} {extendsStr}{{");
+                    sb.AppendLine($"public class {type.Name} {extendsStr}{{");
                 } else {
-                    sb.AppendLine($"export type {type.Name}_Union =");
+                    /* sb.AppendLine($"export type {type.Name}_Union =");
                     foreach (var polyType in unionType.types) {
                         sb.AppendLine($"    | {polyType.Name}");
                         imports.Add(polyType);
                     }
                     sb.AppendLine($";");
-                    sb.AppendLine();
-                    sb.AppendLine($"export abstract class {type.Name} {extendsStr}{{");
-                    sb.AppendLine($"    abstract {unionType.discriminator}:");
+                    sb.AppendLine(); */
+                    sb.AppendLine($"public  abstract class {type.Name} {extendsStr}{{");
+                    /* sb.AppendLine($"    abstract {unionType.discriminator}:");
                     foreach (var polyType in unionType.types) {
                         sb.AppendLine($"        | \"{polyType.Discriminant}\"");
                     }
-                    sb.AppendLine($"    ;");
+                    sb.AppendLine($"    ;"); */
                 }
                 if (discriminant != null) {
-                    var indent = Indent(maxFieldName, discriminator);
-                    sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
+                    // var indent = Indent(maxFieldName, discriminator);
+                    // sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
                 }
                 foreach (var field in fields) {
                     if (field.IsDerivedField)
@@ -122,7 +125,8 @@ namespace Friflo.Json.Flow.Schema
                     var indent  = Indent(maxFieldName, field.name);
                     var optStr  = required ? " ": "?";
                     var nullStr = required ? "" : " | null";
-                    sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}{nullStr};");
+                    // sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}{nullStr};");
+                    sb.AppendLine($"    {fieldType} {field.name};");
                 }
                 sb.AppendLine("}");
                 sb.AppendLine();
@@ -130,11 +134,11 @@ namespace Friflo.Json.Flow.Schema
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
-                sb.AppendLine($"export type {type.Name} =");
+                sb.AppendLine($"public enum {type.Name} {{");
                 foreach (var enumValue in enumValues) {
-                    sb.AppendLine($"    | \"{enumValue}\"");
+                    sb.AppendLine($"    {enumValue},");
                 }
-                sb.AppendLine($";");
+                sb.AppendLine("}");
                 sb.AppendLine();
                 return new EmitType(type, sb);
             }
@@ -142,30 +146,28 @@ namespace Friflo.Json.Flow.Schema
         }
         
         // Note: static by intention
-        private static string GetFieldType(FieldDef field, TypeContext context) {
+        private string GetFieldType(FieldDef field, TypeContext context) {
             var type = field.type;
             if (field.isArray) {
                 var elementTypeName = GetTypeName(type, context);
-                return $"{elementTypeName}[]";
+                return $"List<{elementTypeName}>";
             }
             if (field.isDictionary) {
                 var valueTypeName = GetTypeName(type, context);
-                return $"{{ [key: string]: {valueTypeName} }}";
+                return $"Dictionary<string, {valueTypeName}>";
             }
             return GetTypeName(type, context);
         }
         
-        private static string GetTypeName(TypeDef type, TypeContext context) {
+        private string GetTypeName(TypeDef type, TypeContext context) {
             var standard = context.standardTypes;
-            if (type == standard.JsonValue)
-                return "{} | null";
-            if (type == standard.String)
+            if (standardTypes.TryGetValue(type, out string name))
+                return name;
+            /* if (type == standard.String)
                 return "string";
             if (type == standard.Boolean)
-                return "boolean";
+                return "bool"; */
             context.imports.Add(type);
-            if (type.UnionType != null)
-                return $"{type.Name}_Union";
             return type.Name;
         }
         
@@ -175,18 +177,19 @@ namespace Friflo.Json.Flow.Schema
                 string      filePath    = pair.Key;
                 sb.Clear();
                 sb.AppendLine($"// {Note}");
-                var     max         = emitFile.imports.MaxLength(import => import.Path == filePath ? 0 : import.Name.Length);
+                sb.AppendLine($"using System;");
+                sb.AppendLine($"using System.Collections.Generic;");
+                sb.AppendLine($"using System.Numerics;");
+                sb.AppendLine($"using Friflo.Json.Flow.Mapper.Map.Val;");
 
-                foreach (var import in emitFile.imports) {
+                var     max         = emitFile.imports.MaxLength(import => import.Path == filePath ? 0 : import.Name.Length);
+                /* foreach (var import in emitFile.imports) {
                     if (import.Path == filePath)
                         continue;
                     var typeName    = import.Name;
                     var indent      = Indent(max, typeName);
                     sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.Path}\"");
-                    if (import.UnionType != null) {
-                        sb.AppendLine($"import {{ {typeName}_Union }}{indent} from \"./{import.Path}\"");
-                    }
-                }
+                } */
                 emitFile.header = sb.ToString();
             }
         }

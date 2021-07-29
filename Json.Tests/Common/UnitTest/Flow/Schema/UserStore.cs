@@ -35,6 +35,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(JsonSchemaFolder);
         }
         
+        /// C# -> C#
+        // [Test]
+        public static void CS_CS () {
+            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
+            var generator = CSharpGenerator.Generate(typeStore, UserStoreTypes);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/UserStore");
+        }
+        
         /// C# -> JTD
         [Test]
         public static void CS_JTD () {
