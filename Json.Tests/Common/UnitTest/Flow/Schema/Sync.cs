@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 
         // -------------------------------------- input: C# --------------------------------------
         
-        /// <summary>C# -> Typescript - protocol: <see cref="DatabaseMessage"/></summary>
+        /// C# -> Typescript
         [Test]
         public static void CS_Typescript () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/Sync");
         }
         
-        /// <summary>C# -> JTD - protocol: <see cref="DatabaseMessage"/></summary>
+        /// C# -> JTD
         [Test]
         public static void CS_JTD () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());

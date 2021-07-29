@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         
         // -------------------------------------- input: C# --------------------------------------
 
-        /// <summary>C# -> Typescript - model: <see cref="PocStore"/></summary>
+        /// C# -> Typescript
         [Test]
         public static void CS_Typescript () {
             // Use code generator directly
@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/PocStore");
         }
         
-        /// <summary>C# -> JSON Schema - model: <see cref="PocStore"/></summary>
+        /// C# -> JSON Schema
         [Test, Order(1)]
         public static void CS_JsonSchema () {
             // Use code generator directly
@@ -45,7 +45,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(JsonSchemaFolder);
         }
         
-        /// <summary>C# -> JTD - model: <see cref="PocStore"/></summary>
+        /// C# -> C#
+        // [Test]
+        public static void CS_CS () {
+            // Use code generator directly
+            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
+            typeStore.AddMappers(PocStoreTypes);
+            var schema      = new NativeTypeSchema(typeStore);
+            var generator   = new Generator(schema, ".cs", new[]{"Friflo.Json.Tests.Common."});
+            CSharpGenerator.Generate(generator);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/PocStore");
+        }
+        
+        /// C# -> JTD
         [Test]
         public static void CS_JTD () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
@@ -57,7 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         
         static readonly string JsonSchemaFolder = CommonUtils.GetBasePath() + "assets/Schema/JSON/PocStore";
         
-        /// <summary>JSON Schema -> JSON Schema - model: <see cref="PocStore"/></summary>
+        /// JSON Schema -> JSON Schema
         [Test, Order(2)]
         public static void JSON_JSON () {
             var schemas     = JsonTypeSchema.FromFolder(JsonSchemaFolder);
@@ -71,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             SchemaTest.AssertFoldersAreEqual(JsonSchemaFolder, loopFolder);
         }
         
-        /// <summary>JSON Schema -> Typescript - model: <see cref="PocStore"/></summary>
+        /// JSON Schema -> Typescript
         [Test]
         public static void JSON_Typescript () {
             var schemas     = JsonTypeSchema.FromFolder(JsonSchemaFolder);

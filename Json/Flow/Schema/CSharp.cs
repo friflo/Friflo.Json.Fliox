@@ -11,19 +11,19 @@ using static Friflo.Json.Flow.Schema.Generator;
 
 namespace Friflo.Json.Flow.Schema
 {
-    public partial class TypescriptGenerator
+    public partial class CSharpGenerator
     {
         private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardTypes;
 
 
-        private TypescriptGenerator (Generator generator) {
+        private CSharpGenerator (Generator generator) {
             this.generator  = generator;
             standardTypes   = GetStandardTypes(generator.standardTypes);
         }
         
         public static void Generate(Generator generator) {
-            var emitter = new TypescriptGenerator(generator);
+            var emitter = new CSharpGenerator(generator);
             var sb = new StringBuilder();
             // emit custom types
             foreach (var type in generator.types) {

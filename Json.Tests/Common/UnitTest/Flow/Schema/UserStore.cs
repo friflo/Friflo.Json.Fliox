@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 
         // -------------------------------------- input: C# --------------------------------------
         
-        /// <summary>C# -> Typescript - model: <see cref="UserStore"/></summary>
+        /// C# -> Typescript
         [Test]
         public static void CS_Typescript () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/UserStore");
         }
         
-        /// <summary>C# -> JSON Schema - model: <see cref="UserStore"/></summary>
+        /// C# -> JSON Schema
         [Test, Order(1)]
         public static void CS_JSON () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(JsonSchemaFolder);
         }
         
-        /// <summary>C# -> JTD - model: <see cref="UserStore"/></summary>
+        /// C# -> JTD
         [Test]
         public static void CS_JTD () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         static readonly string JsonSchemaFolder = CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore";
         
         
-        /// <summary>JSON Schema -> Typescript - model: <see cref="UserStore"/></summary>
+        /// JSON Schema -> Typescript
         [Test]
         public static void JSON_Typescript () {
             var schemas     = JsonTypeSchema.FromFolder(JsonSchemaFolder);
@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema-Loop/Typescript/UserStore");
         }
         
-        /// <summary>JSON Schema -> JSON Schema - model: <see cref="UserStore"/></summary>
+        /// JSON Schema -> JSON Schema
         [Test, Order(2)]
         public static void JSON_JSON () {
             var schemas     = JsonTypeSchema.FromFolder(JsonSchemaFolder);

@@ -8,6 +8,7 @@ using System.Text;
 using Friflo.Json.Flow.Schema.Definition;
 using Friflo.Json.Flow.Schema.Utils;
 using static Friflo.Json.Flow.Schema.Generator;
+// Must not have other dependencies to Friflo.Json.Flow.* except .Schema.Definition & .Schema.Utils
 
 namespace Friflo.Json.Flow.Schema
 {
