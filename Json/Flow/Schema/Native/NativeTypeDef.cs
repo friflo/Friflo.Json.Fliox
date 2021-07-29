@@ -13,9 +13,11 @@ public class NativeTypeDef : TypeDef
         // --- internal
         internal readonly   Type                native;
         internal readonly   TypeMapper          mapper;
-        internal            TypeDef             baseType;
+        internal            NativeTypeDef       baseType;
         internal            List<FieldDef>      fields;
         internal            UnionType           unionType;
+        internal            string              discriminator;
+        internal            bool                isAbstract;
         
         // --- TypeDef
         public   override   TypeDef             BaseType        => baseType;
@@ -24,8 +26,10 @@ public class NativeTypeDef : TypeDef
         public   override   bool                IsStruct        { get; }
         public   override   List<FieldDef>      Fields          => fields;
         public   override   string              Discriminant    { get; }
+        public   override   string              Discriminator   => discriminator;
         public   override   TypeSemantic        TypeSemantic    { get; }
         public   override   UnionType           UnionType       => unionType;
+        public   override   bool                IsAbstract      => isAbstract;
         public   override   ICollection<string> EnumValues      { get; }
         
         public   override   string              ToString()      => mapper.type.ToString();
@@ -35,6 +39,7 @@ public class NativeTypeDef : TypeDef
         {
             this.native     = mapper.type;
             this.mapper     = mapper;
+            isAbstract      = mapper.instanceFactory?.isAbstract ?? false;
             IsEnum          = native.IsEnum;
             IsComplex       = mapper.IsComplex;
             IsStruct        = mapper.type.IsValueType;

@@ -27,20 +27,7 @@ namespace Friflo.Json.Flow.Schema.Native
             var types       = new List<TypeDef>                  (typeMappers.Count);
             foreach (var pair in typeMappers) {
                 TypeMapper  mapper  = pair.Value;
-                var underMapper     = mapper.GetUnderlyingMapper();
-                if (IsNullableMapper(underMapper, out var nonNullableType)) {
-                    typeStore.GetTypeMapper(nonNullableType);
-                }
-                if (nativeTypes.ContainsKey(nonNullableType))
-                    continue;
-                NativeTypeDef typeDef;
-                if (NativeStandardTypes.Types.TryGetValue(nonNullableType, out string name)) {
-                    typeDef = new NativeTypeDef(underMapper, name, "Standard");
-                } else {
-                    typeDef = new NativeTypeDef(underMapper, underMapper.type.Name, underMapper.type.Namespace);
-                }
-                nativeTypes.Add(nonNullableType, typeDef);
-                types.      Add(typeDef);
+                AddType(types, mapper, typeStore);
             }
             // in case any Nullable<> was found - typeStore contain now also their non-nullable counterparts.
             typeMappers = typeStore.GetTypeMappers();
@@ -53,7 +40,7 @@ namespace Friflo.Json.Flow.Schema.Native
             foreach (var pair in nativeTypes) {
                 NativeTypeDef   typeDef        = pair.Value;
                 Type            baseType    = typeDef.native.BaseType;
-                TypeMapper      mapper;
+                TypeMapper      mapper = null;
                 // When searching for polymorph base class there may be are classes in this hierarchy. E.g. BinaryBoolOp. 
                 // If these classes may have a protected constructor they need to be skipped. These classes have no TypeMapper. 
                 while (!typeMappers.TryGetValue(baseType, out  mapper)) {
@@ -90,10 +77,22 @@ namespace Friflo.Json.Flow.Schema.Native
                         typeDef.fields.Add(fieldDef);
                     }
                 }
-                
+                if (typeDef.Discriminant != null) {
+                    var baseType = typeDef.baseType;
+                    while (baseType != null) {
+                        var unionType = baseType.unionType;
+                        if (unionType != null) {
+                            typeDef.discriminator = unionType.discriminator;
+                            break;
+                        }
+                        baseType = baseType.baseType;
+                    }
+                    if (typeDef.discriminator == null)
+                        throw new InvalidOperationException($"found no discriminator in base classes. type: {typeDef}");
+                }
                 // set the unionType if a class is a discriminated union
                 var instanceFactory = mapper.instanceFactory;
-                if (instanceFactory != null) {
+                if (instanceFactory != null && !instanceFactory.isAbstract) {
                     var polyTypes   = instanceFactory.polyTypes;
                     var unionTypes  = new List<TypeDef>(polyTypes.Length);
                     foreach (var polyType in polyTypes) {
@@ -101,7 +100,30 @@ namespace Friflo.Json.Flow.Schema.Native
                         unionTypes.Add(element);
                     }
                     typeDef.unionType  = new UnionType (instanceFactory.discriminator, unionTypes);
+                    typeDef.isAbstract = true;
                 }
+            }
+        }
+        
+        private void AddType(List<TypeDef> types, TypeMapper  mapper, TypeStore typeStore) {
+            mapper  = mapper.GetUnderlyingMapper();
+            if (IsNullableMapper(mapper, out var nonNullableType)) {
+                typeStore.GetTypeMapper(nonNullableType);
+            }
+            if (nativeTypes.ContainsKey(nonNullableType))
+                return;
+            NativeTypeDef typeDef;
+            if (NativeStandardTypes.Types.TryGetValue(nonNullableType, out string name)) {
+                typeDef = new NativeTypeDef(mapper, name, "Standard");
+            } else {
+                typeDef = new NativeTypeDef(mapper, mapper.type.Name, mapper.type.Namespace);
+            }
+            nativeTypes.Add(nonNullableType, typeDef);
+            types.      Add(typeDef);
+            var baseType = nonNullableType.BaseType;
+            if (baseType != null && baseType != typeof(object) && baseType != typeof(Enum) && baseType != typeof(ValueType)) {
+                var baseMapper = typeStore.GetTypeMapper(baseType);
+                AddType(types, baseMapper, typeStore);
             }
         }
         

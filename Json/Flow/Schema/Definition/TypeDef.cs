@@ -43,8 +43,10 @@ namespace Friflo.Json.Flow.Schema.Definition
         
         /// <see cref="UnionType"/> is not null, if the type is as discriminated union.
         public  abstract    UnionType           UnionType    { get; }
+        public  abstract    bool                IsAbstract   { get; }
         /// <see cref="Discriminant"/> is not null, if the type is an element of a <see cref="UnionType"/>
         public  abstract    string              Discriminant { get; }
+        public  abstract    string              Discriminator{ get; }
         
         /// If <see cref="IsEnum"/> is true it has <see cref="EnumValues"/>
         public  abstract    bool                IsEnum       { get; }

@@ -75,26 +75,23 @@ namespace Friflo.Json.Flow.Schema
                 var dependencies = new List<TypeDef>();
                 var fields          = type.Fields;
                 int maxFieldName    = fields.MaxLength(field => field.name.Length);
-                
                 string  discriminator   = null;
                 var     discriminant    = type.Discriminant;
                 var     extendsStr      = "";
-                var baseType    = type.BaseType;
                 if (discriminant != null) {
-                    discriminator   = baseType.UnionType.discriminator;
+                    discriminator   = type.Discriminator;
+                    maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
+                }
+                var baseType    = type.BaseType;
+                if (baseType != null) {
                     extendsStr = $"extends {baseType.Name} ";
-                    maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                     dependencies.Add(baseType);
-                } else {
-                    if (baseType != null) {
-                        extendsStr = $"extends {baseType.Name} ";
-                        imports.Add(baseType);
-                        dependencies.Add(baseType);
-                    }
+                    imports.Add(baseType);;
                 }
                 var unionType = type.UnionType;
                 if (unionType == null) {
-                    sb.AppendLine($"export class {type.Name} {extendsStr}{{");
+                    var abstractStr = type.IsAbstract ? "abstract " : "";
+                    sb.AppendLine($"export {abstractStr}class {type.Name} {extendsStr}{{");
                 } else {
                     sb.AppendLine($"export type {type.Name}_Union =");
                     foreach (var polyType in unionType.types) {

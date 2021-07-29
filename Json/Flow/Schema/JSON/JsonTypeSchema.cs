@@ -57,6 +57,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                     var typeType    = type.type;
                     var oneOf       = type.oneOf;
                     if (oneOf != null || typeType == "object") {
+                        typeDef.isAbstract  = type.isAbstract;
                         typeDef.isStruct    = type.isStruct;
                         var properties      = type.properties;
                         if (properties != null) {
@@ -74,8 +75,27 @@ namespace Friflo.Json.Flow.Schema.JSON
                             var itemRef = FindRef(item.reference, context);
                             unionTypes.Add(itemRef);
                         }
-                        typeDef.unionType = new UnionType (type.discriminator, unionTypes);
+                        typeDef.isAbstract = true;
+                        typeDef.unionType  = new UnionType (type.discriminator, unionTypes);
                     }
+                }
+            }
+            foreach (JsonFlowSchema schema in schemaList) {
+                foreach (var pair in schema.typeDefs) {
+                    JsonTypeDef typeDef = pair.Value;
+                    if (typeDef.discriminant == null)
+                        continue;
+                    var baseType = typeDef.baseType;
+                    while (baseType != null) {
+                        var unionType = baseType.unionType;
+                        if (unionType != null) {
+                            typeDef.discriminator = unionType.discriminator;
+                            break;
+                        }
+                        baseType = baseType.baseType;
+                    }
+                    if (typeDef.discriminator == null)
+                        throw new InvalidOperationException($"found no discriminator in base classes. type: {typeDef}");
                 }
             }
         }
@@ -202,7 +222,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             throw new InvalidOperationException($"no type given for field: {itemType.name}");
         }
 
-        private static TypeDef FindRef (string reference, in JsonTypeContext context) {
+        private static JsonTypeDef FindRef (string reference, in JsonTypeContext context) {
             if (reference.StartsWith("#/definitions/")) {
                 return context.schema.typeDefs[reference];
             }

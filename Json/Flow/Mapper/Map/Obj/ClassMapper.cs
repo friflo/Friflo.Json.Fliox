@@ -98,7 +98,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
         
         public override object CreateInstance() {
             if (instanceFactory != null)
-                return instanceFactory.CreateInstance();
+                return instanceFactory.CreateInstance(typeof(T));
             
             if (createInstance != null)
                 return createInstance();
@@ -256,7 +256,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
             if (factory != null) {
                 string discriminator = factory.discriminator;
                 if (discriminator == null) {
-                    obj = (T) factory.CreateInstance();
+                    obj = (T) factory.CreateInstance(typeof(T));
                     if (classType.IsNull(ref obj))
                         return reader.ErrorMsg<TypeMapper>($"No instance created in InstanceFactory: ", factory.GetType().Name, out success);
                     classType = reader.typeCache.GetTypeMapper(obj.GetType());

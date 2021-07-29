@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Schema.Definition;
@@ -17,7 +18,9 @@ namespace Friflo.Json.Flow.Schema.JSON
         public   override   bool                IsStruct        => isStruct;
         public   override   List<FieldDef>      Fields          => fields;
         public   override   UnionType           UnionType       => unionType;
+        public   override   bool                IsAbstract      => isAbstract; 
         public   override   string              Discriminant    => discriminant;
+        public   override   string              Discriminator   => discriminator;
         public   override   bool                IsEnum          => EnumValues != null;
         public   override   ICollection<string> EnumValues      { get; }
         public   override   TypeSemantic        TypeSemantic    => TypeSemantic.None;
@@ -25,11 +28,13 @@ namespace Friflo.Json.Flow.Schema.JSON
         public   override   string              ToString()      => name; 
 
         // --- private
-        internal            TypeDef             baseType;
+        internal            JsonTypeDef         baseType;
         internal            List<FieldDef>      fields;
         internal            UnionType           unionType;
         internal            string              discriminant;
+        internal            string              discriminator;
         internal            bool                isStruct;
+        internal            bool                isAbstract;
 
         public JsonTypeDef (JsonType type, string name, string ns) :
             base (name, ns)

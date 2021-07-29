@@ -80,8 +80,8 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine($"        \"{type.Name}\": {{");
                 var baseType    = type.BaseType;
                 if (discriminant != null) {
-                    discriminator   = baseType.UnionType.discriminator;
-                    maxFieldName = Math.Max(maxFieldName, discriminator.Length);
+                    discriminator   = type.Discriminator;
+                    maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
                 }
                 var unionType = type.UnionType;
                 if (unionType == null) {
@@ -90,6 +90,8 @@ namespace Friflo.Json.Flow.Schema
                         sb.AppendLine($"            \"extends\": {{ {Ref(baseType, true, context)} }},");
                     if (type.IsStruct)
                         sb.AppendLine($"            \"isStruct\": true,");
+                    if (type.IsAbstract)
+                        sb.AppendLine($"            \"isAbstract\": true,");
                 } else {
                     sb.AppendLine($"            \"discriminator\": \"{unionType.discriminator}\",");
                     sb.AppendLine($"            \"oneOf\": [");

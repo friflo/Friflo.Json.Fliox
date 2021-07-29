@@ -17,6 +17,7 @@ namespace Friflo.Json.Flow.Schema.JSON
     ///     <item><see cref="JsonType.extends"/></item>
     ///     <item><see cref="JsonType.discriminator"/></item>
     ///     <item><see cref="JsonType.isStruct"/></item>
+    ///     <item><see cref="JsonType.isAbstract"/></item>
     /// </list>
     /// The restriction of <see cref="JsonFlowSchema"/> is:
     /// <list type="bullet">
@@ -56,6 +57,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         
         public  string                          discriminator;
         public  List<FieldType>                 oneOf;
+        public  bool                            isAbstract;
         //
         // public  SchemaType?                  type; // todo use this
         public  string                          type; // null or SchemaType

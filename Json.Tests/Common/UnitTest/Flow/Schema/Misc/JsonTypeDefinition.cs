@@ -89,8 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
                 
                 var     discriminant    = type.Discriminant;
                 if (discriminant != null) {
-                    var baseType    = type.BaseType;
-                    var discriminator   = baseType.UnionType.discriminator;
+                    var discriminator   = type.Discriminator;
                     maxFieldName = Math.Max(maxFieldName, discriminator.Length);
                 }
                 var unionType = type.UnionType;

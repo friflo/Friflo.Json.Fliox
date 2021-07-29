@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             typeStore.AddMappers(PocStoreTypes);
             var schema      = new NativeTypeSchema(typeStore);
-            var generator   = new Generator(schema, ".cs", new[]{"Friflo.Json.Tests.Common."});
+            var generator   = new Generator(schema, ".cs", new[]{"Friflo.Json.Tests.Common.", "Friflo.Json.Flow."});
             CSharpGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/PocStore");
         }

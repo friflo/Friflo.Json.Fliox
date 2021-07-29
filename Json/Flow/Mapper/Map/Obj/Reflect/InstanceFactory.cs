@@ -22,14 +22,21 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
         public   readonly   PolyType[]                      polyTypes;
         private             TypeMapper                      instanceMapper;
         private  readonly   Dictionary<string, TypeMapper>  polymorphMapper = new Dictionary<string, TypeMapper>();
+        public   readonly   bool                            isAbstract;
 
         private InstanceFactory(string discriminator, Type instanceType, PolyType[] polyTypes) {
             this.discriminator = discriminator;
             this.instanceType = instanceType;
             this.polyTypes = polyTypes;
         }
+        
+        private InstanceFactory() {
+            isAbstract = true;
+        }
 
         internal void InitFactory(TypeStore typeStore) {
+            if (isAbstract)
+                return;
             if (instanceType != null)
                 instanceMapper = typeStore.GetTypeMapper(instanceType);
             
@@ -40,7 +47,9 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
             }
         }
 
-        internal object CreateInstance() {
+        internal object CreateInstance(Type type) {
+            if (isAbstract)
+                throw new InvalidOperationException($"type requires instantiatable types by [Fri.Instance()] or [Fri.Polymorph()] on: {type}");
             return instanceMapper.CreateInstance();
         }
         
@@ -94,6 +103,8 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
 
             if (instanceType != null || typeList.Count > 0)
                 return new InstanceFactory(discriminator, instanceType, typeList.ToArray());
+            if (type.IsAbstract)
+                return new InstanceFactory();
             return null;
         }
 

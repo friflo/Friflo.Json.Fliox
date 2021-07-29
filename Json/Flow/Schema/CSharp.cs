@@ -70,18 +70,15 @@ namespace Friflo.Json.Flow.Schema
                 var discriminant    = type.Discriminant;
                 var extendsStr      = "";
                 var baseType    = type.BaseType;
-                if (discriminant != null) {
+                if (baseType != null) {
                     extendsStr = $": {baseType.Name} ";
-                } else {
-                    if (baseType != null) {
-                        extendsStr = $": {baseType.Name} ";
-                        imports.Add(baseType);
-                    }
+                    imports.Add(baseType);
                 }
                 var unionType = type.UnionType;
                 if (unionType == null) {
                     var classType = type.IsStruct ? "struct" : "class";
-                    sb.AppendLine($"public {classType} {type.Name} {extendsStr}{{");
+                    var abstractStr = type.IsAbstract ? "abstract " : "";
+                    sb.AppendLine($"{abstractStr}public {classType} {type.Name} {extendsStr}{{");
                 } else {
                     sb.AppendLine($"[Fri.Discriminator(\"{unionType.discriminator}\")]");
                     int max    = unionType.types.MaxLength(polyType => polyType.Name.Length);
@@ -90,7 +87,7 @@ namespace Friflo.Json.Flow.Schema
                         sb.AppendLine($"[Fri.Polymorph(typeof({polyType.Name}),{indent} Discriminant = \"{polyType.Discriminant}\")]");
                         imports.Add(polyType);
                     }
-                    sb.AppendLine($"public  abstract class {type.Name} {extendsStr}{{");
+                    sb.AppendLine($"public abstract class {type.Name} {extendsStr}{{");
                 }
                 if (discriminant != null) {
                     // var indent = Indent(maxFieldName, discriminator);
