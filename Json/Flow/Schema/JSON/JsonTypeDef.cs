@@ -29,9 +29,9 @@ namespace Friflo.Json.Flow.Schema.JSON
         internal            UnionType           unionType;
         internal            string              discriminant;
 
-        public JsonTypeDef (JsonType type, string name, string ns) {
-            Name        = name;
-            Namespace   = ns;
+        public JsonTypeDef (JsonType type, string name, string ns) :
+            base (name, ns)
+        {
             this.name   = name;
             this.type   = type;
             if (type.enums != null) {
@@ -39,7 +39,9 @@ namespace Friflo.Json.Flow.Schema.JSON
             }
         }
         
-        public JsonTypeDef (string name) {
+        public JsonTypeDef (string name) :
+            base (name, null)
+        {
             this.name = name;
         }
     }

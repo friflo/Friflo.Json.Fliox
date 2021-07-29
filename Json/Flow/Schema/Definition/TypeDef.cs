@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Schema.Definition
     /// Note: This file does and must not have any dependency to <see cref="System.Type"/>.
     /// </summary>
     public abstract class TypeDef {
-        public              string              Name         { get; set; }
+        public              string              Name         { get; }
         /// <summary>
         /// Namespace of a type. Depending on the generated language / schema is has the following meaning:
         /// <list type="bullet">
@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Schema.Definition
         ///   <item>The package folder in Java</item>
         /// </list> 
         /// </summary>
-        public              string              Namespace    { get; set; }
+        public              string              Namespace    { get; }
         /// <summary>The path of the file a type is generated.
         /// <br></br>
         /// In Typescript or JSON Schema a file can contain multiple types.
@@ -49,6 +49,11 @@ namespace Friflo.Json.Flow.Schema.Definition
         public  abstract    ICollection<string> EnumValues   { get; }
         /// currently not used
         public  abstract    TypeSemantic        TypeSemantic { get; }
+        
+        protected TypeDef (string name, string @namespace) {
+            Name        = name;
+            Namespace   = @namespace;
+        }
     }
     
     public class FieldDef {
