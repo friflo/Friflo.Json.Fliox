@@ -100,7 +100,8 @@ namespace Friflo.Json.Flow.Schema
                 }
                 var unionType = type.UnionType;
                 if (unionType == null) {
-                    sb.AppendLine($"public class {type.Name} {extendsStr}{{");
+                    var classType = type.IsStruct ? "struct" : "class";
+                    sb.AppendLine($"public {classType} {type.Name} {extendsStr}{{");
                 } else {
                     /* sb.AppendLine($"export type {type.Name}_Union =");
                     foreach (var polyType in unionType.types) {
@@ -124,8 +125,8 @@ namespace Friflo.Json.Flow.Schema
                 foreach (var field in fields) {
                     if (field.IsDerivedField)
                         continue;
-                    bool notNull = field.required || field.isArray || field.isDictionary ||
-                                   field.type == context.standardTypes.String || !standardTypes.ContainsKey(field.type);
+                    bool notNull = field.required || field.isArray || field.isDictionary || !field.type.IsStruct ||
+                                   field.type == context.standardTypes.String;
                     var fieldType = GetFieldType(field, context);
                     var emitField = new EmitField(fieldType, field.name, notNull);
                     emitFields.Add(emitField);

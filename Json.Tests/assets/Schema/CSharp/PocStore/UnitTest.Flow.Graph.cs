@@ -47,9 +47,9 @@ public class Employee {
 public class TestType {
     string        id;
     DateTime      dateTime;
-    DateTime      dateTimeNull;
+    DateTime?     dateTimeNull;
     BigInteger    bigInt;
-    BigInteger    bigIntNull;
+    BigInteger?   bigIntNull;
     bool          boolean;
     bool?         booleanNull;
     byte          uint8;
@@ -65,7 +65,7 @@ public class TestType {
     double        float64;
     double?       float64Null;
     PocStruct     pocStruct;
-    PocStruct     pocStructNull;
+    PocStruct?    pocStructNull;
     List<int>     intArray;
     List<int>     intArrayNull;
     JsonValue     jsonValue;
@@ -73,7 +73,7 @@ public class TestType {
     DerivedClass  derivedClassNull;
 }
 
-public class PocStruct {
+public struct PocStruct {
     int  val;
 }
 

@@ -17,6 +17,7 @@
         },
         "PocStruct": {
             "type": "object",
+            "isStruct": true,
             "properties": {
                 "val": { "$ref": "./Standard.json#/definitions/int32" }
             },

@@ -88,6 +88,8 @@ namespace Friflo.Json.Flow.Schema
                     sb.AppendLine($"            \"type\": \"object\",");
                     if (baseType != null)
                         sb.AppendLine($"            \"extends\": {{ {Ref(baseType, true, context)} }},");
+                    if (type.IsStruct)
+                        sb.AppendLine($"            \"isStruct\": true,");
                 } else {
                     sb.AppendLine($"            \"discriminator\": \"{unionType.discriminator}\",");
                     sb.AppendLine($"            \"oneOf\": [");

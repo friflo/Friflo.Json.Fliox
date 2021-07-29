@@ -21,6 +21,7 @@ public class NativeTypeDef : TypeDef
         public   override   TypeDef             BaseType        => baseType;
         public   override   bool                IsEnum          { get; }
         public   override   bool                IsComplex       { get; }
+        public   override   bool                IsStruct        { get; }
         public   override   List<FieldDef>      Fields          => fields;
         public   override   string              Discriminant    { get; }
         public   override   TypeSemantic        TypeSemantic    { get; }
@@ -36,6 +37,7 @@ public class NativeTypeDef : TypeDef
             this.mapper     = mapper;
             IsEnum          = native.IsEnum;
             IsComplex       = mapper.IsComplex;
+            IsStruct        = mapper.type.IsValueType;
             Discriminant    = mapper.Discriminant;
             TypeSemantic    = mapper.GetTypeSemantic();
             EnumValues      = mapper.GetEnumValues();

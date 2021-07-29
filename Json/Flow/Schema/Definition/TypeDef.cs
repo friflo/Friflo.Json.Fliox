@@ -37,6 +37,7 @@ namespace Friflo.Json.Flow.Schema.Definition
         
         /// If <see cref="IsComplex"/> is true it has <see cref="Fields"/>
         public  abstract    bool                IsComplex    { get; }
+        public  abstract    bool                IsStruct     { get; }
         public  abstract    List<FieldDef>      Fields       { get; }
         
         /// <see cref="UnionType"/> is not null, if the type is as discriminated union.

@@ -39,6 +39,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         // public  SchemaType?                  type; // todo use this
         public  string                          type; // null or SchemaType
         public  Dictionary<string, FieldType>   properties;
+        public  bool                            isStruct;
         public  List<string>                    required;
         public  bool                            additionalProperties;
         //

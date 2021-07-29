@@ -57,6 +57,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                     var typeType    = type.type;
                     var oneOf       = type.oneOf;
                     if (oneOf != null || typeType == "object") {
+                        typeDef.isStruct    = type.isStruct;
                         var properties      = type.properties;
                         if (properties != null) {
                             typeDef.fields = new List<FieldDef>(properties.Count);
