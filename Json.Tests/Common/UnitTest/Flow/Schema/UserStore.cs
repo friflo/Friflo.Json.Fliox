@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         /// JSON Schema -> Typescript
         [Test]
         public static void JSON_Typescript () {
-            var schemas     = JsonTypeSchema.FromFolder(JsonSchemaFolder);
+            var schemas     = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
             var schema      = new JsonTypeSchema(schemas);
             var jsonTypes   = SchemaTest.JsonTypesFromTypes (UserStoreTypes, "Friflo.Json.Flow.UserAuth.");
             var generator   = TypescriptGenerator.Generate(schema, jsonTypes);
@@ -69,7 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         /// JSON Schema -> JSON Schema
         [Test, Order(2)]
         public static void JSON_JSON () {
-            var schemas     = JsonTypeSchema.FromFolder(JsonSchemaFolder);
+            var schemas     = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
             var schema      = new JsonTypeSchema(schemas);
             var jsonTypes   = SchemaTest.JsonTypesFromTypes (UserStoreTypes, "Friflo.Json.Flow.UserAuth.");
             var typeDefs    = schema.TypesAsTypeDefs(jsonTypes);
