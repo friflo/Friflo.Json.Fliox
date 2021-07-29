@@ -20,11 +20,15 @@ namespace Friflo.Json.Flow.Schema.Utils
         public              string              footer;
         /// The path of the file
         private  readonly   string              path;
+        
+        public   readonly   string              package;
+        
 
         public  override    string              ToString() => path;
 
-        public EmitFile (string path) {
-            this.path = path;
+        public EmitFile (string path, string package) {
+            this.path       = path;
+            this.package    = package;
         }
     }
         

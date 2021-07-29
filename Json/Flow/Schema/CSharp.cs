@@ -35,7 +35,7 @@ namespace Friflo.Json.Flow.Schema
             }
             generator.GroupTypesByPath(true); // sort dependencies - otherwise possible error TS2449: Class '...' used before its declaration.
             emitter.EmitFileHeaders(sb);
-            // EmitFileFooters(sb);  no TS footer
+            emitter.EmitFileFooters(sb);
             generator.EmitFiles(sb, ns => $"{ns}{generator.fileExt}");
         }
         
@@ -181,6 +181,8 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine($"using System.Collections.Generic;");
                 sb.AppendLine($"using System.Numerics;");
                 sb.AppendLine($"using Friflo.Json.Flow.Mapper.Map.Val;");
+                
+                sb.AppendLine($"namespace {emitFile.package} {{");
 
                 var     max         = emitFile.imports.MaxLength(import => import.Path == filePath ? 0 : import.Name.Length);
                 /* foreach (var import in emitFile.imports) {
@@ -192,6 +194,10 @@ namespace Friflo.Json.Flow.Schema
                 } */
                 emitFile.header = sb.ToString();
             }
+        }
+        
+        private void EmitFileFooters(StringBuilder sb) {
+            sb.AppendLine("}");
         }
     }
 }
