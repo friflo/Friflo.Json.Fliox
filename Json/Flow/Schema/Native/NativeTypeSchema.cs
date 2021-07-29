@@ -92,15 +92,18 @@ namespace Friflo.Json.Flow.Schema.Native
                 }
                 // set the unionType if a class is a discriminated union
                 var instanceFactory = mapper.instanceFactory;
-                if (instanceFactory != null && !instanceFactory.isAbstract) {
-                    var polyTypes   = instanceFactory.polyTypes;
-                    var unionTypes  = new List<TypeDef>(polyTypes.Length);
-                    foreach (var polyType in polyTypes) {
-                        TypeDef element = nativeTypes[polyType.type];
-                        unionTypes.Add(element);
-                    }
-                    typeDef.unionType  = new UnionType (instanceFactory.discriminator, unionTypes);
+                if (instanceFactory != null) {
                     typeDef.isAbstract = true;
+                    // expect polyTypes if not abstract
+                    if (!instanceFactory.isAbstract) {
+                        var polyTypes   = instanceFactory.polyTypes;
+                        var unionTypes  = new List<TypeDef>(polyTypes.Length);
+                        foreach (var polyType in polyTypes) {
+                            TypeDef element = nativeTypes[polyType.type];
+                            unionTypes.Add(element);
+                        }
+                        typeDef.unionType  = new UnionType (instanceFactory.discriminator, unionTypes);
+                    }
                 }
             }
         }

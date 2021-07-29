@@ -39,7 +39,6 @@ public class NativeTypeDef : TypeDef
         {
             this.native     = mapper.type;
             this.mapper     = mapper;
-            isAbstract      = mapper.instanceFactory?.isAbstract ?? false;
             IsEnum          = native.IsEnum;
             IsComplex       = mapper.IsComplex;
             IsStruct        = mapper.type.IsValueType;
