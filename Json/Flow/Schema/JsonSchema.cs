@@ -54,7 +54,7 @@ namespace Friflo.Json.Flow.Schema
             AddType (map, standard.DateTime,      "\"type\": \"string\", \"format\": \"date-time\"" );
             return map;
         }
-        
+
         private EmitType EmitStandardType(TypeDef type, StringBuilder sb) {
             if (!standardTypes.TryGetValue(type, out var definition))
                 return null;

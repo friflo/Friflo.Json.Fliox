@@ -17,7 +17,6 @@ namespace Friflo.Json.Flow.Schema
         private  readonly   Dictionary<TypeDef, string> standardTypes;
         private  const      string                      Union = "_Union";
 
-
         private TypescriptGenerator (Generator generator) {
             this.generator  = generator;
             standardTypes   = GetStandardTypes(generator.standardTypes);
@@ -66,7 +65,6 @@ namespace Friflo.Json.Flow.Schema
         }
         
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
-
             var standardType    = EmitStandardType(type, sb);
             if (standardType != null ) {
                 return standardType;
