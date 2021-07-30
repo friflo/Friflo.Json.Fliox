@@ -11,6 +11,7 @@ namespace Friflo.Json.Flow.Schema
     public class JsonTypeOptions
     {
         public  readonly    TypeSchema              schema;
+        public              string                  fileExt;
         public              ICollection<string>     stripNamespaces;
         public              ICollection<TypeDef>    separateTypes;
         public              Func<TypeDef, string>   getPath;
@@ -24,6 +25,7 @@ namespace Friflo.Json.Flow.Schema
     {
         public  readonly    TypeStore               typeStore; 
         public  readonly    ICollection<Type>       rootTypes;
+        public              string                  fileExt;
         public              ICollection<string>     stripNamespaces;
         public              ICollection<Type>       separateTypes;
         public              Func<TypeDef, string>   getPath;

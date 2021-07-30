@@ -20,13 +20,13 @@ namespace Friflo.Json.Flow.Schema
             options.typeStore.AddMappers(options.rootTypes);
             var schema      = new NativeTypeSchema(options.typeStore);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
-            var generator   = new Generator(schema, ".ts", options.stripNamespaces, sepTypes, options.getPath);
+            var generator   = new Generator(schema, options.fileExt ?? ".ts", options.stripNamespaces, sepTypes, options.getPath);
             Generate(generator);
             return generator;
         }
         
         public static Generator Generate(JsonTypeOptions options) {
-            var generator   = new Generator(options.schema, ".ts", options.stripNamespaces, options.separateTypes, options.getPath);
+            var generator   = new Generator(options.schema, options.fileExt ?? ".ts", options.stripNamespaces, options.separateTypes, options.getPath);
             Generate(generator);
             return generator;
         }
@@ -43,13 +43,13 @@ namespace Friflo.Json.Flow.Schema
             options.typeStore.AddMappers(options.rootTypes);
             var schema      = new NativeTypeSchema(options.typeStore);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
-            var generator   = new Generator(schema, ".json", options.stripNamespaces, sepTypes, options.getPath);
+            var generator   = new Generator(schema, options.fileExt ?? ".json", options.stripNamespaces, sepTypes, options.getPath);
             Generate(generator);
             return generator;
         }
         
         public static Generator Generate(JsonTypeOptions options) {
-            var generator   = new Generator(options.schema, ".json", options.stripNamespaces, options.separateTypes, options.getPath);
+            var generator   = new Generator(options.schema, options.fileExt ?? ".json", options.stripNamespaces, options.separateTypes, options.getPath);
             Generate(generator);
             return generator;
         }
@@ -66,7 +66,13 @@ namespace Friflo.Json.Flow.Schema
             options.typeStore.AddMappers(options.rootTypes);
             var schema      = new NativeTypeSchema(options.typeStore);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
-            var generator   = new Generator(schema, ".cs", options.stripNamespaces, sepTypes, options.getPath);
+            var generator   = new Generator(schema, options.fileExt ?? ".cs", options.stripNamespaces, sepTypes, options.getPath);
+            Generate(generator);
+            return generator;
+        }
+        
+        public static Generator Generate(JsonTypeOptions options) {
+            var generator   = new Generator(options.schema, options.fileExt ?? ".json", options.stripNamespaces, options.separateTypes, options.getPath);
             Generate(generator);
             return generator;
         }
