@@ -76,8 +76,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var schema      = new JsonTypeSchema(schemas);
             var jsonTypes   = SchemaTest.JsonTypesFromTypes (PocStoreTypes, "UnitTest.Flow.Graph.");
             var typeDefs    = schema.TypesAsTypeDefs(jsonTypes);
-            var generator   = JsonSchemaGenerator.Generate(schema, jsonTypes, typeDefs);
-            
+            var options     = new JsonSchemaOptions(schema) { stripNamespaces = jsonTypes, separateTypes = typeDefs };
+            var generator   = JsonSchemaGenerator.Generate(options);
             var loopFolder = CommonUtils.GetBasePath() + "assets/Schema-Loop/JSON/PocStore";
             generator.WriteFiles(loopFolder);
             SchemaTest.AssertFoldersAreEqual(JsonSchemaFolder, loopFolder);
@@ -89,7 +89,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var schemas     = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
             var schema      = new JsonTypeSchema(schemas);
             var jsonTypes   = SchemaTest.JsonTypesFromTypes (PocStoreTypes, "UnitTest.Flow.Graph.");
-            var generator   = TypescriptGenerator.Generate(schema, jsonTypes);
+            var options     = new JsonSchemaOptions(schema) { stripNamespaces = jsonTypes };
+            var generator   = TypescriptGenerator.Generate(options);
 
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema-Loop/Typescript/PocStore");
 

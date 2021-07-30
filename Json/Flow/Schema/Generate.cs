@@ -9,6 +9,33 @@ using Friflo.Json.Flow.Schema.Native;
 
 namespace Friflo.Json.Flow.Schema
 {
+    public class JsonSchemaOptions
+    {
+        public  readonly    TypeSchema              schema;
+        public              ICollection<string>     stripNamespaces;
+        public              ICollection<TypeDef>    separateTypes;
+        public              Func<TypeDef, string>   getPath;
+        
+        public JsonSchemaOptions (TypeSchema schema) {
+            this.schema     = schema;
+        }
+    }
+    
+    public class NativeOptions
+    {
+        public  readonly    TypeStore               typeStore; 
+        public  readonly    ICollection<Type>       rootTypes;
+        public              ICollection<string>     stripNamespaces;
+        public              ICollection<Type>       separateTypes;
+        public              Func<TypeDef, string>   getPath;
+        
+        public NativeOptions (TypeStore typeStore, ICollection<Type> rootTypes) {
+            this.typeStore  = typeStore;
+            this.rootTypes  = rootTypes;
+        }
+    }
+    
+    
     /// <summary>
     /// Generate Typescript from the given rootTypes/>
     /// Examples available at:
@@ -16,17 +43,17 @@ namespace Friflo.Json.Flow.Schema
     /// </summary>
     public partial class TypescriptGenerator
     {
-        public static Generator Generate(TypeStore typeStore, ICollection<Type> rootTypes, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
-            typeStore.AddMappers(rootTypes);
-            var schema      = new NativeTypeSchema(typeStore);
-            var sepTypes    = schema.TypesAsTypeDefs(separateTypes);
-            var generator   = new Generator(schema, ".ts", stripNamespaces, sepTypes);
+        public static Generator Generate(NativeOptions options) {
+            options.typeStore.AddMappers(options.rootTypes);
+            var schema      = new NativeTypeSchema(options.typeStore);
+            var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
+            var generator   = new Generator(schema, ".ts", options.stripNamespaces, sepTypes, options.getPath);
             Generate(generator);
             return generator;
         }
         
-        public static Generator Generate(TypeSchema schema, ICollection<string> stripNamespaces = null, ICollection<TypeDef> separateTypes = null) {
-            var generator   = new Generator(schema, ".ts", stripNamespaces, separateTypes);
+        public static Generator Generate(JsonSchemaOptions options) {
+            var generator   = new Generator(options.schema, ".ts", options.stripNamespaces, options.separateTypes, options.getPath);
             Generate(generator);
             return generator;
         }
@@ -39,17 +66,17 @@ namespace Friflo.Json.Flow.Schema
     /// </summary>
     public partial class JsonSchemaGenerator
     {
-        public static Generator Generate (TypeStore typeStore, ICollection<Type> rootTypes, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
-            typeStore.AddMappers(rootTypes);
-            var schema      = new NativeTypeSchema(typeStore);
-            var sepTypes    = schema.TypesAsTypeDefs(separateTypes);
-            var generator   = new Generator(schema, ".json", stripNamespaces, sepTypes);
+        public static Generator Generate (NativeOptions options) {
+            options.typeStore.AddMappers(options.rootTypes);
+            var schema      = new NativeTypeSchema(options.typeStore);
+            var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
+            var generator   = new Generator(schema, ".json", options.stripNamespaces, sepTypes, options.getPath);
             Generate(generator);
             return generator;
         }
         
-        public static Generator Generate(TypeSchema schema, ICollection<string> stripNamespaces = null, ICollection<TypeDef> separateTypes = null) {
-            var generator   = new Generator(schema, ".json", stripNamespaces, separateTypes);
+        public static Generator Generate(JsonSchemaOptions options) {
+            var generator   = new Generator(options.schema, ".json", options.stripNamespaces, options.separateTypes, options.getPath);
             Generate(generator);
             return generator;
         }
@@ -62,17 +89,11 @@ namespace Friflo.Json.Flow.Schema
     /// </summary>
     public partial class CSharpGenerator
     {
-        public static Generator Generate(TypeStore typeStore, ICollection<Type> rootTypes, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
-            typeStore.AddMappers(rootTypes);
-            var schema      = new NativeTypeSchema(typeStore);
-            var sepTypes    = schema.TypesAsTypeDefs(separateTypes);
-            var generator   = new Generator(schema, ".cs", stripNamespaces, sepTypes);
-            Generate(generator);
-            return generator;
-        }
-        
-        public static Generator Generate(TypeSchema schema, ICollection<string> stripNamespaces = null, ICollection<TypeDef> separateTypes = null) {
-            var generator   = new Generator(schema, ".cs", stripNamespaces, separateTypes);
+        public static Generator Generate(NativeOptions options) {
+            options.typeStore.AddMappers(options.rootTypes);
+            var schema      = new NativeTypeSchema(options.typeStore);
+            var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
+            var generator   = new Generator(schema, ".cs", options.stripNamespaces, sepTypes, options.getPath);
             Generate(generator);
             return generator;
         }
