@@ -25,8 +25,7 @@ namespace Friflo.Json.Flow.Schema
         
         public static void Generate(Generator generator) {
             var emitter = new JsonSchemaGenerator(generator);
-            var sb = new StringBuilder();
-            // emit custom types
+            var sb      = new StringBuilder();
             foreach (var type in generator.types) {
                 sb.Clear();
                 var result = emitter.EmitType(type, sb);

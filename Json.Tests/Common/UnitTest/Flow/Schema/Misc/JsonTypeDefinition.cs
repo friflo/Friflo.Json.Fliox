@@ -32,8 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
         
         public static void Generate(Generator generator, string name) {
             var emitter = new JsonTypeDefinition(generator);
-            var sb = new StringBuilder();
-            // emit custom types
+            var sb      = new StringBuilder();
             foreach (var type in generator.types) {
                 sb.Clear();
                 var result = emitter.EmitType(type, sb);
