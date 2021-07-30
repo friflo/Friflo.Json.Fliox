@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         [Test]
         public static void CS_Typescript () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var options = new NativeOptions(typeStore, UserStoreTypes);
+            var options = new NativeTypeOptions(typeStore, UserStoreTypes);
             var generator = TypescriptGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/UserStore");
         }
@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         [Test, Order(1)]
         public static void CS_JSON () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var options = new NativeOptions(typeStore, UserStoreTypes) { separateTypes = UserStoreTypes };
+            var options = new NativeTypeOptions(typeStore, UserStoreTypes) { separateTypes = UserStoreTypes };
             var generator = JsonSchemaGenerator.Generate(options);
             generator.WriteFiles(JsonSchemaFolder);
         }
@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         [Test]
         public static void CS_CS () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var options = new NativeOptions(typeStore, UserStoreTypes) { stripNamespaces = new[]{"Friflo.Json."} };
+            var options = new NativeTypeOptions(typeStore, UserStoreTypes) { stripNamespaces = new[]{"Friflo.Json."} };
             var generator = CSharpGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/UserStore");
         }
@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var schemas     = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
             var schema      = new JsonTypeSchema(schemas);
             var jsonTypes   = SchemaTest.JsonTypesFromTypes (UserStoreTypes, "Friflo.Json.Flow.UserAuth.");
-            var options     = new JsonSchemaOptions(schema) { stripNamespaces = jsonTypes };
+            var options     = new JsonTypeOptions(schema) { stripNamespaces = jsonTypes };
             var generator   = TypescriptGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema-Loop/Typescript/UserStore");
         }
@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var schema      = new JsonTypeSchema(schemas);
             var jsonTypes   = SchemaTest.JsonTypesFromTypes (UserStoreTypes, "Friflo.Json.Flow.UserAuth.");
             var typeDefs    = schema.TypesAsTypeDefs(jsonTypes);
-            var options     = new JsonSchemaOptions(schema) { stripNamespaces = jsonTypes, separateTypes = typeDefs };
+            var options     = new JsonTypeOptions(schema) { stripNamespaces = jsonTypes, separateTypes = typeDefs };
             var generator   = JsonSchemaGenerator.Generate(options);
             
             var loopFolder = CommonUtils.GetBasePath() + "assets/Schema-Loop/JSON/UserStore";
