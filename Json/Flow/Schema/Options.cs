@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Schema
         public              Func<TypeDef, string>   getPath;
         
         public JsonTypeOptions (TypeSchema schema) {
-            this.schema     = schema;
+            this.schema     = schema ?? throw new ArgumentException("schema must not be null");
         }
     }
     
@@ -31,8 +31,8 @@ namespace Friflo.Json.Flow.Schema
         public              Func<TypeDef, string>   getPath;
         
         public NativeTypeOptions (TypeStore typeStore, ICollection<Type> rootTypes) {
-            this.typeStore  = typeStore;
-            this.rootTypes  = rootTypes;
+            this.typeStore  = typeStore ?? throw new ArgumentException("typeStore must not be null");
+            this.rootTypes  = rootTypes ?? throw new ArgumentException("rootTypes must not be null");
         }
     }
 }
