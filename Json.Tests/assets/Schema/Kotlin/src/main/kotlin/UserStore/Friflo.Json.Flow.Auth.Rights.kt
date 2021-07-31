@@ -1,38 +1,31 @@
 
 data class Right (
-        | "allow"
-        | "task"
-        | "message"
-        | "subscribeMessage"
-        | "database"
-        | "predicate"
-    ;
-    val description? : String | null,
+    val description : String? = null,
 )
 
 data class RightAllow (
-    val grant        : Boolean,
+    val grant       : Boolean,
 )
 
 data class RightTask (
-    val types        : List<TaskType>,
+    val types       : List<TaskType>,
 )
 
 data class RightMessage (
-    val names        : List<String>,
+    val names       : List<String>,
 )
 
 data class RightSubscribeMessage (
-    val names        : List<String>,
+    val names       : List<String>,
 )
 
 data class RightDatabase (
-    val containers   : HashMap<String, ContainerAccess>,
+    val containers  : HashMap<String, ContainerAccess>,
 )
 
 data class ContainerAccess (
-    val operations?       : List<OperationType>,
-    val subscribeChanges? : List<Change> | null,
+    val operations       : List<OperationType>? = null,
+    val subscribeChanges : List<Change>? = null,
 )
 
 enum class OperationType {
@@ -47,6 +40,6 @@ enum class OperationType {
 }
 
 data class RightPredicate (
-    val names        : List<String>,
+    val names       : List<String>,
 )
 

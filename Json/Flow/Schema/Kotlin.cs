@@ -62,7 +62,7 @@ namespace Friflo.Json.Flow.Schema
             return map;
         }
 
-        private EmitType EmitStandardType(TypeDef type, StringBuilder sb) {
+        /* private EmitType EmitStandardType(TypeDef type, StringBuilder sb) {
             if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
             sb.Append("export type ");
@@ -70,13 +70,13 @@ namespace Friflo.Json.Flow.Schema
             sb.AppendLine(";");
             sb.AppendLine();
             return new EmitType(type, sb);
-        }
+        } */
         
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
-            var standardType    = EmitStandardType(type, sb);
+            /* var standardType    = EmitStandardType(type, sb);
             if (standardType != null ) {
                 return standardType;
-            }
+            } */
             if (type.IsComplex) {
                 return EmitComplexType(type, sb);
             }
@@ -113,10 +113,10 @@ namespace Friflo.Json.Flow.Schema
             } else {
                 sb.AppendLine($"data class {type.Name} {extendsStr}(");
                 // sb.AppendLine($"    abstract {unionType.discriminator}:");
-                foreach (var polyType in unionType.types) {
+                /* foreach (var polyType in unionType.types) {
                     sb.AppendLine($"        | \"{polyType.Discriminant}\"");
                 }
-                sb.AppendLine($"    ;");
+                sb.AppendLine($"    ;"); */
             }
             string  discriminant    = type.Discriminant;
             string  discriminator   = type.Discriminator;
@@ -131,9 +131,8 @@ namespace Friflo.Json.Flow.Schema
                 bool required = field.required;
                 var fieldType = GetFieldType(field, context);
                 var indent  = Indent(maxFieldName, field.name);
-                var optStr  = required ? " ": "?";
-                var nullStr = required ? "" : " | null";
-                sb.AppendLine($"    val {field.name}{optStr}{indent} : {fieldType}{nullStr},");
+                var optStr  = required ? "": "? = null";
+                sb.AppendLine($"    val {field.name}{indent} : {fieldType}{optStr},");
             }
             sb.AppendLine(")");
             sb.AppendLine();

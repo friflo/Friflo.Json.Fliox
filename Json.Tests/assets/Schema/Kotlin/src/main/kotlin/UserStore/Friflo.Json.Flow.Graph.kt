@@ -1,5 +1,5 @@
 
 data class Entity (
-    val id  : String,
+    val id : String,
 )
 
