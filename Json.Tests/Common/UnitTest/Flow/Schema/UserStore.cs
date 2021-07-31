@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var options = new NativeTypeOptions(typeStore, UserStoreTypes);
             var generator = KotlinGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Kotlin/UserStore");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Kotlin/src/main/kotlin/UserStore");
         }
         
         /// C# -> JTD
