@@ -46,6 +46,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/UserStore");
         }
         
+        /// C# -> Kotlin
+        [Test]
+        public static void CS_Kotlin () {
+            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
+            var options = new NativeTypeOptions(typeStore, UserStoreTypes);
+            var generator = KotlinGenerator.Generate(options);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Kotlin/UserStore");
+        }
+        
         /// C# -> JTD
         [Test]
         public static void CS_JTD () {
