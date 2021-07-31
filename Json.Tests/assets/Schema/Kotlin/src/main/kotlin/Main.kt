@@ -14,7 +14,7 @@ fun main(args: Array<String>) {
 }
 
 @Serializable
-data class Data(
+class Data(
     val a:      Int,
     val b:      String,
     var list:   List<String>?               = null,   // optional parameter

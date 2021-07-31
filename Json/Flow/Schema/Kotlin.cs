@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Friflo.Json.Flow.Schema.Definition;
 using Friflo.Json.Flow.Schema.Utils;
@@ -102,16 +103,19 @@ namespace Friflo.Json.Flow.Schema
             var extendsStr      = "";
             var baseType        = type.BaseType;
             if (baseType != null) {
-                // extendsStr = $"extends {baseType.Name} ";
+                var parentFields = "";
+                if (fields.Count  > 0)
+                    parentFields = $" ({string.Join(", ", fields.Where(f => f.IsDerivedField))})";
+                extendsStr = $" : {baseType.Name}{parentFields}";
                 // dependencies.Add(baseType);
                 // imports.Add(baseType);
             }
             var unionType = type.UnionType;
             if (unionType == null) {
-                var abstractStr = type.IsAbstract ? "abstract " : "";
-                sb.AppendLine($"data class {type.Name} {extendsStr}(");
+                var abstractStr = type.IsAbstract ? "abstract" : "data";
+                sb.AppendLine($"{abstractStr} class {type.Name}(");
             } else {
-                sb.AppendLine($"data class {type.Name} {extendsStr}(");
+                sb.AppendLine($"abstract class {type.Name}(");
                 // sb.AppendLine($"    abstract {unionType.discriminator}:");
                 /* foreach (var polyType in unionType.types) {
                     sb.AppendLine($"        | \"{polyType.Discriminant}\"");
@@ -125,16 +129,17 @@ namespace Friflo.Json.Flow.Schema
                 var indent      = Indent(maxFieldName, discriminator);
                 // sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
             }
+            
             foreach (var field in fields) {
-                if (field.IsDerivedField)
-                    continue;
+                var fieldModifier = type.IsAbstract ? "open " : field.IsDerivedField ? "override " : "         ";
                 bool required = field.required;
                 var fieldType = GetFieldType(field, context);
                 var indent  = Indent(maxFieldName, field.name);
                 var optStr  = required ? "": "? = null";
-                sb.AppendLine($"    val {field.name}{indent} : {fieldType}{optStr},");
+                sb.AppendLine($"    {fieldModifier} val {field.name}{indent} : {fieldType}{optStr},");
             }
-            sb.AppendLine(")");
+
+            sb.AppendLine($"){extendsStr}");
             sb.AppendLine();
             return new EmitType(type, sb, imports, dependencies);
         }

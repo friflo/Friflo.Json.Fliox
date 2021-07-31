@@ -1,5 +1,5 @@
 
-data class Entity (
-    val id : String,
+abstract class Entity(
+    open  val id : String,
 )
 

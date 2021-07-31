@@ -1,31 +1,36 @@
 
-data class Right (
-    val description : String? = null,
+abstract class Right(
+    open  val description : String? = null,
 )
 
-data class RightAllow (
-    val grant       : Boolean,
-)
+data class RightAllow(
+              val grant       : Boolean,
+    override  val description : String? = null,
+) : Right (description)
 
-data class RightTask (
-    val types       : List<TaskType>,
-)
+data class RightTask(
+              val types       : List<TaskType>,
+    override  val description : String? = null,
+) : Right (description)
 
-data class RightMessage (
-    val names       : List<String>,
-)
+data class RightMessage(
+              val names       : List<String>,
+    override  val description : String? = null,
+) : Right (description)
 
-data class RightSubscribeMessage (
-    val names       : List<String>,
-)
+data class RightSubscribeMessage(
+              val names       : List<String>,
+    override  val description : String? = null,
+) : Right (description)
 
-data class RightDatabase (
-    val containers  : HashMap<String, ContainerAccess>,
-)
+data class RightDatabase(
+              val containers  : HashMap<String, ContainerAccess>,
+    override  val description : String? = null,
+) : Right (description)
 
-data class ContainerAccess (
-    val operations       : List<OperationType>? = null,
-    val subscribeChanges : List<Change>? = null,
+data class ContainerAccess(
+              val operations       : List<OperationType>? = null,
+              val subscribeChanges : List<Change>? = null,
 )
 
 enum class OperationType {
@@ -39,7 +44,8 @@ enum class OperationType {
     full,
 }
 
-data class RightPredicate (
-    val names       : List<String>,
-)
+data class RightPredicate(
+              val names       : List<String>,
+    override  val description : String? = null,
+) : Right (description)
 

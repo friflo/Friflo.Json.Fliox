@@ -1,15 +1,18 @@
 
-data class Role (
-    val rights      : List<Right>,
-    val description : String? = null,
-)
+data class Role(
+    override  val id          : String,
+              val rights      : List<Right>,
+              val description : String? = null,
+) : Entity (id)
 
-data class UserCredential (
-    val passHash : String? = null,
-    val token    : String? = null,
-)
+data class UserCredential(
+    override  val id       : String,
+              val passHash : String? = null,
+              val token    : String? = null,
+) : Entity (id)
 
-data class UserPermission (
-    val roles : List<String>? = null,
-)
+data class UserPermission(
+    override  val id    : String,
+              val roles : List<String>? = null,
+) : Entity (id)
 
