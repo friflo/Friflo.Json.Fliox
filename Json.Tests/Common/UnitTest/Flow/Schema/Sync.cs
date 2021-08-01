@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         }
         
         /// C# -> Kotlin
-        // [Test]
+        [Test]
         public static void CS_Kotlin () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var options = new NativeTypeOptions(typeStore, SyncTypes) {

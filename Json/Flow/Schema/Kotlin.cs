@@ -116,7 +116,8 @@ namespace Friflo.Json.Flow.Schema
                     // var baseClass = (baseType != null && baseType.IsAbstract) ? $": {baseType.Name}() " : "";
                     sb.AppendLine($"abstract class {type.Name} {{");
                 } else {
-                    sb.AppendLine($"data class {type.Name} (");
+                    var classType = type.Fields.Count == 0 ? "" : "data "; 
+                    sb.AppendLine($"{classType}class {type.Name} (");
                 }
             } else {
                 // [Support multiple class descriminators for polymorphism. · Issue #546 · Kotlin/kotlinx.serialization] https://github.com/Kotlin/kotlinx.serialization/issues/546
