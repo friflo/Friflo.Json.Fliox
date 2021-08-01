@@ -58,7 +58,7 @@ namespace Friflo.Json.Flow.Schema
             var map = new Dictionary<TypeDef, string>();
             AddType (map, standard.BigInteger,      "java.math" );
             AddType (map, standard.DateTime,        "kotlinx.datetime" );
-            AddType (map, standard.JsonValue,       "Friflo.Json.Flow.Mapper" );
+            AddType (map, standard.JsonValue,       "kotlinx.serialization.json" );
             return map;
         }
 
@@ -167,6 +167,8 @@ namespace Friflo.Json.Flow.Schema
             context.imports.Add(type);
             if (type == context.standardTypes.DateTime)
                 return "Instant";
+            if (type == context.standardTypes.JsonValue)
+                return "JsonElement";
             return type.Name;
         }
         

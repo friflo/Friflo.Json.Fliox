@@ -2,8 +2,12 @@ import CustomSerializer.BigIntegerSerializer
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.*
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import java.math.BigInteger
 import kotlin.collections.HashMap
+
 
 
 fun main(args: Array<String>) {
@@ -14,7 +18,11 @@ fun main(args: Array<String>) {
 
     var instant = Instant.parse("2021-07-22T06:00:00.000Z");
     var bigInt  = BigInteger("123");
-    var data = Data(42, "str", instant, bigInt)
+    var jsonVal = buildJsonObject {
+        put ("hello", "world")
+    }
+
+    var data = Data(42, "str", instant, bigInt, jsonVal)
 
     var json = Json.encodeToString(data)
     System.out.println("json: " + json);
@@ -27,6 +35,7 @@ class Data(
     var dateTime:   Instant,
     @Serializable(with = BigIntegerSerializer::class)
     var bigInt:     BigInteger,
+    var json:       JsonElement,
     var list:       List<String>?               = null,   // optional parameter
     var map:        HashMap<String, String>?    = null,
 )
