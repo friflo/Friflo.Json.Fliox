@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Friflo.Json.Flow.Schema.Definition;
 using Friflo.Json.Flow.Schema.Utils;
@@ -35,7 +34,7 @@ namespace Friflo.Json.Flow.Schema
                 generator.AddEmitType(result);
             }
             generator.GroupTypesByPath(true); // sort dependencies - otherwise possible error TS2449: Class '...' used before its declaration.
-            // emitter.EmitFileHeaders(sb);
+            emitter.EmitFileHeaders(sb);
             // EmitFileFooters(sb);  no TS footer
             generator.EmitFiles(sb, ns => $"{ns}{generator.fileExt}");
         }
@@ -102,20 +101,22 @@ namespace Friflo.Json.Flow.Schema
             int maxFieldName    = fields.MaxLength(field => field.name.Length);
             var extendsStr      = "";
             var baseType        = type.BaseType;
+            sb.AppendLine("@Serializable");
             if (baseType != null) {
-                var parentFields = "";
+                /* var parentFields = "";
                 if (fields.Count  > 0)
-                    parentFields = $" ({string.Join(", ", fields.Where(f => f.IsDerivedField))})";
-                extendsStr = $" : {baseType.Name}{parentFields}";
+                    parentFields = $" ({string.Join(", ", fields.Where(f => f.IsDerivedField))})"; */
+                extendsStr = $" : {baseType.Name}()";
                 // dependencies.Add(baseType);
                 // imports.Add(baseType);
             }
             var unionType = type.UnionType;
             if (unionType == null) {
                 var abstractStr = type.IsAbstract ? "abstract" : "data";
-                sb.AppendLine($"{abstractStr} class {type.Name}(");
+                var openBracket = type.IsAbstract ? "{" : "(";
+                sb.AppendLine($"{abstractStr} class {type.Name} {openBracket}");
             } else {
-                sb.AppendLine($"abstract class {type.Name}(");
+                sb.AppendLine($"sealed class {type.Name} {{");
                 // sb.AppendLine($"    abstract {unionType.discriminator}:");
                 /* foreach (var polyType in unionType.types) {
                     sb.AppendLine($"        | \"{polyType.Discriminant}\"");
@@ -131,15 +132,16 @@ namespace Friflo.Json.Flow.Schema
             }
             
             foreach (var field in fields) {
-                var fieldModifier = type.IsAbstract ? "open " : field.IsDerivedField ? "override " : "         ";
-                bool required = field.required;
-                var fieldType = GetFieldType(field, context);
-                var indent  = Indent(maxFieldName, field.name);
-                var optStr  = required ? "": "? = null";
-                sb.AppendLine($"    {fieldModifier} val {field.name}{indent} : {fieldType}{optStr},");
+                var fieldModifier = type.IsAbstract ? "abstract " : field.IsDerivedField ? "override " : "         ";
+                var delimiter   = type.IsAbstract ? "" : ",";
+                bool required   = field.required;
+                var fieldType   = GetFieldType(field, context);
+                var indent      = Indent(maxFieldName, field.name);
+                var nullable    = type.IsAbstract ? required ? "" : "?": required ? "": "? = null";
+                sb.AppendLine($"    {fieldModifier} val {field.name}{indent} : {fieldType}{nullable}{delimiter}");
             }
-
-            sb.AppendLine($"){extendsStr}");
+            var closeBracket = type.IsAbstract ? "}" : ")";
+            sb.AppendLine($"{closeBracket}{extendsStr}");
             sb.AppendLine();
             return new EmitType(type, sb, imports, dependencies);
         }
@@ -170,7 +172,8 @@ namespace Friflo.Json.Flow.Schema
                 string      filePath    = pair.Key;
                 sb.Clear();
                 sb.AppendLine($"// {Note}");
-                var max = emitFile.imports.MaxLength(imp => {
+                sb.AppendLine("import kotlinx.serialization.*");
+                /* var max = emitFile.imports.MaxLength(imp => {
                     var typeDef = imp.Value.type;
                     return typeDef.Path == filePath ? 0 : typeDef.Name.Length;
                 });
@@ -181,7 +184,7 @@ namespace Friflo.Json.Flow.Schema
                     var typeName    = import.Name;
                     var indent      = Indent(max, typeName);
                     sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.Path}\"");
-                }
+                } */
                 emitFile.header = sb.ToString();
             }
         }
