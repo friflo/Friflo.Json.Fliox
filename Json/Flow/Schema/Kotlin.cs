@@ -56,8 +56,8 @@ namespace Friflo.Json.Flow.Schema
         
         private static Dictionary<TypeDef, string> GetCustomTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
-            AddType (map, standard.BigInteger,      "System.Numerics" );
-            AddType (map, standard.DateTime,        "System" );
+            AddType (map, standard.BigInteger,      "java.math" );
+            AddType (map, standard.DateTime,        "kotlinx.datetime" );
             AddType (map, standard.JsonValue,       "Friflo.Json.Flow.Mapper" );
             return map;
         }
@@ -138,6 +138,8 @@ namespace Friflo.Json.Flow.Schema
                 var fieldType   = GetFieldType(field, context);
                 var indent      = Indent(maxFieldName, field.name);
                 var nullable    = type.IsAbstract ? required ? "" : "?": required ? "": "? = null";
+                if (field.type == context.standardTypes.BigInteger)
+                    sb.AppendLine("              @Serializable(with = BigIntegerSerializer::class)");
                 sb.AppendLine($"    {fieldModifier} val {field.name}{indent} : {fieldType}{nullable}{delimiter}");
             }
             var closeBracket = type.IsAbstract ? "}" : ")";
@@ -163,6 +165,8 @@ namespace Friflo.Json.Flow.Schema
             if (standardTypes.TryGetValue(type, out string name))
                 return name;
             context.imports.Add(type);
+            if (type == context.standardTypes.DateTime)
+                return "Instant";
             return type.Name;
         }
         
@@ -175,6 +179,8 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine($"package {emitFile.@namespace}");
                 sb.AppendLine();
                 sb.AppendLine("import kotlinx.serialization.*");
+                sb.AppendLine("import CustomSerializer.BigIntegerSerializer");
+                
                 var namespaces = new HashSet<string>();
                 foreach (var importPair in emitFile.imports) {
                     var import = importPair.Value;

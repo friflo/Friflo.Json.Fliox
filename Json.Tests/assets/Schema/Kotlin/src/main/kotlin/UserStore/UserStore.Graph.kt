@@ -2,6 +2,7 @@
 package UserStore.Graph
 
 import kotlinx.serialization.*
+import CustomSerializer.BigIntegerSerializer
 
 @Serializable
 abstract class Entity {

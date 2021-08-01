@@ -2,6 +2,7 @@
 package UserStore.Sync
 
 import kotlinx.serialization.*
+import CustomSerializer.BigIntegerSerializer
 
 enum class TaskType {
     read,

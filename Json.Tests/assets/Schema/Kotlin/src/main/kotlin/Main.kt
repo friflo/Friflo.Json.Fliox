@@ -1,11 +1,7 @@
+import CustomSerializer.BigIntegerSerializer
 import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.*
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 import java.math.BigInteger
 import kotlin.collections.HashMap
 
@@ -28,9 +24,8 @@ fun main(args: Array<String>) {
 class Data(
     val a:          Int,
     val b:          String,
-    // @Serializable(with = InstantComponentSerializer::class, )
     var dateTime:   Instant,
-    @Serializable(with = BigIntegerSerializer::class, )
+    @Serializable(with = BigIntegerSerializer::class)
     var bigInt:     BigInteger,
     var list:       List<String>?               = null,   // optional parameter
     var map:        HashMap<String, String>?    = null,
@@ -55,16 +50,3 @@ enum class TestEnum {
     Test
 }
 
-object BigIntegerSerializer : KSerializer<BigInteger> {
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BigInteger", PrimitiveKind.STRING)
-
-    override fun serialize(encoder: Encoder, value: BigInteger) {
-        val string = value.toString();
-        encoder.encodeString(string)
-    }
-
-    override fun deserialize(decoder: Decoder): BigInteger {
-        val string = decoder.decodeString()
-        return BigInteger(string)
-    }
-}

@@ -2,6 +2,7 @@
 package UserStore.Auth.Rights
 
 import kotlinx.serialization.*
+import CustomSerializer.BigIntegerSerializer
 import UserStore.Sync.*
 
 @Serializable
