@@ -195,11 +195,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
             return $"\"ref\":  \"{name}\"";
         }
         
-        public static Generator Generate (TypeStore typeStore, ICollection<Type> rootTypes, string name, ICollection<string> stripNamespaces = null, ICollection<Type> separateTypes = null) {
-            typeStore.AddMappers(rootTypes);
-            var schema      = new NativeTypeSchema(typeStore);
-            var sepTypes    = schema.TypesAsTypeDefs(separateTypes);
-            var generator   = new Generator(schema, ".json", stripNamespaces, sepTypes);
+        public static Generator Generate(NativeTypeOptions options, string name) {
+            options.typeStore.AddMappers(options.rootTypes);
+            var schema      = new NativeTypeSchema(options.typeStore);
+            var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
+            var generator   = new Generator(schema, options.fileExt ?? ".json", options.stripNamespaces, sepTypes, options.getPath);
             Generate(generator, name);
             return generator;
         }

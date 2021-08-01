@@ -59,7 +59,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         [Test]
         public static void CS_JTD () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var generator = JsonTypeDefinition.Generate(typeStore, UserStoreTypes, "UserStore", null, UserStoreTypes);
+            var options = new NativeTypeOptions(typeStore, UserStoreTypes);
+            var generator = JsonTypeDefinition.Generate(options, "UserStore");
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JTD/", false);
         }
         

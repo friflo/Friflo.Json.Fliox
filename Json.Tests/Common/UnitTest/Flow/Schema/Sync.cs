@@ -35,7 +35,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         [Test]
         public static void CS_JTD () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var generator = JsonTypeDefinition.Generate(typeStore, SyncTypes, "Sync");
+            var options = new NativeTypeOptions(typeStore, SyncTypes);
+            var generator = JsonTypeDefinition.Generate(options, "Sync");
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JTD/", false);
         }
         
