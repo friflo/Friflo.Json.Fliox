@@ -106,19 +106,23 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine($"@SerialName(\"{type.Discriminant}\")");
             }
             // [inheritance - Extend data class in Kotlin - Stack Overflow] https://stackoverflow.com/questions/26444145/extend-data-class-in-kotlin
-            if (baseType != null && baseType.IsAbstract) {
+            if (!type.IsAbstract && baseType != null && baseType.IsAbstract) {
                 extendsStr = $" : {baseType.Name}()";
                 imports.Add(baseType);
             }
             var unionType = type.UnionType;
             if (unionType == null) {
-                var abstractStr = type.IsAbstract ? "abstract" : "data";
-                var openBracket = type.IsAbstract ? "{" : "(";
-                sb.AppendLine($"{abstractStr} class {type.Name} {openBracket}");
+                if (type.IsAbstract) {
+                    // var baseClass = (baseType != null && baseType.IsAbstract) ? $": {baseType.Name}() " : "";
+                    sb.AppendLine($"abstract class {type.Name} {{");
+                } else {
+                    sb.AppendLine($"data class {type.Name} (");
+                }
             } else {
                 // [Support multiple class descriminators for polymorphism. · Issue #546 · Kotlin/kotlinx.serialization] https://github.com/Kotlin/kotlinx.serialization/issues/546
+                var baseClass = (baseType != null && baseType.IsAbstract) ? $": {baseType.Name}() " : "";
                 sb.AppendLine($"// @JsonClassDiscriminator(\"{unionType.discriminator}\") https://github.com/Kotlin/kotlinx.serialization/issues/546");
-                sb.AppendLine($"sealed class {type.Name} {{");
+                sb.AppendLine($"abstract class {type.Name}  {baseClass}{{");
                 // sb.AppendLine($"    abstract {unionType.discriminator}:");
                 /* foreach (var polyType in unionType.types) {
                     sb.AppendLine($"        | \"{polyType.Discriminant}\"");
