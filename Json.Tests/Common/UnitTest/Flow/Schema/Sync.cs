@@ -44,7 +44,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         // [Test]
         public static void CS_CS () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var options = new NativeTypeOptions(typeStore, SyncTypes) { stripNamespaces = new[]{"Friflo.Json."} };
+            var options = new NativeTypeOptions(typeStore, SyncTypes) {
+                stripNamespaces = new[]{new Replacement("Friflo.Json.")}
+            };
             var generator = CSharpGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/Sync");
         }
