@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
                 replacements = new [] { new Replace("Friflo.Json.Flow.", "UserStore2.") }
             };
             var generator = CSharpGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/UserStore2");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/C#/UserStore2");
         }
         
         /// C# -> Kotlin

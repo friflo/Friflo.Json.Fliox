@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
                 replacements = new[]{new Replace("Friflo.Json.")}
             };
             var generator = CSharpGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/Sync");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/C#/Sync");
         }
         
         /// C# -> Kotlin

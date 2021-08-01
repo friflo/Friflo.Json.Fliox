@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
                     new Replace("Friflo.Json.Tests.Common.UnitTest.Flow",   "PocStore2") }
             };
             var generator = CSharpGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/PocStore2");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/C#/PocStore2");
         }
         
         /// C# -> Kotlin
