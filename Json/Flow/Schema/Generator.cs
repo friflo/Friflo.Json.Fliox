@@ -132,9 +132,12 @@ namespace Friflo.Json.Flow.Schema
         private string Strip (string ns) {
             ns  = ns ?? "default";
             foreach (var replacement in replacements) {
-                var pos = ns.IndexOf(replacement.@namespace, StringComparison.InvariantCulture);
+                var search = replacement.@namespace;
+                var pos = ns.IndexOf(search, StringComparison.InvariantCulture);
                 if (pos == 0) {
-                    return replacement.replacement + ns.Substring(replacement.@namespace.Length);
+                    var substr = ns.Substring(search.Length);
+                    var replace = replacement.replacement;
+                    return replace.Length >= 0 ? replace + substr : substr;
                 }
             }
             return ns;
