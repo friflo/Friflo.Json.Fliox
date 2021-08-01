@@ -42,10 +42,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         public static void CS_CS () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var options = new NativeTypeOptions(typeStore, UserStoreTypes) {
-                replacements = new[]{new Replace("Friflo.Json.")}
+                replacements = new [] { new Replace("Friflo.Json.Flow.", "UserStore2.") }
             };
             var generator = CSharpGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/UserStore");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/UserStore2");
         }
         
         /// C# -> Kotlin

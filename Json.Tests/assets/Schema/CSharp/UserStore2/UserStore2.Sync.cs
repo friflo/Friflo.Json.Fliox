@@ -4,7 +4,7 @@ using Friflo.Json.Flow.Mapper;
 
 #pragma warning disable 0169 // [CS0169] The field '...' is never used
 
-namespace Flow.Sync {
+namespace UserStore2.Sync {
 
 public enum TaskType {
     read,

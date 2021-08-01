@@ -48,13 +48,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         /// C# -> C#
         [Test]
         public static void CS_CS () {
-            // Use code generator directly
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            typeStore.AddMappers(PocStoreTypes);
-            var schema      = new NativeTypeSchema(typeStore);
-            var generator   = new Generator(schema, ".cs", new[]{new Replace("Friflo.Json.Tests.Common."), new Replace("Friflo.Json.Flow.")});
-            CSharpGenerator.Generate(generator);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/PocStore");
+            var options = new NativeTypeOptions(typeStore, PocStoreTypes) {
+                replacements = new [] {
+                    new Replace("Friflo.Json.Flow.",                        "PocStore2."),
+                    new Replace("Friflo.Json.Tests.Common.UnitTest.Flow",   "PocStore2") }
+            };
+            var generator = CSharpGenerator.Generate(options);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/PocStore2");
         }
         
         /// C# -> Kotlin

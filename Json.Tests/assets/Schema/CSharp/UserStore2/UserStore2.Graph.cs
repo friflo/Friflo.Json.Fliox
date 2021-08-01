@@ -4,7 +4,7 @@ using Friflo.Json.Flow.Mapper;
 
 #pragma warning disable 0169 // [CS0169] The field '...' is never used
 
-namespace Flow.Graph {
+namespace UserStore2.Graph {
 
 abstract public class Entity {
     [Fri.Property(Required = true)]
