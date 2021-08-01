@@ -57,6 +57,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/PocStore");
         }
         
+        /// C# -> Kotlin
+        // [Test]
+        public static void CS_Kotlin () {
+            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
+            var options = new NativeTypeOptions(typeStore, PocStoreTypes);
+            var generator = KotlinGenerator.Generate(options);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Kotlin/src/main/kotlin/PocStore");
+        }
+        
         /// C# -> JTD
         [Test]
         public static void CS_JTD () {

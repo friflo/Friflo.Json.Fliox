@@ -108,7 +108,7 @@ namespace Friflo.Json.Flow.Schema
                     parentFields = $" ({string.Join(", ", fields.Where(f => f.IsDerivedField))})"; */
                 extendsStr = $" : {baseType.Name}()";
                 // dependencies.Add(baseType);
-                // imports.Add(baseType);
+                imports.Add(baseType);
             }
             var unionType = type.UnionType;
             if (unionType == null) {
@@ -172,19 +172,23 @@ namespace Friflo.Json.Flow.Schema
                 string      filePath    = pair.Key;
                 sb.Clear();
                 sb.AppendLine($"// {Note}");
+                sb.AppendLine($"package {emitFile.@namespace}");
+                sb.AppendLine();
                 sb.AppendLine("import kotlinx.serialization.*");
-                /* var max = emitFile.imports.MaxLength(imp => {
-                    var typeDef = imp.Value.type;
-                    return typeDef.Path == filePath ? 0 : typeDef.Name.Length;
-                });
+                var namespaces = new HashSet<string>();
                 foreach (var importPair in emitFile.imports) {
-                    var import = importPair.Value.type;
-                    if (import.Path == filePath)
+                    var import = importPair.Value;
+                    if (import.type.Path == filePath)
                         continue;
-                    var typeName    = import.Name;
-                    var indent      = Indent(max, typeName);
-                    sb.AppendLine($"import {{ {typeName} }}{indent} from \"./{import.Path}\"");
-                } */
+                    if (customTypes.TryGetValue(import.type, out var @namespace)) {
+                        namespaces.Add(@namespace);
+                        continue;
+                    }
+                    namespaces.Add(import.@namespace);
+                }
+                foreach (var ns in namespaces) {
+                    sb.AppendLine($"import {ns}.*");
+                }
                 emitFile.header = sb.ToString();
             }
         }
