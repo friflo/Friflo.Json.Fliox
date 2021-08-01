@@ -15,6 +15,7 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.2.0")
     testImplementation(kotlin("test"))
 }
 
