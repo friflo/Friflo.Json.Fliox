@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Flow.Schema.Definition;
@@ -35,7 +34,7 @@ namespace Friflo.Json.Flow.Schema
             }
             generator.GroupTypesByPath(true); // sort dependencies - otherwise possible error TS2449: Class '...' used before its declaration.
             emitter.EmitFileHeaders(sb);
-            // EmitFileFooters(sb);  no TS footer
+            // EmitFileFooters(sb);  no Kotlin footer
             generator.EmitFiles(sb, ns => $"{ns}{generator.fileExt}");
         }
         
@@ -62,21 +61,7 @@ namespace Friflo.Json.Flow.Schema
             return map;
         }
 
-        /* private EmitType EmitStandardType(TypeDef type, StringBuilder sb) {
-            if (!standardTypes.TryGetValue(type, out var definition))
-                return null;
-            sb.Append("export type ");
-            sb.Append(definition);
-            sb.AppendLine(";");
-            sb.AppendLine();
-            return new EmitType(type, sb);
-        } */
-        
         private EmitType EmitType(TypeDef type, StringBuilder sb) {
-            /* var standardType    = EmitStandardType(type, sb);
-            if (standardType != null ) {
-                return standardType;
-            } */
             if (type.IsComplex) {
                 return EmitComplexType(type, sb);
             }
@@ -120,24 +105,11 @@ namespace Friflo.Json.Flow.Schema
                     sb.AppendLine($"{classType}class {type.Name} (");
                 }
             } else {
-                // [Support multiple class descriminators for polymorphism. · Issue #546 · Kotlin/kotlinx.serialization] https://github.com/Kotlin/kotlinx.serialization/issues/546
+                // [Support multiple class discriminators for polymorphism. · Issue #546 · Kotlin/kotlinx.serialization] https://github.com/Kotlin/kotlinx.serialization/issues/546
                 var baseClass = (baseType != null && baseType.IsAbstract) ? $": {baseType.Name}() " : "";
                 sb.AppendLine($"// @JsonClassDiscriminator(\"{unionType.discriminator}\") https://github.com/Kotlin/kotlinx.serialization/issues/546");
                 sb.AppendLine($"abstract class {type.Name}  {baseClass}{{");
-                // sb.AppendLine($"    abstract {unionType.discriminator}:");
-                /* foreach (var polyType in unionType.types) {
-                    sb.AppendLine($"        | \"{polyType.Discriminant}\"");
-                }
-                sb.AppendLine($"    ;"); */
             }
-            string  discriminant    = type.Discriminant;
-            string  discriminator   = type.Discriminator;
-            if (discriminant != null) {
-                maxFieldName    = Math.Max(maxFieldName, discriminator.Length);
-                var indent      = Indent(maxFieldName, discriminator);
-                // sb.AppendLine($"    {discriminator}{indent}  : \"{discriminant}\";");
-            }
-            
             foreach (var field in fields) {
                 var @override =  field.IsDerivedField && type.BaseType.IsAbstract;
                 var fieldModifier = type.IsAbstract ? "abstract " : @override ? "override " : "         ";
