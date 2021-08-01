@@ -30,7 +30,7 @@ export class OrderItem {
 }
 
 export class PocStruct {
-    val  : int32;
+    value  : int32;
 }
 
 export class DerivedClass extends OrderItem {

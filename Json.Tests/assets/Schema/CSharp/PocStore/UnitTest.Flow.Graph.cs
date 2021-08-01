@@ -76,7 +76,7 @@ public class TestType : Entity {
 }
 
 public struct PocStruct {
-    int  val;
+    int  value;
 }
 
 public class DerivedClass : OrderItem {

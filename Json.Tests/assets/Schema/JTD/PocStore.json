@@ -81,7 +81,7 @@
         "BigInteger": "string",
         "PocStruct": {
             "properties": {
-                "val": { "type": "int32" }
+                "value": { "type": "int32" }
             }
         },
         "DerivedClass": {

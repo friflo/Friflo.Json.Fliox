@@ -69,7 +69,7 @@ export class TestType extends Entity {
 }
 
 export class PocStruct {
-    val  : int32;
+    value  : int32;
 }
 
 export class DerivedClass extends OrderItem {

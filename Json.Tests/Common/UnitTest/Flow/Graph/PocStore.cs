@@ -110,7 +110,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     }
     
     public struct PocStruct {
-        public  int                 val;
+        public  int                 value;
     }
     
     public class DerivedClass : OrderItem {
