@@ -63,8 +63,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var options = new NativeTypeOptions(typeStore, PocStoreTypes) {
                 replacements = new [] {
-                    new Replace("Friflo.Json.Flow."),
-                    new Replace("Friflo.Json.Tests.Common.UnitTest.Flow.Graph", "PocStore") }
+                    new Replace("Friflo.Json.Flow.",                        "PocStore."),
+                    new Replace("Friflo.Json.Tests.Common.UnitTest.Flow",   "PocStore") }
             };
             var generator = KotlinGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Kotlin/src/main/kotlin/PocStore");
