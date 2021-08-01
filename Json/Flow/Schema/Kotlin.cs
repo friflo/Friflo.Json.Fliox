@@ -102,12 +102,8 @@ namespace Friflo.Json.Flow.Schema
             var extendsStr      = "";
             var baseType        = type.BaseType;
             sb.AppendLine("@Serializable");
-            if (baseType != null) {
-                /* var parentFields = "";
-                if (fields.Count  > 0)
-                    parentFields = $" ({string.Join(", ", fields.Where(f => f.IsDerivedField))})"; */
+            if (baseType != null && baseType.IsAbstract) {
                 extendsStr = $" : {baseType.Name}()";
-                // dependencies.Add(baseType);
                 imports.Add(baseType);
             }
             var unionType = type.UnionType;
@@ -132,9 +128,10 @@ namespace Friflo.Json.Flow.Schema
             }
             
             foreach (var field in fields) {
-                var fieldModifier = type.IsAbstract ? "abstract " : field.IsDerivedField ? "override " : "         ";
+                var @override =  field.IsDerivedField && type.BaseType.IsAbstract;
+                var fieldModifier = type.IsAbstract ? "abstract " : @override ? "override " : "         ";
                 var delimiter   = type.IsAbstract ? "" : ",";
-                bool required   = field.required;
+                var required    = field.required;
                 var fieldType   = GetFieldType(field, context);
                 var indent      = Indent(maxFieldName, field.name);
                 var nullable    = type.IsAbstract ? required ? "" : "?": required ? "": "? = null";
