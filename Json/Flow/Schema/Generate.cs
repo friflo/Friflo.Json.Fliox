@@ -68,7 +68,7 @@ namespace Friflo.Json.Flow.Schema
         }
         
         public static Generator Generate(JsonTypeOptions options) {
-            var generator   = new Generator(options.schema, options.fileExt ?? ".json", options.replacements, options.separateTypes, options.getPath);
+            var generator   = new Generator(options.schema, options.fileExt ?? ".cs", options.replacements, options.separateTypes, options.getPath);
             Generate(generator);
             return generator;
         }
@@ -91,7 +91,7 @@ namespace Friflo.Json.Flow.Schema
         }
         
         public static Generator Generate(JsonTypeOptions options) {
-            var generator   = new Generator(options.schema, options.fileExt ?? ".json", options.replacements, options.separateTypes, options.getPath);
+            var generator   = new Generator(options.schema, options.fileExt ?? ".kt", options.replacements, options.separateTypes, options.getPath);
             Generate(generator);
             return generator;
         }
