@@ -12,7 +12,7 @@ object BigIntegerSerializer : KSerializer<BigInteger> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("BigInteger", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: BigInteger) {
-        val string = value.toString();
+        val string = value.toString()
         encoder.encodeString(string)
     }
 

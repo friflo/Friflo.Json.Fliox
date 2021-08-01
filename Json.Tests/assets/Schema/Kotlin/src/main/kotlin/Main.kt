@@ -16,16 +16,16 @@ fun main(args: Array<String>) {
     // Try adding program arguments at Run/Debug configuration
     println("Program arguments: ${args.joinToString()}")
 
-    var instant = Instant.parse("2021-07-22T06:00:00.000Z");
-    var bigInt  = BigInteger("123");
-    var jsonVal = buildJsonObject {
+    val instant = Instant.parse("2021-07-22T06:00:00.000Z")
+    val bigInt  = BigInteger("123")
+    val jsonVal = buildJsonObject {
         put ("hello", "world")
     }
 
-    var data = Data(42, "str", instant, bigInt, jsonVal)
+    val data = Data(42, "str", instant, bigInt, jsonVal)
 
-    var json = Json.encodeToString(data)
-    System.out.println("json: " + json);
+    val json = Json.encodeToString(data)
+    System.out.println("json: " + json)
 }
 
 @Serializable
@@ -45,13 +45,13 @@ fun learnTypes () {
     var bool:       Boolean = true
     var str:        String = "hello"
 
-    var byte:       Byte = 100;
-    var short:      Short = 1000;
-    var int:        Int = 10000000;
-    var long:       Long = 2000000000000000000;
+    var byte:       Byte = 100
+    var short:      Short = 1000
+    var int:        Int = 10000000
+    var long:       Long = 2000000000000000000
 
-    var float:      Float = 1.1f;
-    var double:     Double = 1.1;
+    var float:      Float = 1.1f
+    var double:     Double = 1.1
     var dateTime:   Instant
 }
 
