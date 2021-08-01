@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
     /// The sync models define a protocol. The generated Typescript are useful for client applications.
     /// JSON Schema files are not generated as the Graph host / server validate protocol messages by code.  
     /// </summary>
-    public static class SyncSchema
+    public static class SyncGen
     {
         private static readonly Type[] SyncTypes        = { typeof(DatabaseMessage) };
 
