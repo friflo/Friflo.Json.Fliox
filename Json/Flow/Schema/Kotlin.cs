@@ -102,6 +102,9 @@ namespace Friflo.Json.Flow.Schema
             var extendsStr      = "";
             var baseType        = type.BaseType;
             sb.AppendLine("@Serializable");
+            if (type.Discriminant != null) {
+                sb.AppendLine($"@SerialName(\"{type.Discriminant}\")");
+            }
             // [inheritance - Extend data class in Kotlin - Stack Overflow] https://stackoverflow.com/questions/26444145/extend-data-class-in-kotlin
             if (baseType != null && baseType.IsAbstract) {
                 extendsStr = $" : {baseType.Name}()";

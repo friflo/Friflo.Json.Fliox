@@ -11,30 +11,35 @@ sealed class Right {
 }
 
 @Serializable
+@SerialName("allow")
 data class RightAllow (
               val grant       : Boolean,
     override  val description : String? = null,
 ) : Right()
 
 @Serializable
+@SerialName("task")
 data class RightTask (
               val types       : List<TaskType>,
     override  val description : String? = null,
 ) : Right()
 
 @Serializable
+@SerialName("message")
 data class RightMessage (
               val names       : List<String>,
     override  val description : String? = null,
 ) : Right()
 
 @Serializable
+@SerialName("subscribeMessage")
 data class RightSubscribeMessage (
               val names       : List<String>,
     override  val description : String? = null,
 ) : Right()
 
 @Serializable
+@SerialName("database")
 data class RightDatabase (
               val containers  : HashMap<String, ContainerAccess>,
     override  val description : String? = null,
@@ -58,6 +63,7 @@ enum class OperationType {
 }
 
 @Serializable
+@SerialName("predicate")
 data class RightPredicate (
               val names       : List<String>,
     override  val description : String? = null,
