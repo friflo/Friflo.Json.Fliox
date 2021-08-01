@@ -103,7 +103,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         public static void JSON_Typescript () {
             var schemas     = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
             var schema      = new JsonTypeSchema(schemas);
-            var jsonTypes   = SchemaTest.JsonTypesFromTypes (PocStoreTypes, "UnitTest.Flow.Graph.");
             var options     = new JsonTypeOptions(schema);
             var generator   = TypescriptGenerator.Generate(options);
 

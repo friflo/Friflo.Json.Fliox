@@ -78,7 +78,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         public static void JSON_Typescript () {
             var schemas     = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
             var schema      = new JsonTypeSchema(schemas);
-            var jsonTypes   = SchemaTest.JsonTypesFromTypes (UserStoreTypes, "Friflo.Json.Flow.UserAuth.");
             var options     = new JsonTypeOptions(schema);
             var generator   = TypescriptGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema-Loop/Typescript/UserStore");
