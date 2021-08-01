@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             typeStore.AddMappers(PocStoreTypes);
             var schema      = new NativeTypeSchema(typeStore);
-            var generator   = new Generator(schema, ".ts", new[]{new Replacement("Friflo.Json.Tests.Common.")});
+            var generator   = new Generator(schema, ".ts", new[]{new Replace("Friflo.Json.Tests.Common.")});
             TypescriptGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/PocStore");
         }
@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             typeStore.AddMappers(PocStoreTypes);
             var schema      = new NativeTypeSchema(typeStore);
             var sepTypes    = schema.TypesAsTypeDefs(PocStoreTypes);
-            var generator   = new Generator(schema, ".json", new[]{new Replacement("Friflo.Json.Tests.Common.")}, sepTypes);
+            var generator   = new Generator(schema, ".json", new[]{new Replace("Friflo.Json.Tests.Common.")}, sepTypes);
             JsonSchemaGenerator.Generate(generator);
             generator.WriteFiles(JsonSchemaFolder);
         }
@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             typeStore.AddMappers(PocStoreTypes);
             var schema      = new NativeTypeSchema(typeStore);
-            var generator   = new Generator(schema, ".cs", new[]{new Replacement("Friflo.Json.Tests.Common."), new Replacement("Friflo.Json.Flow.")});
+            var generator   = new Generator(schema, ".cs", new[]{new Replace("Friflo.Json.Tests.Common."), new Replace("Friflo.Json.Flow.")});
             CSharpGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/PocStore");
         }
@@ -62,7 +62,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         public static void CS_Kotlin () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var options = new NativeTypeOptions(typeStore, PocStoreTypes) {
-                stripNamespaces = new [] { new Replacement("Friflo.Json.Flow.", "PocStore.") }
+                replacements = new [] {
+                    new Replace("Friflo.Json.Flow."),
+                    new Replace("Friflo.Json.Tests.Common.UnitTest.Flow.Graph", "PocStore") }
             };
             var generator = KotlinGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Kotlin/src/main/kotlin/PocStore");

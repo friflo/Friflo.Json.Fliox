@@ -16,13 +16,13 @@ namespace Friflo.Json.Flow.Schema
             options.typeStore.AddMappers(options.rootTypes);
             var schema      = new NativeTypeSchema(options.typeStore);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
-            var generator   = new Generator(schema, options.fileExt ?? ".ts", options.stripNamespaces, sepTypes, options.getPath);
+            var generator   = new Generator(schema, options.fileExt ?? ".ts", options.replacements, sepTypes, options.getPath);
             Generate(generator);
             return generator;
         }
         
         public static Generator Generate(JsonTypeOptions options) {
-            var generator   = new Generator(options.schema, options.fileExt ?? ".ts", options.stripNamespaces, options.separateTypes, options.getPath);
+            var generator   = new Generator(options.schema, options.fileExt ?? ".ts", options.replacements, options.separateTypes, options.getPath);
             Generate(generator);
             return generator;
         }
@@ -39,13 +39,13 @@ namespace Friflo.Json.Flow.Schema
             options.typeStore.AddMappers(options.rootTypes);
             var schema      = new NativeTypeSchema(options.typeStore);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
-            var generator   = new Generator(schema, options.fileExt ?? ".json", options.stripNamespaces, sepTypes, options.getPath);
+            var generator   = new Generator(schema, options.fileExt ?? ".json", options.replacements, sepTypes, options.getPath);
             Generate(generator);
             return generator;
         }
         
         public static Generator Generate(JsonTypeOptions options) {
-            var generator   = new Generator(options.schema, options.fileExt ?? ".json", options.stripNamespaces, options.separateTypes, options.getPath);
+            var generator   = new Generator(options.schema, options.fileExt ?? ".json", options.replacements, options.separateTypes, options.getPath);
             Generate(generator);
             return generator;
         }
@@ -62,13 +62,13 @@ namespace Friflo.Json.Flow.Schema
             options.typeStore.AddMappers(options.rootTypes);
             var schema      = new NativeTypeSchema(options.typeStore);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
-            var generator   = new Generator(schema, options.fileExt ?? ".cs", options.stripNamespaces, sepTypes, options.getPath);
+            var generator   = new Generator(schema, options.fileExt ?? ".cs", options.replacements, sepTypes, options.getPath);
             Generate(generator);
             return generator;
         }
         
         public static Generator Generate(JsonTypeOptions options) {
-            var generator   = new Generator(options.schema, options.fileExt ?? ".json", options.stripNamespaces, options.separateTypes, options.getPath);
+            var generator   = new Generator(options.schema, options.fileExt ?? ".json", options.replacements, options.separateTypes, options.getPath);
             Generate(generator);
             return generator;
         }
@@ -85,13 +85,13 @@ namespace Friflo.Json.Flow.Schema
             options.typeStore.AddMappers(options.rootTypes);
             var schema      = new NativeTypeSchema(options.typeStore);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
-            var generator   = new Generator(schema, options.fileExt ?? ".kt", options.stripNamespaces, sepTypes, options.getPath);
+            var generator   = new Generator(schema, options.fileExt ?? ".kt", options.replacements, sepTypes, options.getPath);
             Generate(generator);
             return generator;
         }
         
         public static Generator Generate(JsonTypeOptions options) {
-            var generator   = new Generator(options.schema, options.fileExt ?? ".json", options.stripNamespaces, options.separateTypes, options.getPath);
+            var generator   = new Generator(options.schema, options.fileExt ?? ".json", options.replacements, options.separateTypes, options.getPath);
             Generate(generator);
             return generator;
         }

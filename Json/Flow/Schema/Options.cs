@@ -10,11 +10,11 @@ namespace Friflo.Json.Flow.Schema
 {
     public class JsonTypeOptions
     {
-        public  readonly    TypeSchema                  schema;
-        public              string                      fileExt;
-        public              ICollection<Replacement>    stripNamespaces;
-        public              ICollection<TypeDef>        separateTypes;
-        public              Func<TypeDef, string>       getPath;
+        public  readonly    TypeSchema              schema;
+        public              string                  fileExt;
+        public              ICollection<Replace>    replacements;
+        public              ICollection<TypeDef>    separateTypes;
+        public              Func<TypeDef, string>   getPath;
         
         public JsonTypeOptions (TypeSchema schema) {
             this.schema     = schema ?? throw new ArgumentException("schema must not be null");
@@ -23,12 +23,12 @@ namespace Friflo.Json.Flow.Schema
     
     public class NativeTypeOptions
     {
-        public  readonly    TypeStore                   typeStore; 
-        public  readonly    ICollection<Type>           rootTypes;
-        public              string                      fileExt;
-        public              ICollection<Replacement>    stripNamespaces;
-        public              ICollection<Type>           separateTypes;
-        public              Func<TypeDef, string>       getPath;
+        public  readonly    TypeStore               typeStore; 
+        public  readonly    ICollection<Type>       rootTypes;
+        public              string                  fileExt;
+        public              ICollection<Replace>    replacements;
+        public              ICollection<Type>       separateTypes;
+        public              Func<TypeDef, string>   getPath;
         
         public NativeTypeOptions (TypeStore typeStore, ICollection<Type> rootTypes) {
             this.typeStore  = typeStore ?? throw new ArgumentException("typeStore must not be null");
@@ -36,18 +36,13 @@ namespace Friflo.Json.Flow.Schema
         }
     }
     
-    public class Replacement {
+    public class Replace {
         public  readonly    string @namespace;
         public  readonly    string replacement;
         
-        public Replacement(string @namespace, string replacement) {
+        public Replace(string @namespace, string replacement = "") {
             this.@namespace     = @namespace;
             this.replacement    = replacement;
-        }
-        
-        public Replacement(string @namespace) {
-            this.@namespace     = @namespace;
-            this.replacement    = "";
         }
     }
 }

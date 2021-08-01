@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         public static void CS_CS () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var options = new NativeTypeOptions(typeStore, UserStoreTypes) {
-                stripNamespaces = new[]{new Replacement("Friflo.Json.")}
+                replacements = new[]{new Replace("Friflo.Json.")}
             };
             var generator = CSharpGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/CSharp/UserStore");
@@ -53,7 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         public static void CS_Kotlin () {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var options = new NativeTypeOptions(typeStore, UserStoreTypes) {
-                stripNamespaces = new [] { new Replacement("Friflo.Json.Flow.", "UserStore.") }
+                replacements = new [] { new Replace("Friflo.Json.Flow.", "UserStore.") }
             };
             var generator = KotlinGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Kotlin/src/main/kotlin/UserStore");

@@ -199,7 +199,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
             options.typeStore.AddMappers(options.rootTypes);
             var schema      = new NativeTypeSchema(options.typeStore);
             var sepTypes    = schema.TypesAsTypeDefs(options.separateTypes);
-            var generator   = new Generator(schema, options.fileExt ?? ".json", options.stripNamespaces, sepTypes, options.getPath);
+            var generator   = new Generator(schema, options.fileExt ?? ".json", options.replacements, sepTypes, options.getPath);
             Generate(generator, name);
             return generator;
         }
