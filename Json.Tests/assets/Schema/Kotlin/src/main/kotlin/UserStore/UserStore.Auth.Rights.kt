@@ -6,6 +6,7 @@ import CustomSerializer.BigIntegerSerializer
 import UserStore.Sync.*
 
 @Serializable
+// @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
 sealed class Right {
     abstract  val description : String?
 }

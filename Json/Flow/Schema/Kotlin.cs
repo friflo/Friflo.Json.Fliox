@@ -116,6 +116,8 @@ namespace Friflo.Json.Flow.Schema
                 var openBracket = type.IsAbstract ? "{" : "(";
                 sb.AppendLine($"{abstractStr} class {type.Name} {openBracket}");
             } else {
+                // [Support multiple class descriminators for polymorphism. · Issue #546 · Kotlin/kotlinx.serialization] https://github.com/Kotlin/kotlinx.serialization/issues/546
+                sb.AppendLine($"// @JsonClassDiscriminator(\"{unionType.discriminator}\") https://github.com/Kotlin/kotlinx.serialization/issues/546");
                 sb.AppendLine($"sealed class {type.Name} {{");
                 // sb.AppendLine($"    abstract {unionType.discriminator}:");
                 /* foreach (var polyType in unionType.types) {
