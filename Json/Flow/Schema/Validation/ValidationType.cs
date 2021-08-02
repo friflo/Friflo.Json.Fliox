@@ -13,24 +13,21 @@ namespace Friflo.Json.Flow.Schema.Validation
     /// performance.
     /// </summary>
     public sealed class ValidationType : IDisposable {
+        public  readonly    TypeDef                 typeDef;
         public  readonly    string                  name;       // only for debugging
         public  readonly    string                  @namespace; // only for debugging
-    //  public              string                  Path        { get; internal set; }
-    //  public              ValidationType          BaseType    { get; }
         public  readonly    bool                    isComplex;
-    //  public              bool                    IsStruct    { get; }
         public  readonly    List<ValidationField>   fields;
         public  readonly    ValidationUnion         unionType;
-    //  public              bool                    IsAbstract  { get; }
         public              Bytes                   discriminant;
         public              Bytes                   discriminator;
         public  readonly    bool                    isEnum;
         public  readonly    List<Bytes>             enumValues;
-    //  public              TypeSemantic            typeSemantic;
         
         public  override    string                  ToString() => $"{@namespace}.{name}";
 
         public ValidationType (TypeDef typeDef) {
+            this.typeDef    = typeDef;     
             name            = typeDef.Name;
             @namespace      = typeDef.Namespace;
             isComplex       = typeDef.IsComplex;
@@ -78,7 +75,6 @@ namespace Friflo.Json.Flow.Schema.Validation
         public              ValidationType  Type => type;
         public  readonly    bool            isArray;
         public  readonly    bool            isDictionary;
-    //  public  readonly    ValidationType  ownerType;
     
         // --- internal
         internal            ValidationType  type;
@@ -98,12 +94,14 @@ namespace Friflo.Json.Flow.Schema.Validation
     }
 
     public class ValidationUnion : IDisposable {
+        public  readonly    UnionType               unionType;
         public              Bytes                   discriminator;
         public  readonly    List<ValidationType>    types;
         
         public   override   string                  ToString() => discriminator.ToString();
 
         public ValidationUnion(UnionType union) {
+            this.unionType  = union;
             discriminator   = new Bytes(union.discriminator);
             types           = new List<ValidationType>(union.types.Count);
         }
