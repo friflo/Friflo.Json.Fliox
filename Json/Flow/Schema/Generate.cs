@@ -6,8 +6,7 @@ using Friflo.Json.Flow.Schema.Native;
 namespace Friflo.Json.Flow.Schema
 {
     /// <summary>
-    /// Generate Typescript from the given rootTypes/>
-    /// Examples available at:
+    /// Generate Typescript from the given options. Examples available at:
     /// <see href="https://github.com/friflo/Friflo.Json.Flow/tree/main/Json.Tests/Common/UnitTest/Flow/Schema"/>
     /// </summary>
     public partial class TypescriptGenerator
@@ -29,8 +28,7 @@ namespace Friflo.Json.Flow.Schema
     }
     
     /// <summary>
-    /// Generate JSON Schema from the given rootTypes/>
-    /// Examples available at:
+    /// Generate JSON Schema from the given options. Examples available at:
     /// <see href="https://github.com/friflo/Friflo.Json.Flow/tree/main/Json.Tests/Common/UnitTest/Flow/Schema"/>
     /// </summary>
     public partial class JsonSchemaGenerator
@@ -52,8 +50,7 @@ namespace Friflo.Json.Flow.Schema
     }
     
     /// <summary>
-    /// Generate C# from the given rootTypes/>
-    /// Examples available at:
+    /// Generate C# from the given options. Examples available at:
     /// <see href="https://github.com/friflo/Friflo.Json.Flow/tree/main/Json.Tests/Common/UnitTest/Flow/Schema"/>
     /// </summary>
     public partial class CSharpGenerator
@@ -75,8 +72,7 @@ namespace Friflo.Json.Flow.Schema
     }
     
     /// <summary>
-    /// Generate Kotlin from the given rootTypes/>
-    /// Examples available at:
+    /// Generate Kotlin from the given options. Examples available at:
     /// <see href="https://github.com/friflo/Friflo.Json.Flow/tree/main/Json.Tests/Common/UnitTest/Flow/Schema"/>
     /// </summary>
     public partial class KotlinGenerator
