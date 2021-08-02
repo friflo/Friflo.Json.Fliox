@@ -42,11 +42,13 @@ namespace Friflo.Json.Flow.Schema.Validation
         public              Bytes                   discriminator;
         public  readonly    List<Bytes>             enumValues;
         
-        public  override    string                  ToString() => $"{@namespace}.{name}";
+        public  override    string                  ToString() => $"{typeId} - {@namespace}.{name}";
         
         public ValidationType (TypeId typeId, TypeDef typeDef) {
             this.typeId     = typeId;
             this.typeDef    = typeDef;
+            this.name       = typeDef.Name;
+            this.@namespace = typeDef.Namespace;
         }
 
         public ValidationType (TypeDef typeDef) {
@@ -87,11 +89,15 @@ namespace Friflo.Json.Flow.Schema.Validation
         public void Dispose() {
             discriminant.Dispose();
             discriminator.Dispose();
-            foreach (var enumValue in enumValues) {
-                enumValue.Dispose();
+            if (enumValues != null) {
+                foreach (var enumValue in enumValues) {
+                    enumValue.Dispose();
+                }
             }
-            foreach (var field in fields) {
-                field.Dispose();
+            if (fields != null) {
+                foreach (var field in fields) {
+                    field.Dispose();
+                }
             }
             unionType?.Dispose();
         }
@@ -100,21 +106,23 @@ namespace Friflo.Json.Flow.Schema.Validation
     // could by a struct 
     public class ValidationField : IDisposable {
         public              Bytes           name;
-        public  readonly    bool            required;
+        public   readonly   bool            required;
         public              ValidationType  Type => type;
-        public  readonly    bool            isArray;
-        public  readonly    bool            isDictionary;
+        public   readonly   bool            isArray;
+        public   readonly   bool            isDictionary;
     
         // --- internal
         internal            ValidationType  type;
+        internal readonly   TypeDef         typeDef;
 
         public  override    string          ToString() => name.ToString();
         
         public ValidationField(FieldDef fieldDef) {
-            name           = new Bytes(fieldDef.name);
-            required       = fieldDef.required;
-            isArray        = fieldDef.isArray;
-            isDictionary   = fieldDef.isDictionary;
+            typeDef         = fieldDef.type;
+            name            = new Bytes(fieldDef.name);
+            required        = fieldDef.required;
+            isArray         = fieldDef.isArray;
+            isDictionary    = fieldDef.isDictionary;
         }
         
         public void Dispose() {

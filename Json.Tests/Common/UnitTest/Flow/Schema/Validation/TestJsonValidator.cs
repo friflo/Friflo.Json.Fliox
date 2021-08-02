@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
     {
         static readonly string JsonSchemaFolder = CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore";
         
-        // [Test]
+        [Test]
         public static void Run() {
             var schemas     = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
             var jsonSchema      = new JsonTypeSchema(schemas);
