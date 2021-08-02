@@ -19,6 +19,7 @@ namespace Friflo.Json.Flow.Schema.Definition
         ///   <item>The module (file) in Typescript (Javascript)</item>
         ///   <item>The schema file in JSON Schema</item>
         ///   <item>The package folder in Java</item>
+        ///   <item>The package declaration in Kotlin</item>
         /// </list> 
         /// </summary>
         public              string              Namespace    { get; }
