@@ -20,9 +20,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             var schemas         = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
             var jsonSchema      = new JsonTypeSchema(schemas);
             using (var parser   = new Local<JsonParser>())
-            using (var schema   = new ValidationSchema(jsonSchema)) {
-                var validator   = new JsonValidator();
-                validator.Validate(ref parser.value, schema);
+            using (var schema   = new ValidationSchema(jsonSchema))
+            using (var validator= new JsonValidator()) {
+                var json        = "{}";
+                validator.Validate(ref parser.value, json, schema, out _);
             }
         }
     }
