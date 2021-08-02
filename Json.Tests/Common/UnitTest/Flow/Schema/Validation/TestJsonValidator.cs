@@ -35,9 +35,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
                 json = AsJson(@"{'id': 'role-database','description': 'test',
                     'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'update'], 'subscribeChanges': ['update'] }}} ]
                 }");
-                // IsTrue(validator.Validate(ref parser.value, json, roleValidation, out _));
+                IsTrue(validator.Validate(ref parser.value, json, roleValidation, out _));
             }
-            
         }
         
         public static string AsJson (string str) {

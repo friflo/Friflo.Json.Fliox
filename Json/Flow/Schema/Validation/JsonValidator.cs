@@ -89,7 +89,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         if (!FindField(type, ref parser.key, out field, out typeId))
                             return false;
                         if (field.isArray) {
-                            if (ValidateArray (ref parser, field.type, field.fieldName))
+                            if (ValidateElement (ref parser, field.type, field.fieldName, true))
                                 continue;
                             return false;
                         }
@@ -99,7 +99,12 @@ namespace Friflo.Json.Flow.Schema.Validation
                         if (!FindField(type, ref parser.key, out field, out typeId))
                             return false;
                         if (typeId == TypeId.Complex) {
-                            if (ValidateObject(ref parser, field.type))
+                            if (field.isDictionary) {
+                                if (ValidateElement (ref parser, field.type, field.fieldName, false))
+                                    continue;
+                                return false;
+                            }
+                            if (ValidateElement (ref parser, field.type, field.fieldName, true))
                                 continue;
                             return false;
                         }
@@ -122,7 +127,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
         }
         
-        private bool ValidateArray (ref JsonParser parser, ValidationType type, string fieldName) {
+        private bool ValidateElement (ref JsonParser parser, ValidationType type, string fieldName, bool isArray) {
             while (true) {
                 var ev      = parser.NextEvent();
                 TypeId typeId = type.typeId;
@@ -133,6 +138,10 @@ namespace Friflo.Json.Flow.Schema.Validation
                             case TypeId.BigInteger:
                             case TypeId.DateTime:
                                 continue;
+                            case TypeId.Enum:
+                                if (FindEnum(type, ref parser.value))
+                                    continue;
+                                return false;
                             default:
                                 return Error($"Found string but expect: {typeId}, field: {fieldName}");
                         }
@@ -173,9 +182,13 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return Error(parser.error.msg.ToString());
                     
                     case JsonEvent.ObjectEnd:
-                        throw new InvalidOperationException($"unexpected event: {ev}");
+                        if (!isArray)
+                            return true;
+                        throw new InvalidOperationException($"expect object end: {ev}");
                     case JsonEvent.ArrayEnd:
-                        return true;
+                        if (isArray)
+                            return true;
+                        throw new InvalidOperationException($"expect array end: {ev}");
                 }
             }
         }
@@ -206,6 +219,16 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
             type    = null;
             typeId  = TypeId.None;
+            return false;
+        }
+        
+        private bool FindEnum (ValidationType type, ref Bytes value) {
+            var enumValues = type.enumValues;
+            foreach (var enumValue in enumValues) {
+                if (enumValue.IsEqual(ref value))
+                    return true;
+            }
+            error = $"enum value not found. value: {value}";
             return false;
         }
         
