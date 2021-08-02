@@ -10,20 +10,24 @@ namespace Friflo.Json.Flow.Schema.Validation
 {
     public enum TypeId
     {
+        None,
+        //
         Complex,
         Union,
         Enum,
-        // --- standard types
-        Boolean,   
-        String,
+        // --- number types
         Uint8,
         Int16,
         Int32,
         Int64,
         Float,
         Double,
+        Boolean,   
+        // --- string types        
+        String,
         BigInteger,
         DateTime,
+        //
         JsonValue 
     }
     
@@ -113,6 +117,7 @@ namespace Friflo.Json.Flow.Schema.Validation
     
         // --- internal
         internal            ValidationType  type;
+        internal            TypeId          typeId;
         internal readonly   TypeDef         typeDef;
 
         public  override    string          ToString() => name.ToString();

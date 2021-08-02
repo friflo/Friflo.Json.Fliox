@@ -43,7 +43,9 @@ namespace Friflo.Json.Flow.Schema.Validation
                 var fields = type.fields;
                 if (fields != null) {
                     foreach (var field in fields) {
-                        field.type = typeMap[field.typeDef];
+                        var fieldType   = typeMap[field.typeDef];
+                        field.type      = fieldType;
+                        field.typeId    = fieldType.typeId;
                     }
                 }
                 var union = type.unionType;
