@@ -41,7 +41,7 @@ namespace Friflo.Json.Flow.Sync
         /// </summary>
         public void ValidateEntities(string container, MessageContext messageContext) {
             using (var pooledValidator = messageContext.pools.EntityValidator.Get()) {
-                var validator = pooledValidator.instance;
+                EntityValidator validator = pooledValidator.instance;
                 foreach (var entityEntry in entities) {
                     var entity = entityEntry.Value;
                     if (entity.Error != null) {
