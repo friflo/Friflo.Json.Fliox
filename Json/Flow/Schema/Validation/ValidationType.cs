@@ -13,50 +13,52 @@ namespace Friflo.Json.Flow.Schema.Validation
     /// performance.
     /// </summary>
     public sealed class ValidationType : IDisposable {
-        public              Bytes                   name; 
+        public  readonly    string                  name;       // only for debugging
         public  readonly    string                  @namespace; // only for debugging
-    //  public              string                  Path         { get; internal set; }
-    //  public              ValidationType          BaseType     { get; }
+    //  public              string                  Path        { get; internal set; }
+    //  public              ValidationType          BaseType    { get; }
         public  readonly    bool                    isComplex;
-    //  public              bool                    IsStruct     { get; }
+    //  public              bool                    IsStruct    { get; }
         public  readonly    List<ValidationField>   fields;
         public  readonly    ValidationUnion         unionType;
-    //  public              bool                    IsAbstract   { get; }
+    //  public              bool                    IsAbstract  { get; }
         public              Bytes                   discriminant;
         public              Bytes                   discriminator;
         public  readonly    bool                    isEnum;
         public  readonly    List<Bytes>             enumValues;
     //  public              TypeSemantic            typeSemantic;
         
-        public  override    string                  ToString() => name.ToString();
+        public  override    string                  ToString() => $"{@namespace}.{name}";
 
         public ValidationType (TypeDef typeDef) {
-            name            = new Bytes(typeDef.Name);
+            name            = typeDef.Name;
             @namespace      = typeDef.Namespace;
             isComplex       = typeDef.IsComplex;
             isEnum          = typeDef.IsEnum;
             discriminant    = new Bytes(typeDef.Discriminant);
             discriminator   = new Bytes(typeDef.Discriminator);
-            if (typeDef.EnumValues != null) {
-                enumValues = new List<Bytes>(typeDef.EnumValues.Count);
-                foreach (var enumValue in typeDef.EnumValues) {
+            var typeEnums   = typeDef.EnumValues;
+            if (typeEnums != null) {
+                enumValues = new List<Bytes>(typeEnums.Count);
+                foreach (var enumValue in typeEnums) {
                     enumValues.Add(new Bytes(enumValue));
                 }
             }
-            if (typeDef.Fields != null) {
-                fields = new List<ValidationField>(typeDef.Fields.Count);
-                foreach (var field in typeDef.Fields) {
-                    fields.Add(null); // todo
+            var typeField = typeDef.Fields;
+            if (typeField != null) {
+                fields = new List<ValidationField>(typeField.Count);
+                foreach (var field in typeField) {
+                    var validationField = new ValidationField(field);
+                    fields.Add(validationField);
                 }
             }
             var union = typeDef.UnionType;
             if (union != null) {
-                unionType = new ValidationUnion(union.discriminator, null); // todo
+                unionType = new ValidationUnion(union);
             }
         }
         
         public void Dispose() {
-            name.Dispose();
             discriminant.Dispose();
             discriminator.Dispose();
             foreach (var enumValue in enumValues) {
@@ -65,6 +67,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             foreach (var field in fields) {
                 field.Dispose();
             }
+            unionType?.Dispose();
         }
     }
     
@@ -72,20 +75,21 @@ namespace Friflo.Json.Flow.Schema.Validation
     public class ValidationField : IDisposable {
         public              Bytes           name;
         public  readonly    bool            required;
-        public  readonly    ValidationType  type;
+        public              ValidationType  Type => type;
         public  readonly    bool            isArray;
         public  readonly    bool            isDictionary;
-        public  readonly    ValidationType  ownerType;
+    //  public  readonly    ValidationType  ownerType;
+    
+        // --- internal
+        internal            ValidationType  type;
 
         public  override    string          ToString() => name.ToString();
         
-        public ValidationField(string name, bool required, ValidationType type, bool isArray, bool isDictionary, ValidationType ownerType) {
-            this.name           = new Bytes(name);
-            this.required       = required;
-            this.type           = type;
-            this.isArray        = isArray;
-            this.isDictionary   = isDictionary;
-            this.ownerType      = ownerType;
+        public ValidationField(FieldDef fieldDef) {
+            name           = new Bytes(fieldDef.name);
+            required       = fieldDef.required;
+            isArray        = fieldDef.isArray;
+            isDictionary   = fieldDef.isDictionary;
         }
         
         public void Dispose() {
@@ -93,15 +97,19 @@ namespace Friflo.Json.Flow.Schema.Validation
         }
     }
 
-    public class ValidationUnion {
-        public  readonly    string                  discriminator;
+    public class ValidationUnion : IDisposable {
+        public              Bytes                   discriminator;
         public  readonly    List<ValidationType>    types;
         
-        public   override   string                  ToString() => discriminator;
+        public   override   string                  ToString() => discriminator.ToString();
+
+        public ValidationUnion(UnionType union) {
+            discriminator   = new Bytes(union.discriminator);
+            types           = new List<ValidationType>(union.types.Count);
+        }
         
-        public ValidationUnion(string discriminator, List<ValidationType> types) {
-            this.discriminator  = discriminator;
-            this.types          = types;
+        public void Dispose() {
+            discriminator.Dispose();
         }
     }
 }
