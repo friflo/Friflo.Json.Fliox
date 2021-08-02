@@ -77,6 +77,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
             return list;
         }
         
+        public static string JsonTypeFromType(Type type, string @namespace) {
+            return $"./{@namespace}{type.Name}.json#/definitions/{type.Name}";
+        }
+        
         public static void AssertFoldersAreEqual(string expectFolder, string otherFolder) {
             var expectFiles = Directory.GetFiles(expectFolder, "*.json", SearchOption.TopDirectoryOnly);
             var otherFiles  = Directory.GetFiles(otherFolder,  "*.json", SearchOption.TopDirectoryOnly);

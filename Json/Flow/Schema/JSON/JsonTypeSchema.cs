@@ -278,6 +278,10 @@ namespace Friflo.Json.Flow.Schema.JSON
             }
             return list;
         }
+        
+        public TypeDef TypeAsTypeDef(string type) {
+            return typeMap[type];
+        }
     }
     
     internal readonly struct JsonTypeContext

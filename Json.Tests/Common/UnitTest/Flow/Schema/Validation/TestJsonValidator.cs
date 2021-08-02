@@ -4,6 +4,8 @@
 using Friflo.Json.Burst;
 using Friflo.Json.Flow.Schema.JSON;
 using Friflo.Json.Flow.Schema.Validation;
+using Friflo.Json.Flow.UserAuth;
+using Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
@@ -22,8 +24,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var parser   = new Local<JsonParser>())
             using (var schema   = new ValidationSchema(jsonSchema))
             using (var validator= new JsonValidator()) {
-                var json        = "{}";
-                validator.Validate(ref parser.value, json, schema, out _);
+                var roleJsonType    = SchemaTest.JsonTypeFromType (typeof(Role), "Friflo.Json.Flow.UserAuth.");
+                var roleTypeDef     = jsonSchema.TypeAsTypeDef(roleJsonType);  
+                var roleValidation  = schema.TypeAsValidationType(roleTypeDef);
+                var json = "{}";
+                validator.Validate(ref parser.value, json, roleValidation, out _);
             }
         }
     }

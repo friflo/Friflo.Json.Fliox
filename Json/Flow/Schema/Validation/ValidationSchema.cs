@@ -11,6 +11,8 @@ namespace Friflo.Json.Flow.Schema.Validation
     {
         private  readonly   List<ValidationType>                types;
         private  readonly   Dictionary<TypeDef, ValidationType> typeMap;
+        
+        public              ValidationType                      TypeAsValidationType(TypeDef type) => typeMap[type];
 
         public ValidationSchema (TypeSchema schema) {
             var schemaTypes = schema.Types;

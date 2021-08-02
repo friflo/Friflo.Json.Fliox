@@ -9,11 +9,8 @@ namespace Friflo.Json.Flow.Schema.Validation
     public class JsonValidator : IDisposable
     {
         private Bytes               jsonBytes = new Bytes(128);
-        private ValidationSchema    schema;
         
-        public bool Validate (ref JsonParser parser, string json, ValidationSchema schema, out string error) {
-            this.schema = schema;
-            error = null;
+        public bool Validate (ref JsonParser parser, string json, ValidationType type, out string error) {
             jsonBytes.Clear();
             jsonBytes.AppendString(json);
             parser.InitParser(jsonBytes);
@@ -22,7 +19,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 error = $"JSON must be an object.";
                 return false;
             }
-            while (false) {
+            while (true) {
                 ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
@@ -58,7 +55,6 @@ namespace Friflo.Json.Flow.Schema.Validation
                         throw new InvalidOperationException($"unexpected event: {ev}");
                 }
             }
-            return true;
         }
 
         public void Dispose() {
