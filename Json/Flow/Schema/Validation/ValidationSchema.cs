@@ -15,8 +15,23 @@ namespace Friflo.Json.Flow.Schema.Validation
 
         public ValidationSchema (TypeSchema schema) {
             var schemaTypes = schema.Types;
-            types           = new List<ValidationType>                  (schemaTypes.Count);
-            typeMap         = new Dictionary<TypeDef, ValidationType>   (schemaTypes.Count);
+            var typeCount   = schemaTypes.Count + 20; // 20 - roughly the number of StandardTypes
+            types           = new List<ValidationType>                  (typeCount);
+            typeMap         = new Dictionary<TypeDef, ValidationType>   (typeCount);
+            
+            var standardType = schema.StandardTypes;
+            AddStandardType(TypeId.Boolean,     standardType.Boolean);
+            AddStandardType(TypeId.String,      standardType.String);
+            AddStandardType(TypeId.Uint8,       standardType.Uint8);
+            AddStandardType(TypeId.Int16,       standardType.Int16);
+            AddStandardType(TypeId.Int32,       standardType.Int32);
+            AddStandardType(TypeId.Int64,       standardType.Int64);
+            AddStandardType(TypeId.Float,       standardType.Float);
+            AddStandardType(TypeId.Double,      standardType.Double);
+            AddStandardType(TypeId.BigInteger,  standardType.BigInteger);
+            AddStandardType(TypeId.DateTime,    standardType.DateTime);
+            AddStandardType(TypeId.JsonValue,   standardType.JsonValue);
+
             foreach (var type in schemaTypes) {
                 var validationType = new ValidationType(type);
                 types.Add(validationType);
@@ -38,6 +53,14 @@ namespace Friflo.Json.Flow.Schema.Validation
                     }
                 }
             }
+        }
+        
+        private void AddStandardType (TypeId typeId, TypeDef typeDef) {
+            if (typeDef == null)
+                return;
+            var type = new ValidationType(typeId, typeDef);
+            types.Add(type);
+            typeMap.Add(typeDef, type);
         }
 
         public void Dispose() {

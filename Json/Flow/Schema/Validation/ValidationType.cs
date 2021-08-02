@@ -8,6 +8,25 @@ using Friflo.Json.Flow.Schema.Definition;
 
 namespace Friflo.Json.Flow.Schema.Validation
 {
+    public enum TypeId
+    {
+        Complex,
+        Union,
+        Enum,
+        // --- standard types
+        Boolean,   
+        String,
+        Uint8,
+        Int16,
+        Int32,
+        Int64,
+        Float,
+        Double,
+        BigInteger,
+        DateTime,
+        JsonValue 
+    }
+    
     /// <summary>
     /// Similar to <see cref="Definition.TypeDef"/> but operates on byte arrays instead of strings to gain
     /// performance.
@@ -16,22 +35,30 @@ namespace Friflo.Json.Flow.Schema.Validation
         public  readonly    TypeDef                 typeDef;
         public  readonly    string                  name;       // only for debugging
         public  readonly    string                  @namespace; // only for debugging
-        public  readonly    bool                    isComplex;
+        public  readonly    TypeId                  typeId;
         public  readonly    List<ValidationField>   fields;
         public  readonly    ValidationUnion         unionType;
         public              Bytes                   discriminant;
         public              Bytes                   discriminator;
-        public  readonly    bool                    isEnum;
         public  readonly    List<Bytes>             enumValues;
         
         public  override    string                  ToString() => $"{@namespace}.{name}";
+        
+        public ValidationType (TypeId typeId, TypeDef typeDef) {
+            this.typeId     = typeId;
+            this.typeDef    = typeDef;
+        }
 
         public ValidationType (TypeDef typeDef) {
             this.typeDef    = typeDef;     
             name            = typeDef.Name;
             @namespace      = typeDef.Namespace;
-            isComplex       = typeDef.IsComplex;
-            isEnum          = typeDef.IsEnum;
+            if      (typeDef.IsComplex)         { typeId = TypeId.Complex; }
+            else if (typeDef.IsEnum)            { typeId = TypeId.Enum; }
+            else if (typeDef.UnionType != null) { typeId = TypeId.Union; }
+            else {
+                throw new InvalidOperationException($"unhandled typeDef: {typeDef}");
+            }
             if (typeDef.Discriminant != null)
                 discriminant    = new Bytes(typeDef.Discriminant);
             if (typeDef.Discriminator != null)
