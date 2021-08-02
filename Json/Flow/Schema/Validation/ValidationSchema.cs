@@ -9,8 +9,7 @@ namespace Friflo.Json.Flow.Schema.Validation
 {
     public class ValidationSchema : IDisposable
     {
-        public  readonly    List<ValidationType>                types;
-        
+        private  readonly   List<ValidationType>                types;
         private  readonly   Dictionary<TypeDef, ValidationType> typeMap;
 
         public ValidationSchema (TypeSchema schema) {

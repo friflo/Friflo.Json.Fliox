@@ -43,68 +43,69 @@ namespace Friflo.Json.Flow.Schema.JSON
             var standardTypes   = new JsonStandardTypes(typeMap);
             StandardTypes       = standardTypes;
             
-            var reader          = new ObjectReader(new TypeStore());
-            
-            foreach (JsonFlowSchema schema in schemaList) {
-                var context = new JsonTypeContext(schema, typeMap, standardTypes, reader);
-                var rootRef = schema.rootRef;
-                if (rootRef != null) {
-                    FindRef(schema.rootRef, context);
-                }
-                foreach (var pair in schema.typeDefs) {
-                    JsonTypeDef typeDef = pair.Value;
-                    JsonType    type    = typeDef.type;
-                    var         extends = type.extends;
-                    type.name           = pair.Key;
-                    if (extends != null) {
-                        typeDef.baseType = FindRef(extends.reference, context);
+            using (var reader          = new ObjectReader(new TypeStore()))
+            {
+                foreach (JsonFlowSchema schema in schemaList) {
+                    var context = new JsonTypeContext(schema, typeMap, standardTypes, reader);
+                    var rootRef = schema.rootRef;
+                    if (rootRef != null) {
+                        FindRef(schema.rootRef, context);
                     }
-                    var typeType    = type.type;
-                    var oneOf       = type.oneOf;
-                    if (oneOf != null || typeType == "object") {
-                        typeDef.isAbstract  = type.isAbstract;
-                        typeDef.isStruct    = type.isStruct;
-                        var properties      = type.properties;
-                        if (properties != null) {
-                            typeDef.fields = new List<FieldDef>(properties.Count);
-                            foreach (var propPair in properties) {
-                                string      fieldName   = propPair.Key;
-                                FieldType   field       = propPair.Value;
-                                SetField(typeDef, fieldName, field, context);
+                    foreach (var pair in schema.typeDefs) {
+                        JsonTypeDef typeDef = pair.Value;
+                        JsonType    type    = typeDef.type;
+                        var         extends = type.extends;
+                        type.name           = pair.Key;
+                        if (extends != null) {
+                            typeDef.baseType = FindRef(extends.reference, context);
+                        }
+                        var typeType    = type.type;
+                        var oneOf       = type.oneOf;
+                        if (oneOf != null || typeType == "object") {
+                            typeDef.isAbstract  = type.isAbstract;
+                            typeDef.isStruct    = type.isStruct;
+                            var properties      = type.properties;
+                            if (properties != null) {
+                                typeDef.fields = new List<FieldDef>(properties.Count);
+                                foreach (var propPair in properties) {
+                                    string      fieldName   = propPair.Key;
+                                    FieldType   field       = propPair.Value;
+                                    SetField(typeDef, fieldName, field, context);
+                                }
                             }
                         }
-                    }
-                    if (oneOf != null) {
-                        var unionTypes = new List<TypeDef>(oneOf.Count);
-                        foreach (var item in oneOf) {
-                            var itemRef = FindRef(item.reference, context);
-                            unionTypes.Add(itemRef);
+                        if (oneOf != null) {
+                            var unionTypes = new List<TypeDef>(oneOf.Count);
+                            foreach (var item in oneOf) {
+                                var itemRef = FindRef(item.reference, context);
+                                unionTypes.Add(itemRef);
+                            }
+                            typeDef.isAbstract = true;
+                            typeDef.unionType  = new UnionType (type.discriminator, unionTypes);
                         }
-                        typeDef.isAbstract = true;
-                        typeDef.unionType  = new UnionType (type.discriminator, unionTypes);
                     }
                 }
-            }
-            foreach (JsonFlowSchema schema in schemaList) {
-                foreach (var pair in schema.typeDefs) {
-                    JsonTypeDef typeDef = pair.Value;
-                    if (typeDef.discriminant == null)
-                        continue;
-                    var baseType = typeDef.baseType;
-                    while (baseType != null) {
-                        var unionType = baseType.unionType;
-                        if (unionType != null) {
-                            typeDef.discriminator = unionType.discriminator;
-                            break;
+                foreach (JsonFlowSchema schema in schemaList) {
+                    foreach (var pair in schema.typeDefs) {
+                        JsonTypeDef typeDef = pair.Value;
+                        if (typeDef.discriminant == null)
+                            continue;
+                        var baseType = typeDef.baseType;
+                        while (baseType != null) {
+                            var unionType = baseType.unionType;
+                            if (unionType != null) {
+                                typeDef.discriminator = unionType.discriminator;
+                                break;
+                            }
+                            baseType = baseType.baseType;
                         }
-                        baseType = baseType.baseType;
+                        if (typeDef.discriminator == null)
+                            throw new InvalidOperationException($"found no discriminator in base classes. type: {typeDef}");
                     }
-                    if (typeDef.discriminator == null)
-                        throw new InvalidOperationException($"found no discriminator in base classes. type: {typeDef}");
                 }
             }
         }
-        
+
         private static void SetField (JsonTypeDef typeDef, string fieldName, FieldType field, in JsonTypeContext context) {
             field.name              = fieldName;
             TypeDef fieldType; // not initialized by intention
@@ -252,17 +253,19 @@ namespace Friflo.Json.Flow.Schema.JSON
         public static List<JsonFlowSchema> ReadSchemas(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
             var schemas = new List<JsonFlowSchema>();
-            var reader = new ObjectReader(new TypeStore());
-            foreach (var path in fileNames) {
-                var fileName = path.Substring(folder.Length + 1);
-                var name = fileName.Substring(0, fileName.Length - ".json".Length);
-                var jsonSchema = File.ReadAllText(path, Encoding.UTF8);
-                var schema = reader.Read<JsonFlowSchema>(jsonSchema);
-                schema.fileName = fileName;
-                schema.name = name;
-                schemas.Add(schema);
+            using (var typeStore    = new TypeStore())
+            using (var reader       = new ObjectReader(typeStore)) {
+                foreach (var path in fileNames) {
+                    var fileName = path.Substring(folder.Length + 1);
+                    var name = fileName.Substring(0, fileName.Length - ".json".Length);
+                    var jsonSchema = File.ReadAllText(path, Encoding.UTF8);
+                    var schema = reader.Read<JsonFlowSchema>(jsonSchema);
+                    schema.fileName = fileName;
+                    schema.name = name;
+                    schemas.Add(schema);
+                }
+                return schemas;
             }
-            return schemas;
         }
         
         public ICollection<TypeDef> TypesAsTypeDefs(ICollection<string> types) {
@@ -279,13 +282,13 @@ namespace Friflo.Json.Flow.Schema.JSON
     
     internal readonly struct JsonTypeContext
     {
-        internal readonly   JsonFlowSchema                      schema;
+        internal readonly   JsonFlowSchema                  schema;
         internal readonly   Dictionary<string, JsonTypeDef> schemas;
         internal readonly   JsonStandardTypes               standardTypes;
         internal readonly   ObjectReader                    reader;
 
-        internal JsonTypeContext(
-            JsonFlowSchema                      schema,
+        internal JsonTypeContext (
+            JsonFlowSchema                  schema,
             Dictionary<string, JsonTypeDef> schemas,
             JsonStandardTypes               standardTypes,
             ObjectReader                    reader)
