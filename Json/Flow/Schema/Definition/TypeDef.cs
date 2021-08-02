@@ -61,6 +61,7 @@ namespace Friflo.Json.Flow.Schema.Definition
         }
     }
     
+    // could by a readonly struct - but may be used by reference in future 
     public class FieldDef {
         public  readonly    string          name;
         public  readonly    bool            required;
@@ -85,8 +86,10 @@ namespace Friflo.Json.Flow.Schema.Definition
         public bool IsDerivedField { get {
             var parent = ownerType.BaseType;
             while (parent != null) {
-                if (parent.Fields.Find(f => f.name == name) != null)
-                    return true;
+                foreach (var field in parent.Fields) {
+                    if (field.name == name)
+                        return true;
+                }
                 parent = parent.BaseType;
             }
             return false;
