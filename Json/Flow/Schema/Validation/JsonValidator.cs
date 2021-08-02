@@ -75,8 +75,11 @@ namespace Friflo.Json.Flow.Schema.Validation
                     case JsonEvent.ArrayStart:
                         if (!FindField(type, ref parser.key, out field, out typeId))
                             return false;
-                        if (field.isArray)
-                            continue;
+                        if (field.isArray) {
+                            if (ValidateArray (ref parser, field.type, field.fieldName))
+                                continue;
+                            return false;
+                        }
                         return Error($"Found array but expect: {typeId}, field: {field}");
                     
                     case JsonEvent.ObjectStart:
@@ -102,6 +105,64 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return Error("Expected EOF in JSON value"); */
                     case JsonEvent.ArrayEnd:
                         throw new InvalidOperationException($"unexpected event: {ev}");
+                }
+            }
+        }
+        
+        private bool ValidateArray (ref JsonParser parser, ValidationType type, string fieldName) {
+            while (true) {
+                var ev      = parser.NextEvent();
+                TypeId typeId = type.typeId;
+                switch (ev) {
+                    case JsonEvent.ValueString:
+                        switch (typeId) {
+                            case TypeId.String:
+                            case TypeId.BigInteger:
+                            case TypeId.DateTime:
+                                continue;
+                            default:
+                                return Error($"Found string but expect: {typeId}, field: {fieldName}");
+                        }
+                        
+                    case JsonEvent.ValueNumber:
+                        switch (typeId) {
+                            case TypeId.Uint8:
+                            case TypeId.Int16:
+                            case TypeId.Int32:
+                            case TypeId.Int64:
+                            case TypeId.Float:
+                            case TypeId.Double:
+                                continue;
+                            default:
+                                return Error($"Found number but expect: {typeId}, field: {fieldName}");
+                        }
+                        
+                    case JsonEvent.ValueBool:
+                        if (typeId == TypeId.Boolean)
+                            continue;
+                        return Error($"Found boolean but expect: {typeId}, field: {fieldName}");
+                    
+                    case JsonEvent.ValueNull:
+                        return Error($"Found null for a required field: {fieldName}");
+                    
+                    case JsonEvent.ArrayStart:
+                        return Error($"Found array in array item. but expect: {typeId}, field: {fieldName}");
+                    
+                    case JsonEvent.ObjectStart:
+                        if (typeId == TypeId.Complex) {
+                            if (ValidateObject(ref parser, type))
+                                continue;
+                            return false;
+                        }
+                        return Error($"Found object but expect: {typeId}, field: {fieldName}");
+                    
+                    case JsonEvent.Error:
+                        return Error(parser.error.msg.ToString());
+                    
+                    case JsonEvent.ObjectEnd:
+                        throw new InvalidOperationException($"unexpected event: {ev}");
+                    case JsonEvent.ArrayEnd:
+                        return true;
                 }
             }
         }

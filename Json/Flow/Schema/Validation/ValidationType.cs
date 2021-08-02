@@ -109,6 +109,7 @@ namespace Friflo.Json.Flow.Schema.Validation
     
     // could by a struct 
     public class ValidationField : IDisposable {
+        public   readonly   string          fieldName;
         public              Bytes           name;
         public   readonly   bool            required;
         public              ValidationType  Type => type;
@@ -124,6 +125,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         
         public ValidationField(FieldDef fieldDef) {
             typeDef         = fieldDef.type;
+            fieldName       = fieldDef.name;
             name            = new Bytes(fieldDef.name);
             required        = fieldDef.required;
             isArray         = fieldDef.isArray;
