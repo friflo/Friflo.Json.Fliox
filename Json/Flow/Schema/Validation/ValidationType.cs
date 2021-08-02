@@ -32,8 +32,10 @@ namespace Friflo.Json.Flow.Schema.Validation
             @namespace      = typeDef.Namespace;
             isComplex       = typeDef.IsComplex;
             isEnum          = typeDef.IsEnum;
-            discriminant    = new Bytes(typeDef.Discriminant);
-            discriminator   = new Bytes(typeDef.Discriminator);
+            if (typeDef.Discriminant != null)
+                discriminant    = new Bytes(typeDef.Discriminant);
+            if (typeDef.Discriminator != null)
+                discriminator   = new Bytes(typeDef.Discriminator);
             var typeEnums   = typeDef.EnumValues;
             if (typeEnums != null) {
                 enumValues = new List<Bytes>(typeEnums.Count);

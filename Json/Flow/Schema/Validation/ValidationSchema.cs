@@ -25,8 +25,10 @@ namespace Friflo.Json.Flow.Schema.Validation
             // set ValidationType references
             foreach (var type in types) {
                 var fields = type.fields;
-                foreach (var field in fields) {
-                    field.type = typeMap[field.type.typeDef];
+                if (fields != null) {
+                    foreach (var field in fields) {
+                        field.type = typeMap[field.type.typeDef];
+                    }
                 }
                 var union = type.unionType;
                 if (union != null) {
