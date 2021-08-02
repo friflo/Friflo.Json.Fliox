@@ -52,7 +52,8 @@ namespace Friflo.Json.Flow.Schema.Validation
                 if (union != null) {
                     foreach (var unionType in union.unionType.types) {
                         ValidationType validationType = typeMap[unionType];
-                        union.types.Add(validationType);
+                        var item = new UnionItem(unionType.Discriminant, validationType);
+                        union.types.Add(item);
                     }
                 }
             }

@@ -9,6 +9,7 @@ using Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
+using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
 {
@@ -27,9 +28,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
                 var roleJsonType    = SchemaTest.JsonTypeFromType (typeof(Role), "Friflo.Json.Flow.UserAuth.");
                 var roleTypeDef     = jsonSchema.TypeAsTypeDef(roleJsonType);  
                 var roleValidation  = schema.TypeAsValidationType(roleTypeDef);
+                
                 var json = "{}";
-                validator.Validate(ref parser.value, json, roleValidation, out _);
+                IsTrue(validator.Validate(ref parser.value, json, roleValidation, out _));
+                
+                json = AsJson(@"{'id': 'role-database','description': 'test',
+                    'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'update'], 'subscribeChanges': ['update'] }}} ]
+                }");
+                // IsTrue(validator.Validate(ref parser.value, json, roleValidation, out _));
             }
+            
+        }
+        
+        public static string AsJson (string str) {
+            return str.Replace('\'', '"');
         }
     }
 }

@@ -59,35 +59,40 @@ namespace Friflo.Json.Flow.Schema.Validation
             this.typeDef    = typeDef;     
             name            = typeDef.Name;
             @namespace      = typeDef.Namespace;
-            if      (typeDef.IsComplex)         { typeId = TypeId.Complex; }
-            else if (typeDef.IsEnum)            { typeId = TypeId.Enum; }
-            else if (typeDef.UnionType != null) { typeId = TypeId.Union; }
-            else {
-                throw new InvalidOperationException($"unhandled typeDef: {typeDef}");
+            
+            var union = typeDef.UnionType;
+            if (union != null) {
+                typeId          = TypeId.Union;
+                unionType       = new ValidationUnion(union);
+                discriminator   = new Bytes(union.discriminator);
+                return;
             }
-            if (typeDef.Discriminant != null)
-                discriminant    = new Bytes(typeDef.Discriminant);
-            if (typeDef.Discriminator != null)
-                discriminator   = new Bytes(typeDef.Discriminator);
-            var typeEnums   = typeDef.EnumValues;
-            if (typeEnums != null) {
+            if (typeDef.IsComplex) {
+                typeId = TypeId.Complex;
+                if (typeDef.Discriminant != null) {
+                    discriminant    = new Bytes(typeDef.Discriminant);
+                }
+                if (typeDef.Discriminator != null) {
+                    discriminator   = new Bytes(typeDef.Discriminator);
+                }
+                var typeField = typeDef.Fields;
+                fields = new List<ValidationField>(typeField.Count);
+                foreach (var field in typeField) {
+                    var validationField = new ValidationField(field);
+                    fields.Add(validationField); }
+
+                return;
+            }
+            if (typeDef.IsEnum) {
+                typeId = TypeId.Enum;
+                var typeEnums   = typeDef.EnumValues;
                 enumValues = new List<Bytes>(typeEnums.Count);
                 foreach (var enumValue in typeEnums) {
                     enumValues.Add(new Bytes(enumValue));
                 }
+                return;
             }
-            var typeField = typeDef.Fields;
-            if (typeField != null) {
-                fields = new List<ValidationField>(typeField.Count);
-                foreach (var field in typeField) {
-                    var validationField = new ValidationField(field);
-                    fields.Add(validationField);
-                }
-            }
-            var union = typeDef.UnionType;
-            if (union != null) {
-                unionType = new ValidationUnion(union);
-            }
+            throw new InvalidOperationException($"unhandled typeDef: {typeDef}");
         }
         
         public void Dispose() {
@@ -138,20 +143,38 @@ namespace Friflo.Json.Flow.Schema.Validation
     }
 
     public class ValidationUnion : IDisposable {
-        public  readonly    UnionType               unionType;
-        public              Bytes                   discriminator;
-        public  readonly    List<ValidationType>    types;
+        public  readonly    UnionType          unionType;
+        public              Bytes              discriminator;
+        public  readonly    List<UnionItem>    types;
         
-        public   override   string                  ToString() => discriminator.ToString();
+        public   override   string             ToString() => discriminator.ToString();
 
         public ValidationUnion(UnionType union) {
             this.unionType  = union;
             discriminator   = new Bytes(union.discriminator);
-            types           = new List<ValidationType>(union.types.Count);
+            types           = new List<UnionItem>(union.types.Count);
         }
         
         public void Dispose() {
             discriminator.Dispose();
+            foreach (var type in types) {
+                type.discriminant.Dispose();
+            }
+        }
+    }
+    
+    public struct UnionItem
+    {
+        public   readonly   string          discriminantStr;
+        internal            Bytes           discriminant;
+        public   readonly   ValidationType  type;
+
+        public   override   string          ToString() => discriminantStr;
+
+        public UnionItem (string discriminant, ValidationType type) {
+            discriminantStr     = discriminant;
+            this.discriminant   = new Bytes(discriminant);
+            this.type           = type;
         }
     }
 }

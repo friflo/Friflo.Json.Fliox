@@ -26,10 +26,23 @@ namespace Friflo.Json.Flow.Schema.Validation
         
         private bool ValidateObject (ref JsonParser parser, ValidationType type)
         {
+            TypeId typeId;
+            if (type.typeId == TypeId.Union) {
+                var ev      = parser.NextEvent();
+                if (ev != JsonEvent.ValueString) {
+                    return Error("Expect discriminator string first member");
+                }
+                var unionType = type.unionType;
+                if (!parser.key.IsEqual(ref unionType.discriminator)) {
+                    return Error($"Unexpected discriminator name. was: {parser.key}, expect: {unionType.discriminator}");
+                }
+                if (!FindUnion(unionType, ref parser.value, out type, out typeId)) {
+                    return Error($"unknown discriminator: {parser.key}");
+                }
+            }
             while (true) {
                 var ev      = parser.NextEvent();
                 ValidationField field;
-                TypeId          typeId;
                 switch (ev) {
                     case JsonEvent.ValueString:
                         if (!FindField(type, ref parser.key, out field, out typeId))
@@ -149,7 +162,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return Error($"Found array in array item. but expect: {typeId}, field: {fieldName}");
                     
                     case JsonEvent.ObjectStart:
-                        if (typeId == TypeId.Complex) {
+                        if (typeId == TypeId.Complex || typeId == TypeId.Union) {
                             if (ValidateObject(ref parser, type))
                                 continue;
                             return false;
@@ -178,6 +191,21 @@ namespace Friflo.Json.Flow.Schema.Validation
             error = $"field not found in type: {type}, key: {key}";
             field = null;
             typeId = TypeId.None; 
+            return false;
+        }
+        
+        private bool FindUnion (ValidationUnion union, ref Bytes discriminant, out ValidationType type, out TypeId typeId) {
+            var types = union.types;
+            for (int n = 0; n < types.Count; n++) {
+                var unionType = types[n];
+                if (discriminant.IsEqual(ref unionType.discriminant)) {
+                    type    = unionType.type;
+                    typeId  = unionType.type.typeId; // todo
+                    return true;
+                }
+            }
+            type    = null;
+            typeId  = TypeId.None;
             return false;
         }
         
