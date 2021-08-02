@@ -11,6 +11,11 @@ using Friflo.Json.Flow.Schema.Definition;
 // ReSharper disable JoinNullCheckWithUsage
 namespace Friflo.Json.Flow.Schema.JSON
 {
+    /// <summary>
+    /// A <see cref="TypeSchema"/> constructed by a set of given <see cref="JsonFlowSchema"/>'s.
+    /// The utility method <see cref="JsonTypeSchema.ReadSchemas"/> can be used to read a set of
+    /// <see cref="JsonFlowSchema"/>'s as files in a folder.
+    /// </summary>
     public class JsonTypeSchema : TypeSchema
     {
         public  override    ICollection<TypeDef>            Types           { get; }
@@ -243,6 +248,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             return name;
         }
 
+        /// <summary>Read a set of <see cref="JsonFlowSchema"/>'s stored as files in the given <see cref="folder"/>.</summary>
         public static List<JsonFlowSchema> ReadSchemas(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
             var schemas = new List<JsonFlowSchema>();
