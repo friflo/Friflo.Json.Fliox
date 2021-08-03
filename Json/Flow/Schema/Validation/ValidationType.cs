@@ -10,10 +10,9 @@ namespace Friflo.Json.Flow.Schema.Validation
     public enum TypeId
     {
         None,
-        //
+        // --- object types
         Complex,
         Union,
-        Enum,
         // --- number types
         Uint8,
         Int16,
@@ -26,6 +25,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         String,
         BigInteger,
         DateTime,
+        Enum,
         //
         JsonValue 
     }
