@@ -54,11 +54,11 @@ namespace Friflo.Json.Flow.Schema.Validation
             this.@namespace = typeDef.Namespace;
         }
         
-        private ValidationType (TypeDef typeDef, UnionType union) : this (TypeId.Union, typeDef) {
+        private ValidationType (TypeDef typeDef, UnionType union)               : this (TypeId.Union,   typeDef) {
             unionType       = new ValidationUnion(union);
         }
         
-        private ValidationType (TypeDef typeDef, List<FieldDef> fieldDefs) : this (TypeId.Complex, typeDef) {
+        private ValidationType (TypeDef typeDef, List<FieldDef> fieldDefs)      : this (TypeId.Complex, typeDef) {
             fields = new ValidationField[fieldDefs.Count];
             int n = 0;
             foreach (var field in fieldDefs) {
@@ -67,7 +67,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
         }
         
-        private ValidationType (TypeDef typeDef, ICollection<string> typeEnums) : this (TypeId.Enum, typeDef) {
+        private ValidationType (TypeDef typeDef, ICollection<string> typeEnums) : this (TypeId.Enum,    typeDef) {
             enumValues = new Bytes[typeEnums.Count];
             int n = 0;
             foreach (var enumValue in typeEnums) {

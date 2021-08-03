@@ -16,37 +16,16 @@ namespace Friflo.Json.Flow.Schema.Validation
             jsonBytes.Dispose();
         }
         
-        public bool Validate (ref JsonParser parser, string json, ValidationType type, out string error) {
+        private void Init(ref JsonParser parser, string json) {
             errorMsg = null;
             jsonBytes.Clear();
             jsonBytes.AppendString(json);
             parser.InitParser(jsonBytes);
-            var ev = parser.NextEvent();
-            bool success;
-            switch (ev) {
-                case JsonEvent.ObjectStart:
-                    success = ValidateObject(ref parser, type);
-                    break;
-                case JsonEvent.ValueString:
-                    success = ValidateString(ref parser.value, type, out string msg);
-                    if (!success)
-                        Error(msg);
-                    break;
-                case JsonEvent.ValueNumber:
-                    success = ValidateNumber(ref parser.value, type, out msg);
-                    if (!success)
-                        Error(msg);
-                    break;
-                case JsonEvent.ValueBool:
-                    success = type.typeId == TypeId.Boolean;
-                    if (!success)
-                        Error($"Found boolean but expect: {type.typeId}");
-                    break;
-                default:
-                    throw new InvalidOperationException($"JsonValidator - JSON element not supported. element: {ev}");
-            }
+        }
+        
+        private bool Return(ref JsonParser parser, bool success, out string error) {
             if (success) {
-                ev = parser.NextEvent();
+                var ev = parser.NextEvent();
                 if (ev == JsonEvent.EOF) {
                     error = null;
                     return true;
@@ -55,6 +34,39 @@ namespace Friflo.Json.Flow.Schema.Validation
                 return false;
             }
             error = errorMsg;
+            return false;
+        }
+
+        public bool ValidateObject (ref JsonParser parser, string json, ValidationType type, out string error) {
+            Init(ref parser, json);
+            var ev = parser.NextEvent();
+            if (ev == JsonEvent.ObjectStart) {
+                bool success = ValidateObject(ref parser, type);
+                return Return(ref parser, success, out error);    
+            }
+            error = $"ValidateObject expect object. was: {ev}";
+            return false;
+        }
+        
+        public bool ValidateObjectMap (ref JsonParser parser, string json, ValidationType type, out string error) {
+            Init(ref parser, json);
+            var ev = parser.NextEvent();
+            if (ev == JsonEvent.ObjectStart) {
+                bool success = ValidateElement(ref parser, type, "", false);
+                return Return(ref parser, success, out error);    
+            }
+            error = $"ValidateObjectMap expect object. was: {ev}";
+            return false;
+        }
+
+        public bool ValidateArray (ref JsonParser parser, string json, ValidationType type, out string error) {
+            Init(ref parser, json);
+            var ev = parser.NextEvent();
+            if (ev == JsonEvent.ArrayStart) {
+                bool success = ValidateElement(ref parser, type, "", true);
+                return Return(ref parser, success, out error);    
+            }
+            error = $"ValidateArray expect array. was: {ev}";
             return false;
         }
         
