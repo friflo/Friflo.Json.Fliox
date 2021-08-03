@@ -21,8 +21,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
     // ReSharper disable once ClassNeverInstantiated.Global
     public class TestJsonValidator : LeakTestsFixture
     {
-        static readonly string JsonSchemaFolder = CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore";
-        private static readonly Type[] UserStoreTypes   = { typeof(Role), typeof(UserCredential), typeof(UserPermission) };
+        static readonly         string  JsonSchemaFolder = CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore";
+        private static readonly Type[]  UserStoreTypes   = { typeof(Role), typeof(UserCredential), typeof(UserPermission) };
         
         [Test]
         public static void ValidateByJsonSchema() {
@@ -32,16 +32,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var schema   = new ValidationSchema(jsonSchema))
             using (var validator= new JsonValidator()) {
                 var roleJsonType    = SchemaTest.JsonTypeFromType (typeof(Role), "Friflo.Json.Flow.UserAuth.");
-                var roleTypeDef     = jsonSchema.TypeAsTypeDef(roleJsonType);  
-                var roleValidation  = schema.TypeAsValidationType(roleTypeDef);
-                
-                var json = "{}";
-                IsTrue(validator.Validate(ref parser.value, json, roleValidation, out _));
-                
-                json = AsJson(@"{'id': 'role-database','description': 'test',
-                    'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'update'], 'subscribeChanges': ['update'] }}} ]
-                }");
-                IsTrue(validator.Validate(ref parser.value, json, roleValidation, out _));
+                var roleTypeDef     = jsonSchema.TypeAsTypeDef(roleJsonType);
+                var types = new Types {
+                    role = schema.TypeAsValidationType(roleTypeDef)
+                };
+                Validate(validator, types, ref parser.value);
             }
         }
         
@@ -52,17 +47,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var schema       = new ValidationSchema(nativeSchema))
             using (var parser       = new Local<JsonParser>())
             using (var validator    = new JsonValidator()) {
-                var roleTypeDef     = nativeSchema.TypeAsTypeDef(typeof(Role));  
-                var roleValidation  = schema.TypeAsValidationType(roleTypeDef);
+                var roleTypeDef     = nativeSchema.TypeAsTypeDef(typeof(Role));
+                var types = new Types {
+                    role = schema.TypeAsValidationType(roleTypeDef)
+                };
+                Validate(validator, types, ref parser.value);
+            }
+        }
+        
+        private class Types {
+            internal    ValidationType  role;
+        }
+        
+        private static void Validate(JsonValidator validator, Types types, ref JsonParser parser) {
+            var json = "{}";
+            IsTrue(validator.Validate(ref parser, json, types.role, out _));
                 
-                var json = "{}";
-                IsTrue(validator.Validate(ref parser.value, json, roleValidation, out _));
-                
-                json = AsJson(@"{'id': 'role-database','description': 'test',
+            json = AsJson(@"{'id': 'role-database','description': 'test',
                     'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'update'], 'subscribeChanges': ['update'] }}} ]
                 }");
-                IsTrue(validator.Validate(ref parser.value, json, roleValidation, out _));
-            }
+            IsTrue(validator.Validate(ref parser, json, types.role, out _));
         }
         
         private static TypeStore CreateTypeStore (ICollection<Type> types) {
@@ -71,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             return typeStore;
         } 
         
-        public static string AsJson (string str) {
+        private static string AsJson (string str) {
             return str.Replace('\'', '"');
         }
     }
