@@ -22,20 +22,30 @@ namespace Friflo.Json.Flow.Schema.Validation
             jsonBytes.AppendString(json);
             parser.InitParser(jsonBytes);
             var ev = parser.NextEvent();
-            if (ev == JsonEvent.ObjectStart) {
-                if (ValidateObject(ref parser, type)) {
-                    ev = parser.NextEvent();
-                    if (ev == JsonEvent.EOF) {
-                        error = null;
-                        return true;
-                    }
-                    error = "Expected EOF in JSON value";
-                    return false;
+            bool success;
+            switch (ev) {
+                case JsonEvent.ObjectStart:
+                    success = ValidateObject(ref parser, type);
+                    break;
+                case JsonEvent.ValueString:
+                    success = ValidateString(ref parser.value, type, out string msg);
+                    if (!success)
+                        Error(msg);
+                    break;
+                default:
+                    throw new InvalidOperationException($"JsonValidator - JSON element not supported. element: {ev}");
+            }
+            if (success) {
+                ev = parser.NextEvent();
+                if (ev == JsonEvent.EOF) {
+                    error = null;
+                    return true;
                 }
-                error = errorMsg;
+                error = "Expected EOF in JSON value";
                 return false;
             }
-            throw new InvalidOperationException("Currently JsonValidator support only JSON objects");
+            error = errorMsg;
+            return false;
         }
         
         private bool ValidateObject (ref JsonParser parser, ValidationType type)
