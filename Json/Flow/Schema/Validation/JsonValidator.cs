@@ -32,6 +32,16 @@ namespace Friflo.Json.Flow.Schema.Validation
                     if (!success)
                         Error(msg);
                     break;
+                case JsonEvent.ValueNumber:
+                    success = ValidateNumber(ref parser.value, type, out msg);
+                    if (!success)
+                        Error(msg);
+                    break;
+                case JsonEvent.ValueBool:
+                    success = type.typeId == TypeId.Boolean;
+                    if (!success)
+                        Error($"Found boolean but expect: {type.typeId}");
+                    break;
                 default:
                     throw new InvalidOperationException($"JsonValidator - JSON element not supported. element: {ev}");
             }

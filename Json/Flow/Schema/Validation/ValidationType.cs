@@ -21,6 +21,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         Int64,
         Float,
         Double,
+        // --- boolean type
         Boolean,   
         // --- string types        
         String,

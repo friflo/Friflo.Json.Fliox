@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
                 var roleTypeDef     = SchemaTest.TypeAsTypeDef (typeof(Role),   jsonSchema, "Friflo.Json.Flow.UserAuth.");
                 var types = new Types {
                     role    = schema.TypeAsValidationType(roleTypeDef),
-                    str     = schema.TypeAsValidationType(jsonSchema.StandardTypes.String)
+                    str     = schema.TypeAsValidationType(jsonSchema.StandardTypes.String),
                 };
                 Validate(validator, types, ref parser.value);
             }
@@ -62,8 +62,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
         }
         
         private static void Validate(JsonValidator validator, Types types, ref JsonParser parser) {
-            IsTrue(validator.Validate(ref parser, "\"hello\"",      types.str,  out _));
-            IsTrue(validator.Validate(ref parser, "{}",             types.role, out _));
+            IsTrue(validator.Validate(ref parser, "\"hello\"",      types.str,      out _));
+            IsTrue(validator.Validate(ref parser, "{}",             types.role,     out _));
                 
             var json = AsJson(@"{'id': 'role-database','description': 'test',
                     'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'update'], 'subscribeChanges': ['update'] }}} ]
