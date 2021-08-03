@@ -169,12 +169,12 @@ namespace Friflo.Json.Flow.Schema.Validation
     }
 
     public class ValidationUnion : IDisposable {
-        private  readonly   UnionType       unionType;
-        public   readonly   string          discriminatorStr;
-        public              Bytes           discriminator;
-        private  readonly   UnionItem[]     types;
+        private  readonly   UnionType   unionType;
+        public   readonly   string      discriminatorStr;
+        public              Bytes       discriminator;
+        private  readonly   UnionItem[] types;
         
-        public   override   string          ToString() => discriminatorStr;
+        public   override   string      ToString() => discriminatorStr;
 
         public ValidationUnion(UnionType union) {
             unionType           = union;

@@ -45,12 +45,8 @@ namespace Friflo.Json.Flow.Schema.Validation
             // set ValidationType references
             foreach (var type in types) {
                 type.SetFields(typeMap);
-
                 var union = type.unionType;
-                if (union != null) {
-                    union.SetUnionTypes(typeMap);
-
-                }
+                union?.SetUnionTypes(typeMap);
             }
         }
         

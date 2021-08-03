@@ -223,8 +223,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         // --- static helper
         // => using static prevent over writing previous error messages
         private static bool ValidateString (ref Bytes value, ValidationType type, out string msg) {
-            var typeId = type.typeId;
-            switch (typeId) {
+            switch (type.typeId) {
                 case TypeId.String:
                 case TypeId.BigInteger:
                 case TypeId.DateTime:
@@ -233,7 +232,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 case TypeId.Enum:
                     return ValidationType.FindEnum(type, ref value, out msg);
                 default:
-                    msg = $"Found string but expect: {typeId}";
+                    msg = $"Found string but expect: {type.typeId}";
                     return false;
             }
         }
