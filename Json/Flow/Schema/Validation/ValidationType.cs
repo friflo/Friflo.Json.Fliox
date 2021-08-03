@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Flow.Schema.Definition;
 
@@ -39,9 +40,9 @@ namespace Friflo.Json.Flow.Schema.Validation
         private  readonly   string              name;       // only for debugging
         private  readonly   string              @namespace; // only for debugging
         public   readonly   TypeId              typeId;
-        public   readonly   ValidationField[]   fields;
+        private  readonly   ValidationField[]   fields;
         public   readonly   ValidationUnion     unionType;
-        public   readonly   Bytes[]             enumValues;
+        private  readonly   Bytes[]             enumValues;
         
         public  override    string              ToString() => $"{typeId} - {@namespace}.{name}";
         
@@ -100,6 +101,41 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
             unionType?.Dispose();
         }
+        
+        internal void SetFields(Dictionary<TypeDef, ValidationType> typeMap) {
+            if (fields != null) {
+                foreach (var field in fields) {
+                    var fieldType   = typeMap[field.typeDef];
+                    field.type      = fieldType;
+                    field.typeId    = fieldType.typeId;
+                }
+            }
+        }
+        
+        internal static bool FindEnum (ValidationType type, ref Bytes value, out string msg) {
+            var enumValues = type.enumValues;
+            for (int n = 0; n < enumValues.Length; n++) {
+                if (enumValues[n].IsEqual(ref value)) {
+                    msg = null;
+                    return true;
+                }
+            }
+            msg = $"enum value not found. value: {value}";
+            return false;
+        }
+        
+        internal static bool FindField (ValidationType type, ref Bytes key, out ValidationField field, out string msg) {
+            foreach (var typeField in type.fields) {
+                if (key.IsEqual(ref typeField.name)) {
+                    field   = typeField;
+                    msg = null;
+                    return true;
+                }
+            }
+            msg = $"field not found in type: {type}, key: {key}";
+            field = null;
+            return false;
+        }
     }
     
     // could by a struct 
@@ -132,10 +168,10 @@ namespace Friflo.Json.Flow.Schema.Validation
     }
 
     public class ValidationUnion : IDisposable {
-        public  readonly    UnionType       unionType;
-        public  readonly    string          discriminatorStr;
+        private  readonly   UnionType       unionType;
+        public   readonly   string          discriminatorStr;
         public              Bytes           discriminator;
-        public  readonly    UnionItem[]     types;
+        private  readonly   UnionItem[]     types;
         
         public   override   string          ToString() => discriminatorStr;
 
@@ -151,6 +187,27 @@ namespace Friflo.Json.Flow.Schema.Validation
             foreach (var type in types) {
                 type.discriminant.Dispose();
             }
+        }
+
+        internal void SetUnionTypes(Dictionary<TypeDef, ValidationType> typeMap) {
+            int n = 0;
+            foreach (var typeDef in unionType.types) {
+                ValidationType validationType = typeMap[typeDef];
+                var item = new UnionItem(typeDef.Discriminant, validationType);
+                types[n++] = item;
+            }
+        }
+        
+        internal static bool FindUnion (ValidationUnion union, ref Bytes discriminant, out ValidationType type) {
+            var types = union.types;
+            for (int n = 0; n < types.Length; n++) {
+                if (discriminant.IsEqual(ref types[n].discriminant)) {
+                    type    = types[n].type;
+                    return true;
+                }
+            }
+            type    = null;
+            return false;
         }
     }
     

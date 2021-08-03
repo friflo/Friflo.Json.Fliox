@@ -40,7 +40,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 if (!parser.key.IsEqual(ref unionType.discriminator)) {
                     return Error($"Unexpected discriminator name. was: {parser.key}, expect: {unionType.discriminatorStr}");
                 }
-                if (!FindUnion(unionType, ref parser.value, out type)) {
+                if (!ValidationUnion.FindUnion(unionType, ref parser.value, out type)) {
                     return Error($"Unknown discriminant: {parser.value}");
                 }
             }
@@ -50,35 +50,35 @@ namespace Friflo.Json.Flow.Schema.Validation
                 string          msg;
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        if (!FindField(type, ref parser.key, out field, out msg))
+                        if (!ValidationType.FindField(type, ref parser.key, out field, out msg))
                             return Error(msg);
                         if (ValidateString (ref parser.value, field.type, out msg))
                             continue;
                         return Error($"{msg}, field: {field}");
                         
                     case JsonEvent.ValueNumber:
-                        if (!FindField(type, ref parser.key, out field, out msg))
+                        if (!ValidationType.FindField(type, ref parser.key, out field, out msg))
                             return Error(msg);
                         if (ValidateNumber(ref parser.value, type, out msg))
                             continue;
                         return Error($"{msg}, field: {field}");
                         
                     case JsonEvent.ValueBool:
-                        if (!FindField(type, ref parser.key, out field, out msg))
+                        if (!ValidationType.FindField(type, ref parser.key, out field, out msg))
                             return Error(msg);
                         if (field.typeId == TypeId.Boolean)
                             continue;
                         return Error($"Found boolean but expect: {field.typeId}, field: {field}");
                     
                     case JsonEvent.ValueNull:
-                        if (!FindField(type, ref parser.key, out field, out msg))
+                        if (!ValidationType.FindField(type, ref parser.key, out field, out msg))
                             return Error(msg);
                         if (!field.required)
                             continue;
                         return Error($"Found null for a required field: {field}");
                     
                     case JsonEvent.ArrayStart:
-                        if (!FindField(type, ref parser.key, out field, out msg))
+                        if (!ValidationType.FindField(type, ref parser.key, out field, out msg))
                             return Error(msg);
                         if (field.isArray) {
                             if (ValidateElement (ref parser, field.type, field.fieldName, true))
@@ -88,7 +88,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return Error($"Found array but expect: {field.typeId}, field: {field}");
                     
                     case JsonEvent.ObjectStart:
-                        if (!FindField(type, ref parser.key, out field, out msg))
+                        if (!ValidationType.FindField(type, ref parser.key, out field, out msg))
                             return Error(msg);
                         if (field.typeId == TypeId.Complex) {
                             if (field.isDictionary) {
@@ -186,7 +186,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     msg = null;
                     return true;
                 case TypeId.Enum:
-                    if (FindEnum(type, ref value, out msg))
+                    if (ValidationType.FindEnum(type, ref value, out msg))
                         return true;
                     return false;
                 default:
@@ -209,43 +209,6 @@ namespace Friflo.Json.Flow.Schema.Validation
                     msg = $"Found number but expect: {type.typeId}";
                     return false;
             }
-        }
-
-        private static bool FindField (ValidationType type, ref Bytes key, out ValidationField field, out string msg) {
-            foreach (var typeField in type.fields) {
-                if (key.IsEqual(ref typeField.name)) {
-                    field   = typeField;
-                    msg = null;
-                    return true;
-                }
-            }
-            msg = $"field not found in type: {type}, key: {key}";
-            field = null;
-            return false;
-        }
-        
-        private static bool FindUnion (ValidationUnion union, ref Bytes discriminant, out ValidationType type) {
-            var types = union.types;
-            for (int n = 0; n < types.Length; n++) {
-                if (discriminant.IsEqual(ref types[n].discriminant)) {
-                    type    = types[n].type;
-                    return true;
-                }
-            }
-            type    = null;
-            return false;
-        }
-        
-        private static bool FindEnum (ValidationType type, ref Bytes value, out string msg) {
-            var enumValues = type.enumValues;
-            for (int n = 0; n < enumValues.Length; n++) {
-                if (enumValues[n].IsEqual(ref value)) {
-                    msg = null;
-                    return true;
-                }
-            }
-            msg = $"enum value not found. value: {value}";
-            return false;
         }
     }
 }

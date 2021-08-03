@@ -40,22 +40,12 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
             // set ValidationType references
             foreach (var type in types) {
-                var fields = type.fields;
-                if (fields != null) {
-                    foreach (var field in fields) {
-                        var fieldType   = typeMap[field.typeDef];
-                        field.type      = fieldType;
-                        field.typeId    = fieldType.typeId;
-                    }
-                }
+                type.SetFields(typeMap);
+
                 var union = type.unionType;
                 if (union != null) {
-                    int n = 0;
-                    foreach (var unionType in union.unionType.types) {
-                        ValidationType validationType = typeMap[unionType];
-                        var item = new UnionItem(unionType.Discriminant, validationType);
-                        union.types[n++] = item;
-                    }
+                    union.SetUnionTypes(typeMap);
+
                 }
             }
         }
