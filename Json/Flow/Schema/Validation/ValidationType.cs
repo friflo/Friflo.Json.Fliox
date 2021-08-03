@@ -42,6 +42,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         private  readonly   string              @namespace; // only for debugging
         public   readonly   TypeId              typeId;
         private  readonly   ValidationField[]   fields;
+        private  readonly   ValidationField[]   requiredFields;
         public   readonly   ValidationUnion     unionType;
         private  readonly   Bytes[]             enumValues;
         
@@ -59,11 +60,21 @@ namespace Friflo.Json.Flow.Schema.Validation
         }
         
         private ValidationType (TypeDef typeDef, List<FieldDef> fieldDefs)      : this (TypeId.Complex, typeDef) {
-            fields = new ValidationField[fieldDefs.Count];
-            int n = 0;
+            int requiredCount = 0;
             foreach (var field in fieldDefs) {
-                var validationField = new ValidationField(field);
+                if (field.required)
+                    requiredCount++;
+            }
+            requiredFields  = new ValidationField[requiredCount];
+            fields          = new ValidationField[fieldDefs.Count];
+            int n = 0;
+            int requiredPos = 0;
+            foreach (var field in fieldDefs) {
+                var reqPos = field.required ? requiredPos++ : -1;
+                var validationField = new ValidationField(field, reqPos);
                 fields[n++] = validationField;
+                if (reqPos >= 0)
+                    requiredFields[reqPos] = validationField;
             }
         }
         
@@ -146,6 +157,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         public   readonly   bool            required;
         public   readonly   bool            isArray;
         public   readonly   bool            isDictionary;
+        public   readonly   int             requiredPos;
     
         // --- internal
         internal            ValidationType  type;
@@ -154,13 +166,14 @@ namespace Friflo.Json.Flow.Schema.Validation
 
         public  override    string          ToString() => fieldName;
         
-        public ValidationField(FieldDef fieldDef) {
-            typeDef         = fieldDef.type;
-            fieldName       = fieldDef.name;
-            name            = new Bytes(fieldDef.name);
-            required        = fieldDef.required;
-            isArray         = fieldDef.isArray;
-            isDictionary    = fieldDef.isDictionary;
+        public ValidationField(FieldDef fieldDef, int requiredPos) {
+            typeDef             = fieldDef.type;
+            fieldName           = fieldDef.name;
+            name                = new Bytes(fieldDef.name);
+            required            = fieldDef.required;
+            isArray             = fieldDef.isArray;
+            isDictionary        = fieldDef.isDictionary;
+            this.requiredPos    = requiredPos;
         }
         
         public void Dispose() {
