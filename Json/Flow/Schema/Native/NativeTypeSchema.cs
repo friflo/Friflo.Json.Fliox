@@ -11,10 +11,12 @@ using Friflo.Json.Flow.Schema.Definition;
 
 namespace Friflo.Json.Flow.Schema.Native
 {
-    public class NativeTypeSchema : TypeSchema
+    public class NativeTypeSchema : TypeSchema, IDisposable
     {
-        public   override   ICollection<TypeDef>            Types           { get; }
-        public   override   StandardTypes                   StandardTypes   { get; }
+        public   override   ICollection<TypeDef>    Types           { get; }
+        public   override   StandardTypes           StandardTypes   { get; }
+        
+        public              TypeDef                 TypeAsTypeDef(Type type) => nativeTypes[type];
 
         /// <summary>Contains only non <see cref="Nullable"/> Type's</summary>
         private  readonly   Dictionary<Type, NativeTypeDef> nativeTypes;
@@ -107,6 +109,8 @@ namespace Friflo.Json.Flow.Schema.Native
                 }
             }
         }
+        
+        public void Dispose() { }
         
         private void AddType(List<TypeDef> types, TypeMapper  mapper, TypeStore typeStore) {
             mapper  = mapper.GetUnderlyingMapper();
