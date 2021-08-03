@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Runtime.CompilerServices;
 using Friflo.Json.Burst;
 
 namespace Friflo.Json.Flow.Schema.Validation
@@ -10,6 +11,10 @@ namespace Friflo.Json.Flow.Schema.Validation
     {
         private Bytes               jsonBytes = new Bytes(128);
         private string              error;
+        
+        public void Dispose() {
+            jsonBytes.Dispose();
+        }
         
         public bool Validate (ref JsonParser parser, string json, ValidationType type, out string error) {
             jsonBytes.Clear();
@@ -44,36 +49,36 @@ namespace Friflo.Json.Flow.Schema.Validation
                 ValidationField field;
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        if (!FindField(type, ref parser.key, out field))
-                            return false;
-                        if (ValidateString (ref parser.value, field.type, out string msg))
+                        if (!FindField(type, ref parser.key, out field, out string msg))
+                            return Error(msg);
+                        if (ValidateString (ref parser.value, field.type, out msg))
                             continue;
                         return Error($"{msg}, field: {field}");
                         
                     case JsonEvent.ValueNumber:
-                        if (!FindField(type, ref parser.key, out field))
-                            return false;
+                        if (!FindField(type, ref parser.key, out field, out msg))
+                            return Error(msg);
                         if (ValidateNumber(ref parser.value, type, out msg))
                             continue;
                         return Error($"{msg}, field: {field}");
                         
                     case JsonEvent.ValueBool:
-                        if (!FindField(type, ref parser.key, out field))
-                            return false;
+                        if (!FindField(type, ref parser.key, out field, out msg))
+                            return Error(msg);
                         if (field.typeId == TypeId.Boolean)
                             continue;
                         return Error($"Found boolean but expect: {field.typeId}, field: {field}");
                     
                     case JsonEvent.ValueNull:
-                        if (!FindField(type, ref parser.key, out field))
-                            return false;
+                        if (!FindField(type, ref parser.key, out field, out msg))
+                            return Error(msg);
                         if (!field.required)
                             continue;
                         return Error($"Found null for a required field: {field}");
                     
                     case JsonEvent.ArrayStart:
-                        if (!FindField(type, ref parser.key, out field))
-                            return false;
+                        if (!FindField(type, ref parser.key, out field, out msg))
+                            return Error(msg);
                         if (field.isArray) {
                             if (ValidateElement (ref parser, field.type, field.fieldName, true))
                                 continue;
@@ -82,8 +87,8 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return Error($"Found array but expect: {field.typeId}, field: {field}");
                     
                     case JsonEvent.ObjectStart:
-                        if (!FindField(type, ref parser.key, out field))
-                            return false;
+                        if (!FindField(type, ref parser.key, out field, out msg))
+                            return Error(msg);
                         if (field.typeId == TypeId.Complex) {
                             if (field.isDictionary) {
                                 if (ValidateElement (ref parser, field.type, field.fieldName, false))
@@ -161,6 +166,14 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool Error (string error) {
+            this.error = error;
+            return false;
+        }
+        
+        // --- static helper
+        // => using static prevent over writing previous error messages
         private static bool ValidateString (ref Bytes value, ValidationType type, out string msg) {
             var typeId = type.typeId;
             switch (typeId) {
@@ -194,20 +207,21 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return false;
             }
         }
-        
-        private bool FindField (ValidationType type, ref Bytes key, out ValidationField field) {
+
+        private static bool FindField (ValidationType type, ref Bytes key, out ValidationField field, out string msg) {
             foreach (var typeField in type.fields) {
                 if (key.IsEqual(ref typeField.name)) {
                     field   = typeField;
+                    msg = null;
                     return true;
                 }
             }
-            Error($"field not found in type: {type}, key: {key}");
+            msg = $"field not found in type: {type}, key: {key}";
             field = null;
             return false;
         }
         
-        private bool FindUnion (ValidationUnion union, ref Bytes discriminant, out ValidationType type) {
+        private static bool FindUnion (ValidationUnion union, ref Bytes discriminant, out ValidationType type) {
             var types = union.types;
             for (int n = 0; n < types.Length; n++) {
                 if (discriminant.IsEqual(ref types[n].discriminant)) {
@@ -229,15 +243,6 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
             msg = $"enum value not found. value: {value}";
             return false;
-        }
-        
-        private bool Error (string error) {
-            this.error = error;
-            return false;
-        }
-
-        public void Dispose() {
-            jsonBytes.Dispose();
         }
     }
 }
