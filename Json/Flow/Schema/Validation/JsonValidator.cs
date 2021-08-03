@@ -209,11 +209,10 @@ namespace Friflo.Json.Flow.Schema.Validation
         
         private bool FindUnion (ValidationUnion union, ref Bytes discriminant, out ValidationType type, out TypeId typeId) {
             var types = union.types;
-            for (int n = 0; n < types.Count; n++) {
-                var unionType = types[n];
-                if (discriminant.IsEqual(ref unionType.discriminant)) {
-                    type    = unionType.type;
-                    typeId  = unionType.type.typeId; // todo
+            for (int n = 0; n < types.Length; n++) {
+                if (discriminant.IsEqual(ref types[n].discriminant)) {
+                    type    = types[n].type;
+                    typeId  = types[n].type.typeId; // todo
                     return true;
                 }
             }
@@ -224,8 +223,8 @@ namespace Friflo.Json.Flow.Schema.Validation
         
         private bool FindEnum (ValidationType type, ref Bytes value) {
             var enumValues = type.enumValues;
-            foreach (var enumValue in enumValues) {
-                if (enumValue.IsEqual(ref value))
+            for (int n = 0; n < enumValues.Length; n++) {
+                if (enumValues[n].IsEqual(ref value))
                     return true;
             }
             error = $"enum value not found. value: {value}";

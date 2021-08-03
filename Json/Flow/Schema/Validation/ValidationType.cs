@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Flow.Schema.Definition;
 
@@ -36,17 +35,17 @@ namespace Friflo.Json.Flow.Schema.Validation
     /// performance.
     /// </summary>
     public sealed class ValidationType : IDisposable {
-        public  readonly    TypeDef                 typeDef;
-        public  readonly    string                  name;       // only for debugging
-        public  readonly    string                  @namespace; // only for debugging
-        public  readonly    TypeId                  typeId;
-        public  readonly    List<ValidationField>   fields;
-        public  readonly    ValidationUnion         unionType;
-        public              Bytes                   discriminant;
-        public              Bytes                   discriminator;
-        public  readonly    List<Bytes>             enumValues;
+        public  readonly    TypeDef             typeDef;
+        public  readonly    string              name;       // only for debugging
+        public  readonly    string              @namespace; // only for debugging
+        public  readonly    TypeId              typeId;
+        public  readonly    ValidationField[]   fields;
+        public  readonly    ValidationUnion     unionType;
+        public              Bytes               discriminant;
+        public              Bytes               discriminator;
+        public  readonly    Bytes[]             enumValues;
         
-        public  override    string                  ToString() => $"{typeId} - {@namespace}.{name}";
+        public  override    string              ToString() => $"{typeId} - {@namespace}.{name}";
         
         public ValidationType (TypeId typeId, TypeDef typeDef) {
             this.typeId     = typeId;
@@ -76,19 +75,21 @@ namespace Friflo.Json.Flow.Schema.Validation
                     discriminator   = new Bytes(typeDef.Discriminator);
                 }
                 var typeField = typeDef.Fields;
-                fields = new List<ValidationField>(typeField.Count);
+                fields = new ValidationField[typeField.Count];
+                int n = 0;
                 foreach (var field in typeField) {
                     var validationField = new ValidationField(field);
-                    fields.Add(validationField); }
-
+                    fields[n++] = validationField;
+                }
                 return;
             }
             if (typeDef.IsEnum) {
                 typeId = TypeId.Enum;
                 var typeEnums   = typeDef.EnumValues;
-                enumValues = new List<Bytes>(typeEnums.Count);
+                enumValues = new Bytes[typeEnums.Count];
+                int n = 0;
                 foreach (var enumValue in typeEnums) {
-                    enumValues.Add(new Bytes(enumValue));
+                    enumValues[n++] = new Bytes(enumValue);
                 }
                 return;
             }
@@ -143,16 +144,16 @@ namespace Friflo.Json.Flow.Schema.Validation
     }
 
     public class ValidationUnion : IDisposable {
-        public  readonly    UnionType          unionType;
-        public              Bytes              discriminator;
-        public  readonly    List<UnionItem>    types;
+        public  readonly    UnionType       unionType;
+        public              Bytes           discriminator;
+        public  readonly    UnionItem[]     types;
         
-        public   override   string             ToString() => discriminator.ToString();
+        public   override   string          ToString() => discriminator.ToString();
 
         public ValidationUnion(UnionType union) {
             this.unionType  = union;
             discriminator   = new Bytes(union.discriminator);
-            types           = new List<UnionItem>(union.types.Count);
+            types           = new UnionItem[union.types.Count];
         }
         
         public void Dispose() {

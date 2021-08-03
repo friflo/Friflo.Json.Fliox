@@ -50,10 +50,11 @@ namespace Friflo.Json.Flow.Schema.Validation
                 }
                 var union = type.unionType;
                 if (union != null) {
+                    int n = 0;
                     foreach (var unionType in union.unionType.types) {
                         ValidationType validationType = typeMap[unionType];
                         var item = new UnionItem(unionType.Discriminant, validationType);
-                        union.types.Add(item);
+                        union.types[n++] = item;
                     }
                 }
             }
