@@ -71,7 +71,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
         }
         
         // ------------------------------------ utilities ------------------------------------ 
-        public static List<string> JsonTypesFromTypes(ICollection<Type> types, string @namespace) {
+        public static List<string> TypesAsJsonTypes(ICollection<Type> types, string @namespace) {
             var list = new List<string>();
             foreach (var type in types) {
                 list.Add($"./{@namespace}{type.Name}.json#/definitions/{type.Name}");
@@ -79,12 +79,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
             return list;
         }
         
-        public static string JsonTypeFromType(Type type, string @namespace) {
+        public static string TypeAsJsonType(Type type, string @namespace) {
             return $"./{@namespace}{type.Name}.json#/definitions/{type.Name}";
         }
         
-        public static TypeDef TypeDefFromType(Type type, JsonTypeSchema jsonSchema, string @namespace) {
-            var path = JsonTypeFromType(type, @namespace);
+        public static TypeDef TypeAsTypeDef(Type type, JsonTypeSchema jsonSchema, string @namespace) {
+            var path = TypeAsJsonType(type, @namespace);
             return jsonSchema.TypeAsTypeDef(path);
         }
         

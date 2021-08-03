@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var parser   = new Local<JsonParser>())
             using (var schema   = new ValidationSchema(jsonSchema))
             using (var validator= new JsonValidator()) {
-                var roleTypeDef     = SchemaTest.TypeDefFromType (typeof(Role), jsonSchema, "Friflo.Json.Flow.UserAuth.");
+                var roleTypeDef     = SchemaTest.TypeAsTypeDef (typeof(Role), jsonSchema, "Friflo.Json.Flow.UserAuth.");
                 var types = new Types {
                     role = schema.TypeAsValidationType(roleTypeDef)
                 };
