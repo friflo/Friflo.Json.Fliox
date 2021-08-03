@@ -19,7 +19,7 @@
     "float64": 0.0,
     "float64Null": null,
     "pocStruct": {
-        "val": 0
+        "value": 0
     },
     "pocStructNull": null,
     "intArray": [
