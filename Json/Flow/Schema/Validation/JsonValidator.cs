@@ -53,17 +53,9 @@ namespace Friflo.Json.Flow.Schema.Validation
                     case JsonEvent.ValueNumber:
                         if (!FindField(type, ref parser.key, out field))
                             return false;
-                        switch (field.typeId) {
-                            case TypeId.Uint8:
-                            case TypeId.Int16:
-                            case TypeId.Int32:
-                            case TypeId.Int64:
-                            case TypeId.Float:
-                            case TypeId.Double:
-                                continue;
-                            default:
-                                return Error($"Found number but expect: {field.typeId}, field: {field}");
-                        }
+                        if (ValidateNumber(ref parser, type, out msg))
+                            continue;
+                        return Error($"{msg}, field: {field}");
                         
                     case JsonEvent.ValueBool:
                         if (!FindField(type, ref parser.key, out field))
@@ -131,17 +123,9 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return Error($"{msg}, field: {fieldName}");
                         
                     case JsonEvent.ValueNumber:
-                        switch (type.typeId) {
-                            case TypeId.Uint8:
-                            case TypeId.Int16:
-                            case TypeId.Int32:
-                            case TypeId.Int64:
-                            case TypeId.Float:
-                            case TypeId.Double:
-                                continue;
-                            default:
-                                return Error($"Found number but expect: {type.typeId}, field: {fieldName}");
-                        }
+                        if (ValidateNumber(ref parser, type, out msg))
+                            continue;
+                        return Error($"{msg}, field: {fieldName}");
                         
                     case JsonEvent.ValueBool:
                         if (type.typeId == TypeId.Boolean)
@@ -191,6 +175,22 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return false;
                 default:
                     msg = $"Found string but expect: {typeId}";
+                    return false;
+            }
+        }
+        
+        private static bool ValidateNumber (ref JsonParser parser, ValidationType type, out string msg) {
+            switch (type.typeId) {
+                case TypeId.Uint8:
+                case TypeId.Int16:
+                case TypeId.Int32:
+                case TypeId.Int64:
+                case TypeId.Float:
+                case TypeId.Double:
+                    msg = null;
+                    return true;
+                default:
+                    msg = $"Found number but expect: {type.typeId}";
                     return false;
             }
         }
