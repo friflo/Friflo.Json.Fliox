@@ -17,16 +17,25 @@ namespace Friflo.Json.Flow.Schema.Validation
         }
         
         public bool Validate (ref JsonParser parser, string json, ValidationType type, out string error) {
+            this.error = null;
             jsonBytes.Clear();
             jsonBytes.AppendString(json);
             parser.InitParser(jsonBytes);
-            var ev      = parser.NextEvent();
-            if (ValidateObject(ref parser, type)) {
-                error = null;
-                return true;
+            var ev = parser.NextEvent();
+            if (ev == JsonEvent.ObjectStart) {
+                if (ValidateObject(ref parser, type)) {
+                    ev = parser.NextEvent();
+                    if (ev == JsonEvent.EOF) {
+                        error = null;
+                        return true;
+                    }
+                    error = "Expected EOF in JSON value";
+                    return false;
+                }
+                error = this.error;
+                return false;
             }
-            error = this.error;
-            return false;
+            throw new InvalidOperationException("Currently JsonValidator support only JSON objects");
         }
         
         private bool ValidateObject (ref JsonParser parser, ValidationType type)
@@ -104,12 +113,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     
                     case JsonEvent.ObjectEnd:
                         return true;
-                        /* ev = parser.NextEvent();
-                        if (ev == JsonEvent.EOF) {
-                            error = null;
-                            return true;
-                        }
-                        return Error("Expected EOF in JSON value"); */
+                    
                     case JsonEvent.ArrayEnd:
                         return Error($"Found array end in object: {ev}");
                     
