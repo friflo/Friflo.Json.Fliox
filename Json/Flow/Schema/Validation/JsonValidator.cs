@@ -46,14 +46,14 @@ namespace Friflo.Json.Flow.Schema.Validation
                     case JsonEvent.ValueString:
                         if (!FindField(type, ref parser.key, out field))
                             return false;
-                        if (ValidateString (ref parser, field.type, out string msg))
+                        if (ValidateString (ref parser.value, field.type, out string msg))
                             continue;
                         return Error($"{msg}, field: {field}");
                         
                     case JsonEvent.ValueNumber:
                         if (!FindField(type, ref parser.key, out field))
                             return false;
-                        if (ValidateNumber(ref parser, type, out msg))
+                        if (ValidateNumber(ref parser.value, type, out msg))
                             continue;
                         return Error($"{msg}, field: {field}");
                         
@@ -118,12 +118,12 @@ namespace Friflo.Json.Flow.Schema.Validation
                 var ev      = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        if (ValidateString(ref parser, type, out string msg))
+                        if (ValidateString(ref parser.value, type, out string msg))
                             continue;
                         return Error($"{msg}, field: {fieldName}");
                         
                     case JsonEvent.ValueNumber:
-                        if (ValidateNumber(ref parser, type, out msg))
+                        if (ValidateNumber(ref parser.value, type, out msg))
                             continue;
                         return Error($"{msg}, field: {fieldName}");
                         
@@ -161,7 +161,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
         }
         
-        private static bool ValidateString (ref JsonParser parser, ValidationType type, out string msg) {
+        private static bool ValidateString (ref Bytes value, ValidationType type, out string msg) {
             var typeId = type.typeId;
             switch (typeId) {
                 case TypeId.String:
@@ -170,7 +170,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     msg = null;
                     return true;
                 case TypeId.Enum:
-                    if (FindEnum(type, ref parser.value, out msg))
+                    if (FindEnum(type, ref value, out msg))
                         return true;
                     return false;
                 default:
@@ -179,7 +179,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
         }
         
-        private static bool ValidateNumber (ref JsonParser parser, ValidationType type, out string msg) {
+        private static bool ValidateNumber (ref Bytes value, ValidationType type, out string msg) {
             switch (type.typeId) {
                 case TypeId.Uint8:
                 case TypeId.Int16:
