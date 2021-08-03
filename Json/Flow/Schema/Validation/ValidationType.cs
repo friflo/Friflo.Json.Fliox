@@ -138,7 +138,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             return false;
         }
         
-        internal static bool FindField (ValidationType type, ref Bytes key, out ValidationField field, out string msg, List<bool> foundFields) {
+        internal static bool FindField (ValidationType type, ref Bytes key, out ValidationField field, out string msg, bool[] foundFields) {
             foreach (var typeField in type.fields) {
                 if (key.IsEqual(ref typeField.name)) {
                     field   = typeField;

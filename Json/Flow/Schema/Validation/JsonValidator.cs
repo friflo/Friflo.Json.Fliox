@@ -10,9 +10,9 @@ namespace Friflo.Json.Flow.Schema.Validation
 {
     public class JsonValidator : IDisposable
     {
-        private  Bytes                          jsonBytes = new Bytes(128);
-        private             string              errorMsg;
-        private  readonly   List<List<bool>>    foundFieldsCache = new List<List<bool>>();
+        private  Bytes                      jsonBytes = new Bytes(128);
+        private             string          errorMsg;
+        private  readonly   List<bool[]>    foundFieldsCache = new List<bool[]>();
         
         public void Dispose() {
             jsonBytes.Dispose();
@@ -89,12 +89,16 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
             // clear foundFields List
             while (foundFieldsCache.Count <= depth) {
-                foundFieldsCache.Add(new List<bool>()); 
+                foundFieldsCache.Add(null); 
             }
-            List<bool> foundFields = foundFieldsCache[depth];
-            foundFields.Clear();
-            for (int n= 0; n < type.requiredFieldsCount; n++) {
-                foundFields.Add(false);
+            int requiredCount = type.requiredFieldsCount;
+            bool[] foundFields = foundFieldsCache[depth];
+            if (foundFields == null || foundFields.Length < requiredCount) {
+                foundFields = new bool[requiredCount];
+                foundFieldsCache[depth] = foundFields;
+            }
+            for (int n= 0; n < requiredCount; n++) {
+                foundFields[n] = false;
             }
             while (true) {
                 var             ev = parser.NextEvent();
@@ -160,7 +164,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                             if (found)
                                 foundCount++;
                         }
-                        if (foundCount < type.requiredFieldsCount) {
+                        if (foundCount < requiredCount) {
                             // return Error($"missing required fields in type: {type}, missing: {type.requiredFieldsCount - foundCount}");
                         }
                         return true;
