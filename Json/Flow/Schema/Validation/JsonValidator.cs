@@ -24,16 +24,16 @@ namespace Friflo.Json.Flow.Schema.Validation
         }
         
         private bool Return(ref JsonParser parser, bool success, out string error) {
-            if (success) {
-                var ev = parser.NextEvent();
-                if (ev == JsonEvent.EOF) {
-                    error = null;
-                    return true;
-                }
-                error = "Expected EOF in JSON value";
+            if (!success) {
+                error = errorMsg;
                 return false;
             }
-            error = errorMsg;
+            var ev = parser.NextEvent();
+            if (ev == JsonEvent.EOF) {
+                error = null;
+                return true;
+            }
+            error = "Expected EOF in JSON value";
             return false;
         }
 
