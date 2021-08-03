@@ -10,9 +10,9 @@ namespace Friflo.Json.Flow.Schema.Validation
 {
     public class JsonValidator : IDisposable
     {
-        private Bytes               jsonBytes = new Bytes(128);
-        private string              errorMsg;
-        private List<List<bool>>    foundFieldsCache = new List<List<bool>>();
+        private  Bytes                          jsonBytes = new Bytes(128);
+        private             string              errorMsg;
+        private  readonly   List<List<bool>>    foundFieldsCache = new List<List<bool>>();
         
         public void Dispose() {
             jsonBytes.Dispose();
@@ -133,7 +133,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         if (!ValidationType.FindField(type, ref parser.key, out field, out msg, foundFields))
                             return Error(msg);
                         if (field.isArray) {
-                            if (ValidateElement (ref parser, field.type, field.fieldName, true, depth + 1))
+                            if (ValidateElement (ref parser, field.type, field.fieldName, true, depth))
                                 continue;
                             return false;
                         }
@@ -148,7 +148,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                                     continue;
                                 return false;
                             }
-                            if (ValidateElement (ref parser, field.type, field.fieldName, true, depth + 1))
+                            if (ValidateElement (ref parser, field.type, field.fieldName, true, depth))
                                 continue;
                             return false;
                         }
