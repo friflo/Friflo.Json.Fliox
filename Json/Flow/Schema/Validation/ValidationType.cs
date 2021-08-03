@@ -42,7 +42,8 @@ namespace Friflo.Json.Flow.Schema.Validation
         private  readonly   string              @namespace; // only for debugging
         public   readonly   TypeId              typeId;
         private  readonly   ValidationField[]   fields;
-        private  readonly   ValidationField[]   requiredFields;
+        public   readonly   int                 requiredFieldsCount;
+        public   readonly   ValidationField[]   requiredFields;
         public   readonly   ValidationUnion     unionType;
         private  readonly   Bytes[]             enumValues;
         
@@ -65,8 +66,9 @@ namespace Friflo.Json.Flow.Schema.Validation
                 if (field.required)
                     requiredCount++;
             }
-            requiredFields  = new ValidationField[requiredCount];
-            fields          = new ValidationField[fieldDefs.Count];
+            requiredFieldsCount = requiredCount;
+            requiredFields      = new ValidationField[requiredCount];
+            fields              = new ValidationField[fieldDefs.Count];
             int n = 0;
             int requiredPos = 0;
             foreach (var field in fieldDefs) {
@@ -136,11 +138,15 @@ namespace Friflo.Json.Flow.Schema.Validation
             return false;
         }
         
-        internal static bool FindField (ValidationType type, ref Bytes key, out ValidationField field, out string msg) {
+        internal static bool FindField (ValidationType type, ref Bytes key, out ValidationField field, out string msg, List<bool> foundFields) {
             foreach (var typeField in type.fields) {
                 if (key.IsEqual(ref typeField.name)) {
                     field   = typeField;
                     msg = null;
+                    var reqPos = field.requiredPos;
+                    if (reqPos >= 0) {
+                        foundFields[reqPos] = true;
+                    }
                     return true;
                 }
             }
