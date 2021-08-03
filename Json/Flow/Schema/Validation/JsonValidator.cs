@@ -33,23 +33,24 @@ namespace Friflo.Json.Flow.Schema.Validation
         {
             if (type.typeId == TypeId.Union) {
                 var ev      = parser.NextEvent();
-                if (ev != JsonEvent.ValueString) {
-                    return Error("Expect discriminator string first member");
-                }
                 var unionType = type.unionType;
+                if (ev != JsonEvent.ValueString) {
+                    return Error($"Expect discriminator string as first member. Expect: {unionType.discriminatorStr}, was: {ev}");
+                }
                 if (!parser.key.IsEqual(ref unionType.discriminator)) {
-                    return Error($"Unexpected discriminator name. was: {parser.key}, expect: {unionType.discriminator}");
+                    return Error($"Unexpected discriminator name. was: {parser.key}, expect: {unionType.discriminatorStr}");
                 }
                 if (!FindUnion(unionType, ref parser.value, out type)) {
-                    return Error($"Unknown discriminator: {parser.key}");
+                    return Error($"Unknown discriminant: {parser.value}");
                 }
             }
             while (true) {
-                var ev      = parser.NextEvent();
+                var             ev = parser.NextEvent();
                 ValidationField field;
+                string          msg;
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        if (!FindField(type, ref parser.key, out field, out string msg))
+                        if (!FindField(type, ref parser.key, out field, out msg))
                             return Error(msg);
                         if (ValidateString (ref parser.value, field.type, out msg))
                             continue;
@@ -120,10 +121,11 @@ namespace Friflo.Json.Flow.Schema.Validation
         
         private bool ValidateElement (ref JsonParser parser, ValidationType type, string fieldName, bool isArray) {
             while (true) {
-                var ev      = parser.NextEvent();
+                var     ev = parser.NextEvent();
+                string  msg;
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        if (ValidateString(ref parser.value, type, out string msg))
+                        if (ValidateString(ref parser.value, type, out msg))
                             continue;
                         return Error($"{msg}, field: {fieldName}");
                         
@@ -145,6 +147,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     
                     case JsonEvent.ObjectStart:
                         if (type.typeId == TypeId.Complex || type.typeId == TypeId.Union) {
+                            // in case of a dictionary the key is not relevant
                             if (ValidateObject(ref parser, type))
                                 continue;
                             return false;

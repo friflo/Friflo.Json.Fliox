@@ -145,15 +145,17 @@ namespace Friflo.Json.Flow.Schema.Validation
 
     public class ValidationUnion : IDisposable {
         public  readonly    UnionType       unionType;
+        public  readonly    string          discriminatorStr;
         public              Bytes           discriminator;
         public  readonly    UnionItem[]     types;
         
         public   override   string          ToString() => discriminator.ToString();
 
         public ValidationUnion(UnionType union) {
-            this.unionType  = union;
-            discriminator   = new Bytes(union.discriminator);
-            types           = new UnionItem[union.types.Count];
+            unionType           = union;
+            discriminatorStr    = union.discriminator;
+            discriminator       = new Bytes(union.discriminator);
+            types               = new UnionItem[union.types.Count];
         }
         
         public void Dispose() {
