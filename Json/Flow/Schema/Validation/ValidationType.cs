@@ -46,46 +46,46 @@ namespace Friflo.Json.Flow.Schema.Validation
         
         public  override    string              ToString() => $"{typeId} - {@namespace}.{name}";
         
-        public ValidationType (TypeId typeId, TypeDef typeDef) {
+        internal ValidationType (TypeId typeId, TypeDef typeDef) {
             this.typeId     = typeId;
             this.typeDef    = typeDef;
             this.name       = typeDef.Name;
             this.@namespace = typeDef.Namespace;
         }
+        
+        private ValidationType (TypeDef typeDef, UnionType union) : this (TypeId.Union, typeDef) {
+            unionType       = new ValidationUnion(union);
+        }
+        
+        private ValidationType (TypeDef typeDef, List<FieldDef> fieldDefs) : this (TypeId.Complex, typeDef) {
+            fields = new ValidationField[fieldDefs.Count];
+            int n = 0;
+            foreach (var field in fieldDefs) {
+                var validationField = new ValidationField(field);
+                fields[n++] = validationField;
+            }
+        }
+        
+        private ValidationType (TypeDef typeDef, ICollection<string> typeEnums) : this (TypeId.Enum, typeDef) {
+            enumValues = new Bytes[typeEnums.Count];
+            int n = 0;
+            foreach (var enumValue in typeEnums) {
+                enumValues[n++] = new Bytes(enumValue);
+            }
+        }
 
-        public ValidationType (TypeDef typeDef) {
-            this.typeDef    = typeDef;     
-            name            = typeDef.Name;
-            @namespace      = typeDef.Namespace;
-            
+        public static ValidationType Create (TypeDef typeDef) {
             var union = typeDef.UnionType;
             if (union != null) {
-                typeId          = TypeId.Union;
-                unionType       = new ValidationUnion(union);
-                return;
+                return new ValidationType(typeDef, union);
             }
             if (typeDef.IsComplex) {
-                typeId = TypeId.Complex;
-                var typeField = typeDef.Fields;
-                fields = new ValidationField[typeField.Count];
-                int n = 0;
-                foreach (var field in typeField) {
-                    var validationField = new ValidationField(field);
-                    fields[n++] = validationField;
-                }
-                return;
+                return new ValidationType(typeDef, typeDef.Fields);
             }
             if (typeDef.IsEnum) {
-                typeId = TypeId.Enum;
-                var typeEnums   = typeDef.EnumValues;
-                enumValues = new Bytes[typeEnums.Count];
-                int n = 0;
-                foreach (var enumValue in typeEnums) {
-                    enumValues[n++] = new Bytes(enumValue);
-                }
-                return;
+                return new ValidationType(typeDef, typeDef.EnumValues);
             }
-            throw new InvalidOperationException($"unhandled typeDef: {typeDef}");
+            return null;
         }
         
         public void Dispose() {

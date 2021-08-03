@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             }
         }
         
-        // [Test]
+        [Test]
         public static void ValidateByTypes() {
             using (var typeStore    = CreateTypeStore(UserStoreTypes))
             using (var nativeSchema = new NativeTypeSchema(typeStore))

@@ -34,7 +34,11 @@ namespace Friflo.Json.Flow.Schema.Validation
             AddStandardType(TypeId.JsonValue,   standardType.JsonValue);
 
             foreach (var type in schemaTypes) {
-                var validationType = new ValidationType(type);
+                if (typeMap.ContainsKey(type))
+                    continue;
+                var validationType = ValidationType.Create(type);
+                if (validationType == null)
+                    continue;
                 types.Add(validationType);
                 typeMap.Add(type, validationType);
             }
