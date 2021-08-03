@@ -160,8 +160,8 @@ namespace Friflo.Json.Flow.Schema.Validation
                     
                     case JsonEvent.ObjectEnd:
                         var foundCount = 0;
-                        foreach (var found in foundFields) {
-                            if (found)
+                        for (int n = 0; n < requiredCount; n++) {
+                            if (foundFields[n])
                                 foundCount++;
                         }
                         if (foundCount < requiredCount) {
