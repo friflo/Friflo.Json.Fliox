@@ -37,7 +37,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return Error($"Unexpected discriminator name. was: {parser.key}, expect: {unionType.discriminator}");
                 }
                 if (!FindUnion(unionType, ref parser.value, out type, out typeId)) {
-                    return Error($"unknown discriminator: {parser.key}");
+                    return Error($"Unknown discriminator: {parser.key}");
                 }
             }
             while (true) {
@@ -47,14 +47,9 @@ namespace Friflo.Json.Flow.Schema.Validation
                     case JsonEvent.ValueString:
                         if (!FindField(type, ref parser.key, out field, out typeId))
                             return false;
-                        switch (typeId) {
-                            case TypeId.String:
-                            case TypeId.BigInteger:
-                            case TypeId.DateTime:
-                                continue;
-                            default:
-                                return Error($"Found string but expect: {typeId}, field: {field}");
-                        }
+                        if (ValidateString (ref parser, field.type, out string msg))
+                            continue;
+                        return Error($"{msg}, field: {field}");
                         
                     case JsonEvent.ValueNumber:
                         if (!FindField(type, ref parser.key, out field, out typeId))
@@ -133,18 +128,9 @@ namespace Friflo.Json.Flow.Schema.Validation
                 TypeId typeId = type.typeId;
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        switch (typeId) {
-                            case TypeId.String:
-                            case TypeId.BigInteger:
-                            case TypeId.DateTime:
-                                continue;
-                            case TypeId.Enum:
-                                if (FindEnum(type, ref parser.value))
-                                    continue;
-                                return false;
-                            default:
-                                return Error($"Found string but expect: {typeId}, field: {fieldName}");
-                        }
+                        if (ValidateString(ref parser, type, out string msg))
+                            continue;
+                        return Error($"{msg}, field: {fieldName}");
                         
                     case JsonEvent.ValueNumber:
                         switch (typeId) {
@@ -193,6 +179,24 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
         }
         
+        private static bool ValidateString (ref JsonParser parser, ValidationType type, out string msg) {
+            var typeId = type.typeId;
+            switch (typeId) {
+                case TypeId.String:
+                case TypeId.BigInteger:
+                case TypeId.DateTime:
+                    msg = null;
+                    return true;
+                case TypeId.Enum:
+                    if (FindEnum(type, ref parser.value, out msg))
+                        return true;
+                    return false;
+                default:
+                    msg = $"Found string but expect: {typeId}";
+                    return false;
+            }
+        }
+        
         private bool FindField (ValidationType type, ref Bytes key, out ValidationField field, out TypeId typeId) {
             foreach (var typeField in type.fields) {
                 if (key.IsEqual(ref typeField.name)) {
@@ -201,7 +205,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return true;
                 }
             }
-            error = $"field not found in type: {type}, key: {key}";
+            Error($"field not found in type: {type}, key: {key}");
             field = null;
             typeId = TypeId.None; 
             return false;
@@ -221,13 +225,15 @@ namespace Friflo.Json.Flow.Schema.Validation
             return false;
         }
         
-        private bool FindEnum (ValidationType type, ref Bytes value) {
+        private static bool FindEnum (ValidationType type, ref Bytes value, out string msg) {
             var enumValues = type.enumValues;
             for (int n = 0; n < enumValues.Length; n++) {
-                if (enumValues[n].IsEqual(ref value))
+                if (enumValues[n].IsEqual(ref value)) {
+                    msg = null;
                     return true;
+                }
             }
-            error = $"enum value not found. value: {value}";
+            msg = $"enum value not found. value: {value}";
             return false;
         }
         
