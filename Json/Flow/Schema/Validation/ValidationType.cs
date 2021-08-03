@@ -127,7 +127,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         internal            TypeId          typeId;
         internal readonly   TypeDef         typeDef;
 
-        public  override    string          ToString() => name.ToString();
+        public  override    string          ToString() => fieldName;
         
         public ValidationField(FieldDef fieldDef) {
             typeDef         = fieldDef.type;
@@ -149,7 +149,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         public              Bytes           discriminator;
         public  readonly    UnionItem[]     types;
         
-        public   override   string          ToString() => discriminator.ToString();
+        public   override   string          ToString() => discriminatorStr;
 
         public ValidationUnion(UnionType union) {
             unionType           = union;
