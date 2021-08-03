@@ -9,15 +9,15 @@ namespace Friflo.Json.Flow.Schema.Validation
 {
     public class JsonValidator : IDisposable
     {
-        private Bytes               jsonBytes = new Bytes(128);
-        private string              error;
+        private Bytes   jsonBytes = new Bytes(128);
+        private string  errorMsg;
         
         public void Dispose() {
             jsonBytes.Dispose();
         }
         
         public bool Validate (ref JsonParser parser, string json, ValidationType type, out string error) {
-            this.error = null;
+            errorMsg = null;
             jsonBytes.Clear();
             jsonBytes.AppendString(json);
             parser.InitParser(jsonBytes);
@@ -32,7 +32,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     error = "Expected EOF in JSON value";
                     return false;
                 }
-                error = this.error;
+                error = errorMsg;
                 return false;
             }
             throw new InvalidOperationException("Currently JsonValidator support only JSON objects");
@@ -181,8 +181,10 @@ namespace Friflo.Json.Flow.Schema.Validation
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool Error (string error) {
-            this.error = error;
+        private bool Error (string msg) {
+            if (errorMsg != null)
+                throw new InvalidOperationException($"error already set. Error: {errorMsg}");
+            errorMsg = msg;
             return false;
         }
         
