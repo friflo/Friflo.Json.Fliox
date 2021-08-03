@@ -102,9 +102,6 @@ namespace Friflo.Json.Flow.Schema.Validation
                         }
                         return Error($"Found object but expect: {field.typeId}, field: {field}");
                     
-                    case JsonEvent.Error:
-                        return Error(parser.error.msg.ToString());
-                    
                     case JsonEvent.ObjectEnd:
                         return true;
                         /* ev = parser.NextEvent();
@@ -114,7 +111,13 @@ namespace Friflo.Json.Flow.Schema.Validation
                         }
                         return Error("Expected EOF in JSON value"); */
                     case JsonEvent.ArrayEnd:
-                        throw new InvalidOperationException($"unexpected event: {ev}");
+                        return Error($"Found array end in object: {ev}");
+                    
+                    case JsonEvent.Error:
+                        return Error(parser.error.msg.ToString());
+
+                    default:
+                        return Error($"Unexpected JSON event in object: {ev}");
                 }
             }
         }
@@ -154,17 +157,21 @@ namespace Friflo.Json.Flow.Schema.Validation
                         }
                         return Error($"Found object but expect: {type.typeId}, field: {fieldName}");
                     
-                    case JsonEvent.Error:
-                        return Error(parser.error.msg.ToString());
-                    
                     case JsonEvent.ObjectEnd:
                         if (!isArray)
                             return true;
-                        throw new InvalidOperationException($"expect object end: {ev}");
+                        return Error($"Found object end in array: {ev}");
+                    
                     case JsonEvent.ArrayEnd:
                         if (isArray)
                             return true;
-                        throw new InvalidOperationException($"expect array end: {ev}");
+                        return Error($"Found array end in object: {ev}");
+                    
+                    case JsonEvent.Error:
+                        return Error(parser.error.msg.ToString());
+
+                    default:
+                        return Error($"Unexpected JSON event: {ev}");
                 }
             }
         }
@@ -186,9 +193,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     msg = null;
                     return true;
                 case TypeId.Enum:
-                    if (ValidationType.FindEnum(type, ref value, out msg))
-                        return true;
-                    return false;
+                    return ValidationType.FindEnum(type, ref value, out msg);
                 default:
                     msg = $"Found string but expect: {typeId}";
                     return false;
