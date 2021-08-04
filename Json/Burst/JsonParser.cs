@@ -143,7 +143,7 @@ namespace Friflo.Json.Burst
         public      int                 ProcessedBytes => previousBytes + bufferCount + pos;
         
         private     int                 bufferCount;
-        public      int                 InputPos => bufferCount + pos;
+        public      int                 Position => bufferCount + pos - startPos;
         
         // --- input array, stream, string, ... used in InitParser() methods
         private     const int           BufSize = 4096; // Test with 1 to find edge cases
@@ -193,7 +193,7 @@ namespace Friflo.Json.Burst
             preErrorState = state.array[stateLevel]; 
             state.array[stateLevel] = State.JsonError;
             
-            int position = bufferCount + pos - startPos;
+            int position = Position;
             // Note 1:  Creating error messages complete avoid creating string on the heap to ensure no allocation
             //          in case of errors. Using string interpolation like $"...{}..." create objects on the heap
             // Note 2:  Even cascaded string interpolation does not work in Unity Burst. So using appenders make sense too.

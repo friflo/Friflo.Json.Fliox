@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Friflo.Json.Burst;
 
 namespace Friflo.Json.Flow.Schema.Validation
@@ -14,6 +15,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         private             JsonParser      parser;
         private             string          errorMsg;
         private  readonly   List<bool[]>    foundFieldsCache = new List<bool[]>();
+        private  readonly   StringBuilder   sb = new StringBuilder();
         
         public void Dispose() {
             parser.Dispose();
@@ -48,7 +50,8 @@ namespace Friflo.Json.Flow.Schema.Validation
                 bool success = ValidateObject(type, 0);
                 return Return(success, out error);    
             }
-            error = $"ValidateObject expect object. was: {ev}";
+            Error($"ValidateObject expect object. was: {ev}");
+            error = errorMsg;
             return false;
         }
         
@@ -59,7 +62,8 @@ namespace Friflo.Json.Flow.Schema.Validation
                 bool success = ValidateElement(type, "", false, 0);
                 return Return(success, out error);    
             }
-            error = $"ValidateObjectMap expect object. was: {ev}";
+            Error ($"ValidateObjectMap expect object. was: {ev}");
+            error = errorMsg;
             return false;
         }
 
@@ -226,7 +230,13 @@ namespace Friflo.Json.Flow.Schema.Validation
         private bool Error (string msg) {
             if (errorMsg != null)
                 throw new InvalidOperationException($"error already set. Error: {errorMsg}");
-            errorMsg = msg;
+            sb.Clear();
+            sb.Append(msg);
+            sb.Append(", path: ");
+            sb.Append(parser.GetPath());
+            sb.Append(", pos: ");
+            sb.Append(parser.Position);
+            errorMsg = sb.ToString();
             return false;
         }
         
