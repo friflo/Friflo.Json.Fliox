@@ -20,6 +20,8 @@ namespace Friflo.Json.Flow.Schema.Validation
         public void Dispose() {
             parser.Dispose();
             jsonBytes.Dispose();
+            foundFieldsCache.Clear();
+            sb.Clear();
         }
         
         private void Init(string json) {
