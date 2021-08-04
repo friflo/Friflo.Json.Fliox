@@ -7,6 +7,10 @@ using Friflo.Json.Flow.Schema.Definition;
 
 namespace Friflo.Json.Flow.Schema.Validation
 {
+    /// <summary>
+    /// <see cref="ValidationSchema"/> provide the validation rules for <see cref="JsonValidator"/> to validate
+    /// arbitrary JSON payloads by <see cref="JsonValidator.ValidateObject"/>.
+    /// </summary>
     public class ValidationSchema : IDisposable
     {
         private  readonly   List<ValidationType>                types;
@@ -14,6 +18,11 @@ namespace Friflo.Json.Flow.Schema.Validation
         
         public              ValidationType                      TypeAsValidationType(TypeDef type) => typeMap[type];
 
+        /// <summary>
+        /// Construct a <see cref="ValidationSchema"/> from a given <see cref="JSON.JsonTypeSchema"/> or a
+        /// <see cref="Native.NativeTypeSchema"/>. The <see cref="ValidationSchema"/> is intended to be used by
+        /// <see cref="JsonValidator"/> to validate JSON payloads by <see cref="JsonValidator.ValidateObject"/>. 
+        /// </summary>
         public ValidationSchema (TypeSchema schema) {
             var schemaTypes = schema.Types;
             var typeCount   = schemaTypes.Count + 20; // 20 - roughly the number of StandardTypes
