@@ -111,7 +111,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     case JsonEvent.ValueNumber:
                         if (!ValidationType.FindField(type, ref parser.key, out field, out msg, foundFields))
                             return Error(msg);
-                        if (ValidateNumber(ref parser.value, type, out msg))
+                        if (ValidateNumber(ref parser, type, out msg))
                             continue;
                         return Error($"{msg}, field: {field}");
                         
@@ -188,7 +188,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return Error($"{msg}, field: {fieldName}");
                         
                     case JsonEvent.ValueNumber:
-                        if (ValidateNumber(ref parser.value, type, out msg))
+                        if (ValidateNumber(ref parser, type, out msg))
                             continue;
                         return Error($"{msg}, field: {fieldName}");
                         
@@ -256,12 +256,18 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
         }
         
-        private static bool ValidateNumber (ref Bytes value, ValidationType type, out string msg) {
+        private static bool ValidateNumber (ref JsonParser parser, ValidationType type, out string msg) {
             switch (type.typeId) {
                 case TypeId.Uint8:
                 case TypeId.Int16:
                 case TypeId.Int32:
                 case TypeId.Int64:
+                    if (!parser.isFloat) {
+                        msg = null;
+                        return true;
+                    }
+                    msg = "Found floating point number but expect integer";
+                    return true;
                 case TypeId.Float:
                 case TypeId.Double:
                     msg = null;
