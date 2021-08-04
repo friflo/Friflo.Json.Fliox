@@ -87,19 +87,15 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return Error($"Unknown discriminant: {parser.value}");
                 }
             }
-            // clear foundFields List
-            while (foundFieldsCache.Count <= depth) {
-                foundFieldsCache.Add(null); 
-            }
+            // init foundFields array
+            while (foundFieldsCache.Count <= depth) { foundFieldsCache.Add(null); }
             int requiredCount = type.requiredFieldsCount;
             bool[] foundFields = foundFieldsCache[depth];
             if (foundFields == null || foundFields.Length < requiredCount) {
-                foundFields = new bool[requiredCount];
-                foundFieldsCache[depth] = foundFields;
+                foundFields = foundFieldsCache[depth] = new bool[requiredCount];
             }
-            for (int n= 0; n < requiredCount; n++) {
-                foundFields[n] = false;
-            }
+            for (int n= 0; n < requiredCount; n++) { foundFields[n] = false; }
+            
             while (true) {
                 var             ev = parser.NextEvent();
                 ValidationField field;
