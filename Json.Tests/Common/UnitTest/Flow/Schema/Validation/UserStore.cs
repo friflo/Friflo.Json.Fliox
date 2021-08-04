@@ -80,7 +80,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             AreEqual("Unknown discriminant: xxx - type: Friflo.Json.Flow.Auth.Rights.Right, path: rights[0].type, pos: 41", error);
             
             IsFalse(validator.ValidateObject(test.roleMissingDisc,  test.roleType, out error));
-            AreEqual("Expect discriminator string as first member. Expect: 'type', was: 'ObjectEnd' - type: Friflo.Json.Flow.Auth.Rights.Right, path: rights[0], pos: 29", error);
+            AreEqual("Expect discriminator as first member. Expect: 'type', was: 'ObjectEnd' - type: Friflo.Json.Flow.Auth.Rights.Right, path: rights[0], pos: 29", error);
 
         }
         
