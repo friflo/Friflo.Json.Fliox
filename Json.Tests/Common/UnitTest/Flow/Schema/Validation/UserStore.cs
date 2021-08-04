@@ -91,6 +91,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             IsFalse(validator.ValidateObject("{\"id\": 42 }",       test.roleType, out error));
             AreEqual("Found number but expect: String - type: Role, path: id, pos: 9", error);
+            
+            IsFalse(validator.ValidateObject("{\"id\": \"id\", \"rights\": [] } yyy",       test.roleType, out error));
+            AreEqual("Expected EOF - type: Role, path: (root), pos: 29", error);
         }
         
         private class TestTypes {

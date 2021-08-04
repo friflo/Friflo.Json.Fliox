@@ -57,12 +57,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
         
         private static void ValidateFailure(JsonValidator validator, TestTypes test)
         {
+            IsFalse(validator.ValidateObject("{\"bigInt\": null }",         test.testType, out string error));
+            AreEqual("Found null for required field. - type: TestType, path: bigInt, pos: 15", error);
+            
+            IsFalse(validator.ValidateObject("{\"uint8\": true }",          test.testType, out error));
+            AreEqual("Found boolean but expect: Uint8 - type: TestType, path: uint8, pos: 14", error);
+            
+            IsFalse(validator.ValidateObject("{\"uint8\": \"abc\" }",       test.testType, out error));
+            AreEqual("Found string but expect: Uint8 - type: TestType, path: uint8, pos: 15", error);
+
+            IsFalse(validator.ValidateObject("{\"uint8\": 1.5 }",           test.testType, out error));
+            AreEqual("Found floating point number but expect Uint8 - type: TestType, path: uint8, pos: 13", error);
+            
+            IsFalse(validator.ValidateObject("{\"uint8\": [] }",            test.testType, out error));
+            AreEqual("Found array but expect: Uint8 - type: TestType, path: uint8[], pos: 11", error);
+            
+            IsFalse(validator.ValidateObject("{\"uint8\": {} }",            test.testType, out error));
+            AreEqual("Found object but expect: Uint8 - type: TestType, path: uint8, pos: 11", error);
+
         }
         
         private class TestTypes {
             internal    ValidationType  testType;
             
-            internal    readonly string testInvalid        = AsJson(@"{'id': 'role-deny', 'rights': [  ] }");
+            // internal    readonly string testInvalid        = AsJson(@"{'id': 'role-deny', 'rights': [  ] }");
         }
 
         // --- helper
@@ -72,8 +90,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             return typeStore;
         } 
         
-        private static string AsJson (string str) {
+        /* private static string AsJson (string str) {
             return str.Replace('\'', '"');
-        }
+        } */
     }
 }
