@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var validator    = new JsonValidator()) {
                 TypeDef roleTypeDef = SchemaTest.TypeAsTypeDef (typeof(Role),   jsonSchema, "Friflo.Json.Flow.UserAuth.");
                 var types = new TestTypes {
-                    role    = schema.TypeAsValidationType(roleTypeDef),
+                    roleType    = schema.TypeAsValidationType(roleTypeDef),
                 };
                 Validate(validator, types, ref parser.value);
             }
@@ -49,23 +49,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var validator    = new JsonValidator()) {
                 TypeDef roleTypeDef = nativeSchema.TypeAsTypeDef(typeof(Role));
                 var types = new TestTypes {
-                    role    = schema.TypeAsValidationType(roleTypeDef),
+                    roleType    = schema.TypeAsValidationType(roleTypeDef),
                 };
                 Validate(validator, types, ref parser.value);
             }
         }
         
         private static void Validate(JsonValidator validator, TestTypes test, ref JsonParser parser) {
-            IsTrue(validator.ValidateObject     (ref parser, "{}",              test.role, out _));
-            IsTrue(validator.ValidateArray      (ref parser, "[]",              test.role, out _));
-            IsTrue(validator.ValidateObjectMap  (ref parser, "{\"key\": {}}",   test.role, out _));
+            IsTrue(validator.ValidateObject     (ref parser, "{}",              test.roleType, out _));
+            IsTrue(validator.ValidateArray      (ref parser, "[]",              test.roleType, out _));
+            IsTrue(validator.ValidateObjectMap  (ref parser, "{\"key\": {}}",   test.roleType, out _));
 
-            IsTrue(validator.ValidateObject     (ref parser, test.roleJson,     test.role, out _));
+            IsTrue(validator.ValidateObject     (ref parser, test.roleValid,    test.roleType, out _));
         }
         
         private class TestTypes {
-            internal    ValidationType  role;
-            internal    readonly string roleJson = AsJson(
+            internal    ValidationType  roleType;
+            internal    readonly string roleValid = AsJson(
                 @"{'id': 'role-database','description': 'test',
                     'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'update'], 'subscribeChanges': ['update'] }}} ]
                 }");
