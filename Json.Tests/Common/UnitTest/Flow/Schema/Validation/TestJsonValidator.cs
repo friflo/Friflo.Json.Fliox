@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var schema   = new ValidationSchema(jsonSchema))
             using (var validator= new JsonValidator()) {
                 var roleTypeDef     = SchemaTest.TypeAsTypeDef (typeof(Role),   jsonSchema, "Friflo.Json.Flow.UserAuth.");
-                var types = new Types {
+                var types = new TestTypes {
                     role    = schema.TypeAsValidationType(roleTypeDef),
                 };
                 Validate(validator, types, ref parser.value);
@@ -47,28 +47,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var parser       = new Local<JsonParser>())
             using (var validator    = new JsonValidator()) {
                 var roleTypeDef     = nativeSchema.TypeAsTypeDef(typeof(Role));
-                var types = new Types {
+                var types = new TestTypes {
                     role    = schema.TypeAsValidationType(roleTypeDef),
                 };
                 Validate(validator, types, ref parser.value);
             }
         }
         
-        private class Types {
-            internal    ValidationType  role;
+        private static void Validate(JsonValidator validator, TestTypes test, ref JsonParser parser) {
+            IsTrue(validator.ValidateObject     (ref parser, "{}",              test.role, out _));
+            IsTrue(validator.ValidateArray      (ref parser, "[]",              test.role, out _));
+            IsTrue(validator.ValidateObjectMap  (ref parser, "{\"key\": {}}",   test.role, out _));
+
+            IsTrue(validator.ValidateObject     (ref parser, test.roleJson,     test.role, out _));
         }
         
-        private static void Validate(JsonValidator validator, Types types, ref JsonParser parser) {
-            IsTrue(validator.ValidateObject     (ref parser, "{}",              types.role, out _));
-            IsTrue(validator.ValidateArray      (ref parser, "[]",              types.role, out _));
-            IsTrue(validator.ValidateObjectMap  (ref parser, "{\"key\": {}}",   types.role, out _));
-                
-            var json = AsJson(@"{'id': 'role-database','description': 'test',
+        private class TestTypes {
+            internal    ValidationType  role;
+            internal    readonly string roleJson = AsJson(
+                @"{'id': 'role-database','description': 'test',
                     'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'update'], 'subscribeChanges': ['update'] }}} ]
                 }");
-            IsTrue(validator.ValidateObject(ref parser, json, types.role, out _));
         }
-        
+
+        // --- helper
         private static TypeStore CreateTypeStore (ICollection<Type> types) {
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             typeStore.AddMappers(types);
