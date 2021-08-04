@@ -112,7 +112,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     case JsonEvent.ValueNumber:
                         if (!ValidationType.FindField(type, ref parser.key, out field, out msg, foundFields))
                             return Error(type, msg);
-                        if (ValidateNumber(ref parser, type, out msg))
+                        if (ValidateNumber(ref parser, field.type, out msg))
                             continue;
                         return Error(type, msg);
                         

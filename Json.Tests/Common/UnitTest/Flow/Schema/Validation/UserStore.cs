@@ -88,6 +88,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             IsFalse(validator.ValidateObject("{]",                  test.roleType, out error));
             AreEqual("unexpected character > expect key. Found: ] - type: Role, path: (root), pos: 2", error);
+            
+            IsFalse(validator.ValidateObject("{\"id\": 42 }",       test.roleType, out error));
+            AreEqual("Found number but expect: String - type: Role, path: id, pos: 9", error);
         }
         
         private class TestTypes {
