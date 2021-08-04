@@ -43,7 +43,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         public   readonly   TypeId              typeId;
         private  readonly   ValidationField[]   fields;
         public   readonly   int                 requiredFieldsCount;
-        public   readonly   ValidationField[]   requiredFields;
+        private  readonly   ValidationField[]   requiredFields;
         public   readonly   ValidationUnion     unionType;
         private  readonly   Bytes[]             enumValues;
         
