@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Text;
 using Friflo.Json.Burst;
 
@@ -31,7 +30,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             parser.InitParser(jsonBytes);
         }
         
-        private bool Return(bool success, out string error) {
+        private bool Return(ValidationType type, bool success, out string error) {
             if (!success) {
                 error = errorMsg;
                 return false;
@@ -41,7 +40,8 @@ namespace Friflo.Json.Flow.Schema.Validation
                 error = null;
                 return true;
             }
-            error = "Expected EOF in JSON value";
+            Error(type, "Expected EOF after reading JSON");
+            error = errorMsg;
             return false;
         }
 
@@ -50,9 +50,9 @@ namespace Friflo.Json.Flow.Schema.Validation
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ObjectStart) {
                 bool success = ValidateObject(type, 0);
-                return Return(success, out error);    
+                return Return(type, success, out error);    
             }
-            Error($"ValidateObject expect object. was: {ev}");
+            Error(type, $"ValidateObject() expect object. was: {ev}");
             error = errorMsg;
             return false;
         }
@@ -62,9 +62,9 @@ namespace Friflo.Json.Flow.Schema.Validation
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ObjectStart) {
                 bool success = ValidateElement(type, "", false, 0);
-                return Return(success, out error);    
+                return Return(type, success, out error);    
             }
-            Error ($"ValidateObjectMap expect object. was: {ev}");
+            Error (type, $"ValidateObjectMap() expect object. was: {ev}");
             error = errorMsg;
             return false;
         }
@@ -74,9 +74,10 @@ namespace Friflo.Json.Flow.Schema.Validation
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ArrayStart) {
                 bool success = ValidateElement(type, "", true, 0);
-                return Return(success, out error);    
+                return Return(type, success, out error);    
             }
-            error = $"ValidateArray expect array. was: {ev}";
+            Error(type, $"ValidateArray expect array. was: {ev}");
+            error = errorMsg;
             return false;
         }
         
@@ -86,14 +87,15 @@ namespace Friflo.Json.Flow.Schema.Validation
                 var ev      = parser.NextEvent();
                 var unionType = type.unionType;
                 if (ev != JsonEvent.ValueString) {
-                    return Error($"Expect discriminator string as first member. Expect: {unionType.discriminatorStr}, was: {ev}");
+                    return Error(type, $"Expect discriminator string as first member. Expect: '{unionType.discriminatorStr}', was: '{ev}'");
                 }
                 if (!parser.key.IsEqual(ref unionType.discriminator)) {
-                    return Error($"Unexpected discriminator name. was: {parser.key}, expect: {unionType.discriminatorStr}");
+                    return Error(type, $"Unexpected discriminator name. was: {parser.key}, expect: {unionType.discriminatorStr}");
                 }
-                if (!ValidationUnion.FindUnion(unionType, ref parser.value, out type)) {
-                    return Error($"Unknown discriminant: {parser.value}");
+                if (!ValidationUnion.FindUnion(unionType, ref parser.value, out var newType)) {
+                    return Error(type, $"Unknown discriminant: {parser.value}");
                 }
+                type = newType;
             }
             var foundFields = GetFoundFields(type, foundFieldsCache, depth);
 
@@ -104,45 +106,45 @@ namespace Friflo.Json.Flow.Schema.Validation
                 switch (ev) {
                     case JsonEvent.ValueString:
                         if (!ValidationType.FindField(type, ref parser.key, out field, out msg, foundFields))
-                            return Error(msg);
+                            return Error(type, msg);
                         if (ValidateString (ref parser.value, field.type, out msg))
                             continue;
-                        return Error($"{msg}, field: {field}");
+                        return Error(type, $"{msg}, field: {field}");
                         
                     case JsonEvent.ValueNumber:
                         if (!ValidationType.FindField(type, ref parser.key, out field, out msg, foundFields))
-                            return Error(msg);
+                            return Error(type, msg);
                         if (ValidateNumber(ref parser, type, out msg))
                             continue;
-                        return Error($"{msg}, field: {field}");
+                        return Error(type, $"{msg}, field: {field}");
                         
                     case JsonEvent.ValueBool:
                         if (!ValidationType.FindField(type, ref parser.key, out field, out msg, foundFields))
-                            return Error(msg);
+                            return Error(type, msg);
                         if (field.typeId == TypeId.Boolean)
                             continue;
-                        return Error($"Found boolean but expect: {field.typeId}, field: {field}");
+                        return Error(type, $"Found boolean but expect: {field.typeId}");
                     
                     case JsonEvent.ValueNull:
                         if (!ValidationType.FindField(type, ref parser.key, out field, out msg, foundFields))
-                            return Error(msg);
+                            return Error(type, msg);
                         if (!field.required)
                             continue;
-                        return Error($"Found null for a required field: {field}");
+                        return Error(type, $"Found null for a required field");
                     
                     case JsonEvent.ArrayStart:
                         if (!ValidationType.FindField(type, ref parser.key, out field, out msg, foundFields))
-                            return Error(msg);
+                            return Error(type, msg);
                         if (field.isArray) {
                             if (ValidateElement (field.type, field.fieldName, true, depth))
                                 continue;
                             return false;
                         }
-                        return Error($"Found array but expect: {field.typeId}, field: {field}");
+                        return Error(type, $"Found array but expect: {field.typeId}, field: {field}");
                     
                     case JsonEvent.ObjectStart:
                         if (!ValidationType.FindField(type, ref parser.key, out field, out msg, foundFields))
-                            return Error(msg);
+                            return Error(type, msg);
                         if (field.typeId == TypeId.Complex) {
                             if (field.isDictionary) {
                                 if (ValidateElement (field.type, field.fieldName, false, depth))
@@ -153,23 +155,23 @@ namespace Friflo.Json.Flow.Schema.Validation
                                 continue;
                             return false;
                         }
-                        return Error($"Found object but expect: {field.typeId}, field: {field}");
+                        return Error(type, $"Found object but expect: {field.typeId}, field: {field}");
                     
                     case JsonEvent.ObjectEnd:
                         if (type.HasMissingFields(foundFields, out var missingFields)) {
                             var missing = string.Join(", ", missingFields);
-                            return Error($"missing required fields in type: {type}, missing-fields: [{missing}]");
+                            return Error(type, $"Missing required fields: [{missing}]");
                         }
                         return true;
                     
                     case JsonEvent.ArrayEnd:
-                        return Error($"Found array end in object: {ev}");
+                        return Error(type, $"Found array end in object: {ev}");
                     
                     case JsonEvent.Error:
-                        return Error(parser.error.msg.ToString());
+                        return Error(type, parser.error.msg.ToString());
 
                     default:
-                        return Error($"Unexpected JSON event in object: {ev}");
+                        return Error(type, $"Unexpected JSON event in object: {ev}");
                 }
             }
         }
@@ -182,23 +184,23 @@ namespace Friflo.Json.Flow.Schema.Validation
                     case JsonEvent.ValueString:
                         if (ValidateString(ref parser.value, type, out msg))
                             continue;
-                        return Error($"{msg}, field: {fieldName}");
+                        return Error(type, $"{msg}, field: {fieldName}");
                         
                     case JsonEvent.ValueNumber:
                         if (ValidateNumber(ref parser, type, out msg))
                             continue;
-                        return Error($"{msg}, field: {fieldName}");
+                        return Error(type, $"{msg}, field: {fieldName}");
                         
                     case JsonEvent.ValueBool:
                         if (type.typeId == TypeId.Boolean)
                             continue;
-                        return Error($"Found boolean but expect: {type.typeId}, field: {fieldName}");
+                        return Error(type, $"Found boolean but expect: {type.typeId}, field: {fieldName}");
                     
                     case JsonEvent.ValueNull:
-                        return Error($"Found null for a required field: {fieldName}");
+                        return Error(type, $"Found null for a required field: {fieldName}");
                     
                     case JsonEvent.ArrayStart:
-                        return Error($"Found array in array item. but expect: {type.typeId}, field: {fieldName}");
+                        return Error(type, $"Found array in array item. but expect: {type.typeId}, field: {fieldName}");
                     
                     case JsonEvent.ObjectStart:
                         if (type.typeId == TypeId.Complex || type.typeId == TypeId.Union) {
@@ -207,33 +209,34 @@ namespace Friflo.Json.Flow.Schema.Validation
                                 continue;
                             return false;
                         }
-                        return Error($"Found object but expect: {type.typeId}, field: {fieldName}");
+                        return Error(type, $"Found object but expect: {type.typeId}, field: {fieldName}");
                     
                     case JsonEvent.ObjectEnd:
                         if (!isArray)
                             return true;
-                        return Error($"Found object end in array: {ev}");
+                        return Error(type, $"Found object end in array: {ev}");
                     
                     case JsonEvent.ArrayEnd:
                         if (isArray)
                             return true;
-                        return Error($"Found array end in object: {ev}");
+                        return Error(type, $"Found array end in object: {ev}");
                     
                     case JsonEvent.Error:
-                        return Error(parser.error.msg.ToString());
+                        return Error(type, parser.error.msg.ToString());
 
                     default:
-                        return Error($"Unexpected JSON event: {ev}");
+                        return Error(type, $"Unexpected JSON event: {ev}");
                 }
             }
         }
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool Error (string msg) {
+        private bool Error (ValidationType type, string msg) {
             if (errorMsg != null)
                 throw new InvalidOperationException($"error already set. Error: {errorMsg}");
             sb.Clear();
             sb.Append(msg);
+            sb.Append(" - type: ");
+            sb.Append(type);
             sb.Append(", path: ");
             sb.Append(parser.GetPath());
             sb.Append(", pos: ");
