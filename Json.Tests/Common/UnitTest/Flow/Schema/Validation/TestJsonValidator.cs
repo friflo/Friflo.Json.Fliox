@@ -5,12 +5,10 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
-using Friflo.Json.Flow.Schema.Definition;
 using Friflo.Json.Flow.Schema.JSON;
 using Friflo.Json.Flow.Schema.Native;
 using Friflo.Json.Flow.Schema.Validation;
 using Friflo.Json.Flow.UserAuth;
-using Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
@@ -30,9 +28,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             var jsonSchema              = new JsonTypeSchema(schemas);
             using (var validationSchema = new ValidationSchema(jsonSchema))
             using (var validator        = new JsonValidator()) {
-                TypeDef roleTypeDef     = SchemaTest.TypeAsTypeDef (typeof(Role),   jsonSchema, "Friflo.Json.Flow.UserAuth.");
                 var types = new TestTypes {
-                    roleType    = validationSchema.TypeDefAsValidationType(roleTypeDef),
+                    roleType    = jsonSchema.TypeAsValidationType<Role>(validationSchema, "Friflo.Json.Flow.UserAuth.")
                 };
                 Validate(validator, types);
             }
@@ -44,9 +41,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var nativeSchema     = new NativeTypeSchema(typeStore))
             using (var validationSchema = new ValidationSchema(nativeSchema))
             using (var validator        = new JsonValidator()) {
-                TypeDef roleTypeDef     = nativeSchema.TypeAsTypeDef(typeof(Role));
                 var types = new TestTypes {
-                    roleType    = validationSchema.TypeDefAsValidationType(roleTypeDef),
+                    roleType    = nativeSchema.TypeAsValidationType<Role>(validationSchema)
                 };
                 Validate(validator, types);
             }

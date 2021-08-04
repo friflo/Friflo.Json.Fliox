@@ -7,8 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Friflo.Json.Flow.Schema;
-using Friflo.Json.Flow.Schema.Definition;
-using Friflo.Json.Flow.Schema.JSON;
 using Friflo.Json.Flow.Schema.Utils;
 using NUnit.Framework;
 
@@ -77,15 +75,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
                 list.Add($"./{@namespace}{type.Name}.json#/definitions/{type.Name}");
             }
             return list;
-        }
-        
-        public static string TypeAsJsonType(Type type, string @namespace) {
-            return $"./{@namespace}{type.Name}.json#/definitions/{type.Name}";
-        }
-        
-        public static TypeDef TypeAsTypeDef(Type type, JsonTypeSchema jsonSchema, string @namespace) {
-            var path = TypeAsJsonType(type, @namespace);
-            return jsonSchema.TypeAsTypeDef(path);
         }
         
         public static void AssertFoldersAreEqual(string expectFolder, string otherFolder) {
