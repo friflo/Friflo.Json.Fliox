@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         public static ValidationType TypeAsValidationType<T>(this JsonTypeSchema jsonSchema, ValidationSchema schema, string @namespace = null) {
             var type = typeof(T);
             @namespace = @namespace ?? type.Namespace;
-            var path = $"./{@namespace}{type.Name}.json#/definitions/{type.Name}";
+            var path = $"./{@namespace}.{type.Name}.json#/definitions/{type.Name}";
             var typeDef = jsonSchema.TypeAsTypeDef(path);
             return schema.TypeDefAsValidationType(typeDef);
         }

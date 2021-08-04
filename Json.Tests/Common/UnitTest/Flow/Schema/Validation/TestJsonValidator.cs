@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var validationSchema = new ValidationSchema(jsonSchema))
             using (var validator        = new JsonValidator()) {
                 var types = new TestTypes {
-                    roleType    = jsonSchema.TypeAsValidationType<Role>(validationSchema, "Friflo.Json.Flow.UserAuth.")
+                    roleType    = jsonSchema.TypeAsValidationType<Role>(validationSchema, "Friflo.Json.Flow.UserAuth")
                 };
                 Validate(validator, types);
             }
