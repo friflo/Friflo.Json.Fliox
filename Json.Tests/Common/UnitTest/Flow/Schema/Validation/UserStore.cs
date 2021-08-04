@@ -67,14 +67,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
         
         private static void ValidateFailure(JsonValidator validator, TestTypes test)
         {
-            IsFalse(validator.ValidateObject    ("123",             test.roleType, out var error));
+            IsFalse(validator.ValidateObject("123",                 test.roleType, out var error));
             AreEqual("ValidateObject expect object. was: ValueNumber, path: (root), pos: 3", error);
             
-            IsFalse(validator.ValidateObject    ("{}",              test.roleType, out error));
+            IsFalse(validator.ValidateObject("{}",                  test.roleType, out error));
             AreEqual("missing required fields in type: Friflo.Json.Flow.UserAuth.Role, missing-fields: [id, rights], path: (root), pos: 2", error);
             
-            IsFalse(validator.ValidateObject    ("[]",              test.roleType, out error));
+            IsFalse(validator.ValidateObject("[]",                  test.roleType, out error));
             AreEqual("ValidateObject expect object. was: ArrayStart, path: [], pos: 1", error);
+            
+            IsFalse(validator.ValidateObject(test.roleUnknownDisc,  test.roleType, out error));
+            AreEqual("Unknown discriminant: xxx, path: rights[0].type, pos: 41", error);
+            
+            IsFalse(validator.ValidateObject(test.roleMissingDisc,  test.roleType, out error));
+            AreEqual("Expect discriminator string as first member. Expect: type, was: ObjectEnd, path: rights[0], pos: 29", error);
+
         }
         
         private class TestTypes {
@@ -85,7 +92,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
                 @"{'id': 'role-database','description': 'test',
                     'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'update'], 'subscribeChanges': ['update'] }}} ]
                 }");
-            
+            internal    readonly string roleUnknownDisc = AsJson(@"{'id': 'role', 'rights': [{ 'type': 'xxx' }] }");
+            internal    readonly string roleMissingDisc = AsJson(@"{'id': 'role', 'rights': [{ }] }");
         }
 
         // --- helper
