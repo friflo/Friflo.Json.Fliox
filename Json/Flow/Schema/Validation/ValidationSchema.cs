@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         private  readonly   List<ValidationType>                types;
         private  readonly   Dictionary<TypeDef, ValidationType> typeMap;
         
-        public              ValidationType                      TypeAsValidationType(TypeDef type) => typeMap[type];
+        public              ValidationType                      TypeDefAsValidationType(TypeDef type) => typeMap[type];
 
         /// <summary>
         /// Construct a <see cref="ValidationSchema"/> from a given <see cref="JSON.JsonTypeSchema"/> or a

@@ -26,13 +26,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
         
         [Test]
         public static void ValidateByJsonSchema() {
-            var schemas             = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
-            var jsonSchema          = new JsonTypeSchema(schemas);
-            using (var schema       = new ValidationSchema(jsonSchema))
-            using (var validator    = new JsonValidator()) {
-                TypeDef roleTypeDef = SchemaTest.TypeAsTypeDef (typeof(Role),   jsonSchema, "Friflo.Json.Flow.UserAuth.");
+            var schemas                 = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
+            var jsonSchema              = new JsonTypeSchema(schemas);
+            using (var validationSchema = new ValidationSchema(jsonSchema))
+            using (var validator        = new JsonValidator()) {
+                TypeDef roleTypeDef     = SchemaTest.TypeAsTypeDef (typeof(Role),   jsonSchema, "Friflo.Json.Flow.UserAuth.");
                 var types = new TestTypes {
-                    roleType    = schema.TypeAsValidationType(roleTypeDef),
+                    roleType    = validationSchema.TypeDefAsValidationType(roleTypeDef),
                 };
                 Validate(validator, types);
             }
@@ -40,13 +40,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
         
         [Test]
         public static void ValidateByTypes() {
-            using (var typeStore    = CreateTypeStore(UserStoreTypes))
-            using (var nativeSchema = new NativeTypeSchema(typeStore))
-            using (var schema       = new ValidationSchema(nativeSchema))
-            using (var validator    = new JsonValidator()) {
-                TypeDef roleTypeDef = nativeSchema.TypeAsTypeDef(typeof(Role));
+            using (var typeStore        = CreateTypeStore(UserStoreTypes))
+            using (var nativeSchema     = new NativeTypeSchema(typeStore))
+            using (var validationSchema = new ValidationSchema(nativeSchema))
+            using (var validator        = new JsonValidator()) {
+                TypeDef roleTypeDef     = nativeSchema.TypeAsTypeDef(typeof(Role));
                 var types = new TestTypes {
-                    roleType    = schema.TypeAsValidationType(roleTypeDef),
+                    roleType    = validationSchema.TypeDefAsValidationType(roleTypeDef),
                 };
                 Validate(validator, types);
             }
