@@ -28,10 +28,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             var jsonSchema              = new JsonTypeSchema(schemas);
             using (var validationSet    = new ValidationSet(jsonSchema))
             using (var validator        = new JsonValidator()) {
-                var types = new TestTypes {
+                var test = new TestTypes {
                     roleType    = jsonSchema.TypeAsValidationType<Role>(validationSet, "Friflo.Json.Flow.UserAuth")
                 };
-                Validate(validator, types);
+                ValidateSuccess(validator, test);
+                ValidateFailure(validator, test);
             }
         }
         
@@ -41,19 +42,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var nativeSchema     = new NativeTypeSchema(typeStore))
             using (var validationSet    = new ValidationSet(nativeSchema))
             using (var validator        = new JsonValidator()) {
-                var types = new TestTypes {
+                var test = new TestTypes {
                     roleType    = nativeSchema.TypeAsValidationType<Role>(validationSet)
                 };
-                Validate(validator, types);
+                ValidateSuccess(validator, test);
+                ValidateFailure(validator, test);
             }
         }
         
-        private static void Validate(JsonValidator validator, TestTypes test) {
+        private static void ValidateSuccess(JsonValidator validator, TestTypes test) {
             IsTrue(validator.ValidateObject     ("{}",              test.roleType, out _));
             IsTrue(validator.ValidateArray      ("[]",              test.roleType, out _));
             IsTrue(validator.ValidateObjectMap  ("{\"key\": {}}",   test.roleType, out _));
 
             IsTrue(validator.ValidateObject     (test.roleValid,    test.roleType, out _));
+        }
+        
+        private static void ValidateFailure(JsonValidator validator, TestTypes test) {
+            IsFalse(validator.ValidateObject    ("123",             test.roleType, out var error));
+            AreEqual("ValidateObject expect object. was: ValueNumber", error);
         }
         
         private class TestTypes {
