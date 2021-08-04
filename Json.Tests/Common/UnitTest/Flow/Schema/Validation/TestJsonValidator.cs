@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Schema.Definition;
 using Friflo.Json.Flow.Schema.JSON;
 using Friflo.Json.Flow.Schema.Native;
 using Friflo.Json.Flow.Schema.Validation;
@@ -26,12 +27,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
         
         [Test]
         public static void ValidateByJsonSchema() {
-            var schemas         = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
-            var jsonSchema      = new JsonTypeSchema(schemas);
-            using (var parser   = new Local<JsonParser>())
-            using (var schema   = new ValidationSchema(jsonSchema))
-            using (var validator= new JsonValidator()) {
-                var roleTypeDef     = SchemaTest.TypeAsTypeDef (typeof(Role),   jsonSchema, "Friflo.Json.Flow.UserAuth.");
+            var schemas             = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
+            var jsonSchema          = new JsonTypeSchema(schemas);
+            using (var parser       = new Local<JsonParser>())
+            using (var schema       = new ValidationSchema(jsonSchema))
+            using (var validator    = new JsonValidator()) {
+                TypeDef roleTypeDef = SchemaTest.TypeAsTypeDef (typeof(Role),   jsonSchema, "Friflo.Json.Flow.UserAuth.");
                 var types = new TestTypes {
                     role    = schema.TypeAsValidationType(roleTypeDef),
                 };
@@ -46,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var schema       = new ValidationSchema(nativeSchema))
             using (var parser       = new Local<JsonParser>())
             using (var validator    = new JsonValidator()) {
-                var roleTypeDef     = nativeSchema.TypeAsTypeDef(typeof(Role));
+                TypeDef roleTypeDef = nativeSchema.TypeAsTypeDef(typeof(Role));
                 var types = new TestTypes {
                     role    = schema.TypeAsValidationType(roleTypeDef),
                 };
