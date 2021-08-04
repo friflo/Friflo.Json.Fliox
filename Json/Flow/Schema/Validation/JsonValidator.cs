@@ -267,7 +267,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return true;
                     }
                     msg = "Found floating point number but expect integer";
-                    return true;
+                    return false;
                 case TypeId.Float:
                 case TypeId.Double:
                     msg = null;
