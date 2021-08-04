@@ -89,15 +89,8 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return Error($"Unknown discriminant: {parser.value}");
                 }
             }
-            // init foundFields array
-            while (foundFieldsCache.Count <= depth) { foundFieldsCache.Add(null); }
-            int requiredCount = type.requiredFieldsCount;
-            bool[] foundFields = foundFieldsCache[depth];
-            if (foundFields == null || foundFields.Length < requiredCount) {
-                foundFields = foundFieldsCache[depth] = new bool[requiredCount];
-            }
-            for (int n= 0; n < requiredCount; n++) { foundFields[n] = false; }
-            
+            var foundFields = GetFoundFields(type, foundFieldsCache, depth);
+
             while (true) {
                 var             ev = parser.NextEvent();
                 ValidationField field;
@@ -157,13 +150,9 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return Error($"Found object but expect: {field.typeId}, field: {field}");
                     
                     case JsonEvent.ObjectEnd:
-                        var foundCount = 0;
-                        for (int n = 0; n < requiredCount; n++) {
-                            if (foundFields[n])
-                                foundCount++;
-                        }
-                        if (foundCount < requiredCount) {
-                            // return Error($"missing required fields in type: {type}, missing: {type.requiredFieldsCount - foundCount}");
+                        if (type.HasMissingFields(foundFields, out var missingFields)) {
+                            var missing = string.Join(", ", missingFields);
+                            return Error($"missing required fields in type: {type}, missing fields: {missing}");
                         }
                         return true;
                     
@@ -278,6 +267,21 @@ namespace Friflo.Json.Flow.Schema.Validation
                     msg = $"Found number but expect: {type.typeId}";
                     return false;
             }
+        }
+        
+        private static bool[] GetFoundFields(ValidationType type, List<bool[]> foundFieldsCache, int depth) {
+            while (foundFieldsCache.Count <= depth) {
+                foundFieldsCache.Add(null);
+            }
+            int requiredCount = type.requiredFieldsCount;
+            bool[] foundFields = foundFieldsCache[depth];
+            if (foundFields == null || foundFields.Length < requiredCount) {
+                foundFields = foundFieldsCache[depth] = new bool[requiredCount];
+            }
+            for (int n= 0; n < requiredCount; n++) {
+                foundFields[n] = false;
+            }
+            return foundFields;
         }
     }
 }

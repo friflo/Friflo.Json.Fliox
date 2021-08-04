@@ -50,25 +50,39 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             }
         }
         
-        private static void ValidateSuccess(JsonValidator validator, TestTypes test) {
-            IsTrue(validator.ValidateObject     ("{}",              test.roleType, out _));
-            IsTrue(validator.ValidateArray      ("[]",              test.roleType, out _));
-            IsTrue(validator.ValidateObjectMap  ("{\"key\": {}}",   test.roleType, out _));
+        private static void ValidateSuccess(JsonValidator validator, TestTypes test)
+        {
+            IsTrue(validator.ValidateObject     (test.roleDeny,     test.roleType, out _));
+            IsTrue(validator.ValidateObject     (test.roleDatabase, test.roleType, out _));
 
-            IsTrue(validator.ValidateObject     (test.roleValid,    test.roleType, out _));
+            var json = "[" + test.roleDeny + "]";
+            IsTrue(validator.ValidateArray      (json,              test.roleType, out _));
+
+            json = "{\"key\": " + test.roleDeny + "}";
+            IsTrue(validator.ValidateObjectMap  (json,              test.roleType, out _));
         }
         
-        private static void ValidateFailure(JsonValidator validator, TestTypes test) {
+        private static void ValidateFailure(JsonValidator validator, TestTypes test)
+        {
             IsFalse(validator.ValidateObject    ("123",             test.roleType, out var error));
             AreEqual("ValidateObject expect object. was: ValueNumber", error);
+            
+            IsFalse(validator.ValidateObject    ("{}",              test.roleType, out error));
+            AreEqual("missing required fields in type: Friflo.Json.Flow.UserAuth.Role, missing fields: id, rights", error);
+            
+            IsFalse(validator.ValidateObject    ("[]",              test.roleType, out error));
+            AreEqual("ValidateObject expect object. was: ArrayStart", error);
         }
         
         private class TestTypes {
             internal    ValidationType  roleType;
-            internal    readonly string roleValid = AsJson(
+            
+            internal    readonly string roleDeny        = AsJson(@"{'id': 'role-deny', 'rights': [  ] }");
+            internal    readonly string roleDatabase    = AsJson(
                 @"{'id': 'role-database','description': 'test',
                     'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'update'], 'subscribeChanges': ['update'] }}} ]
                 }");
+            
         }
 
         // --- helper

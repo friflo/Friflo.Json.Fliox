@@ -47,7 +47,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         public   readonly   ValidationUnion     unionType;
         private  readonly   Bytes[]             enumValues;
         
-        public  override    string              ToString() => $"{typeId} - {@namespace}.{name}";
+        public  override    string              ToString() => $"{@namespace}.{name}";
         
         internal ValidationType (TypeId typeId, TypeDef typeDef) {
             this.typeId     = typeId;
@@ -153,6 +153,25 @@ namespace Friflo.Json.Flow.Schema.Validation
             msg = $"field not found in type: {type}, key: {key}";
             field = null;
             return false;
+        }
+
+        public bool HasMissingFields(bool[] foundFields, out string[] missingFields) {
+            var foundCount = 0;
+            for (int n = 0; n < requiredFieldsCount; n++) {
+                if (foundFields[n])
+                    foundCount++;
+            }
+            var missingCount = requiredFieldsCount - foundCount;
+            if (missingCount == 0) {
+                missingFields = null;
+                return false;
+            }
+            missingFields = new string [missingCount];
+            for (int n = 0; n < requiredFieldsCount; n++) {
+                if (!foundFields[n])
+                    missingFields[n] = requiredFields[n].fieldName;
+            }
+            return true;
         }
     }
     
