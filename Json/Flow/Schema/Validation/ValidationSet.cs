@@ -8,10 +8,10 @@ using Friflo.Json.Flow.Schema.Definition;
 namespace Friflo.Json.Flow.Schema.Validation
 {
     /// <summary>
-    /// <see cref="ValidationSchema"/> provide the validation rules for <see cref="JsonValidator"/> to validate
+    /// <see cref="ValidationSet"/> provide the validation rules for <see cref="JsonValidator"/> to validate
     /// arbitrary JSON payloads by <see cref="JsonValidator.ValidateObject"/>.
     /// </summary>
-    public class ValidationSchema : IDisposable
+    public class ValidationSet : IDisposable
     {
         private  readonly   List<ValidationType>                types;
         private  readonly   Dictionary<TypeDef, ValidationType> typeMap;
@@ -19,11 +19,11 @@ namespace Friflo.Json.Flow.Schema.Validation
         public              ValidationType                      TypeDefAsValidationType(TypeDef type) => typeMap[type];
 
         /// <summary>
-        /// Construct a <see cref="ValidationSchema"/> from a given <see cref="JSON.JsonTypeSchema"/> or a
-        /// <see cref="Native.NativeTypeSchema"/>. The <see cref="ValidationSchema"/> is intended to be used by
+        /// Construct a <see cref="ValidationSet"/> from a given <see cref="JSON.JsonTypeSchema"/> or a
+        /// <see cref="Native.NativeTypeSchema"/>. The <see cref="ValidationSet"/> is intended to be used by
         /// <see cref="JsonValidator"/> to validate JSON payloads by <see cref="JsonValidator.ValidateObject"/>. 
         /// </summary>
-        public ValidationSchema (TypeSchema schema) {
+        public ValidationSet (TypeSchema schema) {
             var schemaTypes = schema.Types;
             var typeCount   = schemaTypes.Count + 20; // 20 - roughly the number of StandardTypes
             types           = new List<ValidationType>                  (typeCount);

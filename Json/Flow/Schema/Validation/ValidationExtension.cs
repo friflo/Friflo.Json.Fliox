@@ -8,18 +8,18 @@ namespace Friflo.Json.Flow.Schema.Validation
 {
     public static class ValidationExtension
     {
-        public static ValidationType TypeAsValidationType<T>(this NativeTypeSchema nativeSchema, ValidationSchema schema) {
+        public static ValidationType TypeAsValidationType<T>(this NativeTypeSchema nativeSchema, ValidationSet validationSet) {
             var type = typeof(T);
             var typeDef = nativeSchema.TypeAsTypeDef(type);
-            return schema.TypeDefAsValidationType(typeDef);
+            return validationSet.TypeDefAsValidationType(typeDef);
         }
         
-        public static ValidationType TypeAsValidationType<T>(this JsonTypeSchema jsonSchema, ValidationSchema schema, string @namespace = null) {
+        public static ValidationType TypeAsValidationType<T>(this JsonTypeSchema jsonSchema, ValidationSet validationSet, string @namespace = null) {
             var type = typeof(T);
             @namespace = @namespace ?? type.Namespace;
             var path = $"./{@namespace}.{type.Name}.json#/definitions/{type.Name}";
             var typeDef = jsonSchema.TypeAsTypeDef(path);
-            return schema.TypeDefAsValidationType(typeDef);
+            return validationSet.TypeDefAsValidationType(typeDef);
         }
     } 
 }
