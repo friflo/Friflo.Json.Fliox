@@ -68,7 +68,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             AreEqual("ValidateObject expect object. was: ValueNumber", error);
             
             IsFalse(validator.ValidateObject    ("{}",              test.roleType, out error));
-            AreEqual("missing required fields in type: Friflo.Json.Flow.UserAuth.Role, missing fields: id, rights", error);
+            AreEqual("missing required fields in type: Friflo.Json.Flow.UserAuth.Role, missing-fields: [id, rights]", error);
             
             IsFalse(validator.ValidateObject    ("[]",              test.roleType, out error));
             AreEqual("ValidateObject expect object. was: ArrayStart", error);

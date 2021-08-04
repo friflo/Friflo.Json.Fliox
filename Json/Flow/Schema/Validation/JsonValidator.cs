@@ -152,7 +152,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     case JsonEvent.ObjectEnd:
                         if (type.HasMissingFields(foundFields, out var missingFields)) {
                             var missing = string.Join(", ", missingFields);
-                            return Error($"missing required fields in type: {type}, missing fields: {missing}");
+                            return Error($"missing required fields in type: {type}, missing-fields: [{missing}]");
                         }
                         return true;
                     
