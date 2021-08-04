@@ -17,7 +17,7 @@ using static NUnit.Framework.Assert;
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
 {
     // ReSharper disable once ClassNeverInstantiated.Global
-    public class TestJsonValidator : LeakTestsFixture
+    public class ValidateUserStore : LeakTestsFixture
     {
         static readonly         string  JsonSchemaFolder = CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore";
         private static readonly Type[]  UserStoreTypes   = { typeof(Role), typeof(UserCredential), typeof(UserPermission) };
