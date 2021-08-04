@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Burst;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Schema.Definition;
@@ -29,14 +28,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
         public static void ValidateByJsonSchema() {
             var schemas             = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
             var jsonSchema          = new JsonTypeSchema(schemas);
-            using (var parser       = new Local<JsonParser>())
             using (var schema       = new ValidationSchema(jsonSchema))
             using (var validator    = new JsonValidator()) {
                 TypeDef roleTypeDef = SchemaTest.TypeAsTypeDef (typeof(Role),   jsonSchema, "Friflo.Json.Flow.UserAuth.");
                 var types = new TestTypes {
                     roleType    = schema.TypeAsValidationType(roleTypeDef),
                 };
-                Validate(validator, types, ref parser.value);
+                Validate(validator, types);
             }
         }
         
@@ -45,22 +43,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var typeStore    = CreateTypeStore(UserStoreTypes))
             using (var nativeSchema = new NativeTypeSchema(typeStore))
             using (var schema       = new ValidationSchema(nativeSchema))
-            using (var parser       = new Local<JsonParser>())
             using (var validator    = new JsonValidator()) {
                 TypeDef roleTypeDef = nativeSchema.TypeAsTypeDef(typeof(Role));
                 var types = new TestTypes {
                     roleType    = schema.TypeAsValidationType(roleTypeDef),
                 };
-                Validate(validator, types, ref parser.value);
+                Validate(validator, types);
             }
         }
         
-        private static void Validate(JsonValidator validator, TestTypes test, ref JsonParser parser) {
-            IsTrue(validator.ValidateObject     (ref parser, "{}",              test.roleType, out _));
-            IsTrue(validator.ValidateArray      (ref parser, "[]",              test.roleType, out _));
-            IsTrue(validator.ValidateObjectMap  (ref parser, "{\"key\": {}}",   test.roleType, out _));
+        private static void Validate(JsonValidator validator, TestTypes test) {
+            IsTrue(validator.ValidateObject     ("{}",              test.roleType, out _));
+            IsTrue(validator.ValidateArray      ("[]",              test.roleType, out _));
+            IsTrue(validator.ValidateObjectMap  ("{\"key\": {}}",   test.roleType, out _));
 
-            IsTrue(validator.ValidateObject     (ref parser, test.roleValid,    test.roleType, out _));
+            IsTrue(validator.ValidateObject     (test.roleValid,    test.roleType, out _));
         }
         
         private class TestTypes {

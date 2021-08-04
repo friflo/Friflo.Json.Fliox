@@ -10,22 +10,24 @@ namespace Friflo.Json.Flow.Schema.Validation
 {
     public class JsonValidator : IDisposable
     {
-        private  Bytes                      jsonBytes = new Bytes(128);
+        private             Bytes           jsonBytes = new Bytes(128);
+        private             JsonParser      parser;
         private             string          errorMsg;
         private  readonly   List<bool[]>    foundFieldsCache = new List<bool[]>();
         
         public void Dispose() {
+            parser.Dispose();
             jsonBytes.Dispose();
         }
         
-        private void Init(ref JsonParser parser, string json) {
+        private void Init(string json) {
             errorMsg = null;
             jsonBytes.Clear();
             jsonBytes.AppendString(json);
             parser.InitParser(jsonBytes);
         }
         
-        private bool Return(ref JsonParser parser, bool success, out string error) {
+        private bool Return(bool success, out string error) {
             if (!success) {
                 error = errorMsg;
                 return false;
@@ -39,40 +41,40 @@ namespace Friflo.Json.Flow.Schema.Validation
             return false;
         }
 
-        public bool ValidateObject (ref JsonParser parser, string json, ValidationType type, out string error) {
-            Init(ref parser, json);
+        public bool ValidateObject (string json, ValidationType type, out string error) {
+            Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ObjectStart) {
-                bool success = ValidateObject(ref parser, type, 0);
-                return Return(ref parser, success, out error);    
+                bool success = ValidateObject(type, 0);
+                return Return(success, out error);    
             }
             error = $"ValidateObject expect object. was: {ev}";
             return false;
         }
         
-        public bool ValidateObjectMap (ref JsonParser parser, string json, ValidationType type, out string error) {
-            Init(ref parser, json);
+        public bool ValidateObjectMap (string json, ValidationType type, out string error) {
+            Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ObjectStart) {
-                bool success = ValidateElement(ref parser, type, "", false, 0);
-                return Return(ref parser, success, out error);    
+                bool success = ValidateElement(type, "", false, 0);
+                return Return(success, out error);    
             }
             error = $"ValidateObjectMap expect object. was: {ev}";
             return false;
         }
 
-        public bool ValidateArray (ref JsonParser parser, string json, ValidationType type, out string error) {
-            Init(ref parser, json);
+        public bool ValidateArray (string json, ValidationType type, out string error) {
+            Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ArrayStart) {
-                bool success = ValidateElement(ref parser, type, "", true, 0);
-                return Return(ref parser, success, out error);    
+                bool success = ValidateElement(type, "", true, 0);
+                return Return(success, out error);    
             }
             error = $"ValidateArray expect array. was: {ev}";
             return false;
         }
         
-        private bool ValidateObject (ref JsonParser parser, ValidationType type, int depth)
+        private bool ValidateObject (ValidationType type, int depth)
         {
             if (type.typeId == TypeId.Union) {
                 var ev      = parser.NextEvent();
@@ -133,7 +135,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         if (!ValidationType.FindField(type, ref parser.key, out field, out msg, foundFields))
                             return Error(msg);
                         if (field.isArray) {
-                            if (ValidateElement (ref parser, field.type, field.fieldName, true, depth))
+                            if (ValidateElement (field.type, field.fieldName, true, depth))
                                 continue;
                             return false;
                         }
@@ -144,11 +146,11 @@ namespace Friflo.Json.Flow.Schema.Validation
                             return Error(msg);
                         if (field.typeId == TypeId.Complex) {
                             if (field.isDictionary) {
-                                if (ValidateElement (ref parser, field.type, field.fieldName, false, depth))
+                                if (ValidateElement (field.type, field.fieldName, false, depth))
                                     continue;
                                 return false;
                             }
-                            if (ValidateElement (ref parser, field.type, field.fieldName, true, depth))
+                            if (ValidateElement (field.type, field.fieldName, true, depth))
                                 continue;
                             return false;
                         }
@@ -177,7 +179,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
         }
         
-        private bool ValidateElement (ref JsonParser parser, ValidationType type, string fieldName, bool isArray, int depth) {
+        private bool ValidateElement (ValidationType type, string fieldName, bool isArray, int depth) {
             while (true) {
                 var     ev = parser.NextEvent();
                 string  msg;
@@ -206,7 +208,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     case JsonEvent.ObjectStart:
                         if (type.typeId == TypeId.Complex || type.typeId == TypeId.Union) {
                             // in case of a dictionary the key is not relevant
-                            if (ValidateObject(ref parser, type, depth + 1))
+                            if (ValidateObject(type, depth + 1))
                                 continue;
                             return false;
                         }
