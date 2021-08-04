@@ -79,7 +79,7 @@ namespace Friflo.Playground.Perf.Mapper
                         if (p.error.ErrSet)
                             Fail(p.error.msg.ToString());
                     }
-                    IsTrue(p.InputPos > 49_000_000);
+                    IsTrue(p.Position > 49_000_000);
                 }
                 int end = TimeUtil.GetMs();
                 Console.WriteLine(end - start);
