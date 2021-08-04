@@ -168,7 +168,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return Error(type, $"Found array end ']' in object: {ev}");
                     
                     case JsonEvent.Error:
-                        return Error(type, parser.error.msg.ToString());
+                        return Error(type, parser.error.GetMessageBody());
 
                     default:
                         return Error(type, $"Unexpected JSON event in object: {ev}");
@@ -222,7 +222,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return Error(type, $"Found array end ']' in object: {ev}");
                     
                     case JsonEvent.Error:
-                        return Error(type, parser.error.msg.ToString());
+                        return Error(type, parser.error.GetMessageBody());
 
                     default:
                         return Error(type, $"Unexpected JSON event: {ev}");

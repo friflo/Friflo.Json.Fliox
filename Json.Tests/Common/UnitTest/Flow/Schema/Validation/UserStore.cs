@@ -81,7 +81,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             IsFalse(validator.ValidateObject(test.roleMissingDisc,  test.roleType, out error));
             AreEqual("Expect discriminator as first member. Expect: 'type', was: 'ObjectEnd' - type: Friflo.Json.Flow.Auth.Rights.Right, path: rights[0], pos: 29", error);
-
+            
+            IsFalse(validator.ValidateObject("{]",                  test.roleType, out error));
+            AreEqual("unexpected character > expect key. Found: ] - type: Friflo.Json.Flow.UserAuth.Role, path: (root), pos: 2", error);
         }
         
         private class TestTypes {

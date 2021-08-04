@@ -18,12 +18,15 @@ namespace Friflo.Json.Burst
     // Intended to be passed as ref parameter to be able notify a possible error 
     public struct JsonError : IDisposable
     {
-        public  bool            ErrSet  { get; private set; }
-        public  Bytes           msg;
-        public  int             Pos     { get; private set; }
+        public      bool            ErrSet  { get; private set; }
+        public      Bytes           msg;
+        public      int             Pos     { get; private set; }
+        
+        internal    int             msgBodyStart;
+        internal    int             msgBodyEnd;
         
 #if !JSON_BURST
-        public  IErrorHandler   errorHandler;
+        public      IErrorHandler   errorHandler;
 #endif
         public void InitJsonError(int capacity) {
             msg.InitBytes(capacity);
@@ -48,9 +51,17 @@ namespace Friflo.Json.Burst
             msg.Clear();
         }
     
-        public override String ToString () {
+        public override string ToString () {
             return msg.ToString();
+        }
+        
+        public string GetMessageBody () {
+            var body = msg;
+            body.start  = msgBodyStart;
+            body.end    = msgBodyEnd;
+            return body.ToString();
         }   
+        
     }
 
     public interface IErrorHandler {
