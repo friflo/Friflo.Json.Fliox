@@ -54,6 +54,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
         {
             IsTrue(validator.ValidateObject     (test.roleDeny,     test.roleType, out _));
             IsTrue(validator.ValidateObject     (test.roleDatabase, test.roleType, out _));
+            
+            IsTrue(validator.ValidateArray      ("[]",              test.roleType, out _));
+            IsTrue(validator.ValidateObjectMap  ("{}",              test.roleType, out _));
 
             var json = "[" + test.roleDeny + "]";
             IsTrue(validator.ValidateArray      (json,              test.roleType, out _));
