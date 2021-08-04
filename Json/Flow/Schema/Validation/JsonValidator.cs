@@ -46,9 +46,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 error = null;
                 return true;
             }
-            Error(type, "Expected EOF after reading JSON");
-            error = errorMsg;
-            return false;
+            return RootError(type, "Expected EOF after reading JSON", out error);
         }
 
         public bool ValidateObject (string json, ValidationType type, out string error) {
@@ -58,9 +56,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 bool success = ValidateObject(type, 0);
                 return Return(type, success, out error);    
             }
-            Error(type, $"ValidateObject() expect object. was: {ev}");
-            error = errorMsg;
-            return false;
+            return RootError(type, $"ValidateObject() expect object. was: {ev}", out error);
         }
         
         public bool ValidateObjectMap (string json, ValidationType type, out string error) {
@@ -70,9 +66,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 bool success = ValidateElement(type, false, 0);
                 return Return(type, success, out error);    
             }
-            Error (type, $"ValidateObjectMap() expect object. was: {ev}");
-            error = errorMsg;
-            return false;
+            return RootError(type, $"ValidateObjectMap() expect object. was: {ev}", out error);
         }
 
         public bool ValidateArray (string json, ValidationType type, out string error) {
@@ -82,9 +76,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 bool success = ValidateElement(type, true, 0);
                 return Return(type, success, out error);    
             }
-            Error(type, $"ValidateArray() expect array. was: {ev}");
-            error = errorMsg;
-            return false;
+            return RootError(type, $"ValidateArray() expect array. was: {ev}", out error);
         }
         
         private bool ValidateObject (ValidationType type, int depth)
@@ -234,6 +226,16 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return Error(type, $"Unexpected JSON event: {ev}");
                 }
             }
+        }
+        
+        private bool RootError (ValidationType type, string msg, out string error) {
+            if (parser.Event == JsonEvent.Error) {
+                Error(type, parser.error.GetMessageBody());
+            } else {
+                Error(type, msg);
+            }
+            error = errorMsg;
+            return false;
         }
         
         private bool Error (ValidationType type, string msg) {

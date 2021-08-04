@@ -68,7 +68,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
         
         private static void ValidateFailure(JsonValidator validator, TestTypes test)
         {
-            IsFalse(validator.ValidateObject("123",                 test.roleType, out var error));
+            IsFalse(validator.ValidateObject("",                    test.roleType, out var error));
+            AreEqual("unexpected EOF on root - type: Role, path: (root), pos: 0", error);
+            
+            IsFalse(validator.ValidateObject("123",                 test.roleType, out error));
             AreEqual("ValidateObject() expect object. was: ValueNumber - type: Role, path: (root), pos: 3", error);
             
             IsFalse(validator.ValidateObject("{}",                  test.roleType, out error));
