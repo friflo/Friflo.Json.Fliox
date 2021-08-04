@@ -38,7 +38,7 @@ namespace Friflo.Json.Flow.Schema.Validation
     /// </summary>
     public sealed class ValidationType : IDisposable {
         private  readonly   TypeDef             typeDef;    // only for debugging
-        private  readonly   string              name;       // only for debugging
+        public   readonly   string              name;       // only for debugging
         private  readonly   string              @namespace; // only for debugging
         public   readonly   TypeId              typeId;
         private  readonly   ValidationField[]   fields;

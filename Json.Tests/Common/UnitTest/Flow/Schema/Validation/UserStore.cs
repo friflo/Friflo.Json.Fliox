@@ -41,7 +41,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var typeStore        = CreateTypeStore(UserStoreTypes))
             using (var nativeSchema     = new NativeTypeSchema(typeStore))
             using (var validationSet    = new ValidationSet(nativeSchema))
-            using (var validator        = new JsonValidator()) {
+            using (var validator        = new JsonValidator(true)) {
+                validator.qualifiedTypeErrors = false; // ensure API available
                 var test = new TestTypes {
                     roleType    = nativeSchema.TypeAsValidationType<Role>(validationSet)
                 };
@@ -68,22 +69,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
         private static void ValidateFailure(JsonValidator validator, TestTypes test)
         {
             IsFalse(validator.ValidateObject("123",                 test.roleType, out var error));
-            AreEqual("ValidateObject() expect object. was: ValueNumber - type: Friflo.Json.Flow.UserAuth.Role, path: (root), pos: 3", error);
+            AreEqual("ValidateObject() expect object. was: ValueNumber - type: Role, path: (root), pos: 3", error);
             
             IsFalse(validator.ValidateObject("{}",                  test.roleType, out error));
-            AreEqual("Missing required fields: [id, rights] - type: Friflo.Json.Flow.UserAuth.Role, path: (root), pos: 2", error);
+            AreEqual("Missing required fields: [id, rights] - type: Role, path: (root), pos: 2", error);
             
             IsFalse(validator.ValidateObject("[]",                  test.roleType, out error));
-            AreEqual("ValidateObject() expect object. was: ArrayStart - type: Friflo.Json.Flow.UserAuth.Role, path: [], pos: 1", error);
+            AreEqual("ValidateObject() expect object. was: ArrayStart - type: Role, path: [], pos: 1", error);
             
             IsFalse(validator.ValidateObject(test.roleUnknownDisc,  test.roleType, out error));
-            AreEqual("Unknown discriminant: xxx - type: Friflo.Json.Flow.Auth.Rights.Right, path: rights[0].type, pos: 41", error);
+            AreEqual("Unknown discriminant: 'xxx' - type: Right, path: rights[0].type, pos: 41", error);
             
             IsFalse(validator.ValidateObject(test.roleMissingDisc,  test.roleType, out error));
-            AreEqual("Expect discriminator as first member. Expect: 'type', was: 'ObjectEnd' - type: Friflo.Json.Flow.Auth.Rights.Right, path: rights[0], pos: 29", error);
+            AreEqual("Expect discriminator as first member. Expect: 'type', was: ObjectEnd - type: Right, path: rights[0], pos: 29", error);
             
             IsFalse(validator.ValidateObject("{]",                  test.roleType, out error));
-            AreEqual("unexpected character > expect key. Found: ] - type: Friflo.Json.Flow.UserAuth.Role, path: (root), pos: 2", error);
+            AreEqual("unexpected character > expect key. Found: ] - type: Role, path: (root), pos: 2", error);
         }
         
         private class TestTypes {

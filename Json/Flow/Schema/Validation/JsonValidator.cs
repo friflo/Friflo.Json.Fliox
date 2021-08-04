@@ -16,6 +16,12 @@ namespace Friflo.Json.Flow.Schema.Validation
         private  readonly   List<bool[]>    foundFieldsCache = new List<bool[]>();
         private  readonly   StringBuilder   sb = new StringBuilder();
         
+        public              bool            qualifiedTypeErrors;
+        
+        public JsonValidator (bool qualifiedTypeErrors = false) {
+            this.qualifiedTypeErrors = qualifiedTypeErrors;
+        }
+        
         public void Dispose() {
             parser.Dispose();
             jsonBytes.Dispose();
@@ -87,13 +93,13 @@ namespace Friflo.Json.Flow.Schema.Validation
                 var ev      = parser.NextEvent();
                 var unionType = type.unionType;
                 if (ev != JsonEvent.ValueString) {
-                    return Error(type, $"Expect discriminator as first member. Expect: '{unionType.discriminatorStr}', was: '{ev}'");
+                    return Error(type, $"Expect discriminator as first member. Expect: '{unionType.discriminatorStr}', was: {ev}");
                 }
                 if (!parser.key.IsEqual(ref unionType.discriminator)) {
                     return Error(type, $"Unexpected discriminator name. was: {parser.key}, expect: {unionType.discriminatorStr}");
                 }
                 if (!ValidationUnion.FindUnion(unionType, ref parser.value, out var newType)) {
-                    return Error(type, $"Unknown discriminant: {parser.value}");
+                    return Error(type, $"Unknown discriminant: '{parser.value}'");
                 }
                 type = newType;
             }
@@ -236,7 +242,11 @@ namespace Friflo.Json.Flow.Schema.Validation
             sb.Clear();
             sb.Append(msg);
             sb.Append(" - type: ");
-            sb.Append(type);
+            if (qualifiedTypeErrors) {
+                sb.Append(type);
+            } else {
+                sb.Append(type.name);
+            }
             sb.Append(", path: ");
             sb.Append(parser.GetPath());
             sb.Append(", pos: ");
