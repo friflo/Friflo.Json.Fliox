@@ -155,7 +155,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                                     continue;
                                 return false;
                             }
-                            if (ValidateElement (field.type, true, depth))
+                            if (ValidateObject (field.type, depth + 1))
                                 continue;
                             return false;
                         }

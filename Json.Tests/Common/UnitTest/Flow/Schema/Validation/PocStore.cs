@@ -56,6 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
         private static void ValidateSuccess(JsonValidator validator, TestTypes test)
         {
             IsTrue(validator.ValidateObject(test.orderValid,                test.orderType, out _));
+            // IsTrue(validator.ValidateObject(test.testTypeValid,             test.testType,  out string error));
         }
         
         private static void ValidateFailure(JsonValidator validator, TestTypes test)
@@ -91,6 +92,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             internal    ValidationType  orderType;
             
             internal    readonly string orderValid        = AsJson("{ 'id': 'order-1', 'created': '2021-07-22T06:00:00.000Z' }");
+            
+            
+            internal    readonly string testTypeValid = AsJson(@"{
+    'id': 'type-1',
+    'dateTime': '2021-07-22T06:00:00.000Z',
+    'bigInt': '0',
+    'boolean': false,
+    'uint8': 0,
+    'int16': 0,
+    'int32': 0,
+    'int64': 0,
+    'float32': 0.0,
+    'float64': 0.0,
+    'pocStruct': {
+        'value': 0
+    },
+    'intArray': [
+    ],
+    'jsonValue': null,
+    'derivedClass': {
+        'derivedVal': 0,
+        'article': 'article-1',
+        'amount': 0
+    },
+    'derivedClassNull': null
+}");
         }
 
         // --- helper

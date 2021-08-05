@@ -167,9 +167,11 @@ namespace Friflo.Json.Flow.Schema.Validation
                 return false;
             }
             missingFields = new string [missingCount];
+            int missingFieldPos = 0;
+            
             for (int n = 0; n < requiredFieldsCount; n++) {
                 if (!foundFields[n])
-                    missingFields[n] = requiredFields[n].fieldName;
+                    missingFields[missingFieldPos++] = requiredFields[n].fieldName;
             }
             return true;
         }
