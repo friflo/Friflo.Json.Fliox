@@ -94,6 +94,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             IsFalse(validator.ValidateObject("{\"id\": \"id\", \"rights\": [] } yyy",       test.roleType, out error));
             AreEqual("Expected EOF - type: Role, path: (root), pos: 29", error);
+            
+            IsFalse(validator.ValidateObject(test.roleUnknownEnum,  test.roleType, out error));
+            AreEqual("Found unknown enum value: 'zzz' - type: RightTask, path: rights[0].types, pos: 68", error);
         }
         
         private class TestTypes {
@@ -106,6 +109,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
                 }");
             internal    readonly string roleUnknownDisc = AsJson(@"{'id': 'role', 'rights': [{ 'type': 'xxx' }] }");
             internal    readonly string roleMissingDisc = AsJson(@"{'id': 'role', 'rights': [{ }] }");
+            internal    readonly string roleUnknownEnum = AsJson(@"{'id': 'role-database', 'rights': [ { 'type': 'task', 'types': 'zzz' } ] }");
         }
 
         // --- helper
