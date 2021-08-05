@@ -72,7 +72,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ObjectStart) {
-                bool success = ValidateElement(type, false, 0);
+                bool success = ValidateElement(type, 0);
                 return Return(type, success, out error);    
             }
             return RootError(type, $"ValidateObjectMap() expect object. was: {ev}", out error);
@@ -82,7 +82,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ArrayStart) {
-                bool success = ValidateElement(type, true, 0);
+                bool success = ValidateElement(type, 0);
                 return Return(type, success, out error);    
             }
             return RootError(type, $"ValidateArray() expect array. was: {ev}", out error);
@@ -143,7 +143,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         if (!ValidationType.FindField(type, ref parser.key, out field, out msg, foundFields))
                             return Error(type, msg);
                         if (field.isArray) {
-                            if (ValidateElement (field.type, true, depth))
+                            if (ValidateElement (field.type, depth))
                                 continue;
                             return false;
                         }
@@ -154,7 +154,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                             return Error(type, msg);
                         if (field.typeId == TypeId.Class) {
                             if (field.isDictionary) {
-                                if (ValidateElement (field.type, false, depth))
+                                if (ValidateElement (field.type, depth))
                                     continue;
                                 return false;
                             }
@@ -183,7 +183,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
         }
         
-        private bool ValidateElement (ValidationType type, bool isArray, int depth) {
+        private bool ValidateElement (ValidationType type, int depth) {
             while (true) {
                 var     ev = parser.NextEvent();
                 string  msg;
@@ -219,14 +219,10 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return Error(type, $"Incorrect type. Was object expect: {type.typeId}");
                     
                     case JsonEvent.ObjectEnd:
-                        if (!isArray)
-                            return true;
-                        return Error(type, $"Found object end '}}' in array: {ev}");
-                    
+                        return true;
+
                     case JsonEvent.ArrayEnd:
-                        if (isArray)
-                            return true;
-                        return Error(type, $"Found array end ']' in object: {ev}");
+                        return true;
                     
                     case JsonEvent.Error:
                         return Error(type, parser.error.GetMessageBody());
