@@ -204,7 +204,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return Error(type, $"Incorrect type. Was: {parser.boolValue}, expect: {type.typeId}");
                     
                     case JsonEvent.ValueNull:
-                        return Error(type, $"Required value must not be null.");
+                        return Error(type, $"Element must not be null.");
                     
                     case JsonEvent.ArrayStart:
                         return Error(type, $"Found array as array item. expect: {type.typeId}");
