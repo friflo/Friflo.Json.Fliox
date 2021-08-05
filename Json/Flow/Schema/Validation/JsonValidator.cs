@@ -17,15 +17,18 @@ namespace Friflo.Json.Flow.Schema.Validation
         private  readonly   List<bool[]>    foundFieldsCache = new List<bool[]>();
         private  readonly   StringBuilder   sb = new StringBuilder();
         private  readonly   Regex           dateTime;
+        private  readonly   Regex           bigInt;
         
         // RFC 3339 + milliseconds
-        private  static readonly Regex      DateTime =  new Regex(@"\b^[1-9]\d{3}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$\b", RegexOptions.Compiled);
+        private  static readonly Regex  DateTime    = new Regex(@"\b^[1-9]\d{3}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$\b",   RegexOptions.Compiled);
+        private  static readonly Regex  BigInt      = new Regex(@"\b^-?[0-9]+$\b",                                          RegexOptions.Compiled);
         
         public              bool            qualifiedTypeErrors;
         
         public JsonValidator (bool qualifiedTypeErrors = false) {
-            this.qualifiedTypeErrors = qualifiedTypeErrors;
-            dateTime = DateTime;
+            this.qualifiedTypeErrors    = qualifiedTypeErrors;
+            dateTime                    = DateTime;
+            bigInt                      = BigInt;
         }
         
         public void Dispose() {
@@ -270,10 +273,15 @@ namespace Friflo.Json.Flow.Schema.Validation
                     msg = null;
                     return true;
                 case TypeId.BigInteger:
-                    msg = null; // todo
-                    return true;
-                case TypeId.DateTime:
                     var str = value.ToString();
+                    if (bigInt.IsMatch(str)) {
+                        msg = null;
+                        return true;
+                    }
+                    msg = $"Invalid BigInteger: '{str}'";
+                    return false;
+                case TypeId.DateTime:
+                    str = value.ToString();
                     if (dateTime.IsMatch(str)) {
                         msg = null;
                         return true;

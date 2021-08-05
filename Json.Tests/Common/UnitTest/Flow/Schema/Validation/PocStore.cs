@@ -83,8 +83,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             IsFalse(validator.ValidateObject("{\"xxx\": {} }",              test.testType, out error));
             AreEqual("Field not found. key: 'xxx' - type: TestType, path: xxx, pos: 9", error);
             
-            IsFalse(validator.ValidateObject("{ \"created\": \"2021-07-22 06:00:00.000Z\" }",   test.orderType, out error));
-            AreEqual("Invalid DateTime: '2021-07-22 06:00:00.000Z' - type: Order, path: created, pos: 39", error);
+            // missing T in dateTime. correct: "2021-07-22T06:00:00.000Z"
+            IsFalse(validator.ValidateObject("{ \"dateTime\": \"2021-07-22 06:00:00.000Z\" }",   test.testType, out error));
+            AreEqual("Invalid DateTime: '2021-07-22 06:00:00.000Z' - type: TestType, path: dateTime, pos: 40", error);
+            
+            IsFalse(validator.ValidateObject("{ \"bigInt\": \"abc\" }",     test.testType, out error));
+            AreEqual("Invalid BigInteger: 'abc' - type: TestType, path: bigInt, pos: 17", error);
 
         }
         
