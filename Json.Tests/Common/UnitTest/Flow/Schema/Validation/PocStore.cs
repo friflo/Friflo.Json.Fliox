@@ -96,10 +96,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             internal    ValidationType  testType;
             internal    ValidationType  orderType;
             
-            internal    readonly string orderValid        = AsJson("{ 'id': 'order-1', 'created': '2021-07-22T06:00:00.000Z' }");
+            internal    readonly string orderValid      = AsJson("{ 'id': 'order-1', 'created': '2021-07-22T06:00:00.000Z' }");
             
             
-            internal    readonly string testTypeValid = AsJson(
+            internal    readonly string testTypeValid   = AsJson(
 @"{
     'id': 'type-1',
     'dateTime': '2021-07-22T06:00:00.000Z',

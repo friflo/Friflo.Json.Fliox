@@ -31,9 +31,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
                 var test = new TestTypes {
                     roleType    = jsonSchema.TypeAsValidationType<Role>(validationSet, "Friflo.Json.Flow.UserAuth")
                 };
-                ValidateSuccess(validator, test);
-                ValidateFailure(validator, test);
-                ValidateSuccessNoAlloc(validator, test);
+                ValidateSuccess         (validator, test);
+                ValidateFailure         (validator, test);
+                ValidateSuccessNoAlloc  (validator, test);
             }
         }
         
@@ -46,29 +46,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
                 var test = new TestTypes {
                     roleType    = nativeSchema.TypeAsValidationType<Role>(validationSet)
                 };
-                ValidateSuccess(validator, test);
-                ValidateFailure(validator, test);
-                ValidateSuccessNoAlloc(validator, test);
+                ValidateSuccess         (validator, test);
+                ValidateFailure         (validator, test);
+                ValidateSuccessNoAlloc  (validator, test);
             }
         }
         
         private static void ValidateSuccess(JsonValidator validator, TestTypes test)
         {
-            SimpleAssert.IsTrue(validator.ValidateObject     (test.roleDeny,     test.roleType, out _));
-            SimpleAssert.IsTrue(validator.ValidateObject     (test.roleDatabase, test.roleType, out _));
+            SimpleAssert.IsTrue(validator.ValidateObject     (test.roleDeny,        test.roleType, out _));
+            SimpleAssert.IsTrue(validator.ValidateObject     (test.roleDatabase,    test.roleType, out _));
             
-            SimpleAssert.IsTrue(validator.ValidateArray      ("[]",              test.roleType, out _));
-            SimpleAssert.IsTrue(validator.ValidateObjectMap  ("{}",              test.roleType, out _));
+            SimpleAssert.IsTrue(validator.ValidateArray      ("[]",                 test.roleType, out _));
+            SimpleAssert.IsTrue(validator.ValidateObjectMap  ("{}",                 test.roleType, out _));
 
-            var json = "[" + test.roleDeny + "]";
-            SimpleAssert.IsTrue(validator.ValidateArray      (json,              test.roleType, out _));
-
-            json = "{\"key\": " + test.roleDeny + "}";
-            SimpleAssert.IsTrue(validator.ValidateObjectMap  (json,              test.roleType, out _));
+            SimpleAssert.IsTrue(validator.ValidateArray      (test.roleDenyArray,   test.roleType, out _));
+            SimpleAssert.IsTrue(validator.ValidateObjectMap  (test.roleDenyMap,     test.roleType, out _));
         }
         
         private static void ValidateSuccessNoAlloc(JsonValidator validator, TestTypes test) {
-            var memLog = new MemoryLogger(2, 1, MemoryLog.Disabled);
+            var memLog = new MemoryLogger(2, 1, MemoryLog.Enabled);
             memLog.Snapshot();
             ValidateSuccess(validator, test);
             memLog.Snapshot();
@@ -112,6 +109,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             internal    ValidationType  roleType;
             
             internal    readonly string roleDeny        = AsJson(@"{'id': 'role-deny', 'rights': [  ] }");
+            internal    readonly string roleDenyArray;
+            internal    readonly string roleDenyMap;
+            
             internal    readonly string roleDatabase    = AsJson(
                 @"{'id': 'role-database','description': 'test',
                     'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'update'], 'subscribeChanges': ['update'] }}} ]
@@ -119,6 +119,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             internal    readonly string roleUnknownDisc = AsJson(@"{'id': 'role', 'rights': [{ 'type': 'xxx' }] }");
             internal    readonly string roleMissingDisc = AsJson(@"{'id': 'role', 'rights': [{ }] }");
             internal    readonly string roleUnknownEnum = AsJson(@"{'id': 'role-database', 'rights': [ { 'type': 'task', 'types': 'zzz' } ] }");
+            
+            internal TestTypes() {
+                roleDenyArray   = "[" + roleDeny + "]";
+                roleDenyMap     = "{\"key\": " + roleDeny + "}";
+            }
         }
 
         // --- helper
