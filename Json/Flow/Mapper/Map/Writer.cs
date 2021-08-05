@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Mapper.Map
 #endif
     public partial struct Writer : IDisposable
     {
-        /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
+        /// <summary>Caches type meta data per thread and provide stats to the cache utilization</summary>
         public readonly     TypeCache           typeCache;
         public              Bytes               bytes;
         /// <summary>Can be used for custom mappers append a number while creating the JSON payload</summary>

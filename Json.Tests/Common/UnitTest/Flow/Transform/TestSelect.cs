@@ -167,7 +167,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Transform
         public void TestGroupSelect() {
             var selectors = new[] {
                 ".children[=>].hobbies[*].name", // group by using [=>]
-                ".children[*].hobbies[*].name"   // dont group by using [*]
+                ".children[*].hobbies[*].name"   // don't group by using [*]
             };
             var select = new ScalarSelect(selectors);
             

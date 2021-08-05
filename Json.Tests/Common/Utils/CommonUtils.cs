@@ -30,14 +30,14 @@ namespace Friflo.Json.Tests.Common.Utils
         }
         
         public static void AreSimilar(object expect, object actual) {
-            var normalisedExpect    = expect.ToString();
+            var normalizedExpect    = expect.ToString();
             var actualExpect        = actual.ToString();
-            if (normalisedExpect == null || actualExpect == null)
+            if (normalizedExpect == null || actualExpect == null)
                 throw new InvalidOperationException("AreSimilar() - ToString() of both parameter must not be null");
             
-            normalisedExpect    = normalisedExpect.Replace(" ", string.Empty);
+            normalizedExpect    = normalizedExpect.Replace(" ", string.Empty);
             actualExpect        = actualExpect.Replace(" ", string.Empty);
-            if (normalisedExpect.Equals(actualExpect))
+            if (normalizedExpect.Equals(actualExpect))
                 return;
             Assert.Fail($"Expected: {expect}\nBut was:  {actual}");
         }
@@ -105,7 +105,7 @@ namespace Friflo.Json.Tests.Common.Utils
             this.memoryLog          = memoryLog;
             totalMemory             = new long[maxSnapshotCount];
             totalMemoryCount        = 0;
-            snapshotCount           = 1; // Dont log memory snapshots in the first interval to give chance filling the buffers.
+            snapshotCount           = 1; // Don't log memory snapshots in the first interval to give chance filling the buffers.
             this.snapshotInterval   = snapshotInterval;
             GC.Collect();
         }

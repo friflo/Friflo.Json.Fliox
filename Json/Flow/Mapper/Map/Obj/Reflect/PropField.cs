@@ -20,9 +20,9 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
         public   readonly   int             primIndex;
         public   readonly   int             objIndex;
         public   readonly   bool            required;
-        internal            Bytes           nameBytes;          // dont mutate
-        public              Bytes           firstMember;        // dont mutate
-        public              Bytes           subSeqMember;       // dont mutate
+        internal            Bytes           nameBytes;          // don't mutate
+        public              Bytes           firstMember;        // don't mutate
+        public              Bytes           subSeqMember;       // don't mutate
         //
         internal readonly   FieldInfo       field;
         internal readonly   PropertyInfo    property;      

@@ -3,14 +3,18 @@
 		"**/*.meta": true
     },
     "cSpell.words": [
+        "Arity",
         "JSONB",
         "Linq",
+        "NETFX",
         "Postgres",
         "Praetz",
         "SIMD",
         "Ullrich",
         "jsxdev",
-        "netsh"
+        "kotlinx",
+        "netsh",
+        "nullary"
     ],
     "cSpell.enableFiletypes": [
         "http"

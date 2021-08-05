@@ -59,7 +59,7 @@ namespace Friflo.Json.Flow.Sync
     }
     
     /// <summary>
-    /// Filters used to specify the type of a database chane.
+    /// Filters used to specify the type of a database change.
     /// Consider using the predefined sets <see cref="Changes.All"/> or <see cref="Changes.None"/> as shortcuts.
     /// </summary>
     // ReSharper disable InconsistentNaming

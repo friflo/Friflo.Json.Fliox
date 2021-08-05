@@ -52,7 +52,7 @@ namespace Friflo.Json.Flow.Mapper
         public              bool                Success         =>!intern.parser.error.ErrSet;
         public              SkipInfo            SkipInfo        => intern.parser.skipInfo;
         public              long                ProcessedBytes  => intern.parser.ProcessedBytes;
-        /// <summary>Caches type mata data per thread and provide stats to the cache utilization</summary>
+        /// <summary>Caches type meta data per thread and provide stats to the cache utilization</summary>
         public              TypeCache           TypeCache       => intern.typeCache; 
 
         public              int                 MaxDepth {
@@ -96,7 +96,7 @@ namespace Friflo.Json.Flow.Mapper
             inputStringBuf.Dispose();
         }
 
-        /// <summary> <see cref="JsonError.Error"/> dont call <see cref="JsonError.errorHandler"/> in
+        /// <summary> <see cref="JsonError.Error"/> don't call <see cref="JsonError.errorHandler"/> in
         /// JSON_BURST compilation caused by absence of interfaces. </summary>
         [Conditional("JSON_BURST")]
         private void JsonBurstError() {

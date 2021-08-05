@@ -19,10 +19,10 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
         public static readonly ClassMatcher Instance = new ClassMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
-            if (TypeUtils.IsStandardType(type)) // dont handle standard types
+            if (TypeUtils.IsStandardType(type)) // don't handle standard types
                 return null;
             Type nullableStruct = TypeUtils.GetNullableStruct(type);
-            if (nullableStruct == null && TypeUtils.IsGenericType(type)) // dont handle generic types like List<> or Dictionary<,>
+            if (nullableStruct == null && TypeUtils.IsGenericType(type)) // don't handle generic types like List<> or Dictionary<,>
                 return null;
             if (EnumMatcher.IsEnum(type, out bool _))
                 return null;

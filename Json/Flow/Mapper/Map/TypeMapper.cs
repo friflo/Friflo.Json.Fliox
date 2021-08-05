@@ -156,7 +156,7 @@ public enum TypeSemantic {
         public override      void    Dispose() { }
         
         /// <summary>
-        /// Need to be overriden, in case the derived <see cref="TypeMapper{TVal}"/> support <see cref="System.Type"/>'s
+        /// Need to be overridden, in case the derived <see cref="TypeMapper{TVal}"/> support <see cref="System.Type"/>'s
         /// as fields or elements returning a <see cref="TypeMapper{TVal}"/>.<br/>
         /// 
         /// In this case <see cref="InitTypeMapper"/> is used to map a <see cref="System.Type"/> to a required

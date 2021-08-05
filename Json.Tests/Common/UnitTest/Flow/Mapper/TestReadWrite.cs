@@ -139,7 +139,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                 cmpRead = read2; 
                 cmpWrite = write2; 
                 
-                int iterations = 2; // dont use < 2
+                int iterations = 2; // don't use < 2
                 for (int n = 0; n < iterations; n++) {
                     AreEqual("hello",   Read<string>(hello));
                     AreEqual(JsonEvent.EOF, enc.JsonEvent);

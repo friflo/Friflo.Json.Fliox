@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
         public static readonly DictionaryMatcher Instance = new DictionaryMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
-            if (TypeUtils.IsStandardType(type)) // dont handle standard types
+            if (TypeUtils.IsStandardType(type)) // don't handle standard types
                 return null;
             Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
             if (args == null)

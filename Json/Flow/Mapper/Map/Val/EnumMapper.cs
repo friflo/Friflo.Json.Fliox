@@ -46,7 +46,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
     }
 
     /// <summary>
-    /// The mapping <see cref="enumToString"/> and <see cref="stringToEnum"/> is not bidirectional as this is the behaviour of C# enum's
+    /// The mapping <see cref="enumToString"/> and <see cref="stringToEnum"/> is not bidirectional as this is the behaviour of C# enum types
     /// <code>
     /// public enum TestEnum {
     ///     Value1 = 11,
