@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var typeStore        = CreateTypeStore(PocStoreTypes))
             using (var nativeSchema     = new NativeTypeSchema(typeStore))
             using (var validationSet    = new ValidationSet(nativeSchema))
-            using (var validator        = new JsonValidator(true)) {
+            using (var validator        = new JsonValidator(qualifiedTypeErrors: true)) { // true -> ensure API available
                 validator.qualifiedTypeErrors = false; // ensure API available
                 var test = new TestTypes {
                     testType    = nativeSchema.TypeAsValidationType<TestType>(validationSet),

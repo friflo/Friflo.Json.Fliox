@@ -41,8 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var typeStore        = CreateTypeStore(UserStoreTypes))
             using (var nativeSchema     = new NativeTypeSchema(typeStore))
             using (var validationSet    = new ValidationSet(nativeSchema))
-            using (var validator        = new JsonValidator(true)) {
-                validator.qualifiedTypeErrors = false; // ensure API available
+            using (var validator        = new JsonValidator()) {
                 var test = new TestTypes {
                     roleType    = nativeSchema.TypeAsValidationType<Role>(validationSet)
                 };
