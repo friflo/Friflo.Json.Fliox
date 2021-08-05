@@ -64,7 +64,8 @@ namespace Friflo.Json.Flow.Schema.Native
                     typeDef.fields = new List<FieldDef>(propFields.fields.Length);
                     foreach (var propField in propFields.fields) {
                         var fieldMapper     = propField.fieldType.GetUnderlyingMapper();
-                        var isNullable      = IsNullableMapper(fieldMapper, out var nonNullableType);
+                        var isNullable      = IsNullableMapper(fieldMapper, out var nonNullableType) ||
+                                              fieldMapper.type == typeof(JsonValue);
                         var isArray         = fieldMapper.IsArray;
                         var isDictionary    = fieldMapper.type.GetInterfaces().Contains(typeof(IDictionary));
                         NativeTypeDef type;

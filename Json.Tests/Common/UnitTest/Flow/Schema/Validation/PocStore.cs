@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
         private static void ValidateSuccess(JsonValidator validator, TestTypes test)
         {
             IsTrue(validator.ValidateObject(test.orderValid,                test.orderType, out _));
-            // IsTrue(validator.ValidateObject(test.testTypeValid,             test.testType,  out string error));
+            IsTrue(validator.ValidateObject(test.testTypeValid,             test.testType,  out string error));
         }
         
         private static void ValidateFailure(JsonValidator validator, TestTypes test)

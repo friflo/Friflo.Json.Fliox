@@ -134,7 +134,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
                 var fieldType = GetFieldType(field, context);
                 var indent = Indent(maxFieldName, field.name);
                 Delimiter(sb, Next, ref firstField);
-                var nullableStr = required ? "" : ", \"nullable\": true";
+                var nullableStr = required ? "" : fieldType.Length == 0 ? "\"nullable\": true" : ", \"nullable\": true";
                 sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{nullableStr} }}");
             }
             sb.AppendLine();

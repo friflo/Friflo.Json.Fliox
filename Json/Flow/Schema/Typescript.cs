@@ -154,7 +154,7 @@ namespace Friflo.Json.Flow.Schema
         private static string GetTypeName(TypeDef type, TypeContext context) {
             var standard = context.standardTypes;
             if (type == standard.JsonValue)
-                return "{} | null";
+                return "any"; // known as Mr anti-any  :) 
             if (type == standard.String)
                 return "string";
             if (type == standard.Boolean)
