@@ -86,13 +86,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             IsFalse(validator.ValidateObject("[]",                  test.roleType, out error));
             AreEqual("ValidateObject() expect object. was: ArrayStart - type: Role, path: [], pos: 1", error);
             
-            IsFalse(validator.ValidateObject(test.roleUnknownDisc,  test.roleType, out error));
+            var json = AsJson(@"{'rights': [{ 'type': 'xxx' }] }");
+            IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
             AreEqual("Unknown discriminant: 'xxx' - type: Right, path: rights[0].type, pos: 27", error);
             
-            IsFalse(validator.ValidateObject(test.roleMissingDisc,  test.roleType, out error));
+            json = AsJson(@"{'rights': [{ }] }");
+            IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
             AreEqual("Expect discriminator as first member. Expect: 'type', was: ObjectEnd - type: Right, path: rights[0], pos: 15", error);
 
-            IsFalse(validator.ValidateObject(test.roleUnexpectedDisc,  test.roleType, out error));
+            json = AsJson(@"{'rights': [{ 'disc': 'xxx' }] }");
+            IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
             AreEqual("Unexpected discriminator: 'disc', expect: 'type' - type: Right, path: rights[0].disc, pos: 27", error);
 
             IsFalse(validator.ValidateObject("{]",                  test.roleType, out error));
@@ -101,14 +104,50 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             IsFalse(validator.ValidateObject("{\"id\": 42 }",       test.roleType, out error));
             AreEqual("Incorrect type. Was number: 42, expect: String - type: Role, path: id, pos: 9", error);
             
-            IsFalse(validator.ValidateObject("{\"id\": \"id\", \"rights\": [] } yyy",       test.roleType, out error));
+            json = "{\"id\": \"id\", \"rights\": [] } yyy";
+            IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
             AreEqual("Expected EOF - type: Role, path: (root), pos: 29", error);
             
-            IsFalse(validator.ValidateObject(test.roleUnknownEnum,  test.roleType, out error));
+            // --- test JsonValidator.ValidateElement()
+            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': 'zzz' } ] }");
+            IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
             AreEqual("Incorrect type. Was: 'zzz', expect: TaskType[] - type: RightTask, path: rights[0].types, pos: 44", error);
             
-            IsFalse(validator.ValidateObject(test.roleUnknownEnumArr,  test.roleType, out error));
+            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': ['yyy'] } ] }");
+            IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
             AreEqual("Incorrect enum value: 'yyy' - type: TaskType, path: rights[0].types[0], pos: 45", error);
+            
+            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': {} ] }");
+            IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
+            AreEqual("Incorrect type. Was: object, expect: TaskType[] - type: RightTask, path: rights[0].types, pos: 40", error);
+            
+            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ {} ] ] }");
+            IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
+            AreEqual("Incorrect type. Was object expect: Enum - type: TaskType, path: rights[0].types[0], pos: 42", error);
+            
+            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': true ] }");
+            IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
+            AreEqual("Incorrect type. Was: true, expect: TaskType[] - type: RightTask, path: rights[0].types, pos: 43", error);
+            
+            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ false ] ] }");
+            IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
+            AreEqual("Incorrect type. Was: False, expect: Enum - type: TaskType, path: rights[0].types[0], pos: 46", error);
+            
+            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': 123 ] }");
+            IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
+            AreEqual("Incorrect type. Was: 123, expect: TaskType[] - type: RightTask, path: rights[0].types, pos: 42", error);
+            
+            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ 456 ] ] }");
+            IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
+            AreEqual("Incorrect type. Was number: 456, expect: Enum - type: TaskType, path: rights[0].types[0], pos: 44", error);
+            
+            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': null ] }");
+            IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
+            AreEqual("Required value must not be null. - type: RightTask, path: rights[0].types, pos: 43", error);
+            
+            json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ null ] ] }");
+            IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
+            AreEqual("Required value must not be null. - type: TaskType, path: rights[0].types[0], pos: 45", error);
 
             
             // --- element errors
@@ -126,12 +165,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
 @"{'id': 'role-database','description': 'test',
     'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'update'], 'subscribeChanges': ['update'] }}} ]
 }");
-            internal    readonly string roleUnknownDisc     = AsJson(@"{'rights': [{ 'type': 'xxx' }] }");
-            internal    readonly string roleMissingDisc     = AsJson(@"{'rights': [{ }] }");
-            internal    readonly string roleUnexpectedDisc  = AsJson(@"{'rights': [{ 'disc': 'xxx' }] }");
-            internal    readonly string roleUnknownEnum     = AsJson(@"{'rights': [{ 'type': 'task', 'types': 'zzz' } ] }");
-            internal    readonly string roleUnknownEnumArr  = AsJson(@"{'rights': [{ 'type': 'task', 'types': ['yyy'] } ] }");
-            // internal    readonly string roleUnknownEnum     = AsJson(@"{'rights': [{ 'type': 'task', 'types': 'zzz' } ] }");
             
             internal TestTypes() {
                 roleDenyArray   = "[" + roleDeny + "]";
