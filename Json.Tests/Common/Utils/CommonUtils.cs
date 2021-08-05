@@ -101,12 +101,12 @@ namespace Friflo.Json.Tests.Common.Utils
         private readonly    int         snapshotInterval;
         private readonly    MemoryLog   memoryLog;
         
-        public MemoryLogger(int size, int snapshotInterval, MemoryLog memoryLog) {
-            this.memoryLog = memoryLog;
-            totalMemory = new long[size];
-            totalMemoryCount = 0;
-            snapshotCount = 1; // Dont log memory snapshots in the first interval to give chance filling the buffers.
-            this.snapshotInterval = snapshotInterval;
+        public MemoryLogger(int maxSnapshotCount, int snapshotInterval, MemoryLog memoryLog) {
+            this.memoryLog          = memoryLog;
+            totalMemory             = new long[maxSnapshotCount];
+            totalMemoryCount        = 0;
+            snapshotCount           = 1; // Dont log memory snapshots in the first interval to give chance filling the buffers.
+            this.snapshotInterval   = snapshotInterval;
             GC.Collect();
         }
 

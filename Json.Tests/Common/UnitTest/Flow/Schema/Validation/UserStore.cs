@@ -33,6 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
                 };
                 ValidateSuccess(validator, test);
                 ValidateFailure(validator, test);
+                ValidateSuccessNoAlloc(validator, test);
             }
         }
         
@@ -47,24 +48,33 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
                 };
                 ValidateSuccess(validator, test);
                 ValidateFailure(validator, test);
+                ValidateSuccessNoAlloc(validator, test);
             }
         }
         
         private static void ValidateSuccess(JsonValidator validator, TestTypes test)
         {
-            IsTrue(validator.ValidateObject     (test.roleDeny,     test.roleType, out _));
-            IsTrue(validator.ValidateObject     (test.roleDatabase, test.roleType, out _));
+            SimpleAssert.IsTrue(validator.ValidateObject     (test.roleDeny,     test.roleType, out _));
+            SimpleAssert.IsTrue(validator.ValidateObject     (test.roleDatabase, test.roleType, out _));
             
-            IsTrue(validator.ValidateArray      ("[]",              test.roleType, out _));
-            IsTrue(validator.ValidateObjectMap  ("{}",              test.roleType, out _));
+            SimpleAssert.IsTrue(validator.ValidateArray      ("[]",              test.roleType, out _));
+            SimpleAssert.IsTrue(validator.ValidateObjectMap  ("{}",              test.roleType, out _));
 
             var json = "[" + test.roleDeny + "]";
-            IsTrue(validator.ValidateArray      (json,              test.roleType, out _));
+            SimpleAssert.IsTrue(validator.ValidateArray      (json,              test.roleType, out _));
 
             json = "{\"key\": " + test.roleDeny + "}";
-            IsTrue(validator.ValidateObjectMap  (json,              test.roleType, out _));
+            SimpleAssert.IsTrue(validator.ValidateObjectMap  (json,              test.roleType, out _));
         }
         
+        private static void ValidateSuccessNoAlloc(JsonValidator validator, TestTypes test) {
+            var memLog = new MemoryLogger(2, 1, MemoryLog.Disabled);
+            memLog.Snapshot();
+            ValidateSuccess(validator, test);
+            memLog.Snapshot();
+            memLog.AssertNoAllocations();
+        }
+
         private static void ValidateFailure(JsonValidator validator, TestTypes test)
         {
             IsFalse(validator.ValidateObject("",                    test.roleType, out var error));
