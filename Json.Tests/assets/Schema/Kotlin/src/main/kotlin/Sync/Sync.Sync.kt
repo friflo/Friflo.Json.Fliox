@@ -43,7 +43,7 @@ data class CreateEntities (
 
 @Serializable
 data class EntityValue (
-              val value : JsonElement,
+              val value : JsonElement? = null,
               val error : EntityError? = null,
 )
 
@@ -240,7 +240,7 @@ data class DeleteEntitiesResult (
 @SerialName("message")
 data class SendMessageResult (
               val Error  : CommandError? = null,
-              val result : JsonElement,
+              val result : JsonElement? = null,
 ) : TaskResult()
 
 @Serializable

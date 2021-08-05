@@ -47,7 +47,6 @@
                 "float64",
                 "pocStruct",
                 "intArray",
-                "jsonValue",
                 "derivedClass"
             ],
             "additionalProperties": false

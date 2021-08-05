@@ -51,7 +51,7 @@
         },
         "EntityValue": {
             "properties": {
-                "value": {  },
+                "value": { "nullable": true },
                 "error": { "ref":  "EntityError", "nullable": true }
             }
         },
@@ -491,7 +491,7 @@
         "PatchTest": {
             "properties": {
                 "path":  { "type": "string" },
-                "value": {  }
+                "value": { "nullable": true }
             }
         },
         "DeleteEntities": {
@@ -629,7 +629,7 @@
         "SendMessageResult": {
             "properties": {
                 "Error":  { "ref":  "CommandError", "nullable": true },
-                "result": {  }
+                "result": { "nullable": true }
             }
         },
         "SubscribeChangesResult": {

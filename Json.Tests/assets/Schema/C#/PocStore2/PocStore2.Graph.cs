@@ -73,7 +73,7 @@ public class TestType : Entity {
     [Fri.Property(Required = true)]
     List<int>     intArray;
     List<int>     intArrayNull;
-    JsonValue     jsonValue;
+    JsonValue?    jsonValue;
     [Fri.Property(Required = true)]
     DerivedClass  derivedClass;
     DerivedClass  derivedClassNull;

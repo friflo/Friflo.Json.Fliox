@@ -58,6 +58,6 @@ data class PatchMove (
 @SerialName("test")
 data class PatchTest (
               val path  : String,
-              val value : JsonElement,
+              val value : JsonElement? = null,
 ) : JsonPatch()
 
