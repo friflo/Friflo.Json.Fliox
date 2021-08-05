@@ -305,23 +305,38 @@ namespace Friflo.Json.Flow.Schema.Validation
         }
         
         private static bool ValidateNumber (ref JsonParser parser, ValidationType type, out string msg) {
-            switch (type.typeId) {
+            var typeId = type.typeId; 
+            switch (typeId) {
                 case TypeId.Uint8:
                 case TypeId.Int16:
                 case TypeId.Int32:
                 case TypeId.Int64:
-                    if (!parser.isFloat) {
-                        msg = null;
-                        return true;
+                    if (parser.isFloat) {
+                        msg = $"Incorrect type. Was number: {parser.value}, expect: {typeId}";
+                        return false;
                     }
-                    msg = $"Incorrect type. Was number: {parser.value}, expect: {type.typeId}";
+                    var value = parser.ValueAsLong(out bool success);
+                    if (!success) {
+                        msg = $"Invalid integer. Was: {parser.value}, expect: {typeId}";
+                        return false;
+                    }
+                    switch (typeId) {
+                        case TypeId.Uint8: if (          0 <= value && value <=        255) { msg = null; return true; } break;   
+                        case TypeId.Int16: if (     -32768 <= value && value <=      32767) { msg = null; return true; } break;
+                        case TypeId.Int32: if (-2147483648 <= value && value <= 2147483647) { msg = null; return true; } break;
+                        case TypeId.Int64:                                                  { msg = null; return true; }
+                        default:
+                            throw new InvalidOperationException("cant be reached");
+                    }
+                    msg = $"{typeId} out of range: {parser.value}";
                     return false;
+                
                 case TypeId.Float:
                 case TypeId.Double:
                     msg = null;
                     return true;
                 default:
-                    msg = $"Incorrect type. Was number: {parser.value}, expect: {type.typeId}";
+                    msg = $"Incorrect type. Was number: {parser.value}, expect: {typeId}";
                     return false;
             }
         }
