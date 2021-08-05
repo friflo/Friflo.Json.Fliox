@@ -39,7 +39,9 @@ namespace Friflo.Json.Flow.Schema.Validation
     public sealed class ValidationType : IDisposable {
         // ReSharper disable once NotAccessedField.Local
         private  readonly   TypeDef             typeDef;    // only for debugging
-        public   readonly   string              name;       // only for debugging
+        public   readonly   string              name;
+        public   readonly   string              qualifiedName;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private  readonly   string              @namespace; // only for debugging
         public   readonly   TypeId              typeId;
         private  readonly   ValidationField[]   fields;
@@ -48,13 +50,14 @@ namespace Friflo.Json.Flow.Schema.Validation
         public   readonly   ValidationUnion     unionType;
         private  readonly   Bytes[]             enumValues;
         
-        public  override    string              ToString() => $"{@namespace}.{name}";
+        public  override    string              ToString() => qualifiedName;
         
         internal ValidationType (TypeId typeId, TypeDef typeDef) {
-            this.typeId     = typeId;
-            this.typeDef    = typeDef;
-            this.name       = typeDef.Name;
-            this.@namespace = typeDef.Namespace;
+            this.typeId         = typeId;
+            this.typeDef        = typeDef;
+            this.name           = typeDef.Name;
+            this.@namespace     = typeDef.Namespace;
+            this.qualifiedName  = $"{@namespace}.{name}";
         }
         
         private ValidationType (TypeDef typeDef, UnionType union)               : this (TypeId.Union,   typeDef) {
@@ -117,6 +120,13 @@ namespace Friflo.Json.Flow.Schema.Validation
             unionType?.Dispose();
         }
         
+        public static string GetName (ValidationType type, bool qualifiedTypeErrors) {
+            if (qualifiedTypeErrors) {
+                return type.qualifiedName;
+            }
+            return type.name;
+        }
+
         internal void SetFields(Dictionary<TypeDef, ValidationType> typeMap) {
             if (fields != null) {
                 foreach (var field in fields) {
@@ -139,7 +149,8 @@ namespace Friflo.Json.Flow.Schema.Validation
             return false;
         }
         
-        internal static bool FindField (ValidationType type, ref JsonParser parser, out ValidationField field, out string msg, bool[] foundFields) {
+        internal static bool FindField (ValidationType type, JsonValidator validator, out ValidationField field, out string msg, bool[] foundFields) {
+            ref var parser = ref validator.parser;
             foreach (var typeField in type.fields) {
                 if (!parser.key.IsEqual(ref typeField.name))
                     continue;
@@ -148,9 +159,11 @@ namespace Friflo.Json.Flow.Schema.Validation
                 if (reqPos >= 0) {
                     foundFields[reqPos] = true;
                 }
-                if (parser.Event != JsonEvent.ArrayStart && field.isArray) {
-                    var value = GetValue(ref parser);
-                    msg = $"Incorrect type. Was: {value}, expect: {field.type}[]";                    
+                var ev = parser.Event; 
+                if (ev != JsonEvent.ArrayStart && ev != JsonEvent.ValueNull && field.isArray) {
+                    var value       = GetValue(ref parser);
+                    var fieldName   = GetName(field.type, validator.qualifiedTypeErrors);
+                    msg = $"Incorrect type. Was: {value}, expect: {fieldName}[]";                    
                     return false;
                 }
                 msg = null;
@@ -167,6 +180,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 case JsonEvent.ValueString:     return "'" + parser.value + "'";
                 case JsonEvent.ValueNumber:     return parser.value.ToString();
                 case JsonEvent.ValueBool:       return parser.boolValue ? "true" : "false";
+                case JsonEvent.ValueNull:       return "null";
                 default:
                     return parser.Event.ToString();
             }

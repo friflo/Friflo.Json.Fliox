@@ -105,7 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             AreEqual("Expected EOF - type: Role, path: (root), pos: 29", error);
             
             IsFalse(validator.ValidateObject(test.roleUnknownEnum,  test.roleType, out error));
-            AreEqual("Incorrect type. Was: 'zzz', expect: Friflo.Json.Flow.Sync.TaskType[] - type: RightTask, path: rights[0].types, pos: 44", error);
+            AreEqual("Incorrect type. Was: 'zzz', expect: TaskType[] - type: RightTask, path: rights[0].types, pos: 44", error);
             
             IsFalse(validator.ValidateObject(test.roleUnknownEnumArr,  test.roleType, out error));
             AreEqual("Incorrect enum value: 'yyy' - type: TaskType, path: rights[0].types[0], pos: 45", error);

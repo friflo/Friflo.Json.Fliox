@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Schema.Validation
 {
     public class JsonValidator : IDisposable
     {
-        private             JsonParser      parser; // on top enabling instance offset 0
+        internal            JsonParser      parser; // on top enabling instance offset 0
         private             Bytes           jsonBytes = new Bytes(128);
         private             string          errorMsg;
         private  readonly   List<bool[]>    foundFieldsCache = new List<bool[]>();
@@ -112,35 +112,35 @@ namespace Friflo.Json.Flow.Schema.Validation
                 string          msg;
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        if (!ValidationType.FindField(type, ref parser, out field, out msg, foundFields))
+                        if (!ValidationType.FindField(type, this, out field, out msg, foundFields))
                             return Error(type, msg);
                         if (ValidateString (ref parser.value, field.type, out msg))
                             continue;
                         return Error(type, msg);
                         
                     case JsonEvent.ValueNumber:
-                        if (!ValidationType.FindField(type, ref parser, out field, out msg, foundFields))
+                        if (!ValidationType.FindField(type, this, out field, out msg, foundFields))
                             return Error(type, msg);
                         if (ValidateNumber(ref parser, field.type, out msg))
                             continue;
                         return Error(type, msg);
                         
                     case JsonEvent.ValueBool:
-                        if (!ValidationType.FindField(type, ref parser, out field, out msg, foundFields))
+                        if (!ValidationType.FindField(type, this, out field, out msg, foundFields))
                             return Error(type, msg);
                         if (field.typeId == TypeId.Boolean)
                             continue;
                         return Error(type, $"Incorrect type. Was: {parser.boolValue}, expect: {field.typeId}");
                     
                     case JsonEvent.ValueNull:
-                        if (!ValidationType.FindField(type, ref parser, out field, out msg, foundFields))
+                        if (!ValidationType.FindField(type, this, out field, out msg, foundFields))
                             return Error(type, msg);
                         if (!field.required)
                             continue;
                         return Error(type, $"Required value must not be null.");
                     
                     case JsonEvent.ArrayStart:
-                        if (!ValidationType.FindField(type, ref parser, out field, out msg, foundFields))
+                        if (!ValidationType.FindField(type, this, out field, out msg, foundFields))
                             return Error(type, msg);
                         if (field.isArray) {
                             if (ValidateElement (field.type, depth))
@@ -150,7 +150,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return Error(type, $"Incorrect type. Was array expect: {field.typeId}");
                     
                     case JsonEvent.ObjectStart:
-                        if (!ValidationType.FindField(type, ref parser, out field, out msg, foundFields))
+                        if (!ValidationType.FindField(type, this, out field, out msg, foundFields))
                             return Error(type, msg);
                         if (field.typeId == TypeId.Class) {
                             if (field.isDictionary) {
@@ -249,11 +249,8 @@ namespace Friflo.Json.Flow.Schema.Validation
             sb.Clear();
             sb.Append(msg);
             sb.Append(" - type: ");
-            if (qualifiedTypeErrors) {
-                sb.Append(type);
-            } else {
-                sb.Append(type.name);
-            }
+            var typeName = ValidationType.GetName(type, qualifiedTypeErrors);
+            sb.Append(typeName);
             sb.Append(", path: ");
             sb.Append(parser.GetPath());
             sb.Append(", pos: ");
