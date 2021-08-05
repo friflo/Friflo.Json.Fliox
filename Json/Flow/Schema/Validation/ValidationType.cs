@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Schema.Validation
     {
         None,
         // --- object types
-        Complex,
+        Class,
         Union,
         // --- number types
         Uint8,
@@ -60,7 +60,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             unionType       = new ValidationUnion(union);
         }
         
-        private ValidationType (TypeDef typeDef, List<FieldDef> fieldDefs)      : this (TypeId.Complex, typeDef) {
+        private ValidationType (TypeDef typeDef, List<FieldDef> fieldDefs)      : this (TypeId.Class, typeDef) {
             int requiredCount = 0;
             foreach (var field in fieldDefs) {
                 if (field.required)
@@ -93,7 +93,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             if (union != null) {
                 return new ValidationType(typeDef, union);
             }
-            if (typeDef.IsComplex) {
+            if (typeDef.IsClass) {
                 return new ValidationType(typeDef, typeDef.Fields);
             }
             if (typeDef.IsEnum) {

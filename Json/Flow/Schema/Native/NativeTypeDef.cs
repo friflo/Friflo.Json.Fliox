@@ -22,7 +22,7 @@ public class NativeTypeDef : TypeDef
         // --- TypeDef
         public   override   TypeDef             BaseType        => baseType;
         public   override   bool                IsEnum          { get; }
-        public   override   bool                IsComplex       { get; }
+        public   override   bool                IsClass         { get; }
         public   override   bool                IsStruct        { get; }
         public   override   List<FieldDef>      Fields          => fields;
         public   override   string              Discriminant    { get; }
@@ -40,7 +40,7 @@ public class NativeTypeDef : TypeDef
             this.native     = mapper.type;
             this.mapper     = mapper;
             IsEnum          = native.IsEnum;
-            IsComplex       = mapper.IsComplex;
+            IsClass         = mapper.IsComplex;
             IsStruct        = mapper.type.IsValueType;
             Discriminant    = mapper.Discriminant;
             TypeSemantic    = mapper.GetTypeSemantic();

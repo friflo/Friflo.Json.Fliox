@@ -36,9 +36,9 @@ namespace Friflo.Json.Flow.Schema.Definition
         /// The class this type extends. In other words its base or parent class.  
         public  abstract    TypeDef             BaseType     { get; }
         
-        /// If <see cref="IsComplex"/> is true it has <see cref="Fields"/>
-        public  abstract    bool                IsComplex    { get; }
-        /// <summary><see cref="IsStruct"/> can be true only, if <see cref="IsComplex"/> is true</summary>
+        /// If <see cref="IsClass"/> is true it has <see cref="Fields"/>
+        public  abstract    bool                IsClass    { get; }
+        /// <summary><see cref="IsStruct"/> can be true only, if <see cref="IsClass"/> is true</summary>
         public  abstract    bool                IsStruct     { get; }
         public  abstract    List<FieldDef>      Fields       { get; }
         

@@ -68,8 +68,8 @@ namespace Friflo.Json.Flow.Schema
             if (standardType != null ) {
                 return standardType;
             }
-            if (type.IsComplex) {
-                return EmitComplexType(type, sb);
+            if (type.IsClass) {
+                return EmitClassType(type, sb);
             }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
@@ -84,7 +84,7 @@ namespace Friflo.Json.Flow.Schema
             return null;
         }
         
-        private EmitType EmitComplexType(TypeDef type, StringBuilder sb) {
+        private EmitType EmitClassType(TypeDef type, StringBuilder sb) {
             var imports         = new HashSet<TypeDef>();
             var context         = new TypeContext (generator, imports, type);
             var dependencies    = new List<TypeDef>();

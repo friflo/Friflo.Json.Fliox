@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         
         // --- TypeDef
         public   override   TypeDef             BaseType        => baseType;
-        public   override   bool                IsComplex       => fields != null;
+        public   override   bool                IsClass         => fields != null;
         public   override   bool                IsStruct        => isStruct;
         public   override   List<FieldDef>      Fields          => fields;
         public   override   UnionType           UnionType       => unionType;

@@ -152,7 +152,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     case JsonEvent.ObjectStart:
                         if (!ValidationType.FindField(type, ref parser.key, out field, out msg, foundFields))
                             return Error(type, msg);
-                        if (field.typeId == TypeId.Complex) {
+                        if (field.typeId == TypeId.Class) {
                             if (field.isDictionary) {
                                 if (ValidateElement (field.type, false, depth))
                                     continue;
@@ -210,7 +210,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return Error(type, $"Found array as array item. expect: {type.typeId}");
                     
                     case JsonEvent.ObjectStart:
-                        if (type.typeId == TypeId.Complex || type.typeId == TypeId.Union) {
+                        if (type.typeId == TypeId.Class || type.typeId == TypeId.Union) {
                             // in case of a dictionary the key is not relevant
                             if (ValidateObject(type, depth + 1))
                                 continue;
