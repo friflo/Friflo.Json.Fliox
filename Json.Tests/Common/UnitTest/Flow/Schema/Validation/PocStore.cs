@@ -74,6 +74,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             IsFalse(validator.ValidateObject("{\"uint8\": {} }",            test.testType, out error));
             AreEqual("Found object but expect: Uint8 - type: TestType, path: uint8, pos: 11", error);
+            
+            IsFalse(validator.ValidateObject("{\"xxx\": {} }",            test.testType, out error));
+            AreEqual("Field not found. key: 'xxx' - type: TestType, path: xxx, pos: 9", error);
 
         }
         

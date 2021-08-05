@@ -150,7 +150,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return true;
                 }
             }
-            msg = $"Field not found. key: {key}";
+            msg = $"Field not found. key: '{key}'";
             field = null;
             return false;
         }
