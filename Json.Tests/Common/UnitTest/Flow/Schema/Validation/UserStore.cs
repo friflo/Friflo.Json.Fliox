@@ -96,13 +96,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             AreEqual("unexpected character > expect key. Found: ] - type: Role, path: (root), pos: 2", error);
             
             IsFalse(validator.ValidateObject("{\"id\": 42 }",       test.roleType, out error));
-            AreEqual("Found number but expect: String - type: Role, path: id, pos: 9", error);
+            AreEqual("Incorrect type. Was number: 42, expect: String - type: Role, path: id, pos: 9", error);
             
             IsFalse(validator.ValidateObject("{\"id\": \"id\", \"rights\": [] } yyy",       test.roleType, out error));
             AreEqual("Expected EOF - type: Role, path: (root), pos: 29", error);
             
             IsFalse(validator.ValidateObject(test.roleUnknownEnum,  test.roleType, out error));
-            AreEqual("Found unknown enum value: 'zzz' - type: RightTask, path: rights[0].types, pos: 68", error);
+            AreEqual("Incorrect enum value: 'zzz' - type: RightTask, path: rights[0].types, pos: 68", error);
         }
         
         private class TestTypes {

@@ -130,14 +130,14 @@ namespace Friflo.Json.Flow.Schema.Validation
                             return Error(type, msg);
                         if (field.typeId == TypeId.Boolean)
                             continue;
-                        return Error(type, $"Found boolean but expect: {field.typeId}");
+                        return Error(type, $"Incorrect type. Was: {parser.boolValue}, expect: {field.typeId}");
                     
                     case JsonEvent.ValueNull:
                         if (!ValidationType.FindField(type, ref parser.key, out field, out msg, foundFields))
                             return Error(type, msg);
                         if (!field.required)
                             continue;
-                        return Error(type, $"Found null for required field.");
+                        return Error(type, $"Required value must not be null.");
                     
                     case JsonEvent.ArrayStart:
                         if (!ValidationType.FindField(type, ref parser.key, out field, out msg, foundFields))
@@ -147,7 +147,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                                 continue;
                             return false;
                         }
-                        return Error(type, $"Found array but expect: {field.typeId}");
+                        return Error(type, $"Incorrect type. Was array expect: {field.typeId}");
                     
                     case JsonEvent.ObjectStart:
                         if (!ValidationType.FindField(type, ref parser.key, out field, out msg, foundFields))
@@ -162,7 +162,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                                 continue;
                             return false;
                         }
-                        return Error(type, $"Found object but expect: {field.typeId}");
+                        return Error(type, $"Incorrect type. Was object expect: {field.typeId}");
                     
                     case JsonEvent.ObjectEnd:
                         if (type.HasMissingFields(foundFields, out var missingFields)) {
@@ -201,10 +201,10 @@ namespace Friflo.Json.Flow.Schema.Validation
                     case JsonEvent.ValueBool:
                         if (type.typeId == TypeId.Boolean)
                             continue;
-                        return Error(type, $"Found boolean but expect: {type.typeId}");
+                        return Error(type, $"Incorrect type. Was: {parser.boolValue}, expect: {type.typeId}");
                     
                     case JsonEvent.ValueNull:
-                        return Error(type, $"Found null for required value.");
+                        return Error(type, $"Required value must not be null.");
                     
                     case JsonEvent.ArrayStart:
                         return Error(type, $"Found array as array item. expect: {type.typeId}");
@@ -216,7 +216,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                                 continue;
                             return false;
                         }
-                        return Error(type, $"Found object but expect: {type.typeId}");
+                        return Error(type, $"Incorrect type. Was object expect: {type.typeId}");
                     
                     case JsonEvent.ObjectEnd:
                         if (!isArray)
@@ -292,9 +292,16 @@ namespace Friflo.Json.Flow.Schema.Validation
                 case TypeId.Enum:
                     return ValidationType.FindEnum(type, ref value, out msg);
                 default:
-                    msg = $"Found string but expect: {type.typeId}";
+                    msg = $"Incorrect type. Was string: '{TruncString(ref value)}', expect: {type.typeId}";
                     return false;
             }
+        }
+        
+        private static string TruncString (ref Bytes value) {
+            var str = value.ToString();
+            if (str.Length < 20)
+                return str;
+            return str.Substring(20) + "...";
         }
         
         private static bool ValidateNumber (ref JsonParser parser, ValidationType type, out string msg) {
@@ -307,14 +314,14 @@ namespace Friflo.Json.Flow.Schema.Validation
                         msg = null;
                         return true;
                     }
-                    msg = $"Found floating point number but expect {type.typeId}";
+                    msg = $"Incorrect type. Was number: {parser.value}, expect: {type.typeId}";
                     return false;
                 case TypeId.Float:
                 case TypeId.Double:
                     msg = null;
                     return true;
                 default:
-                    msg = $"Found number but expect: {type.typeId}";
+                    msg = $"Incorrect type. Was number: {parser.value}, expect: {type.typeId}";
                     return false;
             }
         }

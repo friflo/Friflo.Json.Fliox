@@ -134,7 +134,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return true;
                 }
             }
-            msg = $"Found unknown enum value: '{value}'";
+            msg = $"Incorrect enum value: '{value}'";
             return false;
         }
         

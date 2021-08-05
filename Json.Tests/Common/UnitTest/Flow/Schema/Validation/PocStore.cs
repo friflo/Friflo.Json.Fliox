@@ -63,22 +63,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
         private static void ValidateFailure(JsonValidator validator, TestTypes test)
         {
             IsFalse(validator.ValidateObject("{\"bigInt\": null }",         test.testType, out string error));
-            AreEqual("Found null for required field. - type: TestType, path: bigInt, pos: 15", error);
+            AreEqual("Required value must not be null. - type: TestType, path: bigInt, pos: 15", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": true }",          test.testType, out error));
-            AreEqual("Found boolean but expect: Uint8 - type: TestType, path: uint8, pos: 14", error);
+            AreEqual("Incorrect type. Was: True, expect: Uint8 - type: TestType, path: uint8, pos: 14", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": \"abc\" }",       test.testType, out error));
-            AreEqual("Found string but expect: Uint8 - type: TestType, path: uint8, pos: 15", error);
+            AreEqual("Incorrect type. Was string: 'abc', expect: Uint8 - type: TestType, path: uint8, pos: 15", error);
 
             IsFalse(validator.ValidateObject("{\"uint8\": 1.5 }",           test.testType, out error));
-            AreEqual("Found floating point number but expect Uint8 - type: TestType, path: uint8, pos: 13", error);
+            AreEqual("Incorrect type. Was number: 1.5, expect: Uint8 - type: TestType, path: uint8, pos: 13", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": [] }",            test.testType, out error));
-            AreEqual("Found array but expect: Uint8 - type: TestType, path: uint8[], pos: 11", error);
+            AreEqual("Incorrect type. Was array expect: Uint8 - type: TestType, path: uint8[], pos: 11", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": {} }",            test.testType, out error));
-            AreEqual("Found object but expect: Uint8 - type: TestType, path: uint8, pos: 11", error);
+            AreEqual("Incorrect type. Was object expect: Uint8 - type: TestType, path: uint8, pos: 11", error);
             
             IsFalse(validator.ValidateObject("{\"xxx\": {} }",              test.testType, out error));
             AreEqual("Field not found. key: 'xxx' - type: TestType, path: xxx, pos: 9", error);
