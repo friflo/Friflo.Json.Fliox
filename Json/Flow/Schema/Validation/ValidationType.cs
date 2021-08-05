@@ -37,6 +37,7 @@ namespace Friflo.Json.Flow.Schema.Validation
     /// performance.
     /// </summary>
     public sealed class ValidationType : IDisposable {
+        // ReSharper disable once NotAccessedField.Local
         private  readonly   TypeDef             typeDef;    // only for debugging
         public   readonly   string              name;       // only for debugging
         private  readonly   string              @namespace; // only for debugging
