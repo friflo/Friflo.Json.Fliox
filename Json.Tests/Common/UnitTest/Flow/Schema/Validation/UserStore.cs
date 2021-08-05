@@ -116,9 +116,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             internal    readonly string roleDenyMap;
             
             internal    readonly string roleDatabase    = AsJson(
-                @"{'id': 'role-database','description': 'test',
-                    'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'update'], 'subscribeChanges': ['update'] }}} ]
-                }");
+@"{'id': 'role-database','description': 'test',
+    'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'update'], 'subscribeChanges': ['update'] }}} ]
+}");
             internal    readonly string roleUnknownDisc     = AsJson(@"{'id': 'role', 'rights': [{ 'type': 'xxx' }] }");
             internal    readonly string roleMissingDisc     = AsJson(@"{'id': 'role', 'rights': [{ }] }");
             internal    readonly string roleUnexpectedDisc  = AsJson(@"{'id': 'role', 'rights': [{ 'disc': 'xxx' }] }");

@@ -140,7 +140,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
 }");
             
             internal    readonly string testTypeValidNull = AsJson(
-                @"{
+@"{
     'id': 'type-1',
     'dateTime': '2021-07-22T06:00:00.000Z',
     'dateTimeNull': null,
