@@ -292,12 +292,12 @@ namespace Friflo.Json.Flow.Schema.Validation
                 case TypeId.Enum:
                     return ValidationType.FindEnum(type, ref value, out msg);
                 default:
-                    msg = $"Incorrect type. Was string: '{TruncString(ref value)}', expect: {type.typeId}";
+                    msg = $"Incorrect type. Was string: '{Truncate(ref value)}', expect: {type.typeId}";
                     return false;
             }
         }
         
-        private static string TruncString (ref Bytes value) {
+        private static string Truncate (ref Bytes value) {
             var str = value.ToString();
             if (str.Length < 20)
                 return str;
