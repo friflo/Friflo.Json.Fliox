@@ -120,8 +120,8 @@ namespace Friflo.Json.Flow.Schema.Validation
             unionType?.Dispose();
         }
         
-        public static string GetName (ValidationType type, bool qualifiedTypeErrors) {
-            if (qualifiedTypeErrors) {
+        public static string GetName (ValidationType type, bool qualified) {
+            if (qualified) {
                 return type.qualifiedName;
             }
             return type.name;
