@@ -110,6 +110,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             
             // ------------------------------------ test array elements ------------------------------------
+            json = AsJson(@"{'rights': [ X ] }");            
+            IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
+            AreEqual("unexpected character while reading value. Found: X - type: Right, path: rights[0], pos: 14", error);
+            
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': 'zzz' } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
             AreEqual("Incorrect type. Was: 'zzz', expect: TaskType[] - type: RightTask, path: rights[0].types, pos: 44", error);

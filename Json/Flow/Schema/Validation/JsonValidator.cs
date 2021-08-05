@@ -222,7 +222,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return true;
                     
                     case JsonEvent.Error:
-                        return Error(type, parser.error.GetMessageBody()); // todo
+                        return Error(type, parser.error.GetMessageBody());
 
                     default:
                         return Error(type, $"Unexpected JSON event: {ev}");
