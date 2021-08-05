@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using Friflo.Json.Burst;
 
 namespace Friflo.Json.Flow.Schema.Validation
@@ -15,11 +16,16 @@ namespace Friflo.Json.Flow.Schema.Validation
         private             string          errorMsg;
         private  readonly   List<bool[]>    foundFieldsCache = new List<bool[]>();
         private  readonly   StringBuilder   sb = new StringBuilder();
+        private  readonly   Regex           dateTime;
+        
+        // RFC 3339 + milliseconds
+        private  static readonly Regex      DateTime =  new Regex(@"\b^[1-9]\d{3}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$\b", RegexOptions.Compiled);
         
         public              bool            qualifiedTypeErrors;
         
         public JsonValidator (bool qualifiedTypeErrors = false) {
             this.qualifiedTypeErrors = qualifiedTypeErrors;
+            dateTime = DateTime;
         }
         
         public void Dispose() {
@@ -257,15 +263,24 @@ namespace Friflo.Json.Flow.Schema.Validation
             return false;
         }
         
-        // --- static helper
-        // => using static prevent over writing previous error messages
-        private static bool ValidateString (ref Bytes value, ValidationType type, out string msg) {
+        // --- helper methods
+        private bool ValidateString (ref Bytes value, ValidationType type, out string msg) {
             switch (type.typeId) {
                 case TypeId.String:
-                case TypeId.BigInteger:
-                case TypeId.DateTime:
                     msg = null;
                     return true;
+                case TypeId.BigInteger:
+                    msg = null; // todo
+                    return true;
+                case TypeId.DateTime:
+                    var str = value.ToString();
+                    if (dateTime.IsMatch(str)) {
+                        msg = null;
+                        return true;
+                    }
+                    msg = $"Invalid DateTime: '{str}'";
+                    return false;
+
                 case TypeId.Enum:
                     return ValidationType.FindEnum(type, ref value, out msg);
                 default:

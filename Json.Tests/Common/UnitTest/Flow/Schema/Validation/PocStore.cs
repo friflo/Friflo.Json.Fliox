@@ -29,7 +29,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var validationSet    = new ValidationSet(jsonSchema))
             using (var validator        = new JsonValidator()) {
                 var test = new TestTypes {
-                    testType    = jsonSchema.TypeAsValidationType<TestType>(validationSet, "UnitTest.Flow.Graph")
+                    testType    = jsonSchema.TypeAsValidationType<TestType>(validationSet, "UnitTest.Flow.Graph"),
+                    orderType   = jsonSchema.TypeAsValidationType<Order>   (validationSet, "UnitTest.Flow.Graph")
                 };
                 ValidateSuccess(validator, test);
                 ValidateFailure(validator, test);
@@ -44,7 +45,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var validator        = new JsonValidator(true)) {
                 validator.qualifiedTypeErrors = false; // ensure API available
                 var test = new TestTypes {
-                    testType    = nativeSchema.TypeAsValidationType<TestType>(validationSet)
+                    testType    = nativeSchema.TypeAsValidationType<TestType>(validationSet),
+                    orderType   = nativeSchema.TypeAsValidationType<Order>   (validationSet)
                 };
                 ValidateSuccess(validator, test);
                 ValidateFailure(validator, test);
@@ -53,6 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
         
         private static void ValidateSuccess(JsonValidator validator, TestTypes test)
         {
+            IsTrue(validator.ValidateObject(test.orderValid,                test.orderType, out _));
         }
         
         private static void ValidateFailure(JsonValidator validator, TestTypes test)
@@ -75,15 +78,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             IsFalse(validator.ValidateObject("{\"uint8\": {} }",            test.testType, out error));
             AreEqual("Found object but expect: Uint8 - type: TestType, path: uint8, pos: 11", error);
             
-            IsFalse(validator.ValidateObject("{\"xxx\": {} }",            test.testType, out error));
+            IsFalse(validator.ValidateObject("{\"xxx\": {} }",              test.testType, out error));
             AreEqual("Field not found. key: 'xxx' - type: TestType, path: xxx, pos: 9", error);
+            
+            IsFalse(validator.ValidateObject("{ \"created\": \"2021-07-22 06:00:00.000Z\" }",   test.orderType, out error));
+            AreEqual("Invalid DateTime: '2021-07-22 06:00:00.000Z' - type: Order, path: created, pos: 39", error);
 
         }
         
         private class TestTypes {
             internal    ValidationType  testType;
+            internal    ValidationType  orderType;
             
-            // internal    readonly string testInvalid        = AsJson(@"{'id': 'role-deny', 'rights': [  ] }");
+            internal    readonly string orderValid        = AsJson("{ 'id': 'order-1', 'created': '2021-07-22T06:00:00.000Z' }");
         }
 
         // --- helper
@@ -93,8 +100,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             return typeStore;
         } 
         
-        /* private static string AsJson (string str) {
+        private static string AsJson (string str) {
             return str.Replace('\'', '"');
-        } */
+        }
     }
 }
