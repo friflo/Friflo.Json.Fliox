@@ -87,13 +87,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             AreEqual("ValidateObject() expect object. was: ArrayStart - type: Role, path: [], pos: 1", error);
             
             IsFalse(validator.ValidateObject(test.roleUnknownDisc,  test.roleType, out error));
-            AreEqual("Unknown discriminant: 'xxx' - type: Right, path: rights[0].type, pos: 41", error);
+            AreEqual("Unknown discriminant: 'xxx' - type: Right, path: rights[0].type, pos: 27", error);
             
             IsFalse(validator.ValidateObject(test.roleMissingDisc,  test.roleType, out error));
-            AreEqual("Expect discriminator as first member. Expect: 'type', was: ObjectEnd - type: Right, path: rights[0], pos: 29", error);
+            AreEqual("Expect discriminator as first member. Expect: 'type', was: ObjectEnd - type: Right, path: rights[0], pos: 15", error);
 
             IsFalse(validator.ValidateObject(test.roleUnexpectedDisc,  test.roleType, out error));
-            AreEqual("Unexpected discriminator: 'disc', expect: 'type' - type: Right, path: rights[0].disc, pos: 41", error);
+            AreEqual("Unexpected discriminator: 'disc', expect: 'type' - type: Right, path: rights[0].disc, pos: 27", error);
 
             IsFalse(validator.ValidateObject("{]",                  test.roleType, out error));
             AreEqual("unexpected character > expect key. Found: ] - type: Role, path: (root), pos: 2", error);
@@ -105,7 +105,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             AreEqual("Expected EOF - type: Role, path: (root), pos: 29", error);
             
             IsFalse(validator.ValidateObject(test.roleUnknownEnum,  test.roleType, out error));
-            AreEqual("Incorrect enum value: 'zzz' - type: RightTask, path: rights[0].types, pos: 68", error);
+            AreEqual("Incorrect type. Was: 'zzz', expect: Friflo.Json.Flow.Sync.TaskType[] - type: RightTask, path: rights[0].types, pos: 44", error);
+            
+            IsFalse(validator.ValidateObject(test.roleUnknownEnumArr,  test.roleType, out error));
+            AreEqual("Incorrect enum value: 'yyy' - type: TaskType, path: rights[0].types[0], pos: 45", error);
+
+            
+            // --- element errors
+            // IsFalse(validator.ValidateObject     (test.roleDatabase,    test.roleType, out _));
         }
         
         private class TestTypes {
@@ -119,10 +126,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
 @"{'id': 'role-database','description': 'test',
     'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'update'], 'subscribeChanges': ['update'] }}} ]
 }");
-            internal    readonly string roleUnknownDisc     = AsJson(@"{'id': 'role', 'rights': [{ 'type': 'xxx' }] }");
-            internal    readonly string roleMissingDisc     = AsJson(@"{'id': 'role', 'rights': [{ }] }");
-            internal    readonly string roleUnexpectedDisc  = AsJson(@"{'id': 'role', 'rights': [{ 'disc': 'xxx' }] }");
-            internal    readonly string roleUnknownEnum     = AsJson(@"{'id': 'role-database', 'rights': [ { 'type': 'task', 'types': 'zzz' } ] }");
+            internal    readonly string roleUnknownDisc     = AsJson(@"{'rights': [{ 'type': 'xxx' }] }");
+            internal    readonly string roleMissingDisc     = AsJson(@"{'rights': [{ }] }");
+            internal    readonly string roleUnexpectedDisc  = AsJson(@"{'rights': [{ 'disc': 'xxx' }] }");
+            internal    readonly string roleUnknownEnum     = AsJson(@"{'rights': [{ 'type': 'task', 'types': 'zzz' } ] }");
+            internal    readonly string roleUnknownEnumArr  = AsJson(@"{'rights': [{ 'type': 'task', 'types': ['yyy'] } ] }");
+            // internal    readonly string roleUnknownEnum     = AsJson(@"{'rights': [{ 'type': 'task', 'types': 'zzz' } ] }");
             
             internal TestTypes() {
                 roleDenyArray   = "[" + roleDeny + "]";

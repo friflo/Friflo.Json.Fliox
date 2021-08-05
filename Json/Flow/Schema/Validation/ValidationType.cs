@@ -139,21 +139,37 @@ namespace Friflo.Json.Flow.Schema.Validation
             return false;
         }
         
-        internal static bool FindField (ValidationType type, ref Bytes key, out ValidationField field, out string msg, bool[] foundFields) {
+        internal static bool FindField (ValidationType type, ref JsonParser parser, out ValidationField field, out string msg, bool[] foundFields) {
             foreach (var typeField in type.fields) {
-                if (key.IsEqual(ref typeField.name)) {
-                    field   = typeField;
-                    msg = null;
-                    var reqPos = field.requiredPos;
-                    if (reqPos >= 0) {
-                        foundFields[reqPos] = true;
-                    }
-                    return true;
+                if (!parser.key.IsEqual(ref typeField.name))
+                    continue;
+                field   = typeField;
+                var reqPos = field.requiredPos;
+                if (reqPos >= 0) {
+                    foundFields[reqPos] = true;
                 }
+                if (parser.Event != JsonEvent.ArrayStart && field.isArray) {
+                    var value = GetValue(ref parser);
+                    msg = $"Incorrect type. Was: {value}, expect: {field.type}[]";                    
+                    return false;
+                }
+                msg = null;
+                return true;
             }
-            msg = $"Field not found. key: '{key}'";
+            msg = $"Field not found. key: '{parser.key}'";
             field = null;
             return false;
+        }
+        
+        private static string GetValue(ref JsonParser parser) {
+            switch (parser.Event) {
+                case JsonEvent.ObjectStart:     return "object";
+                case JsonEvent.ValueString:     return "'" + parser.value + "'";
+                case JsonEvent.ValueNumber:     return parser.value.ToString();
+                case JsonEvent.ValueBool:       return parser.boolValue ? "true" : "false";
+                default:
+                    return parser.Event.ToString();
+            }
         }
 
         public bool HasMissingFields(bool[] foundFields, out string[] missingFields) {
