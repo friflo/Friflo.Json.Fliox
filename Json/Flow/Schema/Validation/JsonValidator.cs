@@ -134,14 +134,14 @@ namespace Friflo.Json.Flow.Schema.Validation
                     
                     case JsonEvent.ValueNull:
                         if (!ValidationType.FindField(type, this, out field, out msg, foundFields))
-                            return Error(type, msg);
+                            return Error(type, msg);  // todo
                         if (!field.required)
                             continue;
                         return Error(type, $"Required value must not be null.");
                     
                     case JsonEvent.ArrayStart:
                         if (!ValidationType.FindField(type, this, out field, out msg, foundFields))
-                            return Error(type, msg);
+                            return Error(type, msg);  // todo
                         if (field.isArray) {
                             if (ValidateElement (field.type, depth))
                                 continue;
@@ -170,9 +170,6 @@ namespace Friflo.Json.Flow.Schema.Validation
                             return Error(type, $"Missing required fields: [{missing}]");
                         }
                         return true;
-                    
-                    case JsonEvent.ArrayEnd:
-                        return Error(type, $"Found array end ']' in object: {ev}");
                     
                     case JsonEvent.Error:
                         return Error(type, parser.error.GetMessageBody());
@@ -225,7 +222,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return true;
                     
                     case JsonEvent.Error:
-                        return Error(type, parser.error.GetMessageBody());
+                        return Error(type, parser.error.GetMessageBody()); // todo
 
                     default:
                         return Error(type, $"Unexpected JSON event: {ev}");
