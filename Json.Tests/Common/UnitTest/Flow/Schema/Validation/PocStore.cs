@@ -56,7 +56,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
         private static void ValidateSuccess(JsonValidator validator, TestTypes test)
         {
             IsTrue(validator.ValidateObject(test.orderValid,                test.orderType, out _));
-            IsTrue(validator.ValidateObject(test.testTypeValid,             test.testType,  out string error));
+            IsTrue(validator.ValidateObject(test.testTypeValid,             test.testType,  out _));
+            IsTrue(validator.ValidateObject(test.testTypeValidNull,         test.testType,  out _));
         }
         
         private static void ValidateFailure(JsonValidator validator, TestTypes test)
@@ -94,7 +95,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             internal    readonly string orderValid        = AsJson("{ 'id': 'order-1', 'created': '2021-07-22T06:00:00.000Z' }");
             
             
-            internal    readonly string testTypeValid = AsJson(@"{
+            internal    readonly string testTypeValid = AsJson(
+@"{
     'id': 'type-1',
     'dateTime': '2021-07-22T06:00:00.000Z',
     'bigInt': '0',
@@ -110,11 +112,47 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
     },
     'intArray': [
     ],
-    'jsonValue': null,
     'derivedClass': {
         'derivedVal': 0,
         'article': 'article-1',
         'amount': 0
+    }
+}");
+            
+            internal    readonly string testTypeValidNull = AsJson(
+                @"{
+    'id': 'type-1',
+    'dateTime': '2021-07-22T06:00:00.000Z',
+    'dateTimeNull': null,
+    'bigInt': '0',
+    'bigIntNull': null,
+    'boolean': false,
+    'booleanNull': null,
+    'uint8': 0,
+    'uint8Null': null,
+    'int16': 0,
+    'int16Null': null,
+    'int32': 0,
+    'int32Null': null,
+    'int64': 0,
+    'int64Null': null,
+    'float32': 0.0,
+    'float32Null': null,
+    'float64': 0.0,
+    'float64Null': null,
+    'pocStruct': {
+        'value': 0
+    },
+    'pocStructNull': null,
+    'intArray': [
+    ],
+    'intArrayNull': null,
+    'jsonValue': null,
+    'derivedClass': {
+        'derivedVal': 0,
+        'article': 'article-1',
+        'amount': 0,
+        'name': null
     },
     'derivedClassNull': null
 }");
