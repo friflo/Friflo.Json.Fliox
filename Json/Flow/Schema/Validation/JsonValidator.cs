@@ -328,7 +328,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         default:
                             throw new InvalidOperationException("cant be reached");
                     }
-                    msg = $"{typeId} out of range: {parser.value}";
+                    msg = $"Integer out of range: {parser.value}, expect: {typeId}";
                     return false;
                 
                 case TypeId.Float:

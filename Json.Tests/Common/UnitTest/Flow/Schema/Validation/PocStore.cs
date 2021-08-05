@@ -92,19 +92,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             // --- integer types
             IsFalse(validator.ValidateObject("{ \"uint8\": -1 }",                       test.testType, out error));
-            AreEqual("Uint8 out of range: -1 - type: TestType, path: uint8, pos: 13", error);
+            AreEqual("Integer out of range: -1, expect: Uint8 - type: TestType, path: uint8, pos: 13", error);
             IsFalse(validator.ValidateObject("{ \"uint8\": 256 }",                      test.testType, out error));
-            AreEqual("Uint8 out of range: 256 - type: TestType, path: uint8, pos: 14", error);
+            AreEqual("Integer out of range: 256, expect: Uint8 - type: TestType, path: uint8, pos: 14", error);
             
             IsFalse(validator.ValidateObject("{ \"int16\": -32769 }",                   test.testType, out error));
-            AreEqual("Int16 out of range: -32769 - type: TestType, path: int16, pos: 17", error);
+            AreEqual("Integer out of range: -32769, expect: Int16 - type: TestType, path: int16, pos: 17", error);
             IsFalse(validator.ValidateObject("{ \"int16\": 32768 }",                    test.testType, out error));
-            AreEqual("Int16 out of range: 32768 - type: TestType, path: int16, pos: 16", error);
+            AreEqual("Integer out of range: 32768, expect: Int16 - type: TestType, path: int16, pos: 16", error);
             
             IsFalse(validator.ValidateObject("{ \"int32\": -2147483649 }",              test.testType, out error));
-            AreEqual("Int32 out of range: -2147483649 - type: TestType, path: int32, pos: 22", error);
+            AreEqual("Integer out of range: -2147483649, expect: Int32 - type: TestType, path: int32, pos: 22", error);
             IsFalse(validator.ValidateObject("{ \"int32\": 2147483648 }",               test.testType, out error));
-            AreEqual("Int32 out of range: 2147483648 - type: TestType, path: int32, pos: 21", error);
+            AreEqual("Integer out of range: 2147483648, expect: Int32 - type: TestType, path: int32, pos: 21", error);
 
         }
         
