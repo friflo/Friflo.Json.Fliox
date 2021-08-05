@@ -97,7 +97,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return Error(type, $"Expect discriminator as first member. Expect: '{unionType.discriminatorStr}', was: {ev}");
                 }
                 if (!parser.key.IsEqual(ref unionType.discriminator)) {
-                    return Error(type, $"Unexpected discriminator name. was: {parser.key}, expect: {unionType.discriminatorStr}");
+                    return Error(type, $"Unexpected discriminator: '{parser.key}', expect: '{unionType.discriminatorStr}'");
                 }
                 if (!ValidationUnion.FindUnion(unionType, ref parser.value, out var newType)) {
                     return Error(type, $"Unknown discriminant: '{parser.value}'");
