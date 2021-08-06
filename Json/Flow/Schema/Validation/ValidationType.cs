@@ -121,10 +121,14 @@ namespace Friflo.Json.Flow.Schema.Validation
         }
         
         public static string GetName (ValidationType type, bool qualified) {
-            if (qualified) {
-                return type.qualifiedName;
+            var typeId = type.typeId; 
+            if (typeId == TypeId.Class || typeId == TypeId.Union|| typeId == TypeId.Enum) {
+                if (qualified) {
+                    return type.qualifiedName;
+                }
+                return type.name;
             }
-            return type.name;
+            return typeId.ToString(); // todo check allocation
         }
 
         internal void SetFields(Dictionary<TypeDef, ValidationType> typeMap) {
