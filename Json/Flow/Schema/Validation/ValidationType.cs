@@ -186,7 +186,8 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
         }
 
-        public bool HasMissingFields(bool[] foundFields, out string[] missingFields) {
+        public bool HasMissingFields(bool[] foundFields, List<string> missingFields) {
+            missingFields.Clear();
             var foundCount = 0;
             for (int n = 0; n < requiredFieldsCount; n++) {
                 if (foundFields[n])
@@ -194,15 +195,11 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
             var missingCount = requiredFieldsCount - foundCount;
             if (missingCount == 0) {
-                missingFields = null;
                 return false;
             }
-            missingFields = new string [missingCount];
-            int missingFieldPos = 0;
-            
             for (int n = 0; n < requiredFieldsCount; n++) {
                 if (!foundFields[n])
-                    missingFields[missingFieldPos++] = requiredFields[n].fieldName;
+                    missingFields.Add(requiredFields[n].fieldName);
             }
             return true;
         }

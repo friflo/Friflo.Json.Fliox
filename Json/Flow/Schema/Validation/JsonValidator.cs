@@ -16,6 +16,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         private             string          errorMsg;
         private  readonly   List<bool[]>    foundFieldsCache = new List<bool[]>();
         private  readonly   StringBuilder   sb = new StringBuilder();
+        private  readonly   List<string>    missingFields = new List<string>();
         private  readonly   Regex           dateTime;
         private  readonly   Regex           bigInt;
         
@@ -36,6 +37,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             jsonBytes.Dispose();
             foundFieldsCache.Clear();
             sb.Clear();
+            missingFields.Clear();
         }
         
         private void Init(string json) {
@@ -165,7 +167,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return Error(type, $"Incorrect type. Was object expect: {field.typeId}");
                     
                     case JsonEvent.ObjectEnd:
-                        if (type.HasMissingFields(foundFields, out var missingFields)) {
+                        if (type.HasMissingFields(foundFields, missingFields)) {
                             var missing = string.Join(", ", missingFields);
                             return Error(type, $"Missing required fields: [{missing}]");
                         }
