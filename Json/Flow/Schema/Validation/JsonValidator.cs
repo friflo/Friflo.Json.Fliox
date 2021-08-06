@@ -96,10 +96,10 @@ namespace Friflo.Json.Flow.Schema.Validation
                 var ev      = parser.NextEvent();
                 var unionType = type.unionType;
                 if (ev != JsonEvent.ValueString) {
-                    return Error($"Expect discriminator as first member. Was: {ev}, expect: '{unionType.discriminatorStr}'", type);
+                    return ErrorType("Expect discriminator as first member.", ev.ToString(), unionType.discriminatorStr, type);
                 }
                 if (!parser.key.IsEqual(ref unionType.discriminator)) {
-                    return Error($"Invalid discriminator. Was: '{parser.key}', expect: '{unionType.discriminatorStr}'", type);
+                    return ErrorType("Invalid discriminator.", $"'{parser.key}'", unionType.discriminatorStr, type);
                 }
                 if (!ValidationUnion.FindUnion(unionType, ref parser.value, out var newType)) {
                     return Error($"Invalid discriminant: '{parser.value}'", type);
@@ -134,14 +134,14 @@ namespace Friflo.Json.Flow.Schema.Validation
                             continue;
                         var expect = ValidationType.GetName(field.type, qualifiedTypeErrors);
                         var value = parser.boolValue ? "true" : "false";
-                        return Error($"Incorrect type. Was: {value}, expect: {expect}", type);
+                        return ErrorType("Incorrect type.", value, expect, type);
                     
                     case JsonEvent.ValueNull:
                         if (!ValidationType.FindField(type, this, out field, out msg, foundFields))
                             return Error(msg, type);
                         if (!field.required)
                             continue;
-                        return Error($"Required property must not be null.", type);
+                        return Error("Required property must not be null.", type);
                     
                     case JsonEvent.ArrayStart:
                         if (!ValidationType.FindField(type, this, out field, out msg, foundFields))
@@ -152,7 +152,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                             return false;
                         }
                         expect = ValidationType.GetName(field.type, qualifiedTypeErrors);
-                        return Error($"Incorrect type. Was: array, expect: {expect}", type);
+                        return ErrorType("Incorrect type.", "array", expect, type);
                     
                     case JsonEvent.ObjectStart:
                         if (!ValidationType.FindField(type, this, out field, out msg, foundFields))
@@ -168,7 +168,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                             return false;
                         }
                         expect = ValidationType.GetName(field.type, qualifiedTypeErrors);
-                        return Error($"Incorrect type. Was: object, expect: {expect}", type);
+                        return ErrorType("Incorrect type.", "object", expect, type);
                     
                     case JsonEvent.ObjectEnd:
                         if (type.HasMissingFields(foundFields, missingFields)) {
@@ -206,10 +206,10 @@ namespace Friflo.Json.Flow.Schema.Validation
                             continue;
                         var expect = ValidationType.GetName(type, qualifiedTypeErrors);
                         var value = parser.boolValue ? "true" : "false";
-                        return Error($"Incorrect type. Was: {value}, expect: {expect}", parent);
+                        return ErrorType("Incorrect type.", value, expect, parent);
                     
                     case JsonEvent.ValueNull:
-                        return Error($"Element must not be null.", parent);
+                        return Error("Element must not be null.", parent);
                     
                     case JsonEvent.ArrayStart:
                         expect = ValidationType.GetName(type, qualifiedTypeErrors);
@@ -223,7 +223,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                             return false;
                         }
                         expect = ValidationType.GetName(type, qualifiedTypeErrors);
-                        return Error($"Incorrect type. Was: object, expect: {expect}", parent);
+                        return ErrorType("Incorrect type.", "object", expect, parent);
                     
                     case JsonEvent.ObjectEnd:
                         return true;
@@ -252,15 +252,11 @@ namespace Friflo.Json.Flow.Schema.Validation
         
         private bool ErrorType (string msg, string was, string expect, ValidationType type) {
             sb.Clear();
-            sb.Append(msg);
-            sb.Append("Was: ");
-            sb.Append(was);
-            sb.Append(", expect: ");
-            sb.Append(expect);
-            FormatError(type);
+            sb.Append(msg); sb.Append(" Was: "); sb.Append(was); sb.Append(", expect: "); sb.Append(expect);
+            sb.Append(" - "); FormatError(type);
             return false;         
         }
-        
+
         private bool Error(string msg, ValidationType type) {
             sb.Clear();
             sb.Append(msg);

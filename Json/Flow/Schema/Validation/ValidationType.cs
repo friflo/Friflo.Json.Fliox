@@ -250,7 +250,7 @@ namespace Friflo.Json.Flow.Schema.Validation
 
         public ValidationUnion(UnionType union) {
             unionType           = union;
-            discriminatorStr    = union.discriminator;
+            discriminatorStr    = $"'{union.discriminator}'";
             discriminator       = new Bytes(union.discriminator);
             types               = new UnionItem[union.types.Count];
         }
