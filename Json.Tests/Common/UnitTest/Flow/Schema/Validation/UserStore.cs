@@ -148,7 +148,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': null ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Required value must not be null. - type: RightTask, path: rights[0].types, pos: 43", error);
+            AreEqual("Required property must not be null. - type: RightTask, path: rights[0].types, pos: 43", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ null ] ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
