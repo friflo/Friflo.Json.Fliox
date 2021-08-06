@@ -134,14 +134,14 @@ namespace Friflo.Json.Flow.Schema.Validation
                     
                     case JsonEvent.ValueNull:
                         if (!ValidationType.FindField(type, this, out field, out msg, foundFields))
-                            return Error(type, msg);  // todo
+                            return Error(type, msg);
                         if (!field.required)
                             continue;
                         return Error(type, $"Required value must not be null.");
                     
                     case JsonEvent.ArrayStart:
                         if (!ValidationType.FindField(type, this, out field, out msg, foundFields))
-                            return Error(type, msg);  // todo
+                            return Error(type, msg);
                         if (field.isArray) {
                             if (ValidateElement (field.type, depth))
                                 continue;
