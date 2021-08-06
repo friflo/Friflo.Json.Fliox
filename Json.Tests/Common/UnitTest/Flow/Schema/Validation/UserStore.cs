@@ -112,7 +112,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             // ------------------------------------ test array elements ------------------------------------
             json = AsJson(@"{'rights': [ X ] }");            
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("unexpected character while reading value. Found: X - type: Right, path: rights[0], pos: 14", error);
+            AreEqual("unexpected character while reading value. Found: X - type: Role, path: rights[0], pos: 14", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': 'zzz' } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
@@ -120,7 +120,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': ['yyy'] } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Invalid enum value: 'yyy' - type: TaskType, path: rights[0].types[0], pos: 45", error);
+            AreEqual("Invalid enum value: 'yyy' - type: RightTask, path: rights[0].types[0], pos: 45", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': {} ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
@@ -128,7 +128,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ {} ] ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. Was object expect: Enum - type: TaskType, path: rights[0].types[0], pos: 42", error);
+            AreEqual("Incorrect type. Was object expect: Enum - type: RightTask, path: rights[0].types[0], pos: 42", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': true ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
@@ -136,7 +136,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ false ] ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. Was: False, expect: Enum - type: TaskType, path: rights[0].types[0], pos: 46", error);
+            AreEqual("Incorrect type. Was: False, expect: Enum - type: RightTask, path: rights[0].types[0], pos: 46", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': 123 ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
@@ -144,7 +144,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ 456 ] ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. Was number: 456, expect: Enum - type: TaskType, path: rights[0].types[0], pos: 44", error);
+            AreEqual("Incorrect type. Was number: 456, expect: Enum - type: RightTask, path: rights[0].types[0], pos: 44", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': null ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
@@ -152,7 +152,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ null ] ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Element must not be null. - type: TaskType, path: rights[0].types[0], pos: 45", error);
+            AreEqual("Element must not be null. - type: RightTask, path: rights[0].types[0], pos: 45", error);
             
             
             // ----------------------------- test dictionary elements (values) -----------------------------
@@ -162,7 +162,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             json = AsJson(@"{'rights': [ { 'type': 'database', 'containers': { 'key': true } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. Was: True, expect: Class - type: ContainerAccess, path: rights[0].containers.key, pos: 62", error);
+            AreEqual("Incorrect type. Was: True, expect: Class - type: RightDatabase, path: rights[0].containers.key, pos: 62", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'database', 'containers': 123 } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
@@ -170,7 +170,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             json = AsJson(@"{'rights': [ { 'type': 'database', 'containers': { 'key': 456 } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. Was number: 456, expect: Class - type: ContainerAccess, path: rights[0].containers.key, pos: 61", error);
+            AreEqual("Incorrect type. Was number: 456, expect: Class - type: RightDatabase, path: rights[0].containers.key, pos: 61", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'database', 'containers': [] } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
@@ -178,7 +178,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             json = AsJson(@"{'rights': [ { 'type': 'database', 'containers': { 'key': [] } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Found array as array item. expect: Class - type: ContainerAccess, path: rights[0].containers.key[], pos: 59", error); // todo
+            AreEqual("Found array as array item. expect: Class - type: RightDatabase, path: rights[0].containers.key[], pos: 59", error); // todo
 
         }
         
