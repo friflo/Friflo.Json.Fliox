@@ -254,15 +254,14 @@ namespace Friflo.Json.Flow.Schema.Validation
         private bool ErrorType (string msg, string was, string expect, ValidationType type) {
             sb.Clear();
             sb.Append(msg); sb.Append(" Was: "); sb.Append(was); sb.Append(", expect: "); sb.Append(expect);
-            sb.Append(" - "); FormatError(type);
+            sb.Append(" "); FormatError(type);
             return false;         
         }
 
         private bool Error(string msg, ValidationType type) {
             sb.Clear();
             sb.Append(msg);
-            sb.Append(" - ");
-            FormatError(type);
+            sb.Append(" "); FormatError(type);
             return false;
         }
         
