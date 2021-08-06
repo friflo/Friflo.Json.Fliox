@@ -274,9 +274,8 @@ namespace Friflo.Json.Flow.Schema.Validation
                 sb.Append("at ");
                 var typeName = ValidationType.GetName(type, qualifiedTypeErrors);
                 sb.Append(typeName);
-                sb.Append(", ");
+                sb.Append(" > ");
             }
-            sb.Append("path: ");
             sb.Append(parser.GetPath());
             sb.Append(", pos: ");
             sb.Append(parser.Position);
