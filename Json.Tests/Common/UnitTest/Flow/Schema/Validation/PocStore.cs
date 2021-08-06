@@ -66,19 +66,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             AreEqual("Required property must not be null. - type: TestType, path: bigInt, pos: 15", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": true }",          test.testType, out error));
-            AreEqual("Incorrect type. Was: True, expect: Uint8 - type: TestType, path: uint8, pos: 14", error);
+            AreEqual("Incorrect type. Was: True, expect: uint8 - type: TestType, path: uint8, pos: 14", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": \"abc\" }",       test.testType, out error));
-            AreEqual("Incorrect type. Was string: 'abc', expect: Uint8 - type: TestType, path: uint8, pos: 15", error);
+            AreEqual("Incorrect type. Was string: 'abc', expect: uint8 - type: TestType, path: uint8, pos: 15", error);
 
             IsFalse(validator.ValidateObject("{\"uint8\": 1.5 }",           test.testType, out error));
-            AreEqual("Invalid integer. Was: 1.5, expect: Uint8 - type: TestType, path: uint8, pos: 13", error);
+            AreEqual("Invalid integer. Was: 1.5, expect: uint8 - type: TestType, path: uint8, pos: 13", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": [] }",            test.testType, out error));
-            AreEqual("Incorrect type. Was: array, expect: Uint8 - type: TestType, path: uint8[], pos: 11", error);
+            AreEqual("Incorrect type. Was: array, expect: uint8 - type: TestType, path: uint8[], pos: 11", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": {} }",            test.testType, out error));
-            AreEqual("Incorrect type. Was: object, expect: Uint8 - type: TestType, path: uint8, pos: 11", error);
+            AreEqual("Incorrect type. Was: object, expect: uint8 - type: TestType, path: uint8, pos: 11", error);
             
             IsFalse(validator.ValidateObject("{\"xxx\": {} }",              test.testType, out error));
             AreEqual("Field not found. key: 'xxx' - type: TestType, path: xxx, pos: 9", error);
@@ -98,19 +98,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             // --- integer types
             IsFalse(validator.ValidateObject("{ \"uint8\": -1 }",                       test.testType, out error));
-            AreEqual("Integer out of range: -1, expect: Uint8 - type: TestType, path: uint8, pos: 13", error);
+            AreEqual("Integer out of range: -1, expect: uint8 - type: TestType, path: uint8, pos: 13", error);
             IsFalse(validator.ValidateObject("{ \"uint8\": 256 }",                      test.testType, out error));
-            AreEqual("Integer out of range: 256, expect: Uint8 - type: TestType, path: uint8, pos: 14", error);
+            AreEqual("Integer out of range: 256, expect: uint8 - type: TestType, path: uint8, pos: 14", error);
             
             IsFalse(validator.ValidateObject("{ \"int16\": -32769 }",                   test.testType, out error));
-            AreEqual("Integer out of range: -32769, expect: Int16 - type: TestType, path: int16, pos: 17", error);
+            AreEqual("Integer out of range: -32769, expect: int16 - type: TestType, path: int16, pos: 17", error);
             IsFalse(validator.ValidateObject("{ \"int16\": 32768 }",                    test.testType, out error));
-            AreEqual("Integer out of range: 32768, expect: Int16 - type: TestType, path: int16, pos: 16", error);
+            AreEqual("Integer out of range: 32768, expect: int16 - type: TestType, path: int16, pos: 16", error);
             
             IsFalse(validator.ValidateObject("{ \"int32\": -2147483649 }",              test.testType, out error));
-            AreEqual("Integer out of range: -2147483649, expect: Int32 - type: TestType, path: int32, pos: 22", error);
+            AreEqual("Integer out of range: -2147483649, expect: int32 - type: TestType, path: int32, pos: 22", error);
             IsFalse(validator.ValidateObject("{ \"int32\": 2147483648 }",               test.testType, out error));
-            AreEqual("Integer out of range: 2147483648, expect: Int32 - type: TestType, path: int32, pos: 21", error);
+            AreEqual("Integer out of range: 2147483648, expect: int32 - type: TestType, path: int32, pos: 21", error);
 
         }
         

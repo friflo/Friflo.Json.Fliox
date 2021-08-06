@@ -52,19 +52,19 @@ namespace Friflo.Json.Flow.Schema.Validation
         
         public  override    string              ToString() => qualifiedName;
         
-        internal ValidationType (TypeId typeId, TypeDef typeDef) {
+        internal ValidationType (TypeId typeId, string typeName, TypeDef typeDef) {
             this.typeId         = typeId;
             this.typeDef        = typeDef;
-            this.name           = typeDef.Name;
+            this.name           = typeName;
             this.@namespace     = typeDef.Namespace;
             this.qualifiedName  = $"{@namespace}.{name}";
         }
         
-        private ValidationType (TypeDef typeDef, UnionType union)               : this (TypeId.Union,   typeDef) {
+        private ValidationType (TypeDef typeDef, UnionType union)               : this (TypeId.Union, typeDef.Name, typeDef) {
             unionType       = new ValidationUnion(union);
         }
         
-        private ValidationType (TypeDef typeDef, List<FieldDef> fieldDefs)      : this (TypeId.Class, typeDef) {
+        private ValidationType (TypeDef typeDef, List<FieldDef> fieldDefs)      : this (TypeId.Class, typeDef.Name, typeDef) {
             int requiredCount = 0;
             foreach (var field in fieldDefs) {
                 if (field.required)
@@ -84,7 +84,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
         }
         
-        private ValidationType (TypeDef typeDef, ICollection<string> typeEnums) : this (TypeId.Enum,    typeDef) {
+        private ValidationType (TypeDef typeDef, ICollection<string> typeEnums) : this (TypeId.Enum, typeDef.Name, typeDef) {
             enumValues = new Bytes[typeEnums.Count];
             int n = 0;
             foreach (var enumValue in typeEnums) {
@@ -128,7 +128,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 }
                 return type.name;
             }
-            return typeId.ToString(); // todo check allocation
+            return type.name;
         }
 
         internal void SetFields(Dictionary<TypeDef, ValidationType> typeMap) {

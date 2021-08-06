@@ -315,12 +315,12 @@ namespace Friflo.Json.Flow.Schema.Validation
                 case TypeId.Int32:
                 case TypeId.Int64:
                     if (parser.isFloat) {
-                        msg = $"Invalid integer. Was: {parser.value}, expect: {typeId}";
+                        msg = $"Invalid integer. Was: {parser.value}, expect: {type.name}";
                         return false;
                     }
                     var value = parser.ValueAsLong(out bool success);
                     if (!success) {
-                        msg = $"Invalid integer. Was: {parser.value}, expect: {typeId}";
+                        msg = $"Invalid integer. Was: {parser.value}, expect: {type.name}";
                         return false;
                     }
                     switch (typeId) {
@@ -331,7 +331,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         default:
                             throw new InvalidOperationException("cant be reached");
                     }
-                    msg = $"Integer out of range: {parser.value}, expect: {typeId}";
+                    msg = $"Integer out of range: {parser.value}, expect: {type.name}";
                     return false;
                 
                 case TypeId.Float:

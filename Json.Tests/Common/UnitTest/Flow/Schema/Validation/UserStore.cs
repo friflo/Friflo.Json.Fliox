@@ -102,7 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             AreEqual("unexpected character > expect key. Found: ] - type: Role, path: (root), pos: 2", error);
             
             IsFalse(validator.ValidateObject("{\"id\": 42 }",       test.roleType, out error));
-            AreEqual("Incorrect type. Was number: 42, expect: String - type: Role, path: id, pos: 9", error);
+            AreEqual("Incorrect type. Was number: 42, expect: string - type: Role, path: id, pos: 9", error);
             
             json = "{\"id\": \"id\", \"rights\": [] } yyy";
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));

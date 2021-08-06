@@ -62,9 +62,30 @@ namespace Friflo.Json.Flow.Schema.Validation
         private void AddStandardType (TypeId typeId, TypeDef typeDef) {
             if (typeDef == null)
                 return;
-            var type = new ValidationType(typeId, typeDef);
+            var typeName = GetTypeName(typeId);
+            var type = new ValidationType(typeId, typeName, typeDef);
             types.Add(type);
             typeMap.Add(typeDef, type);
+        }
+        
+        private static string GetTypeName (TypeId typeId) {
+            switch (typeId) {
+                case TypeId.Uint8:      return "uint8";
+                case TypeId.Int16:      return "int16";
+                case TypeId.Int32:      return "int32";
+                case TypeId.Int64:      return "int64";
+                case TypeId.Float:      return "float";
+                case TypeId.Double:     return "double";
+                // --- boolean type
+                case TypeId.Boolean:    return "boolean";
+                // --- string types        
+                case TypeId.String:     return "string";
+                case TypeId.BigInteger: return "BigInteger";
+                case TypeId.DateTime:   return "DateTime";
+                case TypeId.JsonValue:  return "JSON";
+                default:
+                    throw new InvalidOperationException($"no standard typeId: {typeId}");
+            }
         }
 
         public void Dispose() {
