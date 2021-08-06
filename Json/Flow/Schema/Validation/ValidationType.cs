@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Friflo.Json.Burst;
 using Friflo.Json.Flow.Schema.Definition;
 
@@ -281,6 +282,11 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
             type    = null;
             return false;
+        }
+        
+        internal string GetTypesAsString() {
+            var discriminants = types.Select(t => t.discriminant);
+            return $"[{string.Join(", ", discriminants)}]";
         }
     }
     
