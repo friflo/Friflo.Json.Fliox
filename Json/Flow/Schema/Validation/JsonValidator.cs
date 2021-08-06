@@ -133,7 +133,8 @@ namespace Friflo.Json.Flow.Schema.Validation
                         if (field.typeId == TypeId.Boolean)
                             continue;
                         var expect = ValidationType.GetName(field.type, qualifiedTypeErrors);
-                        return Error(type, $"Incorrect type. Was: {parser.boolValue}, expect: {expect}");
+                        var value = parser.boolValue ? "true" : "false";
+                        return Error(type, $"Incorrect type. Was: {value}, expect: {expect}");
                     
                     case JsonEvent.ValueNull:
                         if (!ValidationType.FindField(type, this, out field, out msg, foundFields))
@@ -204,7 +205,8 @@ namespace Friflo.Json.Flow.Schema.Validation
                         if (type.typeId == TypeId.Boolean)
                             continue;
                         var expect = ValidationType.GetName(type, qualifiedTypeErrors);
-                        return Error(parent, $"Incorrect type. Was: {parser.boolValue}, expect: {expect}");
+                        var value = parser.boolValue ? "true" : "false";
+                        return Error(parent, $"Incorrect type. Was: {value}, expect: {expect}");
                     
                     case JsonEvent.ValueNull:
                         return Error(parent, $"Element must not be null.");

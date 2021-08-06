@@ -136,7 +136,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ false ] ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. Was: False, expect: TaskType - type: RightTask, path: rights[0].types[0], pos: 46", error);
+            AreEqual("Incorrect type. Was: false, expect: TaskType - type: RightTask, path: rights[0].types[0], pos: 46", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': 123 ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
@@ -158,11 +158,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             // ----------------------------- test dictionary elements (values) -----------------------------
             json = AsJson(@"{'rights': [ { 'type': 'database', 'containers': true } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. Was: True, expect: ContainerAccess - type: RightDatabase, path: rights[0].containers, pos: 53", error);
+            AreEqual("Incorrect type. Was: true, expect: ContainerAccess - type: RightDatabase, path: rights[0].containers, pos: 53", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'database', 'containers': { 'key': true } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. Was: True, expect: ContainerAccess - type: RightDatabase, path: rights[0].containers.key, pos: 62", error);
+            AreEqual("Incorrect type. Was: true, expect: ContainerAccess - type: RightDatabase, path: rights[0].containers.key, pos: 62", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'database', 'containers': 123 } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));

@@ -66,7 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             AreEqual("Required property must not be null. - type: TestType, path: bigInt, pos: 15", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": true }",          test.testType, out error));
-            AreEqual("Incorrect type. Was: True, expect: uint8 - type: TestType, path: uint8, pos: 14", error);
+            AreEqual("Incorrect type. Was: true, expect: uint8 - type: TestType, path: uint8, pos: 14", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": \"abc\" }",       test.testType, out error));
             AreEqual("Incorrect type. Was string: 'abc', expect: uint8 - type: TestType, path: uint8, pos: 15", error);
