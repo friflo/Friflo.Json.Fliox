@@ -271,7 +271,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 throw new InvalidOperationException($"error already set. Error: {errorMsg}");
             }
             if (type != null) {
-                sb.Append("type: ");
+                sb.Append("at ");
                 var typeName = ValidationType.GetName(type, qualifiedTypeErrors);
                 sb.Append(typeName);
                 sb.Append(", ");

@@ -63,54 +63,54 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
         private static void ValidateFailure(JsonValidator validator, TestTypes test)
         {
             IsFalse(validator.ValidateObject("{\"bigInt\": null }",         test.testType, out string error));
-            AreEqual("Required property must not be null. - type: TestType, path: bigInt, pos: 15", error);
+            AreEqual("Required property must not be null. - at TestType, path: bigInt, pos: 15", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": true }",          test.testType, out error));
-            AreEqual("Incorrect type. Was: true, expect: uint8 - type: TestType, path: uint8, pos: 14", error);
+            AreEqual("Incorrect type. Was: true, expect: uint8 - at TestType, path: uint8, pos: 14", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": \"abc\" }",       test.testType, out error));
-            AreEqual("Incorrect type. Was: 'abc', expect: uint8 - type: TestType, path: uint8, pos: 15", error);
+            AreEqual("Incorrect type. Was: 'abc', expect: uint8 - at TestType, path: uint8, pos: 15", error);
 
             IsFalse(validator.ValidateObject("{\"uint8\": 1.5 }",           test.testType, out error));
-            AreEqual("Invalid integer. Was: 1.5, expect: uint8 - type: TestType, path: uint8, pos: 13", error);
+            AreEqual("Invalid integer. Was: 1.5, expect: uint8 - at TestType, path: uint8, pos: 13", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": [] }",            test.testType, out error));
-            AreEqual("Incorrect type. Was: array, expect: uint8 - type: TestType, path: uint8[], pos: 11", error);
+            AreEqual("Incorrect type. Was: array, expect: uint8 - at TestType, path: uint8[], pos: 11", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": {} }",            test.testType, out error));
-            AreEqual("Incorrect type. Was: object, expect: uint8 - type: TestType, path: uint8, pos: 11", error);
+            AreEqual("Incorrect type. Was: object, expect: uint8 - at TestType, path: uint8, pos: 11", error);
             
             IsFalse(validator.ValidateObject("{\"xxx\": {} }",              test.testType, out error));
-            AreEqual("Field not found. key: 'xxx' - type: TestType, path: xxx, pos: 9", error);
+            AreEqual("Field not found. key: 'xxx' - at TestType, path: xxx, pos: 9", error);
             
             IsFalse(validator.ValidateObject("{\"yyy\": null }",            test.testType, out error));
-            AreEqual("Field not found. key: 'yyy' - type: TestType, path: yyy, pos: 12", error);
+            AreEqual("Field not found. key: 'yyy' - at TestType, path: yyy, pos: 12", error);
             
             IsFalse(validator.ValidateObject("{\"zzz\": [] }",              test.testType, out error));
-            AreEqual("Field not found. key: 'zzz' - type: TestType, path: zzz[], pos: 9", error);
+            AreEqual("Field not found. key: 'zzz' - at TestType, path: zzz[], pos: 9", error);
             
             // missing T in dateTime. correct: "2021-07-22T06:00:00.000Z"
             IsFalse(validator.ValidateObject("{ \"dateTime\": \"2021-07-22 06:00:00.000Z\" }",   test.testType, out error));
-            AreEqual("Invalid DateTime: '2021-07-22 06:00:00.000Z' - type: TestType, path: dateTime, pos: 40", error);
+            AreEqual("Invalid DateTime: '2021-07-22 06:00:00.000Z' - at TestType, path: dateTime, pos: 40", error);
             
             IsFalse(validator.ValidateObject("{ \"bigInt\": \"abc\" }",     test.testType, out error));
-            AreEqual("Invalid BigInteger: 'abc' - type: TestType, path: bigInt, pos: 17", error);
+            AreEqual("Invalid BigInteger: 'abc' - at TestType, path: bigInt, pos: 17", error);
             
             // --- integer types
             IsFalse(validator.ValidateObject("{ \"uint8\": -1 }",                       test.testType, out error));
-            AreEqual("Integer out of range: -1, expect: uint8 - type: TestType, path: uint8, pos: 13", error);
+            AreEqual("Integer out of range: -1, expect: uint8 - at TestType, path: uint8, pos: 13", error);
             IsFalse(validator.ValidateObject("{ \"uint8\": 256 }",                      test.testType, out error));
-            AreEqual("Integer out of range: 256, expect: uint8 - type: TestType, path: uint8, pos: 14", error);
+            AreEqual("Integer out of range: 256, expect: uint8 - at TestType, path: uint8, pos: 14", error);
             
             IsFalse(validator.ValidateObject("{ \"int16\": -32769 }",                   test.testType, out error));
-            AreEqual("Integer out of range: -32769, expect: int16 - type: TestType, path: int16, pos: 17", error);
+            AreEqual("Integer out of range: -32769, expect: int16 - at TestType, path: int16, pos: 17", error);
             IsFalse(validator.ValidateObject("{ \"int16\": 32768 }",                    test.testType, out error));
-            AreEqual("Integer out of range: 32768, expect: int16 - type: TestType, path: int16, pos: 16", error);
+            AreEqual("Integer out of range: 32768, expect: int16 - at TestType, path: int16, pos: 16", error);
             
             IsFalse(validator.ValidateObject("{ \"int32\": -2147483649 }",              test.testType, out error));
-            AreEqual("Integer out of range: -2147483649, expect: int32 - type: TestType, path: int32, pos: 22", error);
+            AreEqual("Integer out of range: -2147483649, expect: int32 - at TestType, path: int32, pos: 22", error);
             IsFalse(validator.ValidateObject("{ \"int32\": 2147483648 }",               test.testType, out error));
-            AreEqual("Integer out of range: 2147483648, expect: int32 - type: TestType, path: int32, pos: 21", error);
+            AreEqual("Integer out of range: 2147483648, expect: int32 - at TestType, path: int32, pos: 21", error);
 
         }
         
