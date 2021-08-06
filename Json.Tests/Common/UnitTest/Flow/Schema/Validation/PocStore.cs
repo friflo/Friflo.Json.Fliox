@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             AreEqual("Incorrect type. Was array expect: Uint8 - type: TestType, path: uint8[], pos: 11", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": {} }",            test.testType, out error));
-            AreEqual("Incorrect type. Was object expect: Uint8 - type: TestType, path: uint8, pos: 11", error);
+            AreEqual("Incorrect type. Was: object, expect: Uint8 - type: TestType, path: uint8, pos: 11", error);
             
             IsFalse(validator.ValidateObject("{\"xxx\": {} }",              test.testType, out error));
             AreEqual("Field not found. key: 'xxx' - type: TestType, path: xxx, pos: 9", error);

@@ -167,7 +167,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                             return false;
                         }
                         expect = ValidationType.GetName(field.type, qualifiedTypeErrors);
-                        return Error(type, $"Incorrect type. Was object expect: {expect}");
+                        return Error(type, $"Incorrect type. Was: object, expect: {expect}");
                     
                     case JsonEvent.ObjectEnd:
                         if (type.HasMissingFields(foundFields, missingFields)) {
@@ -221,7 +221,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                             return false;
                         }
                         expect = ValidationType.GetName(type, qualifiedTypeErrors);
-                        return Error(parent, $"Incorrect type. Was object expect: {expect}");
+                        return Error(parent, $"Incorrect type. Was: object, expect: {expect}");
                     
                     case JsonEvent.ObjectEnd:
                         return true;

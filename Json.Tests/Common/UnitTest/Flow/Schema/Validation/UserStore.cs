@@ -128,7 +128,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ {} ] ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. Was object expect: TaskType - type: RightTask, path: rights[0].types[0], pos: 42", error);
+            AreEqual("Incorrect type. Was: object, expect: TaskType - type: RightTask, path: rights[0].types[0], pos: 42", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': true ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
