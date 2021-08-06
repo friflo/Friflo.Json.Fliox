@@ -304,7 +304,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 case TypeId.Int32:
                 case TypeId.Int64:
                     if (parser.isFloat) {
-                        msg = $"Incorrect type. Was number: {parser.value}, expect: {typeId}";
+                        msg = $"Invalid integer. Was: {parser.value}, expect: {typeId}";
                         return false;
                     }
                     var value = parser.ValueAsLong(out bool success);
