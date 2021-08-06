@@ -307,7 +307,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return false;
 
                 case TypeId.Enum:
-                    return ValidationType.FindEnum(type, ref value, out msg);
+                    return ValidationType.FindEnum(type, ref value, out msg, qualifiedTypeErrors);
                 default:
                     var expect = ValidationType.GetName(type, qualifiedTypeErrors);
                     msg = $"Incorrect type. Was: '{Truncate(ref value)}', expect: {expect}";

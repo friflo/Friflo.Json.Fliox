@@ -142,7 +142,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
         }
         
-        internal static bool FindEnum (ValidationType type, ref Bytes value, out string msg) {
+        internal static bool FindEnum (ValidationType type, ref Bytes value, out string msg, bool qualified) {
             var enumValues = type.enumValues;
             for (int n = 0; n < enumValues.Length; n++) {
                 if (enumValues[n].IsEqual(ref value)) {
@@ -150,7 +150,8 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return true;
                 }
             }
-            msg = $"Invalid enum value: '{value}'";
+            var expect = GetName(type, qualified);
+            msg = $"Invalid enum value: '{value}', expect: {expect}";
             return false;
         }
         
