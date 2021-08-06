@@ -102,7 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             AreEqual("unexpected character > expect key. Found: ] - type: Role, path: (root), pos: 2", error);
             
             IsFalse(validator.ValidateObject("{\"id\": 42 }",       test.roleType, out error));
-            AreEqual("Incorrect type. Was number: 42, expect: string - type: Role, path: id, pos: 9", error);
+            AreEqual("Incorrect type. Was: 42, expect: string - type: Role, path: id, pos: 9", error);
             
             json = "{\"id\": \"id\", \"rights\": [] } yyy";
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
@@ -144,7 +144,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': [ 456 ] ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. Was number: 456, expect: TaskType - type: RightTask, path: rights[0].types[0], pos: 44", error);
+            AreEqual("Incorrect type. Was: 456, expect: TaskType - type: RightTask, path: rights[0].types[0], pos: 44", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': null ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
@@ -166,11 +166,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             json = AsJson(@"{'rights': [ { 'type': 'database', 'containers': 123 } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. Was number: 123, expect: ContainerAccess - type: RightDatabase, path: rights[0].containers, pos: 52", error);
+            AreEqual("Incorrect type. Was: 123, expect: ContainerAccess - type: RightDatabase, path: rights[0].containers, pos: 52", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'database', 'containers': { 'key': 456 } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. Was number: 456, expect: ContainerAccess - type: RightDatabase, path: rights[0].containers.key, pos: 61", error);
+            AreEqual("Incorrect type. Was: 456, expect: ContainerAccess - type: RightDatabase, path: rights[0].containers.key, pos: 61", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'database', 'containers': [] } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));

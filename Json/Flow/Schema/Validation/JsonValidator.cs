@@ -342,7 +342,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return true;
                 default:
                     var expect = ValidationType.GetName(type, qualifiedTypeErrors);
-                    msg = $"Incorrect type. Was number: {parser.value}, expect: {expect}";
+                    msg = $"Incorrect type. Was: {parser.value}, expect: {expect}";
                     return false;
             }
         }
