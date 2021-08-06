@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             var json = AsJson(@"{'rights': [{ 'type': 'xxx' }] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Unknown discriminant: 'xxx' - type: Right, path: rights[0].type, pos: 27", error);
+            AreEqual("Invalid discriminant: 'xxx' - type: Right, path: rights[0].type, pos: 27", error);
             
             json = AsJson(@"{'rights': [{ }] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
@@ -96,7 +96,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
 
             json = AsJson(@"{'rights': [{ 'disc': 'xxx' }] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Unexpected discriminator: 'disc', expect: 'type' - type: Right, path: rights[0].disc, pos: 27", error);
+            AreEqual("Invalid discriminator: 'disc', expect: 'type' - type: Right, path: rights[0].disc, pos: 27", error);
 
             IsFalse(validator.ValidateObject("{]",                  test.roleType, out error));
             AreEqual("unexpected character > expect key. Found: ] - type: Role, path: (root), pos: 2", error);
