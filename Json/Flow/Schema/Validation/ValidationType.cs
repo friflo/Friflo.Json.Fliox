@@ -145,7 +145,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return true;
                 }
             }
-            msg = $"Incorrect enum value: '{value}'";
+            msg = $"Invalid enum value: '{value}'";
             return false;
         }
         

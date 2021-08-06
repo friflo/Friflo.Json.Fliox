@@ -120,7 +120,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': ['yyy'] } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect enum value: 'yyy' - type: TaskType, path: rights[0].types[0], pos: 45", error);
+            AreEqual("Invalid enum value: 'yyy' - type: TaskType, path: rights[0].types[0], pos: 45", error);
             
             json = AsJson(@"{'rights': [{ 'type': 'task', 'types': {} ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
