@@ -174,7 +174,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             json = AsJson(@"{'rights': [ { 'type': 'database', 'containers': [] } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. Was array expect: ContainerAccess - type: RightDatabase, path: rights[0].containers[], pos: 50", error);
+            AreEqual("Incorrect type. Was: array, expect: ContainerAccess - type: RightDatabase, path: rights[0].containers[], pos: 50", error);
             
             json = AsJson(@"{'rights': [ { 'type': 'database', 'containers': { 'key': [] } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));

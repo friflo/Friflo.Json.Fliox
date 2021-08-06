@@ -151,7 +151,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                             return false;
                         }
                         expect = ValidationType.GetName(field.type, qualifiedTypeErrors);
-                        return Error(type, $"Incorrect type. Was array expect: {expect}");
+                        return Error(type, $"Incorrect type. Was: array, expect: {expect}");
                     
                     case JsonEvent.ObjectStart:
                         if (!ValidationType.FindField(type, this, out field, out msg, foundFields))
