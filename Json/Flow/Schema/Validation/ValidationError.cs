@@ -45,7 +45,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             sb.Append(msg);
             if (value != null) {
                 if (expect != null) {
-                    sb.Append(" Was: ");
+                    sb.Append(" was: ");
                     if (isString) {
                         sb.Append('\'');
                         sb.Append(value);

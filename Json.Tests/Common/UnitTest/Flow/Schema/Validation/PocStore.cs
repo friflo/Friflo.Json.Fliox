@@ -66,19 +66,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             AreEqual("Required property must not be null. at TestType > bigInt, pos: 15", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": true }",          test.testType, out error));
-            AreEqual("Incorrect type. Was: true, expect: uint8 at TestType > uint8, pos: 14", error);
+            AreEqual("Incorrect type. was: true, expect: uint8 at TestType > uint8, pos: 14", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": \"abc\" }",       test.testType, out error));
-            AreEqual("Incorrect type. Was: 'abc', expect: uint8 at TestType > uint8, pos: 15", error);
+            AreEqual("Incorrect type. was: 'abc', expect: uint8 at TestType > uint8, pos: 15", error);
 
             IsFalse(validator.ValidateObject("{\"uint8\": 1.5 }",           test.testType, out error));
-            AreEqual("Invalid integer. Was: 1.5, expect: uint8 at TestType > uint8, pos: 13", error);
+            AreEqual("Invalid integer. was: 1.5, expect: uint8 at TestType > uint8, pos: 13", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": [] }",            test.testType, out error));
-            AreEqual("Incorrect type. Was: array, expect: uint8 at TestType > uint8[], pos: 11", error);
+            AreEqual("Incorrect type. was: array, expect: uint8 at TestType > uint8[], pos: 11", error);
             
             IsFalse(validator.ValidateObject("{\"uint8\": {} }",            test.testType, out error));
-            AreEqual("Incorrect type. Was: object, expect: uint8 at TestType > uint8, pos: 11", error);
+            AreEqual("Incorrect type. was: object, expect: uint8 at TestType > uint8, pos: 11", error);
             
             IsFalse(validator.ValidateObject("{\"xxx\": {} }",              test.testType, out error));
             AreEqual("Field not found: 'xxx' at TestType > xxx, pos: 9", error);
@@ -98,19 +98,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             
             // --- integer types
             IsFalse(validator.ValidateObject("{ \"uint8\": -1 }",                       test.testType, out error));
-            AreEqual("Integer out of range. Was: -1, expect: uint8 at TestType > uint8, pos: 13", error);
+            AreEqual("Integer out of range. was: -1, expect: uint8 at TestType > uint8, pos: 13", error);
             IsFalse(validator.ValidateObject("{ \"uint8\": 256 }",                      test.testType, out error));
-            AreEqual("Integer out of range. Was: 256, expect: uint8 at TestType > uint8, pos: 14", error);
+            AreEqual("Integer out of range. was: 256, expect: uint8 at TestType > uint8, pos: 14", error);
             
             IsFalse(validator.ValidateObject("{ \"int16\": -32769 }",                   test.testType, out error));
-            AreEqual("Integer out of range. Was: -32769, expect: int16 at TestType > int16, pos: 17", error);
+            AreEqual("Integer out of range. was: -32769, expect: int16 at TestType > int16, pos: 17", error);
             IsFalse(validator.ValidateObject("{ \"int16\": 32768 }",                    test.testType, out error));
-            AreEqual("Integer out of range. Was: 32768, expect: int16 at TestType > int16, pos: 16", error);
+            AreEqual("Integer out of range. was: 32768, expect: int16 at TestType > int16, pos: 16", error);
             
             IsFalse(validator.ValidateObject("{ \"int32\": -2147483649 }",              test.testType, out error));
-            AreEqual("Integer out of range. Was: -2147483649, expect: int32 at TestType > int32, pos: 22", error);
+            AreEqual("Integer out of range. was: -2147483649, expect: int32 at TestType > int32, pos: 22", error);
             IsFalse(validator.ValidateObject("{ \"int32\": 2147483648 }",               test.testType, out error));
-            AreEqual("Integer out of range. Was: 2147483648, expect: int32 at TestType > int32, pos: 21", error);
+            AreEqual("Integer out of range. was: 2147483648, expect: int32 at TestType > int32, pos: 21", error);
 
         }
         
