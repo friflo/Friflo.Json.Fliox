@@ -155,7 +155,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             return false;
         }
         
-        internal static bool FindField (ValidationType type, JsonValidator validator, out ValidationField field, out string msg, bool[] foundFields) {
+        internal static bool FindField (ValidationType type, JsonValidator validator, out ValidationField field, bool[] foundFields) {
             ref var parser = ref validator.parser;
             foreach (var typeField in type.fields) {
                 if (!parser.key.IsEqual(ref typeField.name))
@@ -169,13 +169,12 @@ namespace Friflo.Json.Flow.Schema.Validation
                 if (ev != JsonEvent.ArrayStart && ev != JsonEvent.ValueNull && field.isArray) {
                     var value       = GetValue(ref parser);
                     var fieldName   = GetName(field.type, validator.qualifiedTypeErrors);
-                    msg = $"Incorrect type. Was: {value}, expect: {fieldName}[]";                    
+                    validator.ErrorType("Incorrect type.", value, fieldName, true, type);
                     return false;
                 }
-                msg = null;
                 return true;
             }
-            msg = $"Field not found. key: '{parser.key}'";
+            validator.Error($"Field not found. key: '{parser.key}'", type);
             field = null;
             return false;
         }

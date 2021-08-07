@@ -10,28 +10,31 @@ namespace Friflo.Json.Flow.Schema.Validation
         public  readonly    string          msg;
         public  readonly    string          was;
         public  readonly    string          expect;
+        public  readonly    bool            expectIsArray;
         public  readonly    ValidationType  type;
         public  readonly    string          path;
         public  readonly    int             pos;
 
         public  override    string          ToString() => msg == null ? "no error" : AsString(new StringBuilder(), false);
 
-        public ValidationError (string msg, string was, string expect, ValidationType type, string path, int pos) {
-            this.msg    = msg;
-            this.was    = was;
-            this.expect = expect;
-            this.type   = type;
-            this.path   = path;
-            this.pos    = pos;
+        public ValidationError (string msg, string was, string expect, bool expectIsArray, ValidationType type, string path, int pos) {
+            this.msg            = msg;
+            this.was            = was;
+            this.expect         = expect;
+            this.expectIsArray  = expectIsArray;
+            this.type           = type;
+            this.path           = path;
+            this.pos            = pos;
         }
         
         public ValidationError (string msg, ValidationType type, string path, int pos) {
-            this.msg    = msg;
-            this.was    = null;
-            this.expect = null;
-            this.type   = type;
-            this.path   = path;
-            this.pos    = pos;
+            this.msg            = msg;
+            this.was            = null;
+            this.expect         = null;
+            this.expectIsArray  = false;
+            this.type           = type;
+            this.path           = path;
+            this.pos            = pos;
         }
         
         public string AsString (StringBuilder sb, bool qualifiedTypeErrors) {
@@ -39,6 +42,9 @@ namespace Friflo.Json.Flow.Schema.Validation
             sb.Append(msg);
             if (was != null) {
                 sb.Append(" Was: "); sb.Append(was); sb.Append(", expect: "); sb.Append(expect);
+                if (expectIsArray) {
+                    sb.Append("[]");
+                }
             }
             sb.Append(" ");
             if (type != null) {
