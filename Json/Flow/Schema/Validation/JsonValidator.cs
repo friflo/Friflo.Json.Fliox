@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Schema.Validation
     {
         internal            JsonParser      parser; // on top enabling instance offset 0
         private             Bytes           jsonBytes = new Bytes(128);
-        private             ValidationError error;
+        private             ValidationError validationError;
         private  readonly   List<bool[]>    foundFieldsCache = new List<bool[]>();
         private  readonly   StringBuilder   sb = new StringBuilder();
         private  readonly   List<string>    missingFields = new List<string>();
@@ -42,7 +42,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         }
         
         private void Init(string json) {
-            error = new ValidationError(null);
+            validationError = new ValidationError();
             jsonBytes.Clear();
             jsonBytes.AppendString(json);
             parser.InitParser(jsonBytes);
@@ -50,7 +50,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         
         private bool Return(ValidationType type, bool success, out string error) {
             if (!success) {
-                error = this.error.AsString(sb, qualifiedTypeErrors);
+                error = validationError.AsString(sb, qualifiedTypeErrors);
                 return false;
             }
             var ev = parser.NextEvent();
@@ -248,23 +248,23 @@ namespace Friflo.Json.Flow.Schema.Validation
             } else {
                 Error(msg, type);
             }
-            error = this.error.AsString(sb, qualifiedTypeErrors);
+            error = validationError.AsString(sb, qualifiedTypeErrors);
             return false;
         }
         
         private bool ErrorType (string msg, string was, string expect, ValidationType type) {
-            if (error.msg != null) {
-                throw new InvalidOperationException($"error already set. Error: {error}");
+            if (validationError.msg != null) {
+                throw new InvalidOperationException($"error already set. Error: {validationError}");
             }
-            error = new ValidationError(msg, was, expect, type, parser.GetPath(), parser.Position);
+            validationError = new ValidationError(msg, was, expect, type, parser.GetPath(), parser.Position);
             return false;         
         }
 
         private bool Error(string msg, ValidationType type) {
-            if (error.msg != null) {
-                throw new InvalidOperationException($"error already set. Error: {error}");
+            if (validationError.msg != null) {
+                throw new InvalidOperationException($"error already set. Error: {validationError}");
             }
-            error = new ValidationError(msg, type, parser.GetPath(), parser.Position);
+            validationError = new ValidationError(msg, type, parser.GetPath(), parser.Position);
             return false;
         }
         

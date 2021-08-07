@@ -16,15 +16,6 @@ namespace Friflo.Json.Flow.Schema.Validation
 
         public  override    string          ToString() => msg == null ? "no error" : AsString(new StringBuilder(), false);
 
-        public ValidationError (string msg) {
-            this.msg    = msg;
-            this.was    = null;
-            this.expect = null;
-            this.type   = null;
-            this.path   = null;
-            this.pos    = 0;
-        }
-        
         public ValidationError (string msg, string was, string expect, ValidationType type, string path, int pos) {
             this.msg    = msg;
             this.was    = was;
