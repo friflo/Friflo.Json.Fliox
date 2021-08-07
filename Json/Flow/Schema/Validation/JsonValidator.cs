@@ -113,21 +113,20 @@ namespace Friflo.Json.Flow.Schema.Validation
             while (true) {
                 var             ev = parser.NextEvent();
                 ValidationField field;
-                string          msg;
                 switch (ev) {
                     case JsonEvent.ValueString:
                         if (!ValidationType.FindField(type, this, out field, foundFields))
                             return false;
-                        if (ValidateString (ref parser.value, field.type, out msg))
+                        if (ValidateString (ref parser.value, field.type, out string msg))
                             continue;
                         return Error(msg, type);
                         
                     case JsonEvent.ValueNumber:
                         if (!ValidationType.FindField(type, this, out field, foundFields))
                             return false;
-                        if (ValidateNumber(ref parser, field.type, out msg))
+                        if (ValidateNumber(field.type, type))
                             continue;
-                        return Error(msg, type);
+                        return false;
                         
                     case JsonEvent.ValueBool:
                         if (!ValidationType.FindField(type, this, out field, foundFields))
@@ -191,17 +190,16 @@ namespace Friflo.Json.Flow.Schema.Validation
         private bool ValidateElement (ValidationType type, ValidationType parent, int depth) {
             while (true) {
                 var     ev = parser.NextEvent();
-                string  msg;
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        if (ValidateString(ref parser.value, type, out msg))
+                        if (ValidateString(ref parser.value, type, out string msg))
                             continue;
                         return Error(msg, parent);
                         
                     case JsonEvent.ValueNumber:
-                        if (ValidateNumber(ref parser, type, out msg))
+                        if (ValidateNumber(type, parent))
                             continue;
-                        return Error(msg, parent);
+                        return false;
                         
                     case JsonEvent.ValueBool:
                         if (type.typeId == TypeId.Boolean)
@@ -307,7 +305,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             return str.Substring(20) + "...";
         }
         
-        private bool ValidateNumber (ref JsonParser parser, ValidationType type, out string msg) {
+        private bool ValidateNumber (ValidationType type, ValidationType owner) {
             var typeId = type.typeId; 
             switch (typeId) {
                 case TypeId.Uint8:
@@ -315,32 +313,32 @@ namespace Friflo.Json.Flow.Schema.Validation
                 case TypeId.Int32:
                 case TypeId.Int64:
                     if (parser.isFloat) {
-                        msg = $"Invalid integer. Was: {parser.value}, expect: {type.name}";
+                        ErrorType("Invalid integer.", parser.value.ToString(), type.name, false, owner);
                         return false;
                     }
                     var value = parser.ValueAsLong(out bool success);
                     if (!success) {
-                        msg = $"Invalid integer. Was: {parser.value}, expect: {type.name}";
+                        ErrorType("Invalid integer.", parser.value.ToString(), type.name, false, owner);
                         return false;
                     }
                     switch (typeId) {
-                        case TypeId.Uint8: if (          0 <= value && value <=        255) { msg = null; return true; } break;   
-                        case TypeId.Int16: if (     -32768 <= value && value <=      32767) { msg = null; return true; } break;
-                        case TypeId.Int32: if (-2147483648 <= value && value <= 2147483647) { msg = null; return true; } break;
-                        case TypeId.Int64:                                                  { msg = null; return true; }
+                        case TypeId.Uint8: if (          0 <= value && value <=        255) { return true; } break;   
+                        case TypeId.Int16: if (     -32768 <= value && value <=      32767) { return true; } break;
+                        case TypeId.Int32: if (-2147483648 <= value && value <= 2147483647) { return true; } break;
+                        case TypeId.Int64:                                                  { return true; }
                         default:
                             throw new InvalidOperationException("cant be reached");
                     }
-                    msg = $"Integer out of range: {parser.value}, expect: {type.name}";
+                    var msg = $"Integer out of range: {parser.value}, expect: {type.name}";
+                    Error(msg, owner);
                     return false;
                 
                 case TypeId.Float:
                 case TypeId.Double:
-                    msg = null;
                     return true;
                 default:
                     var expect = ValidationType.GetName(type, qualifiedTypeErrors);
-                    msg = $"Incorrect type. Was: {parser.value}, expect: {expect}";
+                    ErrorType("Incorrect type.", parser.value.ToString(), expect, false, owner);
                     return false;
             }
         }
