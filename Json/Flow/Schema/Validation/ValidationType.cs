@@ -256,8 +256,9 @@ namespace Friflo.Json.Flow.Schema.Validation
         public   readonly   string      discriminatorStr;
         public              Bytes       discriminator;
         private  readonly   UnionItem[] types;
-        
-        public   override   string      ToString() => discriminatorStr;
+        public              string      TypesAsString { get; private set; }
+
+        public   override   string      ToString()      => discriminatorStr;
 
         public ValidationUnion(UnionType union) {
             unionType           = union;
@@ -280,6 +281,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 var item = new UnionItem(typeDef.Discriminant, validationType);
                 types[n++] = item;
             }
+            TypesAsString       = GetTypesAsString();
         }
         
         internal static bool FindUnion (ValidationUnion union, ref Bytes discriminant, out ValidationType type) {
@@ -294,7 +296,8 @@ namespace Friflo.Json.Flow.Schema.Validation
             return false;
         }
         
-        internal void GetTypesAsString(StringBuilder sb) {
+        private string GetTypesAsString() {
+            var sb = new StringBuilder();
             bool first = true;
             sb.Clear();
             sb.Append('[');
@@ -304,15 +307,16 @@ namespace Friflo.Json.Flow.Schema.Validation
                 } else {
                     sb.Append(", ");
                 }
-                sb.Append(type.discriminant);
+                sb.Append(type.discriminantStr);
             }
             sb.Append(']');
+            return sb.ToString();
         }
     }
     
     public struct UnionItem
     {
-        private  readonly   string          discriminantStr;
+        internal readonly   string          discriminantStr;
         internal            Bytes           discriminant;
         public   readonly   ValidationType  type;
 
