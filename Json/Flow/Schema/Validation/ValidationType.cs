@@ -149,8 +149,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return true;
                 }
             }
-            validator.ErrorType("Invalid enum value.", value.ToString(), type.name, type.@namespace, parent);
-            return false;
+            return validator.ErrorType("Invalid enum value.", value.ToString(), type.name, type.@namespace, parent);
         }
         
         internal static bool FindField (ValidationType type, JsonValidator validator, out ValidationField field, bool[] foundFields) {

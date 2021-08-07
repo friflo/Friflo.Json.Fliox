@@ -284,8 +284,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 case TypeId.Enum:
                     return ValidationType.FindEnum(type, ref value, this, parent);
                 default:
-                    ErrorType("Incorrect type.", $"'{Truncate(ref value)}'", type.name, type.@namespace, parent);
-                    return false;
+                    return ErrorType("Incorrect type.", $"'{Truncate(ref value)}'", type.name, type.@namespace, parent);
             }
         }
         
@@ -304,13 +303,11 @@ namespace Friflo.Json.Flow.Schema.Validation
                 case TypeId.Int32:
                 case TypeId.Int64:
                     if (parser.isFloat) {
-                        ErrorType("Invalid integer.", parser.value.ToString(), type.name, type.@namespace, owner);
-                        return false;
+                        return ErrorType("Invalid integer.", parser.value.ToString(), type.name, type.@namespace, owner);
                     }
                     var value = parser.ValueAsLong(out bool success);
                     if (!success) {
-                        ErrorType("Invalid integer.", parser.value.ToString(), type.name, type.@namespace, owner);
-                        return false;
+                        return ErrorType("Invalid integer.", parser.value.ToString(), type.name, type.@namespace, owner);
                     }
                     switch (typeId) {
                         case TypeId.Uint8: if (          0 <= value && value <=        255) { return true; } break;   
@@ -328,8 +325,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 case TypeId.Double:
                     return true;
                 default:
-                    ErrorType("Incorrect type.", parser.value.ToString(), type.name, type.@namespace, owner);
-                    return false;
+                    return ErrorType("Incorrect type.", parser.value.ToString(), type.name, type.@namespace, owner);
             }
         }
         
