@@ -117,9 +117,9 @@ namespace Friflo.Json.Flow.Schema.Validation
                     case JsonEvent.ValueString:
                         if (!ValidationType.FindField(type, this, out field, foundFields))
                             return false;
-                        if (ValidateString (ref parser.value, field.type, out string msg))
+                        if (ValidateString (ref parser.value, field.type, type))
                             continue;
-                        return Error(msg, type);
+                        return false;
                         
                     case JsonEvent.ValueNumber:
                         if (!ValidationType.FindField(type, this, out field, foundFields))
@@ -192,9 +192,9 @@ namespace Friflo.Json.Flow.Schema.Validation
                 var     ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        if (ValidateString(ref parser.value, type, out string msg))
+                        if (ValidateString(ref parser.value, type, parent))
                             continue;
-                        return Error(msg, parent);
+                        return false;
                         
                     case JsonEvent.ValueNumber:
                         if (ValidateNumber(type, parent))
@@ -267,33 +267,30 @@ namespace Friflo.Json.Flow.Schema.Validation
         }
         
         // --- helper methods
-        private bool ValidateString (ref Bytes value, ValidationType type, out string msg) {
+        private bool ValidateString (ref Bytes value, ValidationType type, ValidationType parent) {
             switch (type.typeId) {
                 case TypeId.String:
-                    msg = null;
                     return true;
                 case TypeId.BigInteger:
                     var str = value.ToString();
                     if (bigInt.IsMatch(str)) {
-                        msg = null;
                         return true;
                     }
-                    msg = $"Invalid BigInteger: '{str}'";
+                    Error($"Invalid BigInteger: '{str}'", parent);
                     return false;
                 case TypeId.DateTime:
                     str = value.ToString();
                     if (dateTime.IsMatch(str)) {
-                        msg = null;
                         return true;
                     }
-                    msg = $"Invalid DateTime: '{str}'";
+                    Error($"Invalid DateTime: '{str}'", parent);
                     return false;
 
                 case TypeId.Enum:
-                    return ValidationType.FindEnum(type, ref value, out msg, qualifiedTypeErrors);
+                    return ValidationType.FindEnum(type, ref value, this, parent);
                 default:
                     var expect = ValidationType.GetName(type, qualifiedTypeErrors);
-                    msg = $"Incorrect type. Was: '{Truncate(ref value)}', expect: {expect}";
+                    ErrorType("Incorrect type.", $"'{Truncate(ref value)}'", expect, false, parent);
                     return false;
             }
         }
