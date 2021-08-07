@@ -266,23 +266,24 @@ namespace Friflo.Json.Flow.Schema.Validation
             switch (type.typeId) {
                 case TypeId.String:
                     return true;
+                
                 case TypeId.BigInteger:
                     var str = value.ToString();
                     if (bigInt.IsMatch(str)) {
                         return true;
                     }
-                    Error($"Invalid BigInteger: '{str}'", parent);
-                    return false;
+                    return Error($"Invalid BigInteger: '{str}'", parent);
+                
                 case TypeId.DateTime:
                     str = value.ToString();
                     if (dateTime.IsMatch(str)) {
                         return true;
                     }
-                    Error($"Invalid DateTime: '{str}'", parent);
-                    return false;
-
+                    return Error($"Invalid DateTime: '{str}'", parent);
+                
                 case TypeId.Enum:
                     return ValidationType.FindEnum(type, ref value, this, parent);
+                
                 default:
                     return ErrorType("Incorrect type.", $"'{Truncate(ref value)}'", type.name, type.@namespace, parent);
             }
@@ -318,8 +319,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                             throw new InvalidOperationException("cant be reached");
                     }
                     var msg = $"Integer out of range: {parser.value}, expect: {type.name}";
-                    Error(msg, owner);
-                    return false;
+                    return Error(msg, owner);
                 
                 case TypeId.Float:
                 case TypeId.Double:
