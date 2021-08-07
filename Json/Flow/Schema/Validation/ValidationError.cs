@@ -8,7 +8,8 @@ namespace Friflo.Json.Flow.Schema.Validation
     public readonly struct ValidationError
     {
         public  readonly    string          msg;
-        public  readonly    string          was;
+        public  readonly    string          value;
+        public  readonly    bool            isString;
         public  readonly    string          expect;
         public  readonly    string          expectNamespace;
         public  readonly    ValidationType  type;
@@ -17,9 +18,10 @@ namespace Friflo.Json.Flow.Schema.Validation
 
         public  override    string          ToString() => msg == null ? "no error" : AsString(new StringBuilder(), false);
 
-        public ValidationError (string msg, string was, string expect, string expectNamespace, ValidationType type, string path, int pos) {
+        public ValidationError (string msg, string value, bool isString, string expect, string expectNamespace, ValidationType type, string path, int pos) {
             this.msg            = msg;
-            this.was            = was;
+            this.value          = value;
+            this.isString       = isString;
             this.expect         = expect;
             this.expectNamespace= expectNamespace;
             this.type           = type;
@@ -29,7 +31,8 @@ namespace Friflo.Json.Flow.Schema.Validation
         
         public ValidationError (string msg, ValidationType type, string path, int pos) {
             this.msg            = msg;
-            this.was            = null;
+            this.value          = null;
+            this.isString       = false;
             this.expect         = null;
             this.expectNamespace= null;
             this.type           = type;
@@ -40,9 +43,15 @@ namespace Friflo.Json.Flow.Schema.Validation
         public string AsString (StringBuilder sb, bool qualifiedTypeErrors) {
             sb.Clear();
             sb.Append(msg);
-            if (was != null) {
+            if (value != null) {
                 sb.Append(" Was: ");
-                sb.Append(was);
+                if (isString) {
+                    sb.Append('\'');    
+                    sb.Append(value);    
+                    sb.Append('\'');    
+                } else {
+                    sb.Append(value);    
+                }
                 sb.Append(", expect: ");
                 if (qualifiedTypeErrors && expectNamespace != null) {
                     sb.Append(expectNamespace);

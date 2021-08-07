@@ -149,7 +149,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return true;
                 }
             }
-            return validator.ErrorType("Invalid enum value.", value.ToString(), type.name, type.@namespace, parent);
+            return validator.ErrorType("Invalid enum value.", value.ToString(), true, type.name, type.@namespace, parent);
         }
         
         internal static bool FindField (ValidationType type, JsonValidator validator, out ValidationField field, bool[] foundFields) {
@@ -164,8 +164,8 @@ namespace Friflo.Json.Flow.Schema.Validation
                 }
                 var ev = parser.Event; 
                 if (ev != JsonEvent.ArrayStart && ev != JsonEvent.ValueNull && field.isArray) {
-                    var value       = GetValue(ref parser);
-                    validator.ErrorType("Incorrect type.", value, field.typeName, field.type.@namespace, type);
+                    var value       = GetValue(ref parser, out bool isString);
+                    validator.ErrorType("Incorrect type.", value, isString, field.typeName, field.type.@namespace, type);
                     return false;
                 }
                 return true;
@@ -175,10 +175,12 @@ namespace Friflo.Json.Flow.Schema.Validation
             return false;
         }
         
-        private static string GetValue(ref JsonParser parser) {
+        private static string GetValue(ref JsonParser parser, out bool isString) {
+            isString = false;
             switch (parser.Event) {
+                case JsonEvent.ValueString:     isString = true;
+                                                return parser.value.ToString();
                 case JsonEvent.ObjectStart:     return "object";
-                case JsonEvent.ValueString:     return "'" + parser.value + "'";
                 case JsonEvent.ValueNumber:     return parser.value.ToString();
                 case JsonEvent.ValueBool:       return parser.boolValue ? "true" : "false";
                 case JsonEvent.ValueNull:       return "null";

@@ -97,14 +97,14 @@ namespace Friflo.Json.Flow.Schema.Validation
                 var ev      = parser.NextEvent();
                 var unionType = type.unionType;
                 if (ev != JsonEvent.ValueString) {
-                    return ErrorType("Expect discriminator as first member.", ev.ToString(), unionType.discriminatorStr, null, type);
+                    return ErrorType("Expect discriminator as first member.", ev.ToString(), false, unionType.discriminatorStr, null, type);
                 }
                 if (!parser.key.IsEqual(ref unionType.discriminator)) {
-                    return ErrorType("Invalid discriminator.", $"'{parser.key}'", unionType.discriminatorStr, null, type);
+                    return ErrorType("Invalid discriminator.", parser.key.ToString(), true, unionType.discriminatorStr, null, type);
                 }
                 if (!ValidationUnion.FindUnion(unionType, ref parser.value, out var newType)) {
                     var expect = unionType.GetTypesAsString();
-                    return ErrorType("Invalid discriminant.", $"'{parser.value}'", expect, null, type);
+                    return ErrorType("Invalid discriminant.", parser.value.ToString(), true, expect, null, type);
                 }
                 type = newType;
             }
@@ -134,7 +134,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         if (field.typeId == TypeId.Boolean)
                             continue;
                         var value = parser.boolValue ? "true" : "false";
-                        return ErrorType("Incorrect type.", value, field.typeName, field.type.@namespace, type);
+                        return ErrorType("Incorrect type.", value, false, field.typeName, field.type.@namespace, type);
                     
                     case JsonEvent.ValueNull:
                         if (!ValidationType.FindField(type, this, out field, foundFields))
@@ -151,7 +151,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                                 continue;
                             return false;
                         }
-                        return ErrorType("Incorrect type.", "array", field.typeName, field.type.@namespace, type);
+                        return ErrorType("Incorrect type.", "array", false, field.typeName, field.type.@namespace, type);
                     
                     case JsonEvent.ObjectStart:
                         if (!ValidationType.FindField(type, this, out field, foundFields))
@@ -166,7 +166,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                                 continue;
                             return false;
                         }
-                        return ErrorType("Incorrect type.", "object", field.typeName, field.type.@namespace, type);
+                        return ErrorType("Incorrect type.", "object", false, field.typeName, field.type.@namespace, type);
                     
                     case JsonEvent.ObjectEnd:
                         if (type.HasMissingFields(foundFields, missingFields)) {
@@ -202,7 +202,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                         if (type.typeId == TypeId.Boolean)
                             continue;
                         var value = parser.boolValue ? "true" : "false";
-                        return ErrorType("Incorrect type.", value, type.name, null, parent);
+                        return ErrorType("Incorrect type.", value, false, type.name, null, parent);
                     
                     case JsonEvent.ValueNull:
                         return Error("Element must not be null.", parent);
@@ -218,7 +218,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                                 continue;
                             return false;
                         }
-                        return ErrorType("Incorrect type.", "object", type.name, type.@namespace, parent);
+                        return ErrorType("Incorrect type.", "object", false, type.name, type.@namespace, parent);
                     
                     case JsonEvent.ObjectEnd:
                         return true;
@@ -245,11 +245,11 @@ namespace Friflo.Json.Flow.Schema.Validation
             return false;
         }
         
-        internal bool ErrorType (string msg, string was, string expect, string expectNamespace, ValidationType type) {
+        internal bool ErrorType (string msg, string was, bool isString, string expect, string expectNamespace, ValidationType type) {
             if (validationError.msg != null) {
                 throw new InvalidOperationException($"error already set. Error: {validationError}");
             }
-            validationError = new ValidationError(msg, was, expect, expectNamespace, type, parser.GetPath(), parser.Position);
+            validationError = new ValidationError(msg, was, isString, expect, expectNamespace, type, parser.GetPath(), parser.Position);
             return false;         
         }
 
@@ -285,7 +285,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return ValidationType.FindEnum(type, ref value, this, parent);
                 
                 default:
-                    return ErrorType("Incorrect type.", $"'{Truncate(ref value)}'", type.name, type.@namespace, parent);
+                    return ErrorType("Incorrect type.", Truncate(ref value), true, type.name, type.@namespace, parent);
             }
         }
         
@@ -304,11 +304,11 @@ namespace Friflo.Json.Flow.Schema.Validation
                 case TypeId.Int32:
                 case TypeId.Int64:
                     if (parser.isFloat) {
-                        return ErrorType("Invalid integer.", parser.value.ToString(), type.name, type.@namespace, owner);
+                        return ErrorType("Invalid integer.", parser.value.ToString(), false, type.name, type.@namespace, owner);
                     }
                     var value = parser.ValueAsLong(out bool success);
                     if (!success) {
-                        return ErrorType("Invalid integer.", parser.value.ToString(), type.name, type.@namespace, owner);
+                        return ErrorType("Invalid integer.", parser.value.ToString(), false, type.name, type.@namespace, owner);
                     }
                     switch (typeId) {
                         case TypeId.Uint8: if (          0 <= value && value <=        255) { return true; } break;   
@@ -318,13 +318,13 @@ namespace Friflo.Json.Flow.Schema.Validation
                         default:
                             throw new InvalidOperationException("cant be reached");
                     }
-                    return ErrorType("Integer out of range.", parser.value.ToString(), type.name, type.@namespace, owner);
+                    return ErrorType("Integer out of range.", parser.value.ToString(), false, type.name, type.@namespace, owner);
                 
                 case TypeId.Float:
                 case TypeId.Double:
                     return true;
                 default:
-                    return ErrorType("Incorrect type.", parser.value.ToString(), type.name, type.@namespace, owner);
+                    return ErrorType("Incorrect type.", parser.value.ToString(), false, type.name, type.@namespace, owner);
             }
         }
         
