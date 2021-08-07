@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Flow.Schema.Definition;
 
@@ -41,7 +42,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         // ReSharper disable once NotAccessedField.Local
         private  readonly   TypeDef             typeDef;    // only for debugging
         public   readonly   string              name;
-        public   readonly   string              qualifiedName;
+        private  readonly   string              qualifiedName;
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         public   readonly   string              @namespace;
         public   readonly   TypeId              typeId;
@@ -189,8 +190,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
         }
 
-        public bool HasMissingFields(bool[] foundFields, List<string> missingFields) {
-            missingFields.Clear();
+        public bool HasMissingFields(bool[] foundFields, StringBuilder sb) {
             var foundCount = 0;
             for (int n = 0; n < requiredFieldsCount; n++) {
                 if (foundFields[n])
@@ -200,10 +200,21 @@ namespace Friflo.Json.Flow.Schema.Validation
             if (missingCount == 0) {
                 return false;
             }
+            bool first = true;
+            sb.Clear();
+            sb.Append('[');
             for (int n = 0; n < requiredFieldsCount; n++) {
-                if (!foundFields[n])
-                    missingFields.Add(requiredFields[n].fieldName);
+                if (!foundFields[n]) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        sb.Append(", ");
+                    }
+                    var fieldName = requiredFields[n].fieldName;
+                    sb.Append(fieldName);
+                }
             }
+            sb.Append(']');
             return true;
         }
     }
