@@ -101,8 +101,8 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return ErrorType("Invalid discriminator.", parser.key.ToString(), true, unionType.discriminatorStr, null, type);
                 }
                 if (!ValidationUnion.FindUnion(unionType, ref parser.value, out var newType)) {
-                    var expect = unionType.GetTypesAsString();
-                    return ErrorType("Invalid discriminant.", parser.value.ToString(), true, expect, null, type);
+                    unionType.GetTypesAsString(sb);
+                    return ErrorType("Invalid discriminant.", parser.value.ToString(), true, sb.ToString(), null, type);
                 }
                 type = newType;
             }
