@@ -68,7 +68,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 bool success = ValidateObject(type, 0);
                 return Return(type, success, out error);    
             }
-            return RootError(type, $"ValidateObject() expect object. was: {ev}", out error);
+            return RootError(type, "ValidateObject() expect object. was:", out error);
         }
         
         public bool ValidateObjectMap (string json, ValidationType type, out string error) {
@@ -78,7 +78,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 bool success = ValidateElement(type, null, 0);
                 return Return(type, success, out error);    
             }
-            return RootError(type, $"ValidateObjectMap() expect object. was: {ev}", out error);
+            return RootError(type, "ValidateObjectMap() expect object. was:", out error);
         }
 
         public bool ValidateArray (string json, ValidationType type, out string error) {
@@ -88,7 +88,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 bool success = ValidateElement(type, null, 0);
                 return Return(type, success, out error);    
             }
-            return RootError(type, $"ValidateArray() expect array. was: {ev}", out error);
+            return RootError(type, "ValidateArray() expect array. was:", out error);
         }
         
         private bool ValidateObject (ValidationType type, int depth)
@@ -239,7 +239,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             if (parser.Event == JsonEvent.Error) {
                 Error(parser.error.GetMessageBody(), type);
             } else {
-                Error(msg, type);
+                ErrorValue(msg, parser.Event.ToString(), false, type);
             }
             error = validationError.AsString(sb, qualifiedTypeErrors);
             return false;
