@@ -252,12 +252,20 @@ namespace Friflo.Json.Flow.Schema.Validation
             validationError = new ValidationError(msg, was, isString, expect, expectNamespace, type, parser.GetPath(), parser.Position);
             return false;         
         }
-
-        internal bool Error(string msg, ValidationType type) {
+        
+        private bool Error(string msg, ValidationType type) {
             if (validationError.msg != null) {
                 throw new InvalidOperationException($"error already set. Error: {validationError}");
             }
-            validationError = new ValidationError(msg, type, parser.GetPath(), parser.Position);
+            validationError = new ValidationError(msg, null, false, type, parser.GetPath(), parser.Position);
+            return false;
+        }
+
+        internal bool ErrorValue(string msg, string value, bool isString, ValidationType type) {
+            if (validationError.msg != null) {
+                throw new InvalidOperationException($"error already set. Error: {validationError}");
+            }
+            validationError = new ValidationError(msg, value, isString, type, parser.GetPath(), parser.Position);
             return false;
         }
         
@@ -272,14 +280,14 @@ namespace Friflo.Json.Flow.Schema.Validation
                     if (bigInt.IsMatch(str)) {
                         return true;
                     }
-                    return Error($"Invalid BigInteger: '{str}'", parent);
+                    return ErrorValue("Invalid BigInteger:", str, true, parent);
                 
                 case TypeId.DateTime:
                     str = value.ToString();
                     if (dateTime.IsMatch(str)) {
                         return true;
                     }
-                    return Error($"Invalid DateTime: '{str}'", parent);
+                    return ErrorValue("Invalid DateTime:", str, true, parent);
                 
                 case TypeId.Enum:
                     return ValidationType.FindEnum(type, ref value, this, parent);

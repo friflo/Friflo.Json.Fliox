@@ -29,10 +29,10 @@ namespace Friflo.Json.Flow.Schema.Validation
             this.pos            = pos;
         }
         
-        public ValidationError (string msg, ValidationType type, string path, int pos) {
+        public ValidationError (string msg, string value, bool isString, ValidationType type, string path, int pos) {
             this.msg            = msg;
-            this.value          = null;
-            this.isString       = false;
+            this.value          = value;
+            this.isString       = isString;
             this.expect         = null;
             this.expectNamespace= null;
             this.type           = type;
@@ -44,20 +44,31 @@ namespace Friflo.Json.Flow.Schema.Validation
             sb.Clear();
             sb.Append(msg);
             if (value != null) {
-                sb.Append(" Was: ");
-                if (isString) {
-                    sb.Append('\'');    
-                    sb.Append(value);    
-                    sb.Append('\'');    
+                if (expect != null) {
+                    sb.Append(" Was: ");
+                    if (isString) {
+                        sb.Append('\'');
+                        sb.Append(value);
+                        sb.Append('\'');
+                    } else {
+                        sb.Append(value);
+                    }
+                    sb.Append(", expect: ");
+                    if (qualifiedTypeErrors && expectNamespace != null) {
+                        sb.Append(expectNamespace);
+                        sb.Append('.');
+                    }
+                    sb.Append(expect);
                 } else {
-                    sb.Append(value);    
+                    sb.Append(' ');
+                    if (isString) {
+                        sb.Append('\'');
+                        sb.Append(value);
+                        sb.Append('\'');
+                    } else {
+                        sb.Append(value);
+                    } 
                 }
-                sb.Append(", expect: ");
-                if (qualifiedTypeErrors && expectNamespace != null) {
-                    sb.Append(expectNamespace);
-                    sb.Append('.');
-                }
-                sb.Append(expect);
             }
             sb.Append(" ");
             if (type != null) {
