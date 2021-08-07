@@ -43,7 +43,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         public   readonly   string              name;
         public   readonly   string              qualifiedName;
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
-        private  readonly   string              @namespace; // only for debugging
+        public   readonly   string              @namespace;
         public   readonly   TypeId              typeId;
         private  readonly   ValidationField[]   fields;
         public   readonly   int                 requiredFieldsCount;
@@ -149,8 +149,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                     return true;
                 }
             }
-            var expect = GetName(type, validator.qualifiedTypeErrors);
-            validator.ErrorType("Invalid enum value.", value.ToString(), expect, false, parent);
+            validator.ErrorType("Invalid enum value.", value.ToString(), type.name, type.@namespace, parent);
             return false;
         }
         
@@ -167,8 +166,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 var ev = parser.Event; 
                 if (ev != JsonEvent.ArrayStart && ev != JsonEvent.ValueNull && field.isArray) {
                     var value       = GetValue(ref parser);
-                    var fieldName   = GetName(field.type, validator.qualifiedTypeErrors);
-                    validator.ErrorType("Incorrect type.", value, fieldName, true, type);
+                    validator.ErrorType("Incorrect type.", value, field.typeName, field.type.@namespace, type);
                     return false;
                 }
                 return true;
@@ -222,11 +220,13 @@ namespace Friflo.Json.Flow.Schema.Validation
         internal            ValidationType  type;
         internal            TypeId          typeId;
         internal readonly   TypeDef         typeDef;
+        internal readonly   string          typeName;
 
         public  override    string          ToString() => fieldName;
         
         public ValidationField(FieldDef fieldDef, int requiredPos) {
             typeDef             = fieldDef.type;
+            typeName            = fieldDef.isArray ? $"{typeDef.Name}[]" : typeDef.Name; 
             fieldName           = fieldDef.name;
             name                = new Bytes(fieldDef.name);
             required            = fieldDef.required;

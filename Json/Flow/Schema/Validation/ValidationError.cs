@@ -10,18 +10,18 @@ namespace Friflo.Json.Flow.Schema.Validation
         public  readonly    string          msg;
         public  readonly    string          was;
         public  readonly    string          expect;
-        public  readonly    bool            expectIsArray;
+        public  readonly    string          expectNamespace;
         public  readonly    ValidationType  type;
         public  readonly    string          path;
         public  readonly    int             pos;
 
         public  override    string          ToString() => msg == null ? "no error" : AsString(new StringBuilder(), false);
 
-        public ValidationError (string msg, string was, string expect, bool expectIsArray, ValidationType type, string path, int pos) {
+        public ValidationError (string msg, string was, string expect, string expectNamespace, ValidationType type, string path, int pos) {
             this.msg            = msg;
             this.was            = was;
             this.expect         = expect;
-            this.expectIsArray  = expectIsArray;
+            this.expectNamespace= expectNamespace;
             this.type           = type;
             this.path           = path;
             this.pos            = pos;
@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             this.msg            = msg;
             this.was            = null;
             this.expect         = null;
-            this.expectIsArray  = false;
+            this.expectNamespace= null;
             this.type           = type;
             this.path           = path;
             this.pos            = pos;
@@ -41,16 +41,23 @@ namespace Friflo.Json.Flow.Schema.Validation
             sb.Clear();
             sb.Append(msg);
             if (was != null) {
-                sb.Append(" Was: "); sb.Append(was); sb.Append(", expect: "); sb.Append(expect);
-                if (expectIsArray) {
-                    sb.Append("[]");
+                sb.Append(" Was: ");
+                sb.Append(was);
+                sb.Append(", expect: ");
+                if (qualifiedTypeErrors && expectNamespace != null) {
+                    sb.Append(expectNamespace);
+                    sb.Append('.');
                 }
+                sb.Append(expect);
             }
             sb.Append(" ");
             if (type != null) {
                 sb.Append("at ");
-                var typeName = ValidationType.GetName(type, qualifiedTypeErrors);
-                sb.Append(typeName);
+                if (qualifiedTypeErrors) {
+                    sb.Append(type.@namespace);
+                    sb.Append('.');
+                }
+                sb.Append(type.name);
                 sb.Append(" > ");
             }
             sb.Append(path);
