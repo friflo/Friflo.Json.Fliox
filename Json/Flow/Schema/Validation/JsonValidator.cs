@@ -13,12 +13,13 @@ namespace Friflo.Json.Flow.Schema.Validation
     {
         internal            JsonParser      parser; // on top enabling instance offset 0
         private             Bytes           jsonBytes = new Bytes(128);
-        private             string          errorMsg;
+        private             ValidationError error;
         private  readonly   List<bool[]>    foundFieldsCache = new List<bool[]>();
         private  readonly   StringBuilder   sb = new StringBuilder();
         private  readonly   List<string>    missingFields = new List<string>();
         private  readonly   Regex           dateTime;
         private  readonly   Regex           bigInt;
+        
         
         // RFC 3339 + milliseconds
         private  static readonly Regex  DateTime    = new Regex(@"\b^[1-9]\d{3}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$\b",   RegexOptions.Compiled);
@@ -41,7 +42,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         }
         
         private void Init(string json) {
-            errorMsg = null;
+            error = new ValidationError(null);
             jsonBytes.Clear();
             jsonBytes.AppendString(json);
             parser.InitParser(jsonBytes);
@@ -49,7 +50,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         
         private bool Return(ValidationType type, bool success, out string error) {
             if (!success) {
-                error = errorMsg;
+                error = this.error.AsString(sb, qualifiedTypeErrors);
                 return false;
             }
             var ev = parser.NextEvent();
@@ -247,38 +248,24 @@ namespace Friflo.Json.Flow.Schema.Validation
             } else {
                 Error(msg, type);
             }
-            error = errorMsg;
+            error = this.error.AsString(sb, qualifiedTypeErrors);
             return false;
         }
         
         private bool ErrorType (string msg, string was, string expect, ValidationType type) {
-            sb.Clear();
-            sb.Append(msg); sb.Append(" Was: "); sb.Append(was); sb.Append(", expect: "); sb.Append(expect);
-            sb.Append(" "); FormatError(type);
+            if (error.msg != null) {
+                throw new InvalidOperationException($"error already set. Error: {error}");
+            }
+            error = new ValidationError(msg, was, expect, type, parser.GetPath(), parser.Position);
             return false;         
         }
 
         private bool Error(string msg, ValidationType type) {
-            sb.Clear();
-            sb.Append(msg);
-            sb.Append(" "); FormatError(type);
+            if (error.msg != null) {
+                throw new InvalidOperationException($"error already set. Error: {error}");
+            }
+            error = new ValidationError(msg, type, parser.GetPath(), parser.Position);
             return false;
-        }
-        
-        private void FormatError (ValidationType type) {
-            if (errorMsg != null) {
-                throw new InvalidOperationException($"error already set. Error: {errorMsg}");
-            }
-            if (type != null) {
-                sb.Append("at ");
-                var typeName = ValidationType.GetName(type, qualifiedTypeErrors);
-                sb.Append(typeName);
-                sb.Append(" > ");
-            }
-            sb.Append(parser.GetPath());
-            sb.Append(", pos: ");
-            sb.Append(parser.Position);
-            errorMsg = sb.ToString();
         }
         
         // --- helper methods
