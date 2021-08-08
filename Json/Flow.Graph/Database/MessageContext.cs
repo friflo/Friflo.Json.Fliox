@@ -78,12 +78,12 @@ namespace Friflo.Json.Flow.Database
         internal int    typeValidatorCount;
         
         public void AssertEqual(in PoolUsage other) {
-            if (patcherCount            != other.patcherCount)          throw new InvalidOperationException("detect patcher leak");
-            if (selectorCount           != other.selectorCount)         throw new InvalidOperationException("detect selector leak");
-            if (evaluatorCount          != other.evaluatorCount)        throw new InvalidOperationException("detect evaluator leak");
-            if (objectMapperCount       != other.objectMapperCount)     throw new InvalidOperationException("detect objectMapper leak");
-            if (entityValidatorCount    != other.entityValidatorCount)  throw new InvalidOperationException("detect entityValidator leak");
-            if (typeValidatorCount      != other.typeValidatorCount)    throw new InvalidOperationException("detect typeValidator leak");
+            if (patcherCount            != other.patcherCount)          throw new InvalidOperationException("detect JsonPatcher leak");
+            if (selectorCount           != other.selectorCount)         throw new InvalidOperationException("detect ScalarSelector leak");
+            if (evaluatorCount          != other.evaluatorCount)        throw new InvalidOperationException("detect JsonEvaluator leak");
+            if (objectMapperCount       != other.objectMapperCount)     throw new InvalidOperationException("detect ObjectMapper leak");
+            if (entityValidatorCount    != other.entityValidatorCount)  throw new InvalidOperationException("detect EntityValidator leak");
+            if (typeValidatorCount      != other.typeValidatorCount)    throw new InvalidOperationException("detect TypeValidator leak");
         }
     }
     
