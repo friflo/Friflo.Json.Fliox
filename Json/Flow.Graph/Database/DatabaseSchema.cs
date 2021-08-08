@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Schema.Definition;
 using Friflo.Json.Flow.Schema.Validation;
 using Friflo.Json.Flow.Sync;
 
@@ -10,11 +11,13 @@ namespace Friflo.Json.Flow.Database
 {
     public class DatabaseSchema
     {
-        public Dictionary<string, ValidationType> containerTypes = new Dictionary<string, ValidationType>();
+        private readonly    TypeSchema                          typeSchema;
+        private readonly    Dictionary<string, ValidationType>  containerTypes = new Dictionary<string, ValidationType>();
         
-        public DatabaseSchema(ICollection<ValidationType> validationTypes) {
-            foreach (var validationType in validationTypes) {
-                containerTypes.Add(validationType.name, validationType);
+        public DatabaseSchema(TypeSchema typeSchema, ICollection<ValidationType> entityTypes) {
+            this.typeSchema = typeSchema;
+            foreach (var entityType in entityTypes) {
+                containerTypes.Add(entityType.name, entityType);
             }
         }
 

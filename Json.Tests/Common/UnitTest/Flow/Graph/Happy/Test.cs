@@ -89,8 +89,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var nativeSchema = new NativeTypeSchema(TestGlobals.typeStore))
             using (var validationSet= new ValidationSet(nativeSchema)) {
                 var typeDefs        = nativeSchema.TypesAsTypeDefs(EntityStore.GetEntityTypes<PocStore>());
-                var validationTypes = validationSet.TypeDefsAsValidationTypes(typeDefs);
-                fileDatabase.schema = new DatabaseSchema(validationTypes);
+                var entityTypes     = validationSet.TypeDefsAsValidationTypes(typeDefs);
+                fileDatabase.schema = new DatabaseSchema(nativeSchema, entityTypes);
                 await TestRelationPoC.CreateStore(createStore);
             }
         }
