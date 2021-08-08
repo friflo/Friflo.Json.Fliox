@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 {
     public static class PocStoreGen
     {
-        private static readonly Type[] PocStoreTypes    = { typeof(Order), typeof(Customer), typeof(Article), typeof(Producer), typeof(Employee), typeof(TestType) };
+        private static readonly Type[]  PocStoreTypes       = EntityStore.GetEntityTypes<PocStore>();
         
         // -------------------------------------- input: C# --------------------------------------
 

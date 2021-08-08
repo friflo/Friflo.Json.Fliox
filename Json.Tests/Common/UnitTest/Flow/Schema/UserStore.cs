@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 {
     public static class UserStoreGen
     {
-        private static readonly Type[] UserStoreTypes   = { typeof(Role), typeof(UserCredential), typeof(UserPermission) };
+        private static readonly Type[] UserStoreTypes      = EntityStore.GetEntityTypes<UserStore>();
 
         // -------------------------------------- input: C# --------------------------------------
         

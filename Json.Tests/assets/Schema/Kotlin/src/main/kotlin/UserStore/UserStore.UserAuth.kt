@@ -7,10 +7,9 @@ import UserStore.Graph.*
 import UserStore.Auth.Rights.*
 
 @Serializable
-data class Role (
-    override  val id          : String,
-              val rights      : List<Right>,
-              val description : String? = null,
+data class UserPermission (
+    override  val id    : String,
+              val roles : List<String>? = null,
 ) : Entity()
 
 @Serializable
@@ -21,8 +20,9 @@ data class UserCredential (
 ) : Entity()
 
 @Serializable
-data class UserPermission (
-    override  val id    : String,
-              val roles : List<String>? = null,
+data class Role (
+    override  val id          : String,
+              val rights      : List<Right>,
+              val description : String? = null,
 ) : Entity()
 

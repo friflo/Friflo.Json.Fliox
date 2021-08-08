@@ -8,10 +8,8 @@ using UserStore2.Auth.Rights;
 
 namespace UserStore2.UserAuth {
 
-public class Role : Entity {
-    [Fri.Property(Required = true)]
-    List<Right>  rights;
-    string       description;
+public class UserPermission : Entity {
+    List<string>  roles;
 }
 
 public class UserCredential : Entity {
@@ -19,8 +17,10 @@ public class UserCredential : Entity {
     string  token;
 }
 
-public class UserPermission : Entity {
-    List<string>  roles;
+public class Role : Entity {
+    [Fri.Property(Required = true)]
+    List<Right>  rights;
+    string       description;
 }
 
 }

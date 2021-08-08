@@ -3,9 +3,8 @@ import { Entity }      from "./Friflo.Json.Flow.Graph"
 import { Right }       from "./Friflo.Json.Flow.Auth.Rights"
 import { Right_Union } from "./Friflo.Json.Flow.Auth.Rights"
 
-export class Role extends Entity {
-    rights       : Right_Union[];
-    description? : string | null;
+export class UserPermission extends Entity {
+    roles? : string[] | null;
 }
 
 export class UserCredential extends Entity {
@@ -13,7 +12,8 @@ export class UserCredential extends Entity {
     token?    : string | null;
 }
 
-export class UserPermission extends Entity {
-    roles? : string[] | null;
+export class Role extends Entity {
+    rights       : Right_Union[];
+    description? : string | null;
 }
 

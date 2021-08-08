@@ -69,6 +69,11 @@ namespace Friflo.Json.Flow.Graph
             typeStore.typeResolver.AddGenericTypeMatcher(EntityMatcher.Instance);
             return typeStore;
         }
+        
+        public static Type[] GetEntityTypes<TEntityStore> () where TEntityStore : EntityStore {
+            return StoreUtils.GetEntityTypes<TEntityStore>();
+        }
+
 
         // --------------------------------------- public interface ---------------------------------------
         /// <summary>
