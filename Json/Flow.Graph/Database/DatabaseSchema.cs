@@ -12,10 +12,11 @@ namespace Friflo.Json.Flow.Database
     public class DatabaseSchema
     {
         private readonly    TypeSchema                          typeSchema;
-        private readonly    Dictionary<string, ValidationType>  containerTypes = new Dictionary<string, ValidationType>();
+        private readonly    Dictionary<string, ValidationType>  containerTypes;
         
         public DatabaseSchema(TypeSchema typeSchema, ICollection<ValidationType> entityTypes) {
             this.typeSchema = typeSchema;
+            containerTypes = new Dictionary<string, ValidationType>(entityTypes.Count);
             foreach (var entityType in entityTypes) {
                 containerTypes.Add(entityType.name, entityType);
             }
