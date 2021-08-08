@@ -19,13 +19,12 @@ namespace Friflo.Json.Flow.Schema.Validation
         private  readonly   Regex           dateTime;
         private  readonly   Regex           bigInt;
         
-        
+        public              bool            qualifiedTypeErrors;
+
         // RFC 3339 + milliseconds
         private  static readonly Regex  DateTime    = new Regex(@"\b^[1-9]\d{3}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$\b",   RegexOptions.Compiled);
         private  static readonly Regex  BigInt      = new Regex(@"\b^-?[0-9]+$\b",                                          RegexOptions.Compiled);
-        
-        public              bool            qualifiedTypeErrors;
-        
+
         public JsonValidator (bool qualifiedTypeErrors = false) {
             this.qualifiedTypeErrors    = qualifiedTypeErrors;
             dateTime                    = DateTime;
