@@ -9,6 +9,8 @@ using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Flow.Database.Utils;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Schema.Native;
+using Friflo.Json.Flow.Schema.Validation;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
@@ -74,6 +76,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var useStore     = new PocStore(fileDatabase, "useStore")) {
                 await TestRelationPoC.CreateStore(createStore);
                 await TestStores(createStore, useStore);
+            }
+        }
+        
+        // [UnityTest] public IEnumerator FileValidateCoroutine() { yield return RunAsync.Await(FileValidate(), i => Logger.Info("--- " + i)); }
+        // [Test]      public async Task  FileValidateAsync() { await FileValidate(); }
+
+        private static async Task FileValidate() {
+            using (var _            = Pools.SharedPools) // for LeakTestsFixture
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/PocStore"))
+            using (var createStore  = new PocStore(fileDatabase, "createStore"))
+            using (var nativeSchema = new NativeTypeSchema(TestGlobals.typeStore))
+            using (var validationSet= new ValidationSet(nativeSchema)) {
+                var typeDefs        = nativeSchema.TypesAsTypeDefs(EntityStore.GetEntityTypes<PocStore>());
+                var validationTypes = validationSet.TypeDefsAsValidationTypes(typeDefs);
+                fileDatabase.schema = new DatabaseSchema(validationTypes);
+                await TestRelationPoC.CreateStore(createStore);
             }
         }
         

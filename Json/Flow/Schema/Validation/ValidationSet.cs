@@ -16,8 +16,6 @@ namespace Friflo.Json.Flow.Schema.Validation
         private  readonly   List<ValidationType>                types;
         private  readonly   Dictionary<TypeDef, ValidationType> typeMap;
         
-        public              ValidationType                      TypeDefAsValidationType(TypeDef type) => typeMap[type];
-
         /// <summary>
         /// Construct a <see cref="ValidationSet"/> from a given <see cref="JSON.JsonTypeSchema"/> or a
         /// <see cref="Native.NativeTypeSchema"/>. The <see cref="ValidationSet"/> is intended to be used by
@@ -59,6 +57,23 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
         }
         
+        public void Dispose() {
+            foreach (var type in types) {
+                type.Dispose();
+            }
+        }
+        
+        public ValidationType               TypeDefAsValidationType(TypeDef type) => typeMap[type];
+        
+        public ICollection<ValidationType>  TypeDefsAsValidationTypes(ICollection<TypeDef> types) {
+            var list = new List<ValidationType>(this.types.Count);
+            foreach (var typeDef in types) {
+                var validationType = TypeDefAsValidationType(typeDef);
+                list.Add(validationType);
+            }
+            return list;
+        }
+        
         private void AddStandardType (TypeId typeId, TypeDef typeDef) {
             if (typeDef == null)
                 return;
@@ -85,12 +100,6 @@ namespace Friflo.Json.Flow.Schema.Validation
                 case TypeId.JsonValue:  return "JSON";
                 default:
                     throw new InvalidOperationException($"no standard typeId: {typeId}");
-            }
-        }
-
-        public void Dispose() {
-            foreach (var type in types) {
-                type.Dispose();
             }
         }
     }
