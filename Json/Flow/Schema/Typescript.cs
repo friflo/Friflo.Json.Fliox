@@ -40,23 +40,23 @@ namespace Friflo.Json.Flow.Schema
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
-            AddType (map, standard.Uint8,         "uint8 = number" );
-            AddType (map, standard.Int16,         "int16 = number" );
-            AddType (map, standard.Int32,         "int32 = number" );
-            AddType (map, standard.Int64,         "int64 = number" );
+            var nl= Environment.NewLine;
+            AddType (map, standard.Uint8,       $"/** unsigned integer 8-bit. Range: [0 - 255]                                  */{nl}export type uint8 = number" );
+            AddType (map, standard.Int16,       $"/** signed integer 16-bit. Range: [-32768, 32767]                             */{nl}export type int16 = number" );
+            AddType (map, standard.Int32,       $"/** signed integer 32-bit. Range: [-2147483648, 2147483647]                   */{nl}export type int32 = number" );
+            AddType (map, standard.Int64,       $"/** signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807] */{nl}export type int64 = number" );
                
-            AddType (map, standard.Double,        "double = number" );
-            AddType (map, standard.Float,         "float = number" );
+            AddType (map, standard.Double,      $"/** double precision floating point number */{nl}export type double = number" );
+            AddType (map, standard.Float,       $"/** single precision floating point number */{nl}export type float = number" );
                
-            AddType (map, standard.BigInteger,    "BigInteger = string" );
-            AddType (map, standard.DateTime,      "DateTime = string" );
+            AddType (map, standard.BigInteger,  $"/** integer with arbitrary precision       */{nl}export type BigInteger = string" );
+            AddType (map, standard.DateTime,    $"/** timestamp as RFC 3339 + milliseconds   */{nl}export type DateTime = string" );
             return map;
         }
 
         private EmitType EmitStandardType(TypeDef type, StringBuilder sb) {
             if (!standardTypes.TryGetValue(type, out var definition))
                 return null;
-            sb.Append("export type ");
             sb.Append(definition);
             sb.AppendLine(";");
             sb.AppendLine();
