@@ -20,6 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             EntityStore.AddTypeMatchers(typeStore);
             var entityTypes = EntityStore.GetEntityTypes<PocStore>();
             typeStore.AddMappers(entityTypes);
+            typeStore.GetTypeMapper(typeof(Entity)); // todo necessary?
         }
         
         public static void Dispose() {

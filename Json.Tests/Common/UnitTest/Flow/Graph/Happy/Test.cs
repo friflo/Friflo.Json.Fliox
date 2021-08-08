@@ -79,8 +79,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        // [UnityTest] public IEnumerator FileValidateCoroutine() { yield return RunAsync.Await(FileValidate(), i => Logger.Info("--- " + i)); }
-        // [Test]      public async Task  FileValidateAsync() { await FileValidate(); }
+        [UnityTest] public IEnumerator FileValidateCoroutine() { yield return RunAsync.Await(FileValidate(), i => Logger.Info("--- " + i)); }
+        [Test]      public async Task  FileValidateAsync() { await FileValidate(); }
 
         private static async Task FileValidate() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
