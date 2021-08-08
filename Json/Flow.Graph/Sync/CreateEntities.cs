@@ -24,6 +24,17 @@ namespace Friflo.Json.Flow.Sync
                 return MissingContainer();
             if (entities == null)
                 return MissingField(nameof(entities));
+            
+            var schema = database.schema;
+            if (schema != null) {
+                var validationResult = schema.ValidateEntities (container, entities, messageContext);
+                /* if (validationResult != null) {
+                    var errors = SyncResponse.GetEntityErrors(ref response.createErrors, container);
+                    errors.AddErrors(validationResult.validationErrors);
+                    return TaskError(validationResult.error);
+                } */
+            }
+
             var entityContainer = database.GetOrCreateContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {

@@ -142,7 +142,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             }
         }
         
-        internal static bool FindEnum (ValidationType type, ref Bytes value, JsonValidator validator, ValidationType parent) {
+        internal static bool FindEnum (ValidationType type, ref Bytes value, TypeValidator validator, ValidationType parent) {
             var enumValues = type.enumValues;
             for (int n = 0; n < enumValues.Length; n++) {
                 if (enumValues[n].IsEqual(ref value)) {
@@ -152,7 +152,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             return validator.ErrorType("Invalid enum value.", value.ToString(), true, type.name, type.@namespace, parent);
         }
         
-        internal static bool FindField (ValidationType type, JsonValidator validator, out ValidationField field, bool[] foundFields) {
+        internal static bool FindField (ValidationType type, TypeValidator validator, out ValidationField field, bool[] foundFields) {
             ref var parser = ref validator.parser;
             foreach (var typeField in type.fields) {
                 if (!parser.key.IsEqual(ref typeField.name))

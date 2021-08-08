@@ -8,8 +8,8 @@ using Friflo.Json.Flow.Schema.Definition;
 namespace Friflo.Json.Flow.Schema.Validation
 {
     /// <summary>
-    /// <see cref="ValidationSet"/> provide the validation rules for <see cref="JsonValidator"/> to validate
-    /// arbitrary JSON payloads by <see cref="JsonValidator.ValidateObject"/>.
+    /// <see cref="ValidationSet"/> provide the validation rules for <see cref="TypeValidator"/> to validate
+    /// arbitrary JSON payloads by <see cref="TypeValidator.ValidateObject"/>.
     /// </summary>
     public class ValidationSet : IDisposable
     {
@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         /// <summary>
         /// Construct a <see cref="ValidationSet"/> from a given <see cref="JSON.JsonTypeSchema"/> or a
         /// <see cref="Native.NativeTypeSchema"/>. The <see cref="ValidationSet"/> is intended to be used by
-        /// <see cref="JsonValidator"/> to validate JSON payloads by <see cref="JsonValidator.ValidateObject"/>. 
+        /// <see cref="TypeValidator"/> to validate JSON payloads by <see cref="TypeValidator.ValidateObject"/>. 
         /// </summary>
         public ValidationSet (TypeSchema schema) {
             var schemaTypes = schema.Types;

@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             var schemas                 = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
             var jsonSchema              = new JsonTypeSchema(schemas);
             using (var validationSet    = new ValidationSet(jsonSchema))
-            using (var validator        = new JsonValidator()) {
+            using (var validator        = new TypeValidator()) {
                 var test = new TestTypes {
                     roleType    = jsonSchema.TypeAsValidationType<Role>(validationSet, "Friflo.Json.Flow.UserAuth")
                 };
@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var typeStore        = CreateTypeStore(UserStoreTypes))
             using (var nativeSchema     = new NativeTypeSchema(typeStore))
             using (var validationSet    = new ValidationSet(nativeSchema))
-            using (var validator        = new JsonValidator()) {
+            using (var validator        = new TypeValidator()) {
                 var test = new TestTypes {
                     roleType    = nativeSchema.TypeAsValidationType<Role>(validationSet)
                 };
@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             }
         }
         
-        private static void ValidateSuccess(JsonValidator validator, TestTypes test)
+        private static void ValidateSuccess(TypeValidator validator, TestTypes test)
         {
             SimpleAssert.IsTrue(validator.ValidateObject     (test.roleDeny,        test.roleType, out _));
             SimpleAssert.IsTrue(validator.ValidateObject     (test.roleDatabase,    test.roleType, out _));
@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             SimpleAssert.IsTrue(validator.ValidateObjectMap  (test.roleDenyMap,     test.roleType, out _));
         }
         
-        private static void ValidateSuccessNoAlloc(JsonValidator validator, TestTypes test) {
+        private static void ValidateSuccessNoAlloc(TypeValidator validator, TestTypes test) {
             var memLog = new MemoryLogger(2, 1, MemoryLog.Enabled);
             memLog.Snapshot();
             ValidateSuccess(validator, test);
@@ -72,7 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             memLog.AssertNoAllocations();
         }
 
-        private static void ValidateFailure(JsonValidator validator, TestTypes test)
+        private static void ValidateFailure(TypeValidator validator, TestTypes test)
         {
             IsFalse(validator.ValidateObject("",                    test.roleType, out var error));
             AreEqual("unexpected EOF on root at Role > (root), pos: 0", error);

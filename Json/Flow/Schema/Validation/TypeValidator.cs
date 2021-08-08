@@ -9,7 +9,7 @@ using Friflo.Json.Burst;
 
 namespace Friflo.Json.Flow.Schema.Validation
 {
-    public class JsonValidator : IDisposable
+    public class TypeValidator : IDisposable
     {
         internal            JsonParser      parser; // on top enabling instance offset 0
         private             Bytes           jsonBytes = new Bytes(128);
@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         private  static readonly Regex  DateTime    = new Regex(@"\b^[1-9]\d{3}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$\b",   RegexOptions.Compiled);
         private  static readonly Regex  BigInt      = new Regex(@"\b^-?[0-9]+$\b",                                          RegexOptions.Compiled);
 
-        public JsonValidator (bool qualifiedTypeErrors = false) {
+        public TypeValidator (bool qualifiedTypeErrors = false) {
             this.qualifiedTypeErrors    = qualifiedTypeErrors;
             dateTime                    = DateTime;
             bigInt                      = BigInt;

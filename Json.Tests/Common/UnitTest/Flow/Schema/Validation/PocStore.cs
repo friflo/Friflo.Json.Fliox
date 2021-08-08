@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             var schemas                 = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
             var jsonSchema              = new JsonTypeSchema(schemas);
             using (var validationSet    = new ValidationSet(jsonSchema))
-            using (var validator        = new JsonValidator()) {
+            using (var validator        = new TypeValidator()) {
                 var test = new TestTypes {
                     testType    = jsonSchema.TypeAsValidationType<TestType>(validationSet, "UnitTest.Flow.Graph"),
                     orderType   = jsonSchema.TypeAsValidationType<Order>   (validationSet, "UnitTest.Flow.Graph")
@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             using (var typeStore        = CreateTypeStore(PocStoreTypes))
             using (var nativeSchema     = new NativeTypeSchema(typeStore))
             using (var validationSet    = new ValidationSet(nativeSchema))
-            using (var validator        = new JsonValidator(qualifiedTypeErrors: true)) { // true -> ensure API available
+            using (var validator        = new TypeValidator(qualifiedTypeErrors: true)) { // true -> ensure API available
                 validator.qualifiedTypeErrors = false; // ensure API available
                 var test = new TestTypes {
                     testType    = nativeSchema.TypeAsValidationType<TestType>(validationSet),
@@ -53,14 +53,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             }
         }
         
-        private static void ValidateSuccess(JsonValidator validator, TestTypes test)
+        private static void ValidateSuccess(TypeValidator validator, TestTypes test)
         {
             IsTrue(validator.ValidateObject(test.orderValid,                test.orderType, out _));
             IsTrue(validator.ValidateObject(test.testTypeValid,             test.testType,  out _));
             IsTrue(validator.ValidateObject(test.testTypeValidNull,         test.testType,  out _));
         }
         
-        private static void ValidateFailure(JsonValidator validator, TestTypes test)
+        private static void ValidateFailure(TypeValidator validator, TestTypes test)
         {
             IsFalse(validator.ValidateObject("{\"bigInt\": null }",         test.testType, out string error));
             AreEqual("Required property must not be null. at TestType > bigInt, pos: 15", error);

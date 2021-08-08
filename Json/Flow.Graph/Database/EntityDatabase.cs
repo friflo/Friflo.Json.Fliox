@@ -20,6 +20,7 @@ namespace Friflo.Json.Flow.Database
         public              EventBroker                         eventBroker;
         public              TaskHandler                         taskHandler = new TaskHandler();
         public              Authenticator                       authenticator = new AuthenticateNone(new AuthorizeAllow());
+        public              DatabaseSchema                      schema;
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 

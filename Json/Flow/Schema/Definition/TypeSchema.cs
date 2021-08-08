@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Schema.Definition
     ///     <see cref="JSON.JsonTypeSchema"/> or <see cref="Native.NativeTypeSchema"/>. 
     ///   </item>
     ///   <item>
-    ///     Enable implementation of <see cref="Validation.JsonValidator"/> being independent from a specific
+    ///     Enable implementation of <see cref="Validation.TypeValidator"/> being independent from a specific
     ///     <see cref="TypeSchema"/> like <see cref="JSON.JsonTypeSchema"/> or <see cref="Native.NativeTypeSchema"/>.
     ///   </item>
     ///   <item>

@@ -6,6 +6,7 @@ using Friflo.Json.Burst;
 using Friflo.Json.Flow.Auth;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Schema.Validation;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
 using Friflo.Json.Flow.Utils;
@@ -74,6 +75,7 @@ namespace Friflo.Json.Flow.Database
         internal int    evaluatorCount;
         internal int    objectMapperCount;
         internal int    entityValidatorCount;
+        internal int    typeValidatorCount;
         
         public void AssertEqual(in PoolUsage other) {
             if (patcherCount            != other.patcherCount)          throw new InvalidOperationException("detect patcher leak");
@@ -81,6 +83,7 @@ namespace Friflo.Json.Flow.Database
             if (evaluatorCount          != other.evaluatorCount)        throw new InvalidOperationException("detect evaluator leak");
             if (objectMapperCount       != other.objectMapperCount)     throw new InvalidOperationException("detect objectMapper leak");
             if (entityValidatorCount    != other.entityValidatorCount)  throw new InvalidOperationException("detect entityValidator leak");
+            if (typeValidatorCount      != other.typeValidatorCount)    throw new InvalidOperationException("detect typeValidator leak");
         }
     }
     
@@ -93,35 +96,39 @@ namespace Friflo.Json.Flow.Database
         /// <see cref="Mapper.ObjectMapper.reader"/> -> <see cref="ObjectReader.Error"/> need to be checked. </summary>
         ObjectPool<ObjectMapper>    ObjectMapper    { get; }
         ObjectPool<EntityValidator> EntityValidator { get; }
+        ObjectPool<TypeValidator>   TypeValidator   { get; }
         
         PoolUsage                   PoolUsage       { get; }
     }
     
     public class Pools : IPools, IDisposable
     {
-        public ObjectPool<JsonPatcher>      JsonPatcher     { get; }
-        public ObjectPool<ScalarSelector>   ScalarSelector  { get; }
-        public ObjectPool<JsonEvaluator>    JsonEvaluator   { get; }
-        public ObjectPool<ObjectMapper>     ObjectMapper    { get; }
-        public ObjectPool<EntityValidator>  EntityValidator { get; }
+        public  ObjectPool<JsonPatcher>     JsonPatcher     { get; }
+        public  ObjectPool<ScalarSelector>  ScalarSelector  { get; }
+        public  ObjectPool<JsonEvaluator>   JsonEvaluator   { get; }
+        public  ObjectPool<ObjectMapper>    ObjectMapper    { get; }
+        public  ObjectPool<EntityValidator> EntityValidator { get; }
+        public  ObjectPool<TypeValidator>   TypeValidator   { get; }
         
         public   static readonly    Pools   SharedPools = new Pools(Default.Constructor);
         
         // constructor present for code navigation
         private Pools(Default _) {
-            JsonPatcher      = new SharedPool<JsonPatcher>      (() => new JsonPatcher());
-            ScalarSelector   = new SharedPool<ScalarSelector>   (() => new ScalarSelector());
-            JsonEvaluator    = new SharedPool<JsonEvaluator>    (() => new JsonEvaluator());
-            ObjectMapper     = new SharedPool<ObjectMapper>     (SyncTypeStore.CreateObjectMapper);
-            EntityValidator  = new SharedPool<EntityValidator>  (() => new EntityValidator());
+            JsonPatcher     = new SharedPool<JsonPatcher>       (() => new JsonPatcher());
+            ScalarSelector  = new SharedPool<ScalarSelector>    (() => new ScalarSelector());
+            JsonEvaluator   = new SharedPool<JsonEvaluator>     (() => new JsonEvaluator());
+            ObjectMapper    = new SharedPool<ObjectMapper>      (SyncTypeStore.CreateObjectMapper);
+            EntityValidator = new SharedPool<EntityValidator>   (() => new EntityValidator());
+            TypeValidator   = new SharedPool<TypeValidator>     (() => new TypeValidator());
         }
         
         internal Pools(Pools sharedPools) {
-            JsonPatcher      = new LocalPool<JsonPatcher>       (sharedPools.JsonPatcher,      "JsonPatcher");
-            ScalarSelector   = new LocalPool<ScalarSelector>    (sharedPools.ScalarSelector,   "ScalarSelector");
-            JsonEvaluator    = new LocalPool<JsonEvaluator>     (sharedPools.JsonEvaluator,    "JsonEvaluator");
-            ObjectMapper     = new LocalPool<ObjectMapper>      (sharedPools.ObjectMapper,     "ObjectMapper");
-            EntityValidator  = new LocalPool<EntityValidator>   (sharedPools.EntityValidator,  "EntityValidator");
+            JsonPatcher     = new LocalPool<JsonPatcher>        (sharedPools.JsonPatcher,       "JsonPatcher");
+            ScalarSelector  = new LocalPool<ScalarSelector>     (sharedPools.ScalarSelector,    "ScalarSelector");
+            JsonEvaluator   = new LocalPool<JsonEvaluator>      (sharedPools.JsonEvaluator,     "JsonEvaluator");
+            ObjectMapper    = new LocalPool<ObjectMapper>       (sharedPools.ObjectMapper,      "ObjectMapper");
+            EntityValidator = new LocalPool<EntityValidator>    (sharedPools.EntityValidator,   "EntityValidator");
+            TypeValidator   = new LocalPool<TypeValidator>      (sharedPools.TypeValidator,     "TypeValidator");
         }
 
         public void Dispose() {
@@ -130,6 +137,7 @@ namespace Friflo.Json.Flow.Database
             JsonEvaluator.  Dispose();
             ObjectMapper.   Dispose();
             EntityValidator.Dispose();
+            TypeValidator.  Dispose();
         }
 
         public PoolUsage PoolUsage { get {
@@ -138,7 +146,8 @@ namespace Friflo.Json.Flow.Database
                 selectorCount           = ScalarSelector    .Usage,
                 evaluatorCount          = JsonEvaluator     .Usage,
                 objectMapperCount       = ObjectMapper      .Usage,
-                entityValidatorCount    = EntityValidator   .Usage
+                entityValidatorCount    = EntityValidator   .Usage,
+                typeValidatorCount      = TypeValidator     .Usage
             };
             return usage;
         } }
