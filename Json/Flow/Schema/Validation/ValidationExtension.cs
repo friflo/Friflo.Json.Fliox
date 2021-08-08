@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
+using System.Collections.Generic;
 using Friflo.Json.Flow.Schema.JSON;
 using Friflo.Json.Flow.Schema.Native;
 
@@ -20,6 +22,16 @@ namespace Friflo.Json.Flow.Schema.Validation
             var path = $"./{@namespace}.{type.Name}.json#/definitions/{type.Name}";
             var typeDef = jsonSchema.TypeAsTypeDef(path);
             return validationSet.TypeDefAsValidationType(typeDef);
+        }
+        
+        public static ICollection<ValidationType> TypesAsValidationTypes(this NativeTypeSchema nativeSchema, ValidationSet validationSet, ICollection<Type> types) {
+            var list = new List<ValidationType>();
+            foreach (var type in types) {
+                var typeDef         = nativeSchema.TypeAsTypeDef(type);
+                var validationType  = validationSet.TypeDefAsValidationType(typeDef);
+                list.Add(validationType);
+            }
+            return list;
         }
     } 
 }
