@@ -42,9 +42,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             modifyDb.ClearErrors();
             var articles = store.articles;
             
-            var testCustomers = modifyDb.GetModifyContainer<Article>();
-            testCustomers.creates.Add("article-missing-id",     val => new EntityValue("{}"));
-            testCustomers.creates.Add("article-incorrect-type", val => new EntityValue(val.Json.Replace("\"xxx\"", "123")));
+            var articleModifier = modifyDb.GetWriteModifier<Article>();
+            articleModifier.creates.Add("article-missing-id",     val => new EntityValue("{}"));
+            articleModifier.creates.Add("article-incorrect-type", val => new EntityValue(val.Json.Replace("\"xxx\"", "123")));
 
             var articleMissingName      = new Article { id = "article-missing-name" };
             var articleMissingId        = new Article { id = "article-missing-id" };
@@ -63,8 +63,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
 |   WriteError: Article 'article-missing-name', Required property must not be null. at Article > name, pos: 40", sync.Message);
             
 
-            testCustomers.creates.Add("invalid-json",       val => new EntityValue("X"));
-            testCustomers.creates.Add("empty-json",         val => new EntityValue(""));
+            articleModifier.creates.Add("invalid-json",       val => new EntityValue("X"));
+            articleModifier.creates.Add("empty-json",         val => new EntityValue(""));
             
             var invalidJson     = new Article { id = "invalid-json" };
             var emptyJson       = new Article { id = "empty-json" };

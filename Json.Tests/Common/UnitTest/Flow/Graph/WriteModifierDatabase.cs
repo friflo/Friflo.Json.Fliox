@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return await local.ExecuteSync(syncRequest, messageContext);
         }
 
-        public WriteModifier GetModifyContainer<TEntity>() where TEntity : Entity {
+        public WriteModifier GetWriteModifier<TEntity>() where TEntity : Entity {
             var name = typeof(TEntity).Name;
             if (!writeModifiers.TryGetValue(name, out var writeModifier)) {
                 writeModifier = new WriteModifier();
