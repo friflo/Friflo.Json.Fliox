@@ -22,25 +22,25 @@ namespace Friflo.Json.Flow.Database
             }
         }
 
-        public ValidationResult ValidateEntities (string container, Dictionary<string, EntityValue> entities, MessageContext messageContext)
+        public Dictionary<string, EntityError> ValidateEntities (string container, Dictionary<string, EntityValue> entities, MessageContext messageContext)
         {
+            Dictionary<string, EntityError> validationErrors = null;
             var type = containerTypes[container];
             using (var pooledValidator = messageContext.pools.TypeValidator.Get()) {
                 TypeValidator validator = pooledValidator.instance;
                 foreach (var entity in entities) {
                     string json = entity.Value.Json;
                     if (!validator.ValidateObject(json, type, out string error)) {
-                        throw new InvalidOperationException(error);   
+                        string key = entity.Key;
+                        if (validationErrors == null) {
+                            validationErrors = new Dictionary<string, EntityError>();
+                        }
+                        validationErrors.Add(key, new EntityError(EntityErrorType.WriteError, container, key, error));
                     }
                 }
             }
-            return null;
+            return validationErrors;
         }
     }
-    
-    public class ValidationResult
-    {
-        public CommandError                     error;
-        public Dictionary<string, EntityError>  validationErrors;
-    }
+ 
 }
