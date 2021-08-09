@@ -54,6 +54,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             
             var sync = await store.TrySync(); // -------- Sync --------
             
+            IsFalse(sync.Success);
+            IsFalse(createTask.Success);
             var errors = createTask.Error.entityErrors;
             AreEqual("Required property must not be null. at Article > name, pos: 40", errors["article-missing-name"].message);
             AreEqual(@"Sync() failed with task errors. Count: 1
@@ -69,14 +71,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             var invalidJson     = new Article { id = "invalid-json" };
             var emptyJson       = new Article { id = "empty-json" };
 
-            articles.CreateRange(new [] { invalidJson, emptyJson });
+            createTask = articles.CreateRange(new [] { invalidJson, emptyJson });
             
-            sync = await store.TrySync(); // -------- Sync --------
+            await store.TrySync(); // -------- Sync --------
             
-            AreEqual(@"Sync() failed with task errors. Count: 1
-|- CreateTask<Article> (#ids: 2) # EntityErrors ~ count: 2
-|   WriteError: Article 'empty-json', unexpected EOF on root at Article > (root), pos: 0
-|   WriteError: Article 'invalid-json', unexpected character while reading value. Found: X at Article > (root), pos: 1", sync.Message);
+            IsFalse(sync.Success);
+            IsFalse(createTask.Success);
+            AreEqual(@"EntityErrors ~ count: 2
+| WriteError: Article 'empty-json', unexpected EOF on root at Article > (root), pos: 0
+| WriteError: Article 'invalid-json', unexpected character while reading value. Found: X at Article > (root), pos: 1", createTask.Error.Message);
 
         }
     }
