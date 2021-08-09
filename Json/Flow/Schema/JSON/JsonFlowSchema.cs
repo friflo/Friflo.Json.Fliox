@@ -9,6 +9,7 @@ using Friflo.Json.Flow.Mapper;
 // ReSharper disable CollectionNeverUpdated.Global
 namespace Friflo.Json.Flow.Schema.JSON
 {
+    /// <summary>
     /// Compatible subset of JSON Schema with some extensions required for code generation.
     /// JSON Schema specification: https://json-schema.org/specification.html
     /// 
@@ -19,24 +20,31 @@ namespace Friflo.Json.Flow.Schema.JSON
     ///     <item><see cref="JsonType.isStruct"/></item>
     ///     <item><see cref="JsonType.isAbstract"/></item>
     /// </list>
-    /// The restriction of <see cref="JsonFlowSchema"/> is:
+    /// The restriction of <see cref="JsonFlowSchema"/> are:
     /// <list type="bullet">
     ///   <item>
-    ///     A schema property cannot nest another "type": "object" with "properties": { ... }
+    ///     A schema property cannot nest anonymous types by "type": "object" with "properties": { ... }.
     ///     The property type needs to be a known type like "string", ... or a referenced ("$ref") type.
-    ///     Allowed are also arrays and dictionaries with exactly one element or value type.
+    ///     This restriction enables generation of code and types for languages without support of anonymous types. 
+    ///     It also enables concise error messages for validation errors when using <see cref="Validation.TypeValidator"/>. 
+    ///   </item>
+    ///   <item>
+    ///     Note: Arrays and dictionaries are also valid schema properties. E.g. <br></br>
+    ///     A valid array property like: <code>{ "type": ["array", "null"], "items": { "type": "string" } }</code><br></br>
+    ///     A valid dictionary property like:  <code>{ "type": "object", "additionalProperties": { "type": "string" } }</code><br></br>
     ///     These element / value types needs to be a known type like "string", ... or a referenced ("$ref") type.
     ///   </item>
     ///   <item>
     ///     On root level are only "$ref": "..." and "definitions": [...] allowed.
     ///   </item>
     /// </list>
-
+    /// </summary>
     public class JsonFlowSchema
     {
         [Fri.Property(Name =                   "$ref")]
         public  string                          rootRef;
         
+        [Fri.Property(Required = true)]
         public  Dictionary<string, JsonType>    definitions;
         
         /// <summary>file name is <see cref="name"/> + ".json".
