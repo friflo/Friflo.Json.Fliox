@@ -88,8 +88,8 @@ namespace Friflo.Json.Flow.Database
             
             // Apply patches
             // targets collect entities with: successful read & successful applied patch 
-            var targets = new  Dictionary<string,EntityValue>(entities.Count);
-            
+            var targets     = new  Dictionary<string,EntityValue>(entities.Count);
+            var container   = patchEntities.container;
             Dictionary<string, EntityError> patchErrors = null;
             using (var pooledPatcher = messageContext.pools.JsonPatcher.Get()) {
                 JsonPatcher patcher = pooledPatcher.instance;
@@ -106,7 +106,7 @@ namespace Friflo.Json.Flow.Database
                     }
                     string target = value.Json;
                     if (target == null) {
-                        error = new EntityError(EntityErrorType.PatchError, patchEntities.container, key, "patch target not found");
+                        error = new EntityError(EntityErrorType.PatchError, container, key, "patch target not found");
                         AddEntityError(ref patchErrors, key, error);
                         continue;
                     }
@@ -114,8 +114,9 @@ namespace Friflo.Json.Flow.Database
                     entity.Value.SetJson(json);
                     targets.Add(key, value);
                 }
-                database.schema?.ValidateEntities(patchEntities.container, targets, messageContext, EntityErrorType.PatchError, ref response.patchErrors);
             }
+            database.schema?.ValidateEntities(container, targets, messageContext, EntityErrorType.PatchError, ref response.patchErrors);
+            
             // Write patched entities back
             var task = new UpdateEntities {entities = targets};
             var updateResult = await UpdateEntities(task, messageContext).ConfigureAwait(false);
