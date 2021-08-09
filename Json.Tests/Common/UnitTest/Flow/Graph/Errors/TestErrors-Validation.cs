@@ -59,10 +59,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             IsFalse(createTask.Success);
             var errors = createTask.Error.entityErrors;
             AreEqual("Required property must not be null. at Article > name, pos: 40", errors["article-missing-name"].message);
-            AreEqual(@"EntityErrors ~ count: 3
+            const string expectError = @"EntityErrors ~ count: 3
 | WriteError: Article 'article-incorrect-type', Incorrect type. was: 123, expect: string at Article > name, pos: 41
 | WriteError: Article 'article-missing-id', Missing required fields: [id, name] at Article > (root), pos: 2
-| WriteError: Article 'article-missing-name', Required property must not be null. at Article > name, pos: 40", createTask.Error.Message);
+| WriteError: Article 'article-missing-name', Required property must not be null. at Article > name, pos: 40";
+            AreEqual(expectError, createTask.Error.Message);
             
             // --- test validation errors for updates
             var updateTask = articles.UpdateRange(new [] { articleMissingName, articleMissingId, articleIncorrectType});
@@ -73,10 +74,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             IsFalse(updateTask.Success);
             errors = updateTask.Error.entityErrors;
             AreEqual("Required property must not be null. at Article > name, pos: 40", errors["article-missing-name"].message);
-            AreEqual(@"EntityErrors ~ count: 3
-| WriteError: Article 'article-incorrect-type', Incorrect type. was: 123, expect: string at Article > name, pos: 41
-| WriteError: Article 'article-missing-id', Missing required fields: [id, name] at Article > (root), pos: 2
-| WriteError: Article 'article-missing-name', Required property must not be null. at Article > name, pos: 40", updateTask.Error.Message);
+            AreEqual(expectError, updateTask.Error.Message);
 
 
             // --- test validation errors for invalid JSON
