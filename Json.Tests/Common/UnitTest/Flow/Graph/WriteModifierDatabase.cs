@@ -9,12 +9,14 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
-    public delegate EntityValue Modifier (EntityValue processor);
+    public delegate EntityValue WriteModifier (EntityValue processor);
+    public delegate EntityPatch PatchModifier (EntityPatch processor);
     
     public class WriteModifierDatabase : EntityDatabase
     {
         private readonly    EntityDatabase  local;
-        private readonly    Dictionary<string, WriteModifier>   writeModifiers  = new Dictionary<string, WriteModifier>();
+        private readonly    Dictionary<string, WriteModifiers>   writeModifiers  = new Dictionary<string, WriteModifiers>();
+        private readonly    Dictionary<string, PatchModifiers>   patchModifiers  = new Dictionary<string, PatchModifiers>();
         
         public WriteModifierDatabase(EntityDatabase local) {
             this.local = local;
@@ -35,13 +37,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             foreach (var task in syncRequest.tasks) {
                 switch (task) {
                     case CreateEntities createEntities:
-                        if (writeModifiers.TryGetValue(createEntities.container, out var writesModifier)) {
-                            writesModifier.ModifyWrites(createEntities.entities, writesModifier.writes);
+                        if (writeModifiers.TryGetValue(createEntities.container, out var write)) {
+                            WriteModifiers.ModifyWrites(createEntities.entities, write.writes);
                         }
                         break;
                     case UpdateEntities updateEntities:
-                        if (writeModifiers.TryGetValue(updateEntities.container, out writesModifier)) {
-                            writesModifier.ModifyWrites(updateEntities.entities, writesModifier.writes);
+                        if (writeModifiers.TryGetValue(updateEntities.container, out write)) {
+                            WriteModifiers.ModifyWrites(updateEntities.entities, write.writes);
+                        }
+                        break;
+                    case PatchEntities patchEntities:
+                        if (patchModifiers.TryGetValue(patchEntities.container, out var patch)) {
+                            PatchModifiers.ModifyPatches(patchEntities.patches, patch.patches);
                         }
                         break;
                 }
@@ -49,21 +56,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return await local.ExecuteSync(syncRequest, messageContext);
         }
 
-        public WriteModifier GetWriteModifier<TEntity>() where TEntity : Entity {
+        public WriteModifiers GetWriteModifiers<TEntity>() where TEntity : Entity {
             var name = typeof(TEntity).Name;
             if (!writeModifiers.TryGetValue(name, out var writeModifier)) {
-                writeModifier = new WriteModifier();
+                writeModifier = new WriteModifiers();
                 writeModifiers.Add(name, writeModifier);
             }
             return writeModifier;
         }
     }
     
-    public class WriteModifier
+    public class WriteModifiers
     {
-        public  readonly    Dictionary<string, Modifier>    writes    = new Dictionary<string, Modifier>();
+        public  readonly    Dictionary<string, WriteModifier>    writes    = new Dictionary<string, WriteModifier>();
         
-        internal void ModifyWrites(Dictionary<string, EntityValue> entities, Dictionary<string, Modifier> creates) {
+        internal static void ModifyWrites(Dictionary<string, EntityValue> entities, Dictionary<string, WriteModifier> creates) {
             var modifications = new Dictionary<string, EntityValue>();
             foreach (var pair in entities) {
                 var key = pair.Key;
@@ -77,6 +84,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var key     = pair.Key;
                 var value   = pair.Value;
                 entities[key] = value;
+            }
+        }
+    }
+    
+    public class PatchModifiers
+    {
+        public  readonly    Dictionary<string, PatchModifier>    patches    = new Dictionary<string, PatchModifier>();
+        
+        internal static void ModifyPatches(Dictionary<string, EntityPatch> entityPatches, Dictionary<string, PatchModifier> patches) {
+            var modifications = new Dictionary<string, EntityPatch>();
+            foreach (var pair in entityPatches) {
+                var key = pair.Key;
+                if (patches.TryGetValue(key, out var modifier)) {
+                    EntityPatch value       = pair.Value;
+                    EntityPatch modified    = modifier (value);
+                    modifications.Add(key, modified);
+                }
+            }
+            foreach (var pair in modifications) {
+                var         key     = pair.Key;
+                EntityPatch value   = pair.Value;
+                entityPatches[key] = value;
             }
         }
     }

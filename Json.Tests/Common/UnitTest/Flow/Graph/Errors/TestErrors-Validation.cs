@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             modifyDb.ClearErrors();
             var articles = store.articles;
             
-            var articleModifier = modifyDb.GetWriteModifier<Article>();
+            var articleModifier = modifyDb.GetWriteModifiers<Article>();
             articleModifier.writes.Add("article-missing-id",     val => new EntityValue("{}"));
             articleModifier.writes.Add("article-incorrect-type", val => new EntityValue(val.Json.Replace("\"xxx\"", "123")));
 
@@ -85,6 +85,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             var emptyJson       = new Article { id = "empty-json" };
 
             createTask = articles.CreateRange(new [] { invalidJson, emptyJson });
+            
+            
+            // test validation errors for patches
+            
+            
+            var articlePatch    = new Article { id = "article-patch-error" };
+            var patchArticle    = articles.Patch(articlePatch);
+            patchArticle.Member(a => a.name);
+            
+            
+            
+            
             
             await store.TrySync(); // -------- Sync --------
             
