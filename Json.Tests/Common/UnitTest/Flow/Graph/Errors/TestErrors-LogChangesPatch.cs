@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
 
         private static async Task AssertLogChangesPatch(PocStore store, TestDatabase testDatabase) {
             testDatabase.ClearErrors();
-            TestContainer testCustomers = testDatabase.GetTestContainer("Customer");
+            TestContainer testCustomers = testDatabase.GetTestContainer<Customer>();
             var customers = store.customers;
             
             // --- prepare precondition for log changes

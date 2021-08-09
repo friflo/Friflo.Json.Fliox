@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
 
         private static async Task AssertEntityWrite(PocStore store, TestDatabase testDatabase) {
             testDatabase.ClearErrors();
-            TestContainer testCustomers = testDatabase.GetTestContainer("Customer");
+            TestContainer testCustomers = testDatabase.GetTestContainer<Customer>();
             
             const string deleteEntityError      = "delete-entity-error";
             const string createEntityError      = "create-entity-error";

@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
         
         private static async Task AssertTaskError(PocStore store, TestDatabase testDatabase) {
             testDatabase.ClearErrors();
-            TestContainer testCustomers = testDatabase.GetTestContainer("Customer");
+            TestContainer testCustomers = testDatabase.GetTestContainer<Customer>();
             
             const string createTaskError        = "create-task-error";
             const string updateTaskError        = "update-task-error";

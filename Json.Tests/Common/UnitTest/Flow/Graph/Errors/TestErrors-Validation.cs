@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             modifyDb.ClearErrors();
             var articles = store.articles;
             
-            var testCustomers = modifyDb.GetModifyContainer(nameof(Article));
+            var testCustomers = modifyDb.GetModifyContainer<Article>();
             testCustomers.creates.Add("article-missing-id", entityValue => new EntityValue("{}"));
 
             var articleMissingName  = new Article { id = "article-missing-name" };

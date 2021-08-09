@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
@@ -43,7 +44,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return await local.ExecuteSync(syncRequest, messageContext);
         }
 
-        public WriteModifier GetModifyContainer(string name) {
+        public WriteModifier GetModifyContainer<TEntity>() where TEntity : Entity {
+            var name = typeof(TEntity).Name;
             if (!writeModifiers.TryGetValue(name, out var writeModifier)) {
                 writeModifier = new WriteModifier();
                 writeModifiers.Add(name, writeModifier);

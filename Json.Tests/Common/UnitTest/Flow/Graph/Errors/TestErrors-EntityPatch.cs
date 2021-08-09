@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
 
         private static async Task AssertEntityPatch(PocStore store, TestDatabase testDatabase) {
             testDatabase.ClearErrors();
-            TestContainer testCustomers = testDatabase.GetTestContainer("Customer");
+            TestContainer testCustomers = testDatabase.GetTestContainer<Customer>();
             const string patchReadEntityError   = "patch-read-entity-error";
             const string patchWriteEntityError  = "patch-write-entity-error";
             const string patchTaskException     = "patch-task-exception";

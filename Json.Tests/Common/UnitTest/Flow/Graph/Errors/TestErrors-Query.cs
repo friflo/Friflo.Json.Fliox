@@ -32,8 +32,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             const string article2JsonError      = "article-2";
             const string readTaskError          = "read-task-error";
             
-            var testArticles  = testDatabase.GetTestContainer("Article");
-            var testCustomers = testDatabase.GetTestContainer("Customer");
+            var testArticles  = testDatabase.GetTestContainer<Article>();
+            var testCustomers = testDatabase.GetTestContainer<Customer>();
             
             testArticles.readEntityErrors.Add(article2JsonError, (value) => value.SetJson(@"{""invalidJson"" XXX}"));
             testArticles.readEntityErrors.Add(article1ReadError, (value) => value.SetError(testArticles.ReadError(article1ReadError)));

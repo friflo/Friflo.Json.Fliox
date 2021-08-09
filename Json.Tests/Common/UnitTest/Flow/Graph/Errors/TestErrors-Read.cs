@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
 | ReadError: Article 'article-1', simulated read entity error
 | ParseError: Article 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
             
-            TestContainer testArticles = testDatabase.GetTestContainer("Article");
+            TestContainer testArticles = testDatabase.GetTestContainer<Article>();
             const string article1ReadError      = "article-1";
             const string article2JsonError      = "article-2";
             const string articleInvalidJson     = "article-invalidJson";

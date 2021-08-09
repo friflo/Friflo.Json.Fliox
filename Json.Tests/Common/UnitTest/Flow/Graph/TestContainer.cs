@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
@@ -67,7 +68,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return response;
         }
 
-        public TestContainer GetTestContainer(string name) {
+        public TestContainer GetTestContainer<TEntity>() where TEntity : Entity {
+            var name = typeof(TEntity).Name;
             return (TestContainer) GetOrCreateContainer(name);
         }
     }
