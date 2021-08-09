@@ -9,8 +9,8 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
-    public delegate EntityValue WriteModifier (EntityValue processor);
-    public delegate EntityPatch PatchModifier (EntityPatch processor);
+    public delegate EntityValue WriteModifier (EntityValue value);
+    public delegate EntityPatch PatchModifier (EntityPatch patch);
     
     public class WriteModifierDatabase : EntityDatabase
     {
@@ -38,17 +38,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 switch (task) {
                     case CreateEntities createEntities:
                         if (writeModifiers.TryGetValue(createEntities.container, out var write)) {
-                            WriteModifiers.ModifyWrites(createEntities.entities, write.writes);
+                            write.ModifyWrites(createEntities.entities);
                         }
                         break;
                     case UpdateEntities updateEntities:
                         if (writeModifiers.TryGetValue(updateEntities.container, out write)) {
-                            WriteModifiers.ModifyWrites(updateEntities.entities, write.writes);
+                            write.ModifyWrites(updateEntities.entities);
                         }
                         break;
                     case PatchEntities patchEntities:
                         if (patchModifiers.TryGetValue(patchEntities.container, out var patch)) {
-                            PatchModifiers.ModifyPatches(patchEntities.patches, patch.patches);
+                            patch.ModifyPatches(patchEntities.patches);
                         }
                         break;
                 }
@@ -79,11 +79,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     {
         public  readonly    Dictionary<string, WriteModifier>    writes    = new Dictionary<string, WriteModifier>();
         
-        internal static void ModifyWrites(Dictionary<string, EntityValue> entities, Dictionary<string, WriteModifier> creates) {
+        internal void ModifyWrites(Dictionary<string, EntityValue> entities) {
             var modifications = new Dictionary<string, EntityValue>();
             foreach (var pair in entities) {
                 var key = pair.Key;
-                if (creates.TryGetValue(key, out var modifier)) {
+                if (writes.TryGetValue(key, out var modifier)) {
                     var value       = pair.Value;
                     var modified    = modifier (value);
                     modifications.Add(key, modified);
@@ -101,7 +101,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     {
         public  readonly    Dictionary<string, PatchModifier>    patches    = new Dictionary<string, PatchModifier>();
         
-        internal static void ModifyPatches(Dictionary<string, EntityPatch> entityPatches, Dictionary<string, PatchModifier> patches) {
+        internal void ModifyPatches(Dictionary<string, EntityPatch> entityPatches) {
             var modifications = new Dictionary<string, EntityPatch>();
             foreach (var pair in entityPatches) {
                 var key = pair.Key;
