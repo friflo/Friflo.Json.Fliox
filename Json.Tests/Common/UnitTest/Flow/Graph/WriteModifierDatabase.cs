@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public void ClearErrors() {
             foreach (var pair in writeModifiers) {
                 var container = pair.Value;
-                container.creates.Clear();
+                container.writes.Clear();
             }
         }
 
@@ -36,7 +36,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 switch (task) {
                     case CreateEntities createEntities:
                         if (writeModifiers.TryGetValue(createEntities.container, out var writesModifier)) {
-                            writesModifier.ModifyWrites(createEntities.entities, writesModifier.creates);
+                            writesModifier.ModifyWrites(createEntities.entities, writesModifier.writes);
+                        }
+                        break;
+                    case UpdateEntities updateEntities:
+                        if (writeModifiers.TryGetValue(updateEntities.container, out writesModifier)) {
+                            writesModifier.ModifyWrites(updateEntities.entities, writesModifier.writes);
                         }
                         break;
                 }
@@ -56,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     
     public class WriteModifier
     {
-        public  readonly    Dictionary<string, Modifier>    creates    = new Dictionary<string, Modifier>();
+        public  readonly    Dictionary<string, Modifier>    writes    = new Dictionary<string, Modifier>();
         
         internal void ModifyWrites(Dictionary<string, EntityValue> entities, Dictionary<string, Modifier> creates) {
             var modifications = new Dictionary<string, EntityValue>();

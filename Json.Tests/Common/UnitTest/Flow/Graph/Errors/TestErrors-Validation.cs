@@ -43,13 +43,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             var articles = store.articles;
             
             var articleModifier = modifyDb.GetWriteModifier<Article>();
-            articleModifier.creates.Add("article-missing-id",     val => new EntityValue("{}"));
-            articleModifier.creates.Add("article-incorrect-type", val => new EntityValue(val.Json.Replace("\"xxx\"", "123")));
+            articleModifier.writes.Add("article-missing-id",     val => new EntityValue("{}"));
+            articleModifier.writes.Add("article-incorrect-type", val => new EntityValue(val.Json.Replace("\"xxx\"", "123")));
 
             var articleMissingName      = new Article { id = "article-missing-name" };
             var articleMissingId        = new Article { id = "article-missing-id" };
             var articleIncorrectType    = new Article { id = "article-incorrect-type", name = "xxx"};
             
+            // --- test validation errors for creates
             var createTask = articles.CreateRange(new [] { articleMissingName, articleMissingId, articleIncorrectType});
             
             var sync = await store.TrySync(); // -------- Sync --------
@@ -58,15 +59,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             IsFalse(createTask.Success);
             var errors = createTask.Error.entityErrors;
             AreEqual("Required property must not be null. at Article > name, pos: 40", errors["article-missing-name"].message);
-            AreEqual(@"Sync() failed with task errors. Count: 1
-|- CreateTask<Article> (#ids: 3) # EntityErrors ~ count: 3
-|   WriteError: Article 'article-incorrect-type', Incorrect type. was: 123, expect: string at Article > name, pos: 41
-|   WriteError: Article 'article-missing-id', Missing required fields: [id, name] at Article > (root), pos: 2
-|   WriteError: Article 'article-missing-name', Required property must not be null. at Article > name, pos: 40", sync.Message);
+            AreEqual(@"EntityErrors ~ count: 3
+| WriteError: Article 'article-incorrect-type', Incorrect type. was: 123, expect: string at Article > name, pos: 41
+| WriteError: Article 'article-missing-id', Missing required fields: [id, name] at Article > (root), pos: 2
+| WriteError: Article 'article-missing-name', Required property must not be null. at Article > name, pos: 40", createTask.Error.Message);
             
+            // --- test validation errors for updates
+            var updateTask = articles.UpdateRange(new [] { articleMissingName, articleMissingId, articleIncorrectType});
+            
+            sync = await store.TrySync(); // -------- Sync --------
+            
+            IsFalse(sync.Success);
+            IsFalse(updateTask.Success);
+            errors = updateTask.Error.entityErrors;
+            AreEqual("Required property must not be null. at Article > name, pos: 40", errors["article-missing-name"].message);
+            AreEqual(@"EntityErrors ~ count: 3
+| WriteError: Article 'article-incorrect-type', Incorrect type. was: 123, expect: string at Article > name, pos: 41
+| WriteError: Article 'article-missing-id', Missing required fields: [id, name] at Article > (root), pos: 2
+| WriteError: Article 'article-missing-name', Required property must not be null. at Article > name, pos: 40", updateTask.Error.Message);
 
-            articleModifier.creates.Add("invalid-json",       val => new EntityValue("X"));
-            articleModifier.creates.Add("empty-json",         val => new EntityValue(""));
+
+            // --- test validation errors for invalid JSON
+            articleModifier.writes.Add("invalid-json",       val => new EntityValue("X"));
+            articleModifier.writes.Add("empty-json",         val => new EntityValue(""));
             
             var invalidJson     = new Article { id = "invalid-json" };
             var emptyJson       = new Article { id = "empty-json" };
