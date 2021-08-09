@@ -25,18 +25,7 @@ namespace Friflo.Json.Flow.Sync
             if (entities == null)
                 return MissingField(nameof(entities));
             
-            var schema = database.schema;
-            if (schema != null) {
-                var validationErrors = schema.ValidateEntities (container, entities, messageContext);
-                if (validationErrors != null) {
-                    var errors = SyncResponse.GetEntityErrors(ref response.createErrors, container);
-                    errors.AddErrors(validationErrors);
-                    foreach (var pair in validationErrors) {
-                        var key = pair.Key;
-                        entities.Remove(key);
-                    }
-                }
-            }
+            database.schema?.ValidateEntities (container, entities, messageContext, ref response.createErrors);
 
             var entityContainer = database.GetOrCreateContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value

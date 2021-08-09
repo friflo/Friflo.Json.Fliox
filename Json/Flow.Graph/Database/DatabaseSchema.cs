@@ -22,8 +22,12 @@ namespace Friflo.Json.Flow.Database
             }
         }
 
-        public Dictionary<string, EntityError> ValidateEntities (string container, Dictionary<string, EntityValue> entities, MessageContext messageContext)
-        {
+        public void ValidateEntities (
+            string                                  container,
+            Dictionary<string, EntityValue>         entities,
+            MessageContext                          messageContext,
+            ref Dictionary<string, EntityErrors>    entityErrorMap
+        ) {
             Dictionary<string, EntityError> validationErrors = null;
             var type = containerTypes[container];
             using (var pooledValidator = messageContext.pools.TypeValidator.Get()) {
@@ -39,7 +43,14 @@ namespace Friflo.Json.Flow.Database
                     }
                 }
             }
-            return validationErrors;
+            if (validationErrors == null)
+                return;
+            var errors = SyncResponse.GetEntityErrors(ref entityErrorMap, container);
+            errors.AddErrors(validationErrors);
+            foreach (var pair in validationErrors) {
+                var key = pair.Key;
+                entities.Remove(key);
+            }
         }
     }
  
