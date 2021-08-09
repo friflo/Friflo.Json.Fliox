@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Sync
             if (patches == null)
                 return MissingField(nameof(patches));
             var entityContainer = database.GetOrCreateContainer(container);
-            var result = await entityContainer.PatchEntities(this, messageContext).ConfigureAwait(false);
+            var result = await entityContainer.PatchEntities(this, response, messageContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error); 
             }

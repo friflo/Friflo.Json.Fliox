@@ -8,6 +8,7 @@ using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Schema.Native;
 using Friflo.Json.Flow.Schema.Validation;
 using Friflo.Json.Flow.Sync;
+using Friflo.Json.Flow.Transform;
 using Friflo.Json.Tests.Common.Utils;
 using UnityEngine.TestTools;
 using static NUnit.Framework.Assert;
@@ -75,6 +76,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             errors = updateTask.Error.entityErrors;
             AreEqual("Required property must not be null. at Article > name, pos: 40", errors["article-missing-name"].message);
             AreEqual(expectError, updateTask.Error.Message);
+            
+            
+            // test validation errors for patches
+            var patchModifier = modifyDb.GetPatchModifiers<Article>();
+            patchModifier.patches.Add("article-2", patch => {
+                var replace = (PatchReplace)patch.patches[0];
+                replace.value.json = "123";
+                return patch;
+            });
+            var articlePatch    = new Article { id = "article-2", name = "changed name"};
+            var patchArticle    = articles.Patch(articlePatch);
+            patchArticle.Member(a => a.name);
+            
+            sync = await store.TrySync(); // -------- Sync --------
+            
+            IsFalse(patchArticle.Success);
+            AreEqual(@"EntityErrors ~ count: 1
+| PatchError: Article 'article-2', Incorrect type. was: 123, expect: string at Article > name, pos: 40", patchArticle.Error.Message);
 
 
             // --- test validation errors for invalid JSON
@@ -85,18 +104,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             var emptyJson       = new Article { id = "empty-json" };
 
             createTask = articles.CreateRange(new [] { invalidJson, emptyJson });
-            
-            
-            // test validation errors for patches
-            
-            
-            var articlePatch    = new Article { id = "article-patch-error" };
-            var patchArticle    = articles.Patch(articlePatch);
-            patchArticle.Member(a => a.name);
-            
-            
-            
-            
             
             await store.TrySync(); // -------- Sync --------
             

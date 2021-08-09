@@ -64,6 +64,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
             return writeModifier;
         }
+        
+        public PatchModifiers GetPatchModifiers<TEntity>() where TEntity : Entity {
+            var name = typeof(TEntity).Name;
+            if (!patchModifiers.TryGetValue(name, out var patchModifier)) {
+                patchModifier = new PatchModifiers();
+                patchModifiers.Add(name, patchModifier);
+            }
+            return patchModifier;
+        }
     }
     
     public class WriteModifiers

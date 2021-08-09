@@ -73,7 +73,7 @@ namespace Friflo.Json.Flow.Database
         /// If the used database has integrated support for patching JSON its <see cref="EntityContainer"/>
         /// implementation can override this method to replace two database requests by one.
         /// </summary>
-        public virtual async Task<PatchEntitiesResult> PatchEntities   (PatchEntities patchEntities, MessageContext messageContext) {
+        public virtual async Task<PatchEntitiesResult> PatchEntities   (PatchEntities patchEntities, SyncResponse response, MessageContext messageContext) {
             var entityPatches = patchEntities.patches;
             var ids = entityPatches.Select(patch => patch.Key).ToHashSet();
             // Read entities to be patched
@@ -114,6 +114,7 @@ namespace Friflo.Json.Flow.Database
                     entity.Value.SetJson(json);
                     targets.Add(key, value);
                 }
+                database.schema?.ValidateEntities(patchEntities.container, targets, messageContext, EntityErrorType.PatchError, ref response.patchErrors);
             }
             // Write patched entities back
             var task = new UpdateEntities {entities = targets};

@@ -26,6 +26,7 @@ namespace Friflo.Json.Flow.Database
             string                                  container,
             Dictionary<string, EntityValue>         entities,
             MessageContext                          messageContext,
+            EntityErrorType                         errorType,
             ref Dictionary<string, EntityErrors>    entityErrorMap
         ) {
             Dictionary<string, EntityError> validationErrors = null;
@@ -39,7 +40,7 @@ namespace Friflo.Json.Flow.Database
                         if (validationErrors == null) {
                             validationErrors = new Dictionary<string, EntityError>();
                         }
-                        validationErrors.Add(key, new EntityError(EntityErrorType.WriteError, container, key, error));
+                        validationErrors.Add(key, new EntityError(errorType, container, key, error));
                     }
                 }
             }
