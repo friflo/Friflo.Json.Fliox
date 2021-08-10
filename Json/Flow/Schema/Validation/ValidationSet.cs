@@ -15,6 +15,7 @@ namespace Friflo.Json.Flow.Schema.Validation
     {
         private  readonly   List<ValidationType>                types;
         private  readonly   Dictionary<TypeDef, ValidationType> typeMap;
+        private  readonly   TypeDef                             rootType;
         
         /// <summary>
         /// Construct a <see cref="ValidationSet"/> from a given <see cref="JSON.JsonTypeSchema"/> or a
@@ -22,6 +23,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         /// <see cref="TypeValidator"/> to validate JSON payloads by <see cref="TypeValidator.ValidateObject"/>. 
         /// </summary>
         public ValidationSet (TypeSchema schema) {
+            rootType        = schema.RootType;
             var schemaTypes = schema.Types;
             var typeCount   = schemaTypes.Count + 20; // 20 - roughly the number of StandardTypes
             types           = new List<ValidationType>                  (typeCount);
@@ -61,6 +63,15 @@ namespace Friflo.Json.Flow.Schema.Validation
             foreach (var type in types) {
                 type.Dispose();
             }
+        }
+        
+        public ICollection<ValidationType>  GetEntityTypes() {
+            var entityTypes = new List<ValidationType>();
+            foreach (var field in rootType.Fields) {
+                var validationType = typeMap[field.type];
+                entityTypes.Add(validationType);
+            }
+            return entityTypes;
         }
         
         public ValidationType               TypeDefAsValidationType(TypeDef type) => typeMap[type];

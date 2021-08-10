@@ -20,10 +20,11 @@ namespace Friflo.Json.Flow.Schema.JSON
     {
         public  override    ICollection<TypeDef>            Types           { get; }
         public  override    StandardTypes                   StandardTypes   { get; }
+        public  override    TypeDef                         RootType       { get; }
         
         private readonly    Dictionary<string, JsonTypeDef> typeMap;
         
-        public JsonTypeSchema(List<JsonFlowSchema> schemaList) {
+        public JsonTypeSchema(List<JsonFlowSchema> schemaList, string rootType = null) {
             typeMap = new Dictionary<string, JsonTypeDef>(schemaList.Count);
             foreach (JsonFlowSchema schema in schemaList) {
                 schema.typeDefs = new Dictionary<string, JsonTypeDef>(schema.definitions.Count);
@@ -42,6 +43,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             Types               = new List<TypeDef>(typeMap.Values);
             var standardTypes   = new JsonStandardTypes(typeMap);
             StandardTypes       = standardTypes;
+            RootType            = rootType != null ? TypeAsTypeDef(rootType) : null;
             
             using (var reader          = new ObjectReader(new TypeStore()))
             {

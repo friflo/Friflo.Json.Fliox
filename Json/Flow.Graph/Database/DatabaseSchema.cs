@@ -9,17 +9,24 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database
 {
-    public class DatabaseSchema
+    public class DatabaseSchema : IDisposable
     {
-        private readonly    TypeSchema                          typeSchema;
-        private readonly    Dictionary<string, ValidationType>  containerTypes;
+        private  readonly   TypeSchema                          typeSchema;
+        private  readonly   Dictionary<string, ValidationType>  containerTypes;
+        private  readonly   ValidationSet                       validationSet;
         
-        public DatabaseSchema(TypeSchema typeSchema, ICollection<ValidationType> entityTypes) {
+        public DatabaseSchema(TypeSchema typeSchema) {
+            validationSet   = new ValidationSet(typeSchema);
             this.typeSchema = typeSchema;
-            containerTypes = new Dictionary<string, ValidationType>(entityTypes.Count);
+            var entityTypes = validationSet.GetEntityTypes();
+            containerTypes  = new Dictionary<string, ValidationType>(entityTypes.Count);
             foreach (var entityType in entityTypes) {
                 containerTypes.Add(entityType.name, entityType);
             }
+        }
+        
+        public void Dispose() {
+            validationSet.Dispose();
         }
 
         public void ValidateEntities (

@@ -31,10 +31,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/PocStore"))
             using (var modifierDatabase = new WriteModifierDatabase(fileDatabase))
             using (var createStore      = new PocStore(modifierDatabase, "createStore"))
-            using (var nativeSchema     = new NativeTypeSchema(TestGlobals.typeStore))
-            using (var validationSet    = new ValidationSet(nativeSchema)) {
-                var entityTypes         = nativeSchema.TypesAsValidationTypes(validationSet, EntityStore.GetEntityTypes<PocStore>());
-                fileDatabase.schema     = new DatabaseSchema(nativeSchema, entityTypes);
+            using (var nativeSchema     = new NativeTypeSchema(TestGlobals.typeStore, typeof(PocStore)))
+            using (fileDatabase.schema  = new DatabaseSchema(nativeSchema)) {
                 await AssertValidation(createStore, modifierDatabase);
             }
         }

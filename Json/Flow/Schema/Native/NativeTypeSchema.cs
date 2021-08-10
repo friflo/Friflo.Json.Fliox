@@ -13,13 +13,17 @@ namespace Friflo.Json.Flow.Schema.Native
     {
         public   override   ICollection<TypeDef>    Types           { get; }
         public   override   StandardTypes           StandardTypes   { get; }
+        public   override   TypeDef                 RootType       { get; }
         
         public              TypeDef                 TypeAsTypeDef(Type type) => nativeTypes[type];
 
         /// <summary>Contains only non <see cref="Nullable"/> Type's</summary>
         private  readonly   Dictionary<Type, NativeTypeDef> nativeTypes;
         
-        public NativeTypeSchema (TypeStore typeStore) {
+        public NativeTypeSchema (TypeStore typeStore, Type rootType = null) {
+            if (rootType != null) {
+                typeStore.GetTypeMapper(rootType);
+            }
             var typeMappers = typeStore.GetTypeMappers();
             
             // Collect all types into containers to simplify further processing
@@ -35,6 +39,7 @@ namespace Friflo.Json.Flow.Schema.Native
             var standardTypes = new NativeStandardTypes(nativeTypes);
             Types           = types;
             StandardTypes   = standardTypes;
+            RootType        = rootType != null ? TypeAsTypeDef(rootType) : null;
 
             // set the base type (base class or parent class) for all types. 
             foreach (var pair in nativeTypes) {

@@ -25,13 +25,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         [Test]      public async Task  FileValidationAsync() { await FileValidation(); }
 
         private static async Task FileValidation() {
-            using (var _            = Pools.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/PocStore"))
-            using (var createStore  = new PocStore(fileDatabase, "createStore"))
-            using (var nativeSchema = new NativeTypeSchema(TestGlobals.typeStore))
-            using (var validationSet= new ValidationSet(nativeSchema)) {
-                var entityTypes     = nativeSchema.TypesAsValidationTypes(validationSet, EntityStore.GetEntityTypes<PocStore>());
-                fileDatabase.schema = new DatabaseSchema(nativeSchema, entityTypes);
+            using (var _                = Pools.SharedPools) // for LeakTestsFixture
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/PocStore"))
+            using (var createStore      = new PocStore(fileDatabase, "createStore"))
+            using (var nativeSchema     = new NativeTypeSchema(TestGlobals.typeStore, typeof(PocStore)))
+            using (fileDatabase.schema  = new DatabaseSchema(nativeSchema)) {
                 await TestRelationPoC.CreateStore(createStore);
             }
         }

@@ -59,6 +59,11 @@ namespace Friflo.Json.Flow.Schema
             this.typeStore  = typeStore ?? throw new ArgumentException("typeStore must not be null");
             this.rootTypes  = rootTypes ?? throw new ArgumentException("rootTypes must not be null");
         }
+        
+        public NativeTypeOptions (TypeStore typeStore, Type rootType) {
+            this.typeStore  = typeStore ?? throw new ArgumentException("typeStore must not be null");
+            this.rootTypes  = rootType != null ? new List<Type>{ rootType } : throw new ArgumentException("rootType must not be null");
+        }
     }
     
     public class Replace {

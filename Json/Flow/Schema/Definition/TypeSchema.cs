@@ -39,5 +39,7 @@ namespace Friflo.Json.Flow.Schema.Definition
         /// <summary>Set of all well known / standard types used in the type system / schema like integers,
         /// floating point numbers, strings, booleans and timestamps</summary>
         public abstract     StandardTypes           StandardTypes   { get; }
+        
+        public abstract     TypeDef                 RootType        { get; }
     }
 }
