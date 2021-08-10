@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Database.Remote;
+using Friflo.Json.Flow.Schema.JSON;
 using Friflo.Json.Tests.Common.UnitTest.Flow.Graph;
 using Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy;
 
@@ -88,7 +89,14 @@ namespace Friflo.Json.Tests.Main
         //     $env:UserDomain 
         private static void GraphServer(string endpoint, string database, string wwwRoot, bool simulateErrors) {
             Console.WriteLine($"FileDatabase: {database}");
-            var fileDatabase = new FileDatabase(database) { eventBroker = new EventBroker(true) };
+            var fileDatabase        = new FileDatabase(database) { eventBroker = new EventBroker(true) };
+            
+            // adding DatabaseSchema is optional - it enables validation of create, update & patch operations
+            var jsonSchemaFolder    = "./Json.Tests/assets/Schema/JSON/PocStore";
+            var schemas             = JsonTypeSchema.ReadSchemas(jsonSchemaFolder);
+            var jsonSchema          = new JsonTypeSchema(schemas, "./UnitTest.Flow.Graph.json#/definitions/PocStore");
+            fileDatabase.schema     = new DatabaseSchema(jsonSchema);
+            
             EntityDatabase localDatabase = fileDatabase;
             if (simulateErrors) {
                 var testDatabase = new TestDatabase(fileDatabase);
