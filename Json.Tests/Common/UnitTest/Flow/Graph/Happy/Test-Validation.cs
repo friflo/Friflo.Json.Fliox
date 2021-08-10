@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Schema.JSON;
 using Friflo.Json.Flow.Schema.Native;
 using Friflo.Json.Flow.Schema.Validation;
 using Friflo.Json.Tests.Common.Utils;
@@ -21,10 +22,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 {
     public partial class TestStore
     {
-        [UnityTest] public IEnumerator FileValidationCoroutine() { yield return RunAsync.Await(FileValidation(), i => Logger.Info("--- " + i)); }
-        [Test]      public async Task  FileValidationAsync() { await FileValidation(); }
+        [UnityTest] public IEnumerator ValidationByTypesCoroutine() { yield return RunAsync.Await(ValidationByTypes(), i => Logger.Info("--- " + i)); }
+        [Test]      public async Task  ValidationByTypesAsync() { await ValidationByTypes(); }
 
-        private static async Task FileValidation() {
+        private static async Task ValidationByTypes() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/PocStore"))
             using (var createStore      = new PocStore(fileDatabase, "createStore"))
@@ -33,15 +34,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 await TestRelationPoC.CreateStore(createStore);
             }
         }
-    }
-    
-    public class TestEntityStoreMapper
-    {
-        [Test]
-        public void EntityStoreMapper() {
-            var typeStore = new TypeStore();
-            EntityStore.AddTypeMatchers(typeStore);
-            var mapper = typeStore.GetTypeMapper(typeof(PocStore));
+        
+        [UnityTest] public IEnumerator ValidationByJsonSchemaCoroutine() { yield return RunAsync.Await(ValidationByJsonSchema(), i => Logger.Info("--- " + i)); }
+        [Test]      public async Task  ValidationByJsonSchemaAsync() { await ValidationByJsonSchema(); }
+
+        private static async Task ValidationByJsonSchema() {
+            var jsonSchemaFolder    = CommonUtils.GetBasePath() + "assets/Schema/JSON/PocStore";
+            var schemas             = JsonTypeSchema.ReadSchemas(jsonSchemaFolder);
+            using (var _                = Pools.SharedPools) // for LeakTestsFixture
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/PocStore"))
+            using (var createStore      = new PocStore(fileDatabase, "createStore"))
+            using (var jsonSchema       = new JsonTypeSchema(schemas, "./UnitTest.Flow.Graph.json#/definitions/PocStore"))
+            using (fileDatabase.schema  = new DatabaseSchema(jsonSchema)) {
+                await TestRelationPoC.CreateStore(createStore);
+            }
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Schema.JSON
     /// The utility method <see cref="JsonTypeSchema.ReadSchemas"/> can be used to read a set of
     /// <see cref="JsonFlowSchema"/>'s as files in a folder.
     /// </summary>
-    public class JsonTypeSchema : TypeSchema
+    public class JsonTypeSchema : TypeSchema, IDisposable
     {
         public  override    ICollection<TypeDef>            Types           { get; }
         public  override    StandardTypes                   StandardTypes   { get; }
@@ -43,14 +43,6 @@ namespace Friflo.Json.Flow.Schema.JSON
             Types               = new List<TypeDef>(typeMap.Values);
             var standardTypes   = new JsonStandardTypes(typeMap);
             StandardTypes       = standardTypes;
-            if (rootType != null) {
-                var rootTypeDef = TypeAsTypeDef(rootType);
-                if (rootTypeDef == null)
-                    throw new InvalidOperationException($"rootType not found: {rootType}");
-                if (!rootTypeDef.IsClass)
-                    throw new InvalidOperationException($"rootType must be a class: {rootType}");
-                RootType = rootTypeDef;
-            }
             
             using (var reader          = new ObjectReader(new TypeStore()))
             {
@@ -113,7 +105,17 @@ namespace Friflo.Json.Flow.Schema.JSON
                     }
                 }
             }
+            if (rootType != null) {
+                var rootTypeDef = TypeAsTypeDef(rootType);
+                if (rootTypeDef == null)
+                    throw new InvalidOperationException($"rootType not found: {rootType}");
+                if (!rootTypeDef.IsClass)
+                    throw new InvalidOperationException($"rootType must be a class: {rootType}");
+                RootType = rootTypeDef;
+            }
         }
+        
+        public void Dispose() { }
 
         private static void SetField (JsonTypeDef typeDef, string fieldName, FieldType field, in JsonTypeContext context) {
             field.name              = fieldName;

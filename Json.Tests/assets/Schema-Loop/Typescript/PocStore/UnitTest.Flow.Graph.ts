@@ -23,6 +23,15 @@ export class Employee extends Entity {
     lastName?  : string | null;
 }
 
+export abstract class PocStore {
+    orders     : { [key: string]: Order };
+    customers  : { [key: string]: Customer };
+    articles   : { [key: string]: Article };
+    producers  : { [key: string]: Producer };
+    employees  : { [key: string]: Employee };
+    types      : { [key: string]: TestType };
+}
+
 export class OrderItem {
     article  : string;
     amount   : int32;
