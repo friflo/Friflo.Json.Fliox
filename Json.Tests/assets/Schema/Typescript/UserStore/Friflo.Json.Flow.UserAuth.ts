@@ -3,6 +3,12 @@ import { Entity }      from "./Friflo.Json.Flow.Graph"
 import { Right }       from "./Friflo.Json.Flow.Auth.Rights"
 import { Right_Union } from "./Friflo.Json.Flow.Auth.Rights"
 
+export abstract class UserStore {
+    permissions  : { [key: string]: UserPermission };
+    credentials  : { [key: string]: UserCredential };
+    roles        : { [key: string]: Role };
+}
+
 export class UserPermission extends Entity {
     roles? : string[] | null;
 }
