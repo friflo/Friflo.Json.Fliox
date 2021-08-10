@@ -9,6 +9,15 @@ import { int64 }      from "./Standard"
 import { float }      from "./Standard"
 import { double }     from "./Standard"
 
+export abstract class PocStore {
+    orders?    : { [key: string]: Order } | null;
+    customers? : { [key: string]: Customer } | null;
+    articles?  : { [key: string]: Article } | null;
+    producers? : { [key: string]: Producer } | null;
+    employees? : { [key: string]: Employee } | null;
+    types?     : { [key: string]: TestType } | null;
+}
+
 export class Order extends Entity {
     customer? : string | null;
     created   : DateTime;

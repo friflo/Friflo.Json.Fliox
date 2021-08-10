@@ -128,7 +128,8 @@ namespace Friflo.Json.Flow.Schema.Native
             types.      Add(typeDef);
             var baseType = nonNullableType.BaseType;
             var isEntityStore = baseType != null && baseType.FullName == "Friflo.Json.Flow.Graph.EntityStore"; // todo
-            if (baseType != null && baseType != typeof(object) && baseType != typeof(Enum) && baseType != typeof(ValueType) && !isEntityStore) {
+            var isEntitySet   = baseType != null && baseType.FullName == "Friflo.Json.Flow.Graph.EntitySet";   // todo
+            if (baseType != null && baseType != typeof(object) && baseType != typeof(Enum) && baseType != typeof(ValueType) && !isEntityStore && !isEntitySet) {
                 var baseMapper = typeStore.GetTypeMapper(baseType);
                 AddType(types, baseMapper, typeStore);
             }
