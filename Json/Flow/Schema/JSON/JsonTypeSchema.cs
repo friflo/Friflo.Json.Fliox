@@ -43,7 +43,14 @@ namespace Friflo.Json.Flow.Schema.JSON
             Types               = new List<TypeDef>(typeMap.Values);
             var standardTypes   = new JsonStandardTypes(typeMap);
             StandardTypes       = standardTypes;
-            RootType            = rootType != null ? TypeAsTypeDef(rootType) : null;
+            if (rootType != null) {
+                var rootTypeDef = TypeAsTypeDef(rootType);
+                if (rootTypeDef == null)
+                    throw new InvalidOperationException($"rootType not found: {rootType}");
+                if (!rootTypeDef.IsClass)
+                    throw new InvalidOperationException($"rootType must be a class: {rootType}");
+                RootType = rootTypeDef;
+            }
             
             using (var reader          = new ObjectReader(new TypeStore()))
             {

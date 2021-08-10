@@ -66,6 +66,9 @@ namespace Friflo.Json.Flow.Schema.Validation
         }
         
         public ICollection<ValidationType>  GetEntityTypes() {
+            if (rootType == null) {
+                throw new InvalidOperationException("GetEntityTypes() requires a TypeSchema with a TypeSchema.RootType");
+            }
             var entityTypes = new List<ValidationType>();
             foreach (var field in rootType.Fields) {
                 var validationType = typeMap[field.type];
