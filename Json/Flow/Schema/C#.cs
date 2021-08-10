@@ -92,7 +92,7 @@ namespace Friflo.Json.Flow.Schema
             if (unionType == null) {
                 var classType = type.IsStruct ? "struct" : "class";
                 var abstractStr = type.IsAbstract ? "abstract " : "";
-                sb.AppendLine($"{abstractStr}public {classType} {type.Name} {extendsStr}{{");
+                sb.AppendLine($"public {abstractStr}{classType} {type.Name} {extendsStr}{{");
             } else {
                 sb.AppendLine($"[Fri.Discriminator(\"{unionType.discriminator}\")]");
                 int max    = unionType.types.MaxLength(polyType => polyType.Name.Length);

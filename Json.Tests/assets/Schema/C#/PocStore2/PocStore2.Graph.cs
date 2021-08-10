@@ -14,7 +14,7 @@ public class Order : Entity {
     List<OrderItem>  items;
 }
 
-abstract public class Entity {
+public abstract class Entity {
     [Fri.Property(Required = true)]
     string  id;
 }
