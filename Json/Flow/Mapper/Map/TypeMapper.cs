@@ -29,6 +29,7 @@ namespace Friflo.Json.Flow.Mapper.Map
         public virtual      bool            IsComplex       => false;
         public virtual      bool            IsArray         => false;
         public virtual      bool            IsDictionary    => false;
+        public virtual      Type            BaseType        => null;
         public virtual      int             Count(object array) => throw new InvalidOperationException("Count not applicable");
 
 

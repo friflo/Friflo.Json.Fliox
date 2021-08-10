@@ -53,13 +53,18 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
     }
     
     internal class ClassMapper<T> : TypeMapper<T> {
-        private readonly ConstructorInfo    constructor;
-        private readonly Func<T>            createInstance;
+        private readonly    ConstructorInfo constructor;
+        private readonly    Func<T>         createInstance;
 
-        public override string          DataTypeName() { return "class"; }
-        public override bool            IsComplex => true;
+        public  override    string          DataTypeName() { return "class"; }
+        public  override    bool            IsComplex       => true;
+        public  override    Type            BaseType { get {
+            var baseType= type.BaseType; 
+            if (baseType == typeof(object) || baseType == typeof(ValueType))
+                return null;
+            return baseType;
+        }}
 
-       
         protected ClassMapper (StoreConfig config, Type type, ConstructorInfo constructor, InstanceFactory instanceFactory, bool isValueType) :
             base (config, type, TypeUtils.IsNullable(type), isValueType)
         {

@@ -111,8 +111,8 @@ namespace Friflo.Json.Flow.Schema.Native
         
         public void Dispose() { }
         
-        private void AddType(List<TypeDef> types, TypeMapper  mapper, TypeStore typeStore) {
-            mapper  = mapper.GetUnderlyingMapper();
+        private void AddType(List<TypeDef> types, TypeMapper typeMapper, TypeStore typeStore) {
+            var mapper  = typeMapper.GetUnderlyingMapper();
             if (IsNullableMapper(mapper, out var nonNullableType)) {
                 typeStore.GetTypeMapper(nonNullableType);
             }
@@ -126,10 +126,9 @@ namespace Friflo.Json.Flow.Schema.Native
             }
             nativeTypes.Add(nonNullableType, typeDef);
             types.      Add(typeDef);
-            var baseType = nonNullableType.BaseType;
-            var isEntityStore = baseType != null && baseType.FullName == "Friflo.Json.Flow.Graph.EntityStore"; // todo
-            var isEntitySet   = baseType != null && baseType.FullName == "Friflo.Json.Flow.Graph.EntitySet";   // todo
-            if (baseType != null && baseType != typeof(object) && baseType != typeof(Enum) && baseType != typeof(ValueType) && !isEntityStore && !isEntitySet) {
+            
+            var baseType = mapper.BaseType;
+            if (baseType != null) {
                 var baseMapper = typeStore.GetTypeMapper(baseType);
                 AddType(types, baseMapper, typeStore);
             }
