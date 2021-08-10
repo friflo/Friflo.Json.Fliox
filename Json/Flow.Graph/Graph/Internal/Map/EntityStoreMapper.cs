@@ -2,10 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Flow.Graph.Internal.Map
 {
@@ -28,29 +28,11 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
-            var entityTypes = GetEntityTypes(type);
-            foreach (var entityType in entityTypes) {
-                typeStore.GetTypeMapper(entityType);    
-            }
+            var fields = new PropertyFields(type, typeStore);
+            FieldInfo fieldInfo = typeof(TypeMapper).GetField(nameof(propFields), BindingFlags.Public | BindingFlags.Instance);
+            // ReSharper disable once PossibleNullReferenceException
+            fieldInfo.SetValue(this, fields);
         }
-        
-        private static Type[] GetEntityTypes(Type type) 
-        {
-            var types   = new List<Type>();
-            var flags   = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-            FieldInfo[] fields = type.GetFields(flags);
-            for (int n = 0; n < fields.Length; n++) {
-                var  field      = fields[n];
-                Type fieldType  = field.FieldType;
-                if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(EntitySet<>)) {
-                    var genericArgs = fieldType.GetGenericArguments();
-                    var entityType = genericArgs[0];
-                    types.Add(entityType);
-                }
-            }
-            return types.ToArray();
-        }
-        
         
         public override void Write(ref Writer writer, T slot) {
             throw new NotImplementedException();
