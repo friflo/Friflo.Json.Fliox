@@ -5,6 +5,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Schema.Native;
 using Friflo.Json.Flow.Schema.Validation;
 using Friflo.Json.Tests.Common.Utils;
@@ -33,6 +34,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 fileDatabase.schema = new DatabaseSchema(nativeSchema, entityTypes);
                 await TestRelationPoC.CreateStore(createStore);
             }
+        }
+    }
+    
+    public class TestEntityStoreMapper
+    {
+        [Test]
+        public void EntityStoreMapper() {
+            var typeStore = new TypeStore();
+            EntityStore.AddTypeMatchers(typeStore);
+            var mapper = typeStore.GetTypeMapper(typeof(PocStore));
         }
     }
 }
