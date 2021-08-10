@@ -28,10 +28,14 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
             if (property != null) {
                 memberType   = property.PropertyType;
                 AttributeUtils.Property(property.CustomAttributes, out jsonName, out required);
-
+                if (property.GetSetMethod(false) == null)
+                    required = true;
             } else {
                 memberType   = field.FieldType;
                 AttributeUtils.Property(field.CustomAttributes, out jsonName, out required);
+                // used for fields like: readonly EntitySet<Order>
+                if ((field.Attributes & FieldAttributes.InitOnly) != 0)
+                    required = true;
             }
             if (memberType == null)
                 throw new InvalidOperationException("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);

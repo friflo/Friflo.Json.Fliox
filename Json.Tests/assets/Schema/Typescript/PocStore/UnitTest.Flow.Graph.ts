@@ -10,12 +10,12 @@ import { float }      from "./Standard"
 import { double }     from "./Standard"
 
 export abstract class PocStore {
-    orders?    : { [key: string]: Order } | null;
-    customers? : { [key: string]: Customer } | null;
-    articles?  : { [key: string]: Article } | null;
-    producers? : { [key: string]: Producer } | null;
-    employees? : { [key: string]: Employee } | null;
-    types?     : { [key: string]: TestType } | null;
+    orders     : { [key: string]: Order };
+    customers  : { [key: string]: Customer };
+    articles   : { [key: string]: Article };
+    producers  : { [key: string]: Producer };
+    employees  : { [key: string]: Employee };
+    types      : { [key: string]: TestType };
 }
 
 export class Order extends Entity {
