@@ -44,7 +44,8 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
     public class DictionaryMapper<TMap, TElm> : CollectionMapper<TMap, TElm> where TMap : IDictionary<string, TElm>
     {
         public  override    string      DataTypeName() { return "Dictionary"; }
-        public  override    bool        IsArray => false;
+        public  override    bool        IsArray         => false;
+        public  override    bool        IsDictionary    => true;
         
         public DictionaryMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
             base(config, type, typeof(TElm), 1, typeof(string), constructor) {

@@ -22,12 +22,13 @@ namespace Friflo.Json.Flow.Mapper.Map
         public  readonly    bool            isValueType;
         public  readonly    Type            nullableUnderlyingType;
         public  readonly    bool            useIL;
-        internal            InstanceFactory instanceFactory;
+        public              InstanceFactory instanceFactory;
         internal            string          discriminant;
 
         public              string          Discriminant    => discriminant;
         public virtual      bool            IsComplex       => false;
         public virtual      bool            IsArray         => false;
+        public virtual      bool            IsDictionary    => false;
         public virtual      int             Count(object array) => throw new InvalidOperationException("Count not applicable");
 
 

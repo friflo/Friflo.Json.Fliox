@@ -30,7 +30,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
             this.polyTypes = polyTypes;
         }
         
-        private InstanceFactory() {
+        public InstanceFactory() {
             isAbstract = true;
         }
 

@@ -23,8 +23,12 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
     
     public class EntityStoreMapper<T> : TypeMapper<T>
     {
+        public  override    bool    IsComplex => true;
+
         public EntityStoreMapper (StoreConfig config, Type type) :
-            base (config, type, true, false) {
+            base (config, type, true, false)
+        {
+            instanceFactory = new InstanceFactory(); // abstract type
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {

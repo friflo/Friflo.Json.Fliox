@@ -2,9 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Schema.Definition;
@@ -67,7 +65,7 @@ namespace Friflo.Json.Flow.Schema.Native
                         var isNullable      = IsNullableMapper(fieldMapper, out var nonNullableType) ||
                                               fieldMapper.type == typeof(JsonValue);
                         var isArray         = fieldMapper.IsArray;
-                        var isDictionary    = fieldMapper.type.GetInterfaces().Contains(typeof(IDictionary));
+                        var isDictionary    = fieldMapper.IsDictionary;
                         NativeTypeDef type;
                         if (isArray || isDictionary) {
                             var elementMapper = fieldMapper.GetElementMapper().GetUnderlyingMapper();
@@ -129,7 +127,8 @@ namespace Friflo.Json.Flow.Schema.Native
             nativeTypes.Add(nonNullableType, typeDef);
             types.      Add(typeDef);
             var baseType = nonNullableType.BaseType;
-            if (baseType != null && baseType != typeof(object) && baseType != typeof(Enum) && baseType != typeof(ValueType)) {
+            var isEntityStore = baseType != null && baseType.FullName == "Friflo.Json.Flow.Graph.EntityStore"; // todo
+            if (baseType != null && baseType != typeof(object) && baseType != typeof(Enum) && baseType != typeof(ValueType) && !isEntityStore) {
                 var baseMapper = typeStore.GetTypeMapper(baseType);
                 AddType(types, baseMapper, typeStore);
             }

@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
+using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Flow.Graph.Internal.Map
 {
@@ -14,23 +15,29 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
             bool isEntitySet = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(EntitySet<>);
             if (!isEntitySet)
                 return null;
-                
-            var genericArgs = type.GetGenericArguments();
-            var entityType = genericArgs[0];
 
-            object[] constructorParams = {config, entityType };
+            object[] constructorParams = {config, type };
             return (TypeMapper)TypeMapperUtils.CreateGenericInstance(typeof(EntitySetMapper<>), new[] {type}, constructorParams);
         }
     }
     
     public class EntitySetMapper<T> : TypeMapper<T>
     {
+        private             TypeMapper  elementType;
+        
+        public  override    bool        IsDictionary        => true;
+        public  override    TypeMapper  GetElementMapper()  => elementType;
+        
         public EntitySetMapper (StoreConfig config, Type type) :
-            base (config, type, true, false) {
+            base (config, type, true, false)
+        {
+            instanceFactory = new InstanceFactory(); // abstract type
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
-            typeStore.GetTypeMapper(type);
+            var genericArgs = type.GetGenericArguments();
+            var entityType  = genericArgs[0];
+            elementType     = typeStore.GetTypeMapper(entityType);
         }
 
         public override void Write(ref Writer writer, T slot) {
