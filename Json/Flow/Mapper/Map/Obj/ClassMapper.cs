@@ -58,12 +58,6 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
 
         public  override    string          DataTypeName() { return "class"; }
         public  override    bool            IsComplex       => true;
-        public  override    Type            BaseType { get {
-            var baseType= type.BaseType; 
-            if (baseType == typeof(object) || baseType == typeof(ValueType))
-                return null;
-            return baseType;
-        }}
 
         protected ClassMapper (StoreConfig config, Type type, ConstructorInfo constructor, InstanceFactory instanceFactory, bool isValueType) :
             base (config, type, TypeUtils.IsNullable(type), isValueType)
@@ -80,6 +74,15 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
             base.Dispose();
             propFields?.Dispose();
         }
+        
+        public override Type BaseType { get {
+            var baseType        = type.BaseType;
+            bool isDerived      = baseType != typeof(object);
+            bool isStruct       = baseType == typeof(ValueType);
+            if (isDerived && !isStruct)
+                return baseType;
+            return null;
+        }}
 
         private static Expression<Func<T>> CreateInstanceExpression () {
             Type nullableStruct = TypeUtils.GetNullableStruct(typeof(T));
