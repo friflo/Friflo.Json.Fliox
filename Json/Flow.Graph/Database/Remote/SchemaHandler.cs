@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,7 +44,7 @@ namespace Friflo.Json.Flow.Database.Remote
             }
             if (path == "index.html") {
                 var sb = new StringBuilder();
-                HtmlHeader(sb, "Database schema", "List of generated database schemas / languages");
+                HtmlHeader(sb, new []{"database", "schema"}, "List of generated database schemas / languages");
                 sb.AppendLine("<ul>");
                 foreach (var pair in schemas) {
                     sb.AppendLine($"<li><a href='./{pair.Key}/index.html'>{pair.Value.name}</a></li>");
@@ -64,10 +65,10 @@ namespace Friflo.Json.Flow.Database.Remote
             var fileName = path.Substring(schemaTypeEnd + 1);
             if (fileName == "index.html") {
                 var sb = new StringBuilder();
-                HtmlHeader(sb, schemaSet.name, $"{schemaSet.name} files generated from the database schema");
+                HtmlHeader(sb, new[]{"database", "schema", schemaSet.name}, $"{schemaSet.name} files generated from the database schema");
                 sb.AppendLine("<ul>");
                 foreach (var file in schemaSet.files.Keys) {
-                    sb.AppendLine($"<li><a href='./{file}'>{file}</a></li>");
+                    sb.AppendLine($"<li><a href='./{file}' target='_blank'>{file}</a></li>");
                 }
                 sb.AppendLine("</ul>");
                 HtmlFooter(sb);
@@ -106,7 +107,16 @@ namespace Friflo.Json.Flow.Database.Remote
             return schemas;
         }
         
-        public static void HtmlHeader(StringBuilder sb, string title, string description) {
+        public static void HtmlHeader(StringBuilder sb, string[] titlePath, string description) {
+            var title = string.Join(" - ", titlePath);
+            var titleElements = new List<string>();
+            int n = titlePath.Length -1;
+            foreach (var name in titlePath) {
+                var link = string.Join("", Enumerable.Repeat("../", n--));
+                titleElements.Add($"<a href='{link}index.html'>{name}</a>");
+            }
+            var titleLinks = string.Join(" - ", titleElements);
+            
             sb.AppendLine("<!DOCTYPE html>");
             sb.AppendLine("<html lang='en'>");
             sb.AppendLine("<head>");
@@ -118,7 +128,7 @@ namespace Friflo.Json.Flow.Database.Remote
             sb.AppendLine("</head>");
             sb.AppendLine("<body style='font-family: sans-serif'>");
             sb.AppendLine($"<h2><a href='https://github.com/friflo/Friflo.Json.Flow' target='_blank' rel='noopener'><img src='/Json-Flow-80x65.svg' alt='friflo JSON Flow' /></a>");
-            sb.AppendLine($"&nbsp;&nbsp;&nbsp;&nbsp;{title}</h2>");
+            sb.AppendLine($"&nbsp;&nbsp;&nbsp;&nbsp;{titleLinks}</h2>");
             sb.AppendLine($"<p>{description}</p>");
         }
         
