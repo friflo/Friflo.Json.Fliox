@@ -41,11 +41,15 @@ namespace Friflo.Json.Flow.Database.Remote
             if (schemas == null) {
                 schemas = GenerateSchemas(schema.typeSchema);
             }
-            if (path == "") {
+            if (path == "index.html") {
                 var sb = new StringBuilder();
+                HtmlHeader(sb, "Database schema", "List of generated database schemas / languages");
+                sb.AppendLine("<ul>");
                 foreach (var pair in schemas) {
-                    sb.AppendLine($"<a href=\"./{pair.Key}/\">{pair.Value.name}</a><br>");
+                    sb.AppendLine($"<li><a href='./{pair.Key}/index.html'>{pair.Value.name}</a></li>");
                 }
+                sb.AppendLine("</ul>");
+                HtmlFooter(sb);
                 content = sb.ToString();
                 contentType = "text/html";
                 return;
@@ -58,11 +62,15 @@ namespace Friflo.Json.Flow.Database.Remote
                 return;
             }
             var fileName = path.Substring(schemaTypeEnd + 1);
-            if (fileName == "") {
+            if (fileName == "index.html") {
                 var sb = new StringBuilder();
+                HtmlHeader(sb, schemaSet.name, $"{schemaSet.name} files generated from the database schema");
+                sb.AppendLine("<ul>");
                 foreach (var file in schemaSet.files.Keys) {
-                    sb.AppendLine($"<a href=\"./{file}\">{file}</a><br>");
+                    sb.AppendLine($"<li><a href='./{file}'>{file}</a></li>");
                 }
+                sb.AppendLine("</ul>");
+                HtmlFooter(sb);
                 content = sb.ToString();
                 contentType = "text/html";
                 return;
@@ -97,7 +105,29 @@ namespace Friflo.Json.Flow.Database.Remote
 
             return schemas;
         }
+        
+        public static void HtmlHeader(StringBuilder sb, string title, string description) {
+            sb.AppendLine("<!DOCTYPE html>");
+            sb.AppendLine("<html lang='en'>");
+            sb.AppendLine("<head>");
+            sb.AppendLine("<meta charset='UTF-8'>");
+            sb.AppendLine("<meta name='viewport' content='width=device-width, initial-scale=1'>");
+            sb.AppendLine($"<meta name='description' content='{description}'>");
+            sb.AppendLine("<link rel='icon' href='data:,'>");
+            sb.AppendLine($"<title>{title}</title>");
+            sb.AppendLine("</head>");
+            sb.AppendLine("<body style='font-family: sans-serif'>");
+            sb.AppendLine($"<h2><a href='https://github.com/friflo/Friflo.Json.Flow' target='_blank' rel='noopener'><img src='/Json-Flow-80x65.svg' alt='friflo JSON Flow' /></a>");
+            sb.AppendLine($"&nbsp;&nbsp;&nbsp;&nbsp;{title}</h2>");
+            sb.AppendLine($"<p>{description}</p>");
+        }
+        
+        public static void HtmlFooter(StringBuilder sb) {
+            sb.AppendLine("</body>");
+            sb.AppendLine("</html>");
+        }
     }
+    
     
     public class SchemaSet
     {

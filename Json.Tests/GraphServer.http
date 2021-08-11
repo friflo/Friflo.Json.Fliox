@@ -110,7 +110,7 @@ content-type: application/json
 
 
 ### Get database schema
-GET http://localhost:8081/schema/ HTTP/1.1
+GET http://localhost:8081/schema/index.html HTTP/1.1
 
 ### create an article - creates file ./Json.Tests/assets/db/Article/new-article.json
 POST http://localhost:8081/ HTTP/1.1

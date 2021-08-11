@@ -52,6 +52,8 @@ namespace Friflo.Json.Tests.Main
                 return "image/png";
             if (path.EndsWith(".css"))
                 return "text/css";
+            if (path.EndsWith(".svg"))
+                return "image/svg+xml";
             return "text/plain";
         }
         
