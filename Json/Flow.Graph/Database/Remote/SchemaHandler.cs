@@ -2,6 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -24,9 +26,14 @@ namespace Friflo.Json.Flow.Database.Remote
                 var path = req.Url.AbsolutePath.Substring(BasePath.Length);
                 Result result = new Result();
                 GetSchemaFile(path, hostDatabase, ref result);
-                byte[]  response   = Encoding.UTF8.GetBytes(result.content);
+                byte[]  response;
+                if (result.isText) {
+                    response    = Encoding.UTF8.GetBytes(result.content);
+                } else {
+                    response    = result.bytes;
+                }
                 HttpHostDatabase.SetResponseHeader(resp, result.contentType, HttpStatusCode.OK, response.Length);
-                await resp.OutputStream.WriteAsync(response, 0, result.content.Length).ConfigureAwait(false);
+                await resp.OutputStream.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
                 resp.Close();
                 return true;
             }
@@ -60,10 +67,13 @@ namespace Friflo.Json.Flow.Database.Remote
             if (!schemas.TryGetValue(schemaType, out SchemaSet schemaSet)) {
                 return result.Error($"unknown schema type: {schemaType}", "text/plain");
             }
+            var storeName = schema.typeSchema.RootType.Name;
+            var zipFile = $"{storeName}-{schemaType}.zip";
             var fileName = path.Substring(schemaTypeEnd + 1);
             if (fileName == "index.html") {
                 var sb = new StringBuilder();
                 HtmlHeader(sb, new[]{"server", "schema", schemaSet.name}, $"{schemaSet.name} files generated from the database schema");
+                sb.AppendLine($"<a href='{zipFile}'>{zipFile}</a>");
                 sb.AppendLine("<ul>");
                 foreach (var file in schemaSet.files.Keys) {
                     sb.AppendLine($"<li><a href='./{file}' target='_blank'>{file}</a></li>");
@@ -72,10 +82,33 @@ namespace Friflo.Json.Flow.Database.Remote
                 HtmlFooter(sb);
                 return result.Set(sb.ToString(), "text/html");
             }
+            if (fileName == zipFile) {
+                result.bytes        = GetSchemaZip(schemaSet);
+                result.contentType  = "application/zip";
+                result.isText       = false;
+                return true;
+            }
             if (!schemaSet.files.TryGetValue(fileName, out string content)) {
                 return result.Error("file not found", "text/plain");
             }
             return result.Set(content, schemaSet.contentType);
+        }
+        
+        private static byte[] GetSchemaZip(SchemaSet schemaSet) {
+            using (var memoryStream = new MemoryStream()) {
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true)) {
+                    foreach (var pair in schemaSet.files) {
+                        var fileName    = pair.Key;
+                        var content     = pair.Value;
+                        var entry = archive.CreateEntry(fileName);
+                        using (var entryStream = entry.Open())
+                        using (var streamWriter = new StreamWriter(entryStream)) {
+                            streamWriter.Write(content);
+                        }
+                    }
+                }
+                return memoryStream.ToArray();
+            }
         }
 
         private static Dictionary<string, SchemaSet> GenerateSchemas(TypeSchema typeSchema) {
@@ -139,16 +172,20 @@ namespace Friflo.Json.Flow.Database.Remote
     public struct Result {
         public  string  content;
         public  string  contentType;
+        public  byte[]  bytes;
+        public  bool    isText;
         
         public bool Set(string  content, string  contentType) {
             this.content        = content;
             this.contentType    = contentType;
+            isText              = true;
             return true;
         }
         
         public bool Error(string  content, string contentType) {
             this.content        = content;
             this.contentType    = contentType;
+            isText              = true;
             return false;
         }
     }
