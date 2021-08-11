@@ -21,23 +21,22 @@ namespace Friflo.Json.Flow.Database.Remote
             HttpListenerRequest  req  = context.Request;
             HttpListenerResponse resp = context.Response;
             if (req.HttpMethod == "GET" && req.Url.AbsolutePath.StartsWith(BasePath)) {
-                var path = req.Url.AbsolutePath.Substring(BasePath.Length); 
-                GetSchemaFile(path, hostDatabase, out string content, out string contentType);
-                byte[]  response   = Encoding.UTF8.GetBytes(content);
-                HttpHostDatabase.SetResponseHeader(resp, contentType, HttpStatusCode.OK, response.Length);
-                await resp.OutputStream.WriteAsync(response, 0, content.Length).ConfigureAwait(false);
+                var path = req.Url.AbsolutePath.Substring(BasePath.Length);
+                Result result = new Result();
+                GetSchemaFile(path, hostDatabase, ref result);
+                byte[]  response   = Encoding.UTF8.GetBytes(result.content);
+                HttpHostDatabase.SetResponseHeader(resp, result.contentType, HttpStatusCode.OK, response.Length);
+                await resp.OutputStream.WriteAsync(response, 0, result.content.Length).ConfigureAwait(false);
                 resp.Close();
                 return true;
             }
             return false;
         }
         
-        private void GetSchemaFile(string path, HttpHostDatabase hostDatabase, out string content, out string contentType) {
+        private bool GetSchemaFile(string path, HttpHostDatabase hostDatabase, ref Result result) {
             var schema = hostDatabase.local.schema;
             if (schema == null) {
-                content     = "no schema attached to database";
-                contentType = "text/plain";
-                return;
+                return result.Error("no schema attached to database", "text/plain");
             }
             if (schemas == null) {
                 schemas = GenerateSchemas(schema.typeSchema);
@@ -51,16 +50,15 @@ namespace Friflo.Json.Flow.Database.Remote
                 }
                 sb.AppendLine("</ul>");
                 HtmlFooter(sb);
-                content = sb.ToString();
-                contentType = "text/html";
-                return;
+                return result.Set(sb.ToString(), "text/html");
             }
             var schemaTypeEnd = path.IndexOf('/');
+            if (schemaTypeEnd <= 0) {
+                return result.Error($"invalid path:  {path}", "text/plain");
+            }
             var schemaType = path.Substring(0, schemaTypeEnd);
             if (!schemas.TryGetValue(schemaType, out SchemaSet schemaSet)) {
-                content     = $"unknown schema type: {schemaType}";
-                contentType = "text/plain";
-                return;
+                return result.Error($"unknown schema type: {schemaType}", "text/plain");
             }
             var fileName = path.Substring(schemaTypeEnd + 1);
             if (fileName == "index.html") {
@@ -72,16 +70,12 @@ namespace Friflo.Json.Flow.Database.Remote
                 }
                 sb.AppendLine("</ul>");
                 HtmlFooter(sb);
-                content = sb.ToString();
-                contentType = "text/html";
-                return;
+                return result.Set(sb.ToString(), "text/html");
             }
-            if (!schemaSet.files.TryGetValue(fileName, out content)) {
-                content     = "file not found";
-                contentType = "text/plain";
-                return;
+            if (!schemaSet.files.TryGetValue(fileName, out string content)) {
+                return result.Error("file not found", "text/plain");
             }
-            contentType = schemaSet.contentType;
+            return result.Set(content, schemaSet.contentType);
         }
 
         private static Dictionary<string, SchemaSet> GenerateSchemas(TypeSchema typeSchema) {
@@ -142,9 +136,24 @@ namespace Friflo.Json.Flow.Database.Remote
         }
     }
     
-    
-    public class SchemaSet
-    {
+    public struct Result {
+        public  string  content;
+        public  string  contentType;
+        
+        public bool Set(string  content, string  contentType) {
+            this.content        = content;
+            this.contentType    = contentType;
+            return true;
+        }
+        
+        public bool Error(string  content, string contentType) {
+            this.content        = content;
+            this.contentType    = contentType;
+            return false;
+        }
+    }
+
+    public class SchemaSet {
         public readonly  string                      name;
         public readonly  string                      contentType;
         public readonly  Dictionary<string, string>  files;

@@ -54,6 +54,13 @@ namespace Friflo.Json.Flow.Database.Remote
                         }
                         catch (Exception e) {
                             Log($"Request failed - {e.GetType()}: {e.Message}");
+                            var     req             = ctx.Request;
+                            var     resp            = ctx.Response;
+                            var     response        = $"invalid url: {req.Url}, method: {req.HttpMethod}";
+                            byte[]  responseBytes   = Encoding.UTF8.GetBytes(response);
+                            SetResponseHeader(resp, "text/plain", HttpStatusCode.BadRequest, responseBytes.Length);
+                            await resp.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
+                            resp.Close();
                         }
                     });
                 }
@@ -134,19 +141,8 @@ namespace Friflo.Json.Flow.Database.Remote
             bool success = await schemaHandler.HandleContext(ctx, this);
             if (success)
                 return;
-            if (contextHandler != null) {
-                success = await contextHandler.HandleContext(ctx, this).ConfigureAwait(false);
-                if (success)
-                    return;
-            }
-            var     response        = $"invalid url: {req.Url}, method: {req.HttpMethod}";
-            byte[]  responseBytes   = Encoding.UTF8.GetBytes(response);
-            SetResponseHeader(resp, "text/plain", HttpStatusCode.BadRequest, responseBytes.Length);
-            await resp.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
-            resp.Close();
+            contextHandler?.HandleContext(ctx, this).ConfigureAwait(false);
         }
-        
-
 
         public static void SetResponseHeader (HttpListenerResponse resp, string contentType, HttpStatusCode statusCode, int len) {
             resp.ContentType        = contentType;
