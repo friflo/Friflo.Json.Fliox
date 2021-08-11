@@ -125,6 +125,7 @@ namespace Friflo.Json.Flow.Database.Remote
             sb.AppendLine($"<meta name='description' content='{description}'>");
             sb.AppendLine("<link rel='icon' href='data:,'>");
             sb.AppendLine($"<title>{title}</title>");
+            sb.AppendLine("<style>a {text-decoration: none; }</style>");
             sb.AppendLine("</head>");
             sb.AppendLine("<body style='font-family: sans-serif'>");
             sb.AppendLine($"<h2><a href='https://github.com/friflo/Friflo.Json.Flow' target='_blank' rel='noopener'><img src='/Json-Flow-80x65.svg' alt='friflo JSON Flow' /></a>");
