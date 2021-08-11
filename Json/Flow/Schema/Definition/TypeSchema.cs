@@ -41,5 +41,13 @@ namespace Friflo.Json.Flow.Schema.Definition
         public abstract     StandardTypes           StandardTypes   { get; }
         
         public abstract     TypeDef                 RootType        { get; }
+        
+        public ICollection<TypeDef> GetEntityTypes() {
+            var list = new List<TypeDef>(RootType.Fields.Count);
+            foreach (var field in RootType.Fields) {
+                list.Add(field.type);
+            }
+            return list;
+        }
     }
 }

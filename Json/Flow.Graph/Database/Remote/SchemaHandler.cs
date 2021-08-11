@@ -87,11 +87,13 @@ namespace Friflo.Json.Flow.Database.Remote
         private static Dictionary<string, SchemaSet> GenerateSchemas(TypeSchema typeSchema) {
             var schemas             = new Dictionary<string, SchemaSet>();
             
-            var options             = new JsonTypeOptions(typeSchema);
-            var jsonGenerator       = JsonSchemaGenerator.Generate(options);
+            var entityTypes         = typeSchema.GetEntityTypes();
+            var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = entityTypes };
+            var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
             var jsonSchema          = new SchemaSet ("JSON Schema", "application/json", jsonGenerator.files);
             schemas.Add("json", jsonSchema);
             
+            var options             = new JsonTypeOptions(typeSchema);
             var typescriptGenerator = TypescriptGenerator.Generate(options);
             var typescriptSchema    = new SchemaSet ("Typescript", "text/plain", typescriptGenerator.files);
             schemas.Add("typescript", typescriptSchema);
