@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Database
 {
     public class DatabaseSchema : IDisposable
     {
-        private  readonly   TypeSchema                          typeSchema;
+        public   readonly   TypeSchema                          typeSchema;
         private  readonly   Dictionary<string, ValidationType>  containerTypes;
         private  readonly   ValidationSet                       validationSet;
         
