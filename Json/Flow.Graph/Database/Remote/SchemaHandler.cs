@@ -13,9 +13,9 @@ namespace Friflo.Json.Flow.Database.Remote
 {
     public class SchemaHandler : IHttpContextHandler
     {
-        private Dictionary<string, SchemaSet> schemas;
-
-        private const string BasePath = "/schema/";
+        private         Dictionary<string, SchemaSet>   schemas;
+        public          string                          image = "/Json-Flow-53x43.svg";
+        private const   string                          BasePath = "/schema/";
         
         public async Task<bool> HandleContext(HttpListenerContext context, HttpHostDatabase hostDatabase) {
             HttpListenerRequest  req  = context.Request;
@@ -107,7 +107,7 @@ namespace Friflo.Json.Flow.Database.Remote
             return schemas;
         }
         
-        public static void HtmlHeader(StringBuilder sb, string[] titlePath, string description) {
+        public void HtmlHeader(StringBuilder sb, string[] titlePath, string description) {
             var title = string.Join(" - ", titlePath);
             var titleElements = new List<string>();
             int n = titlePath.Length -1;
@@ -123,12 +123,12 @@ namespace Friflo.Json.Flow.Database.Remote
             sb.AppendLine("<meta charset='UTF-8'>");
             sb.AppendLine("<meta name='viewport' content='width=device-width, initial-scale=1'>");
             sb.AppendLine($"<meta name='description' content='{description}'>");
-            sb.AppendLine("<link rel='icon' href='/Json-Flow-80x65.svg' type='image/x-icon'>");
+            sb.AppendLine("<link rel='icon' href='{image}' type='image/x-icon'>");
             sb.AppendLine($"<title>{title}</title>");
             sb.AppendLine("<style>a {text-decoration: none; }</style>");
             sb.AppendLine("</head>");
             sb.AppendLine("<body style='font-family: sans-serif'>");
-            sb.AppendLine($"<h2><a href='https://github.com/friflo/Friflo.Json.Flow' target='_blank' rel='noopener'><img src='/Json-Flow-80x65.svg' alt='friflo JSON Flow' /></a>");
+            sb.AppendLine($"<h2><a href='https://github.com/friflo/Friflo.Json.Flow' target='_blank' rel='noopener'><img src='{image}' alt='friflo JSON Flow' /></a>");
             sb.AppendLine($"&nbsp;&nbsp;&nbsp;&nbsp;{titleLinks}</h2>");
             sb.AppendLine($"<p>{description}</p>");
         }
