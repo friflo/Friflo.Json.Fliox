@@ -68,7 +68,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 return result.Error($"unknown schema type: {schemaType}", "text/plain");
             }
             var storeName = schema.typeSchema.RootType.Name;
-            var zipFile = $"{storeName}-{schemaType}.zip";
+            var zipFile = $"{storeName}.{schemaType}.zip";
             var fileName = path.Substring(schemaTypeEnd + 1);
             if (fileName == "index.html") {
                 var sb = new StringBuilder();
@@ -118,20 +118,20 @@ namespace Friflo.Json.Flow.Database.Remote
             var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = entityTypes };
             var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
             var jsonSchema          = new SchemaSet ("JSON Schema", "application/json", jsonGenerator.files);
-            schemas.Add("json", jsonSchema);
+            schemas.Add("json-schema",  jsonSchema);
             
             var options             = new JsonTypeOptions(typeSchema);
             var typescriptGenerator = TypescriptGenerator.Generate(options);
-            var typescriptSchema    = new SchemaSet ("Typescript", "text/plain", typescriptGenerator.files);
-            schemas.Add("typescript", typescriptSchema);
+            var typescriptSchema    = new SchemaSet ("Typescript",  "text/plain",       typescriptGenerator.files);
+            schemas.Add("typescript",   typescriptSchema);
             
             var csharpGenerator     = CSharpGenerator.Generate(options);
-            var csharpSchema        = new SchemaSet ("C#", "text/plain", csharpGenerator.files);
-            schemas.Add("csharp", csharpSchema);
+            var csharpSchema        = new SchemaSet ("C#",          "text/plain",       csharpGenerator.files);
+            schemas.Add("csharp",       csharpSchema);
             
             var kotlinGenerator     = KotlinGenerator.Generate(options);
-            var kotlinSchema        = new SchemaSet ("Kotlin", "text/plain", kotlinGenerator.files);
-            schemas.Add("kotlin", kotlinSchema);
+            var kotlinSchema        = new SchemaSet ("Kotlin",      "text/plain",       kotlinGenerator.files);
+            schemas.Add("kotlin",       kotlinSchema);
 
             return schemas;
         }
