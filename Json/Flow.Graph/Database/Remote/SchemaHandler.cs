@@ -45,12 +45,13 @@ namespace Friflo.Json.Flow.Database.Remote
             if (schema == null) {
                 return result.Error("no schema attached to database", "text/plain");
             }
+            var storeName = schema.typeSchema.RootType.Name;
             if (schemas == null) {
                 schemas = GenerateSchemas(schema.typeSchema);
             }
             if (path == "index.html") {
                 var sb = new StringBuilder();
-                HtmlHeader(sb, new []{"server", "schema"}, "List of generated database schemas / languages");
+                HtmlHeader(sb, new []{"server", "schema"}, $"Available schemas / languages for database schema <b>{storeName}</b>");
                 sb.AppendLine("<ul>");
                 foreach (var pair in schemas) {
                     sb.AppendLine($"<li><a href='./{pair.Key}/index.html'>{pair.Value.name}</a></li>");
@@ -67,12 +68,11 @@ namespace Friflo.Json.Flow.Database.Remote
             if (!schemas.TryGetValue(schemaType, out SchemaSet schemaSet)) {
                 return result.Error($"unknown schema type: {schemaType}", "text/plain");
             }
-            var storeName = schema.typeSchema.RootType.Name;
             var zipFile = $"{storeName}.{schemaType}.zip";
             var fileName = path.Substring(schemaTypeEnd + 1);
             if (fileName == "index.html") {
                 var sb = new StringBuilder();
-                HtmlHeader(sb, new[]{"server", "schema", schemaSet.name}, $"{schemaSet.name} files generated from the database schema");
+                HtmlHeader(sb, new[]{"server", "schema", schemaSet.name}, $"{schemaSet.name} files for database schema <b>{storeName}</b>");
                 sb.AppendLine($"<a href='{zipFile}'>{zipFile}</a>");
                 sb.AppendLine("<ul>");
                 foreach (var file in schemaSet.files.Keys) {
