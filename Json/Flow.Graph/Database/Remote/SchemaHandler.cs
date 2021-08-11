@@ -44,7 +44,7 @@ namespace Friflo.Json.Flow.Database.Remote
             }
             if (path == "index.html") {
                 var sb = new StringBuilder();
-                HtmlHeader(sb, new []{"database", "schema"}, "List of generated database schemas / languages");
+                HtmlHeader(sb, new []{"server", "schema"}, "List of generated database schemas / languages");
                 sb.AppendLine("<ul>");
                 foreach (var pair in schemas) {
                     sb.AppendLine($"<li><a href='./{pair.Key}/index.html'>{pair.Value.name}</a></li>");
@@ -65,7 +65,7 @@ namespace Friflo.Json.Flow.Database.Remote
             var fileName = path.Substring(schemaTypeEnd + 1);
             if (fileName == "index.html") {
                 var sb = new StringBuilder();
-                HtmlHeader(sb, new[]{"database", "schema", schemaSet.name}, $"{schemaSet.name} files generated from the database schema");
+                HtmlHeader(sb, new[]{"server", "schema", schemaSet.name}, $"{schemaSet.name} files generated from the database schema");
                 sb.AppendLine("<ul>");
                 foreach (var file in schemaSet.files.Keys) {
                     sb.AppendLine($"<li><a href='./{file}' target='_blank'>{file}</a></li>");
