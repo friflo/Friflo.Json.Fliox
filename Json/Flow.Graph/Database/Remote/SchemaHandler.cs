@@ -43,8 +43,8 @@ namespace Friflo.Json.Flow.Database.Remote
             }
             if (path == "") {
                 var sb = new StringBuilder();
-                foreach (var type in schemas.Keys) {
-                    sb.AppendLine($"<a href=\"./{type}/\">{type}</a><br>");
+                foreach (var pair in schemas) {
+                    sb.AppendLine($"<a href=\"./{pair.Key}/\">{pair.Value.name}</a><br>");
                 }
                 content = sb.ToString();
                 contentType = "text/html";
@@ -80,19 +80,19 @@ namespace Friflo.Json.Flow.Database.Remote
             
             var options             = new JsonTypeOptions(typeSchema);
             var jsonGenerator       = JsonSchemaGenerator.Generate(options);
-            var jsonSchema          = new SchemaSet ("application/json", jsonGenerator.files);
+            var jsonSchema          = new SchemaSet ("JSON Schema", "application/json", jsonGenerator.files);
             schemas.Add("json", jsonSchema);
             
             var typescriptGenerator = TypescriptGenerator.Generate(options);
-            var typescriptSchema    = new SchemaSet ("text/plain", typescriptGenerator.files);
+            var typescriptSchema    = new SchemaSet ("Typescript", "text/plain", typescriptGenerator.files);
             schemas.Add("typescript", typescriptSchema);
             
             var csharpGenerator     = CSharpGenerator.Generate(options);
-            var csharpSchema        = new SchemaSet ("text/plain", csharpGenerator.files);
+            var csharpSchema        = new SchemaSet ("C#", "text/plain", csharpGenerator.files);
             schemas.Add("csharp", csharpSchema);
             
             var kotlinGenerator     = KotlinGenerator.Generate(options);
-            var kotlinSchema        = new SchemaSet ("text/plain", kotlinGenerator.files);
+            var kotlinSchema        = new SchemaSet ("Kotlin", "text/plain", kotlinGenerator.files);
             schemas.Add("kotlin", kotlinSchema);
 
             return schemas;
@@ -101,10 +101,12 @@ namespace Friflo.Json.Flow.Database.Remote
     
     public class SchemaSet
     {
+        public readonly  string                      name;
         public readonly  string                      contentType;
         public readonly  Dictionary<string, string>  files;
         
-        public SchemaSet (string contentType, Dictionary<string, string>  files) {
+        public SchemaSet (string name, string contentType, Dictionary<string, string>  files) {
+            this.name           = name;
             this.contentType    = contentType;
             this.files          = files;
         }
