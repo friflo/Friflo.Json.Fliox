@@ -123,7 +123,7 @@ namespace Friflo.Json.Flow.Database.Remote
             sb.AppendLine("<meta charset='UTF-8'>");
             sb.AppendLine("<meta name='viewport' content='width=device-width, initial-scale=1'>");
             sb.AppendLine($"<meta name='description' content='{description}'>");
-            sb.AppendLine("<link rel='icon' href='data:,'>");
+            sb.AppendLine("<link rel='icon' href='/Json-Flow-80x65.svg' type='image/x-icon'>");
             sb.AppendLine($"<title>{title}</title>");
             sb.AppendLine("<style>a {text-decoration: none; }</style>");
             sb.AppendLine("</head>");
