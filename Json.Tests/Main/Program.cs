@@ -106,8 +106,7 @@ namespace Friflo.Json.Tests.Main
         
         private static TypeSchema GetTypeSchema(bool fromJsonSchema) {
             if (fromJsonSchema) {
-                var jsonSchemaFolder    = "./Json.Tests/assets/Schema/JSON/PocStore";
-                var schemas             = JsonTypeSchema.ReadSchemas(jsonSchemaFolder);
+                var schemas = JsonTypeSchema.ReadSchemas("./Json.Tests/assets/Schema/JSON/PocStore");
                 return new JsonTypeSchema(schemas, "./UnitTest.Flow.Graph.json#/definitions/PocStore");
             }
             // using a NativeTypeSchema add an additional dependency by using the EntityStore: PocStore
