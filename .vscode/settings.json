@@ -3,6 +3,7 @@
 		"**/*.meta": true
     },
     "cSpell.words": [
+        "AGPL",
         "Arity",
         "JSONB",
         "Linq",
@@ -10,7 +11,9 @@
         "Postgres",
         "Praetz",
         "SIMD",
+        "Sublicensing",
         "Ullrich",
+        "WIPO",
         "jsxdev",
         "kotlinx",
         "netsh",
