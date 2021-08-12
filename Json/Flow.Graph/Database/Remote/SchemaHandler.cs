@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Schema;
 using Friflo.Json.Flow.Schema.Definition;
 
+// ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Flow.Database.Remote
 {
     public class SchemaHandler : IHttpContextHandler
@@ -25,14 +26,15 @@ namespace Friflo.Json.Flow.Database.Remote
             if (req.HttpMethod == "GET" && req.Url.AbsolutePath.StartsWith(BasePath)) {
                 var path = req.Url.AbsolutePath.Substring(BasePath.Length);
                 Result result = new Result();
-                GetSchemaFile(path, hostDatabase, ref result);
+                bool success = GetSchemaFile(path, hostDatabase, ref result);
                 byte[]  response;
                 if (result.isText) {
                     response    = Encoding.UTF8.GetBytes(result.content);
                 } else {
                     response    = result.bytes;
                 }
-                HttpHostDatabase.SetResponseHeader(resp, result.contentType, HttpStatusCode.OK, response.Length);
+                HttpStatusCode status = success ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
+                HttpHostDatabase.SetResponseHeader(resp, result.contentType, status, response.Length);
                 await resp.OutputStream.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
                 resp.Close();
                 return true;
@@ -40,7 +42,7 @@ namespace Friflo.Json.Flow.Database.Remote
             return false;
         }
         
-        private bool GetSchemaFile(string path, HttpHostDatabase hostDatabase, ref Result result) {
+        public bool GetSchemaFile(string path, HttpHostDatabase hostDatabase, ref Result result) {
             var schema = hostDatabase.local.schema;
             if (schema == null) {
                 return result.Error("no schema attached to database");
@@ -117,7 +119,7 @@ namespace Friflo.Json.Flow.Database.Remote
 #endif
         }
 
-        private static Dictionary<string, SchemaSet> GenerateSchemas(TypeSchema typeSchema) {
+        public static Dictionary<string, SchemaSet> GenerateSchemas(TypeSchema typeSchema) {
             var schemas             = new Dictionary<string, SchemaSet>();
             
             var entityTypes         = typeSchema.GetEntityTypes();
