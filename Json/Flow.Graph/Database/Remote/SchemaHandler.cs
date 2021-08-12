@@ -43,7 +43,7 @@ namespace Friflo.Json.Flow.Database.Remote
         private bool GetSchemaFile(string path, HttpHostDatabase hostDatabase, ref Result result) {
             var schema = hostDatabase.local.schema;
             if (schema == null) {
-                return result.Error("no schema attached to database", "text/plain");
+                return result.Error("no schema attached to database");
             }
             var storeName = schema.typeSchema.RootType.Name;
             if (schemas == null) {
@@ -62,11 +62,11 @@ namespace Friflo.Json.Flow.Database.Remote
             }
             var schemaTypeEnd = path.IndexOf('/');
             if (schemaTypeEnd <= 0) {
-                return result.Error($"invalid path:  {path}", "text/plain");
+                return result.Error($"invalid path:  {path}");
             }
             var schemaType = path.Substring(0, schemaTypeEnd);
             if (!schemas.TryGetValue(schemaType, out SchemaSet schemaSet)) {
-                return result.Error($"unknown schema type: {schemaType}", "text/plain");
+                return result.Error($"unknown schema type: {schemaType}");
             }
             var zipFile = $"{storeName}.{schemaType}.zip";
             var fileName = path.Substring(schemaTypeEnd + 1);
@@ -84,17 +84,22 @@ namespace Friflo.Json.Flow.Database.Remote
             }
             if (fileName == zipFile) {
                 result.bytes        = GetSchemaZip(schemaSet);
+                if (result.bytes == null)
+                    return result.Error("ZipArchive not supported (Unity)");
                 result.contentType  = "application/zip";
                 result.isText       = false;
                 return true;
             }
             if (!schemaSet.files.TryGetValue(fileName, out string content)) {
-                return result.Error("file not found", "text/plain");
+                return result.Error("file not found");
             }
             return result.Set(content, schemaSet.contentType);
         }
         
         private static byte[] GetSchemaZip(SchemaSet schemaSet) {
+#if UNITY_5_3_OR_NEWER
+            return null;
+#else
             using (var memoryStream = new MemoryStream()) {
                 using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true)) {
                     foreach (var pair in schemaSet.files) {
@@ -109,6 +114,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 }
                 return memoryStream.ToArray();
             }
+#endif
         }
 
         private static Dictionary<string, SchemaSet> GenerateSchemas(TypeSchema typeSchema) {
@@ -182,9 +188,9 @@ namespace Friflo.Json.Flow.Database.Remote
             return true;
         }
         
-        public bool Error(string  content, string contentType) {
+        public bool Error(string  content) {
             this.content        = content;
-            this.contentType    = contentType;
+            this.contentType    = "text/plain";
             isText              = true;
             return false;
         }
