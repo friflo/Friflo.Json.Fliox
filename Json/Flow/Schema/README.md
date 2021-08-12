@@ -16,7 +16,7 @@ Currently supported input schemas are:
 - C#
 - JSON Schema
 
-From these input schema the following output schemas can be generate:
+From these input schemas the following output schemas can be generate:
 - C#
 - JSON Schema
 - Typescript
@@ -28,6 +28,7 @@ From these input schema the following output schemas can be generate:
     - Nullable structs, primitives and enums
     - container types like: arrays, List<>, Dictionary<>, Queue<>, Stack<>, ...
     - polymorphic classes with discriminator / discriminants.
+    - namespace support
 
 - Create clear and concise messages for validation errors. E.g.  
     `Missing required fields: [id, name] at Article > (root), pos: 2`
