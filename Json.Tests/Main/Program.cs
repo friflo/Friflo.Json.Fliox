@@ -4,13 +4,10 @@ using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
-using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Flow.Schema.JSON;
-using Friflo.Json.Tests.Common.UnitTest.Flow.Graph;
-using Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy;
 
 namespace Friflo.Json.Tests.Main
 {
@@ -19,6 +16,7 @@ namespace Friflo.Json.Tests.Main
         enum Module
         {
             GraphServer,
+            //
             MemoryDbThroughput,
             FileDbThroughput,
             WebsocketDbThroughput,
@@ -42,9 +40,9 @@ namespace Friflo.Json.Tests.Main
 
             var rootCommand = new RootCommand {
                 moduleOpt,
-                new Option<string>("--endpoint", () => "http://+:8081/",                "endpoint the server listen at"),
-                new Option<string>("--database", () => "./Json.Tests/assets/Graph/PocStore",  "folder of the file database"),
-                new Option<string>("--www",      () => "./Json.Tests/assets/www",       "folder of static web files")
+                new Option<string>("--endpoint", () => "http://+:8081/",                        "endpoint the server listen at"),
+                new Option<string>("--database", () => "./Json.Tests/assets/Graph/PocStore",    "folder of the file database"),
+                new Option<string>("--www",      () => "./Json.Tests/assets/www",               "folder of static web files")
             };
             rootCommand.Description = "small tests within Friflo.Json.Tests";
 
@@ -53,22 +51,22 @@ namespace Friflo.Json.Tests.Main
                 Console.WriteLine($"module: {module}");
                 switch (module) {
                     case Module.GraphServer:
-                        GraphServer(endpoint, database, www, false);
+                        GraphServer(endpoint, database, www);
                         break;
                     case Module.MemoryDbThroughput:
-                        await MemoryDbThroughput();
+                        await Throughput.MemoryDbThroughput();
                         break;
                     case Module.FileDbThroughput:
-                        await FileDbThroughput();
+                        await Throughput.FileDbThroughput();
                         break;
                     case Module.WebsocketDbThroughput:
-                        await WebsocketDbThroughput();
+                        await Throughput.WebsocketDbThroughput();
                         break;
                     case Module.HttpDbThroughput:
-                        await HttpDbThroughput();
+                        await Throughput.HttpDbThroughput();
                         break;
                     case Module.LoopbackDbThroughput:
-                        await LoopbackDbThroughput();
+                        await Throughput.LoopbackDbThroughput();
                         break;
                 }
             });
@@ -87,7 +85,7 @@ namespace Friflo.Json.Tests.Main
         // Get DOMAIN\USER via  PowerShell
         //     $env:UserName
         //     $env:UserDomain 
-        private static void GraphServer(string endpoint, string database, string wwwRoot, bool simulateErrors) {
+        private static void GraphServer(string endpoint, string database, string wwwRoot) {
             Console.WriteLine($"FileDatabase: {database}");
             var fileDatabase        = new FileDatabase(database) { eventBroker = new EventBroker(true) };
             
@@ -97,56 +95,11 @@ namespace Friflo.Json.Tests.Main
             var jsonSchema          = new JsonTypeSchema(schemas, "./UnitTest.Flow.Graph.json#/definitions/PocStore");
             fileDatabase.schema     = new DatabaseSchema(jsonSchema);
             
-            EntityDatabase localDatabase = fileDatabase;
-            if (simulateErrors) {
-                var testDatabase = new TestDatabase(fileDatabase);
-                // TestStoreErrors.AddSimulationErrors(testDatabase);
-                localDatabase = testDatabase;
-            }
-            var contextHandler = new HttpContextHandler(wwwRoot);
-            var hostDatabase = new HttpHostDatabase(localDatabase, endpoint, contextHandler);
+            var contextHandler      = new HttpContextHandler(wwwRoot);
+            var hostDatabase        = new HttpHostDatabase(fileDatabase, endpoint, contextHandler);
             hostDatabase.Start();
             hostDatabase.Run();
         }
-        
-        private static async Task MemoryDbThroughput() {
-            var db = new MemoryDatabase();
-            await TestStore.ConcurrentAccess(db, 4, 0, 1_000_000, false);
-        }
-        
-        private static async Task FileDbThroughput() {
-            var db = new FileDatabase("./Json.Tests/assets/Graph/testConcurrencyDb");
-            await TestStore.ConcurrentAccess(db, 4, 0, 1_000_000, false);
-        }
-        
-        private static async Task WebsocketDbThroughput() {
-            var db = new MemoryDatabase();
-            using (var hostDatabase     = new HttpHostDatabase(db, "http://+:8080/", null))
-            using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/")) {
-                await TestStore.RunRemoteHost(hostDatabase, async () => {
-                    await remoteDatabase.Connect();
-                    await TestStore.ConcurrentAccess(remoteDatabase, 4, 0, 1_000_000, false);
-                });
-            }
-        }
-        
-        private static async Task HttpDbThroughput() {
-            var db = new MemoryDatabase();
-            using (var hostDatabase     = new HttpHostDatabase(db, "http://+:8080/", null))
-            using (var remoteDatabase   = new HttpClientDatabase("ws://localhost:8080/")) {
-                await TestStore.RunRemoteHost(hostDatabase, async () => {
-                    await TestStore.ConcurrentAccess(remoteDatabase, 4, 0, 1_000_000, false);
-                });
-            }
-        }
-        
-        private static async Task LoopbackDbThroughput() {
-            var db = new MemoryDatabase();
-            using (var loopbackDatabase     = new LoopbackDatabase(db)) {
-                await TestStore.ConcurrentAccess(loopbackDatabase, 4, 0, 1_000_000, false);
-            }
-        }
-
     }
 }
 
