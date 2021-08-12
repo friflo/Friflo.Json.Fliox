@@ -7,7 +7,12 @@ using System.IO;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Event;
 using Friflo.Json.Flow.Database.Remote;
+using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Schema.Definition;
 using Friflo.Json.Flow.Schema.JSON;
+using Friflo.Json.Flow.Schema.Native;
+using Friflo.Json.Tests.Common.UnitTest.Flow.Graph;
 
 namespace Friflo.Json.Tests.Main
 {
@@ -89,16 +94,24 @@ namespace Friflo.Json.Tests.Main
             Console.WriteLine($"FileDatabase: {database}");
             var fileDatabase        = new FileDatabase(database) { eventBroker = new EventBroker(true) };
             
-            // adding DatabaseSchema is optional - it enables validation of create, update & patch operations
-            var jsonSchemaFolder    = "./Json.Tests/assets/Schema/JSON/PocStore";
-            var schemas             = JsonTypeSchema.ReadSchemas(jsonSchemaFolder);
-            var jsonSchema          = new JsonTypeSchema(schemas, "./UnitTest.Flow.Graph.json#/definitions/PocStore");
-            fileDatabase.schema     = new DatabaseSchema(jsonSchema);
+            // adding DatabaseSchema is optional - it enables type validation for create, update & patch operations
+            var typeSchema          = GetTypeSchema(true);
+            fileDatabase.schema     = new DatabaseSchema(typeSchema);
             
             var contextHandler      = new HttpContextHandler(wwwRoot);
             var hostDatabase        = new HttpHostDatabase(fileDatabase, endpoint, contextHandler);
             hostDatabase.Start();
             hostDatabase.Run();
+        }
+        
+        private static TypeSchema GetTypeSchema(bool fromJsonSchema) {
+            if (fromJsonSchema) {
+                var jsonSchemaFolder    = "./Json.Tests/assets/Schema/JSON/PocStore";
+                var schemas             = JsonTypeSchema.ReadSchemas(jsonSchemaFolder);
+                return new JsonTypeSchema(schemas, "./UnitTest.Flow.Graph.json#/definitions/PocStore");
+            }
+            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
+            return new NativeTypeSchema(typeStore, typeof(PocStore));
         }
     }
 }
