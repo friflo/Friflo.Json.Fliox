@@ -110,6 +110,7 @@ namespace Friflo.Json.Tests.Main
                 var schemas             = JsonTypeSchema.ReadSchemas(jsonSchemaFolder);
                 return new JsonTypeSchema(schemas, "./UnitTest.Flow.Graph.json#/definitions/PocStore");
             }
+            // using a NativeTypeSchema add an additional dependency by using the EntityStore: PocStore
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             return new NativeTypeSchema(typeStore, typeof(PocStore));
         }
