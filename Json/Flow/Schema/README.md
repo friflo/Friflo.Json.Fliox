@@ -40,5 +40,10 @@ From these input schemas the following output schemas can be generate:
 - Code generators are designed to be small and easy to maintain ~ 200 LOC / generator.  
   Also their performance reaches 10.000 schema transformations / second for smaller schemas.
 
+## Usage
+- Examples for code generation and JSON type validation at:  
+  [Schema generators & JSON Validation tests](../../../Json.Tests/Common/UnitTest/Flow/Schema)
 
+- Schema validation in an `EntityDatabase` is demonstrated at:  
+  [GraphServer](../../../Json.Tests/Main/Program.cs)
 
