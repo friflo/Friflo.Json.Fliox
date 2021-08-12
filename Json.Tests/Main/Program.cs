@@ -92,7 +92,7 @@ namespace Friflo.Json.Tests.Main
         //     $env:UserDomain 
         private static void GraphServer(string endpoint, string database, string wwwRoot) {
             Console.WriteLine($"FileDatabase: {database}");
-            var fileDatabase        = new FileDatabase(database) { eventBroker = new EventBroker(true) };
+            var fileDatabase        = new FileDatabase(database) { eventBroker = new EventBroker(true) }; // eventBroker enables Pub-Sub
             
             // adding DatabaseSchema is optional - it enables type validation for create, update & patch operations
             var typeSchema          = GetTypeSchema(true);
