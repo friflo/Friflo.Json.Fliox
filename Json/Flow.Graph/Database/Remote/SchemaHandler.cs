@@ -77,7 +77,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 var sb = new StringBuilder();
                 HtmlHeader(sb, new[]{"server", "schema", schemaSet.name}, $"{schemaSet.name} files for database schema <b>{storeName}</b>");
                 sb.AppendLine($"<a href='{zipFile}'>{zipFile}</a><br/>");
-                sb.AppendLine($"<a href='directory'>{storeName} {schemaSet.name} files</a>");
+                sb.AppendLine($"<a href='directory' target='_blank'>{storeName} {schemaSet.name} files</a>");
                 sb.AppendLine("<ul>");
                 foreach (var file in schemaSet.files.Keys) {
                     sb.AppendLine($"<li><a href='./{file}' target='_blank'>{file}</a></li>");
