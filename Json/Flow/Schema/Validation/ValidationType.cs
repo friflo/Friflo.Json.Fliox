@@ -170,7 +170,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 }
                 return true;
             }
-            validator.ErrorValue("Field not found:", parser.key.ToString(), true, type);
+            validator.ErrorValue("Unknown property:", parser.key.ToString(), true, type);
             field = null;
             return false;
         }

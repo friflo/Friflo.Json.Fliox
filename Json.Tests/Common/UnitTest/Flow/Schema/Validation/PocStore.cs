@@ -81,13 +81,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
             AreEqual("Incorrect type. was: object, expect: uint8 at TestType > uint8, pos: 11", error);
             
             IsFalse(validator.ValidateObject("{\"xxx\": {} }",              test.testType, out error));
-            AreEqual("Field not found: 'xxx' at TestType > xxx, pos: 9", error);
+            AreEqual("Unknown property: 'xxx' at TestType > xxx, pos: 9", error);
             
             IsFalse(validator.ValidateObject("{\"yyy\": null }",            test.testType, out error));
-            AreEqual("Field not found: 'yyy' at TestType > yyy, pos: 12", error);
+            AreEqual("Unknown property: 'yyy' at TestType > yyy, pos: 12", error);
             
             IsFalse(validator.ValidateObject("{\"zzz\": [] }",              test.testType, out error));
-            AreEqual("Field not found: 'zzz' at TestType > zzz[], pos: 9", error);
+            AreEqual("Unknown property: 'zzz' at TestType > zzz[], pos: 9", error);
             
             // missing T in dateTime. correct: "2021-07-22T06:00:00.000Z"
             IsFalse(validator.ValidateObject("{ \"dateTime\": \"2021-07-22 06:00:00.000Z\" }",   test.testType, out error));

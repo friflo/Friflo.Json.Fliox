@@ -9,6 +9,35 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database
 {
+    /// <summary>
+    /// If <see cref="DatabaseSchema"/> is assigned to a <see cref="EntityDatabase.schema"/> the JSON payloads of all
+    /// entities used in write operations (create, update and patch) are validated by their expected type.<br/>
+    /// It is intended to be used for <see cref="Remote.RemoteHostDatabase"/> instances to ensure that the entities
+    /// (records) in an <see cref="EntityContainer"/> meet the expected type. So only successful validated JSON
+    /// payloads are written to an <see cref="EntityContainer"/>.
+    /// 
+    /// This type validation includes the following checks:
+    /// <list type="bullet">
+    ///   <item>
+    ///     Check if the type of a property matches the type in a schema.<br/>
+    ///     E.g. A container using a type 'Article' expect the property "name" of type string. Writing the payload
+    ///     <code>{ "id": "test", "name": 123 }</code> will result in the error:
+    ///     <code>WriteError: Article 'test', Incorrect type. was: 123, expect: string at Article > name</code>
+    ///   </item>
+    ///   <item>
+    ///     Check if required properties are present in the JSON payload.<br/>
+    ///     E.g. A container using a type 'Article' requires the property "name" being present. Writing the payload
+    ///     <code>{ "id": "test" }</code> will result in the error:
+    ///     <code>WriteError: Article 'test', Missing required fields: [name] at Article > (root)</code>
+    ///   </item>
+    ///   <item>
+    ///     Check no unknown properties are present in a JSON payload<br/>
+    ///     E.g. A container using a type 'Article' expect only the properties 'id' and 'name'. Writing the payload
+    ///     <code>{ "id": "test", "name": "Phone", "foo": "Bar" }</code> will result in the error:
+    ///     <code>WriteError: Article 'test', Unknown property: 'foo' at Article > foo</code>
+    ///   </item>
+    /// </list>   
+    /// </summary>
     public class DatabaseSchema : IDisposable
     {
         public   readonly   TypeSchema                          typeSchema;
