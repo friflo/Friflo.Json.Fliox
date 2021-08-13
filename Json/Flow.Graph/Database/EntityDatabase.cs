@@ -17,9 +17,27 @@ namespace Friflo.Json.Flow.Database
     {
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
+        /// <summary>
+        /// An optional <see cref="EventBroker"/> used to enable Pub-Sub. If enabled the database send
+        /// events to a client for database changes and messages the client has subscribed.
+        /// </summary>
         public              EventBroker                         eventBroker;
+        /// <summary>
+        /// The <see cref="TaskHandler"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
+        /// Custom task (request) handler can be added to the <see cref="taskHandler"/> or
+        /// the <see cref="taskHandler"/> can be replaced by a custom implementation.
+        /// </summary>
         public              TaskHandler                         taskHandler = new TaskHandler();
+        /// <summary>
+        /// An <see cref="Authenticator"/> performs authentication and authorization for all
+        /// <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/> sent by a client.
+        /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="taskHandler"/>.
+        /// </summary>
         public              Authenticator                       authenticator = new AuthenticateNone(new AuthorizeAllow());
+        /// <summary>
+        /// An optional <see cref="DatabaseSchema"/> used to validate the JSON payloads in all write operations
+        /// performed on the <see cref="EntityContainer"/>'s of the database
+        /// </summary>
         public              DatabaseSchema                      schema;
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
