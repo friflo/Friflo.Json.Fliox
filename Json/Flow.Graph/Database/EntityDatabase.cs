@@ -13,23 +13,23 @@ namespace Friflo.Json.Flow.Database
     /// <summary>
     /// <see cref="EntityDatabase"/> is an abstraction for a specific database adapter / implementation e.g. a
     /// <see cref="MemoryDatabase"/> or a <see cref="FileDatabase"/>.
-    /// An <see cref="EntityDatabase"/> contains multiple <see cref="EntityContainer"/>'s representing
+    /// An <see cref="EntityDatabase"/> contains multiple <see cref="EntityContainer"/>'s each representing
     /// a table / collection of a database. Each container is intended to store the records / entities of a specific type.
-    /// E.g. one container storing JSON objects representing 'articles' another one for storing 'orders'.
+    /// E.g. one container for storing JSON objects representing 'articles' another one for storing 'orders'.
     /// <br/>
-    /// An <see cref="EntityDatabase"/> instance is the single entry point for all requests send by a client. E.g.
-    /// by an <see cref="Graph.EntityStore"/>.
+    /// An <see cref="EntityDatabase"/> instance is the single entry point for all requests send by a client.
+    /// E.g. sent by an <see cref="Graph.EntityStore"/> client.
     /// A request is represented by a <see cref="SyncRequest"/> containing all database operations like create, read,
     /// update, delete and all messages / commands send by a client in its <see cref="SyncRequest.tasks"/> property.
     /// The <see cref="EntityDatabase"/> execute these tasks by its <see cref="taskHandler"/>.
     /// <br/>
-    /// <see cref="EntityDatabase"/> and all its implementation are designed to be thread safe enabling multiple
+    /// Instances of <see cref="EntityDatabase"/> and all its implementation are designed to be thread safe enabling multiple
     /// clients e.g. <see cref="Graph.EntityStore"/> operating on the same <see cref="EntityDatabase"/> instance.
     /// <br/>
     /// The <see cref="EntityDatabase"/> can be configured to support.
     /// <list type="bullet">
     ///     <item>A Pub-Sub implementation to send events for database changes or messages a client has subscribed.</item>
-    ///     <item>Authentication and task authorization individually for each task</item>
+    ///     <item>Client / user authentication and task authorization. Each task is authorized individually.</item>
     ///     <item>Type / schema validation of JSON object written to its containers</item>
     /// </list>
     /// </summary>
