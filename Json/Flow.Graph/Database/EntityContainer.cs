@@ -11,14 +11,18 @@ using Friflo.Json.Flow.Transform;
 namespace Friflo.Json.Flow.Database
 {
     /// <summary>
+    /// An <see cref="EntityContainer"/> the abstraction used to store the entities / records of a collection / table
+    /// as key value pairs. Using a string as key and a JSON object as value. Each container is intended to store the
+    /// entities / records of a specific type. E.g. one container for storing JSON objects representing 'articles'
+    /// another one for storing 'orders'.
     /// <para>
-    ///   <see cref="EntityContainer"/> define the entire set of interfaces a database adapter needs to implement to enable
-    ///   the complete feature set of <see cref="Graph.EntitySet{T}"/> and <see cref="Graph.EntityStore"/>.
-    ///   <see cref="EntityContainer"/> and all its implementations are designed to be thread safe.
+    ///   <see cref="EntityContainer"/> define the entire set of interfaces a database adapter needs to implement to
+    ///   enable the complete feature set of <see cref="Graph.EntitySet{T}"/> and <see cref="Graph.EntityStore"/>.
+    ///   <see cref="EntityContainer"/> and all its implementations must be thread safe.
     /// </para>
     /// <para>
     ///   The interface methods are designed to enable clear, compact and efficient implementations of database
-    ///   requests. E.g. operations like SELECT, INSERT, DELETE or UPDATE in case of an SQL database adapter.
+    ///   operations. E.g. operations like SELECT, INSERT, DELETE or UPDATE in case of an SQL database adapter.
     ///   <see cref="MemoryContainer"/> and <see cref="FileContainer"/> show straight forward implementation of
     ///   <see cref="EntityContainer"/>.
     ///   Additional to memory implementation <see cref="FileContainer"/> shows also how to handle database errors.
