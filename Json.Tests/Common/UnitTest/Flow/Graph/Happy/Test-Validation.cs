@@ -28,6 +28,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var createStore      = new PocStore(fileDatabase, "createStore"))
             using (var nativeSchema     = new NativeTypeSchema(TestGlobals.typeStore, typeof(PocStore)))
             using (fileDatabase.schema  = new DatabaseSchema(nativeSchema)) {
+                // All write operation performed in following call produce JSON payload which meet the types defined
+                // in the assigned schema => the call succeed without any validation error. 
                 await TestRelationPoC.CreateStore(createStore);
             }
         }
@@ -43,6 +45,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var createStore      = new PocStore(fileDatabase, "createStore"))
             using (var jsonSchema       = new JsonTypeSchema(schemas, "./UnitTest.Flow.Graph.json#/definitions/PocStore"))
             using (fileDatabase.schema  = new DatabaseSchema(jsonSchema)) {
+                // All write operation performed in following call produce JSON payload which meet the types defined
+                // in the assigned schema => the call succeed without any validation error. 
                 await TestRelationPoC.CreateStore(createStore);
             }
         }
