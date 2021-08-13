@@ -12,8 +12,9 @@ namespace Friflo.Json.Flow.Database
 {
     /// <summary>
     /// <para>
-    ///   EntityContainer define the entire set of interfaces a database adapter needs to implement to enable
-    ///   the complete feature set of <see cref="Graph.EntitySet{T}"/> and <see cref="Graph.EntityStore"/>
+    ///   <see cref="EntityContainer"/> define the entire set of interfaces a database adapter needs to implement to enable
+    ///   the complete feature set of <see cref="Graph.EntitySet{T}"/> and <see cref="Graph.EntityStore"/>.
+    ///   <see cref="EntityContainer"/> and all its implementations are designed to be thread safe.
     /// </para>
     /// <para>
     ///   The interface methods are designed to enable clear, compact and efficient implementations of database
