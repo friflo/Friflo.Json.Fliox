@@ -11,8 +11,8 @@ using Friflo.Json.Flow.Transform;
 namespace Friflo.Json.Flow.Database
 {
     /// <summary>
-    /// An <see cref="EntityContainer"/> the abstraction used to store the entities / records of a collection / table
-    /// as key value pairs. Using a string as key and a JSON object as value. Each container is intended to store the
+    /// An <see cref="EntityContainer"/> is the abstraction of a collection / table used to store their entities / records 
+    /// as key value pairs. It uses a string as key and a JSON object as value. Each container is intended to store the
     /// entities / records of a specific type. E.g. one container for storing JSON objects representing 'articles'
     /// another one for storing 'orders'.
     /// <para>

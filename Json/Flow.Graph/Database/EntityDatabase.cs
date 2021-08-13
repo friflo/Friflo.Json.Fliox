@@ -17,8 +17,8 @@ namespace Friflo.Json.Flow.Database
     /// a table / collection of a database. Each container is intended to store the records / entities of a specific type.
     /// E.g. one container for storing JSON objects representing 'articles' another one for storing 'orders'.
     /// <br/>
-    /// An <see cref="EntityDatabase"/> instance is the single entry point for all requests send by a client -
-    /// e.g. an <see cref="Graph.EntityStore"/> - and handle these requests by by its <see cref="ExecuteSync"/> method.  
+    /// An <see cref="EntityDatabase"/> instance is the single entry point used to handle all requests send by a client -
+    /// e.g. an <see cref="Graph.EntityStore"/>. It handle these requests by its <see cref="ExecuteSync"/> method.
     /// A request is represented by a <see cref="SyncRequest"/> containing all database operations like create, read,
     /// update, delete and all messages / commands send by a client in the <see cref="SyncRequest.tasks"/> list.
     /// The <see cref="EntityDatabase"/> execute these tasks by its <see cref="taskHandler"/>.
