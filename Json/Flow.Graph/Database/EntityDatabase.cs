@@ -25,6 +25,7 @@ namespace Friflo.Json.Flow.Database
     /// <br/>
     /// Instances of <see cref="EntityDatabase"/> and all its implementation are designed to be thread safe enabling multiple
     /// clients e.g. <see cref="Graph.EntityStore"/> operating on the same <see cref="EntityDatabase"/> instance.
+    /// To maintain thread safety <see cref="EntityDatabase"/> implementations must not have any mutable state.
     /// <br/>
     /// The <see cref="EntityDatabase"/> can be configured to support.
     /// <list type="bullet">
