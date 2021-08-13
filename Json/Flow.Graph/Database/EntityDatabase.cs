@@ -20,6 +20,7 @@ namespace Friflo.Json.Flow.Database
         /// <summary>
         /// An optional <see cref="EventBroker"/> used to enable Pub-Sub. If enabled the database send
         /// events to a client for database changes and messages the client has subscribed.
+        /// In case of remote database connections WebSockets are used to send Pub-Sub events to clients.   
         /// </summary>
         public              EventBroker                         eventBroker;
         /// <summary>
