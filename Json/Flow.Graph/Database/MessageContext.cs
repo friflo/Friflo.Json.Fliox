@@ -52,7 +52,7 @@ namespace Friflo.Json.Flow.Database
         }
         
         public void Cancel() {
-            canceler.Invoke();
+            canceler(); // canceler.Invoke();
         }
         
         public bool Authenticated() {

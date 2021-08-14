@@ -165,7 +165,11 @@ namespace Friflo.Json.Flow.Graph
                         break;
                 }
             }
-            store._intern.subscriptionHandler?.Invoke(this, ev);
+            var subHandler = store._intern.subscriptionHandler;
+            // ReSharper disable once UseNullPropagation
+            if (subHandler == null)
+                return;
+            subHandler(this, ev); // subHandler.Invoke(this, ev);
         }
         
         private EntityChanges<T> GetChanges<T> () where T : class {
