@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
+using System.Linq.Expressions;
 using System.Reflection;
 using Friflo.Json.Burst;
 
@@ -26,10 +27,10 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
         //
         internal readonly   FieldInfo       field;
         internal readonly   PropertyInfo    property;
-        // [Making reflection fly and exploring delegates – Defunct – go to codeblog.jonskeet.uk – Jon Skeet: Coding Blog]
-        //   https://blogs.msmvps.com/jonskeet/2008/08/09/making-reflection-fly-and-exploring-delegates/
-        private  readonly   MethodInfo      getMethod; // todo check creating delegate as in EntityId<>
-        private  readonly   MethodInfo      setMethod; // todo check creating delegate as in EntityId<>
+        private  readonly   MethodInfo              getMethod;
+        private  readonly   Func<object, object>    getLambda;
+        // private  readonly   Delegate             getDelegate;
+        private  readonly   MethodInfo              setMethod; // todo check creating delegate as in EntityId<>
 
         internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
             int primIndex, int objIndex, bool required)
@@ -45,9 +46,26 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
             this.property   = property;
             this.getMethod  = property != null ? property.GetGetMethod(true) : null;
             this.setMethod  = property != null ? property.GetSetMethod(true) : null;
+            if (property != null) {
+                // var typeArray    = new [] {  property.DeclaringType, property.PropertyType  };
+                // var delegateType = Expression.GetDelegateType(typeArray);
+                // getDelegate      =  Delegate.CreateDelegate(delegateType, getMethod);
+                var lambdaExp   = GetLambda(property);
+                getLambda       = lambdaExp.Compile();
+            }
             this.primIndex  = primIndex;
             this.objIndex   = objIndex;
             this.required   = required;
+        }
+        
+        public static Expression<Func<object, object>> GetLambda (PropertyInfo propInfo) {
+            var declaringType   = propInfo.DeclaringType;
+            var parameterExp    = Expression.Parameter(typeof(object), "instance");
+            var convParam       = Expression.Convert(parameterExp, declaringType);
+            var propertyExp     = Expression.Property(convParam, propInfo);
+            var resultExp       = Expression.Convert(propertyExp, typeof(object));
+            var lambda          = Expression.Lambda<Func<object, object>>(resultExp, parameterExp);
+            return lambda;
         }
 
         public void Dispose() {
@@ -79,6 +97,9 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
                 if (useDirect)
                     return field.GetValueDirect(__makeref(obj));
                 return field.GetValue (obj);
+            }
+            if (getLambda != null) {
+                return getLambda(obj);
             }
             return getMethod.Invoke(obj, null);
         }
