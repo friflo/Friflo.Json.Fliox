@@ -30,7 +30,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
         private  readonly   MethodInfo              getMethod;
         private  readonly   Func<object, object>    getLambda;
         // private  readonly   Delegate             getDelegate;
-        private  readonly   MethodInfo              setMethod; // todo check creating delegate as in EntityId<>
+        private  readonly   MethodInfo              setMethod;
         private  readonly   Action<object, object>  setLambda;
 
         internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
@@ -100,7 +100,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
                 if (useDirect)
                     field.SetValueDirect(__makeref(obj), value);
                 else
-                    field.SetValue(obj, value);
+                    field.SetValue(obj, value); // todo use Expression
             } else {
                 if (setLambda != null) {
                     setLambda(obj, value);
@@ -117,7 +117,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
             if (field != null) {
                 if (useDirect)
                     return field.GetValueDirect(__makeref(obj));
-                return field.GetValue (obj);
+                return field.GetValue (obj); // todo use Expression
             }
             if (getLambda != null) {
                 return getLambda(obj);
