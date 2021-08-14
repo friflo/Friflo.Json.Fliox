@@ -16,7 +16,7 @@ using Friflo.Json.Flow.Transform.Select;
 namespace Friflo.Json.Flow.Graph.Internal.Map
 {
     // -------------------------------------------------------------------------------------
-    
+    [ObsoleteAttribute("not used / required anymore - not deleted now for git log")]
     public class EntityMatcher : ITypeMatcher {
         public static readonly EntityMatcher Instance = new EntityMatcher();
         
@@ -34,7 +34,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         }
     }
 
-
+    [ObsoleteAttribute("not used / required anymore - not deleted now for git log")]
     internal class EntityMapper<T> : TypeMapper<T> where T : Entity
     {
         private readonly TypeMapper<T> mapper;
