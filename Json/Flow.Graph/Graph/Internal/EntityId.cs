@@ -10,7 +10,7 @@ namespace Friflo.Json.Flow.Graph.Internal
     internal class EntityId {
         private static readonly   Dictionary<Type, EntityId> Ids = new Dictionary<Type, EntityId>();
 
-        internal static EntityId<T> GetEntityId<T> () {
+        internal static EntityId<T> GetEntityId<T> () where T : class {
             var type = typeof(T);
             if (Ids.TryGetValue(type, out var id)) {
                 return (EntityId<T>)id;
@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
     }
     
-    internal class EntityId<T> : EntityId {
+    internal class EntityId<T> : EntityId where T : class {
         internal readonly   FieldInfo               field;
         internal readonly   Func  <T,      string>  propertyGet;
         internal readonly   Action<T,      string>  propertySet;
@@ -43,21 +43,19 @@ namespace Friflo.Json.Flow.Graph.Internal
             } 
         }
         
-        private void SetEntityId (object entity, string id) {
+        private void SetEntityId (T entity, string id) {
             if (field != null) {
                 field.SetValue(entity, id);
                 return;
             }
-            var typedEntity = (T)entity; // unbox.any - entity is a always reference type -> no unboxing
-            propertySet(typedEntity, id);
+            propertySet(entity, id);
         }
         
-        internal string GetEntityId (object entity) {
+        internal string GetEntityId (T entity) {
             if (field != null) {
                 return (string)field.GetValue(entity);
             }
-            var typedEntity = (T)entity; // unbox.any - entity is a always reference type -> no unboxing 
-            return propertyGet(typedEntity);
+            return propertyGet(entity);
         }
     } 
 }
