@@ -69,6 +69,8 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   T               entity;
         private             PeerEntity<T>   peer;
         
+        private static readonly   EntityId<T>     StaticEntityId = EntityId.GetEntityId<T>();
+        
         public   override   string          ToString() => id ?? "null";
         
         public Ref(string id) {
@@ -78,10 +80,11 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public Ref(T entity) {
-            this.id     = entity?.id;
+            var entityId = entity != null ? StaticEntityId.GetEntityId(entity) : null;
+            this.id     = entityId;
             this.entity = entity;
             this.peer   = null;
-            if (entity != null && entity.id == null)
+            if (entity != null && entityId == null)
                 throw new ArgumentException($"constructing a Ref<>(entity != null) expect entity.id not null. Type: {typeof(T)}");
         }
         

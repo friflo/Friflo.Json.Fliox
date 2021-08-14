@@ -74,5 +74,22 @@ namespace Friflo.Json.Flow.Graph.Internal
                 propertySet = (Action<T, string>) Delegate.CreateDelegate (typeof(Action<T, string>), idSetMethod);
             } 
         }
+        
+        private void SetEntityId (object entity, string id) {
+            if (field != null) {
+                field.SetValue(entity, id);
+                return;
+            }
+            var typedEntity = (T)entity; // unbox.any - entity is a always reference type -> no unboxing
+            propertySet(typedEntity, id);
+        }
+        
+        internal string GetEntityId (object entity) {
+            if (field != null) {
+                return (string)field.GetValue(entity);
+            }
+            var typedEntity = (T)entity; // unbox.any - entity is a always reference type -> no unboxing 
+            return propertyGet(typedEntity);
+        }
     } 
 }
