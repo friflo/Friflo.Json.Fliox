@@ -27,13 +27,14 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal readonly   Action<T, string>   propertySet;
 
         internal EntityId() {
+            var propertyName = "id";
             var type = typeof(T);
-            field         = type.GetField("id", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            field         = type.GetField(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             if (field != null) {
                 propertySet = null;
                 propertyGet = null;
             } else {
-                var property = type.GetProperty("id");
+                var property = type.GetProperty(propertyName);
                 if (property == null)
                     throw new InvalidOperationException($"id not found. type: {type}");
                 var idGetMethod = property.GetGetMethod(true);    
