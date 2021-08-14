@@ -25,9 +25,11 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
         public              Bytes           subSeqMember;       // don't mutate
         //
         internal readonly   FieldInfo       field;
-        internal readonly   PropertyInfo    property;      
-        private  readonly   MethodInfo      getMethod;
-        private  readonly   MethodInfo      setMethod;
+        internal readonly   PropertyInfo    property;
+        // [Making reflection fly and exploring delegates – Defunct – go to codeblog.jonskeet.uk – Jon Skeet: Coding Blog]
+        //   https://blogs.msmvps.com/jonskeet/2008/08/09/making-reflection-fly-and-exploring-delegates/
+        private  readonly   MethodInfo      getMethod; // todo check creating delegate as in EntityId<>
+        private  readonly   MethodInfo      setMethod; // todo check creating delegate as in EntityId<>
 
         internal PropField (string name, string jsonName, TypeMapper fieldType, FieldInfo field, PropertyInfo property,
             int primIndex, int objIndex, bool required)

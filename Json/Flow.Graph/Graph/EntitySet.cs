@@ -282,6 +282,21 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // ------------------------------------------- internals -------------------------------------------
+        internal void SetEntityId (object entity, string id) {
+            if (intern.idField != null) {
+                intern.idField.SetValue(entity, id);
+                return;
+            }
+            intern.idPropertySet((T)entity, id);
+        }
+        
+        internal string GetEntityId (object entity) {
+            if (intern.idField != null) {
+                return (string)intern.idField.GetValue(entity);
+            }
+            return intern.idPropertyGet((T)entity);
+        }
+
         internal override void LogSetChangesInternal(LogTask logTask) {
             syncSet.LogSetChanges(peers, logTask);
         }
@@ -324,6 +339,16 @@ namespace Friflo.Json.Flow.Graph
         }
 
         internal PeerEntity<T> GetPeerById(string id) {
+            if (peers.TryGetValue(id, out PeerEntity<T> peer)) {
+                return peer;
+            }
+            peer = new PeerEntity<T>(id);
+            peers.Add(id, peer);
+            return peer;
+        }
+        
+        internal PeerEntity<T> GetPeerByEntity(object entity) {
+            var id = GetEntityId(entity);
             if (peers.TryGetValue(id, out PeerEntity<T> peer)) {
                 return peer;
             }
