@@ -33,7 +33,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         }
     }
 
-    internal class RefMapper<T> : TypeMapper<Ref<T>> where T : Entity
+    internal class RefMapper<T> : TypeMapper<Ref<T>> where T : class
     {
         private             TypeMapper<T> entityMapper;
         private readonly    TypeMapper    stringMapper;

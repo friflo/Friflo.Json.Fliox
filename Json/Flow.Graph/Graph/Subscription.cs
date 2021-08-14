@@ -168,7 +168,7 @@ namespace Friflo.Json.Flow.Graph
             store._intern.subscriptionHandler?.Invoke(this, ev);
         }
         
-        private EntityChanges<T> GetChanges<T> () where T : Entity {
+        private EntityChanges<T> GetChanges<T> () where T : class {
             if (!results.TryGetValue(typeof(T), out var result)) {
                 var set         = store.GetEntitySet<T>();
                 var resultTyped = new EntityChanges<T>(set);
@@ -191,7 +191,7 @@ namespace Friflo.Json.Flow.Graph
             return messages;
         }
         
-        public EntityChanges<T> GetEntityChanges<T>(SubscriptionEvent subscriptionEvent) where T : Entity {
+        public EntityChanges<T> GetEntityChanges<T>(SubscriptionEvent subscriptionEvent) where T : class {
             var result  = GetChanges<T>();
             var set     = result._set;
             result.Clear();
@@ -255,7 +255,7 @@ namespace Friflo.Json.Flow.Graph
         }
     }
     
-    public class ChangeInfo<T> : ChangeInfo where T : Entity
+    public class ChangeInfo<T> : ChangeInfo where T : class
     {
         public bool IsEqual(ChangeInfo<T> other) {
             return creates == other.creates &&
@@ -267,7 +267,7 @@ namespace Friflo.Json.Flow.Graph
     
     public abstract class EntityChanges { }
     
-    public class EntityChanges<T> : EntityChanges where T : Entity {
+    public class EntityChanges<T> : EntityChanges where T : class {
         public              ChangeInfo<T>                       Info { get; }
         // ReSharper disable once InconsistentNaming
         internal readonly   EntitySet<T>                        _set;
@@ -294,7 +294,7 @@ namespace Friflo.Json.Flow.Graph
         }
     }
     
-    public readonly struct ChangePatch<T> where T : Entity {
+    public readonly struct ChangePatch<T> where T : class {
         public readonly T               entity;
         public readonly List<JsonPatch> patches;
 

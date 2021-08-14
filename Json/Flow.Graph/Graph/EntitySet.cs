@@ -39,7 +39,7 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class EntitySet<T> : EntitySet where T : Entity
+    public class EntitySet<T> : EntitySet where T : class
     {
         // Keep all utility related fields of EntitySet in SetIntern to enhance debugging overview.
         // Reason:  EntitySet is extended by application which is mainly interested in following fields while debugging:
@@ -280,12 +280,12 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- create RefPath / RefsPath
-        public RefPath<T, TRef> RefPath<TRef>(Expression<Func<T, Ref<TRef>>> selector) where TRef : Entity {
+        public RefPath<T, TRef> RefPath<TRef>(Expression<Func<T, Ref<TRef>>> selector) where TRef : class {
             string path = ExpressionSelector.PathFromExpression(selector, out _);
             return new RefPath<T, TRef>(path);
         }
         
-        public RefsPath<T, TRef> RefsPath<TRef>(Expression<Func<T, IEnumerable<Ref<TRef>>>> selector) where TRef : Entity {
+        public RefsPath<T, TRef> RefsPath<TRef>(Expression<Func<T, IEnumerable<Ref<TRef>>>> selector) where TRef : class {
             string path = ExpressionSelector.PathFromExpression(selector, out _);
             return new RefsPath<T, TRef>(path);
         }

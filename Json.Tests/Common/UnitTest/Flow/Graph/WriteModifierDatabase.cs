@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return await local.ExecuteSync(syncRequest, messageContext);
         }
 
-        public WriteModifiers GetWriteModifiers<TEntity>() where TEntity : Entity {
+        public WriteModifiers GetWriteModifiers<TEntity>() where TEntity : class {
             var name = typeof(TEntity).Name;
             if (!writeModifiers.TryGetValue(name, out var writeModifier)) {
                 writeModifier = new WriteModifiers();
@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return writeModifier;
         }
         
-        public PatchModifiers GetPatchModifiers<TEntity>() where TEntity : Entity {
+        public PatchModifiers GetPatchModifiers<TEntity>() where TEntity : class {
             var name = typeof(TEntity).Name;
             if (!patchModifiers.TryGetValue(name, out var patchModifier)) {
                 patchModifier = new PatchModifiers();

@@ -277,7 +277,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
     
     static class PocUtils
     {
-        public static void AddChanges<T> (this ChangeInfo<T> sum, EntityChanges<T> changes) where T: Entity {
+        public static void AddChanges<T> (this ChangeInfo<T> sum, EntityChanges<T> changes) where T: class {
             sum.creates += changes.creates.Count;
             sum.updates += changes.updates.Count;
             sum.deletes += changes.deletes.Count;

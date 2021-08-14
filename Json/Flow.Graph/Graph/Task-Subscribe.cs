@@ -9,7 +9,7 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public class SubscribeChangesTask<T> : SyncTask where T : Entity
+    public class SubscribeChangesTask<T> : SyncTask where T : class
     {
         internal            TaskState               state;
         internal            List<Change>            changes;

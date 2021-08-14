@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class PatchTask<T> : SyncTask where T : Entity
+    public class PatchTask<T> : SyncTask where T : class
     {
         internal readonly   List<string>        members = new List<string>();
         internal readonly   List<PeerEntity<T>> peers   = new List<PeerEntity<T>>();

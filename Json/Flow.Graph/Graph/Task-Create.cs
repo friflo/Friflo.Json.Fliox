@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class CreateTask<T> : WriteTask where T : Entity
+    public class CreateTask<T> : WriteTask where T : class
     {
         private readonly    EntitySet<T>    set;
         private readonly    List<T>         entities;

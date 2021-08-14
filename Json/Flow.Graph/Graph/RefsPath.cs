@@ -7,8 +7,8 @@ using Friflo.Json.Flow.Graph.Internal;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public class RefsPath<TEntity, TRef>    where TEntity : Entity
-                                            where TRef    : Entity 
+    public class RefsPath<TEntity, TRef>    where TEntity : class
+                                            where TRef    : class 
     {
         public readonly string path;
 
@@ -25,8 +25,8 @@ namespace Friflo.Json.Flow.Graph
     }
     
     public class RefPath<TEntity, TRef> : RefsPath<TEntity, TRef>
-                                            where TEntity : Entity
-                                            where TRef    : Entity 
+                                            where TEntity : class
+                                            where TRef    : class 
     {
         internal RefPath(string path) : base (path) { }
         

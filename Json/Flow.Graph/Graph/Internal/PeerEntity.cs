@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Graph.Internal
     internal class PeerEntity { }
     
     // --- PeerEntity<>
-    internal class PeerEntity<T> : PeerEntity where T : Entity
+    internal class PeerEntity<T> : PeerEntity where T : class
     {
         internal  readonly  string          id;      // never null
         private             T               entity;

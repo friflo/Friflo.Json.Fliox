@@ -54,7 +54,7 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public struct Ref<T>  where T : Entity
+    public struct Ref<T>  where T : class
     {
         // invariant of Ref<T> has following cases:
         //

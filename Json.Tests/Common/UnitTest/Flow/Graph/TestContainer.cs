@@ -68,7 +68,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             return response;
         }
 
-        public TestContainer GetTestContainer<TEntity>() where TEntity : Entity {
+        public TestContainer GetTestContainer<TEntity>() where TEntity : class {
             var name = typeof(TEntity).Name;
             return (TestContainer) GetOrCreateContainer(name);
         }

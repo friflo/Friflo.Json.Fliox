@@ -17,12 +17,12 @@ namespace Friflo.Json.Flow.Graph.Internal
             this.subRefs    = new SubRefs();
         }
 
-        internal ReadRefsTask<TValue> ReadRefsByExpression<TValue>(Expression expression, EntityStore store) where TValue : Entity {
+        internal ReadRefsTask<TValue> ReadRefsByExpression<TValue>(Expression expression, EntityStore store) where TValue : class {
             string path = ExpressionSelector.PathFromExpression(expression, out _);
             return ReadRefsByPath<TValue>(path, store);
         }
         
-        internal ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector, EntityStore store) where TValue : Entity {
+        internal ReadRefsTask<TValue> ReadRefsByPath<TValue>(string selector, EntityStore store) where TValue : class {
             if (subRefs.TryGetTask(selector, out ReadRefsTask subRefsTask))
                 return (ReadRefsTask<TValue>)subRefsTask;
             var newQueryRefs = new ReadRefsTask<TValue>(task, selector, typeof(TValue).Name, store);

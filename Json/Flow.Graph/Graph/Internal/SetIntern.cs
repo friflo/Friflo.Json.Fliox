@@ -10,7 +10,7 @@ using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
-    internal struct SetIntern<T> where T : Entity
+    internal struct SetIntern<T> where T : class
     {
         internal readonly   TypeMapper<T>           typeMapper;
         internal readonly   ObjectMapper            jsonMapper;
