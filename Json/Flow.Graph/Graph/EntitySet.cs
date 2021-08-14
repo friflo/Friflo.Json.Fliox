@@ -296,14 +296,16 @@ namespace Friflo.Json.Flow.Graph
                 intern.idField.SetValue(entity, id);
                 return;
             }
-            intern.idPropertySet((T)entity, id);
+            var typedEntity = (T)entity; // todo check unbox.any
+            intern.idPropertySet(typedEntity, id);
         }
         
         internal string GetEntityId (object entity) {
             if (intern.idField != null) {
                 return (string)intern.idField.GetValue(entity);
             }
-            return intern.idPropertyGet((T)entity);
+            var typedEntity = (T)entity; // todo check unbox.any
+            return intern.idPropertyGet(typedEntity);
         }
 
         internal override void LogSetChangesInternal(LogTask logTask) {
