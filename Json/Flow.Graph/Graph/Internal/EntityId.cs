@@ -22,9 +22,9 @@ namespace Friflo.Json.Flow.Graph.Internal
     }
     
     internal class EntityId<T> : EntityId where T : class {
-        internal readonly   FieldInfo               field;
-        internal readonly   Func  <T,      string>  propertyGet;
-        internal readonly   Action<T,      string>  propertySet;
+        internal readonly   FieldInfo           field;
+        internal readonly   Func  <T, string>   propertyGet;
+        internal readonly   Action<T, string>   propertySet;
 
         internal EntityId() {
             var type = typeof(T);

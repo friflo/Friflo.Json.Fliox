@@ -11,14 +11,14 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal struct SetIntern<T> where T : class
     {
-        internal readonly   TypeMapper<T>           typeMapper;
-        internal readonly   ObjectMapper            jsonMapper;
-        internal readonly   ObjectPatcher           objectPatcher;
-        internal readonly   Tracer                  tracer;
-        internal readonly   EntityStore             store;
-        internal readonly   FieldInfo               idField;
-        internal readonly   Func  <T,      string>  idPropertyGet;
-        internal readonly   Action<T,      string>  idPropertySet;
+        internal readonly   TypeMapper<T>       typeMapper;
+        internal readonly   ObjectMapper        jsonMapper;
+        internal readonly   ObjectPatcher       objectPatcher;
+        internal readonly   Tracer              tracer;
+        internal readonly   EntityStore         store;
+        internal readonly   FieldInfo           idField;
+        internal readonly   Func  <T, string>   idPropertyGet;
+        internal readonly   Action<T, string>   idPropertySet;
 
         
         // --- non readonly
