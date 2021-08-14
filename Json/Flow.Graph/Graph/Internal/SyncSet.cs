@@ -50,8 +50,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal bool AddCreate (PeerEntity<T> peer) {
             peer.assigned = true;
-            var entity = peer.Entity;
-            creates.TryAdd(entity.id, peer);    // sole place a peer (entity) is added
+            creates.TryAdd(peer.id, peer);    // sole place a peer (entity) is added
             if (!peer.created) {
                 peer.created = true;            // sole place created set to true
                 return true;
@@ -61,8 +60,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal void AddUpdate (PeerEntity<T> peer) {
             peer.assigned = true;
-            var entity = peer.Entity;
-            updates.TryAdd(entity.id, peer);    // sole place a peer (entity) is added
+            updates.TryAdd(peer.id, peer);    // sole place a peer (entity) is added
             if (!peer.updated) {
                 peer.updated = true;            // sole place created set to true
             }
@@ -174,7 +172,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         internal void LogEntityChanges(T entity, LogTask logTask) {
-            var peer = set.GetPeerById(entity.id);
+            var peer = set.GetPeerByEntity(entity);
             GetEntityChanges(peer, logTask);
         }
 
@@ -199,8 +197,9 @@ namespace Friflo.Json.Flow.Graph.Internal
                     patches = patchList
                 };
                 SetNextPatchSource(peer); // todo next patch source need to be set on Sync() 
-                patches[entity.id] = entityPatch;
-                logTask.AddPatch(this, entity.id);
+                var id = peer.id;
+                patches[id] = entityPatch;
+                logTask.AddPatch(this, id);
                 
                 set.intern.store._intern.tracerLogTask = logTask;
                 set.intern.tracer.Trace(entity);
@@ -225,10 +224,11 @@ namespace Friflo.Json.Flow.Graph.Internal
             var entries = new Dictionary<string, EntityValue>();
             
             foreach (var createPair in creates) {
-                T entity = createPair.Value.Entity;
-                var json = writer.Write(entity);
-                var entry = new EntityValue(json);
-                entries.Add(entity.id, entry);
+                T entity    = createPair.Value.Entity;
+                var json    = writer.Write(entity);
+                var entry   = new EntityValue(json);
+                var id      = set.GetEntityId(entity);
+                entries.Add(id, entry);
             }
             var req = new CreateEntities {
                 container = set.name,
@@ -244,10 +244,11 @@ namespace Friflo.Json.Flow.Graph.Internal
             var entries = new Dictionary<string, EntityValue>();
             
             foreach (var updatePair in updates) {
-                T entity = updatePair.Value.Entity;
-                var json = writer.Write(entity);
-                var entry = new EntityValue(json);
-                entries.Add(entity.id, entry);
+                T entity    = updatePair.Value.Entity;
+                var json    = writer.Write(entity);
+                var entry   = new EntityValue(json);
+                var id      = set.GetEntityId(entity);
+                entries.Add(id, entry);
             }
             var req = new UpdateEntities {
                 container = set.name,
@@ -306,8 +307,8 @@ namespace Friflo.Json.Flow.Graph.Internal
                 var memberAccessor  = new MemberAccessor(set.intern.store._intern.jsonMapper.writer);
                 
                 foreach (var peer in patchTask.peers) {
-                    var entity = peer.Entity;
-                    var id = entity.id;
+                    var entity  = peer.Entity;
+                    var id      = peer.id;
                     if (!patches.TryGetValue(id, out EntityPatch patch)) {
                         patch = new EntityPatch {
                             patches = new List<JsonPatch>()

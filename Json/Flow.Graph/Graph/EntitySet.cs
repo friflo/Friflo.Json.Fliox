@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph.Internal;
@@ -146,7 +145,8 @@ namespace Friflo.Json.Flow.Graph
         public CreateTask<T> Create(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Create() entity must not be null. EntitySet: {name}");
-            if (entity.id == null)
+            var id = GetEntityId(entity);
+            if (id == null)
                 throw new ArgumentException($"EntitySet.Create() entity.id must not be null. EntitySet: {name}");
             var task = syncSet.Create(entity);
             intern.store.AddTask(task);
@@ -157,7 +157,8 @@ namespace Friflo.Json.Flow.Graph
             if (entities == null)
                 throw new ArgumentException($"EntitySet.CreateRange() entity must not be null. EntitySet: {name}");
             foreach (var entity in entities) {
-                if (entity.id == null)
+                var id = GetEntityId(entity);
+                if (id == null)
                     throw new ArgumentException($"EntitySet.CreateRange() entity.id must not be null. EntitySet: {name}");
             }
             var task = syncSet.CreateRange(entities);
@@ -169,7 +170,8 @@ namespace Friflo.Json.Flow.Graph
         public UpdateTask<T> Update(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Update() entity must not be null. EntitySet: {name}");
-            if (entity.id == null)
+            var id = GetEntityId(entity);
+            if (id == null)
                 throw new ArgumentException($"EntitySet.Update() entity.id must not be null. EntitySet: {name}");
             var task = syncSet.Update(entity);
             intern.store.AddTask(task);
@@ -180,7 +182,8 @@ namespace Friflo.Json.Flow.Graph
             if (entities == null)
                 throw new ArgumentException($"EntitySet.UpdateRange() entity must not be null. EntitySet: {name}");
             foreach (var entity in entities) {
-                if (entity.id == null)
+                var id = GetEntityId(entity);
+                if (id == null)
                     throw new ArgumentException($"EntitySet.UpdateRange() entity.id must not be null. EntitySet: {name}");
             }
             var task = syncSet.UpdateRange(entities);
@@ -190,7 +193,7 @@ namespace Friflo.Json.Flow.Graph
         
         // --- Patch
         public PatchTask<T> Patch(T entity) {
-            var peer = GetPeerById(entity.id);
+            var peer = GetPeerByEntity(entity);
             peer.SetEntity(entity);
             var task = syncSet.Patch(peer);
             intern.store.AddTask(task);
@@ -200,7 +203,7 @@ namespace Friflo.Json.Flow.Graph
         public PatchTask<T> PatchRange(ICollection<T> entities) {
             var peerList = new List<PeerEntity<T>>(entities.Count);
             foreach (var entity in entities) {
-                var peer = GetPeerById(entity.id);
+                var peer = GetPeerByEntity(entity);
                 peer.SetEntity(entity);
                 peerList.Add(peer);
             }
@@ -213,9 +216,10 @@ namespace Friflo.Json.Flow.Graph
         public DeleteTask<T> Delete(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Delete() entity must not be null. EntitySet: {name}");
-            if (entity.id == null)
+            var id = GetEntityId(entity);
+            if (id == null)
                 throw new ArgumentException($"EntitySet.Delete() id must not be null. EntitySet: {name}");
-            var task = syncSet.Delete(entity.id);
+            var task = syncSet.Delete(id);
             intern.store.AddTask(task);
             return task;
         }
@@ -231,7 +235,11 @@ namespace Friflo.Json.Flow.Graph
         public DeleteTask<T> DeleteRange(ICollection<T> entities) {
             if (entities == null)
                 throw new ArgumentException($"EntitySet.DeleteRange() entities must not be null. EntitySet: {name}");
-            var ids = entities.Select(e => e.id).ToList();
+            var ids = new List<string>(entities.Count);
+            foreach (var entity in entities) {
+                var id = GetEntityId(entity);
+                ids.Add(id);
+            }
             foreach (var id in ids) {
                 if (id == null) throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
             }
@@ -263,7 +271,8 @@ namespace Friflo.Json.Flow.Graph
             var task = intern.store._intern.syncStore.CreateLog();
             if (entity == null)
                 throw new ArgumentException($"EntitySet.LogEntityChanges() entity must not be null. EntitySet: {name}");
-            if (entity.id == null)
+            var id = GetEntityId(entity);
+            if (id == null)
                 throw new ArgumentException($"EntitySet.LogEntityChanges() entity.id must not be null. EntitySet: {name}");
             syncSet.LogEntityChanges(entity, task);
             intern.store.AddTask(task);
@@ -282,7 +291,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // ------------------------------------------- internals -------------------------------------------
-        internal void SetEntityId (object entity, string id) {
+        private void SetEntityId (object entity, string id) {
             if (intern.idField != null) {
                 intern.idField.SetValue(entity, id);
                 return;
@@ -311,12 +320,13 @@ namespace Friflo.Json.Flow.Graph
         }
 
         internal PeerEntity<T> CreatePeer (T entity) {
-            if (peers.TryGetValue(entity.id, out PeerEntity<T> peer)) {
+            var id = GetEntityId(entity);
+            if (peers.TryGetValue(id, out PeerEntity<T> peer)) {
                 peer.SetEntity(entity);
                 return peer;
             }
-            peer = new PeerEntity<T>(entity);
-            peers.Add(entity.id, peer);
+            peer = new PeerEntity<T>(entity, id);
+            peers.Add(id, peer);
             return peer;
         }
         
@@ -381,7 +391,7 @@ namespace Friflo.Json.Flow.Graph
                     var entity = peer.NullableEntity;
                     if (entity == null) {
                         entity = (T)intern.typeMapper.CreateInstance();
-                        entity.id = id;
+                        SetEntityId(entity, id);
                         peer.SetEntity(entity);
                     }
                     reader.ReadTo(json, entity);

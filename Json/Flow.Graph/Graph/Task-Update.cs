@@ -45,7 +45,8 @@ namespace Friflo.Json.Flow.Graph
         
         internal override void GetIds(List<string> ids) {
             foreach (var entity in entities) {
-                ids.Add(entity.id);    
+                var id = set.GetEntityId(entity);
+                ids.Add(id);
             }
         }
     }

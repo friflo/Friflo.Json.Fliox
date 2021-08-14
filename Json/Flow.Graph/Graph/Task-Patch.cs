@@ -53,14 +53,14 @@ namespace Friflo.Json.Flow.Graph
         }
 
         public void Add(T entity) {
-            var peer = set.GetPeerById(entity.id);
+            var peer = set.GetPeerByEntity(entity);
             peers.Add(peer);
         }
         
         public void AddRange(ICollection<T> entities) {
             var newPeers = new List<PeerEntity<T>>(entities.Count);
             foreach (var entity in entities) {
-                var peer = set.GetPeerById(entity.id);
+                var peer = set.GetPeerByEntity(entity);
                 newPeers.Add(peer);
             }
             peers.AddRange(newPeers);

@@ -26,11 +26,11 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         public   override   string          ToString() => id;
         
-        internal PeerEntity(T entity) {
+        internal PeerEntity(T entity, string id) {
             if (entity == null)
                 throw new NullReferenceException($"entity must not be null. Type: {typeof(T)}");
             this.entity = entity;
-            this.id     = entity.id;
+            this.id     = id;
         }
         
         internal PeerEntity(string id) {
@@ -46,14 +46,14 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal void SetEntity(T entity) {
             if (entity == null)
                 throw new InvalidOperationException("Expect entity not null");
+            // if (entityId != id)
+            //    throw new InvalidOperationException("Expect entity.id == id");
             if (this.entity == null) {
-                if (entity.id != id)
-                    throw new InvalidOperationException("Expect entity.id == id");
                 this.entity = entity;
                 return;
             }
             if (this.entity != entity)
-                throw new ArgumentException($"Entity is already tracked by another instance. id: '{entity.id}'");
+                throw new ArgumentException($"Entity is already tracked by another instance. id: '{id}'");
         }
 
         internal void SetPatchSource(T entity) {

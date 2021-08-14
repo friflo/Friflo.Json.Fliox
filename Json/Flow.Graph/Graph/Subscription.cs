@@ -207,7 +207,7 @@ namespace Friflo.Json.Flow.Graph
                             string  id      = entityPair.Key;
                             var     peer    = set.GetPeerById(id);
                             var     entity  = peer.Entity;
-                            result.creates.Add(entity.id, entity);
+                            result.creates.Add(id, entity);
                         }
                         result.Info.creates += create.entities.Count;
                         break;
@@ -220,7 +220,7 @@ namespace Friflo.Json.Flow.Graph
                             string  id      = entityPair.Key;
                             var     peer    = set.GetPeerById(id);
                             var     entity  = peer.Entity;
-                            result.updates.Add(entity.id, entity);
+                            result.updates.Add(id, entity);
                         }
                         result.Info.updates += update.entities.Count;
                         break;
