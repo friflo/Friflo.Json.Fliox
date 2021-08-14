@@ -296,7 +296,7 @@ namespace Friflo.Json.Flow.Graph
                 intern.idField.SetValue(entity, id);
                 return;
             }
-            var typedEntity = (T)entity; // todo check unbox.any
+            var typedEntity = (T)entity; // unbox.any - entity is a always reference type -> no unboxing
             intern.idPropertySet(typedEntity, id);
         }
         
@@ -304,7 +304,7 @@ namespace Friflo.Json.Flow.Graph
             if (intern.idField != null) {
                 return (string)intern.idField.GetValue(entity);
             }
-            var typedEntity = (T)entity; // todo check unbox.any
+            var typedEntity = (T)entity; // unbox.any - entity is a always reference type -> no unboxing 
             return intern.idPropertyGet(typedEntity);
         }
 
