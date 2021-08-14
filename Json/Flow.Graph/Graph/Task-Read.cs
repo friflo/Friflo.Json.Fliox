@@ -152,7 +152,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // lab - all ReadRefs
-        public ReadRefsTask<Entity> ReadAllRefs()
+        public ReadRefsTask<object> ReadAllRefs()
         {
             throw new NotImplementedException("ReadAllRefs() planned to be implemented");
         }

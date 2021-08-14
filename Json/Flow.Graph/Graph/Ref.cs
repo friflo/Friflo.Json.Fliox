@@ -14,26 +14,26 @@ namespace Friflo.Json.Flow.Graph
     /// A reference is an <see cref="id"/> of type <see cref="string"/>. A reference can be in two states:
     ///   <para><b>unresolved</b>
     ///     Only the access to <see cref="id"/> is valid. This is always the case.
-    ///     Access to the referenced <see cref="Graph.Entity"/> instance via the property <see cref="Entity"/> result in an <see cref="Exception"/>.
+    ///     Access to the referenced entity instance via the property <see cref="Entity"/> result in an <see cref="Exception"/>.
     ///   </para> 
     ///   <para><b>resolved</b>
-    ///     Access to the referenced <see cref="Graph.Entity"/> instance is valid via the property <see cref="Entity"/>.
+    ///     Access to the referenced entity instance is valid via the property <see cref="Entity"/>.
     ///   </para> 
     /// </para> 
     /// The <see cref="id"/> is used when serializing a <see cref="Ref{T}"/> field to and from JSON.  
     /// <para>
     ///     A <see cref="Ref{T}"/> can be assigned in three ways:
-    ///     <para>1. By assigning an id of type <see cref="string"/>. Assigning a null <see cref="string"/> is valid.</para>
-    ///     <para>2. By assigning an entity with an <see cref="Graph.Entity"/> instance. Assigning a null <see cref="Graph.Entity"/> is valid.</para>
-    ///     <para>3. By assigning with another reference of type <see cref="Ref{T}"/>. Assigning a default <see cref="Ref{T}"/> is valid.</para>
+    ///     <para>1. By assigning an id of type <see cref="string"/>.                   Assigning a null <see cref="string"/> is valid.</para>
+    ///     <para>2. By assigning an entity.                                            Assigning null as entity is valid.</para>
+    ///     <para>3. By assigning with another reference of type <see cref="Ref{T}"/>.  Assigning a default <see cref="Ref{T}"/> is valid.</para>
     /// </para>
     /// 
     /// <para>
     ///     Access to <see cref="id"/> and property  <see cref="Entity"/>:
     ///     <para>The <see cref="id"/> of a <see cref="Ref{T}"/> can be accessed at all time without any restrictions.</para>
-    ///     <para>The property <see cref="Entity"/> enables access to the referenced <see cref="Graph.Entity"/> instance.
+    ///     <para>The property <see cref="Entity"/> enables access to the referenced entity instance.
     ///         If the <see cref="Ref{T}"/> was assigned by an entity the access has no restrictions.
-    ///         If the <see cref="Ref{T}"/> was assigned by an id the referenced <see cref="Graph.Entity"/> instance need to
+    ///         If the <see cref="Ref{T}"/> was assigned by an id the referenced entity instance need to
     ///         be resolved upfront. For resolving see notes bellow.
     ///     </para>
     /// </para>
@@ -41,7 +41,7 @@ namespace Friflo.Json.Flow.Graph
     ///   To resolve the <see cref="Entity"/> by its <see cref="id"/> various options are available:
     ///   <para>By calling <see cref="FindBy"/> of a <see cref="Ref{T}"/> instance.</para>
     ///   <para>
-    ///     When reading an <see cref="Graph.Entity"/> instance containing a <see cref="Ref{T}"/> field
+    ///     When reading an entity instance containing a <see cref="Ref{T}"/> field
     ///     <see cref="EntitySet{T}.Read"/> returns a <see cref="ReadTask{T}"/> providing the possibility
     ///     to read referenced entity together with its parent by calling <see cref="ReadTask{T}.ReadRef{TValue}"/>.
     ///     <br></br>
