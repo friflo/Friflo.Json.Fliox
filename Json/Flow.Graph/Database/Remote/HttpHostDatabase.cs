@@ -23,9 +23,10 @@ namespace Friflo.Json.Flow.Database.Remote
     // See: [Configure options for the ASP.NET Core Kestrel web server | Microsoft Docs] https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/options?view=aspnetcore-5.0
     public class HttpHostDatabase : RemoteHostDatabase
     {
+        public              IHttpContextHandler schemaHandler = new SchemaHandler();
+        
         private readonly    string              endpoint;
         private readonly    HttpListener        listener;
-        private readonly    IHttpContextHandler schemaHandler = new SchemaHandler();
         private readonly    IHttpContextHandler contextHandler;
         private             bool                runServer;
         
