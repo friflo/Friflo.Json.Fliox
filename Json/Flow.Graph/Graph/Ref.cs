@@ -7,8 +7,7 @@ using Friflo.Json.Flow.Graph.Internal;
 namespace Friflo.Json.Flow.Graph
 {
     /// <summary>
-    /// A <see cref="Ref{T}"/> is used to declare type safe fields being references to other entities (extending <see cref="Entity"/>)
-    /// in a data model.
+    /// A <see cref="Ref{T}"/> is used to declare type safe fields being references to other entities in a data model.
     /// 
     /// <para>
     /// A reference is an <see cref="id"/> of type <see cref="string"/>. A reference can be in two states:
@@ -29,7 +28,7 @@ namespace Friflo.Json.Flow.Graph
     /// </para>
     /// 
     /// <para>
-    ///     Access to <see cref="id"/> and property  <see cref="Entity"/>:
+    ///     Access to <see cref="id"/> and property <see cref="Entity"/>:
     ///     <para>The <see cref="id"/> of a <see cref="Ref{T}"/> can be accessed at all time without any restrictions.</para>
     ///     <para>The property <see cref="Entity"/> enables access to the referenced entity instance.
     ///         If the <see cref="Ref{T}"/> was assigned by an entity the access has no restrictions.
