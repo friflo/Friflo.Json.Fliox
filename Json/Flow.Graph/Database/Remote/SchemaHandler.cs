@@ -33,7 +33,7 @@ namespace Friflo.Json.Flow.Database.Remote
             if (req.HttpMethod == "GET" && req.Url.AbsolutePath.StartsWith(BasePath)) {
                 var path = req.Url.AbsolutePath.Substring(BasePath.Length);
                 Result result = new Result();
-                bool success = GetSchemaFile(path, hostDatabase, ref result);
+                bool success = GetSchemaFile(path, hostDatabase.local.schema, ref result);
                 byte[]  response;
                 if (result.isText) {
                     response    = Encoding.UTF8.GetBytes(result.content);
@@ -49,8 +49,7 @@ namespace Friflo.Json.Flow.Database.Remote
             return false;
         }
         
-        public bool GetSchemaFile(string path, HttpHostDatabase hostDatabase, ref Result result) {
-            var schema = hostDatabase.local.schema;
+        public bool GetSchemaFile(string path, DatabaseSchema schema, ref Result result) {
             if (schema == null) {
                 return result.Error("no schema attached to database");
             }
