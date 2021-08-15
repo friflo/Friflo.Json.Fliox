@@ -10,11 +10,13 @@ using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Schema;
 using Friflo.Json.Flow.Schema.Definition;
 
+// ReSharper disable MemberCanBeProtected.Global
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Flow.Database.Remote
 {
     public delegate byte[] CreateZip(Dictionary<string, string> files);
     
+    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class SchemaHandler : IHttpContextHandler
     {
         public              string                          image = "/Json-Flow-53x43.svg";
@@ -55,7 +57,10 @@ namespace Friflo.Json.Flow.Database.Remote
             }
             var storeName = schema.typeSchema.RootType.Name;
             if (schemas == null) {
-                schemas = GenerateSchemas(schema.typeSchema, zip);
+                using (var writer = new ObjectWriter(new TypeStore())) {
+                    writer.Pretty = true;
+                    schemas = GenerateSchemas(writer, schema.typeSchema);
+                }
             }
             if (path == "index.html") {
                 var sb = new StringBuilder();
@@ -108,33 +113,33 @@ namespace Friflo.Json.Flow.Database.Remote
             return result.Set(content, schemaSet.contentType);
         }
         
-        public static Dictionary<string, SchemaSet> GenerateSchemas(TypeSchema typeSchema, CreateZip zip) {
-            var schemas             = new Dictionary<string, SchemaSet>();
-            using (var writer       = new ObjectWriter(new TypeStore())) {
-                writer.Pretty           = true;
-                var entityTypes         = typeSchema.GetEntityTypes();
-                var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = entityTypes };
-                var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
-                var jsonSchema          = new SchemaSet (writer, zip, "JSON Schema", "application/json", jsonGenerator.files);
-                schemas.Add("json-schema",  jsonSchema);
-                
-                var options             = new JsonTypeOptions(typeSchema);
-                var typescriptGenerator = TypescriptGenerator.Generate(options);
-                var typescriptSchema    = new SchemaSet (writer, zip, "Typescript",  "text/plain",       typescriptGenerator.files);
-                schemas.Add("typescript",   typescriptSchema);
-                
-                var csharpGenerator     = CSharpGenerator.Generate(options);
-                var csharpSchema        = new SchemaSet (writer, zip, "C#",          "text/plain",       csharpGenerator.files);
-                schemas.Add("csharp",       csharpSchema);
-                
-                var kotlinGenerator     = KotlinGenerator.Generate(options);
-                var kotlinSchema        = new SchemaSet (writer, zip, "Kotlin",      "text/plain",       kotlinGenerator.files);
-                schemas.Add("kotlin",       kotlinSchema);
-            }
-            return schemas;
+        // override intended
+        public virtual Dictionary<string, SchemaSet> GenerateSchemas(ObjectWriter writer, TypeSchema typeSchema) {
+            var result              = new Dictionary<string, SchemaSet>();
+            
+            var entityTypes         = typeSchema.GetEntityTypes();
+            var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = entityTypes };
+            var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
+            var jsonSchema          = new SchemaSet (writer, zip, "JSON Schema", "application/json", jsonGenerator.files);
+            result.Add("json-schema",  jsonSchema);
+            
+            var options             = new JsonTypeOptions(typeSchema);
+            var typescriptGenerator = TypescriptGenerator.Generate(options);
+            var typescriptSchema    = new SchemaSet (writer, zip, "Typescript",  "text/plain",       typescriptGenerator.files);
+            result.Add("typescript",   typescriptSchema);
+            
+            var csharpGenerator     = CSharpGenerator.Generate(options);
+            var csharpSchema        = new SchemaSet (writer, zip, "C#",          "text/plain",       csharpGenerator.files);
+            result.Add("csharp",       csharpSchema);
+            
+            var kotlinGenerator     = KotlinGenerator.Generate(options);
+            var kotlinSchema        = new SchemaSet (writer, zip, "Kotlin",      "text/plain",       kotlinGenerator.files);
+            result.Add("kotlin",       kotlinSchema);
+            return result;
         }
         
-        public void HtmlHeader(StringBuilder sb, string[] titlePath, string description) {
+        // override intended
+        public virtual void HtmlHeader(StringBuilder sb, string[] titlePath, string description) {
             var title = string.Join(" - ", titlePath);
             var titleElements = new List<string>();
             int n = titlePath.Length -1;
@@ -161,7 +166,8 @@ namespace Friflo.Json.Flow.Database.Remote
             sb.AppendLine($"<p>{description}</p>");
         }
         
-        public static void HtmlFooter(StringBuilder sb) {
+        // override intended
+        public virtual void HtmlFooter(StringBuilder sb) {
             sb.AppendLine("</body>");
             sb.AppendLine("</html>");
         }
