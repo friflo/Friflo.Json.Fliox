@@ -23,9 +23,9 @@ namespace Friflo.Json.Flow.UserAuth
         /// <summary>"clientId" used for a <see cref="UserStore"/> to request a user authentication with its token</summary>
         public const string AuthUser    = "AuthUser";
         
-        public readonly EntitySet<UserPermission>   permissions;
-        public readonly EntitySet<UserCredential>   credentials;
-        public readonly EntitySet<Role>             roles;
+        public  readonly    EntitySet<UserPermission>   permissions;
+        public  readonly    EntitySet<UserCredential>   credentials;
+        public  readonly    EntitySet<Role>             roles;
         
         public UserStore(EntityDatabase database, string clientId) : base(database, SyncTypeStore.Get(), clientId) {
             permissions = new EntitySet<UserPermission> (this);

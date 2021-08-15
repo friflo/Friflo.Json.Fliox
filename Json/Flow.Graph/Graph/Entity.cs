@@ -16,11 +16,8 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public abstract class Entity
     {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string _id;
-        
         [Fri.Property(Required = true)]
-        public string id {
+        public  string  id {
             get => _id;
             set {
                 if (_id == value)
@@ -32,6 +29,9 @@ namespace Friflo.Json.Flow.Graph
                 throw new ArgumentException($"Entity id must not be changed. Type: {GetType().Name}, was: '{_id}', assigned: '{value}'");
             }
         }
+        
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string  _id;
 
         public override     string  ToString() => id ?? "null";
     }

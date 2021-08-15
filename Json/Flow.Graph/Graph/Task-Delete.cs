@@ -12,12 +12,12 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class DeleteTask<T> : SyncTask where T : class
     {
-        private  readonly   EntitySet<T>        set;
-        private  readonly   List<string>        ids;
-        internal            TaskState           state;
-        internal override   TaskState           State       => state;
+        private  readonly   EntitySet<T>    set;
+        private  readonly   List<string>    ids;
+        internal            TaskState       state;
+        internal override   TaskState       State       => state;
 
-        public   override   string              Details     => $"DeleteTask<{typeof(T).Name}> (#ids: {ids.Count})";
+        public   override   string          Details     => $"DeleteTask<{typeof(T).Name}> (#ids: {ids.Count})";
         
         
         internal DeleteTask(List<string> ids, EntitySet<T> set) {

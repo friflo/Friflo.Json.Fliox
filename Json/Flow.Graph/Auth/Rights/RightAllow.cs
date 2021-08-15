@@ -7,10 +7,10 @@ namespace Friflo.Json.Flow.Auth.Rights
 {
     public class RightAllow : Right
     {
-        public          bool                    grant;
-        public override RightType               RightType => RightType.allow;
+        public              bool        grant;
+        public  override    RightType   RightType => RightType.allow;
 
-        public override string                  ToString() => grant.ToString();
+        public  override    string      ToString() => grant.ToString();
 
         private  static readonly Authorizer Allow = new AuthorizeAllow();
         internal static readonly Authorizer Deny  = new AuthorizeDeny();

@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Database
 {
     public class MemoryDatabase : EntityDatabase
     {
-        private readonly    bool    pretty;
+        private  readonly   bool    pretty;
 
         public MemoryDatabase(bool pretty = false) {
             this.pretty = pretty;
@@ -24,9 +24,9 @@ namespace Friflo.Json.Flow.Database
     
     public class MemoryContainer : EntityContainer
     {
-        private readonly    Dictionary<string, string>  payloads    = new Dictionary<string, string>();
+        private  readonly   Dictionary<string, string>  payloads    = new Dictionary<string, string>();
         
-        public  override    bool            Pretty      { get; }
+        public   override   bool                        Pretty      { get; }
 
         public MemoryContainer(string name, EntityDatabase database, bool pretty) : base(name, database) {
             Pretty = pretty;

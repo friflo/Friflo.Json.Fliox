@@ -37,7 +37,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
     [ObsoleteAttribute("not used / required anymore - not deleted now for git log")]
     internal class EntityMapper<T> : TypeMapper<T> where T : Entity
     {
-        private readonly TypeMapper<T> mapper;
+        private readonly TypeMapper<T>  mapper;
         
         public override string          DataTypeName()   { return "Entity"; }
         public override TypeMapper      GetUnderlyingMapper()   => mapper;

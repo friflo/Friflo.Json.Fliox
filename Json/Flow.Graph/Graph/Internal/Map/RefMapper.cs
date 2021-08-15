@@ -35,12 +35,12 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
 
     internal class RefMapper<T> : TypeMapper<Ref<T>> where T : class
     {
-        private             TypeMapper<T> entityMapper;
-        private readonly    TypeMapper    stringMapper;
+        private             TypeMapper<T>   entityMapper;
+        private readonly    TypeMapper      stringMapper;
         
-        public override string          DataTypeName()          { return "Ref<>"; }
-        public override TypeMapper      GetUnderlyingMapper()   => stringMapper;
-        public override TypeSemantic    GetTypeSemantic     ()  => TypeSemantic.Reference;
+        public  override    string          DataTypeName()          { return "Ref<>"; }
+        public  override    TypeMapper      GetUnderlyingMapper()   => stringMapper;
+        public  override    TypeSemantic    GetTypeSemantic     ()  => TypeSemantic.Reference;
 
         // ReSharper disable once UnusedParameter.Local
         public RefMapper(StoreConfig config, Type type, ConstructorInfo constructor) :

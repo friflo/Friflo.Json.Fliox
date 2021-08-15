@@ -14,8 +14,8 @@ namespace Friflo.Json.Flow.Database
 {
     public class FileDatabase : EntityDatabase
     {
-        private readonly    string  databaseFolder;
-        private readonly    bool    pretty;
+        private  readonly   string  databaseFolder;
+        private  readonly   bool    pretty;
 
         public FileDatabase(string databaseFolder, bool pretty = true) {
             this.pretty = pretty;
@@ -30,10 +30,10 @@ namespace Friflo.Json.Flow.Database
     
     public class FileContainer : EntityContainer
     {
-        private readonly    string                  folder;
-        private readonly    AsyncReaderWriterLock   rwLock;
+        private  readonly   string                  folder;
+        private  readonly   AsyncReaderWriterLock   rwLock;
 
-        public  override    bool                    Pretty      { get; }
+        public   override   bool                    Pretty      { get; }
 
 
         public FileContainer(string name, EntityDatabase database, string folder, bool pretty) : base (name, database) {

@@ -14,9 +14,9 @@ namespace Friflo.Json.Flow.Database.Utils
     /// available as of 2021-06-21.
     public class DataChannel<T>
     {
-        public  readonly DataChannelReader<T>   reader; 
-        public  readonly DataChannelWriter<T>   writer; 
-     // private readonly Channel<T>             channel;
+        public  readonly    DataChannelReader<T>    reader; 
+        public  readonly    DataChannelWriter<T>    writer; 
+     // private readonly Channel<T>                 channel;
 
         private DataChannel(Channel<T, T> channel) {
             reader = new DataChannelReader<T>(channel.Reader);

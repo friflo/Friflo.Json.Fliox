@@ -29,14 +29,14 @@ namespace Friflo.Json.Flow.Database
     public class MessageContext
     {
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="DatabaseRequest"/></summary>
-        public                  string          clientId;
-        public  readonly        IPools          pools;
-        public  readonly        IEventTarget    eventTarget;
-        public                  AuthState       authState;
+        public              string          clientId;
+        public  readonly    IPools          pools;
+        public  readonly    IEventTarget    eventTarget;
+        public              AuthState       authState;
         
-        private                 PoolUsage       startUsage;
-        public                  Action          canceler = () => {};
-        public override         string          ToString() => $"clientId: {clientId}, auth: {authState}";
+        private             PoolUsage       startUsage;
+        public              Action          canceler = () => {};
+        public override     string          ToString() => $"clientId: {clientId}, auth: {authState}";
 
         public MessageContext (IEventTarget eventTarget) {
             pools               = new Pools(Pools.SharedPools);

@@ -51,7 +51,7 @@ namespace Friflo.Json.Flow.Database
         public  readonly    string          name;
         private readonly    EntityDatabase  database;
 
-        public virtual      bool            Pretty      => false;
+        public  virtual     bool            Pretty      => false;
 
         public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities command, MessageContext messageContext);
         public abstract Task<UpdateEntitiesResult>  UpdateEntities  (UpdateEntities command, MessageContext messageContext);
@@ -169,7 +169,7 @@ namespace Friflo.Json.Flow.Database
             List<References>                    references,
             Dictionary<string, EntityValue>     entities,
             string                              container,
-            MessageContext                         messageContext)
+            MessageContext                      messageContext)
         {
             if (references.Count == 0)
                 throw new InvalidOperationException("Expect references.Count > 0");

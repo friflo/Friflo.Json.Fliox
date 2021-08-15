@@ -11,10 +11,10 @@ namespace Friflo.Json.Flow.Graph.Internal
     {
         internal static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();  
             
-        internal    IDictionary<string, EntityError> createErrors = NoErrors;
-        internal    IDictionary<string, EntityError> updateErrors = NoErrors;
-        internal    IDictionary<string, EntityError> patchErrors  = NoErrors;
-        internal    IDictionary<string, EntityError> deleteErrors = NoErrors;
+        internal    IDictionary<string, EntityError>    createErrors = NoErrors;
+        internal    IDictionary<string, EntityError>    updateErrors = NoErrors;
+        internal    IDictionary<string, EntityError>    patchErrors  = NoErrors;
+        internal    IDictionary<string, EntityError>    deleteErrors = NoErrors;
 
         internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
         

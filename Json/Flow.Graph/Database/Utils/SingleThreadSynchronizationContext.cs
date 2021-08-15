@@ -10,7 +10,7 @@ namespace Friflo.Json.Flow.Database.Utils
     // [Await, SynchronizationContext, and Console Apps | .NET Parallel Programming] https://devblogs.microsoft.com/pfxteam/await-synchronizationcontext-and-console-apps/
     public class SingleThreadSynchronizationContext : SynchronizationContext
     {
-        private readonly BlockingCollection<ActionPair> queue = new BlockingCollection<ActionPair>();
+        private  readonly   BlockingCollection<ActionPair>  queue = new BlockingCollection<ActionPair>();
 
         public override void Post(SendOrPostCallback callback, object state) {
             var action = new ActionPair {callback = callback, state = state};

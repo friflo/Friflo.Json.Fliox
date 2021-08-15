@@ -10,10 +10,10 @@ namespace Friflo.Json.Flow.Database
         public              string          Name    { get; }
         public              TValue          Value   => reader.Read<TValue>(json);
         
-        private readonly    string          json;
-        private readonly    ObjectReader    reader;
+        private  readonly   string          json;
+        private  readonly   ObjectReader    reader;
 
-        public  override    string          ToString() => Name;
+        public   override   string          ToString() => Name;
 
         internal Command(string name, string json, ObjectReader reader) {
             Name        = name;
@@ -31,10 +31,10 @@ namespace Friflo.Json.Flow.Database
     
     internal class CommandCallback<TValue, TResult> : CommandCallback
     {
-        private  readonly   string                                  name;
-        private  readonly   CommandHandler<TValue, TResult>         handler;
+        private  readonly   string                              name;
+        private  readonly   CommandHandler<TValue, TResult>     handler;
 
-        public   override   string                                  ToString() => name;
+        public   override   string                              ToString() => name;
 
         internal CommandCallback (string name, CommandHandler<TValue, TResult> handler) {
             this.name       = name;

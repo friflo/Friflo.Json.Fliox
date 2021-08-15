@@ -299,10 +299,10 @@ namespace Friflo.Json.Flow.Graph
     }
     
     public readonly struct ChangePatch<T> where T : class {
-        public readonly T               entity;
-        public readonly List<JsonPatch> patches;
+        public  readonly    T                   entity;
+        public  readonly    List<JsonPatch>     patches;
 
-        public override string          ToString() => StaticEntityId.GetEntityId(entity);
+        public  override    string              ToString() => StaticEntityId.GetEntityId(entity);
         
         private static readonly   EntityId<T>     StaticEntityId = EntityId.GetEntityId<T>();
 

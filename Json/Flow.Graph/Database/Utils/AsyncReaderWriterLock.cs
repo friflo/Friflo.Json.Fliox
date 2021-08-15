@@ -20,9 +20,9 @@ namespace Friflo.Json.Flow.Database.Utils {
     //
     public sealed class AsyncReaderWriterLock : IDisposable
     {
-        private readonly SemaphoreSlim readSemaphore  = new SemaphoreSlim(1, 1);
-        private readonly SemaphoreSlim writeSemaphore = new SemaphoreSlim(1, 1);
-        private          int           readerCount;
+        private  readonly   SemaphoreSlim   readSemaphore  = new SemaphoreSlim(1, 1);
+        private  readonly   SemaphoreSlim   writeSemaphore = new SemaphoreSlim(1, 1);
+        private             int             readerCount;
 
         public async Task AcquireWriterLock(CancellationToken token = default)
         {

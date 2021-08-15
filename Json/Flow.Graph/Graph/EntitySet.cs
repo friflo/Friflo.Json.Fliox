@@ -15,10 +15,10 @@ namespace Friflo.Json.Flow.Graph
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
     {
-        internal  readonly  string          name;
+        internal  readonly  string      name;
 
-        internal  abstract  SyncSet         SyncSet      { get; }
-        internal  abstract  SetInfo         SetInfo   { get; }
+        internal  abstract  SyncSet     SyncSet     { get; }
+        internal  abstract  SetInfo     SetInfo     { get; }
 
         internal static readonly QueryPath RefQueryPath = new RefQueryPath();
         

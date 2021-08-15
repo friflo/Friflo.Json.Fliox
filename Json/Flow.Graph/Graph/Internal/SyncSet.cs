@@ -50,7 +50,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal bool AddCreate (PeerEntity<T> peer) {
             peer.assigned = true;
-            creates.TryAdd(peer.id, peer);    // sole place a peer (entity) is added
+            creates.TryAdd(peer.id, peer);      // sole place a peer (entity) is added
             if (!peer.created) {
                 peer.created = true;            // sole place created set to true
                 return true;
@@ -60,7 +60,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal void AddUpdate (PeerEntity<T> peer) {
             peer.assigned = true;
-            updates.TryAdd(peer.id, peer);    // sole place a peer (entity) is added
+            updates.TryAdd(peer.id, peer);      // sole place a peer (entity) is added
             if (!peer.updated) {
                 peer.updated = true;            // sole place created set to true
             }

@@ -34,7 +34,7 @@ namespace Friflo.Json.Flow.Auth
     }
     
     public class AuthorizeAll : Authorizer {
-        private readonly ICollection<Authorizer> list;
+        private readonly    ICollection<Authorizer>     list;
         
         public AuthorizeAll(ICollection<Authorizer> list) {
             this.list = list;    
@@ -50,7 +50,7 @@ namespace Friflo.Json.Flow.Auth
     }
     
     public class AuthorizeAny : Authorizer {
-        private readonly ICollection<Authorizer> list;
+        private readonly    ICollection<Authorizer>     list;
         
         public AuthorizeAny(ICollection<Authorizer> list) {
             this.list = list;    
@@ -66,8 +66,8 @@ namespace Friflo.Json.Flow.Auth
     }
     
     public class AuthorizeTaskType : Authorizer {
-        private readonly TaskType   type;
-        public  override string     ToString() => type.ToString();
+        private  readonly   TaskType    type;
+        public   override   string      ToString() => type.ToString();
 
         public AuthorizeTaskType(TaskType type) {
             this.type = type;    
@@ -79,9 +79,9 @@ namespace Friflo.Json.Flow.Auth
     }
     
     public class AuthorizeMessage : Authorizer {
-        private readonly    string  messageName;
-        private readonly    bool    prefix;
-        public  override    string  ToString() => prefix ? $"{messageName}*" : messageName;
+        private  readonly   string      messageName;
+        private  readonly   bool        prefix;
+        public   override   string      ToString() => prefix ? $"{messageName}*" : messageName;
 
         public AuthorizeMessage (string message) {
             if (message.EndsWith("*")) {
@@ -103,9 +103,9 @@ namespace Friflo.Json.Flow.Auth
     }
     
     public class AuthorizeSubscribeMessage : Authorizer {
-        private readonly    string  messageName;
-        private readonly    bool    prefix;
-        public  override    string  ToString() => prefix ? $"{messageName}*" : messageName;
+        private  readonly   string      messageName;
+        private  readonly   bool        prefix;
+        public   override   string      ToString() => prefix ? $"{messageName}*" : messageName;
 
         public AuthorizeSubscribeMessage (string message) {
             if (message.EndsWith("*")) {
@@ -127,17 +127,17 @@ namespace Friflo.Json.Flow.Auth
     }
     
     public class AuthorizeContainer : Authorizer {
-        private readonly    string  container;
+        private  readonly   string  container;
         
-        private readonly    bool    create;
-        private readonly    bool    update;
-        private readonly    bool    delete;
-        private readonly    bool    patch;
+        private  readonly   bool    create;
+        private  readonly   bool    update;
+        private  readonly   bool    delete;
+        private  readonly   bool    patch;
         //
-        private readonly    bool    read;
-        private readonly    bool    query;
+        private  readonly   bool    read;
+        private  readonly   bool    query;
 
-        public  override    string  ToString() => container;
+        public   override   string  ToString() => container;
         
         public AuthorizeContainer (string container, ICollection<OperationType> types) {
             this.container = container;
@@ -185,14 +185,14 @@ namespace Friflo.Json.Flow.Auth
     }
     
     public class AuthorizeSubscribeChanges : Authorizer {
-        private readonly    string  container;
+        private  readonly   string  container;
         
-        private readonly    bool    create;
-        private readonly    bool    update;
-        private readonly    bool    delete;
-        private readonly    bool    patch;
+        private  readonly   bool    create;
+        private  readonly   bool    update;
+        private  readonly   bool    delete;
+        private  readonly   bool    patch;
         
-        public  override    string  ToString() => container;
+        public   override   string  ToString() => container;
         
         public AuthorizeSubscribeChanges (string container, ICollection<Change> changes) {
             this.container = container;

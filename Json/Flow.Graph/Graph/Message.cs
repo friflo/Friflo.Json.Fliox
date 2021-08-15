@@ -46,7 +46,7 @@ namespace Friflo.Json.Flow.Graph
         /// </summary>
         public              TValue          Value => Message.Read<TValue>(Json, reader);
 
-        public override string              ToString()  => Name;
+        public override     string          ToString()  => Name;
         
         /// <summary>
         /// <see cref="Json"/> is set to <see cref="SendMessage.value"/> json.
@@ -76,7 +76,7 @@ namespace Friflo.Json.Flow.Graph
         
         private readonly    ObjectReader    reader;
         
-        public override string              ToString()  => Name;
+        public override     string          ToString()  => Name;
         
         internal Message(string name, string json, ObjectReader reader) {
             Name        = name;

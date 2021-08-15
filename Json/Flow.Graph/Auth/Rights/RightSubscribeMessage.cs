@@ -12,8 +12,8 @@ namespace Friflo.Json.Flow.Auth.Rights
     public class RightSubscribeMessage : Right
     {
         [Fri.Property(Required = true)]
-        public          List<string>            names;
-        public override RightType               RightType => RightType.subscribeMessage;
+        public              List<string>    names;
+        public  override    RightType       RightType => RightType.subscribeMessage;
         
         public override Authorizer ToAuthorizer() {
             if (names.Count == 1) {

@@ -13,9 +13,9 @@ namespace Friflo.Json.Flow.Auth.Rights
     [Fri.Polymorph(typeof(RightDatabase),           Discriminant = "database")]
     [Fri.Polymorph(typeof(RightPredicate),          Discriminant = "predicate")]
     public abstract class Right {
-        public          string          description;
-        public abstract RightType       RightType { get; }
+        public              string      description;
+        public  abstract    RightType   RightType { get; }
 
-        public abstract Authorizer      ToAuthorizer();
+        public  abstract    Authorizer  ToAuthorizer();
     }
 }

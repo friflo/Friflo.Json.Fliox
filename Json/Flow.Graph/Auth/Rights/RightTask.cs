@@ -14,8 +14,8 @@ namespace Friflo.Json.Flow.Auth.Rights
     public class RightTask : Right
     {
         [Fri.Property(Required = true)]
-        public          List<TaskType>          types;
-        public override RightType               RightType => RightType.task;
+        public              List<TaskType>  types;
+        public  override    RightType       RightType => RightType.task;
         
         private static readonly Authorizer Read             = new AuthorizeTaskType(TaskType.read);
         private static readonly Authorizer Query            = new AuthorizeTaskType(TaskType.query);

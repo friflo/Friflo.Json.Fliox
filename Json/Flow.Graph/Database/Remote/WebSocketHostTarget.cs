@@ -18,12 +18,12 @@ namespace Friflo.Json.Flow.Database.Remote
     // [Things I Wish Someone Told Me About ASP.NET Core WebSockets | codetinkerer.com] https://www.codetinkerer.com/2018/06/05/aspnet-core-websockets.html
     internal class WebSocketHostTarget : IEventTarget
     {
-        private readonly WebSocket                              webSocket;
+        private  readonly   WebSocket                               webSocket;
         /// Only set to true for testing. It avoids an early out at <see cref="Event.EventSubscriber.SendEvents"/> 
-        private readonly bool                                   fakeOpenClosedSocket;
+        private  readonly   bool                                    fakeOpenClosedSocket;
 
-        private readonly DataChannelWriter<ArraySegment<byte>>  sendWriter;
-        private readonly Task                                   sendLoop;
+        private  readonly   DataChannelWriter<ArraySegment<byte>>   sendWriter;
+        private  readonly   Task                                    sendLoop;
         
         private WebSocketHostTarget (WebSocket webSocket, bool fakeOpenClosedSocket) {
             this.webSocket              = webSocket;
