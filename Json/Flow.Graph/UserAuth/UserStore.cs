@@ -9,6 +9,9 @@ using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnassignedField.Global
+// ReSharper disable CollectionNeverUpdated.Global
 namespace Friflo.Json.Flow.UserAuth
 {
     /// <summary>
