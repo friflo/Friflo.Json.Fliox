@@ -20,10 +20,12 @@ namespace Friflo.Json.Flow.Graph.Internal
             Ids[type]   = result;
             return result;
         }
+
+        private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
         
         private static EntityId<T> CreateEntityId<T> (string name)  where T : class {
             var type        = typeof(T);
-            var property    = type.GetProperty(name);
+            var property    = type.GetProperty(name, Flags);
             if (property != null) {
                 var propType = property.PropertyType; 
                 if (propType == typeof(string)) {
@@ -33,7 +35,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 var msg = $"unsupported type for entity id. property: {name}, type: {propType.Name}, entity: {type.Name}";
                 throw new InvalidOperationException(msg);
             }
-            var field   = type.GetField(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            var field   = type.GetField(name, Flags);
             if (field != null) {
                 var fieldType = field.FieldType; 
                 if (fieldType == typeof(string)) {
