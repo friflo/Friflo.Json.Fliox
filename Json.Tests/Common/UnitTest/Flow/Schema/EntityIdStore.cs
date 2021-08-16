@@ -29,6 +29,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var generator   = JsonSchemaGenerator.Generate(options);
             generator.WriteFiles(JsonSchemaFolder);
         }
+        
+        /// C# -> C#
+        [Test]
+        public static void CS_CS () {
+            var typeStore   = EntityStore.AddTypeMatchers(new TypeStore());
+            var options     = new NativeTypeOptions(typeStore, EntityIdStoreTypes) {
+                replacements = new [] {new Replace("Friflo.Json.Tests.Common.UnitTest.Flow", "EntityIdStore2") }
+            };
+            var generator = CSharpGenerator.Generate(options);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/C#/EntityIdStore2");
+        }
 
         
         // ---------------------------------- input: JSON Schema ----------------------------------
