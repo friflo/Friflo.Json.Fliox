@@ -51,7 +51,7 @@ namespace Friflo.Json.Flow.Schema
                 
             AddType (map, standard.BigInteger,  "\"type\": \"string\", \"pattern\": \"^-?[0-9]+$\"" ); // https://www.regextester.com/
             AddType (map, standard.DateTime,    "\"type\": \"string\", \"format\": \"date-time\"" );
-            AddType (map, standard.Guid,        "\"type\": \"string\", \"pattern\": \"(\\\\{){0,1}[0-9a-fA-F]{8}\\\\-[0-9a-fA-F]{4}\\\\-[0-9a-fA-F]{4}\\\\-[0-9a-fA-F]{4}\\\\-[0-9a-fA-F]{12}(\\\\}){0,1}\"" );
+            AddType (map, standard.Guid,        "\"type\": \"string\", \"pattern\": \"^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$\"" );
             return map;
         }
 
