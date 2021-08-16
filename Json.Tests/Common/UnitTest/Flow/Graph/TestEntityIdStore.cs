@@ -8,10 +8,10 @@ using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
-    public class GuidStore : EntityStore {
+    public class TestEntityIdStore : EntityStore {
         public readonly EntitySet<GuidEntity> guidEntities;
 
-        public GuidStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
+        public TestEntityIdStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
             guidEntities = new EntitySet<GuidEntity>(this);
         }
     }

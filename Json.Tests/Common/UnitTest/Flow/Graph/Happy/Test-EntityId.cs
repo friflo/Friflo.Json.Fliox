@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var typeStore    = new TypeStore())
             using (var database     = new MemoryDatabase()) {
                 // Test: EntityId<T>.GetEntityId()
-                using (var guidStore    = new GuidStore(database, typeStore, "guidStore")) {
+                using (var guidStore    = new TestEntityIdStore(database, typeStore, "guidStore")) {
                     var entity  = new GuidEntity { id = new Guid(id)};
                     var create  = guidStore.guidEntities.Create(entity);
                     
@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsTrue(entity == find.Result);
                 }
                 // Test: EntityId<T>.SetEntityId()
-                using (var guidStore    = new GuidStore(database, typeStore, "guidStore")) {
+                using (var guidStore    = new TestEntityIdStore(database, typeStore, "guidStore")) {
                     var read = guidStore.guidEntities.Read();
                     var find = read.Find(id);
                         
