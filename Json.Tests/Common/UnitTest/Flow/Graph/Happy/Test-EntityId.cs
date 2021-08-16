@@ -25,24 +25,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         [Test]      public async Task  GuidIdAsync() { await AssertGuidId(); }
         
         private static async Task AssertGuidId() {
+            const string id = "87db6552-a99d-4d53-9b20-8cc797db2b8f";
             using (var typeStore    = new TypeStore())
-            using (var database     = new MemoryDatabase())
-            using (var guidStore    = new GuidStore(database, typeStore, "guidStore")) {
-                const string id = "87db6552-a99d-4d53-9b20-8cc797db2b8f";
-                var entity      = new GuidEntity { id = new Guid(id)};
-                var create      = guidStore.guidEntities.Create(entity);
-                
-                await guidStore.Sync();
-                
-                IsTrue(create.Success);
-                
-                var read = guidStore.guidEntities.Read();
-                var find = read.Find(id);
+            using (var database     = new MemoryDatabase()) {
+                // Test: EntityId<T>.GetEntityId()
+                using (var guidStore    = new GuidStore(database, typeStore, "guidStore")) {
+                    var entity  = new GuidEntity { id = new Guid(id)};
+                    var create  = guidStore.guidEntities.Create(entity);
                     
-                await guidStore.Sync();
-                
-                IsTrue(find.Success);
-                IsTrue(entity == find.Result);
+                    await guidStore.Sync();
+                    
+                    IsTrue(create.Success);
+                    
+                    var read = guidStore.guidEntities.Read();
+                    var find = read.Find(id);
+                        
+                    await guidStore.Sync();
+                    
+                    IsTrue(find.Success);
+                    IsTrue(entity == find.Result);
+                }
+                // Test: EntityId<T>.SetEntityId()
+                using (var guidStore    = new GuidStore(database, typeStore, "guidStore")) {
+                    var read = guidStore.guidEntities.Read();
+                    var find = read.Find(id);
+                        
+                    await guidStore.Sync();
+                    
+                    IsTrue(find.Success);
+                    AreEqual(id, find.Result.id.ToString());
+                }
             }
         }
     }
