@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
-using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using UnityEngine.TestTools;
@@ -57,17 +56,5 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 }
             }
         }
-    }
-    
-    public class GuidStore : EntityStore {
-        public readonly EntitySet<GuidEntity> guidEntities;
-
-        public GuidStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-            guidEntities = new EntitySet<GuidEntity>(this);
-        }
-    }
-
-    public class GuidEntity {
-        public Guid id;
     }
 }
