@@ -1,3 +1,4 @@
+import { testEntityIdStore } from "./TestEntityIdStore";
 import { testPocStore } from "./TestPocStore";
 import { testSync } from "./TestSync";
 import { testUserStore } from "./TestUserStore";
@@ -8,3 +9,4 @@ validateSchemas()
 testPocStore();
 testSync()
 testUserStore();
+testEntityIdStore();

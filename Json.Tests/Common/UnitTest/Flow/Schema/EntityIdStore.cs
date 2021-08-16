@@ -6,6 +6,7 @@ using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Schema;
 using Friflo.Json.Flow.Schema.JSON;
+using Friflo.Json.Flow.Schema.Native;
 using Friflo.Json.Tests.Common.UnitTest.Flow.Graph;
 using Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc;
 using Friflo.Json.Tests.Common.Utils;
@@ -18,6 +19,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         private static readonly Type[] EntityIdStoreTypes      = EntityStore.GetEntityTypes<TestEntityIdStore>();
 
         // -------------------------------------- input: C# --------------------------------------
+        /// C# -> Typescript
+        [Test]
+        public static void CS_Typescript () {
+            // Use code generator directly
+            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
+            var schema      = new NativeTypeSchema(typeStore, typeof(TestEntityIdStore));
+            var generator   = new Generator(schema, ".ts", new[]{new Replace("Friflo.Json.Tests.Common.")});
+            TypescriptGenerator.Generate(generator);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/EntityIdStore");
+        }
+        
         /// C# -> JSON Schema
         [Test, Order(1)]
         public static void CS_JSON () {

@@ -51,6 +51,7 @@ namespace Friflo.Json.Flow.Schema
                
             AddType (map, standard.BigInteger,  $"/** integer with arbitrary precision       */{nl}export type BigInteger = string" );
             AddType (map, standard.DateTime,    $"/** timestamp as RFC 3339 + milliseconds   */{nl}export type DateTime = string" );
+            AddType (map, standard.Guid,        $"/** GUID / UUID as RFC 4122. e.g. \"123e4567-e89b-12d3-a456-426614174000\" */{nl}export type Guid = string" );
             return map;
         }
 

@@ -9,10 +9,11 @@ export function validateSchemas() {
 
     const validate = ajv.getSchema("http://json-schema.org/draft-07/schema#") as ValidateFunction;
 
-    const userStoreFiles = getFiles("../JSON/UserStore/");
-    const pocStoreFiles  = getFiles("../JSON/PocStore/");
+    const userStoreFiles        = getFiles("../JSON/UserStore/");
+    const pocStoreFiles         = getFiles("../JSON/PocStore/");
+    const entityIdStoreFiles    = getFiles("../JSON/EntityIdStore/");
 
-    const schemas : string[] = userStoreFiles.concat(pocStoreFiles);
+    const schemas : string[] = userStoreFiles.concat(pocStoreFiles, entityIdStoreFiles);
 
     for (var path of schemas) {
         console.log("validate: ", path);
