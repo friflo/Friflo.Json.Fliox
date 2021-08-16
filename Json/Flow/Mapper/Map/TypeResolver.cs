@@ -52,6 +52,7 @@ namespace Friflo.Json.Flow.Mapper.Map
         //  if (Match(PatchMatcher.         Instance,   config, type, q)) return q.hit;
             if (Match(BigIntMatcher.        Instance,   config, type, q)) return q.hit;
             if (Match(DateTimeMatcher.      Instance,   config, type, q)) return q.hit;
+            if (Match(GuidMatcher.          Instance,   config, type, q)) return q.hit;
                 
             //  
             if (Match(StringMatcher.        Instance,   config, type, q)) return q.hit;
