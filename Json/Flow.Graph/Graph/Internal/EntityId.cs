@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (property != null) {
                 var propType = property.PropertyType; 
                 if (propType == typeof(string)) {
-                    return new EntityIdProperty<T>(property);
+                    return new EntityIdStringProperty<T>(property);
                 }
                 // add additional types here
                 var msg = $"unsupported type for entity id. property: {name}, type: {propType.Name}, entity: {type.Name}";
@@ -37,7 +37,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (field != null) {
                 var fieldType = field.FieldType; 
                 if (fieldType == typeof(string)) {
-                    return new EntityIdField<T>(field);
+                    return new EntityIdStringField<T>(field);
                 }
                 // add additional types here
                 var msg = $"unsupported type for entity id. field: {name}, type: {fieldType.Name}, entity: {type.Name}";
@@ -52,45 +52,5 @@ namespace Friflo.Json.Flow.Graph.Internal
     internal abstract class EntityId<T> : EntityId where T : class {
         internal abstract   string  GetEntityId (T entity);
         internal abstract   void    SetEntityId (T entity, string id);
-    }
-    
-    
-    // ------------------------------------------ EntityIdField<T> -----------------------------------------
-    internal class EntityIdField<T> : EntityId<T> where T : class {
-        private readonly   FieldInfo           field;
-        
-        internal EntityIdField(FieldInfo field) {
-            this.field = field;
-        }
-        
-        internal override   string  GetEntityId (T entity) {
-            return (string)field.GetValue(entity);
-        }
-        
-        internal override   void    SetEntityId (T entity, string id) {
-            field.SetValue(entity, id);
-        }
-    }
-    
-    
-    // ----------------------------------------- EntityIdProperty<T> ---------------------------------------
-    internal class EntityIdProperty<T> : EntityId<T> where T : class {
-        private  readonly   Func  <T, string>   propertyGet;
-        private  readonly   Action<T, string>   propertySet;
-        
-        internal EntityIdProperty(PropertyInfo property) {
-            var idGetMethod = property.GetGetMethod(true);    
-            var idSetMethod = property.GetSetMethod(true);
-            propertyGet = (Func  <T, string>) Delegate.CreateDelegate (typeof(Func<T, string>),   idGetMethod);
-            propertySet = (Action<T, string>) Delegate.CreateDelegate (typeof(Action<T, string>), idSetMethod);
-        }
-        
-        internal override   string  GetEntityId (T entity){
-            return propertyGet(entity);
-        }
-        
-        internal override   void    SetEntityId (T entity, string id) {
-            propertySet(entity, id);
-        }
     }
 }
