@@ -2,7 +2,7 @@
 package Sync.Sync
 
 import kotlinx.serialization.*
-import CustomSerializer.BigIntegerSerializer
+import CustomSerializer.*
 import kotlinx.serialization.json.*
 import Sync.Transform.*
 

@@ -2,7 +2,7 @@
 package PocStore.Graph
 
 import kotlinx.serialization.*
-import CustomSerializer.BigIntegerSerializer
+import CustomSerializer.*
 import kotlinx.datetime.*
 import java.math.*
 import kotlinx.serialization.json.*

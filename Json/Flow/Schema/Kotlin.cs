@@ -57,6 +57,7 @@ namespace Friflo.Json.Flow.Schema
             var map = new Dictionary<TypeDef, string>();
             AddType (map, standard.BigInteger,      "java.math" );
             AddType (map, standard.DateTime,        "kotlinx.datetime" );
+            AddType (map, standard.Guid,            "java.util" );
             AddType (map, standard.JsonValue,       "kotlinx.serialization.json" );
             return map;
         }
@@ -120,6 +121,8 @@ namespace Friflo.Json.Flow.Schema
                 var nullable    = type.IsAbstract ? required ? "" : "?": required ? "": "? = null";
                 if (field.type == context.standardTypes.BigInteger)
                     sb.AppendLine("              @Serializable(with = BigIntegerSerializer::class)");
+                if (field.type == context.standardTypes.Guid)
+                    sb.AppendLine("              @Serializable(with = UUIDSerializer::class)");
                 sb.AppendLine($"    {fieldModifier} val {field.name}{indent} : {fieldType}{nullable}{delimiter}");
             }
             var closeBracket = type.IsAbstract ? "}" : ")";
@@ -149,6 +152,8 @@ namespace Friflo.Json.Flow.Schema
                 return "Instant";
             if (type == context.standardTypes.JsonValue)
                 return "JsonElement";
+            if (type == context.standardTypes.Guid)
+                return "UUID";
             return type.Name;
         }
         
@@ -161,7 +166,7 @@ namespace Friflo.Json.Flow.Schema
                 sb.AppendLine($"package {emitFile.@namespace}");
                 sb.AppendLine();
                 sb.AppendLine("import kotlinx.serialization.*");
-                sb.AppendLine("import CustomSerializer.BigIntegerSerializer");
+                sb.AppendLine("import CustomSerializer.*");
                 
                 var namespaces = new HashSet<string>();
                 foreach (var importPair in emitFile.imports) {

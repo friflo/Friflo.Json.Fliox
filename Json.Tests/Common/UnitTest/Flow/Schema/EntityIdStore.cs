@@ -52,6 +52,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var generator = CSharpGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/C#/EntityIdStore2");
         }
+        
+        /// C# -> Kotlin
+        [Test]
+        public static void CS_Kotlin () {
+            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
+            var options = new NativeTypeOptions(typeStore, EntityIdStoreTypes) {
+                replacements = new [] {
+                    new Replace("Friflo.Json.Tests.Common.UnitTest.Flow",   "EntityIdStore") }
+            };
+            var generator = KotlinGenerator.Generate(options);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Kotlin/src/main/kotlin/EntityIdStore");
+        }
 
         
         // ---------------------------------- input: JSON Schema ----------------------------------
