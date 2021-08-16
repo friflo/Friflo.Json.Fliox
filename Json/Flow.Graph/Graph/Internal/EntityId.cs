@@ -7,6 +7,7 @@ using System.Reflection;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
+    // -------------------------------------------- EntityId -----------------------------------------------
     internal abstract class EntityId {
         private static readonly   Dictionary<Type, EntityId> Ids = new Dictionary<Type, EntityId>();
 
@@ -15,36 +16,44 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (Ids.TryGetValue(type, out EntityId id)) {
                 return (EntityId<T>)id;
             }
-            var result = CreateEntityId<T>("id"); 
-            Ids[type] = result;
-            return (EntityId<T>)result;
+            var result  = CreateEntityId<T>("id"); 
+            Ids[type]   = result;
+            return result;
         }
         
-        private static EntityId CreateEntityId<T> (string name)  where T : class {
-            var type    = typeof(T);
-            var property = type.GetProperty(name);
+        private static EntityId<T> CreateEntityId<T> (string name)  where T : class {
+            var type        = typeof(T);
+            var property    = type.GetProperty(name);
             if (property != null) {
                 var propType = property.PropertyType; 
-                if (propType != typeof(string))
-                    throw new InvalidOperationException($"unsupported type for entity id. property: {name}, type: {propType}, entity: {type}");        
+                if (propType != typeof(string)) {
+                    var msg = $"unsupported type for entity id. property: {name}, type: {propType}, entity: {type}";
+                    throw new InvalidOperationException(msg);
+                }
                 return new EntityIdProperty<T>(property);
             }
             var field   = type.GetField(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             if (field != null) {
                 var fieldType = field.FieldType; 
-                if (fieldType != typeof(string))
-                    throw new InvalidOperationException($"unsupported type for entity id. field: {name}, type: {fieldType}, entity: {type}");  
+                if (fieldType != typeof(string)) {
+                    var msg = $"unsupported type for entity id. field: {name}, type: {fieldType}, entity: {type}";
+                    throw new InvalidOperationException(msg);
+                }
                 return new EntityIdField<T>(field);
             }
             throw new InvalidOperationException($"id not found. type: {type}");
         }
     }
     
+    
+    // -------------------------------------------- EntityId<T> --------------------------------------------
     internal abstract class EntityId<T> : EntityId where T : class {
         internal abstract   string  GetEntityId (T entity);
         internal abstract   void    SetEntityId (T entity, string id);
     }
     
+    
+    // ------------------------------------------ EntityIdField<T> -----------------------------------------
     internal class EntityIdField<T> : EntityId<T> where T : class {
         private readonly   FieldInfo           field;
         
@@ -61,6 +70,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
     }
     
+    
+    // ----------------------------------------- EntityIdProperty<T> ---------------------------------------
     internal class EntityIdProperty<T> : EntityId<T> where T : class {
         private  readonly   Func  <T, string>   propertyGet;
         private  readonly   Action<T, string>   propertySet;
