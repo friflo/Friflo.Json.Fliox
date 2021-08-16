@@ -41,16 +41,17 @@ namespace Friflo.Json.Flow.Schema
         
         private static Dictionary<TypeDef, string> GetStandardTypes(StandardTypes standard) {
             var map = new Dictionary<TypeDef, string>();
-            AddType (map, standard.Uint8,         "\"type\": \"integer\", \"minimum\": 0, \"maximum\": 255" );
-            AddType (map, standard.Int16,         "\"type\": \"integer\", \"minimum\": -32768, \"maximum\": 32767" );
-            AddType (map, standard.Int32,         "\"type\": \"integer\", \"minimum\": -2147483648, \"maximum\": 2147483647" );
-            AddType (map, standard.Int64,         "\"type\": \"integer\", \"minimum\": -9223372036854775808, \"maximum\": 9223372036854775807" );
+            AddType (map, standard.Uint8,       "\"type\": \"integer\", \"minimum\": 0, \"maximum\": 255" );
+            AddType (map, standard.Int16,       "\"type\": \"integer\", \"minimum\": -32768, \"maximum\": 32767" );
+            AddType (map, standard.Int32,       "\"type\": \"integer\", \"minimum\": -2147483648, \"maximum\": 2147483647" );
+            AddType (map, standard.Int64,       "\"type\": \"integer\", \"minimum\": -9223372036854775808, \"maximum\": 9223372036854775807" );
                 
-            AddType (map, standard.Double,        "\"type\": \"number\"" );
-            AddType (map, standard.Float,         "\"type\": \"number\"" );
+            AddType (map, standard.Double,      "\"type\": \"number\"" );
+            AddType (map, standard.Float,       "\"type\": \"number\"" );
                 
-            AddType (map, standard.BigInteger,    "\"type\": \"string\", \"pattern\": \"^-?[0-9]+$\"" ); // https://www.regextester.com/
-            AddType (map, standard.DateTime,      "\"type\": \"string\", \"format\": \"date-time\"" );
+            AddType (map, standard.BigInteger,  "\"type\": \"string\", \"pattern\": \"^-?[0-9]+$\"" ); // https://www.regextester.com/
+            AddType (map, standard.DateTime,    "\"type\": \"string\", \"format\": \"date-time\"" );
+            AddType (map, standard.Guid,        "\"type\": \"string\", \"pattern\": \"(\\\\{){0,1}[0-9a-fA-F]{8}\\\\-[0-9a-fA-F]{4}\\\\-[0-9a-fA-F]{4}\\\\-[0-9a-fA-F]{4}\\\\-[0-9a-fA-F]{12}(\\\\}){0,1}\"" );
             return map;
         }
 

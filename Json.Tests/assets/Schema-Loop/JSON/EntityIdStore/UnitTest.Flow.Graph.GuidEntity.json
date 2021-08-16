@@ -6,8 +6,11 @@
         "GuidEntity": {
             "type": "object",
             "properties": {
-                "id": { "type": ["string", "null"] }
+                "id": { "$ref": "./Standard.json#/definitions/Guid" }
             },
+            "required": [
+                "id"
+            ],
             "additionalProperties": false
         }
     }
