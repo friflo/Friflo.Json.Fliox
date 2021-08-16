@@ -34,7 +34,9 @@
         { "fileMatch": ["/Json.Tests/assets/Graph/PocStore/Employee/*.json"], "url": "./Json.Tests/assets/Schema/JSON/PocStore/UnitTest.Flow.Graph.Employee.json" },
         { "fileMatch": ["/Json.Tests/assets/Graph/PocStore/Order/*.json"],    "url": "./Json.Tests/assets/Schema/JSON/PocStore/UnitTest.Flow.Graph.Order.json" },
         { "fileMatch": ["/Json.Tests/assets/Graph/PocStore/Producer/*.json"], "url": "./Json.Tests/assets/Schema/JSON/PocStore/UnitTest.Flow.Graph.Producer.json" },
-        { "fileMatch": ["/Json.Tests/assets/Graph/PocStore/TestType/*.json"], "url": "./Json.Tests/assets/Schema/JSON/PocStore/UnitTest.Flow.Graph.TestType.json" }
+        { "fileMatch": ["/Json.Tests/assets/Graph/PocStore/TestType/*.json"], "url": "./Json.Tests/assets/Schema/JSON/PocStore/UnitTest.Flow.Graph.TestType.json" },
+
+        { "fileMatch": ["/Json.Tests/assets/Graph/EntityIdStore/GuidEntity/*.json"], "url": "./Json.Tests/assets/Schema/JSON/EntityIdStore/UnitTest.Flow.Graph.GuidEntity.json" }
         
     ]
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.Utils;
+using Friflo.Json.Tests.Unity.Utils;
 using UnityEngine.TestTools;
 using static NUnit.Framework.Assert;
 
@@ -25,12 +26,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         private static async Task AssertGuidId() {
             const string id = "87db6552-a99d-4d53-9b20-8cc797db2b8f";
+            using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
-            using (var database     = new MemoryDatabase()) {
+            using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/EntityIdStore")) {
                 // Test: EntityId<T>.GetEntityId()
                 using (var guidStore    = new TestEntityIdStore(database, typeStore, "guidStore")) {
                     var entity  = new GuidEntity { id = new Guid(id)};
-                    var create  = guidStore.guidEntities.Create(entity);
+                    var create  = guidStore.guidEntities.Update(entity);
                     
                     await guidStore.Sync();
                     
