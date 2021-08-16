@@ -65,10 +65,10 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             if (reader.parser.Event != JsonEvent.ValueString)
                 return reader.HandleEvent(this, out success);
             ref var value = ref reader.parser.value;
-            if (!Guid.TryParse(value.ToString(), out var dateTime))     
+            if (!Guid.TryParse(value.ToString(), out var result))     
                 return reader.ErrorMsg<Guid?>("Failed parsing Guid. value: ", value.ToString(), out success);
             success = true;
-            return dateTime;
+            return result;
         }
     }
 }
