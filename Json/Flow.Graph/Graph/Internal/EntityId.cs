@@ -24,10 +24,16 @@ namespace Friflo.Json.Flow.Graph.Internal
             var type    = typeof(T);
             var property = type.GetProperty(name);
             if (property != null) {
+                var propType = property.PropertyType; 
+                if (propType != typeof(string))
+                    throw new InvalidOperationException($"unsupported type for entity id. property: {name}, type: {propType}, entity: {type}");        
                 return new EntityIdProperty<T>(property);
             }
             var field   = type.GetField(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             if (field != null) {
+                var fieldType = field.FieldType; 
+                if (fieldType != typeof(string))
+                    throw new InvalidOperationException($"unsupported type for entity id. field: {name}, type: {fieldType}, entity: {type}");  
                 return new EntityIdField<T>(field);
             }
             throw new InvalidOperationException($"id not found. type: {type}");
