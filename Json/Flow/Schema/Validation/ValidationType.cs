@@ -28,6 +28,7 @@ namespace Friflo.Json.Flow.Schema.Validation
         String,
         BigInteger,
         DateTime,
+        Guid,
         Enum,
         //
         JsonValue 

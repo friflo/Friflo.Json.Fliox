@@ -18,17 +18,20 @@ namespace Friflo.Json.Flow.Schema.Validation
         private  readonly   StringBuilder   sb = new StringBuilder();
         private  readonly   Regex           dateTime;
         private  readonly   Regex           bigInt;
+        private  readonly   Regex           guid;
         
         public              bool            qualifiedTypeErrors;
 
         // RFC 3339 + milliseconds
-        private  static readonly Regex  DateTime    = new Regex(@"\b^[1-9]\d{3}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$\b",   RegexOptions.Compiled);
-        private  static readonly Regex  BigInt      = new Regex(@"\b^-?[0-9]+$\b",                                          RegexOptions.Compiled);
+        private  static readonly Regex  DateTime    = new Regex(@"\b^[1-9]\d{3}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$\b",           RegexOptions.Compiled);
+        private  static readonly Regex  BigInt      = new Regex(@"\b^-?[0-9]+$\b",                                                  RegexOptions.Compiled);
+        private  static readonly Regex  Guid        = new Regex(@"\b^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$\b",RegexOptions.Compiled);
 
         public TypeValidator (bool qualifiedTypeErrors = false) {
             this.qualifiedTypeErrors    = qualifiedTypeErrors;
             dateTime                    = DateTime;
             bigInt                      = BigInt;
+            guid                        = Guid;
         }
         
         public void Dispose() {
@@ -284,6 +287,13 @@ namespace Friflo.Json.Flow.Schema.Validation
                         return true;
                     }
                     return ErrorValue("Invalid DateTime:", str, true, parent);
+                
+                case TypeId.Guid:
+                    str = value.ToString();
+                    if (guid.IsMatch(str)) {
+                        return true;
+                    }
+                    return ErrorValue("Invalid Guid:", str, true, parent);
                 
                 case TypeId.Enum:
                     return ValidationType.FindEnum(type, ref value, this, parent);

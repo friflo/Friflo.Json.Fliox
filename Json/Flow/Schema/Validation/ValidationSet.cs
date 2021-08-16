@@ -40,6 +40,7 @@ namespace Friflo.Json.Flow.Schema.Validation
             AddStandardType(TypeId.Double,      standardType.Double);
             AddStandardType(TypeId.BigInteger,  standardType.BigInteger);
             AddStandardType(TypeId.DateTime,    standardType.DateTime);
+            AddStandardType(TypeId.Guid,        standardType.Guid);
             AddStandardType(TypeId.JsonValue,   standardType.JsonValue);
 
             foreach (var type in schemaTypes) {
@@ -111,6 +112,7 @@ namespace Friflo.Json.Flow.Schema.Validation
                 case TypeId.String:     return "string";
                 case TypeId.BigInteger: return "BigInteger";
                 case TypeId.DateTime:   return "DateTime";
+                case TypeId.Guid:       return "Guid";
                 case TypeId.JsonValue:  return "JSON";
                 default:
                     throw new InvalidOperationException($"no standard typeId: {typeId}");
