@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.Utils;
-using Friflo.Json.Tests.Unity.Utils;
 using UnityEngine.TestTools;
 using static NUnit.Framework.Assert;
 
