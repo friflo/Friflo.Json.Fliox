@@ -41,7 +41,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 }
                 return new EntityIdField<T>(field);
             }
-            throw new InvalidOperationException($"id not found. type: {type}");
+            throw new InvalidOperationException($"entity id not found. name: {name}, entity: {type.Name}");
         }
     }
     
