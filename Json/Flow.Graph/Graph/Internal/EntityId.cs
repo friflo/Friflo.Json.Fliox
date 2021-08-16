@@ -26,20 +26,22 @@ namespace Friflo.Json.Flow.Graph.Internal
             var property    = type.GetProperty(name);
             if (property != null) {
                 var propType = property.PropertyType; 
-                if (propType != typeof(string)) {
-                    var msg = $"unsupported type for entity id. property: {name}, type: {propType.Name}, entity: {type.Name}";
-                    throw new InvalidOperationException(msg);
+                if (propType == typeof(string)) {
+                    return new EntityIdProperty<T>(property);
                 }
-                return new EntityIdProperty<T>(property);
+                // add additional types here
+                var msg = $"unsupported type for entity id. property: {name}, type: {propType.Name}, entity: {type.Name}";
+                throw new InvalidOperationException(msg);
             }
             var field   = type.GetField(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             if (field != null) {
                 var fieldType = field.FieldType; 
-                if (fieldType != typeof(string)) {
-                    var msg = $"unsupported type for entity id. field: {name}, type: {fieldType.Name}, entity: {type.Name}";
-                    throw new InvalidOperationException(msg);
+                if (fieldType == typeof(string)) {
+                    return new EntityIdField<T>(field);
                 }
-                return new EntityIdField<T>(field);
+                // add additional types here
+                var msg = $"unsupported type for entity id. field: {name}, type: {fieldType.Name}, entity: {type.Name}";
+                throw new InvalidOperationException(msg);
             }
             throw new InvalidOperationException($"entity id not found. name: {name}, entity: {type.Name}");
         }
