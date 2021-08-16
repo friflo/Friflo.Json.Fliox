@@ -29,11 +29,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                 var idResult = reader.Read<Guid>(idJson);
                 AreEqual(guid, idResult);
                 
-                var useGuid = new UseGuid { guid = guid, guidNull = guid };
+                var useGuid = new UseGuid { guid = guid, guidNull = guid, guidNull2 = null };
                 json = writer.Write(useGuid);
                 AreEqual(@"{
     ""guid"": ""87db6552-a99d-4d53-9b20-8cc797db2b8f"",
-    ""guidNull"": ""87db6552-a99d-4d53-9b20-8cc797db2b8f""
+    ""guidNull"": ""87db6552-a99d-4d53-9b20-8cc797db2b8f"",
+    ""guidNull2"": null
 }", json);
             }
         }
@@ -42,5 +43,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
     public class UseGuid {
         public  Guid    guid;
         public  Guid?   guidNull;
+        public  Guid?   guidNull2;
     }
 }
