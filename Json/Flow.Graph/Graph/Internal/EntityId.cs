@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (property != null) {
                 var propType = property.PropertyType; 
                 if (propType != typeof(string)) {
-                    var msg = $"unsupported type for entity id. property: {name}, type: {propType}, entity: {type}";
+                    var msg = $"unsupported type for entity id. property: {name}, type: {propType.Name}, entity: {type.Name}";
                     throw new InvalidOperationException(msg);
                 }
                 return new EntityIdProperty<T>(property);
@@ -36,7 +36,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (field != null) {
                 var fieldType = field.FieldType; 
                 if (fieldType != typeof(string)) {
-                    var msg = $"unsupported type for entity id. field: {name}, type: {fieldType}, entity: {type}";
+                    var msg = $"unsupported type for entity id. field: {name}, type: {fieldType.Name}, entity: {type.Name}";
                     throw new InvalidOperationException(msg);
                 }
                 return new EntityIdField<T>(field);
