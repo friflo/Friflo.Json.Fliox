@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
 {
     public static class EntityIdStoreGen
     {
-        private static readonly Type[] EntityIdStoreTypes      = EntityStore.GetEntityTypes<TestEntityIdStore>();
+        private static readonly Type[] EntityIdStoreTypes      = EntityStore.GetEntityTypes<EntityIdStore>();
 
         // -------------------------------------- input: C# --------------------------------------
         /// C# -> Typescript
@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         public static void CS_Typescript () {
             // Use code generator directly
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var schema      = new NativeTypeSchema(typeStore, typeof(TestEntityIdStore));
+            var schema      = new NativeTypeSchema(typeStore, typeof(EntityIdStore));
             var generator   = new Generator(schema, ".ts", new[]{new Replace("Friflo.Json.Tests.Common.")});
             TypescriptGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/EntityIdStore");
@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         [Test, Order(1)]
         public static void CS_JSON () {
             var typeStore   = EntityStore.AddTypeMatchers(new TypeStore());
-            var options     = new NativeTypeOptions(typeStore, typeof(TestEntityIdStore)) {
+            var options     = new NativeTypeOptions(typeStore, typeof(EntityIdStore)) {
                 separateTypes = EntityIdStoreTypes,
                 replacements = new [] {new Replace("Friflo.Json.Tests.Common.")}
             };
@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
         [Test, Order(2)]
         public static void JSON_JSON () {
             var schemas     = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
-            var schema      = new JsonTypeSchema(schemas, "./UnitTest.Flow.Graph.json#/definitions/TestEntityIdStore");
+            var schema      = new JsonTypeSchema(schemas, "./UnitTest.Flow.Graph.json#/definitions/EntityIdStore");
             var entityTypes = schema.GetEntityTypes();
             var options     = new JsonTypeOptions(schema) { separateTypes = entityTypes };
             var generator   = JsonSchemaGenerator.Generate(options);
