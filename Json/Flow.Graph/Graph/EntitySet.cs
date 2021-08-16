@@ -292,18 +292,11 @@ namespace Friflo.Json.Flow.Graph
         
         // ------------------------------------------- internals -------------------------------------------
         private void SetEntityId (T entity, string id) {
-            if (intern.idField != null) {
-                intern.idField.SetValue(entity, id);
-                return;
-            }
-            intern.idPropertySet(entity, id);
+            intern.entityId.SetEntityId(entity, id);
         }
         
         internal string GetEntityId (T entity) {
-            if (intern.idField != null) {
-                return (string)intern.idField.GetValue(entity);
-            }
-            return intern.idPropertyGet(entity);
+            return intern.entityId.GetEntityId(entity);
         }
 
         internal override void LogSetChangesInternal(LogTask logTask) {

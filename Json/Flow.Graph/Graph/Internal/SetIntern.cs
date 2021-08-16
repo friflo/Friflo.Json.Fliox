@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
-using System.Reflection;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Sync;
@@ -16,9 +14,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal readonly   ObjectPatcher       objectPatcher;
         internal readonly   Tracer              tracer;
         internal readonly   EntityStore         store;
-        internal readonly   FieldInfo           idField;
-        internal readonly   Func  <T, string>   idPropertyGet;
-        internal readonly   Action<T, string>   idPropertySet;
+        internal readonly   EntityId<T>         entityId;
 
         
         // --- non readonly
@@ -31,10 +27,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             tracer          = new Tracer(store._intern.typeCache, store);
             this.store      = store;
             subscription    = null;
-            var id          = EntityId.GetEntityId<T>();
-            idField         = id.field;
-            idPropertyGet   = id.propertyGet;
-            idPropertySet   = id.propertySet;
+            entityId        = EntityId.GetEntityId<T>();
         }
     }
 }
