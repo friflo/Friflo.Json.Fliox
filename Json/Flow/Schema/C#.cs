@@ -57,6 +57,7 @@ namespace Friflo.Json.Flow.Schema
             var map = new Dictionary<TypeDef, string>();
             AddType (map, standard.BigInteger,      "System.Numerics" );
             AddType (map, standard.DateTime,        "System" );
+            AddType (map, standard.Guid,            "System" );
             AddType (map, standard.JsonValue,       "Friflo.Json.Flow.Mapper" );
             return map;
         }

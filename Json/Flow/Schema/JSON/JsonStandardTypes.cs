@@ -18,6 +18,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         public   override   TypeDef     Double      { get; }
         public   override   TypeDef     BigInteger  { get; }
         public   override   TypeDef     DateTime    { get; }
+        public   override   TypeDef     Guid        { get; }
         public   override   TypeDef     JsonValue   { get; }
         
         internal JsonStandardTypes (Dictionary<string, JsonTypeDef> types) {
@@ -31,6 +32,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             Double      = Find(types, "./Standard.json#/definitions/double");
             BigInteger  = Find(types, "./Standard.json#/definitions/BigInteger");
             DateTime    = Find(types, "./Standard.json#/definitions/DateTime");
+            Guid        = Find(types, "./Standard.json#/definitions/Guid");
             JsonValue   = new JsonTypeDef("{ }");
         }
         

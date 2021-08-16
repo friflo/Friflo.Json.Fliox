@@ -23,10 +23,14 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
 #endif
     public class GuidMapper : TypeMapper<Guid>
     {
-        public override string DataTypeName() { return "Guid"; }
-        
+        public  override    string          DataTypeName() { return "Guid"; }
+        public  override    TypeMapper      GetUnderlyingMapper() => stringMapper; // todo - remove?
+        private readonly    TypeMapper      stringMapper;
+
         public GuidMapper(StoreConfig config, Type type) :
-            base (config, type, false, false) {
+            base (config, type, false, false)
+        {
+            stringMapper = StringMatcher.Instance.MatchTypeMapper(typeof(string), config);
         }
 
         public override void Write(ref Writer writer, Guid value) {

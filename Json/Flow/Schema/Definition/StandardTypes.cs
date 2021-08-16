@@ -22,6 +22,7 @@ namespace Friflo.Json.Flow.Schema.Definition
         
         public abstract     TypeDef     BigInteger  { get; }
         public abstract     TypeDef     DateTime    { get; }
+        public abstract     TypeDef     Guid        { get; }
         
         public abstract     TypeDef     JsonValue   { get; }
     }
