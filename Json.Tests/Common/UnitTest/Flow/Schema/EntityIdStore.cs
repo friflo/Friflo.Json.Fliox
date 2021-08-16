@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var options     = new JsonTypeOptions(schema) { separateTypes = entityTypes };
             var generator   = JsonSchemaGenerator.Generate(options);
             
-            var loopFolder  = CommonUtils.GetBasePath() + "assets/Schema-Loop/JSON/EntityIdStore2";
+            var loopFolder  = CommonUtils.GetBasePath() + "assets/Schema-Loop/JSON/EntityIdStore";
             generator.WriteFiles(loopFolder, false);
             SchemaTest.AssertFoldersAreEqual(JsonSchemaFolder, loopFolder);
         }
