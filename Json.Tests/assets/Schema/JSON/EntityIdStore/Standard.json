@@ -4,6 +4,9 @@
     "definitions": {
         "Guid": {
             "type": "string", "pattern": "^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$"
+        },
+        "int32": {
+            "type": "integer", "minimum": -2147483648, "maximum": 2147483647
         }
     }
 }

@@ -11,5 +11,9 @@ public class GuidEntity {
     Guid  id;
 }
 
+public class IntEntity {
+    int  id;
+}
+
 }
 

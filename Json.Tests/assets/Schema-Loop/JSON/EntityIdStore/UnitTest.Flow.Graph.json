@@ -6,10 +6,12 @@
             "type": "object",
             "isAbstract": true,
             "properties": {
-                "guidEntities": { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Flow.Graph.GuidEntity.json#/definitions/GuidEntity" } }
+                "guidEntities": { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Flow.Graph.GuidEntity.json#/definitions/GuidEntity" } },
+                "intEntities":  { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Flow.Graph.IntEntity.json#/definitions/IntEntity" } }
             },
             "required": [
-                "guidEntities"
+                "guidEntities",
+                "intEntities"
             ],
             "additionalProperties": false
         }

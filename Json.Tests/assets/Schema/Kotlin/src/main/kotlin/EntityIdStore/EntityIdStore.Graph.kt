@@ -11,3 +11,8 @@ data class GuidEntity (
               val id : UUID,
 )
 
+@Serializable
+data class IntEntity (
+              val id : Int,
+)
+

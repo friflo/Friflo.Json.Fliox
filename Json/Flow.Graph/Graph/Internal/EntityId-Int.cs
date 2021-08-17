@@ -6,32 +6,32 @@ using System.Reflection;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
-    internal class EntityIdGuidField<T> : EntityId<T> where T : class {
+    internal class EntityIdIntField<T> : EntityId<T> where T : class {
         private readonly   FieldInfo           field;
         
-        internal EntityIdGuidField(FieldInfo field) {
+        internal EntityIdIntField(FieldInfo field) {
             this.field = field;
         }
         
         internal override   string  GetEntityId (T entity) {
-            var value = (Guid)field.GetValue(entity);
+            var value = (int)field.GetValue(entity);
             return value.ToString();
         }
         
         internal override   void    SetEntityId (T entity, string id) {
-            var value = new Guid(id);
+            var value = int.Parse(id);
             field.SetValue(entity, value);
         }
     }
     
     
-    internal class EntityIdGuidProperty<T> : EntityId<T> where T : class {
-        private  readonly   Func  <T, Guid>   propertyGet;
-        private  readonly   Action<T, Guid>   propertySet;
+    internal class EntityIdIntProperty<T> : EntityId<T> where T : class {
+        private  readonly   Func  <T, int>      propertyGet;
+        private  readonly   Action<T, int>      propertySet;
         
-        internal EntityIdGuidProperty(MethodInfo idGetMethod, MethodInfo idSetMethod) {
-            propertyGet = (Func  <T, Guid>) Delegate.CreateDelegate (typeof(Func  <T, Guid>), idGetMethod);
-            propertySet = (Action<T, Guid>) Delegate.CreateDelegate (typeof(Action<T, Guid>), idSetMethod);
+        internal EntityIdIntProperty(MethodInfo idGetMethod, MethodInfo idSetMethod) {
+            propertyGet = (Func  <T, int>) Delegate.CreateDelegate (typeof(Func  <T, int>), idGetMethod);
+            propertySet = (Action<T, int>) Delegate.CreateDelegate (typeof(Action<T, int>), idSetMethod);
         }
         
         internal override   string  GetEntityId (T entity){
@@ -40,7 +40,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal override   void    SetEntityId (T entity, string id) {
-            var value = new Guid(id);
+            var value = int.Parse(id);
             propertySet(entity, value);
         }
     }
