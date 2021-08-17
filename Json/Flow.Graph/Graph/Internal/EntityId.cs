@@ -30,6 +30,10 @@ namespace Friflo.Json.Flow.Graph.Internal
                 var propType    = property.PropertyType;
                 var idGetMethod = property.GetGetMethod(true);    
                 var idSetMethod = property.GetSetMethod(true);
+                if (idGetMethod == null || idSetMethod == null) {
+                    var msg2 = $"entity id property must have get & set: {name}, type: {propType.Name}, entity: {type.Name}";
+                    throw new InvalidOperationException(msg2);
+                }
                 if (propType == typeof(string)) {
                     return new EntityIdStringProperty<T>(idGetMethod, idSetMethod);
                 }
