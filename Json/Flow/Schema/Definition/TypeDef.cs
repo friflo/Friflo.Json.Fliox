@@ -72,6 +72,7 @@ namespace Friflo.Json.Flow.Schema.Definition
         /// if <see cref="isDictionary"/> is true <see cref="type"/> contains the value type.
         public  readonly    bool            isDictionary;
         public  readonly    TypeDef         ownerType;
+        public              bool            IsDerivedField { get; private set; }
 
         public  override    string          ToString() => name;
         
@@ -84,17 +85,18 @@ namespace Friflo.Json.Flow.Schema.Definition
             this.ownerType      = ownerType;
         }
         
-        public bool IsDerivedField { get {
+        internal void MarkDerivedField() {
             var parent = ownerType.BaseType;
             while (parent != null) {
                 foreach (var field in parent.Fields) {
-                    if (field.name == name)
-                        return true;
+                    if (field.name == name) {
+                        IsDerivedField = true;
+                        return;
+                    }
                 }
                 parent = parent.BaseType;
             }
-            return false;
-        }}
+        }
     }
 
     public class UnionType {

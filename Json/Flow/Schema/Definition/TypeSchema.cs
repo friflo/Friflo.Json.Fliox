@@ -49,5 +49,19 @@ namespace Friflo.Json.Flow.Schema.Definition
             }
             return list;
         }
+        
+        /// <summary>
+        /// Must to be called after collecting all <see cref="Types"/> and their <see cref="TypeDef.Fields"/>.
+        /// </summary>
+        protected void MarkDerivedFields () {
+            foreach (var type in Types) {
+                var fields = type.Fields;
+                if (fields == null)
+                    continue;
+                foreach (var typeField in fields) {
+                    typeField.MarkDerivedField();
+                }
+            }
+        }
     }
 }

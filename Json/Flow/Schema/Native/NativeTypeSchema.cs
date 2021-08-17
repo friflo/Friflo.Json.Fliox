@@ -111,6 +111,7 @@ namespace Friflo.Json.Flow.Schema.Native
                     }
                 }
             }
+            MarkDerivedFields();
             if (rootType != null) {
                 var rootTypeDef = TypeAsTypeDef(rootType);
                 if (rootTypeDef == null)
