@@ -9,4 +9,4 @@ https://github.com/friflo/Friflo.Json.Flow
 
 ### Topics
 
-entity graph orm database pubsub json-mapper parser serializer http websocket c-sharp code-generator unity async throughput realtime-messaging rpc authorization
+entity graph orm database pubsub json-mapper json-schema-validator parser serializer  websocket c-sharp code-generator unity async throughput realtime-messaging rpc authorization
