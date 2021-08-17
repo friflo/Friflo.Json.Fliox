@@ -27,12 +27,14 @@ namespace Friflo.Json.Flow.Graph.Internal
             var type        = typeof(T);
             var property    = type.GetProperty(name, Flags);
             if (property != null) {
-                var propType = property.PropertyType; 
+                var propType    = property.PropertyType;
+                var idGetMethod = property.GetGetMethod(true);    
+                var idSetMethod = property.GetSetMethod(true);
                 if (propType == typeof(string)) {
-                    return new EntityIdStringProperty<T>(property);
+                    return new EntityIdStringProperty<T>(idGetMethod, idSetMethod);
                 }
                 if (propType == typeof(Guid)) {
-                    return new EntityIdGuidProperty<T>(property);
+                    return new EntityIdGuidProperty<T>  (idGetMethod, idSetMethod);
                 }
                 // add additional types here
                 var msg = $"unsupported type for entity id. property: {name}, type: {propType.Name}, entity: {type.Name}";

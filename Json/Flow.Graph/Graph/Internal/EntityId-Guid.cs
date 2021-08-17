@@ -29,9 +29,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         private  readonly   Func  <T, Guid>   propertyGet;
         private  readonly   Action<T, Guid>   propertySet;
         
-        internal EntityIdGuidProperty(PropertyInfo property) {
-            var idGetMethod = property.GetGetMethod(true);    
-            var idSetMethod = property.GetSetMethod(true);
+        internal EntityIdGuidProperty(MethodInfo idGetMethod, MethodInfo idSetMethod) {
             propertyGet = (Func  <T, Guid>) Delegate.CreateDelegate (typeof(Func  <T, Guid>), idGetMethod);
             propertySet = (Action<T, Guid>) Delegate.CreateDelegate (typeof(Action<T, Guid>), idSetMethod);
         }
