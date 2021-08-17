@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var typeStore    = new TypeStore())
             using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/EntityIdStore")) {
                 
-                // --- Guid as id ---
+                // --- Guid as entity id ---
                 var guidId = new Guid("87db6552-a99d-4d53-9b20-8cc797db2b8f");
                 // Test: EntityId<T>.GetEntityId()
                 using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     AreEqual(guidId, find.Result.id);
                 }
                 
-                // --- int as id ---
+                // --- int as entity id ---
                 const int intId = 1234;
                 // Test: EntityId<T>.GetEntityId()
                 using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     AreEqual(intId, find.Result.id);
                 }
                 
-                // --- long as id ---
+                // --- long as entity id ---
                 const long longId = 1234567890123456789;
                 // Test: EntityId<T>.GetEntityId()
                 using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
