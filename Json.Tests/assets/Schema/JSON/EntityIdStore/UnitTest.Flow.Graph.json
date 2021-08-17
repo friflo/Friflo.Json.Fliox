@@ -7,11 +7,13 @@
             "isAbstract": true,
             "properties": {
                 "guidEntities": { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Flow.Graph.GuidEntity.json#/definitions/GuidEntity" } },
-                "intEntities":  { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Flow.Graph.IntEntity.json#/definitions/IntEntity" } }
+                "intEntities":  { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Flow.Graph.IntEntity.json#/definitions/IntEntity" } },
+                "longEntities": { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Flow.Graph.LongEntity.json#/definitions/LongEntity" } }
             },
             "required": [
                 "guidEntities",
-                "intEntities"
+                "intEntities",
+                "longEntities"
             ],
             "additionalProperties": false
         }

@@ -15,5 +15,9 @@ public class IntEntity {
     int  id;
 }
 
+public class LongEntity {
+    long  id;
+}
+
 }
 

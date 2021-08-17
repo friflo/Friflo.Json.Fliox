@@ -87,6 +87,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsTrue(find.Success);
                     AreEqual(intId, find.Result.id);
                 }
+                
+                // --- long as id ---
+                const long longId = 1234567890123456789;
+                // Test: EntityId<T>.GetEntityId()
+                using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
+                    var entity  = new LongEntity { id = longId};
+                    var create  = store.longEntities.Update(entity);
+                    
+                    await store.Sync();
+                    
+                    IsTrue(create.Success);
+                    
+                    var read = store.longEntities.Read();
+                    var find = read.Find(longId.ToString());
+                        
+                    await store.Sync();
+                    
+                    IsTrue(find.Success);
+                    IsTrue(entity == find.Result);
+                }
+                // Test: EntityId<T>.SetEntityId()
+                using (var guidStore    = new EntityIdStore(database, typeStore, "guidStore")) {
+                    var read = guidStore.longEntities.Read();
+                    var find = read.Find(longId.ToString());
+                        
+                    await guidStore.Sync();
+                    
+                    IsTrue(find.Success);
+                    AreEqual(longId, find.Result.id);
+                }
             }
         }
     }

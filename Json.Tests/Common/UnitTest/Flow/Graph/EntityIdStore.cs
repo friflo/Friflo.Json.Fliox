@@ -11,10 +11,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     public class EntityIdStore : EntityStore {
         public  readonly    EntitySet<GuidEntity>   guidEntities;
         public  readonly    EntitySet<IntEntity>    intEntities;
+        public  readonly    EntitySet<LongEntity>   longEntities;
 
         public EntityIdStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
             guidEntities    = new EntitySet<GuidEntity>(this);
             intEntities     = new EntitySet<IntEntity> (this);
+            longEntities    = new EntitySet<LongEntity> (this);
         }
     }
 
@@ -24,5 +26,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     
     public class IntEntity {
         public int  id;
+    }
+    
+    public class LongEntity {
+        public long id;
     }
 }
