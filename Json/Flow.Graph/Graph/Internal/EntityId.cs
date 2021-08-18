@@ -115,19 +115,17 @@ namespace Friflo.Json.Flow.Graph.Internal
                 
         internal static Func<TEntity,TField> GetFieldGet<TEntity, TField>(FieldInfo field) {
             var instanceType    = field.DeclaringType;
-            var fieldName       = field.Name;
             var instExp         = Expression.Parameter(instanceType,    "instance");
-            var fieldExp        = Expression.Field(instExp, fieldName);
+            var fieldExp        = Expression.Field(instExp, field);
             return                Expression.Lambda<Func<TEntity, TField>>(fieldExp, instExp).Compile();
         }
         
         internal static Action<TEntity,TField> GetFieldSet<TEntity, TField>(FieldInfo field) {
             var instanceType    = field.DeclaringType;
             var fieldType       = field.FieldType;
-            var fieldName       = field.Name;
             var instExp         = Expression.Parameter(instanceType,    "instance");
             var valueExp        = Expression.Parameter(fieldType,       "value");
-            var fieldExp        = Expression.Field(instExp, fieldName);
+            var fieldExp        = Expression.Field(instExp, field);
             var assignExpr      = Expression.Assign (fieldExp, valueExp);
             return                Expression.Lambda<Action<TEntity, TField>>(assignExpr, instExp, valueExp).Compile();
         }
