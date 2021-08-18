@@ -105,8 +105,11 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
         }
         
         private static bool IsKey(IEnumerable<CustomAttributeData> attributes) {
-            foreach (var attr in attributes) {
+            foreach (CustomAttributeData attr in attributes) {
                 if (attr.AttributeType == typeof(Fri.KeyAttribute))
+                    return true;
+                // Unity has System.ComponentModel.DataAnnotations.KeyAttribute no available by default
+                if (attr.AttributeType.FullName == "System.ComponentModel.DataAnnotations.KeyAttribute")
                     return true;
             }
             return false;

@@ -25,5 +25,10 @@ public class CustomIdEntity {
     string  customId;
 }
 
+public class CustomIdEntity2 {
+    [Fri.Required]
+    string  customId2;
+}
+
 }
 

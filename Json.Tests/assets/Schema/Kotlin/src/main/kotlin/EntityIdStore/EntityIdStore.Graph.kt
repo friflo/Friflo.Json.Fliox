@@ -26,3 +26,8 @@ data class CustomIdEntity (
               val customId : String,
 )
 
+@Serializable
+data class CustomIdEntity2 (
+              val customId2 : String,
+)
+

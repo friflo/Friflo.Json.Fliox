@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
@@ -13,12 +14,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public  readonly    EntitySet<IntEntity>        intEntities;
         public  readonly    EntitySet<LongEntity>       longEntities;
         public  readonly    EntitySet<CustomIdEntity>   customIdEntities;
+#if !UNITY_5_3_OR_NEWER
+        public  readonly    EntitySet<CustomIdEntity2>  customIdEntities2;
+#endif
 
         public EntityIdStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-            guidEntities        = new EntitySet<GuidEntity>     (this);
-            intEntities         = new EntitySet<IntEntity>      (this);
-            longEntities        = new EntitySet<LongEntity>     (this);
-            customIdEntities    = new EntitySet<CustomIdEntity> (this);
+            guidEntities       = new EntitySet<GuidEntity>      (this);
+            intEntities        = new EntitySet<IntEntity>       (this);
+            longEntities       = new EntitySet<LongEntity>      (this);
+            customIdEntities   = new EntitySet<CustomIdEntity>  (this);
+#if !UNITY_5_3_OR_NEWER
+            customIdEntities2  = new EntitySet<CustomIdEntity2> (this);
+#endif
         }
     }
 
@@ -38,4 +45,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         [Fri.Key]
         [Fri.Required]  public string customId;
     }
+    
+#if !UNITY_5_3_OR_NEWER
+    // define key alternatively by System.ComponentModel.DataAnnotations.KeyAttribute
+    public class CustomIdEntity2 {
+        [Key] 
+        [Fri.Required]  public string customId2;
+    }
+#endif
 }
