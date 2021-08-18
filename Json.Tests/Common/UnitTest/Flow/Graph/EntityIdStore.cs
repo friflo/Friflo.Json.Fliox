@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     }
     
     public class LongEntity {
-        public long id;
+        public long Id { get; set; }
     }
     
     public class CustomIdEntity {

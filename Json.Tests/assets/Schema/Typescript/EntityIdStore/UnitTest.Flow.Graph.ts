@@ -19,7 +19,7 @@ export class IntEntity {
 }
 
 export class LongEntity {
-    id  : int64;
+    Id  : int64;
 }
 
 export class CustomIdEntity {

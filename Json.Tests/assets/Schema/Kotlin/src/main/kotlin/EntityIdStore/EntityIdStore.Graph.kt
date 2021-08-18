@@ -18,7 +18,7 @@ data class IntEntity (
 
 @Serializable
 data class LongEntity (
-              val id : Long,
+              val Id : Long,
 )
 
 @Serializable

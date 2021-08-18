@@ -92,7 +92,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 const long longId = 1234567890123456789;
                 // Test: EntityId<T>.GetEntityId()
                 using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
-                    var entity  = new LongEntity { id = longId};
+                    var entity  = new LongEntity { Id = longId};
                     var create  = store.longEntities.Update(entity);
                     
                     await store.Sync();
@@ -115,7 +115,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     await guidStore.Sync();
                     
                     IsTrue(find.Success);
-                    AreEqual(longId, find.Result.id);
+                    AreEqual(longId, find.Result.Id);
                 }
                 
                 // --- string as custom entity id ---

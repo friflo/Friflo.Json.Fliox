@@ -17,25 +17,20 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (Ids.TryGetValue(type, out EntityId id)) {
                 return (EntityId<T>)id;
             }
-            var name = "id";
-            var keyMember = FindKeyMember (type);
-            if (keyMember != null) {
-                name = keyMember.Name;   
-            }
-            EntityId<T> result;
-            var property    = type.GetProperty(name, Flags);
+            var member = FindKeyMember (type);
+            var property = member as PropertyInfo;
             if (property != null) {
-                result  = CreateEntityIdProperty<T>(property, type);
+                var result  = CreateEntityIdProperty<T>(property, type);
                 Ids[type]   = result;
                 return result;
             }
-            var field    = type.GetField(name, Flags);
+            var field = member as FieldInfo;
             if (field != null) {
-                result  = CreateEntityIdField<T>(field, type);
+                var result  = CreateEntityIdField<T>(field, type);
                 Ids[type]   = result;
                 return result;
             }
-            throw new InvalidOperationException($"entity id not found. name: {name}, entity: {type.Name}");
+            throw new InvalidOperationException($"missing entity id member. entity: {type.Name}");
         }
         
         private static MemberInfo FindKeyMember (Type type) {
@@ -45,6 +40,20 @@ namespace Friflo.Json.Flow.Graph.Internal
                 if (IsKey(customAttributes))
                     return member;
             }
+            var property = type.GetProperty("id", Flags);
+            if (property != null)
+                return property;
+            property = type.GetProperty("Id", Flags);
+            if (property != null)
+                return property;
+            
+            var field = type.GetField("id", Flags);
+            if (field != null)
+                return field;
+            field = type.GetField("Id", Flags);
+            if (field != null)
+                return field;
+            
             return null;
         }
 

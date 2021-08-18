@@ -6,10 +6,10 @@
         "LongEntity": {
             "type": "object",
             "properties": {
-                "id": { "$ref": "./Standard.json#/definitions/int64" }
+                "Id": { "$ref": "./Standard.json#/definitions/int64" }
             },
             "required": [
-                "id"
+                "Id"
             ],
             "additionalProperties": false
         }

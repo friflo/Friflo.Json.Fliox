@@ -16,7 +16,7 @@ public class IntEntity {
 }
 
 public class LongEntity {
-    long  id;
+    long  Id;
 }
 
 public class CustomIdEntity {
