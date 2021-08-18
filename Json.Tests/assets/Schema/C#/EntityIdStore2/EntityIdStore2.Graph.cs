@@ -20,6 +20,7 @@ public class LongEntity {
 }
 
 public class CustomIdEntity {
+    [Fri.Key]
     [Fri.Property(Required = true)]
     string  customId;
 }

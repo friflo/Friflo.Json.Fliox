@@ -119,6 +119,8 @@ namespace Friflo.Json.Flow.Schema
                 var isReferenceType = def.isArray || def.isDictionary || !def.type.IsStruct;
                 bool notNull        = def.required || isReferenceType;
                 var nullStr         = notNull ? " " : "?";
+                if (def.isKey)
+                    sb.AppendLine("    [Fri.Key]");
                 if (def.required && isReferenceType)
                     sb.AppendLine("    [Fri.Property(Required = true)]");
                 sb.AppendLine($"    {field.type}{nullStr}{indent} {def.name};");
