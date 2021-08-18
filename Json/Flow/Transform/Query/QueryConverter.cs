@@ -71,7 +71,7 @@ namespace Friflo.Json.Flow.Transform.Query
         
         public static string GetMemberName(MemberExpression member, QueryCx cx) {
             MemberInfo memberInfo = member.Member;
-            AttributeUtils.Property(memberInfo.CustomAttributes, out var customName, out _);
+            AttributeUtils.Property(memberInfo.CustomAttributes, out var customName);
             if (customName != null)
                 return customName;
             

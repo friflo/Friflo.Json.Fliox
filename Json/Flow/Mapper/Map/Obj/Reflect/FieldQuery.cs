@@ -27,14 +27,14 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
             bool            required;
             if (property != null) {
                 memberType   = property.PropertyType;
-                AttributeUtils.Property(property.CustomAttributes, out jsonName, out required);
-                required = required || IsRequired(property.CustomAttributes);
+                AttributeUtils.Property(property.CustomAttributes, out jsonName);
+                required =IsRequired(property.CustomAttributes);
                 if (property.GetSetMethod(false) == null)
                     required = true;
             } else {
                 memberType   = field.FieldType;
-                AttributeUtils.Property(field.CustomAttributes, out jsonName, out required);
-                required = required || IsRequired(field.CustomAttributes);
+                AttributeUtils.Property(field.CustomAttributes, out jsonName);
+                required = IsRequired(field.CustomAttributes);
                 // used for fields like: readonly EntitySet<Order>
                 if ((field.Attributes & FieldAttributes.InitOnly) != 0)
                     required = true;
@@ -158,9 +158,8 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
     
     public static class AttributeUtils {
                 
-        public static void Property(IEnumerable<CustomAttributeData> attributes, out string name, out bool required) {
+        public static void Property(IEnumerable<CustomAttributeData> attributes, out string name) {
             name        = null;
-            required    = false;
             foreach (var attr in attributes) {
                 if (attr.AttributeType != typeof(Fri.PropertyAttribute))
                     continue;
@@ -171,10 +170,6 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
                         case nameof(Fri.PropertyAttribute.Name):
                             if (args.TypedValue.Value != null)
                                 name = args.TypedValue.Value as string;
-                            break;
-                        case nameof(Fri.PropertyAttribute.Required):
-                            if (args.TypedValue.Value != null)
-                                required = (bool)args.TypedValue.Value;
                             break;
                     }
                 }

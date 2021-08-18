@@ -33,7 +33,6 @@ namespace Friflo.Json.Flow.Mapper
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
         public sealed class PropertyAttribute : Attribute {
             public string       Name        { get; set; }
-            public bool         Required    { get; set; }
         }
         
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
