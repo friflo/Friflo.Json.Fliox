@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Schema.JSON
     ///     <item><see cref="JsonType.isAbstract"/></item>
     ///     <item><see cref="FieldType.isKey"/></item>
     /// </list>
-    /// The restriction of <see cref="JsonFlowSchema"/> are:
+    /// The restriction of <see cref="JsonSchema"/> are:
     /// <list type="bullet">
     ///   <item>
     ///     A schema property cannot nest anonymous types by "type": "object" with "properties": { ... }.
@@ -40,7 +40,7 @@ namespace Friflo.Json.Flow.Schema.JSON
     ///   </item>
     /// </list>
     /// </summary>
-    public class JsonFlowSchema
+    public class JsonSchema
     {
         [Fri.Property(Name ="$ref")]public  string                          rootRef;
         

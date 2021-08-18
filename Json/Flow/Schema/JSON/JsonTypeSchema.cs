@@ -12,9 +12,9 @@ using Friflo.Json.Flow.Schema.Definition;
 namespace Friflo.Json.Flow.Schema.JSON
 {
     /// <summary>
-    /// A <see cref="TypeSchema"/> constructed by a set of given <see cref="JsonFlowSchema"/>'s.
+    /// A <see cref="TypeSchema"/> constructed by a set of given <see cref="JsonSchema"/>'s.
     /// The utility method <see cref="JsonTypeSchema.ReadSchemas"/> can be used to read a set of
-    /// <see cref="JsonFlowSchema"/>'s as files in a folder.
+    /// <see cref="JsonSchema"/>'s as files in a folder.
     /// </summary>
     public class JsonTypeSchema : TypeSchema, IDisposable
     {
@@ -24,9 +24,9 @@ namespace Friflo.Json.Flow.Schema.JSON
         
         private readonly    Dictionary<string, JsonTypeDef> typeMap;
         
-        public JsonTypeSchema(List<JsonFlowSchema> schemaList, string rootType = null) {
+        public JsonTypeSchema(List<JsonSchema> schemaList, string rootType = null) {
             typeMap = new Dictionary<string, JsonTypeDef>(schemaList.Count);
-            foreach (JsonFlowSchema schema in schemaList) {
+            foreach (JsonSchema schema in schemaList) {
                 schema.typeDefs = new Dictionary<string, JsonTypeDef>(schema.definitions.Count);
                 foreach (var pair in schema.definitions) {
                     var typeName    = pair.Key;
@@ -46,7 +46,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             
             using (var reader          = new ObjectReader(new TypeStore()))
             {
-                foreach (JsonFlowSchema schema in schemaList) {
+                foreach (JsonSchema schema in schemaList) {
                     var context = new JsonTypeContext(schema, typeMap, standardTypes, reader);
                     var rootRef = schema.rootRef;
                     if (rootRef != null) {
@@ -86,7 +86,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                         }
                     }
                 }
-                foreach (JsonFlowSchema schema in schemaList) {
+                foreach (JsonSchema schema in schemaList) {
                     foreach (var pair in schema.typeDefs) {
                         JsonTypeDef typeDef = pair.Value;
                         if (typeDef.discriminant == null)
@@ -248,7 +248,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             return context.schemas[reference];
         }
         
-        private static string GetNamespace (JsonFlowSchema schema, string typeName) {
+        private static string GetNamespace (JsonSchema schema, string typeName) {
             var name = schema.name;
             var rootRef = schema.rootRef;
             if (rootRef != null) {
@@ -262,17 +262,17 @@ namespace Friflo.Json.Flow.Schema.JSON
             return name;
         }
 
-        /// <summary>Read a set of <see cref="JsonFlowSchema"/>'s stored as files in the given <see cref="folder"/>.</summary>
-        public static List<JsonFlowSchema> ReadSchemas(string folder) {
+        /// <summary>Read a set of <see cref="JsonSchema"/>'s stored as files in the given <see cref="folder"/>.</summary>
+        public static List<JsonSchema> ReadSchemas(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
-            var schemas = new List<JsonFlowSchema>();
+            var schemas = new List<JsonSchema>();
             using (var typeStore    = new TypeStore())
             using (var reader       = new ObjectReader(typeStore)) {
                 foreach (var path in fileNames) {
                     var fileName = path.Substring(folder.Length + 1);
                     var name = fileName.Substring(0, fileName.Length - ".json".Length);
                     var jsonSchema = File.ReadAllText(path, Encoding.UTF8);
-                    var schema = reader.Read<JsonFlowSchema>(jsonSchema);
+                    var schema = reader.Read<JsonSchema>(jsonSchema);
                     schema.fileName = fileName;
                     schema.name = name;
                     schemas.Add(schema);
@@ -299,13 +299,13 @@ namespace Friflo.Json.Flow.Schema.JSON
     
     internal readonly struct JsonTypeContext
     {
-        internal readonly   JsonFlowSchema                  schema;
+        internal readonly   JsonSchema                      schema;
         internal readonly   Dictionary<string, JsonTypeDef> schemas;
         internal readonly   JsonStandardTypes               standardTypes;
         internal readonly   ObjectReader                    reader;
 
         internal JsonTypeContext (
-            JsonFlowSchema                  schema,
+            JsonSchema                      schema,
             Dictionary<string, JsonTypeDef> schemas,
             JsonStandardTypes               standardTypes,
             ObjectReader                    reader)

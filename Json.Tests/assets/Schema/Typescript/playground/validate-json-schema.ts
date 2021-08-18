@@ -12,7 +12,7 @@ export function validateSchemas() {
     const userStoreFiles        = getFiles("../JSON/UserStore/");
     const pocStoreFiles         = getFiles("../JSON/PocStore/");
     const entityIdStoreFiles    = getFiles("../JSON/EntityIdStore/");
-    const jsonFlowSchemaFiles   = getFiles("../JSON/JsonFlowSchema/");
+    const jsonFlowSchemaFiles   = getFiles("../JSON/JsonSchema/");
 
     const schemas : string[] = userStoreFiles.concat(pocStoreFiles, entityIdStoreFiles, jsonFlowSchemaFiles);
 

@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
     /// </summary>
     public static class JsonFlowSchemaGen
     {
-        private static readonly Type[] JsonFlowSchemaTypes        = { typeof(JsonFlowSchema) };
+        private static readonly Type[] JsonFlowSchemaTypes        = { typeof(JsonSchema) };
 
         // -------------------------------------- input: C# --------------------------------------
         
@@ -27,16 +27,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var options = new NativeTypeOptions(typeStore, JsonFlowSchemaTypes);
             var generator = TypescriptGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/JsonFlowSchema");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/JsonSchema");
         }
         
         /// C# -> JSON Schema
         [Test, Order(1)]
         public static void CS_JSON () {
             var typeStore   = EntityStore.AddTypeMatchers(new TypeStore());
-            var options     = new NativeTypeOptions(typeStore, typeof(JsonFlowSchema));
+            var options     = new NativeTypeOptions(typeStore, typeof(JsonSchema));
             var generator   = JsonSchemaGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JSON/JsonFlowSchema");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JSON/JsonSchema");
         }
         
         /// C# -> C#
@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
                 replacements = new[]{new Replace("Friflo.Json.")}
             };
             var generator = CSharpGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/C#/JsonFlowSchema");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/C#/JsonSchema");
         }
     }
 }

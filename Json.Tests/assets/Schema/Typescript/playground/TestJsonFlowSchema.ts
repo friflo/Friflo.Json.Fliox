@@ -1,7 +1,7 @@
-import { JsonFlowSchema } from "../JsonFlowSchema/Friflo.Json.Flow.Schema.JSON"
+import { JsonSchema } from "../JsonSchema/Friflo.Json.Flow.Schema.JSON"
 
 // check assignment with using a type compiles successful
-var exampleSync: JsonFlowSchema = {
+var exampleSync: JsonSchema = {
     "definitions": {
         "Entity": {
             "type": "object",
@@ -17,5 +17,5 @@ var exampleSync: JsonFlowSchema = {
     }    
 }
 
-export function testJsonFlowSchema() {
+export function testJsonSchema() {
 }
