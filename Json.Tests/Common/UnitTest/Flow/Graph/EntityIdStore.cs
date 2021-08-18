@@ -47,10 +47,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     }
     
 #if !UNITY_5_3_OR_NEWER
-    // define key alternatively by System.ComponentModel.DataAnnotations.KeyAttribute
+    // Apply [Key]      alternatively by System.ComponentModel.DataAnnotations.KeyAttribute
+    // Apply [Required] alternatively by System.ComponentModel.DataAnnotations.RequiredAttribute
     public class CustomIdEntity2 {
         [Key] 
-        [Fri.Required]  public string customId2;
+        [Required]  public string customId2;
     }
 #endif
 }

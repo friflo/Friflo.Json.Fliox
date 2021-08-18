@@ -26,6 +26,7 @@ public class CustomIdEntity {
 }
 
 public class CustomIdEntity2 {
+    [Fri.Key]
     [Fri.Required]
     string  customId2;
 }

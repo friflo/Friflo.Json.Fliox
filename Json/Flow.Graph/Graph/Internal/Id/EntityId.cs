@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Flow.Graph.Internal.Id
 {
@@ -38,7 +39,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             var members = type.GetMembers(Flags);
             foreach (var member in members) {
                 var customAttributes = member.CustomAttributes;
-                if (IsKey(customAttributes))
+                if (FieldQuery.IsKey(customAttributes))
                     return member;
             }
             var property = type.GetProperty("id", Flags);
@@ -104,18 +105,6 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             throw new InvalidOperationException(msg);
         }
         
-        private static bool IsKey(IEnumerable<CustomAttributeData> attributes) {
-            foreach (CustomAttributeData attr in attributes) {
-                if (attr.AttributeType == typeof(Fri.KeyAttribute))
-                    return true;
-                // Unity has System.ComponentModel.DataAnnotations.KeyAttribute no available by default
-                if (attr.AttributeType.FullName == "System.ComponentModel.DataAnnotations.KeyAttribute")
-                    return true;
-            }
-            return false;
-        }
-        
-                
         internal static Func<TEntity,TField> GetFieldGet<TEntity, TField>(FieldInfo field) {
             var instanceType    = field.DeclaringType;
             var instExp         = Expression.Parameter(instanceType,    "instance");
