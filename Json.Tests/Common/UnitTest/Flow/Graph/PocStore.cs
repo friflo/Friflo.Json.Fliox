@@ -44,68 +44,62 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 
     public class Article : Entity
     {
-        [Fri.Property(Required = true)]
-        public  string              name;
-        public  Ref<Producer>       producer;
+        [Fri.Required]  public  string          name;
+                        public  Ref<Producer>   producer;
     }
 
     public class Customer : Entity {
-        [Fri.Property(Required = true)]
-        public  string              name;
+        [Fri.Required]  public  string          name;
     }
     
     public class Producer : Entity {
-        [Fri.Property(Required = true)]
-        public  string              name;
-        [Fri.Property(Name = "employees")]
-        public  List<Ref<Employee>> employeeList;
+        [Fri.Required]  public  string              name;
+        [Fri.Property (Name =                       "employees")]
+                        public  List<Ref<Employee>> employeeList;
     }
     
     public class Employee : Entity {
-        [Fri.Property(Required = true)]
-        public  string              firstName;
-        public  string              lastName;
+        [Fri.Required]  public  string  firstName;
+                        public  string  lastName;
     }
     
     public class TestType : Entity {
-        public  DateTime            dateTime;
-        public  DateTime?           dateTimeNull;
-        public  BigInteger          bigInt;
-        public  BigInteger?         bigIntNull;
+                        public  DateTime        dateTime;
+                        public  DateTime?       dateTimeNull;
+                        public  BigInteger      bigInt;
+                        public  BigInteger?     bigIntNull;
+                
+                        public  bool            boolean;
+                        public  bool?           booleanNull;
+                
+                        public  byte            uint8;
+                        public  byte?           uint8Null;
+                        
+                        public  short           int16;
+                        public  short?          int16Null;
+                        
+                        public  int             int32;
+                        public  int?            int32Null;
+                        
+                        public  long            int64;
+                        public  long?           int64Null;
+                        
+                        public  float           float32;
+                        public  float?          float32Null;
+                        
+                        public  double          float64;
+                        public  double?         float64Null;
+                
+                        public  PocStruct       pocStruct;
+                        public  PocStruct?      pocStructNull;
 
-        public  bool                boolean;
-        public  bool?               booleanNull;
-
-        public  byte                uint8;
-        public  byte?               uint8Null;
+        [Fri.Required]  public  List<int>       intArray = new List<int>();
+                        public  List<int>       intArrayNull;
         
-        public  short               int16;
-        public  short?              int16Null;
+                        public  JsonValue       jsonValue;
         
-        public  int                 int32;
-        public  int?                int32Null;
-        
-        public  long                int64;
-        public  long?               int64Null;
-        
-        public  float               float32;
-        public  float?              float32Null;
-        
-        public  double              float64;
-        public  double?             float64Null;
-
-        public  PocStruct           pocStruct;
-        public  PocStruct?          pocStructNull;
-
-        [Fri.Property(Required = true)]
-        public  List<int>           intArray = new List<int>();
-        public  List<int>           intArrayNull;
-        
-        public  JsonValue           jsonValue;
-        
-        [Fri.Property(Required = true)]
-        public  DerivedClass        derivedClass;
-        public  DerivedClass        derivedClassNull;
+        [Fri.Required]  public  DerivedClass    derivedClass;
+                        public  DerivedClass    derivedClassNull;
     }
     
     public struct PocStruct {
