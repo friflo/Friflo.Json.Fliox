@@ -21,6 +21,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
         public   readonly   int             primIndex;
         public   readonly   int             objIndex;
         public   readonly   bool            required;
+        public   readonly   bool            isKey;
         internal            Bytes           nameBytes;          // don't mutate
         public              Bytes           firstMember;        // don't mutate
         public              Bytes           subSeqMember;       // don't mutate
@@ -56,6 +57,9 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
                 getLambda           = getLambdaExp.Compile();
                 setLambda           = setLambdaExp.Compile();
                 GetSetLambda(property);
+                isKey = FieldQuery.IsKey(property.CustomAttributes);
+            } else {
+                isKey = FieldQuery.IsKey(field.CustomAttributes);
             }
             this.primIndex  = primIndex;
             this.objIndex   = objIndex;

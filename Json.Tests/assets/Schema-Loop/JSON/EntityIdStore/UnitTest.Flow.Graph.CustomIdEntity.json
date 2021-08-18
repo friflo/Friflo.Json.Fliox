@@ -6,7 +6,7 @@
         "CustomIdEntity": {
             "type": "object",
             "properties": {
-                "customId": { "type": "string" }
+                "customId": { "type": "string", "isKey": true }
             },
             "required": [
                 "customId"

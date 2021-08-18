@@ -167,7 +167,8 @@ namespace Friflo.Json.Flow.Schema.JSON
                 fieldType = context.standardTypes.JsonValue;
                 // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
             }
-            var fieldDef = new FieldDef (fieldName, required, fieldType, isArray, isDictionary, typeDef);
+            var isKey    = field.isKey;
+            var fieldDef = new FieldDef (fieldName, required, isKey, fieldType, isArray, isDictionary, typeDef);
             typeDef.fields.Add(fieldDef);
         }
         

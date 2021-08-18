@@ -115,6 +115,8 @@ namespace Friflo.Json.Flow.Schema.JSON
         [Fri.Ignore]
         public  string          name;
         
+        public  bool            isKey;
+        
         public override string  ToString() => name;
     }
     

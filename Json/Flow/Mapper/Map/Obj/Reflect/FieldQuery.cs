@@ -137,7 +137,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
             return false;
         }
         
-        private static bool IsKey(IEnumerable<CustomAttributeData> attributes) {
+        internal static bool IsKey(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
                 if (attr.AttributeType == typeof(Fri.KeyAttribute))
                     return true;

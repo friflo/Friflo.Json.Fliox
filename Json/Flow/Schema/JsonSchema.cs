@@ -136,8 +136,9 @@ namespace Friflo.Json.Flow.Schema
                 var indent = Indent(maxFieldName, field.name);
                 if (required)
                     requiredFields.Add(field.name);
+                var keyStr = field.isKey ? ", \"isKey\": true" : "";
                 Delimiter(sb, Next, ref firstField);
-                sb.Append($"                \"{field.name}\":{indent} {{ {fieldType} }}");
+                sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{keyStr} }}");
             }
             sb.AppendLine();
             sb.AppendLine("            },");
