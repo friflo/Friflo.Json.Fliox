@@ -9,10 +9,8 @@ namespace Friflo.Json.Flow.Transform.Query.Ops
     // ------------------------------------ unary arithmetic operations ------------------------------------
     public abstract class UnaryArithmeticOp : Operation
     {
-        [Fri.Property(Required = true)]
-        public              Operation       value;
-        [Fri.Ignore]
-        internal  readonly  EvalResult      evalResult = new EvalResult(new List<Scalar>());
+        [Fri.Required] public           Operation   value;
+        [Fri.Ignore] internal  readonly EvalResult  evalResult = new EvalResult(new List<Scalar>());
 
         protected UnaryArithmeticOp() { }
 

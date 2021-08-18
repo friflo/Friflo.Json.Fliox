@@ -37,10 +37,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     }
 
     public class OrderItem {
-        [Fri.Property(Required = true)]
-        public  Ref<Article>        article;
-        public  int                 amount;
-        public  string              name;
+        [Fri.Required]  public  Ref<Article>    article;
+                        public  int             amount;
+                        public  string          name;
     }
 
     public class Article : Entity

@@ -23,40 +23,34 @@ namespace Friflo.Json.Flow.Transform
 
     public class PatchReplace : JsonPatch
     {
-        [Fri.Property(Required = true)]
-        public string       path;
-        [Fri.Property(Required = true)]
-        public JsonValue    value;
+        [Fri.Required]  public  string      path;
+        [Fri.Required]  public  JsonValue   value;
 
-        public override PatchType   PatchType   => PatchType.Replace;
-        public override string      ToString()  => path;
+        public override         PatchType   PatchType   => PatchType.Replace;
+        public override         string      ToString()  => path;
     }
     
     public class PatchAdd : JsonPatch
     {
-        [Fri.Property(Required = true)]
-        public string       path;
-        [Fri.Property(Required = true)]
-        public JsonValue    value;
+        [Fri.Required]  public  string      path;
+        [Fri.Required]  public  JsonValue   value;
 
-        public override PatchType   PatchType   => PatchType.Add;
-        public override string      ToString()  => path;
+        public override         PatchType   PatchType   => PatchType.Add;
+        public override         string      ToString()  => path;
     }
     
     public class PatchRemove : JsonPatch
     {
-        [Fri.Property(Required = true)]
-        public string       path;
+        [Fri.Required]  public  string      path;
 
-        public override PatchType   PatchType   => PatchType.Remove;
-        public override string      ToString()  => path;
+        public override         PatchType   PatchType   => PatchType.Remove;
+        public override         string      ToString()  => path;
     }
     
     public class PatchCopy : JsonPatch
     {
-        [Fri.Property(Required = true)]
-        public string       path;
-        public string       from;
+        [Fri.Required]  public string       path;
+                        public string       from;
 
         public override PatchType   PatchType   => PatchType.Copy;
         public override string      ToString()  => path;
@@ -64,23 +58,21 @@ namespace Friflo.Json.Flow.Transform
     
     public class PatchMove : JsonPatch
     {
-        [Fri.Property(Required = true)]
-        public string       path;
-        public string       from;
+        [Fri.Required]  public  string      path;
+                        public  string      from;
 
-        public override PatchType   PatchType   => PatchType.Move;
-        public override string      ToString()  => path;
+        public override         PatchType   PatchType   => PatchType.Move;
+        public override         string      ToString()  => path;
 
     }
     
     public class PatchTest : JsonPatch
     {
-        [Fri.Property(Required = true)]
-        public string       path;
-        public JsonValue    value;
+        [Fri.Required]  public  string      path;
+                        public  JsonValue   value;
 
-        public override PatchType   PatchType   => PatchType.Test;
-        public override string      ToString()  => path;
+        public override         PatchType   PatchType   => PatchType.Test;
+        public override         string      ToString()  => path;
     }
     
     public enum PatchType

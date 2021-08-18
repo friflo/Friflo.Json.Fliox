@@ -10,11 +10,9 @@ namespace Friflo.Json.Flow.Transform.Query.Ops
     // ------------------------------------ binary arithmetic operations ------------------------------------
     public abstract class BinaryArithmeticOp : Operation
     {
-        [Fri.Property(Required = true)]
-        public              Operation   left;
-        [Fri.Property(Required = true)]
-        public              Operation   right;
-        internal readonly   EvalResult  evalResult = new EvalResult(new List<Scalar>());
+        [Fri.Required]  public  Operation   left;
+        [Fri.Required]  public  Operation   right;
+        internal readonly       EvalResult  evalResult = new EvalResult(new List<Scalar>());
 
         protected BinaryArithmeticOp() { }
         protected BinaryArithmeticOp(Operation left, Operation right) {

@@ -36,7 +36,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     
     public class CustomIdEntity {
         [Fri.Key]
-        [Fri.Property(Required = true)]
-        public string customId;
+        [Fri.Required]  public string customId;
     }
 }

@@ -82,7 +82,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         [Fri.Property(Name =   "$ref", Required = true)]
         public  string          reference;
 
-        public override string  ToString() => reference;
+        public override         string      ToString() => reference;
     }
     
     public class FieldType

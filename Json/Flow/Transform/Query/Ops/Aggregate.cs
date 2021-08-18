@@ -42,14 +42,10 @@ namespace Friflo.Json.Flow.Transform.Query.Ops
     // ------------------------------------------- binary -------------------------------------------
     public abstract class BinaryAggregateOp : Operation
     {
-        [Fri.Property(Required = true)]
-        public              Field               field;
-        [Fri.Property(Required = true)]
-        public              string              arg;
-        [Fri.Property(Required = true)]
-        public              Operation           array;
-        [Fri.Ignore]
-        internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
+        [Fri.Required]  public              Field       field;
+        [Fri.Required]  public              string      arg;
+        [Fri.Required]  public              Operation   array;
+        [Fri.Ignore]    internal  readonly  EvalResult  evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
         protected BinaryAggregateOp() { }
         protected BinaryAggregateOp(Field field, string arg, Operation array) {

@@ -10,8 +10,7 @@ namespace Friflo.Json.Flow.Transform.Query.Ops
     // ----------------------------------- unary logical operations -----------------------------------
     public abstract class UnaryLogicalOp : FilterOperation
     {
-        [Fri.Property(Required = true)]
-        public           FilterOperation            operand;     // e.g.   i => i.amount < 1
+        [Fri.Required]  public  FilterOperation     operand;     // e.g.   i => i.amount < 1
 
         protected UnaryLogicalOp() { }
         protected UnaryLogicalOp(FilterOperation operand) { this.operand = operand; }
@@ -44,12 +43,9 @@ namespace Friflo.Json.Flow.Transform.Query.Ops
     // ----------------------------------- (n-ary) logical group operations -----------------------------------
     public abstract class BinaryLogicalOp : FilterOperation
     {
-        [Fri.Property(Required = true)]
-        public              List<FilterOperation>   operands;
-        [Fri.Ignore]
-        internal readonly   List<EvalResult>        evalList        = new List<EvalResult>();
-        [Fri.Ignore]
-        internal            N_aryResultEnumerator   resultIterator  = new N_aryResultEnumerator(true); // reused iterator
+        [Fri.Required]  public          List<FilterOperation>   operands;
+        [Fri.Ignore] internal readonly  List<EvalResult>        evalList        = new List<EvalResult>();
+        [Fri.Ignore] internal           N_aryResultEnumerator   resultIterator  = new N_aryResultEnumerator(true); // reused iterator
 
         protected BinaryLogicalOp() { }
         protected BinaryLogicalOp(List<FilterOperation> operands) { this.operands = operands; }

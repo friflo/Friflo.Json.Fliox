@@ -7,12 +7,9 @@ namespace Friflo.Json.Flow.Transform.Query.Ops
 {
     public abstract class BinaryQuantifyOp : FilterOperation
     {
-        [Fri.Property(Required = true)]
-        public      Field           field;
-        [Fri.Property(Required = true)]
-        public      string          arg;
-        [Fri.Property(Required = true)]
-        public      FilterOperation predicate;  // e.g.   i => i.amount < 1
+        [Fri.Required]  public  Field           field;
+        [Fri.Required]  public  string          arg;
+        [Fri.Required]  public  FilterOperation predicate;  // e.g.   i => i.amount < 1
 
         protected BinaryQuantifyOp() { }
         protected BinaryQuantifyOp(Field field, string arg, FilterOperation predicate) {

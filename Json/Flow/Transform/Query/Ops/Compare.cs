@@ -9,10 +9,8 @@ namespace Friflo.Json.Flow.Transform.Query.Ops
     // -------------------------------------- comparison operations --------------------------------------
     public abstract class BinaryBoolOp : FilterOperation
     {
-        [Fri.Property(Required = true)]
-        public              Operation            left;
-        [Fri.Property(Required = true)]
-        public              Operation            right;
+        [Fri.Required]  public  Operation   left;
+        [Fri.Required]  public  Operation   right;
         
         protected BinaryBoolOp() { }
         protected BinaryBoolOp(Operation left, Operation right) {

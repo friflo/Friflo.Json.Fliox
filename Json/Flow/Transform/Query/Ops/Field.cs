@@ -23,15 +23,11 @@ namespace Friflo.Json.Flow.Transform.Query.Ops
     // ------------------------------------- unary operations -------------------------------------
     public class Field : Operation
     {
-        [Fri.Property(Required = true)]
-        public          string                  name;
-        
-        [Fri.Ignore]
-        internal        string                  selector;   // == field if field starts with . otherwise appended to a lambda parameter
-        [Fri.Ignore]
-        internal        EvalResult              evalResult;
+        [Fri.Required]  public      string      name;
+        [Fri.Ignore]    internal    string      selector;   // == field if field starts with . otherwise appended to a lambda parameter
+        [Fri.Ignore]    internal    EvalResult  evalResult;
 
-        public override string                  Linq => name;
+        public override             string      Linq => name;
 
         public Field() { }
         public Field(string name) { this.name = name; }
