@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Friflo.Json.Flow.Mapper;
 
-namespace Friflo.Json.Flow.Graph.Internal
+namespace Friflo.Json.Flow.Graph.Internal.Id
 {
     // -------------------------------------------- EntityId -----------------------------------------------
     internal abstract class EntityId {

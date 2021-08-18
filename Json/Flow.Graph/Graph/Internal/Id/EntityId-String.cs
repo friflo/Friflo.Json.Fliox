@@ -4,7 +4,7 @@
 using System;
 using System.Reflection;
 
-namespace Friflo.Json.Flow.Graph.Internal
+namespace Friflo.Json.Flow.Graph.Internal.Id
 {
     internal class EntityIdStringField<T> : EntityId<T> where T : class {
         private readonly   FieldInfo           field;
