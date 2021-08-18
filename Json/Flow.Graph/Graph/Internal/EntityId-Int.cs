@@ -8,19 +8,25 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal class EntityIdIntField<T> : EntityId<T> where T : class {
         private readonly   FieldInfo           field;
+        private readonly   Func  <T, int>      fieldGet;
+        private readonly   Action<T, int>      fieldSet;
         
         internal EntityIdIntField(FieldInfo field) {
-            this.field = field;
+            this.field  = field;
+            fieldGet    = GetFieldGet<T, int>(field);
+            fieldSet    = GetFieldSet<T, int>(field);
         }
         
         internal override   string  GetEntityId (T entity) {
-            var value = (int)field.GetValue(entity);
+            // var value = (int)field.GetValue(entity);
+            var value = fieldGet(entity);
             return value.ToString();
         }
         
         internal override   void    SetEntityId (T entity, string id) {
             var value = int.Parse(id);
-            field.SetValue(entity, value);
+            fieldSet(entity, value);
+            // field.SetValue(entity, value);
         }
     }
     
