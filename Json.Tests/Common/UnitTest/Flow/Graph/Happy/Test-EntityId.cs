@@ -48,11 +48,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsTrue(entity == find.Result);
                 }
                 // Test: EntityId<T>.SetEntityId()
-                using (var guidStore    = new EntityIdStore(database, typeStore, "guidStore")) {
-                    var read = guidStore.guidEntities.Read();
+                using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
+                    var read = store.guidEntities.Read();
                     var find = read.Find(guidId.ToString());
                         
-                    await guidStore.Sync();
+                    await store.Sync();
                     
                     IsTrue(find.Success);
                     AreEqual(guidId, find.Result.id);
@@ -78,11 +78,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsTrue(entity == find.Result);
                 }
                 // Test: EntityId<T>.SetEntityId()
-                using (var guidStore    = new EntityIdStore(database, typeStore, "guidStore")) {
-                    var read = guidStore.intEntities.Read();
+                using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
+                    var read = store.intEntities.Read();
                     var find = read.Find(intId.ToString());
                         
-                    await guidStore.Sync();
+                    await store.Sync();
                     
                     IsTrue(find.Success);
                     AreEqual(intId, find.Result.id);
@@ -108,11 +108,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsTrue(entity == find.Result);
                 }
                 // Test: EntityId<T>.SetEntityId()
-                using (var guidStore    = new EntityIdStore(database, typeStore, "guidStore")) {
-                    var read = guidStore.longEntities.Read();
+                using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
+                    var read = store.longEntities.Read();
                     var find = read.Find(longId.ToString());
                         
-                    await guidStore.Sync();
+                    await store.Sync();
                     
                     IsTrue(find.Success);
                     AreEqual(longId, find.Result.Id);
@@ -138,11 +138,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsTrue(entity == find.Result);
                 }
                 // Test: EntityId<T>.SetEntityId()
-                using (var guidStore    = new EntityIdStore(database, typeStore, "guidStore")) {
-                    var read = guidStore.customIdEntities.Read();
+                using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
+                    var read = store.customIdEntities.Read();
                     var find = read.Find(stringId);
                         
-                    await guidStore.Sync();
+                    await store.Sync();
                     
                     IsTrue(find.Success);
                     AreEqual(stringId, find.Result.customId);
@@ -168,11 +168,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsTrue(entity == find.Result);
                 }
                 // Test: EntityId<T>.SetEntityId()
-                using (var guidStore    = new EntityIdStore(database, typeStore, "guidStore")) {
-                    var read = guidStore.customIdEntities2.Read();
+                using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
+                    var read = store.customIdEntities2.Read();
                     var find = read.Find(stringId2);
                         
-                    await guidStore.Sync();
+                    await store.Sync();
                     
                     IsTrue(find.Success);
                     AreEqual(stringId2, find.Result.customId2);
