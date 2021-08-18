@@ -19,6 +19,7 @@ namespace Friflo.Json.Flow.Schema.JSON
     ///     <item><see cref="JsonType.discriminator"/></item>
     ///     <item><see cref="JsonType.isStruct"/></item>
     ///     <item><see cref="JsonType.isAbstract"/></item>
+    ///     <item><see cref="FieldType.isKey"/></item>
     /// </list>
     /// The restriction of <see cref="JsonFlowSchema"/> are:
     /// <list type="bullet">
