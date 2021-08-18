@@ -20,10 +20,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 {
     public class TestEntityId
     {
-        [UnityTest] public IEnumerator GuidIdCoroutine() { yield return RunAsync.Await(AssertGuidId(), i => Logger.Info("--- " + i)); }
-        [Test]      public async Task  GuidIdAsync() { await AssertGuidId(); }
+        [UnityTest] public IEnumerator EntityIdCoroutine() { yield return RunAsync.Await(AssertEntityId(), i => Logger.Info("--- " + i)); }
+        [Test]      public async Task  EntityIdAsync() { await AssertEntityId(); }
         
-        private static async Task AssertGuidId() {
+        private static async Task AssertEntityId() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
             using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/EntityIdStore")) {
