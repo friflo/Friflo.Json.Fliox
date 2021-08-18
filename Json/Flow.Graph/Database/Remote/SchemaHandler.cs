@@ -97,7 +97,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 return result.Set(sb.ToString(), "text/html");
             }
             if (fileName == zipFile) {
-                result.bytes        = schemaSet.zipArchive;
+                result.bytes        = schemaSet.GetZipArchive(zip);
                 if (result.bytes == null)
                     return result.Error("ZipArchive not supported (Unity)");
                 result.contentType  = "application/zip";
@@ -120,20 +120,20 @@ namespace Friflo.Json.Flow.Database.Remote
             var entityTypes         = typeSchema.GetEntityTypes();
             var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = entityTypes };
             var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
-            var jsonSchema          = new SchemaSet (writer, zip, "JSON Schema", "application/json", jsonGenerator.files);
+            var jsonSchema          = new SchemaSet (writer, "JSON Schema", "application/json", jsonGenerator.files);
             result.Add("json-schema",  jsonSchema);
             
             var options             = new JsonTypeOptions(typeSchema);
             var typescriptGenerator = TypescriptGenerator.Generate(options);
-            var typescriptSchema    = new SchemaSet (writer, zip, "Typescript",  "text/plain",       typescriptGenerator.files);
+            var typescriptSchema    = new SchemaSet (writer, "Typescript",  "text/plain",       typescriptGenerator.files);
             result.Add("typescript",   typescriptSchema);
             
             var csharpGenerator     = CSharpGenerator.Generate(options);
-            var csharpSchema        = new SchemaSet (writer, zip, "C#",          "text/plain",       csharpGenerator.files);
+            var csharpSchema        = new SchemaSet (writer, "C#",          "text/plain",       csharpGenerator.files);
             result.Add("csharp",       csharpSchema);
             
             var kotlinGenerator     = KotlinGenerator.Generate(options);
-            var kotlinSchema        = new SchemaSet (writer, zip, "Kotlin",      "text/plain",       kotlinGenerator.files);
+            var kotlinSchema        = new SchemaSet (writer, "Kotlin",      "text/plain",       kotlinGenerator.files);
             result.Add("kotlin",       kotlinSchema);
             return result;
         }
@@ -195,17 +195,23 @@ namespace Friflo.Json.Flow.Database.Remote
     }
 
     public class SchemaSet {
-        public readonly  string                      name;
-        public readonly  string                      contentType;
-        public readonly  Dictionary<string, string>  files;
-        public readonly  byte[]                      zipArchive;
-        public readonly  string                      directory;
-        
-        public SchemaSet (ObjectWriter writer, CreateZip zip, string name, string contentType, Dictionary<string, string> files) {
+        public  readonly    string                      name;
+        public  readonly    string                      contentType;
+        public  readonly    Dictionary<string, string>  files;
+        public  readonly    string                      directory;
+        private             byte[]                      zipArchive;
+
+        public byte[] GetZipArchive (CreateZip zip) {
+            if (zipArchive == null && zip != null ) {
+                zipArchive = zip(files);
+            }
+            return zipArchive;
+        }
+
+        public SchemaSet (ObjectWriter writer, string name, string contentType, Dictionary<string, string> files) {
             this.name           = name;
             this.contentType    = contentType;
             this.files          = files;
-            zipArchive          = zip?.Invoke(files);
             directory           = writer.Write(files.Keys.ToList());
         }
     }
