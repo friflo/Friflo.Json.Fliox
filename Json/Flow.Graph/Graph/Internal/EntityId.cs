@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
@@ -16,60 +17,89 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (Ids.TryGetValue(type, out EntityId id)) {
                 return (EntityId<T>)id;
             }
-            var result  = CreateEntityId<T>("id"); 
-            Ids[type]   = result;
-            return result;
+            var name = "id";
+            var keyMember = FindKeyMember (type);
+            if (keyMember != null) {
+                name = keyMember.Name;   
+            }
+            EntityId<T> result;
+            var property    = type.GetProperty(name, Flags);
+            if (property != null) {
+                result  = CreateEntityIdProperty<T>(property, type);
+                Ids[type]   = result;
+                return result;
+            }
+            var field    = type.GetField(name, Flags);
+            if (field != null) {
+                result  = CreateEntityIdField<T>(field, type);
+                Ids[type]   = result;
+                return result;
+            }
+            throw new InvalidOperationException($"entity id not found. name: {name}, entity: {type.Name}");
+        }
+        
+        private static MemberInfo FindKeyMember (Type type) {
+            var members = type.GetMembers(Flags);
+            foreach (var member in members) {
+                var customAttributes = member.CustomAttributes;
+                if (IsKey(customAttributes))
+                    return member;
+            }
+            return null;
         }
 
         private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
         
-        private static EntityId<T> CreateEntityId<T> (string name)  where T : class {
-            var type        = typeof(T);
-            var property    = type.GetProperty(name, Flags);
-            if (property != null) {
-                var propType    = property.PropertyType;
-                var idGetMethod = property.GetGetMethod(true);    
-                var idSetMethod = property.GetSetMethod(true);
-                if (idGetMethod == null || idSetMethod == null) {
-                    var msg2 = $"entity id property must have get & set: {name}, type: {propType.Name}, entity: {type.Name}";
-                    throw new InvalidOperationException(msg2);
-                }
-                if (propType == typeof(string)) {
-                    return new EntityIdStringProperty<T>(idGetMethod, idSetMethod);
-                }
-                if (propType == typeof(Guid)) {
-                    return new EntityIdGuidProperty<T>  (idGetMethod, idSetMethod);
-                }
-                if (propType == typeof(int)) {
-                    return new EntityIdIntProperty<T>  (idGetMethod, idSetMethod);
-                }
-                if (propType == typeof(long)) {
-                    return new EntityIdLongProperty<T>  (idGetMethod, idSetMethod);
-                }
-                // add additional types here
-                var msg = $"unsupported type for entity id. property: {name}, type: {propType.Name}, entity: {type.Name}";
-                throw new InvalidOperationException(msg);
+        private static EntityId<T> CreateEntityIdProperty<T> (PropertyInfo property, Type type)  where T : class {
+            var propType    = property.PropertyType;
+            var idGetMethod = property.GetGetMethod(true);    
+            var idSetMethod = property.GetSetMethod(true);
+            if (idGetMethod == null || idSetMethod == null) {
+                var msg2 = $"entity id property must have get & set: {property.Name}, type: {propType.Name}, entity: {type.Name}";
+                throw new InvalidOperationException(msg2);
             }
-            var field   = type.GetField(name, Flags);
-            if (field != null) {
-                var fieldType = field.FieldType; 
-                if (fieldType == typeof(string)) {
-                    return new EntityIdStringField<T>(field);
-                }
-                if (fieldType == typeof(Guid)) {
-                    return new EntityIdGuidField<T>(field);
-                }
-                if (fieldType == typeof(int)) {
-                    return new EntityIdIntField<T>(field);
-                }
-                if (fieldType == typeof(long)) {
-                    return new EntityIdLongField<T>(field);
-                }
-                // add additional types here
-                var msg = $"unsupported type for entity id. field: {name}, type: {fieldType.Name}, entity: {type.Name}";
-                throw new InvalidOperationException(msg);
+            if (propType == typeof(string)) {
+                return new EntityIdStringProperty<T>(idGetMethod, idSetMethod);
             }
-            throw new InvalidOperationException($"entity id not found. name: {name}, entity: {type.Name}");
+            if (propType == typeof(Guid)) {
+                return new EntityIdGuidProperty<T>  (idGetMethod, idSetMethod);
+            }
+            if (propType == typeof(int)) {
+                return new EntityIdIntProperty<T>  (idGetMethod, idSetMethod);
+            }
+            if (propType == typeof(long)) {
+                return new EntityIdLongProperty<T>  (idGetMethod, idSetMethod);
+            }
+            // add additional types here
+            var msg = $"unsupported type for entity id. property: {property.Name}, type: {propType.Name}, entity: {type.Name}";
+            throw new InvalidOperationException(msg);
+        }
+            
+        private static EntityId<T> CreateEntityIdField<T> (FieldInfo field, Type type)  where T : class {
+            var fieldType = field.FieldType; 
+            if (fieldType == typeof(string)) {
+                return new EntityIdStringField<T>(field);
+            }
+            if (fieldType == typeof(Guid)) {
+                return new EntityIdGuidField<T>(field);
+            }
+            if (fieldType == typeof(int)) {
+                return new EntityIdIntField<T>(field);
+            }
+            if (fieldType == typeof(long)) {
+                return new EntityIdLongField<T>(field);
+            }
+            // add additional types here
+            var msg = $"unsupported type for entity id. field: {field.Name}, type: {fieldType.Name}, entity: {type.Name}";
+            throw new InvalidOperationException(msg);
+        }
+        
+        private static bool IsKey(IEnumerable<CustomAttributeData> attributes) {
+            foreach (var attr in attributes) {
+                if (attr.AttributeType == typeof(Fri.KeyAttribute))
+                    return true;
+            }
+            return false;
         }
     }
     

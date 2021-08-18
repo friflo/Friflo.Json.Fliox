@@ -21,3 +21,8 @@ data class LongEntity (
               val id : Long,
 )
 
+@Serializable
+data class CustomIdEntity (
+              val customId : String,
+)
+

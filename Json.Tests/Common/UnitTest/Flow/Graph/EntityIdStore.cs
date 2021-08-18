@@ -9,14 +9,16 @@ using Friflo.Json.Flow.Mapper;
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     public class EntityIdStore : EntityStore {
-        public  readonly    EntitySet<GuidEntity>   guidEntities;
-        public  readonly    EntitySet<IntEntity>    intEntities;
-        public  readonly    EntitySet<LongEntity>   longEntities;
+        public  readonly    EntitySet<GuidEntity>       guidEntities;
+        public  readonly    EntitySet<IntEntity>        intEntities;
+        public  readonly    EntitySet<LongEntity>       longEntities;
+        public  readonly    EntitySet<CustomIdEntity>   customIdEntities;
 
         public EntityIdStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-            guidEntities    = new EntitySet<GuidEntity>(this);
-            intEntities     = new EntitySet<IntEntity> (this);
-            longEntities    = new EntitySet<LongEntity> (this);
+            guidEntities        = new EntitySet<GuidEntity>     (this);
+            intEntities         = new EntitySet<IntEntity>      (this);
+            longEntities        = new EntitySet<LongEntity>     (this);
+            customIdEntities    = new EntitySet<CustomIdEntity> (this);
         }
     }
 
@@ -30,5 +32,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     
     public class LongEntity {
         public long id;
+    }
+    
+    public class CustomIdEntity {
+        [Fri.Key]
+        [Fri.Property(Required = true)]
+        public string customId;
     }
 }

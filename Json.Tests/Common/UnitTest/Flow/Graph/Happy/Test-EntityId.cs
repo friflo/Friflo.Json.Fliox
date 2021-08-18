@@ -117,6 +117,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsTrue(find.Success);
                     AreEqual(longId, find.Result.id);
                 }
+                
+                // --- string as custom entity id ---
+                const string stringId = "abc";
+                // Test: EntityId<T>.GetEntityId()
+                using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
+                    var entity  = new CustomIdEntity { customId = stringId};
+                    var create  = store.customIdEntities.Update(entity);
+                    
+                    await store.Sync();
+                    
+                    IsTrue(create.Success);
+                    
+                    var read = store.customIdEntities.Read();
+                    var find = read.Find(stringId);
+                        
+                    await store.Sync();
+                    
+                    IsTrue(find.Success);
+                    IsTrue(entity == find.Result);
+                }
+                // Test: EntityId<T>.SetEntityId()
+                using (var guidStore    = new EntityIdStore(database, typeStore, "guidStore")) {
+                    var read = guidStore.customIdEntities.Read();
+                    var find = read.Find(stringId);
+                        
+                    await guidStore.Sync();
+                    
+                    IsTrue(find.Success);
+                    AreEqual(stringId, find.Result.customId);
+                }
             }
         }
     }

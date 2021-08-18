@@ -19,5 +19,10 @@ public class LongEntity {
     long  id;
 }
 
+public class CustomIdEntity {
+    [Fri.Property(Required = true)]
+    string  customId;
+}
+
 }
 
