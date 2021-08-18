@@ -12,14 +12,13 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task -----------------------------------
     public class QueryEntities : DatabaseTask
     {
-        [Fri.Property(Required = true)]
-        public  string                      container;
-        public  string                      filterLinq;
-        public  FilterOperation             filter;
-        public  List<References>            references;
+        [Fri.Required]  public  string              container;
+                        public  string              filterLinq;
+                        public  FilterOperation     filter;
+                        public  List<References>    references;
         
-        internal override   TaskType        TaskType => TaskType.query;
-        public   override   string          TaskName => $"container: '{container}', filter: {filterLinq}";
+        internal override       TaskType            TaskType => TaskType.query;
+        public   override       string              TaskName => $"container: '{container}', filter: {filterLinq}";
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
@@ -56,14 +55,12 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task result -----------------------------------
     public class QueryEntitiesResult : TaskResult, ICommandResult
     {
-        public  string                          container;  // only for debugging ergonomics
-        public  string                          filterLinq;
-        [Fri.Property(Required = true)]
-        public  HashSet<string>                 ids;
-        public  List<ReferencesResult>          references;
-        [Fri.Ignore]
-        public  Dictionary<string,EntityValue>  entities;
-        public  CommandError                    Error { get; set; }
+                        public  string                          container;  // only for debugging ergonomics
+                        public  string                          filterLinq;
+        [Fri.Required]  public  HashSet<string>                 ids;
+                        public  List<ReferencesResult>          references;
+        [Fri.Ignore]    public  Dictionary<string,EntityValue>  entities;
+                        public  CommandError                    Error { get; set; }
 
         
         internal override   TaskType            TaskType => TaskType.query;

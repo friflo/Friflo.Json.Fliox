@@ -11,13 +11,11 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task -----------------------------------
     public class PatchEntities : DatabaseTask
     {
-        [Fri.Property(Required = true)]
-        public  string                          container;
-        [Fri.Property(Required = true)]
-        public  Dictionary<string, EntityPatch> patches;
+        [Fri.Required] public   string                          container;
+        [Fri.Required] public   Dictionary<string, EntityPatch> patches;
         
-        internal override   TaskType            TaskType => TaskType.patch;
-        public   override   string              TaskName =>  $"container: '{container}'";
+        internal override       TaskType                        TaskType => TaskType.patch;
+        public   override       string                          TaskName =>  $"container: '{container}'";
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
@@ -39,8 +37,7 @@ namespace Friflo.Json.Flow.Sync
 
     public class EntityPatch
     {
-        [Fri.Property(Required = true)]
-        public List<JsonPatch>                  patches;
+        [Fri.Required]  public  List<JsonPatch>             patches;
     }
 
     // ----------------------------------- task result -----------------------------------

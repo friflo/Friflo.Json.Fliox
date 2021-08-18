@@ -12,9 +12,8 @@ namespace Friflo.Json.Flow.Auth.Rights
 {
     public class RightDatabase : Right
     {
-        [Fri.Property(Required = true)]
-        public              Dictionary<string, ContainerAccess> containers;
-        public  override    RightType                           RightType => RightType.database;
+        [Fri.Required]  public  Dictionary<string, ContainerAccess> containers;
+        public  override        RightType                           RightType => RightType.database;
         
         public override Authorizer ToAuthorizer() {
             var list = new List<Authorizer>(containers.Count);

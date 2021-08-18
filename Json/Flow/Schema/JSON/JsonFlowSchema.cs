@@ -41,22 +41,17 @@ namespace Friflo.Json.Flow.Schema.JSON
     /// </summary>
     public class JsonFlowSchema
     {
-        [Fri.Property(Name =                   "$ref")]
-        public  string                          rootRef;
+        [Fri.Property(Name ="$ref")]public  string                          rootRef;
         
-        [Fri.Property(Required = true)]
-        public  Dictionary<string, JsonType>    definitions;
+        [Fri.Required]              public  Dictionary<string, JsonType>    definitions;
         
         /// <summary>file name is <see cref="name"/> + ".json".
         /// E.g. <see cref="name"/>: Standard.json, <see cref="name"/>: "Standard</summary>
-        [Fri.Ignore]
-        public  string                          fileName;
-        [Fri.Ignore]
-        public  string                          name;
-        [Fri.Ignore]
-        public  Dictionary<string, JsonTypeDef> typeDefs;
+        [Fri.Ignore]                public  string                          fileName;
+        [Fri.Ignore]                public  string                          name;
+        [Fri.Ignore]                public  Dictionary<string, JsonTypeDef> typeDefs;
 
-        public override string                  ToString() => fileName;
+        public override                     string                          ToString() => fileName;
     }
     
     public class JsonType

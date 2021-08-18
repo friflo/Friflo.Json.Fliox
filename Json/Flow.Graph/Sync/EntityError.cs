@@ -13,18 +13,18 @@ namespace Friflo.Json.Flow.Sync
     /// This implies that the previous read or query call was successful. 
     public class EntityError
     {
-        [Fri.Property(Required = true)] public  EntityErrorType     type;
-        [Fri.Property]                  public  string              message;
+        [Fri.Required]      public  EntityErrorType     type;
+        [Fri.Property]      public  string              message;
             
-        [Fri.Ignore]                    public  string              id;
-        [Fri.Ignore]                    public  string              container;
+        [Fri.Ignore]        public  string              id;
+        [Fri.Ignore]        public  string              container;
         /// <summary>Is != <see cref="TaskErrorResultType.None"/> if the error is caused indirectly by a <see cref="DatabaseTask"/> error.</summary>
-        [Fri.Ignore]                    public  TaskErrorResultType taskErrorType;
+        [Fri.Ignore]        public  TaskErrorResultType taskErrorType;
         /// <summary>Show the stacktrace if <see cref="taskErrorType"/> == <see cref="TaskErrorResultType.UnhandledException"/>
         /// and the accessed <see cref="EntityDatabase"/> expose this data.</summary>
-        [Fri.Ignore]                    public  string              stacktrace;
+        [Fri.Ignore]        public  string              stacktrace;
 
-        public override                         string              ToString() => AsText(true);
+        public override     string              ToString() => AsText(true);
 
         public EntityError() { } // required for TypeMapper
 

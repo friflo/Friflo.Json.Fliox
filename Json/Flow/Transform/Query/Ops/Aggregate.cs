@@ -9,10 +9,8 @@ namespace Friflo.Json.Flow.Transform.Query.Ops
     // ------------------------------------------- unary -------------------------------------------
     public abstract class UnaryAggregateOp : Operation
     {
-        [Fri.Property(Required = true)]
-        public              Field               field;
-        [Fri.Ignore]
-        internal  readonly  EvalResult          evalResult = new EvalResult(new List<Scalar> {new Scalar()});
+        [Fri.Required]  public              Field       field;
+        [Fri.Ignore]    internal  readonly  EvalResult  evalResult = new EvalResult(new List<Scalar> {new Scalar()});
 
         protected UnaryAggregateOp() { }
         protected UnaryAggregateOp(Field field) {

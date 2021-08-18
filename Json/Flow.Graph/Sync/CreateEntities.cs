@@ -11,13 +11,11 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task -----------------------------------
     public class CreateEntities : DatabaseTask
     {
-        [Fri.Property(Required = true)]
-        public  string                          container;
-        [Fri.Property(Required = true)]
-        public  Dictionary<string, EntityValue> entities;
+        [Fri.Required]  public  string                          container;
+        [Fri.Required]  public  Dictionary<string, EntityValue> entities;
         
-        internal override   TaskType            TaskType => TaskType.create;
-        public   override   string              TaskName => $"container: '{container}'";
+        internal override       TaskType                        TaskType => TaskType.create;
+        public   override       string                          TaskName => $"container: '{container}'";
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)

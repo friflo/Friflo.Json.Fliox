@@ -12,11 +12,10 @@ namespace Friflo.Json.Flow.Auth.Rights
 {
     public class RightPredicate : Right
     {
-        [Fri.Property(Required = true)]
-        public              List<string>    names;
-        public  override    RightType       RightType => RightType.predicate;
+        [Fri.Required]  public  List<string>    names;
         
-        public  override    Authorizer      ToAuthorizer() => throw new NotImplementedException();
+        public  override        RightType       RightType => RightType.predicate;
+        public  override        Authorizer      ToAuthorizer() => throw new NotImplementedException();
         
     }
     

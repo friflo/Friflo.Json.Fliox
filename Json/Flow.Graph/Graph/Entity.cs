@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public abstract class Entity
     {
-        [Fri.Property(Required = true)]
+        [Fri.Required]
         public  string  id {
             get => _id;
             set {

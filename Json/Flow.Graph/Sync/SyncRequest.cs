@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Sync
         /// </summary>
         [Fri.Property(Name = "ack")]    public  int?                eventAck;
                                         public  string              token;
-        [Fri.Property(Required = true)] public  List<DatabaseTask>  tasks;
+        [Fri.Required]                  public  List<DatabaseTask>  tasks;
         
         internal override                       RequestType         RequestType => RequestType.sync;
     }
@@ -78,9 +78,8 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- sync results -----------------------------------
     public class ContainerEntities
     {
-        public  string                                  container; // only for debugging
-        [Fri.Property(Required = true)]
-        public  Dictionary<string, EntityValue>         entities;
+                        public  string                          container; // only for debugging
+        [Fri.Required]  public  Dictionary<string, EntityValue> entities;
         
         internal void AddEntities(Dictionary<string, EntityValue> add) {
             foreach (var entity in add) {
@@ -91,9 +90,8 @@ namespace Friflo.Json.Flow.Sync
     
     public class EntityErrors
     {
-        public  string                                  container; // only for debugging
-        [Fri.Property(Required = true)]
-        public  Dictionary<string, EntityError>         errors;
+                        public  string                              container; // only for debugging
+        [Fri.Required]  public  Dictionary<string, EntityError>     errors;
         
         public EntityErrors() {} // required for TypeMapper
 

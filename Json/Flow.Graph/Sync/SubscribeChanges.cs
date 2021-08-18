@@ -13,14 +13,12 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task -----------------------------------
     public class SubscribeChanges : DatabaseTask
     {
-        [Fri.Property(Required = true)]
-        public string                   container;
-        [Fri.Property(Required = true)]
-        public List<Change>             changes;
-        public FilterOperation          filter;
+        [Fri.Required]  public  string          container;
+        [Fri.Required]  public  List<Change>    changes;
+                        public  FilterOperation filter;
         
-        internal override   TaskType    TaskType  => TaskType.subscribeChanges;
-        public   override   string      TaskName  => $"container: '{container}'";
+        internal override       TaskType        TaskType  => TaskType.subscribeChanges;
+        public   override       string          TaskName  => $"container: '{container}'";
 
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             var eventBroker = database.eventBroker;

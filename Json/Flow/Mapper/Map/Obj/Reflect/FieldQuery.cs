@@ -28,11 +28,13 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
             if (property != null) {
                 memberType   = property.PropertyType;
                 AttributeUtils.Property(property.CustomAttributes, out jsonName, out required);
+                required = required || IsRequired(property.CustomAttributes);
                 if (property.GetSetMethod(false) == null)
                     required = true;
             } else {
                 memberType   = field.FieldType;
                 AttributeUtils.Property(field.CustomAttributes, out jsonName, out required);
+                required = required || IsRequired(field.CustomAttributes);
                 // used for fields like: readonly EntitySet<Order>
                 if ((field.Attributes & FieldAttributes.InitOnly) != 0)
                     required = true;
@@ -132,6 +134,14 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
         private static bool Ignore(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
                 if (attr.AttributeType == typeof(Fri.IgnoreAttribute))
+                    return true;
+            }
+            return false;
+        }
+        
+        private static bool IsRequired(IEnumerable<CustomAttributeData> attributes) {
+            foreach (var attr in attributes) {
+                if (attr.AttributeType == typeof(Fri.RequiredAttribute))
                     return true;
             }
             return false;

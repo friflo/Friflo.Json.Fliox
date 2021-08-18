@@ -10,13 +10,11 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task -----------------------------------
     public class ReadEntitiesList : DatabaseTask
     {
-        [Fri.Property(Required = true)]
-        public  string                  container;
-        [Fri.Property(Required = true)]
-        public  List<ReadEntities>      reads;
+        [Fri.Required]  public  string              container;
+        [Fri.Required]  public  List<ReadEntities>  reads;
         
-        internal override   TaskType    TaskType => TaskType.read;
-        public   override   string      TaskName =>  $"container: '{container}'";
+        internal override       TaskType            TaskType => TaskType.read;
+        public   override       string              TaskName =>  $"container: '{container}'";
 
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
@@ -78,9 +76,8 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task result -----------------------------------
     public class ReadEntitiesListResult : TaskResult
     {
-        [Fri.Property(Required = true)]
-        public              List<ReadEntitiesResult>    reads;
+        [Fri.Required]  public  List<ReadEntitiesResult>    reads;
         
-        internal override   TaskType                    TaskType => TaskType.read;
+        internal override       TaskType                    TaskType => TaskType.read;
     }
 }

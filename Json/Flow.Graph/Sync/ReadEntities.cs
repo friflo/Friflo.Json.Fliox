@@ -9,21 +9,18 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- sub task -----------------------------------
     public class ReadEntities
     {
-        [Fri.Property(Required = true)]
-        public  HashSet<string>                 ids;
-        public  List<References>                references;
+        [Fri.Required]  public  HashSet<string>                 ids;
+                        public  List<References>                references;
     }
     
     // ----------------------------------- sub task result -----------------------------------
     /// The data of requested entities are added to <see cref="ContainerEntities.entities"/> 
     public class ReadEntitiesResult: ICommandResult
     {
-        [Fri.Property(Required = true)]
-        public  List<ReferencesResult>          references;
-        public  CommandError                    Error { get; set; }
+        [Fri.Required]  public  List<ReferencesResult>          references;
+                        public  CommandError                    Error { get; set; }
 
-        [Fri.Ignore]
-        public  Dictionary<string,EntityValue>  entities;
+        [Fri.Ignore]    public  Dictionary<string,EntityValue>  entities;
         
         /// <summary>
         /// Validate all <see cref="EntityValue.value"/>'s in the result set.

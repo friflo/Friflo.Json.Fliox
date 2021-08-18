@@ -41,6 +41,10 @@ namespace Friflo.Json.Flow.Mapper
         }
         
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+        public sealed class RequiredAttribute : Attribute {
+        }
+        
+        [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
         public sealed class KeyAttribute : Attribute {
         }
         

@@ -9,13 +9,12 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task result -----------------------------------
     public class TaskErrorResult : TaskResult
     {
-        [Fri.Property(Required = true)]
-        public              TaskErrorResultType type;
-        public              string              message;
-        public              string              stacktrace;
+        [Fri.Required]  public  TaskErrorResultType type;
+                        public  string              message;
+                        public  string              stacktrace;
 
-        internal override   TaskType            TaskType => TaskType.error;
-        public   override   string              ToString() => $"type: {type}, message: {message}";
+        internal override       TaskType            TaskType => TaskType.error;
+        public   override       string              ToString() => $"type: {type}, message: {message}";
     }
     
     /// <summary>Describe the type of a <see cref="TaskErrorResult"/></summary>

@@ -15,12 +15,11 @@ namespace Friflo.Json.Flow.Sync
         ///   <para><see cref="name"/> = {""} => subscribe all message events.</para>
         ///   <para><see cref="name"/> = {} => unsubscribe message events.</para>
         /// </summary>
-        [Fri.Property(Required = true)]
-        public              string          name;
-        public              bool?           remove;
+        [Fri.Required]  public  string      name;
+                        public  bool?       remove;
         
-        internal override   TaskType        TaskType    => TaskType.subscribeMessage;
-        public   override   string          TaskName    => $"name: '{name}'";
+        internal override       TaskType    TaskType    => TaskType.subscribeMessage;
+        public   override       string      TaskName    => $"name: '{name}'";
 
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             var eventBroker = database.eventBroker;

@@ -10,13 +10,11 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task -----------------------------------
     public class SendMessage : DatabaseTask
     {
-        [Fri.Property(Required = true)]
-        public              string          name;
-        [Fri.Property(Required = true)]
-        public              JsonValue       value;
+        [Fri.Required]  public  string          name;
+        [Fri.Required]  public  JsonValue       value;
             
-        internal override   TaskType        TaskType => TaskType.message;
-        public   override   string          TaskName => $"name: '{name}'";
+        internal override       TaskType        TaskType => TaskType.message;
+        public   override       string          TaskName => $"name: '{name}'";
 
         internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (name == null)
