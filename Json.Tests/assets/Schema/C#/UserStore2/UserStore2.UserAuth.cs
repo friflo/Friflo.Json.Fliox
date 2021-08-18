@@ -18,7 +18,7 @@ public class UserCredential : Entity {
 }
 
 public class Role : Entity {
-    [Fri.Property(Required = true)]
+    [Fri.Required]
     List<Right>  rights;
     string       description;
 }

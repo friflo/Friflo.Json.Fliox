@@ -15,36 +15,36 @@ public class Order : Entity {
 }
 
 public abstract class Entity {
-    [Fri.Property(Required = true)]
+    [Fri.Required]
     string  id;
 }
 
 public class OrderItem {
-    [Fri.Property(Required = true)]
+    [Fri.Required]
     string  article;
     int     amount;
     string  name;
 }
 
 public class Customer : Entity {
-    [Fri.Property(Required = true)]
+    [Fri.Required]
     string  name;
 }
 
 public class Article : Entity {
-    [Fri.Property(Required = true)]
+    [Fri.Required]
     string  name;
     string  producer;
 }
 
 public class Producer : Entity {
-    [Fri.Property(Required = true)]
+    [Fri.Required]
     string        name;
     List<string>  employees;
 }
 
 public class Employee : Entity {
-    [Fri.Property(Required = true)]
+    [Fri.Required]
     string  firstName;
     string  lastName;
 }
@@ -70,11 +70,11 @@ public class TestType : Entity {
     double?       float64Null;
     PocStruct     pocStruct;
     PocStruct?    pocStructNull;
-    [Fri.Property(Required = true)]
+    [Fri.Required]
     List<int>     intArray;
     List<int>     intArrayNull;
     JsonValue?    jsonValue;
-    [Fri.Property(Required = true)]
+    [Fri.Required]
     DerivedClass  derivedClass;
     DerivedClass  derivedClassNull;
 }

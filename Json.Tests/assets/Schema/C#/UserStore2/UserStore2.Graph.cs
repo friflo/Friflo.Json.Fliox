@@ -7,7 +7,7 @@ using Friflo.Json.Flow.Mapper;
 namespace UserStore2.Graph {
 
 public abstract class Entity {
-    [Fri.Property(Required = true)]
+    [Fri.Required]
     string  id;
 }
 

@@ -21,7 +21,7 @@ public class LongEntity {
 
 public class CustomIdEntity {
     [Fri.Key]
-    [Fri.Property(Required = true)]
+    [Fri.Required]
     string  customId;
 }
 

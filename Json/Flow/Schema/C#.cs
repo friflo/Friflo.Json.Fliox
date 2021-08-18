@@ -122,7 +122,7 @@ namespace Friflo.Json.Flow.Schema
                 if (def.isKey)
                     sb.AppendLine("    [Fri.Key]");
                 if (def.required && isReferenceType)
-                    sb.AppendLine("    [Fri.Property(Required = true)]");
+                    sb.AppendLine("    [Fri.Required]");
                 sb.AppendLine($"    {field.type}{nullStr}{indent} {def.name};");
             }
             sb.AppendLine("}");

@@ -23,22 +23,22 @@ public class RightAllow : Right {
 }
 
 public class RightTask : Right {
-    [Fri.Property(Required = true)]
+    [Fri.Required]
     List<TaskType>  types;
 }
 
 public class RightMessage : Right {
-    [Fri.Property(Required = true)]
+    [Fri.Required]
     List<string>  names;
 }
 
 public class RightSubscribeMessage : Right {
-    [Fri.Property(Required = true)]
+    [Fri.Required]
     List<string>  names;
 }
 
 public class RightDatabase : Right {
-    [Fri.Property(Required = true)]
+    [Fri.Required]
     Dictionary<string, ContainerAccess>  containers;
 }
 
@@ -59,7 +59,7 @@ public enum OperationType {
 }
 
 public class RightPredicate : Right {
-    [Fri.Property(Required = true)]
+    [Fri.Required]
     List<string>  names;
 }
 
