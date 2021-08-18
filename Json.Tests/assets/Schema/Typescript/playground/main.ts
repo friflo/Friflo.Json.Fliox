@@ -1,4 +1,5 @@
 import { testEntityIdStore } from "./TestEntityIdStore";
+import { testJsonFlowSchema } from "./TestJsonFlowSchema";
 import { testPocStore } from "./TestPocStore";
 import { testSync } from "./TestSync";
 import { testUserStore } from "./TestUserStore";
@@ -10,3 +11,4 @@ testPocStore();
 testSync()
 testUserStore();
 testEntityIdStore();
+testJsonFlowSchema();

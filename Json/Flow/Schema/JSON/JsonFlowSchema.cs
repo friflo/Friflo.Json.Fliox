@@ -61,12 +61,12 @@ namespace Friflo.Json.Flow.Schema.JSON
         
         public  string                          discriminator;
         public  List<FieldType>                 oneOf;
-        public  bool                            isAbstract;
+        public  bool?                           isAbstract;
         //
         // public  SchemaType?                  type; // todo use this
         public  string                          type; // null or SchemaType
         public  Dictionary<string, FieldType>   properties;
-        public  bool                            isStruct;
+        public  bool?                           isStruct;
         public  List<string>                    required;
         public  bool                            additionalProperties;
         //
@@ -97,8 +97,8 @@ namespace Friflo.Json.Flow.Schema.JSON
         
         public  List<FieldType> oneOf;
         
-        public  long            minimum;
-        public  long            maximum;
+        public  long?           minimum;
+        public  long?           maximum;
         
         public  string          pattern;
         public  string          format;  // "date-time"
@@ -111,7 +111,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         [Fri.Ignore]
         public  string          name;
         
-        public  bool            isKey;
+        public  bool?           isKey;
         
         public override string  ToString() => name;
     }

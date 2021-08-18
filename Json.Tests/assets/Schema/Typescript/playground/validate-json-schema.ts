@@ -12,8 +12,9 @@ export function validateSchemas() {
     const userStoreFiles        = getFiles("../JSON/UserStore/");
     const pocStoreFiles         = getFiles("../JSON/PocStore/");
     const entityIdStoreFiles    = getFiles("../JSON/EntityIdStore/");
+    const jsonFlowSchemaFiles   = getFiles("../JSON/JsonFlowSchema/");
 
-    const schemas : string[] = userStoreFiles.concat(pocStoreFiles, entityIdStoreFiles);
+    const schemas : string[] = userStoreFiles.concat(pocStoreFiles, entityIdStoreFiles, jsonFlowSchemaFiles);
 
     for (var path of schemas) {
         console.log("validate: ", path);

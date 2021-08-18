@@ -63,8 +63,8 @@ namespace Friflo.Json.Flow.Schema.JSON
                         var typeType    = type.type;
                         var oneOf       = type.oneOf;
                         if (oneOf != null || typeType == "object") {
-                            typeDef.isAbstract  = type.isAbstract;
-                            typeDef.isStruct    = type.isStruct;
+                            typeDef.isAbstract  = type.isAbstract.HasValue && type.isAbstract.Value;
+                            typeDef.isStruct    = type.isStruct.HasValue && type.isStruct.Value;
                             var properties      = type.properties;
                             if (properties != null) {
                                 typeDef.fields = new List<FieldDef>(properties.Count);
@@ -167,7 +167,7 @@ namespace Friflo.Json.Flow.Schema.JSON
                 fieldType = context.standardTypes.JsonValue;
                 // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
             }
-            var isKey    = field.isKey;
+            var isKey    = field.isKey.HasValue && field.isKey.Value;
             var fieldDef = new FieldDef (fieldName, required, isKey, fieldType, isArray, isDictionary, typeDef);
             typeDef.fields.Add(fieldDef);
         }
