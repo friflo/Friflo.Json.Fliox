@@ -57,13 +57,13 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         }
 
         public override DiffNode Diff (Differ differ, Ref<T, TKey> left, Ref<T, TKey> right) {
-            if (left.key != right.key) // todo use left.id.Equals(right.id) 
-                return differ.AddNotEqual(left.id, right.id);
+            if (left.id != right.id) // todo use left.id.Equals(right.id) 
+                return differ.AddNotEqual(left.key, right.key);
             return null;
         }
         
         public override void Trace(Tracer tracer, Ref<T, TKey> value) {
-            string id = value.key;
+            string id = value.id;
             if (id == null)
                 return;
             var store = tracer.tracerContext.Store();
@@ -82,7 +82,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         }
 
         public override void Write(ref Writer writer, Ref<T, TKey> value) {
-            string id = value.key;
+            string id = value.id;
             if (id != null) {
                 writer.WriteString(id);
             } else {

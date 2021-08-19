@@ -18,7 +18,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             using (var database = new MemoryDatabase())
             using (var store    = new PocStore(database, "TestQueryRef")) {
                 var orders = store.orders;
-                var customerId = orders.Query(o => o.customer.id == "customer-1");
+                var customerId = orders.Query(o => o.customer.key == "customer-1");
                 AreEqual("QueryTask<Order> (filter: .customer == 'customer-1')", customerId.ToString());
                 
                 var e = Throws<NotSupportedException>(() => { var _ = orders.Query(o => o.customer.Entity == null); });

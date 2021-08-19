@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             var allArticles2            = articles.QueryByFilter(filterAll)                         .TaskName("allArticles2");
             var producersTask           = allArticles.ReadRefs(a => a.producer);
             var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"))   .TaskName("hasOrderCamera");
-            var ordersWithCustomer1     = orders.Query(o => o.customer.id == "customer-1")          .TaskName("ordersWithCustomer1");
+            var ordersWithCustomer1     = orders.Query(o => o.customer.key == "customer-1")          .TaskName("ordersWithCustomer1");
             var read3                   = orders.Query(o => o.items.Count(i => i.amount < 1) > 0)   .TaskName("read3");
             var ordersAnyAmountLowerFilter = new EntityFilter<Order>(o => o.items.Any(i => i.amount < 2));
             var ordersAnyAmountLower2   = orders.QueryByFilter(ordersAnyAmountLowerFilter)          .TaskName("ordersAnyAmountLower2");

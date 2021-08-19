@@ -345,7 +345,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         internal PeerEntity<T> GetPeerByRef(Ref<T, TKey> reference) {
-            string id = reference.key;
+            string id = reference.id;
             if (id == null)
                 return null; // todo add test
             PeerEntity<T> peer = reference.GetPeer();

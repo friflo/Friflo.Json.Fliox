@@ -11,16 +11,16 @@ namespace Friflo.Json.Flow.Graph
     /// A <see cref="Ref{T,K}"/> is used to declare type safe fields being references to other entities in a data model.
     /// 
     /// <para>
-    /// A reference is an <see cref="id"/> of type <see cref="string"/>. A reference can be in two states:
+    /// A reference is an <see cref="key"/> of type <see cref="string"/>. A reference can be in two states:
     ///   <para><b>unresolved</b>
-    ///     Only the access to <see cref="id"/> is valid. This is always the case.
+    ///     Only the access to <see cref="key"/> is valid. This is always the case.
     ///     Access to the referenced entity instance via the property <see cref="Entity"/> result in an <see cref="Exception"/>.
     ///   </para> 
     ///   <para><b>resolved</b>
     ///     Access to the referenced entity instance is valid via the property <see cref="Entity"/>.
     ///   </para> 
     /// </para> 
-    /// The <see cref="id"/> is used when serializing a <see cref="Ref{T}"/> field to and from JSON.  
+    /// The <see cref="key"/> is used when serializing a <see cref="Ref{T}"/> field to and from JSON.  
     /// <para>
     ///     A <see cref="Ref{T}"/> can be assigned in three ways:
     ///     <para>1. By assigning an id of type <see cref="string"/>.                   Assigning a null <see cref="string"/> is valid.</para>
@@ -29,8 +29,8 @@ namespace Friflo.Json.Flow.Graph
     /// </para>
     /// 
     /// <para>
-    ///     Access to <see cref="id"/> and property <see cref="Entity"/>:
-    ///     <para>The <see cref="id"/> of a <see cref="Ref{T}"/> can be accessed at all time without any restrictions.</para>
+    ///     Access to <see cref="key"/> and property <see cref="Entity"/>:
+    ///     <para>The <see cref="key"/> of a <see cref="Ref{T}"/> can be accessed at all time without any restrictions.</para>
     ///     <para>The property <see cref="Entity"/> enables access to the referenced entity instance.
     ///         If the <see cref="Ref{T}"/> was assigned by an entity the access has no restrictions.
     ///         If the <see cref="Ref{T}"/> was assigned by an id the referenced entity instance need to
@@ -38,7 +38,7 @@ namespace Friflo.Json.Flow.Graph
     ///     </para>
     /// </para>
     /// <para>
-    ///   To resolve the <see cref="Entity"/> by its <see cref="id"/> various options are available:
+    ///   To resolve the <see cref="Entity"/> by its <see cref="key"/> various options are available:
     ///   <para>By calling <see cref="FindBy"/> of a <see cref="Ref{T}"/> instance.</para>
     ///   <para>
     ///     When reading an entity instance containing a <see cref="Ref{T}"/> field
@@ -65,26 +65,26 @@ namespace Friflo.Json.Flow.Graph
         //      peer == null    =>  Ref<> is not attached to a peer until now
         //      peer != null    =>  Ref<> is attached to a peer
 
-        public   readonly   TKey            id;
-        public   readonly   string          key;
+        public   readonly   TKey            key;
+        public   readonly   string          id;
         private  readonly   T               entity;
         private             PeerEntity<T>   peer;
         
         internal static readonly   EntityId<T, TKey>     StaticEntityId = EntityId.GetEntityId2<T, TKey>();
         
-        public   override   string          ToString() => key ?? "null";
+        public   override   string          ToString() => id ?? "null";
         
-        public Ref(TKey id) {
-            this.id     = id;
-            key         = StaticEntityId.KeyToId(id);
+        public Ref(TKey key) {
+            this.key    = key;
+            id          = StaticEntityId.KeyToId(key);
             this.entity = null;
             this.peer   = null;
         }
         
         public Ref(T entity) {
             TKey entityId = entity != null ? StaticEntityId.GetKey(entity) : default;
-            this.id     = entityId;
-            this.key    = StaticEntityId.KeyToId(id);
+            this.key    = entityId;
+            this.id     = StaticEntityId.KeyToId(key);
             this.entity = entity;
             this.peer   = null;
             if (entity != null && entityId == null)
@@ -92,8 +92,8 @@ namespace Friflo.Json.Flow.Graph
         }
         
         internal Ref(PeerEntity<T> peer) {
-            this.id     = StaticEntityId.IdToKey(peer.id);      // peer.id is never null
-            this.key    = peer.id;
+            this.key    = StaticEntityId.IdToKey(peer.id);      // peer.id is never null
+            this.id     = peer.id;
             this.entity = null;
             this.peer   = peer;
         }
@@ -104,7 +104,7 @@ namespace Friflo.Json.Flow.Graph
                     return entity;
                 if (peer.assigned)
                     return peer.Entity;
-                throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), key);
+                throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), id);
             }
         }
 
@@ -129,11 +129,11 @@ namespace Friflo.Json.Flow.Graph
             if (obj == null)
                 return false;
             Ref<T, TKey> other = (Ref<T, TKey>)obj;
-            return id.Equals(other.id);
+            return key.Equals(other.key);
         }
 
         public override int GetHashCode() {
-            return id.GetHashCode();
+            return key.GetHashCode();
         }
 
         public static implicit operator Ref<T, TKey>(T entity) {
@@ -150,8 +150,8 @@ namespace Friflo.Json.Flow.Graph
 
         public Find<T> FindBy(ReadTask<T, TKey> task) {
             // may validate that set is the same which created the PeerEntity<>
-            var find = task.Find(key);
-            peer = task.set.GetPeerById(key);
+            var find = task.Find(id);
+            peer = task.set.GetPeerById(id);
             return find;
         }
     }
