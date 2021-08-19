@@ -102,7 +102,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
                     slot = new Ref<T, TKey> (peer);
                     return slot;
                 }
-                var key = Ref<T, TKey>.StaticEntityId.StringToKey(id);
+                var key = Ref<T, TKey>.StaticEntityId.IdToKey(id);
                 slot = new Ref<T, TKey> (key);
                 return slot;
             }

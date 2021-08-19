@@ -19,19 +19,19 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             fieldSet    = GetFieldSet<T, short>(field);
         }
 
-        internal override short StringToKey(string id) {
+        internal override short IdToKey(string id) {
             return short.Parse(id);
         }
 
-        internal override string KeyToString(short id) {
-            return id.ToString();
+        internal override string KeyToId(short key) {
+            return key.ToString();
         }
         
-        internal override   short  GetId (T entity) {
+        internal override   short  GetKey (T entity) {
             return fieldGet(entity);
         }
         
-        internal override   void    SetId (T entity, short id) {
+        internal override   void    SetKey (T entity, short id) {
             fieldSet(entity, id);
         }
     }
@@ -48,19 +48,19 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             propertySet = (Action<T, short>) Delegate.CreateDelegate (typeof(Action<T, short>), idSetMethod);
         }
 
-        internal override short StringToKey(string id) {
+        internal override short IdToKey(string id) {
             return short.Parse(id);
         }
 
-        internal override string KeyToString(short id) {
-            return id.ToString();
+        internal override string KeyToId(short key) {
+            return key.ToString();
         }
         
-        internal override   short  GetId (T entity) {
+        internal override   short  GetKey (T entity) {
             return propertyGet(entity);
         }
         
-        internal override   void    SetId (T entity, short id) {
+        internal override   void    SetKey (T entity, short id) {
             propertySet(entity, id);
         }
     }

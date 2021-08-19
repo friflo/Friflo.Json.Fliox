@@ -308,11 +308,11 @@ namespace Friflo.Json.Flow.Graph
         
         // ------------------------------------------- internals -------------------------------------------
         private void SetEntityId (T entity, string id) {
-            intern.entityId.SetEntityId(entity, id);
+            intern.entityId.SetId(entity, id);
         }
         
         internal override string GetEntityId (T entity) {
-            return intern.entityId.GetEntityId(entity);
+            return intern.entityId.GetId(entity);
         }
 
         internal override void LogSetChangesInternal(LogTask logTask) {

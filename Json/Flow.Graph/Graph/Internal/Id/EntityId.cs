@@ -152,25 +152,25 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
     // -------------------------------------------- EntityId<T> --------------------------------------------
     internal abstract class EntityId2<T> : EntityId where T : class {
         internal abstract   Type    GetEntityIdType (); // todo remove
-        internal abstract   string  GetEntityId (T entity);
-        internal abstract   void    SetEntityId (T entity, string id);
+        internal abstract   string  GetId  (T entity);
+        internal abstract   void    SetId  (T entity, string id);
     }
     
     internal abstract class EntityId<T, TKey> : EntityId2<T> where T : class {
-        internal abstract   TKey    StringToKey (string id);
-        internal abstract   string  KeyToString (TKey id);
+        internal abstract   TKey    IdToKey (string id);
+        internal abstract   string  KeyToId (TKey key);
         
-        internal abstract   TKey    GetId (T entity);
-        internal abstract   void    SetId (T entity, TKey id);
+        internal abstract   TKey    GetKey  (T entity);
+        internal abstract   void    SetKey  (T entity, TKey id);
 
-        internal override   string  GetEntityId (T entity) {
-            TKey id = GetId(entity);
-            return KeyToString(id);
+        internal override   string  GetId   (T entity) {
+            TKey key = GetKey(entity);
+            return KeyToId(key);
         }
         
-        internal override   void    SetEntityId (T entity, string id) {
-            TKey key = StringToKey(id);
-            SetId(entity, key);
+        internal override   void    SetId   (T entity, string id) {
+            TKey key = IdToKey(id);
+            SetKey(entity, key);
         }
     }
 }
