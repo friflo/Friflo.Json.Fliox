@@ -47,20 +47,26 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
                 if (FieldQuery.IsKey(customAttributes))
                     return f;
             }
-            var property = type.GetProperty("id", Flags);
-            if (property != null)
-                return property;
-            property = type.GetProperty("Id", Flags);
+            var property = FindMember(properties);
             if (property != null)
                 return property;
             
-            var field = type.GetField("id", Flags);
-            if (field != null)
-                return field;
-            field = type.GetField("Id", Flags);
+            var field = FindMember(fields);
             if (field != null)
                 return field;
             
+            return null;
+        }
+        
+        private static T FindMember<T> (T[] members) where T : MemberInfo {
+            foreach (var member in members) {
+                if (member.Name == "id")
+                    return member;
+            }
+            foreach (var member in members) {
+                if (member.Name == "Id")
+                    return member;
+            }
             return null;
         }
 
