@@ -6,99 +6,16 @@ using System.Reflection;
 
 namespace Friflo.Json.Flow.Mapper.Utils
 {
-    // Reflect
     public static class ReflectUtils
     {
-        // GetField
-        public static FieldInfo GetField (Type type, String name)
-        {
-#if NETFX_CORE
-            TypeInfo ti = type.GetTypeInfo ();
-            FieldInfo fi = ti.GetDeclaredField (name);
-            if (fi != null)
-                return fi;
-            type = ti.BaseType;
-            if (type != null)
-                return GetField (type, name);
-            return null;
-#else
-            return type. GetField (name, BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
-#endif
-        }
+        private static readonly object[] DefConstructorArgs = new object[0];
 
-        // GetFields
-        public static FieldInfo[] GetFields (Type type)
-        {
-#if NETFX_CORE
-            List<FieldInfo> list = new List<FieldInfo>();
-            Type t = type;
-            while (t != null)
-            {
-                TypeInfo ti = t.GetTypeInfo();
-                foreach (FieldInfo item in ti.DeclaredFields)
-                {
-                    if (item.IsPublic && !item.IsStatic)
-                        list.Add(item);
-                }
-                t = ti.BaseType;
-            }
-            return list.ToArray();
-#else
-            return type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance ); //| BindingFlags.Static);
-#endif
-        }
-        
-        public static PropertyInfo[] GetProperties (Type type)
-        {
-            return type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance ); //| BindingFlags.Static);
-        }
-
-        public static PropertyInfo GetPropertyGet (Type type, String name)
-        {
-#if NETFX_CORE
-            TypeInfo ti = type.GetTypeInfo ();
-            PropertyInfo pi = ti.GetDeclaredProperty (name);
-            if (pi != null && pi.GetMethod != null)
-                return pi;
-            type = ti.BaseType;
-            if (type != null)
-                return GetPropertyGet (type, name);
-            return null;
-#else
-            PropertyInfo pi = type.GetProperty (name, BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
-            if (pi == null || pi.GetGetMethod (true) == null)
-                return null;
-            return pi;
-#endif
-        }
-
-        public static PropertyInfo GetPropertySet (Type type, String name)
-        {
-#if NETFX_CORE
-            TypeInfo ti = type.GetTypeInfo ();
-            PropertyInfo pi = ti.GetDeclaredProperty (name);
-            if (pi != null && pi.SetMethod != null)
-                return pi;
-            type = ti.BaseType;
-            if (type != null)
-                return GetPropertySet (type, name);
-            return null;
-#else
-            PropertyInfo pi = type.GetProperty (name, BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
-            if (pi == null || pi.GetSetMethod (true) == null)
-                return null;
-            return pi;
-#endif
-        }
-
-        private static readonly Object[] DefConstructorArgs = new Object[0];
-
-        public static Object CreateInstance (Type type)
+        public static object CreateInstance (Type type)
         {
             return CreateInstance (type, DefConstructorArgs );
         }
         
-        public static Object CreateInstance (Type type, Object[] args)
+        public static object CreateInstance (Type type, object[] args)
         {
             try
             {
@@ -106,7 +23,7 @@ namespace Friflo.Json.Flow.Mapper.Utils
             }
             catch (TargetInvocationException e)
             {
-                throw e.InnerException != null ? e.InnerException : e;
+                throw e.InnerException ?? e;
             }
         }
 
@@ -124,7 +41,7 @@ namespace Friflo.Json.Flow.Mapper.Utils
         }
         
         public static object CreateInstanceCopy<T>(ConstructorInfo constructor, IEnumerable<T> src) {
-            object[] args = new Object[1];
+            object[] args = new object[1];
             args[0] = src;
             return constructor. Invoke (args);
         }
@@ -139,7 +56,6 @@ namespace Friflo.Json.Flow.Mapper.Utils
                 if (ci.GetParameters().Length == 0)
                     return ci;
             return null;
-
         }
         
         public static ConstructorInfo GetCopyConstructor (Type type) {
@@ -187,81 +103,5 @@ namespace Friflo.Json.Flow.Mapper.Utils
 #endif
             return null;
         }
-
-        // GetMethods
-        public static MethodInfo[] GetMethods (Type type)
-        {
-#if NETFX_CORE
-            List<MethodInfo> list = new List<MethodInfo>();
-            Type curType = type;
-            while (curType != typeof( Object ))
-            {
-                TypeInfo ti = curType.GetTypeInfo();
-                foreach (MethodInfo method in ti.DeclaredMethods)
-                    list.Add (method);
-                curType = ti.BaseType;
-            }
-            return list.ToArray();
-#else
-            return type.GetMethods(BindingFlags.FlattenHierarchy | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-#endif
-        }
-
-        // GetMethod
-        public static MethodInfo GetMethod (Type type, String method, Type[] types)
-        {
-#if NETFX_CORE
-            Type curType = type;
-            while (curType != typeof( Object ))
-            {
-                TypeInfo ti = curType.GetTypeInfo();
-                MethodInfo mi = ti.GetDeclaredMethod(method);
-                if (mi != null)
-                    return mi;
-                curType = ti.BaseType;
-            }
-            return null;
-#else
-            return type.GetMethod(method, types);
-#endif
-        }
-
-        // GetMethodEx
-        public static MethodInfo GetMethodEx (Type type, String method, Type[] types)
-        {
-            MethodInfo[] methods = ReflectUtils.GetMethods(type);
-            for (int n = 0; n < methods. Length; n++)
-            {
-                MethodInfo m = methods[n];
-                if (m. Name. Equals (method))
-                {
-                    ParameterInfo[] po = m.GetParameters();
-                    if (po.Length == types.Length)
-                    {
-                        int i = 0;
-                        for (; i < po.Length; i++)
-                        {
-                            if (po[i].ParameterType != types[i])
-                                break;
-                        }
-                        if (i == types.Length)
-                            return m;
-                    }
-                }
-            }
-            return null;
-        }
-
-        // Invoke
-        public static Object Invoke (MethodInfo method, Object obj, Object[] args) {
-            return method. Invoke (obj, args);
-        }
-    
-        public static String GetMethodName (MethodInfo method)
-        {
-            // ReSharper disable once PossibleNullReferenceException
-            return method. DeclaringType + "." + method. Name;
-        }
-
     }
 }
