@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Schema.Definition
     /// Note: This file does and must not have any dependency to <see cref="System.Type"/>.
     /// </summary>
     public abstract class TypeDef {
-        public              string              Name         { get; }
+        public              string              Name            { get; }
         /// <summary>
         /// Namespace of a type. Depending on the generated language / schema is has the following meaning:
         /// <list type="bullet">
@@ -22,7 +22,7 @@ namespace Friflo.Json.Flow.Schema.Definition
         ///   <item>The package declaration in Kotlin</item>
         /// </list> 
         /// </summary>
-        public              string              Namespace    { get; }
+        public              string              Namespace       { get; }
         /// <summary>The path of the file containing the generated type. It is set by <see cref="Generator"/>.
         /// <br></br>
         /// In Typescript or JSON Schema a file can contain multiple types.
@@ -31,30 +31,30 @@ namespace Friflo.Json.Flow.Schema.Definition
         /// In Java each type require its own file. The <see cref="Namespace"/> is the Java package name which can be
         /// used by multiple types. But each type has its individual file <see cref="Path"/>.
         /// </summary>
-        public              string              Path         { get; internal set; }
+        public              string              Path            { get; internal set; }
         
         /// The class this type extends. In other words its base or parent class.  
-        public  abstract    TypeDef             BaseType     { get; }
+        public  abstract    TypeDef             BaseType        { get; }
         
         /// If <see cref="IsClass"/> is true it has <see cref="Fields"/>
-        public  abstract    bool                IsClass    { get; }
+        public  abstract    bool                IsClass         { get; }
         /// <summary><see cref="IsStruct"/> can be true only, if <see cref="IsClass"/> is true</summary>
-        public  abstract    bool                IsStruct     { get; }
-        public  abstract    List<FieldDef>      Fields       { get; }
+        public  abstract    bool                IsStruct        { get; }
+        public  abstract    List<FieldDef>      Fields          { get; }
         
         /// <summary><see cref="UnionType"/> is not null, if the type is as discriminated union.</summary>
-        public  abstract    UnionType           UnionType    { get; }
-        public  abstract    bool                IsAbstract   { get; }
+        public  abstract    UnionType           UnionType       { get; }
+        public  abstract    bool                IsAbstract      { get; }
         /// <summary><see cref="Discriminant"/> is not null if the type is an element of a <see cref="UnionType"/>
         /// Either both <see cref="Discriminant"/> and <see cref="Discriminator"/> are not null or both are null</summary>
-        public  abstract    string              Discriminant { get; }
-        public  abstract    string              Discriminator{ get; }
+        public  abstract    string              Discriminant    { get; }
+        public  abstract    string              Discriminator   { get; }
         
         /// If <see cref="IsEnum"/> is true it has <see cref="EnumValues"/>
-        public  abstract    bool                IsEnum       { get; }
-        public  abstract    ICollection<string> EnumValues   { get; }
+        public  abstract    bool                IsEnum          { get; }
+        public  abstract    ICollection<string> EnumValues      { get; }
         /// currently not used
-        public  abstract    TypeSemantic        TypeSemantic { get; }
+        public  abstract    TypeSemantic        TypeSemantic    { get; }
         
         protected TypeDef (string name, string @namespace) {
             Name        = name;
