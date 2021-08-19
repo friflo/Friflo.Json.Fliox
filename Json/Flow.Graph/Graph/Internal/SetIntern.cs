@@ -15,7 +15,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal readonly   ObjectPatcher       objectPatcher;
         internal readonly   Tracer              tracer;
         internal readonly   EntityStore         store;
-        internal readonly   EntityId<T>         entityId;
+        internal readonly   EntityId2<T>        entityId;
 
         
         // --- non readonly

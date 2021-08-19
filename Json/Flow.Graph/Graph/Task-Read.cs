@@ -97,10 +97,10 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ReadTask<T> : SyncTask, IReadRefsTask<T> where T : class
+    public class ReadTask<T, TKey> : SyncTask, IReadRefsTask<T, TKey> where T : class
     {
         internal            TaskState               state;
-        internal readonly   EntitySet<T>            set;
+        internal readonly   EntitySet<T, TKey>            set;
         internal            RefsTask                refsTask;
         internal readonly   Dictionary<string, T>   results     = new Dictionary<string, T>();
         internal readonly   List<FindTask<T>>       findTasks   = new List<FindTask<T>>();
@@ -112,7 +112,7 @@ namespace Friflo.Json.Flow.Graph
         public   override   string                  Details     => $"ReadTask<{typeof(T).Name}> (#ids: {results.Count})";
         
 
-        internal ReadTask(EntitySet<T> set) {
+        internal ReadTask(EntitySet<T, TKey> set) {
             refsTask    = new RefsTask(this);
             this.set    = set;
         }
@@ -147,56 +147,56 @@ namespace Friflo.Json.Flow.Graph
         }
 
         // lab - ReadRefs by Entity Type
-        public ReadRefsTask<TRef> ReadRefsOfType<TRef>() where TRef : class {
+        public ReadRefsTask<TRef, TKey> ReadRefsOfType<TRef>() where TRef : class {
             throw new NotImplementedException("ReadRefsOfType() planned to be implemented");
         }
         
         // lab - all ReadRefs
-        public ReadRefsTask<object> ReadAllRefs()
+        public ReadRefsTask<object, TKey> ReadAllRefs()
         {
             throw new NotImplementedException("ReadAllRefs() planned to be implemented");
         }
         
         // --- Ref
-        public ReadRefTask<TRef> ReadRef<TRef>(Expression<Func<T, Ref<TRef>>> selector) where TRef : class {
+        public ReadRefTask<TRef, TKey> ReadRef<TRef>(Expression<Func<T, Ref<TRef, TKey>>> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             string path = ExpressionSelector.PathFromExpression(selector, out _);
             return ReadRefByPath<TRef>(path);
         }
         
-        public ReadRefTask<TRef> ReadRefPath<TRef>(RefPath<T, TRef> selector) where TRef : class {
+        public ReadRefTask<TRef, TKey> ReadRefPath<TRef>(RefPath<T, TRef, TKey> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return ReadRefByPath<TRef>(selector.path);
         }
         
-        private ReadRefTask<TRef> ReadRefByPath<TRef>(string path) where TRef : class {
+        private ReadRefTask<TRef, TKey> ReadRefByPath<TRef>(string path) where TRef : class {
             if (refsTask.subRefs.TryGetTask(path, out ReadRefsTask subRefsTask))
-                return (ReadRefTask<TRef>)subRefsTask;
-            var newQueryRefs = new ReadRefTask<TRef>(this, path, typeof(TRef).Name, set.intern.store);
+                return (ReadRefTask<TRef, TKey>)subRefsTask;
+            var newQueryRefs = new ReadRefTask<TRef, TKey>(this, path, typeof(TRef).Name, set.intern.store);
             refsTask.subRefs.AddTask(path, newQueryRefs);
             set.intern.store.AddTask(newQueryRefs);
             return newQueryRefs;
         }
         
         // --- Refs
-        public ReadRefsTask<TRef> ReadRefsPath<TRef>(RefsPath<T, TRef> selector) where TRef : class {
+        public ReadRefsTask<TRef, TKey> ReadRefsPath<TRef>(RefsPath<T, TRef, TKey> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByPath<TRef>(selector.path, set.intern.store);
+            return refsTask.ReadRefsByPath<TRef, TKey>(selector.path, set.intern.store);
         }
 
-        public ReadRefsTask<TRef> ReadRefs<TRef>(Expression<Func<T, Ref<TRef>>> selector) where TRef : class {
+        public ReadRefsTask<TRef, TKey> ReadRefs<TRef>(Expression<Func<T, Ref<TRef, TKey>>> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRef>(selector, set.intern.store);
+            return refsTask.ReadRefsByExpression<TRef, TKey>(selector, set.intern.store);
         }
         
-        public ReadRefsTask<TRef> ReadArrayRefs<TRef>(Expression<Func<T, IEnumerable<Ref<TRef>>>> selector) where TRef : class {
+        public ReadRefsTask<TRef, TKey> ReadArrayRefs<TRef>(Expression<Func<T, IEnumerable<Ref<TRef, TKey>>>> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRef>(selector, set.intern.store);
+            return refsTask.ReadRefsByExpression<TRef, TKey>(selector, set.intern.store);
         }
         
         internal override void AddFailedTask(List<SyncTask> failed) {

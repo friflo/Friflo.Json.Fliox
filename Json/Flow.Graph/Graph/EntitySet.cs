@@ -29,17 +29,33 @@ namespace Friflo.Json.Flow.Graph
         
         internal  abstract  void                ResetSync               ();
         internal  abstract  SyncTask            SubscribeChangesInternal(IEnumerable<Change> changes);
-        internal abstract   SubscribeChanges    GetSubscription();
+        internal  abstract  SubscribeChanges    GetSubscription();
+        
+
 
         protected EntitySet(string name) {
             this.name = name;
+        }
+    }
+    
+    public abstract class EntitySet2<T> : EntitySet where T : class
+    {
+        internal  abstract  PeerEntity<T>       GetPeerById (string id);
+        internal  abstract  PeerEntity<T>       GetPeerByEntity(T entity);
+        
+        internal  abstract  PeerEntity<T>       CreatePeer (T entity);
+        internal  abstract  string              GetEntityId (T entity);
+        
+        internal  SyncSet2<T>   syncSet2;
+
+        protected EntitySet2(string name) : base(name) {
         }
     }
 
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class EntitySet<T> : EntitySet where T : class
+    public class EntitySet<T, TKey> : EntitySet2<T>  where T : class
     {
         // Keep all utility related fields of EntitySet in SetIntern to enhance debugging overview.
         // Reason:  EntitySet is extended by application which is mainly interested in following fields while debugging:
@@ -53,7 +69,7 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   EntityContainer                     container; // not used - only for debugging ergonomics
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        internal            SyncSet<T>                          syncSet;
+        internal            SyncSet<T, TKey>                    syncSet;
         
         internal override   SyncSet                             SyncSet => syncSet;
         public   override   string                              ToString() => SetInfo.ToString();
@@ -67,7 +83,7 @@ namespace Friflo.Json.Flow.Graph
         
         // --------------------------------------- public interface --------------------------------------- 
         // --- Read
-        public ReadTask<T> Read() {
+        public ReadTask<T, TKey> Read() {
             // ReadTasks<> are not added with intern.store.AddTask(task) as it only groups the tasks created via its
             // methods like: Find(), FindRange(), ReadRefTask() & ReadRefsTask().
             // A ReadTask<> its self cannot fail.
@@ -75,7 +91,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         // --- Query
-        public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
+        public QueryTask<T, TKey> Query(Expression<Func<T, bool>> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.Query() filter must not be null. EntitySet: {name}");
             var op = Operation.FromFilter(filter, RefQueryPath);
@@ -84,7 +100,7 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public QueryTask<T> QueryByFilter(EntityFilter<T> filter) {
+        public QueryTask<T, TKey> QueryByFilter(EntityFilter<T> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.QueryByFilter() filter must not be null. EntitySet: {name}");
             var task = syncSet.QueryFilter(filter.op);
@@ -92,7 +108,7 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public QueryTask<T> QueryAll() {
+        public QueryTask<T, TKey> QueryAll() {
             var all = Operation.FilterTrue;
             var task = syncSet.QueryFilter(all);
             intern.store.AddTask(task);
@@ -280,14 +296,14 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- create RefPath / RefsPath
-        public RefPath<T, TRef> RefPath<TRef>(Expression<Func<T, Ref<TRef>>> selector) where TRef : class {
+        public RefPath<T, TRef, TKey> RefPath<TRef>(Expression<Func<T, Ref<TRef, TKey>>> selector) where TRef : class {
             string path = ExpressionSelector.PathFromExpression(selector, out _);
-            return new RefPath<T, TRef>(path);
+            return new RefPath<T, TRef, TKey>(path);
         }
         
-        public RefsPath<T, TRef> RefsPath<TRef>(Expression<Func<T, IEnumerable<Ref<TRef>>>> selector) where TRef : class {
+        public RefsPath<T, TRef, TKey> RefsPath<TRef>(Expression<Func<T, IEnumerable<Ref<TRef, TKey>>>> selector) where TRef : class {
             string path = ExpressionSelector.PathFromExpression(selector, out _);
-            return new RefsPath<T, TRef>(path);
+            return new RefsPath<T, TRef, TKey>(path);
         }
         
         // ------------------------------------------- internals -------------------------------------------
@@ -295,7 +311,7 @@ namespace Friflo.Json.Flow.Graph
             intern.entityId.SetEntityId(entity, id);
         }
         
-        internal string GetEntityId (T entity) {
+        internal override string GetEntityId (T entity) {
             return intern.entityId.GetEntityId(entity);
         }
 
@@ -309,10 +325,11 @@ namespace Friflo.Json.Flow.Graph
             store._intern.setByName[type.Name]  = this;
             container   = store._intern.database.GetOrCreateContainer(name);
             intern      = new SetIntern<T>(store);
-            syncSet     = new SyncSet<T>(this);
+            syncSet     = new SyncSet<T, TKey>(this);
+            syncSet2    = syncSet;
         }
 
-        internal PeerEntity<T> CreatePeer (T entity) {
+        internal override PeerEntity<T> CreatePeer (T entity) {
             var id = GetEntityId(entity);
             if (peers.TryGetValue(id, out PeerEntity<T> peer)) {
                 peer.SetEntity(entity);
@@ -327,8 +344,8 @@ namespace Friflo.Json.Flow.Graph
             peers.Remove(id);
         }
         
-        internal PeerEntity<T> GetPeerByRef(Ref<T> reference) {
-            string id = reference.id;
+        internal PeerEntity<T> GetPeerByRef(Ref<T, TKey> reference) {
+            string id = reference.key;
             if (id == null)
                 return null; // todo add test
             PeerEntity<T> peer = reference.GetPeer();
@@ -340,8 +357,8 @@ namespace Friflo.Json.Flow.Graph
             }
             return peer;
         }
-
-        internal PeerEntity<T> GetPeerById(string id) {
+        
+        internal override PeerEntity<T> GetPeerById(string id) {
             if (peers.TryGetValue(id, out PeerEntity<T> peer)) {
                 return peer;
             }
@@ -350,7 +367,7 @@ namespace Friflo.Json.Flow.Graph
             return peer;
         }
         
-        internal PeerEntity<T> GetPeerByEntity(T entity) {
+        internal override PeerEntity<T> GetPeerByEntity(T entity) {
             var id = GetEntityId(entity);
             if (peers.TryGetValue(id, out PeerEntity<T> peer)) {
                 return peer;
@@ -419,7 +436,8 @@ namespace Friflo.Json.Flow.Graph
         }
 
         internal override void ResetSync() {
-            syncSet = new SyncSet<T>(this);
+            syncSet     = new SyncSet<T, TKey>(this);
+            syncSet2    = syncSet;
         }
         
         internal override SyncTask SubscribeChangesInternal(IEnumerable<Change> changes) {

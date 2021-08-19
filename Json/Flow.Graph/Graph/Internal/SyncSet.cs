@@ -4,51 +4,56 @@
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Flow.Sync;
-using Friflo.Json.Flow.Graph.Internal.Map;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
+    internal abstract class SyncSet2 <T> : SyncSet where T : class
+    {
+        internal abstract void AddUpdate (PeerEntity<T> peer);
+        internal abstract bool AddCreate (PeerEntity<T> peer);
+        internal abstract void AddDelete (string id);
+    }
 
     /// Multiple instances of this class can be created when calling EntitySet.Sync() without awaiting the result.
     /// Each instance is mapped to a <see cref="SyncRequest"/> / <see cref="SyncResponse"/> instance.
-    internal partial class SyncSet<T> : SyncSet where T : class
+    internal partial class SyncSet<T, TKey> : SyncSet2<T> where T : class
     {
         // Note!
         // All fields must be private by all means to ensure that all scheduled tasks of a Sync() request managed
         // by this instance can be mapped to their task results safely.
         
-        private readonly    EntitySet<T>                        set;
-        private readonly    List<string>                        idsBuf       = new List<string>();
+        private readonly    EntitySet<T, TKey>                      set;
+        private readonly    List<string>                            idsBuf       = new List<string>();
             
-        private readonly    List<ReadTask<T>>                   reads        = new List<ReadTask<T>>();
+        private readonly    List<ReadTask<T, TKey>>                 reads        = new List<ReadTask<T, TKey>>();
         /// key: <see cref="QueryTask{T}.filterLinq"/> 
-        private readonly    Dictionary<string, QueryTask<T>>    queries      = new Dictionary<string, QueryTask<T>>();
+        private readonly    Dictionary<string, QueryTask<T, TKey>>  queries      = new Dictionary<string, QueryTask<T, TKey>>();
         
-        private             SubscribeChangesTask<T>             subscribeChanges;
-        
-        /// key: <see cref="PeerEntity{T}.entity"/>.id
-        private readonly    Dictionary<string, PeerEntity<T>>   creates      = new Dictionary<string, PeerEntity<T>>();
-        private readonly    List<WriteTask>                     createTasks  = new List<WriteTask>();
+        private             SubscribeChangesTask<T>                 subscribeChanges;
         
         /// key: <see cref="PeerEntity{T}.entity"/>.id
-        private readonly    Dictionary<string, PeerEntity<T>>   updates      = new Dictionary<string, PeerEntity<T>>();
-        private readonly    List<WriteTask>                     updateTasks  = new List<WriteTask>();
+        private readonly    Dictionary<string, PeerEntity<T>>       creates      = new Dictionary<string, PeerEntity<T>>();
+        private readonly    List<WriteTask>                         createTasks  = new List<WriteTask>();
+        
+        /// key: <see cref="PeerEntity{T}.entity"/>.id
+        private readonly    Dictionary<string, PeerEntity<T>>       updates      = new Dictionary<string, PeerEntity<T>>();
+        private readonly    List<WriteTask>                         updateTasks  = new List<WriteTask>();
 
         /// key: entity id
-        private readonly    Dictionary<string, EntityPatch>     patches      = new Dictionary<string, EntityPatch>();
-        private readonly    List<PatchTask<T>>                  patchTasks   = new List<PatchTask<T>>();
+        private readonly    Dictionary<string, EntityPatch>         patches      = new Dictionary<string, EntityPatch>();
+        private readonly    List<PatchTask<T>>                      patchTasks   = new List<PatchTask<T>>();
         
         /// key: entity id
-        private readonly    HashSet<string>                     deletes      = new HashSet   <string>();
-        private readonly    List<DeleteTask<T>>                 deleteTasks  = new List<DeleteTask<T>>();
+        private readonly    HashSet<string>                         deletes      = new HashSet   <string>();
+        private readonly    List<DeleteTask<T>>                     deleteTasks  = new List<DeleteTask<T>>();
 
-        internal SyncSet(EntitySet<T> set) {
+        internal SyncSet(EntitySet<T, TKey> set) {
             this.set = set;
         }
         
-        internal bool AddCreate (PeerEntity<T> peer) {
+        internal override bool AddCreate (PeerEntity<T> peer) {
             peer.assigned = true;
             creates.TryAdd(peer.id, peer);      // sole place a peer (entity) is added
             if (!peer.created) {
@@ -58,7 +63,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             return false;
         }
         
-        internal void AddUpdate (PeerEntity<T> peer) {
+        internal override void AddUpdate (PeerEntity<T> peer) {
             peer.assigned = true;
             updates.TryAdd(peer.id, peer);      // sole place a peer (entity) is added
             if (!peer.updated) {
@@ -66,23 +71,23 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
-        internal void AddDelete (string id) {
+        internal override void AddDelete (string id) {
             deletes.Add(id);
         }
         
         // --- Read
-        internal ReadTask<T> Read() {
-            var read = new ReadTask<T>(set);
+        internal ReadTask<T, TKey> Read() {
+            var read = new ReadTask<T, TKey>(set);
             reads.Add(read);
             return read;
         }
         
         // --- Query
-        internal QueryTask<T> QueryFilter(FilterOperation filter) {
+        internal QueryTask<T, TKey> QueryFilter(FilterOperation filter) {
             var filterLinq = filter.Linq;
-            if (queries.TryGetValue(filterLinq, out QueryTask<T> query))
+            if (queries.TryGetValue(filterLinq, out QueryTask<T, TKey> query))
                 return query;
-            query = new QueryTask<T>(filter, set.intern.store);
+            query = new QueryTask<T, TKey>(filter, set.intern.store);
             queries.Add(filterLinq, query);
             return query;
         }
@@ -283,7 +288,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (queries.Count == 0)
                 return;
             foreach (var queryPair in queries) {
-                QueryTask<T> query = queryPair.Value;
+                QueryTask<T, TKey> query = queryPair.Value;
                 var subRefs = query.refsTask.subRefs;
                 List<References> references = null;
                 if (subRefs.Count > 0) {

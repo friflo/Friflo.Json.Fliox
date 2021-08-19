@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class DeleteTask<T> : SyncTask where T : class
     {
-        private  readonly   EntitySet<T>    set;
+        private  readonly   EntitySet2<T>    set;
         private  readonly   List<string>    ids;
         internal            TaskState       state;
         internal override   TaskState       State       => state;
@@ -20,19 +20,19 @@ namespace Friflo.Json.Flow.Graph
         public   override   string          Details     => $"DeleteTask<{typeof(T).Name}> (#ids: {ids.Count})";
         
         
-        internal DeleteTask(List<string> ids, EntitySet<T> set) {
+        internal DeleteTask(List<string> ids, EntitySet2<T> set) {
             this.set = set;
             this.ids = ids;
         }
 
         public void Add(string id) {
-            set.syncSet.AddDelete(id);
+            set.syncSet2.AddDelete(id);
             ids.Add(id);
         }
         
         public void AddRange(ICollection<string> ids) {
             foreach (var id in ids) {
-                set.syncSet.AddDelete(id);
+                set.syncSet2.AddDelete(id);
             }
             this.ids.AddRange(ids);
         }

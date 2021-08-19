@@ -18,7 +18,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
             for (int n = 0; n < fields.Length; n++) {
                 var  field      = fields[n];
                 Type fieldType  = field.FieldType;
-                if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(EntitySet<>)) {
+                if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(EntitySet<,>)) {
                     var genericArgs = fieldType.GetGenericArguments();
                     var entityType = genericArgs[0];
                     types.Add(entityType);

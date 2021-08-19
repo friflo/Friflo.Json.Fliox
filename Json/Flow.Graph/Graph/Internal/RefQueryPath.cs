@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                     return QueryConverter.GetMemberName(member, cx);
                 case MemberExpression parentMember:
                     var type = parentMember.Type;
-                    var isRef = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Ref<>);
+                    var isRef = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Ref<,>);
                     var parentName  = GetQueryPath(parentMember, cx);
                     var name        = QueryConverter.GetMemberName(member, cx);
                     if (isRef) {

@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Friflo.Json.Flow.Graph.Internal.Id
 {
-    internal class EntityIdShortField<T> : EntityId<T> where T : class {
+    internal class EntityIdShortField<T> : EntityId<T, short> where T : class {
         private  readonly   FieldInfo           field;
         private  readonly   Func  <T, short>    fieldGet;
         private  readonly   Action<T, short>    fieldSet;
@@ -18,22 +18,26 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             fieldGet    = GetFieldGet<T, short>(field);
             fieldSet    = GetFieldSet<T, short>(field);
         }
-        
-        internal override   string  GetEntityId (T entity) {
-            // var value = (short)field.GetValue(entity);
-            var value = fieldGet(entity);
-            return value.ToString();
+
+        internal override short StringToKey(string id) {
+            return short.Parse(id);
+        }
+
+        internal override string KeyToString(short id) {
+            return id.ToString();
         }
         
-        internal override   void    SetEntityId (T entity, string id) {
-            var value = short.Parse(id);
-            fieldSet(entity, value);
-            // field.SetValue(entity, value);
+        internal override   short  GetId (T entity) {
+            return fieldGet(entity);
+        }
+        
+        internal override   void    SetId (T entity, short id) {
+            fieldSet(entity, id);
         }
     }
     
     
-    internal class EntityIdShortProperty<T> : EntityId<T> where T : class {
+    internal class EntityIdShortProperty<T> : EntityId<T, short> where T : class {
         private  readonly   Func  <T, short>    propertyGet;
         private  readonly   Action<T, short>    propertySet;
         
@@ -43,15 +47,21 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             propertyGet = (Func  <T, short>) Delegate.CreateDelegate (typeof(Func  <T, short>), idGetMethod);
             propertySet = (Action<T, short>) Delegate.CreateDelegate (typeof(Action<T, short>), idSetMethod);
         }
-        
-        internal override   string  GetEntityId (T entity){
-            var value = propertyGet(entity);
-            return value.ToString();
+
+        internal override short StringToKey(string id) {
+            return short.Parse(id);
+        }
+
+        internal override string KeyToString(short id) {
+            return id.ToString();
         }
         
-        internal override   void    SetEntityId (T entity, string id) {
-            var value = short.Parse(id);
-            propertySet(entity, value);
+        internal override   short  GetId (T entity) {
+            return propertyGet(entity);
+        }
+        
+        internal override   void    SetId (T entity, short id) {
+            propertySet(entity, id);
         }
     }
 }

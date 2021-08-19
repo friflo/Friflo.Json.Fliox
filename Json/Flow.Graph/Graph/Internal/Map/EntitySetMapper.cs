@@ -12,7 +12,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         public static readonly EntitySetMatcher Instance = new EntitySetMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
-            bool isEntitySet = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(EntitySet<>);
+            bool isEntitySet = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(EntitySet<,>);
             if (!isEntitySet)
                 return null;
 

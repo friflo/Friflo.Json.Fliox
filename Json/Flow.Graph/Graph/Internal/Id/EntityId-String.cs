@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Friflo.Json.Flow.Graph.Internal.Id
 {
-    internal class EntityIdStringField<T> : EntityId<T> where T : class {
+    internal class EntityIdStringField<T> : EntityId<T, string> where T : class {
         private  readonly   FieldInfo           field;
         private  readonly   Func  <T, string>   fieldGet;
         private  readonly   Action<T, string>   fieldSet;
@@ -18,20 +18,26 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             fieldGet    = GetFieldGet<T, string>(field);
             fieldSet    = GetFieldSet<T, string>(field);
         }
+
+        internal override string StringToKey(string id) {
+            return id;
+        }
+
+        internal override string KeyToString(string id) {
+            return id;
+        }
         
-        internal override   string  GetEntityId (T entity) {
-            // return (string)field.GetValue(entity);
+        internal override   string  GetId (T entity) {
             return fieldGet(entity);
         }
         
-        internal override   void    SetEntityId (T entity, string id) {
+        internal override   void    SetId (T entity, string id) {
             fieldSet(entity, id);
-            // field.SetValue(entity, id);
         }
     }
     
 
-    internal class EntityIdStringProperty<T> : EntityId<T> where T : class {
+    internal class EntityIdStringProperty<T> : EntityId<T, string> where T : class {
         private  readonly   Func  <T, string>   propertyGet;
         private  readonly   Action<T, string>   propertySet;
         
@@ -41,12 +47,20 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             propertyGet = (Func  <T, string>) Delegate.CreateDelegate (typeof(Func<T, string>),   idGetMethod);
             propertySet = (Action<T, string>) Delegate.CreateDelegate (typeof(Action<T, string>), idSetMethod);
         }
+
+        internal override string StringToKey(string id) {
+            return id;
+        }
+
+        internal override string KeyToString(string id) {
+            return id;
+        }
         
-        internal override   string  GetEntityId (T entity){
+        internal override   string  GetId (T entity) {
             return propertyGet(entity);
         }
         
-        internal override   void    SetEntityId (T entity, string id) {
+        internal override   void    SetId (T entity, string id) {
             propertySet(entity, id);
         }
     }

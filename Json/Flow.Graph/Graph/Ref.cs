@@ -8,7 +8,7 @@ using Friflo.Json.Flow.Graph.Internal.Id;
 namespace Friflo.Json.Flow.Graph
 {
     /// <summary>
-    /// A <see cref="Ref{T}"/> is used to declare type safe fields being references to other entities in a data model.
+    /// A <see cref="Ref{T,K}"/> is used to declare type safe fields being references to other entities in a data model.
     /// 
     /// <para>
     /// A reference is an <see cref="id"/> of type <see cref="string"/>. A reference can be in two states:
@@ -54,7 +54,7 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public struct Ref<T>  where T : class
+    public struct Ref<T, TKey>  where T : class
     {
         // invariant of Ref<T> has following cases:
         //
@@ -65,23 +65,26 @@ namespace Friflo.Json.Flow.Graph
         //      peer == null    =>  Ref<> is not attached to a peer until now
         //      peer != null    =>  Ref<> is attached to a peer
 
-        public   readonly   string          id;
+        public   readonly   TKey            id;
+        public   readonly   string          key;
         private  readonly   T               entity;
         private             PeerEntity<T>   peer;
         
-        private static readonly   EntityId<T>     StaticEntityId = EntityId.GetEntityId<T>();
+        internal static readonly   EntityId<T, TKey>     StaticEntityId = EntityId.GetEntityId2<T, TKey>();
         
-        public   override   string          ToString() => id ?? "null";
+        public   override   string          ToString() => key ?? "null";
         
-        public Ref(string id) {
+        public Ref(TKey id) {
             this.id     = id;
+            key         = StaticEntityId.KeyToString(id);
             this.entity = null;
             this.peer   = null;
         }
         
         public Ref(T entity) {
-            var entityId = entity != null ? StaticEntityId.GetEntityId(entity) : null;
+            TKey entityId = entity != null ? StaticEntityId.GetId(entity) : default;
             this.id     = entityId;
+            this.key    = StaticEntityId.KeyToString(id);
             this.entity = entity;
             this.peer   = null;
             if (entity != null && entityId == null)
@@ -89,7 +92,8 @@ namespace Friflo.Json.Flow.Graph
         }
         
         internal Ref(PeerEntity<T> peer) {
-            this.id     = peer.id;      // peer.id is never null
+            this.id     = StaticEntityId.StringToKey(peer.id);      // peer.id is never null
+            this.key    = peer.id;
             this.entity = null;
             this.peer   = peer;
         }
@@ -100,7 +104,7 @@ namespace Friflo.Json.Flow.Graph
                     return entity;
                 if (peer.assigned)
                     return peer.Entity;
-                throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), id);
+                throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), key);
             }
         }
 
@@ -124,7 +128,7 @@ namespace Friflo.Json.Flow.Graph
         public override bool Equals(object obj) {
             if (obj == null)
                 return false;
-            Ref<T> other = (Ref<T>)obj;
+            Ref<T, TKey> other = (Ref<T, TKey>)obj;
             return id.Equals(other.id);
         }
 
@@ -132,22 +136,22 @@ namespace Friflo.Json.Flow.Graph
             return id.GetHashCode();
         }
 
-        public static implicit operator Ref<T>(T entity) {
-            return new Ref<T> (entity);
+        public static implicit operator Ref<T, TKey>(T entity) {
+            return new Ref<T, TKey> (entity);
         }
         
         /* public static implicit operator T(Ref<T> reference) {
             return reference.entity;
         } */
 
-        public static implicit operator Ref<T>(string id) {
-            return new Ref<T> (id);
+        public static implicit operator Ref<T, TKey>(TKey id) {
+            return new Ref<T, TKey> (id);
         }
 
-        public Find<T> FindBy(ReadTask<T> task) {
+        public Find<T> FindBy(ReadTask<T, TKey> task) {
             // may validate that set is the same which created the PeerEntity<>
-            var find = task.Find(id);
-            peer = task.set.GetPeerById(id);
+            var find = task.Find(key);
+            peer = task.set.GetPeerById(key);
             return find;
         }
     }

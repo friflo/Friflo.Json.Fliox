@@ -19,13 +19,13 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class CreateTask<T> : WriteTask where T : class
     {
-        private readonly    EntitySet<T>    set;
+        private readonly    EntitySet2<T>   set;
         private readonly    List<T>         entities;
 
         public   override   string          Details     => $"CreateTask<{typeof(T).Name}> (#ids: {entities.Count})";
         
         
-        internal CreateTask(List<T> entities, EntitySet<T> set) {
+        internal CreateTask(List<T> entities, EntitySet2<T> set) {
             this.set        = set;
             this.entities   = entities;
         }
@@ -34,7 +34,7 @@ namespace Friflo.Json.Flow.Graph
             if (entity == null)
                 throw new ArgumentException($"CreateTask<{set.name}>.Add() entity must not be null.");
             var peer = set.CreatePeer(entity);
-            set.syncSet.AddCreate(peer);
+            set.syncSet2.AddCreate(peer);
             entities.Add(entity);
         }
         
@@ -45,7 +45,7 @@ namespace Friflo.Json.Flow.Graph
                     throw new ArgumentException($"CreateTask<{set.name}>.AddRange() entities[{n}] must not be null.");
                 n++;
                 var peer = set.CreatePeer(entity);
-                set.syncSet.AddCreate(peer);
+                set.syncSet2.AddCreate(peer);
             }
             this.entities.AddRange(entities);
         }

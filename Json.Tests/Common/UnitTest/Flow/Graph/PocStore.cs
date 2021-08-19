@@ -12,32 +12,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     public class PocStore : EntityStore
     {
-        public readonly EntitySet<Order>      orders;
-        public readonly EntitySet<Customer>   customers;
-        public readonly EntitySet<Article>    articles;
-        public readonly EntitySet<Producer>   producers;
-        public readonly EntitySet<Employee>   employees;
-        public readonly EntitySet<TestType>   types;
+        public readonly EntitySet<Order, string>      orders;
+        public readonly EntitySet<Customer, string>   customers;
+        public readonly EntitySet<Article, string>    articles;
+        public readonly EntitySet<Producer, string>   producers;
+        public readonly EntitySet<Employee, string>   employees;
+        public readonly EntitySet<TestType, string>   types;
         
         public PocStore(EntityDatabase database, string clientId) : base (database, TestGlobals.typeStore, clientId) {
-            orders      = new EntitySet<Order>       (this);
-            customers   = new EntitySet<Customer>    (this);
-            articles    = new EntitySet<Article>     (this);
-            producers   = new EntitySet<Producer>    (this);
-            employees   = new EntitySet<Employee>    (this);
-            types       = new EntitySet<TestType>    (this);
+            orders      = new EntitySet<Order, string>       (this);
+            customers   = new EntitySet<Customer, string>    (this);
+            articles    = new EntitySet<Article, string>     (this);
+            producers   = new EntitySet<Producer, string>    (this);
+            employees   = new EntitySet<Employee, string>    (this);
+            types       = new EntitySet<TestType, string>    (this);
         }
     }
     
     // ------------------------------ models ------------------------------
     public class Order : Entity {
-        public  Ref<Customer>       customer;
+        public  Ref<Customer, string>       customer;
         public  DateTime            created;
         public  List<OrderItem>     items = new List<OrderItem>();
     }
 
     public class OrderItem {
-        [Fri.Required]  public  Ref<Article>    article;
+        [Fri.Required]  public  Ref<Article, string>    article;
                         public  int             amount;
                         public  string          name;
     }
@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     public class Article : Entity
     {
         [Fri.Required]  public  string          name;
-                        public  Ref<Producer>   producer;
+                        public  Ref<Producer, string>   producer;
     }
 
     public class Customer : Entity {
@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     public class Producer : Entity {
         [Fri.Required]  public  string              name;
         [Fri.Property (Name =                       "employees")]
-                        public  List<Ref<Employee>> employeeList;
+                        public  List<Ref<Employee, string>> employeeList;
     }
     
     public class Employee : Entity {

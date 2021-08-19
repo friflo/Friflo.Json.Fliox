@@ -175,7 +175,7 @@ namespace Friflo.Json.Flow.Graph
         
         private EntityChanges<T> GetChanges<T> () where T : class {
             if (!results.TryGetValue(typeof(T), out var result)) {
-                var set         = store.GetEntitySet<T>();
+                var set         = store.GetEntitySet2<T>();
                 var resultTyped = new EntityChanges<T>(set);
                 results.Add(typeof(T), resultTyped);
                 return resultTyped;
@@ -275,7 +275,7 @@ namespace Friflo.Json.Flow.Graph
     public class EntityChanges<T> : EntityChanges where T : class {
         public              ChangeInfo<T>                       Info { get; }
         // ReSharper disable once InconsistentNaming
-        internal readonly   EntitySet<T>                        _set;
+        internal readonly   EntitySet2<T>                       _set;
         
         public   readonly   Dictionary<string, T>               creates = new Dictionary<string, T>();
         public   readonly   Dictionary<string, T>               updates = new Dictionary<string, T>();
@@ -284,7 +284,7 @@ namespace Friflo.Json.Flow.Graph
         
         public override     string                              ToString() => Info.ToString();       
 
-        internal EntityChanges(EntitySet<T> set) {
+        internal EntityChanges(EntitySet2<T> set) {
             this._set = set;
             Info = new ChangeInfo<T>();
         }
@@ -305,7 +305,7 @@ namespace Friflo.Json.Flow.Graph
 
         public  override    string              ToString() => StaticEntityId.GetEntityId(entity);
         
-        private static readonly   EntityId<T>     StaticEntityId = EntityId.GetEntityId<T>();
+        private static readonly   EntityId2<T>  StaticEntityId = EntityId.GetEntityId<T>();
 
 
         public ChangePatch(T entity, List<JsonPatch> patches) {

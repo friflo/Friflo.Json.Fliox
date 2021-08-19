@@ -22,18 +22,18 @@ namespace Friflo.Json.Flow.Graph
     }
 
     /// ensure all tasks returning <see cref="ReadRefsTask{T}"/>'s provide the same interface
-    public interface IReadRefsTask<T> where T : class
+    public interface IReadRefsTask<T, TKey> where T : class
     {
-        ReadRefsTask<TRef> ReadRefsPath   <TRef>(RefsPath<T, TRef> selector)                           where TRef : class;
-        ReadRefsTask<TRef> ReadRefs       <TRef>(Expression<Func<T, Ref<TRef>>> selector)              where TRef : class;
-        ReadRefsTask<TRef> ReadArrayRefs  <TRef>(Expression<Func<T, IEnumerable<Ref<TRef>>>> selector) where TRef : class;
+        ReadRefsTask<TRef, TKey> ReadRefsPath   <TRef>(RefsPath<T, TRef, TKey> selector)                           where TRef : class;
+        ReadRefsTask<TRef, TKey> ReadRefs       <TRef>(Expression<Func<T, Ref<TRef, TKey>>> selector)              where TRef : class;
+        ReadRefsTask<TRef, TKey> ReadArrayRefs  <TRef>(Expression<Func<T, IEnumerable<Ref<TRef, TKey>>>> selector) where TRef : class;
     }
 
     // ----------------------------------------- ReadRefsTask<T> -----------------------------------------
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ReadRefsTask<T> : ReadRefsTask, IReadRefsTask<T>  where T : class
+    public class ReadRefsTask<T, TKey> : ReadRefsTask, IReadRefsTask<T, TKey>  where T : class
     {
         private             RefsTask                refsTask;
         private             Dictionary<string, T>   results;
@@ -62,7 +62,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         internal override void SetResult(EntitySet set, HashSet<string> ids) {
-            var entitySet = (EntitySet<T>) set;
+            var entitySet = (EntitySet<T, TKey>) set;
             results = new Dictionary<string, T>(ids.Count);
             var entityErrorInfo = new TaskErrorInfo();
             foreach (var id in ids) {
@@ -79,22 +79,22 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- Refs
-        public ReadRefsTask<TRef> ReadRefsPath<TRef>(RefsPath<T, TRef> selector) where TRef : class {
+        public ReadRefsTask<TRef, TKey> ReadRefsPath<TRef>(RefsPath<T, TRef, TKey> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByPath<TRef>(selector.path, store);
+            return refsTask.ReadRefsByPath<TRef, TKey>(selector.path, store);
         }
         
-        public ReadRefsTask<TRef> ReadRefs<TRef>(Expression<Func<T, Ref<TRef>>> selector) where TRef : class {
+        public ReadRefsTask<TRef, TKey> ReadRefs<TRef>(Expression<Func<T, Ref<TRef, TKey>>> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRef>(selector, store);
+            return refsTask.ReadRefsByExpression<TRef, TKey>(selector, store);
         }
         
-        public ReadRefsTask<TRef> ReadArrayRefs<TRef>(Expression<Func<T, IEnumerable<Ref<TRef>>>> selector) where TRef : class {
+        public ReadRefsTask<TRef, TKey> ReadArrayRefs<TRef>(Expression<Func<T, IEnumerable<Ref<TRef, TKey>>>> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRef>(selector, store);
+            return refsTask.ReadRefsByExpression<TRef, TKey>(selector, store);
         }
     }
     
@@ -102,7 +102,7 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ReadRefTask<T> : ReadRefsTask, IReadRefsTask<T> where T : class
+    public class ReadRefTask<T, TKey> : ReadRefsTask, IReadRefsTask<T, TKey> where T : class
     {
         private             RefsTask        refsTask;
         private             string          id;
@@ -132,7 +132,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         internal override void SetResult(EntitySet set, HashSet<string> ids) {
-            var entitySet = (EntitySet<T>) set;
+            var entitySet = (EntitySet<T, TKey>) set;
             if (ids.Count != 1)
                 throw new InvalidOperationException($"Expect ids result set with one element. got: {ids.Count}, task: {this}");
             id = ids.First();
@@ -146,22 +146,22 @@ namespace Friflo.Json.Flow.Graph
             }
         }
         
-        public ReadRefsTask<TRef> ReadRefsPath<TRef>(RefsPath<T, TRef> selector) where TRef : class {
+        public ReadRefsTask<TRef, TKey> ReadRefsPath<TRef>(RefsPath<T, TRef, TKey> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByPath<TRef>(selector.path, store);
+            return refsTask.ReadRefsByPath<TRef, TKey>(selector.path, store);
         }
         
-        public ReadRefsTask<TRef> ReadRefs<TRef>(Expression<Func<T, Ref<TRef>>> selector) where TRef : class {
+        public ReadRefsTask<TRef, TKey> ReadRefs<TRef>(Expression<Func<T, Ref<TRef, TKey>>> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRef>(selector, store);
+            return refsTask.ReadRefsByExpression<TRef, TKey>(selector, store);
         }
         
-        public ReadRefsTask<TRef> ReadArrayRefs<TRef>(Expression<Func<T, IEnumerable<Ref<TRef>>>> selector) where TRef : class {
+        public ReadRefsTask<TRef, TKey> ReadArrayRefs<TRef>(Expression<Func<T, IEnumerable<Ref<TRef, TKey>>>> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return refsTask.ReadRefsByExpression<TRef>(selector, store);
+            return refsTask.ReadRefsByExpression<TRef, TKey>(selector, store);
         }
     }
 }

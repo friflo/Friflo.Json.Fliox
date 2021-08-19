@@ -12,11 +12,15 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
     // -------------------------------------------- EntityId -----------------------------------------------
     internal abstract class EntityId {
         private static readonly   Dictionary<Type, EntityId> Ids = new Dictionary<Type, EntityId>();
-
-        internal static EntityId<T> GetEntityId<T> () where T : class {
+        
+        internal static EntityId<T, TKey> GetEntityId2<T, TKey> () where T : class {
+            return (EntityId<T, TKey>)GetEntityId<T>();
+        }
+        
+        internal static EntityId2<T> GetEntityId<T> () where T : class {
             var type = typeof(T);
             if (Ids.TryGetValue(type, out EntityId id)) {
-                return (EntityId<T>)id;
+                return (EntityId2<T>)id;
             }
             var member = FindKeyMember (type);
             var property = member as PropertyInfo;
@@ -72,7 +76,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
 
         private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
         
-        private static EntityId<T> CreateEntityIdProperty<T> (PropertyInfo property)  where T : class {
+        private static EntityId2<T> CreateEntityIdProperty<T> (PropertyInfo property)  where T : class {
             var type        = typeof (T);
             var propType    = property.PropertyType;
             var idGetMethod = property.GetGetMethod(true);    
@@ -102,7 +106,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             throw new InvalidOperationException(msg);
         }
             
-        private static EntityId<T> CreateEntityIdField<T> (FieldInfo field)  where T : class {
+        private static EntityId2<T> CreateEntityIdField<T> (FieldInfo field)  where T : class {
             var type        = typeof (T);
             var fieldType   = field.FieldType;
             
@@ -146,9 +150,27 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
     
     
     // -------------------------------------------- EntityId<T> --------------------------------------------
-    internal abstract class EntityId<T> : EntityId where T : class {
-        internal abstract   Type    GetEntityIdType ();
+    internal abstract class EntityId2<T> : EntityId where T : class {
+        internal abstract   Type    GetEntityIdType (); // todo remove
         internal abstract   string  GetEntityId (T entity);
         internal abstract   void    SetEntityId (T entity, string id);
+    }
+    
+    internal abstract class EntityId<T, TKey> : EntityId2<T> where T : class {
+        internal abstract   TKey    StringToKey (string id);
+        internal abstract   string  KeyToString (TKey id);
+        
+        internal abstract   TKey    GetId (T entity);
+        internal abstract   void    SetId (T entity, TKey id);
+
+        internal override   string  GetEntityId (T entity) {
+            TKey id = GetId(entity);
+            return KeyToString(id);
+        }
+        
+        internal override   void    SetEntityId (T entity, string id) {
+            TKey key = StringToKey(id);
+            SetId(entity, key);
+        }
     }
 }

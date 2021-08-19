@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal  abstract  void    SubscribeChangesResult  (SubscribeChanges   task, TaskResult result);
     }
 
-    internal partial class SyncSet<T>
+    internal partial class SyncSet<T, TKey>
     {
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.createErrors"/> for all
         /// <see cref="creates"/> to enable setting <see cref="LogTask"/> to error state via <see cref="LogTask.SetResult"/>. 
@@ -121,7 +121,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
 
-        private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ReadTask<T> read, ContainerEntities readEntities) {
+        private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ReadTask<T, TKey> read, ContainerEntities readEntities) {
             if (result.Error != null) {
                 var taskError = DatabaseTask.TaskError(result.Error);
                 SetReadTaskError(read, taskError);
@@ -162,7 +162,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             AddReferencesResult(task.references, result.references, read.refsTask.subRefs);
         }
 
-        private static void SetReadTaskError(ReadTask<T> read, TaskErrorResult taskError) {
+        private static void SetReadTaskError(ReadTask<T, TKey> read, TaskErrorResult taskError) {
             TaskErrorInfo error = new TaskErrorInfo(taskError);
             read.state.SetError(error);
             SetSubRefsError(read.refsTask.subRefs, error);

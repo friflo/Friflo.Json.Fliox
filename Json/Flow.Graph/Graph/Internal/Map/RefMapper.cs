@@ -20,20 +20,21 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (TypeUtils.IsStandardType(type)) // doesnt handle standard types
                 return null;
-            Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof(Ref<>) );
+            Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof(Ref<,>) );
             if (args == null)
                 return null;
             
             Type refType = args[0];
+            Type keyType = args[1];
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
             
             object[] constructorParams = {config, type, constructor};
             // new RefMapper<T>(config, type, constructor);
-            return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(RefMapper<>), new[] {refType}, constructorParams);
+            return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(RefMapper<,>), new[] {refType, keyType}, constructorParams);
         }
     }
 
-    internal class RefMapper<T> : TypeMapper<Ref<T>> where T : class
+    internal class RefMapper<T, TKey> : TypeMapper<Ref<T, TKey>> where T : class
     {
         private             TypeMapper<T>   entityMapper;
         private readonly    TypeMapper      stringMapper;
@@ -55,18 +56,18 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
             return entityMapper;
         }
 
-        public override DiffNode Diff (Differ differ, Ref<T> left, Ref<T> right) {
-            if (left.id != right.id)
+        public override DiffNode Diff (Differ differ, Ref<T, TKey> left, Ref<T, TKey> right) {
+            if (left.key != right.key) // todo use left.id.Equals(right.id) 
                 return differ.AddNotEqual(left.id, right.id);
             return null;
         }
         
-        public override void Trace(Tracer tracer, Ref<T> value) {
-            string id = value.id;
+        public override void Trace(Tracer tracer, Ref<T, TKey> value) {
+            string id = value.key;
             if (id == null)
                 return;
             var store = tracer.tracerContext.Store();
-            var set = store.GetEntitySet<T>();
+            var set = store.GetEntitySet<T, TKey>();
             PeerEntity<T> peer = set.GetPeerByRef(value);
             if (peer.assigned)
                 return;
@@ -80,8 +81,8 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
             mapper.Trace(tracer, entity);
         }
 
-        public override void Write(ref Writer writer, Ref<T> value) {
-            string id = value.id;
+        public override void Write(ref Writer writer, Ref<T, TKey> value) {
+            string id = value.key;
             if (id != null) {
                 writer.WriteString(id);
             } else {
@@ -89,19 +90,20 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
             }
         }
 
-        public override Ref<T> Read(ref Reader reader, Ref<T> slot, out bool success) {
+        public override Ref<T, TKey> Read(ref Reader reader, Ref<T, TKey> slot, out bool success) {
             var ev = reader.parser.Event;
             if (ev == JsonEvent.ValueString) {
                 success = true;
                 string id = reader.parser.value.ToString();
                 if (reader.tracerContext != null) {
                     var store = reader.tracerContext.Store();
-                    var set = store.GetEntitySet<T>();
+                    var set = store.GetEntitySet<T, TKey>();
                     var peer = set.GetPeerById(id);
-                    slot = new Ref<T> (peer);
+                    slot = new Ref<T, TKey> (peer);
                     return slot;
                 }
-                slot = new Ref<T> (id);
+                var key = Ref<T, TKey>.StaticEntityId.StringToKey(id);
+                slot = new Ref<T, TKey> (key);
                 return slot;
             }
             if (ev == JsonEvent.ValueNull) {
