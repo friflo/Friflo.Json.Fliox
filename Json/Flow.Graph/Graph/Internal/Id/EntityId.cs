@@ -21,13 +21,13 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             var member = FindKeyMember (type);
             var property = member as PropertyInfo;
             if (property != null) {
-                var result  = CreateEntityIdProperty<T>(property, type);
+                var result  = CreateEntityIdProperty<T>(property);
                 Ids[type]   = result;
                 return result;
             }
             var field = member as FieldInfo;
             if (field != null) {
-                var result  = CreateEntityIdField<T>(field, type);
+                var result  = CreateEntityIdField<T>(field);
                 Ids[type]   = result;
                 return result;
             }
@@ -35,11 +35,17 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
         }
         
         private static MemberInfo FindKeyMember (Type type) {
-            var members = type.GetMembers(Flags);
-            foreach (var member in members) {
-                var customAttributes = member.CustomAttributes;
+            var properties = type.GetProperties(Flags);
+            foreach (var p in properties) {
+                var customAttributes = p.CustomAttributes;
                 if (FieldQuery.IsKey(customAttributes))
-                    return member;
+                    return p;
+            }
+            var fields = type.GetFields(Flags);
+            foreach (var f in fields) {
+                var customAttributes = f.CustomAttributes;
+                if (FieldQuery.IsKey(customAttributes))
+                    return f;
             }
             var property = type.GetProperty("id", Flags);
             if (property != null)
@@ -60,10 +66,12 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
 
         private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
         
-        private static EntityId<T> CreateEntityIdProperty<T> (PropertyInfo property, Type type)  where T : class {
+        private static EntityId<T> CreateEntityIdProperty<T> (PropertyInfo property)  where T : class {
+            var type        = typeof (T);
             var propType    = property.PropertyType;
             var idGetMethod = property.GetGetMethod(true);    
             var idSetMethod = property.GetSetMethod(true);
+            
             if (idGetMethod == null || idSetMethod == null) {
                 var msg2 = $"entity id property must have get & set: {property.Name}, type: {propType.Name}, entity: {type.Name}";
                 throw new InvalidOperationException(msg2);
@@ -85,8 +93,10 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             throw new InvalidOperationException(msg);
         }
             
-        private static EntityId<T> CreateEntityIdField<T> (FieldInfo field, Type type)  where T : class {
-            var fieldType = field.FieldType; 
+        private static EntityId<T> CreateEntityIdField<T> (FieldInfo field)  where T : class {
+            var type        = typeof (T);
+            var fieldType   = field.FieldType;
+            
             if (fieldType == typeof(string)) {
                 return new EntityIdStringField<T>(field);
             }
