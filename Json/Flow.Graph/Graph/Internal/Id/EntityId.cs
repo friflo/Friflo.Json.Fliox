@@ -94,6 +94,9 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             if (propType == typeof(long)) {
                 return new EntityIdLongProperty<T>  (idGetMethod, idSetMethod);
             }
+            if (propType == typeof(short)) {
+                return new EntityIdShortProperty<T>  (idGetMethod, idSetMethod);
+            }
             // add additional types here
             var msg = $"unsupported type for entity id. property: {property.Name}, type: {propType.Name}, entity: {type.Name}";
             throw new InvalidOperationException(msg);
@@ -114,6 +117,9 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             }
             if (fieldType == typeof(long)) {
                 return new EntityIdLongField<T>(field);
+            }
+            if (fieldType == typeof(short)) {
+                return new EntityIdShortField<T>(field);
             }
             // add additional types here
             var msg = $"unsupported type for entity id. field: {field.Name}, type: {fieldType.Name}, entity: {type.Name}";

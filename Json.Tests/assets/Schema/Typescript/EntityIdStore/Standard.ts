@@ -9,3 +9,6 @@ export type int32 = number;
 /** signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807] */
 export type int64 = number;
 
+/** signed integer 16-bit. Range: [-32768, 32767]                             */
+export type int16 = number;
+

@@ -2,11 +2,13 @@
 import { Guid }  from "./Standard"
 import { int32 } from "./Standard"
 import { int64 } from "./Standard"
+import { int16 } from "./Standard"
 
 export abstract class EntityIdStore {
     guidEntities       : { [key: string]: GuidEntity };
     intEntities        : { [key: string]: IntEntity };
     longEntities       : { [key: string]: LongEntity };
+    shortEntities      : { [key: string]: ShortEntity };
     customIdEntities   : { [key: string]: CustomIdEntity };
     customIdEntities2  : { [key: string]: CustomIdEntity2 };
 }
@@ -21,6 +23,10 @@ export class IntEntity {
 
 export class LongEntity {
     Id  : int64;
+}
+
+export class ShortEntity {
+    id  : int16;
 }
 
 export class CustomIdEntity {

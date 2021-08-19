@@ -22,6 +22,11 @@ data class LongEntity (
 )
 
 @Serializable
+data class ShortEntity (
+              val id : Short,
+)
+
+@Serializable
 data class CustomIdEntity (
               val customId : String,
 )

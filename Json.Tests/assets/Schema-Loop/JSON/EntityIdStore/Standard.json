@@ -10,6 +10,9 @@
         },
         "int64": {
             "type": "integer", "minimum": -9223372036854775808, "maximum": 9223372036854775807
+        },
+        "int16": {
+            "type": "integer", "minimum": -32768, "maximum": 32767
         }
     }
 }

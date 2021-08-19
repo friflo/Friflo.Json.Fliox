@@ -13,6 +13,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public  readonly    EntitySet<GuidEntity>       guidEntities;
         public  readonly    EntitySet<IntEntity>        intEntities;
         public  readonly    EntitySet<LongEntity>       longEntities;
+        public  readonly    EntitySet<ShortEntity>      shortEntities;
         public  readonly    EntitySet<CustomIdEntity>   customIdEntities;
 #if !UNITY_5_3_OR_NEWER
         public  readonly    EntitySet<CustomIdEntity2>  customIdEntities2;
@@ -22,6 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             guidEntities       = new EntitySet<GuidEntity>      (this);
             intEntities        = new EntitySet<IntEntity>       (this);
             longEntities       = new EntitySet<LongEntity>      (this);
+            shortEntities      = new EntitySet<ShortEntity>     (this);
             customIdEntities   = new EntitySet<CustomIdEntity>  (this);
 #if !UNITY_5_3_OR_NEWER
             customIdEntities2  = new EntitySet<CustomIdEntity2> (this);
@@ -39,6 +41,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     
     public class LongEntity {
         public long Id { get; set; }
+    }
+    
+    public class ShortEntity {
+        public short id;
     }
     
     public class CustomIdEntity {

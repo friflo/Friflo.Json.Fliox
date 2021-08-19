@@ -19,6 +19,10 @@ public class LongEntity {
     long  Id;
 }
 
+public class ShortEntity {
+    short  id;
+}
+
 public class CustomIdEntity {
     [Fri.Key]
     [Fri.Required]

@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 }
                 
                 // --- int as entity id ---
-                const int intId = 1234;
+                const int intId = 1234567890;
                 // Test: EntityId<T>.GetEntityId()
                 using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                     var entity  = new IntEntity { id = intId};
@@ -116,6 +116,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     
                     IsTrue(find.Success);
                     AreEqual(longId, find.Result.Id);
+                }
+                
+                // --- short as entity id ---
+                const short shortId = 12345;
+                // Test: EntityId<T>.GetEntityId()
+                using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
+                    var entity  = new ShortEntity { id = shortId };
+                    var create  = store.shortEntities.Update(entity);
+                    
+                    await store.Sync();
+                    
+                    IsTrue(create.Success);
+                    
+                    var read = store.shortEntities.Read();
+                    var find = read.Find(shortId.ToString());
+                        
+                    await store.Sync();
+                    
+                    IsTrue(find.Success);
+                    IsTrue(entity == find.Result);
+                }
+                // Test: EntityId<T>.SetEntityId()
+                using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
+                    var read = store.shortEntities.Read();
+                    var find = read.Find(shortId.ToString());
+                        
+                    await store.Sync();
+                    
+                    IsTrue(find.Success);
+                    AreEqual(shortId, find.Result.id);
                 }
                 
                 // --- string as custom entity id ---
