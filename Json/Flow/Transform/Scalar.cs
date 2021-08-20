@@ -86,6 +86,8 @@ namespace Friflo.Json.Flow.Transform
         public string AsString() {
             if (type == ScalarType.String)
                 return stringValue;
+            if (type == ScalarType.Long)
+                return LongValue.ToString();
             if (type == ScalarType.Null)
                 return null;
             throw new InvalidOperationException($"Scalar cannot be returned as string. type: {type}, value: {this}");

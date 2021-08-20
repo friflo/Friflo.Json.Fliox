@@ -78,7 +78,7 @@ namespace Friflo.Json.Flow.Transform
             foreach (var item in values) {
                 var str = item.AsString();
                 if (str != null)
-                    result.Add(item.AsString());
+                    result.Add(str);
             }
             return result;
         }

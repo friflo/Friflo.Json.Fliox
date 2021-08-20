@@ -36,12 +36,13 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
 
     internal class RefMapper<TKey, T> : TypeMapper<Ref<TKey, T>> where T : class
     {
-        private             TypeMapper<T>   entityMapper;
-        private readonly    TypeMapper      stringMapper;
+        private             TypeMapper<TKey>    keyMapper;
+        private             TypeMapper<T>       entityMapper;
+        private readonly    TypeMapper          stringMapper;
         
-        public  override    string          DataTypeName()          { return "Ref<>"; }
-        public  override    TypeMapper      GetUnderlyingMapper()   => stringMapper;
-        public  override    TypeSemantic    GetTypeSemantic     ()  => TypeSemantic.Reference;
+        public  override    string              DataTypeName()          { return "Ref<>"; }
+        public  override    TypeMapper          GetUnderlyingMapper()   => stringMapper;
+        public  override    TypeSemantic        GetTypeSemantic     ()  => TypeSemantic.Reference;
 
         // ReSharper disable once UnusedParameter.Local
         public RefMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
@@ -50,9 +51,14 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
             stringMapper = StringMatcher.Instance.MatchTypeMapper(typeof(string), config);
         }
 
+        public override void InitTypeMapper(TypeStore typeStore) {
+            keyMapper       = (TypeMapper<TKey>)    typeStore.GetTypeMapper(typeof(TKey));
+            // entityMapper    = (TypeMapper<T>)       typeStore.GetTypeMapper(typeof(T));
+        }
+
         private TypeMapper<T> GetEntityMapper(TypeCache typeCache) {
             if (entityMapper == null)
-                entityMapper = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
+               entityMapper = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
             return entityMapper;
         }
 
@@ -82,15 +88,41 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         }
 
         public override void Write(ref Writer writer, Ref<TKey, T> value) {
-            string id = value.id;
+            if (value.key != null) {
+                keyMapper.Write(ref writer, value.key);
+            } else {
+                writer.AppendNull();
+            }
+            /* string id = value.id;
             if (id != null) {
                 writer.WriteString(id);
             } else {
                 writer.AppendNull();
-            }
+            } */
         }
 
         public override Ref<TKey, T> Read(ref Reader reader, Ref<TKey, T> slot, out bool success) {
+            var ev = reader.parser.Event;
+            if (ev == JsonEvent.ValueNull) {
+                success = true;
+                return default;
+            }
+            TKey key = keyMapper.Read(ref reader, default, out success);
+            if (success) {
+                if (reader.tracerContext != null) {
+                    var store = reader.tracerContext.Store();
+                    var set = store.GetEntitySet<TKey, T>();
+                    var id = Ref<TKey, T>.StaticEntityKey.KeyToId(key);
+                    var peer = set.GetPeerById(id);
+                    slot = new Ref<TKey, T> (peer);
+                    return slot;
+                }
+                slot = new Ref<TKey, T> (key);
+                return slot;
+            }
+            return default;
+            
+            /*
             var ev = reader.parser.Event;
             if (ev == JsonEvent.ValueString) {
                 success = true;
@@ -110,7 +142,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
                 success = true;
                 return default;
             }
-            return reader.HandleEvent(this, out success);
+            return reader.HandleEvent(this, out success);  */
         }
     }
 }
