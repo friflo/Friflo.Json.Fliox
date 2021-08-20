@@ -305,7 +305,7 @@ namespace Friflo.Json.Flow.Graph
 
         public  override    string              ToString() => StaticEntityId.GetId(entity);
         
-        private static readonly   EntityId2<T>  StaticEntityId = EntityId.GetEntityId<T>();
+        private static readonly   EntityId<T>   StaticEntityId = EntityId.GetEntityId<T>();
 
 
         public ChangePatch(T entity, List<JsonPatch> patches) {

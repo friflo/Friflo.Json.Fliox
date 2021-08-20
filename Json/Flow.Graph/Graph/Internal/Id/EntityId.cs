@@ -13,14 +13,14 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
     internal abstract class EntityId {
         private static readonly   Dictionary<Type, EntityId> Ids = new Dictionary<Type, EntityId>();
         
-        internal static EntityId<TKey, T> GetEntityId2<TKey, T> () where T : class {
-            return (EntityId<TKey, T>)GetEntityId<T>();
+        internal static EntityKey<TKey, T> GetEntityKey<TKey, T> () where T : class {
+            return (EntityKey<TKey, T>)GetEntityId<T>();
         }
         
-        internal static EntityId2<T> GetEntityId<T> () where T : class {
+        internal static EntityId<T> GetEntityId<T> () where T : class {
             var type = typeof(T);
             if (Ids.TryGetValue(type, out EntityId id)) {
-                return (EntityId2<T>)id;
+                return (EntityId<T>)id;
             }
             var member = FindKeyMember (type);
             var property = member as PropertyInfo;
@@ -76,7 +76,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
 
         private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
         
-        private static EntityId2<T> CreateEntityIdProperty<T> (PropertyInfo property)  where T : class {
+        private static EntityId<T> CreateEntityIdProperty<T> (PropertyInfo property)  where T : class {
             var type        = typeof (T);
             var propType    = property.PropertyType;
             var idGetMethod = property.GetGetMethod(true);    
@@ -87,43 +87,43 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
                 throw new InvalidOperationException(msg2);
             }
             if (propType == typeof(string)) {
-                return new EntityIdStringProperty<T>(idGetMethod, idSetMethod);
+                return new EntityKeyStringProperty<T>(idGetMethod, idSetMethod);
             }
             if (propType == typeof(Guid)) {
-                return new EntityIdGuidProperty<T>  (idGetMethod, idSetMethod);
+                return new EntityKeyGuidProperty<T>  (idGetMethod, idSetMethod);
             }
             if (propType == typeof(int)) {
-                return new EntityIdIntProperty<T>  (idGetMethod, idSetMethod);
+                return new EntityKeyIntProperty<T>  (idGetMethod, idSetMethod);
             }
             if (propType == typeof(long)) {
-                return new EntityIdLongProperty<T>  (idGetMethod, idSetMethod);
+                return new EntityKeyLongProperty<T>  (idGetMethod, idSetMethod);
             }
             if (propType == typeof(short)) {
-                return new EntityIdShortProperty<T>  (idGetMethod, idSetMethod);
+                return new EntityKeyShortProperty<T>  (idGetMethod, idSetMethod);
             }
             // add additional types here
             var msg = $"unsupported type for entity id. property: {property.Name}, type: {propType.Name}, entity: {type.Name}";
             throw new InvalidOperationException(msg);
         }
             
-        private static EntityId2<T> CreateEntityIdField<T> (FieldInfo field)  where T : class {
+        private static EntityId<T> CreateEntityIdField<T> (FieldInfo field)  where T : class {
             var type        = typeof (T);
             var fieldType   = field.FieldType;
             
             if (fieldType == typeof(string)) {
-                return new EntityIdStringField<T>(field);
+                return new EntityKeyStringField<T>(field);
             }
             if (fieldType == typeof(Guid)) {
-                return new EntityIdGuidField<T>(field);
+                return new EntityKeyGuidField<T>(field);
             }
             if (fieldType == typeof(int)) {
-                return new EntityIdIntField<T>(field);
+                return new EntityKeyIntField<T>(field);
             }
             if (fieldType == typeof(long)) {
-                return new EntityIdLongField<T>(field);
+                return new EntityKeyLongField<T>(field);
             }
             if (fieldType == typeof(short)) {
-                return new EntityIdShortField<T>(field);
+                return new EntityKeyShortField<T>(field);
             }
             // add additional types here
             var msg = $"unsupported type for entity id. field: {field.Name}, type: {fieldType.Name}, entity: {type.Name}";
@@ -150,13 +150,13 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
     
     
     // -------------------------------------------- EntityId<T> --------------------------------------------
-    internal abstract class EntityId2<T> : EntityId where T : class {
+    internal abstract class EntityId<T> : EntityId where T : class {
         internal abstract   Type    GetEntityIdType (); // todo remove
         internal abstract   string  GetId  (T entity);
         internal abstract   void    SetId  (T entity, string id);
     }
     
-    internal abstract class EntityId<TKey, T> : EntityId2<T> where T : class {
+    internal abstract class EntityKey<TKey, T> : EntityId<T> where T : class {
         internal abstract   TKey    IdToKey (string id);
         internal abstract   string  KeyToId (TKey key);
         

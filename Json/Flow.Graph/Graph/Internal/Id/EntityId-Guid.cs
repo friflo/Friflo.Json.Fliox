@@ -6,14 +6,14 @@ using System.Reflection;
 
 namespace Friflo.Json.Flow.Graph.Internal.Id
 {
-    internal class EntityIdGuidField<T> : EntityId<Guid, T> where T : class {
+    internal class EntityKeyGuidField<T> : EntityKey<Guid, T> where T : class {
         private  readonly   FieldInfo           field;
         private  readonly   Func  <T, Guid>     fieldGet;
         private  readonly   Action<T, Guid>     fieldSet;
         
         internal override   Type                GetEntityIdType () => typeof(Guid);
         
-        internal EntityIdGuidField(FieldInfo field) {
+        internal EntityKeyGuidField(FieldInfo field) {
             this.field  = field;
             fieldGet    = GetFieldGet<T, Guid>(field);
             fieldSet    = GetFieldSet<T, Guid>(field);
@@ -37,13 +37,13 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
     }
     
     
-    internal class EntityIdGuidProperty<T> : EntityId<Guid, T> where T : class {
+    internal class EntityKeyGuidProperty<T> : EntityKey<Guid, T> where T : class {
         private  readonly   Func  <T, Guid>     propertyGet;
         private  readonly   Action<T, Guid>     propertySet;
         
         internal override   Type                GetEntityIdType () => typeof(Guid);
         
-        internal EntityIdGuidProperty(MethodInfo idGetMethod, MethodInfo idSetMethod) {
+        internal EntityKeyGuidProperty(MethodInfo idGetMethod, MethodInfo idSetMethod) {
             propertyGet = (Func  <T, Guid>) Delegate.CreateDelegate (typeof(Func  <T, Guid>), idGetMethod);
             propertySet = (Action<T, Guid>) Delegate.CreateDelegate (typeof(Action<T, Guid>), idSetMethod);
         }
