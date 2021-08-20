@@ -182,12 +182,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsTrue(find.Success);
                     AreEqual(stringId, find.Result.customId);
                 }
+                
+                // --- write and read Ref<>'s
                 using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                     var create = store.entityRefs.Create(entityRef);
                     
                     await store.Sync();
                     
                     IsTrue(create.Success);
+                }
+                using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
+                    var read = store.entityRefs.Read();
+                    
+                    var find = read.Find(entityRef.id);
+                    read.ReadRef(er => er.guidEntity);
+                    read.ReadRef(er => er.intEntity);
+                    read.ReadRef(er => er.longEntity);
+                    read.ReadRef(er => er.shortEntity);
+                    read.ReadRef(er => er.customIdEntity);                    
+                        
+                    await store.Sync();
+                    
+                    IsTrue(find.Success);
+                    AreEqual(entityRef.id, find.Result.id);
                 }
 #if !UNITY_5_3_OR_NEWER
                 // --- string as custom entity id ---
