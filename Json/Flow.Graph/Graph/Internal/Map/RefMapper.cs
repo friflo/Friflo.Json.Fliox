@@ -53,14 +53,15 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
 
         public override void InitTypeMapper(TypeStore typeStore) {
             keyMapper       = (TypeMapper<TKey>)    typeStore.GetTypeMapper(typeof(TKey));
-            // entityMapper    = (TypeMapper<T>)       typeStore.GetTypeMapper(typeof(T));
+            entityMapper    = (TypeMapper<T>)       typeStore.GetTypeMapper(typeof(T));
         }
 
+        /*
         private TypeMapper<T> GetEntityMapper(TypeCache typeCache) {
             if (entityMapper == null)
                entityMapper = (TypeMapper<T>)typeCache.GetTypeMapper(typeof(T));
             return entityMapper;
-        }
+        } */
 
         public override DiffNode Diff (Differ differ, Ref<TKey, T> left, Ref<TKey, T> right) {
             if (left.id != right.id) // todo use left.id.Equals(right.id) 
@@ -83,8 +84,8 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
                 return;  // todo add test
             if (set.syncSet.AddCreate(peer))
                 store._intern.tracerLogTask.AddCreate(set.syncSet, peer.id);
-            var mapper = GetEntityMapper(tracer.typeCache);
-            mapper.Trace(tracer, entity);
+            // var mapper = GetEntityMapper(tracer.typeCache);
+            entityMapper.Trace(tracer, entity);
         }
 
         public override void Write(ref Writer writer, Ref<TKey, T> value) {

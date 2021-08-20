@@ -14,17 +14,17 @@
                 "id": { "type": "string" }
             }
         },
+        "Customer": {
+            "properties": {
+                "id":   { "type": "string" },
+                "name": { "type": "string" }
+            }
+        },
         "OrderItem": {
             "properties": {
                 "article": { "type": "string" },
                 "amount":  { "type": "int32" },
                 "name":    { "type": "string", "nullable": true }
-            }
-        },
-        "Customer": {
-            "properties": {
-                "id":   { "type": "string" },
-                "name": { "type": "string" }
             }
         },
         "Article": {

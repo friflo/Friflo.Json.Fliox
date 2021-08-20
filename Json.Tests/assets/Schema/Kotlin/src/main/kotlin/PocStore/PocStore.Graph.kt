@@ -21,17 +21,17 @@ abstract class Entity {
 }
 
 @Serializable
+data class Customer (
+    override  val id   : String,
+              val name : String,
+) : Entity()
+
+@Serializable
 data class OrderItem (
               val article : String,
               val amount  : Int,
               val name    : String? = null,
 )
-
-@Serializable
-data class Customer (
-    override  val id   : String,
-              val name : String,
-) : Entity()
 
 @Serializable
 data class Article (

@@ -24,14 +24,14 @@ export class Order extends Entity {
     items?    : OrderItem[] | null;
 }
 
+export class Customer extends Entity {
+    name  : string;
+}
+
 export class OrderItem {
     article  : string;
     amount   : int32;
     name?    : string | null;
-}
-
-export class Customer extends Entity {
-    name  : string;
 }
 
 export class Article extends Entity {

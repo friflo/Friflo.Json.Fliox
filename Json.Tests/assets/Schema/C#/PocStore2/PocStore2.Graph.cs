@@ -19,15 +19,15 @@ public abstract class Entity {
     string  id;
 }
 
+public class Customer : Entity {
+    [Fri.Required]
+    string  name;
+}
+
 public class OrderItem {
     [Fri.Required]
     string  article;
     int     amount;
-    string  name;
-}
-
-public class Customer : Entity {
-    [Fri.Required]
     string  name;
 }
 
