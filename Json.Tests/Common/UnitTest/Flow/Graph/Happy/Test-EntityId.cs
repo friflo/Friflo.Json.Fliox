@@ -201,10 +201,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     read.ReadRef(er => er.shortEntity);
                     read.ReadRef(er => er.customIdEntity);                    
                         
-                    await store.Sync();
-                    
+                    await store.Sync();                   
+                   
                     IsTrue(find.Success);
-                    AreEqual(entityRef.id, find.Result.id);
+                    var result = find.Result;
+                    AreEqual(entityRef.id, result.id);
+                    IsNotNull(result.guidEntity);
+                    IsNotNull(result.intEntity);
+                    IsNotNull(result.longEntity);
+                    IsNotNull(result.shortEntity);
+                    IsNotNull(result.customIdEntity);
                 }
 #if !UNITY_5_3_OR_NEWER
                 // --- string as custom entity id ---
