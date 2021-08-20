@@ -13,7 +13,7 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class QueryTask<TKey, T> : SyncTask, IReadRefsTask<TKey, T> where T : class
+    public class QueryTask<TKey, T> : SyncTask, IReadRefsTask<T> where T : class
     {
         internal            TaskState               state;
         internal            RefsTask                refsTask;

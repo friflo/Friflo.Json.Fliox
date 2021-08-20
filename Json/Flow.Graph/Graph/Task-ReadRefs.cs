@@ -22,7 +22,7 @@ namespace Friflo.Json.Flow.Graph
     }
 
     /// ensure all tasks returning <see cref="ReadRefsTask{T}"/>'s provide the same interface
-    public interface IReadRefsTask<TKey, T> where T : class
+    public interface IReadRefsTask<T> where T : class
     {
         ReadRefsTask<TKey2, TRef> ReadRefsPath   <TKey2, TRef>(RefsPath<TKey2, T, TRef> selector)                           where TRef : class;
         ReadRefsTask<TKey2, TRef> ReadRefs       <TKey2, TRef>(Expression<Func<T, Ref<TKey2, TRef>>> selector)              where TRef : class;
@@ -33,7 +33,7 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ReadRefsTask<TKey, T> : ReadRefsTask, IReadRefsTask<TKey, T>  where T : class
+    public class ReadRefsTask<TKey, T> : ReadRefsTask, IReadRefsTask<T>  where T : class
     {
         private             RefsTask                refsTask;
         private             Dictionary<string, T>   results;
@@ -102,7 +102,7 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ReadRefTask<TKey, T> : ReadRefsTask, IReadRefsTask<TKey, T> where T : class
+    public class ReadRefTask<TKey, T> : ReadRefsTask, IReadRefsTask<T> where T : class
     {
         private             RefsTask        refsTask;
         private             string          id;

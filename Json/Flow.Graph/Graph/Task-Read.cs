@@ -97,7 +97,7 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ReadTask<TKey, T> : SyncTask, IReadRefsTask<TKey, T> where T : class
+    public class ReadTask<TKey, T> : SyncTask, IReadRefsTask<T> where T : class
     {
         internal            TaskState               state;
         internal readonly   EntitySet<TKey, T>      set;
