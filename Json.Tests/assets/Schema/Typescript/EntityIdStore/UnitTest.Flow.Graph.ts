@@ -10,6 +10,7 @@ export abstract class EntityIdStore {
     longEntities       : { [key: string]: LongEntity };
     shortEntities      : { [key: string]: ShortEntity };
     customIdEntities   : { [key: string]: CustomIdEntity };
+    entityRefs         : { [key: string]: EntityRefs };
     customIdEntities2  : { [key: string]: CustomIdEntity2 };
 }
 
@@ -31,6 +32,15 @@ export class ShortEntity {
 
 export class CustomIdEntity {
     customId  : string;
+}
+
+export class EntityRefs {
+    id              : string;
+    guidEntity?     : string | null;
+    intEntity?      : string | null;
+    longEntity?     : string | null;
+    shortEntity?    : string | null;
+    customIdEntity? : string | null;
 }
 
 export class CustomIdEntity2 {

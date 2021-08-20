@@ -29,6 +29,16 @@ public class CustomIdEntity {
     string  customId;
 }
 
+public class EntityRefs {
+    [Fri.Required]
+    string  id;
+    string  guidEntity;
+    string  intEntity;
+    string  longEntity;
+    string  shortEntity;
+    string  customIdEntity;
+}
+
 public class CustomIdEntity2 {
     [Fri.Key]
     [Fri.Required]

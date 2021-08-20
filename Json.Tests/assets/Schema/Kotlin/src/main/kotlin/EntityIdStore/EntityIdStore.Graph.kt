@@ -32,6 +32,16 @@ data class CustomIdEntity (
 )
 
 @Serializable
+data class EntityRefs (
+              val id             : String,
+              val guidEntity     : String? = null,
+              val intEntity      : String? = null,
+              val longEntity     : String? = null,
+              val shortEntity    : String? = null,
+              val customIdEntity : String? = null,
+)
+
+@Serializable
 data class CustomIdEntity2 (
               val customId2 : String,
 )

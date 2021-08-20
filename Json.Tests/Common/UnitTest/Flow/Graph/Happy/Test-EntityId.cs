@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
             using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/EntityIdStore")) {
-                
+                var entityRef = new EntityRefs { id = "entity-ref-1" };
                 // --- Guid as entity id ---
                 var guidId = new Guid("87db6552-a99d-4d53-9b20-8cc797db2b8f");
                 // Test: EntityId<T>.GetEntityId()
@@ -46,6 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     
                     IsTrue(find.Success);
                     IsTrue(entity == find.Result);
+                    entityRef.guidEntity = entity;
                 }
                 // Test: EntityId<T>.SetEntityId()
                 using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
@@ -76,6 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     
                     IsTrue(find.Success);
                     IsTrue(entity == find.Result);
+                    entityRef.intEntity = entity;
                 }
                 // Test: EntityId<T>.SetEntityId()
                 using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
@@ -106,6 +108,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     
                     IsTrue(find.Success);
                     IsTrue(entity == find.Result);
+                    entityRef.longEntity = entity;
                 }
                 // Test: EntityId<T>.SetEntityId()
                 using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
@@ -136,6 +139,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     
                     IsTrue(find.Success);
                     IsTrue(entity == find.Result);
+                    entityRef.shortEntity = entity;
                 }
                 // Test: EntityId<T>.SetEntityId()
                 using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
@@ -166,6 +170,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     
                     IsTrue(find.Success);
                     IsTrue(entity == find.Result);
+                    entityRef.customIdEntity = entity;
                 }
                 // Test: EntityId<T>.SetEntityId()
                 using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
@@ -176,6 +181,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     
                     IsTrue(find.Success);
                     AreEqual(stringId, find.Result.customId);
+                }
+                using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
+                    var create = store.entityRefs.Create(entityRef);
+                    
+                    await store.Sync();
+                    
+                    IsTrue(create.Success);
                 }
 #if !UNITY_5_3_OR_NEWER
                 // --- string as custom entity id ---

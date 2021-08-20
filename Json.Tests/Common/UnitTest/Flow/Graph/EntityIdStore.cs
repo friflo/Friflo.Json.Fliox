@@ -10,21 +10,23 @@ using Friflo.Json.Flow.Mapper;
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     public class EntityIdStore : EntityStore {
-        public  readonly    EntitySet <string, GuidEntity>      guidEntities;
-        public  readonly    EntitySet <string, IntEntity>       intEntities;
-        public  readonly    EntitySet <string, LongEntity>      longEntities;
-        public  readonly    EntitySet <string, ShortEntity>     shortEntities;
-        public  readonly    EntitySet <string, CustomIdEntity>  customIdEntities;
+        public  readonly    EntitySet <Guid,    GuidEntity>      guidEntities;
+        public  readonly    EntitySet <int,     IntEntity>       intEntities;
+        public  readonly    EntitySet <long,    LongEntity>      longEntities;
+        public  readonly    EntitySet <short,   ShortEntity>     shortEntities;
+        public  readonly    EntitySet <string,  CustomIdEntity>  customIdEntities;
+        public  readonly    EntitySet <string,  EntityRefs>      entityRefs;
 #if !UNITY_5_3_OR_NEWER
-        public  readonly    EntitySet <string, CustomIdEntity2> customIdEntities2;
+        public  readonly    EntitySet <string,  CustomIdEntity2> customIdEntities2;
 #endif
 
         public EntityIdStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-            guidEntities       = new EntitySet <string, GuidEntity>      (this);
-            intEntities        = new EntitySet <string, IntEntity>       (this);
-            longEntities       = new EntitySet <string, LongEntity>      (this);
-            shortEntities      = new EntitySet <string, ShortEntity>     (this);
-            customIdEntities   = new EntitySet <string, CustomIdEntity>  (this);
+            guidEntities      = new EntitySet <Guid,    GuidEntity>      (this);
+            intEntities       = new EntitySet <int,     IntEntity>       (this);
+            longEntities      = new EntitySet <long,    LongEntity>      (this);
+            shortEntities     = new EntitySet <short,   ShortEntity>     (this);
+            customIdEntities  = new EntitySet <string,  CustomIdEntity>  (this);
+            entityRefs        = new EntitySet <string,  EntityRefs>      (this);
 #if !UNITY_5_3_OR_NEWER
             customIdEntities2  = new EntitySet <string, CustomIdEntity2> (this);
 #endif
@@ -50,6 +52,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     public class CustomIdEntity {
         [Fri.Key]
         [Fri.Required]  public string customId;
+    }
+    
+    public class EntityRefs {
+        
+        [Fri.Required]  public string                       id;
+                        public Ref <Guid,   GuidEntity>     guidEntity;
+                        public Ref <int,    IntEntity>      intEntity;
+                        public Ref <long,   LongEntity>     longEntity;
+                        public Ref <short,  ShortEntity>    shortEntity;
+                        public Ref <string, CustomIdEntity> customIdEntity;
     }
     
 #if !UNITY_5_3_OR_NEWER

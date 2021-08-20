@@ -1,0 +1,8 @@
+{
+    "id": "entity-ref-1",
+    "guidEntity": "87db6552-a99d-4d53-9b20-8cc797db2b8f",
+    "intEntity": "1234567890",
+    "longEntity": "1234567890123456789",
+    "shortEntity": "12345",
+    "customIdEntity": "abc"
+}
