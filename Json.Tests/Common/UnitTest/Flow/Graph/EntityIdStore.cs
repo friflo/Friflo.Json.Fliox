@@ -17,9 +17,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public  readonly    EntitySet <short,   ShortEntity>     shortEntities;
         public  readonly    EntitySet <string,  CustomIdEntity>  customIdEntities;
         public  readonly    EntitySet <string,  EntityRefs>      entityRefs;
-#if !UNITY_5_3_OR_NEWER
         public  readonly    EntitySet <string,  CustomIdEntity2> customIdEntities2;
-#endif
+
 
         public EntityIdStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
             guidEntities      = new EntitySet <Guid,    GuidEntity>      (this);
@@ -28,9 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             shortEntities     = new EntitySet <short,   ShortEntity>     (this);
             customIdEntities  = new EntitySet <string,  CustomIdEntity>  (this);
             entityRefs        = new EntitySet <string,  EntityRefs>      (this);
-#if !UNITY_5_3_OR_NEWER
-            customIdEntities2  = new EntitySet <string, CustomIdEntity2> (this);
-#endif
+            customIdEntities2 = new EntitySet <string, CustomIdEntity2> (this);
         }
     }
 
@@ -67,12 +64,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                         public List<Ref <Guid, GuidEntity>> guidEntities;
     }
     
-#if !UNITY_5_3_OR_NEWER
-    // Apply [Key]      alternatively by System.ComponentModel.DataAnnotations.KeyAttribute
-    // Apply [Required] alternatively by System.ComponentModel.DataAnnotations.RequiredAttribute
+
     public class CustomIdEntity2 {
-        [Key] 
-        [Required]  public string customId2;
-    }
+#if UNITY_5_3_OR_NEWER
+        [Fri.Key] [Fri.Required]
+#else
+        // Apply [Key]      alternatively by System.ComponentModel.DataAnnotations.KeyAttribute
+        // Apply [Required] alternatively by System.ComponentModel.DataAnnotations.RequiredAttribute
+        [Key] [Required]
 #endif
+        public string customId2;
+    }
+
 }

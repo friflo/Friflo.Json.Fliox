@@ -217,7 +217,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsNotNull(result.customIdEntity);
                     IsNotNull(result.guidEntities[0].Entity);
                 }
-#if !UNITY_5_3_OR_NEWER
+                
                 // --- string as custom entity id ---
                 const string stringId2 = "xyz";
                 // Test: EntityId<T>.GetEntityId()
@@ -247,7 +247,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsTrue(find.Success);
                     AreEqual(stringId2, find.Result.customId2);
                 }
-#endif
             }
         }
     }
