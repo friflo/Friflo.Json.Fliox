@@ -147,12 +147,12 @@ namespace Friflo.Json.Flow.Graph
         }
 
         // lab - ReadRefs by Entity Type
-        public ReadRefsTask<TKey2, TRef> ReadRefsOfType<TKey2, TRef>() where TRef : class {
+        public ReadRefsTask<TRef> ReadRefsOfType<TRef>() where TRef : class {
             throw new NotImplementedException("ReadRefsOfType() planned to be implemented");
         }
         
         // lab - all ReadRefs
-        public ReadRefsTask<object, object> ReadAllRefs()
+        public ReadRefsTask<object> ReadAllRefs()
         {
             throw new NotImplementedException("ReadAllRefs() planned to be implemented");
         }
@@ -181,19 +181,19 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- Refs
-        public ReadRefsTask<TKey2, TRef> ReadRefsPath<TKey2, TRef>(RefsPath<TKey2, T, TRef> selector) where TRef : class {
+        public ReadRefsTask<TRef> ReadRefsPath<TKey2, TRef>(RefsPath<TKey2, T, TRef> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TKey2, TRef>(selector.path, set.intern.store);
         }
 
-        public ReadRefsTask<TKey2, TRef> ReadRefs<TKey2, TRef>(Expression<Func<T, Ref<TKey2, TRef>>> selector) where TRef : class {
+        public ReadRefsTask<TRef> ReadRefs<TKey2, TRef>(Expression<Func<T, Ref<TKey2, TRef>>> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TKey2, TRef>(selector, set.intern.store);
         }
         
-        public ReadRefsTask<TKey2, TRef> ReadArrayRefs<TKey2, TRef>(Expression<Func<T, IEnumerable<Ref<TKey2, TRef>>>> selector) where TRef : class {
+        public ReadRefsTask<TRef> ReadArrayRefs<TKey2, TRef>(Expression<Func<T, IEnumerable<Ref<TKey2, TRef>>>> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TKey2, TRef>(selector, set.intern.store);

@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 
             // lab - test ReadRef expressions
             if (lab) {
-                readOrders.ReadRefsOfType<string, Article>();
+                readOrders.ReadRefsOfType<Article>();
                 readOrders.ReadAllRefs();
             }
 

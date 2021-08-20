@@ -24,16 +24,16 @@ namespace Friflo.Json.Flow.Graph
     /// ensure all tasks returning <see cref="ReadRefsTask{T}"/>'s provide the same interface
     public interface IReadRefsTask<T> where T : class
     {
-        ReadRefsTask<TKey2, TRef> ReadRefsPath   <TKey2, TRef>(RefsPath<TKey2, T, TRef> selector)                           where TRef : class;
-        ReadRefsTask<TKey2, TRef> ReadRefs       <TKey2, TRef>(Expression<Func<T, Ref<TKey2, TRef>>> selector)              where TRef : class;
-        ReadRefsTask<TKey2, TRef> ReadArrayRefs  <TKey2, TRef>(Expression<Func<T, IEnumerable<Ref<TKey2, TRef>>>> selector) where TRef : class;
+        ReadRefsTask<TRef> ReadRefsPath   <TKey2, TRef>(RefsPath<TKey2, T, TRef> selector)                           where TRef : class;
+        ReadRefsTask<TRef> ReadRefs       <TKey2, TRef>(Expression<Func<T, Ref<TKey2, TRef>>> selector)              where TRef : class;
+        ReadRefsTask<TRef> ReadArrayRefs  <TKey2, TRef>(Expression<Func<T, IEnumerable<Ref<TKey2, TRef>>>> selector) where TRef : class;
     }
 
     // ----------------------------------------- ReadRefsTask<T> -----------------------------------------
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ReadRefsTask<TKey, T> : ReadRefsTask, IReadRefsTask<T>  where T : class
+    public class ReadRefsTask<T> : ReadRefsTask, IReadRefsTask<T>  where T : class
     {
         private             RefsTask                refsTask;
         private             Dictionary<string, T>   results;
@@ -79,19 +79,19 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- Refs
-        public ReadRefsTask<TKey2, TRef> ReadRefsPath<TKey2, TRef>(RefsPath<TKey2, T, TRef> selector) where TRef : class {
+        public ReadRefsTask<TRef> ReadRefsPath<TKey2, TRef>(RefsPath<TKey2, T, TRef> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TKey2, TRef>(selector.path, store);
         }
         
-        public ReadRefsTask<TKey2, TRef> ReadRefs<TKey2, TRef>(Expression<Func<T, Ref<TKey2, TRef>>> selector) where TRef : class {
+        public ReadRefsTask<TRef> ReadRefs<TKey2, TRef>(Expression<Func<T, Ref<TKey2, TRef>>> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TKey2, TRef>(selector, store);
         }
         
-        public ReadRefsTask<TKey2, TRef> ReadArrayRefs<TKey2,TRef>(Expression<Func<T, IEnumerable<Ref<TKey2, TRef>>>> selector) where TRef : class {
+        public ReadRefsTask<TRef> ReadArrayRefs<TKey2,TRef>(Expression<Func<T, IEnumerable<Ref<TKey2, TRef>>>> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TKey2, TRef>(selector, store);
@@ -146,19 +146,19 @@ namespace Friflo.Json.Flow.Graph
             }
         }
         
-        public ReadRefsTask<TKey2, TRef> ReadRefsPath<TKey2, TRef>(RefsPath<TKey2, T, TRef> selector) where TRef : class {
+        public ReadRefsTask<TRef> ReadRefsPath<TKey2, TRef>(RefsPath<TKey2, T, TRef> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TKey2, TRef>(selector.path, store);
         }
         
-        public ReadRefsTask<TKey2, TRef> ReadRefs<TKey2, TRef>(Expression<Func<T, Ref<TKey2, TRef>>> selector) where TRef : class {
+        public ReadRefsTask<TRef> ReadRefs<TKey2, TRef>(Expression<Func<T, Ref<TKey2, TRef>>> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TKey2, TRef>(selector, store);
         }
         
-        public ReadRefsTask<TKey2, TRef> ReadArrayRefs<TKey2, TRef>(Expression<Func<T, IEnumerable<Ref<TKey2, TRef>>>> selector) where TRef : class {
+        public ReadRefsTask<TRef> ReadArrayRefs<TKey2, TRef>(Expression<Func<T, IEnumerable<Ref<TKey2, TRef>>>> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TKey2, TRef>(selector, store);
