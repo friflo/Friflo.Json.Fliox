@@ -91,7 +91,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         // --- Query
-        public QueryTask<TKey, T> Query(Expression<Func<T, bool>> filter) {
+        public QueryTask<T> Query(Expression<Func<T, bool>> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.Query() filter must not be null. EntitySet: {name}");
             var op = Operation.FromFilter(filter, RefQueryPath);
@@ -100,7 +100,7 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public QueryTask<TKey, T> QueryByFilter(EntityFilter<T> filter) {
+        public QueryTask<T> QueryByFilter(EntityFilter<T> filter) {
             if (filter == null)
                 throw new ArgumentException($"EntitySet.QueryByFilter() filter must not be null. EntitySet: {name}");
             var task = syncSet.QueryFilter(filter.op);
@@ -108,7 +108,7 @@ namespace Friflo.Json.Flow.Graph
             return task;
         }
         
-        public QueryTask<TKey, T> QueryAll() {
+        public QueryTask<T> QueryAll() {
             var all = Operation.FilterTrue;
             var task = syncSet.QueryFilter(all);
             intern.store.AddTask(task);
