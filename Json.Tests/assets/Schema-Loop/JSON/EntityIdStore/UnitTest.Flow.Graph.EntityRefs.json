@@ -11,7 +11,8 @@
                 "intEntity":      { "type": ["string", "null"] },
                 "longEntity":     { "type": ["string", "null"] },
                 "shortEntity":    { "type": ["string", "null"] },
-                "customIdEntity": { "type": ["string", "null"] }
+                "customIdEntity": { "type": ["string", "null"] },
+                "guidEntities":   { "type": ["array", "null"], "items": { "type": "string" } }
             },
             "required": [
                 "id"

@@ -41,6 +41,7 @@ export class EntityRefs {
     longEntity?     : string | null;
     shortEntity?    : string | null;
     customIdEntity? : string | null;
+    guidEntities?   : string[] | null;
 }
 
 export class CustomIdEntity2 {

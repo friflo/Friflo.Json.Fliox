@@ -39,6 +39,7 @@ data class EntityRefs (
               val longEntity     : String? = null,
               val shortEntity    : String? = null,
               val customIdEntity : String? = null,
+              val guidEntities   : List<String>? = null,
 )
 
 @Serializable

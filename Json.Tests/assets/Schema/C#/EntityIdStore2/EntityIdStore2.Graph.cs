@@ -31,12 +31,13 @@ public class CustomIdEntity {
 
 public class EntityRefs {
     [Fri.Required]
-    string  id;
-    string  guidEntity;
-    string  intEntity;
-    string  longEntity;
-    string  shortEntity;
-    string  customIdEntity;
+    string        id;
+    string        guidEntity;
+    string        intEntity;
+    string        longEntity;
+    string        shortEntity;
+    string        customIdEntity;
+    List<string>  guidEntities;
 }
 
 public class CustomIdEntity2 {

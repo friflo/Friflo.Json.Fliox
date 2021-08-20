@@ -3,8 +3,10 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using UnityEngine.TestTools;
@@ -47,6 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsTrue(find.Success);
                     IsTrue(entity == find.Result);
                     entityRef.guidEntity = entity;
+                    entityRef.guidEntities = new List<Ref<Guid, GuidEntity>> { entity };
                 }
                 // Test: EntityId<T>.SetEntityId()
                 using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
@@ -199,7 +202,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     read.ReadRef(er => er.intEntity);
                     read.ReadRef(er => er.longEntity);
                     read.ReadRef(er => er.shortEntity);
-                    read.ReadRef(er => er.customIdEntity);                    
+                    read.ReadRef(er => er.customIdEntity);
+                    
+                    read.ReadArrayRefs(er => er.guidEntities);
+     
                         
                     await store.Sync();                   
                    

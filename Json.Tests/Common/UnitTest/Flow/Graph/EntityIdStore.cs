@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
@@ -62,6 +63,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                         public Ref <long,   LongEntity>     longEntity;
                         public Ref <short,  ShortEntity>    shortEntity;
                         public Ref <string, CustomIdEntity> customIdEntity;
+                        
+                        public List<Ref <Guid,   GuidEntity>>       guidEntities;
     }
     
 #if !UNITY_5_3_OR_NEWER
