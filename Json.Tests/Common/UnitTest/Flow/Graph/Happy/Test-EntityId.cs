@@ -198,15 +198,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     var read = store.entityRefs.Read();
                     
                     var find = read.Find(entityRef.id);
-                    read.ReadRef(er => er.guidEntity);
-                    read.ReadRef(er => er.intEntity);
-                    read.ReadRef(er => er.longEntity);
-                    read.ReadRef(er => er.shortEntity);
-                    read.ReadRef(er => er.customIdEntity);
-                    
-                    read.ReadArrayRefs(er => er.guidEntities);
-     
-                        
+                    read.ReadRef        (er => er.guidEntity);
+                    read.ReadRef        (er => er.intEntity);
+                    read.ReadRef        (er => er.longEntity);
+                    read.ReadRef        (er => er.shortEntity);
+                    read.ReadRef        (er => er.customIdEntity);
+                    read.ReadArrayRefs  (er => er.guidEntities);
+
                     await store.Sync();                   
                    
                     IsTrue(find.Success);
@@ -217,6 +215,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsNotNull(result.longEntity);
                     IsNotNull(result.shortEntity);
                     IsNotNull(result.customIdEntity);
+                    IsNotNull(result.guidEntities[0].Entity);
                 }
 #if !UNITY_5_3_OR_NEWER
                 // --- string as custom entity id ---
