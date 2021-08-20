@@ -102,7 +102,7 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ReadRefTask<TKey, T> : ReadRefsTask, IReadRefsTask<T> where T : class
+    public class ReadRefTask<T> : ReadRefsTask, IReadRefsTask<T> where T : class
     {
         private             RefsTask        refsTask;
         private             string          id;
@@ -132,7 +132,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         internal override void SetResult(EntitySet set, HashSet<string> ids) {
-            var entitySet = (EntitySet<TKey, T>) set;
+            var entitySet = (EntitySet2<T>) set;
             if (ids.Count != 1)
                 throw new InvalidOperationException($"Expect ids result set with one element. got: {ids.Count}, task: {this}");
             id = ids.First();
