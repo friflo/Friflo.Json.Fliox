@@ -36,12 +36,12 @@ export class CustomIdEntity {
 
 export class EntityRefs {
     id              : string;
-    guidEntity?     : string | null;
-    intEntity?      : string | null;
-    longEntity?     : string | null;
-    shortEntity?    : string | null;
+    guidEntity      : Guid;
+    intEntity       : int32;
+    longEntity      : int64;
+    shortEntity     : int16;
     customIdEntity? : string | null;
-    guidEntities?   : string[] | null;
+    guidEntities?   : Guid[] | null;
 }
 
 export class CustomIdEntity2 {

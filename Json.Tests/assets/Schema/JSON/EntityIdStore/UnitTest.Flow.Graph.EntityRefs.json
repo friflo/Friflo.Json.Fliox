@@ -7,15 +7,19 @@
             "type": "object",
             "properties": {
                 "id":             { "type": "string" },
-                "guidEntity":     { "type": ["string", "null"] },
-                "intEntity":      { "type": ["string", "null"] },
-                "longEntity":     { "type": ["string", "null"] },
-                "shortEntity":    { "type": ["string", "null"] },
+                "guidEntity":     { "$ref": "./Standard.json#/definitions/Guid" },
+                "intEntity":      { "$ref": "./Standard.json#/definitions/int32" },
+                "longEntity":     { "$ref": "./Standard.json#/definitions/int64" },
+                "shortEntity":    { "$ref": "./Standard.json#/definitions/int16" },
                 "customIdEntity": { "type": ["string", "null"] },
-                "guidEntities":   { "type": ["array", "null"], "items": { "type": "string" } }
+                "guidEntities":   { "type": ["array", "null"], "items": { "$ref": "./Standard.json#/definitions/Guid" } }
             },
             "required": [
-                "id"
+                "id",
+                "guidEntity",
+                "intEntity",
+                "longEntity",
+                "shortEntity"
             ],
             "additionalProperties": false
         }

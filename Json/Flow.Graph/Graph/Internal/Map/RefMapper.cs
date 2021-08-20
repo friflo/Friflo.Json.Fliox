@@ -8,7 +8,6 @@ using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Diff;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Map.Utils;
-using Friflo.Json.Flow.Mapper.Map.Val;
 using Friflo.Json.Flow.Mapper.Utils;
 
 namespace Friflo.Json.Flow.Graph.Internal.Map
@@ -38,18 +37,15 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
     {
         private             TypeMapper<TKey>    keyMapper;
         private             TypeMapper<T>       entityMapper;
-        private readonly    TypeMapper          stringMapper;
         
         public  override    string              DataTypeName()          { return "Ref<>"; }
-        public  override    TypeMapper          GetUnderlyingMapper()   => stringMapper;
+        public  override    TypeMapper          GetUnderlyingMapper()   => keyMapper;
         public  override    TypeSemantic        GetTypeSemantic     ()  => TypeSemantic.Reference;
 
         // ReSharper disable once UnusedParameter.Local
         public RefMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
             base(config, type, false, true)
-        {
-            stringMapper = StringMatcher.Instance.MatchTypeMapper(typeof(string), config);
-        }
+        { }
 
         public override void InitTypeMapper(TypeStore typeStore) {
             keyMapper       = (TypeMapper<TKey>)    typeStore.GetTypeMapper(typeof(TKey));
