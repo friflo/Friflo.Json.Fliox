@@ -12,20 +12,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     public class PocStore : EntityStore
     {
-        public readonly EntitySet<string, Order>      orders;
-        public readonly EntitySet<string, Customer>   customers;
-        public readonly EntitySet<string, Article>    articles;
-        public readonly EntitySet<string, Producer>   producers;
-        public readonly EntitySet<string, Employee>   employees;
-        public readonly EntitySet<string, TestType>   types;
+        public readonly EntitySet <string, Order>       orders;
+        public readonly EntitySet <string, Customer>    customers;
+        public readonly EntitySet <string, Article>     articles;
+        public readonly EntitySet <string, Producer>    producers;
+        public readonly EntitySet <string, Employee>    employees;
+        public readonly EntitySet <string, TestType>    types;
         
         public PocStore(EntityDatabase database, string clientId) : base (database, TestGlobals.typeStore, clientId) {
-            orders      = new EntitySet<string, Order>       (this);
-            customers   = new EntitySet<string, Customer>    (this);
-            articles    = new EntitySet<string, Article>     (this);
-            producers   = new EntitySet<string, Producer>    (this);
-            employees   = new EntitySet<string, Employee>    (this);
-            types       = new EntitySet<string, TestType>    (this);
+            orders      = new EntitySet <string, Order>       (this);
+            customers   = new EntitySet <string, Customer>    (this);
+            articles    = new EntitySet <string, Article>     (this);
+            producers   = new EntitySet <string, Producer>    (this);
+            employees   = new EntitySet <string, Employee>    (this);
+            types       = new EntitySet <string, TestType>    (this);
         }
     }
     

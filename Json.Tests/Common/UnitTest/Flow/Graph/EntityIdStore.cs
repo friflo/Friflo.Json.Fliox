@@ -10,23 +10,23 @@ using Friflo.Json.Flow.Mapper;
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
     public class EntityIdStore : EntityStore {
-        public  readonly    EntitySet<string, GuidEntity>       guidEntities;
-        public  readonly    EntitySet<string, IntEntity>        intEntities;
-        public  readonly    EntitySet<string, LongEntity>       longEntities;
-        public  readonly    EntitySet<string, ShortEntity>      shortEntities;
-        public  readonly    EntitySet<string, CustomIdEntity>   customIdEntities;
+        public  readonly    EntitySet <string, GuidEntity>      guidEntities;
+        public  readonly    EntitySet <string, IntEntity>       intEntities;
+        public  readonly    EntitySet <string, LongEntity>      longEntities;
+        public  readonly    EntitySet <string, ShortEntity>     shortEntities;
+        public  readonly    EntitySet <string, CustomIdEntity>  customIdEntities;
 #if !UNITY_5_3_OR_NEWER
-        public  readonly    EntitySet<string, CustomIdEntity2>  customIdEntities2;
+        public  readonly    EntitySet <string, CustomIdEntity2> customIdEntities2;
 #endif
 
         public EntityIdStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-            guidEntities       = new EntitySet<string, GuidEntity>      (this);
-            intEntities        = new EntitySet<string, IntEntity>       (this);
-            longEntities       = new EntitySet<string, LongEntity>      (this);
-            shortEntities      = new EntitySet<string, ShortEntity>     (this);
-            customIdEntities   = new EntitySet<string, CustomIdEntity>  (this);
+            guidEntities       = new EntitySet <string, GuidEntity>      (this);
+            intEntities        = new EntitySet <string, IntEntity>       (this);
+            longEntities       = new EntitySet <string, LongEntity>      (this);
+            shortEntities      = new EntitySet <string, ShortEntity>     (this);
+            customIdEntities   = new EntitySet <string, CustomIdEntity>  (this);
 #if !UNITY_5_3_OR_NEWER
-            customIdEntities2  = new EntitySet<string, CustomIdEntity2> (this);
+            customIdEntities2  = new EntitySet <string, CustomIdEntity2> (this);
 #endif
         }
     }
