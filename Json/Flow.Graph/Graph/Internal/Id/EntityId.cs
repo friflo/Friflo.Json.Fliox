@@ -13,8 +13,8 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
     internal abstract class EntityId {
         private static readonly   Dictionary<Type, EntityId> Ids = new Dictionary<Type, EntityId>();
         
-        internal static EntityId<T, TKey> GetEntityId2<T, TKey> () where T : class {
-            return (EntityId<T, TKey>)GetEntityId<T>();
+        internal static EntityId<TKey, T> GetEntityId2<TKey, T> () where T : class {
+            return (EntityId<TKey, T>)GetEntityId<T>();
         }
         
         internal static EntityId2<T> GetEntityId<T> () where T : class {
@@ -156,7 +156,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
         internal abstract   void    SetId  (T entity, string id);
     }
     
-    internal abstract class EntityId<T, TKey> : EntityId2<T> where T : class {
+    internal abstract class EntityId<TKey, T> : EntityId2<T> where T : class {
         internal abstract   TKey    IdToKey (string id);
         internal abstract   string  KeyToId (TKey key);
         

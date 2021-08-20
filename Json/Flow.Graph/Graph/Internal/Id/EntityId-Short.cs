@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Friflo.Json.Flow.Graph.Internal.Id
 {
-    internal class EntityIdShortField<T> : EntityId<T, short> where T : class {
+    internal class EntityIdShortField<T> : EntityId<short, T> where T : class {
         private  readonly   FieldInfo           field;
         private  readonly   Func  <T, short>    fieldGet;
         private  readonly   Action<T, short>    fieldSet;
@@ -37,7 +37,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
     }
     
     
-    internal class EntityIdShortProperty<T> : EntityId<T, short> where T : class {
+    internal class EntityIdShortProperty<T> : EntityId<short, T> where T : class {
         private  readonly   Func  <T, short>    propertyGet;
         private  readonly   Action<T, short>    propertySet;
         

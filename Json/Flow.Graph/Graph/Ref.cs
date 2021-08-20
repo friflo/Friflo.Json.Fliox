@@ -54,7 +54,7 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public struct Ref<T, TKey>  where T : class
+    public struct Ref<TKey, T>  where T : class
     {
         // invariant of Ref<T> has following cases:
         //
@@ -70,7 +70,7 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   T               entity;
         private             PeerEntity<T>   peer;
         
-        internal static readonly   EntityId<T, TKey>     StaticEntityId = EntityId.GetEntityId2<T, TKey>();
+        internal static readonly   EntityId<TKey, T>     StaticEntityId = EntityId.GetEntityId2<TKey, T>();
         
         public   override   string          ToString() => id ?? "null";
         
@@ -128,7 +128,7 @@ namespace Friflo.Json.Flow.Graph
         public override bool Equals(object obj) {
             if (obj == null)
                 return false;
-            Ref<T, TKey> other = (Ref<T, TKey>)obj;
+            Ref<TKey, T> other = (Ref<TKey, T>)obj;
             return key.Equals(other.key);
         }
 
@@ -136,19 +136,19 @@ namespace Friflo.Json.Flow.Graph
             return key.GetHashCode();
         }
 
-        public static implicit operator Ref<T, TKey>(T entity) {
-            return new Ref<T, TKey> (entity);
+        public static implicit operator Ref<TKey, T>(T entity) {
+            return new Ref<TKey, T> (entity);
         }
         
         /* public static implicit operator T(Ref<T> reference) {
             return reference.entity;
         } */
 
-        public static implicit operator Ref<T, TKey>(TKey id) {
-            return new Ref<T, TKey> (id);
+        public static implicit operator Ref<TKey, T>(TKey id) {
+            return new Ref<TKey, T> (id);
         }
 
-        public Find<T> FindBy(ReadTask<T, TKey> task) {
+        public Find<T> FindBy(ReadTask<TKey, T> task) {
             // may validate that set is the same which created the PeerEntity<>
             var find = task.Find(id);
             peer = task.set.GetPeerById(id);

@@ -7,7 +7,7 @@ using Friflo.Json.Flow.Graph.Internal;
 
 namespace Friflo.Json.Flow.Graph
 {
-    public class RefsPath<TEntity, TRef, TKey>  where TEntity : class
+    public class RefsPath<TKey, TEntity, TRef>  where TEntity : class
                                                 where TRef    : class 
     {
         public readonly string path;
@@ -18,21 +18,21 @@ namespace Friflo.Json.Flow.Graph
             this.path = path;
         }
         
-        public static RefsPath<TEntity, TRef, TKey> MemberRefs(Expression<Func<TEntity, IEnumerable<Ref<TRef, TKey>>>> selector)  {
+        public static RefsPath<TKey, TEntity, TRef> MemberRefs(Expression<Func<TEntity, IEnumerable<Ref<TKey, TRef>>>> selector)  {
             string selectorPath = ExpressionSelector.PathFromExpression(selector, out _);
-            return new RefsPath<TEntity, TRef, TKey>(selectorPath);
+            return new RefsPath<TKey, TEntity, TRef>(selectorPath);
         }
     }
     
-    public class RefPath<TEntity, TRef, TKey> : RefsPath<TEntity, TRef, TKey>
+    public class RefPath<TKey, TEntity, TRef> : RefsPath<TKey, TEntity, TRef>
                                             where TEntity : class
                                             where TRef    : class 
     {
         internal RefPath(string path) : base (path) { }
         
-        public static RefPath<TEntity, TRef, TKey> MemberRef(Expression<Func<TEntity, Ref<TRef, TKey>>> selector) {
+        public static RefPath<TKey, TEntity, TRef> MemberRef(Expression<Func<TEntity, Ref<TKey, TRef>>> selector) {
             string selectorPath = ExpressionSelector.PathFromExpression(selector, out _);
-            return new RefPath<TEntity, TRef, TKey>(selectorPath);
+            return new RefPath<TKey, TEntity, TRef>(selectorPath);
         }
     }
 }

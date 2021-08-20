@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             AreSimilar("Producer: 1, tasks: 1 >> create #1",            producers); // created samsung implicit
 
             var steveJobs       = new Employee { id = "apple-0001", firstName = "Steve", lastName = "Jobs"};
-            var appleEmployees  = new List<Ref<Employee,string>>{ steveJobs };
+            var appleEmployees  = new List<Ref<string, Employee>>{ steveJobs };
             var apple           = new Producer { id = "producer-apple", name = "Apple", employeeList = appleEmployees};
             var ipad            = new Article  { id = "article-ipad",   name = "iPad Pro", producer = apple};
             var createIPad      = articles.Create(ipad);

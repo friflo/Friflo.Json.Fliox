@@ -36,7 +36,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         
         public override void InitTypeMapper(TypeStore typeStore) {
             var genericArgs = type.GetGenericArguments();
-            var entityType  = genericArgs[0];
+            var entityType  = genericArgs[1];
             elementType     = typeStore.GetTypeMapper(entityType);
         }
 

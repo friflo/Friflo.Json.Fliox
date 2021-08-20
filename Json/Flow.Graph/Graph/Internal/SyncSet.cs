@@ -18,18 +18,18 @@ namespace Friflo.Json.Flow.Graph.Internal
 
     /// Multiple instances of this class can be created when calling EntitySet.Sync() without awaiting the result.
     /// Each instance is mapped to a <see cref="SyncRequest"/> / <see cref="SyncResponse"/> instance.
-    internal partial class SyncSet<T, TKey> : SyncSet2<T> where T : class
+    internal partial class SyncSet<TKey, T> : SyncSet2<T> where T : class
     {
         // Note!
         // All fields must be private by all means to ensure that all scheduled tasks of a Sync() request managed
         // by this instance can be mapped to their task results safely.
         
-        private readonly    EntitySet<T, TKey>                      set;
+        private readonly    EntitySet<TKey, T>                      set;
         private readonly    List<string>                            idsBuf       = new List<string>();
             
-        private readonly    List<ReadTask<T, TKey>>                 reads        = new List<ReadTask<T, TKey>>();
+        private readonly    List<ReadTask<TKey, T>>                 reads        = new List<ReadTask<TKey, T>>();
         /// key: <see cref="QueryTask{T}.filterLinq"/> 
-        private readonly    Dictionary<string, QueryTask<T, TKey>>  queries      = new Dictionary<string, QueryTask<T, TKey>>();
+        private readonly    Dictionary<string, QueryTask<TKey, T>>  queries      = new Dictionary<string, QueryTask<TKey, T>>();
         
         private             SubscribeChangesTask<T>                 subscribeChanges;
         
@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         private readonly    HashSet<string>                         deletes      = new HashSet   <string>();
         private readonly    List<DeleteTask<T>>                     deleteTasks  = new List<DeleteTask<T>>();
 
-        internal SyncSet(EntitySet<T, TKey> set) {
+        internal SyncSet(EntitySet<TKey, T> set) {
             this.set = set;
         }
         
@@ -76,18 +76,18 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         // --- Read
-        internal ReadTask<T, TKey> Read() {
-            var read = new ReadTask<T, TKey>(set);
+        internal ReadTask<TKey, T> Read() {
+            var read = new ReadTask<TKey, T>(set);
             reads.Add(read);
             return read;
         }
         
         // --- Query
-        internal QueryTask<T, TKey> QueryFilter(FilterOperation filter) {
+        internal QueryTask<TKey, T> QueryFilter(FilterOperation filter) {
             var filterLinq = filter.Linq;
-            if (queries.TryGetValue(filterLinq, out QueryTask<T, TKey> query))
+            if (queries.TryGetValue(filterLinq, out QueryTask<TKey, T> query))
                 return query;
-            query = new QueryTask<T, TKey>(filter, set.intern.store);
+            query = new QueryTask<TKey, T>(filter, set.intern.store);
             queries.Add(filterLinq, query);
             return query;
         }
@@ -288,7 +288,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (queries.Count == 0)
                 return;
             foreach (var queryPair in queries) {
-                QueryTask<T, TKey> query = queryPair.Value;
+                QueryTask<TKey, T> query = queryPair.Value;
                 var subRefs = query.refsTask.subRefs;
                 List<References> references = null;
                 if (subRefs.Count > 0) {
