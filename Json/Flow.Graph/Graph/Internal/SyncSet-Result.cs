@@ -121,7 +121,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
 
-        private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ReadTask<TKey, T> read, ContainerEntities readEntities) {
+        private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ReadTask<T> read, ContainerEntities readEntities) {
             if (result.Error != null) {
                 var taskError = DatabaseTask.TaskError(result.Error);
                 SetReadTaskError(read, taskError);
@@ -162,7 +162,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             AddReferencesResult(task.references, result.references, read.refsTask.subRefs);
         }
 
-        private static void SetReadTaskError(ReadTask<TKey, T> read, TaskErrorResult taskError) {
+        private static void SetReadTaskError(ReadTask<T> read, TaskErrorResult taskError) {
             TaskErrorInfo error = new TaskErrorInfo(taskError);
             read.state.SetError(error);
             SetSubRefsError(read.refsTask.subRefs, error);

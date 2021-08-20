@@ -97,10 +97,10 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ReadTask<TKey, T> : SyncTask, IReadRefsTask<T> where T : class
+    public class ReadTask<T> : SyncTask, IReadRefsTask<T> where T : class
     {
         internal            TaskState               state;
-        internal readonly   EntitySet<TKey, T>      set;
+        internal readonly   EntitySet2<T>           set;
         internal            RefsTask                refsTask;
         internal readonly   Dictionary<string, T>   results     = new Dictionary<string, T>();
         internal readonly   List<FindTask<T>>       findTasks   = new List<FindTask<T>>();
@@ -112,7 +112,7 @@ namespace Friflo.Json.Flow.Graph
         public   override   string                  Details     => $"ReadTask<{typeof(T).Name}> (#ids: {results.Count})";
         
 
-        internal ReadTask(EntitySet<TKey, T> set) {
+        internal ReadTask(EntitySet2<T> set) {
             refsTask    = new RefsTask(this);
             this.set    = set;
         }
@@ -147,12 +147,12 @@ namespace Friflo.Json.Flow.Graph
         }
 
         // lab - ReadRefs by Entity Type
-        public ReadRefsTask<TKey, TRef> ReadRefsOfType<TRef>() where TRef : class {
+        public ReadRefsTask<TKey2, TRef> ReadRefsOfType<TKey2, TRef>() where TRef : class {
             throw new NotImplementedException("ReadRefsOfType() planned to be implemented");
         }
         
         // lab - all ReadRefs
-        public ReadRefsTask<TKey, object> ReadAllRefs()
+        public ReadRefsTask<object, object> ReadAllRefs()
         {
             throw new NotImplementedException("ReadAllRefs() planned to be implemented");
         }

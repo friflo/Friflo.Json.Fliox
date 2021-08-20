@@ -62,7 +62,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         internal override void SetResult(EntitySet set, HashSet<string> ids) {
-            var entitySet = (EntitySet<TKey, T>) set;
+            var entitySet = (EntitySet2<T>) set;
             results = new Dictionary<string, T>(ids.Count);
             var entityErrorInfo = new TaskErrorInfo();
             foreach (var id in ids) {

@@ -40,13 +40,18 @@ namespace Friflo.Json.Flow.Graph
     
     public abstract class EntitySet2<T> : EntitySet where T : class
     {
+        // Keep all utility related fields of EntitySet in SetIntern to enhance debugging overview.
+        // Reason:  EntitySet is extended by application which is mainly interested in following fields while debugging:
+        //          peers, Sync, name, container & store 
+        internal            SetIntern<T>        intern;
+        internal            SyncSet2<T>         syncSet2;
+        
         internal  abstract  PeerEntity<T>       GetPeerById (string id);
         internal  abstract  PeerEntity<T>       GetPeerByEntity(T entity);
         
         internal  abstract  PeerEntity<T>       CreatePeer (T entity);
         internal  abstract  string              GetEntityId (T entity);
         
-        internal  SyncSet2<T>   syncSet2;
 
         protected EntitySet2(string name) : base(name) {
         }
@@ -57,10 +62,7 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class EntitySet<TKey, T> : EntitySet2<T>  where T : class
     {
-        // Keep all utility related fields of EntitySet in SetIntern to enhance debugging overview.
-        // Reason:  EntitySet is extended by application which is mainly interested in following fields while debugging:
-        //          peers, Sync, name, container & store 
-        internal            SetIntern<T>                        intern;
+
         
         /// key: <see cref="PeerEntity{T}.entity"/>.id          Note: must be private by all means
         private  readonly   Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
@@ -83,7 +85,7 @@ namespace Friflo.Json.Flow.Graph
         
         // --------------------------------------- public interface --------------------------------------- 
         // --- Read
-        public ReadTask<TKey, T> Read() {
+        public ReadTask<T> Read() {
             // ReadTasks<> are not added with intern.store.AddTask(task) as it only groups the tasks created via its
             // methods like: Find(), FindRange(), ReadRefTask() & ReadRefsTask().
             // A ReadTask<> its self cannot fail.
