@@ -29,7 +29,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             
         private readonly    List<ReadTask<T>>                   reads        = new List<ReadTask<T>>();
         /// key: <see cref="QueryTask{T}.filterLinq"/> 
-        private readonly    Dictionary<string, QueryTask<T>>    queries      = new Dictionary<string, QueryTask<T>>();
+        private readonly    Dictionary<string, QueryTask<TKey, T>>    queries      = new Dictionary<string, QueryTask<TKey, T>>();
         
         private             SubscribeChangesTask<T>             subscribeChanges;
         
@@ -83,11 +83,11 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         // --- Query
-        internal QueryTask<T> QueryFilter(FilterOperation filter) {
+        internal QueryTask<TKey, T> QueryFilter(FilterOperation filter) {
             var filterLinq = filter.Linq;
-            if (queries.TryGetValue(filterLinq, out QueryTask<T> query))
+            if (queries.TryGetValue(filterLinq, out QueryTask<TKey, T> query))
                 return query;
-            query = new QueryTask<T>(filter, set.intern.store);
+            query = new QueryTask<TKey, T>(filter, set.intern.store);
             queries.Add(filterLinq, query);
             return query;
         }
@@ -288,7 +288,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (queries.Count == 0)
                 return;
             foreach (var queryPair in queries) {
-                QueryTask<T> query = queryPair.Value;
+                QueryTask<TKey, T> query = queryPair.Value;
                 var subRefs = query.refsTask.subRefs;
                 List<References> references = null;
                 if (subRefs.Count > 0) {

@@ -218,6 +218,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsNotNull(result.guidEntities[0].Entity);
                 }
                 
+                // ensure QueryTask<> results enables type-safe key access
+                using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
+                    var guidEntities    = store.guidEntities.   QueryAll();
+                    var intEntities     = store.intEntities.    QueryAll();
+                    var longEntities    = store.longEntities.   QueryAll();
+                    var shortEntities   = store.shortEntities.  QueryAll();
+
+                    await store.Sync();
+                   
+                    IsNotNull(guidEntities  [guidId]);
+                    IsNotNull(intEntities   [intId]);
+                    IsNotNull(longEntities  [longId]);
+                    IsNotNull(shortEntities [shortId]);
+                }
+                
                 // --- string as custom entity id ---
                 const string stringId2 = "xyz";
                 // Test: EntityId<T>.GetEntityId()

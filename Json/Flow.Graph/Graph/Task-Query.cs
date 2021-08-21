@@ -13,17 +13,17 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class QueryTask<T> : SyncTask, IReadRefsTask<T> where T : class
+    public class QueryTask<TKey, T> : SyncTask, IReadRefsTask<T> where T : class
     {
         internal            TaskState               state;
         internal            RefsTask                refsTask;
         internal readonly   FilterOperation         filter;
         internal readonly   string                  filterLinq; // use as string identifier of a filter 
-        internal            Dictionary<string, T>   results;
+        internal            Dictionary<TKey, T>     results;
         private  readonly   EntityStore             store;
 
-        public              Dictionary<string, T>   Results         => IsOk("QueryTask.Result",  out Exception e) ? results     : throw e;
-        public              T                       this[string id] => IsOk("QueryTask[]",       out Exception e) ? results[id] : throw e;
+        public              Dictionary<TKey, T>     Results         => IsOk("QueryTask.Result",  out Exception e) ? results      : throw e;
+        public              T                       this[TKey key]  => IsOk("QueryTask[]",       out Exception e) ? results[key] : throw e;
             
         internal override   TaskState               State           => state;
         public   override   string                  Details         => $"QueryTask<{typeof(T).Name}> (filter: {filterLinq})";

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Graph.Internal.Id;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph.Internal
@@ -178,6 +179,8 @@ namespace Friflo.Json.Flow.Graph.Internal
             entities.Add(id, value);
         }
         
+        private static readonly EntityKey<TKey, T> EntityKey = EntityId.GetEntityKey<TKey, T>(); 
+
         internal override void QueryEntitiesResult(QueryEntities task, TaskResult result, ContainerEntities queryEntities) {
             var filterLinq = task.filterLinq;
             var query = queries[filterLinq];
@@ -190,7 +193,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             var queryResult     = (QueryEntitiesResult)result;
             var entityErrorInfo = new TaskErrorInfo();
             var entities        = queryEntities.entities;
-            var results         = query.results = new Dictionary<string, T>(queryResult.ids.Count);
+            var results         = query.results = new Dictionary<TKey, T>(queryResult.ids.Count);
             foreach (var id in queryResult.ids) {
                 if (!entities.TryGetValue(id, out EntityValue value)) {
                     AddEntityResponseError(id, entities, ref entityErrorInfo);
@@ -202,7 +205,8 @@ namespace Friflo.Json.Flow.Graph.Internal
                     continue;
                 }
                 var peer = set.GetPeerById(id);
-                results.Add(id, peer.Entity);
+                var key = EntityKey.IdToKey(id);
+                results.Add(key, peer.Entity);
             }
             if (entityErrorInfo.HasErrors) {
                 query.state.SetError(entityErrorInfo);
