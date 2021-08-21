@@ -184,7 +184,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 
         /// Composition of read and write tasks
         public class ReadWriteTasks {
-            public readonly     Find<Article>                   findArticle;
+            public readonly     Find<string, Article>           findArticle;
             public readonly     UpdateTask<Article>             updateArticles;
 
             

@@ -24,30 +24,30 @@ namespace Friflo.Json.Flow.Graph.Internal
         // All fields must be private by all means to ensure that all scheduled tasks of a Sync() request managed
         // by this instance can be mapped to their task results safely.
         
-        private readonly    EntitySet<TKey, T>                  set;
-        private readonly    List<string>                        idsBuf       = new List<string>();
+        private readonly    EntitySet<TKey, T>                      set;
+        private readonly    List<string>                            idsBuf       = new List<string>();
             
-        private readonly    List<ReadTask<T>>                   reads        = new List<ReadTask<T>>();
-        /// key: <see cref="QueryTask{T}.filterLinq"/> 
-        private readonly    Dictionary<string, QueryTask<TKey, T>>    queries      = new Dictionary<string, QueryTask<TKey, T>>();
+        private readonly    List<ReadTask<TKey, T>>                 reads        = new List<ReadTask<TKey, T>>();
+        /// key: <see cref="QueryTask{TKey,T}.filterLinq"/> 
+        private readonly    Dictionary<string, QueryTask<TKey, T>>  queries      = new Dictionary<string, QueryTask<TKey, T>>();
         
-        private             SubscribeChangesTask<T>             subscribeChanges;
-        
-        /// key: <see cref="PeerEntity{T}.entity"/>.id
-        private readonly    Dictionary<string, PeerEntity<T>>   creates      = new Dictionary<string, PeerEntity<T>>();
-        private readonly    List<WriteTask>                     createTasks  = new List<WriteTask>();
+        private             SubscribeChangesTask<T>                 subscribeChanges;
         
         /// key: <see cref="PeerEntity{T}.entity"/>.id
-        private readonly    Dictionary<string, PeerEntity<T>>   updates      = new Dictionary<string, PeerEntity<T>>();
-        private readonly    List<WriteTask>                     updateTasks  = new List<WriteTask>();
+        private readonly    Dictionary<string, PeerEntity<T>>       creates      = new Dictionary<string, PeerEntity<T>>();
+        private readonly    List<WriteTask>                         createTasks  = new List<WriteTask>();
+        
+        /// key: <see cref="PeerEntity{T}.entity"/>.id
+        private readonly    Dictionary<string, PeerEntity<T>>       updates      = new Dictionary<string, PeerEntity<T>>();
+        private readonly    List<WriteTask>                         updateTasks  = new List<WriteTask>();
 
         /// key: entity id
-        private readonly    Dictionary<string, EntityPatch>     patches      = new Dictionary<string, EntityPatch>();
-        private readonly    List<PatchTask<T>>                  patchTasks   = new List<PatchTask<T>>();
+        private readonly    Dictionary<string, EntityPatch>         patches      = new Dictionary<string, EntityPatch>();
+        private readonly    List<PatchTask<T>>                      patchTasks   = new List<PatchTask<T>>();
         
         /// key: entity id
-        private readonly    HashSet<string>                     deletes      = new HashSet   <string>();
-        private readonly    List<DeleteTask<T>>                 deleteTasks  = new List<DeleteTask<T>>();
+        private readonly    HashSet<string>                         deletes      = new HashSet   <string>();
+        private readonly    List<DeleteTask<T>>                     deleteTasks  = new List<DeleteTask<T>>();
 
         internal SyncSet(EntitySet<TKey, T> set) {
             this.set = set;
@@ -76,8 +76,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         // --- Read
-        internal ReadTask<T> Read() {
-            var read = new ReadTask<T>(set);
+        internal ReadTask<TKey, T> Read() {
+            var read = new ReadTask<TKey, T>(set);
             reads.Add(read);
             return read;
         }
@@ -275,8 +275,13 @@ namespace Friflo.Json.Flow.Graph.Internal
                     references = new List<References>(reads.Count);
                     AddReferences(references, read.refsTask.subRefs);
                 }
+                var ids = new HashSet<string>(read.results.Keys.Count);
+                foreach (var key in read.results.Keys) {
+                    var id = EntityKey.KeyToId(key);
+                    ids.Add(id);
+                }
                 var req = new ReadEntities {
-                    ids = read.results.Keys.ToHashSet(),
+                    ids = ids,
                     references = references
                 };
                 readList.reads.Add(req);

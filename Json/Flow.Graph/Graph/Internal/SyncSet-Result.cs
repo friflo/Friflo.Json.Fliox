@@ -122,7 +122,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
 
-        private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ReadTask<T> read, ContainerEntities readEntities) {
+        private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ReadTask<TKey, T> read, ContainerEntities readEntities) {
             if (result.Error != null) {
                 var taskError = DatabaseTask.TaskError(result.Error);
                 SetReadTaskError(read, taskError);
@@ -148,7 +148,8 @@ namespace Friflo.Json.Flow.Graph.Internal
                     continue;
                 }
                 var peer = set.GetPeerById(id);
-                read.results[id] = peer.Entity;
+                var key = EntityKey.IdToKey(id);                
+                read.results[key] = peer.Entity;
             }
             foreach (var findTask in read.findTasks) {
                 findTask.SetFindResult(read.results, entities);
@@ -163,7 +164,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             AddReferencesResult(task.references, result.references, read.refsTask.subRefs);
         }
 
-        private static void SetReadTaskError(ReadTask<T> read, TaskErrorResult taskError) {
+        private static void SetReadTaskError(ReadTask<TKey, T> read, TaskErrorResult taskError) {
             TaskErrorInfo error = new TaskErrorInfo(taskError);
             read.state.SetError(error);
             SetSubRefsError(read.refsTask.subRefs, error);
@@ -179,7 +180,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             entities.Add(id, value);
         }
         
-        private static readonly EntityKey<TKey, T> EntityKey = EntityId.GetEntityKey<TKey, T>(); 
+        internal static readonly EntityKey<TKey, T> EntityKey = EntityId.GetEntityKey<TKey, T>(); 
 
         internal override void QueryEntitiesResult(QueryEntities task, TaskResult result, ContainerEntities queryEntities) {
             var filterLinq = task.filterLinq;

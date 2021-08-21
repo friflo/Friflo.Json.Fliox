@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsTrue(create.Success);
                     
                     var read = store.guidEntities.Read();
-                    var find = read.Find(guidId.ToString());
+                    var find = read.Find(guidId);
                         
                     await store.Sync();
                     
@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 // Test: EntityId<T>.SetEntityId()
                 using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                     var read = store.guidEntities.Read();
-                    var find = read.Find(guidId.ToString());
+                    var find = read.Find(guidId);
                         
                     await store.Sync();
                     
@@ -74,7 +74,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsTrue(create.Success);
                     
                     var read = store.intEntities.Read();
-                    var find = read.Find(intId.ToString());
+                    var find = read.Find(intId);
                         
                     await store.Sync();
                     
@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 // Test: EntityId<T>.SetEntityId()
                 using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                     var read = store.intEntities.Read();
-                    var find = read.Find(intId.ToString());
+                    var find = read.Find(intId);
                         
                     await store.Sync();
                     
@@ -105,7 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsTrue(create.Success);
                     
                     var read = store.longEntities.Read();
-                    var find = read.Find(longId.ToString());
+                    var find = read.Find(longId);
                         
                     await store.Sync();
                     
@@ -116,7 +116,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 // Test: EntityId<T>.SetEntityId()
                 using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                     var read = store.longEntities.Read();
-                    var find = read.Find(longId.ToString());
+                    var find = read.Find(longId);
                         
                     await store.Sync();
                     
@@ -136,7 +136,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                     IsTrue(create.Success);
                     
                     var read = store.shortEntities.Read();
-                    var find = read.Find(shortId.ToString());
+                    var find = read.Find(shortId);
                         
                     await store.Sync();
                     
@@ -147,7 +147,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 // Test: EntityId<T>.SetEntityId()
                 using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                     var read = store.shortEntities.Read();
-                    var find = read.Find(shortId.ToString());
+                    var find = read.Find(shortId);
                         
                     await store.Sync();
                     

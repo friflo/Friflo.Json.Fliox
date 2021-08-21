@@ -42,8 +42,8 @@ namespace Friflo.Json.Flow.Graph
     ///   <para>By calling <see cref="FindBy"/> of a <see cref="Ref{TKey,T}"/> instance.</para>
     ///   <para>
     ///     When reading an entity instance containing a <see cref="Ref{TKey,T}"/> field
-    ///     <see cref="EntitySet{TKey,T}.Read"/> returns a <see cref="ReadTask{T}"/> providing the possibility
-    ///     to read referenced entity together with its parent by calling <see cref="ReadTask{T}.ReadRef{TKey,T}"/>.
+    ///     <see cref="EntitySet{TKey,T}.Read"/> returns a <see cref="ReadTask{TKey, T}"/> providing the possibility
+    ///     to read referenced entity together with its parent by calling <see cref="ReadTask{TKey, T}.ReadRef{TKey,T}"/>.
     ///     <br></br>
     ///     Further more those tasks used to resolve references provide themself methods to resolve their references.
     ///     These are <see cref="ReadRefTask{T}"/> and <see cref="ReadRefsTask{T}"/>
@@ -148,9 +148,9 @@ namespace Friflo.Json.Flow.Graph
             return new Ref<TKey, T> (id);
         }
 
-        public Find<T> FindBy(ReadTask<T> task) {
+        public Find<TKey, T> FindBy(ReadTask<TKey, T> task) {
             // may validate that set is the same which created the PeerEntity<>
-            var find = task.Find(id);
+            var find = task.Find(key);
             peer = task.set.GetPeerById(id);
             return find;
         }

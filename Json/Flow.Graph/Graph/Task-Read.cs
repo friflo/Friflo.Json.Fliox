@@ -10,40 +10,39 @@ using Friflo.Json.Flow.Sync;
 namespace Friflo.Json.Flow.Graph
 {
     
-    public abstract  class FindTask<T> : SyncTask where T : class {
+    public abstract  class FindTask<TKey, T> : SyncTask where T : class {
         internal                    TaskState   findState;
         
         public   abstract override  string      Details { get; }
         internal abstract override  TaskState   State   { get; }
 
-        internal abstract void SetFindResult(Dictionary<string, T> values, Dictionary<string, EntityValue> entities);
+        internal abstract void SetFindResult(Dictionary<TKey, T> values, Dictionary<string, EntityValue> entities);
     }
     
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class Find<T> : FindTask<T> where T : class
+    public class Find<TKey, T> : FindTask<TKey, T> where T : class
     {
-        private  readonly   string      id;
+        private  readonly   TKey        key;
         private             T           result;
 
         public              T           Result      => IsOk("Find.Result", out Exception e) ? result : throw e;
-
         internal override   TaskState   State       => findState;
-
-        public   override   string      Details     => $"Find<{typeof(T).Name}> (id: '{id}')";
+        public   override   string      Details     => $"Find<{typeof(T).Name}> (id: '{key}')";
         
 
-        internal Find(string id) {
-            this.id     = id;
+        internal Find(TKey key) {
+            this.key     = key;
         }
         
-        internal override void SetFindResult(Dictionary<string, T> values, Dictionary<string, EntityValue> entities) {
+        internal override void SetFindResult(Dictionary<TKey, T> values, Dictionary<string, EntityValue> entities) {
             TaskErrorInfo error = new TaskErrorInfo();
+            var id = SyncSet<TKey,T>.EntityKey.KeyToId(key);
             var entityError = entities[id].Error;
             if (entityError == null) {
                 findState.Synced = true;
-                result = values[id];
+                result = values[key];
                 return;
             }
             error.AddEntityError(entityError);
@@ -54,32 +53,33 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class FindRange<T> : FindTask<T> where T : class
+    public class FindRange<TKey, T> : FindTask<TKey, T> where T : class
     {
-        private  readonly   HashSet<string>         ids;
-        private  readonly   Dictionary<string, T>   results = new Dictionary<string, T>();
+        private  readonly   HashSet<TKey>           keys;
+        private  readonly   Dictionary<TKey, T>     results = new Dictionary<TKey, T>();
 
-        public              T                       this[string id]      => IsOk("FindRange[]", out Exception e) ? results[id] : throw e;
-        public              Dictionary<string, T>   Results { get {
+        public              T                       this[TKey key]      => IsOk("FindRange[]", out Exception e) ? results[key] : throw e;
+        public              Dictionary<TKey, T>     Results { get {
             if (IsOk("FindRange.Results", out Exception e))
                 return results;
             throw e;
         } }
 
         internal override   TaskState       State       => findState;
-        public   override   string          Details     => $"FindRange<{typeof(T).Name}> (#ids: {ids.Count})";
+        public   override   string          Details     => $"FindRange<{typeof(T).Name}> (#ids: {keys.Count})";
         
 
-        internal FindRange(ICollection<string> ids) {
-            this.ids    = ids.ToHashSet();
+        internal FindRange(ICollection<TKey> keys) {
+            this.keys    = keys.ToHashSet();
         }
         
-        internal override void SetFindResult(Dictionary<string, T> values, Dictionary<string, EntityValue> entities) {
+        internal override void SetFindResult(Dictionary<TKey, T> values, Dictionary<string, EntityValue> entities) {
             TaskErrorInfo error = new TaskErrorInfo();
-            foreach (var id in ids) {
+            foreach (var key in keys) {
+                var id = SyncSet<TKey,T>.EntityKey.KeyToId(key);
                 var entityError = entities[id].Error;
                 if (entityError == null) {
-                    results.Add(id, values[id]);    
+                    results.Add(key, values[key]);    
                 } else {
                     error.AddEntityError(entityError);
                 }
@@ -97,16 +97,16 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ReadTask<T> : SyncTask, IReadRefsTask<T> where T : class
+    public class ReadTask<TKey, T> : SyncTask, IReadRefsTask<T> where T : class
     {
         internal            TaskState               state;
         internal readonly   EntityPeerSet<T>        set;
         internal            RefsTask                refsTask;
-        internal readonly   Dictionary<string, T>   results     = new Dictionary<string, T>();
-        internal readonly   List<FindTask<T>>       findTasks   = new List<FindTask<T>>();
+        internal readonly   Dictionary<TKey, T>     results     = new Dictionary<TKey, T>();
+        internal readonly   List<FindTask<TKey, T>> findTasks   = new List<FindTask<TKey, T>>();
 
-        public              Dictionary<string, T>   Results          => IsOk("ReadTask.Results", out Exception e) ? results     : throw e;
-        public              T                       this[string id]  => IsOk("ReadTask[]",       out Exception e) ? results[id] : throw e;
+        public              Dictionary<TKey, T>     Results         => IsOk("ReadTask.Results", out Exception e) ? results      : throw e;
+        public              T                       this[TKey key]  => IsOk("ReadTask[]",       out Exception e) ? results[key] : throw e;
 
         internal override   TaskState               State       => state;
         public   override   string                  Details     => $"ReadTask<{typeof(T).Name}> (#ids: {results.Count})";
@@ -117,30 +117,30 @@ namespace Friflo.Json.Flow.Graph
             this.set    = set;
         }
 
-        public Find<T> Find(string id) {
-            if (id == null)
+        public Find<TKey, T> Find(TKey key) {
+            if (key == null)
                 throw new ArgumentException($"ReadTask.Find() id must not be null. EntitySet: {set.name}");
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            results.Add(id, null);
-            var find = new Find<T>(id);
+            results.Add(key, null);
+            var find = new Find<TKey, T>(key);
             findTasks.Add(find);
             set.intern.store.AddTask(find);
             return find;
         }
         
-        public FindRange<T> FindRange(ICollection<string> ids) {
-            if (ids == null)
+        public FindRange<TKey, T> FindRange(ICollection<TKey> keys) {
+            if (keys == null)
                 throw new ArgumentException($"ReadTask.FindRange() ids must not be null. EntitySet: {set.name}");
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            results.EnsureCapacity(results.Count + ids.Count);
-            foreach (var id in ids) {
+            results.EnsureCapacity(results.Count + keys.Count);
+            foreach (var id in keys) {
                 if (id == null)
                     throw new ArgumentException($"ReadTask.FindRange() id must not be null. EntitySet: {set.name}");
                 results.TryAdd(id, null);
             }
-            var find = new FindRange<T>(ids);
+            var find = new FindRange<TKey, T>(keys);
             findTasks.Add(find);
             set.intern.store.AddTask(find);
             return find;

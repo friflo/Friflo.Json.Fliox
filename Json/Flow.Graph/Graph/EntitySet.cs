@@ -83,7 +83,7 @@ namespace Friflo.Json.Flow.Graph
         
         // --------------------------------------- public interface --------------------------------------- 
         // --- Read
-        public ReadTask<T> Read() {
+        public ReadTask<TKey, T> Read() {
             // ReadTasks<> are not added with intern.store.AddTask(task) as it only groups the tasks created via its
             // methods like: Find(), FindRange(), ReadRefTask() & ReadRefsTask().
             // A ReadTask<> its self cannot fail.
