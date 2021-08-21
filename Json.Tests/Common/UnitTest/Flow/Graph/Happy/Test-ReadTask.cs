@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
     {
         [Test] public async Task TestRead       () { await TestCreate(async (store) => await AssertRead             (store)); }
         
-        /// Optimization: <see cref="RefPath{TEntity,TRef}"/> and <see cref="RefsPath{TEntity,TRef}"/> can be created static as creating
+        /// Optimization: <see cref="RefPath{TEntity,TRefKey,TRef}"/> and <see cref="RefsPath{TEntity,TRefKey,TRef}"/> can be created static as creating
         /// a path from a <see cref="System.Linq.Expressions.Expression"/> is costly regarding heap allocations and CPU.
         private static readonly RefPath <Order, string, Customer> OrderCustomer = RefPath<Order, string, Customer>.MemberRef(o => o.customer);
         private static readonly RefsPath<Order, string, Article> ItemsArticle  =  RefsPath<Order, string, Article>.MemberRefs(o => o.items.Select(a => a.article));
