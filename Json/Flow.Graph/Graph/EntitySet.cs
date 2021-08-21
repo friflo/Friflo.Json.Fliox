@@ -118,7 +118,7 @@ namespace Friflo.Json.Flow.Graph
         // --- SubscribeChanges
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <see cref="changes"/>.
-        /// By default these changes are applied to the <see cref="EntitySet{T}"/>.
+        /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
         /// To react on specific changes use <see cref="EntityStore.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
@@ -132,7 +132,7 @@ namespace Friflo.Json.Flow.Graph
         
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the <see cref="changes"/>.
-        /// By default these changes are applied to the <see cref="EntitySet{T}"/>.
+        /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
         /// To react on specific changes use <see cref="EntityStore.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
@@ -145,7 +145,7 @@ namespace Friflo.Json.Flow.Graph
         
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <see cref="changes"/>.
-        /// By default these changes are applied to the <see cref="EntitySet{T}"/>.
+        /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
         /// To react on specific changes use <see cref="EntityStore.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>

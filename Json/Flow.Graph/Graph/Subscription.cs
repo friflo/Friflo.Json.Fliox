@@ -40,7 +40,7 @@ namespace Friflo.Json.Flow.Graph
         /// <summary>
         /// Creates a <see cref="SubscriptionProcessor"/> with the specified <see cref="synchronizationContext"/>
         /// The <see cref="synchronizationContext"/> is required to ensure that <see cref="ProcessEvent"/> is called on the
-        /// same thread as all other API calls of <see cref="EntityStore"/> and <see cref="EntitySet{T}"/>.
+        /// same thread as all other API calls of <see cref="EntityStore"/> and <see cref="EntitySet{TKey,T}"/>.
         /// <para>
         ///   In case of UI applications like WinForms, WPF or Unity <see cref="SynchronizationContext.Current"/> can be used.
         ///   If <see cref="synchronizationContext"/> is null it defaults to <see cref="SynchronizationContext.Current"/>.
@@ -93,7 +93,7 @@ namespace Friflo.Json.Flow.Graph
         /// <summary>
         /// Process the <see cref="SubscriptionEvent.tasks"/> of the given <see cref="SubscriptionEvent"/>.
         /// These <see cref="SubscriptionEvent.tasks"/> are "messages" resulting from subscriptions registered by
-        /// methods like <see cref="EntitySet{T}.SubscribeChanges"/>, <see cref="EntityStore.SubscribeAllChanges"/> or
+        /// methods like <see cref="EntitySet{TKey,T}.SubscribeChanges"/>, <see cref="EntityStore.SubscribeAllChanges"/> or
         /// <see cref="EntityStore.SubscribeMessage"/>.
         /// <br></br>
         /// Tasks notifying about database changes are applied to the <see cref="EntityStore"/> the <see cref="SubscriptionProcessor"/>

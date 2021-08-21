@@ -182,8 +182,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         /// In case the given entity was added via <see cref="Create"/> (peer.create != null) trace the entity to
-        /// find changes in referenced entities in <see cref="Ref{T}"/> fields of the given entity.
-        /// In these cases <see cref="RefMapper{T}.Trace"/> add untracked entities (== have no <see cref="PeerEntity{T}"/>)
+        /// find changes in referenced entities in <see cref="Ref{TKey,T}"/> fields of the given entity.
+        /// In these cases <see cref="Map.RefMapper{TKey,T}.Trace"/> add untracked entities (== have no <see cref="PeerEntity{T}"/>)
         /// which is not already assigned) 
         private void GetEntityChanges(PeerEntity<T> peer, LogTask logTask) {
             if (peer.created) {

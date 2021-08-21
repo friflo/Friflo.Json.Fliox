@@ -56,7 +56,7 @@ namespace Friflo.Json.Flow.Graph
         }
     }
     
-    /// Identify entries in <see cref="SyncSet{T}.patches"/> or <see cref="SyncSet{T}.creates"/> by tuple
+    /// Identify entries in <see cref="SyncSet{TKey,T}.patches"/> or <see cref="SyncSet{TKey,T}.creates"/> by tuple
     /// <see cref="sync"/> and <see cref="id"/>
     internal readonly struct LogChange {
         internal readonly   SyncSet     sync;

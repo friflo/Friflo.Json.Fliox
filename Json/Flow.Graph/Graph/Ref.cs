@@ -8,7 +8,7 @@ using Friflo.Json.Flow.Graph.Internal.Id;
 namespace Friflo.Json.Flow.Graph
 {
     /// <summary>
-    /// A <see cref="Ref{T,K}"/> is used to declare type safe fields being references to other entities in a data model.
+    /// A <see cref="Ref{TKey,T}"/> is used to declare type safe fields being references to other entities in a data model.
     /// 
     /// <para>
     /// A reference is an <see cref="key"/> of type <see cref="string"/>. A reference can be in two states:
@@ -20,30 +20,30 @@ namespace Friflo.Json.Flow.Graph
     ///     Access to the referenced entity instance is valid via the property <see cref="Entity"/>.
     ///   </para> 
     /// </para> 
-    /// The <see cref="key"/> is used when serializing a <see cref="Ref{T}"/> field to and from JSON.  
+    /// The <see cref="key"/> is used when serializing a <see cref="Ref{TKey,T}"/> field to and from JSON.  
     /// <para>
-    ///     A <see cref="Ref{T}"/> can be assigned in three ways:
-    ///     <para>1. By assigning an id of type <see cref="string"/>.                   Assigning a null <see cref="string"/> is valid.</para>
-    ///     <para>2. By assigning an entity.                                            Assigning null as entity is valid.</para>
-    ///     <para>3. By assigning with another reference of type <see cref="Ref{T}"/>.  Assigning a default <see cref="Ref{T}"/> is valid.</para>
+    ///     A <see cref="Ref{TKey,T}"/> can be assigned in three ways:
+    ///     <para>1. By assigning an id of type <see cref="string"/>.                       Assigning a null <see cref="string"/> is valid.</para>
+    ///     <para>2. By assigning an entity.                                                Assigning null as entity is valid.</para>
+    ///     <para>3. By assigning with another reference of type <see cref="Ref{TKey,T}"/>. Assigning a default <see cref="Ref{TKey,T}"/> is valid.</para>
     /// </para>
     /// 
     /// <para>
     ///     Access to <see cref="key"/> and property <see cref="Entity"/>:
-    ///     <para>The <see cref="key"/> of a <see cref="Ref{T}"/> can be accessed at all time without any restrictions.</para>
+    ///     <para>The <see cref="key"/> of a <see cref="Ref{TKey,T}"/> can be accessed at all time without any restrictions.</para>
     ///     <para>The property <see cref="Entity"/> enables access to the referenced entity instance.
-    ///         If the <see cref="Ref{T}"/> was assigned by an entity the access has no restrictions.
-    ///         If the <see cref="Ref{T}"/> was assigned by an id the referenced entity instance need to
+    ///         If the <see cref="Ref{TKey,T}"/> was assigned by an entity the access has no restrictions.
+    ///         If the <see cref="Ref{TKey,T}"/> was assigned by an id the referenced entity instance need to
     ///         be resolved upfront. For resolving see notes bellow.
     ///     </para>
     /// </para>
     /// <para>
     ///   To resolve the <see cref="Entity"/> by its <see cref="key"/> various options are available:
-    ///   <para>By calling <see cref="FindBy"/> of a <see cref="Ref{T}"/> instance.</para>
+    ///   <para>By calling <see cref="FindBy"/> of a <see cref="Ref{TKey,T}"/> instance.</para>
     ///   <para>
-    ///     When reading an entity instance containing a <see cref="Ref{T}"/> field
-    ///     <see cref="EntitySet{T}.Read"/> returns a <see cref="ReadTask{T}"/> providing the possibility
-    ///     to read referenced entity together with its parent by calling <see cref="ReadTask{T}.ReadRef{TValue}"/>.
+    ///     When reading an entity instance containing a <see cref="Ref{TKey,T}"/> field
+    ///     <see cref="EntitySet{TKey,T}.Read"/> returns a <see cref="ReadTask{T}"/> providing the possibility
+    ///     to read referenced entity together with its parent by calling <see cref="ReadTask{T}.ReadRef{TKey,T}"/>.
     ///     <br></br>
     ///     Further more those tasks used to resolve references provide themself methods to resolve their references.
     ///     These are <see cref="ReadRefTask{T}"/> and <see cref="ReadRefsTask{T}"/>

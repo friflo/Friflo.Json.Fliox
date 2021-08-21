@@ -145,7 +145,7 @@ namespace Friflo.Json.Flow.Graph
         /// <summary>
         /// Set a custom <see cref="SubscriptionProcessor"/> to enable reacting on specific database change or message (or command) events.
         /// E.g. notifying other application modules about created, updated, deleted or patches entities.
-        /// To subscribe to database change events use <see cref="Graph.EntitySet{T}.SubscribeChanges"/>.
+        /// To subscribe to database change events use <see cref="Graph.EntitySet{TKey,T}.SubscribeChanges"/>.
         /// The default <see cref="SubscriptionProcessor"/> apply all changes to the <see cref="EntityStore"/> as they arrive.
         /// To subscribe to message events use <see cref="SubscribeMessage"/>.
         /// <br></br>
@@ -170,7 +170,7 @@ namespace Friflo.Json.Flow.Graph
         /// <para>
         ///   1. change events.
         ///      To receive change events use <see cref="SubscribeAllChanges"/> or
-        ///      <see cref="Graph.EntitySet{T}.SubscribeChanges"/> and its sibling methods.
+        ///      <see cref="Graph.EntitySet{TKey,T}.SubscribeChanges"/> and its sibling methods.
         /// </para>
         /// <para>
         ///   2. message events.
