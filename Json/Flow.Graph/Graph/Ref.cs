@@ -70,21 +70,21 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   T               entity;
         private             PeerEntity<T>   peer;
         
-        internal static readonly   EntityKey<TKey, T>     StaticEntityKey = EntityId.GetEntityKey<TKey, T>();
+        internal static readonly   EntityKey<TKey, T>     EntityKey = EntityId.GetEntityKey<TKey, T>();
         
         public   override   string          ToString() => id ?? "null";
         
         public Ref(TKey key) {
             this.key    = key;
-            id          = StaticEntityKey.KeyToId(key);
+            id          = EntityKey.KeyToId(key);
             this.entity = null;
             this.peer   = null;
         }
         
         public Ref(T entity) {
-            TKey entityId = entity != null ? StaticEntityKey.GetKey(entity) : default;
+            TKey entityId = entity != null ? EntityKey.GetKey(entity) : default;
             this.key    = entityId;
-            this.id     = StaticEntityKey.KeyToId(key);
+            this.id     = EntityKey.KeyToId(key);
             this.entity = entity;
             this.peer   = null;
             if (entity != null && entityId == null)
@@ -92,7 +92,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         internal Ref(PeerEntity<T> peer) {
-            this.key    = StaticEntityKey.IdToKey(peer.id);      // peer.id is never null
+            this.key    = EntityKey.IdToKey(peer.id);      // peer.id is never null
             this.id     = peer.id;
             this.entity = null;
             this.peer   = peer;

@@ -277,7 +277,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 }
                 var ids = new HashSet<string>(read.results.Keys.Count);
                 foreach (var key in read.results.Keys) {
-                    var id = EntityKey.KeyToId(key);
+                    var id = Ref<TKey,T>.EntityKey.KeyToId(key);
                     ids.Add(id);
                 }
                 var req = new ReadEntities {
