@@ -44,7 +44,7 @@ namespace Friflo.Json.Flow.Graph
         // Reason:  EntitySet is extended by application which is mainly interested in following fields while debugging:
         //          peers, Sync, name, container & store 
         internal            SetIntern<T>        intern;
-        internal            SyncSet2<T>         syncSet2;
+        internal            SyncPeerSet<T>      syncPeerSet;
         
         internal  abstract  PeerEntity<T>       GetPeerById (string id);
         internal  abstract  PeerEntity<T>       GetPeerByEntity(T entity);
@@ -326,7 +326,7 @@ namespace Friflo.Json.Flow.Graph
             container   = store._intern.database.GetOrCreateContainer(name);
             intern      = new SetIntern<T>(store);
             syncSet     = new SyncSet<TKey, T>(this);
-            syncSet2    = syncSet;
+            syncPeerSet = syncSet;
         }
 
         internal override PeerEntity<T> CreatePeer (T entity) {
@@ -437,7 +437,7 @@ namespace Friflo.Json.Flow.Graph
 
         internal override void ResetSync() {
             syncSet     = new SyncSet<TKey, T>(this);
-            syncSet2    = syncSet;
+            syncPeerSet = syncSet;
         }
         
         internal override SyncTask SubscribeChangesInternal(IEnumerable<Change> changes) {

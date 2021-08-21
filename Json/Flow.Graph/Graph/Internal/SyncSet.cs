@@ -9,7 +9,7 @@ using Friflo.Json.Flow.Transform;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
-    internal abstract class SyncSet2 <T> : SyncSet where T : class
+    internal abstract class SyncPeerSet <T> : SyncSet where T : class
     {
         internal abstract void AddUpdate (PeerEntity<T> peer);
         internal abstract bool AddCreate (PeerEntity<T> peer);
@@ -18,7 +18,7 @@ namespace Friflo.Json.Flow.Graph.Internal
 
     /// Multiple instances of this class can be created when calling EntitySet.Sync() without awaiting the result.
     /// Each instance is mapped to a <see cref="SyncRequest"/> / <see cref="SyncResponse"/> instance.
-    internal partial class SyncSet<TKey, T> : SyncSet2<T> where T : class
+    internal partial class SyncSet<TKey, T> : SyncPeerSet<T> where T : class
     {
         // Note!
         // All fields must be private by all means to ensure that all scheduled tasks of a Sync() request managed

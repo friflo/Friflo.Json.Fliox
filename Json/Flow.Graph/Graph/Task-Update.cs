@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Graph
             if (entity == null)
                 throw new ArgumentException($"UpdateTask<{set.name}>.Add() entity must not be null.");
             var peer = set.CreatePeer(entity);
-            set.syncSet2.AddUpdate(peer);
+            set.syncPeerSet.AddUpdate(peer);
             entities.Add(entity);
         }
         
@@ -38,7 +38,7 @@ namespace Friflo.Json.Flow.Graph
                     throw new ArgumentException($"UpdateTask<{set.name}>.AddRange() entities[{n}] must not be null.");
                 n++;
                 var peer = set.CreatePeer(entity);
-                set.syncSet2.AddUpdate(peer);
+                set.syncPeerSet.AddUpdate(peer);
             }
             this.entities.AddRange(entities);
         }
