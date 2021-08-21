@@ -4,6 +4,7 @@
 using System;
 using System.Reflection;
 using Friflo.Json.Burst;
+using Friflo.Json.Flow.Graph.Internal.Id;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Diff;
 using Friflo.Json.Flow.Mapper.Map;
@@ -23,13 +24,13 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
             if (args == null)
                 return null;
             
-            Type keyType = args[0];
-            Type refType = args[1];
+            Type keyType    = args[0];
+            Type entityType = args[1];
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
             
             object[] constructorParams = {config, type, constructor};
             // new RefMapper<T>(config, type, constructor);
-            return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(RefMapper<,>), new[] {keyType, refType}, constructorParams);
+            return (TypeMapper) TypeMapperUtils.CreateGenericInstance(typeof(RefMapper<,>), new[] {keyType, entityType}, constructorParams);
         }
     }
 
@@ -50,6 +51,13 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         public override void InitTypeMapper(TypeStore typeStore) {
             keyMapper       = (TypeMapper<TKey>)    typeStore.GetTypeMapper(typeof(TKey));
             entityMapper    = (TypeMapper<T>)       typeStore.GetTypeMapper(typeof(T));
+            var entityId    = EntityId.GetEntityId<T>();
+            var entityKeyType  = entityId.GetKeyType();
+            if (typeof(TKey) != entityKeyType) {
+                var entityName = typeof(T).Name;
+                var msg = $"Type mismatch of entity keys: EntitySet<{entityKeyType.Name}, {entityName}> != Ref<{typeof(TKey).Name}, {entityName}>";
+                throw new InvalidOperationException(msg);
+            }
         }
 
         /*

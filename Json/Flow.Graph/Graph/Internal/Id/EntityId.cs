@@ -151,6 +151,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
     
     // -------------------------------------------- EntityId<T> --------------------------------------------
     internal abstract class EntityId<T> : EntityId where T : class {
+        internal abstract   Type    GetKeyType();
         internal abstract   string  GetId  (T entity);
         internal abstract   void    SetId  (T entity, string id);
     }
