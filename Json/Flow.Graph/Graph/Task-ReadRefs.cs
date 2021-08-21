@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Graph
     /// ensure all tasks returning <see cref="ReadRefsTask{T}"/>'s provide the same interface
     public interface IReadRefsTask<T> where T : class
     {
-        ReadRefsTask<TRef> ReadRefsPath   <TKey2, TRef>(RefsPath<TKey2, T, TRef> selector)                           where TRef : class;
+        ReadRefsTask<TRef> ReadRefsPath   <TKey2, TRef>(RefsPath<T, TKey2, TRef> selector)                           where TRef : class;
         ReadRefsTask<TRef> ReadRefs       <TKey2, TRef>(Expression<Func<T, Ref<TKey2, TRef>>> selector)              where TRef : class;
         ReadRefsTask<TRef> ReadArrayRefs  <TKey2, TRef>(Expression<Func<T, IEnumerable<Ref<TKey2, TRef>>>> selector) where TRef : class;
     }
@@ -79,7 +79,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- Refs
-        public ReadRefsTask<TRef> ReadRefsPath<TKey2, TRef>(RefsPath<TKey2, T, TRef> selector) where TRef : class {
+        public ReadRefsTask<TRef> ReadRefsPath<TKey2, TRef>(RefsPath<T, TKey2, TRef> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TRef>(selector.path, store);
@@ -146,7 +146,7 @@ namespace Friflo.Json.Flow.Graph
             }
         }
         
-        public ReadRefsTask<TRef> ReadRefsPath<TKey2, TRef>(RefsPath<TKey2, T, TRef> selector) where TRef : class {
+        public ReadRefsTask<TRef> ReadRefsPath<TKey2, TRef>(RefsPath<T, TKey2, TRef> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TRef>(selector.path, store);

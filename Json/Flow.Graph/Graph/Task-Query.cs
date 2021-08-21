@@ -36,7 +36,7 @@ namespace Friflo.Json.Flow.Graph
             this.store      = store;
         }
 
-        public ReadRefsTask<TRef> ReadRefsPath<TKey2, TRef>(RefsPath<TKey2, T, TRef> selector) where TRef : class {
+        public ReadRefsTask<TRef> ReadRefsPath<TKey2, TRef>(RefsPath<T, TKey2, TRef> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TRef>(selector.path, store);

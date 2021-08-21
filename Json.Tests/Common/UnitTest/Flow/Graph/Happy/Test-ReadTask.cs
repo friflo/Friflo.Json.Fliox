@@ -22,8 +22,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         /// Optimization: <see cref="RefPath{TEntity,TRef}"/> and <see cref="RefsPath{TEntity,TRef}"/> can be created static as creating
         /// a path from a <see cref="System.Linq.Expressions.Expression"/> is costly regarding heap allocations and CPU.
-        private static readonly RefPath <string, Order, Customer> OrderCustomer = RefPath<string, Order, Customer>.MemberRef(o => o.customer);
-        private static readonly RefsPath<string, Order, Article> ItemsArticle  =  RefsPath<string, Order, Article>.MemberRefs(o => o.items.Select(a => a.article));
+        private static readonly RefPath <Order, string, Customer> OrderCustomer = RefPath<Order, string, Customer>.MemberRef(o => o.customer);
+        private static readonly RefsPath<Order, string, Article> ItemsArticle  =  RefsPath<Order, string, Article>.MemberRefs(o => o.items.Select(a => a.article));
         
         private static async Task AssertRead(PocStore store) {
             var orders = store.orders;

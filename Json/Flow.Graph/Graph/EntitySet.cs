@@ -296,14 +296,14 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- create RefPath / RefsPath
-        public RefPath<TKey, T, TRef> RefPath<TRef>(Expression<Func<T, Ref<TKey, TRef>>> selector) where TRef : class {
+        public RefPath<T, TKey, TRef> RefPath<TRef>(Expression<Func<T, Ref<TKey, TRef>>> selector) where TRef : class {
             string path = ExpressionSelector.PathFromExpression(selector, out _);
-            return new RefPath<TKey, T, TRef>(path);
+            return new RefPath<T, TKey, TRef>(path);
         }
         
-        public RefsPath<TKey, T, TRef> RefsPath<TRef>(Expression<Func<T, IEnumerable<Ref<TKey, TRef>>>> selector) where TRef : class {
+        public RefsPath<T, TKey, TRef> RefsPath<TRef>(Expression<Func<T, IEnumerable<Ref<TKey, TRef>>>> selector) where TRef : class {
             string path = ExpressionSelector.PathFromExpression(selector, out _);
-            return new RefsPath<TKey, T, TRef>(path);
+            return new RefsPath<T, TKey, TRef>(path);
         }
         
         // ------------------------------------------- internals -------------------------------------------
