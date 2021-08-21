@@ -12,13 +12,13 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class UpdateTask<T> : WriteTask where T : class
     {
-        private readonly    EntitySet2<T>   set;
-        private  readonly   List<T>         entities;
+        private readonly    EntityPeerSet<T>    set;
+        private  readonly   List<T>             entities;
 
-        public   override   string          Details     => $"UpdateTask<{typeof(T).Name}> (#ids: {entities.Count})";
+        public   override   string              Details     => $"UpdateTask<{typeof(T).Name}> (#ids: {entities.Count})";
         
         
-        internal UpdateTask(List<T> entities, EntitySet2<T> set) {
+        internal UpdateTask(List<T> entities, EntityPeerSet<T> set) {
             this.set        = set;
             this.entities   = entities;
         }

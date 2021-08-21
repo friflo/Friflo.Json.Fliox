@@ -62,7 +62,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         internal override void SetResult(EntitySet set, HashSet<string> ids) {
-            var entitySet = (EntitySet2<T>) set;
+            var entitySet = (EntityPeerSet<T>) set;
             results = new Dictionary<string, T>(ids.Count);
             var entityErrorInfo = new TaskErrorInfo();
             foreach (var id in ids) {
@@ -132,7 +132,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         internal override void SetResult(EntitySet set, HashSet<string> ids) {
-            var entitySet = (EntitySet2<T>) set;
+            var entitySet = (EntityPeerSet<T>) set;
             if (ids.Count != 1)
                 throw new InvalidOperationException($"Expect ids result set with one element. got: {ids.Count}, task: {this}");
             id = ids.First();

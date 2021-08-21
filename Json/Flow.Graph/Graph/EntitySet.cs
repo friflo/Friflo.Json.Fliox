@@ -38,7 +38,7 @@ namespace Friflo.Json.Flow.Graph
         }
     }
     
-    public abstract class EntitySet2<T> : EntitySet where T : class
+    public abstract class EntityPeerSet<T> : EntitySet where T : class
     {
         // Keep all utility related fields of EntitySet in SetIntern to enhance debugging overview.
         // Reason:  EntitySet is extended by application which is mainly interested in following fields while debugging:
@@ -53,17 +53,15 @@ namespace Friflo.Json.Flow.Graph
         internal  abstract  string              GetEntityId (T entity);
         
 
-        protected EntitySet2(string name) : base(name) {
+        protected EntityPeerSet(string name) : base(name) {
         }
     }
 
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class EntitySet<TKey, T> : EntitySet2<T>  where T : class
+    public class EntitySet<TKey, T> : EntityPeerSet<T>  where T : class
     {
-
-        
         /// key: <see cref="PeerEntity{T}.entity"/>.id          Note: must be private by all means
         private  readonly   Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
         
