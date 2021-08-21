@@ -42,39 +42,43 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
             if (memberType == null)
                 throw new InvalidOperationException("Field '" + fieldName + "' ('" + fieldName + "') not found in type " + type);
 
-            TypeMapper  mapper      = typeStore.GetTypeMapper(memberType);
-            /* var refMapper = EntityMatcher.GetRefMapper(memberType, typeStore.config, mapper);
-            if (refMapper != null)
-                mapper = refMapper; */
+            try {
+                TypeMapper  mapper      = typeStore.GetTypeMapper(memberType);
+                /* var refMapper = EntityMatcher.GetRefMapper(memberType, typeStore.config, mapper);
+                if (refMapper != null)
+                    mapper = refMapper; */
 
-            Type        ut          = mapper.nullableUnderlyingType;
-            bool isNullablePrimitive = ut != null && ut.IsPrimitive;
-            bool isNullableEnum      = ut != null && ut.IsEnum;
-            
-            if (addMembers) {
-                if (jsonName == null)
-                    jsonName = typeStore.config.jsonNaming.PropertyName(fieldName);
+                Type        ut          = mapper.nullableUnderlyingType;
+                bool isNullablePrimitive = ut != null && ut.IsPrimitive;
+                bool isNullableEnum      = ut != null && ut.IsEnum;
                 
-                PropField pf;
-                if (memberType.IsEnum || memberType.IsPrimitive || isNullablePrimitive || isNullableEnum) {
-                    pf =     new PropField(fieldName, jsonName, mapper, field, property, primCount,    -9999, required); // force index exception in case of buggy impl.
-                } else {
-                    if (mapper.isValueType)
-                        pf = new PropField(fieldName, jsonName, mapper, field, property, primCount, objCount, required);
-                    else
-                        pf = new PropField(fieldName, jsonName, mapper, field, property, -9999,     objCount, required); // force index exception in case of buggy impl.
-                }
+                if (addMembers) {
+                    if (jsonName == null)
+                        jsonName = typeStore.config.jsonNaming.PropertyName(fieldName);
+                    
+                    PropField pf;
+                    if (memberType.IsEnum || memberType.IsPrimitive || isNullablePrimitive || isNullableEnum) {
+                        pf =     new PropField(fieldName, jsonName, mapper, field, property, primCount,    -9999, required); // force index exception in case of buggy impl.
+                    } else {
+                        if (mapper.isValueType)
+                            pf = new PropField(fieldName, jsonName, mapper, field, property, primCount, objCount, required);
+                        else
+                            pf = new PropField(fieldName, jsonName, mapper, field, property, -9999,     objCount, required); // force index exception in case of buggy impl.
+                    }
 
-                fieldList.Add(pf);
+                    fieldList.Add(pf);
+                }
+                
+                if (memberType.IsPrimitive || isNullablePrimitive || memberType.IsEnum || isNullableEnum) {
+                    primCount++;
+                } else if (mapper.isValueType) {
+                    // struct itself must not be incremented only its members. Their position need to be counted 
+                    TraverseMembers(mapper.type, false);
+                } else
+                    objCount++; // object
+            } catch (InvalidTypeException e) {
+                throw new InvalidTypeException($"Invalid member: {type.Name}.{fieldName} - {e.Message}");
             }
-            
-            if (memberType.IsPrimitive || isNullablePrimitive || memberType.IsEnum || isNullableEnum) {
-                primCount++;
-            } else if (mapper.isValueType) {
-                // struct itself must not be incremented only its members. Their position need to be counted 
-                TraverseMembers(mapper.type, false);
-            } else
-                objCount++; // object
         }
 
         private void TraverseMembers(Type type, bool addMembers) {
