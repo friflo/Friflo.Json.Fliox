@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             shortEntities     = new EntitySet <short,   ShortEntity>     (this);
             customIdEntities  = new EntitySet <string,  CustomIdEntity>  (this);
             entityRefs        = new EntitySet <string,  EntityRefs>      (this);
-            customIdEntities2 = new EntitySet <string, CustomIdEntity2> (this);
+            customIdEntities2 = new EntitySet <string,  CustomIdEntity2> (this);
         }
     }
 
