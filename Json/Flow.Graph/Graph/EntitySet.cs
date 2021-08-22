@@ -70,7 +70,7 @@ namespace Friflo.Json.Flow.Graph
     /// usually named <b>id</b>.
     /// Supported <see cref="TKey"/> types are:
     /// <see cref="string"/>, <see cref="long"/>, <see cref="int"/>, <see cref="short"/> and <see cref="Guid"/><br/>
-    /// The key type <see cref="TKey"/> must match the <see cref="Type"/> used for field / property <see cref="Type"/>.
+    /// The key type <see cref="TKey"/> must match the <see cref="Type"/> used for the key field / property.
     /// In case of a type mismatch a runtime exceptions is thrown.
     /// </summary>
 #if !UNITY_5_3_OR_NEWER
