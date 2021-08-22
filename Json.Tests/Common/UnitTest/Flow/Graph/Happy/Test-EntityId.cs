@@ -193,7 +193,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             
             // --- write and read Ref<>'s
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
-                var create = store.entityRefs.Create(entityRef);
+                var create = store.entityRefs.Update(entityRef);
                 
                 await store.Sync();
                 
