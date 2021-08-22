@@ -12,6 +12,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
         private  readonly   Action<T, short>    fieldSet;
         
         internal override   Type                GetKeyType() => typeof(short);
+        internal override   string              GetKeyName() => field.Name;
 
         internal EntityKeyShortField(FieldInfo field) {
             this.field  = field;
@@ -38,12 +39,15 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
     
     
     internal class EntityKeyShortProperty<T> : EntityKey<short, T> where T : class {
+        private  readonly   PropertyInfo        property;
         private  readonly   Func  <T, short>    propertyGet;
         private  readonly   Action<T, short>    propertySet;
         
         internal override   Type                GetKeyType() => typeof(short);
+        internal override   string              GetKeyName() => property.Name;
 
-        internal EntityKeyShortProperty(MethodInfo idGetMethod, MethodInfo idSetMethod) {
+        internal EntityKeyShortProperty(PropertyInfo property, MethodInfo idGetMethod, MethodInfo idSetMethod) {
+            this.property = property;
             propertyGet = (Func  <T, short>) Delegate.CreateDelegate (typeof(Func  <T, short>), idGetMethod);
             propertySet = (Action<T, short>) Delegate.CreateDelegate (typeof(Action<T, short>), idSetMethod);
         }

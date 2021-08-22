@@ -6,6 +6,8 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph.Internal;
+using Friflo.Json.Flow.Graph.Internal.Id;
+using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
 using Friflo.Json.Flow.Transform.Query;
@@ -320,7 +322,15 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public EntitySet(EntityStore store) : base (typeof(T).Name) {
-            Type type = typeof(T);
+            var entityId        = EntityId.GetEntityId<T>();
+            var entityKeyType   = entityId.GetKeyType();
+            var entityKeyName   = entityId.GetKeyName();
+            var type            = typeof(T);
+            var keyType         = typeof(TKey);
+            if (keyType != entityKeyType) {
+                var msg = $"Key type mismatch. {entityKeyType.Name} ({type.Name}.{entityKeyName}) != {keyType.Name} (EntitySet<{keyType.Name},{type.Name}>)";
+                throw new InvalidTypeException(msg);
+            }
             store._intern.setByType[type]       = this;
             store._intern.setByName[type.Name]  = this;
             container   = store._intern.database.GetOrCreateContainer(name);

@@ -87,19 +87,19 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
                 throw new InvalidOperationException(msg2);
             }
             if (propType == typeof(string)) {
-                return new EntityKeyStringProperty<T>(idGetMethod, idSetMethod);
+                return new EntityKeyStringProperty<T>   (property, idGetMethod, idSetMethod);
             }
             if (propType == typeof(Guid)) {
-                return new EntityKeyGuidProperty<T>  (idGetMethod, idSetMethod);
+                return new EntityKeyGuidProperty<T>     (property, idGetMethod, idSetMethod);
             }
             if (propType == typeof(int)) {
-                return new EntityKeyIntProperty<T>  (idGetMethod, idSetMethod);
+                return new EntityKeyIntProperty<T>      (property, idGetMethod, idSetMethod);
             }
             if (propType == typeof(long)) {
-                return new EntityKeyLongProperty<T>  (idGetMethod, idSetMethod);
+                return new EntityKeyLongProperty<T>     (property, idGetMethod, idSetMethod);
             }
             if (propType == typeof(short)) {
-                return new EntityKeyShortProperty<T>  (idGetMethod, idSetMethod);
+                return new EntityKeyShortProperty<T>    (property, idGetMethod, idSetMethod);
             }
             // add additional types here
             var msg = $"unsupported type for entity id. property: {property.Name}, type: {propType.Name}, entity: {type.Name}";
@@ -152,6 +152,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
     // -------------------------------------------- EntityId<T> --------------------------------------------
     internal abstract class EntityId<T> : EntityId where T : class {
         internal abstract   Type    GetKeyType();
+        internal abstract   string  GetKeyName();
         internal abstract   string  GetId  (T entity);
         internal abstract   void    SetId  (T entity, string id);
     }
