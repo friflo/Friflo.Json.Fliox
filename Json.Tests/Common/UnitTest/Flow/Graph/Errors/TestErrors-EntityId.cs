@@ -30,39 +30,59 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
         private static void AssertEntityIdTests(EntityDatabase database, TypeStore typeStore) {
             Exception e;
             e = Throws<InvalidTypeException>(() => {
-                _ = new EntityIdErrorStore(database, typeStore, "store");
+                _ = new TypeMismatchStore(database, typeStore, "store");
             });
             AreEqual("Key Type mismatch. String (IntEntity.id) != Int64 (EntitySet<Int64,IntEntity>)", e.Message);
             
             e = Throws<InvalidOperationException>(() => {
-                _ = new EntityIdErrorStore2(database, typeStore, "store");
+                _ = new UnsupportedKeyTypeStore(database, typeStore, "store");
             });
             AreEqual("unsupported Type for entity key: ByteEntity.id, Type: Byte", e.Message);
+            
+            e = Throws<InvalidTypeException>(() => {
+                _ = new InvalidMemberStore(database, typeStore, "store");
+            });
+            AreEqual("Invalid member: StringEntity.entityRef - Ref<Int32, StringEntity> != EntitySet<String, StringEntity>", e.Message);
         }
     }
+
+    // --------
+    public class IntEntity {
+        public  string      id;
+    }
     
-    public class EntityIdErrorStore : EntityStore {
+    public class TypeMismatchStore : EntityStore {
         public  readonly    EntitySet <long,    IntEntity>      intEntities;
 
-        public EntityIdErrorStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-            intEntities      = new EntitySet <long,    IntEntity>      (this);
+        public TypeMismatchStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
+            intEntities = new EntitySet <long,    IntEntity>      (this);
         }
     }
 
-    public class IntEntity {
-        public string id;
+    // --------
+    public class ByteEntity {
+        public  byte        id;
     }
     
-    public class EntityIdErrorStore2 : EntityStore {
+    public class UnsupportedKeyTypeStore : EntityStore {
         public  readonly    EntitySet <byte,    ByteEntity>      byteEntities;
 
-        public EntityIdErrorStore2(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-            byteEntities      = new EntitySet <byte,    ByteEntity>      (this);
+        public UnsupportedKeyTypeStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
+            byteEntities = new EntitySet <byte,    ByteEntity>      (this);
         }
     }
     
-    public class ByteEntity {
-        public byte id;
+    // --------
+    public class StringEntity {
+        public  string                  id;
+        public  Ref<int, StringEntity>  entityRef;
     }
+    
+    public class InvalidMemberStore : EntityStore {
+        public  readonly    EntitySet <string,    StringEntity>      stringEntities;
 
+        public InvalidMemberStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
+            stringEntities = new EntitySet <string,    StringEntity>      (this);
+        }
+    }
 }
