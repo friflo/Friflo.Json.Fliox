@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             e = Throws<InvalidTypeException>(() => {
                 _ = new TypeMismatchStore(database, typeStore, "store");
             });
-            AreEqual("Key Type mismatch. String (IntEntity.id) != Int64 (EntitySet<Int64,IntEntity>)", e.Message);
+            AreEqual("key Type mismatch. String (IntEntity.id) != Int64 (EntitySet<Int64,IntEntity>)", e.Message);
             
             e = Throws<InvalidOperationException>(() => {
                 _ = new UnsupportedKeyTypeStore(database, typeStore, "store");

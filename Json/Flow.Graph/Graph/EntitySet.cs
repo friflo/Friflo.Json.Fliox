@@ -352,7 +352,7 @@ namespace Friflo.Json.Flow.Graph
             var entityKeyName   = entityId.GetKeyName();
             var keyType         = typeof(TKey);
             if (keyType != entityKeyType) {
-                var msg = $"Key Type mismatch. {entityKeyType.Name} ({type.Name}.{entityKeyName}) != {keyType.Name} (EntitySet<{keyType.Name},{type.Name}>)";
+                var msg = $"key Type mismatch. {entityKeyType.Name} ({type.Name}.{entityKeyName}) != {keyType.Name} (EntitySet<{keyType.Name},{type.Name}>)";
                 throw new InvalidTypeException(msg);
             }
         }

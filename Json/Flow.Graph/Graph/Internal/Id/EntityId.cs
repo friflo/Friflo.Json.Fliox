@@ -102,7 +102,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
                 return new EntityKeyShortProperty<T>    (property, idGetMethod, idSetMethod);
             }
             // add additional types here
-            var msg = $"unsupported Type for entity key: {type.Name}.{property.Name}, Type: {propType.Name}";
+            var msg = UnsupportedTypeMessage(type, property, propType);
             throw new InvalidOperationException(msg);
         }
             
@@ -126,8 +126,12 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
                 return new EntityKeyShortField<T>(field);
             }
             // add additional types here
-            var msg = $"unsupported Type for entity key: {type.Name}.{field.Name}, Type: {fieldType.Name}";
+            var msg = UnsupportedTypeMessage(type, field, fieldType);
             throw new InvalidOperationException(msg);
+        }
+        
+        private static string UnsupportedTypeMessage(Type type, MemberInfo member, Type memberType) {
+            return $"unsupported Type for entity key: {type.Name}.{member.Name}, Type: {memberType.Name}";
         }
         
         internal static Func<TEntity,TField> GetFieldGet<TEntity, TField>(FieldInfo field) {
