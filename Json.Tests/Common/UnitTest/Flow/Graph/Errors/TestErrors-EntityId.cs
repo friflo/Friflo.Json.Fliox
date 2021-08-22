@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             e = Throws<InvalidOperationException>(() => {
                 _ = new EntityIdErrorStore2(database, typeStore, "store");
             });
-            AreEqual("unsupported Type for entity key. field: id, Type: Byte, entity: ByteEntity", e.Message);
+            AreEqual("unsupported Type for entity key: ByteEntity.id, Type: Byte", e.Message);
         }
     }
     
