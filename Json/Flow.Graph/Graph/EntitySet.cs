@@ -322,21 +322,25 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public EntitySet(EntityStore store) : base (typeof(T).Name) {
-            var entityId        = EntityId.GetEntityId<T>();
-            var entityKeyType   = entityId.GetKeyType();
-            var entityKeyName   = entityId.GetKeyName();
-            var type            = typeof(T);
-            var keyType         = typeof(TKey);
-            if (keyType != entityKeyType) {
-                var msg = $"Key type mismatch. {entityKeyType.Name} ({type.Name}.{entityKeyName}) != {keyType.Name} (EntitySet<{keyType.Name},{type.Name}>)";
-                throw new InvalidTypeException(msg);
-            }
+            var type = typeof(T);
+            ValidateKeyType(type);
             store._intern.setByType[type]       = this;
             store._intern.setByName[type.Name]  = this;
             container   = store._intern.database.GetOrCreateContainer(name);
             intern      = new SetIntern<T>(store);
             syncSet     = new SyncSet<TKey, T>(this);
             syncPeerSet = syncSet;
+        }
+        
+        private static void ValidateKeyType(Type type) {
+            var entityId        = EntityId.GetEntityId<T>();
+            var entityKeyType   = entityId.GetKeyType();
+            var entityKeyName   = entityId.GetKeyName();
+            var keyType         = typeof(TKey);
+            if (keyType != entityKeyType) {
+                var msg = $"Key type mismatch. {entityKeyType.Name} ({type.Name}.{entityKeyName}) != {keyType.Name} (EntitySet<{keyType.Name},{type.Name}>)";
+                throw new InvalidTypeException(msg);
+            }
         }
 
         internal override PeerEntity<T> CreatePeer (T entity) {
