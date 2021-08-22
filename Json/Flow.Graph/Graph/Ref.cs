@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Graph
     /// A <see cref="Ref{TKey,T}"/> is used to declare type safe fields being references to other entities in a data model.
     /// 
     /// <para>
-    /// A reference is an <see cref="key"/> of type <see cref="string"/>. A reference can be in two states:
+    /// A reference is an <see cref="key"/> of type <see cref="TKey"/>. A reference can be in two states:
     ///   <para><b>unresolved</b>
     ///     Only the access to <see cref="key"/> is valid. This is always the case.
     ///     Access to the referenced entity instance via the property <see cref="Entity"/> result in an <see cref="Exception"/>.
@@ -23,7 +23,7 @@ namespace Friflo.Json.Flow.Graph
     /// The <see cref="key"/> is used when serializing a <see cref="Ref{TKey,T}"/> field to and from JSON.  
     /// <para>
     ///     A <see cref="Ref{TKey,T}"/> can be assigned in three ways:
-    ///     <para>1. By assigning an id of type <see cref="string"/>.                       Assigning a null <see cref="string"/> is valid.</para>
+    ///     <para>1. By assigning an id of type <see cref="TKey"/>.                         Assigning a default (null) <see cref="TKey"/> is valid.</para>
     ///     <para>2. By assigning an entity.                                                Assigning null as entity is valid.</para>
     ///     <para>3. By assigning with another reference of type <see cref="Ref{TKey,T}"/>. Assigning a default <see cref="Ref{TKey,T}"/> is valid.</para>
     /// </para>
