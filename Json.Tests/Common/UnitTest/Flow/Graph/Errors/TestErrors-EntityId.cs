@@ -1,15 +1,11 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-
-using System.Collections;
-using System.Threading.Tasks;
+using System;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
-using Friflo.Json.Tests.Common.Utils;
-using UnityEngine.TestTools;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
@@ -32,10 +28,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
         }
             
         private static void AssertEntityIdTests(EntityDatabase database, TypeStore typeStore) {
-            var e = Throws<InvalidTypeException>(() => {
-                _ = new EntityIdErrorStore(database, typeStore, "guidStore");
+            Exception e;
+            e = Throws<InvalidTypeException>(() => {
+                _ = new EntityIdErrorStore(database, typeStore, "store");
             });
             AreEqual("Key Type mismatch. String (IntEntity.id) != Int64 (EntitySet<Int64,IntEntity>)", e.Message);
+            
+            e = Throws<InvalidOperationException>(() => {
+                _ = new EntityIdErrorStore2(database, typeStore, "store");
+            });
+            AreEqual("unsupported Type for entity key. field: id, Type: Byte, entity: ByteEntity", e.Message);
         }
     }
     
@@ -49,6 +51,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
 
     public class IntEntity {
         public string id;
+    }
+    
+    public class EntityIdErrorStore2 : EntityStore {
+        public  readonly    EntitySet <byte,    ByteEntity>      byteEntities;
+
+        public EntityIdErrorStore2(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
+            byteEntities      = new EntitySet <byte,    ByteEntity>      (this);
+        }
+    }
+    
+    public class ByteEntity {
+        public byte id;
     }
 
 }
