@@ -19,7 +19,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public  readonly    EntitySet <string,  EntityRefs>      entityRefs;
         public  readonly    EntitySet <string,  CustomIdEntity2> customIdEntities2;
 
-
         public EntityIdStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
             guidEntities      = new EntitySet <Guid,    GuidEntity>      (this);
             intEntities       = new EntitySet <int,     IntEntity>       (this);
@@ -53,17 +52,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     }
     
     public class EntityRefs {
-        
         [Fri.Required]  public string                       id;
                         public Ref <Guid,   GuidEntity>     guidEntity;
                         public Ref <int,    IntEntity>      intEntity;
                         public Ref <long,   LongEntity>     longEntity;
                         public Ref <short,  ShortEntity>    shortEntity;
                         public Ref <string, CustomIdEntity> customIdEntity;
-                        
                         public List<Ref <Guid, GuidEntity>> guidEntities;
     }
-    
 
     public class CustomIdEntity2 {
 #if UNITY_5_3_OR_NEWER
