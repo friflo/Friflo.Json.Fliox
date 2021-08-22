@@ -62,10 +62,12 @@ namespace Friflo.Json.Flow.Graph
     /// <summary>
     /// An EntitySet represents a collection (table) of entities (records).
     /// <br/>
-    /// The methods of EntitySet enable to create, read, update or delete or container entities.
-    /// It also allows to subscribe to entities changes made by other database useres.
-    /// The type <see cref="T"/> of a container entity need to be a class containing a
-    /// field or property used as its key usually named <b>id</b>.
+    /// The methods of an <see cref="EntitySet{TKey,T}"/> enable to create, read, update or delete container entities.
+    /// It also allows to subscribe to entities changes made by other database users.<br/>
+    /// <see cref="EntitySet{TKey,T}"/>'s are designed to be used as fields or properties inside an <see cref="EntityStore"/>.
+    /// <br/>
+    /// The type <see cref="T"/> of a container entity need to be a class containing a field or property used as its key
+    /// usually named <b>id</b>.
     /// Supported <see cref="TKey"/> types are:
     /// <see cref="string"/>, <see cref="long"/>, <see cref="int"/>, <see cref="short"/> and <see cref="Guid"/><br/>
     /// The key type <see cref="TKey"/> must match the <see cref="Type"/> used for field / property <see cref="Type"/>.
