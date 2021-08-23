@@ -81,6 +81,9 @@ namespace Friflo.Json.Flow.Graph
         /// key: <see cref="PeerEntity{T}.entity"/>.id          Note: must be private by all means
         private  readonly   Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
         
+        private static readonly   EntityId<T>  EntityKey = EntityId.GetEntityKey<TKey, T>();
+
+        
         // ReSharper disable once NotAccessedField.Local
         private  readonly   EntityContainer                     container; // not used - only for debugging ergonomics
         
@@ -177,8 +180,7 @@ namespace Friflo.Json.Flow.Graph
         public CreateTask<T> Create(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Create() entity must not be null. EntitySet: {name}");
-            var id = GetEntityId(entity);
-            if (id == null)
+            if (EntityKey.IsKeyNull(entity))
                 throw new ArgumentException($"EntitySet.Create() entity.id must not be null. EntitySet: {name}");
             var task = syncSet.Create(entity);
             intern.store.AddTask(task);
@@ -189,8 +191,7 @@ namespace Friflo.Json.Flow.Graph
             if (entities == null)
                 throw new ArgumentException($"EntitySet.CreateRange() entity must not be null. EntitySet: {name}");
             foreach (var entity in entities) {
-                var id = GetEntityId(entity);
-                if (id == null)
+                if (EntityKey.IsKeyNull(entity))
                     throw new ArgumentException($"EntitySet.CreateRange() entity.id must not be null. EntitySet: {name}");
             }
             var task = syncSet.CreateRange(entities);
@@ -202,8 +203,7 @@ namespace Friflo.Json.Flow.Graph
         public UpdateTask<T> Update(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Update() entity must not be null. EntitySet: {name}");
-            var id = GetEntityId(entity);
-            if (id == null)
+            if (EntityKey.IsKeyNull(entity))
                 throw new ArgumentException($"EntitySet.Update() entity.id must not be null. EntitySet: {name}");
             var task = syncSet.Update(entity);
             intern.store.AddTask(task);
@@ -214,8 +214,7 @@ namespace Friflo.Json.Flow.Graph
             if (entities == null)
                 throw new ArgumentException($"EntitySet.UpdateRange() entity must not be null. EntitySet: {name}");
             foreach (var entity in entities) {
-                var id = GetEntityId(entity);
-                if (id == null)
+                if (EntityKey.IsKeyNull(entity))
                     throw new ArgumentException($"EntitySet.UpdateRange() entity.id must not be null. EntitySet: {name}");
             }
             var task = syncSet.UpdateRange(entities);
@@ -303,8 +302,7 @@ namespace Friflo.Json.Flow.Graph
             var task = intern.store._intern.syncStore.CreateLog();
             if (entity == null)
                 throw new ArgumentException($"EntitySet.LogEntityChanges() entity must not be null. EntitySet: {name}");
-            var id = GetEntityId(entity);
-            if (id == null)
+            if (EntityKey.IsKeyNull(entity))
                 throw new ArgumentException($"EntitySet.LogEntityChanges() entity.id must not be null. EntitySet: {name}");
             syncSet.LogEntityChanges(entity, task);
             intern.store.AddTask(task);

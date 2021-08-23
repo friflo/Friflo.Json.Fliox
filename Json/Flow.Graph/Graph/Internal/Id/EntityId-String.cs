@@ -13,6 +13,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
         
         internal override   Type                GetKeyType() => typeof(string);
         internal override   string              GetKeyName() => field.Name;
+        internal override   bool                IsKeyNull (T entity) => GetKey(entity) == null;
 
         internal EntityKeyStringField(FieldInfo field) {
             this.field  = field;
