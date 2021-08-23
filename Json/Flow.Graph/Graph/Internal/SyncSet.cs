@@ -275,7 +275,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                     references = new List<References>(reads.Count);
                     AddReferences(references, read.refsTask.subRefs);
                 }
-                var ids = new HashSet<string>(read.results.Keys.Count);
+                var ids = Helper.CreateHashSet<string>(read.results.Keys.Count);
                 foreach (var key in read.results.Keys) {
                     var id = Ref<TKey,T>.EntityKey.KeyToId(key);
                     ids.Add(id);
