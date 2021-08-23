@@ -222,11 +222,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 IsNotNull(result.customIdEntity);
                 IsNotNull(result.guidEntities[0].Entity);
                 
+                IsNotNull(guidEntity.Result);
                 IsTrue(guidId   == guidEntity.Key);
                 IsTrue(intId    == intEntity.Key);
                 IsTrue(longId   == longEntity.Key);
                 IsTrue(shortId  == shortEntity.Key);
                 IsTrue(stringId == customIdEntity.Key);
+                IsNotNull(guidEntities.Results[guidId]);
                 IsNotNull(guidEntities[guidId]);
             }
             
