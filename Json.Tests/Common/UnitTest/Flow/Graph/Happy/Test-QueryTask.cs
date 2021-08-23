@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             AreEqual("readOrders -> .customer", customer.Details);
 
             Exception e;
-            e = Throws<TaskNotSyncedException>(() => { var _ = customer.Id; });
+            e = Throws<TaskNotSyncedException>(() => { var _ = customer.Key; });
             AreEqual("ReadRefTask.Id requires Sync(). readOrders -> .customer", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
             AreEqual("ReadRefTask.Result requires Sync(). readOrders -> .customer", e.Message);
@@ -84,7 +84,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             AreEqual(1,                 hasOrderCamera.Results.Count);
             AreEqual(3,                 hasOrderCamera["order-1"].items.Count);
     
-            AreEqual("customer-1",      customer.Id);
+            AreEqual("customer-1",      customer.Key);
             AreEqual("Smith Ltd.",      customer.Result.name);
                 
             AreEqual(3,                 producersTask.Results.Count);

@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Graph
         internal abstract void    SetResult (EntitySet set, HashSet<string> ids);
     }
 
-    /// ensure all tasks returning <see cref="ReadRefsTask{T}"/>'s provide the same interface
+    /// ensure all tasks returning <see cref="ReadRefsTask{TKey,T}"/>'s provide the same interface
     public interface IReadRefsTask<T> where T : class
     {
         ReadRefsTask<TRefKey, TRef> ReadRefsPath   <TRefKey, TRef>(RefsPath<T, TRefKey, TRef> selector)                           where TRef : class;
@@ -103,15 +103,15 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ReadRefTask<T> : ReadRefsTask, IReadRefsTask<T> where T : class
+    public class ReadRefTask<TKey, T> : ReadRefsTask, IReadRefsTask<T> where T : class
     {
         private             RefsTask        refsTask;
-        private             string          id;
+        private             TKey            key;
         private             T               entity;
         private   readonly  SyncTask        parent;
         private   readonly  EntityStore     store;
     
-        public              string          Id      => IsOk("ReadRefTask.Id",     out Exception e) ? id      : throw e;
+        public              TKey            Key     => IsOk("ReadRefTask.Id",     out Exception e) ? key     : throw e;
         public              T               Result  => IsOk("ReadRefTask.Result", out Exception e) ? entity  : throw e;
                 
         internal override   TaskState       State       => state;
@@ -136,7 +136,8 @@ namespace Friflo.Json.Flow.Graph
             var entitySet = (EntityPeerSet<T>) set;
             if (ids.Count != 1)
                 throw new InvalidOperationException($"Expect ids result set with one element. got: {ids.Count}, task: {this}");
-            id = ids.First();
+            var id = ids.First();
+            key = Ref<TKey,T>.EntityKey.IdToKey(id);
             var peer = entitySet.GetPeerById(id);
             if (peer.error == null) {
                 entity = peer.Entity;

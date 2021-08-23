@@ -159,23 +159,23 @@ namespace Friflo.Json.Flow.Graph
         } */
         
         // --- Ref
-        public ReadRefTask<TRef> ReadRef<TRefKey, TRef>(Expression<Func<T, Ref<TRefKey, TRef>>> selector) where TRef : class {
+        public ReadRefTask<TRefKey, TRef> ReadRef<TRefKey, TRef>(Expression<Func<T, Ref<TRefKey, TRef>>> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
             string path = ExpressionSelector.PathFromExpression(selector, out _);
-            return ReadRefByPath<TRef>(path);
+            return ReadRefByPath<TRefKey, TRef>(path);
         }
         
-        public ReadRefTask<TRef> ReadRefPath<TRefKey, TRef>(RefPath<T, TRefKey, TRef> selector) where TRef : class {
+        public ReadRefTask<TRefKey, TRef> ReadRefPath<TRefKey, TRef>(RefPath<T, TRefKey, TRef> selector) where TRef : class {
             if (State.IsSynced())
                 throw AlreadySyncedError();
-            return ReadRefByPath<TRef>(selector.path);
+            return ReadRefByPath<TRefKey, TRef>(selector.path);
         }
         
-        private ReadRefTask<TRef> ReadRefByPath<TRef>(string path) where TRef : class {
+        private ReadRefTask<TRefKey, TRef> ReadRefByPath<TRefKey, TRef>(string path) where TRef : class {
             if (refsTask.subRefs.TryGetTask(path, out ReadRefsTask subRefsTask))
-                return (ReadRefTask<TRef>)subRefsTask;
-            var newQueryRefs = new ReadRefTask<TRef>(this, path, typeof(TRef).Name, set.intern.store);
+                return (ReadRefTask<TRefKey, TRef>)subRefsTask;
+            var newQueryRefs = new ReadRefTask<TRefKey, TRef>(this, path, typeof(TRef).Name, set.intern.store);
             refsTask.subRefs.AddTask(path, newQueryRefs);
             set.intern.store.AddTask(newQueryRefs);
             return newQueryRefs;
