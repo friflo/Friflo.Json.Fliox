@@ -14,6 +14,13 @@ namespace System.Collections.Generic
             return new HashSet<T>(capacity);
 #endif
         }
+        
+        public static T First<T>(this HashSet<T> hashSet) {
+            // ReSharper disable once GenericEnumeratorNotDisposed - HashSet<T>.Dispose() does nothing
+            var enumerator = hashSet.GetEnumerator();
+            enumerator.MoveNext();
+            return enumerator.Current;
+        }
     }
 }
 
