@@ -15,7 +15,7 @@ namespace Friflo.Json.Flow.Graph
         private readonly    EntityPeerSet<T>    set;
         private  readonly   List<T>             entities;
 
-        public   override   string              Details     => $"UpdateTask<{typeof(T).Name}> (#ids: {entities.Count})";
+        public   override   string              Details     => $"UpdateTask<{typeof(T).Name}> (#keys: {entities.Count})";
         
         
         internal UpdateTask(List<T> entities, EntityPeerSet<T> set) {

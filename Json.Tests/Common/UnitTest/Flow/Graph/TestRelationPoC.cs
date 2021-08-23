@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                                   articles.Create(notebook);
             var createCam2      = articles.Create(cameraCreate);   // Create new CreateTask for same entity
             AreNotSame(createCam1, createCam2);               
-            AreEqual("CreateTask<Article> (#ids: 1)", createCam1.ToString());
+            AreEqual("CreateTask<Article> (#keys: 1)", createCam1.ToString());
 
             var newBulkArticles = new List<Article>();
             for (int n = 0; n < 2; n++) {

@@ -22,7 +22,7 @@ namespace Friflo.Json.Flow.Graph
         private readonly    EntityPeerSet<T>    set;
         private readonly    List<T>             entities;
 
-        public   override   string              Details     => $"CreateTask<{typeof(T).Name}> (#ids: {entities.Count})";
+        public   override   string              Details     => $"CreateTask<{typeof(T).Name}> (#keys: {entities.Count})";
         
         
         internal CreateTask(List<T> entities, EntityPeerSet<T> set) {

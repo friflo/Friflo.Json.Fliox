@@ -45,9 +45,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             var updateError     = customers.Update(new Customer{id = updateTaskException})  .TaskName("updateError");
             var deleteError     = customers.Delete(new Customer{id = deleteTaskException})  .TaskName("deleteError");
             
-            AreEqual("CreateTask<Customer> (#ids: 1)", createError.Details);
-            AreEqual("UpdateTask<Customer> (#ids: 1)", updateError.Details);
-            AreEqual("DeleteTask<Customer> (#ids: 1)", deleteError.Details);
+            AreEqual("CreateTask<Customer> (#keys: 1)", createError.Details);
+            AreEqual("UpdateTask<Customer> (#keys: 1)", updateError.Details);
+            AreEqual("DeleteTask<Customer> (#keys: 1)", deleteError.Details);
             
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Success; });
