@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -261,24 +260,23 @@ namespace Friflo.Json.Flow.Graph
             throw new InvalidOperationException(msg);
         }
         
-        private readonly ConcurrentDictionary<Task, MessageContext> pendingSyncs = new ConcurrentDictionary<Task, MessageContext>();
-        
         public async Task CancelPendingSyncs() {
-            foreach (var pair in pendingSyncs) {
+            foreach (var pair in _intern.pendingSyncs) {
                 var messageContext = pair.Value;
                 messageContext.Cancel();
             }
-            await Task.WhenAll(pendingSyncs.Keys);
+            await Task.WhenAll(_intern.pendingSyncs.Keys);
         }
         
         public int GetPendingSyncsCount() {
-            return pendingSyncs.Count;
+            return _intern.pendingSyncs.Count;
         }
         
         private async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             _intern.syncCount++;
             SyncResponse response;
             Task<SyncResponse> task = null;
+            var pendingSyncs = _intern.pendingSyncs;
             try {
                 task = _intern.database.ExecuteSync(syncRequest, messageContext);
                 

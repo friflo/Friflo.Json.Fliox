@@ -2,8 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Utils;
@@ -13,21 +15,22 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal struct StoreIntern
     {
-        internal readonly   string                                  clientId;
-        internal readonly   TypeStore                               typeStore;
-        private  readonly   TypeStore                               ownedTypeStore;
-        internal readonly   TypeCache                               typeCache;
-        internal readonly   ObjectMapper                            jsonMapper;
+        internal readonly   string                                      clientId;
+        internal readonly   TypeStore                                   typeStore;
+        private  readonly   TypeStore                                   ownedTypeStore;
+        internal readonly   TypeCache                                   typeCache;
+        internal readonly   ObjectMapper                                jsonMapper;
 
-        internal readonly   ObjectPatcher                           objectPatcher;
+        internal readonly   ObjectPatcher                               objectPatcher;
         
-        internal readonly   EntityDatabase                          database;
-        internal readonly   Dictionary<Type,   EntitySet>           setByType;
-        internal readonly   Dictionary<string, EntitySet>           setByName;
-        internal readonly   EventTarget                             eventTarget;
-        internal readonly   Dictionary<string, MessageSubscriber>   subscriptions;
-        internal readonly   List<MessageSubscriber>                 subscriptionsPrefix;
-        internal readonly   ObjectReader                            messageReader;
+        internal readonly   EntityDatabase                              database;
+        internal readonly   Dictionary<Type,   EntitySet>               setByType;
+        internal readonly   Dictionary<string, EntitySet>               setByName;
+        internal readonly   EventTarget                                 eventTarget;
+        internal readonly   Dictionary<string, MessageSubscriber>       subscriptions;
+        internal readonly   List<MessageSubscriber>                     subscriptionsPrefix;
+        internal readonly   ObjectReader                                messageReader;
+        internal readonly   ConcurrentDictionary<Task, MessageContext>  pendingSyncs;
         
         // --- non readonly
         internal            SyncStore                               syncStore;
@@ -38,6 +41,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal            int                                     lastEventSeq;
         internal            int                                     syncCount;
         internal            string                                  token;
+
 
         public   override   string                                  ToString() => clientId;
 
@@ -72,6 +76,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             disposed                    = false;
             syncCount                   = 0;
             token                       = null;
+            pendingSyncs                = new ConcurrentDictionary<Task, MessageContext>();
         }
         
         internal void Dispose() {
