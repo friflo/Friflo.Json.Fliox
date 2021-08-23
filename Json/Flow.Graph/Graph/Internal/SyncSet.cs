@@ -13,7 +13,6 @@ namespace Friflo.Json.Flow.Graph.Internal
     {
         internal abstract void AddUpdate (PeerEntity<T> peer);
         internal abstract bool AddCreate (PeerEntity<T> peer);
-        internal abstract void AddDelete (string id);
     }
 
     /// Multiple instances of this class can be created when calling EntitySet.Sync() without awaiting the result.
@@ -25,6 +24,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         // by this instance can be mapped to their task results safely.
         
         private readonly    EntitySet<TKey, T>                      set;
+        private readonly    List<TKey>                              keysBuf      = new List<TKey>();
         private readonly    List<string>                            idsBuf       = new List<string>();
             
         private readonly    List<ReadTask<TKey, T>>                 reads        = new List<ReadTask<TKey, T>>();
@@ -46,8 +46,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         private readonly    List<PatchTask<T>>                      patchTasks   = new List<PatchTask<T>>();
         
         /// key: entity id
-        private readonly    HashSet<string>                         deletes      = new HashSet   <string>();
-        private readonly    List<DeleteTask<T>>                     deleteTasks  = new List<DeleteTask<T>>();
+        private readonly    HashSet<TKey>                           deletes      = new HashSet   <TKey>();
+        private readonly    List<DeleteTask<TKey, T>>               deleteTasks  = new List<DeleteTask<TKey, T>>();
 
         internal SyncSet(EntitySet<TKey, T> set) {
             this.set = set;
@@ -71,7 +71,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
-        internal override void AddDelete (string id) {
+        internal void AddDelete (TKey id) {
             deletes.Add(id);
         }
         
@@ -152,18 +152,18 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         // --- Delete
-        internal DeleteTask<T> Delete(string id) {
-            AddDelete(id);
-            var delete = new DeleteTask<T>(new List<string>{id}, set);
+        internal DeleteTask<TKey, T> Delete(TKey key) {
+            AddDelete(key);
+            var delete = new DeleteTask<TKey, T>(new List<TKey>{key}, set);
             deleteTasks.Add(delete);
             return delete;
         }
         
-        internal DeleteTask<T> DeleteRange(ICollection<string> ids) {
-            foreach (var id in ids) {
-                AddDelete(id);
+        internal DeleteTask<TKey, T> DeleteRange(ICollection<TKey> keys) {
+            foreach (var key in keys) {
+                AddDelete(key);
             }
-            var delete = new DeleteTask<T>(ids.ToList(), set);
+            var delete = new DeleteTask<TKey, T>(keys.ToList(), set);
             deleteTasks.Add(delete);
             return delete;
         }
@@ -352,9 +352,14 @@ namespace Friflo.Json.Flow.Graph.Internal
         private void DeleteEntities(List<DatabaseTask> tasks) {
             if (deletes.Count == 0)
                 return;
+            var ids = new HashSet<string>(deletes.Count);
+            foreach (var key in deletes) {
+                var id = Ref<TKey, T>.EntityKey.KeyToId(key);
+                ids.Add(id);
+            }
             var req = new DeleteEntities {
                 container   = set.name,
-                ids         = new HashSet<string>(deletes)
+                ids         = ids
             };
             tasks.Add(req);
             deletes.Clear();

@@ -316,9 +316,10 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             foreach (var deleteTask in deleteTasks) {
                 var entityErrorInfo = new TaskErrorInfo();
-                idsBuf.Clear();
-                deleteTask.GetIds(idsBuf);
-                foreach (var id in idsBuf) {
+                keysBuf.Clear();
+                deleteTask.GetKeys(keysBuf);
+                foreach (var key in keysBuf) {
+                    var id = Ref<TKey, T>.EntityKey.KeyToId(key); // todo performance
                     if (deleteErrors.TryGetValue(id, out EntityError error)) {
                         entityErrorInfo.AddEntityError(error);
                     }

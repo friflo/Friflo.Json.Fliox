@@ -10,35 +10,35 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class DeleteTask<T> : SyncTask where T : class
+    public class DeleteTask<TKey, T> : SyncTask where T : class
     {
-        private  readonly   EntityPeerSet<T>    set;
-        private  readonly   List<string>        ids;
+        private  readonly   EntitySet<TKey, T>  set;
+        private  readonly   List<TKey>          keys;
         internal            TaskState           state;
         internal override   TaskState           State       => state;
 
-        public   override   string              Details     => $"DeleteTask<{typeof(T).Name}> (#ids: {ids.Count})";
+        public   override   string              Details     => $"DeleteTask<{typeof(T).Name}> (#ids: {keys.Count})";
         
         
-        internal DeleteTask(List<string> ids, EntityPeerSet<T> set) {
+        internal DeleteTask(List<TKey> ids, EntitySet<TKey, T> set) {
             this.set = set;
-            this.ids = ids;
+            this.keys = ids;
         }
 
-        public void Add(string id) {
-            set.syncPeerSet.AddDelete(id);
-            ids.Add(id);
+        public void Add(TKey id) {
+            set.syncSet.AddDelete(id);
+            keys.Add(id);
         }
         
-        public void AddRange(ICollection<string> ids) {
-            foreach (var id in ids) {
-                set.syncPeerSet.AddDelete(id);
+        public void AddRange(ICollection<TKey> keys) {
+            foreach (var id in keys) {
+                set.syncSet.AddDelete(id);
             }
-            this.ids.AddRange(ids);
+            this.keys.AddRange(keys);
         }
 
-        internal void GetIds(List<string> ids) {
-            ids.AddRange(this.ids);
+        internal void GetKeys(List<TKey> keys) {
+            keys.AddRange(this.keys);
         }
     }
 }

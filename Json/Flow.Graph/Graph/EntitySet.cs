@@ -244,48 +244,48 @@ namespace Friflo.Json.Flow.Graph
         }
 
         // --- Delete
-        public DeleteTask<T> Delete(T entity) {
+        public DeleteTask<TKey, T> Delete(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Delete() entity must not be null. EntitySet: {name}");
-            var id = GetEntityId(entity);
-            if (id == null)
+            var key = GetEntityKey(entity);
+            if (key == null)
                 throw new ArgumentException($"EntitySet.Delete() id must not be null. EntitySet: {name}");
-            var task = syncSet.Delete(id);
+            var task = syncSet.Delete(key);
             intern.store.AddTask(task);
             return task;
         }
 
-        public DeleteTask<T> Delete(string id) {
-            if (id == null)
+        public DeleteTask<TKey, T> Delete(TKey key) {
+            if (key == null)
                 throw new ArgumentException($"EntitySet.Delete() id must not be null. EntitySet: {name}");
-            var task = syncSet.Delete(id);
+            var task = syncSet.Delete(key);
             intern.store.AddTask(task);
             return task;
         }
         
-        public DeleteTask<T> DeleteRange(ICollection<T> entities) {
+        public DeleteTask<TKey, T> DeleteRange(ICollection<T> entities) {
             if (entities == null)
                 throw new ArgumentException($"EntitySet.DeleteRange() entities must not be null. EntitySet: {name}");
-            var ids = new List<string>(entities.Count);
+            var keys = new List<TKey>(entities.Count);
             foreach (var entity in entities) {
-                var id = GetEntityId(entity);
-                ids.Add(id);
+                var key = GetEntityKey(entity);
+                keys.Add(key);
             }
-            foreach (var id in ids) {
-                if (id == null) throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
+            foreach (var key in keys) {
+                if (key == null) throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
             }
-            var task = syncSet.DeleteRange(ids);
+            var task = syncSet.DeleteRange(keys);
             intern.store.AddTask(task);
             return task;
         }
         
-        public DeleteTask<T> DeleteRange(ICollection<string> ids) {
-            if (ids == null)
+        public DeleteTask<TKey, T> DeleteRange(ICollection<TKey> keys) {
+            if (keys == null)
                 throw new ArgumentException($"EntitySet.DeleteRange() ids must not be null. EntitySet: {name}");
-            foreach (var id in ids) {
-                if (id == null) throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
+            foreach (var key in keys) {
+                if (key == null) throw new ArgumentException($"EntitySet.DeleteRange() id must not be null. EntitySet: {name}");
             }
-            var task = syncSet.DeleteRange(ids);
+            var task = syncSet.DeleteRange(keys);
             intern.store.AddTask(task);
             return task;
         }
@@ -321,7 +321,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // ------------------------------------------- internals -------------------------------------------
-        private void SetEntityId (T entity, string id) {
+        private static void SetEntityId (T entity, string id) {
             Ref<TKey, T>.EntityKey.SetId(entity, id);
         }
         
@@ -329,11 +329,11 @@ namespace Friflo.Json.Flow.Graph
             return Ref<TKey, T>.EntityKey.GetId(entity);
         }
         
-        private void SetEntityKey (T entity, TKey key) {
+        private static void SetEntityKey (T entity, TKey key) {
             Ref<TKey, T>.EntityKey.SetKey(entity, key);
         }
         
-        internal TKey GetEntityKey (T entity) {
+        private static TKey GetEntityKey (T entity) {
             return Ref<TKey, T>.EntityKey.GetKey(entity);
         }
 
