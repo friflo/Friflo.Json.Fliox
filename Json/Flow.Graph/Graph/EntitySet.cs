@@ -380,6 +380,13 @@ namespace Friflo.Json.Flow.Graph
             peers.Remove(key);
         }
         
+        [Conditional("DEBUG")]
+        private static void AssertId(TKey key, string id) {
+            var expect = Ref<TKey,T>.EntityKey.KeyToId(key);
+            if (id != expect)
+                throw new InvalidOperationException($"assigned invalid id: {id}, expect: {expect}");
+        }
+        
         internal PeerEntity<T> GetPeerByRef(Ref<TKey, T> reference) {
             string id = reference.id;
             if (id == null)
@@ -389,16 +396,20 @@ namespace Friflo.Json.Flow.Graph
                 var entity = reference.GetEntity();
                 if (entity != null)
                     return CreatePeer(entity);
-                return GetPeerByKey(reference.key);
+                return GetPeerByKey(reference.key, id);
             }
             return peer;
         }
         
-        internal PeerEntity<T> GetPeerByKey(TKey key) {
+        internal PeerEntity<T> GetPeerByKey(TKey key, string id) {
             if (peers.TryGetValue(key, out PeerEntity<T> peer)) {
                 return peer;
             }
-            var id = Ref<TKey,T>.EntityKey.KeyToId(key);
+            if (id == null) {
+                id = Ref<TKey,T>.EntityKey.KeyToId(key);
+            } else {
+                AssertId(key, id);
+            }
             peer = new PeerEntity<T>(id);
             peers.Add(key, peer);
             return peer;

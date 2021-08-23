@@ -211,7 +211,7 @@ namespace Friflo.Json.Flow.Graph
                         foreach (var entityPair in create.entities) {
                             string  id      = entityPair.Key;
                             TKey    key      = Ref<TKey, T>.EntityKey.IdToKey(id);
-                            var     peer    = set.GetPeerByKey(key);
+                            var     peer    = set.GetPeerByKey(key, id);
                             var     entity  = peer.Entity;
                             result.creates.Add(key, entity);
                         }
@@ -225,7 +225,7 @@ namespace Friflo.Json.Flow.Graph
                         foreach (var entityPair in update.entities) {
                             string  id      = entityPair.Key;
                             TKey    key      = Ref<TKey, T>.EntityKey.IdToKey(id);
-                            var     peer    = set.GetPeerByKey(key);
+                            var     peer    = set.GetPeerByKey(key, id);
                             var     entity  = peer.Entity;
                             result.updates.Add(key, entity);
                         }
@@ -250,7 +250,7 @@ namespace Friflo.Json.Flow.Graph
                         foreach (var pair in patch.patches) {
                             string      id          = pair.Key;
                             TKey        key         = Ref<TKey, T>.EntityKey.IdToKey(id);
-                            var         peer        = set.GetPeerByKey(key);
+                            var         peer        = set.GetPeerByKey(key, id);
                             var         entity      = peer.Entity;
                             EntityPatch entityPatch = pair.Value;
                             var         changePatch = new ChangePatch<T>(entity, entityPatch.patches);
