@@ -169,7 +169,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         // --- Log changes -> create patches
-        internal void LogSetChanges(Dictionary<string, PeerEntity<T>> peers, LogTask logTask) {
+        internal void LogSetChanges(Dictionary<TKey, PeerEntity<T>> peers, LogTask logTask) {
             foreach (var peerPair in peers) {
                 PeerEntity<T> peer = peerPair.Value;
                 GetEntityChanges(peer, logTask);

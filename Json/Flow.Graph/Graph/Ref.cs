@@ -151,7 +151,7 @@ namespace Friflo.Json.Flow.Graph
         public Find<TKey, T> FindBy(ReadTask<TKey, T> task) {
             // may validate that set is the same which created the PeerEntity<>
             var find = task.Find(key);
-            peer = task.set.GetPeerById(id);
+            peer = task.set.GetPeerByKey(key);
             return find;
         }
     }

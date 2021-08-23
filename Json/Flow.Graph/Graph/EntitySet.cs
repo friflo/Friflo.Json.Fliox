@@ -79,7 +79,7 @@ namespace Friflo.Json.Flow.Graph
     public class EntitySet<TKey, T> : EntityPeerSet<T>  where T : class
     {
         /// key: <see cref="PeerEntity{T}.entity"/>.id          Note: must be private by all means
-        private  readonly   Dictionary<string, PeerEntity<T>>   peers       = new Dictionary<string, PeerEntity<T>>();
+        private  readonly   Dictionary<TKey, PeerEntity<T>>     peers = new Dictionary<TKey, PeerEntity<T>>();
         
         private static readonly   EntityId<T>  EntityKey = EntityId.GetEntityKey<TKey, T>();
 
@@ -364,18 +364,20 @@ namespace Friflo.Json.Flow.Graph
         }
 
         internal override PeerEntity<T> CreatePeer (T entity) {
-            var id = GetEntityId(entity);
-            if (peers.TryGetValue(id, out PeerEntity<T> peer)) {
+            var key = GetEntityKey(entity);
+            if (peers.TryGetValue(key, out PeerEntity<T> peer)) {
                 peer.SetEntity(entity);
                 return peer;
             }
+            var id = GetEntityId(entity);
             peer = new PeerEntity<T>(entity, id);
-            peers.Add(id, peer);
+            peers.Add(key, peer);
             return peer;
         }
         
         internal void DeletePeer (string id) {
-            peers.Remove(id);
+            var key = Ref<TKey,T>.EntityKey.IdToKey(id);
+            peers.Remove(key);
         }
         
         internal PeerEntity<T> GetPeerByRef(Ref<TKey, T> reference) {
@@ -387,27 +389,40 @@ namespace Friflo.Json.Flow.Graph
                 var entity = reference.GetEntity();
                 if (entity != null)
                     return CreatePeer(entity);
-                return GetPeerById(id);
+                return GetPeerByKey(reference.key);
             }
             return peer;
         }
         
+        internal PeerEntity<T> GetPeerByKey(TKey key) {
+            if (peers.TryGetValue(key, out PeerEntity<T> peer)) {
+                return peer;
+            }
+            var id = Ref<TKey,T>.EntityKey.KeyToId(key);
+            peer = new PeerEntity<T>(id);
+            peers.Add(key, peer);
+            return peer;
+        }
+        
+        /// use <see cref="GetPeerByKey"/> is possible
         internal override PeerEntity<T> GetPeerById(string id) {
-            if (peers.TryGetValue(id, out PeerEntity<T> peer)) {
+            var key = Ref<TKey,T>.EntityKey.IdToKey(id);
+            if (peers.TryGetValue(key, out PeerEntity<T> peer)) {
                 return peer;
             }
             peer = new PeerEntity<T>(id);
-            peers.Add(id, peer);
+            peers.Add(key, peer);
             return peer;
         }
         
         internal override PeerEntity<T> GetPeerByEntity(T entity) {
-            var id = GetEntityId(entity);
-            if (peers.TryGetValue(id, out PeerEntity<T> peer)) {
+            var key = GetEntityKey(entity);
+            if (peers.TryGetValue(key, out PeerEntity<T> peer)) {
                 return peer;
             }
+            var id = Ref<TKey,T>.EntityKey.KeyToId(key);
             peer = new PeerEntity<T>(id);
-            peers.Add(id, peer);
+            peers.Add(key, peer);
             return peer;
         }
         

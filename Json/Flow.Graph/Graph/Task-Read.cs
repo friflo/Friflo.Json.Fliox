@@ -100,7 +100,7 @@ namespace Friflo.Json.Flow.Graph
     public class ReadTask<TKey, T> : SyncTask, IReadRefsTask<T> where T : class
     {
         internal            TaskState               state;
-        internal readonly   EntityPeerSet<T>        set;
+        internal readonly   EntitySet<TKey, T>      set;
         internal            RefsTask                refsTask;
         internal readonly   Dictionary<TKey, T>     results     = new Dictionary<TKey, T>();
         internal readonly   List<FindTask<TKey, T>> findTasks   = new List<FindTask<TKey, T>>();
@@ -112,7 +112,7 @@ namespace Friflo.Json.Flow.Graph
         public   override   string                  Details     => $"ReadTask<{typeof(T).Name}> (#ids: {results.Count})";
         
 
-        internal ReadTask(EntityPeerSet<T> set) {
+        internal ReadTask(EntitySet<TKey, T> set) {
             refsTask    = new RefsTask(this);
             this.set    = set;
         }
