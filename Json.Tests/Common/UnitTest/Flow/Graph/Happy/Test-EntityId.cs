@@ -203,12 +203,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 var read = store.entityRefs.Read();
                 
                 var find = read.Find(entityRef.id);
-                read.ReadRef        (er => er.guidEntity);
-                read.ReadRef        (er => er.intEntity);
-                read.ReadRef        (er => er.longEntity);
-                read.ReadRef        (er => er.shortEntity);
-                read.ReadRef        (er => er.customIdEntity);
-                read.ReadArrayRefs  (er => er.guidEntities);
+                var guidEntity      = read.ReadRef        (er => er.guidEntity);
+                var intEntity       = read.ReadRef        (er => er.intEntity);
+                var longEntity      = read.ReadRef        (er => er.longEntity);
+                var shortEntity     = read.ReadRef        (er => er.shortEntity);
+                var customIdEntity  = read.ReadRef        (er => er.customIdEntity);
+                var guidEntities    = read.ReadArrayRefs  (er => er.guidEntities);
 
                 await store.Sync();                   
                
@@ -221,6 +221,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 IsNotNull(result.shortEntity);
                 IsNotNull(result.customIdEntity);
                 IsNotNull(result.guidEntities[0].Entity);
+                
+                IsTrue(guidId   == guidEntity.Key);
+                IsTrue(intId    == intEntity.Key);
+                IsTrue(longId   == longEntity.Key);
+                IsTrue(shortId  == shortEntity.Key);
+                IsTrue(stringId == customIdEntity.Key);
+                IsNotNull(guidEntities[guidId]);
             }
             
             // ensure QueryTask<> results enables type-safe key access
