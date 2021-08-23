@@ -137,10 +137,10 @@ namespace Friflo.Json.Flow.Graph
             if (ids.Count != 1)
                 throw new InvalidOperationException($"Expect ids result set with one element. got: {ids.Count}, task: {this}");
             var id = ids.First();
-            key = Ref<TKey,T>.EntityKey.IdToKey(id);
             var peer = entitySet.GetPeerById(id);
             if (peer.error == null) {
-                entity = peer.Entity;
+                key     = Ref<TKey,T>.EntityKey.IdToKey(id);
+                entity  = peer.Entity;
             } else {
                 var entityErrorInfo = new TaskErrorInfo();
                 entityErrorInfo.AddEntityError(peer.error);
