@@ -49,7 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Key; });
-            AreEqual("ReadRefTask.Id requires Sync(). readOrders -> .customer", e.Message);
+            AreEqual("ReadRefTask.Key requires Sync(). readOrders -> .customer", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
             AreEqual("ReadRefTask.Result requires Sync(). readOrders -> .customer", e.Message);
 

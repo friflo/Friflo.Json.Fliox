@@ -110,7 +110,7 @@ namespace Friflo.Json.Flow.Graph
         private   readonly  SyncTask        parent;
         private   readonly  EntityStore     store;
     
-        public              TKey            Key     => IsOk("ReadRefTask.Id",     out Exception e) ? key     : throw e;
+        public              TKey            Key     => IsOk("ReadRefTask.Key",    out Exception e) ? key     : throw e;
         public              T               Result  => IsOk("ReadRefTask.Result", out Exception e) ? entity  : throw e;
                 
         internal override   TaskState       State       => state;
