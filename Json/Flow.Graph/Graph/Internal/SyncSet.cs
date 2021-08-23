@@ -232,7 +232,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 T entity    = createPair.Value.Entity;
                 var json    = writer.Write(entity);
                 var entry   = new EntityValue(json);
-                var id      = set.GetEntityId(entity);
+                var id      = Ref<TKey,T>.EntityKey.GetId(entity);
                 entries.Add(id, entry);
             }
             var req = new CreateEntities {
@@ -252,7 +252,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 T entity    = updatePair.Value.Entity;
                 var json    = writer.Write(entity);
                 var entry   = new EntityValue(json);
-                var id      = set.GetEntityId(entity);
+                var id      = Ref<TKey,T>.EntityKey.GetId(entity);
                 entries.Add(id, entry);
             }
             var req = new UpdateEntities {
