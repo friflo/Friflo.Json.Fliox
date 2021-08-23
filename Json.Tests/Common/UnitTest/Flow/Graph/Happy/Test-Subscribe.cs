@@ -64,8 +64,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         AreEqual(6, eventInfo.Count);
                         AreEqual(6, eventInfo.changes.Count);
                         AreEqual("(creates: 6, updates: 0, deletes: 0, patches: 0, messages: 0)", eventInfo.ToString());
-                        var articleChanges  = handler.GetEntityChanges<Article> (ev);
-                        var producerChanges = handler.GetEntityChanges<Producer>(ev);
+                        var articleChanges  = handler.GetEntityChanges<string, Article> (ev);
+                        var producerChanges = handler.GetEntityChanges<string, Producer>(ev);
                         AreEqual(5, articleChanges.creates.Count);
                         AreEqual("(creates: 5, updates: 0, deletes: 0, patches: 0)", articleChanges.ToString());
                         AreEqual("(creates: 1, updates: 0, deletes: 0, patches: 0)", producerChanges.ToString());
@@ -188,11 +188,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         protected override void ProcessEvent (SubscriptionEvent ev) {
             AreEqual("createStore", ev.clientId);
             base.ProcessEvent(ev);
-            var orderChanges    = GetEntityChanges<Order>   (ev);
-            var customerChanges = GetEntityChanges<Customer>(ev);
-            var articleChanges  = GetEntityChanges<Article> (ev);
-            var producerChanges = GetEntityChanges<Producer>(ev);
-            var employeeChanges = GetEntityChanges<Employee>(ev);
+            var orderChanges    = GetEntityChanges<string, Order>   (ev);
+            var customerChanges = GetEntityChanges<string, Customer>(ev);
+            var articleChanges  = GetEntityChanges<string, Article> (ev);
+            var producerChanges = GetEntityChanges<string, Producer>(ev);
+            var employeeChanges = GetEntityChanges<string, Employee>(ev);
             var messages        = GetMessages               (ev);
             
             orderSum.   AddChanges(orderChanges);
@@ -237,7 +237,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             }
         }
         
-        private  void AssertChangeEvent (EntityChanges<Article> articleChanges) {
+        private  void AssertChangeEvent (EntityChanges<string, Article> articleChanges) {
             switch (EventSequence) {
                 case 1:
                     AreEqual("(creates: 2, updates: 0, deletes: 1, patches: 0)", articleChanges.Info.ToString());
@@ -277,7 +277,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
     
     static class PocUtils
     {
-        public static void AddChanges<T> (this ChangeInfo<T> sum, EntityChanges<T> changes) where T: class {
+        public static void AddChanges<TKey, T> (this ChangeInfo<T> sum, EntityChanges<TKey, T> changes) where T: class {
             sum.creates += changes.creates.Count;
             sum.updates += changes.updates.Count;
             sum.deletes += changes.deletes.Count;

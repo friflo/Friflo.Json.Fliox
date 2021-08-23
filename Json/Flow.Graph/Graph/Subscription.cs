@@ -173,14 +173,14 @@ namespace Friflo.Json.Flow.Graph
             subHandler(this, ev); // subHandler.Invoke(this, ev);
         }
         
-        private EntityChanges<T> GetChanges<T> () where T : class {
+        private EntityChanges<TKey, T> GetChanges<TKey, T> () where T : class {
             if (!results.TryGetValue(typeof(T), out var result)) {
                 var set         = store.GetPeerSet<T>();
-                var resultTyped = new EntityChanges<T>(set);
+                var resultTyped = new EntityChanges<TKey, T>(set);
                 results.Add(typeof(T), resultTyped);
                 return resultTyped;
             }
-            return (EntityChanges<T>)result;
+            return (EntityChanges<TKey, T>)result;
         }
         
         public List<Message> GetMessages(SubscriptionEvent subscriptionEvent) {
@@ -196,8 +196,8 @@ namespace Friflo.Json.Flow.Graph
             return messages;
         }
         
-        public EntityChanges<T> GetEntityChanges<T>(SubscriptionEvent subscriptionEvent) where T : class {
-            var result  = GetChanges<T>();
+        public EntityChanges<TKey, T> GetEntityChanges<TKey, T>(SubscriptionEvent subscriptionEvent) where T : class {
+            var result  = GetChanges<TKey, T>();
             var set     = result._set;
             result.Clear();
             
@@ -210,9 +210,10 @@ namespace Friflo.Json.Flow.Graph
                             continue;
                         foreach (var entityPair in create.entities) {
                             string  id      = entityPair.Key;
+                            TKey    key      = Ref<TKey, T>.EntityKey.IdToKey(id);
                             var     peer    = set.GetPeerById(id);
                             var     entity  = peer.Entity;
-                            result.creates.Add(id, entity);
+                            result.creates.Add(key, entity);
                         }
                         result.Info.creates += create.entities.Count;
                         break;
@@ -223,9 +224,10 @@ namespace Friflo.Json.Flow.Graph
                             continue;
                         foreach (var entityPair in update.entities) {
                             string  id      = entityPair.Key;
+                            TKey    key      = Ref<TKey, T>.EntityKey.IdToKey(id);
                             var     peer    = set.GetPeerById(id);
                             var     entity  = peer.Entity;
-                            result.updates.Add(id, entity);
+                            result.updates.Add(key, entity);
                         }
                         result.Info.updates += update.entities.Count;
                         break;
@@ -235,7 +237,8 @@ namespace Friflo.Json.Flow.Graph
                         if (delete.container != set.name)
                             continue;
                         foreach (var id in delete.ids) {
-                            result.deletes.Add(id);
+                            TKey    key      = Ref<TKey, T>.EntityKey.IdToKey(id);
+                            result.deletes.Add(key);
                         }
                         result.Info.deletes += delete.ids.Count;
                         break;
@@ -246,11 +249,12 @@ namespace Friflo.Json.Flow.Graph
                             continue;
                         foreach (var pair in patch.patches) {
                             string      id          = pair.Key;
+                            TKey        key         = Ref<TKey, T>.EntityKey.IdToKey(id);
                             var         peer        = set.GetPeerById(id);
                             var         entity      = peer.Entity;
                             EntityPatch entityPatch = pair.Value;
                             var         changePatch = new ChangePatch<T>(entity, entityPatch.patches);
-                            result.patches.Add(id, changePatch);
+                            result.patches.Add(key, changePatch);
                         }
                         result.Info.patches += patch.patches.Count;
                         break;
@@ -272,15 +276,15 @@ namespace Friflo.Json.Flow.Graph
     
     public abstract class EntityChanges { }
     
-    public class EntityChanges<T> : EntityChanges where T : class {
+    public class EntityChanges<TKey, T> : EntityChanges where T : class {
         public              ChangeInfo<T>                       Info { get; }
         // ReSharper disable once InconsistentNaming
         internal readonly   EntityPeerSet<T>                    _set;
         
-        public   readonly   Dictionary<string, T>               creates = new Dictionary<string, T>();
-        public   readonly   Dictionary<string, T>               updates = new Dictionary<string, T>();
-        public   readonly   HashSet   <string>                  deletes = new HashSet   <string>();
-        public   readonly   Dictionary<string, ChangePatch<T>>  patches = new Dictionary<string, ChangePatch<T>>();
+        public   readonly   Dictionary<TKey, T>                 creates = new Dictionary<TKey, T>();
+        public   readonly   Dictionary<TKey, T>                 updates = new Dictionary<TKey, T>();
+        public   readonly   HashSet   <TKey>                    deletes = new HashSet   <TKey>();
+        public   readonly   Dictionary<TKey, ChangePatch<T>>    patches = new Dictionary<TKey, ChangePatch<T>>();
         
         public override     string                              ToString() => Info.ToString();       
 
