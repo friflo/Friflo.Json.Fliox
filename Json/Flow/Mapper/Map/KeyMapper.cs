@@ -21,6 +21,8 @@ namespace Friflo.Json.Flow.Mapper.Map
     {
         public abstract void        WriteKey       (ref Writer writer, TKey key);
         public abstract TKey        ReadKey        (ref Reader reader, out bool success);
+        public abstract JsonKey     ToJsonKey      (TKey key);
+        public abstract TKey        ToKey          (JsonKey key);
     }
     
     public class StringKeyMapper : KeyMapper<string>
@@ -32,6 +34,14 @@ namespace Friflo.Json.Flow.Mapper.Map
         public override string ReadKey (ref Reader reader, out bool success) {
             success = true;
             return reader.parser.key.ToString();
+        }
+        
+        public override JsonKey     ToJsonKey      (string key) {
+            return new JsonKey(key);
+        }
+        
+        public override string      ToKey          (JsonKey key) {
+            return key.AsString();
         }
     }
 

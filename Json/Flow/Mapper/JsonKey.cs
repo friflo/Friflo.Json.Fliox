@@ -12,6 +12,8 @@ namespace Friflo.Json.Flow.Mapper
         internal readonly   string      str;
         internal readonly   long        lng;
         
+        public override string ToString() => AsString();
+        
         public JsonKey (string str) {
             this.type   = KeyType.String;
             this.str    = str;
@@ -22,6 +24,14 @@ namespace Friflo.Json.Flow.Mapper
             this.type   = KeyType.Long;
             this.str    = null;
             this.lng    = lng;
+        }
+        
+        public string AsString() {
+            switch (type) {
+                case KeyType.String:    return str;
+                case KeyType.Long:      return lng.ToString();
+                default:                return "None";
+            }
         }
     }
     

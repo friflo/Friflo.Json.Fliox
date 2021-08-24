@@ -69,7 +69,8 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
             foreach (var leftPair in left) {
                 var leftKey   = leftPair.Key;
                 var leftValue = leftPair.Value;
-                differ.PushKey(elementType, leftKey.ToString()); // todo use JsonKey
+                var leftJson = keyMapper.ToJsonKey(leftKey);
+                differ.PushKey(elementType, leftJson);
                 if (right.TryGetValue(leftKey, out TElm rightValue)) {
                     elementType.DiffObject(differ, leftValue, rightValue);
                 } else {
@@ -78,9 +79,10 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
                 differ.Pop();
             }
             foreach (var rightPair in right) {
-                var rightKey   = rightPair.Key;
-                var rightValue = rightPair.Value;
-                differ.PushKey(elementType, rightKey.ToString());  // todo use JsonKey
+                var rightKey    = rightPair.Key;
+                var rightValue  = rightPair.Value;
+                var rightJson   = keyMapper.ToJsonKey(rightKey);
+                differ.PushKey(elementType, rightJson);
                 if (!left.TryGetValue(rightKey, out TElm _)) {
                     differ.AddOnlyRight(rightValue);
                 }
@@ -91,7 +93,8 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
         
         public override void PatchObject(Patcher patcher, object obj) {
             TMap map = (TMap)obj;
-            var key = patcher.GetMemberKey<TKey>();  // todo use JsonKey
+            var jsonKey = patcher.GetMemberKey();
+            var key = keyMapper.ToKey(jsonKey); 
             map.TryGetValue(key, out TElm value);
             var action = patcher.DescendMember(elementType, value, out object newValue);
             switch (action) {

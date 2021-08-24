@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Transform.Patch;
 
 namespace Friflo.Json.Flow.Transform
@@ -23,7 +24,7 @@ namespace Friflo.Json.Flow.Transform
         
         private             Bytes           keyBytes = new Bytes(32);
         private readonly    List<PatchNode> nodeStack = new List<PatchNode>();
-        private readonly    List<string>    pathTokens = new List<string>(); // reused buffer
+        private readonly    List<JsonKey>   pathTokens = new List<JsonKey>(); // reused buffer
         private readonly    PatchNode       rootNode = new PatchNode();
 
         public void Dispose() {

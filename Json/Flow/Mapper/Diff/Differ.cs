@@ -34,7 +34,7 @@ namespace Friflo.Json.Flow.Mapper.Diff
             parentStack.Clear();
             path.Clear();
             var mapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
-            var item = new TypeNode(NodeType.Root, null, -1, mapper);
+            var item = new TypeNode(NodeType.Root, new JsonKey(), -1, mapper);
             path.Add(item);
             var diff = mapper.Diff(this, left, right);
             Pop();
@@ -113,17 +113,17 @@ namespace Friflo.Json.Flow.Mapper.Diff
         }
 
         public void PushMember(PropField field) {
-            var item = new TypeNode(NodeType.Member, field.name, -1, field.fieldType);
+            var item = new TypeNode(NodeType.Member, field.key, -1, field.fieldType);
             path.Add(item);
         }
         
-        public void PushKey(TypeMapper mapper, string key) {
+        public void PushKey(TypeMapper mapper, JsonKey key) {
             var item = new TypeNode(NodeType.Member, key, -1, mapper);
             path.Add(item);
         }
         
         public void PushElement(int index, TypeMapper elementType) {
-            var item = new TypeNode(NodeType.Element, null, index, elementType);
+            var item = new TypeNode(NodeType.Element, new JsonKey(), index, elementType);
             path.Add(item);
         }
 

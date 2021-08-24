@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Burst;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Transform.Select
 {
@@ -166,7 +167,7 @@ namespace Friflo.Json.Flow.Transform.Select
     
     internal static class PathTools
     {
-        public static string PathToPathTokens(string path, List<string> pathTokens) {
+        public static string PathToPathTokens(string path, List<JsonKey> pathTokens) {
             pathTokens.Clear();
             int last = 1;
             int len = path.Length;
@@ -175,12 +176,12 @@ namespace Friflo.Json.Flow.Transform.Select
             for (int n = 1; n < len; n++) {
                 if (path[n] == '/') {
                     var token = path.Substring(last, n - last);
-                    pathTokens.Add(token);
+                    pathTokens.Add(new JsonKey(token));
                     last = n + 1;
                 }
             }
             var lastToken = path.Substring(last, len - last);
-            pathTokens.Add(lastToken);
+            pathTokens.Add(new JsonKey(lastToken));
             return path;
         }
     }

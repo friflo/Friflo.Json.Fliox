@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Mapper.Diff
         private             PatchType       patchType;
         private             string          json;
         private             int             pathPos;
-        private readonly    List<string>    pathNodes = new List<string>();
+        private readonly    List<JsonKey>   pathNodes = new List<JsonKey>();
         private             string          path;
         internal readonly   object[]        setMethodParams = new object[1];
         
@@ -56,7 +56,7 @@ namespace Friflo.Json.Flow.Mapper.Diff
             mapper.PatchObject(this, root);
         }
 
-        public bool IsMember(string key) {
+        public bool IsMember(JsonKey key) {
             return key.Equals(pathNodes[pathPos]);
         }
 
@@ -77,16 +77,11 @@ namespace Friflo.Json.Flow.Mapper.Diff
             return NodeAction.Assign;
         }
         
-        public string GetMemberKey() {
+        public JsonKey GetMemberKey() {
             var key = pathNodes[pathPos];
             return key;
         }
         
-        public T GetMemberKey<T>() {
-            var key = (T)(object)pathNodes[pathPos];
-            return key;
-        }
-
         public NodeAction DescendElement(TypeMapper elementType, object element, out object value) {
             if (++pathPos >= pathNodes.Count) {
                 value = jsonReader.ReadObject(json, elementType.type);
@@ -98,7 +93,8 @@ namespace Friflo.Json.Flow.Mapper.Diff
         }
 
         public int GetElementIndex(int count) {
-            var node = pathNodes[pathPos];
+            var nodeKey = pathNodes[pathPos];
+            var node    = nodeKey.AsString();
             if (!int.TryParse(node, out int index))
                 throw new InvalidOperationException($"Incompatible element index type. index: {node} path: {path}");
             if (index >= count)

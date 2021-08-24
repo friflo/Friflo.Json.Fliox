@@ -13,6 +13,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
     public class PropField : IDisposable
     {
         public   readonly   string          name;
+        public   readonly   JsonKey         key;
         public   readonly   string          jsonName;
 
         // ReSharper disable once UnassignedReadonlyField
@@ -38,6 +39,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj.Reflect
             int primIndex, int objIndex, bool required)
         {
             this.name       = name;
+            this.key        = new JsonKey(name);
             this.jsonName   = jsonName;
             this.fieldType  = fieldType;
             this.nameBytes  = new Bytes(jsonName);

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Transform.Select;
 
 namespace Friflo.Json.Flow.Transform.Patch
@@ -33,7 +34,7 @@ namespace Friflo.Json.Flow.Transform.Patch
             }
         }
         
-        private static void GetPathNodes(JsonPatch patch, List<string> pathTokens) {
+        private static void GetPathNodes(JsonPatch patch, List<JsonKey> pathTokens) {
             pathTokens.Clear();
             var patchType = patch.PatchType;
             switch (patchType) {
@@ -54,7 +55,7 @@ namespace Friflo.Json.Flow.Transform.Patch
             }
         }
 
-        internal static void CreatePatchTree(PatchNode rootNode, IList<JsonPatch> patches, List<string> pathTokens) {
+        internal static void CreatePatchTree(PatchNode rootNode, IList<JsonPatch> patches, List<JsonKey> pathTokens) {
             rootNode.children.Clear();
             rootNode.patchType = null;
             var count = patches.Count;
@@ -64,7 +65,8 @@ namespace Friflo.Json.Flow.Transform.Patch
                 PatchNode curNode = rootNode;
                 PatchNode childNode = rootNode;
                 for (int i = 0; i < pathTokens.Count; i++) {
-                    var token = pathTokens[i];
+                    var tokenKey = pathTokens[i];
+                    var token    = tokenKey.AsString();
                     if (!curNode.children.TryGetValue(token, out childNode)) {
                         childNode = new PatchNode();
                         curNode.children.Add(token, childNode);
