@@ -6,7 +6,9 @@ namespace Friflo.Json.Flow.Mapper.Map.Key
     public class LongKeyMapper : KeyMapper<long>
     {
         public override void WriteKey (ref Writer writer, long key) {
+            writer.bytes.AppendChar('\"');
             writer.format.AppendLong(ref writer.bytes, key);
+            writer.bytes.AppendChar('\"');
         }
         
         public override long ReadKey (ref Reader reader, out bool success) {

@@ -126,6 +126,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
             var mapStr =     "{\"key\":\"value\"}";
             var mapMapNum =  "{\"key\":{\"key\":42}}";
             var mapNum2 =    "{\"str\":44}";
+            var intMapNum =  "{\"123\":42}";
             var invalid =    "invalid";
                 
             using (var typeStore    = new TypeStore())
@@ -463,6 +464,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                         AreEqual(expect, Read<Dictionary<string, Dictionary<string, int>>>(mapMapNum));
                     }
                     
+                    // --- map - key type: long
+                    {
+                        var expect = new Dictionary<long, int> {{ 123, 42 }};
+                        AreEqual(expect, Read<Dictionary<long, int>>(intMapNum));
+                    }
+                    
                     // ---- BigInteger ---
                     AreEqual(new TestStruct{ key = 42 },        Read<TestStruct>    (mapNum));
                     AreEqual(default(TestStruct),               enc.Read<TestStruct>(@null));
@@ -514,7 +521,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
 
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual(130, enc.TypeCache.LookupCount);
+                        AreEqual(131, enc.TypeCache.LookupCount);
                         AreEqual(  0, enc.TypeCache.StoreLookupCount);
                         AreEqual(  0, enc.TypeCache.TypeCreationCount);
                     }
