@@ -120,11 +120,11 @@ namespace Friflo.Json.Burst
         public      Bytes               value;
 
         private     Bytes               path; // used for current path storing the path segments names
-        private     Bytes               errVal; // used for conversion of an additional value in error message creation
+        public      Bytes               errVal; // used for conversion of an additional value in error message creation
         private     Bytes               getPathBuf; // MUST be used only in GetPath()
     
         private     ValueFormat         format;
-        private     ValueParser         valueParser;
+        public      ValueParser         valueParser;
     
         private     Str32               @true;
         private     Str32               @false;

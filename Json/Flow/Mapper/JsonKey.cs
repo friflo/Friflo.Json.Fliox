@@ -33,6 +33,12 @@ namespace Friflo.Json.Flow.Mapper
                 default:                return "None";
             }
         }
+        
+        public long AsLong() {
+            if (type == KeyType.Long)
+                return lng;
+            throw new InvalidOperationException($"cannot return JsonKey as long. {ToString()}");
+        }
     }
     
     public enum KeyType

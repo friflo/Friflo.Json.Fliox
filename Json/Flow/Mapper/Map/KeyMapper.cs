@@ -9,11 +9,14 @@ namespace Friflo.Json.Flow.Mapper.Map
     public class KeyMapper
     {
         private static readonly StringKeyMapper StringKeyMapper = new StringKeyMapper();
+        private static readonly LongKeyMapper   LongKeyMapper   = new LongKeyMapper();
             
         public static KeyMapper GetKeyMapper<TKey>() {
             var keyType = typeof(TKey);
             if (keyType == typeof(string))
                 return StringKeyMapper;
+            if (keyType == typeof(long))
+                return LongKeyMapper;
             throw new InvalidOperationException($"unsupported key Type: {keyType.FullName}");
         }
     }
