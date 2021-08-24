@@ -79,6 +79,11 @@ namespace Friflo.Json.Flow.Mapper.Utils
             return type. IsAssignableFrom (from);
 #endif
         }
+        
+        public static bool IsIDictionary(Type type) {
+            Type[] dictArgs = GetGenericInterfaceArgs (type, typeof( IDictionary<,>) );
+            return dictArgs != null;
+        }
 
         public static Type[] GetGenericInterfaceArgs (Type type, Type interfaceType)
         {

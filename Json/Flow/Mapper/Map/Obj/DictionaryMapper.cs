@@ -22,7 +22,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
             
             Type keyType = args[0];
             if (keyType != typeof(string)) // Support only Dictionary with key type: string
-                return TypeNotSupportedMatcher.CreateTypeNotSupported(config, type, "Dictionary only support string as key type");
+                return null;
             Type elementType = args[1];
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
             if (constructor == null) {

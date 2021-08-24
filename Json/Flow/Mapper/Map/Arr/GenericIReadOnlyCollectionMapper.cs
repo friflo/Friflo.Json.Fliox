@@ -19,6 +19,8 @@ namespace Friflo.Json.Flow.Mapper.Map.Arr
             Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof(IReadOnlyCollection<>) );
             if (args == null)
                 return null;
+            if (ReflectUtils.IsIDictionary(type))
+                return null;
             Type elementType = args[0];
             ConstructorInfo constructor = ReflectUtils.GetCopyConstructor(type);
             if (constructor == null) {

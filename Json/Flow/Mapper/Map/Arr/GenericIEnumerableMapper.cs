@@ -19,6 +19,8 @@ namespace Friflo.Json.Flow.Mapper.Map.Arr
             Type[] args = ReflectUtils.GetGenericInterfaceArgs (type, typeof(IEnumerable<>) );
             if (args == null)
                 return null;
+            if (ReflectUtils.IsIDictionary(type))
+                return null;
             Type elementType = args[0];
             ConstructorInfo constructor = null;
             // ReSharper disable once ExpressionIsAlwaysNull

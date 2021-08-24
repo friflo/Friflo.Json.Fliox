@@ -412,7 +412,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                     StringAssert.Contains("Cannot assign array to Dictionary. Expect:", enc.Error.msg.ToString());
                     {
                         var e = Assert.Throws<NotSupportedException>(() => enc.Read<Dictionary<int, string>>(mapStr));
-                        AreEqual("Type not supported. Dictionary only support string as key type Type: System.Collections.Generic.Dictionary`2[System.Int32,System.String]", e.Message);              
+                        AreEqual("Type not supported. Found no TypeMapper in TypeStore Type: System.Collections.Generic.Dictionary`2[System.Int32,System.String]", e.Message);              
                     }
                     
                     // --- maps - value type: integral 
