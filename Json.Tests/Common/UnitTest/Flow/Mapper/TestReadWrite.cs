@@ -469,6 +469,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                         var expect = new Dictionary<long, int> {{ 123, 42 }};
                         AreEqual(expect, Read<Dictionary<long, int>>(intMapNum));
                     }
+                    // --- map - key type: JsonKey
+                    {
+                        var expect = new Dictionary<JsonKey, int> {{ new JsonKey(123), 42 }};
+                        AreEqual(expect, Read<Dictionary<JsonKey, int>>(intMapNum));
+                        
+                        expect = new Dictionary<JsonKey, int> {{ new JsonKey("key"), 42 }};
+                        AreEqual(expect, Read<Dictionary<JsonKey, int>>(mapNum));
+                    }
                     
                     // ---- BigInteger ---
                     AreEqual(new TestStruct{ key = 42 },        Read<TestStruct>    (mapNum));
@@ -521,7 +529,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
 
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual(131, enc.TypeCache.LookupCount);
+                        AreEqual(133, enc.TypeCache.LookupCount);
                         AreEqual(  0, enc.TypeCache.StoreLookupCount);
                         AreEqual(  0, enc.TypeCache.TypeCreationCount);
                     }
