@@ -174,9 +174,9 @@ namespace Friflo.Json.Flow.Mapper.Map
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteKey(string key, int pos) {
+        public void WriteKey<T>(KeyMapper<T> keyMapper, T key, int pos) {
             WriteDelimiter(pos);
-            WriteString(key);
+            keyMapper.WriteKey(ref this, key);
             if (!pretty)
                 bytes.AppendChar(':');
             else

@@ -33,7 +33,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
             }
             object[] constructorParams = {config, type, constructor};
             // return new DictionaryMapper<TElm>  (config, type, constructor);
-            var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(DictionaryMapper<,>), new[] {type, elementType}, constructorParams);
+            var newInstance = TypeMapperUtils.CreateGenericInstance(typeof(DictionaryMapper<,,>), new[] {type, keyType, elementType}, constructorParams);
             return (TypeMapper) newInstance;
         }
     }
@@ -41,14 +41,18 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class DictionaryMapper<TMap, TElm> : CollectionMapper<TMap, TElm> where TMap : IDictionary<string, TElm>
+    public class DictionaryMapper<TMap, TKey, TElm> : CollectionMapper<TMap, TElm> where TMap : IDictionary<TKey, TElm>
     {
-        public  override    string      DataTypeName() { return "Dictionary"; }
-        public  override    bool        IsArray         => false;
-        public  override    bool        IsDictionary    => true;
+        private readonly    KeyMapper<TKey> keyMapper;
+        
+        public  override    string          DataTypeName() { return "Dictionary"; }
+        public  override    bool            IsArray         => false;
+        public  override    bool            IsDictionary    => true;
         
         public DictionaryMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
-            base(config, type, typeof(TElm), 1, typeof(string), constructor) {
+            base(config, type, typeof(TElm), 1, typeof(string), constructor)
+        {
+            keyMapper       = (KeyMapper<TKey>)KeyMapper.GetKeyMapper<TKey>();
         }
         
         public override void Trace(Tracer tracer, TMap map) {
@@ -65,7 +69,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
             foreach (var leftPair in left) {
                 var leftKey   = leftPair.Key;
                 var leftValue = leftPair.Value;
-                differ.PushKey(elementType, leftKey);
+                differ.PushKey(elementType, leftKey.ToString()); // todo use JsonKey
                 if (right.TryGetValue(leftKey, out TElm rightValue)) {
                     elementType.DiffObject(differ, leftValue, rightValue);
                 } else {
@@ -76,7 +80,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
             foreach (var rightPair in right) {
                 var rightKey   = rightPair.Key;
                 var rightValue = rightPair.Value;
-                differ.PushKey(elementType, rightKey);
+                differ.PushKey(elementType, rightKey.ToString());  // todo use JsonKey
                 if (!left.TryGetValue(rightKey, out TElm _)) {
                     differ.AddOnlyRight(rightValue);
                 }
@@ -87,7 +91,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
         
         public override void PatchObject(Patcher patcher, object obj) {
             TMap map = (TMap)obj;
-            var key = patcher.GetMemberKey();
+            var key = patcher.GetMemberKey<TKey>();  // todo use JsonKey
             map.TryGetValue(key, out TElm value);
             var action = patcher.DescendMember(elementType, value, out object newValue);
             switch (action) {
@@ -112,11 +116,11 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
                 var elemVar = entry.Value;
                 if (EqualityComparer<TElm>.Default.Equals(elemVar, default)) {
                     if (writer.writeNullMembers) {
-                        writer.WriteKey(entry.Key, n++);
+                        writer.WriteKey(keyMapper, entry.Key, n++);
                         writer.AppendNull();
                     }
                 } else {
-                    writer.WriteKey(entry.Key, n++);
+                    writer.WriteKey(keyMapper, entry.Key, n++);
                     elementType.Write(ref writer, elemVar);
                     writer.FlushFilledBuffer();
                 }
@@ -143,7 +147,9 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
                     case JsonEvent.ArrayStart:
                     case JsonEvent.ObjectStart:
                     case JsonEvent.ValueNull:
-                        string key = reader.parser.key.ToString();
+                        TKey key = keyMapper.ReadKey(ref reader, out success);
+                        if (!success)
+                            return default;
                         TElm elemVar = default;
                         elemVar = elementType.Read(ref reader, elemVar, out success);
                         if (!success)

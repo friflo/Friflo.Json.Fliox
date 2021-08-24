@@ -81,6 +81,11 @@ namespace Friflo.Json.Flow.Mapper.Diff
             var key = pathNodes[pathPos];
             return key;
         }
+        
+        public T GetMemberKey<T>() {
+            var key = (T)(object)pathNodes[pathPos];
+            return key;
+        }
 
         public NodeAction DescendElement(TypeMapper elementType, object element, out object value) {
             if (++pathPos >= pathNodes.Count) {
