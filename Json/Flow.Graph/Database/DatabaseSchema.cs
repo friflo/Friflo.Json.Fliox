@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Schema.Definition;
 using Friflo.Json.Flow.Schema.Validation;
 using Friflo.Json.Flow.Sync;
@@ -61,21 +62,21 @@ namespace Friflo.Json.Flow.Database
 
         public void ValidateEntities (
             string                                  container,
-            Dictionary<string, EntityValue>         entities,
+            Dictionary<JsonKey, EntityValue>        entities,
             MessageContext                          messageContext,
             EntityErrorType                         errorType,
             ref Dictionary<string, EntityErrors>    entityErrorMap
         ) {
-            Dictionary<string, EntityError> validationErrors = null;
+            Dictionary<JsonKey, EntityError> validationErrors = null;
             var type = containerTypes[container];
             using (var pooledValidator = messageContext.pools.TypeValidator.Get()) {
                 TypeValidator validator = pooledValidator.instance;
                 foreach (var entity in entities) {
                     string json = entity.Value.Json;
                     if (!validator.ValidateObject(json, type, out string error)) {
-                        string key = entity.Key;
+                        var key = entity.Key;
                         if (validationErrors == null) {
-                            validationErrors = new Dictionary<string, EntityError>();
+                            validationErrors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
                         }
                         validationErrors.Add(key, new EntityError(errorType, container, key, error));
                     }

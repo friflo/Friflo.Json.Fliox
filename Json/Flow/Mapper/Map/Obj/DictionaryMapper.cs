@@ -138,9 +138,11 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
             if (!reader.StartObject(this, out success))
                 return default;
 
-            if (EqualityComparer<TMap>.Default.Equals(map, default))
+            if (map == null) {
                 map = (TMap) CreateInstance();
-
+            } else {
+                map.Clear();
+            }
             while (true) {
                 JsonEvent ev = reader.parser.NextEvent();
                 switch (ev) {

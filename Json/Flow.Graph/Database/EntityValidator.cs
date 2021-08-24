@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Burst;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database
@@ -19,7 +20,7 @@ namespace Friflo.Json.Flow.Database
         private             JsonParser      parser;
         private             Bytes           idKey = new Bytes("id");
         
-        public bool IsValidEntity(string json, string id, out string error) {
+        public bool IsValidEntity(string json, JsonKey id, out string error) {
             jsonBytes.Clear();
             jsonBytes.AppendString(json);
             parser.InitParser(jsonBytes);
@@ -32,7 +33,7 @@ namespace Friflo.Json.Flow.Database
                 ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
-                        if (parser.key.IsEqualBytes(ref idKey) && !parser.value.IsEqualString(id)) {
+                        if (parser.key.IsEqualBytes(ref idKey) && !parser.value.IsEqualString(id.AsString())) {
                             error = $"entity id does not match key. id: {parser.value.ToString()}";
                             return false;
                         }

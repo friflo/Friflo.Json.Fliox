@@ -3,6 +3,7 @@
 
 using System;
 using System.Text;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Transform
 {
@@ -90,6 +91,16 @@ namespace Friflo.Json.Flow.Transform
                 return LongValue.ToString();
             if (type == ScalarType.Null)
                 return null;
+            throw new InvalidOperationException($"Scalar cannot be returned as string. type: {type}, value: {this}");
+        }
+        
+        public JsonKey AsJsonKey() {
+            if (type == ScalarType.String)
+                return new JsonKey(stringValue);
+            if (type == ScalarType.Long)
+                return new JsonKey(LongValue);
+            if (type == ScalarType.Null)
+                return new JsonKey();
             throw new InvalidOperationException($"Scalar cannot be returned as string. type: {type}, value: {this}");
         }
         

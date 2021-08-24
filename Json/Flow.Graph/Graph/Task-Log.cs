@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Graph.Internal;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
@@ -24,15 +25,15 @@ namespace Friflo.Json.Flow.Graph
 
         internal LogTask() { }
 
-        internal void AddPatch(SyncSet sync, string id) {
-            if (id == null)
+        internal void AddPatch(SyncSet sync, JsonKey id) {
+            if (id.IsNull())
                 throw new ArgumentException("id must not be null");
             var change = new LogChange(sync, id);
             patches.Add(change);
         }
         
-        internal void AddCreate(SyncSet sync, string id) {
-            if (id == null)
+        internal void AddCreate(SyncSet sync, JsonKey id) {
+            if (id.IsNull())
                 throw new ArgumentException("id must not be null");
             var change = new LogChange(sync, id);
             creates.Add(change);
@@ -60,9 +61,9 @@ namespace Friflo.Json.Flow.Graph
     /// <see cref="sync"/> and <see cref="id"/>
     internal readonly struct LogChange {
         internal readonly   SyncSet     sync;
-        internal readonly   string      id;
+        internal readonly   JsonKey     id;
 
-        internal LogChange(SyncSet sync, string id) {
+        internal LogChange(SyncSet sync, JsonKey id) {
             this.sync   = sync;
             this.id     = id;
         }

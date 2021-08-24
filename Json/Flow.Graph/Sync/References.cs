@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Sync
     {
                         public  string                  error;
                         public  string                  container;
-        [Fri.Required]  public  HashSet<string>         ids;
+        [Fri.Required]  public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<ReferencesResult>  references;
     }
 }

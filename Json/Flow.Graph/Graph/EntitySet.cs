@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph.Internal;
 using Friflo.Json.Flow.Graph.Internal.Id;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
@@ -25,9 +26,9 @@ namespace Friflo.Json.Flow.Graph
         internal static readonly QueryPath RefQueryPath = new RefQueryPath();
         
         internal  abstract  void                LogSetChangesInternal   (LogTask logTask);
-        internal  abstract  void                SyncPeerEntities        (Dictionary<string, EntityValue> entities);
-        internal  abstract  void                DeletePeerEntities      (HashSet   <string> ids);
-        internal  abstract  void                PatchPeerEntities       (Dictionary<string, EntityPatch> patches);
+        internal  abstract  void                SyncPeerEntities        (Dictionary<JsonKey, EntityValue> entities);
+        internal  abstract  void                DeletePeerEntities      (HashSet   <JsonKey> ids);
+        internal  abstract  void                PatchPeerEntities       (Dictionary<JsonKey, EntityPatch> patches);
         
         internal  abstract  void                ResetSync               ();
         internal  abstract  SyncTask            SubscribeChangesInternal(IEnumerable<Change> changes);
@@ -48,11 +49,12 @@ namespace Friflo.Json.Flow.Graph
         internal            SetIntern<T>        intern;
         internal            SyncPeerSet<T>      syncPeerSet;
         
-        internal  abstract  PeerEntity<T>       GetPeerById (string id);
+        internal  abstract  PeerEntity<T>       GetPeerById (JsonKey id);
         internal  abstract  PeerEntity<T>       GetPeerByEntity(T entity);
         
         internal  abstract  PeerEntity<T>       CreatePeer (T entity);
-        internal  abstract  string              GetEntityId (T entity);
+        // internal  abstract  string              GetEntityId (T entity);
+        internal  abstract  JsonKey             GetEntityId (T entity);
         
 
         protected EntityPeerSet(string name) : base(name) {
@@ -321,11 +323,11 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // ------------------------------------------- internals -------------------------------------------
-        private static void SetEntityId (T entity, string id) {
+        private static void SetEntityId (T entity, JsonKey id) {
             Ref<TKey, T>.EntityKey.SetId(entity, id);
         }
         
-        internal override string GetEntityId (T entity) {
+        internal override JsonKey GetEntityId (T entity) {
             return Ref<TKey, T>.EntityKey.GetId(entity);
         }
         
@@ -375,21 +377,21 @@ namespace Friflo.Json.Flow.Graph
             return peer;
         }
         
-        internal void DeletePeer (string id) {
+        internal void DeletePeer (JsonKey id) {
             var key = Ref<TKey,T>.EntityKey.IdToKey(id);
             peers.Remove(key);
         }
         
         [Conditional("DEBUG")]
-        private static void AssertId(TKey key, string id) {
+        private static void AssertId(TKey key, JsonKey id) {
             var expect = Ref<TKey,T>.EntityKey.KeyToId(key);
-            if (id != expect)
+            if (!id.IsEqual(expect))
                 throw new InvalidOperationException($"assigned invalid id: {id}, expect: {expect}");
         }
         
         internal PeerEntity<T> GetPeerByRef(Ref<TKey, T> reference) {
-            string id = reference.id;
-            if (id == null)
+            var id = reference.id;
+            if (id.IsNull())
                 return null; // todo add test
             PeerEntity<T> peer = reference.GetPeer();
             if (peer == null) {
@@ -401,11 +403,11 @@ namespace Friflo.Json.Flow.Graph
             return peer;
         }
         
-        internal PeerEntity<T> GetPeerByKey(TKey key, string id) {
+        internal PeerEntity<T> GetPeerByKey(TKey key, JsonKey id) {
             if (peers.TryGetValue(key, out PeerEntity<T> peer)) {
                 return peer;
             }
-            if (id == null) {
+            if (id.IsNull()) {
                 id = Ref<TKey,T>.EntityKey.KeyToId(key);
             } else {
                 AssertId(key, id);
@@ -414,9 +416,9 @@ namespace Friflo.Json.Flow.Graph
             peers.Add(key, peer);
             return peer;
         }
-        
+
         /// use <see cref="GetPeerByKey"/> is possible
-        internal override PeerEntity<T> GetPeerById(string id) {
+        internal override PeerEntity<T> GetPeerById(JsonKey id) {
             var key = Ref<TKey,T>.EntityKey.IdToKey(id);
             if (peers.TryGetValue(key, out PeerEntity<T> peer)) {
                 return peer;
@@ -438,7 +440,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // --- EntitySet
-        internal override void SyncPeerEntities(Dictionary<string, EntityValue> entities) {
+        internal override void SyncPeerEntities(Dictionary<JsonKey, EntityValue> entities) {
             var reader = intern.jsonMapper.reader;
                 
             foreach (var entityPair in entities) {
@@ -478,16 +480,16 @@ namespace Friflo.Json.Flow.Graph
             }
         }
         
-        internal  override void DeletePeerEntities (HashSet<string> ids) {
+        internal  override void DeletePeerEntities (HashSet<JsonKey> ids) {
             foreach (var id in ids) {
                 DeletePeer(id);
             }
         }
         
-        internal  override void PatchPeerEntities (Dictionary<string, EntityPatch> patches) {
+        internal  override void PatchPeerEntities (Dictionary<JsonKey, EntityPatch> patches) {
             var objectPatcher = intern.store._intern.objectPatcher;
             foreach (var pair in patches) {
-                string      id          = pair.Key;
+                var         id          = pair.Key;
                 EntityPatch entityPatch = pair.Value;
                 var         peer        = GetPeerById(id);
                 var         entity      = peer.Entity;

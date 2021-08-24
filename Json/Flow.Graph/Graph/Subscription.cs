@@ -209,8 +209,8 @@ namespace Friflo.Json.Flow.Graph
                         if (create.container != set.name)
                             continue;
                         foreach (var entityPair in create.entities) {
-                            string  id      = entityPair.Key;
-                            TKey    key      = Ref<TKey, T>.EntityKey.IdToKey(id);
+                            var     id      = entityPair.Key;
+                            TKey    key     = Ref<TKey, T>.EntityKey.IdToKey(id);
                             var     peer    = set.GetPeerByKey(key, id);
                             var     entity  = peer.Entity;
                             result.creates.Add(key, entity);
@@ -223,8 +223,8 @@ namespace Friflo.Json.Flow.Graph
                         if (update.container != set.name)
                             continue;
                         foreach (var entityPair in update.entities) {
-                            string  id      = entityPair.Key;
-                            TKey    key      = Ref<TKey, T>.EntityKey.IdToKey(id);
+                            var     id      = entityPair.Key;
+                            TKey    key     = Ref<TKey, T>.EntityKey.IdToKey(id);
                             var     peer    = set.GetPeerByKey(key, id);
                             var     entity  = peer.Entity;
                             result.updates.Add(key, entity);
@@ -248,7 +248,7 @@ namespace Friflo.Json.Flow.Graph
                         if (patch.container != set.name)
                             continue;
                         foreach (var pair in patch.patches) {
-                            string      id          = pair.Key;
+                            var         id          = pair.Key;
                             TKey        key         = Ref<TKey, T>.EntityKey.IdToKey(id);
                             var         peer        = set.GetPeerByKey(key, id);
                             var         entity      = peer.Entity;
@@ -307,7 +307,7 @@ namespace Friflo.Json.Flow.Graph
         public  readonly    T                   entity;
         public  readonly    List<JsonPatch>     patches;
 
-        public  override    string              ToString() => StaticEntityId.GetId(entity);
+        public  override    string              ToString() => StaticEntityId.GetId(entity).AsString();
         
         private static readonly   EntityId<T>   StaticEntityId = EntityId.GetEntityId<T>();
 

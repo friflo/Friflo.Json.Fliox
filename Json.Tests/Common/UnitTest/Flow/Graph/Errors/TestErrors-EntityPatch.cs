@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 using static NUnit.Framework.Assert;
 
@@ -60,17 +61,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
                 IsFalse(patchNotFound.Success);
                 AreEqual(TaskErrorType.EntityErrors, patchNotFound.Error.type);
                 var patchErrors = patchNotFound.Error.entityErrors;
-                AreEqual("PatchError: Customer 'unknown-id', patch target not found", patchErrors[unknownId].ToString());
+                AreEqual("PatchError: Customer 'unknown-id', patch target not found", patchErrors[new JsonKey(unknownId)].ToString());
             } {
                 IsFalse(patchReadError.Success);
                 AreEqual(TaskErrorType.EntityErrors, patchReadError.Error.type);
                 var patchErrors = patchReadError.Error.entityErrors;
-                AreEqual("ReadError: Customer 'patch-read-entity-error', simulated read entity error", patchErrors[patchReadEntityError].ToString());
+                AreEqual("ReadError: Customer 'patch-read-entity-error', simulated read entity error", patchErrors[new JsonKey(patchReadEntityError)].ToString());
             } {
                 IsFalse(patchWriteError.Success);
                 AreEqual(TaskErrorType.EntityErrors, patchWriteError.Error.type);
                 var patchErrors = patchWriteError.Error.entityErrors;
-                AreEqual("WriteError: Customer 'patch-write-entity-error', simulated write entity error", patchErrors[patchWriteEntityError].ToString());
+                AreEqual("WriteError: Customer 'patch-write-entity-error', simulated write entity error", patchErrors[new JsonKey(patchWriteEntityError)].ToString());
             }
             
             // --- test read task error

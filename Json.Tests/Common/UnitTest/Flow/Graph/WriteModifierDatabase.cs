@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
@@ -78,10 +79,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     {
         public  readonly    Dictionary<string, WriteModifier>    writes    = new Dictionary<string, WriteModifier>();
         
-        internal void ModifyWrites(Dictionary<string, EntityValue> entities) {
+        internal void ModifyWrites(Dictionary<JsonKey, EntityValue> entities) {
             var modifications = new Dictionary<string, EntityValue>();
             foreach (var pair in entities) {
-                var key = pair.Key;
+                var key = pair.Key.AsString();
                 if (writes.TryGetValue(key, out var modifier)) {
                     var value       = pair.Value;
                     var modified    = modifier (value);
@@ -89,7 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 }
             }
             foreach (var pair in modifications) {
-                var key     = pair.Key;
+                var key     = new JsonKey(pair.Key);
                 var value   = pair.Value;
                 entities[key] = value;
             }
@@ -100,10 +101,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
     {
         public  readonly    Dictionary<string, PatchModifier>    patches    = new Dictionary<string, PatchModifier>();
         
-        internal void ModifyPatches(Dictionary<string, EntityPatch> entityPatches) {
+        internal void ModifyPatches(Dictionary<JsonKey, EntityPatch> entityPatches) {
             var modifications = new Dictionary<string, EntityPatch>();
             foreach (var pair in entityPatches) {
-                var key = pair.Key;
+                var key = pair.Key.AsString();
                 if (patches.TryGetValue(key, out var modifier)) {
                     EntityPatch value       = pair.Value;
                     EntityPatch modified    = modifier (value);
@@ -111,7 +112,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 }
             }
             foreach (var pair in modifications) {
-                var         key     = pair.Key;
+                var         key     = new JsonKey(pair.Key);
                 EntityPatch value   = pair.Value;
                 entityPatches[key] = value;
             }

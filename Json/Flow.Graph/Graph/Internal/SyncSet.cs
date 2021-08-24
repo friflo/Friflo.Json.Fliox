@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         private readonly    EntitySet<TKey, T>                      set;
         private readonly    List<TKey>                              keysBuf      = new List<TKey>();
-        private readonly    List<string>                            idsBuf       = new List<string>();
+        private readonly    List<JsonKey>                           idsBuf       = new List<JsonKey>();
             
         private readonly    List<ReadTask<TKey, T>>                 reads        = new List<ReadTask<TKey, T>>();
         /// key: <see cref="QueryTask{TKey,T}.filterLinq"/> 
@@ -34,15 +34,15 @@ namespace Friflo.Json.Flow.Graph.Internal
         private             SubscribeChangesTask<T>                 subscribeChanges;
         
         /// key: <see cref="PeerEntity{T}.entity"/>.id
-        private readonly    Dictionary<string, PeerEntity<T>>       creates      = new Dictionary<string, PeerEntity<T>>();
+        private readonly    Dictionary<JsonKey, PeerEntity<T>>      creates      = new Dictionary<JsonKey, PeerEntity<T>>(JsonKey.Equality);
         private readonly    List<WriteTask>                         createTasks  = new List<WriteTask>();
         
         /// key: <see cref="PeerEntity{T}.entity"/>.id
-        private readonly    Dictionary<string, PeerEntity<T>>       updates      = new Dictionary<string, PeerEntity<T>>();
+        private readonly    Dictionary<JsonKey, PeerEntity<T>>      updates      = new Dictionary<JsonKey, PeerEntity<T>>(JsonKey.Equality);
         private readonly    List<WriteTask>                         updateTasks  = new List<WriteTask>();
 
         /// key: entity id
-        private readonly    Dictionary<string, EntityPatch>         patches      = new Dictionary<string, EntityPatch>();
+        private readonly    Dictionary<JsonKey, EntityPatch>        patches      = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
         private readonly    List<PatchTask<T>>                      patchTasks   = new List<PatchTask<T>>();
         
         /// key: entity id
@@ -226,7 +226,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (creates.Count == 0)
                 return;
             var writer = set.intern.jsonMapper.writer;
-            var entries = new Dictionary<string, EntityValue>();
+            var entries = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
             
             foreach (var createPair in creates) {
                 T entity    = createPair.Value.Entity;
@@ -246,7 +246,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (updates.Count == 0)
                 return;
             var writer = set.intern.jsonMapper.writer;
-            var entries = new Dictionary<string, EntityValue>();
+            var entries = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
             
             foreach (var updatePair in updates) {
                 T entity    = updatePair.Value.Entity;
@@ -275,7 +275,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                     references = new List<References>(reads.Count);
                     AddReferences(references, read.refsTask.subRefs);
                 }
-                var ids = Helper.CreateHashSet<string>(read.results.Keys.Count);
+                var ids = Helper.CreateHashSet<JsonKey>(read.results.Keys.Count);
                 foreach (var key in read.results.Keys) {
                     var id = Ref<TKey,T>.EntityKey.KeyToId(key);
                     ids.Add(id);
@@ -343,7 +343,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (patches.Count > 0) {
                 var req = new PatchEntities {
                     container = set.name,
-                    patches = new Dictionary<string, EntityPatch>(patches)
+                    patches = new Dictionary<JsonKey, EntityPatch>(patches, JsonKey.Equality)
                 };
                 tasks.Add(req);
             }
@@ -352,7 +352,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         private void DeleteEntities(List<DatabaseTask> tasks) {
             if (deletes.Count == 0)
                 return;
-            var ids = new HashSet<string>(deletes.Count);
+            var ids = new HashSet<JsonKey>(deletes.Count, JsonKey.Equality);
             foreach (var key in deletes) {
                 var id = Ref<TKey, T>.EntityKey.KeyToId(key);
                 ids.Add(id);

@@ -8,6 +8,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database.Utils;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database
@@ -54,13 +55,13 @@ namespace Friflo.Json.Flow.Database
         
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
             var entities = command.entities;
-            Dictionary<string, EntityError> createErrors = null;
+            Dictionary<JsonKey, EntityError> createErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);
             try {
                 foreach (var entityPair in entities) {
-                    string      key     = entityPair.Key;
+                    var      key     = entityPair.Key;
                     EntityValue payload = entityPair.Value;
-                    var path = FilePath(key);
+                    var path = FilePath(key.AsString());
                     try {
                         await WriteText(path, payload.Json).ConfigureAwait(false);
                     } catch (Exception e) {
@@ -76,13 +77,13 @@ namespace Friflo.Json.Flow.Database
 
         public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
             var entities = command.entities;
-            Dictionary<string, EntityError> updateErrors = null;
+            Dictionary<JsonKey, EntityError> updateErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);
             try {
                 foreach (var entityPair in entities) {
-                    string      key     = entityPair.Key;
+                    var         key     = entityPair.Key;
                     EntityValue payload = entityPair.Value;
-                    var path = FilePath(key);
+                    var path = FilePath(key.AsString());
                     try {
                         await WriteText(path, payload.Json).ConfigureAwait(false);
                     } catch (Exception e) {
@@ -98,11 +99,11 @@ namespace Friflo.Json.Flow.Database
 
         public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {
             var keys        = command.ids;
-            var entities    = new Dictionary<string, EntityValue>(keys.Count);
+            var entities    = new Dictionary<JsonKey, EntityValue>(keys.Count, JsonKey.Equality);
             await rwLock.AcquireReaderLock().ConfigureAwait(false);
             try {
                 foreach (var key in keys) {
-                    var filePath = FilePath(key);
+                    var filePath = FilePath(key.AsString());
                     EntityValue entry;
                     if (File.Exists(filePath)) {
                         try {
@@ -133,11 +134,11 @@ namespace Friflo.Json.Flow.Database
 
         public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
             var keys = command.ids;
-            Dictionary<string, EntityError> deleteErrors = null;
+            Dictionary<JsonKey, EntityError> deleteErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);
             try {
                 foreach (var key in keys) {
-                    string path = FilePath(key);
+                    string path = FilePath(key.AsString());
                     try {
                         DeleteFile(path);
                     } catch (Exception e) {
@@ -154,14 +155,14 @@ namespace Friflo.Json.Flow.Database
         
         
         // -------------------------------------- helper methods -------------------------------------- 
-        private static HashSet<string> GetIds(string folder) {
+        private static HashSet<JsonKey> GetIds(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
-            var ids = Helper.CreateHashSet<string>(fileNames.Length);
+            var ids = Helper.CreateHashSet<JsonKey>(fileNames.Length);
             for (int n = 0; n < fileNames.Length; n++) {
                 var fileName = fileNames[n];
                 var len = fileName.Length;
                 var id = fileName.Substring(folder.Length, len - folder.Length - ".json".Length);
-                ids.Add(id);
+                ids.Add(new JsonKey(id));
             }
             return ids;
         }

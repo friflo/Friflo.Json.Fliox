@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Flow.Graph.Internal.Id
@@ -159,23 +160,23 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
         internal abstract   string  GetKeyName();
         internal virtual    bool    IsKeyNull (T entity) => false;
 
-        internal abstract   string  GetId  (T entity);
-        internal abstract   void    SetId  (T entity, string id);
+        internal abstract   JsonKey GetId  (T entity);
+        internal abstract   void    SetId  (T entity, JsonKey id);
     }
     
     internal abstract class EntityKey<TKey, T> : EntityId<T> where T : class {
-        internal abstract   TKey    IdToKey (string id);
-        internal abstract   string  KeyToId (TKey key);
+        internal abstract   JsonKey KeyToId (TKey key);
+        internal abstract   TKey    IdToKey (JsonKey key);        
         
         internal abstract   TKey    GetKey  (T entity);
         internal abstract   void    SetKey  (T entity, TKey id);
 
-        internal override   string  GetId   (T entity) {
+        internal override   JsonKey  GetId   (T entity) {
             TKey key = GetKey(entity);
             return KeyToId(key);
         }
         
-        internal override   void    SetId   (T entity, string id) {
+        internal override   void    SetId   (T entity, JsonKey id) {
             TKey key = IdToKey(id);
             SetKey(entity, key);
         }

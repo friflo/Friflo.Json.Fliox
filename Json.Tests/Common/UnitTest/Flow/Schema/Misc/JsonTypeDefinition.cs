@@ -65,6 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Misc
             AddType (map, standard.Float,         "float" );
                
             AddType (map, standard.DateTime,      "timestamp" );
+            AddType (map, standard.JsonKey,       "string" );
             return map;
         }
         

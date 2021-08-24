@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
 
@@ -80,7 +81,7 @@ namespace Friflo.Json.Flow.Database
         /// </summary>
         public virtual async Task<PatchEntitiesResult> PatchEntities   (PatchEntities patchEntities, SyncResponse response, MessageContext messageContext) {
             var entityPatches = patchEntities.patches;
-            var ids = entityPatches.Select(patch => patch.Key).ToHashSet();
+            var ids = entityPatches.Select(patch => patch.Key).ToHashSet(JsonKey.Equality);
             // Read entities to be patched
             var readTask = new ReadEntities {ids = ids};
             var readResult = await ReadEntities(readTask, messageContext).ConfigureAwait(false);
@@ -93,9 +94,9 @@ namespace Friflo.Json.Flow.Database
             
             // Apply patches
             // targets collect entities with: successful read & successful applied patch 
-            var targets     = new  Dictionary<string,EntityValue>(entities.Count);
+            var targets     = new  Dictionary<JsonKey,EntityValue>(entities.Count, JsonKey.Equality);
             var container   = patchEntities.container;
-            Dictionary<string, EntityError> patchErrors = null;
+            Dictionary<JsonKey, EntityError> patchErrors = null;
             using (var pooledPatcher = messageContext.pools.JsonPatcher.Get()) {
                 JsonPatcher patcher = pooledPatcher.instance;
                 foreach (var entity in entities) {
@@ -139,7 +140,7 @@ namespace Friflo.Json.Flow.Database
             return new PatchEntitiesResult{patchErrors = patchErrors};
         }
         
-        internal async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, HashSet<string> ids, MessageContext messageContext) {
+        internal async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, HashSet<JsonKey> ids, MessageContext messageContext) {
             var readIds         = new ReadEntities {ids = ids};
             var readEntities    = await ReadEntities(readIds, messageContext).ConfigureAwait(false);
             if (readEntities.Error != null) {
@@ -150,7 +151,7 @@ namespace Friflo.Json.Flow.Database
             }
             
             var jsonFilter      = new JsonFilter(command.filter); // filter can be reused
-            var result          = new Dictionary<string, EntityValue>();
+            var result          = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
             using (var pooledEvaluator = messageContext.pools.JsonEvaluator.Get()) {
                 JsonEvaluator evaluator = pooledEvaluator.instance;
                 foreach (var entityPair in readEntities.entities) {
@@ -167,7 +168,7 @@ namespace Friflo.Json.Flow.Database
         
         private static List<ReferencesResult> GetReferences(
             List<References>                    references,
-            Dictionary<string, EntityValue>     entities,
+            Dictionary<JsonKey, EntityValue>    entities,
             string                              container,
             MessageContext                      messageContext)
         {
@@ -181,7 +182,7 @@ namespace Friflo.Json.Flow.Database
                 selectors.Add(reference.selector);
                 var referenceResult = new ReferencesResult {
                     container   = reference.container,
-                    ids         = new HashSet<string>()
+                    ids         = new HashSet<JsonKey>(JsonKey.Equality)
                 };
                 referenceResults.Add(referenceResult);
             }
@@ -206,7 +207,7 @@ namespace Friflo.Json.Flow.Database
                     }
                     for (int n = 0; n < references.Count; n++) {
                         // selectorResults[n] contains Select() result of selectors[n] 
-                        var entityRefs = selectorResults[n].AsStrings();
+                        var entityRefs = selectorResults[n].AsJsonKeys();
                         var referenceResult = referenceResults[n];
                         referenceResult.ids.UnionWith(entityRefs);
                     }
@@ -217,7 +218,7 @@ namespace Friflo.Json.Flow.Database
 
         public async Task<ReadReferencesResult> ReadReferences(
                 List<References>                    references,
-                Dictionary<string, EntityValue>     entities,
+                Dictionary<JsonKey, EntityValue>    entities,
                 string                              container,
                 string                              selectorPath,
                 SyncResponse                        syncResponse,
@@ -234,7 +235,7 @@ namespace Friflo.Json.Flow.Database
                 var ids = referenceResult.ids;
                 if (ids.Count == 0)
                     continue;
-                var refIdList   = ids.ToHashSet();
+                var refIdList   = ids.ToHashSet(JsonKey.Equality);
                 var readRefIds  = new ReadEntities {ids = refIdList};
                 var refEntities = await refCont.ReadEntities(readRefIds, messageContext).ConfigureAwait(false);
                 var subPath = $"{selectorPath} -> {reference.selector}";
@@ -251,7 +252,7 @@ namespace Friflo.Json.Flow.Database
                 
                 if (subReferences == null)
                     continue;
-                var subEntities = new Dictionary<string, EntityValue>(ids.Count);
+                var subEntities = new Dictionary<JsonKey, EntityValue>(ids.Count, JsonKey.Equality);
                 foreach (var id in ids) {
                     subEntities.Add(id, refEntities.entities[id]);
                 }
@@ -263,9 +264,9 @@ namespace Friflo.Json.Flow.Database
             return new ReadReferencesResult {references = referenceResults};
         }
 
-        protected static void AddEntityError(ref Dictionary<string, EntityError> errors, string key, EntityError error) {
+        protected static void AddEntityError(ref Dictionary<JsonKey, EntityError> errors, JsonKey key, EntityError error) {
             if (errors == null) {
-                errors = new Dictionary<string, EntityError>();
+                errors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
             }
             // add with TryAdd(). Only the first entity error is relevant. Subsequent entity errors are consequential failures.
             errors.TryAdd(key, error);

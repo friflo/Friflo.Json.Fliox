@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
 
@@ -226,14 +227,14 @@ namespace Friflo.Json.Flow.Database.Event
             }
         }
         
-        private Dictionary<string, EntityValue> FilterEntities (FilterOperation filter, Dictionary<string, EntityValue> entities) {
+        private Dictionary<JsonKey, EntityValue> FilterEntities (FilterOperation filter, Dictionary<JsonKey, EntityValue> entities) {
             if (filter == null)
                 return entities;
             var jsonFilter      = new JsonFilter(filter); // filter can be reused
-            var result          = new Dictionary<string, EntityValue>();
+            var result          = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
 
             foreach (var entityPair in entities) {
-                string      key     = entityPair.Key;
+                var         key     = entityPair.Key;
                 EntityValue value   = entityPair.Value;
                 var         payload = value.Json;
                 if (jsonEvaluator.Filter(payload, jsonFilter)) {

@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Mapper;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
@@ -50,17 +51,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             IsFalse(deleteError.Success);
             var deleteErrors = deleteError.Error.entityErrors;
             AreEqual(1,        deleteErrors.Count);
-            AreEqual("WriteError: Customer 'delete-entity-error', simulated write entity error", deleteErrors[deleteEntityError].ToString());
+            AreEqual("WriteError: Customer 'delete-entity-error', simulated write entity error", deleteErrors[new JsonKey(deleteEntityError)].ToString());
             
             IsFalse(createError.Success);
             var createErrors = createError.Error.entityErrors;
             AreEqual(1,        createErrors.Count);
-            AreEqual("WriteError: Customer 'create-entity-error', simulated write entity error", createErrors[createEntityError].ToString());
+            AreEqual("WriteError: Customer 'create-entity-error', simulated write entity error", createErrors[new JsonKey(createEntityError)].ToString());
             
             IsFalse(updateError.Success);
             var updateErrors = updateError.Error.entityErrors;
             AreEqual(1,        updateErrors.Count);
-            AreEqual("WriteError: Customer 'update-entity-error', simulated write entity error", updateErrors[updateEntityError].ToString());
+            AreEqual("WriteError: Customer 'update-entity-error', simulated write entity error", updateErrors[new JsonKey(updateEntityError)].ToString());
         }
     }
 }

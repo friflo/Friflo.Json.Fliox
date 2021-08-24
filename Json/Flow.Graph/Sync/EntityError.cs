@@ -16,7 +16,7 @@ namespace Friflo.Json.Flow.Sync
         [Fri.Required]      public  EntityErrorType     type;
         [Fri.Property]      public  string              message;
             
-        [Fri.Ignore]        public  string              id;
+        [Fri.Ignore]        public  JsonKey             id;
         [Fri.Ignore]        public  string              container;
         /// <summary>Is != <see cref="TaskErrorResultType.None"/> if the error is caused indirectly by a <see cref="DatabaseTask"/> error.</summary>
         [Fri.Ignore]        public  TaskErrorResultType taskErrorType;
@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Sync
 
         public EntityError() { } // required for TypeMapper
 
-        public EntityError(EntityErrorType type, string container, string  id, string message) {
+        public EntityError(EntityErrorType type, string container, JsonKey id, string message) {
             this.type       = type;
             this.container  = container;
             this.id         = id;

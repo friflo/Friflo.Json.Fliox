@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Transform.Select;
 
 namespace Friflo.Json.Flow.Transform
@@ -79,6 +80,16 @@ namespace Friflo.Json.Flow.Transform
                 var str = item.AsString();
                 if (str != null)
                     result.Add(str);
+            }
+            return result;
+        }
+        
+        public List<JsonKey> AsJsonKeys() {
+            var result = new List<JsonKey>(values.Count);
+            foreach (var item in values) {
+                var key = item.AsJsonKey();
+                if (!key.IsNull())
+                    result.Add(key);
             }
             return result;
         }

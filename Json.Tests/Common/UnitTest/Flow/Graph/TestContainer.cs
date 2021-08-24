@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
@@ -59,8 +60,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                     continue;
                 var entities = result.entities;
                 foreach (var id in testContainer.missingResultErrors) {
-                    if (entities.TryGetValue(id, out EntityValue _)) {
-                        entities.Remove(id);
+                    var key = new JsonKey(id);
+                    if (entities.TryGetValue(key, out EntityValue _)) {
+                        entities.Remove(key);
                     }
                 }
             }
@@ -105,7 +107,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
-            var error = SimulateWriteErrors(command.entities.Keys.ToHashSet(), out var errors);
+            var error = SimulateWriteErrors(command.entities.Keys.ToHashSet(JsonKey.Equality), out var errors);
             if (error != null)
                 return Task.FromResult(new CreateEntitiesResult {Error = error});
             if (errors != null)
@@ -114,7 +116,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
-            var error = SimulateWriteErrors(command.entities.Keys.ToHashSet(), out var errors);
+            var error = SimulateWriteErrors(command.entities.Keys.ToHashSet(JsonKey.Equality), out var errors);
             if (error != null)
                 return Task.FromResult(new UpdateEntitiesResult {Error = error});
             if (errors != null)
@@ -157,16 +159,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         
         // --- simulate read/write error methods
-        private CommandError SimulateReadErrors(Dictionary<string,EntityValue> entities) {
+        private CommandError SimulateReadErrors(Dictionary<JsonKey,EntityValue> entities) {
             foreach (var pair in readEntityErrors) {
                 var id      = pair.Key;
-                if (entities.TryGetValue(id, out EntityValue value)) {
+                if (entities.TryGetValue(new JsonKey(id), out EntityValue value)) {
                     var action = pair.Value;
                     action(value);
                 }
             }
             foreach (var pair in readTaskErrors) {
-                var id      = pair.Key;
+                var id      = new JsonKey(pair.Key);
                 if (entities.ContainsKey(id)) {
                     var func = pair.Value;
                     return func();
@@ -176,29 +178,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
         
         public EntityError ReadError(string id) {
-            var error = new EntityError(EntityErrorType.ReadError, name, id, "simulated read entity error");
+            var error = new EntityError(EntityErrorType.ReadError, name, new JsonKey(id), "simulated read entity error");
             return error;
         }
         
         public EntityError WriteError(string id) {
-            var error = new EntityError(EntityErrorType.WriteError, name, id, "simulated write entity error");
+            var error = new EntityError(EntityErrorType.WriteError, name, new JsonKey(id), "simulated write entity error");
             return error;
         }
         
-        private CommandError SimulateWriteErrors(HashSet<string> entities, out Dictionary<string, EntityError> errors) {
+        private CommandError SimulateWriteErrors(HashSet<JsonKey> entities, out Dictionary<JsonKey, EntityError> errors) {
             errors = null;
             foreach (var pair in writeEntityErrors) {
-                var id = pair.Key;
+                var id = new JsonKey(pair.Key);
                 if (entities.Contains(id)) {
                     if (errors == null)
-                        errors = new Dictionary<string, EntityError>();
+                        errors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
                     var fcn = pair.Value;
                     var entityError = fcn();
                     errors.Add(id, entityError);
                 }
             }
             foreach (var pair in writeTaskErrors) {
-                var id = pair.Key;
+                var id = new JsonKey(pair.Key);
                 if (entities.Contains(id)) {
                     var func = pair.Value;
                     return func();

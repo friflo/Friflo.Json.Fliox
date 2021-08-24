@@ -25,5 +25,6 @@ namespace Friflo.Json.Flow.Schema.Definition
         public abstract     TypeDef     Guid        { get; }
         
         public abstract     TypeDef     JsonValue   { get; }
+        public abstract     TypeDef     JsonKey     { get; }
     }
 }

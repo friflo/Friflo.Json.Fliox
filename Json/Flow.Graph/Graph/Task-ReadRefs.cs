@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Friflo.Json.Flow.Graph.Internal;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Graph
 {
@@ -17,7 +18,7 @@ namespace Friflo.Json.Flow.Graph
         internal abstract   string      Container   { get; }
         internal abstract   SubRefs     SubRefs     { get; }
         
-        internal abstract void    SetResult (EntitySet set, HashSet<string> ids);
+        internal abstract void    SetResult (EntitySet set, HashSet<JsonKey> ids);
     }
 
     /// ensure all tasks returning <see cref="ReadRefsTask{TKey,T}"/>'s provide the same interface
@@ -60,7 +61,7 @@ namespace Friflo.Json.Flow.Graph
             this.store      = store;
         }
 
-        internal override void SetResult(EntitySet set, HashSet<string> ids) {
+        internal override void SetResult(EntitySet set, HashSet<JsonKey> ids) {
             var entitySet = (EntityPeerSet<T>) set;
             results = new Dictionary<TKey, T>(ids.Count);
             var entityErrorInfo = new TaskErrorInfo();
@@ -131,7 +132,7 @@ namespace Friflo.Json.Flow.Graph
             this.store      = store;
         }
         
-        internal override void SetResult(EntitySet set, HashSet<string> ids) {
+        internal override void SetResult(EntitySet set, HashSet<JsonKey> ids) {
             var entitySet = (EntityPeerSet<T>) set;
             if (ids.Count != 1)
                 throw new InvalidOperationException($"Expect ids result set with one element. got: {ids.Count}, task: {this}");

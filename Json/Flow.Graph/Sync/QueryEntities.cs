@@ -46,7 +46,7 @@ namespace Friflo.Json.Flow.Sync
             }
             result.container    = container;
             result.filterLinq   = filterLinq;
-            result.ids          = entities.Keys.ToHashSet();
+            result.ids          = entities.Keys.ToHashSet(JsonKey.Equality);
             result.references   = queryRefsResults.references;
             return result;
         }
@@ -57,9 +57,9 @@ namespace Friflo.Json.Flow.Sync
     {
                         public  string                          container;  // only for debugging ergonomics
                         public  string                          filterLinq;
-        [Fri.Required]  public  HashSet<string>                 ids;
+        [Fri.Required]  public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<ReferencesResult>          references;
-        [Fri.Ignore]    public  Dictionary<string,EntityValue>  entities;
+        [Fri.Ignore]    public  Dictionary<JsonKey,EntityValue> entities;
                         public  CommandError                    Error { get; set; }
 
         

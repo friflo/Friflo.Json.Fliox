@@ -174,8 +174,8 @@ namespace Friflo.Json.Flow.Schema
         private static string GetTypeName(TypeDef type, TypeContext context, bool required) {
             var standard = context.standardTypes;
             if (type == standard.JsonValue)
-                return ""; // allow any type
-            if (type == standard.String)
+                return ""; // allow any type                
+            if (type == standard.String || type == standard.JsonKey)
                 return $"\"type\": {Opt(required, "string")}";
             if (type == standard.Boolean)
                 return $"\"type\": {Opt(required, "boolean")}";

@@ -471,11 +471,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                     }
                     // --- map - key type: JsonKey
                     {
-                        var expect = new Dictionary<JsonKey, int> {{ new JsonKey(123), 42 }};
-                        AreEqual(expect, Read<Dictionary<JsonKey, int>>(intMapNum));
-                        
-                        expect = new Dictionary<JsonKey, int> {{ new JsonKey("key"), 42 }};
-                        AreEqual(expect, Read<Dictionary<JsonKey, int>>(mapNum));
+                        var expect = new Dictionary<JsonKey, int> (JsonKey.Equality){{ new JsonKey(123), 42 }};
+                        var dest = new Dictionary<JsonKey, int>(JsonKey.Equality);
+                        AssertUtils.Equivalent(expect, reader.ReadTo(intMapNum, dest));
+
+                        dest.Clear();
+                        expect = new Dictionary<JsonKey, int> (JsonKey.Equality){{ new JsonKey("key"), 42 }};
+                        AssertUtils.Equivalent(expect, reader.ReadTo(mapNum, dest));
                     }
                     
                     // ---- BigInteger ---

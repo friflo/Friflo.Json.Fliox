@@ -51,7 +51,8 @@ namespace Friflo.Json.Flow.Mapper.Utils
 #if NETFX_CORE
             foreach (ConstructorInfo ci in type.GetTypeInfo ().DeclaredConstructors)
 #else
-            foreach (ConstructorInfo ci in type.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic))
+            var constructors = type.GetConstructors(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
+            foreach (ConstructorInfo ci in constructors)
 #endif
                 if (ci.GetParameters().Length == 0)
                     return ci;

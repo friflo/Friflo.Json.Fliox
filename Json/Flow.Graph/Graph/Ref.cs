@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Flow.Graph.Internal;
 using Friflo.Json.Flow.Graph.Internal.Id;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Graph
 {
@@ -66,13 +67,13 @@ namespace Friflo.Json.Flow.Graph
         //      peer != null    =>  Ref<> is attached to a peer
 
         public   readonly   TKey            key;
-        public   readonly   string          id;
+        public   readonly   JsonKey         id;
         private  readonly   T               entity;
         private             PeerEntity<T>   peer;
         
         internal static readonly   EntityKey<TKey, T>     EntityKey = EntityId.GetEntityKey<TKey, T>();
         
-        public   override   string          ToString() => id ?? "null";
+        public   override   string          ToString() => id.IsNull() ? "null" : id.AsString();
         
         public Ref(TKey key) {
             this.key    = key;
@@ -104,7 +105,7 @@ namespace Friflo.Json.Flow.Graph
                     return entity;
                 if (peer.assigned)
                     return peer.Entity;
-                throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), id);
+                throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), id.AsString());
             }
         }
 

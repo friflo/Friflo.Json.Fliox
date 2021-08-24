@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph.Internal
@@ -19,7 +20,7 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         internal void AddEntityError(EntityError error) {
             if (TaskError == null) {
-                var entityErrors = new SortedDictionary<string, EntityError>();
+                var entityErrors = new SortedDictionary<JsonKey, EntityError>(JsonKey.Comparer);
                 TaskError = new TaskError(entityErrors);
             }
             TaskError.entityErrors.Add(error.id, error);

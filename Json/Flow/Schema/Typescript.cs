@@ -156,7 +156,7 @@ namespace Friflo.Json.Flow.Schema
             var standard = context.standardTypes;
             if (type == standard.JsonValue)
                 return "any"; // known as Mr anti-any  :) 
-            if (type == standard.String)
+            if (type == standard.String || type == standard.JsonKey)
                 return "string";
             if (type == standard.Boolean)
                 return "boolean";

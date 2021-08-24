@@ -48,7 +48,7 @@ namespace Friflo.Json.Flow.Sync
                 return result;
             result = new ContainerEntities {
                 container = container,
-                entities = new Dictionary<string,EntityValue>()
+                entities = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality)
             };
             results.Add(container, result);
             return result;
@@ -78,10 +78,10 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- sync results -----------------------------------
     public class ContainerEntities
     {
-                        public  string                          container; // only for debugging
-        [Fri.Required]  public  Dictionary<string, EntityValue> entities;
+                        public  string                              container; // only for debugging
+        [Fri.Required]  public  Dictionary<JsonKey, EntityValue>    entities = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
         
-        internal void AddEntities(Dictionary<string, EntityValue> add) {
+        internal void AddEntities(Dictionary<JsonKey, EntityValue> add) {
             foreach (var entity in add) {
                 entities.TryAdd(entity.Key, entity.Value);
             }
@@ -91,16 +91,16 @@ namespace Friflo.Json.Flow.Sync
     public class EntityErrors
     {
                         public  string                              container; // only for debugging
-        [Fri.Required]  public  Dictionary<string, EntityError>     errors;
+        [Fri.Required]  public  Dictionary<JsonKey, EntityError>    errors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
         
         public EntityErrors() {} // required for TypeMapper
 
         public EntityErrors(string container) {
             this.container  = container;
-            errors          = new Dictionary<string, EntityError>();
+            errors          = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
         }
         
-        internal void AddErrors(Dictionary<string, EntityError> errors) {
+        internal void AddErrors(Dictionary<JsonKey, EntityError> errors) {
             foreach (var error in errors) {
                 this.errors.TryAdd(error.Key, error.Value);
             }

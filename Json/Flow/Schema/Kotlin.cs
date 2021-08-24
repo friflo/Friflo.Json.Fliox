@@ -50,6 +50,7 @@ namespace Friflo.Json.Flow.Schema
                
             AddType (map, standard.Double,        "Double" );
             AddType (map, standard.Float,         "Float" );
+            AddType (map, standard.JsonKey,       "String" );
             return map;
         }
         

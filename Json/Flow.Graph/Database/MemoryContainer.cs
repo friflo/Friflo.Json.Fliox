@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Database
@@ -24,7 +25,7 @@ namespace Friflo.Json.Flow.Database
     
     public class MemoryContainer : EntityContainer
     {
-        private  readonly   Dictionary<string, string>  payloads    = new Dictionary<string, string>();
+        private  readonly   Dictionary<JsonKey, string>  payloads    = new Dictionary<JsonKey, string>(JsonKey.Equality);
         
         public   override   bool                        Pretty      { get; }
 
@@ -35,7 +36,7 @@ namespace Friflo.Json.Flow.Database
         public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
             var entities = command.entities;
             foreach (var entityPair in entities) {
-                string      key      = entityPair.Key;
+                var      key      = entityPair.Key;
                 EntityValue payload  = entityPair.Value;
                 if (payloads.TryGetValue(key, out string _))
                     throw new InvalidOperationException($"Entity with key '{key}' already in DatabaseContainer: {name}");
@@ -48,7 +49,7 @@ namespace Friflo.Json.Flow.Database
         public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
             var entities = command.entities;
             foreach (var entityPair in entities) {
-                string      key      = entityPair.Key;
+                var         key      = entityPair.Key;
                 EntityValue payload  = entityPair.Value;
                 payloads[key] = payload.Json;
             }
@@ -58,7 +59,7 @@ namespace Friflo.Json.Flow.Database
 
         public override Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {
             var keys = command.ids;
-            var entities = new Dictionary<string, EntityValue>(keys.Count);
+            var entities = new Dictionary<JsonKey, EntityValue>(keys.Count, JsonKey.Equality);
             foreach (var key in keys) {
                 payloads.TryGetValue(key, out var payload);
                 var entry = new EntityValue(payload);
@@ -69,7 +70,7 @@ namespace Friflo.Json.Flow.Database
         }
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
-            var ids     = payloads.Keys.ToHashSet();
+            var ids     = payloads.Keys.ToHashSet(JsonKey.Equality);
             var result  = await FilterEntities(command, ids, messageContext).ConfigureAwait(false);
             return result;
         }

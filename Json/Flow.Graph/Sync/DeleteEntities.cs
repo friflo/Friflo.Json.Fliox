@@ -11,7 +11,7 @@ namespace Friflo.Json.Flow.Sync
     public class DeleteEntities : DatabaseTask
     {
         [Fri.Required]  public  string              container;
-        [Fri.Required]  public  HashSet<string>     ids;
+        [Fri.Required]  public  HashSet<JsonKey>    ids = new HashSet<JsonKey>(JsonKey.Equality);
         
         internal override       TaskType            TaskType => TaskType.delete;
         public   override       string              TaskName => $"container: '{container}'";
@@ -38,8 +38,8 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task result -----------------------------------
     public class DeleteEntitiesResult : TaskResult, ICommandResult
     {
-                     public CommandError                    Error { get; set; }
-        [Fri.Ignore] public Dictionary<string, EntityError> deleteErrors;
+                     public CommandError                        Error { get; set; }
+        [Fri.Ignore] public Dictionary<JsonKey, EntityError>    deleteErrors;
 
         internal override   TaskType                        TaskType => TaskType.delete;
     }

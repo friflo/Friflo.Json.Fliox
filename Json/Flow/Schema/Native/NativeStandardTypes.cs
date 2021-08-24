@@ -23,6 +23,7 @@ namespace Friflo.Json.Flow.Schema.Native
         public   override   TypeDef     DateTime    { get; }
         public   override   TypeDef     Guid        { get; }
         public   override   TypeDef     JsonValue   { get; }
+        public   override   TypeDef     JsonKey     { get; }
         
         internal NativeStandardTypes (Dictionary<Type, NativeTypeDef> types) {
             Boolean     = Find(types, typeof(bool));
@@ -37,6 +38,7 @@ namespace Friflo.Json.Flow.Schema.Native
             DateTime    = Find(types, typeof(DateTime));
             Guid        = Find(types, typeof(Guid));
             JsonValue   = Find(types, typeof(JsonValue));
+            JsonKey     = Find(types, typeof(JsonKey));
         }
         
         private static Dictionary<Type, string> GetTypes() {
@@ -52,7 +54,8 @@ namespace Friflo.Json.Flow.Schema.Native
                 { typeof(BigInteger),   "BigInteger"},
                 { typeof(DateTime),     "DateTime"},
                 { typeof(Guid),         "Guid"},
-                { typeof(JsonValue),    "JsonValue"}
+                { typeof(JsonValue),    "JsonValue"},
+                { typeof(JsonKey),      "JsonKey"}
             };
             return map;
         }

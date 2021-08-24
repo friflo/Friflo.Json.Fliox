@@ -20,6 +20,7 @@ namespace Friflo.Json.Flow.Schema.JSON
         public   override   TypeDef     DateTime    { get; }
         public   override   TypeDef     Guid        { get; }
         public   override   TypeDef     JsonValue   { get; }
+        public   override   TypeDef     JsonKey     { get; }
         
         internal JsonStandardTypes (Dictionary<string, JsonTypeDef> types) {
             Boolean     = new JsonTypeDef("boolean");
@@ -34,6 +35,7 @@ namespace Friflo.Json.Flow.Schema.JSON
             DateTime    = Find(types, "./Standard.json#/definitions/DateTime");
             Guid        = Find(types, "./Standard.json#/definitions/Guid");
             JsonValue   = new JsonTypeDef("{ }");
+            JsonKey     = new JsonTypeDef("string");
         }
         
         private static TypeDef Find (Dictionary<string, JsonTypeDef> types, string type) {

@@ -3,18 +3,19 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph.Internal
 {
     internal abstract class SyncSet
     {
-        internal static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();  
+        internal static readonly IDictionary<JsonKey, EntityError> NoErrors = new EmptyDictionary<JsonKey, EntityError>();  
             
-        internal    IDictionary<string, EntityError>    createErrors = NoErrors;
-        internal    IDictionary<string, EntityError>    updateErrors = NoErrors;
-        internal    IDictionary<string, EntityError>    patchErrors  = NoErrors;
-        internal    IDictionary<string, EntityError>    deleteErrors = NoErrors;
+        internal    IDictionary<JsonKey, EntityError>    createErrors = NoErrors;
+        internal    IDictionary<JsonKey, EntityError>    updateErrors = NoErrors;
+        internal    IDictionary<JsonKey, EntityError>    patchErrors  = NoErrors;
+        internal    IDictionary<JsonKey, EntityError>    deleteErrors = NoErrors;
 
         internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
         
@@ -35,7 +36,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             CreateUpdateEntitiesResult(task.entities, result, createTasks, createErrors);
             if (result is TaskErrorResult taskError) {
                 if (createErrors == NoErrors) {
-                    createErrors = new Dictionary<string, EntityError>();
+                    createErrors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
                 }
                 foreach (var createPair in creates) {
                     var id = createPair.Key;
@@ -60,10 +61,10 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         private void CreateUpdateEntitiesResult(
-            Dictionary<string, EntityValue>     entities,
+            Dictionary<JsonKey, EntityValue>    entities,
             TaskResult                          result,
             List<WriteTask>                     writeTasks,
-            IDictionary<string, EntityError>    writeErrors)
+            IDictionary<JsonKey, EntityError>   writeErrors)
         {
             if (result is TaskErrorResult taskError) {
                 foreach (var writeTask in writeTasks) {
@@ -173,7 +174,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
-        private void AddEntityResponseError(string id, Dictionary<string, EntityValue> entities, ref TaskErrorInfo entityErrorInfo) {
+        private void AddEntityResponseError(JsonKey id, Dictionary<JsonKey, EntityValue> entities, ref TaskErrorInfo entityErrorInfo) {
             var responseError = new EntityError(EntityErrorType.ReadError, set.name, id, "requested entity missing in response results");
             entityErrorInfo.AddEntityError(responseError);
             var value = new EntityValue(responseError); 
@@ -266,7 +267,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                     patchTask.state.SetError(new TaskErrorInfo(taskError));
                 }
                 if (patchErrors == NoErrors) {
-                    patchErrors = new Dictionary<string, EntityError>();
+                    patchErrors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
                 }
                 foreach (var patchPair in patches) {
                     var id = patchPair.Key;

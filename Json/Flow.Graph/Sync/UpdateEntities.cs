@@ -11,8 +11,8 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task -----------------------------------
     public class UpdateEntities : DatabaseTask
     {
-        [Fri.Required]  public  string                          container;
-        [Fri.Required]  public  Dictionary<string, EntityValue> entities;
+        [Fri.Required]  public  string                              container;
+        [Fri.Required]  public  Dictionary<JsonKey, EntityValue>    entities = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
         
         internal override       TaskType                        TaskType => TaskType.update;
         public   override       string                          TaskName => $"container: '{container}'";
@@ -53,8 +53,8 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- task result -----------------------------------
     public class UpdateEntitiesResult : TaskResult, ICommandResult
     {
-        public              CommandError                    Error { get; set; }
-        [Fri.Ignore] public Dictionary<string, EntityError> updateErrors;
+        public              CommandError                        Error { get; set; }
+        [Fri.Ignore] public Dictionary<JsonKey, EntityError>    updateErrors;
 
         internal override   TaskType                        TaskType => TaskType.update;
     }

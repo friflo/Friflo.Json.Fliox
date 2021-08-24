@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 // ReSharper disable JoinNullCheckWithUsage
@@ -13,7 +14,7 @@ namespace Friflo.Json.Flow.Graph.Internal
     // --- PeerEntity<>
     internal class PeerEntity<T> : PeerEntity where T : class
     {
-        internal  readonly  string          id;      // never null
+        internal  readonly  JsonKey         id;      // never null
         private             T               entity;
         internal            EntityError     error;
         
@@ -24,17 +25,17 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal            T               PatchSource     { get; private set; }
         internal            T               NextPatchSource { get; private set; }
 
-        public   override   string          ToString() => id;
+        public   override   string          ToString() => id.AsString();
         
-        internal PeerEntity(T entity, string id) {
+        internal PeerEntity(T entity, JsonKey id) {
             if (entity == null)
                 throw new NullReferenceException($"entity must not be null. Type: {typeof(T)}");
             this.entity = entity;
             this.id     = id;
         }
         
-        internal PeerEntity(string id) {
-            if (id == null)
+        internal PeerEntity(JsonKey id) {
+            if (id.IsNull())
                 throw new NullReferenceException($"id must not be null. Type: {typeof(T)}");
             this.id = id;
         }

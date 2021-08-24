@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Friflo.Json.Flow.Graph.Internal;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
@@ -16,7 +17,7 @@ namespace Friflo.Json.Flow.Graph
         public   abstract override  string      Details { get; }
         internal abstract override  TaskState   State   { get; }
 
-        internal abstract void SetFindResult(Dictionary<TKey, T> values, Dictionary<string, EntityValue> entities);
+        internal abstract void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -36,7 +37,7 @@ namespace Friflo.Json.Flow.Graph
             this.key     = key;
         }
         
-        internal override void SetFindResult(Dictionary<TKey, T> values, Dictionary<string, EntityValue> entities) {
+        internal override void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities) {
             TaskErrorInfo error = new TaskErrorInfo();
             var id = Ref<TKey,T>.EntityKey.KeyToId(key);
             var entityError = entities[id].Error;
@@ -73,7 +74,7 @@ namespace Friflo.Json.Flow.Graph
             this.keys    = keys.ToHashSet();
         }
         
-        internal override void SetFindResult(Dictionary<TKey, T> values, Dictionary<string, EntityValue> entities) {
+        internal override void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities) {
             TaskErrorInfo error = new TaskErrorInfo();
             foreach (var key in keys) {
                 var id = Ref<TKey,T>.EntityKey.KeyToId(key);

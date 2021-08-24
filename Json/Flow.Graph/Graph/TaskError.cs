@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph.Internal;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 
 namespace Friflo.Json.Flow.Graph
@@ -48,7 +49,7 @@ namespace Friflo.Json.Flow.Graph
     public class TaskError {
         public   readonly   TaskErrorType                       type;
         /// The entities caused that task failed. Return empty dictionary in case of no entity errors. Is never null.
-        public   readonly   IDictionary<string, EntityError>    entityErrors;
+        public   readonly   IDictionary<JsonKey, EntityError>   entityErrors;
         /// Return a single line error message. Is never null.
         public   readonly   string                              taskMessage;
         /// Return the stacktrace for an <see cref="TaskErrorType.UnhandledException"/> if provided. Otherwise null.
@@ -57,7 +58,7 @@ namespace Friflo.Json.Flow.Graph
         public              string                              Message     => GetMessage(false);
         public   override   string                              ToString()  => GetMessage(true);
        
-        private static readonly IDictionary<string, EntityError> NoErrors = new EmptyDictionary<string, EntityError>();
+        private static readonly IDictionary<JsonKey, EntityError> NoErrors = new EmptyDictionary<JsonKey, EntityError>();
 
         internal TaskError(TaskErrorResult error) {
             type                = TaskToSyncError(error.type);
@@ -66,7 +67,7 @@ namespace Friflo.Json.Flow.Graph
             entityErrors        = NoErrors;
         }
 
-        internal TaskError(IDictionary<string, EntityError> entityErrors) {
+        internal TaskError(IDictionary<JsonKey, EntityError> entityErrors) {
             this.entityErrors   = entityErrors ?? throw new ArgumentException("entityErrors must not be null");
             type                = TaskErrorType.EntityErrors;
             taskMessage         = "EntityErrors";

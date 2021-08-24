@@ -9,7 +9,7 @@ namespace Friflo.Json.Flow.Sync
     // ----------------------------------- sub task -----------------------------------
     public class ReadEntities
     {
-        [Fri.Required]  public  HashSet<string>                 ids;
+        [Fri.Required]  public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<References>                references;
     }
     
@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Sync
         [Fri.Required]  public  List<ReferencesResult>          references;
                         public  CommandError                    Error { get; set; }
 
-        [Fri.Ignore]    public  Dictionary<string,EntityValue>  entities;
+        [Fri.Ignore]    public  Dictionary<JsonKey,EntityValue> entities;
         
         /// <summary>
         /// Validate all <see cref="EntityValue.value"/>'s in the result set.

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Flow.Graph.Internal;
+using Friflo.Json.Flow.Mapper;
 
 namespace Friflo.Json.Flow.Graph
 {
@@ -11,7 +12,7 @@ namespace Friflo.Json.Flow.Graph
         internal            TaskState   state;
         internal override   TaskState   State      => state;
 
-        internal abstract void GetIds(List<string> ids);
+        internal abstract void GetIds(List<JsonKey> ids);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -50,7 +51,7 @@ namespace Friflo.Json.Flow.Graph
             this.entities.AddRange(entities);
         }
 
-        internal override void GetIds(List<string> ids) {
+        internal override void GetIds(List<JsonKey> ids) {
             foreach (var entity in entities) {
                 var id = set.GetEntityId(entity);
                 ids.Add(id);    

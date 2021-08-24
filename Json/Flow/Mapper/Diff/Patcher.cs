@@ -57,7 +57,7 @@ namespace Friflo.Json.Flow.Mapper.Diff
         }
 
         public bool IsMember(JsonKey key) {
-            return key.Equals(pathNodes[pathPos]);
+            return key.IsEqual(pathNodes[pathPos]);
         }
 
         public NodeAction DescendMember(TypeMapper typeMapper, object member, out object value) {

@@ -4,6 +4,7 @@
 using System.Collections;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Schema.Native;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
@@ -55,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             IsFalse(sync.Success);
             IsFalse(createTask.Success);
             var errors = createTask.Error.entityErrors;
-            AreEqual("Required property must not be null. at Article > name, pos: 40", errors["article-missing-name"].message);
+            AreEqual("Required property must not be null. at Article > name, pos: 40", errors[new JsonKey("article-missing-name")].message);
             const string expectError = @"EntityErrors ~ count: 3
 | WriteError: Article 'article-incorrect-type', Incorrect type. was: 123, expect: string at Article > name, pos: 41
 | WriteError: Article 'article-missing-id', Missing required fields: [id, name] at Article > (root), pos: 2
@@ -70,7 +71,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             IsFalse(sync.Success);
             IsFalse(updateTask.Success);
             errors = updateTask.Error.entityErrors;
-            AreEqual("Required property must not be null. at Article > name, pos: 40", errors["article-missing-name"].message);
+            AreEqual("Required property must not be null. at Article > name, pos: 40", errors[new JsonKey("article-missing-name")].message);
             AreEqual(expectError, updateTask.Error.Message);
             
             
