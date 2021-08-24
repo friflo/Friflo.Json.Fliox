@@ -2,21 +2,23 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Flow.Mapper.Map.Key;
 
 namespace Friflo.Json.Flow.Mapper.Map
 {
     public class KeyMapper
     {
-        private static readonly StringKeyMapper StringKeyMapper = new StringKeyMapper();
-        private static readonly LongKeyMapper   LongKeyMapper   = new LongKeyMapper();
+        internal static readonly Dictionary<Type, KeyMapper> KeyMappers  = new Dictionary<Type, KeyMapper>() {
+            { typeof(string),   new StringKeyMapper() },
+            { typeof(long),     new LongKeyMapper()   },
+            { typeof(JsonKey),  new JsonKeyMapper()   },
+        };
             
         public static KeyMapper GetKeyMapper<TKey>() {
             var keyType = typeof(TKey);
-            if (keyType == typeof(string))
-                return StringKeyMapper;
-            if (keyType == typeof(long))
-                return LongKeyMapper;
+            if (KeyMappers.TryGetValue(keyType, out KeyMapper keyMapper))
+                return keyMapper;
             throw new InvalidOperationException($"unsupported key Type: {keyType.FullName}");
         }
     }

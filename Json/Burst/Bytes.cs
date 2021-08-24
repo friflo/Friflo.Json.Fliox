@@ -161,6 +161,17 @@ namespace Friflo.Json.Burst
             }
             return -1;
         }
+        
+        public bool IsIntegral() {
+            ref var str = ref buffer.array;
+            for (int i = start; i < end; i++) {
+                byte c = str[i];
+                if ('0' <= c && c <= '9')
+                    continue;
+                return false;
+            }
+            return true;
+        }
 
 #if JSON_BURST
         public bool IsEqual32(in Str32 value) {
