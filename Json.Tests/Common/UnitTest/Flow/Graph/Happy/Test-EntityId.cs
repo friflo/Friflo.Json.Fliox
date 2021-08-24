@@ -32,6 +32,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 await AssertEntityIdTests (database, typeStore);
             }
         }
+        
+        [UnityTest] public IEnumerator EntityIdCoroutineLoopback() { yield return RunAsync.Await(AssertEntityIdLoopback(), i => Logger.Info("--- " + i)); }
+        [Test]      public async Task  EntityIdAsyncLoopback() { await AssertEntityIdLoopback(); }
+        
+        private static async Task AssertEntityIdLoopback() {
+            using (var _            = Pools.SharedPools) // for LeakTestsFixture
+            using (var typeStore    = new TypeStore())
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/EntityIdStore"))
+            using (var database     = new LoopbackDatabase(fileDatabase))
+            {
+                await AssertEntityIdTests (database, typeStore);
+            }
+        }
+        
+        
             
         private static async Task AssertEntityIdTests(EntityDatabase database, TypeStore typeStore) {
             var entityRef = new EntityRefs { id = "entity-ref-1" };

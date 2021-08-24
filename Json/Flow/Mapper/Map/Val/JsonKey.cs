@@ -49,11 +49,12 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             ref var parser = ref reader.parser;
             var ev = parser.Event;
             switch (ev) {
-                case JsonEvent.ValueNumber:
-                    var lng = parser.ValueAsLong(out success);
-                    return new JsonKey(lng);
                 case JsonEvent.ValueString:
                     success = true;
+                    if (parser.value.IsIntegral()) {
+                        var lng = parser.ValueAsLong(out success);
+                        return new JsonKey(lng);
+                    }
                     return new JsonKey(parser.value.ToString());
                 default:
                     throw new InvalidOperationException($"JsonKey - unexpected event: {ev}");
