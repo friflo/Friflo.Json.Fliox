@@ -36,7 +36,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Key
             return key;
         }
         
-        public override JsonKey      ToKey          (JsonKey key) {
+        public override JsonKey      ToKey          (in JsonKey key) {
             return key;
         }
     }

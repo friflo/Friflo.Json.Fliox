@@ -161,12 +161,12 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
         internal virtual    bool    IsKeyNull (T entity) => false;
 
         internal abstract   JsonKey GetId  (T entity);
-        internal abstract   void    SetId  (T entity, JsonKey id);
+        internal abstract   void    SetId  (T entity, in JsonKey id);
     }
     
     internal abstract class EntityKey<TKey, T> : EntityId<T> where T : class {
         internal abstract   JsonKey KeyToId (TKey key);
-        internal abstract   TKey    IdToKey (JsonKey key);        
+        internal abstract   TKey    IdToKey (in JsonKey key);        
         
         internal abstract   TKey    GetKey  (T entity);
         internal abstract   void    SetKey  (T entity, TKey id);
@@ -176,7 +176,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             return KeyToId(key);
         }
         
-        internal override   void    SetId   (T entity, JsonKey id) {
+        internal override   void    SetId   (T entity, in JsonKey id) {
             TKey key = IdToKey(id);
             SetKey(entity, key);
         }

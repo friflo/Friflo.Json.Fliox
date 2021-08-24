@@ -44,7 +44,7 @@ namespace Friflo.Json.Flow.Mapper
                     throw new InvalidOperationException($"invalid JsonKey: {ToString()}");
             }
         }
-        public bool IsEqual(JsonKey other) {
+        public bool IsEqual(in JsonKey other) {
             if (type != other.type)
                 return false;
             
@@ -74,7 +74,7 @@ namespace Friflo.Json.Flow.Mapper
         public string AsString() {
             switch (type) {
                 case KeyType.String:    return str;
-                case KeyType.Long:      return lng.ToString();
+                case KeyType.Long:      return str ?? lng.ToString();
                 default:                return "None";
             }
         }

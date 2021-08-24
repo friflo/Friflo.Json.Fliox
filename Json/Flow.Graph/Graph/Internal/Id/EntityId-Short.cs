@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             fieldSet    = GetFieldSet<T, short>(field);
         }
 
-        internal override short IdToKey(JsonKey id) {
+        internal override short IdToKey(in JsonKey id) {
             return (short)id.AsLong();
         }
 
@@ -53,7 +53,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             propertySet = (Action<T, short>) Delegate.CreateDelegate (typeof(Action<T, short>), idSetMethod);
         }
 
-        internal override short IdToKey(JsonKey id) {
+        internal override short IdToKey(in JsonKey id) {
             return (short)id.AsLong();
         }
 

@@ -117,7 +117,7 @@ namespace Friflo.Json.Flow.Mapper.Diff
             path.Add(item);
         }
         
-        public void PushKey(TypeMapper mapper, JsonKey key) {
+        public void PushKey(TypeMapper mapper, in JsonKey key) {
             var item = new TypeNode(NodeType.Member, key, -1, mapper);
             path.Add(item);
         }

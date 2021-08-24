@@ -28,7 +28,7 @@ namespace Friflo.Json.Flow.Sync
 
         public EntityError() { } // required for TypeMapper
 
-        public EntityError(EntityErrorType type, string container, JsonKey id, string message) {
+        public EntityError(EntityErrorType type, string container, in JsonKey id, string message) {
             this.type       = type;
             this.container  = container;
             this.id         = id;

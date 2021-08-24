@@ -27,14 +27,14 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         public   override   string          ToString() => id.AsString();
         
-        internal PeerEntity(T entity, JsonKey id) {
+        internal PeerEntity(T entity, in JsonKey id) {
             if (entity == null)
                 throw new NullReferenceException($"entity must not be null. Type: {typeof(T)}");
             this.entity = entity;
             this.id     = id;
         }
         
-        internal PeerEntity(JsonKey id) {
+        internal PeerEntity(in JsonKey id) {
             if (id.IsNull())
                 throw new NullReferenceException($"id must not be null. Type: {typeof(T)}");
             this.id = id;

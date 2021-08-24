@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Key
             return new JsonKey(key);
         }
         
-        public override long      ToKey          (JsonKey key) {
+        public override long      ToKey          (in JsonKey key) {
             return key.AsLong();
         }
     }

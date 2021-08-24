@@ -172,7 +172,7 @@ namespace Friflo.Json.Flow.Mapper.Diff
         public   readonly   int         index;
         public   readonly   TypeMapper  typeMapper;
 
-        internal TypeNode(NodeType nodeType, JsonKey name, int index, TypeMapper typeMapper) {
+        internal TypeNode(NodeType nodeType, in JsonKey name, int index, TypeMapper typeMapper) {
             this.nodeType   = nodeType;
             this.name       = name;
             this.index      = index;

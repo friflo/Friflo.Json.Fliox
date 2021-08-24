@@ -56,7 +56,7 @@ namespace Friflo.Json.Flow.Mapper.Diff
             mapper.PatchObject(this, root);
         }
 
-        public bool IsMember(JsonKey key) {
+        public bool IsMember(in JsonKey key) {
             return key.IsEqual(pathNodes[pathPos]);
         }
 

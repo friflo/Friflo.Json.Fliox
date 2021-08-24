@@ -20,7 +20,7 @@ namespace Friflo.Json.Flow.Database
         private             JsonParser      parser;
         private             Bytes           idKey = new Bytes("id");
         
-        public bool IsValidEntity(string json, JsonKey id, out string error) {
+        public bool IsValidEntity(string json, in JsonKey id, out string error) {
             jsonBytes.Clear();
             jsonBytes.AppendString(json);
             parser.InitParser(jsonBytes);

@@ -174,7 +174,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
-        private void AddEntityResponseError(JsonKey id, Dictionary<JsonKey, EntityValue> entities, ref TaskErrorInfo entityErrorInfo) {
+        private void AddEntityResponseError(in JsonKey id, Dictionary<JsonKey, EntityValue> entities, ref TaskErrorInfo entityErrorInfo) {
             var responseError = new EntityError(EntityErrorType.ReadError, set.name, id, "requested entity missing in response results");
             entityErrorInfo.AddEntityError(responseError);
             var value = new EntityValue(responseError); 

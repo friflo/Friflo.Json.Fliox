@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Graph
         internal            SetIntern<T>        intern;
         internal            SyncPeerSet<T>      syncPeerSet;
         
-        internal  abstract  PeerEntity<T>       GetPeerById (JsonKey id);
+        internal  abstract  PeerEntity<T>       GetPeerById (in JsonKey id);
         internal  abstract  PeerEntity<T>       GetPeerByEntity(T entity);
         
         internal  abstract  PeerEntity<T>       CreatePeer (T entity);
@@ -323,7 +323,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         // ------------------------------------------- internals -------------------------------------------
-        private static void SetEntityId (T entity, JsonKey id) {
+        private static void SetEntityId (T entity, in JsonKey id) {
             Ref<TKey, T>.EntityKey.SetId(entity, id);
         }
         
@@ -377,13 +377,13 @@ namespace Friflo.Json.Flow.Graph
             return peer;
         }
         
-        internal void DeletePeer (JsonKey id) {
+        internal void DeletePeer (in JsonKey id) {
             var key = Ref<TKey,T>.EntityKey.IdToKey(id);
             peers.Remove(key);
         }
         
         [Conditional("DEBUG")]
-        private static void AssertId(TKey key, JsonKey id) {
+        private static void AssertId(TKey key, in JsonKey id) {
             var expect = Ref<TKey,T>.EntityKey.KeyToId(key);
             if (!id.IsEqual(expect))
                 throw new InvalidOperationException($"assigned invalid id: {id}, expect: {expect}");
@@ -418,7 +418,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         /// use <see cref="GetPeerByKey"/> is possible
-        internal override PeerEntity<T> GetPeerById(JsonKey id) {
+        internal override PeerEntity<T> GetPeerById(in JsonKey id) {
             var key = Ref<TKey,T>.EntityKey.IdToKey(id);
             if (peers.TryGetValue(key, out PeerEntity<T> peer)) {
                 return peer;

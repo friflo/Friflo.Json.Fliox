@@ -25,14 +25,14 @@ namespace Friflo.Json.Flow.Graph
 
         internal LogTask() { }
 
-        internal void AddPatch(SyncSet sync, JsonKey id) {
+        internal void AddPatch(SyncSet sync, in JsonKey id) {
             if (id.IsNull())
                 throw new ArgumentException("id must not be null");
             var change = new LogChange(sync, id);
             patches.Add(change);
         }
         
-        internal void AddCreate(SyncSet sync, JsonKey id) {
+        internal void AddCreate(SyncSet sync, in JsonKey id) {
             if (id.IsNull())
                 throw new ArgumentException("id must not be null");
             var change = new LogChange(sync, id);
@@ -63,7 +63,7 @@ namespace Friflo.Json.Flow.Graph
         internal readonly   SyncSet     sync;
         internal readonly   JsonKey     id;
 
-        internal LogChange(SyncSet sync, JsonKey id) {
+        internal LogChange(SyncSet sync, in JsonKey id) {
             this.sync   = sync;
             this.id     = id;
         }
