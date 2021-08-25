@@ -241,8 +241,9 @@ namespace Friflo.Json.Flow.Mapper.Map
         }
         
         public void WriteGuid (in Guid guid) {
-            // writer.WriteString(key.ToString()); allocate a string
-            
+#if UNITY_5_3_OR_NEWER
+            WriteString(guid.ToString());
+#else
             var span = new Span<char>(charBuf);
             if (!guid.TryFormat(span, out int len))
                 throw new InvalidOperationException($"Failed writing Guid: {guid}");
@@ -251,6 +252,7 @@ namespace Friflo.Json.Flow.Mapper.Map
                 bytes.AppendChar(charBuf[n]);
             }
             bytes.AppendChar('\"');
+#endif
         }
     }
 }

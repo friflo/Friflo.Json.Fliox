@@ -94,6 +94,10 @@ namespace Friflo.Json.Flow.Mapper.Map
         }
         
         public static bool TryParseGuidBytes(ref Bytes bytes, char[] charBuf, out Guid guid) {
+#if UNITY_5_3_OR_NEWER
+            guid = new Guid(bytes.ToString());
+            return true;
+#else
             var array   = bytes.buffer.array;
             int len     = bytes.end - bytes.start;
             int offset  = bytes.start;
@@ -105,6 +109,7 @@ namespace Friflo.Json.Flow.Mapper.Map
                 return true;
             }
             return false;
+#endif
         }
     }
 }
