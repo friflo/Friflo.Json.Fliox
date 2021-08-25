@@ -76,7 +76,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
             var reusedListShort =   new List<short>();
             var reusedListByte =    new List<byte>();
             var reusedListBool =    new List<bool>();
-            
+
             var reusedListNulDbl =     new List<double?>();
             var reusedListNulFlt =     new List<float?>();
             var reusedListNulLng =     new List<long?>();
@@ -84,6 +84,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
             var reusedListNulShort =   new List<short?>();
             var reusedListNulByte =    new List<byte?>();
             var reusedListNulBool =    new List<bool?>();
+            
+            var reusedDictionaryInt = new Dictionary<int,    int>();
+            // var reusedDictionaryStr = new Dictionary<string, int>(); // allocate memory
  
             var hello =         "\"hello\"";
             var @double =       "12.5";
@@ -96,6 +99,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
             var arrFlt =        "[11.5,12.5,13.5]";
             var arrNum =        "[1,2,3]";
             var arrBln =        "[true, false]";
+            
+            var mapInt =        "{\"20\": 123 }";
 
              // --- class/map
             var testClass =     testClassJson; 
@@ -175,17 +180,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                     IsTrue(SomeEnum.Value1 == reusedClass.someEnum);
                     IsTrue(SomeEnum.Value2 == reusedClass.testChild.someEnum);
                     AreEqual(42, reusedClass.key);
+                    
+                    // ------------------------------ Dictionary<,> ----------------------------
+                    NotNull(enc.ReadTo(mapInt, reusedDictionaryInt));
+                    AreEqual(123, reusedDictionaryInt[20]);
+                    
+                    // NotNull(enc.ReadTo(mapInt, reusedDictionaryStr));
+                    // AreEqual(123, reusedDictionaryStr["20"]);
 
 
                     // Ensure minimum required type lookups
                     if (n > 1) {
-                        AreEqual( 41, enc.TypeCache.LookupCount);
+                        AreEqual( 42, enc.TypeCache.LookupCount);
                         AreEqual(  0, enc.TypeCache.StoreLookupCount);
                         AreEqual(  0, enc.TypeCache.TypeCreationCount);
                     }
                     enc.TypeCache.ClearCounts();
                 }
-                AreEqual(587000,   enc.ProcessedBytes);
+                AreEqual(599000,   enc.ProcessedBytes);
             }
             memLog.AssertNoAllocations();
         }
