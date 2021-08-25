@@ -61,33 +61,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
             
             var reusedClass = new TestClass();
 
-            var reusedArrDbl =      new double[3];
-            var reusedArrFlt =      new float[3];
-            var reusedArrLng =      new long[3];
-            var reusedArrInt =      new int[3];
-            var reusedArrShort =    new short[3];
-            var reusedArrByte =     new byte[3];
-            var reusedArrBool =     new bool[2];
+            var reusedArrDbl =          new double[3];
+            var reusedArrFlt =          new float[3];
+            var reusedArrLng =          new long[3];
+            var reusedArrInt =          new int[3];
+            var reusedArrShort =        new short[3];
+            var reusedArrByte =         new byte[3];
+            var reusedArrBool =         new bool[2];
             
-            var reusedListDbl =     new List<double>();
-            var reusedListFlt =     new List<float>();
-            var reusedListLng =     new List<long>();
-            var reusedListInt =     new List<int>();
-            var reusedListShort =   new List<short>();
-            var reusedListByte =    new List<byte>();
-            var reusedListBool =    new List<bool>();
+            var reusedListDbl =         new List<double>();
+            var reusedListFlt =         new List<float>();
+            var reusedListLng =         new List<long>();
+            var reusedListInt =         new List<int>();
+            var reusedListShort =       new List<short>();
+            var reusedListByte =        new List<byte>();
+            var reusedListBool =        new List<bool>();
 
-            var reusedListNulDbl =     new List<double?>();
-            var reusedListNulFlt =     new List<float?>();
-            var reusedListNulLng =     new List<long?>();
-            var reusedListNulInt =     new List<int?>();
-            var reusedListNulShort =   new List<short?>();
-            var reusedListNulByte =    new List<byte?>();
-            var reusedListNulBool =    new List<bool?>();
+            var reusedListNulDbl =      new List<double?>();
+            var reusedListNulFlt =      new List<float?>();
+            var reusedListNulLng =      new List<long?>();
+            var reusedListNulInt =      new List<int?>();
+            var reusedListNulShort =    new List<short?>();
+            var reusedListNulByte =     new List<byte?>();
+            var reusedListNulBool =     new List<bool?>();
             
-            var reusedDictionaryInt = new Dictionary<int,    int>();
-            var reusedDictionaryGuid= new Dictionary<Guid,   int>();
+            var reusedDictionaryInt =   new Dictionary<int,    int>();
+            var reusedDictionaryGuid =  new Dictionary<Guid,   int>();
             // var reusedDictionaryStr = new Dictionary<string, int>(); // allocate memory
+            
+            var reusedHashSet =         new HashSet<int>();
  
             var hello =         "\"hello\"";
             var @double =       "12.5";
@@ -194,17 +196,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                     
                     // NotNull(enc.ReadTo(mapInt, reusedDictionaryStr));
                     // AreEqual(123, reusedDictionaryStr["20"]);
+                    
+                    // -------------------------------- HashSet<> ------------------------------
+                    NotNull(enc.ReadTo(arrNum, reusedHashSet));
+                    IsTrue(reusedHashSet.Contains(1));
 
 
                     // Ensure minimum required type lookups
                     if (n > 1) {
-                        AreEqual( 43, enc.TypeCache.LookupCount);
+                        AreEqual( 44, enc.TypeCache.LookupCount);
                         AreEqual(  0, enc.TypeCache.StoreLookupCount);
                         AreEqual(  0, enc.TypeCache.TypeCreationCount);
                     }
                     enc.TypeCache.ClearCounts();
                 }
-                AreEqual(645000,   enc.ProcessedBytes);
+                AreEqual(652000,   enc.ProcessedBytes);
             }
             memLog.AssertNoAllocations();
         }
