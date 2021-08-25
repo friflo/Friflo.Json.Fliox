@@ -31,7 +31,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
         }
 
         public override void Write(ref Writer writer, Guid value) {
-            writer.WriteString(value.ToString());
+            writer.WriteGuid(value);
         }
 
         // ReSharper disable once RedundantAssignment
@@ -56,7 +56,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
 
         public override void Write(ref Writer writer, Guid? value) {
             if (value.HasValue)
-                writer.WriteString(value.Value.ToString());
+                writer.WriteGuid(value.Value);
             else
                 writer.AppendNull();
         }
