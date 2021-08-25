@@ -93,21 +93,8 @@ namespace Friflo.Json.Flow.Mapper
         Long
     }
     
-    internal readonly struct KeyDictionary<T>
-    {
-        private readonly Dictionary<JsonKey, T> dict;
-            
-        internal KeyDictionary(Dictionary<JsonKey, T> dict = null) {
-            if (dict == null) {
-                dict = new Dictionary<JsonKey, T>(JsonKey.Equality);
-            }
-            this.dict = dict;
-        }
-    }
-    
     public class KeyComparer : IComparer<JsonKey>
     {
-        
         public int Compare(JsonKey x, JsonKey y) {
             int dif = x.type - y.type;
             if (dif != 0)
