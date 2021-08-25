@@ -127,6 +127,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
             var mapMapNum =  "{\"key\":{\"key\":42}}";
             var mapNum2 =    "{\"str\":44}";
             var intMapNum =  "{\"123\":42}";
+            var guidMapNum =  "{\"87db6552-a99d-4d53-9b20-8cc797db2b8f\":42}";
             var invalid =    "invalid";
                 
             using (var typeStore    = new TypeStore())
@@ -484,6 +485,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                         var expect = new Dictionary<byte, int> {{ 123, 42 }};
                         AreEqual(expect, Read<Dictionary<byte, int>>(intMapNum));
                     }
+                    // --- map - key type: Guid
+                    {
+                        var expect = new Dictionary<Guid, int> {{ new Guid("87db6552-a99d-4d53-9b20-8cc797db2b8f"), 42 }};
+                        AreEqual(expect, Read<Dictionary<Guid, int>>(guidMapNum));
+                    }
                     // --- map - key type: JsonKey
                     {
                         var expect = new Dictionary<JsonKey, int> (JsonKey.Equality){{ new JsonKey(123), 42 }};
@@ -546,7 +552,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
 
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual(136, enc.TypeCache.LookupCount);
+                        AreEqual(137, enc.TypeCache.LookupCount);
                         AreEqual(  0, enc.TypeCache.StoreLookupCount);
                         AreEqual(  0, enc.TypeCache.TypeCreationCount);
                     }
