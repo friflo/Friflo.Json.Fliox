@@ -352,7 +352,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         private void DeleteEntities(List<DatabaseTask> tasks) {
             if (deletes.Count == 0)
                 return;
-            var ids = new HashSet<JsonKey>(deletes.Count, JsonKey.Equality);
+            var ids = Helper.CreateHashSet (deletes.Count, JsonKey.Equality);
             foreach (var key in deletes) {
                 var id = Ref<TKey, T>.EntityKey.KeyToId(key);
                 ids.Add(id);

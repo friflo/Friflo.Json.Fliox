@@ -15,6 +15,14 @@ namespace System.Collections.Generic
 #endif
         }
         
+        public static HashSet<T> CreateHashSet<T>(int capacity, IEqualityComparer<T> comparer) {
+#if UNITY_5_3_OR_NEWER
+            return new HashSet<T>(comparer);
+#else
+            return new HashSet<T>(capacity, comparer);
+#endif
+        }
+        
         public static T First<T>(this HashSet<T> hashSet) {
             // ReSharper disable once GenericEnumeratorNotDisposed - HashSet<T>.Dispose() does nothing
             var enumerator = hashSet.GetEnumerator();
@@ -58,13 +66,25 @@ namespace System.Linq
 {
     public static class UnityExtensionLinq
     {
-        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> collection) {
+        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source) {
             // return new HashSet<T>(collection, null); todo use this
             var hashSet = new HashSet<T>();
-            foreach (var element in collection) {
+            foreach (var element in source) {
                 hashSet.Add(element);
             }
             return hashSet;
+        }
+
+        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer)
+        {
+            return new HashSet<T>(source, comparer);
+            /*
+            var hashSet = new HashSet<T>(comparer);
+            foreach (var element in source) {
+                hashSet.Add(element);
+            }
+            return hashSet;
+            */
         }
     }
 }
