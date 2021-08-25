@@ -9,12 +9,12 @@ namespace Friflo.Json.Flow.Mapper.Map.Key
     {
         public override void WriteKey (ref Writer writer, JsonKey key) {
             switch (key.type) {
-                case KeyType.Long:
+                case JsonKeyType.Long:
                     writer.bytes.AppendChar('\"');
                     writer.format.AppendLong(ref writer.bytes, key.lng);
                     writer.bytes.AppendChar('\"');
                     break;
-                case KeyType.String:
+                case JsonKeyType.String:
                     writer.WriteString(key.str);
                     break;
                 default:

@@ -28,15 +28,15 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
 
         public override void Write(ref Writer writer, JsonKey value) {
             switch (value.type) {
-                case KeyType.Long:
+                case JsonKeyType.Long:
                     writer.bytes.AppendChar('\"');
                     writer.format.AppendLong(ref writer.bytes, value.lng);
                     writer.bytes.AppendChar('\"');
                     break;
-                case KeyType.String:
+                case JsonKeyType.String:
                     writer.WriteString(value.str);
                     break;
-                case KeyType.None:
+                case JsonKeyType.None:
                     writer.AppendNull();
                     break;
             }
