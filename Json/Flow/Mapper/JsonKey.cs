@@ -57,17 +57,11 @@ namespace Friflo.Json.Flow.Mapper
         }
 
         public override bool Equals(object obj) {
-            throw new NotImplementedException("not implemented by intention. Use IsEqual() or JsonKey.Equality comparer");
+            throw new NotImplementedException("not implemented by intention to avoid boxing. Use IsEqual() or JsonKey.Equality comparer");
         }
 
         public override int GetHashCode() {
-            switch (type) {
-                case JsonKeyType.String:    return str.GetHashCode();
-                case JsonKeyType.Long:      return lng.GetHashCode();
-                case JsonKeyType.None:      return 0;
-                default:
-                    throw new InvalidOperationException("cannot be reached");
-            }
+            throw new NotImplementedException("not implemented by intention to avoid boxing. Use JsonKey.Equality comparer");
         }
 
         public string AsString() {
