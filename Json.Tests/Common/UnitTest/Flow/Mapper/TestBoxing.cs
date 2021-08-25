@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
             
             var start   = GC.GetAllocatedBytesForCurrentThread();
             var equal   = false;   
-            for (int n = 0; n < 1000000; n++)
+            for (int n = 0; n < 100; n++)
                 equal = generic.IsEqual(0);
             var diff    = GC.GetAllocatedBytesForCurrentThread() - start;
             
