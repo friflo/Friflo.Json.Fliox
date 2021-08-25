@@ -12,6 +12,9 @@ namespace Friflo.Json.Flow.Mapper.Map
         internal static readonly Dictionary<Type, KeyMapper> KeyMappers  = new Dictionary<Type, KeyMapper>() {
             { typeof(string),   new StringKeyMapper() },
             { typeof(long),     new LongKeyMapper()   },
+            { typeof(int),      new IntKeyMapper()    },
+            { typeof(short),    new ShortKeyMapper()  },
+            { typeof(byte),     new ByteKeyMapper()   },
             { typeof(JsonKey),  new JsonKeyMapper()   },
         };
             

@@ -412,8 +412,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                     enc.Read<Dictionary<string, string>>(arrBln);
                     StringAssert.Contains("Cannot assign array to Dictionary. Expect:", enc.Error.msg.ToString());
                     {
-                        var e = Assert.Throws<NotSupportedException>(() => enc.Read<Dictionary<int, string>>(mapStr));
-                        AreEqual("Type not supported. Found no TypeMapper in TypeStore Type: System.Collections.Generic.Dictionary`2[System.Int32,System.String]", e.Message);              
+                        var e = Assert.Throws<NotSupportedException>(() => enc.Read<Dictionary<UnknownKey, string>>(mapStr));
+                        AreEqual("Type not supported. Found no TypeMapper in TypeStore Type: System.Collections.Generic.Dictionary`2[Friflo.Json.Tests.Common.UnitTest.Flow.Mapper.UnknownKey,System.String]", e.Message);              
                     }
                     
                     // --- maps - value type: integral 
@@ -468,6 +468,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                     {
                         var expect = new Dictionary<long, int> {{ 123, 42 }};
                         AreEqual(expect, Read<Dictionary<long, int>>(intMapNum));
+                    }
+                    // --- map - key type: int
+                    {
+                        var expect = new Dictionary<int, int> {{ 123, 42 }};
+                        AreEqual(expect, Read<Dictionary<int, int>>(intMapNum));
+                    }
+                    // --- map - key type: short
+                    {
+                        var expect = new Dictionary<short, int> {{ 123, 42 }};
+                        AreEqual(expect, Read<Dictionary<short, int>>(intMapNum));
+                    }
+                    // --- map - key type: byte
+                    {
+                        var expect = new Dictionary<byte, int> {{ 123, 42 }};
+                        AreEqual(expect, Read<Dictionary<byte, int>>(intMapNum));
                     }
                     // --- map - key type: JsonKey
                     {
@@ -531,7 +546,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
 
                     // Ensure minimum required type lookups
                     if (n > 0) {
-                        AreEqual(133, enc.TypeCache.LookupCount);
+                        AreEqual(136, enc.TypeCache.LookupCount);
                         AreEqual(  0, enc.TypeCache.StoreLookupCount);
                         AreEqual(  0, enc.TypeCache.TypeCreationCount);
                     }
@@ -577,7 +592,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
             AreEqual(value, writeResult);
             return result;
         }
-
-
     }
+    class UnknownKey {}
 }
