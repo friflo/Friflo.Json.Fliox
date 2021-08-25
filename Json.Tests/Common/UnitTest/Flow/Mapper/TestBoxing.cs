@@ -9,30 +9,41 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
 {
-    public class TestBoxing
+    public static class TestBoxing
     {
         [Test]
-        public void TestBoxingDictionary() {
+        public static void TestBoxingDictionaryJsonKey() {
             var dict = new Dictionary<JsonKey, int>(JsonKey.Equality);
-            var key = new JsonKey(1);
-            
-            dict.Add(key, 2);
+            for (int n = 0; n < 100; n++)
+                dict.Add(new JsonKey(n), n);    
+
             GC.Collect();
-            
+            LookupDictionaryJsonKey(dict, 2); // ensure subsequent calls dont allocate memory on heap
+
             var start   = GC.GetAllocatedBytesForCurrentThread();
-            var value   = dict[key];
+            LookupDictionaryJsonKey(dict, 100);
             var diff    = GC.GetAllocatedBytesForCurrentThread() - start;
+
+            Console.Out.WriteLine($"diff: {diff}");
             
-            // AreEqual(0, diff); // fails if running without debugger
-            AreEqual(2, value);
+            AreEqual(0, diff); // fails if running without debugger
+        }
+        
+        private static void LookupDictionaryJsonKey(Dictionary<JsonKey, int> dict, int count) {
+            for (int n = 0; n < count; n++) {
+                var key = new JsonKey(n);
+                dict.TryGetValue(key, out var value);
+            }
         }
         
         [Test]
-        public void TestNoBoxing() {
+        public static void TestNoBoxing() {
             var generic = new Generic<int>();
             
             var start   = GC.GetAllocatedBytesForCurrentThread();
-            var equal   = generic.IsEqual(0);
+            var equal   = false;   
+            for (int n = 0; n < 1000000; n++)
+                equal = generic.IsEqual(0);
             var diff    = GC.GetAllocatedBytesForCurrentThread() - start;
             
             AreEqual(0, diff);
