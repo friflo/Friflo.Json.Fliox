@@ -25,9 +25,9 @@ namespace Friflo.Json.Flow.Mapper.Map
     
     public abstract class KeyMapper<TKey> : KeyMapper
     {
-        public abstract void        WriteKey       (ref Writer writer, TKey key);
+        public abstract void        WriteKey       (ref Writer writer, in TKey key);
         public abstract TKey        ReadKey        (ref Reader reader, out bool success);
-        public abstract JsonKey     ToJsonKey      (TKey key);
+        public abstract JsonKey     ToJsonKey      (in TKey key);
         public abstract TKey        ToKey          (in JsonKey key);
     }
 }

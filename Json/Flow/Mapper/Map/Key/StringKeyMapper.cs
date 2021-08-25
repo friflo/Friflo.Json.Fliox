@@ -5,7 +5,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Key
 {
     public class StringKeyMapper : KeyMapper<string>
     {
-        public override void WriteKey (ref Writer writer, string key) {
+        public override void WriteKey (ref Writer writer, in string key) {
             writer.WriteString(key);
         }
         
@@ -14,7 +14,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Key
             return reader.parser.key.ToString();
         }
         
-        public override JsonKey     ToJsonKey      (string key) {
+        public override JsonKey     ToJsonKey      (in string key) {
             return new JsonKey(key);
         }
         

@@ -7,7 +7,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Key
 {
     public class JsonKeyMapper : KeyMapper<JsonKey>
     {
-        public override void WriteKey (ref Writer writer, JsonKey key) {
+        public override void WriteKey (ref Writer writer, in JsonKey key) {
             switch (key.type) {
                 case JsonKeyType.Long:
                     writer.bytes.AppendChar('\"');
@@ -32,7 +32,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Key
             return new JsonKey(parser.key.ToString());
         }
         
-        public override JsonKey     ToJsonKey      (JsonKey key) {
+        public override JsonKey     ToJsonKey      (in JsonKey key) {
             return key;
         }
         
