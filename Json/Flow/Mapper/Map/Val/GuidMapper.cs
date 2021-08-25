@@ -16,6 +16,20 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
                 return new NullableGuidMapper (config, type);
             return null;
         }
+        
+        public static bool TryParseGuidBytes(ref Bytes bytes, char[] charBuf, out Guid guid) {
+            var array   = bytes.buffer.array;
+            int len     = bytes.end - bytes.start;
+            int offset  = bytes.start;
+            for (int n = 0; n < len; n++) {
+                charBuf[n] = (char)array[offset + n];
+            }
+            var span = new Span<char>(charBuf, 0, len);
+            if (Guid.TryParse(span, out guid)) {
+                return true;
+            }
+            return false;
+        }
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -39,7 +53,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             ref var value = ref reader.parser.value;
             if (reader.parser.Event != JsonEvent.ValueString)
                 return reader.HandleEvent(this, out success);
-            if (!Guid.TryParse(value.ToString(), out slot))     
+            if (!GuidMatcher.TryParseGuidBytes(ref value, reader.charBuf, out slot))     
                 return reader.ErrorMsg<Guid>("Failed parsing Guid. value: ", value.ToString(), out success);
             success = true;
             return slot;
@@ -65,7 +79,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             if (reader.parser.Event != JsonEvent.ValueString)
                 return reader.HandleEvent(this, out success);
             ref var value = ref reader.parser.value;
-            if (!Guid.TryParse(value.ToString(), out var result))     
+            if (!GuidMatcher.TryParseGuidBytes(ref value, reader.charBuf, out var result))     
                 return reader.ErrorMsg<Guid?>("Failed parsing Guid. value: ", value.ToString(), out success);
             success = true;
             return result;
