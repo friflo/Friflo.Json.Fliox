@@ -26,7 +26,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
         }
 
         internal override JsonKey KeyToId(in Guid key) {
-            return new JsonKey(key.ToString());
+            return new JsonKey(key);
         }
 
         internal override   Guid  GetKey (T entity) {
@@ -58,7 +58,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
         }
 
         internal override JsonKey KeyToId(in Guid key) {
-            return new JsonKey(key.ToString());
+            return new JsonKey(key);
         }
         
         internal override   Guid  GetKey (T entity) {

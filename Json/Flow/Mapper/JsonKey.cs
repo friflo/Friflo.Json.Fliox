@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Mapper
                 this.type   = JsonKeyType.Long;
                 this.str    = str;
                 this.lng    = result;
-                return;                   
+                return;
             }
             this.type   = JsonKeyType.String;
             this.str    = str;
@@ -32,6 +32,12 @@ namespace Friflo.Json.Flow.Mapper
             this.type   = JsonKeyType.Long;
             this.str    = null;
             this.lng    = lng;
+        }
+        
+        public JsonKey (in Guid guid) {
+            this.type   = JsonKeyType.String;
+            this.str    = guid.ToString();
+            this.lng    = 0;
         }
         
         public bool IsNull() {
