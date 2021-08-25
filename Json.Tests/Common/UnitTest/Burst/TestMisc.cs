@@ -199,11 +199,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         [Test]
         public static void TestIsIntegral() {
             IsFalse (IsIntegral(""));
+            IsFalse (IsIntegral("-"));
             
             IsFalse (IsIntegral("/"));
             IsTrue  (IsIntegral("0"));
             IsTrue  (IsIntegral("9"));
             IsFalse (IsIntegral(":"));
+            
+            IsFalse (IsIntegral("-0"));
+            IsTrue  (IsIntegral("-1"));
             
             IsFalse (IsIntegral("01"));
             IsTrue  (IsIntegral("10"));

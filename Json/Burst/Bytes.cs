@@ -171,10 +171,15 @@ namespace Friflo.Json.Burst
             if (len == 1) {
                 return '0' <= c && c <= '9'; 
             }
+            var begin = start;
+            if (c == '-') {
+                c = str[1];
+                begin++;
+            }
             // no leading 0
             if (c < '1' || c > '9')
                 return false;
-            for (int i = start + 1; i < end; i++) {
+            for (int i = begin + 1; i < end; i++) {
                 c = str[i];
                 if ('0' <= c && c <= '9')
                     continue;
