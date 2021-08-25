@@ -86,6 +86,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
             var reusedListNulBool =    new List<bool?>();
             
             var reusedDictionaryInt = new Dictionary<int,    int>();
+            var reusedDictionaryGuid= new Dictionary<Guid,   int>();
             // var reusedDictionaryStr = new Dictionary<string, int>(); // allocate memory
  
             var hello =         "\"hello\"";
@@ -101,6 +102,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
             var arrBln =        "[true, false]";
             
             var mapInt =        "{\"20\": 123 }";
+            var mapGuid =       "{\"12341234-1111-2222-3333-444455556666\": 124 }";
+            
+            var guid = new Guid("12341234-1111-2222-3333-444455556666");
 
              // --- class/map
             var testClass =     testClassJson; 
@@ -185,19 +189,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                     NotNull(enc.ReadTo(mapInt, reusedDictionaryInt));
                     AreEqual(123, reusedDictionaryInt[20]);
                     
+                    NotNull(enc.ReadTo(mapGuid, reusedDictionaryGuid));
+                    AreEqual(124, reusedDictionaryGuid[guid]);
+                    
                     // NotNull(enc.ReadTo(mapInt, reusedDictionaryStr));
                     // AreEqual(123, reusedDictionaryStr["20"]);
 
 
                     // Ensure minimum required type lookups
                     if (n > 1) {
-                        AreEqual( 42, enc.TypeCache.LookupCount);
+                        AreEqual( 43, enc.TypeCache.LookupCount);
                         AreEqual(  0, enc.TypeCache.StoreLookupCount);
                         AreEqual(  0, enc.TypeCache.TypeCreationCount);
                     }
                     enc.TypeCache.ClearCounts();
                 }
-                AreEqual(599000,   enc.ProcessedBytes);
+                AreEqual(645000,   enc.ProcessedBytes);
             }
             memLog.AssertNoAllocations();
         }
