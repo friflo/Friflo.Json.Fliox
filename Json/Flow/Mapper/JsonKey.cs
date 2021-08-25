@@ -77,6 +77,10 @@ namespace Friflo.Json.Flow.Mapper
                 return lng;
             throw new InvalidOperationException($"cannot return JsonKey as long. {ToString()}");
         }
+        
+        public Guid AsGuid() {
+            return new Guid(AsString());
+        }
     }
     
     public enum JsonKeyType {

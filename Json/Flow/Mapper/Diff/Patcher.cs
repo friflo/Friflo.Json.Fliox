@@ -94,12 +94,10 @@ namespace Friflo.Json.Flow.Mapper.Diff
 
         public int GetElementIndex(int count) {
             var nodeKey = pathNodes[pathPos];
-            var node    = nodeKey.AsString();
-            if (!int.TryParse(node, out int index))
-                throw new InvalidOperationException($"Incompatible element index type. index: {node} path: {path}");
+            var index   = nodeKey.AsLong();
             if (index >= count)
                 throw new InvalidOperationException($"Element index out of range. Count: {count} index: {index} path: {path}");
-            return index;
+            return (int)index;
         }
     }
 

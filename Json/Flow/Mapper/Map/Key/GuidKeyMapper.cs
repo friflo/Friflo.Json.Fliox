@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Key
         }
         
         public override Guid      ToKey          (in JsonKey key) {
-            return new Guid(key.AsString());
+            return key.AsGuid();
         }
     }
 }
