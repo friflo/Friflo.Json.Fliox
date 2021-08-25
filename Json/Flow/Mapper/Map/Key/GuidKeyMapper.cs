@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using Friflo.Json.Flow.Mapper.Map.Val;
 
 namespace Friflo.Json.Flow.Mapper.Map.Key
 {
@@ -13,7 +12,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Key
         }
         
         public override Guid ReadKey (ref Reader reader, out bool success) {
-            if (GuidMatcher.TryParseGuidBytes(ref reader.parser.key, reader.charBuf, out var result)) {
+            if (Reader.TryParseGuidBytes(ref reader.parser.key, reader.charBuf, out var result)) {
                 success = true;
                 return result;
             }

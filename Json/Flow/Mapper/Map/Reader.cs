@@ -92,5 +92,19 @@ namespace Friflo.Json.Flow.Mapper.Map
                     return ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
             }
         }
+        
+        public static bool TryParseGuidBytes(ref Bytes bytes, char[] charBuf, out Guid guid) {
+            var array   = bytes.buffer.array;
+            int len     = bytes.end - bytes.start;
+            int offset  = bytes.start;
+            for (int n = 0; n < len; n++) {
+                charBuf[n] = (char)array[offset + n];
+            }
+            var span = new Span<char>(charBuf, 0, len);
+            if (Guid.TryParse(span, out guid)) {
+                return true;
+            }
+            return false;
+        }
     }
 }
