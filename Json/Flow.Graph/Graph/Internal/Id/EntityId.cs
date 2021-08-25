@@ -165,7 +165,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
     }
     
     internal abstract class EntityKey<TKey, T> : EntityId<T> where T : class {
-        internal abstract   JsonKey KeyToId (TKey key);
+        internal abstract   JsonKey KeyToId (in TKey key);
         internal abstract   TKey    IdToKey (in JsonKey key);        
         
         internal abstract   TKey    GetKey  (T entity);

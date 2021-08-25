@@ -25,7 +25,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             return id.AsLong();
         }
 
-        internal override JsonKey KeyToId(long key) {
+        internal override JsonKey KeyToId(in long key) {
             return new JsonKey(key);
         }
         
@@ -57,7 +57,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             return id.AsLong();
         }
 
-        internal override JsonKey KeyToId(long key) {
+        internal override JsonKey KeyToId(in long key) {
             return new JsonKey(key);
         }
         
