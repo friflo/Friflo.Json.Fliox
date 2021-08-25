@@ -127,7 +127,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
             var mapMapNum =  "{\"key\":{\"key\":42}}";
             var mapNum2 =    "{\"str\":44}";
             var intMapNum =  "{\"123\":42}";
-            var guidMapNum =  "{\"87db6552-a99d-4d53-9b20-8cc797db2b8f\":42}";
+            var guidMapNum =  "{\"12345678-1111-2222-3333-444455556666\":42}";
             var invalid =    "invalid";
                 
             using (var typeStore    = new TypeStore())
@@ -487,7 +487,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
                     }
                     // --- map - key type: Guid
                     {
-                        var expect = new Dictionary<Guid, int> {{ new Guid("87db6552-a99d-4d53-9b20-8cc797db2b8f"), 42 }};
+                        var expect = new Dictionary<Guid, int> {{ new Guid("12345678-1111-2222-3333-444455556666"), 42 }};
                         AreEqual(expect, Read<Dictionary<Guid, int>>(guidMapNum));
                     }
                     // --- map - key type: JsonKey
