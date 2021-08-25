@@ -17,13 +17,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
             var key = new JsonKey(1);
             
             dict.Add(key, 2);
+            GC.Collect();
+            
             var start   = GC.GetAllocatedBytesForCurrentThread();
             var value   = dict[key];
-            var end     = GC.GetAllocatedBytesForCurrentThread();
-            var diff    = end - start;
+            var diff    = GC.GetAllocatedBytesForCurrentThread() - start;
             
-            // AreEqual(0, diff);
+            // AreEqual(0, diff); // fails if running without debugger
             AreEqual(2, value);
         }
+        
+        [Test]
+        public void TestNoBoxing() {
+            var generic = new Generic<int>();
+            
+            var start   = GC.GetAllocatedBytesForCurrentThread();
+            var equal   = generic.IsEqual(0);
+            var diff    = GC.GetAllocatedBytesForCurrentThread() - start;
+            
+            AreEqual(0, diff);
+            IsTrue(equal);
+        }
+        
+        
+        private class Generic<TKey>
+        {
+            public bool IsEqual(TKey key) {
+                return EqualityComparer<TKey>.Default.Equals(key, default);
+            }
+        }
+
     }
 }
