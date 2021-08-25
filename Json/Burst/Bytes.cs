@@ -163,9 +163,19 @@ namespace Friflo.Json.Burst
         }
         
         public bool IsIntegral() {
+            int len = end - start;
+            if (len == 0)
+                return false;
             ref var str = ref buffer.array;
-            for (int i = start; i < end; i++) {
-                byte c = str[i];
+            byte c = str[0];
+            if (len == 1) {
+                return '0' <= c && c <= '9'; 
+            }
+            // no leading 0
+            if (c < '1' || c > '9')
+                return false;
+            for (int i = start + 1; i < end; i++) {
+                c = str[i];
                 if ('0' <= c && c <= '9')
                     continue;
                 return false;

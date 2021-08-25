@@ -196,6 +196,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             }
         }
         
+        [Test]
+        public static void TestIsIntegral() {
+            IsFalse (IsIntegral(""));
+            
+            IsFalse (IsIntegral("/"));
+            IsTrue  (IsIntegral("0"));
+            IsTrue  (IsIntegral("9"));
+            IsFalse (IsIntegral(":"));
+            
+            IsFalse (IsIntegral("01"));
+            IsTrue  (IsIntegral("10"));
+            IsTrue  (IsIntegral("99"));
+        }
+        
+        private static bool IsIntegral(string str) {
+            using (var bytes = new Bytes(str)) {
+                return bytes.IsIntegral();
+            }
+        }
     }
     
     struct StructAssign
