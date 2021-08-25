@@ -8,7 +8,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Key
     public class GuidKeyMapper : KeyMapper<Guid>
     {
         public override void WriteKey (ref Writer writer, in Guid key) {
-            writer.WriteString(key.ToString());
+            writer.WriteGuid (key);
         }
         
         public override Guid ReadKey (ref Reader reader, out bool success) {

@@ -27,6 +27,7 @@ namespace Friflo.Json.Flow.Mapper.Map
         /// <summary>Can be used for custom mappers append a number while creating the JSON payload</summary>
         public              ValueFormat         format;
         internal            Bytes               @null;
+        public              char[]              charBuf;
         internal            int                 level;
         public              int                 maxDepth;
         public              bool                pretty;
@@ -50,6 +51,7 @@ namespace Friflo.Json.Flow.Mapper.Map
             format          = new ValueFormat();
             format. InitTokenFormat();
             @null           = new Bytes("null");
+            charBuf         = new char[128];
             typeCache       = new TypeCache(typeStore);
             level           = 0;
             maxDepth        = JsonParser.DefaultMaxDepth;
@@ -236,6 +238,19 @@ namespace Friflo.Json.Flow.Mapper.Map
 #endif
             mapper.Write(ref this, value);
             
+        }
+        
+        public void WriteGuid (in Guid guid) {
+            // writer.WriteString(key.ToString()); allocate a string
+            
+            var span = new Span<char>(charBuf);
+            if (!guid.TryFormat(span, out int len))
+                throw new InvalidOperationException($"Failed writing Guid: {guid}");
+            bytes.AppendChar('\"');
+            for (int n = 0; n < len; n++) {
+                bytes.AppendChar(charBuf[n]);
+            }
+            bytes.AppendChar('\"');
         }
     }
 }
