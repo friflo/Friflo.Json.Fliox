@@ -67,12 +67,12 @@ namespace System.Linq
     public static class UnityExtensionLinq
     {
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source) {
-            // return new HashSet<T>(collection, null); todo use this
-            var hashSet = new HashSet<T>();
+            return new HashSet<T>(source, null);
+            /*var hashSet = new HashSet<T>();
             foreach (var element in source) {
                 hashSet.Add(element);
             }
-            return hashSet;
+            return hashSet;*/
         }
 
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer)
