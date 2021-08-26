@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var options = new NativeTypeOptions(typeStore, JsonFlowSchemaTypes);
             var generator = TypescriptGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/JsonSchema");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/JsonSchema");
         }
         
         /// C# -> JSON Schema
@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var typeStore   = EntityStore.AddTypeMatchers(new TypeStore());
             var options     = new NativeTypeOptions(typeStore, typeof(JsonSchema));
             var generator   = JsonSchemaGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JSON/JsonSchema");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JSON/JsonSchema");
         }
         
         /// C# -> C#
@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
                 replacements = new[]{new Replace("Friflo.Json.")}
             };
             var generator = CSharpGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/C#/JsonSchema");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/C#/JsonSchema");
         }
     }
 }

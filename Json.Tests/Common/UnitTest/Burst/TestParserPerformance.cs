@@ -13,50 +13,50 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
     {
         // Add JSON samples from https://github.com/ysharplanguage/FastJsonParser
         [Test]
-        public void TestPerf_oj_highly_nested() {   jsonIterate ("assets/Burst/codec/_oj-highly-nested.json", 67);    }
+        public void TestPerf_oj_highly_nested() {   jsonIterate ("assets~/Burst/codec/_oj-highly-nested.json", 67);    }
 
         [Test]
-        public void TestPerf_boon_small()       {   jsonIterate ("assets/Burst/codec/boon-small.json",        20);    }
+        public void TestPerf_boon_small()       {   jsonIterate ("assets~/Burst/codec/boon-small.json",        20);    }
 
         [Test]
-        public void TestPerf_tiny()             {   jsonIterate ("assets/Burst/codec/tiny.json",              19);    }
+        public void TestPerf_tiny()             {   jsonIterate ("assets~/Burst/codec/tiny.json",              19);    }
 
         [Test]
-        public void TestPerf_dicos()            {   jsonIterate ("assets/Burst/codec/dicos.json",             72);    }
+        public void TestPerf_dicos()            {   jsonIterate ("assets~/Burst/codec/dicos.json",             72);    }
 
         [Test]
-        public void Boon_actionLabel()          {   jsonIterate ("assets/Burst/codec/boon/actionLabel.json",  77);    }
+        public void Boon_actionLabel()          {   jsonIterate ("assets~/Burst/codec/boon/actionLabel.json",  77);    }
         
         [Test]
-        public void Boon_medium()               {   jsonIterate ("assets/Burst/codec/boon/medium.json",       54);    }
+        public void Boon_medium()               {   jsonIterate ("assets~/Burst/codec/boon/medium.json",       54);    }
     
         [Test]
-        public void Boon_menu()                 {   jsonIterate ("assets/Burst/codec/boon/menu.json",         22);    }
+        public void Boon_menu()                 {   jsonIterate ("assets~/Burst/codec/boon/menu.json",         22);    }
         
         [Test]
-        public void Boon_sgml()                 {   jsonIterate ("assets/Burst/codec/boon/sgml.json",         25);    }
+        public void Boon_sgml()                 {   jsonIterate ("assets~/Burst/codec/boon/sgml.json",         25);    }
     
         [Test]
-        public void Boon_small()                {   jsonIterate ("assets/Burst/codec/boon/small.json",         4);    }
+        public void Boon_small()                {   jsonIterate ("assets~/Burst/codec/boon/small.json",         4);    }
     
         [Test]
-        public void Boon_webxml()               {   jsonIterate ("assets/Burst/codec/boon/webxml.json",      100);    }
+        public void Boon_webxml()               {   jsonIterate ("assets~/Burst/codec/boon/webxml.json",      100);    }
     
         [Test]
-        public void Boon_widget()               {   jsonIterate ("assets/Burst/codec/boon/widget.json",       46);    }
+        public void Boon_widget()               {   jsonIterate ("assets~/Burst/codec/boon/widget.json",       46);    }
 
         //
         [Test]
-        public void JsonExamples_canada()       {   jsonIterate ("assets/Burst/jsonexamples/canada.json",     223228);    }
+        public void JsonExamples_canada()       {   jsonIterate ("assets~/Burst/jsonexamples/canada.json",     223228);    }
     
         [Test]
-        public void JsonExamples_citm_catalog() {   jsonIterate ("assets/Burst/jsonexamples/citm_catalog.json", 59166);   }
+        public void JsonExamples_citm_catalog() {   jsonIterate ("assets~/Burst/jsonexamples/citm_catalog.json", 59166);   }
     
         [Test]
-        public void JsonExamples_log()          {   jsonIterate ("assets/Burst/jsonexamples/log.json",        49);    }
+        public void JsonExamples_log()          {   jsonIterate ("assets~/Burst/jsonexamples/log.json",        49);    }
     
         [Test]
-        public void JsonExamples_twitter()      {   jsonIterate ("assets/Burst/jsonexamples/twitter.json",  16228);   }
+        public void JsonExamples_twitter()      {   jsonIterate ("assets~/Burst/jsonexamples/twitter.json",  16228);   }
         
         private void jsonIterate(String path, int expectedCount)
         {

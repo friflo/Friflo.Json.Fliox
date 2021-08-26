@@ -187,7 +187,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
         [Test]
         public void EncodeJsonComplex() {
             using (TypeStore typeStore = createStore())
-            using (Bytes bytes = CommonUtils.FromFile("assets/Burst/codec/complex.json")) {
+            using (Bytes bytes = CommonUtils.FromFile("assets~/Burst/codec/complex.json")) {
                 JsonComplex obj = EncodeJson<JsonComplex>(bytes, typeStore);
                 CheckJsonComplex(obj);
             }
@@ -196,7 +196,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
         [Test]
         public void EncodeJsonToComplex()   {
             using (TypeStore typeStore = createStore())
-            using (Bytes bytes = CommonUtils.FromFile("assets/Burst/codec/complex.json")) {
+            using (Bytes bytes = CommonUtils.FromFile("assets~/Burst/codec/complex.json")) {
                 JsonComplex obj = new JsonComplex();
                 IsTrue(EncodeJsonTo(bytes, obj, typeStore));
                 CheckJsonComplex(obj);
@@ -209,11 +209,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Mapper
             using (var reader   = new ObjectReader(typeStore))
             using (var writer   = new ObjectWriter(typeStore))
             using (var json     = new TestBytes())
-            using (Bytes bytes = CommonUtils.FromFile("assets/Burst/codec/complex.json")) {
+            using (Bytes bytes = CommonUtils.FromFile("assets~/Burst/codec/complex.json")) {
                 var complex = reader.Read<JsonComplex>(bytes);
                 writer.Pretty = true;
                 writer.Write(complex, ref json.bytes);
-                CommonUtils.ToFile("assets/Burst/output/complexPrettyReflect.json", json.bytes);
+                CommonUtils.ToFile("assets~/Burst/output/complexPrettyReflect.json", json.bytes);
             }
         }
         

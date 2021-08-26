@@ -75,28 +75,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
         [Test]
         public void ManualSkip() {
-            using (Bytes bytes = CommonUtils.FromFile("assets/Burst/codec/complex.json")) {
+            using (Bytes bytes = CommonUtils.FromFile("assets~/Burst/codec/complex.json")) {
                 RunParser(bytes, SkipMode.Manual, 1, MemoryLog.Disabled);
             }
         }
         
         [Test]
         public void ManualSkipCheckAllocations() {
-            using (Bytes bytes = CommonUtils.FromFile("assets/Burst/codec/complex.json")) {
+            using (Bytes bytes = CommonUtils.FromFile("assets~/Burst/codec/complex.json")) {
                 RunParser(bytes, SkipMode.Manual, 1000, MemoryLog.Enabled);
             }
         }
         
         [Test]
         public void AutoSkip() {
-            using (Bytes bytes = CommonUtils.FromFile("assets/Burst/codec/complex.json")) {
+            using (Bytes bytes = CommonUtils.FromFile("assets~/Burst/codec/complex.json")) {
                 RunParser(bytes, SkipMode.Auto, 1, MemoryLog.Disabled);
             }
         }
         
         [Test]
         public void AutoSkipCheckAllocations() {
-            using (Bytes bytes = CommonUtils.FromFile("assets/Burst/codec/complex.json")) {
+            using (Bytes bytes = CommonUtils.FromFile("assets~/Burst/codec/complex.json")) {
                 RunParser(bytes, SkipMode.Auto, 1000, MemoryLog.Enabled);
             }
         }

@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static async Task AssertEntityId() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
-            using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/EntityIdStore")) {
+            using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/Graph/EntityIdStore")) {
                 await AssertEntityIdTests (database, typeStore);
             }
         }
@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static async Task AssertEntityIdLoopback() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/EntityIdStore"))
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/Graph/EntityIdStore"))
             using (var database     = new LoopbackDatabase(fileDatabase))
             {
                 await AssertEntityIdTests (database, typeStore);

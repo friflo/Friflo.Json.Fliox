@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var typeStore   = EntityStore.AddTypeMatchers(new TypeStore());
             var options     = new NativeTypeOptions(typeStore, typeof(UserStore));
             var generator   = TypescriptGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/UserStore");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/UserStore");
         }
         
         /// C# -> JSON Schema
@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
                 replacements = new [] { new Replace("Friflo.Json.Flow.", "UserStore2.") }
             };
             var generator = CSharpGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/C#/UserStore2");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/C#/UserStore2");
         }
         
         /// C# -> Kotlin
@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
                 replacements = new [] { new Replace("Friflo.Json.Flow.", "UserStore.") }
             };
             var generator = KotlinGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Kotlin/src/main/kotlin/UserStore");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Kotlin/src/main/kotlin/UserStore");
         }
         
         /// C# -> JTD
@@ -65,12 +65,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var typeStore   = EntityStore.AddTypeMatchers(new TypeStore());
             var options     = new NativeTypeOptions(typeStore, UserStoreTypes);
             var generator = JsonTypeDefinition.Generate(options, "UserStore");
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JTD/", false);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JTD/", false);
         }
         
         // ---------------------------------- input: JSON Schema ----------------------------------
         
-        static readonly string JsonSchemaFolder = CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore";
+        static readonly string JsonSchemaFolder = CommonUtils.GetBasePath() + "assets~/Schema/JSON/UserStore";
         
         
         /// JSON Schema -> Typescript
@@ -80,7 +80,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var schema      = new JsonTypeSchema(schemas);
             var options     = new JsonTypeOptions(schema);
             var generator   = TypescriptGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema-Loop/Typescript/UserStore");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema-Loop/Typescript/UserStore");
         }
         
         /// JSON Schema -> JSON Schema
@@ -93,7 +93,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var options     = new JsonTypeOptions(schema) { separateTypes = typeDefs };
             var generator   = JsonSchemaGenerator.Generate(options);
             
-            var loopFolder = CommonUtils.GetBasePath() + "assets/Schema-Loop/JSON/UserStore";
+            var loopFolder = CommonUtils.GetBasePath() + "assets~/Schema-Loop/JSON/UserStore";
             generator.WriteFiles(loopFolder, false);
             SchemaTest.AssertFoldersAreEqual(JsonSchemaFolder, loopFolder);
         }

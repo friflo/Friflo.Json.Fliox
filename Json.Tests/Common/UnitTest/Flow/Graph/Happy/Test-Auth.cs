@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
-                    using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/UserStore"))
+                    using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/Graph/UserStore"))
                     using (                       new UserDatabaseHandler   (userDatabase))
                     using (var userStore        = new UserStore(userDatabase, UserStore.AuthUser))
                     using (var database         = new MemoryDatabase())
@@ -202,7 +202,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
-                    using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/UserStore"))
+                    using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/Graph/UserStore"))
                     using (var serverStore      = new UserStore             (userDatabase, UserStore.Server))
                     using (var authUserStore    = new UserStore             (userDatabase, UserStore.AuthUser))
                     using (                       new UserDatabaseHandler   (userDatabase)) {

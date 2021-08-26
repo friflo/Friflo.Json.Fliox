@@ -46,8 +46,8 @@ namespace Friflo.Json.Tests.Main
             var rootCommand = new RootCommand {
                 moduleOpt,
                 new Option<string>("--endpoint", () => "http://+:8081/",                        "endpoint the server listen at"),
-                new Option<string>("--database", () => "./Json.Tests/assets/Graph/PocStore",    "folder of the file database"),
-                new Option<string>("--www",      () => "./Json.Tests/assets/www",               "folder of static web files")
+                new Option<string>("--database", () => "./Json.Tests/assets~/Graph/PocStore",    "folder of the file database"),
+                new Option<string>("--www",      () => "./Json.Tests/assets~/www",               "folder of static web files")
             };
             rootCommand.Description = "small tests within Friflo.Json.Tests";
 
@@ -107,7 +107,7 @@ namespace Friflo.Json.Tests.Main
         
         private static TypeSchema GetTypeSchema(bool fromJsonSchema) {
             if (fromJsonSchema) {
-                var schemas = JsonTypeSchema.ReadSchemas("./Json.Tests/assets/Schema/JSON/PocStore");
+                var schemas = JsonTypeSchema.ReadSchemas("./Json.Tests/assets~/Schema/JSON/PocStore");
                 return new JsonTypeSchema(schemas, "./UnitTest.Flow.Graph.json#/definitions/PocStore");
             }
             // using a NativeTypeSchema add an additional dependency by using the EntityStore: PocStore

@@ -56,7 +56,7 @@ namespace Friflo.Json.Flow.Schema
     ///     The implementation should be small similar to <see cref="TypescriptGenerator"/> and <see cref="JsonSchemaGenerator"/>
     ///   </item>
     ///   <item>
-    ///     The generated files (PocStore and Sync) must be committed to a folder in 'assets/Schema' and
+    ///     The generated files (PocStore and Sync) must be committed to a folder in 'assets~/Schema' and
     ///     a lean setup should be added ensuring the generated files are valid / compile successful.
     ///   </item>
     /// </list>

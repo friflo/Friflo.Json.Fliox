@@ -12,14 +12,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
     {
         [Test]
         public void TestManualBuilder() {
-            using (Bytes bytes = CommonUtils.FromFile("assets/Burst/codec/complex.json")) {
+            using (Bytes bytes = CommonUtils.FromFile("assets~/Burst/codec/complex.json")) {
                 RunManualBuilder(bytes, 1, MemoryLog.Disabled);
             }
         }
         
         [Test]
         public void TestManualNoLeaks() {
-            using (Bytes bytes = CommonUtils.FromFile("assets/Burst/codec/complex.json")) {
+            using (Bytes bytes = CommonUtils.FromFile("assets~/Burst/codec/complex.json")) {
                 RunManualBuilder(bytes, 10000, MemoryLog.Enabled);
             }
         }
@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     }
                     memLog.AssertNoAllocations();
                 }
-                CommonUtils.ToFile("assets/Burst/output/writeManual.json", ser.json);
+                CommonUtils.ToFile("assets~/Burst/output/writeManual.json", ser.json);
                 if (p.error.ErrSet)
                     Fail(p.error.msg.ToString());
                 AreEqual(JsonEvent.EOF, p.NextEvent());   // Important to ensure absence of application errors

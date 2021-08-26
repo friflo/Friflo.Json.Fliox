@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
 
         private static async Task FileValidation() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/PocStore"))
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/Graph/PocStore"))
             using (var modifierDatabase = new WriteModifierDatabase(fileDatabase))
             using (var createStore      = new PocStore(modifierDatabase, "createStore"))
             using (var nativeSchema     = new NativeTypeSchema(TestGlobals.typeStore, typeof(PocStore)))

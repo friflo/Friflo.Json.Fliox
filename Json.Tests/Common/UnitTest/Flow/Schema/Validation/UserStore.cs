@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema.Validation
     // ReSharper disable once ClassNeverInstantiated.Global
     public class UserStoreValidation : LeakTestsFixture
     {
-        private static readonly string  JsonSchemaFolder    = CommonUtils.GetBasePath() + "assets/Schema/JSON/UserStore";
+        private static readonly string  JsonSchemaFolder    = CommonUtils.GetBasePath() + "assets~/Schema/JSON/UserStore";
         private static readonly Type[]  UserStoreTypes      = EntityStore.GetEntityTypes<UserStore>();
         
         [Test]

@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 
         private static async Task ValidationByTypes() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/PocStore"))
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/Graph/PocStore"))
             using (var createStore      = new PocStore(fileDatabase, "createStore"))
             using (var nativeSchema     = new NativeTypeSchema(TestGlobals.typeStore, typeof(PocStore)))
             using (fileDatabase.schema  = new DatabaseSchema(nativeSchema)) {
@@ -38,10 +38,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         [Test]      public async Task  ValidationByJsonSchemaAsync() { await ValidationByJsonSchema(); }
 
         private static async Task ValidationByJsonSchema() {
-            var jsonSchemaFolder    = CommonUtils.GetBasePath() + "assets/Schema/JSON/PocStore";
+            var jsonSchemaFolder    = CommonUtils.GetBasePath() + "assets~/Schema/JSON/PocStore";
             var schemas             = JsonTypeSchema.ReadSchemas(jsonSchemaFolder);
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/PocStore"))
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/Graph/PocStore"))
             using (var createStore      = new PocStore(fileDatabase, "createStore"))
             using (var jsonSchema       = new JsonTypeSchema(schemas, "./UnitTest.Flow.Graph.json#/definitions/PocStore"))
             using (fileDatabase.schema  = new DatabaseSchema(jsonSchema)) {

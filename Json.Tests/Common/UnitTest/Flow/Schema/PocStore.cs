@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var schema      = new NativeTypeSchema(typeStore, typeof(PocStore));
             var generator   = new Generator(schema, ".ts", new[]{new Replace("Friflo.Json.Tests.Common.")});
             TypescriptGenerator.Generate(generator);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/PocStore");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/PocStore");
         }
         
         /// C# -> JSON Schema
@@ -53,7 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
                     new Replace("Friflo.Json.Tests.Common.UnitTest.Flow",   "PocStore2") }
             };
             var generator = CSharpGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/C#/PocStore2");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/C#/PocStore2");
         }
         
         /// C# -> Kotlin
@@ -66,7 +66,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
                     new Replace("Friflo.Json.Tests.Common.UnitTest.Flow",   "PocStore") }
             };
             var generator = KotlinGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Kotlin/src/main/kotlin/PocStore");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Kotlin/src/main/kotlin/PocStore");
         }
         
         /// C# -> JTD
@@ -75,12 +75,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var options = new NativeTypeOptions(typeStore, PocStoreTypes);
             var generator = JsonTypeDefinition.Generate(options, "PocStore");
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JTD/", false);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JTD/", false);
         }
         
         // ---------------------------------- input: JSON Schema ----------------------------------
         
-        static readonly string JsonSchemaFolder = CommonUtils.GetBasePath() + "assets/Schema/JSON/PocStore";
+        static readonly string JsonSchemaFolder = CommonUtils.GetBasePath() + "assets~/Schema/JSON/PocStore";
         
         /// JSON Schema -> JSON Schema
         [Test, Order(2)]
@@ -91,7 +91,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var typeDefs    = schema.TypesAsTypeDefs(jsonTypes);
             var options     = new JsonTypeOptions(schema) { separateTypes = typeDefs };
             var generator   = JsonSchemaGenerator.Generate(options);
-            var loopFolder = CommonUtils.GetBasePath() + "assets/Schema-Loop/JSON/PocStore";
+            var loopFolder = CommonUtils.GetBasePath() + "assets~/Schema-Loop/JSON/PocStore";
             generator.WriteFiles(loopFolder);
             SchemaTest.AssertFoldersAreEqual(JsonSchemaFolder, loopFolder);
         }
@@ -104,7 +104,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var options     = new JsonTypeOptions(schema);
             var generator   = TypescriptGenerator.Generate(options);
 
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema-Loop/Typescript/PocStore");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema-Loop/Typescript/PocStore");
 
         }
     }

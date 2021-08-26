@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var options = new NativeTypeOptions(typeStore, SyncTypes);
             var generator = TypescriptGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/Sync");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/Sync");
         }
         
         /// C# -> C#
@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
                 replacements = new[]{new Replace("Friflo.Json.")}
             };
             var generator = CSharpGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/C#/Sync");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/C#/Sync");
         }
         
         /// C# -> Kotlin
@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
                     new Replace("Friflo.Json.Tests.Common.UnitTest.Flow",   "Sync") }
             };
             var generator = KotlinGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Kotlin/src/main/kotlin/Sync");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Kotlin/src/main/kotlin/Sync");
         }
         
         /// C# -> JTD
@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
             var options = new NativeTypeOptions(typeStore, SyncTypes);
             var generator = JsonTypeDefinition.Generate(options, "Sync");
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/JTD/", false);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JTD/", false);
         }
     }
 }

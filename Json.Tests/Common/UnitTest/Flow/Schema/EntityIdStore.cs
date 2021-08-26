@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var schema      = new NativeTypeSchema(typeStore, typeof(EntityIdStore));
             var generator   = new Generator(schema, ".ts", new[]{new Replace("Friflo.Json.Tests.Common.")});
             TypescriptGenerator.Generate(generator);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Typescript/EntityIdStore");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/EntityIdStore");
         }
         
         /// C# -> JSON Schema
@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
                 replacements = new [] {new Replace("Friflo.Json.Tests.Common.UnitTest.Flow", "EntityIdStore2") }
             };
             var generator = CSharpGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/C#/EntityIdStore2");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/C#/EntityIdStore2");
         }
         
         /// C# -> Kotlin
@@ -62,13 +62,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
                     new Replace("Friflo.Json.Tests.Common.UnitTest.Flow",   "EntityIdStore") }
             };
             var generator = KotlinGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets/Schema/Kotlin/src/main/kotlin/EntityIdStore");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Kotlin/src/main/kotlin/EntityIdStore");
         }
 
         
         // ---------------------------------- input: JSON Schema ----------------------------------
         
-        static readonly string JsonSchemaFolder = CommonUtils.GetBasePath() + "assets/Schema/JSON/EntityIdStore";
+        static readonly string JsonSchemaFolder = CommonUtils.GetBasePath() + "assets~/Schema/JSON/EntityIdStore";
         
         /// JSON Schema -> JSON Schema
         [Test, Order(2)]
@@ -79,7 +79,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Schema
             var options     = new JsonTypeOptions(schema) { separateTypes = entityTypes };
             var generator   = JsonSchemaGenerator.Generate(options);
             
-            var loopFolder  = CommonUtils.GetBasePath() + "assets/Schema-Loop/JSON/EntityIdStore";
+            var loopFolder  = CommonUtils.GetBasePath() + "assets~/Schema-Loop/JSON/EntityIdStore";
             generator.WriteFiles(loopFolder, false);
             SchemaTest.AssertFoldersAreEqual(JsonSchemaFolder, loopFolder);
         }

@@ -329,14 +329,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
         [Test]
         public void TestNextEvent() {
-            using (Bytes bytes = CommonUtils.FromFile("assets/Burst/codec/parse.json")) {
+            using (Bytes bytes = CommonUtils.FromFile("assets~/Burst/codec/parse.json")) {
                 TestParserImpl.TestNextEvent(bytes);
             }
         }
         
         [Test]
         public void ParseJsonComplex()  {
-            using (Bytes bytes = CommonUtils.FromFile("assets/Burst/codec/complex.json")) {
+            using (Bytes bytes = CommonUtils.FromFile("assets~/Burst/codec/complex.json")) {
                 ParseJson(bytes);
             }
         }
