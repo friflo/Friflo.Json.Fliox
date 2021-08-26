@@ -69,7 +69,7 @@ namespace Friflo.Json.Flow.Graph
         public   readonly   TKey                key;
         public   readonly   JsonKey             id;
         private  readonly   T                   entity;
-        private             EntitySet<TKey,T>   set;
+        private             EntitySet<TKey,T>   set;    // alternatively a Peer<T> could be used 
 
         public   override   string      ToString() => id.IsNull() ? "null" : id.AsString();
 
