@@ -23,6 +23,10 @@ public class ShortEntity {
     short  id;
 }
 
+public class ByteEntity {
+    byte  id;
+}
+
 public class CustomIdEntity {
     [Fri.Key]
     [Fri.Required]
@@ -36,6 +40,7 @@ public class EntityRefs {
     int         intEntity;
     long        longEntity;
     short       shortEntity;
+    byte        byteEntity;
     string      customIdEntity;
     List<Guid>  guidEntities;
 }

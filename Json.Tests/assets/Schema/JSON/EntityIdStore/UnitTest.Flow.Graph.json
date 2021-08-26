@@ -10,6 +10,7 @@
                 "intEntities":       { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Flow.Graph.IntEntity.json#/definitions/IntEntity" } },
                 "longEntities":      { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Flow.Graph.LongEntity.json#/definitions/LongEntity" } },
                 "shortEntities":     { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Flow.Graph.ShortEntity.json#/definitions/ShortEntity" } },
+                "byteEntities":      { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Flow.Graph.ByteEntity.json#/definitions/ByteEntity" } },
                 "customIdEntities":  { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Flow.Graph.CustomIdEntity.json#/definitions/CustomIdEntity" } },
                 "entityRefs":        { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Flow.Graph.EntityRefs.json#/definitions/EntityRefs" } },
                 "customIdEntities2": { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Flow.Graph.CustomIdEntity2.json#/definitions/CustomIdEntity2" } }
@@ -19,6 +20,7 @@
                 "intEntities",
                 "longEntities",
                 "shortEntities",
+                "byteEntities",
                 "customIdEntities",
                 "entityRefs",
                 "customIdEntities2"

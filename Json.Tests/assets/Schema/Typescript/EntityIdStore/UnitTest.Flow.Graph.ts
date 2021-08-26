@@ -3,12 +3,14 @@ import { Guid }  from "./Standard"
 import { int32 } from "./Standard"
 import { int64 } from "./Standard"
 import { int16 } from "./Standard"
+import { uint8 } from "./Standard"
 
 export abstract class EntityIdStore {
     guidEntities       : { [key: string]: GuidEntity };
     intEntities        : { [key: string]: IntEntity };
     longEntities       : { [key: string]: LongEntity };
     shortEntities      : { [key: string]: ShortEntity };
+    byteEntities       : { [key: string]: ByteEntity };
     customIdEntities   : { [key: string]: CustomIdEntity };
     entityRefs         : { [key: string]: EntityRefs };
     customIdEntities2  : { [key: string]: CustomIdEntity2 };
@@ -30,6 +32,10 @@ export class ShortEntity {
     id  : int16;
 }
 
+export class ByteEntity {
+    id  : uint8;
+}
+
 export class CustomIdEntity {
     customId  : string;
 }
@@ -40,6 +46,7 @@ export class EntityRefs {
     intEntity       : int32;
     longEntity      : int64;
     shortEntity     : int16;
+    byteEntity      : uint8;
     customIdEntity? : string | null;
     guidEntities?   : Guid[] | null;
 }

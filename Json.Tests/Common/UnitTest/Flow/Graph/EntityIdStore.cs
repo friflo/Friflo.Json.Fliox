@@ -15,6 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public  readonly    EntitySet <int,     IntEntity>       intEntities;
         public  readonly    EntitySet <long,    LongEntity>      longEntities;
         public  readonly    EntitySet <short,   ShortEntity>     shortEntities;
+        public  readonly    EntitySet <byte,    ByteEntity>      byteEntities;
         public  readonly    EntitySet <string,  CustomIdEntity>  customIdEntities;
         public  readonly    EntitySet <string,  EntityRefs>      entityRefs;
         public  readonly    EntitySet <string,  CustomIdEntity2> customIdEntities2;
@@ -24,6 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             intEntities       = new EntitySet <int,     IntEntity>       (this);
             longEntities      = new EntitySet <long,    LongEntity>      (this);
             shortEntities     = new EntitySet <short,   ShortEntity>     (this);
+            byteEntities      = new EntitySet <byte,    ByteEntity>      (this);
             customIdEntities  = new EntitySet <string,  CustomIdEntity>  (this);
             entityRefs        = new EntitySet <string,  EntityRefs>      (this);
             customIdEntities2 = new EntitySet <string,  CustomIdEntity2> (this);
@@ -46,6 +48,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public short id;
     }
     
+    public class ByteEntity {
+        public byte id;
+    }
+    
     public class CustomIdEntity {
         [Fri.Key]
         [Fri.Required]  public string customId;
@@ -57,6 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                         public Ref <int,    IntEntity>      intEntity;
                         public Ref <long,   LongEntity>     longEntity;
                         public Ref <short,  ShortEntity>    shortEntity;
+                        public Ref <byte,   ByteEntity>     byteEntity;
                         public Ref <string, CustomIdEntity> customIdEntity;
                         public List<Ref <Guid, GuidEntity>> guidEntities;
     }

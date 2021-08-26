@@ -12,3 +12,6 @@ export type int64 = number;
 /** signed integer 16-bit. Range: [-32768, 32767]                             */
 export type int16 = number;
 
+/** unsigned integer 8-bit. Range: [0 - 255]                                  */
+export type uint8 = number;
+

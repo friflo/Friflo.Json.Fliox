@@ -175,6 +175,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual(shortId, find.Result.id);
             }
             
+            // --- byte as entity id ---
+            const byte byteId = 123;
+            // Test: EntityId<T>.GetEntityId()
+            using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
+                var entity  = new ByteEntity { id = byteId };
+                var create  = store.byteEntities.Update(entity);
+                
+                await store.Sync();
+                
+                IsTrue(create.Success);
+                
+                var read = store.byteEntities.Read();
+                var find = read.Find(byteId);
+                    
+                await store.Sync();
+                
+                IsTrue(find.Success);
+                IsTrue(entity == find.Result);
+                entityRef.byteEntity = entity;
+            }
+            // Test: EntityId<T>.SetEntityId()
+            using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
+                var read = store.byteEntities.Read();
+                var find = read.Find(byteId);
+                    
+                await store.Sync();
+                
+                IsTrue(find.Success);
+                AreEqual(byteId, find.Result.id);
+            }
+            
             // --- string as custom entity id ---
             const string stringId = "abc";
             // Test: EntityId<T>.GetEntityId()

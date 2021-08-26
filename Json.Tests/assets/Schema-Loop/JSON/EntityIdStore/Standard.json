@@ -13,6 +13,9 @@
         },
         "int16": {
             "type": "integer", "minimum": -32768, "maximum": 32767
+        },
+        "uint8": {
+            "type": "integer", "minimum": 0, "maximum": 255
         }
     }
 }

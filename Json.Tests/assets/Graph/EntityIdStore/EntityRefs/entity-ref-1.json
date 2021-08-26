@@ -4,6 +4,7 @@
     "intEntity": 1234567890,
     "longEntity": 1234567890123456789,
     "shortEntity": 12345,
+    "byteEntity": 123,
     "customIdEntity": "abc",
     "guidEntities": [
         "87db6552-a99d-4d53-9b20-8cc797db2b8f"
