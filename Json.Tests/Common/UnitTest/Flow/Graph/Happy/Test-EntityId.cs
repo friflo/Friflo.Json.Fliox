@@ -254,6 +254,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 var intRef       = read.ReadRef        (er => er.intEntity);
                 var longRef      = read.ReadRef        (er => er.longEntity);
                 var shortRef     = read.ReadRef        (er => er.shortEntity);
+                var byteRef      = read.ReadRef        (er => er.byteEntity);
                 var customIdRef  = read.ReadRef        (er => er.customIdEntity);
                 var guidRefs     = read.ReadArrayRefs  (er => er.intEntities);
 
@@ -266,6 +267,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 IsNotNull(result.intEntity);
                 IsNotNull(result.longEntity);
                 IsNotNull(result.shortEntity);
+                IsNotNull(result.byteEntity);
                 IsNotNull(result.customIdEntity);
                 IsNotNull(result.intEntities[0].Entity);
                 
@@ -274,6 +276,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 IsTrue(intId    == intRef.Key);
                 IsTrue(longId   == longRef.Key);
                 IsTrue(shortId  == shortRef.Key);
+                IsTrue(byteId   == byteRef.Key);
                 IsTrue(stringId == customIdRef.Key);
                 IsNotNull(guidRefs.Results[intId]);
                 IsNotNull(guidRefs[intId]);
