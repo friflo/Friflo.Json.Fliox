@@ -47,6 +47,7 @@ namespace Friflo.Json.Flow.Graph
         // Reason:  EntitySet is extended by application which is mainly interested in following fields while debugging:
         //          peers, Sync, name, container & store 
         internal            SetIntern<T>    intern;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal            SyncPeerSet<T>  syncPeerSet;
         
         internal  abstract  Peer<T>         GetPeerById (in JsonKey id);
