@@ -48,7 +48,7 @@ export class EntityRefs {
     shortEntity     : int16;
     byteEntity      : uint8;
     customIdEntity? : string | null;
-    guidEntities?   : Guid[] | null;
+    intEntities?    : int32[] | null;
 }
 
 export class CustomIdEntity2 {

@@ -13,7 +13,7 @@
                 "shortEntity":    { "$ref": "./Standard.json#/definitions/int16" },
                 "byteEntity":     { "$ref": "./Standard.json#/definitions/uint8" },
                 "customIdEntity": { "type": ["string", "null"] },
-                "guidEntities":   { "type": ["array", "null"], "items": { "$ref": "./Standard.json#/definitions/Guid" } }
+                "intEntities":    { "type": ["array", "null"], "items": { "$ref": "./Standard.json#/definitions/int32" } }
             },
             "required": [
                 "id",

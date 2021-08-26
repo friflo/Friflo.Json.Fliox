@@ -46,8 +46,7 @@ data class EntityRefs (
               val shortEntity    : Short,
               val byteEntity     : Byte,
               val customIdEntity : String? = null,
-              @Serializable(with = UUIDSerializer::class)
-              val guidEntities   : List<UUID>? = null,
+              val intEntities    : List<Int>? = null,
 )
 
 @Serializable

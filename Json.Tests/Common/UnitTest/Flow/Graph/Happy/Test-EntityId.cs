@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static async Task AssertEntityId() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
-            using (var database     = new MemoryDatabase()) {
+            using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/EntityIdStore")) {
                 await AssertEntityIdTests (database, typeStore);
             }
         }
@@ -39,17 +39,47 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         private static async Task AssertEntityIdLoopback() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
-            using (var fileDatabase = new MemoryDatabase())
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets/Graph/EntityIdStore"))
             using (var database     = new LoopbackDatabase(fileDatabase))
             {
                 await AssertEntityIdTests (database, typeStore);
             }
         }
-        
-        
-            
+
         private static async Task AssertEntityIdTests(EntityDatabase database, TypeStore typeStore) {
             var entityRef = new EntityRefs { id = "entity-ref-1" };
+            
+            // --- int as entity id ---
+            const int intId = 1234567890;
+            var intEntity  = new IntEntity { id = intId};
+            // Test: EntityId<T>.GetEntityId()
+            using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
+                var create  = store.intEntities.Update(intEntity);
+                
+                await store.Sync();
+                
+                IsTrue(create.Success);
+                
+                var read = store.intEntities.Read();
+                var find = read.Find(intId);
+                    
+                await store.Sync();
+                
+                IsTrue(find.Success);
+                IsTrue(intEntity == find.Result);
+                entityRef.intEntity = intEntity;
+            }
+            // Test: EntityId<T>.SetEntityId()
+            using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
+                var read = store.intEntities.Read();
+                var find = read.Find(intId);
+                    
+                await store.Sync();
+                
+                IsTrue(find.Success);
+                AreEqual(intId, find.Result.id);
+            }
+            
             // --- Guid as entity id ---
             var guidId = new Guid("87db6552-a99d-4d53-9b20-8cc797db2b8f");
             // Test: EntityId<T>.GetEntityId()
@@ -69,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
                 entityRef.guidEntity = entity;
-                entityRef.guidEntities = new List<Ref<Guid, GuidEntity>> { entity };
+                entityRef.intEntities = new List<Ref<int, IntEntity>> { intEntity };
             }
             // Test: EntityId<T>.SetEntityId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
@@ -82,41 +112,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 AreEqual(guidId, find.Result.id);
             }
             
-            // --- int as entity id ---
-            const int intId = 1234567890;
-            // Test: EntityId<T>.GetEntityId()
-            using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
-                var entity  = new IntEntity { id = intId};
-                var create  = store.intEntities.Update(entity);
-                var list = new List<IntEntity>();
-                for (int n = 0; n < 100000; n++) {
-                    list.Add(new IntEntity() {id = n});
-                }
-                store.intEntities.UpdateRange(list);
-                
-                await store.Sync();
-                
-                IsTrue(create.Success);
-                
-                var read = store.intEntities.Read();
-                var find = read.Find(intId);
-                    
-                await store.Sync();
-                
-                IsTrue(find.Success);
-                IsTrue(entity == find.Result);
-                entityRef.intEntity = entity;
-            }
-            // Test: EntityId<T>.SetEntityId()
-            using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
-                var read = store.intEntities.Read();
-                var find = read.Find(intId);
-                    
-                await store.Sync();
-                
-                IsTrue(find.Success);
-                AreEqual(intId, find.Result.id);
-            }
+
             
             // --- long as entity id ---
             const long longId = 1234567890123456789;
@@ -254,12 +250,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 var read = store.entityRefs.Read();
                 
                 var find = read.Find(entityRef.id);
-                var guidEntity      = read.ReadRef        (er => er.guidEntity);
-                var intEntity       = read.ReadRef        (er => er.intEntity);
-                var longEntity      = read.ReadRef        (er => er.longEntity);
-                var shortEntity     = read.ReadRef        (er => er.shortEntity);
-                var customIdEntity  = read.ReadRef        (er => er.customIdEntity);
-                var guidEntities    = read.ReadArrayRefs  (er => er.guidEntities);
+                var guidRef      = read.ReadRef        (er => er.guidEntity);
+                var intRef       = read.ReadRef        (er => er.intEntity);
+                var longRef      = read.ReadRef        (er => er.longEntity);
+                var shortRef     = read.ReadRef        (er => er.shortEntity);
+                var customIdRef  = read.ReadRef        (er => er.customIdEntity);
+                var guidRefs     = read.ReadArrayRefs  (er => er.intEntities);
 
                 await store.Sync();                   
                
@@ -271,16 +267,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 IsNotNull(result.longEntity);
                 IsNotNull(result.shortEntity);
                 IsNotNull(result.customIdEntity);
-                IsNotNull(result.guidEntities[0].Entity);
+                IsNotNull(result.intEntities[0].Entity);
                 
-                IsNotNull(guidEntity.Result);
-                IsTrue(guidId   == guidEntity.Key);
-                IsTrue(intId    == intEntity.Key);
-                IsTrue(longId   == longEntity.Key);
-                IsTrue(shortId  == shortEntity.Key);
-                IsTrue(stringId == customIdEntity.Key);
-                IsNotNull(guidEntities.Results[guidId]);
-                IsNotNull(guidEntities[guidId]);
+                IsNotNull(guidRef.Result);
+                IsTrue(guidId   == guidRef.Key);
+                IsTrue(intId    == intRef.Key);
+                IsTrue(longId   == longRef.Key);
+                IsTrue(shortId  == shortRef.Key);
+                IsTrue(stringId == customIdRef.Key);
+                IsNotNull(guidRefs.Results[intId]);
+                IsNotNull(guidRefs[intId]);
             }
             
             // ensure QueryTask<> results enables type-safe key access

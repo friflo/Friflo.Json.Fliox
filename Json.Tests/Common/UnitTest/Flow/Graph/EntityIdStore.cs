@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                         public Ref <short,  ShortEntity>    shortEntity;
                         public Ref <byte,   ByteEntity>     byteEntity;
                         public Ref <string, CustomIdEntity> customIdEntity;
-                        public List<Ref <Guid, GuidEntity>> guidEntities;
+                        public List<Ref <int, IntEntity>>   intEntities;
     }
 
     public class CustomIdEntity2 {
