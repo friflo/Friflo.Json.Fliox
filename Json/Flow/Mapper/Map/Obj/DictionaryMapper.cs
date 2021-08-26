@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
                 return null;
             
             Type keyType = args[0];
-            if (!KeyMapper.KeyMappers.ContainsKey(keyType)) // Support only Dictionary with key type: string & long
+            if (!config.keyMappers.ContainsKey(keyType)) // Support only Dictionary with key type: string & long
                 return null;
             Type elementType = args[1];
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
@@ -52,7 +52,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
         public DictionaryMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
             base(config, type, typeof(TElm), 1, typeof(string), constructor)
         {
-            keyMapper       = (KeyMapper<TKey>)KeyMapper.GetKeyMapper<TKey>();
+            keyMapper       = (KeyMapper<TKey>)config.keyMappers[typeof(TKey)];
         }
         
         public override void Trace(Tracer tracer, TMap map) {

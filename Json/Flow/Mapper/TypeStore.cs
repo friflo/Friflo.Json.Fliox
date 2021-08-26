@@ -18,12 +18,14 @@ namespace Friflo.Json.Flow.Mapper
     [CLSCompliant(true)]
 #endif
     public class StoreConfig {
-        public  readonly    bool        useIL;
-        public  readonly    IJsonNaming jsonNaming;
+        public   readonly   bool                        useIL;
+        public   readonly   IJsonNaming                 jsonNaming;
+        internal readonly   Dictionary<Type, KeyMapper> keyMappers;
 
         public StoreConfig(TypeAccess typeAccess = TypeAccess.Reflection, IJsonNaming jsonNaming = null) {
             this.useIL = typeAccess == TypeAccess.IL;
             this.jsonNaming = jsonNaming ?? new DefaultNaming();
+            this.keyMappers = KeyMapper.CreateDefaultKeyMappers();
         }
     }
 
@@ -66,6 +68,10 @@ namespace Friflo.Json.Flow.Mapper
                 foreach (var mapper in typeMap.Values)
                     mapper.Dispose();
             }
+        }
+        
+        public bool AddKeyMapper (Type keyType, KeyMapper keyMapper) {
+            return config.keyMappers.TryAdd(keyType, keyMapper);
         }
         
         public List<TypeMapper> AddMappers (ICollection<Type> types) {
