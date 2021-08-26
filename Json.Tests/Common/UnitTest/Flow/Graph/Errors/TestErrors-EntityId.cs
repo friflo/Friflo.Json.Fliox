@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
             e = Throws<InvalidOperationException>(() => {
                 _ = new UnsupportedKeyTypeStore(database, typeStore, "store");
             });
-            AreEqual("unsupported Type for entity key: ByteEntity.id, Type: Byte", e.Message);
+            AreEqual("unsupported Type for entity key: CharEntity.id, Type: Char", e.Message);
             
             e = Throws<InvalidTypeException>(() => {
                 _ = new InvalidMemberStore(database, typeStore, "store");
@@ -63,15 +63,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Errors
     }
 
     // --------
-    public class ByteEntity {
-        public  byte        id;
+    public class CharEntity {
+        public  char        id;
     }
     
     public class UnsupportedKeyTypeStore : EntityStore {
-        public  readonly    EntitySet <byte,    ByteEntity>      byteEntities;
+        public  readonly    EntitySet <char,    CharEntity>      charEntities;
 
         public UnsupportedKeyTypeStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-            byteEntities = new EntitySet <byte,    ByteEntity>      (this);
+            charEntities = new EntitySet <char,    CharEntity>      (this);
         }
     }
     

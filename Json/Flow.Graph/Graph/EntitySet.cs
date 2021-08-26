@@ -71,7 +71,8 @@ namespace Friflo.Json.Flow.Graph
     /// The type <see cref="T"/> of a container entity need to be a class containing a field or property used as its key
     /// usually named <b>id</b>.
     /// Supported <see cref="TKey"/> types are:
-    /// <see cref="string"/>, <see cref="long"/>, <see cref="int"/>, <see cref="short"/> and <see cref="Guid"/><br/>
+    /// <see cref="string"/>, <see cref="long"/>, <see cref="int"/>, <see cref="short"/>, <see cref="byte"/>
+    /// and <see cref="Guid"/><br/>.
     /// The key type <see cref="TKey"/> must match the <see cref="Type"/> used for the key field / property.
     /// In case of a type mismatch a runtime exceptions is thrown.
     /// </summary>

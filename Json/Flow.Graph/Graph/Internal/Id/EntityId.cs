@@ -102,6 +102,9 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             if (propType == typeof(short)) {
                 return new EntityKeyShortProperty<T>    (property, idGetMethod, idSetMethod);
             }
+            if (propType == typeof(byte)) {
+                return new EntityKeyByteProperty<T>    (property, idGetMethod, idSetMethod);
+            }
             // add additional types here
             var msg = UnsupportedTypeMessage(type, property, propType);
             throw new InvalidOperationException(msg);
@@ -125,6 +128,9 @@ namespace Friflo.Json.Flow.Graph.Internal.Id
             }
             if (fieldType == typeof(short)) {
                 return new EntityKeyShortField<T>(field);
+            }
+            if (fieldType == typeof(byte)) {
+                return new EntityKeyByteField<T>(field);
             }
             // add additional types here
             var msg = UnsupportedTypeMessage(type, field, fieldType);
