@@ -390,18 +390,24 @@ namespace Friflo.Json.Flow.Graph
                 throw new InvalidOperationException($"assigned invalid id: {id}, expect: {expect}");
         }
         
-        internal Peer<T> GetPeerByRef(Ref<TKey, T> reference) {
+        internal  bool GetPeerByRef(Ref<TKey, T> reference, out Peer<T> peer) {
             var id = reference.id;
-            if (id.IsNull())
-                return null; // todo add test
+            if (id.IsNull()) {
+                peer = null;
+                return false; // todo add test
+            }
             var set = reference.GetSet();
             if (set == null) {
                 var entity = reference.GetEntity();
-                if (entity != null)
-                    return CreatePeer(entity);
-                return GetOrCreatePeerByKey(reference.key, id);
+                if (entity != null) {
+                    peer = CreatePeer(entity);
+                    return true;
+                }
+                peer = GetOrCreatePeerByKey(reference.key, id);
+                return true;
             }
-            return set.GetPeerByKey(reference.key);
+            peer = set.GetPeerByKey(reference.key);
+            return true;
         }
         
         internal Peer<T> GetPeerByKey(TKey key) {
