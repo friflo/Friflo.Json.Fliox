@@ -8,11 +8,7 @@ using Friflo.Json.Flow.Sync;
 // ReSharper disable JoinNullCheckWithUsage
 namespace Friflo.Json.Flow.Graph.Internal
 {
-
-    internal class PeerEntity { }
-    
-    // --- PeerEntity<>
-    internal class PeerEntity<T> : PeerEntity where T : class
+    internal class PeerEntity<T> where T : class
     {
         internal  readonly  JsonKey         id;      // never null
         private             T               entity;
@@ -47,8 +43,6 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal void SetEntity(T entity) {
             if (entity == null)
                 throw new InvalidOperationException("Expect entity not null");
-            // if (entityId != id)
-            //    throw new InvalidOperationException("Expect entity.id == id");
             if (this.entity == null) {
                 this.entity = entity;
                 return;
@@ -77,6 +71,4 @@ namespace Friflo.Json.Flow.Graph.Internal
             NextPatchSource = null;
         }
     }
-
-
 }
