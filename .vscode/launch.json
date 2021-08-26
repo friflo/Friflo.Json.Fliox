@@ -27,7 +27,7 @@
             "name": "TS playground",
             "type": "node",
             "request": "launch",
-            "cwd": "${workspaceFolder}/Json.Tests/assets/Schema/Typescript",
+            "cwd": "${workspaceFolder}/Json.Tests/assets~/Schema/Typescript",
             "runtimeExecutable": "npm",
             "runtimeArgs": ["run", "dbg"]
           }
