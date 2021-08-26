@@ -40,6 +40,7 @@
         { "fileMatch": ["/Json.Tests/assets/Graph/EntityIdStore/IntEntity/*.json"],         "url": "./Json.Tests/assets/Schema/JSON/EntityIdStore/UnitTest.Flow.Graph.IntEntity.json" },
         { "fileMatch": ["/Json.Tests/assets/Graph/EntityIdStore/LongEntity/*.json"],        "url": "./Json.Tests/assets/Schema/JSON/EntityIdStore/UnitTest.Flow.Graph.LongEntity.json" },
         { "fileMatch": ["/Json.Tests/assets/Graph/EntityIdStore/ShortEntity/*.json"],       "url": "./Json.Tests/assets/Schema/JSON/EntityIdStore/UnitTest.Flow.Graph.ShortEntity.json" },
+        { "fileMatch": ["/Json.Tests/assets/Graph/EntityIdStore/ByteEntity/*.json"],        "url": "./Json.Tests/assets/Schema/JSON/EntityIdStore/UnitTest.Flow.Graph.ByteEntity.json" },
         { "fileMatch": ["/Json.Tests/assets/Graph/EntityIdStore/CustomIdEntity/*.json"],    "url": "./Json.Tests/assets/Schema/JSON/EntityIdStore/UnitTest.Flow.Graph.CustomIdEntity.json" },
         { "fileMatch": ["/Json.Tests/assets/Graph/EntityIdStore/CustomIdEntity2/*.json"],   "url": "./Json.Tests/assets/Schema/JSON/EntityIdStore/UnitTest.Flow.Graph.CustomIdEntity2.json" },
         { "fileMatch": ["/Json.Tests/assets/Graph/EntityIdStore/EntityRefs/*.json"],        "url": "./Json.Tests/assets/Schema/JSON/EntityIdStore/UnitTest.Flow.Graph.EntityRefs.json" }
