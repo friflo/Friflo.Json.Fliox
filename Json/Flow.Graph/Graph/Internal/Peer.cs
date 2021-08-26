@@ -8,6 +8,12 @@ using Friflo.Json.Flow.Sync;
 // ReSharper disable JoinNullCheckWithUsage
 namespace Friflo.Json.Flow.Graph.Internal
 {
+    // Could be struct but this would make changing fields & properties complex as their changes require to update
+    // EntitySet<TKey,T>.peers.
+    // The benefit of a struct is higher memory locality and reduced heap allocations as the memory for all peers
+    // are entirely contained by EntitySet<TKey,T>.peers Dictionary<TKey,Peer<T>>.
+    // In case entities are already tracked by EntitySet<TKey,T>.peers no Peer<T> is instantiated on the heap
+    // neither Peer<T> is a class nor a struct.
     internal class Peer<T> where T : class
     {
         internal  readonly  JsonKey         id;      // never null
