@@ -79,7 +79,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                     continue;
                 }
                 var key = Ref<TKey, T>.EntityKey.IdToKey(id);
-                var peer = set.GetPeerByKey(key, id);
+                var peer = set.GetOrCreatePeerByKey(key, id);
                 peer.created = false;
                 peer.updated = false;
                 peer.SetPatchSource(reader.Read<T>(entry.Value.Json));
@@ -149,7 +149,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                     continue;
                 }
                 var key = Ref<TKey,T>.EntityKey.IdToKey(id);
-                var peer = set.GetPeerByKey(key, id);
+                var peer = set.GetOrCreatePeerByKey(key, id);
                 read.results[key] = peer.Entity;
             }
             foreach (var findTask in read.findTasks) {
@@ -205,7 +205,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                     continue;
                 }
                 var key = Ref<TKey,T>.EntityKey.IdToKey(id);
-                var peer = set.GetPeerByKey(key, id);
+                var peer = set.GetOrCreatePeerByKey(key, id);
                 results.Add(key, peer.Entity);
             }
             if (entityErrorInfo.HasErrors) {

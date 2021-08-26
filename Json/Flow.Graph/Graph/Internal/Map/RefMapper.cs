@@ -117,8 +117,8 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
                 if (reader.tracerContext != null) {
                     var store = reader.tracerContext.Store();
                     var set = store.GetEntitySet<TKey, T>();
-                    var peer = set.GetPeerByKey(key, new JsonKey());
-                    slot = new Ref<TKey, T> (peer);
+                    var peer = set.GetOrCreatePeerByKey(key, new JsonKey());
+                    slot = new Ref<TKey, T> (peer, set);
                     return slot;
                 }
                 slot = new Ref<TKey, T> (key);

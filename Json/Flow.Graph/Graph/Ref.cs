@@ -63,13 +63,13 @@ namespace Friflo.Json.Flow.Graph
         //      id != null,     entity == null      => Ref<> was assigned by an id != null
         //      id != null,     entity != null      => Ref<> was assigned by an entity != null
         //
-        //      peer == null    =>  Ref<> is not attached to a peer until now
-        //      peer != null    =>  Ref<> is attached to a peer
+        //      set == null    =>  Ref<TKey,T> is not attached to a Peer<T> until now
+        //      set != null    =>  Ref<TKey,T> is attached to a Peer<T>
 
-        public   readonly   TKey        key;
-        public   readonly   JsonKey     id;
-        private  readonly   T           entity;
-        private             Peer<T>     peer;
+        public   readonly   TKey                key;
+        public   readonly   JsonKey             id;
+        private  readonly   T                   entity;
+        private             EntitySet<TKey,T>   set;
 
         public   override   string      ToString() => id.IsNull() ? "null" : id.AsString();
 
@@ -79,7 +79,7 @@ namespace Friflo.Json.Flow.Graph
             this.key    = key;
             id          = EntityKey.KeyToId(key);
             this.entity = null;
-            this.peer   = null;
+            this.set    = null;
         }
         
         public Ref(T entity) {
@@ -87,22 +87,23 @@ namespace Friflo.Json.Flow.Graph
             this.key    = entityId;
             this.id     = EntityKey.KeyToId(key);
             this.entity = entity;
-            this.peer   = null;
+            this.set    = null;
             if (entity != null && entityId == null)
                 throw new ArgumentException($"constructing a Ref<>(entity != null) expect entity.id not null. Type: {typeof(T)}");
         }
         
-        internal Ref(Peer<T> peer) {
+        internal Ref(Peer<T> peer, EntitySet<TKey, T> set) {
             this.key    = EntityKey.IdToKey(peer.id);      // peer.id is never null
             this.id     = peer.id;
             this.entity = null;
-            this.peer   = peer;
+            this.set    = set;
         }
 
         public T        Entity {
             get {
-                if (peer == null)
+                if (set == null)
                     return entity;
+                var peer = set.GetPeerByKey(key);
                 if (peer.assigned)
                     return peer.Entity;
                 throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), id.AsString());
@@ -111,10 +112,11 @@ namespace Friflo.Json.Flow.Graph
 
         public bool TryEntity(out T entity) {
             // same implementation as Entity
-            if (peer == null) {
+            if (set == null) {
                 entity = this.entity;
                 return true;
             }
+            var peer = set.GetPeerByKey(key);
             if (peer.assigned) {
                 entity = peer.Entity;
                 return true;
@@ -123,8 +125,8 @@ namespace Friflo.Json.Flow.Graph
             return false;
         }
         
-        internal T          GetEntity() { return entity; }
-        internal Peer<T>    GetPeer()   { return peer; }
+        internal T                  GetEntity() { return entity; }
+        internal EntitySet<TKey, T> GetSet()    { return set; }
 
         public override bool Equals(object obj) {
             if (obj == null)
@@ -152,7 +154,7 @@ namespace Friflo.Json.Flow.Graph
         public Find<TKey, T> FindBy(ReadTask<TKey, T> task) {
             // may validate that set is the same which created the PeerEntity<>
             var find = task.Find(key);
-            peer = task.set.GetPeerByKey(key, id);
+            set = task.set;
             return find;
         }
     }

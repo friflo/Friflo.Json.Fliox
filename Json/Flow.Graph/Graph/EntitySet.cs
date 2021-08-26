@@ -394,17 +394,21 @@ namespace Friflo.Json.Flow.Graph
             var id = reference.id;
             if (id.IsNull())
                 return null; // todo add test
-            Peer<T> peer = reference.GetPeer();
-            if (peer == null) {
+            var set = reference.GetSet();
+            if (set == null) {
                 var entity = reference.GetEntity();
                 if (entity != null)
                     return CreatePeer(entity);
-                return GetPeerByKey(reference.key, id);
+                return GetOrCreatePeerByKey(reference.key, id);
             }
-            return peer;
+            return set.GetPeerByKey(reference.key);
         }
         
-        internal Peer<T> GetPeerByKey(TKey key, JsonKey id) {
+        internal Peer<T> GetPeerByKey(TKey key) {
+            return peers[key];
+        }
+        
+        internal Peer<T> GetOrCreatePeerByKey(TKey key, JsonKey id) {
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
             }
@@ -418,7 +422,7 @@ namespace Friflo.Json.Flow.Graph
             return peer;
         }
 
-        /// use <see cref="GetPeerByKey"/> is possible
+        /// use <see cref="GetOrCreatePeerByKey"/> is possible
         internal override Peer<T> GetPeerById(in JsonKey id) {
             var key = Ref<TKey,T>.EntityKey.IdToKey(id);
             if (peers.TryGetValue(key, out Peer<T> peer)) {
