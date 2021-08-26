@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Obj
                 return null;
             
             Type keyType = args[0];
-            if (!config.keyMappers.ContainsKey(keyType)) // Support only Dictionary with key type: string & long
+            if (!config.keyMappers.ContainsKey(keyType))
                 return null;
             Type elementType = args[1];
             ConstructorInfo constructor = ReflectUtils.GetDefaultConstructor(type);
