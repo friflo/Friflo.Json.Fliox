@@ -79,7 +79,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
                 return;
             var store = tracer.tracerContext.Store();
             var set = store.GetEntitySet<TKey, T>();
-            PeerEntity<T> peer = set.GetPeerByRef(value);
+            Peer<T> peer = set.GetPeerByRef(value);
             if (peer.assigned)
                 return;
             // Track untracked entity

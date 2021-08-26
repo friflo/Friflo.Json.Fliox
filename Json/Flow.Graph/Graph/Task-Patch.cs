@@ -17,7 +17,7 @@ namespace Friflo.Json.Flow.Graph
     public class PatchTask<T> : SyncTask where T : class
     {
         internal readonly   List<string>        members = new List<string>();
-        internal readonly   List<PeerEntity<T>> peers   = new List<PeerEntity<T>>();
+        internal readonly   List<Peer<T>>       peers   = new List<Peer<T>>();
         private  readonly   EntityPeerSet<T>    set;
 
         internal            TaskState           state;
@@ -42,12 +42,12 @@ namespace Friflo.Json.Flow.Graph
         }
         
 
-        internal PatchTask(PeerEntity<T> peer, EntityPeerSet<T> set) {
+        internal PatchTask(Peer<T> peer, EntityPeerSet<T> set) {
             this.set = set;
             peers.Add(peer);
         }
         
-        internal PatchTask(ICollection<PeerEntity<T>> peers, EntityPeerSet<T> set) {
+        internal PatchTask(ICollection<Peer<T>> peers, EntityPeerSet<T> set) {
             this.set = set;
             this.peers.AddRange(peers);
         }
@@ -58,7 +58,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public void AddRange(ICollection<T> entities) {
-            var newPeers = new List<PeerEntity<T>>(entities.Count);
+            var newPeers = new List<Peer<T>>(entities.Count);
             foreach (var entity in entities) {
                 var peer = set.GetPeerByEntity(entity);
                 newPeers.Add(peer);

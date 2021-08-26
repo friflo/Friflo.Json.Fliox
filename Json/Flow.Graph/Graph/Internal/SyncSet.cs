@@ -11,8 +11,8 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal abstract class SyncPeerSet <T> : SyncSet where T : class
     {
-        internal abstract void AddUpdate (PeerEntity<T> peer);
-        internal abstract bool AddCreate (PeerEntity<T> peer);
+        internal abstract void AddUpdate (Peer<T> peer);
+        internal abstract bool AddCreate (Peer<T> peer);
     }
 
     /// Multiple instances of this class can be created when calling EntitySet.Sync() without awaiting the result.
@@ -33,12 +33,12 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         private             SubscribeChangesTask<T>                 subscribeChanges;
         
-        /// key: <see cref="PeerEntity{T}.entity"/>.id
-        private readonly    Dictionary<JsonKey, PeerEntity<T>>      creates      = new Dictionary<JsonKey, PeerEntity<T>>(JsonKey.Equality);
+        /// key: <see cref="Peer{T}.entity"/>.id
+        private readonly    Dictionary<JsonKey, Peer<T>>            creates      = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality);
         private readonly    List<WriteTask>                         createTasks  = new List<WriteTask>();
         
-        /// key: <see cref="PeerEntity{T}.entity"/>.id
-        private readonly    Dictionary<JsonKey, PeerEntity<T>>      updates      = new Dictionary<JsonKey, PeerEntity<T>>(JsonKey.Equality);
+        /// key: <see cref="Peer{T}.entity"/>.id
+        private readonly    Dictionary<JsonKey, Peer<T>>            updates      = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality);
         private readonly    List<WriteTask>                         updateTasks  = new List<WriteTask>();
 
         /// key: entity id
@@ -53,7 +53,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             this.set = set;
         }
         
-        internal override bool AddCreate (PeerEntity<T> peer) {
+        internal override bool AddCreate (Peer<T> peer) {
             peer.assigned = true;
             creates.TryAdd(peer.id, peer);      // sole place a peer (entity) is added
             if (!peer.created) {
@@ -63,7 +63,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             return false;
         }
         
-        internal override void AddUpdate (PeerEntity<T> peer) {
+        internal override void AddUpdate (Peer<T> peer) {
             peer.assigned = true;
             updates.TryAdd(peer.id, peer);      // sole place a peer (entity) is added
             if (!peer.updated) {
@@ -139,13 +139,13 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         // --- Patch
-        internal PatchTask<T> Patch(PeerEntity<T> peer) {
+        internal PatchTask<T> Patch(Peer<T> peer) {
             var patchTask  = new PatchTask<T>(peer, set);
             patchTasks.Add(patchTask);
             return patchTask;
         }
         
-        internal PatchTask<T> PatchRange(ICollection<PeerEntity<T>> peers) {
+        internal PatchTask<T> PatchRange(ICollection<Peer<T>> peers) {
             var patchTask  = new PatchTask<T>(peers, set);
             patchTasks.Add(patchTask);
             return patchTask;
@@ -169,9 +169,9 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         // --- Log changes -> create patches
-        internal void LogSetChanges(Dictionary<TKey, PeerEntity<T>> peers, LogTask logTask) {
+        internal void LogSetChanges(Dictionary<TKey, Peer<T>> peers, LogTask logTask) {
             foreach (var peerPair in peers) {
-                PeerEntity<T> peer = peerPair.Value;
+                Peer<T> peer = peerPair.Value;
                 GetEntityChanges(peer, logTask);
             }
         }
@@ -183,9 +183,9 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         /// In case the given entity was added via <see cref="Create"/> (peer.create != null) trace the entity to
         /// find changes in referenced entities in <see cref="Ref{TKey,T}"/> fields of the given entity.
-        /// In these cases <see cref="Map.RefMapper{TKey,T}.Trace"/> add untracked entities (== have no <see cref="PeerEntity{T}"/>)
+        /// In these cases <see cref="Map.RefMapper{TKey,T}.Trace"/> add untracked entities (== have no <see cref="Peer{T}"/>)
         /// which is not already assigned) 
-        private void GetEntityChanges(PeerEntity<T> peer, LogTask logTask) {
+        private void GetEntityChanges(Peer<T> peer, LogTask logTask) {
             if (peer.created) {
                 set.intern.store._intern.tracerLogTask = logTask;
                 set.intern.tracer.Trace(peer.Entity);
@@ -393,7 +393,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
         
-        private void SetNextPatchSource(PeerEntity<T> peer) {
+        private void SetNextPatchSource(Peer<T> peer) {
             var mapper = set.intern.jsonMapper;
             var json = mapper.writer.Write(peer.Entity);
             peer.SetNextPatchSource(mapper.Read<T>(json));

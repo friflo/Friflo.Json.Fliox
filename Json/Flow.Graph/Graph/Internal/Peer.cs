@@ -8,7 +8,7 @@ using Friflo.Json.Flow.Sync;
 // ReSharper disable JoinNullCheckWithUsage
 namespace Friflo.Json.Flow.Graph.Internal
 {
-    internal class PeerEntity<T> where T : class
+    internal class Peer<T> where T : class
     {
         internal  readonly  JsonKey         id;      // never null
         private             T               entity;
@@ -23,14 +23,14 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         public   override   string          ToString() => id.AsString();
         
-        internal PeerEntity(T entity, in JsonKey id) {
+        internal Peer(T entity, in JsonKey id) {
             if (entity == null)
                 throw new NullReferenceException($"entity must not be null. Type: {typeof(T)}");
             this.entity = entity;
             this.id     = id;
         }
         
-        internal PeerEntity(in JsonKey id) {
+        internal Peer(in JsonKey id) {
             if (id.IsNull())
                 throw new NullReferenceException($"id must not be null. Type: {typeof(T)}");
             this.id = id;

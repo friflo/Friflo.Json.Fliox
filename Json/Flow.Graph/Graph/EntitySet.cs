@@ -46,15 +46,15 @@ namespace Friflo.Json.Flow.Graph
         // Keep all utility related fields of EntitySet in SetIntern to enhance debugging overview.
         // Reason:  EntitySet is extended by application which is mainly interested in following fields while debugging:
         //          peers, Sync, name, container & store 
-        internal            SetIntern<T>        intern;
-        internal            SyncPeerSet<T>      syncPeerSet;
+        internal            SetIntern<T>    intern;
+        internal            SyncPeerSet<T>  syncPeerSet;
         
-        internal  abstract  PeerEntity<T>       GetPeerById (in JsonKey id);
-        internal  abstract  PeerEntity<T>       GetPeerByEntity(T entity);
+        internal  abstract  Peer<T>         GetPeerById (in JsonKey id);
+        internal  abstract  Peer<T>         GetPeerByEntity(T entity);
         
-        internal  abstract  PeerEntity<T>       CreatePeer (T entity);
-        // internal  abstract  string              GetEntityId (T entity);
-        internal  abstract  JsonKey             GetEntityId (T entity);
+        internal  abstract  Peer<T>         CreatePeer (T entity);
+        // internal  abstract  string       GetEntityId (T entity);
+        internal  abstract  JsonKey         GetEntityId (T entity);
         
 
         protected EntityPeerSet(string name) : base(name) {
@@ -81,22 +81,22 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class EntitySet<TKey, T> : EntityPeerSet<T>  where T : class
     {
-        /// key: <see cref="PeerEntity{T}.entity"/>.id          Note: must be private by all means
-        private  readonly   Dictionary<TKey, PeerEntity<T>>     peers = new Dictionary<TKey, PeerEntity<T>>();
+        /// key: <see cref="Peer{T}.entity"/>.id        Note: must be private by all means
+        private  readonly   Dictionary<TKey, Peer<T>>   peers = new Dictionary<TKey, Peer<T>>();
         
         private static readonly   EntityId<T>  EntityKey = EntityId.GetEntityKey<TKey, T>();
 
         
         // ReSharper disable once NotAccessedField.Local
-        private  readonly   EntityContainer                     container; // not used - only for debugging ergonomics
+        private  readonly   EntityContainer             container; // not used - only for debugging ergonomics
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        internal            SyncSet<TKey, T>                    syncSet;
+        internal            SyncSet<TKey, T>            syncSet;
         
-        internal override   SyncSet                             SyncSet => syncSet;
-        public   override   string                              ToString() => SetInfo.ToString();
+        internal override   SyncSet                     SyncSet     => syncSet;
+        public   override   string                      ToString()  => SetInfo.ToString();
         
-        internal override   SetInfo                             SetInfo { get {
+        internal override   SetInfo                     SetInfo { get {
             var info = new SetInfo (name) { peers = peers.Count };
             syncSet.SetTaskInfo(ref info);
             return info;
@@ -235,7 +235,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public PatchTask<T> PatchRange(ICollection<T> entities) {
-            var peerList = new List<PeerEntity<T>>(entities.Count);
+            var peerList = new List<Peer<T>>(entities.Count);
             foreach (var entity in entities) {
                 var peer = GetPeerByEntity(entity);
                 peer.SetEntity(entity);
@@ -366,14 +366,14 @@ namespace Friflo.Json.Flow.Graph
             }
         }
 
-        internal override PeerEntity<T> CreatePeer (T entity) {
+        internal override Peer<T> CreatePeer (T entity) {
             var key = GetEntityKey(entity);
-            if (peers.TryGetValue(key, out PeerEntity<T> peer)) {
+            if (peers.TryGetValue(key, out Peer<T> peer)) {
                 peer.SetEntity(entity);
                 return peer;
             }
             var id = GetEntityId(entity);
-            peer = new PeerEntity<T>(entity, id);
+            peer = new Peer<T>(entity, id);
             peers.Add(key, peer);
             return peer;
         }
@@ -390,11 +390,11 @@ namespace Friflo.Json.Flow.Graph
                 throw new InvalidOperationException($"assigned invalid id: {id}, expect: {expect}");
         }
         
-        internal PeerEntity<T> GetPeerByRef(Ref<TKey, T> reference) {
+        internal Peer<T> GetPeerByRef(Ref<TKey, T> reference) {
             var id = reference.id;
             if (id.IsNull())
                 return null; // todo add test
-            PeerEntity<T> peer = reference.GetPeer();
+            Peer<T> peer = reference.GetPeer();
             if (peer == null) {
                 var entity = reference.GetEntity();
                 if (entity != null)
@@ -404,8 +404,8 @@ namespace Friflo.Json.Flow.Graph
             return peer;
         }
         
-        internal PeerEntity<T> GetPeerByKey(TKey key, JsonKey id) {
-            if (peers.TryGetValue(key, out PeerEntity<T> peer)) {
+        internal Peer<T> GetPeerByKey(TKey key, JsonKey id) {
+            if (peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
             }
             if (id.IsNull()) {
@@ -413,29 +413,29 @@ namespace Friflo.Json.Flow.Graph
             } else {
                 AssertId(key, id);
             }
-            peer = new PeerEntity<T>(id);
+            peer = new Peer<T>(id);
             peers.Add(key, peer);
             return peer;
         }
 
         /// use <see cref="GetPeerByKey"/> is possible
-        internal override PeerEntity<T> GetPeerById(in JsonKey id) {
+        internal override Peer<T> GetPeerById(in JsonKey id) {
             var key = Ref<TKey,T>.EntityKey.IdToKey(id);
-            if (peers.TryGetValue(key, out PeerEntity<T> peer)) {
+            if (peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
             }
-            peer = new PeerEntity<T>(id);
+            peer = new Peer<T>(id);
             peers.Add(key, peer);
             return peer;
         }
         
-        internal override PeerEntity<T> GetPeerByEntity(T entity) {
+        internal override Peer<T> GetPeerByEntity(T entity) {
             var key = GetEntityKey(entity);
-            if (peers.TryGetValue(key, out PeerEntity<T> peer)) {
+            if (peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
             }
             var id = Ref<TKey,T>.EntityKey.KeyToId(key);
-            peer = new PeerEntity<T>(id);
+            peer = new Peer<T>(id);
             peers.Add(key, peer);
             return peer;
         }

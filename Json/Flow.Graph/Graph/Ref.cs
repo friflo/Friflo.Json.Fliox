@@ -66,14 +66,14 @@ namespace Friflo.Json.Flow.Graph
         //      peer == null    =>  Ref<> is not attached to a peer until now
         //      peer != null    =>  Ref<> is attached to a peer
 
-        public   readonly   TKey            key;
-        public   readonly   JsonKey         id;
-        private  readonly   T               entity;
-        private             PeerEntity<T>   peer;
-        
+        public   readonly   TKey        key;
+        public   readonly   JsonKey     id;
+        private  readonly   T           entity;
+        private             Peer<T>     peer;
+
+        public   override   string      ToString() => id.IsNull() ? "null" : id.AsString();
+
         internal static readonly   EntityKey<TKey, T>     EntityKey = EntityId.GetEntityKey<TKey, T>();
-        
-        public   override   string          ToString() => id.IsNull() ? "null" : id.AsString();
         
         public Ref(TKey key) {
             this.key    = key;
@@ -92,7 +92,7 @@ namespace Friflo.Json.Flow.Graph
                 throw new ArgumentException($"constructing a Ref<>(entity != null) expect entity.id not null. Type: {typeof(T)}");
         }
         
-        internal Ref(PeerEntity<T> peer) {
+        internal Ref(Peer<T> peer) {
             this.key    = EntityKey.IdToKey(peer.id);      // peer.id is never null
             this.id     = peer.id;
             this.entity = null;
@@ -123,8 +123,8 @@ namespace Friflo.Json.Flow.Graph
             return false;
         }
         
-        internal T              GetEntity() { return entity; }
-        internal PeerEntity<T>  GetPeer()   { return peer; }
+        internal T          GetEntity() { return entity; }
+        internal Peer<T>    GetPeer()   { return peer; }
 
         public override bool Equals(object obj) {
             if (obj == null)
