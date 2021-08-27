@@ -42,7 +42,7 @@ namespace Friflo.Json.Flow.Graph
         
         internal static void  AppendName(StringBuilder sb, string name) {
             sb.Append(name);
-            sb.Append(":");
+            sb.Append(": ");
             int len = name.Length + 1;
             for (int n = len; n < 10; n++)
                 sb.Append(' ');
