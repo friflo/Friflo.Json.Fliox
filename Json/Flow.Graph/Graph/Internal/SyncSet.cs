@@ -2,11 +2,15 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Transform;
 
+using static System.Diagnostics.DebuggerBrowsableState;
+
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Flow.Graph.Internal
 {
     internal abstract class SyncPeerSet <T> : SyncSet where T : class
@@ -20,32 +24,51 @@ namespace Friflo.Json.Flow.Graph.Internal
     internal partial class SyncSet<TKey, T> : SyncPeerSet<T> where T : class
     {
         // Note!
-        // All fields must be private by all means to ensure that all scheduled tasks of a Sync() request managed
-        // by this instance can be mapped to their task results safely.
+        // All fields & properties must be private by all means to ensure that all scheduled tasks of a Sync() request
+        // managed by this instance can be mapped to their task results safely.
         
-        private readonly    EntitySet<TKey, T>                      set;
-            
-        private readonly    List<ReadTask<TKey, T>>                 reads        = new List<ReadTask<TKey, T>>();
-        /// key: <see cref="QueryTask{TKey,T}.filterLinq"/> 
-        private readonly    Dictionary<string, QueryTask<TKey, T>>  queries      = new Dictionary<string, QueryTask<TKey, T>>();
+        private readonly                        EntitySet<TKey, T>                      set;
         
-        private             SubscribeChangesTask<T>                 subscribeChanges;
+        // --- backing fields for lazy-initialized properties
+        [DebuggerBrowsable(Never)]  private     List<ReadTask<TKey, T>>                 reads_;
+        
+        [DebuggerBrowsable(Never)]  private     Dictionary<string, QueryTask<TKey, T>>  queries_;
+        
+        [DebuggerBrowsable(Never)]  private     Dictionary<JsonKey, Peer<T>>            creates_;
+        [DebuggerBrowsable(Never)]  private     List<WriteTask>                         createTasks_;
+        
+        [DebuggerBrowsable(Never)]  private     Dictionary<JsonKey, Peer<T>>            updates_;
+        [DebuggerBrowsable(Never)]  private     List<WriteTask>                         updateTasks_;
+        
+        [DebuggerBrowsable(Never)]  private     Dictionary<JsonKey, EntityPatch>        patches_;
+        [DebuggerBrowsable(Never)]  private     List<PatchTask<T>>                      patchTasks_;
+        
+        [DebuggerBrowsable(Never)]  private     HashSet<TKey>                           deletes_;
+        [DebuggerBrowsable(Never)]  private     List<DeleteTask<TKey, T>>               deleteTasks_;
+
+        // --- lazy-initialized properties => they behave like readonly fields
+        private     List<ReadTask<TKey, T>>                 reads       => reads_       ?? (reads_      = new List<ReadTask<TKey, T>>());
+        
+        /// key: <see cref="QueryTask{TKey,T}.filterLinq"/>
+        private     Dictionary<string, QueryTask<TKey, T>>  queries     => queries_     ?? (queries_    = new Dictionary<string, QueryTask<TKey, T>>());
+        
+        private     SubscribeChangesTask<T>                 subscribeChanges;
         
         /// key: <see cref="Peer{T}.entity"/>.id
-        private readonly    Dictionary<JsonKey, Peer<T>>            creates      = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality);
-        private readonly    List<WriteTask>                         createTasks  = new List<WriteTask>();
+        private     Dictionary<JsonKey, Peer<T>>            creates     => creates_     ?? (creates_    = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
+        private     List<WriteTask>                         createTasks => createTasks_ ?? (createTasks_= new List<WriteTask>());
         
         /// key: <see cref="Peer{T}.entity"/>.id
-        private readonly    Dictionary<JsonKey, Peer<T>>            updates      = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality);
-        private readonly    List<WriteTask>                         updateTasks  = new List<WriteTask>();
+        private     Dictionary<JsonKey, Peer<T>>            updates      => updates_    ?? (updates_    = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
+        private     List<WriteTask>                         updateTasks  => updateTasks_?? (updateTasks_= new List<WriteTask>());
 
         /// key: entity id
-        private readonly    Dictionary<JsonKey, EntityPatch>        patches      = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
-        private readonly    List<PatchTask<T>>                      patchTasks   = new List<PatchTask<T>>();
+        private     Dictionary<JsonKey, EntityPatch>        patches      => patches_    ?? (patches_    = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality));
+        private     List<PatchTask<T>>                      patchTasks   => patchTasks_ ?? (patchTasks_ = new List<PatchTask<T>>());
         
         /// key: entity id
-        private readonly    HashSet<TKey>                           deletes      = new HashSet   <TKey>();
-        private readonly    List<DeleteTask<TKey, T>>               deleteTasks  = new List<DeleteTask<TKey, T>>();
+        private     HashSet<TKey>                           deletes      => deletes_    ?? (deletes_    = new HashSet   <TKey>());
+        private     List<DeleteTask<TKey, T>>               deleteTasks  => deleteTasks_?? (deleteTasks_= new List<DeleteTask<TKey, T>>());
 
         internal SyncSet(EntitySet<TKey, T> set) {
             this.set = set;
