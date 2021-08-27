@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Graph.Internal;
@@ -79,6 +80,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             }
             var endBytes = GC.GetAllocatedBytesForCurrentThread();
             AreEqual(startBytes, endBytes);
+        }
+
+        [Test]
+        public Task TestSyncMemory() {
+            var database = new NoopDatabase();
+            var store = new PocStore(database, "TestSyncMemory");
+            store.Sync(); // force one time allocations
+            // GC.Collect();
+            var start = GC.GetAllocatedBytesForCurrentThread();
+            store.Sync();
+            var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+#if DEBUG
+            AreEqual(2904, diff);
+#else
+            AreEqual(2752, diff);
+#endif
+            return Task.CompletedTask;
+        }
+
+        private class NoopDatabase : EntityDatabase
+        {
+            public override EntityContainer CreateContainer(string name, EntityDatabase database) {
+                return null;
+            }
         }
 #endif
     }
