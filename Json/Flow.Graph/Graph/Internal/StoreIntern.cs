@@ -15,23 +15,24 @@ namespace Friflo.Json.Flow.Graph.Internal
 {
     internal struct StoreIntern
     {
+        // readonly
         internal readonly   string                                      clientId;
         internal readonly   TypeStore                                   typeStore;
         private  readonly   TypeStore                                   ownedTypeStore;
         internal readonly   TypeCache                                   typeCache;
-        internal readonly   ObjectMapper                                jsonMapper;
-
-        internal readonly   ObjectPatcher                               objectPatcher;
-        
         internal readonly   EntityDatabase                              database;
+        internal readonly   EventTarget                                 eventTarget;
+        internal readonly   ObjectMapper                                jsonMapper;
+        // readonly - owned
+        internal readonly   ObjectPatcher                               objectPatcher;
         internal readonly   Dictionary<Type,   EntitySet>               setByType;
         internal readonly   Dictionary<string, EntitySet>               setByName;
-        internal readonly   EventTarget                                 eventTarget;
         internal readonly   Dictionary<string, MessageSubscriber>       subscriptions;
         internal readonly   List<MessageSubscriber>                     subscriptionsPrefix;
         internal readonly   ObjectReader                                messageReader;
         internal readonly   ConcurrentDictionary<Task, MessageContext>  pendingSyncs;
-        
+        internal readonly   List<JsonKey>                               idsBuf;
+
         // --- non readonly
         internal            SyncStore                               syncStore;
         internal            LogTask                                 tracerLogTask;
@@ -41,7 +42,6 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal            int                                     lastEventSeq;
         internal            int                                     syncCount;
         internal            string                                  token;
-
 
         public   override   string                                  ToString() => clientId;
 
@@ -55,28 +55,33 @@ namespace Friflo.Json.Flow.Graph.Internal
             EventTarget             eventTarget,
             SubscriptionProcessor   subscriptionProcessor)
         {
+            // readonly
             this.clientId               = clientId;
             this.typeStore              = typeStore;
             this.ownedTypeStore         = owned;
-            this.database               = database;
-            this.jsonMapper             = jsonMapper;
             this.typeCache              = jsonMapper.writer.TypeCache;
+            this.database               = database;
             this.eventTarget            = eventTarget;
-            this.subscriptionProcessor  = subscriptionProcessor;
-            syncStore                   = null;
+            this.jsonMapper             = jsonMapper;
+            // readonly - owned
+            objectPatcher               = new ObjectPatcher(jsonMapper);
             setByType                   = new Dictionary<Type, EntitySet>();
             setByName                   = new Dictionary<string, EntitySet>();
-            objectPatcher               = new ObjectPatcher(jsonMapper);
             subscriptions               = new Dictionary<string, MessageSubscriber>();
             subscriptionsPrefix         = new List<MessageSubscriber>();
             messageReader               = new ObjectReader(typeStore, new NoThrowHandler());
+            pendingSyncs                = new ConcurrentDictionary<Task, MessageContext>();
+            idsBuf                      = new List<JsonKey>();
+            
+            // --- non readonly
+            syncStore                   = null;
             tracerLogTask               = null;
+            this.subscriptionProcessor  = subscriptionProcessor;
             subscriptionHandler         = null;
-            lastEventSeq                = 0;
             disposed                    = false;
+            lastEventSeq                = 0;
             syncCount                   = 0;
             token                       = null;
-            pendingSyncs                = new ConcurrentDictionary<Task, MessageContext>();
         }
         
         internal void Dispose() {

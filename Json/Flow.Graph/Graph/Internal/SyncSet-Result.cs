@@ -86,6 +86,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             foreach (var writeTask in writeTasks) {
                 var entityErrorInfo = new TaskErrorInfo();
+                var idsBuf = set.intern.store._intern.idsBuf;
                 idsBuf.Clear();
                 writeTask.GetIds(idsBuf);
                 foreach (var id in idsBuf) {

@@ -25,7 +25,6 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         private readonly    EntitySet<TKey, T>                      set;
         private readonly    List<TKey>                              keysBuf      = new List<TKey>();
-        private readonly    List<JsonKey>                           idsBuf       = new List<JsonKey>();
             
         private readonly    List<ReadTask<TKey, T>>                 reads        = new List<ReadTask<TKey, T>>();
         /// key: <see cref="QueryTask{TKey,T}.filterLinq"/> 
