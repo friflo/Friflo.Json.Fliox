@@ -24,7 +24,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         // All fields & getters must be private by all means to ensure that all scheduled tasks of a Sync() request
         // managed by this instance can be mapped to their task results safely.
         
-        private readonly                        EntitySet<TKey, T>                      set;
+        private     readonly EntitySet<TKey, T>             set;
         
         // --- backing fields for lazy-initialized getters
         private     List<ReadTask<TKey, T>>                 _reads;
