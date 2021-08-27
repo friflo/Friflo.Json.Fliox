@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Graph.Internal;
+using Friflo.Json.Flow.Sync;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -87,14 +88,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var database = new NoopDatabase();
             var store = new PocStore(database, "TestSyncMemory");
             store.Sync(); // force one time allocations
+            store.Sync();
             // GC.Collect();
             var start = GC.GetAllocatedBytesForCurrentThread();
             store.Sync();
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
 #if DEBUG
-            AreEqual(2904, diff);
+            AreEqual(2608, diff);   // Test Release also
 #else
-            AreEqual(2752, diff);
+            AreEqual(2552, diff);   // Test Debug also
 #endif
             return Task.CompletedTask;
         }
@@ -103,6 +105,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         {
             public override EntityContainer CreateContainer(string name, EntityDatabase database) {
                 return null;
+            }
+            
+            public override Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+                var result = new SyncResponse {
+                    tasks   = new List<TaskResult>(),
+                    results = new Dictionary<string, ContainerEntities>()
+                };
+                return Task.FromResult(result);
             }
         }
 #endif
