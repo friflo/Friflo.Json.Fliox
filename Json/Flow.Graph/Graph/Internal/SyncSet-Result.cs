@@ -265,7 +265,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsPatch"/> for all
         /// <see cref="Patches"/> to enable setting <see cref="LogTask"/> to error state via <see cref="LogTask.SetResult"/>. 
         internal override void PatchEntitiesResult(PatchEntities task, TaskResult result) {
-            var patchTasks = PatchTasks();
+            var patchTasks  = PatchTasks();
+            var patches     = Patches();
             if (result is TaskErrorResult taskError) {
                 foreach (var patchTask in patchTasks) {
                     patchTask.state.SetError(new TaskErrorInfo(taskError));
@@ -273,7 +274,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 if (errorsPatch == NoErrors) {
                     errorsPatch = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
                 }
-                foreach (var patchPair in Patches()) {
+                foreach (var patchPair in patches) {
                     var id = patchPair.Key;
                     var error = new EntityError(EntityErrorType.PatchError, set.name, id, taskError.message){
                         taskErrorType   = taskError.type,
@@ -305,7 +306,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 }
             }
             // enable GC to collect references in containers which are not needed anymore
-            Patches().Clear();
+            patches.Clear();
             patchTasks.Clear();
         }
 

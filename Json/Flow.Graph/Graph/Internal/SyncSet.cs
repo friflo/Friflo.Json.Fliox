@@ -329,38 +329,44 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
 
-        private void PatchEntities(List<DatabaseTask> tasks) {
-            var patches = Patches();
-            foreach (var patchTask in PatchTasks()) {
-                // todo performance: cache MemberAccess instances with members as key
-                var memberAccess    = new MemberAccess(patchTask.members);
-                var memberAccessor  = new MemberAccessor(set.intern.store._intern.jsonMapper.writer);
-                
-                foreach (var peer in patchTask.peers) {
-                    var entity  = peer.Entity;
-                    var id      = peer.id;
-                    if (!patches.TryGetValue(id, out EntityPatch patch)) {
-                        patch = new EntityPatch {
-                            patches = new List<JsonPatch>()
-                        };
-                        patches.Add(id, patch);
-                        SetNextPatchSource(peer);
-                    }
-                    var entityPatches   = patch.patches;
-                    var selectResults   = memberAccessor.GetValues(entity, memberAccess);
-                    int n = 0;
-                    foreach (var path in patchTask.members) {
-                        var value = new JsonValue {
-                            json = selectResults[n++].Json
-                        };
-                        entityPatches.Add(new PatchReplace {
-                            path = path,
-                            value = value
-                        });
+        private void PatchEntities(List<DatabaseTask> tasks)
+        {
+            var patches     = _patches;
+            var patchTasks  = _patchTasks;
+            
+            if (patchTasks != null && patchTasks.Count > 0) {
+                patches = Patches();    
+                foreach (var patchTask in patchTasks) {
+                    // todo performance: cache MemberAccess instances with members as key
+                    var memberAccess    = new MemberAccess(patchTask.members);
+                    var memberAccessor  = new MemberAccessor(set.intern.store._intern.jsonMapper.writer);
+                    
+                    foreach (var peer in patchTask.peers) {
+                        var entity  = peer.Entity;
+                        var id      = peer.id;
+                        if (!patches.TryGetValue(id, out EntityPatch patch)) {
+                            patch = new EntityPatch {
+                                patches = new List<JsonPatch>()
+                            };
+                            patches.Add(id, patch);
+                            SetNextPatchSource(peer);
+                        }
+                        var entityPatches   = patch.patches;
+                        var selectResults   = memberAccessor.GetValues(entity, memberAccess);
+                        int n = 0;
+                        foreach (var path in patchTask.members) {
+                            var value = new JsonValue {
+                                json = selectResults[n++].Json
+                            };
+                            entityPatches.Add(new PatchReplace {
+                                path = path,
+                                value = value
+                            });
+                        }
                     }
                 }
             }
-            if (patches.Count > 0) {
+            if (patches != null && patches.Count > 0) {
                 var req = new PatchEntities {
                     container = set.name,
                     patches = new Dictionary<JsonKey, EntityPatch>(patches, JsonKey.Equality)

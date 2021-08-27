@@ -369,7 +369,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         [Conditional("DEBUG")]
-        private static void AssertTaskCount(SetInfo setInfo, int taskCount) {
+        private static void AssertTaskCount(in SetInfo setInfo, int taskCount) {
             int expect  = setInfo.tasks; 
             if (expect != taskCount)
                 throw new InvalidOperationException($"Unexpected task.Count. expect: {expect}, got: {taskCount}");
