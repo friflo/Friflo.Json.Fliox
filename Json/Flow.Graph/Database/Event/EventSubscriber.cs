@@ -20,9 +20,10 @@ namespace Friflo.Json.Flow.Database.Event
         internal readonly   string                                  clientId;
         private             IEventTarget                            eventTarget;
         /// key: <see cref="SubscribeChanges.container"/>
-        internal readonly   Dictionary<string, SubscribeChanges>    changeSubscriptions = new Dictionary<string, SubscribeChanges>();
-        internal readonly   HashSet<string>                         messageSubscriptions= new  HashSet<string>();
-        internal readonly   HashSet<string>                         messagePrefixSubscriptions= new  HashSet<string>();
+        internal readonly   Dictionary<string, SubscribeChanges>    changeSubscriptions         = new Dictionary<string, SubscribeChanges>();
+        internal readonly   HashSet<string>                         messageSubscriptions        = new HashSet<string>();
+        internal readonly   HashSet<string>                         messagePrefixSubscriptions  = new HashSet<string>();
+        private  readonly   Pools                                   pools                       = new Pools(Pools.SharedPools);
         
         internal            int                                     SubscriptionCount => changeSubscriptions.Count + messageSubscriptions.Count + messagePrefixSubscriptions.Count; 
         
@@ -122,7 +123,7 @@ namespace Friflo.Json.Flow.Database.Event
             
             while (DequeueEvent(out var ev)) {
                 try {
-                    var messageContext = new MessageContext(eventTarget);
+                    var messageContext  = new MessageContext(pools, eventTarget);
                     // In case the event target is remote connection it is not guaranteed that the event arrives.
                     // The remote target may already be disconnected and this is still not know when sending the event.
                     await eventTarget.ProcessEvent(ev, messageContext).ConfigureAwait(false);

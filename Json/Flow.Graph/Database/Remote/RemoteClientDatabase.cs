@@ -17,6 +17,7 @@ namespace Friflo.Json.Flow.Database.Remote
         private             int                                 reqId;
         private  readonly   ProtocolType                        protocolType;
         private  readonly   Dictionary<string, IEventTarget>    clientTargets = new Dictionary<string, IEventTarget>();
+        private  readonly   Pools                               pools = new Pools(Pools.SharedPools);
 
         // ReSharper disable once EmptyConstructor - added for source navigation
         protected RemoteClientDatabase(ProtocolType protocolType) {
@@ -38,7 +39,7 @@ namespace Friflo.Json.Flow.Database.Remote
         
         protected void ProcessEvent(DatabaseEvent ev) {
             var eventTarget     = clientTargets[ev.targetId];
-            var messageContext  = new MessageContext(eventTarget);
+            var messageContext  = new MessageContext(pools, eventTarget);
             eventTarget.ProcessEvent(ev, messageContext);
             messageContext.Release();
         }

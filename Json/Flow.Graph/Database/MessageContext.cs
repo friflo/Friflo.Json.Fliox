@@ -33,14 +33,14 @@ namespace Friflo.Json.Flow.Database
         public              Action          canceler = () => {};
         public override     string          ToString() => $"clientId: {clientId}, auth: {authState}";
 
-        public MessageContext (IEventTarget eventTarget) {
-            pools               = new Pools(Pools.SharedPools);
+        public MessageContext (IPools pools, IEventTarget eventTarget) {
+            this.pools          = pools;
             startUsage          = pools.PoolUsage;
             this.eventTarget    = eventTarget;
         }
         
-        public MessageContext (IEventTarget eventTarget, string clientId) {
-            pools               = new Pools(Pools.SharedPools);
+        public MessageContext (IPools pools, IEventTarget eventTarget, string clientId) {
+            this.pools          = pools;
             startUsage          = pools.PoolUsage;
             this.eventTarget    = eventTarget;
             this.clientId       = clientId;

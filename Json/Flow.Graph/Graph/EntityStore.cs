@@ -86,7 +86,7 @@ namespace Friflo.Json.Flow.Graph
         // --- Sync / TrySync
         public async Task<SyncResult> Sync() {
             SyncRequest syncRequest = CreateSyncRequest(out SyncStore syncReq);
-            var messageContext = new MessageContext(_intern.eventTarget, _intern.clientId);
+            var messageContext = new MessageContext(_intern.pools, _intern.eventTarget, _intern.clientId);
             SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
             
             var result = HandleSyncResponse(syncRequest, response, syncReq);
@@ -98,7 +98,7 @@ namespace Friflo.Json.Flow.Graph
         
         public async Task<SyncResult> TrySync() {
             SyncRequest syncRequest = CreateSyncRequest(out SyncStore syncReq);
-            var messageContext = new MessageContext(_intern.eventTarget, _intern.clientId);
+            var messageContext = new MessageContext(_intern.pools, _intern.eventTarget, _intern.clientId);
             SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
             
             var result = HandleSyncResponse(syncRequest, response, syncReq);

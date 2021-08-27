@@ -25,9 +25,10 @@ namespace Friflo.Json.Flow.Database.Remote
     {
         public              IHttpContextHandler schemaHandler = new SchemaHandler();
         
-        private readonly    string              endpoint;
-        private readonly    HttpListener        listener;
-        private readonly    IHttpContextHandler contextHandler;
+        private  readonly   string              endpoint;
+        private  readonly   HttpListener        listener;
+        private  readonly   IHttpContextHandler contextHandler;
+        private  readonly   Pools               pools = new Pools(Pools.SharedPools);
         private             bool                runServer;
         
         private             int                 requestCount;
@@ -123,7 +124,7 @@ namespace Friflo.Json.Flow.Database.Remote
                 StreamReader reader = new StreamReader(inputStream, Encoding.UTF8);
                 string requestContent = await reader.ReadToEndAsync().ConfigureAwait(false);
 
-                var messageContext  = new MessageContext(null);
+                var messageContext  = new MessageContext(pools, null);
                 var result          = await ExecuteRequestJson(requestContent, messageContext, ProtocolType.ReqResp).ConfigureAwait(false);
                 messageContext.Release();
                 byte[]  resultBytes = Encoding.UTF8.GetBytes(result.body);

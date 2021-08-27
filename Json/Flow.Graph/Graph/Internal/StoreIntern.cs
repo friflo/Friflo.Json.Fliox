@@ -32,6 +32,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal readonly   ObjectReader                                messageReader;
         internal readonly   ConcurrentDictionary<Task, MessageContext>  pendingSyncs;
         internal readonly   List<JsonKey>                               idsBuf;
+        internal readonly   Pools                                       pools;
 
         // --- non readonly
         internal            SyncStore                               syncStore;
@@ -72,6 +73,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             messageReader               = new ObjectReader(typeStore, new NoThrowHandler());
             pendingSyncs                = new ConcurrentDictionary<Task, MessageContext>();
             idsBuf                      = new List<JsonKey>();
+            pools                       = new Pools(Pools.SharedPools);
             
             // --- non readonly
             syncStore                   = null;

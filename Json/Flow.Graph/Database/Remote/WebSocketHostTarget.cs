@@ -24,6 +24,7 @@ namespace Friflo.Json.Flow.Database.Remote
 
         private  readonly   DataChannelWriter<ArraySegment<byte>>   sendWriter;
         private  readonly   Task                                    sendLoop;
+        private  readonly   Pools                                   pools = new Pools(Pools.SharedPools);
         
         private WebSocketHostTarget (WebSocket webSocket, bool fakeOpenClosedSocket) {
             this.webSocket              = webSocket;
@@ -96,7 +97,7 @@ namespace Friflo.Json.Flow.Database.Remote
                     
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
                         var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
-                        var messageContext  = new MessageContext(this);
+                        var messageContext  = new MessageContext(pools, this);
                         var result          = await remoteHost.ExecuteRequestJson(requestContent, messageContext, ProtocolType.BiDirect).ConfigureAwait(false);
                         messageContext.Release();
                         byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);
