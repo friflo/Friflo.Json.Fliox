@@ -10,7 +10,6 @@ using Friflo.Json.Flow.Transform;
 
 using static System.Diagnostics.DebuggerBrowsableState;
 
-// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Flow.Graph.Internal
 {
     internal abstract class SyncPeerSet <T> : SyncSet where T : class
@@ -30,45 +29,45 @@ namespace Friflo.Json.Flow.Graph.Internal
         private readonly                        EntitySet<TKey, T>                      set;
         
         // --- backing fields for lazy-initialized properties
-        [DebuggerBrowsable(Never)]  private     List<ReadTask<TKey, T>>                 reads_;
+        [DebuggerBrowsable(Never)]  private     List<ReadTask<TKey, T>>                 reads;
         
-        [DebuggerBrowsable(Never)]  private     Dictionary<string, QueryTask<TKey, T>>  queries_;
+        [DebuggerBrowsable(Never)]  private     Dictionary<string, QueryTask<TKey, T>>  queries;
         
-        [DebuggerBrowsable(Never)]  private     Dictionary<JsonKey, Peer<T>>            creates_;
-        [DebuggerBrowsable(Never)]  private     List<WriteTask>                         createTasks_;
+        [DebuggerBrowsable(Never)]  private     Dictionary<JsonKey, Peer<T>>            creates;
+        [DebuggerBrowsable(Never)]  private     List<WriteTask>                         createTasks;
         
-        [DebuggerBrowsable(Never)]  private     Dictionary<JsonKey, Peer<T>>            updates_;
-        [DebuggerBrowsable(Never)]  private     List<WriteTask>                         updateTasks_;
+        [DebuggerBrowsable(Never)]  private     Dictionary<JsonKey, Peer<T>>            updates;
+        [DebuggerBrowsable(Never)]  private     List<WriteTask>                         updateTasks;
         
-        [DebuggerBrowsable(Never)]  private     Dictionary<JsonKey, EntityPatch>        patches_;
-        [DebuggerBrowsable(Never)]  private     List<PatchTask<T>>                      patchTasks_;
+        [DebuggerBrowsable(Never)]  private     Dictionary<JsonKey, EntityPatch>        patches;
+        [DebuggerBrowsable(Never)]  private     List<PatchTask<T>>                      patchTasks;
         
-        [DebuggerBrowsable(Never)]  private     HashSet<TKey>                           deletes_;
-        [DebuggerBrowsable(Never)]  private     List<DeleteTask<TKey, T>>               deleteTasks_;
+        [DebuggerBrowsable(Never)]  private     HashSet<TKey>                           deletes;
+        [DebuggerBrowsable(Never)]  private     List<DeleteTask<TKey, T>>               deleteTasks;
 
         // --- lazy-initialized properties => they behave like readonly fields
-        private     List<ReadTask<TKey, T>>                 reads       => reads_       ?? (reads_      = new List<ReadTask<TKey, T>>());
+        private     List<ReadTask<TKey, T>>                 Reads       => reads        ?? (reads       = new List<ReadTask<TKey, T>>());
         
         /// key: <see cref="QueryTask{TKey,T}.filterLinq"/>
-        private     Dictionary<string, QueryTask<TKey, T>>  queries     => queries_     ?? (queries_    = new Dictionary<string, QueryTask<TKey, T>>());
+        private     Dictionary<string, QueryTask<TKey, T>>  Queries     => queries      ?? (queries     = new Dictionary<string, QueryTask<TKey, T>>());
         
         private     SubscribeChangesTask<T>                 subscribeChanges;
         
         /// key: <see cref="Peer{T}.entity"/>.id
-        private     Dictionary<JsonKey, Peer<T>>            creates     => creates_     ?? (creates_    = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
-        private     List<WriteTask>                         createTasks => createTasks_ ?? (createTasks_= new List<WriteTask>());
+        private     Dictionary<JsonKey, Peer<T>>            Creates     => creates      ?? (creates     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
+        private     List<WriteTask>                         CreateTasks => createTasks  ?? (createTasks = new List<WriteTask>());
         
         /// key: <see cref="Peer{T}.entity"/>.id
-        private     Dictionary<JsonKey, Peer<T>>            updates      => updates_    ?? (updates_    = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
-        private     List<WriteTask>                         updateTasks  => updateTasks_?? (updateTasks_= new List<WriteTask>());
+        private     Dictionary<JsonKey, Peer<T>>            Updates      => updates     ?? (updates     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
+        private     List<WriteTask>                         UpdateTasks  => updateTasks ?? (updateTasks = new List<WriteTask>());
 
         /// key: entity id
-        private     Dictionary<JsonKey, EntityPatch>        patches      => patches_    ?? (patches_    = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality));
-        private     List<PatchTask<T>>                      patchTasks   => patchTasks_ ?? (patchTasks_ = new List<PatchTask<T>>());
+        private     Dictionary<JsonKey, EntityPatch>        Patches      => patches     ?? (patches     = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality));
+        private     List<PatchTask<T>>                      PatchTasks   => patchTasks  ?? (patchTasks  = new List<PatchTask<T>>());
         
         /// key: entity id
-        private     HashSet<TKey>                           deletes      => deletes_    ?? (deletes_    = new HashSet   <TKey>());
-        private     List<DeleteTask<TKey, T>>               deleteTasks  => deleteTasks_?? (deleteTasks_= new List<DeleteTask<TKey, T>>());
+        private     HashSet<TKey>                           Deletes      => deletes     ?? (deletes     = new HashSet   <TKey>());
+        private     List<DeleteTask<TKey, T>>               DeleteTasks  => deleteTasks ?? (deleteTasks = new List<DeleteTask<TKey, T>>());
 
         internal SyncSet(EntitySet<TKey, T> set) {
             this.set = set;
@@ -76,7 +75,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal override bool AddCreate (Peer<T> peer) {
             peer.assigned = true;
-            creates.TryAdd(peer.id, peer);      // sole place a peer (entity) is added
+            Creates.TryAdd(peer.id, peer);      // sole place a peer (entity) is added
             if (!peer.created) {
                 peer.created = true;            // sole place created set to true
                 return true;
@@ -86,30 +85,30 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal override void AddUpdate (Peer<T> peer) {
             peer.assigned = true;
-            updates.TryAdd(peer.id, peer);      // sole place a peer (entity) is added
+            Updates.TryAdd(peer.id, peer);      // sole place a peer (entity) is added
             if (!peer.updated) {
                 peer.updated = true;            // sole place created set to true
             }
         }
         
         internal void AddDelete (TKey id) {
-            deletes.Add(id);
+            Deletes.Add(id);
         }
         
         // --- Read
         internal ReadTask<TKey, T> Read() {
             var read = new ReadTask<TKey, T>(set);
-            reads.Add(read);
+            Reads.Add(read);
             return read;
         }
         
         // --- Query
         internal QueryTask<TKey, T> QueryFilter(FilterOperation filter) {
             var filterLinq = filter.Linq;
-            if (queries.TryGetValue(filterLinq, out QueryTask<TKey, T> query))
+            if (Queries.TryGetValue(filterLinq, out QueryTask<TKey, T> query))
                 return query;
             query = new QueryTask<TKey, T>(filter, set.intern.store);
-            queries.Add(filterLinq, query);
+            Queries.Add(filterLinq, query);
             return query;
         }
         
@@ -126,7 +125,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             var peer = set.CreatePeer(entity);
             AddCreate(peer);
             var create = new CreateTask<T>(new List<T>{entity}, set);
-            createTasks.Add(create);
+            CreateTasks.Add(create);
             return create;
         }
         
@@ -136,7 +135,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 AddCreate(peer);
             }
             var create = new CreateTask<T>(entities.ToList(), set);
-            createTasks.Add(create);
+            CreateTasks.Add(create);
             return create;
         }
         
@@ -145,7 +144,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             var peer = set.CreatePeer(entity);
             AddUpdate(peer);
             var update = new UpdateTask<T>(new List<T>{entity}, set);
-            updateTasks.Add(update);
+            UpdateTasks.Add(update);
             return update;
         }
         
@@ -155,20 +154,20 @@ namespace Friflo.Json.Flow.Graph.Internal
                 AddUpdate(peer);
             }
             var update = new UpdateTask<T>(entities.ToList(), set);
-            updateTasks.Add(update);
+            UpdateTasks.Add(update);
             return update;
         }
         
         // --- Patch
         internal PatchTask<T> Patch(Peer<T> peer) {
             var patchTask  = new PatchTask<T>(peer, set);
-            patchTasks.Add(patchTask);
+            PatchTasks.Add(patchTask);
             return patchTask;
         }
         
         internal PatchTask<T> PatchRange(ICollection<Peer<T>> peers) {
             var patchTask  = new PatchTask<T>(peers, set);
-            patchTasks.Add(patchTask);
+            PatchTasks.Add(patchTask);
             return patchTask;
         }
         
@@ -176,7 +175,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal DeleteTask<TKey, T> Delete(TKey key) {
             AddDelete(key);
             var delete = new DeleteTask<TKey, T>(new List<TKey>{key}, set);
-            deleteTasks.Add(delete);
+            DeleteTasks.Add(delete);
             return delete;
         }
         
@@ -185,7 +184,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 AddDelete(key);
             }
             var delete = new DeleteTask<TKey, T>(keys.ToList(), set);
-            deleteTasks.Add(delete);
+            DeleteTasks.Add(delete);
             return delete;
         }
         
@@ -224,7 +223,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 };
                 SetNextPatchSource(peer); // todo next patch source need to be set on Sync() 
                 var id = peer.id;
-                patches[id] = entityPatch;
+                Patches[id] = entityPatch;
                 logTask.AddPatch(this, id);
                 
                 set.intern.store._intern.tracerLogTask = logTask;
@@ -244,12 +243,12 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         private void CreateEntities(List<DatabaseTask> tasks) {
-            if (creates.Count == 0)
+            if (Creates.Count == 0)
                 return;
             var writer = set.intern.jsonMapper.writer;
             var entries = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
             
-            foreach (var createPair in creates) {
+            foreach (var createPair in Creates) {
                 T entity    = createPair.Value.Entity;
                 var json    = writer.Write(entity);
                 var entry   = new EntityValue(json);
@@ -264,12 +263,12 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         private void UpdateEntities(List<DatabaseTask> tasks) {
-            if (updates.Count == 0)
+            if (Updates.Count == 0)
                 return;
             var writer = set.intern.jsonMapper.writer;
             var entries = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
             
-            foreach (var updatePair in updates) {
+            foreach (var updatePair in Updates) {
                 T entity    = updatePair.Value.Entity;
                 var json    = writer.Write(entity);
                 var entry   = new EntityValue(json);
@@ -284,16 +283,16 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         private void ReadEntitiesList(List<DatabaseTask> tasks) {
-            if (reads.Count == 0)
+            if (Reads.Count == 0)
                 return;
             var readList = new ReadEntitiesList {
                 reads       = new List<ReadEntities>(),
                 container   = set.name
             };
-            foreach (var read in reads) {
+            foreach (var read in Reads) {
                 List<References> references = null;
                 if (read.refsTask.subRefs.Count >= 0) {
-                    references = new List<References>(reads.Count);
+                    references = new List<References>(Reads.Count);
                     AddReferences(references, read.refsTask.subRefs);
                 }
                 var ids = Helper.CreateHashSet(read.results.Keys.Count, JsonKey.Equality);
@@ -311,9 +310,9 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         private void QueryEntities(List<DatabaseTask> tasks) {
-            if (queries.Count == 0)
+            if (Queries.Count == 0)
                 return;
-            foreach (var queryPair in queries) {
+            foreach (var queryPair in Queries) {
                 QueryTask<TKey, T> query = queryPair.Value;
                 var subRefs = query.refsTask.subRefs;
                 List<References> references = null;
@@ -332,7 +331,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         private void PatchEntities(List<DatabaseTask> tasks) {
-            foreach (var patchTask in patchTasks) {
+            foreach (var patchTask in PatchTasks) {
                 // todo performance: cache MemberAccess instances with members as key
                 var memberAccess    = new MemberAccess(patchTask.members);
                 var memberAccessor  = new MemberAccessor(set.intern.store._intern.jsonMapper.writer);
@@ -340,11 +339,11 @@ namespace Friflo.Json.Flow.Graph.Internal
                 foreach (var peer in patchTask.peers) {
                     var entity  = peer.Entity;
                     var id      = peer.id;
-                    if (!patches.TryGetValue(id, out EntityPatch patch)) {
+                    if (!Patches.TryGetValue(id, out EntityPatch patch)) {
                         patch = new EntityPatch {
                             patches = new List<JsonPatch>()
                         };
-                        patches.Add(id, patch);
+                        Patches.Add(id, patch);
                         SetNextPatchSource(peer);
                     }
                     var entityPatches   = patch.patches;
@@ -361,20 +360,20 @@ namespace Friflo.Json.Flow.Graph.Internal
                     }
                 }
             }
-            if (patches.Count > 0) {
+            if (Patches.Count > 0) {
                 var req = new PatchEntities {
                     container = set.name,
-                    patches = new Dictionary<JsonKey, EntityPatch>(patches, JsonKey.Equality)
+                    patches = new Dictionary<JsonKey, EntityPatch>(Patches, JsonKey.Equality)
                 };
                 tasks.Add(req);
             }
         }
 
         private void DeleteEntities(List<DatabaseTask> tasks) {
-            if (deletes.Count == 0)
+            if (Deletes.Count == 0)
                 return;
-            var ids = Helper.CreateHashSet (deletes.Count, JsonKey.Equality);
-            foreach (var key in deletes) {
+            var ids = Helper.CreateHashSet (Deletes.Count, JsonKey.Equality);
+            foreach (var key in Deletes) {
                 var id = Ref<TKey, T>.EntityKey.KeyToId(key);
                 ids.Add(id);
             }
@@ -383,7 +382,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 ids         = ids
             };
             tasks.Add(req);
-            deletes.Clear();
+            Deletes.Clear();
         }
         
         private void SubscribeChanges(List<DatabaseTask> tasks) {
@@ -424,20 +423,20 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         internal void SetTaskInfo(ref SetInfo info) {
             info.tasks =
-                Any(reads.Count)   +
-                queries.Count       +
-                Any(creates.Count) +
-                Any(updates.Count) +
-                Any(patches.Count + patchTasks.Count) +
-                Any(deletes.Count) +
+                Any(Reads.Count)   +
+                Queries.Count       +
+                Any(Creates.Count) +
+                Any(Updates.Count) +
+                Any(Patches.Count + PatchTasks.Count) +
+                Any(Deletes.Count) +
                 (subscribeChanges != null ? 1 : 0);
             //
-            info.reads      = reads.Count;
-            info.queries    = queries.Count;
-            info.create     = creates.Count;
-            info.update     = updates.Count;
-            info.patch      = patches.Count + patchTasks.Count;
-            info.delete     = deletes.Count;
+            info.reads      = Reads.Count;
+            info.queries    = Queries.Count;
+            info.create     = Creates.Count;
+            info.update     = Updates.Count;
+            info.patch      = Patches.Count + PatchTasks.Count;
+            info.delete     = Deletes.Count;
             // info.readRefs   = readRefsMap.Count;
         }
     }
