@@ -93,6 +93,12 @@ namespace Friflo.Json.Flow.Graph.Internal
             Deletes().Add(id);
         }
         
+        internal void AddDeleteRange (ICollection<TKey> keys) {
+            var deletes = Deletes();
+            deletes.EnsureCapacity(deletes.Count + keys.Count);
+            deletes.UnionWith(keys);
+        }
+        
         // --- Read
         internal ReadTask<TKey, T> Read() {
             var read = new ReadTask<TKey, T>(set);
@@ -179,9 +185,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal DeleteTask<TKey, T> DeleteRange(ICollection<TKey> keys) {
-            foreach (var key in keys) {
-                AddDelete(key);
-            }
+            AddDeleteRange(keys);
             var delete = new DeleteTask<TKey, T>(keys.ToList(), set);
             DeleteTasks().Add(delete);
             return delete;

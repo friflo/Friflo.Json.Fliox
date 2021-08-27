@@ -31,9 +31,7 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public void AddRange(ICollection<TKey> keys) {
-            foreach (var key in keys) {
-                set.syncSet.AddDelete(key);
-            }
+            set.syncSet.AddDeleteRange(keys);
             this.keys.AddRange(keys);
         }
 
