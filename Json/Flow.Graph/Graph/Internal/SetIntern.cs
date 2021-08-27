@@ -15,7 +15,6 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal readonly   ObjectPatcher       objectPatcher;
         internal readonly   Tracer              tracer;
         internal readonly   EntityStore         store;
-        internal readonly   EntityId<T>         entityId;
 
         
         // --- non readonly
@@ -28,7 +27,6 @@ namespace Friflo.Json.Flow.Graph.Internal
             tracer          = new Tracer(store._intern.typeCache, store);
             this.store      = store;
             subscription    = null;
-            entityId        = EntityId.GetEntityId<T>();
         }
     }
 }
