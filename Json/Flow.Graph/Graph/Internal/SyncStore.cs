@@ -10,14 +10,18 @@ namespace Friflo.Json.Flow.Graph.Internal
     {
         internal            Dictionary<string, SyncSet> SyncSets { get; private set; }
         
-        internal readonly   List<SyncTask>              appTasks            = new List<SyncTask>();
-        private  readonly   List<LogTask>               logTasks            = new List<LogTask>();
+        internal readonly   List<SyncTask>      appTasks            = new List<SyncTask>();
         
-        internal readonly   List<SendMessageTask>       messageTasks        = new List<SendMessageTask>();
-        private             int                         messageTasksIndex;
+        private     List<LogTask>               logTasks;
+        private     List<LogTask>               LogTasks()          => logTasks ?? (logTasks = new List<LogTask>());
         
-        internal readonly   List<SubscribeMessageTask>  subscribeMessage    = new List<SubscribeMessageTask>();
-        private             int                         subscribeMessageIndex;
+        internal    List<SendMessageTask>       messageTasks;
+        internal    List<SendMessageTask>       MessageTasks()      => messageTasks ?? (messageTasks = new List<SendMessageTask>());
+        private     int                         messageTasksIndex;
+        
+        private     List<SubscribeMessageTask>  subscribeMessage;
+        internal    List<SubscribeMessageTask>  SubscribeMessage()  => subscribeMessage ?? (subscribeMessage = new List<SubscribeMessageTask>());
+        private     int                         subscribeMessageIndex;
         
         internal void SetSyncSets(EntityStore store) {
             var setByName = store._intern.setByName;
@@ -31,11 +35,13 @@ namespace Friflo.Json.Flow.Graph.Internal
 
         internal LogTask CreateLog() {
             var logTask = new LogTask();
-            logTasks.Add(logTask);
+            LogTasks().Add(logTask);
             return logTask;
         }
 
         internal void LogResults() {
+            if (logTasks == null)
+                return;
             foreach (var logTask in logTasks) {
                 logTask.state.Synced = true;
                 logTask.SetResult();
@@ -50,6 +56,8 @@ namespace Friflo.Json.Flow.Graph.Internal
                 
         // --- Message
         private void Message(List<DatabaseTask> tasks) {
+            if (messageTasks == null)
+                return;
             foreach (var messageTask in messageTasks) {
                 var req = new SendMessage {
                     name  = messageTask.name,
@@ -61,7 +69,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal void MessageResult (SendMessage task, TaskResult result) {
             // consider invalid response
-            if (messageTasksIndex >= messageTasks.Count)
+            if (messageTasks == null || messageTasksIndex >= messageTasks.Count)
                 return;
             var index = messageTasksIndex++;
             SendMessageTask messageTask = messageTasks[index];
@@ -76,6 +84,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         // --- SubscribeMessage
         private void SubscribeMessage(List<DatabaseTask> tasks) {
+            if (subscribeMessage == null)
+                return;
             foreach (var subscribe in subscribeMessage) {
                 var req = new SubscribeMessage{ name = subscribe.name, remove = subscribe.remove };
                 tasks.Add(req);
@@ -84,7 +94,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         
         internal void SubscribeMessageResult (SubscribeMessage task, TaskResult result) {
             // consider invalid response
-            if (subscribeMessageIndex >= subscribeMessage.Count)
+            if (subscribeMessage == null || subscribeMessageIndex >= subscribeMessage.Count)
                 return;
             var index = subscribeMessageIndex++;
             var subscribeTask = subscribeMessage[index];

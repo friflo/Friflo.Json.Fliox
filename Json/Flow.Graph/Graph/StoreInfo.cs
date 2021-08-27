@@ -96,6 +96,9 @@ namespace Friflo.Json.Flow.Graph
             }
             return sb.ToString();
         }
+        
+        public static int Any<TCol>    (ICollection<TCol> col) { return col != null ? col.Count != 0 ? 1 : 0 : 0; }
+        public static int Count<TCol>  (ICollection<TCol> col) { return col?.Count ?? 0; }
     }
 
 #if !UNITY_5_3_OR_NEWER
@@ -109,7 +112,7 @@ namespace Friflo.Json.Flow.Graph
         internal StoreInfo(SyncStore sync, Dictionary<Type, EntitySet> setByType) {
             peers = 0;
             tasks = 0;
-            tasks += sync.messageTasks.Count;
+            tasks += SetInfo.Count(sync.messageTasks);
             foreach (var pair in setByType)
                 Add(pair.Value.SetInfo);
         }

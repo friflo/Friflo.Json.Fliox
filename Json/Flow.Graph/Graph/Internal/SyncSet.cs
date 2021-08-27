@@ -430,25 +430,22 @@ namespace Friflo.Json.Flow.Graph.Internal
             peer.SetNextPatchSource(mapper.Read<T>(json));
         }
 
-        private static int Any<TCol>    (ICollection<TCol> col) { return col != null ? col.Count != 0 ? 1 : 0 : 0; }
-        private static int Count<TCol>  (ICollection<TCol> col) { return col?.Count ?? 0; }
-
         internal void SetTaskInfo(ref SetInfo info) {
             info.tasks =
-                Any  (_reads)   +
-                Count(_queries) +
-                Any  (_creates) +
-                Any  (_updates) +
-                Any  (_patches) + Any(_patchTasks) +
-                Any  (_deletes)    +
+                SetInfo.Any  (_reads)   +
+                SetInfo.Count(_queries) +
+                SetInfo.Any  (_creates) +
+                SetInfo.Any  (_updates) +
+                SetInfo.Any  (_patches) + SetInfo.Any(_patchTasks) +
+                SetInfo.Any  (_deletes)    +
                 (subscribeChanges != null ? 1 : 0);
             //
-            info.reads      = Count(_reads);
-            info.queries    = Count(_queries);
-            info.create     = Count(_creates);
-            info.update     = Count(_updates);
-            info.patch      = Count(_patches) + Count(_patchTasks);
-            info.delete     = Count(_deletes);
+            info.reads      = SetInfo.Count(_reads);
+            info.queries    = SetInfo.Count(_queries);
+            info.create     = SetInfo.Count(_creates);
+            info.update     = SetInfo.Count(_updates);
+            info.patch      = SetInfo.Count(_patches) + SetInfo.Count(_patchTasks);
+            info.delete     = SetInfo.Count(_deletes);
             // info.readRefs   = readRefsMap.Count;
         }
     }

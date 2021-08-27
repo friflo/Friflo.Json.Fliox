@@ -100,7 +100,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             if (!subscriptions.TryGetValue(name, out var subscriber)) {
                 subscriber = new MessageSubscriber(name);
                 subscriptions.Add(name, subscriber);
-                syncStore.subscribeMessage.Add(task);
+                syncStore.SubscribeMessage().Add(task);
             } else {
                 task.state.Synced = true;
             }
@@ -134,7 +134,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
             if (subscriber.callbackHandlers.Count == 0) {
                 subscriptions.Remove(name);
-                syncStore.subscribeMessage.Add(task);
+                syncStore.SubscribeMessage().Add(task);
             } else {
                 task.state.Synced = true;
             }
