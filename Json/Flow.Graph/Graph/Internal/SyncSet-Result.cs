@@ -12,10 +12,10 @@ namespace Friflo.Json.Flow.Graph.Internal
     {
         internal static readonly IDictionary<JsonKey, EntityError> NoErrors = new EmptyDictionary<JsonKey, EntityError>();  
             
-        internal    IDictionary<JsonKey, EntityError>    createErrors = NoErrors;
-        internal    IDictionary<JsonKey, EntityError>    updateErrors = NoErrors;
-        internal    IDictionary<JsonKey, EntityError>    patchErrors  = NoErrors;
-        internal    IDictionary<JsonKey, EntityError>    deleteErrors = NoErrors;
+        internal    IDictionary<JsonKey, EntityError>    errorsCreate = NoErrors;
+        internal    IDictionary<JsonKey, EntityError>    errorsUpdate = NoErrors;
+        internal    IDictionary<JsonKey, EntityError>    errorsPatch  = NoErrors;
+        internal    IDictionary<JsonKey, EntityError>    errorsDelete = NoErrors;
 
         internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
         
@@ -30,14 +30,14 @@ namespace Friflo.Json.Flow.Graph.Internal
 
     internal partial class SyncSet<TKey, T>
     {
-        /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.createErrors"/> for all
+        /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsCreate"/> for all
         /// <see cref="Creates"/> to enable setting <see cref="LogTask"/> to error state via <see cref="LogTask.SetResult"/>. 
         internal override void CreateEntitiesResult(CreateEntities task, TaskResult result) {
-            CreateUpdateEntitiesResult(task.entities, result, CreateTasks(), createErrors);
+            CreateUpdateEntitiesResult(task.entities, result, CreateTasks(), errorsCreate);
             var creates = Creates();
             if (result is TaskErrorResult taskError) {
-                if (createErrors == NoErrors) {
-                    createErrors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
+                if (errorsCreate == NoErrors) {
+                    errorsCreate = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
                 }
                 foreach (var createPair in creates) {
                     var id = createPair.Key;
@@ -45,7 +45,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                         taskErrorType   = taskError.type,
                         stacktrace      = taskError.stacktrace
                     };
-                    createErrors.TryAdd(id, error);
+                    errorsCreate.TryAdd(id, error);
                 }
             }
             // enable GC to collect references in containers which are not needed anymore
@@ -54,7 +54,7 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
 
         internal override void UpdateEntitiesResult(UpdateEntities task, TaskResult result) {
-            CreateUpdateEntitiesResult(task.entities, result, UpdateTasks(), updateErrors);
+            CreateUpdateEntitiesResult(task.entities, result, UpdateTasks(), errorsUpdate);
             
             // enable GC to collect references in containers which are not needed anymore
             Updates().Clear();
@@ -262,7 +262,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             }
         }
 
-        /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.patchErrors"/> for all
+        /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsPatch"/> for all
         /// <see cref="Patches"/> to enable setting <see cref="LogTask"/> to error state via <see cref="LogTask.SetResult"/>. 
         internal override void PatchEntitiesResult(PatchEntities task, TaskResult result) {
             var patchTasks = PatchTasks();
@@ -270,8 +270,8 @@ namespace Friflo.Json.Flow.Graph.Internal
                 foreach (var patchTask in patchTasks) {
                     patchTask.state.SetError(new TaskErrorInfo(taskError));
                 }
-                if (patchErrors == NoErrors) {
-                    patchErrors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
+                if (errorsPatch == NoErrors) {
+                    errorsPatch = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
                 }
                 foreach (var patchPair in Patches()) {
                     var id = patchPair.Key;
@@ -279,7 +279,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                         taskErrorType   = taskError.type,
                         stacktrace      = taskError.stacktrace
                     };
-                    patchErrors.TryAdd(id, error);
+                    errorsPatch.TryAdd(id, error);
                 }
             } else {
                 // var patchResult = (PatchEntitiesResult)result;
@@ -293,7 +293,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 foreach (var patchTask in patchTasks) {
                     var entityErrorInfo = new TaskErrorInfo();
                     foreach (var peer in patchTask.peers) {
-                        if (patchErrors.TryGetValue(peer.id, out EntityError error)) {
+                        if (errorsPatch.TryGetValue(peer.id, out EntityError error)) {
                             entityErrorInfo.AddEntityError(error);
                         }
                     }
@@ -326,7 +326,7 @@ namespace Friflo.Json.Flow.Graph.Internal
                 deleteTask.GetKeys(keysBuf);
                 foreach (var key in keysBuf) {
                     var id = Ref<TKey, T>.EntityKey.KeyToId(key); // todo performance
-                    if (deleteErrors.TryGetValue(id, out EntityError error)) {
+                    if (errorsDelete.TryGetValue(id, out EntityError error)) {
                         entityErrorInfo.AddEntityError(error);
                     }
                 }

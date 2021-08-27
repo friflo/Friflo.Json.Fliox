@@ -14,6 +14,8 @@ namespace Friflo.Json.Flow.Graph.Internal
     /// </summary>
     public class EmptyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
+        public  override    string  ToString() => "Count: 0";
+
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() {
             return new EmptyDictionaryIterator<KeyValuePair<TKey, TValue>>();
         }

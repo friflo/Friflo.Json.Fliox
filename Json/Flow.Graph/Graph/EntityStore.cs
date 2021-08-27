@@ -382,7 +382,7 @@ namespace Friflo.Json.Flow.Graph
                 foreach (var createError in createErrors) {
                     createError.Value.SetInferredErrorFields();
                     var syncSet = syncSets[createError.Key];
-                    syncSet.createErrors = createError.Value.errors;
+                    syncSet.errorsCreate = createError.Value.errors;
                 }
             }
             var updateErrors = response.updateErrors;
@@ -390,7 +390,7 @@ namespace Friflo.Json.Flow.Graph
                 foreach (var updateError in updateErrors) {
                     updateError.Value.SetInferredErrorFields();
                     var syncSet = syncSets[updateError.Key];
-                    syncSet.updateErrors = updateError.Value.errors;
+                    syncSet.errorsUpdate = updateError.Value.errors;
                 }
             }
             var patchErrors = response.patchErrors;
@@ -398,7 +398,7 @@ namespace Friflo.Json.Flow.Graph
                 foreach (var patchError in patchErrors) {
                     patchError.Value.SetInferredErrorFields();
                     var syncSet = syncSets[patchError.Key];
-                    syncSet.patchErrors = patchError.Value.errors;
+                    syncSet.errorsPatch = patchError.Value.errors;
                 }
             }
             var deleteErrors = response.deleteErrors;
@@ -406,7 +406,7 @@ namespace Friflo.Json.Flow.Graph
                 foreach (var deleteError in deleteErrors) {
                     deleteError.Value.SetInferredErrorFields();
                     var syncSet = syncSets[deleteError.Key];
-                    syncSet.deleteErrors = deleteError.Value.errors;
+                    syncSet.errorsDelete = deleteError.Value.errors;
                 }
             }
         }

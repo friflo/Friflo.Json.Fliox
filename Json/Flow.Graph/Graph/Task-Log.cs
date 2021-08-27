@@ -42,12 +42,12 @@ namespace Friflo.Json.Flow.Graph
         internal void SetResult() {
             var entityErrorInfo = new TaskErrorInfo();
             foreach (var patch in patches) {
-                if (patch.sync.patchErrors.TryGetValue(patch.id, out EntityError error)) {
+                if (patch.sync.errorsPatch.TryGetValue(patch.id, out EntityError error)) {
                     entityErrorInfo.AddEntityError(error);
                 }
             }
             foreach (var create in creates) {
-                if (create.sync.createErrors.TryGetValue(create.id, out EntityError error)) {
+                if (create.sync.errorsCreate.TryGetValue(create.id, out EntityError error)) {
                     entityErrorInfo.AddEntityError(error);
                 }
             }
