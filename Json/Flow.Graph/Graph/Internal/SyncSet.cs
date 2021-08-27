@@ -24,7 +24,6 @@ namespace Friflo.Json.Flow.Graph.Internal
         // by this instance can be mapped to their task results safely.
         
         private readonly    EntitySet<TKey, T>                      set;
-        private readonly    List<TKey>                              keysBuf      = new List<TKey>();
             
         private readonly    List<ReadTask<TKey, T>>                 reads        = new List<ReadTask<TKey, T>>();
         /// key: <see cref="QueryTask{TKey,T}.filterLinq"/> 

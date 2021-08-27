@@ -43,10 +43,6 @@ namespace Friflo.Json.Flow.Graph
     
     public abstract class EntityPeerSet<T> : EntitySet where T : class
     {
-        // Keep all utility related fields of EntitySet in SetIntern to enhance debugging overview.
-        // Reason:  EntitySet is extended by application which is mainly interested in following fields while debugging:
-        //          peers, Sync, name, container & store 
-        internal            SetIntern<T>    intern;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal            SyncPeerSet<T>  syncPeerSet;
         
@@ -82,6 +78,11 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class EntitySet<TKey, T> : EntityPeerSet<T>  where T : class
     {
+        // Keep all utility related fields of EntitySet in SetIntern to enhance debugging overview.
+        // Reason:  EntitySet is extended by application which is mainly interested in following fields while debugging:
+        //          peers, Sync, name, container & store 
+        internal            SetIntern<TKey, T>          intern;
+        
         /// key: <see cref="Peer{T}.entity"/>.id        Note: must be private by all means
         private  readonly   Dictionary<TKey, Peer<T>>   peers = new Dictionary<TKey, Peer<T>>();
         
@@ -351,7 +352,7 @@ namespace Friflo.Json.Flow.Graph
             store._intern.setByType[type]       = this;
             store._intern.setByName[type.Name]  = this;
             container   = store._intern.database.GetOrCreateContainer(name);
-            intern      = new SetIntern<T>(store);
+            intern      = new SetIntern<TKey, T>(store);
             syncSet     = new SyncSet<TKey, T>(this);
             syncPeerSet = syncSet;
         }
