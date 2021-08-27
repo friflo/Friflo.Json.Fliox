@@ -84,21 +84,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         }
 
         [Test]
-        public Task TestSyncMemory() {
+        public async Task TestSyncMemory() {
             var database = new NoopDatabase();
-            var store = new PocStore(database, "TestSyncMemory");
-            store.Sync(); // force one time allocations
-            store.Sync();
+            var store = new PocStore(database, null);
+            await store.Sync(); // force one time allocations
+            await store.Sync();
             // GC.Collect();
             var start = GC.GetAllocatedBytesForCurrentThread();
-            store.Sync();
+            await store.Sync();
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
 #if DEBUG
             AreEqual(2208, diff);   // Test Release also
 #else
             AreEqual(2152, diff);   // Test Debug also
 #endif
-            return Task.CompletedTask;
         }
 
         private class NoopDatabase : EntityDatabase
