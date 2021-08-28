@@ -49,6 +49,10 @@ namespace System.Collections.Generic
         public static int EnsureCapacity<TKey,TValue>(this Dictionary<TKey,TValue> dictionary, int capacity) {
             return 0;
         }
+        
+        public static int EnsureCapacity<T>(this HashSet<T> hashSet, int capacity) {
+            return 0;
+        }
     }
 }
 
