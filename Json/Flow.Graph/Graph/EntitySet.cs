@@ -92,16 +92,16 @@ namespace Friflo.Json.Flow.Graph
         private  readonly   EntityContainer             container; // not used - only for debugging ergonomics
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        internal            SyncSet<TKey, T>            _syncSet;
-        internal            SyncSet<TKey, T>            GetSyncSet()    => _syncSet ?? (_syncSet = new SyncSet<TKey, T>(this));
-        internal  override  SyncPeerSet<T>              GetSyncPeerSet()=> _syncSet;
+        private             SyncSet<TKey, T>            syncSet;
+        internal            SyncSet<TKey, T>            GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
+        internal  override  SyncPeerSet<T>              GetSyncPeerSet()=> syncSet;
 
-        internal override   SyncSet                     SyncSet     => _syncSet;
+        internal override   SyncSet                     SyncSet     => syncSet;
         public   override   string                      ToString()  => SetInfo.ToString();
         
         internal override   SetInfo                     SetInfo { get {
             var info = new SetInfo (name) { peers = peers.Count };
-            _syncSet?.SetTaskInfo(ref info);
+            syncSet?.SetTaskInfo(ref info);
             return info;
         }}
 
@@ -510,7 +510,7 @@ namespace Friflo.Json.Flow.Graph
         }
 
         internal override void ResetSync() {
-            _syncSet    = null;
+            syncSet    = null;
         }
         
         internal override SyncTask SubscribeChangesInternal(IEnumerable<Change> changes) {
