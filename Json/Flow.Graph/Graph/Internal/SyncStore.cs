@@ -29,7 +29,10 @@ namespace Friflo.Json.Flow.Graph.Internal
             foreach (var pair in setByName) {
                 string      container   = pair.Key;
                 EntitySet   set         = pair.Value;
-                SyncSets.Add(container, set.SyncSet);
+                SyncSet     syncSet     = set.SyncSet;
+                if (syncSet != null) {
+                    SyncSets.Add(container, set.SyncSet);
+                }
             }
         }
 
