@@ -4,6 +4,11 @@
       "commandName": "Project",
       "commandLineArgs": "--module GraphServer",
       "workingDirectory": "$(SolutionDir)"
+    },
+    "MemoryDbThroughput": {
+      "commandName": "Project",
+      "commandLineArgs": "--module MemoryDbThroughput",
+      "workingDirectory": "$(SolutionDir)"
     }
   }
 }
