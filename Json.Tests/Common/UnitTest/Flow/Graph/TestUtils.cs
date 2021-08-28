@@ -93,11 +93,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 var store = new PocStore(database, typeStore, null);
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-#if DEBUG
-                AreEqual(10536, diff);   // Test Release also
-#else
-                AreEqual(10536, diff);   // Test Debug also
-#endif
+                
+                Console.WriteLine($"PocStore memory: {diff}");
+                IsTrue(diff < 10600);
             }
         }
 
