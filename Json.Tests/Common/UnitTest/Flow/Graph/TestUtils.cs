@@ -86,36 +86,38 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         
         [Test]
         public void TestMemoryEntityStore() {
-            TestGlobals.typeStore = new TypeStore();
-            var database    = new NoopDatabase();
-            var _           = new PocStore(database, null);
-            
-            var start = GC.GetAllocatedBytesForCurrentThread();
-            var store = new PocStore(database, null);
-            var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+            using (var typeStore = new TypeStore()) {
+                var database    = new NoopDatabase();
+                var _           = new PocStore(database, typeStore, null);
+                
+                var start = GC.GetAllocatedBytesForCurrentThread();
+                var store = new PocStore(database, typeStore, null);
+                var diff = GC.GetAllocatedBytesForCurrentThread() - start;
 #if DEBUG
-            AreEqual(10536, diff);   // Test Release also
+                AreEqual(10536, diff);   // Test Release also
 #else
-            AreEqual(10536, diff);   // Test Debug also
+                AreEqual(10536, diff);   // Test Debug also
 #endif
+            }
         }
 
         [Test]
         public async Task TestMemorySync() {
-            TestGlobals.typeStore = new TypeStore();
-            var database    = new NoopDatabase();
-            var store       = new PocStore(database, null);
-            await store.Sync(); // force one time allocations
-            // GC.Collect();
-            
-            var start = GC.GetAllocatedBytesForCurrentThread();
-            await store.Sync();
-            var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+            using (var typeStore = new TypeStore()) {
+                var database    = new NoopDatabase();
+                var store       = new PocStore(database, typeStore, null);
+                await store.Sync(); // force one time allocations
+                // GC.Collect();
+                
+                var start = GC.GetAllocatedBytesForCurrentThread();
+                await store.Sync();
+                var diff = GC.GetAllocatedBytesForCurrentThread() - start;
 #if DEBUG
-            AreEqual(2208, diff);   // Test Release also
+                AreEqual(2208, diff);   // Test Release also
 #else
-            AreEqual(2152, diff);   // Test Debug also
+                AreEqual(2152, diff);   // Test Debug also
 #endif
+            }
         }
 
         private class NoopDatabase : EntityDatabase

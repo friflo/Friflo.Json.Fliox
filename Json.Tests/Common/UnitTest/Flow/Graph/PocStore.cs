@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
         public readonly EntitySet <string, Employee>    employees;
         public readonly EntitySet <string, TestType>    types;
         
-        public PocStore(EntityDatabase database, string clientId) : base (database, TestGlobals.typeStore, clientId) {
+        public PocStore(EntityDatabase database, TypeStore typeStore, string clientId) : base (database, typeStore, clientId) {
             orders      = new EntitySet <string, Order>       (this);
             customers   = new EntitySet <string, Customer>    (this);
             articles    = new EntitySet <string, Article>     (this);
@@ -27,6 +27,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             employees   = new EntitySet <string, Employee>    (this);
             types       = new EntitySet <string, TestType>    (this);
         }
+        
+        public PocStore(EntityDatabase database, string clientId) : this (database, TestGlobals.typeStore, clientId) { }
     }
     
     // ------------------------------ models ------------------------------
