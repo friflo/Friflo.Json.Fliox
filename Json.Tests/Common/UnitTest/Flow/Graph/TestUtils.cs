@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Graph.Internal;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -82,14 +83,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             var endBytes = GC.GetAllocatedBytesForCurrentThread();
             AreEqual(startBytes, endBytes);
         }
+        
+        [Test]
+        public void TestMemoryEntityStore() {
+            TestGlobals.typeStore = new TypeStore();
+            var database    = new NoopDatabase();
+            var _           = new PocStore(database, null);
+            
+            var start = GC.GetAllocatedBytesForCurrentThread();
+            var store = new PocStore(database, null);
+            var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+#if DEBUG
+            AreEqual(10536, diff);   // Test Release also
+#else
+            AreEqual(10536, diff);   // Test Debug also
+#endif
+        }
 
         [Test]
-        public async Task TestSyncMemory() {
-            var database = new NoopDatabase();
-            var store = new PocStore(database, null);
+        public async Task TestMemorySync() {
+            TestGlobals.typeStore = new TypeStore();
+            var database    = new NoopDatabase();
+            var store       = new PocStore(database, null);
             await store.Sync(); // force one time allocations
-            await store.Sync();
             // GC.Collect();
+            
             var start = GC.GetAllocatedBytesForCurrentThread();
             await store.Sync();
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
