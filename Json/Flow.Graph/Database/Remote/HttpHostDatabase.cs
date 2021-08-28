@@ -28,7 +28,6 @@ namespace Friflo.Json.Flow.Database.Remote
         private  readonly   string              endpoint;
         private  readonly   HttpListener        listener;
         private  readonly   IHttpContextHandler contextHandler;
-        private  readonly   Pools               pools = new Pools(Pools.SharedPools);
         private             bool                runServer;
         
         private             int                 requestCount;
@@ -124,6 +123,8 @@ namespace Friflo.Json.Flow.Database.Remote
                 StreamReader reader = new StreamReader(inputStream, Encoding.UTF8);
                 string requestContent = await reader.ReadToEndAsync().ConfigureAwait(false);
 
+                // Each request require its own pool as multiple request running concurrently. Could cache a Pools instance per connection.
+                var pools           = new Pools(Pools.SharedPools);
                 var messageContext  = new MessageContext(pools, null);
                 var result          = await ExecuteRequestJson(requestContent, messageContext, ProtocolType.ReqResp).ConfigureAwait(false);
                 messageContext.Release();
