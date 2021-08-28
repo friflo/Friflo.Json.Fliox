@@ -18,7 +18,7 @@ namespace Friflo.Json.Flow.Graph
     {
         internal readonly   List<string>        members = new List<string>();
         internal readonly   List<Peer<T>>       peers   = new List<Peer<T>>();
-        private  readonly   EntityPeerSet<T>    set;
+        private  readonly   EntitySetBase<T>    set;
 
         internal            TaskState           state;
         internal override   TaskState           State      => state;
@@ -42,12 +42,12 @@ namespace Friflo.Json.Flow.Graph
         }
         
 
-        internal PatchTask(Peer<T> peer, EntityPeerSet<T> set) {
+        internal PatchTask(Peer<T> peer, EntitySetBase<T> set) {
             this.set = set;
             peers.Add(peer);
         }
         
-        internal PatchTask(ICollection<Peer<T>> peers, EntityPeerSet<T> set) {
+        internal PatchTask(ICollection<Peer<T>> peers, EntitySetBase<T> set) {
             this.set = set;
             this.peers.AddRange(peers);
         }

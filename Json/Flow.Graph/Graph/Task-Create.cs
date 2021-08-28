@@ -20,13 +20,13 @@ namespace Friflo.Json.Flow.Graph
 #endif
     public class CreateTask<T> : WriteTask where T : class
     {
-        private readonly    EntityPeerSet<T>    set;
+        private readonly    EntitySetBase<T>    set;
         private readonly    List<T>             entities;
 
         public   override   string              Details     => $"CreateTask<{typeof(T).Name}> (#keys: {entities.Count})";
         
         
-        internal CreateTask(List<T> entities, EntityPeerSet<T> set) {
+        internal CreateTask(List<T> entities, EntitySetBase<T> set) {
             this.set        = set;
             this.entities   = entities;
         }

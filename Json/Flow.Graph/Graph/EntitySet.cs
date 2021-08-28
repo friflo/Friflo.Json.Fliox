@@ -39,7 +39,7 @@ namespace Friflo.Json.Flow.Graph
         }
     }
     
-    public abstract class EntityPeerSet<T> : EntitySet where T : class
+    public abstract class EntitySetBase<T> : EntitySet where T : class
     {
         internal  abstract  SyncSetBase<T>  GetSyncSetBase();
         
@@ -49,7 +49,7 @@ namespace Friflo.Json.Flow.Graph
         internal  abstract  Peer<T>         CreatePeer (T entity);
         internal  abstract  JsonKey         GetEntityId (T entity);
 
-        protected EntityPeerSet(string name) : base(name) { }
+        protected EntitySetBase(string name) : base(name) { }
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ namespace Friflo.Json.Flow.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class EntitySet<TKey, T> : EntityPeerSet<T>  where T : class
+    public class EntitySet<TKey, T> : EntitySetBase<T>  where T : class
     {
         // Keep all utility related fields of EntitySet in SetIntern to enhance debugging overview.
         // Reason:  EntitySet is extended by application which is mainly interested in following fields while debugging:

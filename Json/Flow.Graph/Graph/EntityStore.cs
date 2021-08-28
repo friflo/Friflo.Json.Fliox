@@ -312,13 +312,6 @@ namespace Friflo.Json.Flow.Graph
                 return entitySet;
             throw new InvalidOperationException($"unknown EntitySet. name: {name}");
         }
-        
-        internal EntityPeerSet<T> GetPeerSet<T>() where T : class {
-            Type entityType = typeof(T);
-            if (_intern.setByType.TryGetValue(entityType, out EntitySet set))
-                return (EntityPeerSet<T>)set;
-            throw new InvalidOperationException($"unknown EntitySet<{entityType.Name}>");
-        }
 
         internal EntitySet<TKey, T> GetEntitySet<TKey, T>() where T : class {
             Type entityType = typeof(T);
