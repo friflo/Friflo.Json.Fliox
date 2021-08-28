@@ -10,7 +10,7 @@ using Friflo.Json.Flow.Transform;
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Flow.Graph.Internal
 {
-    internal abstract class SyncPeerSet <T> : SyncSet where T : class
+    internal abstract class SyncSetBase <T> : SyncSet where T : class
     {
         internal abstract void AddUpdate (Peer<T> peer);
         internal abstract bool AddCreate (Peer<T> peer);
@@ -18,7 +18,7 @@ namespace Friflo.Json.Flow.Graph.Internal
 
     /// Multiple instances of this class can be created when calling EntitySet.Sync() without awaiting the result.
     /// Each instance is mapped to a <see cref="SyncRequest"/> / <see cref="SyncResponse"/> instance.
-    internal partial class SyncSet<TKey, T> : SyncPeerSet<T> where T : class
+    internal partial class SyncSet<TKey, T> : SyncSetBase<T> where T : class
     {
         // Note!
         // All fields & getters must be private by all means to ensure that all scheduled tasks of a Sync() request
@@ -44,15 +44,15 @@ namespace Friflo.Json.Flow.Graph.Internal
         private     List<DeleteTask<TKey, T>>               _deleteTasks;
 
         // --- lazy-initialized getters => they behave like readonly fields
-        private     List<ReadTask<TKey, T>>                 Reads()     => _reads        ?? (_reads       = new List<ReadTask<TKey, T>>());
+        private     List<ReadTask<TKey, T>>                 Reads()      => _reads       ?? (_reads       = new List<ReadTask<TKey, T>>());
         
         /// key: <see cref="QueryTask{TKey,T}.filterLinq"/>
-        private     Dictionary<string, QueryTask<TKey, T>>  Queries()   => _queries      ?? (_queries     = new Dictionary<string, QueryTask<TKey, T>>());
+        private     Dictionary<string, QueryTask<TKey, T>>  Queries()    => _queries     ?? (_queries     = new Dictionary<string, QueryTask<TKey, T>>());
         
         private     SubscribeChangesTask<T>                 subscribeChanges;
         
         /// key: <see cref="Peer{T}.entity"/>.id
-        private     Dictionary<JsonKey, Peer<T>>            Creates()   => _creates      ?? (_creates     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
+        private     Dictionary<JsonKey, Peer<T>>            Creates()    => _creates     ?? (_creates     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
         private     List<WriteTask>                         CreateTasks()=> _createTasks ?? (_createTasks = new List<WriteTask>());
         
         /// key: <see cref="Peer{T}.entity"/>.id

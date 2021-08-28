@@ -33,8 +33,6 @@ namespace Friflo.Json.Flow.Graph
         internal  abstract  void                ResetSync               ();
         internal  abstract  SyncTask            SubscribeChangesInternal(IEnumerable<Change> changes);
         internal  abstract  SubscribeChanges    GetSubscription();
-        
-
 
         protected EntitySet(string name) {
             this.name = name;
@@ -43,18 +41,15 @@ namespace Friflo.Json.Flow.Graph
     
     public abstract class EntityPeerSet<T> : EntitySet where T : class
     {
-        internal  abstract  SyncPeerSet<T>  GetSyncPeerSet();
+        internal  abstract  SyncSetBase<T>  GetSyncSetBase();
         
         internal  abstract  Peer<T>         GetPeerById (in JsonKey id);
         internal  abstract  Peer<T>         GetPeerByEntity(T entity);
         
         internal  abstract  Peer<T>         CreatePeer (T entity);
-        // internal  abstract  string       GetEntityId (T entity);
         internal  abstract  JsonKey         GetEntityId (T entity);
-        
 
-        protected EntityPeerSet(string name) : base(name) {
-        }
+        protected EntityPeerSet(string name) : base(name) { }
     }
 
     /// <summary>
@@ -94,10 +89,10 @@ namespace Friflo.Json.Flow.Graph
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private             SyncSet<TKey, T>            syncSet;
         internal            SyncSet<TKey, T>            GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
-        internal  override  SyncPeerSet<T>              GetSyncPeerSet()=> syncSet;
+        internal override   SyncSetBase<T>              GetSyncSetBase()=> syncSet;
 
-        internal override   SyncSet                     SyncSet     => syncSet;
-        public   override   string                      ToString()  => SetInfo.ToString();
+        internal override   SyncSet                     SyncSet         => syncSet;
+        public   override   string                      ToString()      => SetInfo.ToString();
         
         internal override   SetInfo                     SetInfo { get {
             var info = new SetInfo (name) { peers = peers.Count };

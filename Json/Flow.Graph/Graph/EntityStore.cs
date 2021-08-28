@@ -25,12 +25,12 @@ namespace Friflo.Json.Flow.Graph
         // ReSharper disable once InconsistentNaming
         internal            StoreIntern             _intern;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              TypeStore               TypeStore   => _intern.typeStore;
-        public              StoreInfo               StoreInfo   => new StoreInfo(_intern.syncStore, _intern.setByType); 
-        public   override   string                  ToString()  => StoreInfo.ToString();
-        public              IReadOnlyList<SyncTask> Tasks       => _intern.syncStore.appTasks;
+        public              TypeStore               TypeStore       => _intern.typeStore;
+        public              StoreInfo               StoreInfo       => new StoreInfo(_intern.syncStore, _intern.setByType); 
+        public   override   string                  ToString()      => StoreInfo.ToString();
+        public              IReadOnlyList<SyncTask> Tasks           => _intern.syncStore.appTasks;
         
-        public              int                     GetSyncCount()              => _intern.syncCount;
+        public              int                     GetSyncCount()  => _intern.syncCount;
         
         /// <summary>
         /// Instantiate an <see cref="EntityStore"/> with a given <see cref="database"/> and an optional <see cref="typeStore"/>.
