@@ -85,11 +85,11 @@ namespace Friflo.Json.Flow.Graph
         
         // --- Sync / TrySync
         public async Task<SyncResult> Sync() {
-            SyncRequest syncRequest = CreateSyncRequest(out SyncStore syncReq);
-            var messageContext = new MessageContext(_intern.pools, _intern.eventTarget, _intern.clientId);
-            SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
+            var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
+            var messageContext  = new MessageContext(_intern.pools, _intern.eventTarget, _intern.clientId);
+            var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
             
-            var result = HandleSyncResponse(syncRequest, response, syncReq);
+            var result = HandleSyncResponse(syncRequest, response, syncStore);
             if (!result.Success)
                 throw new SyncResultException(response.error, result.failed);
             messageContext.Release();
@@ -97,11 +97,11 @@ namespace Friflo.Json.Flow.Graph
         }
         
         public async Task<SyncResult> TrySync() {
-            SyncRequest syncRequest = CreateSyncRequest(out SyncStore syncReq);
-            var messageContext = new MessageContext(_intern.pools, _intern.eventTarget, _intern.clientId);
-            SyncResponse response = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
+            var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
+            var messageContext  = new MessageContext(_intern.pools, _intern.eventTarget, _intern.clientId);
+            var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
             
-            var result = HandleSyncResponse(syncRequest, response, syncReq);
+            var result = HandleSyncResponse(syncRequest, response, syncStore);
             messageContext.Release();
             return result;
         }
@@ -328,15 +328,15 @@ namespace Friflo.Json.Flow.Graph
         }
 
         /// <summary>
-        /// Returning current <see cref="StoreIntern.syncStore"/> as <see cref="syncReq"/> enables request handling
+        /// Returning current <see cref="StoreIntern.syncStore"/> as <see cref="syncStore"/> enables request handling
         /// in a worker thread while calling <see cref="SyncStore"/> methods from "main" thread.
         /// 
         /// If store has <see cref="StoreIntern.subscriptionProcessor"/> acknowledge received events to clear
         /// <see cref="Database.Event.EventSubscriber.sentEvents"/>. This avoids resending already received events on reconnect. 
         /// </summary>
-        private SyncRequest CreateSyncRequest(out SyncStore syncReq) {
-            syncReq = _intern.syncStore;
-            syncReq.SetSyncSets(this);
+        private SyncRequest CreateSyncRequest(out SyncStore syncStore) {
+            syncStore = _intern.syncStore;
+            syncStore.SetSyncSets(this);
             
             var tasks       = new List<DatabaseTask>();
             var syncRequest = new SyncRequest {
@@ -358,7 +358,7 @@ namespace Friflo.Json.Flow.Graph
                 syncSet?.AddTasks(tasks);
                 AssertTaskCount(setInfo, tasks.Count - curTaskCount);
             }
-            syncReq.AddTasks(tasks);
+            syncStore.AddTasks(tasks);
             
             // --- create new SyncStore and SyncSet's to collect future SyncTask's and executed via the next Sync() 
             foreach (var setPair in _intern.setByType) {
@@ -376,8 +376,8 @@ namespace Friflo.Json.Flow.Graph
                 throw new InvalidOperationException($"Unexpected task.Count. expect: {expect}, got: {taskCount}");
         }
 
-        private static void SetErrors(SyncResponse response, SyncStore syncReq) {
-            var syncSets = syncReq.SyncSets;
+        private static void SetErrors(SyncResponse response, SyncStore syncStore) {
+            var syncSets = syncStore.SyncSets;
             var createErrors = response.createErrors;
             if (createErrors != null) {
                 foreach (var createError in createErrors) {
@@ -412,10 +412,10 @@ namespace Friflo.Json.Flow.Graph
             }
         }
 
-        private SyncResult HandleSyncResponse(SyncRequest syncRequest, SyncResponse response, SyncStore syncReq) {
+        private SyncResult HandleSyncResponse(SyncRequest syncRequest, SyncResponse response, SyncStore syncStore) {
             SyncResult      syncResult;
             ErrorResponse   error       = response.error;
-            var             syncSets    = syncReq.SyncSets;
+            var             syncSets    = syncStore.SyncSets;
             try {
                 TaskErrorResult                         syncError;
                 Dictionary<string, ContainerEntities>   containerResults;
@@ -428,7 +428,7 @@ namespace Friflo.Json.Flow.Graph
                         var set = _intern.setByName[containerResult.Key];
                         set.SyncPeerEntities(containerEntities.entities);
                     }
-                    SetErrors(response, syncReq);
+                    SetErrors(response, syncStore);
                 } else {
                     syncError = new TaskErrorResult {
                         message = error.message,
@@ -491,7 +491,7 @@ namespace Friflo.Json.Flow.Graph
                             break;
                         case TaskType.message:
                             var message =           (SendMessage) task;
-                            syncReq.MessageResult(message, result);
+                            syncStore.MessageResult(message, result);
                             break;
                         case TaskType.subscribeChanges:
                             var subscribeChanges =  (SubscribeChanges) task;
@@ -500,18 +500,18 @@ namespace Friflo.Json.Flow.Graph
                             break;
                         case TaskType.subscribeMessage:
                             var subscribeMessage =  (SubscribeMessage) task;
-                            syncReq.SubscribeMessageResult(subscribeMessage, result);
+                            syncStore.SubscribeMessageResult(subscribeMessage, result);
                             break;
                     }
                 }
-                syncReq.LogResults();
+                syncStore.LogResults();
             }
             finally {
                 var failed = new List<SyncTask>();
-                foreach (SyncTask task in syncReq.appTasks) {
+                foreach (SyncTask task in syncStore.appTasks) {
                     task.AddFailedTask(failed);
                 }
-                syncResult = new SyncResult(syncReq.appTasks, failed, error);
+                syncResult = new SyncResult(syncStore.appTasks, failed, error);
             }
             return syncResult;
         }
