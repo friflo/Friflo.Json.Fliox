@@ -111,9 +111,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 await store.Sync();
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
 #if DEBUG
-                AreEqual(2208, diff);   // Test Release also
+                AreEqual(1344, diff);   // Test Release also
 #else
-                AreEqual(2152, diff);   // Test Debug also
+                AreEqual(1288, diff);   // Test Debug also
 #endif
             }
         }

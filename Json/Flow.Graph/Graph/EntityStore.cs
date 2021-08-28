@@ -351,10 +351,11 @@ namespace Friflo.Json.Flow.Graph
             }
 
             foreach (var setPair in _intern.setByType) {
-                EntitySet set = setPair.Value;
-                var setInfo = set.SetInfo;
-                var curTaskCount = tasks.Count;
-                set.SyncSet.AddTasks(tasks);
+                EntitySet set       = setPair.Value;
+                var setInfo         = set.SetInfo;
+                var curTaskCount    = tasks.Count;
+                var syncSet         = set.SyncSet;
+                syncSet?.AddTasks(tasks);
                 AssertTaskCount(setInfo, tasks.Count - curTaskCount);
             }
             syncReq.AddTasks(tasks);

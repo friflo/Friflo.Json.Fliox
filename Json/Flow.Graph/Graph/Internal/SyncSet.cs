@@ -179,14 +179,14 @@ namespace Friflo.Json.Flow.Graph.Internal
         // --- Delete
         internal DeleteTask<TKey, T> Delete(TKey key) {
             AddDelete(key);
-            var delete = new DeleteTask<TKey, T>(new List<TKey>{key}, set);
+            var delete = new DeleteTask<TKey, T>(new List<TKey>{key}, this);
             DeleteTasks().Add(delete);
             return delete;
         }
         
         internal DeleteTask<TKey, T> DeleteRange(ICollection<TKey> keys) {
             AddDeleteRange(keys);
-            var delete = new DeleteTask<TKey, T>(keys.ToList(), set);
+            var delete = new DeleteTask<TKey, T>(keys.ToList(), this);
             DeleteTasks().Add(delete);
             return delete;
         }

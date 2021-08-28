@@ -28,18 +28,20 @@ namespace Friflo.Json.Flow.Graph
             if (entity == null)
                 throw new ArgumentException($"UpdateTask<{set.name}>.Add() entity must not be null.");
             var peer = set.CreatePeer(entity);
-            set.syncPeerSet.AddUpdate(peer);
+            var syncSet = set.GetSyncPeerSet();
+            syncSet.AddUpdate(peer);
             entities.Add(entity);
         }
         
         public void AddRange(ICollection<T> entities) {
             var n = 0;
+            var syncSet = set.GetSyncPeerSet();
             foreach (var entity in entities) {
                 if (entity == null)
                     throw new ArgumentException($"UpdateTask<{set.name}>.AddRange() entities[{n}] must not be null.");
                 n++;
                 var peer = set.CreatePeer(entity);
-                set.syncPeerSet.AddUpdate(peer);
+                syncSet.AddUpdate(peer);
             }
             this.entities.AddRange(entities);
         }
