@@ -91,7 +91,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var _           = new PocStore(database, typeStore, null);
                 
                 var start = GC.GetAllocatedBytesForCurrentThread();
-                var store = new PocStore(database, typeStore, null); // ~ 5 µs
+                var store = new PocStore(database, typeStore, null); // ~ 4 µs
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 
                 Console.WriteLine($"PocStore memory: {diff}");
