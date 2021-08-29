@@ -8,7 +8,7 @@ using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Flow.Graph.Internal.Map
 {
-    public class EntitySetMatcher : ITypeMatcher {
+    internal class EntitySetMatcher : ITypeMatcher {
         public static readonly EntitySetMatcher Instance = new EntitySetMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         }
     }
     
-    public class EntitySetMapper<T> : TypeMapper<T>
+    internal class EntitySetMapper<T> : TypeMapper<T>
     {
         private             TypeMapper  elementType;
         

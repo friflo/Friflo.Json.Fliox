@@ -10,7 +10,7 @@ using Friflo.Json.Flow.Mapper.Utils;
 
 namespace Friflo.Json.Flow.Mapper.Map.Arr
 {
-    public class ArrayMatcher : ITypeMatcher {
+    internal class ArrayMatcher : ITypeMatcher {
         public static readonly ArrayMatcher Instance = new ArrayMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -33,10 +33,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Arr
     }
     
     
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public class ArrayMapper<TElm> : CollectionMapper <TElm[], TElm>
+    internal class ArrayMapper<TElm> : CollectionMapper <TElm[], TElm>
     {
         public override string  DataTypeName() { return "array"; }
         public override int     Count(object array) => ((TElm[]) array).Length; 

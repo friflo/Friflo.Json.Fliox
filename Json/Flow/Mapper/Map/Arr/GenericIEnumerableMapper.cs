@@ -10,7 +10,7 @@ using Friflo.Json.Flow.Mapper.Utils;
 
 namespace Friflo.Json.Flow.Mapper.Map.Arr
 {
-    public class GenericIEnumerableMatcher : ITypeMatcher {
+    internal class GenericIEnumerableMatcher : ITypeMatcher {
         public static readonly GenericIEnumerableMatcher Instance = new GenericIEnumerableMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -31,10 +31,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Arr
         }        
     }
     
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public class GenericIEnumerableMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : IEnumerable<TElm>
+    internal class GenericIEnumerableMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : IEnumerable<TElm>
     {
         public override string DataTypeName() { return "IEnumerable"; }
         

@@ -3,7 +3,7 @@
 
 namespace Friflo.Json.Flow.Mapper.Map.Key
 {
-    public class IntKeyMapper : KeyMapper<int>
+    internal class IntKeyMapper : KeyMapper<int>
     {
         public override void WriteKey (ref Writer writer, in int key) {
             writer.bytes.AppendChar('\"');

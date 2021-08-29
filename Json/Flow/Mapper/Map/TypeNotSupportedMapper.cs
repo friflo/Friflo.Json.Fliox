@@ -4,7 +4,7 @@ using System;
 
 namespace Friflo.Json.Flow.Mapper.Map
 {
-    public class TypeNotSupportedMatcher : ITypeMatcher {
+    internal class TypeNotSupportedMatcher : ITypeMatcher {
         public static readonly TypeNotSupportedMatcher Instance = new TypeNotSupportedMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {

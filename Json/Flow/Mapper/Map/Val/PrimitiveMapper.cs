@@ -7,7 +7,7 @@ using Friflo.Json.Flow.Mapper.MapIL.Val;
 // ReSharper disable PossibleInvalidOperationException
 namespace Friflo.Json.Flow.Mapper.Map.Val
 {
-    public class StringMatcher : ITypeMatcher {
+    internal class StringMatcher : ITypeMatcher {
         public static readonly StringMatcher Instance = new StringMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -17,10 +17,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
         }
     }
     
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public class StringMapper : TypeMapper<string>
+    internal class StringMapper : TypeMapper<string>
     {
         public override string DataTypeName() { return "string"; }
         
@@ -41,7 +38,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
     }
     
     // ---------------------------------------------------------------------------- double
-    public class DoubleMatcher : ITypeMatcher {
+    internal class DoubleMatcher : ITypeMatcher {
         public static readonly DoubleMatcher Instance = new DoubleMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -52,7 +49,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             return null;
         }
     }
-    public class DoubleMapper : TypeMapper<double> {
+    internal class DoubleMapper : TypeMapper<double> {
         public override string DataTypeName() { return "double"; }
         
         public DoubleMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
@@ -66,7 +63,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             return reader.parser.ValueAsDoubleStd(out success);
         }
     }
-    public class NullableDoubleMapper : TypeMapper<double?> {
+    internal class NullableDoubleMapper : TypeMapper<double?> {
         public override string DataTypeName() { return "double?"; }
         
         public NullableDoubleMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
@@ -82,7 +79,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
     }
 
     // ---------------------------------------------------------------------------- float
-    public class FloatMatcher : ITypeMatcher {
+    internal class FloatMatcher : ITypeMatcher {
         public static readonly FloatMatcher Instance = new FloatMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -93,7 +90,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             return null;
         }
     }
-    public class FloatMapper : TypeMapper<float> {
+    internal class FloatMapper : TypeMapper<float> {
         public override string DataTypeName() { return "float"; }
 
         public FloatMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
@@ -107,7 +104,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             return reader.parser.ValueAsFloatStd(out success);
         }
     }
-    public class NullableFloatMapper : TypeMapper<float?> {
+    internal class NullableFloatMapper : TypeMapper<float?> {
         public override string DataTypeName() { return "float?"; }
 
         public NullableFloatMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
@@ -123,7 +120,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
     }
 
     // ---------------------------------------------------------------------------- long
-    public class LongMatcher : ITypeMatcher {
+    internal class LongMatcher : ITypeMatcher {
         public static readonly LongMatcher Instance = new LongMatcher();
                 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -134,7 +131,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             return null;
         }
     }
-    public class LongMapper : TypeMapper<long> {
+    internal class LongMapper : TypeMapper<long> {
         public override string DataTypeName() { return "long"; }
 
         public LongMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
@@ -149,7 +146,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             return reader.parser.ValueAsLong(out success);
         }
     }
-    public class NullableLongMapper : TypeMapper<long?> {
+    internal class NullableLongMapper : TypeMapper<long?> {
         public override string DataTypeName() { return "long?"; }
 
         public NullableLongMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
@@ -165,7 +162,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
     }
     
     // ---------------------------------------------------------------------------- int
-    public class IntMatcher : ITypeMatcher {
+    internal class IntMatcher : ITypeMatcher {
         public static readonly IntMatcher Instance = new IntMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -176,7 +173,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             return null;
         }
     }
-    public class IntMapper : TypeMapper<int> {
+    internal class IntMapper : TypeMapper<int> {
         public override string DataTypeName() { return "int"; }
 
         public IntMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
@@ -190,7 +187,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             return reader.parser.ValueAsInt(out success);
         }
     }
-    public class NullableIntMapper : TypeMapper<int?> {
+    internal class NullableIntMapper : TypeMapper<int?> {
         public override string DataTypeName() { return "int?"; }
 
         public NullableIntMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
@@ -206,7 +203,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
     }
     
     // ---------------------------------------------------------------------------- short
-    public class ShortMatcher : ITypeMatcher {
+    internal class ShortMatcher : ITypeMatcher {
         public static readonly ShortMatcher Instance = new ShortMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -217,7 +214,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             return null;
         }
     }
-    public class ShortMapper : TypeMapper<short> {
+    internal class ShortMapper : TypeMapper<short> {
         public override string DataTypeName() { return "short"; }
         
         public ShortMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
@@ -232,7 +229,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             return reader.parser.ValueAsShort(out success);
         }
     }
-    public class NullableShortMapper : TypeMapper<short?> {
+    internal class NullableShortMapper : TypeMapper<short?> {
         public override string DataTypeName() { return "short?"; }
         
         public NullableShortMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
@@ -250,7 +247,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
     
     
     // ---------------------------------------------------------------------------- byte
-    public class ByteMatcher : ITypeMatcher {
+    internal class ByteMatcher : ITypeMatcher {
         public static readonly ByteMatcher Instance = new ByteMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -261,7 +258,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             return null;
         }
     }
-    public class ByteMapper : TypeMapper<byte> {
+    internal class ByteMapper : TypeMapper<byte> {
         public override string DataTypeName() { return "byte"; }
 
         public ByteMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
@@ -276,7 +273,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             return reader.parser.ValueAsByte(out success);
         }
     }
-    public class NullableByteMapper : TypeMapper<byte?> {
+    internal class NullableByteMapper : TypeMapper<byte?> {
         public override string DataTypeName() { return "byte?"; }
 
         public NullableByteMapper(StoreConfig config, Type type) : base (config, type, true, true) { }
@@ -293,7 +290,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
     }
     
     // ---------------------------------------------------------------------------- bool
-    public class BoolMatcher : ITypeMatcher {
+    internal class BoolMatcher : ITypeMatcher {
         public static readonly BoolMatcher Instance = new BoolMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -305,7 +302,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
         }
     }
     
-    public class BoolMapper : TypeMapper<bool> {
+    internal class BoolMapper : TypeMapper<bool> {
         public override string DataTypeName() { return "bool"; }
         
         public BoolMapper(StoreConfig config, Type type) : base (config, type, false, true) { }
@@ -320,7 +317,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
             return reader.parser.ValueAsBool(out success);
         }
     }
-    public class NullableBoolMapper : TypeMapper<bool?> {
+    internal class NullableBoolMapper : TypeMapper<bool?> {
         public override string DataTypeName() { return "bool?"; }
         
         public NullableBoolMapper(StoreConfig config, Type type) : base (config, type, true, true) { }

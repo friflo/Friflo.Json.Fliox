@@ -5,7 +5,7 @@ using System;
 
 namespace Friflo.Json.Flow.Mapper.Map.Key
 {
-    public class GuidKeyMapper : KeyMapper<Guid>
+    internal class GuidKeyMapper : KeyMapper<Guid>
     {
         public override void WriteKey (ref Writer writer, in Guid key) {
             writer.WriteGuid (key);

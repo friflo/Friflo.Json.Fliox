@@ -10,7 +10,7 @@ using Friflo.Json.Flow.Mapper.Utils;
 
 namespace Friflo.Json.Flow.Mapper.Map.Arr
 {
-    public static class PrimitiveList
+    internal static class PrimitiveList
     {
         public static void AddListItemNull<TElm> (List<TElm> list, int index, int startLen) {
             if (index < startLen)
@@ -27,7 +27,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Arr
         }
     }
     
-    public class PrimitiveListMatcher : ITypeMatcher {
+    internal class PrimitiveListMatcher : ITypeMatcher {
         public static readonly PrimitiveListMatcher Instance = new PrimitiveListMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -80,10 +80,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Arr
         }
     }
     
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public class PrimitiveListMapper<T> : CollectionMapper<List<T>, T>
+    internal class PrimitiveListMapper<T> : CollectionMapper<List<T>, T>
     {
         public override string  DataTypeName() { return "List"; }
         public override int     Count(object array) => ((List<T>) array).Count;

@@ -10,7 +10,7 @@ using Friflo.Json.Flow.Mapper.Utils;
 
 namespace Friflo.Json.Flow.Mapper.Map.Val
 {
-    public class EnumMatcher : ITypeMatcher {
+    internal class EnumMatcher : ITypeMatcher {
         public static readonly EnumMatcher Instance = new EnumMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -54,10 +54,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
     /// }
     /// </code>
     /// </summary>    
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public class EnumMapper<T> : TypeMapper<T>
+    internal class EnumMapper<T> : TypeMapper<T>
     {
         private     readonly Dictionary<BytesString, object> stringToEnum   = new Dictionary<BytesString, object>();
         private     readonly Dictionary<object, BytesString> enumToString   = new Dictionary<object, BytesString>();

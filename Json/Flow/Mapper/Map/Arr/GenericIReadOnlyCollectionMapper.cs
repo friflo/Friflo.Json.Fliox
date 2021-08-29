@@ -10,7 +10,7 @@ using Friflo.Json.Flow.Mapper.Utils;
 
 namespace Friflo.Json.Flow.Mapper.Map.Arr
 {
-    public class GenericIReadOnlyCollectionMatcher : ITypeMatcher {
+    internal class GenericIReadOnlyCollectionMatcher : ITypeMatcher {
         public static readonly GenericIReadOnlyCollectionMatcher Instance = new GenericIReadOnlyCollectionMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -33,10 +33,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Arr
         }        
     }
     
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public class GenericIReadOnlyCollectionMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : IReadOnlyCollection<TElm>
+    internal class GenericIReadOnlyCollectionMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : IReadOnlyCollection<TElm>
     {
         public override string  DataTypeName() { return "IReadOnlyCollection"; }
         public override int     Count(object array) => ((TCol) array).Count;

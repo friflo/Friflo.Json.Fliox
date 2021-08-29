@@ -6,7 +6,7 @@ using Friflo.Json.Burst;
 namespace Friflo.Json.Flow.Mapper.Map.Val
 {
     
-    public class DateTimeMatcher  : ITypeMatcher {
+    internal class DateTimeMatcher  : ITypeMatcher {
         public static readonly DateTimeMatcher Instance = new DateTimeMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -18,10 +18,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
         }
     }
     
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public class DateTimeMapper : TypeMapper<DateTime>
+    internal class DateTimeMapper : TypeMapper<DateTime>
     {
         public override string DataTypeName() { return "DateTime"; }
         
@@ -45,7 +42,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
         }
     }
     
-    public class NullableDateTimeMapper : TypeMapper<DateTime?>
+    internal class NullableDateTimeMapper : TypeMapper<DateTime?>
     {
         public override string DataTypeName() { return "DateTime?"; }
         

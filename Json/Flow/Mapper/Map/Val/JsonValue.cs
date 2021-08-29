@@ -5,7 +5,7 @@ using System;
 namespace Friflo.Json.Flow.Mapper.Map.Val
 {
     // ------------------------- PatchValueMatcher / PatchValueMapper -------------------------
-    public class JsonValueMatcher : ITypeMatcher {
+    internal class JsonValueMatcher : ITypeMatcher {
         public static readonly JsonValueMatcher Instance = new JsonValueMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -15,10 +15,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Val
         }
     }
     
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public class JsonValueMapper : TypeMapper<JsonValue>
+    internal class JsonValueMapper : TypeMapper<JsonValue>
     {
         public override string DataTypeName() { return "JsonValue"; }
 

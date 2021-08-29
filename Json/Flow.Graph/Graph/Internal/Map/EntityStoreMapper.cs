@@ -9,7 +9,7 @@ using Friflo.Json.Flow.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Flow.Graph.Internal.Map
 {
-    public class EntityStoreMatcher : ITypeMatcher {
+    internal class EntityStoreMatcher : ITypeMatcher {
         public static readonly EntityStoreMatcher Instance = new EntityStoreMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -21,7 +21,7 @@ namespace Friflo.Json.Flow.Graph.Internal.Map
         }
     }
     
-    public class EntityStoreMapper<T> : TypeMapper<T>
+    internal class EntityStoreMapper<T> : TypeMapper<T>
     {
         public  override    bool    IsComplex => true;
 

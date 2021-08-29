@@ -14,7 +14,7 @@ using Friflo.Json.Flow.Mapper.Utils;
 namespace Friflo.Json.Flow.Graph.Internal.Map
 {
     // -------------------------------------------------------------------------------------
-    public class RefMatcher : ITypeMatcher {
+    internal class RefMatcher : ITypeMatcher {
         public static readonly RefMatcher Instance = new RefMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {

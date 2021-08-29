@@ -175,7 +175,7 @@ public enum TypeSemantic {
         }
     }
     
-    public class ConcreteTypeMatcher : ITypeMatcher
+    internal class ConcreteTypeMatcher : ITypeMatcher
     {
         private readonly TypeMapper mapper;
 

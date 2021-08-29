@@ -10,7 +10,7 @@ using Friflo.Json.Flow.Mapper.Utils;
 
 namespace Friflo.Json.Flow.Mapper.Map.Arr
 {
-    public class GenericIListMatcher : ITypeMatcher {
+    internal class GenericIListMatcher : ITypeMatcher {
         public static readonly GenericIListMatcher Instance = new GenericIListMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -34,10 +34,7 @@ namespace Friflo.Json.Flow.Mapper.Map.Arr
         }        
     }
     
-#if !UNITY_5_3_OR_NEWER
-    [CLSCompliant(true)]
-#endif
-    public class GenericIListMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : IList<TElm>
+    internal class GenericIListMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : IList<TElm>
     {
         public override string  DataTypeName() { return "IList"; }
         public override int     Count(object array) => ((TCol) array).Count;

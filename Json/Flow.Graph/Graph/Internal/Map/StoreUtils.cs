@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace Friflo.Json.Flow.Graph.Internal.Map
 {
-    public static class StoreUtils
+    internal static class StoreUtils
     {
         public static Type[] GetEntityTypes<TEntityStore>() where TEntityStore : EntityStore 
         {
