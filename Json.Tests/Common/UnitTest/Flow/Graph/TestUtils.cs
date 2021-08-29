@@ -95,7 +95,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 
                 Console.WriteLine($"PocStore memory: {diff}");
-                IsTrue(diff < 10600);
+                IsTrue(diff < 7600);
             }
         }
 

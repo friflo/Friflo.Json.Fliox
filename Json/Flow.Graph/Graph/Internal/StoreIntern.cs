@@ -70,7 +70,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             setByName                   = new Dictionary<string, EntitySet>();
             subscriptions               = new Dictionary<string, MessageSubscriber>();
             subscriptionsPrefix         = new List<MessageSubscriber>();
-            messageReader               = new ObjectReader(typeStore, new NoThrowHandler());
+            messageReader               = jsonMapper.reader; // new ObjectReader(typeStore, new NoThrowHandler());
             pendingSyncs                = new ConcurrentDictionary<Task, MessageContext>();
             idsBuf                      = new List<JsonKey>();
             pools                       = new Pools(Pools.SharedPools);
@@ -92,7 +92,7 @@ namespace Friflo.Json.Flow.Graph.Internal
             idsBuf.Clear();
             pendingSyncs.Clear();
             disposed = true;
-            messageReader.Dispose();
+            // messageReader.Dispose();
             subscriptionsPrefix.Clear();
             subscriptions.Clear();
             database.RemoveEventTarget(clientId);
