@@ -105,9 +105,17 @@ namespace Friflo.Json.Flow.Graph
             syncSet?.SetTaskInfo(ref info);
             return info;
         }}
-
         
         // --------------------------------------- public interface --------------------------------------- 
+        public EntitySet(EntityStore store) : base (typeof(T).Name) {
+            var type = typeof(T);
+            ValidateKeyType(type);
+            store._intern.setByType[type]       = this;
+            store._intern.setByName[type.Name]  = this;
+            container   = store._intern.database.GetOrCreateContainer(name);
+            intern      = new SetIntern<TKey, T>(store);
+        }
+
         // --- Read
         public ReadTask<TKey, T> Read() {
             // ReadTasks<> are not added with intern.store.AddTask(task) as it only groups the tasks created via its
@@ -346,15 +354,6 @@ namespace Friflo.Json.Flow.Graph
 
         internal override void LogSetChangesInternal(LogTask logTask) {
             GetSyncSet().LogSetChanges(peers, logTask);
-        }
-        
-        public EntitySet(EntityStore store) : base (typeof(T).Name) {
-            var type = typeof(T);
-            ValidateKeyType(type);
-            store._intern.setByType[type]       = this;
-            store._intern.setByName[type.Name]  = this;
-            container   = store._intern.database.GetOrCreateContainer(name);
-            intern      = new SetIntern<TKey, T>(store);
         }
         
         private static void ValidateKeyType(Type type) {
