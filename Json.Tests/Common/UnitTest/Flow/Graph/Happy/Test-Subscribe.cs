@@ -64,8 +64,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                         AreEqual(6, eventInfo.Count);
                         AreEqual(6, eventInfo.changes.Count);
                         AreEqual("(creates: 6, updates: 0, deletes: 0, patches: 0, messages: 0)", eventInfo.ToString());
-                        var articleChanges  = handler.GetEntityChanges<string, Article> (ev);
-                        var producerChanges = handler.GetEntityChanges<string, Producer>(ev);
+                        var articleChanges  = handler.GetEntityChanges(store.articles,  ev);
+                        var producerChanges = handler.GetEntityChanges(store.producers, ev);
                         AreEqual(5, articleChanges.creates.Count);
                         AreEqual("(creates: 5, updates: 0, deletes: 0, patches: 0)", articleChanges.ToString());
                         AreEqual("(creates: 1, updates: 0, deletes: 0, patches: 0)", producerChanges.ToString());
@@ -164,6 +164,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
 
     // assert expected database changes by counting the entity changes for each DatabaseContainer / EntitySet<>
     internal class PocSubscriptionProcessor : SubscriptionProcessor {
+        private readonly    PocStore                store;
         private readonly    ChangeInfo<Order>       orderSum     = new ChangeInfo<Order>();
         private readonly    ChangeInfo<Customer>    customerSum  = new ChangeInfo<Customer>();
         private readonly    ChangeInfo<Article>     articleSum   = new ChangeInfo<Article>();
@@ -178,9 +179,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         private readonly    EventAssertion          eventAssertion;
         
-        internal PocSubscriptionProcessor (EntityStore store, EventAssertion eventAssertion)
+        internal PocSubscriptionProcessor (PocStore store, EventAssertion eventAssertion)
             : base (store)
         {
+            this.store          = store;
             this.eventAssertion = eventAssertion;
         }
             
@@ -188,12 +190,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         protected override void ProcessEvent (SubscriptionEvent ev) {
             AreEqual("createStore", ev.clientId);
             base.ProcessEvent(ev);
-            var orderChanges    = GetEntityChanges<string, Order>   (ev);
-            var customerChanges = GetEntityChanges<string, Customer>(ev);
-            var articleChanges  = GetEntityChanges<string, Article> (ev);
-            var producerChanges = GetEntityChanges<string, Producer>(ev);
-            var employeeChanges = GetEntityChanges<string, Employee>(ev);
-            var messages        = GetMessages               (ev);
+            var orderChanges    = GetEntityChanges(store.orders,    ev);
+            var customerChanges = GetEntityChanges(store.customers, ev);
+            var articleChanges  = GetEntityChanges(store.articles,  ev);
+            var producerChanges = GetEntityChanges(store.producers, ev);
+            var employeeChanges = GetEntityChanges(store.employees, ev);
+            var messages        = GetMessages                      (ev);
             
             orderSum.   AddChanges(orderChanges);
             customerSum.AddChanges(customerChanges);

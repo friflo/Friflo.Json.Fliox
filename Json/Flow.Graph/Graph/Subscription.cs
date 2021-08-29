@@ -173,10 +173,9 @@ namespace Friflo.Json.Flow.Graph
             subHandler(this, ev); // subHandler.Invoke(this, ev);
         }
         
-        private EntityChanges<TKey, T> GetChanges<TKey, T> () where T : class {
+        private EntityChanges<TKey, T> GetChanges<TKey, T> (EntitySet<TKey, T> entitySet) where T : class {
             if (!results.TryGetValue(typeof(T), out var result)) {
-                var set         = store.GetEntitySet<TKey, T>();
-                var resultTyped = new EntityChanges<TKey, T>(set);
+                var resultTyped = new EntityChanges<TKey, T>(entitySet);
                 results.Add(typeof(T), resultTyped);
                 return resultTyped;
             }
@@ -196,9 +195,8 @@ namespace Friflo.Json.Flow.Graph
             return messages;
         }
         
-        public EntityChanges<TKey, T> GetEntityChanges<TKey, T>(SubscriptionEvent subscriptionEvent) where T : class {
-            var result  = GetChanges<TKey, T>();
-            var set     = result._set;
+        public EntityChanges<TKey, T> GetEntityChanges<TKey, T>(EntitySet<TKey, T> entitySet, SubscriptionEvent subscriptionEvent) where T : class {
+            var result  = GetChanges(entitySet);
             result.Clear();
             
             foreach (var task in subscriptionEvent.tasks) {
@@ -206,12 +204,12 @@ namespace Friflo.Json.Flow.Graph
                     
                     case TaskType.create:
                         var create = (CreateEntities)task;
-                        if (create.container != set.name)
+                        if (create.container != entitySet.name)
                             continue;
                         foreach (var entityPair in create.entities) {
                             var     id      = entityPair.Key;
                             TKey    key     = Ref<TKey, T>.EntityKey.IdToKey(id);
-                            var     peer    = set.GetOrCreatePeerByKey(key, id);
+                            var     peer    = entitySet.GetOrCreatePeerByKey(key, id);
                             var     entity  = peer.Entity;
                             result.creates.Add(key, entity);
                         }
@@ -220,12 +218,12 @@ namespace Friflo.Json.Flow.Graph
                     
                     case TaskType.update:
                         var update = (UpdateEntities)task;
-                        if (update.container != set.name)
+                        if (update.container != entitySet.name)
                             continue;
                         foreach (var entityPair in update.entities) {
                             var     id      = entityPair.Key;
                             TKey    key     = Ref<TKey, T>.EntityKey.IdToKey(id);
-                            var     peer    = set.GetOrCreatePeerByKey(key, id);
+                            var     peer    = entitySet.GetOrCreatePeerByKey(key, id);
                             var     entity  = peer.Entity;
                             result.updates.Add(key, entity);
                         }
@@ -234,7 +232,7 @@ namespace Friflo.Json.Flow.Graph
                     
                     case TaskType.delete:
                         var delete = (DeleteEntities)task;
-                        if (delete.container != set.name)
+                        if (delete.container != entitySet.name)
                             continue;
                         foreach (var id in delete.ids) {
                             TKey    key      = Ref<TKey, T>.EntityKey.IdToKey(id);
@@ -245,12 +243,12 @@ namespace Friflo.Json.Flow.Graph
                     
                     case TaskType.patch:
                         var patch = (PatchEntities)task;
-                        if (patch.container != set.name)
+                        if (patch.container != entitySet.name)
                             continue;
                         foreach (var pair in patch.patches) {
                             var         id          = pair.Key;
                             TKey        key         = Ref<TKey, T>.EntityKey.IdToKey(id);
-                            var         peer        = set.GetOrCreatePeerByKey(key, id);
+                            var         peer        = entitySet.GetOrCreatePeerByKey(key, id);
                             var         entity      = peer.Entity;
                             EntityPatch entityPatch = pair.Value;
                             var         changePatch = new ChangePatch<T>(entity, entityPatch.patches);
@@ -278,8 +276,8 @@ namespace Friflo.Json.Flow.Graph
     
     public class EntityChanges<TKey, T> : EntityChanges where T : class {
         public              ChangeInfo<T>                       Info { get; }
-        // ReSharper disable once InconsistentNaming
-        internal readonly   EntitySet<TKey, T>                  _set;
+        // ReSharper disable once NotAccessedField.Local
+        private  readonly   EntitySet<TKey, T>                  entitySet; // only for debugging ergonomics
         
         public   readonly   Dictionary<TKey, T>                 creates = new Dictionary<TKey, T>();
         public   readonly   Dictionary<TKey, T>                 updates = new Dictionary<TKey, T>();
@@ -288,8 +286,8 @@ namespace Friflo.Json.Flow.Graph
         
         public override     string                              ToString() => Info.ToString();       
 
-        internal EntityChanges(EntitySet<TKey, T> set) {
-            this._set = set;
+        internal EntityChanges(EntitySet<TKey, T> entitySet) {
+            this.entitySet = entitySet;
             Info = new ChangeInfo<T>();
         }
 
