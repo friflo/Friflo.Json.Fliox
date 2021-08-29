@@ -11,6 +11,14 @@ using Friflo.Json.Flow.Mapper;
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Flow.Graph
 {
+    /// <summary>
+    /// <see cref="Entity"/> can be used as a base class for entity model classes.<br/>
+    /// Doing this is optional. If its used it provides the features listed below.
+    /// <list type="bullet">
+    ///   <item>Enable instant listing of all declared entity models by using IDE tools like: "Find usage" or "Find All References"</item>
+    ///   <item>Ensures an entity key (id) is not changed when already assigned by a runtime assertion.</item>
+    /// </list>  
+    /// </summary>
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
