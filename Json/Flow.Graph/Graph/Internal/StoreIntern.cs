@@ -87,12 +87,19 @@ namespace Friflo.Json.Flow.Graph.Internal
         }
         
         internal void Dispose() {
+            // readonly - owned
+            pools.Dispose();
+            idsBuf.Clear();
+            pendingSyncs.Clear();
             disposed = true;
             messageReader.Dispose();
             subscriptionsPrefix.Clear();
             subscriptions.Clear();
             database.RemoveEventTarget(clientId);
+            setByName.Clear();
+            setByType.Clear();
             objectPatcher.Dispose();
+            // readonly
             jsonMapper.Dispose();
             ownedTypeStore?.Dispose();
         }
