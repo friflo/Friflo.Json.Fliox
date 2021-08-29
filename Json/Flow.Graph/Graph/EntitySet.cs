@@ -13,7 +13,9 @@ using Friflo.Json.Flow.Sync;
 using Friflo.Json.Flow.Transform;
 using Friflo.Json.Flow.Transform.Query;
 
-namespace Friflo.Json.Flow.Graph
+// EntitySet & EntitySetBase<T> are not intended as a public API.
+// These classes are declared here to simplify navigation to EntitySet<TKey, T>.
+namespace Friflo.Json.Flow.Graph.Internal
 {
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
@@ -51,6 +53,10 @@ namespace Friflo.Json.Flow.Graph
 
         protected EntitySetBase(string name) : base(name) { }
     }
+}
+
+namespace Friflo.Json.Flow.Graph
+{
 
     /// <summary>
     /// An EntitySet represents a collection (table) of entities (records).
