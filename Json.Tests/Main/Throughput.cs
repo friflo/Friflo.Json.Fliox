@@ -1,10 +1,10 @@
 ﻿#if !UNITY_2020_1_OR_NEWER
 
 using System.Threading.Tasks;
-using Friflo.Json.Flow.Database;
-using Friflo.Json.Flow.Database.Remote;
-using Friflo.Json.Tests.Common.UnitTest.Flow.Graph;
-using Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy;
+using Friflo.Json.Fliox.Database;
+using Friflo.Json.Fliox.Database.Remote;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Graph;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy;
 
 namespace Friflo.Json.Tests.Main
 {

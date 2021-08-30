@@ -5,7 +5,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Flow.Database.Remote;
+using Friflo.Json.Fliox.Database.Remote;
 
 namespace Friflo.Json.Tests.Main
 {

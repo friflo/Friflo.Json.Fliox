@@ -30,8 +30,8 @@
     <ItemGroup>
       <ProjectReference Include="..\Json.Tests\Friflo.Json.Tests.csproj" />
       <ProjectReference Include="..\Json\Burst\Friflo.Json.Burst.csproj" />
-      <ProjectReference Include="..\Json\Flow.Graph\Friflo.Json.Flow.Graph.csproj" />
-      <ProjectReference Include="..\Json\Flow\Friflo.Json.Flow.csproj" />
+      <ProjectReference Include="..\Json\Fliox.Graph\Friflo.Json.Fliox.Graph.csproj" />
+      <ProjectReference Include="..\Json\Fliox\Friflo.Json.Fliox.csproj" />
     </ItemGroup>
 	
     <ItemGroup>

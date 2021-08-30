@@ -5,7 +5,7 @@
 A JSON parser / serializer and object mapper trimmed towards performance with clear & compact API C#/.NET
 
 ### Website
-https://github.com/friflo/Friflo.Json.Flow
+https://github.com/friflo/Friflo.Json.Fliox
 
 ### Topics
 

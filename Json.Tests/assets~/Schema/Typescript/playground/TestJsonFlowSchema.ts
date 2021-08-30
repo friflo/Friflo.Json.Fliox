@@ -1,4 +1,4 @@
-import { JsonSchema } from "../JsonSchema/Friflo.Json.Flow.Schema.JSON"
+import { JsonSchema } from "../JsonSchema/Friflo.Json.Fliox.Schema.JSON"
 
 // check assignment with using a type compiles successful
 var exampleSync: JsonSchema = {

@@ -25,25 +25,25 @@
     "dotnet-test-explorer.testProjectPath": "Json.Tests",
     "editor.detectIndentation": false,
     "json.schemas": [
-        { "fileMatch": ["/Json.Tests/assets~/Graph/UserStore/Role/*.json"],                  "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Flow.UserAuth.Role.json" },
-        { "fileMatch": ["/Json.Tests/assets~/Graph/UserStore/UserCredential/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Flow.UserAuth.UserCredential.json" },
-        { "fileMatch": ["/Json.Tests/assets~/Graph/UserStore/UserPermission/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Flow.UserAuth.UserPermission.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/UserStore/Role/*.json"],                  "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Fliox.UserAuth.Role.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/UserStore/UserCredential/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Fliox.UserAuth.UserCredential.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/UserStore/UserPermission/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Fliox.UserAuth.UserPermission.json" },
 
-        { "fileMatch": ["/Json.Tests/assets~/Graph/PocStore/Article/*.json"],                "url": "./Json.Tests/assets~/Schema/JSON/PocStore/UnitTest.Flow.Graph.Article.json" },
-        { "fileMatch": ["/Json.Tests/assets~/Graph/PocStore/Customer/*.json"],               "url": "./Json.Tests/assets~/Schema/JSON/PocStore/UnitTest.Flow.Graph.Customer.json" },
-        { "fileMatch": ["/Json.Tests/assets~/Graph/PocStore/Employee/*.json"],               "url": "./Json.Tests/assets~/Schema/JSON/PocStore/UnitTest.Flow.Graph.Employee.json" },
-        { "fileMatch": ["/Json.Tests/assets~/Graph/PocStore/Order/*.json"],                  "url": "./Json.Tests/assets~/Schema/JSON/PocStore/UnitTest.Flow.Graph.Order.json" },
-        { "fileMatch": ["/Json.Tests/assets~/Graph/PocStore/Producer/*.json"],               "url": "./Json.Tests/assets~/Schema/JSON/PocStore/UnitTest.Flow.Graph.Producer.json" },
-        { "fileMatch": ["/Json.Tests/assets~/Graph/PocStore/TestType/*.json"],               "url": "./Json.Tests/assets~/Schema/JSON/PocStore/UnitTest.Flow.Graph.TestType.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/PocStore/Article/*.json"],                "url": "./Json.Tests/assets~/Schema/JSON/PocStore/UnitTest.Fliox.Graph.Article.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/PocStore/Customer/*.json"],               "url": "./Json.Tests/assets~/Schema/JSON/PocStore/UnitTest.Fliox.Graph.Customer.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/PocStore/Employee/*.json"],               "url": "./Json.Tests/assets~/Schema/JSON/PocStore/UnitTest.Fliox.Graph.Employee.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/PocStore/Order/*.json"],                  "url": "./Json.Tests/assets~/Schema/JSON/PocStore/UnitTest.Fliox.Graph.Order.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/PocStore/Producer/*.json"],               "url": "./Json.Tests/assets~/Schema/JSON/PocStore/UnitTest.Fliox.Graph.Producer.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/PocStore/TestType/*.json"],               "url": "./Json.Tests/assets~/Schema/JSON/PocStore/UnitTest.Fliox.Graph.TestType.json" },
 
-        { "fileMatch": ["/Json.Tests/assets~/Graph/EntityIdStore/GuidEntity/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Flow.Graph.GuidEntity.json" },
-        { "fileMatch": ["/Json.Tests/assets~/Graph/EntityIdStore/IntEntity/*.json"],         "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Flow.Graph.IntEntity.json" },
-        { "fileMatch": ["/Json.Tests/assets~/Graph/EntityIdStore/LongEntity/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Flow.Graph.LongEntity.json" },
-        { "fileMatch": ["/Json.Tests/assets~/Graph/EntityIdStore/ShortEntity/*.json"],       "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Flow.Graph.ShortEntity.json" },
-        { "fileMatch": ["/Json.Tests/assets~/Graph/EntityIdStore/ByteEntity/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Flow.Graph.ByteEntity.json" },
-        { "fileMatch": ["/Json.Tests/assets~/Graph/EntityIdStore/CustomIdEntity/*.json"],    "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Flow.Graph.CustomIdEntity.json" },
-        { "fileMatch": ["/Json.Tests/assets~/Graph/EntityIdStore/CustomIdEntity2/*.json"],   "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Flow.Graph.CustomIdEntity2.json" },
-        { "fileMatch": ["/Json.Tests/assets~/Graph/EntityIdStore/EntityRefs/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Flow.Graph.EntityRefs.json" }
+        { "fileMatch": ["/Json.Tests/assets~/Graph/EntityIdStore/GuidEntity/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Fliox.Graph.GuidEntity.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/EntityIdStore/IntEntity/*.json"],         "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Fliox.Graph.IntEntity.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/EntityIdStore/LongEntity/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Fliox.Graph.LongEntity.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/EntityIdStore/ShortEntity/*.json"],       "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Fliox.Graph.ShortEntity.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/EntityIdStore/ByteEntity/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Fliox.Graph.ByteEntity.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/EntityIdStore/CustomIdEntity/*.json"],    "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Fliox.Graph.CustomIdEntity.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/EntityIdStore/CustomIdEntity2/*.json"],   "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Fliox.Graph.CustomIdEntity2.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/EntityIdStore/EntityRefs/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Fliox.Graph.EntityRefs.json" }
         
     ]
 }

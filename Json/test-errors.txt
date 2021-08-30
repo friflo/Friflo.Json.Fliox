@@ -4,7 +4,7 @@
 Build_Error_2 - "Expect corresponding request to response"
 
 Test Run Aborted.
-https://github.com/friflo/Friflo.Json.Flow/runs/2911471132
+https://github.com/friflo/Friflo.Json.Fliox/runs/2911471132
 
 √ WebSocketCreateSync [1s 165ms] => test OK - danach Test Run Aborted.
  
@@ -13,9 +13,9 @@ https://github.com/friflo/Friflo.Json.Flow/runs/2911471132
 
 The active test run was aborted. Reason: Test host process crashed : Process terminated. Assertion failed.
 OnReceive failed processing WebSocket message. Exception: System.InvalidOperationException: Expect corresponding request to response
-   at Friflo.Json.Flow.Database.Remote.WebSocketClientDatabase.OnReceive(String messageJson) in /home/runner/work/Friflo.Json.Flow/Friflo.Json.Flow/Json/Flow.Graph/Database/Remote/WebSocketClientDatabase.cs:line 93
-   at Friflo.Json.Flow.Database.Remote.WebSocketClientDatabase.OnReceive(String messageJson) in /home/runner/work/Friflo.Json.Flow/Friflo.Json.Flow/Json/Flow.Graph/Database/Remote/WebSocketClientDatabase.cs:line 93
-   at Friflo.Json.Flow.Database.Remote.WebSocketClientDatabase.ReceiveLoop() in /home/runner/work/Friflo.Json.Flow/Friflo.Json.Flow/Json/Flow.Graph/Database/Remote/WebSocketClientDatabase.cs:line 77
+   at Friflo.Json.Fliox.Database.Remote.WebSocketClientDatabase.OnReceive(String messageJson) in /home/runner/work/Friflo.Json.Fliox/Friflo.Json.Fliox/Json/Fliox.Graph/Database/Remote/WebSocketClientDatabase.cs:line 93
+   at Friflo.Json.Fliox.Database.Remote.WebSocketClientDatabase.OnReceive(String messageJson) in /home/runner/work/Friflo.Json.Fliox/Friflo.Json.Fliox/Json/Fliox.Graph/Database/Remote/WebSocketClientDatabase.cs:line 93
+   at Friflo.Json.Fliox.Database.Remote.WebSocketClientDatabase.ReceiveLoop() in /home/runner/work/Friflo.Json.Fliox/Friflo.Json.Fliox/Json/Fliox.Graph/Database/Remote/WebSocketClientDatabase.cs:line 77
 
 ...
 Test Run Aborted.
@@ -25,7 +25,7 @@ Test Run Aborted.
 Build_Error_1
 
 test failed:
-https://github.com/friflo/Friflo.Json.Flow/runs/2891888359
+https://github.com/friflo/Friflo.Json.Fliox/runs/2891888359
 
 
   X LoopbackUseSync [98ms]
@@ -34,10 +34,10 @@ https://github.com/friflo/Friflo.Json.Flow/runs/2891888359
   But was:  0
 
   Stack Trace:
-   at Friflo.Json.Flow.Graph.Internal.PeerEntity`1.get_Entity() in /home/runner/work/Friflo.Json.Flow/Friflo.Json.Flow/Json/Flow.Graph/Graph/Internal/PeerEntity.cs:line 44
-   at Friflo.Json.Flow.Graph.SubscriptionHandler.GetEntityChanges[T](SubscriptionEvent subscriptionEvent) in /home/runner/work/Friflo.Json.Flow/Friflo.Json.Flow/Json/Flow.Graph/Graph/SubscriptionHandler.cs:line 165
-   at Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy.PocHandler.OnEvent(SubscriptionEvent ev) in /home/runner/work/Friflo.Json.Flow/Friflo.Json.Flow/Json.Tests/Common/UnitTest/Flow/Graph/Happy/Test-Subscribe.cs:line 84
-   at Friflo.Json.Flow.Graph.SubscriptionHandler.<>c__DisplayClass12_0.<EnqueueEvent>b__0(Object <p0>) in /home/runner/work/Friflo.Json.Flow/Friflo.Json.Flow/Json/Flow.Graph/Graph/SubscriptionHandler.cs:line 62
-   at Friflo.Json.Flow.Database.Utils.SingleThreadSynchronizationContext.RunOnCurrentThread() in /home/runner/work/Friflo.Json.Flow/Friflo.Json.Flow/Json/Flow.Graph/Database/Utils/SingleThreadSynchronizationContext.cs:line 22
-   at Friflo.Json.Flow.Database.Utils.SingleThreadSynchronizationContext.Run(Func`1 func) in /home/runner/work/Friflo.Json.Flow/Friflo.Json.Flow/Json/Flow.Graph/Database/Utils/SingleThreadSynchronizationContext.cs:line 43
-   at Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy.TestStore.LoopbackUseSync() in /home/runner/work/Friflo.Json.Flow/Friflo.Json.Flow/Json.Tests/Common/UnitTest/Flow/Graph/Happy/Test.cs:line 193
+   at Friflo.Json.Fliox.Graph.Internal.PeerEntity`1.get_Entity() in /home/runner/work/Friflo.Json.Fliox/Friflo.Json.Fliox/Json/Fliox.Graph/Graph/Internal/PeerEntity.cs:line 44
+   at Friflo.Json.Fliox.Graph.SubscriptionHandler.GetEntityChanges[T](SubscriptionEvent subscriptionEvent) in /home/runner/work/Friflo.Json.Fliox/Friflo.Json.Fliox/Json/Fliox.Graph/Graph/SubscriptionHandler.cs:line 165
+   at Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy.PocHandler.OnEvent(SubscriptionEvent ev) in /home/runner/work/Friflo.Json.Fliox/Friflo.Json.Fliox/Json.Tests/Common/UnitTest/Fliox/Graph/Happy/Test-Subscribe.cs:line 84
+   at Friflo.Json.Fliox.Graph.SubscriptionHandler.<>c__DisplayClass12_0.<EnqueueEvent>b__0(Object <p0>) in /home/runner/work/Friflo.Json.Fliox/Friflo.Json.Fliox/Json/Fliox.Graph/Graph/SubscriptionHandler.cs:line 62
+   at Friflo.Json.Fliox.Database.Utils.SingleThreadSynchronizationContext.RunOnCurrentThread() in /home/runner/work/Friflo.Json.Fliox/Friflo.Json.Fliox/Json/Fliox.Graph/Database/Utils/SingleThreadSynchronizationContext.cs:line 22
+   at Friflo.Json.Fliox.Database.Utils.SingleThreadSynchronizationContext.Run(Func`1 func) in /home/runner/work/Friflo.Json.Fliox/Friflo.Json.Fliox/Json/Fliox.Graph/Database/Utils/SingleThreadSynchronizationContext.cs:line 43
+   at Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy.TestStore.LoopbackUseSync() in /home/runner/work/Friflo.Json.Fliox/Friflo.Json.Fliox/Json.Tests/Common/UnitTest/Fliox/Graph/Happy/Test.cs:line 193

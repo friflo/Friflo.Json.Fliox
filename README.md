@@ -1,9 +1,9 @@
 
 
-# ![logo](docs/images/Json-Flow.svg)        ***friflo*** **JSON Flow**
+# ![logo](docs/images/Json-Fliox.svg)        ***friflo*** **JSON Fliox**
 
-[![.NET Tests](https://github.com/friflo/Friflo.Json.Flow/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Flow/actions)
-[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/friflo/Friflo.Json.Flow)
+[![.NET Tests](https://github.com/friflo/Friflo.Json.Fliox/workflows/.NET/badge.svg)](https://github.com/friflo/Friflo.Json.Fliox/actions)
+[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/friflo/Friflo.Json.Fliox)
 
 
 
@@ -86,7 +86,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
 
 # Object Mapper Reader/Writer
 
-## **`Friflo.Json.Flow`**
+## **`Friflo.Json.Fliox`**
 
 - Support deserialization in two ways:
 
@@ -146,7 +146,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
 - Compatible to **.NET Standard**.
     That is: .Net Core, .NET 5, .NET Framework, Mono, Xamarin (iOS, Mac, Android), UWP, Unity
 
-- **CLS compliant API**. Meaning the API of the **Friflo.Json.Flow** library is compatible to all languages targeting .NET. These are:
+- **CLS compliant API**. Meaning the API of the **Friflo.Json.Fliox** library is compatible to all languages targeting .NET. These are:
   C#, C++/CLI, Eiffel, F#, IronPython, IronRuby, PowerBuilder, Visual Basic, Visual COBOL, and Windows PowerShell. See more at:
   [Common Language Specification](https://docs.microsoft.com/en-us/dotnet/standard/language-independence-and-language-independent-components)
 
@@ -175,7 +175,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
   [Unity Collections](https://docs.unity3d.com/Packages/com.unity.collections@0.14/manual/index.html)
   to enable using `NativeArray`, `NativeList`, `FixedString32` & `FixedString128`
 
-- Small libraries: `Friflo.Json.Burst.dll` ~ **45 kb**,  `Friflo.Json.Flow.dll` ~ **150 kb**
+- Small libraries: `Friflo.Json.Burst.dll` ~ **45 kb**,  `Friflo.Json.Fliox.dll` ~ **150 kb**
 
 - **Expressive error messages** when parsing invalid JSON. E.g.  
     ```
@@ -186,7 +186,7 @@ CPU/memory resources to the main thread being the critical path in game loops.
 # **Unit tests**
 
 The current result of the unit test are available as **CI tests** at
-[Github actions](https://github.com/friflo/Friflo.Json.Flow/actions).
+[Github actions](https://github.com/friflo/Friflo.Json.Fliox/actions).
 
 The project is using [NUnit](https://nunit.org/) for unit testing. Execute them locally by running:
 ```

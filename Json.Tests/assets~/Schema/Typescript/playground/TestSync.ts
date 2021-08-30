@@ -1,4 +1,4 @@
-import { DatabaseMessage } from "../Sync/Friflo.Json.Flow.Sync"
+import { DatabaseMessage } from "../Sync/Friflo.Json.Fliox.Sync"
 
 // check assignment with using a type compiles successful
 var exampleSync: DatabaseMessage = {

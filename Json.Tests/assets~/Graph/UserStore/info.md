@@ -2,9 +2,9 @@
 # UserStore database
 
 This folder contains an example user database used to configure user authentication and authorization by utilizing a
-[UserAuthenticator.cs](../../../../Json/Flow.Graph/UserAuth/UserDatabaseAuthenticator.cs) instance.
+[UserAuthenticator.cs](../../../../Json/Fliox.Graph/UserAuth/UserDatabaseAuthenticator.cs) instance.
 
-The schema of the database is defined via the models in [UserStore.cs](../../../../Json/Flow.Graph/UserAuth/UserStore.cs).
+The schema of the database is defined via the models in [UserStore.cs](../../../../Json/Fliox.Graph/UserAuth/UserStore.cs).
 
 folders (containers):
 
@@ -26,7 +26,7 @@ and if authorization is successful the task is executed.
 
 ## VSCode
 To simplify manual editing of entities (files) in VSCode [UserStore - JSON Schema](../../Schema/JSON/UserStore) is used.
-The JSON Schema files in this folder are generated from the models by the [Schema Generator](../../../Common/UnitTest/Flow/Schema).
+The JSON Schema files in this folder are generated from the models by the [Schema Generator](../../../Common/UnitTest/Fliox/Schema).
 
 The mapping of **JSON Schema** files via VSCode is explained here:
 [Mapping to a schema in the workspace](https://code.visualstudio.com/docs/languages/json#_mapping-to-a-schema-in-the-workspace)

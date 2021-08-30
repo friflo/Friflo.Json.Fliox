@@ -4,15 +4,15 @@ using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
-using Friflo.Json.Flow.Database;
-using Friflo.Json.Flow.Database.Event;
-using Friflo.Json.Flow.Database.Remote;
-using Friflo.Json.Flow.Graph;
-using Friflo.Json.Flow.Mapper;
-using Friflo.Json.Flow.Schema.Definition;
-using Friflo.Json.Flow.Schema.JSON;
-using Friflo.Json.Flow.Schema.Native;
-using Friflo.Json.Tests.Common.UnitTest.Flow.Graph;
+using Friflo.Json.Fliox.Database;
+using Friflo.Json.Fliox.Database.Event;
+using Friflo.Json.Fliox.Database.Remote;
+using Friflo.Json.Fliox.Graph;
+using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Schema.Definition;
+using Friflo.Json.Fliox.Schema.JSON;
+using Friflo.Json.Fliox.Schema.Native;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Graph;
 
 namespace Friflo.Json.Tests.Main
 {
@@ -108,7 +108,7 @@ namespace Friflo.Json.Tests.Main
         private static TypeSchema GetTypeSchema(bool fromJsonSchema) {
             if (fromJsonSchema) {
                 var schemas = JsonTypeSchema.ReadSchemas("./Json.Tests/assets~/Schema/JSON/PocStore");
-                return new JsonTypeSchema(schemas, "./UnitTest.Flow.Graph.json#/definitions/PocStore");
+                return new JsonTypeSchema(schemas, "./UnitTest.Fliox.Graph.json#/definitions/PocStore");
             }
             // using a NativeTypeSchema add an additional dependency by using the EntityStore: PocStore
             var typeStore = EntityStore.AddTypeMatchers(new TypeStore());

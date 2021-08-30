@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Tests", "Json.Tests\Friflo.Json.Tests.csproj", "{6410478E-2F5C-4F74-9428-D11630F85916}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Burst", "Json\Burst\Friflo.Json.Burst.csproj", "{AA13E9BB-3549-4ABB-8B7E-5D2B3BC1755D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox", "Json\Fliox\Friflo.Json.Fliox.csproj", "{C45F68CA-9E64-4A37-8188-A93198A51E36}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Graph", "Json\Fliox.Graph\Friflo.Json.Fliox.Graph.csproj", "{738EDB04-B367-4FCE-8873-3F438DE4CC21}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6410478E-2F5C-4F74-9428-D11630F85916}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6410478E-2F5C-4F74-9428-D11630F85916}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6410478E-2F5C-4F74-9428-D11630F85916}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6410478E-2F5C-4F74-9428-D11630F85916}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA13E9BB-3549-4ABB-8B7E-5D2B3BC1755D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA13E9BB-3549-4ABB-8B7E-5D2B3BC1755D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA13E9BB-3549-4ABB-8B7E-5D2B3BC1755D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA13E9BB-3549-4ABB-8B7E-5D2B3BC1755D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C45F68CA-9E64-4A37-8188-A93198A51E36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C45F68CA-9E64-4A37-8188-A93198A51E36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C45F68CA-9E64-4A37-8188-A93198A51E36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C45F68CA-9E64-4A37-8188-A93198A51E36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{738EDB04-B367-4FCE-8873-3F438DE4CC21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{738EDB04-B367-4FCE-8873-3F438DE4CC21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{738EDB04-B367-4FCE-8873-3F438DE4CC21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{738EDB04-B367-4FCE-8873-3F438DE4CC21}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

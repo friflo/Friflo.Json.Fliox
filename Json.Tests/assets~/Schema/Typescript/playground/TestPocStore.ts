@@ -1,4 +1,4 @@
-import { Article, DerivedClass, Order } from "../PocStore/UnitTest.Flow.Graph"
+import { Article, DerivedClass, Order } from "../PocStore/UnitTest.Fliox.Graph"
 
 
 var exampleArticle: Article = {
