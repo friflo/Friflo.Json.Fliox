@@ -12,6 +12,7 @@ using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Sync;
 
+// ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Flow.Graph
 {
 #if !UNITY_5_3_OR_NEWER
@@ -47,15 +48,11 @@ namespace Friflo.Json.Flow.Graph
             }
             AddTypeMatchers(typeStore);
             
-            // throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 
-            var jsonMapper = new ObjectMapper(typeStore, new NoThrowHandler()) {
-                TracerContext = this
-            };
+            ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
             var subscriptionProcessor   = new SubscriptionProcessor(this);
-            _intern = new StoreIntern(clientId, typeStore, owned, database, jsonMapper, eventTarget, subscriptionProcessor) {
-                syncStore = new SyncStore()
-            };
+            _intern = new StoreIntern(clientId, typeStore, owned, database, tracer, eventTarget, subscriptionProcessor);
+            _intern.syncStore = new SyncStore();
             database.AddEventTarget(clientId, eventTarget);
         }
         

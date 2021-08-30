@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Mapper;
+using Friflo.Json.Flow.Mapper.Map;
 using Friflo.Json.Flow.Mapper.Utils;
 using Friflo.Json.Flow.Sync;
 
@@ -22,8 +23,8 @@ namespace Friflo.Json.Flow.Graph.Internal
         internal readonly   TypeCache                                   typeCache;
         internal readonly   EntityDatabase                              database;
         internal readonly   EventTarget                                 eventTarget;
-        internal readonly   ObjectMapper                                jsonMapper;
         // readonly - owned
+        internal readonly   ObjectMapper                                jsonMapper;
         internal readonly   ObjectPatcher                               objectPatcher;
         internal readonly   Dictionary<Type,   EntitySet>               setByType;
         internal readonly   Dictionary<string, EntitySet>               setByName;
@@ -52,25 +53,28 @@ namespace Friflo.Json.Flow.Graph.Internal
             TypeStore               typeStore,
             TypeStore               owned,
             EntityDatabase          database,
-            ObjectMapper            jsonMapper,
+            ITracerContext          tracerContext,
             EventTarget             eventTarget,
             SubscriptionProcessor   subscriptionProcessor)
         {
+            // throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 
+            var mapper                  = new ObjectMapper(typeStore, new NoThrowHandler());
+            mapper.TracerContext        = tracerContext;
             // readonly
             this.clientId               = clientId;
             this.typeStore              = typeStore;
             this.ownedTypeStore         = owned;
-            this.typeCache              = jsonMapper.writer.TypeCache;
+            this.typeCache              = mapper.writer.TypeCache;
             this.database               = database;
             this.eventTarget            = eventTarget;
-            this.jsonMapper             = jsonMapper;
             // readonly - owned
+            jsonMapper                  = mapper;
             objectPatcher               = new ObjectPatcher(jsonMapper);
             setByType                   = new Dictionary<Type, EntitySet>();
             setByName                   = new Dictionary<string, EntitySet>();
             subscriptions               = new Dictionary<string, MessageSubscriber>();
             subscriptionsPrefix         = new List<MessageSubscriber>();
-            messageReader               = jsonMapper.reader; // new ObjectReader(typeStore, new NoThrowHandler());
+            messageReader               = mapper.reader; // new ObjectReader(typeStore, new NoThrowHandler());
             pendingSyncs                = new ConcurrentDictionary<Task, MessageContext>();
             idsBuf                      = new List<JsonKey>();
             pools                       = new Pools(Pools.SharedPools);
