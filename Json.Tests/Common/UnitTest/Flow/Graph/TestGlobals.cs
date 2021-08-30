@@ -4,6 +4,7 @@
 using Friflo.Json.Flow.Graph;
 using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
+using Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
 {
@@ -20,6 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph
             EntityStore.AddTypeMatchers(typeStore);
             typeStore.GetTypeMapper(typeof(PocStore));
             typeStore.GetTypeMapper(typeof(Entity)); // todo necessary?
+            typeStore.GetTypeMapper(typeof(SimpleStore));
         }
         
         public static void Dispose() {

@@ -10,6 +10,7 @@ using Friflo.Json.Flow.Database;
 using Friflo.Json.Flow.Database.Remote;
 using Friflo.Json.Flow.Database.Utils;
 using Friflo.Json.Flow.Graph;
+using Friflo.Json.Flow.Mapper;
 using Friflo.Json.Flow.Sync;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
@@ -38,42 +39,42 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
         
         public static async Task ConcurrentAccess(EntityDatabase database, int readerCount, int writerCount, int requestCount, bool singleEntity) {
             // --- prepare
-            var store       = new PocStore(database, "prepare");
-            var employees   = new List<Employee>();
+            var store       = new SimpleStore(database, "prepare");
+            var entities    = new List<SimplyEntity>();
             int max         = Math.Max(readerCount, writerCount);
             if (singleEntity) {
-                var employee = new Employee{ id = "concurrent-access", firstName = "Concurrent accessed entity" };
+                var entity = new SimplyEntity{ id = 222, text = "Concurrent accessed entity" };
                 for (int n = 0; n < max; n++) {
-                    employees.Add(employee);
+                    entities.Add(entity);
                 }
-                store.employees.Create(employee);
+                store.entities.Create(entity);
             } else {
                 // use individual entity per readerStores / writerStore
                 for (int n = 0; n < max; n++) {
-                    employees.Add(new Employee{ id = $"concurrent-{n}", firstName = "Concurrent accessed entity" });
+                    entities.Add(new SimplyEntity{ id = n, text = "Concurrent accessed entity" });
                 }
-                store.employees.CreateRange(employees);
+                store.entities.CreateRange(entities);
             }
             await store.Sync();
 
-            var readerStores = new List<PocStore>();
-            var writerStores = new List<PocStore>();
+            var readerStores = new List<SimpleStore>();
+            var writerStores = new List<SimpleStore>();
             try {
                 for (int n = 0; n < readerCount; n++) {
-                    readerStores.Add(new PocStore(database, $"reader-{n}"));
+                    readerStores.Add(new SimpleStore(database, $"reader-{n}"));
                 }
                 for (int n = 0; n < writerCount; n++) {
-                    writerStores.Add(new PocStore(database, $"writer-{n}"));
+                    writerStores.Add(new SimpleStore(database, $"writer-{n}"));
                 }
 
                 // --- run readers and writers
                 var tasks = new List<Task>();
 
                 for (int n = 0; n < readerStores.Count; n++) {
-                    tasks.Add(ReadLoop  (readerStores[n], employees[n], requestCount));
+                    tasks.Add(ReadLoop  (readerStores[n], entities[n], requestCount));
                 }
                 for (int n = 0; n < writerStores.Count; n++) {
-                    tasks.Add(WriteLoop (writerStores[n], employees[n], requestCount));
+                    tasks.Add(WriteLoop (writerStores[n], entities[n], requestCount));
                 }
                 var lastCount = 0;
                 var count = new Thread(() => {
@@ -101,11 +102,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             
         }
 
-        private static Task ReadLoop (PocStore store, Employee employee, int requestCount) {
-            var id = employee.id;
+        private static Task ReadLoop (SimpleStore store, SimplyEntity entity, int requestCount) {
+            var id = entity.id;
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
-                    var readEmployee = store.employees.Read();
+                    var readEmployee = store.entities.Read();
                     readEmployee.Find(id);
                     await store.Sync();
                     AreEqual (1, readEmployee.Results.Count);
@@ -115,16 +116,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
             });
         }
         
-        private static Task WriteLoop (PocStore store, Employee employee, int requestCount) {
+        private static Task WriteLoop (SimpleStore store, SimplyEntity entity, int requestCount) {
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
-                    store.employees.Create(employee);
+                    store.entities.Create(entity);
                     await store.Sync();
                 }
             });
         }
         
-        private static int CountRequests (List<PocStore> readers, List<PocStore> writers, int lastCount) {
+        private static int CountRequests (List<SimpleStore> readers, List<SimpleStore> writers, int lastCount) {
             int sum = 0;
             sum += readers.Sum(reader => reader.GetSyncCount());
             sum += writers.Sum(writer => writer.GetSyncCount());
@@ -188,5 +189,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Flow.Graph.Happy
                 }
             });
         }
+    }
+    
+    public class SimpleStore : EntityStore
+    {
+        public readonly EntitySet <int, SimplyEntity>   entities;
+        
+        public SimpleStore(EntityDatabase database, TypeStore typeStore, string clientId) : base (database, typeStore, clientId) {
+            entities    = new EntitySet <int, SimplyEntity>       (this);
+        }
+        
+        public SimpleStore(EntityDatabase database, string clientId) : this (database, TestGlobals.typeStore, clientId) { }
+    }
+    
+    // ------------------------------ models ------------------------------
+    public class SimplyEntity {
+        public  int     id;
+        public  string  text;
     }
 }
