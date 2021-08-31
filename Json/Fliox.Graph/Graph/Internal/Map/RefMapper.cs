@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Graph.Internal.Id;
@@ -70,13 +69,13 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
 
         public override DiffNode Diff (Differ differ, Ref<TKey, T> left, Ref<TKey, T> right) {
             // if (!left.id.IsEqual(right.id))
-            if (!EqualityComparer<TKey>.Default.Equals(left.key, right.key))
+            if (!left.IsEqual(right.key))
                 return differ.AddNotEqual(left.key, right.key);
             return null;
         }
         
         public override void Trace(Tracer tracer, Ref<TKey, T> value) {
-            if (Ref<TKey, T>.EntityKey.IsKeyNull(value.key))
+            if (value.IsNull())
                 return;
             var store = tracer.tracerContext.Store();
             var set = store.GetEntitySet<TKey, T>();

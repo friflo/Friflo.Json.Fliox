@@ -2,6 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Friflo.Json.Fliox.Graph.Internal;
 using Friflo.Json.Fliox.Graph.Internal.Id;
 
@@ -70,7 +72,7 @@ namespace Friflo.Json.Fliox.Graph
         private             EntitySet<TKey,T>   set;    // alternatively a Peer<T> could be used 
 
         public   override   string              ToString() => AsString();
-        private             string              AsString() => EntityKey.IsKeyNull(key) ? "null" : EntityKey.KeyToId(key).AsString();
+        private             string              AsString() => IsNull() ? "null" : EntityKey.KeyToId(key).AsString();
 
         internal static readonly   EntityKey<TKey, T>     EntityKey = EntityId.GetEntityKey<TKey, T>();
         
@@ -123,12 +125,23 @@ namespace Friflo.Json.Fliox.Graph
         
         internal T                  GetEntity() { return entity; }
         internal EntitySet<TKey, T> GetSet()    { return set; }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsNull () {
+            return EntityKey.IsKeyNull(key);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsEqual (in Ref<TKey, T> other) {
+            return EqualityComparer<TKey>.Default.Equals(key, other.key);
+        }
 
+        /// <summary>Performance note: Prefer using <see cref="IsEqual"/> as is compares without boxing</summary>
         public override bool Equals(object obj) {
             if (obj == null)
                 return false;
             Ref<TKey, T> other = (Ref<TKey, T>)obj;
-            return key.Equals(other.key);
+            return IsEqual(other);
         }
 
         public override int GetHashCode() {

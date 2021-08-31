@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Fliox.Graph;
 using Friflo.Json.Fliox.Mapper;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -56,14 +57,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
 
         private static void TestNoBoxing<TKey>(TKey left, TKey right) {
             var start   = GC.GetAllocatedBytesForCurrentThread();
-            var equal   = false;   
+            var equal1  = false;   
+            var equal2  = false;
             for (int n = 0; n < 100; n++) {
-                equal = EqualityComparer<TKey>.Default.Equals(left, right);
+                Ref<TKey, object> leftRef  = left;
+                Ref<TKey, object> rightRef = right;
+                equal1 = EqualityComparer<TKey>.Default.Equals(left, right);
+                equal2 = leftRef.IsEqual(rightRef);
             }
             var diff    = GC.GetAllocatedBytesForCurrentThread() - start;
             
             AreEqual(0, diff);
-            IsTrue(equal);
+            IsTrue(equal1);
+            IsTrue(equal2);
         }
     }
 }
