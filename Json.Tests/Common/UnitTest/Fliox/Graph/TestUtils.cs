@@ -31,21 +31,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             }
         }
 
-        class TestEntity : PocEntity { }
-
-        [Test]
-        public void TestSetEntityId() {
-            var test = new TestEntity {
-                id = "id-1" // OK
-            };
-            // changing id throws exception
-            var e = Throws<ArgumentException>(() => { var _ = test.id = "id-2"; });
-            AreEqual("Entity id must not be changed. Type: TestEntity, was: 'id-1', assigned: 'id-2'", e.Message);
-
-            // setting id to the already used id is valid 
-            test.id = "id-1";
-        }
-        
         [Test]
         public void TestEmptyDictionary() {
             var empty = new EmptyDictionary<string, string>();

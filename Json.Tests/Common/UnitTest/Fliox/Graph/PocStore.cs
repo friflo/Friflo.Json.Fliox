@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Numerics;
 using Friflo.Json.Fliox.Database;
 using Friflo.Json.Fliox.Graph;
@@ -33,33 +32,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
     }
     
     // ------------------------------ models ------------------------------
-    /// <summary>
-    /// <see cref="PocEntity"/> can be used as a base class for entity model classes.<br/>
-    /// Doing this is optional. If its used it provides the features listed below.
-    /// <list type="bullet">
-    ///   <item>Enable instant listing of all declared entity models by using IDE tools like: "Find usage" or "Find All References"</item>
-    ///   <item>Ensures an entity key (id) is not changed when already assigned by a runtime assertion.</item>
-    /// </list>  
-    /// </summary>
     public abstract class PocEntity
     {
-        // ReSharper disable once InconsistentNaming
-        [Fri.Required]
-        public  string  id {
-            get => _id;
-            set {
-                if (_id == value)
-                    return;
-                if (_id == null) {
-                    _id = value;
-                    return;
-                }
-                throw new ArgumentException($"Entity id must not be changed. Type: {GetType().Name}, was: '{_id}', assigned: '{value}'");
-            }
-        }
-        
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string  _id;
+        [Fri.Required]  public  string  id { get; set; } // defining as property ensures. "id" is first JSON member
 
         public override     string  ToString() => JsonDebug.ToJson(this, false);
     }
