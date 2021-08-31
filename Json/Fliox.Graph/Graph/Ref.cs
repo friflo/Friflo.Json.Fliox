@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Graph
     /// The <see cref="key"/> is used when serializing a <see cref="Ref{TKey,T}"/> field to and from JSON.  
     /// <para>
     ///     A <see cref="Ref{TKey,T}"/> can be assigned in three ways:
-    ///     <para>1. By assigning an id of type <see cref="TKey"/>.                         Assigning a default (null) <see cref="TKey"/> is valid.</para>
+    ///     <para>1. By assigning an key of type <see cref="TKey"/>.                        Assigning a default (null) <see cref="TKey"/> is valid.</para>
     ///     <para>2. By assigning an entity.                                                Assigning null as entity is valid.</para>
     ///     <para>3. By assigning with another reference of type <see cref="Ref{TKey,T}"/>. Assigning a default <see cref="Ref{TKey,T}"/> is valid.</para>
     /// </para>
@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Graph
     ///     <para>The <see cref="key"/> of a <see cref="Ref{TKey,T}"/> can be accessed at all time without any restrictions.</para>
     ///     <para>The property <see cref="Entity"/> enables access to the referenced entity instance.
     ///         If the <see cref="Ref{TKey,T}"/> was assigned by an entity the access has no restrictions.
-    ///         If the <see cref="Ref{TKey,T}"/> was assigned by an id the referenced entity instance need to
+    ///         If the <see cref="Ref{TKey,T}"/> was assigned by an key the referenced entity instance need to
     ///         be resolved upfront. For resolving see notes bellow.
     ///     </para>
     /// </para>
@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Graph
             this.entity = entity;
             this.set    = null;
             if (entity != null && entityId == null)
-                throw new ArgumentException($"constructing a Ref<>(entity != null) expect entity.id not null. Type: {typeof(T)}");
+                throw new ArgumentException($"constructing a Ref<>(entity != null) expect entity.key not null. Type: {typeof(T)}");
         }
         
         internal Ref(Peer<T> peer, EntitySet<TKey, T> set) {
@@ -156,8 +156,8 @@ namespace Friflo.Json.Fliox.Graph
             return reference.entity;
         } */
 
-        public static implicit operator Ref<TKey, T>(TKey id) {
-            return new Ref<TKey, T> (id);
+        public static implicit operator Ref<TKey, T>(TKey key) {
+            return new Ref<TKey, T> (key);
         }
 
         public Find<TKey, T> FindBy(ReadTask<TKey, T> task) {
