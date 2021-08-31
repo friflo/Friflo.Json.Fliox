@@ -67,7 +67,8 @@ namespace Friflo.Json.Fliox.Graph
         //      set != null    =>  Ref<TKey,T> is attached to a Peer<T>
 
         public   readonly   TKey                key;
-        public   readonly   JsonKey             id;
+        
+        internal readonly   JsonKey             id;
         private  readonly   T                   entity;
         private             EntitySet<TKey,T>   set;    // alternatively a Peer<T> could be used 
 

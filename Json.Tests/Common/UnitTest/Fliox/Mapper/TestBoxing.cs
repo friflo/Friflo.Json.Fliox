@@ -39,27 +39,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         }
         
         [Test]
-        public static void TestNoBoxing() {
-            var generic = new Generic<int>();
-            
+        public static void TestNoBoxingInt() {
+            TestNoBoxing(1, 1);
+        }
+        
+        [Test]
+        public static void TestNoBoxingString() {
+            TestNoBoxing("abc", "abc");
+        }
+        
+        [Test]
+        public static void TestNoBoxingGuid() {
+            var guid = new Guid("11111111-0000-1111-0000-111111111111");
+            TestNoBoxing(guid, guid);
+        }
+
+        private static void TestNoBoxing<TKey>(TKey left, TKey right) {
             var start   = GC.GetAllocatedBytesForCurrentThread();
             var equal   = false;   
-            for (int n = 0; n < 100; n++)
-                equal = generic.IsEqual(0);
+            for (int n = 0; n < 100; n++) {
+                equal = EqualityComparer<TKey>.Default.Equals(left, right);
+            }
             var diff    = GC.GetAllocatedBytesForCurrentThread() - start;
             
             AreEqual(0, diff);
             IsTrue(equal);
         }
-        
-        
-        private class Generic<TKey>
-        {
-            public bool IsEqual(TKey key) {
-                return EqualityComparer<TKey>.Default.Equals(key, default);
-            }
-        }
-
     }
 }
 
