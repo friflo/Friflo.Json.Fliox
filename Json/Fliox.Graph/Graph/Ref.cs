@@ -3,9 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Fliox.Graph.Internal;
 using Friflo.Json.Fliox.Graph.Internal.Id;
+
+using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Graph
 {
@@ -67,14 +70,14 @@ namespace Friflo.Json.Fliox.Graph
         //      set == null    =>  Ref<TKey,T> is not attached to a Peer<T> until now
         //      set != null    =>  Ref<TKey,T> is attached to a Peer<T>
 
-        public   readonly   TKey                key;
-        private  readonly   T                   entity;
-        private             EntitySet<TKey,T>   set;    // alternatively a Peer<T> could be used 
+                                    public   readonly   TKey                key;
+        [DebuggerBrowsable(Never)]  private  readonly   T                   entity;
+        [DebuggerBrowsable(Never)]  private             EntitySet<TKey,T>   set;    // alternatively a Peer<T> could be used 
 
-        public   override   string              ToString() => AsString();
-        private             string              AsString() => IsNull() ? "null" : EntityKey.KeyToId(key).AsString();
+        public   override           string              ToString() => AsString();
+        private                     string              AsString() => IsNull() ? "null" : EntityKey.KeyToId(key).AsString();
 
-        internal static readonly   EntityKey<TKey, T>     EntityKey = EntityId.GetEntityKey<TKey, T>();
+        internal static readonly    EntityKey<TKey, T>  EntityKey = EntityId.GetEntityKey<TKey, T>();
         
         public Ref(TKey key) {
             this.key    = key;
