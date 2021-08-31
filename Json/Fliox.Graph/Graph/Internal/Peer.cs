@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Graph.Internal
         internal            T               PatchSource     { get; private set; }
         internal            T               NextPatchSource { get; private set; }
 
-        public   override   string          ToString() => id.AsString();
+        public   override   string          ToString() => JsonDebug.ToJson(entity, false);
         
         internal Peer(T entity, in JsonKey id) {
             if (entity == null)
