@@ -69,6 +69,8 @@ namespace Friflo.Json.Fliox.Graph
             // typeStore.typeResolver.AddGenericTypeMatcher(EntityMatcher.Instance);
             typeStore.typeResolver.AddGenericTypeMatcher(EntityStoreMatcher.Instance);
             typeStore.typeResolver.AddGenericTypeMatcher(EntitySetMatcher.Instance);
+            //
+            JsonDebug.DebugTypeStore.typeResolver.AddGenericTypeMatcher(RefMatcher.Instance);
             return typeStore;
         }
         

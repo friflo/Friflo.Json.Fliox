@@ -15,6 +15,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             SyncTypeStore.Init();
             // LeakTestsFixture requires to register all types used by TypeStore before leak tracking starts 
             typeStore = new TypeStore();
+            RegisterTypeMatcher(typeStore);
+            RegisterTypeMatcher(JsonDebug.DebugTypeStore);
+        }
+        
+        private static void RegisterTypeMatcher(TypeStore typeStore) {
             typeStore.GetTypeMapper(typeof(TestMessage));
             
             // create all TypeMappers required by PocStore model classes before leak tracking of LeakTestsFixture starts.
