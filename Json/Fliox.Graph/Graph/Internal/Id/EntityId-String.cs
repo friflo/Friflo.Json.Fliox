@@ -12,9 +12,10 @@ namespace Friflo.Json.Fliox.Graph.Internal.Id
         private  readonly   Func  <T, string>   fieldGet;
         private  readonly   Action<T, string>   fieldSet;
         
-        internal override   Type                GetKeyType()            => typeof(string);
-        internal override   string              GetKeyName()            => field.Name;
-        internal override   bool                IsKeyNull (T entity)    => GetKey(entity) == null;
+        internal override   Type                GetKeyType()                => typeof(string);
+        internal override   string              GetKeyName()                => field.Name;
+        internal override   bool                IsEntityKeyNull (T entity)  => GetKey(entity) == null;
+        internal override   bool                IsKeyNull (string key)      => key == null;
 
         internal EntityKeyStringField(FieldInfo field) {
             this.field  = field;
@@ -45,9 +46,10 @@ namespace Friflo.Json.Fliox.Graph.Internal.Id
         private  readonly   Func  <T, string>   propertyGet;
         private  readonly   Action<T, string>   propertySet;
         
-        internal override   Type                GetKeyType()            => typeof(string);
-        internal override   string              GetKeyName()            => property.Name;
-        internal override   bool                IsKeyNull (T entity)    => GetKey(entity) == null;
+        internal override   Type                GetKeyType()                => typeof(string);
+        internal override   string              GetKeyName()                => property.Name;
+        internal override   bool                IsEntityKeyNull (T entity)  => GetKey(entity) == null;
+        internal override   bool                IsKeyNull (string key)      => key == null;
 
         internal EntityKeyStringProperty(PropertyInfo property, MethodInfo idGetMethod, MethodInfo idSetMethod) {
             this.property = property;

@@ -76,8 +76,7 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
         }
         
         public override void Trace(Tracer tracer, Ref<TKey, T> value) {
-            var id = value.id;
-            if (id.IsNull())
+            if (Ref<TKey, T>.EntityKey.IsKeyNull(value.key))
                 return;
             var store = tracer.tracerContext.Store();
             var set = store.GetEntitySet<TKey, T>();

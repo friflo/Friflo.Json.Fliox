@@ -195,7 +195,7 @@ namespace Friflo.Json.Fliox.Graph
         public CreateTask<T> Create(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Create() entity must not be null. EntitySet: {name}");
-            if (EntityKey.IsKeyNull(entity))
+            if (EntityKey.IsEntityKeyNull(entity))
                 throw new ArgumentException($"EntitySet.Create() entity.id must not be null. EntitySet: {name}");
             var task = GetSyncSet().Create(entity);
             intern.store.AddTask(task);
@@ -206,7 +206,7 @@ namespace Friflo.Json.Fliox.Graph
             if (entities == null)
                 throw new ArgumentException($"EntitySet.CreateRange() entity must not be null. EntitySet: {name}");
             foreach (var entity in entities) {
-                if (EntityKey.IsKeyNull(entity))
+                if (EntityKey.IsEntityKeyNull(entity))
                     throw new ArgumentException($"EntitySet.CreateRange() entity.id must not be null. EntitySet: {name}");
             }
             var task = GetSyncSet().CreateRange(entities);
@@ -218,7 +218,7 @@ namespace Friflo.Json.Fliox.Graph
         public UpdateTask<T> Update(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Update() entity must not be null. EntitySet: {name}");
-            if (EntityKey.IsKeyNull(entity))
+            if (EntityKey.IsEntityKeyNull(entity))
                 throw new ArgumentException($"EntitySet.Update() entity.id must not be null. EntitySet: {name}");
             var task = GetSyncSet().Update(entity);
             intern.store.AddTask(task);
@@ -229,7 +229,7 @@ namespace Friflo.Json.Fliox.Graph
             if (entities == null)
                 throw new ArgumentException($"EntitySet.UpdateRange() entity must not be null. EntitySet: {name}");
             foreach (var entity in entities) {
-                if (EntityKey.IsKeyNull(entity))
+                if (EntityKey.IsEntityKeyNull(entity))
                     throw new ArgumentException($"EntitySet.UpdateRange() entity.id must not be null. EntitySet: {name}");
             }
             var task = GetSyncSet().UpdateRange(entities);
@@ -317,7 +317,7 @@ namespace Friflo.Json.Fliox.Graph
             var task = intern.store._intern.syncStore.CreateLog();
             if (entity == null)
                 throw new ArgumentException($"EntitySet.LogEntityChanges() entity must not be null. EntitySet: {name}");
-            if (EntityKey.IsKeyNull(entity))
+            if (EntityKey.IsEntityKeyNull(entity))
                 throw new ArgumentException($"EntitySet.LogEntityChanges() entity.id must not be null. EntitySet: {name}");
             GetSyncSet().LogEntityChanges(entity, task);
             intern.store.AddTask(task);
@@ -392,8 +392,7 @@ namespace Friflo.Json.Fliox.Graph
         }
         
         internal  bool GetPeerByRef(Ref<TKey, T> reference, out Peer<T> peer) {
-            var id = reference.id;
-            if (id.IsNull()) {
+            if (Ref<TKey, T>.EntityKey.IsKeyNull(reference.key)) {
                 peer = null;
                 return false; // todo add test
             }
@@ -404,7 +403,7 @@ namespace Friflo.Json.Fliox.Graph
                     peer = CreatePeer(entity);
                     return true;
                 }
-                peer = GetOrCreatePeerByKey(reference.key, id);
+                peer = GetOrCreatePeerByKey(reference.key, new JsonKey());
                 return true;
             }
             peer = set.GetPeerByKey(reference.key);

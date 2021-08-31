@@ -164,7 +164,7 @@ namespace Friflo.Json.Fliox.Graph.Internal.Id
     internal abstract class EntityId<T> : EntityId where T : class {
         internal abstract   Type    GetKeyType();
         internal abstract   string  GetKeyName();
-        internal virtual    bool    IsKeyNull (T entity) => false;
+        internal virtual    bool    IsEntityKeyNull (T entity) => false;
 
         internal abstract   JsonKey GetId   (T entity);
         internal abstract   void    SetId   (T entity, in JsonKey id);
@@ -176,6 +176,9 @@ namespace Friflo.Json.Fliox.Graph.Internal.Id
         
         internal abstract   TKey    GetKey  (T entity);
         internal abstract   void    SetKey  (T entity, TKey id);
+        
+        internal virtual    bool    IsKeyNull (TKey key) => false;
+
 
         internal override   JsonKey GetId   (T entity) {
             TKey key = GetKey(entity);

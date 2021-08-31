@@ -4,7 +4,6 @@
 using System;
 using Friflo.Json.Fliox.Graph.Internal;
 using Friflo.Json.Fliox.Graph.Internal.Id;
-using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Graph
 {
@@ -67,18 +66,16 @@ namespace Friflo.Json.Fliox.Graph
         //      set != null    =>  Ref<TKey,T> is attached to a Peer<T>
 
         public   readonly   TKey                key;
-        
-        internal readonly   JsonKey             id;
         private  readonly   T                   entity;
         private             EntitySet<TKey,T>   set;    // alternatively a Peer<T> could be used 
 
-        public   override   string      ToString() => id.IsNull() ? "null" : id.AsString();
+        public   override   string              ToString() => AsString();
+        private             string              AsString() => EntityKey.IsKeyNull(key) ? "null" : EntityKey.KeyToId(key).AsString();
 
         internal static readonly   EntityKey<TKey, T>     EntityKey = EntityId.GetEntityKey<TKey, T>();
         
         public Ref(TKey key) {
             this.key    = key;
-            id          = EntityKey.KeyToId(key);
             this.entity = null;
             this.set    = null;
         }
@@ -86,7 +83,6 @@ namespace Friflo.Json.Fliox.Graph
         public Ref(T entity) {
             TKey entityId = entity != null ? EntityKey.GetKey(entity) : default;
             this.key    = entityId;
-            this.id     = EntityKey.KeyToId(key);
             this.entity = entity;
             this.set    = null;
             if (entity != null && entityId == null)
@@ -95,7 +91,6 @@ namespace Friflo.Json.Fliox.Graph
         
         internal Ref(Peer<T> peer, EntitySet<TKey, T> set) {
             this.key    = EntityKey.IdToKey(peer.id);      // peer.id is never null
-            this.id     = peer.id;
             this.entity = null;
             this.set    = set;
         }
@@ -107,7 +102,7 @@ namespace Friflo.Json.Fliox.Graph
                 var peer = set.GetPeerByKey(key);
                 if (peer.assigned)
                     return peer.Entity;
-                throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), id.AsString());
+                throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), AsString());
             }
         }
 
