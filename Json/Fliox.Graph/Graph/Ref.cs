@@ -126,6 +126,11 @@ namespace Friflo.Json.Fliox.Graph
         internal T                  GetEntity() { return entity; }
         internal EntitySet<TKey, T> GetSet()    { return set; }
         
+        /// <summary>
+        /// Returns true only in case <see cref="TKey"/> is a reference type like string and the <see cref="key"/> is null.
+        /// Return always false in case <see cref="TKey"/> is a value type like <see cref="int"/> or <see cref="Guid"/>
+        /// as values type cannot be null. 
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsNull () {
             return EntityKey.IsKeyNull(key);
