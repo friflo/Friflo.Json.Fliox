@@ -34,36 +34,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
     // ------------------------------ models ------------------------------
     public abstract class PocEntity
     {
-        [Fri.Required]  public  string  id { get; set; } // defining as property ensures. "id" is first JSON member
+        [Fri.Required]  public  string  id { get; set; } // defining as property ensures "id" is first JSON member
 
         public override     string  ToString() => JsonDebug.ToJson(this, false);
     }
     
     public class Order : PocEntity {
-        public  Ref<string, Customer>       customer;
-        public  DateTime            created;
-        public  List<OrderItem>     items = new List<OrderItem>();
+        public  Ref<string, Customer>   customer;
+        public  DateTime                created;
+        public  List<OrderItem>         items = new List<OrderItem>();
     }
 
     public class OrderItem {
         [Fri.Required]  public  Ref<string, Article>    article;
-                        public  int             amount;
-                        public  string          name;
+                        public  int                     amount;
+                        public  string                  name;
     }
 
     public class Article : PocEntity
     {
-        [Fri.Required]  public  string          name;
+        [Fri.Required]  public  string                  name;
                         public  Ref<string, Producer>   producer;
     }
 
     public class Customer : PocEntity {
-        [Fri.Required]  public  string          name;
+        [Fri.Required]  public  string                  name;
     }
     
     public class Producer : PocEntity {
-        [Fri.Required]  public  string              name;
-        [Fri.Property (Name =                       "employees")]
+        [Fri.Required]  public  string                      name;
+        [Fri.Property (Name =                              "employees")]
                         public  List<Ref<string, Employee>> employeeList;
     }
     
