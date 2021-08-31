@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string  _id;
 
-        public override     string  ToString() => JsonDebug.ToJson(this);
+        public override     string  ToString() => JsonDebug.ToJson(this, false);
     }
     
     public class Order : PocEntity {

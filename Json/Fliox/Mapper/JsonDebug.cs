@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Mapper
         /// <br/>
         /// It allocates high amount of resources 
         /// </summary>
-        public static string ToJson<T>(T value, bool pretty = false) {
+        public static string ToJson<T>(T value, bool pretty) {
             if (!_loggedWarning) {
                 Console.WriteLine("warning: JsonDebug.ToJson() must be called only for debugging purposes.");
                 _loggedWarning = true;
