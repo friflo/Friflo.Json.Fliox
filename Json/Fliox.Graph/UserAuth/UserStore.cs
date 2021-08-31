@@ -44,16 +44,19 @@ namespace Friflo.Json.Fliox.UserAuth
     }
 
     // -------------------------------------- models ---------------------------------------
-    public class UserPermission : Entity {
-        public  List<string>    roles;
+    public class UserPermission {
+        [Fri.Required]  public  string          id;
+                        public  List<string>    roles;
     }
     
-    public class UserCredential : Entity {
-        public  string          passHash;
-        public  string          token;
+    public class UserCredential {
+        [Fri.Required]  public  string          id;
+                        public  string          passHash;
+                        public  string          token;
     }
     
-    public class Role : Entity {
+    public class Role {
+        [Fri.Required]  public  string          id;
         [Fri.Required]  public  List<Right>     rights;
                         public  string          description;
     }

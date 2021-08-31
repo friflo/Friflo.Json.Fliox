@@ -9,7 +9,7 @@
                 "items":    { "elements": { "ref":  "OrderItem" }, "nullable": true }
             }
         },
-        "Entity": {
+        "PocEntity": {
             "properties": {
                 "id": { "type": "string" }
             }

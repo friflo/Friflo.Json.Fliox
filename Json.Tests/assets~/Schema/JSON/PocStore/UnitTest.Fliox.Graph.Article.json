@@ -5,7 +5,7 @@
     "definitions": {
         "Article": {
             "type": "object",
-            "extends": { "$ref": "./Friflo.Json.Fliox.Graph.json#/definitions/Entity" },
+            "extends": { "$ref": "./UnitTest.Fliox.Graph.json#/definitions/PocEntity" },
             "properties": {
                 "id":       { "type": "string" },
                 "name":     { "type": "string" },

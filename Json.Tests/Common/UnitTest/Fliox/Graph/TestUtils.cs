@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             }
         }
 
-        class TestEntity : Entity { }
+        class TestEntity : PocEntity { }
 
         [Test]
         public void TestSetEntityId() {

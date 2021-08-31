@@ -5,7 +5,6 @@
     "definitions": {
         "UserPermission": {
             "type": "object",
-            "extends": { "$ref": "./Friflo.Json.Fliox.Graph.json#/definitions/Entity" },
             "properties": {
                 "id":    { "type": "string" },
                 "roles": { "type": ["array", "null"], "items": { "type": "string" } }

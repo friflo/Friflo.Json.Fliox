@@ -13,10 +13,10 @@ data class Order (
               val customer : String? = null,
               val created  : Instant,
               val items    : List<OrderItem>? = null,
-) : Entity()
+) : PocEntity()
 
 @Serializable
-abstract class Entity {
+abstract class PocEntity {
     abstract  val id : String
 }
 
@@ -24,7 +24,7 @@ abstract class Entity {
 data class Customer (
     override  val id   : String,
               val name : String,
-) : Entity()
+) : PocEntity()
 
 @Serializable
 data class OrderItem (
@@ -38,21 +38,21 @@ data class Article (
     override  val id       : String,
               val name     : String,
               val producer : String? = null,
-) : Entity()
+) : PocEntity()
 
 @Serializable
 data class Producer (
     override  val id        : String,
               val name      : String,
               val employees : List<String>? = null,
-) : Entity()
+) : PocEntity()
 
 @Serializable
 data class Employee (
     override  val id        : String,
               val firstName : String,
               val lastName  : String? = null,
-) : Entity()
+) : PocEntity()
 
 @Serializable
 data class TestType (
@@ -84,7 +84,7 @@ data class TestType (
               val jsonValue        : JsonElement? = null,
               val derivedClass     : DerivedClass,
               val derivedClassNull : DerivedClass? = null,
-) : Entity()
+) : PocEntity()
 
 @Serializable
 data class PocStruct (

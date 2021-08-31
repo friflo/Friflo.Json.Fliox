@@ -8,18 +8,18 @@ using System.Numerics;
 
 namespace PocStore2.Graph {
 
-public class Order : Entity {
+public class Order : PocEntity {
     string           customer;
     DateTime         created;
     List<OrderItem>  items;
 }
 
-public abstract class Entity {
+public abstract class PocEntity {
     [Fri.Required]
     string  id;
 }
 
-public class Customer : Entity {
+public class Customer : PocEntity {
     [Fri.Required]
     string  name;
 }
@@ -31,25 +31,25 @@ public class OrderItem {
     string  name;
 }
 
-public class Article : Entity {
+public class Article : PocEntity {
     [Fri.Required]
     string  name;
     string  producer;
 }
 
-public class Producer : Entity {
+public class Producer : PocEntity {
     [Fri.Required]
     string        name;
     List<string>  employees;
 }
 
-public class Employee : Entity {
+public class Employee : PocEntity {
     [Fri.Required]
     string  firstName;
     string  lastName;
 }
 
-public class TestType : Entity {
+public class TestType : PocEntity {
     DateTime      dateTime;
     DateTime?     dateTimeNull;
     BigInteger    bigInt;

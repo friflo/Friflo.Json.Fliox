@@ -12,6 +12,10 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Sync;
 
+#if !UNITY_5_3_OR_NEWER
+[assembly: CLSCompliant(true)]
+#endif
+
 // ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Fliox.Graph
 {

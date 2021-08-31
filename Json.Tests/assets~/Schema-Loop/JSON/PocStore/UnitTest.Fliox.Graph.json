@@ -23,6 +23,17 @@
             ],
             "additionalProperties": false
         },
+        "PocEntity": {
+            "type": "object",
+            "isAbstract": true,
+            "properties": {
+                "id": { "type": "string" }
+            },
+            "required": [
+                "id"
+            ],
+            "additionalProperties": false
+        },
         "OrderItem": {
             "type": "object",
             "properties": {

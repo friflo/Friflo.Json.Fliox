@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using Friflo.Json.Fliox.Database;
 using Friflo.Json.Fliox.Graph;
@@ -32,7 +33,38 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
     }
     
     // ------------------------------ models ------------------------------
-    public class Order : Entity {
+    /// <summary>
+    /// <see cref="PocEntity"/> can be used as a base class for entity model classes.<br/>
+    /// Doing this is optional. If its used it provides the features listed below.
+    /// <list type="bullet">
+    ///   <item>Enable instant listing of all declared entity models by using IDE tools like: "Find usage" or "Find All References"</item>
+    ///   <item>Ensures an entity key (id) is not changed when already assigned by a runtime assertion.</item>
+    /// </list>  
+    /// </summary>
+    public abstract class PocEntity
+    {
+        // ReSharper disable once InconsistentNaming
+        [Fri.Required]
+        public  string  id {
+            get => _id;
+            set {
+                if (_id == value)
+                    return;
+                if (_id == null) {
+                    _id = value;
+                    return;
+                }
+                throw new ArgumentException($"Entity id must not be changed. Type: {GetType().Name}, was: '{_id}', assigned: '{value}'");
+            }
+        }
+        
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string  _id;
+
+        public override     string  ToString() => id ?? "null";
+    }
+    
+    public class Order : PocEntity {
         public  Ref<string, Customer>       customer;
         public  DateTime            created;
         public  List<OrderItem>     items = new List<OrderItem>();
@@ -44,28 +76,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                         public  string          name;
     }
 
-    public class Article : Entity
+    public class Article : PocEntity
     {
         [Fri.Required]  public  string          name;
                         public  Ref<string, Producer>   producer;
     }
 
-    public class Customer : Entity {
+    public class Customer : PocEntity {
         [Fri.Required]  public  string          name;
     }
     
-    public class Producer : Entity {
+    public class Producer : PocEntity {
         [Fri.Required]  public  string              name;
         [Fri.Property (Name =                       "employees")]
                         public  List<Ref<string, Employee>> employeeList;
     }
     
-    public class Employee : Entity {
+    public class Employee : PocEntity {
         [Fri.Required]  public  string  firstName;
                         public  string  lastName;
     }
     
-    public class TestType : Entity {
+    public class TestType : PocEntity {
                         public  DateTime        dateTime;
                         public  DateTime?       dateTimeNull;
                         public  BigInteger      bigInt;

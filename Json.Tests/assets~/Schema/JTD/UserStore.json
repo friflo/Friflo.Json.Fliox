@@ -7,11 +7,6 @@
                 "roles": { "elements": { "type": "string" }, "nullable": true }
             }
         },
-        "Entity": {
-            "properties": {
-                "id": { "type": "string" }
-            }
-        },
         "UserCredential": {
             "properties": {
                 "id":       { "type": "string" },
