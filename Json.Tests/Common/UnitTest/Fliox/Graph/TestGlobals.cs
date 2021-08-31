@@ -13,10 +13,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
         
         public static void Init() {
             SyncTypeStore.Init();
-            // LeakTestsFixture requires to register all types used by TypeStore before leak tracking starts 
+            // LeakTestsFixture requires to register all types used by TypeStore before leak tracking starts
             typeStore = new TypeStore();
             RegisterTypeMatcher(typeStore);
             RegisterTypeMatcher(JsonDebug.DebugTypeStore);
+            // force instantiation of ObjectWriter before leak tracking starts. Otherwise debugger does instantiation
+            // when using JsonDebug.ToJson() in a ToString() override resulting in a false positive leak.
+            JsonDebug.Init();
         }
         
         private static void RegisterTypeMatcher(TypeStore typeStore) {
