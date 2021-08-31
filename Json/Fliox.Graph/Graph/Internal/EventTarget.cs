@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Sync;
 
 namespace Friflo.Json.Fliox.Graph.Internal
 {
-    public class EventTarget : IEventTarget
+    internal class EventTarget : IEventTarget
     {
         private readonly EntityStore    store;
         
