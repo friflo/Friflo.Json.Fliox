@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
 
         public override DiffNode Diff (Differ differ, Ref<TKey, T> left, Ref<TKey, T> right) {
             // if (!left.id.IsEqual(right.id))
-            if (!left.IsEqual(right.key))
+            if (!left.IsEqual(right))
                 return differ.AddNotEqual(left.key, right.key);
             return null;
         }
