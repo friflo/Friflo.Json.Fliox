@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Mapper;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using static NUnit.Framework.Assert;
@@ -53,6 +54,7 @@ namespace Friflo.Json.Tests.Unity.Utils
 
         [TearDown]
         public void TearDown() {
+            JsonDebug.Dispose();
             DebugUtils.StopLeakDetection();
             
             ResultState state = TestContext.CurrentContext.Result.Outcome;

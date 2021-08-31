@@ -17,9 +17,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             typeStore = new TypeStore();
             RegisterTypeMatcher(typeStore);
             RegisterTypeMatcher(JsonDebug.DebugTypeStore);
-            // force instantiation of ObjectWriter before leak tracking starts. Otherwise debugger does instantiation
-            // when using JsonDebug.ToJson() in a ToString() override resulting in a false positive leak.
-            JsonDebug.Init();
         }
         
         private static void RegisterTypeMatcher(TypeStore typeStore) {

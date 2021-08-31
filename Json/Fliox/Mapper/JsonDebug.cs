@@ -12,16 +12,8 @@ namespace Friflo.Json.Fliox.Mapper
         private  static readonly    SharedPool<ObjectWriter>    WriterPool      = new SharedPool<ObjectWriter> (() => new ObjectWriter(DebugTypeStore));
         private  static             bool                        _loggedWarning;
         
-        /// <summary>
-        /// <see cref="Init"/> is only available for project <b>Friflo.Json.Tests</b> to enable leak detection.
-        /// It reserves two <see cref="ObjectWriter"/>'s used for <see cref="ToJson{T}"/> calls as two could be used at a time.
-        /// One from test code - another one from the IDE / debugger.
-        /// </summary>
-        public static void Init() {
-            var pooled1 = WriterPool.Get();
-            var pooled2 = WriterPool.Get();
-            pooled2.Dispose();
-            pooled1.Dispose();
+        public static void Dispose() {
+            WriterPool.Dispose();
         }
         
         /// <summary>

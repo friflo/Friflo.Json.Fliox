@@ -23,6 +23,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             var types       = store.types;
 
             var samsung         = new Producer { id = "producer-samsung", name = "Samsung"};
+            var samsungJson     = samsung.ToString();
+            AreEqual("{\"id\":\"producer-samsung\",\"name\":\"Samsung\",\"employees\":null}", samsungJson);
+            
             var galaxy          = new Article  { id = "article-galaxy",   name = "Galaxy S10", producer = samsung};
             var createGalaxy    = articles.Create(galaxy);
             AreSimilar("entities: 1, tasks: 1",                         store);
