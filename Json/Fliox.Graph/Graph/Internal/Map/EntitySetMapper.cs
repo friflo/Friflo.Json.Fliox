@@ -3,7 +3,6 @@
 
 using System;
 using System.Reflection;
-using Friflo.Json.Fliox.Graph.Internal.Id;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
@@ -15,17 +14,22 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
             bool isEntitySet = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(EntitySet<,>);
             if (!isEntitySet)
                 return null;
+            var genericArgs = type.GetGenericArguments();
+            var entityType  = genericArgs[1];
             
             object[] constructorParams = {config, type };
-            return (TypeMapper)TypeMapperUtils.CreateGenericInstance(typeof(EntitySetMapper<>), new[] {type}, constructorParams);
+            return (TypeMapper)TypeMapperUtils.CreateGenericInstance(typeof(EntitySetMapper<,>), new[] {type, entityType}, constructorParams);
         }
+        
+        internal static readonly object[] NoArgs = new object[] {};
     }
     
     internal interface IEntitySetMapper {
         EntitySet   CreateEntitySet ();
     }
     
-    internal class EntitySetMapper<T> : TypeMapper<T>, IEntitySetMapper where T : class
+    internal class EntitySetMapper<T, TEntity> : TypeMapper<T>, IEntitySetMapper    where T       : class
+                                                                                    where TEntity : class
     {
         private             TypeMapper      elementType;
         private readonly    ConstructorInfo setConstructor;
@@ -37,12 +41,11 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
             base (config, type, true, false)
         {
             instanceFactory = new InstanceFactory(); // abstract type - todo remove
-            setConstructor = type.GetConstructor(new Type[] {});
+            setConstructor  = type.GetConstructor(new Type[] {});
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
-            var genericArgs = type.GetGenericArguments();
-            var entityType  = genericArgs[1];
+            var entityType  = typeof(TEntity);
             elementType     = typeStore.GetTypeMapper(entityType);
         }
 
@@ -55,12 +58,7 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
         }
         
         public EntitySet CreateEntitySet() {
-            var genericArgs = type.GetGenericArguments();
-            var entityType  = genericArgs[1];
-            if (!EntityId.FindEntityId(entityType, out EntityId _))
-                return null;
-            var args = new object[] {};
-            var instance = setConstructor.Invoke (args);
+            var instance    = setConstructor.Invoke (EntitySetMatcher.NoArgs);
             return (EntitySet)instance;
         }
     }
