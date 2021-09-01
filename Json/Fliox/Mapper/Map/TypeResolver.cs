@@ -106,7 +106,8 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
         private static bool MatchMappers(List<ITypeMatcher> mappers,  StoreConfig config, Type type, Query query) {
             for (int i = 0; i < mappers.Count; i++) {
-                if (Match(mappers[i], config, type, query))
+                var mapper = mappers[i];
+                if (Match(mapper, config, type, query))
                     return true;
             }
             return false;
