@@ -18,11 +18,12 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
             for (int n = 0; n < fields.Length; n++) {
                 var  field      = fields[n];
                 Type fieldType  = field.FieldType;
-                if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(EntitySet<,>)) {
-                    var genericArgs = fieldType.GetGenericArguments();
-                    var entityType = genericArgs[1];
-                    types.Add(entityType);
-                }
+                bool isEntitySet = IsEntitySet(fieldType);
+                if (!isEntitySet)
+                    continue;
+                var genericArgs = fieldType.GetGenericArguments();
+                var entityType = genericArgs[1];
+                types.Add(entityType);
             }
             return types.ToArray();
         }
@@ -32,9 +33,9 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
             var flags   = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             FieldInfo[] fields = type.GetFields(flags);
             for (int n = 0; n < fields.Length; n++) {
-                var  field       = fields[n];
-                Type fieldType   = field.FieldType;
-                bool isEntitySet = fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(EntitySet<,>);
+                var  field          = fields[n];
+                Type fieldType      = field.FieldType;
+                bool isEntitySet    = IsEntitySet(fieldType);
                 if (!isEntitySet)
                     continue;
                 var entitySet = (EntitySet)field.GetValue(store);
@@ -46,6 +47,10 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
                 }
                 entitySet.Init(store);
             }
+        }
+        
+        internal static bool IsEntitySet (Type type) {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(EntitySet<,>);
         }
     }
 }

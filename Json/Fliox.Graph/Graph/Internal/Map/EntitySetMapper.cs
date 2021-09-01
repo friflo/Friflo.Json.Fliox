@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
 {
     internal class EntitySetMatcher : ITypeMatcher {
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
-            bool isEntitySet = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(EntitySet<,>);
+            bool isEntitySet = StoreUtils.IsEntitySet(type);
             if (!isEntitySet)
                 return null;
             var genericArgs = type.GetGenericArguments();
