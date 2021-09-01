@@ -23,8 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         [Test]
         public static void CS_Typescript () {
             // Use code generator directly
-            var typeStore   = new TypeStore();
-            var schema      = new NativeTypeSchema(typeStore, typeof(EntityIdStore));
+            var schema      = new NativeTypeSchema(typeof(EntityIdStore));
             var generator   = new Generator(schema, ".ts", new[]{new Replace("Friflo.Json.Tests.Common.")});
             TypescriptGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/EntityIdStore");
@@ -33,8 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> JSON Schema
         [Test, Order(1)]
         public static void CS_JSON () {
-            var typeStore   = new TypeStore();
-            var options     = new NativeTypeOptions(typeStore, typeof(EntityIdStore)) {
+            var options     = new NativeTypeOptions(typeof(EntityIdStore)) {
                 separateTypes = EntityIdStoreTypes,
                 replacements = new [] {new Replace("Friflo.Json.Tests.Common.")}
             };
@@ -45,8 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> C#
         [Test]
         public static void CS_CS () {
-            var typeStore   = new TypeStore();
-            var options     = new NativeTypeOptions(typeStore, EntityIdStoreTypes) {
+            var options     = new NativeTypeOptions(new TypeStore(), EntityIdStoreTypes) { // call constructor with two params
                 replacements = new [] {new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox", "EntityIdStore2") }
             };
             var generator = CSharpGenerator.Generate(options);
@@ -56,8 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Kotlin
         [Test]
         public static void CS_Kotlin () {
-            var typeStore   = new TypeStore();
-            var options     = new NativeTypeOptions(typeStore, EntityIdStoreTypes) {
+            var options     = new NativeTypeOptions(EntityIdStoreTypes) {
                 replacements = new [] {
                     new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "EntityIdStore") }
             };

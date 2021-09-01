@@ -55,14 +55,16 @@ namespace Friflo.Json.Fliox.Schema
         /// <summary><see cref="getPath"/> allow customization of generated file names</summary>
         public              Func<TypeDef, string>   getPath;
         
-        public NativeTypeOptions (TypeStore typeStore, ICollection<Type> rootTypes) {
-            this.typeStore  = typeStore ?? throw new ArgumentException("typeStore must not be null");
-            this.rootTypes  = rootTypes ?? throw new ArgumentException("rootTypes must not be null");
-        }
+        public NativeTypeOptions (ICollection<Type> rootTypes) :    this (null, rootTypes) { }
         
-        public NativeTypeOptions (TypeStore typeStore, Type rootType) {
-            this.typeStore  = typeStore ?? throw new ArgumentException("typeStore must not be null");
-            this.rootTypes  = rootType != null ? new List<Type>{ rootType } : throw new ArgumentException("rootType must not be null");
+        public NativeTypeOptions (Type rootType) :                  this (null, new List<Type> {rootType}) { }
+        
+        public NativeTypeOptions (TypeStore typeStore, ICollection<Type> rootTypes) {
+            if (typeStore == null) {
+                typeStore = new TypeStore();
+            }
+            this.typeStore  = typeStore;
+            this.rootTypes  = rootTypes ?? throw new ArgumentException("rootTypes must not be null");
         }
     }
     

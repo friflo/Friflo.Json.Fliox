@@ -20,7 +20,12 @@ namespace Friflo.Json.Fliox.Schema.Native
         /// <summary>Contains only non <see cref="Nullable"/> Type's</summary>
         private  readonly   Dictionary<Type, NativeTypeDef> nativeTypes;
         
+        public NativeTypeSchema (Type rootType) : this (null, rootType) { }
+        
         public NativeTypeSchema (TypeStore typeStore, Type rootType = null) {
+            if (typeStore == null) {
+                typeStore = new TypeStore();
+            }
             if (rootType != null) {
                 typeStore.GetTypeMapper(rootType);
             }
@@ -44,7 +49,7 @@ namespace Friflo.Json.Fliox.Schema.Native
             foreach (var pair in nativeTypes) {
                 NativeTypeDef   typeDef        = pair.Value;
                 Type            baseType    = typeDef.native.BaseType;
-                TypeMapper      mapper = null;
+                TypeMapper      mapper;
                 // When searching for polymorph base class there may be are classes in this hierarchy. E.g. BinaryBoolOp. 
                 // If these classes may have a protected constructor they need to be skipped. These classes have no TypeMapper. 
                 while (!typeMappers.TryGetValue(baseType, out  mapper)) {

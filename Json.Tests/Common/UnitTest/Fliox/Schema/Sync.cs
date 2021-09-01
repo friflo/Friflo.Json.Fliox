@@ -2,8 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using Friflo.Json.Fliox.Graph;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Sync;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc;
@@ -25,8 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Typescript
         [Test]
         public static void CS_Typescript () {
-            var typeStore   = new TypeStore();
-            var options     = new NativeTypeOptions(typeStore, SyncTypes);
+            var options     = new NativeTypeOptions(SyncTypes);
             var generator   = TypescriptGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/Sync");
         }
@@ -34,8 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> C#
         // [Test]
         public static void CS_CS () {
-            var typeStore   = new TypeStore();
-            var options     = new NativeTypeOptions(typeStore, SyncTypes) {
+            var options     = new NativeTypeOptions(SyncTypes) {
                 replacements = new[]{new Replace("Friflo.Json.")}
             };
             var generator = CSharpGenerator.Generate(options);
@@ -45,8 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Kotlin
         [Test]
         public static void CS_Kotlin () {
-            var typeStore   = new TypeStore();
-            var options     = new NativeTypeOptions(typeStore, SyncTypes) {
+            var options     = new NativeTypeOptions(SyncTypes) {
                 replacements = new [] {
                     new Replace("Friflo.Json.Fliox.",                        "Sync."),
                     new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "Sync") }
@@ -58,8 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> JTD
         [Test]
         public static void CS_JTD () {
-            var typeStore   = new TypeStore();
-            var options     = new NativeTypeOptions(typeStore, SyncTypes);
+            var options     = new NativeTypeOptions(SyncTypes);
             var generator   = JsonTypeDefinition.Generate(options, "Sync");
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JTD/", false);
         }

@@ -2,8 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using Friflo.Json.Fliox.Graph;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Tests.Common.Utils;
@@ -24,8 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Typescript
         [Test]
         public static void CS_Typescript () {
-            var typeStore   = new TypeStore();
-            var options     = new NativeTypeOptions(typeStore, JsonFlowSchemaTypes);
+            var options     = new NativeTypeOptions(JsonFlowSchemaTypes);
             var generator   = TypescriptGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/JsonSchema");
         }
@@ -33,8 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> JSON Schema
         [Test, Order(1)]
         public static void CS_JSON () {
-            var typeStore   = new TypeStore();
-            var options     = new NativeTypeOptions(typeStore, typeof(JsonSchema));
+            var options     = new NativeTypeOptions(typeof(JsonSchema));
             var generator   = JsonSchemaGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JSON/JsonSchema");
         }
@@ -42,8 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> C#
         // [Test]
         public static void CS_CS () {
-            var typeStore   = new TypeStore();
-            var options     = new NativeTypeOptions(typeStore, JsonFlowSchemaTypes) {
+            var options     = new NativeTypeOptions(JsonFlowSchemaTypes) {
                 replacements = new[]{new Replace("Friflo.Json.")}
             };
             var generator = CSharpGenerator.Generate(options);
