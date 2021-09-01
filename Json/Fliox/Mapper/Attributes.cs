@@ -9,9 +9,9 @@ namespace Friflo.Json.Fliox.Mapper
 #endif
     public static class Fri {
 
-        [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]
+        [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Struct)]
         public sealed class TypeMapperAttribute : Attribute {
-            public TypeMapperAttribute (Type  typeMapper) {}
+            public TypeMapperAttribute (Type typeMapper) {}
         }
         
         [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class)]

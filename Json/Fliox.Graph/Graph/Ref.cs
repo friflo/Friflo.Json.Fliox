@@ -7,7 +7,8 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Fliox.Graph.Internal;
 using Friflo.Json.Fliox.Graph.Internal.Id;
-
+using Friflo.Json.Fliox.Graph.Internal.Map;
+using Friflo.Json.Fliox.Mapper;
 using static System.Diagnostics.DebuggerBrowsableState;
 
 namespace Friflo.Json.Fliox.Graph
@@ -59,6 +60,7 @@ namespace Friflo.Json.Fliox.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
+    [Fri.TypeMapper(typeof(RefMatcher))]
     public struct Ref<TKey, T>  where T : class
     {
         // invariant of Ref<T> has following cases:

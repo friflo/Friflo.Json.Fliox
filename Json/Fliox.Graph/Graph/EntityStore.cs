@@ -22,6 +22,7 @@ namespace Friflo.Json.Fliox.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
+    // [Fri.TypeMapper(typeof(EntityStoreMatcher))]
     public class EntityStore : ITracerContext, IDisposable
     {
         // Keep all EntityStore fields in StoreIntern to enhance debugging overview.
@@ -65,12 +66,11 @@ namespace Friflo.Json.Fliox.Graph
         }
         
         public static TypeStore AddTypeMatchers (TypeStore typeStore) {
-            typeStore.typeResolver.AddGenericTypeMatcher(RefMatcher.Instance);
-            // typeStore.typeResolver.AddGenericTypeMatcher(EntityMatcher.Instance);
+            // typeStore.typeResolver.AddGenericTypeMatcher(RefMatcher.Instance);
             typeStore.typeResolver.AddGenericTypeMatcher(EntityStoreMatcher.Instance);
             typeStore.typeResolver.AddGenericTypeMatcher(EntitySetMatcher.Instance);
             //
-            JsonDebug.DebugTypeStore.typeResolver.AddGenericTypeMatcher(RefMatcher.Instance);
+            // JsonDebug.DebugTypeStore.typeResolver.AddGenericTypeMatcher(RefMatcher.Instance);
             return typeStore;
         }
         

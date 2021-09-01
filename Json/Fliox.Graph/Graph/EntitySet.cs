@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using Friflo.Json.Fliox.Database;
 using Friflo.Json.Fliox.Graph.Internal;
 using Friflo.Json.Fliox.Graph.Internal.Id;
+using Friflo.Json.Fliox.Graph.Internal.Map;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Sync;
@@ -76,6 +77,7 @@ namespace Friflo.Json.Fliox.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
+    // [Fri.TypeMapper(typeof(EntitySetMatcher))]
     public class EntitySet<TKey, T> : EntitySetBase<T>  where T : class
     {
         // Keep all utility related fields of EntitySet in SetIntern to enhance debugging overview.

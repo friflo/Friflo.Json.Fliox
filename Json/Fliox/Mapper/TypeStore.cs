@@ -111,9 +111,15 @@ namespace Friflo.Json.Fliox.Mapper
             
             typeCreationCount++;
 
-            var typeMapperType = GetTypeMapperType(type);
+            var typeMapperType = GetTypeMapperType(type, out bool isMapper);
             if (typeMapperType != null) {
-                mapper = (TypeMapper)ReflectUtils.CreateInstance(typeMapperType);
+                if (isMapper) {
+                    mapper = (TypeMapper)ReflectUtils.CreateInstance(typeMapperType);
+                } else {
+                    var matcher = (ITypeMatcher)ReflectUtils.CreateInstance(typeMapperType);
+                    typeResolver.AddGenericTypeMatcher(matcher);
+                    mapper = typeResolver.CreateTypeMapper(config, type);    
+                }
             } else {
                 mapper = typeResolver.CreateTypeMapper(config, type);
             }
@@ -127,15 +133,26 @@ namespace Friflo.Json.Fliox.Mapper
             return mapper;
         }
         
-        private static Type GetTypeMapperType(Type type) {
+        private static Type GetTypeMapperType(Type type, out bool isMapper) {
             foreach (var attr in type.CustomAttributes) {
                 if (attr.AttributeType == typeof(Fri.TypeMapperAttribute)) {
                     var arg = attr.ConstructorArguments;
                     var typeMapper = arg[0].Value as Type;
-                    if (typeMapper != null && typeMapper.IsSubclassOf(typeof(TypeMapper)))
-                        return typeMapper;
+                    if (typeMapper != null) {
+                        if (typeMapper.IsSubclassOf(typeof(TypeMapper))) {
+                            isMapper = true;
+                            return typeMapper;
+                        }
+                        if (typeof(ITypeMatcher).IsAssignableFrom(typeMapper)) {
+                            isMapper = false;
+                            return typeMapper;
+                        }
+                    }
+                    var msg = $"[Fri.TypeMapper()] parameter must be a Type extending TypeMapper or TypeMatcher at Type: {type}";
+                    throw new InvalidOperationException(msg);
                 }
             }
+            isMapper = false;
             return null;
         }
 
