@@ -62,8 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
     public class TypeMismatchStore : EntityStore {
         public  readonly    EntitySet <long, IntEntity> intEntities = new EntitySet <long, IntEntity>();
 
-        public TypeMismatchStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-        }
+        public TypeMismatchStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {}
     }
     
     // --------
@@ -75,8 +74,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
         // ReSharper disable once UnassignedReadonlyField
         public  readonly    EntitySet <long, IntEntity2> intEntities; // test without assignment
 
-        public TypeMismatchStore2(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-        }
+        public TypeMismatchStore2(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {}
     }
 
     // --------
@@ -87,8 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
     public class UnsupportedKeyTypeStore : EntityStore {
         public  readonly    EntitySet <char, CharEntity>    charEntities = new EntitySet <char, CharEntity>();
 
-        public UnsupportedKeyTypeStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-        }
+        public UnsupportedKeyTypeStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {}
     }
     
     // --------
@@ -100,7 +97,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
     public class InvalidMemberStore : EntityStore {
         public  readonly    EntitySet <string,    StringEntity> stringEntities = new EntitySet <string,    StringEntity>();
 
-        public InvalidMemberStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-        }
+        public InvalidMemberStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {}
     }
 }

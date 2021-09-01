@@ -21,8 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
         public  readonly    EntitySet <string,  EntityRefs>      entityRefs;
         public  readonly    EntitySet <string,  CustomIdEntity2> customIdEntities2;
 
-        public EntityIdStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-        }
+        public EntityIdStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {}
     }
 
     public class GuidEntity {

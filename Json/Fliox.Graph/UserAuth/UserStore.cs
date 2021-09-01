@@ -30,8 +30,7 @@ namespace Friflo.Json.Fliox.UserAuth
         public  readonly    EntitySet <string, UserCredential>  credentials = new EntitySet <string, UserCredential> ();
         public  readonly    EntitySet <string, Role>            roles       = new EntitySet <string, Role>           ();
         
-        public UserStore(EntityDatabase database, string clientId) : base(database, SyncTypeStore.Get(), clientId) {
-        }
+        public UserStore(EntityDatabase database, string clientId) : base(database, SyncTypeStore.Get(), clientId) {}
         
         public async Task<AuthenticateUserResult> AuthenticateUser(AuthenticateUser command) {
             var commandTask = SendMessage<AuthenticateUser, AuthenticateUserResult>(command);

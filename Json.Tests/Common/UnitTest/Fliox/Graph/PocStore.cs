@@ -19,10 +19,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
         public readonly EntitySet <string, Employee>    employees   = new EntitySet <string, Employee> ();
         public readonly EntitySet <string, TestType>    types       = new EntitySet <string, TestType> ();
         
-        public PocStore(EntityDatabase database, TypeStore typeStore, string clientId) : base (database, typeStore, clientId) {
-        }
+        public PocStore(EntityDatabase database, TypeStore typeStore, string clientId) : base (database, typeStore, clientId) {}
         
-        public PocStore(EntityDatabase database, string clientId) : this (database, TestGlobals.typeStore, clientId) { }
+        public PocStore(EntityDatabase database, string clientId) : this (database, TestGlobals.typeStore, clientId) {}
     }
     
     // ------------------------------ models ------------------------------
