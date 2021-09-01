@@ -9,42 +9,41 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
 {
     internal static class StoreUtils
     {
-        public static FieldInfo[] GetEntitySetFields(Type entityStoreType) 
+        public static Type[] GetEntityTypes<TEntityStore>() where TEntityStore : EntityStore 
         {
-            var setFields   = new List<FieldInfo>();
+            var types   = new List<Type>();
+            var type    = typeof(TEntityStore);
             var flags   = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-            FieldInfo[] fields = entityStoreType.GetFields(flags);
+            FieldInfo[] fields = type.GetFields(flags);
             for (int n = 0; n < fields.Length; n++) {
                 var  field      = fields[n];
                 Type fieldType  = field.FieldType;
                 if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(EntitySet<,>)) {
-                    setFields.Add(field);
+                    var genericArgs = fieldType.GetGenericArguments();
+                    var entityType = genericArgs[1];
+                    types.Add(entityType);
                 }
-            }
-            return setFields.ToArray();
-        }
-        
-        public static Type[] GetEntityTypes(Type entityStoreType) 
-        {
-            var entitySetTypes = GetEntitySetFields (entityStoreType);
-            var types   = new List<Type>();
-            foreach (var entitySetType in entitySetTypes) {
-                var genericArgs = entitySetType.FieldType.GetGenericArguments();
-                var entityType = genericArgs[1];
-                types.Add(entityType);
-                
             }
             return types.ToArray();
         }
 
         public static void InitEntitySets(EntityStore store) {
-            var fields = GetEntitySetFields(store.GetType());
-            foreach (var field in fields) {
-                // var setType = field.FieldType;
-                // var setMapper = (IEntitySetMapper)store._intern.typeStore.GetTypeMapper(setType);
-                // var entitySet = setMapper.CreateEntitySet(entityStore);
-                var entitySet = (EntitySet)field.GetValue(store);
-                entitySet.Init(store);
+            var type    = store.GetType();
+            var flags   = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+            FieldInfo[] fields = type.GetFields(flags);
+            for (int n = 0; n < fields.Length; n++) {
+                var  field      = fields[n];
+                Type fieldType  = field.FieldType;
+                if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(EntitySet<,>)) {
+                    var entitySet = (EntitySet)field.GetValue(store);
+                    if (entitySet == null) {
+                        var setType     = field.FieldType;
+                        var setMapper   = (IEntitySetMapper)store._intern.typeStore.GetTypeMapper(setType);
+                        entitySet       = setMapper.CreateEntitySet();
+                        field.SetValue(store, entitySet);
+                    }
+                    entitySet.Init(store);
+                }
             }
         }
     }

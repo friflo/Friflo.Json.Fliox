@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
     }
     
     internal interface IEntitySetMapper {
-        EntitySet   CreateEntitySet (EntityStore store);
+        EntitySet   CreateEntitySet ();
     }
     
     internal class EntitySetMapper<T> : TypeMapper<T>, IEntitySetMapper where T : class
@@ -37,8 +37,7 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
             base (config, type, true, false)
         {
             instanceFactory = new InstanceFactory(); // abstract type - todo remove
-            Type[] entitySetArgs = { typeof(EntityStore) };
-            setConstructor = type.GetConstructor(entitySetArgs);
+            setConstructor = type.GetConstructor(new Type[] {});
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
@@ -55,12 +54,12 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
             throw new NotImplementedException();
         }
         
-        public EntitySet CreateEntitySet(EntityStore store) {
+        public EntitySet CreateEntitySet() {
             var genericArgs = type.GetGenericArguments();
             var entityType  = genericArgs[1];
             if (!EntityId.FindEntityId(entityType, out EntityId _))
                 return null;
-            var args = new object[] {store};
+            var args = new object[] {};
             var instance = setConstructor.Invoke (args);
             return (EntitySet)instance;
         }

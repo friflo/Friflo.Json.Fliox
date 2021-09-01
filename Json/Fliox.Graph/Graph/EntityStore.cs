@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.Graph
         } */
         
         public static Type[] GetEntityTypes<TEntityStore> () where TEntityStore : EntityStore {
-            return StoreUtils.GetEntityTypes(typeof(TEntityStore));
+            return StoreUtils.GetEntityTypes<TEntityStore>();
         }
 
 
