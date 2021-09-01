@@ -9,8 +9,6 @@ using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 namespace Friflo.Json.Fliox.Graph.Internal.Map
 {
     internal class EntitySetMatcher : ITypeMatcher {
-        public static readonly EntitySetMatcher Instance = new EntitySetMatcher();
-        
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             bool isEntitySet = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(EntitySet<,>);
             if (!isEntitySet)

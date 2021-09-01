@@ -15,8 +15,6 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
 {
     // -------------------------------------------------------------------------------------
     internal class RefMatcher : ITypeMatcher {
-        public static readonly RefMatcher Instance = new RefMatcher();
-        
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (TypeUtils.IsStandardType(type)) // doesnt handle standard types
                 return null;

@@ -10,8 +10,6 @@ using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 namespace Friflo.Json.Fliox.Graph.Internal.Map
 {
     internal class EntityStoreMatcher : ITypeMatcher {
-        public static readonly EntityStoreMatcher Instance = new EntityStoreMatcher();
-        
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (!type.IsSubclassOf(typeof(EntityStore)))
                 return null;
