@@ -45,13 +45,12 @@ namespace Friflo.Json.Fliox.Graph.Internal
     
     public abstract class EntitySetBase<T> : EntitySet where T : class
     {
-        internal  abstract  SyncSetBase<T>  GetSyncSetBase();
+        internal  abstract  SyncSetBase<T>  GetSyncSetBase  ();
         
-        internal  abstract  Peer<T>         GetPeerById (in JsonKey id);
-        internal  abstract  Peer<T>         GetPeerByEntity(T entity);
-        
-        internal  abstract  Peer<T>         CreatePeer (T entity);
-        internal  abstract  JsonKey         GetEntityId (T entity);
+        internal  abstract  Peer<T>         GetPeerById     (in JsonKey id);
+        internal  abstract  Peer<T>         GetPeerByEntity (T entity);
+        internal  abstract  Peer<T>         CreatePeer      (T entity);
+        internal  abstract  JsonKey         GetEntityId     (T entity);
 
         protected EntitySetBase(string name) : base(name) { }
         
