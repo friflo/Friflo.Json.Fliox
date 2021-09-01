@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    // [Fri.TypeMapper(typeof(EntitySetMatcher))]
+    [Fri.TypeMapper(typeof(EntitySetMatcher))]
     public class EntitySet<TKey, T> : EntitySetBase<T>  where T : class
     {
         // Keep all utility related fields of EntitySet in SetIntern to enhance debugging overview.

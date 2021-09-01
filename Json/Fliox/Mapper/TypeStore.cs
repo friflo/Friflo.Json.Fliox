@@ -152,6 +152,12 @@ namespace Friflo.Json.Fliox.Mapper
                     throw new InvalidOperationException(msg);
                 }
             }
+            var baseType = type.BaseType;
+            if (baseType != null) {
+                // some types require using the ITypeMatcher from their base class.
+                // E.g. classes extending EntityStore use EntityStoreMatcher
+                return GetTypeMapperType (baseType, out isMapper);
+            }
             isMapper = false;
             return null;
         }
