@@ -55,17 +55,15 @@ namespace Friflo.Json.Fliox.Graph.Internal
 
         protected EntitySetBase(string name) : base(name) { }
         
-        internal static bool ValidateKeyType(Type keyType, out string error) {
+        internal static void ValidateKeyType(Type keyType) {
             var entityId        = EntityId.GetEntityId<T>();
             var entityKeyType   = entityId.GetKeyType();
             var entityKeyName   = entityId.GetKeyName();
-            if (keyType != entityKeyType) {
-                var type = typeof(T);
-                error = $"key Type mismatch. {entityKeyType.Name} ({type.Name}.{entityKeyName}) != {keyType.Name} (EntitySet<{keyType.Name},{type.Name}>)";
-                return false;
-            }
-            error = null;
-            return true;
+            if (keyType == entityKeyType)
+                return;
+            var type = typeof(T);
+            var error = $"key Type mismatch. {entityKeyType.Name} ({type.Name}.{entityKeyName}) != {keyType.Name} (EntitySet<{keyType.Name},{type.Name}>)";
+            throw new InvalidTypeException(error);
         }
     }
 }
@@ -132,9 +130,7 @@ namespace Friflo.Json.Fliox.Graph
         
         // --------------------------------------- public interface --------------------------------------- 
         public EntitySet() : base (typeof(T).Name) {
-            if (!ValidateKeyType(typeof(TKey), out string error)) {
-                throw new InvalidTypeException(error);
-            }
+            ValidateKeyType(typeof(TKey));
         }
 
         // --- Read

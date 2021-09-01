@@ -61,9 +61,7 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
         }
         
         public EntitySet CreateEntitySet() {
-            if (!EntitySetBase<TEntity>.ValidateKeyType(keyType, out string error)) {
-                throw new InvalidTypeException(error);
-            }
+            EntitySetBase<TEntity>.ValidateKeyType(keyType);
             var instance    = setConstructor.Invoke (EntitySetMatcher.NoArgs);
             return (EntitySet)instance;
         }
