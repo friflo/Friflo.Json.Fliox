@@ -15,9 +15,10 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
             if (!isEntitySet)
                 return null;
             var genericArgs = type.GetGenericArguments();
+            var keyType     = genericArgs[0];
             var entityType  = genericArgs[1];
             
-            object[] constructorParams = {config, type };
+            object[] constructorParams = {config, type, keyType};
             return (TypeMapper)TypeMapperUtils.CreateGenericInstance(typeof(EntitySetMapper<,>), new[] {type, entityType}, constructorParams);
         }
         
@@ -33,15 +34,17 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
     {
         private             TypeMapper      elementType;
         private readonly    ConstructorInfo setConstructor;
+        private readonly    Type            keyType;
         
         public  override    bool            IsDictionary        => true;
         public  override    TypeMapper      GetElementMapper()  => elementType;
         
-        public EntitySetMapper (StoreConfig config, Type type) :
+        public EntitySetMapper (StoreConfig config, Type type, Type keyType) :
             base (config, type, true, false)
         {
             instanceFactory = new InstanceFactory(); // abstract type - todo remove
             setConstructor  = type.GetConstructor(new Type[] {});
+            this.keyType    = keyType;
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
@@ -58,6 +61,9 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
         }
         
         public EntitySet CreateEntitySet() {
+            if (!EntitySetBase<TEntity>.ValidateKeyType(keyType, out string error)) {
+                throw new InvalidTypeException(error);
+            }
             var instance    = setConstructor.Invoke (EntitySetMatcher.NoArgs);
             return (EntitySet)instance;
         }

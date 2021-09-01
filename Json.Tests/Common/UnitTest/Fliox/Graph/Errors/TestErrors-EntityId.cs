@@ -37,6 +37,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             });
             AreEqual("key Type mismatch. String (IntEntity.id) != Int64 (EntitySet<Int64,IntEntity>)", e.Message);
             
+            e = Throws<InvalidTypeException>(() => {
+                _ = new TypeMismatchStore2(database, typeStore, "store");
+            });
+            AreEqual("key Type mismatch. String (IntEntity2.id) != Int64 (EntitySet<Int64,IntEntity2>)", e.Message);
+            
             e = Throws<InvalidOperationException>(() => {
                 _ = new UnsupportedKeyTypeStore(database, typeStore, "store");
             });
@@ -58,6 +63,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
         public  readonly    EntitySet <long, IntEntity> intEntities = new EntitySet <long, IntEntity>();
 
         public TypeMismatchStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
+        }
+    }
+    
+    // --------
+    public class IntEntity2 {
+        public  string      id;
+    }
+    
+    public class TypeMismatchStore2 : EntityStore {
+        // ReSharper disable once UnassignedReadonlyField
+        public  readonly    EntitySet <long, IntEntity2> intEntities; // test without assignment
+
+        public TypeMismatchStore2(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
         }
     }
 

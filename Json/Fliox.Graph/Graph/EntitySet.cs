@@ -54,6 +54,19 @@ namespace Friflo.Json.Fliox.Graph.Internal
         internal  abstract  JsonKey         GetEntityId (T entity);
 
         protected EntitySetBase(string name) : base(name) { }
+        
+        internal static bool ValidateKeyType(Type keyType, out string error) {
+            var entityId        = EntityId.GetEntityId<T>();
+            var entityKeyType   = entityId.GetKeyType();
+            var entityKeyName   = entityId.GetKeyName();
+            if (keyType != entityKeyType) {
+                var type = typeof(T);
+                error = $"key Type mismatch. {entityKeyType.Name} ({type.Name}.{entityKeyName}) != {keyType.Name} (EntitySet<{keyType.Name},{type.Name}>)";
+                return false;
+            }
+            error = null;
+            return true;
+        }
     }
 }
 
@@ -119,7 +132,7 @@ namespace Friflo.Json.Fliox.Graph
         
         // --------------------------------------- public interface --------------------------------------- 
         public EntitySet() : base (typeof(T).Name) {
-            if (!ValidateKeyType(out string error)) {
+            if (!ValidateKeyType(typeof(TKey), out string error)) {
                 throw new InvalidTypeException(error);
             }
         }
@@ -364,20 +377,6 @@ namespace Friflo.Json.Fliox.Graph
             GetSyncSet().LogSetChanges(peers, logTask);
         }
         
-        private static bool ValidateKeyType(out string error) {
-            var entityId        = EntityId.GetEntityId<T>();
-            var entityKeyType   = entityId.GetKeyType();
-            var entityKeyName   = entityId.GetKeyName();
-            var keyType         = typeof(TKey);
-            if (keyType != entityKeyType) {
-                var type = typeof(T);
-                error = $"key Type mismatch. {entityKeyType.Name} ({type.Name}.{entityKeyName}) != {keyType.Name} (EntitySet<{keyType.Name},{type.Name}>)";
-                return false;
-            }
-            error = null;
-            return true;
-        }
-
         internal override Peer<T> CreatePeer (T entity) {
             var key = GetEntityKey(entity);
             if (peers.TryGetValue(key, out Peer<T> peer)) {
