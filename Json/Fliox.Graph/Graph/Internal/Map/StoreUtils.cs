@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
 {
     internal static class StoreUtils
     {
-        public static Type[] GetEntityTypes<TEntityStore>() where TEntityStore : EntityStore 
+        internal static Type[] GetEntityTypes<TEntityStore>() where TEntityStore : EntityStore 
         {
             var types   = new List<Type>();
             var type    = typeof(TEntityStore);
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
             return types.ToArray();
         }
 
-        public static void InitEntitySets(EntityStore store) {
+        internal static void InitEntitySets(EntityStore store) {
             var type    = store.GetType();
             var flags   = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             FieldInfo[] fields = type.GetFields(flags);
