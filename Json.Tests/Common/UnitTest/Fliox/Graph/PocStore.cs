@@ -12,20 +12,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 {
     public class PocStore : EntityStore
     {
-        public readonly EntitySet <string, Order>       orders;
-        public readonly EntitySet <string, Customer>    customers;
-        public readonly EntitySet <string, Article>     articles;
-        public readonly EntitySet <string, Producer>    producers;
-        public readonly EntitySet <string, Employee>    employees;
-        public readonly EntitySet <string, TestType>    types;
+        public readonly EntitySet <string, Order>       orders      = new EntitySet <string, Order>    ();
+        public readonly EntitySet <string, Customer>    customers   = new EntitySet <string, Customer> ();
+        public readonly EntitySet <string, Article>     articles    = new EntitySet <string, Article>  ();
+        public readonly EntitySet <string, Producer>    producers   = new EntitySet <string, Producer> ();
+        public readonly EntitySet <string, Employee>    employees   = new EntitySet <string, Employee> ();
+        public readonly EntitySet <string, TestType>    types       = new EntitySet <string, TestType> ();
         
         public PocStore(EntityDatabase database, TypeStore typeStore, string clientId) : base (database, typeStore, clientId) {
-            orders      = new EntitySet <string, Order>       (this);
-            customers   = new EntitySet <string, Customer>    (this);
-            articles    = new EntitySet <string, Article>     (this);
-            producers   = new EntitySet <string, Producer>    (this);
-            employees   = new EntitySet <string, Employee>    (this);
-            types       = new EntitySet <string, TestType>    (this);
         }
         
         public PocStore(EntityDatabase database, string clientId) : this (database, TestGlobals.typeStore, clientId) { }

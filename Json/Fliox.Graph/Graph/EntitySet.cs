@@ -28,6 +28,7 @@ namespace Friflo.Json.Fliox.Graph.Internal
 
         internal static readonly QueryPath RefQueryPath = new RefQueryPath();
         
+        internal  abstract  void                Init                    (EntityStore store);
         internal  abstract  void                LogSetChangesInternal   (LogTask logTask);
         internal  abstract  void                SyncPeerEntities        (Dictionary<JsonKey, EntityValue> entities);
         internal  abstract  void                DeletePeerEntities      (HashSet   <JsonKey> ids);
@@ -92,7 +93,7 @@ namespace Friflo.Json.Fliox.Graph
 
         
         // ReSharper disable once NotAccessedField.Local
-        private  readonly   EntityContainer             container; // not used - only for debugging ergonomics
+        private             EntityContainer             container; // not used - only for debugging ergonomics
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private             SyncSet<TKey, T>            syncSet;
@@ -108,16 +109,19 @@ namespace Friflo.Json.Fliox.Graph
             return info;
         }}
         
-        // --------------------------------------- public interface --------------------------------------- 
-        public EntitySet(EntityStore store) : base (typeof(T).Name) {
-            if (!ValidateKeyType(out string error)) {
-                throw new InvalidTypeException(error);
-            }
+        internal override void Init(EntityStore store) {
             var type = typeof(T);
             store._intern.setByType[type]       = this;
             store._intern.setByName[type.Name]  = this;
             container   = store._intern.database.GetOrCreateContainer(name);
             intern      = new SetIntern<TKey, T>(store);
+        }
+        
+        // --------------------------------------- public interface --------------------------------------- 
+        public EntitySet() : base (typeof(T).Name) {
+            if (!ValidateKeyType(out string error)) {
+                throw new InvalidTypeException(error);
+            }
         }
 
         // --- Read

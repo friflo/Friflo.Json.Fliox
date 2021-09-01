@@ -9,32 +9,43 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
 {
     internal static class StoreUtils
     {
-        public static Type[] GetEntitySetTypes(Type entityStoreType) 
+        public static FieldInfo[] GetEntitySetFields(Type entityStoreType) 
         {
-            var types   = new List<Type>();
+            var setFields   = new List<FieldInfo>();
             var flags   = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             FieldInfo[] fields = entityStoreType.GetFields(flags);
             for (int n = 0; n < fields.Length; n++) {
                 var  field      = fields[n];
                 Type fieldType  = field.FieldType;
                 if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(EntitySet<,>)) {
-                    types.Add(fieldType);
+                    setFields.Add(field);
                 }
             }
-            return types.ToArray();
+            return setFields.ToArray();
         }
         
         public static Type[] GetEntityTypes(Type entityStoreType) 
         {
-            var entitySetTypes = GetEntitySetTypes (entityStoreType);
+            var entitySetTypes = GetEntitySetFields (entityStoreType);
             var types   = new List<Type>();
             foreach (var entitySetType in entitySetTypes) {
-                var genericArgs = entitySetType.GetGenericArguments();
+                var genericArgs = entitySetType.FieldType.GetGenericArguments();
                 var entityType = genericArgs[1];
                 types.Add(entityType);
                 
             }
             return types.ToArray();
+        }
+
+        public static void InitEntitySets(EntityStore store) {
+            var fields = GetEntitySetFields(store.GetType());
+            foreach (var field in fields) {
+                // var setType = field.FieldType;
+                // var setMapper = (IEntitySetMapper)store._intern.typeStore.GetTypeMapper(setType);
+                // var entitySet = setMapper.CreateEntitySet(entityStore);
+                var entitySet = (EntitySet)field.GetValue(store);
+                entitySet.Init(store);
+            }
         }
     }
 }

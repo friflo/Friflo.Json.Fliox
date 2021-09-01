@@ -55,10 +55,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
     }
     
     public class TypeMismatchStore : EntityStore {
-        public  readonly    EntitySet <long,    IntEntity>      intEntities;
+        public  readonly    EntitySet <long, IntEntity> intEntities = new EntitySet <long, IntEntity>();
 
         public TypeMismatchStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-            intEntities = new EntitySet <long,    IntEntity>      (this);
         }
     }
 
@@ -68,10 +67,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
     }
     
     public class UnsupportedKeyTypeStore : EntityStore {
-        public  readonly    EntitySet <char,    CharEntity>      charEntities;
+        public  readonly    EntitySet <char, CharEntity>    charEntities = new EntitySet <char, CharEntity>();
 
         public UnsupportedKeyTypeStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-            charEntities = new EntitySet <char,    CharEntity>      (this);
         }
     }
     
@@ -82,10 +80,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
     }
     
     public class InvalidMemberStore : EntityStore {
-        public  readonly    EntitySet <string,    StringEntity>      stringEntities;
+        public  readonly    EntitySet <string,    StringEntity> stringEntities = new EntitySet <string,    StringEntity>();
 
         public InvalidMemberStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-            stringEntities = new EntitySet <string,    StringEntity>      (this);
         }
     }
 }

@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Graph
             _intern = new StoreIntern(clientId, typeStore, owned, database, tracer, eventTarget, subscriptionProcessor);
             _intern.syncStore = new SyncStore();
             database.AddEventTarget(clientId, eventTarget);
-            InitEntitySets();
+            StoreUtils.InitEntitySets(this);
         }
         
         public void Dispose() {
@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Graph
         }
         
         /*
-        // todo remove obsolete method - TypeMapper / ITypeMatcher are registered via [Fri.TypeMapper())]
+        // done: remove obsolete method - TypeMapper / ITypeMatcher are registered via [Fri.TypeMapper())]
         public static TypeStore AddTypeMatchers (TypeStore typeStore) {
             // typeStore.typeResolver.AddGenericTypeMatcher(RefMatcher.Instance);
             // typeStore.typeResolver.AddGenericTypeMatcher(EntityStoreMatcher.Instance);
@@ -259,15 +259,6 @@ namespace Friflo.Json.Fliox.Graph
 
         
         // ------------------------------------------- internals -------------------------------------------
-        private void InitEntitySets() {
-            return;
-            var entityTypes = StoreUtils.GetEntitySetTypes(GetType());
-            foreach (var entityType in entityTypes) {
-                var setMapper = (IEntitySetFactory)_intern.typeStore.GetTypeMapper(entityType);
-                var entitySet = setMapper.CreateEntitySet(this);
-            }
-        }
-        
         internal void AssertSubscriptionProcessor() {
             if (_intern.subscriptionProcessor != null)
                 return;

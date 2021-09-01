@@ -11,24 +11,16 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 {
     public class EntityIdStore : EntityStore {
-        public  readonly    EntitySet <Guid,    GuidEntity>      guidEntities;
-        public  readonly    EntitySet <int,     IntEntity>       intEntities;
-        public  readonly    EntitySet <long,    LongEntity>      longEntities;
-        public  readonly    EntitySet <short,   ShortEntity>     shortEntities;
-        public  readonly    EntitySet <byte,    ByteEntity>      byteEntities;
-        public  readonly    EntitySet <string,  CustomIdEntity>  customIdEntities;
-        public  readonly    EntitySet <string,  EntityRefs>      entityRefs;
-        public  readonly    EntitySet <string,  CustomIdEntity2> customIdEntities2;
+        public  readonly    EntitySet <Guid,    GuidEntity>      guidEntities       = new EntitySet <Guid,   GuidEntity>      ();
+        public  readonly    EntitySet <int,     IntEntity>       intEntities        = new EntitySet <int,    IntEntity>       ();
+        public  readonly    EntitySet <long,    LongEntity>      longEntities       = new EntitySet <long,   LongEntity>      ();
+        public  readonly    EntitySet <short,   ShortEntity>     shortEntities      = new EntitySet <short,  ShortEntity>     ();
+        public  readonly    EntitySet <byte,    ByteEntity>      byteEntities       = new EntitySet <byte,   ByteEntity>      ();
+        public  readonly    EntitySet <string,  CustomIdEntity>  customIdEntities   = new EntitySet <string, CustomIdEntity>  ();
+        public  readonly    EntitySet <string,  EntityRefs>      entityRefs         = new EntitySet <string, EntityRefs>      ();
+        public  readonly    EntitySet <string,  CustomIdEntity2> customIdEntities2  = new EntitySet <string, CustomIdEntity2> ();
 
         public EntityIdStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
-            guidEntities      = new EntitySet <Guid,    GuidEntity>      (this);
-            intEntities       = new EntitySet <int,     IntEntity>       (this);
-            longEntities      = new EntitySet <long,    LongEntity>      (this);
-            shortEntities     = new EntitySet <short,   ShortEntity>     (this);
-            byteEntities      = new EntitySet <byte,    ByteEntity>      (this);
-            customIdEntities  = new EntitySet <string,  CustomIdEntity>  (this);
-            entityRefs        = new EntitySet <string,  EntityRefs>      (this);
-            customIdEntities2 = new EntitySet <string,  CustomIdEntity2> (this);
         }
     }
 

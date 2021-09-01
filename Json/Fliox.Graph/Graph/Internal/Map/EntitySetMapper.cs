@@ -21,11 +21,11 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
         }
     }
     
-    interface IEntitySetFactory {
+    internal interface IEntitySetMapper {
         EntitySet   CreateEntitySet (EntityStore store);
     }
     
-    internal class EntitySetMapper<T> : TypeMapper<T>, IEntitySetFactory where T : class
+    internal class EntitySetMapper<T> : TypeMapper<T>, IEntitySetMapper where T : class
     {
         private             TypeMapper      elementType;
         private readonly    ConstructorInfo setConstructor;
