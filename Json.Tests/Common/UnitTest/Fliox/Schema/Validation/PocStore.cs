@@ -186,7 +186,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
 
         // --- helper
         private static TypeStore CreateTypeStore (ICollection<Type> types) {
-            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
+            var typeStore = new TypeStore();
             typeStore.AddMappers(types);
             return typeStore;
         } 

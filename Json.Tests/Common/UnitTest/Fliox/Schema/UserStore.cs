@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Typescript
         [Test]
         public static void CS_Typescript () {
-            var typeStore   = EntityStore.AddTypeMatchers(new TypeStore());
+            var typeStore   = new TypeStore();
             var options     = new NativeTypeOptions(typeStore, typeof(UserStore));
             var generator   = TypescriptGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/UserStore");
@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> JSON Schema
         [Test, Order(1)]
         public static void CS_JSON () {
-            var typeStore   = EntityStore.AddTypeMatchers(new TypeStore());
+            var typeStore   = new TypeStore();
             var options     = new NativeTypeOptions(typeStore, typeof(UserStore)) { separateTypes = UserStoreTypes };
             var generator   = JsonSchemaGenerator.Generate(options);
             generator.WriteFiles(JsonSchemaFolder);
@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> C#
         [Test]
         public static void CS_CS () {
-            var typeStore   = EntityStore.AddTypeMatchers(new TypeStore());
+            var typeStore   = new TypeStore();
             var options     = new NativeTypeOptions(typeStore, UserStoreTypes) {
                 replacements = new [] { new Replace("Friflo.Json.Fliox.", "UserStore2.") }
             };
@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Kotlin
         [Test]
         public static void CS_Kotlin () {
-            var typeStore   = EntityStore.AddTypeMatchers(new TypeStore());
+            var typeStore   = new TypeStore();
             var options     = new NativeTypeOptions(typeStore, UserStoreTypes) {
                 replacements = new [] { new Replace("Friflo.Json.Fliox.", "UserStore.") }
             };
@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> JTD
         [Test]
         public static void CS_JTD () {
-            var typeStore   = EntityStore.AddTypeMatchers(new TypeStore());
+            var typeStore   = new TypeStore();
             var options     = new NativeTypeOptions(typeStore, UserStoreTypes);
             var generator = JsonTypeDefinition.Generate(options, "UserStore");
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JTD/", false);

@@ -25,17 +25,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Typescript
         [Test]
         public static void CS_Typescript () {
-            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var options = new NativeTypeOptions(typeStore, SyncTypes);
-            var generator = TypescriptGenerator.Generate(options);
+            var typeStore   = new TypeStore();
+            var options     = new NativeTypeOptions(typeStore, SyncTypes);
+            var generator   = TypescriptGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/Sync");
         }
         
         /// C# -> C#
         // [Test]
         public static void CS_CS () {
-            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var options = new NativeTypeOptions(typeStore, SyncTypes) {
+            var typeStore   = new TypeStore();
+            var options     = new NativeTypeOptions(typeStore, SyncTypes) {
                 replacements = new[]{new Replace("Friflo.Json.")}
             };
             var generator = CSharpGenerator.Generate(options);
@@ -45,8 +45,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Kotlin
         [Test]
         public static void CS_Kotlin () {
-            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var options = new NativeTypeOptions(typeStore, SyncTypes) {
+            var typeStore   = new TypeStore();
+            var options     = new NativeTypeOptions(typeStore, SyncTypes) {
                 replacements = new [] {
                     new Replace("Friflo.Json.Fliox.",                        "Sync."),
                     new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "Sync") }
@@ -58,9 +58,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> JTD
         [Test]
         public static void CS_JTD () {
-            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var options = new NativeTypeOptions(typeStore, SyncTypes);
-            var generator = JsonTypeDefinition.Generate(options, "Sync");
+            var typeStore   = new TypeStore();
+            var options     = new NativeTypeOptions(typeStore, SyncTypes);
+            var generator   = JsonTypeDefinition.Generate(options, "Sync");
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JTD/", false);
         }
     }

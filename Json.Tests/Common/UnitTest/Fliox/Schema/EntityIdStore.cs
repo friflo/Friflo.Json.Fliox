@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         [Test]
         public static void CS_Typescript () {
             // Use code generator directly
-            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
+            var typeStore   = new TypeStore();
             var schema      = new NativeTypeSchema(typeStore, typeof(EntityIdStore));
             var generator   = new Generator(schema, ".ts", new[]{new Replace("Friflo.Json.Tests.Common.")});
             TypescriptGenerator.Generate(generator);
@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> JSON Schema
         [Test, Order(1)]
         public static void CS_JSON () {
-            var typeStore   = EntityStore.AddTypeMatchers(new TypeStore());
+            var typeStore   = new TypeStore();
             var options     = new NativeTypeOptions(typeStore, typeof(EntityIdStore)) {
                 separateTypes = EntityIdStoreTypes,
                 replacements = new [] {new Replace("Friflo.Json.Tests.Common.")}
@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> C#
         [Test]
         public static void CS_CS () {
-            var typeStore   = EntityStore.AddTypeMatchers(new TypeStore());
+            var typeStore   = new TypeStore();
             var options     = new NativeTypeOptions(typeStore, EntityIdStoreTypes) {
                 replacements = new [] {new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox", "EntityIdStore2") }
             };
@@ -56,8 +56,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Kotlin
         [Test]
         public static void CS_Kotlin () {
-            var typeStore = EntityStore.AddTypeMatchers(new TypeStore());
-            var options = new NativeTypeOptions(typeStore, EntityIdStoreTypes) {
+            var typeStore   = new TypeStore();
+            var options     = new NativeTypeOptions(typeStore, EntityIdStoreTypes) {
                 replacements = new [] {
                     new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "EntityIdStore") }
             };
