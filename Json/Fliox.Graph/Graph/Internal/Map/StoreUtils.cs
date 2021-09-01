@@ -32,18 +32,19 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
             var flags   = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             FieldInfo[] fields = type.GetFields(flags);
             for (int n = 0; n < fields.Length; n++) {
-                var  field      = fields[n];
-                Type fieldType  = field.FieldType;
-                if (fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(EntitySet<,>)) {
-                    var entitySet = (EntitySet)field.GetValue(store);
-                    if (entitySet == null) {
-                        var setType     = field.FieldType;
-                        var setMapper   = (IEntitySetMapper)store._intern.typeStore.GetTypeMapper(setType);
-                        entitySet       = setMapper.CreateEntitySet();
-                        field.SetValue(store, entitySet);
-                    }
-                    entitySet.Init(store);
+                var  field       = fields[n];
+                Type fieldType   = field.FieldType;
+                bool isEntitySet = fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(EntitySet<,>);
+                if (!isEntitySet)
+                    continue;
+                var entitySet = (EntitySet)field.GetValue(store);
+                if (entitySet == null) {
+                    var setType     = field.FieldType;
+                    var setMapper   = (IEntitySetMapper)store._intern.typeStore.GetTypeMapper(setType);
+                    entitySet       = setMapper.CreateEntitySet();
+                    field.SetValue(store, entitySet);
                 }
+                entitySet.Init(store);
             }
         }
     }

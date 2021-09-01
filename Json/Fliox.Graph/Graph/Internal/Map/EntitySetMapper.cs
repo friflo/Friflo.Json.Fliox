@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
             return (TypeMapper)TypeMapperUtils.CreateGenericInstance(typeof(EntitySetMapper<,>), new[] {type, entityType}, constructorParams);
         }
         
-        internal static readonly object[] NoArgs = new object[] {};
+        internal static readonly object[] NoArgs = {};
     }
     
     internal interface IEntitySetMapper {
