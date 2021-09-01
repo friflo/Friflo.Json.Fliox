@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
         public override string DataTypeName() { return "unsupported type"; }
 
-        public TypeNotSupportedMapper(StoreConfig config, Type type, string msg) : base(config, type, true, false) {
+        public TypeNotSupportedMapper(StoreConfig config, Type type, string msg) : base(config, type, !type.IsValueType, false) {
             this.msg = msg;
         }
 

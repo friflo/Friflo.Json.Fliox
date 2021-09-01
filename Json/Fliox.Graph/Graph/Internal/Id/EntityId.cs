@@ -13,6 +13,10 @@ namespace Friflo.Json.Fliox.Graph.Internal.Id
     // -------------------------------------------- EntityId -----------------------------------------------
     internal abstract class EntityId {
         private static readonly   Dictionary<Type, EntityId> Ids = new Dictionary<Type, EntityId>();
+
+        internal static bool FindEntityId (Type type, out EntityId result) {
+            return Ids.TryGetValue(type, out result);
+        }
         
         internal static EntityKey<TKey, T> GetEntityKey<TKey, T> () where T : class {
             return (EntityKey<TKey, T>)GetEntityId<T>();

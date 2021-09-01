@@ -59,6 +59,7 @@ namespace Friflo.Json.Fliox.Graph
             _intern = new StoreIntern(clientId, typeStore, owned, database, tracer, eventTarget, subscriptionProcessor);
             _intern.syncStore = new SyncStore();
             database.AddEventTarget(clientId, eventTarget);
+            InitEntitySets();
         }
         
         public void Dispose() {
@@ -77,7 +78,7 @@ namespace Friflo.Json.Fliox.Graph
         } */
         
         public static Type[] GetEntityTypes<TEntityStore> () where TEntityStore : EntityStore {
-            return StoreUtils.GetEntityTypes<TEntityStore>();
+            return StoreUtils.GetEntityTypes(typeof(TEntityStore));
         }
 
 
@@ -258,6 +259,15 @@ namespace Friflo.Json.Fliox.Graph
 
         
         // ------------------------------------------- internals -------------------------------------------
+        private void InitEntitySets() {
+            return;
+            var entityTypes = StoreUtils.GetEntitySetTypes(GetType());
+            foreach (var entityType in entityTypes) {
+                var setMapper = (IEntitySetFactory)_intern.typeStore.GetTypeMapper(entityType);
+                var entitySet = setMapper.CreateEntitySet(this);
+            }
+        }
+        
         internal void AssertSubscriptionProcessor() {
             if (_intern.subscriptionProcessor != null)
                 return;
