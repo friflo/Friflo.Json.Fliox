@@ -128,7 +128,7 @@ namespace Friflo.Json.Fliox.Graph
         }
         
         // --------------------------------------- public interface --------------------------------------- 
-        public EntitySet() : base (typeof(T).Name) {
+        internal EntitySet() : base (typeof(T).Name) {
             ValidateKeyType(typeof(TKey));
         }
 

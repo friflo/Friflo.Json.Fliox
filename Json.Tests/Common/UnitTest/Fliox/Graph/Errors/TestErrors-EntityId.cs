@@ -14,8 +14,8 @@ using static NUnit.Framework.Assert;
     using NUnit.Framework;
 #endif
 
+// ReSharper disable UnassignedReadonlyField
 // ReSharper disable ClassNeverInstantiated.Global
-// ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
 {
@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
     }
     
     public class TypeMismatchStore : EntityStore {
-        public  readonly    EntitySet <long, IntEntity> intEntities = new EntitySet <long, IntEntity>();
+        public  readonly    EntitySet <long, IntEntity> intEntities;
 
         public TypeMismatchStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {}
     }
@@ -83,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
     }
     
     public class UnsupportedKeyTypeStore : EntityStore {
-        public  readonly    EntitySet <char, CharEntity>    charEntities = new EntitySet <char, CharEntity>();
+        public  readonly    EntitySet <char, CharEntity>    charEntities;
 
         public UnsupportedKeyTypeStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {}
     }
@@ -95,7 +95,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
     }
     
     public class InvalidMemberStore : EntityStore {
-        public  readonly    EntitySet <string,    StringEntity> stringEntities = new EntitySet <string,    StringEntity>();
+        public  readonly    EntitySet <string,    StringEntity> stringEntities;
 
         public InvalidMemberStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {}
     }

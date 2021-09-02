@@ -15,6 +15,7 @@ using Friflo.Json.Fliox.Sync;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 
+// ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
 {
     public partial class TestStore
@@ -194,7 +195,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
     
     public class SimpleStore : EntityStore
     {
-        public readonly EntitySet <int, SimplyEntity>   entities = new EntitySet <int, SimplyEntity> ();
+        public readonly EntitySet <int, SimplyEntity>   entities;
         
         public SimpleStore(EntityDatabase database, TypeStore typeStore, string clientId) : base (database, typeStore, clientId) {}
         
