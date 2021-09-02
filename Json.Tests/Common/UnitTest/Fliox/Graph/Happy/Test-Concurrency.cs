@@ -162,8 +162,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             // --- prepare
             var stores = new List<EntityStore>();
             try {
+                var typeStore = new TypeStore();
                 for (int n = 0; n < clientCount; n++) {
-                    stores.Add(new EntityStore(database, null,$"reader-{n}"));
+                    stores.Add(new EntityStore(database, typeStore,$"reader-{n}"));
                 }
                 var tasks = new List<Task>();
                 

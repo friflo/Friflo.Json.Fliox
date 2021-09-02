@@ -294,7 +294,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var eventBroker  = new EventBroker(false))
             using (var database     = new MemoryDatabase())
-            using (var listenDb     = new EntityStore(database, null, "listenDb")) {
+            using (var typeStore    = new TypeStore())
+            using (var listenDb     = new EntityStore(database, typeStore, "listenDb")) {
                 database.eventBroker = eventBroker;
                 bool receivedHello = false;
                 listenDb.SubscribeMessage("Hello", msg => {
@@ -302,7 +303,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 });
                 await listenDb.Sync();
 
-                using (var sendStore  = new EntityStore(database, null, "sendStore")) {
+                using (var sendStore  = new EntityStore(database, typeStore, "sendStore")) {
                     sendStore.SendMessage("Hello", "some text");
                     await sendStore.Sync();
                     

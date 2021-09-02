@@ -47,14 +47,13 @@ namespace Friflo.Json.Fliox.Graph
         /// Their creation is expensive compared to the instantiation of an <see cref="EntityStore"/>. 
         /// </summary>
         public EntityStore(EntityDatabase database, TypeStore typeStore, string clientId) {
-            TypeStore owned = null;
             if (typeStore == null) {
-                typeStore = owned = new TypeStore();
+                throw new NullReferenceException(nameof(typeStore));
             }
             ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
             var subscriptionProcessor   = new SubscriptionProcessor(this);
-            _intern = new StoreIntern(clientId, typeStore, owned, database, tracer, eventTarget, subscriptionProcessor);
+            _intern = new StoreIntern(clientId, typeStore, database, tracer, eventTarget, subscriptionProcessor);
             _intern.syncStore = new SyncStore();
             database.AddEventTarget(clientId, eventTarget);
             StoreUtils.InitEntitySets(this);

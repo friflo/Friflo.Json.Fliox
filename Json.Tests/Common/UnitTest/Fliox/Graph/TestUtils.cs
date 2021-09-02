@@ -18,7 +18,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
         public void TestQueryRef() {
             using (var __       = Pools.SharedPools) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
-            using (var store    = new PocStore(database, "TestQueryRef")) {
+            using (var store    = new PocStore(database, new TypeStore(), "TestQueryRef")) {
                 var orders = store.orders;
                 var customerId = orders.Query(o => o.customer.key == "customer-1");
                 AreEqual("QueryTask<Order> (filter: .customer == 'customer-1')", customerId.ToString());
@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 #if !UNITY_2020_1_OR_NEWER
         [Test]
         public void TestDictionaryValueIterator() {
-            var store = new PocStore(new MemoryDatabase(), "TestDictionaryValueIterator");
+            var store = new PocStore(new MemoryDatabase(), new TypeStore(), "TestDictionaryValueIterator");
             var readArticles = store.articles.Read();
                         readArticles.Find("missing-id");
             var task =  readArticles.ReadRef(a => a.producer);
@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 
                 Console.WriteLine($"PocStore memory: {diff}");
-                IsTrue(diff < 7600);
+                IsTrue(diff < 7590);
             }
         }
 

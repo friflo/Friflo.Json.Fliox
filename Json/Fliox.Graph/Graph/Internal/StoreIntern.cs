@@ -19,7 +19,6 @@ namespace Friflo.Json.Fliox.Graph.Internal
         // readonly
         internal readonly   string                                      clientId;
         internal readonly   TypeStore                                   typeStore;
-        private  readonly   TypeStore                                   ownedTypeStore;
         internal readonly   TypeCache                                   typeCache;
         internal readonly   EntityDatabase                              database;
         internal readonly   EventTarget                                 eventTarget;
@@ -51,7 +50,6 @@ namespace Friflo.Json.Fliox.Graph.Internal
         internal StoreIntern(
             string                  clientId,
             TypeStore               typeStore,
-            TypeStore               owned,
             EntityDatabase          database,
             ITracerContext          tracerContext,
             EventTarget             eventTarget,
@@ -63,7 +61,6 @@ namespace Friflo.Json.Fliox.Graph.Internal
             // readonly
             this.clientId               = clientId;
             this.typeStore              = typeStore;
-            this.ownedTypeStore         = owned;
             this.typeCache              = mapper.writer.TypeCache;
             this.database               = database;
             this.eventTarget            = eventTarget;
@@ -105,7 +102,6 @@ namespace Friflo.Json.Fliox.Graph.Internal
             objectPatcher.Dispose();
             // readonly
             jsonMapper.Dispose();
-            ownedTypeStore?.Dispose();
         }
         
         internal SubscribeMessageTask AddCallbackHandler(string name, MessageCallback handler) {
