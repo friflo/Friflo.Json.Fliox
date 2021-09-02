@@ -44,18 +44,24 @@ namespace Friflo.Json.Fliox.UserAuth
     public class UserPermission {
         [Fri.Required]  public  string          id;
                         public  List<string>    roles;
+
+        public override         string ToString() => JsonDebug.ToJson(this, false);
     }
     
     public class UserCredential {
         [Fri.Required]  public  string          id;
                         public  string          passHash;
                         public  string          token;
+                        
+        public override         string ToString() => JsonDebug.ToJson(this, false);
     }
     
     public class Role {
         [Fri.Required]  public  string          id;
         [Fri.Required]  public  List<Right>     rights;
                         public  string          description;
+                        
+        public override         string ToString() => JsonDebug.ToJson(this, false);
     }
     
     // -------------------------------------- commands -------------------------------------
