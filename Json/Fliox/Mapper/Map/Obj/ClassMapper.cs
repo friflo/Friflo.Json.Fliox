@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
         
         public override void InitTypeMapper(TypeStore typeStore) {
             instanceFactory?.InitFactory(typeStore);
-            var fields = new PropertyFields(type, typeStore);
+            var fields = new PropertyFields(type, typeStore, false);
             FieldInfo fieldInfo = typeof(TypeMapper).GetField(nameof(propFields), BindingFlags.Public | BindingFlags.Instance);
             // ReSharper disable once PossibleNullReferenceException
             fieldInfo.SetValue(this, fields);

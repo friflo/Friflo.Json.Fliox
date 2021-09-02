@@ -14,9 +14,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         internal            int                 primCount;
         internal            int                 objCount;
         private  readonly   TypeStore           typeStore;
+        private  readonly   bool                privateSetter;
 
-        internal FieldQuery(TypeStore typeStore, Type type) {
-            this.typeStore = typeStore;
+        internal FieldQuery(TypeStore typeStore, Type type, bool privateSetter) {
+            this.typeStore      = typeStore;
+            this.privateSetter  = privateSetter;
             TraverseMembers(type, true);
         }
 
@@ -98,7 +100,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                 if (!(property.CanRead && property.CanWrite))
                     continue;
                 // Is getter and setter public?
-                bool isPublic = property.GetGetMethod(false) != null && property.GetSetMethod(false) != null;
+                bool isPublic = property.GetGetMethod(false) != null && property.GetSetMethod(privateSetter) != null;
                 if (!isPublic && !Property(property.CustomAttributes))
                     continue;
                 var name = property.Name;

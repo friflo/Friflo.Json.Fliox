@@ -28,19 +28,19 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         
         private  readonly   Bytes                           removedKey;
 
-        public PropertyFields (Type type, TypeStore typeStore)
+        public PropertyFields (Type type, TypeStore typeStore, bool privateSetter)
         {
-            typeName       = type. ToString();
-            var query = new FieldQuery(typeStore, type);
-            primCount = query.primCount;
-            objCount  = query.objCount;
-            var fieldList = query.fieldList;
-            num = fieldList. Count;
-            removedKey = new Bytes("__REMOVED");
-            fieldMap = new HashMapOpen<Bytes, PropField>(11, removedKey);
+            typeName        = type. ToString();
+            var query       = new FieldQuery(typeStore, type, privateSetter);
+            primCount       = query.primCount;
+            objCount        = query.objCount;
+            var fieldList   = query.fieldList;
+            num             = fieldList. Count;
+            removedKey      = new Bytes("__REMOVED");
+            fieldMap        = new HashMapOpen<Bytes, PropField>(11, removedKey);
             
-            fields = new PropField [num];
-            names32 = new Bytes32[num];
+            fields          = new PropField [num];
+            names32         = new Bytes32[num];
             
             for (int n = 0; n < num; n++) {
                 fields[n] = fieldList[n];

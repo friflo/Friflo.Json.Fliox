@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
-            var fields = new PropertyFields(type, typeStore);
+            var fields = new PropertyFields(type, typeStore, true);
             FieldInfo fieldInfo = typeof(TypeMapper).GetField(nameof(propFields), BindingFlags.Public | BindingFlags.Instance);
             // ReSharper disable once PossibleNullReferenceException
             fieldInfo.SetValue(this, fields);

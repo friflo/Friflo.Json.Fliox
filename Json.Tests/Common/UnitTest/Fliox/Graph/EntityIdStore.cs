@@ -8,18 +8,19 @@ using Friflo.Json.Fliox.Database;
 using Friflo.Json.Fliox.Graph;
 using Friflo.Json.Fliox.Mapper;
 
-// ReSharper disable UnassignedReadonlyField
+// ReSharper disable UnusedAutoPropertyAccessor.Local
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 {
     public class EntityIdStore : EntityStore {
-        public  readonly    EntitySet <Guid,    GuidEntity>      guidEntities;
-        public  readonly    EntitySet <int,     IntEntity>       intEntities;
-        public  readonly    EntitySet <long,    LongEntity>      longEntities;
-        public  readonly    EntitySet <short,   ShortEntity>     shortEntities;
-        public  readonly    EntitySet <byte,    ByteEntity>      byteEntities;
-        public  readonly    EntitySet <string,  CustomIdEntity>  customIdEntities;
-        public  readonly    EntitySet <string,  EntityRefs>      entityRefs;
-        public  readonly    EntitySet <string,  CustomIdEntity2> customIdEntities2;
+        public  EntitySet <Guid,    GuidEntity>      guidEntities       { get; private set; }
+        public  EntitySet <int,     IntEntity>       intEntities        { get; private set; }
+        public  EntitySet <long,    LongEntity>      longEntities       { get; private set; }
+        public  EntitySet <short,   ShortEntity>     shortEntities      { get; private set; }
+        public  EntitySet <byte,    ByteEntity>      byteEntities       { get; private set; }
+        public  EntitySet <string,  CustomIdEntity>  customIdEntities   { get; private set; }
+        public  EntitySet <string,  EntityRefs>      entityRefs         { get; private set; }
+        public  EntitySet <string,  CustomIdEntity2> customIdEntities2  { get; private set; }
 
         public EntityIdStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {}
     }
