@@ -99,6 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 foreach (var writerStore in writerStores) {
                     writerStore.Dispose();
                 }
+                typeStore.Dispose();
             }
             
         }
