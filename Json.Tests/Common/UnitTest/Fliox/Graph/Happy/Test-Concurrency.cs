@@ -39,7 +39,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         
         public static async Task ConcurrentAccess(EntityDatabase database, int readerCount, int writerCount, int requestCount, bool singleEntity) {
             // --- prepare
-            var store       = new SimpleStore(database, "prepare");
+            var typeStore   = new TypeStore();
+            var store       = new SimpleStore(database, typeStore, "prepare");
             var entities    = new List<SimplyEntity>();
             int max         = Math.Max(readerCount, writerCount);
             if (singleEntity) {
@@ -61,10 +62,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             var writerStores = new List<SimpleStore>();
             try {
                 for (int n = 0; n < readerCount; n++) {
-                    readerStores.Add(new SimpleStore(database, $"reader-{n}"));
+                    readerStores.Add(new SimpleStore(database, typeStore, $"reader-{n}"));
                 }
                 for (int n = 0; n < writerCount; n++) {
-                    writerStores.Add(new SimpleStore(database, $"writer-{n}"));
+                    writerStores.Add(new SimpleStore(database, typeStore, $"writer-{n}"));
                 }
 
                 // --- run readers and writers
@@ -199,8 +200,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         public readonly EntitySet <int, SimplyEntity>   entities;
         
         public SimpleStore(EntityDatabase database, TypeStore typeStore, string clientId) : base (database, typeStore, clientId) {}
-        
-        public SimpleStore(EntityDatabase database, string clientId) : this (database, TestGlobals.typeStore, clientId) {}
     }
     
     // ------------------------------ models ------------------------------
