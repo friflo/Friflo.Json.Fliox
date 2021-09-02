@@ -51,8 +51,6 @@ namespace Friflo.Json.Fliox.Graph
             if (typeStore == null) {
                 typeStore = owned = new TypeStore();
             }
-            // AddTypeMatchers(typeStore);
-            
             ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
             var subscriptionProcessor   = new SubscriptionProcessor(this);
@@ -65,17 +63,6 @@ namespace Friflo.Json.Fliox.Graph
         public void Dispose() {
             _intern.Dispose();
         }
-        
-        /*
-        // done: remove obsolete method - TypeMapper / ITypeMatcher are registered via [Fri.TypeMapper())]
-        public static TypeStore AddTypeMatchers (TypeStore typeStore) {
-            // typeStore.typeResolver.AddGenericTypeMatcher(RefMatcher.Instance);
-            // typeStore.typeResolver.AddGenericTypeMatcher(EntityStoreMatcher.Instance);
-            // typeStore.typeResolver.AddGenericTypeMatcher(EntitySetMatcher.Instance);
-            //
-            // JsonDebug.DebugTypeStore.typeResolver.AddGenericTypeMatcher(RefMatcher.Instance);
-            return typeStore;
-        } */
         
         public static Type[] GetEntityTypes<TEntityStore> () where TEntityStore : EntityStore {
             return StoreUtils.GetEntityTypes<TEntityStore>();
