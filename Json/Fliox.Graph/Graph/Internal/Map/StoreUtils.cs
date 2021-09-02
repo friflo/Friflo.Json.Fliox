@@ -38,13 +38,10 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
                 bool isEntitySet    = IsEntitySet(fieldType);
                 if (!isEntitySet)
                     continue;
-                var entitySet = (EntitySet)field.GetValue(store);
-                if (entitySet == null) {
-                    var setType     = field.FieldType;
-                    var setMapper   = (IEntitySetMapper)store._intern.typeStore.GetTypeMapper(setType);
-                    entitySet       = setMapper.CreateEntitySet();
-                    field.SetValue(store, entitySet);
-                }
+                var setType     = field.FieldType;
+                var setMapper   = (IEntitySetMapper)store._intern.typeStore.GetTypeMapper(setType);
+                var entitySet   = setMapper.CreateEntitySet();
+                field.SetValue(store, entitySet);
                 entitySet.Init(store);
             }
         }

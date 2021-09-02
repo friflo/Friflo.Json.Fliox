@@ -119,6 +119,7 @@ namespace Friflo.Json.Fliox.Graph
             return info;
         }}
         
+        /// constructor is called via <see cref="StoreUtils.InitEntitySets"/> 
         internal EntitySet() : base (typeof(T).Name) {
             ValidateKeyType(typeof(TKey));
         }

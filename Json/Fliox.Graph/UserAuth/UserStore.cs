@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Graph;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Sync;
 
+// ReSharper disable UnassignedReadonlyField
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnassignedField.Global
 // ReSharper disable CollectionNeverUpdated.Global
@@ -26,9 +27,9 @@ namespace Friflo.Json.Fliox.UserAuth
         /// <summary>"clientId" used for a <see cref="UserStore"/> to request a user authentication with its token</summary>
         public const string AuthUser    = "AuthUser";
         
-        public  readonly    EntitySet <string, UserPermission>  permissions = new EntitySet <string, UserPermission> ();
-        public  readonly    EntitySet <string, UserCredential>  credentials = new EntitySet <string, UserCredential> ();
-        public  readonly    EntitySet <string, Role>            roles       = new EntitySet <string, Role>           ();
+        public  readonly    EntitySet <string, UserPermission>  permissions;
+        public  readonly    EntitySet <string, UserCredential>  credentials;
+        public  readonly    EntitySet <string, Role>            roles;
         
         public UserStore(EntityDatabase database, string clientId) : base(database, SyncTypeStore.Get(), clientId) {}
         
