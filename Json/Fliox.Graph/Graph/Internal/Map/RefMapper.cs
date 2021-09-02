@@ -99,12 +99,6 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
             } else {
                 writer.AppendNull();
             }
-            /* string id = value.id;
-            if (id != null) {
-                writer.WriteString(id);
-            } else {
-                writer.AppendNull();
-            } */
         }
 
         public override Ref<TKey, T> Read(ref Reader reader, Ref<TKey, T> slot, out bool success) {
@@ -126,28 +120,6 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
                 return slot;
             }
             return default;
-            
-            /*
-            var ev = reader.parser.Event;
-            if (ev == JsonEvent.ValueString) {
-                success = true;
-                string id = reader.parser.value.ToString();
-                if (reader.tracerContext != null) {
-                    var store = reader.tracerContext.Store();
-                    var set = store.GetEntitySet<TKey, T>();
-                    var peer = set.GetPeerById(id);
-                    slot = new Ref<TKey, T> (peer);
-                    return slot;
-                }
-                var key = Ref<TKey, T>.StaticEntityKey.IdToKey(id);
-                slot = new Ref<TKey, T> (key);
-                return slot;
-            }
-            if (ev == JsonEvent.ValueNull) {
-                success = true;
-                return default;
-            }
-            return reader.HandleEvent(this, out success);  */
         }
     }
 }
