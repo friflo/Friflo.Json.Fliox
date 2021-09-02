@@ -16,10 +16,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
     {
         [Test]
         public void RunLinq() {
-            using (var _        = Pools.SharedPools) // for LeakTestsFixture
-            using (var database = new MemoryDatabase())
-            using (var store    = new PocStore(database, "store"))
-            using (var m        = new ObjectMapper(store.TypeStore)) {
+            using (var _            = Pools.SharedPools) // for LeakTestsFixture
+            using (var database     = new MemoryDatabase())
+            using (var typeStore    = new TypeStore())
+            using (var store        = new PocStore(database,typeStore, "store"))
+            using (var m            = new ObjectMapper(store.TypeStore)) {
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order1 = readOrders.Find("order-1");
@@ -70,8 +71,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         }
         
         private static Order GetOrder(string id) {
-            using (var database = new MemoryDatabase())
-            using (var store = new PocStore(database, "store")) {
+            using (var database     = new MemoryDatabase())
+            using (var typeStore    = new TypeStore())
+            using (var store        = new PocStore(database, typeStore, "store")) {
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order = readOrders.Find(id);
@@ -110,9 +112,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 
         [Test]
         public void TestSelectSameInstance() {
-            using (var _        = Pools.SharedPools) // for LeakTestsFixture
-            using (var database = new MemoryDatabase())
-            using (var store    = new PocStore(database, "store")) {
+            using (var _            = Pools.SharedPools) // for LeakTestsFixture
+            using (var database     = new MemoryDatabase())
+            using (var typeStore    = new TypeStore())
+            using (var store        = new PocStore(database, typeStore, "store")) {
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order1 = readOrders.Find("order-1");
