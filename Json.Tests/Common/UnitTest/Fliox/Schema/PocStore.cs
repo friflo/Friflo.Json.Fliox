@@ -45,7 +45,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         public static void CS_CS () {
             var options     = new NativeTypeOptions(PocStoreTypes) {
                 replacements = new [] {
-                    new Replace("Friflo.Json.Fliox.",                        "PocStore2."),
                     new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "PocStore2") }
             };
             var generator = CSharpGenerator.Generate(options);
@@ -57,7 +56,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         public static void CS_Kotlin () {
             var options     = new NativeTypeOptions(PocStoreTypes) {
                 replacements = new [] {
-                    new Replace("Friflo.Json.Fliox.",                        "PocStore."),
                     new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "PocStore") }
             };
             var generator = KotlinGenerator.Generate(options);
