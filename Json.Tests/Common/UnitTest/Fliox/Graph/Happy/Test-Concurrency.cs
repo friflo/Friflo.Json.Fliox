@@ -14,7 +14,6 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Sync;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
-using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
 {
@@ -106,11 +105,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             var id = entity.id;
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
-                    var readEmployee = store.entities.Read();
-                    readEmployee.Find(id);
+                    var readEntities = store.entities.Read();
+                    readEntities.Find(id);
                     await store.Sync();
-                    AreEqual (1, readEmployee.Results.Count);
-                    if (!readEmployee.Results.ContainsKey(id))
+                    if (1 !=  readEntities.Results.Count)
+                        throw new TestException($"Expect entities Count: 1. was: {readEntities.Results.Count}");
+                    if (!readEntities.Results.ContainsKey(id))
                         throw new TestException($"Expect entity with id: {id}");
                 }
             });
@@ -185,7 +185,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 for (int n= 0; n < requestCount; n++) {
                     var message = store.SendMessage(StdMessage.Echo, text);
                     await store.Sync();
-                    AreEqual (result, message.ResultJson);
+                    if (result != message.ResultJson)
+                        throw new TestException($"Expect result: {result}, was: {message.ResultJson}");
                 }
             });
         }
