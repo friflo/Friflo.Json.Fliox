@@ -32,6 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 
         [Test]
         public void TestEmptyDictionary() {
+            // ReSharper disable once CollectionNeverUpdated.Local
             var empty = new EmptyDictionary<string, string>();
             empty.Clear(); // no exception
             
@@ -75,7 +76,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 var _           = new PocStore(database, typeStore, null);
                 
                 var start = GC.GetAllocatedBytesForCurrentThread();
-                var store = new PocStore(database, typeStore, null); // ~ 4 µs
+                // ReSharper disable once UnusedVariable
+                var store = new PocStore(database, typeStore, null); // ~ 6 µs
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 
                 Console.WriteLine($"PocStore memory: {diff}");
