@@ -22,7 +22,8 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
             return (TypeMapper)TypeMapperUtils.CreateGenericInstance(typeof(EntitySetMapper<,>), new[] {type, entityType}, constructorParams);
         }
         
-        internal static readonly object[] NoArgs = {};
+        internal static readonly    object[]    NoArgs      = {};
+        internal static readonly    Type[]      NoTypeArgs  = {};
     }
     
     internal interface IEntitySetMapper {
@@ -43,7 +44,8 @@ namespace Friflo.Json.Fliox.Graph.Internal.Map
             base (config, type, true, false)
         {
             instanceFactory = new InstanceFactory(); // abstract type - todo remove
-            setConstructor  = type.GetConstructor(new Type[] {});
+            var flags       = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+            setConstructor  = type.GetConstructor(flags, null, EntitySetMatcher.NoTypeArgs, null);
             this.keyType    = keyType;
         }
         
