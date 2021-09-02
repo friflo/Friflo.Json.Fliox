@@ -119,6 +119,10 @@ namespace Friflo.Json.Fliox.Graph
             return info;
         }}
         
+        internal EntitySet() : base (typeof(T).Name) {
+            ValidateKeyType(typeof(TKey));
+        }
+        
         internal override void Init(EntityStore store) {
             var type = typeof(T);
             store._intern.setByType[type]       = this;
@@ -127,11 +131,8 @@ namespace Friflo.Json.Fliox.Graph
             intern      = new SetIntern<TKey, T>(store);
         }
         
-        // --------------------------------------- public interface --------------------------------------- 
-        internal EntitySet() : base (typeof(T).Name) {
-            ValidateKeyType(typeof(TKey));
-        }
-
+        // --------------------------------------- public interface ---------------------------------------
+        
         // --- Read
         public ReadTask<TKey, T> Read() {
             // ReadTasks<> are not added with intern.store.AddTask(task) as it only groups the tasks created via its
