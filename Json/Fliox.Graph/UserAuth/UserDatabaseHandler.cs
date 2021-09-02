@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.UserAuth
         private readonly SharedPool<UserStore>   storePool;
         
         public UserDatabaseHandler(EntityDatabase authDatabase) {
-            storePool = new SharedPool<UserStore>      (() => new UserStore(authDatabase, UserStore.Server));
+            storePool = new SharedPool<UserStore> (() => new UserStore(authDatabase, UserStore.Server));
             authDatabase.authenticator = new UserDatabaseAuthenticator();
             authDatabase.taskHandler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(AuthenticateUser); 
         }
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.UserAuth
         
         private async Task<AuthenticateUserResult> AuthenticateUser (Command<AuthenticateUser> command) {
             using (var pooledStore = storePool.Get()) {
-                var store = pooledStore.instance;
+                var store           = pooledStore.instance;
                 var validateToken   = command.Value;
                 var clientId        = validateToken.clientId;
                 var readCredentials = store.credentials.Read();
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.UserAuth
                 
                 await store.Sync();
 
-                UserCredential  cred        = findCred.Result;
+                UserCredential  cred    = findCred.Result;
                 bool            isValid = cred != null && cred.token == validateToken.token;
                 return new AuthenticateUserResult { isValid = isValid };
             }

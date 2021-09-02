@@ -59,10 +59,10 @@ namespace Friflo.Json.Fliox.UserAuth
         public UserAuthenticator (UserStore userStore, IUserAuth userAuth, Authorizer unknown = null) {
             this.userStore      = userStore;
             this.userAuth       = userAuth;
-            credByTarget        = new ConcurrentDictionary<IEventTarget, ClientCredentials>();
-            credByClient        = new ConcurrentDictionary<string,       ClientCredentials>();
+            credByTarget        = new ConcurrentDictionary <IEventTarget, ClientCredentials>();
+            credByClient        = new ConcurrentDictionary <string,       ClientCredentials>();
             this.unknown        = unknown ?? new AuthorizeDeny();
-            authorizerByRole    = new ConcurrentDictionary<string,       Authorizer>();
+            authorizerByRole    = new ConcurrentDictionary <string,       Authorizer>();
         }
         
         public async Task ValidateRoles() {
@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.UserAuth
             await userStore.TrySync();
             Dictionary<string, Role> roles = queryRoles.Results;
             foreach (var pair in roles) {
-                var role     = pair.Value;
+                var role = pair.Value;
                 foreach (var right in role.rights) {
                     if (!(right is RightPredicate rightPredicates))
                         break;
@@ -161,7 +161,7 @@ namespace Friflo.Json.Fliox.UserAuth
             var readRoles = userStore.roles.Read().FindRange(newRoles);
             await userStore.Sync();
             foreach (var newRolePair in readRoles.Results) {
-                var role        = newRolePair.Key;
+                string role     = newRolePair.Key;
                 Role newRole    = newRolePair.Value;
                 if (newRole == null)
                     throw new InvalidOperationException($"authorization role not found: '{role}'");
