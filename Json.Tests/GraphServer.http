@@ -163,6 +163,8 @@ content-type: application/json
 ]}
 
 
+# =============================== WebSocket only tasks ===============================
+
 ### subscribe to all ("*") messages - run only for WebSocket; fails for HTTP POST
 # Filter all messages matching to "name".
 # "name": "*"                  => subscribe all message events.
