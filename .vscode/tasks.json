@@ -16,7 +16,7 @@
         {
             "label": "test",
             "command": "dotnet",
-            "type": "shell",
+            "type": "process",
             "group": "test",
             "args": [
                 "test",
