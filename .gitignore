@@ -1,5 +1,6 @@
 
 appsettings.private.json
+/Playground/.idea
 
 .bin/
 .obj/
