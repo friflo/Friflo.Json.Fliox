@@ -1,3 +1,6 @@
+
+#if !UNITY_5_3_OR_NEWER
+
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Db.Cosmos;
 using Friflo.Json.Fliox.Db.Database;
@@ -46,3 +49,5 @@ namespace Friflo.Playground.CosmosDB
         }
     }
 }
+
+#endif
