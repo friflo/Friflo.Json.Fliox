@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.Database
             return new PatchEntitiesResult{patchErrors = patchErrors};
         }
         
-        internal async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, HashSet<JsonKey> ids, MessageContext messageContext) {
+        protected async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, HashSet<JsonKey> ids, MessageContext messageContext) {
             var readIds         = new ReadEntities {ids = ids};
             var readEntities    = await ReadEntities(readIds, messageContext).ConfigureAwait(false);
             if (readEntities.Error != null) {
