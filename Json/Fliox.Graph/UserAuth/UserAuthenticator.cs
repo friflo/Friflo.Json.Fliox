@@ -11,9 +11,6 @@ using Friflo.Json.Fliox.Database;
 using Friflo.Json.Fliox.Database.Event;
 using Friflo.Json.Fliox.Sync;
 
-#if UNITY_5_3_OR_NEWER
-    using ValueTask = System.Threading.Tasks.Task;
-#endif
 
 namespace Friflo.Json.Fliox.UserAuth
 {
@@ -82,8 +79,8 @@ namespace Friflo.Json.Fliox.UserAuth
                 }
             }
         }
-
-        public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext)
+        
+        public override async Task Authenticate(SyncRequest syncRequest, MessageContext messageContext)
         {
             var clientId = syncRequest.clientId;
             if (clientId == null) {
@@ -128,7 +125,7 @@ namespace Friflo.Json.Fliox.UserAuth
             messageContext.authState.SetSuccess(credential.authorizer);
         }
         
-        protected virtual async Task<Authorizer> GetAuthorizer(string clientId) {
+        private async Task<Authorizer> GetAuthorizer(string clientId) {
             var readPermission = userStore.permissions.Read().Find(clientId);
             await userStore.Sync();
             UserPermission permission = readPermission.Result;

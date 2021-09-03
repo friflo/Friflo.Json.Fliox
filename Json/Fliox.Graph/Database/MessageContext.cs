@@ -6,12 +6,6 @@ using Friflo.Json.Fliox.Auth;
 using Friflo.Json.Fliox.Database.Event;
 using Friflo.Json.Fliox.Sync;
 
-#if UNITY_5_3_OR_NEWER
-    using BoolTask = System.Threading.Tasks.Task<bool>;
-#else
-    using BoolTask = System.Threading.Tasks.ValueTask<bool>;
-#endif
-
 namespace Friflo.Json.Fliox.Database
 {
     // ------------------------------------ MessageContext ------------------------------------
@@ -49,16 +43,7 @@ namespace Friflo.Json.Fliox.Database
         public void Cancel() {
             canceler(); // canceler.Invoke();
         }
-        
-        public bool Authenticated() {
-            return authState.Authenticated;
-        }
-        
-        public bool Authorize(DatabaseTask task, MessageContext messageContext) {
-            return authState.Authorizer.Authorize(task, messageContext);
-        }
 
-        
         public void Release() {
             startUsage.AssertEqual(pools.PoolUsage);
         }

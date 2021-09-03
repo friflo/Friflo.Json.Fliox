@@ -8,9 +8,6 @@ using Friflo.Json.Fliox.Auth.Rights;
 using Friflo.Json.Fliox.Database;
 using Friflo.Json.Fliox.Sync;
 
-#if UNITY_5_3_OR_NEWER
-    using ValueTask = System.Threading.Tasks.Task;
-#endif
 
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.UserAuth
@@ -39,15 +36,15 @@ namespace Friflo.Json.Fliox.UserAuth
             new AuthorizeContainer(nameof(UserCredential),  new []{OperationType.read})
         });
         
-#pragma warning disable 1998   // This async method lacks 'await' operators and will run synchronously. ....
-        public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
+        public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
             var clientId = syncRequest.clientId;
             if (userRights.TryGetValue(clientId, out Authorizer rights)) {
                 messageContext.authState.SetSuccess(rights);
-                return;
+                return Task.CompletedTask;
             }
             // authState.SetFailed() is not called to avoid giving a hint for a valid clientId (user)
-            messageContext.authState.SetSuccess(UnknownRights); 
+            messageContext.authState.SetSuccess(UnknownRights);
+            return Task.CompletedTask;
         }
     }
 }

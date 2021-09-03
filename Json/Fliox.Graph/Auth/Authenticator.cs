@@ -8,10 +8,6 @@ using Friflo.Json.Fliox.Auth.Rights;
 using Friflo.Json.Fliox.Database;
 using Friflo.Json.Fliox.Sync;
 
-#if UNITY_5_3_OR_NEWER
-    using ValueTask = System.Threading.Tasks.Task;
-#endif
-
 namespace Friflo.Json.Fliox.Auth
 {
     /// <summary>
@@ -22,7 +18,7 @@ namespace Friflo.Json.Fliox.Auth
     {
         protected readonly Dictionary<string, AuthorizePredicate> registeredPredicates = new Dictionary<string, AuthorizePredicate>();
             
-        public abstract ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext);
+        public abstract Task Authenticate(SyncRequest syncRequest, MessageContext messageContext);
         
         /// <summary>
         /// Register a predicate function by the given <see cref="name"/> which enables custom authorization via code,
@@ -57,9 +53,9 @@ namespace Friflo.Json.Fliox.Auth
             this.unknown = unknown ?? throw new NullReferenceException(nameof(unknown));
         }
         
-#pragma warning disable 1998   // This async method lacks 'await' operators and will run synchronously. ....
-        public override async ValueTask Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
+        public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.authState.SetFailed("not authenticated", unknown);
+            return Task.CompletedTask;
         }
     }
 }
