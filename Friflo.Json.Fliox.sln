@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Burst", "Json\B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox", "Json\Fliox\Friflo.Json.Fliox.csproj", "{C45F68CA-9E64-4A37-8188-A93198A51E36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Graph", "Json\Fliox.Graph\Friflo.Json.Fliox.Graph.csproj", "{738EDB04-B367-4FCE-8873-3F438DE4CC21}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Db", "Json\Fliox.Graph\Friflo.Json.Fliox.Db.csproj", "{738EDB04-B367-4FCE-8873-3F438DE4CC21}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Db.Cosmos", "Json\Fliox.Db.Cosmos\Friflo.Json.Fliox.Db.Cosmos.csproj", "{62AB91E6-3C0E-4DD6-966E-AE4594452C01}"
 EndProject

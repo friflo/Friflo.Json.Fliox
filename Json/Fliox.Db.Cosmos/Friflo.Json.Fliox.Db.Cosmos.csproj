@@ -14,7 +14,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Fliox.Graph\Friflo.Json.Fliox.Graph.csproj" />
+      <ProjectReference Include="..\Fliox.Graph\Friflo.Json.Fliox.Db.csproj" />
     </ItemGroup>
 
     <ItemGroup>
