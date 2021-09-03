@@ -3,8 +3,8 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Db.Sync;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Db.Database
 {

@@ -4,11 +4,11 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Db.Graph;
+using Friflo.Json.Fliox.Db.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Schema.Validation;
-using Friflo.Json.Fliox.Db.UserAuth;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;

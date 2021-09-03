@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Db.Database;
 using Friflo.Json.Fliox.Db.Graph.Internal;
 using Friflo.Json.Fliox.Db.Graph.Internal.Map;
+using Friflo.Json.Fliox.Db.Sync;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
-using Friflo.Json.Fliox.Db.Sync;
 
 #if !UNITY_5_3_OR_NEWER
 [assembly: CLSCompliant(true)]

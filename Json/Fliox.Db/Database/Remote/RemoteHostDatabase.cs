@@ -3,8 +3,8 @@
 
 using System;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Db.Sync;
+using Friflo.Json.Fliox.Mapper;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.Db.Database.Remote

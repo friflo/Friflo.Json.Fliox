@@ -3,9 +3,9 @@
 
 using System;
 using Friflo.Json.Fliox.Db.Graph;
+using Friflo.Json.Fliox.Db.UserAuth;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.JSON;
-using Friflo.Json.Fliox.Db.UserAuth;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;

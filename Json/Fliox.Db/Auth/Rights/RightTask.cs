@@ -3,8 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Db.Sync;
+using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable CollectionNeverUpdated.Global
 // ReSharper disable MemberCanBePrivate.Global

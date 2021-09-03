@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Db.Auth.Rights;
 using Friflo.Json.Fliox.Db.Database;
 using Friflo.Json.Fliox.Db.Graph;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Db.Sync;
+using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable UnassignedReadonlyField
 // ReSharper disable ClassNeverInstantiated.Global

@@ -10,8 +10,8 @@ using Friflo.Json.Fliox.Db.Database;
 using Friflo.Json.Fliox.Db.Database.Remote;
 using Friflo.Json.Fliox.Db.Database.Utils;
 using Friflo.Json.Fliox.Db.Graph;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Db.Sync;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 

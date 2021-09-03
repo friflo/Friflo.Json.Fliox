@@ -2,9 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Fliox.Db.Sync;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
-using Friflo.Json.Fliox.Db.Sync;
 
 namespace Friflo.Json.Fliox.Db.Graph.Internal
 {

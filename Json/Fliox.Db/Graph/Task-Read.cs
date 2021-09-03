@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.Db.Graph.Internal;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Db.Sync;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Db.Graph
 {
