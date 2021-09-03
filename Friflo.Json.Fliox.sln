@@ -6,9 +6,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Burst", "Json\B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox", "Json\Fliox\Friflo.Json.Fliox.csproj", "{C45F68CA-9E64-4A37-8188-A93198A51E36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Db", "Json\Fliox.Graph\Friflo.Json.Fliox.Db.csproj", "{738EDB04-B367-4FCE-8873-3F438DE4CC21}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Db.Cosmos", "Json\Fliox.Db.Cosmos\Friflo.Json.Fliox.Db.Cosmos.csproj", "{62AB91E6-3C0E-4DD6-966E-AE4594452C01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Db", "Json\Fliox.Db\Friflo.Json.Fliox.Db.csproj", "{C0C7ECC7-D621-4BA0-AD31-687EEA6FE981}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,13 +28,13 @@ Global
 		{C45F68CA-9E64-4A37-8188-A93198A51E36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C45F68CA-9E64-4A37-8188-A93198A51E36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C45F68CA-9E64-4A37-8188-A93198A51E36}.Release|Any CPU.Build.0 = Release|Any CPU
-		{738EDB04-B367-4FCE-8873-3F438DE4CC21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{738EDB04-B367-4FCE-8873-3F438DE4CC21}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{738EDB04-B367-4FCE-8873-3F438DE4CC21}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{738EDB04-B367-4FCE-8873-3F438DE4CC21}.Release|Any CPU.Build.0 = Release|Any CPU
 		{62AB91E6-3C0E-4DD6-966E-AE4594452C01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{62AB91E6-3C0E-4DD6-966E-AE4594452C01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62AB91E6-3C0E-4DD6-966E-AE4594452C01}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62AB91E6-3C0E-4DD6-966E-AE4594452C01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0C7ECC7-D621-4BA0-AD31-687EEA6FE981}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0C7ECC7-D621-4BA0-AD31-687EEA6FE981}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0C7ECC7-D621-4BA0-AD31-687EEA6FE981}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0C7ECC7-D621-4BA0-AD31-687EEA6FE981}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

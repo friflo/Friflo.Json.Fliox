@@ -16,13 +16,13 @@
     <ItemGroup>
       <None Remove="**/*.meta" />
     </ItemGroup>
-	
-    <ItemGroup>
-      <ProjectReference Include="..\Fliox.Graph\Friflo.Json.Fliox.Db.csproj" />
-    </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.20.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Fliox.Db\Friflo.Json.Fliox.Db.csproj" />
     </ItemGroup>
 
 </Project>
