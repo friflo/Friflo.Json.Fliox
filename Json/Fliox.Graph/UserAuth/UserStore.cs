@@ -22,14 +22,14 @@ namespace Friflo.Json.Fliox.UserAuth
     /// </summary>
     public class UserStore : EntityStore, IUserAuth
     {
+        public  readonly    EntitySet <string, UserPermission>  permissions;
+        public  readonly    EntitySet <string, UserCredential>  credentials;
+        public  readonly    EntitySet <string, Role>            roles;
+        
         /// <summary>"clientId" used for a <see cref="UserStore"/> to perform user authentication.</summary>
         public const string Server      = "Server";
         /// <summary>"clientId" used for a <see cref="UserStore"/> to request a user authentication with its token</summary>
         public const string AuthUser    = "AuthUser";
-        
-        public  readonly    EntitySet <string, UserPermission>  permissions;
-        public  readonly    EntitySet <string, UserCredential>  credentials;
-        public  readonly    EntitySet <string, Role>            roles;
         
         public UserStore(EntityDatabase database, string clientId) : base(database, SyncTypeStore.Get(), clientId) {}
         
