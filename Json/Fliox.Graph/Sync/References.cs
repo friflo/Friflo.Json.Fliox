@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Graph;
+using Friflo.Json.Fliox.Db.Graph;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Sync
+namespace Friflo.Json.Fliox.Db.Sync
 {
     // ----------------------------------- sub task -----------------------------------
     public class References

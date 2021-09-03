@@ -3,12 +3,12 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 
 // ReSharper disable CollectionNeverUpdated.Global
 // ReSharper disable UnassignedField.Global
 // ReSharper disable MemberCanBePrivate.Global
-namespace Friflo.Json.Fliox.Auth.Rights
+namespace Friflo.Json.Fliox.Db.Auth.Rights
 {
     public class RightDatabase : Right
     {

@@ -3,11 +3,11 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Friflo.Json.Fliox.Graph.Internal;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Graph.Internal;
+using Friflo.Json.Fliox.Db.Sync;
 using Friflo.Json.Fliox.Transform;
 
-namespace Friflo.Json.Fliox.Graph
+namespace Friflo.Json.Fliox.Db.Graph
 {
     public class SubscribeChangesTask<T> : SyncTask where T : class
     {

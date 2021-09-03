@@ -2,9 +2,9 @@
 // See LICENSE file in the project root for full license information.
 using System.Collections.Generic;
 using System.Text;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 
-namespace Friflo.Json.Fliox.Graph
+namespace Friflo.Json.Fliox.Db.Graph
 {
     public class SyncResult
     {

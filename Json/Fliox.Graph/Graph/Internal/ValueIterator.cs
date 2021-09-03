@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Friflo.Json.Fliox.Graph.Internal
+namespace Friflo.Json.Fliox.Db.Graph.Internal
 {
     public struct ValueIterator<TKey, TValue> : IEnumerator<TValue>
     {

@@ -3,7 +3,7 @@
 
 using System.Collections;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Database;
+using Friflo.Json.Fliox.Db.Database;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Tests.Common.Utils;

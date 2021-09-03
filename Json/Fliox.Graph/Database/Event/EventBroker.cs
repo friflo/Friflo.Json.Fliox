@@ -6,10 +6,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 using Friflo.Json.Fliox.Transform;
 
-namespace Friflo.Json.Fliox.Database.Event
+namespace Friflo.Json.Fliox.Db.Database.Event
 {
     public interface IEventTarget {
         bool        IsOpen ();

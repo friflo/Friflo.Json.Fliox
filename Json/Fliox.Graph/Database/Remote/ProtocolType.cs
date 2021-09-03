@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 
-namespace Friflo.Json.Fliox.Database.Remote
+namespace Friflo.Json.Fliox.Db.Database.Remote
 {
     /// <summary>
     /// Specify how <see cref="DatabaseRequest"/>'s and <see cref="DatabaseResponse"/>'s are send via the used

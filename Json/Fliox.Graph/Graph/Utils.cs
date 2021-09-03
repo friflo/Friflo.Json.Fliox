@@ -2,10 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Database;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Database;
+using Friflo.Json.Fliox.Db.Sync;
 
-namespace Friflo.Json.Fliox.Graph
+namespace Friflo.Json.Fliox.Db.Graph
 {
     /// <summary>
     /// Set of utility methods to guide a graceful shutdown by disposing all resources.

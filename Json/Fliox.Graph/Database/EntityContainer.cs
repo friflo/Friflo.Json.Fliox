@@ -6,10 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 using Friflo.Json.Fliox.Transform;
 
-namespace Friflo.Json.Fliox.Database
+namespace Friflo.Json.Fliox.Db.Database
 {
     /// <summary>
     /// An <see cref="EntityContainer"/> is the abstraction of a collection / table used to store their entities / records 

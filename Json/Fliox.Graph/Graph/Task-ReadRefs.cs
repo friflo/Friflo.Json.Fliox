@@ -4,10 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Friflo.Json.Fliox.Graph.Internal;
+using Friflo.Json.Fliox.Db.Graph.Internal;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Graph
+namespace Friflo.Json.Fliox.Db.Graph
 {
 
     // could be an interface, but than internal used methods would be public (C# 8.0 enables internal interface methods) 

@@ -4,9 +4,9 @@
 using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 
-namespace Friflo.Json.Fliox.Database
+namespace Friflo.Json.Fliox.Db.Database
 {
     /// <summary>
     /// Is used to ensure that <see cref="ReadEntitiesResult"/> returned by <see cref="EntityContainer.ReadEntities"/>

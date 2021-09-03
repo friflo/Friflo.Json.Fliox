@@ -3,7 +3,7 @@
 using System;
 using System.Text;
 
-namespace Friflo.Json.Fliox.Sync
+namespace Friflo.Json.Fliox.Db.Sync
 {
     // ----------------------------------- response -----------------------------------
     public class ErrorResponse : DatabaseResponse

@@ -3,7 +3,7 @@
 
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Auth.Rights
+namespace Friflo.Json.Fliox.Db.Auth.Rights
 {
     [Fri.Discriminator("type")]
     [Fri.Polymorph(typeof(RightAllow),              Discriminant = "allow")]

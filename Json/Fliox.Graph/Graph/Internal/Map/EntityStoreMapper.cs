@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 
-namespace Friflo.Json.Fliox.Graph.Internal.Map
+namespace Friflo.Json.Fliox.Db.Graph.Internal.Map
 {
     internal class EntityStoreMatcher : ITypeMatcher {
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {

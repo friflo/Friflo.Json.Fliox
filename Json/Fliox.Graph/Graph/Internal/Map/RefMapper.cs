@@ -4,14 +4,14 @@
 using System;
 using System.Reflection;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.Graph.Internal.Id;
+using Friflo.Json.Fliox.Db.Graph.Internal.Id;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Diff;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Mapper.Utils;
 
-namespace Friflo.Json.Fliox.Graph.Internal.Map
+namespace Friflo.Json.Fliox.Db.Graph.Internal.Map
 {
     // -------------------------------------------------------------------------------------
     internal class RefMatcher : ITypeMatcher {

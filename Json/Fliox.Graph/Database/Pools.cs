@@ -5,11 +5,11 @@ using System;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Validation;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Utils;
 
-namespace Friflo.Json.Fliox.Database
+namespace Friflo.Json.Fliox.Db.Database
 {
         public struct PoolUsage {
         internal int    patcherCount;

@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using Friflo.Json.Fliox.Database;
+using Friflo.Json.Fliox.Db.Database;
 
-namespace Friflo.Json.Fliox.Auth
+namespace Friflo.Json.Fliox.Db.Auth
 {
     /// <summary>
     /// Contains the authentication and authorization result of <see cref="Authenticator.Authenticate"/>.

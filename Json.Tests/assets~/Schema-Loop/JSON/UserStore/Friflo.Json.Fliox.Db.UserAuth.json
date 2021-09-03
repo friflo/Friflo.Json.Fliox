@@ -6,9 +6,9 @@
             "type": "object",
             "isAbstract": true,
             "properties": {
-                "permissions": { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.UserAuth.UserPermission.json#/definitions/UserPermission" } },
-                "credentials": { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.UserAuth.UserCredential.json#/definitions/UserCredential" } },
-                "roles":       { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.UserAuth.Role.json#/definitions/Role" } }
+                "permissions": { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Db.UserAuth.UserPermission.json#/definitions/UserPermission" } },
+                "credentials": { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Db.UserAuth.UserCredential.json#/definitions/UserCredential" } },
+                "roles":       { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Db.UserAuth.Role.json#/definitions/Role" } }
             },
             "required": [
                 "permissions",

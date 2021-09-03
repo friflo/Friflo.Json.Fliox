@@ -5,7 +5,7 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Graph;
+using Friflo.Json.Fliox.Db.Graph;
 using Friflo.Json.Fliox.Mapper;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;

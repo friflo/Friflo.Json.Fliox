@@ -5,13 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using Friflo.Json.Fliox.Graph.Internal;
-using Friflo.Json.Fliox.Graph.Internal.Id;
-using Friflo.Json.Fliox.Graph.Internal.Map;
+using Friflo.Json.Fliox.Db.Graph.Internal;
+using Friflo.Json.Fliox.Db.Graph.Internal.Id;
+using Friflo.Json.Fliox.Db.Graph.Internal.Map;
 using Friflo.Json.Fliox.Mapper;
 using static System.Diagnostics.DebuggerBrowsableState;
 
-namespace Friflo.Json.Fliox.Graph
+namespace Friflo.Json.Fliox.Db.Graph
 {
     /// <summary>
     /// A <see cref="Ref{TKey,T}"/> is used to declare type safe fields being references to other entities in a data model.

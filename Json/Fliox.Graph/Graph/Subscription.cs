@@ -5,13 +5,13 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
-using Friflo.Json.Fliox.Database.Utils;
-using Friflo.Json.Fliox.Graph.Internal;
-using Friflo.Json.Fliox.Graph.Internal.Id;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Database.Utils;
+using Friflo.Json.Fliox.Db.Graph.Internal;
+using Friflo.Json.Fliox.Db.Graph.Internal.Id;
+using Friflo.Json.Fliox.Db.Sync;
 using Friflo.Json.Fliox.Transform;
 
-namespace Friflo.Json.Fliox.Graph
+namespace Friflo.Json.Fliox.Db.Graph
 {
     public enum SubscriptionHandling {
         /// <summary>

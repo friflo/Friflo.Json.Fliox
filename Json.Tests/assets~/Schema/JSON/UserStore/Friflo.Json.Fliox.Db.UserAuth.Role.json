@@ -7,7 +7,7 @@
             "type": "object",
             "properties": {
                 "id":          { "type": "string" },
-                "rights":      { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Auth.Rights.json#/definitions/Right" } },
+                "rights":      { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Db.Auth.Rights.json#/definitions/Right" } },
                 "description": { "type": ["string", "null"] }
             },
             "required": [

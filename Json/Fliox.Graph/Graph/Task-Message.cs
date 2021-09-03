@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using Friflo.Json.Fliox.Graph.Internal;
+using Friflo.Json.Fliox.Db.Graph.Internal;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Graph
+namespace Friflo.Json.Fliox.Db.Graph
 {
     public class SendMessageTask : SyncTask
     {

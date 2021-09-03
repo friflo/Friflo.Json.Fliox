@@ -5,7 +5,7 @@ using System;
 using System.Reflection;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Graph.Internal.Id
+namespace Friflo.Json.Fliox.Db.Graph.Internal.Id
 {
     internal class EntityKeyByteField<T> : EntityKey<byte, T> where T : class {
         private  readonly   FieldInfo           field;

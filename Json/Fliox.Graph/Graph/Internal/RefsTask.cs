@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace Friflo.Json.Fliox.Graph.Internal
+namespace Friflo.Json.Fliox.Db.Graph.Internal
 {
     internal struct RefsTask
     {

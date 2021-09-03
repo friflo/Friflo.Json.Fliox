@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Sync
+namespace Friflo.Json.Fliox.Db.Sync
 {
     // ----------------------------------- request -----------------------------------
     public class SyncRequest : DatabaseRequest

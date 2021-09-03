@@ -4,11 +4,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Database;
+using Friflo.Json.Fliox.Db.Database;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 
-namespace Friflo.Json.Fliox.Sync
+namespace Friflo.Json.Fliox.Db.Sync
 {
     // ----------------------------------- task -----------------------------------
     public class SubscribeChanges : DatabaseTask

@@ -3,7 +3,7 @@
 
 using System;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Graph;
+using Friflo.Json.Fliox.Db.Graph;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER

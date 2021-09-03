@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Database;
+using Friflo.Json.Fliox.Db.Database;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 {

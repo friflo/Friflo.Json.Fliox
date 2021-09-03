@@ -3,7 +3,7 @@
 
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Sync
+namespace Friflo.Json.Fliox.Db.Sync
 {
     public class EntityValue
     {

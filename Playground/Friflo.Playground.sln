@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Burst", "..\Jso
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox", "..\Json\Fliox\Friflo.Json.Fliox.csproj", "{E0C5C2FC-9EC5-402B-BBDF-B7788B35618F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Graph", "..\Json\Fliox.Graph\Friflo.Json.Fliox.Graph.csproj", "{E7319858-9136-4716-8DD1-D20E42BF0D22}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Db.Graph", "..\Json\Fliox.Graph\Friflo.Json.Fliox.Db.Graph.csproj", "{E7319858-9136-4716-8DD1-D20E42BF0D22}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Tests", "..\Json.Tests\Friflo.Json.Tests.csproj", "{E0612D12-6E76-4838-A541-A5D64055FACC}"
 EndProject

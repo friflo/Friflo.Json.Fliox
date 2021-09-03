@@ -3,10 +3,10 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Graph.Internal;
+using Friflo.Json.Fliox.Db.Graph.Internal;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Graph
+namespace Friflo.Json.Fliox.Db.Graph
 {
     public abstract class WriteTask : SyncTask {
         internal            TaskState   state;

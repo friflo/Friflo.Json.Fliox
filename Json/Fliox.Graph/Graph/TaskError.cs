@@ -4,12 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Friflo.Json.Fliox.Database;
-using Friflo.Json.Fliox.Graph.Internal;
+using Friflo.Json.Fliox.Db.Database;
+using Friflo.Json.Fliox.Db.Graph.Internal;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 
-namespace Friflo.Json.Fliox.Graph
+namespace Friflo.Json.Fliox.Db.Graph
 {
     /// <summary>Describe the type of a <see cref="TaskError"/></summary>
     public enum TaskErrorType

@@ -3,10 +3,10 @@
 
 using System;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 
 // ReSharper disable JoinNullCheckWithUsage
-namespace Friflo.Json.Fliox.Graph.Internal
+namespace Friflo.Json.Fliox.Db.Graph.Internal
 {
     // Could be struct but this would make changing fields & properties complex as their changes require to update
     // EntitySet<TKey,T>.peers.

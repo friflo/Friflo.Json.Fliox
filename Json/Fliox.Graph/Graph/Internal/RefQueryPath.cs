@@ -4,7 +4,7 @@
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.Transform.Query;
 
-namespace Friflo.Json.Fliox.Graph.Internal
+namespace Friflo.Json.Fliox.Db.Graph.Internal
 {
     internal class RefQueryPath : QueryPath
     {

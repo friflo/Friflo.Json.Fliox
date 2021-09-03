@@ -26,9 +26,9 @@
     "dotnet-test-explorer.testProjectPath": "Json.Tests",
     "editor.detectIndentation": false,
     "json.schemas": [
-        { "fileMatch": ["/Json.Tests/assets~/Graph/UserStore/Role/*.json"],                  "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Fliox.UserAuth.Role.json" },
-        { "fileMatch": ["/Json.Tests/assets~/Graph/UserStore/UserCredential/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Fliox.UserAuth.UserCredential.json" },
-        { "fileMatch": ["/Json.Tests/assets~/Graph/UserStore/UserPermission/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Fliox.UserAuth.UserPermission.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/UserStore/Role/*.json"],                  "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Fliox.Db.UserAuth.Role.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/UserStore/UserCredential/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Fliox.Db.UserAuth.UserCredential.json" },
+        { "fileMatch": ["/Json.Tests/assets~/Graph/UserStore/UserPermission/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Fliox.Db.UserAuth.UserPermission.json" },
 
         { "fileMatch": ["/Json.Tests/assets~/Graph/PocStore/Article/*.json"],                "url": "./Json.Tests/assets~/Schema/JSON/PocStore/UnitTest.Fliox.Graph.Article.json" },
         { "fileMatch": ["/Json.Tests/assets~/Graph/PocStore/Customer/*.json"],               "url": "./Json.Tests/assets~/Schema/JSON/PocStore/UnitTest.Fliox.Graph.Customer.json" },

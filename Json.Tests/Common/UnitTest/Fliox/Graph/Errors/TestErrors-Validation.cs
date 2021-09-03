@@ -3,10 +3,10 @@
 
 using System.Collections;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Database;
+using Friflo.Json.Fliox.Db.Database;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Native;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Tests.Common.Utils;
 using UnityEngine.TestTools;

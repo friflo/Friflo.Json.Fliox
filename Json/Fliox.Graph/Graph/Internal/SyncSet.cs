@@ -3,12 +3,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 
 // ReSharper disable InconsistentNaming
-namespace Friflo.Json.Fliox.Graph.Internal
+namespace Friflo.Json.Fliox.Db.Graph.Internal
 {
     internal abstract class SyncSetBase <T> : SyncSet where T : class
     {

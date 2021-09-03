@@ -2,10 +2,10 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Text;
-using Friflo.Json.Fliox.Database;
+using Friflo.Json.Fliox.Db.Database;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Sync
+namespace Friflo.Json.Fliox.Db.Sync
 {
     /// An <see cref="EntityError"/> needs to be set only, if the access to <see cref="EntityValue"/>'s
     /// returned by a previous call to <see cref="EntityContainer.ReadEntities"/> or

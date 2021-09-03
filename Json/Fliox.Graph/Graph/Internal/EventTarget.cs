@@ -3,11 +3,11 @@
 
 using System;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Database;
-using Friflo.Json.Fliox.Database.Event;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Database;
+using Friflo.Json.Fliox.Db.Database.Event;
+using Friflo.Json.Fliox.Db.Sync;
 
-namespace Friflo.Json.Fliox.Graph.Internal
+namespace Friflo.Json.Fliox.Db.Graph.Internal
 {
     internal class EventTarget : IEventTarget
     {

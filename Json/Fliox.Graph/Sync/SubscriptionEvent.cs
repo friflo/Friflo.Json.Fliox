@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace Friflo.Json.Fliox.Sync
+namespace Friflo.Json.Fliox.Db.Sync
 {
     // ----------------------------------- event -----------------------------------
     public class SubscriptionEvent : DatabaseEvent

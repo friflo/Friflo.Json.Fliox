@@ -2,9 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Database;
-using Friflo.Json.Fliox.Database.Remote;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Database;
+using Friflo.Json.Fliox.Db.Database.Remote;
+using Friflo.Json.Fliox.Db.Sync;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 {

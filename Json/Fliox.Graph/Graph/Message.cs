@@ -2,9 +2,9 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 
-namespace Friflo.Json.Fliox.Graph
+namespace Friflo.Json.Fliox.Db.Graph
 {
     /// <summary>
     /// Expose the <see cref="Name"/> and the <see cref="Json"/> value of a received message.

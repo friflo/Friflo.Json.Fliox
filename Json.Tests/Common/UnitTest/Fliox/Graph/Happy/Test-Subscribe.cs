@@ -3,12 +3,12 @@
 
 using System.Collections;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Database;
-using Friflo.Json.Fliox.Database.Event;
-using Friflo.Json.Fliox.Database.Utils;
-using Friflo.Json.Fliox.Graph;
+using Friflo.Json.Fliox.Db.Database;
+using Friflo.Json.Fliox.Db.Database.Event;
+using Friflo.Json.Fliox.Db.Database.Utils;
+using Friflo.Json.Fliox.Db.Graph;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;

@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph

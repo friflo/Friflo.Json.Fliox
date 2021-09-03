@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Friflo.Json.Fliox.Graph.Internal.Map
+namespace Friflo.Json.Fliox.Db.Graph.Internal.Map
 {
     internal static class StoreUtils
     {

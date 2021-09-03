@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Friflo.Json.Fliox.Database.Utils {
+namespace Friflo.Json.Fliox.Db.Database.Utils {
     
     // [c# - ReaderWriterLockSlim and async\await - Stack Overflow] https://stackoverflow.com/questions/19659387/readerwriterlockslim-and-async-await
     //

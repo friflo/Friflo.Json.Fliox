@@ -4,11 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Friflo.Json.Fliox.Graph.Internal;
+using Friflo.Json.Fliox.Db.Graph.Internal;
 
 using static System.Diagnostics.DebuggerBrowsableState;
 
-namespace Friflo.Json.Fliox.Graph
+namespace Friflo.Json.Fliox.Db.Graph
 {
     public abstract class SyncTask
     {

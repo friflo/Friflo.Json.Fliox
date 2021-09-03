@@ -4,19 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
-using Friflo.Json.Fliox.Database;
-using Friflo.Json.Fliox.Graph.Internal;
-using Friflo.Json.Fliox.Graph.Internal.Id;
-using Friflo.Json.Fliox.Graph.Internal.Map;
+using Friflo.Json.Fliox.Db.Database;
+using Friflo.Json.Fliox.Db.Graph.Internal;
+using Friflo.Json.Fliox.Db.Graph.Internal.Id;
+using Friflo.Json.Fliox.Db.Graph.Internal.Map;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Transform.Query;
 
 // EntitySet & EntitySetBase<T> are not intended as a public API.
 // These classes are declared here to simplify navigation to EntitySet<TKey, T>.
-namespace Friflo.Json.Fliox.Graph.Internal
+namespace Friflo.Json.Fliox.Db.Graph.Internal
 {
     // --------------------------------------- EntitySet ---------------------------------------
     public abstract class EntitySet
@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.Graph.Internal
     }
 }
 
-namespace Friflo.Json.Fliox.Graph
+namespace Friflo.Json.Fliox.Db.Graph
 {
 
     /// <summary>

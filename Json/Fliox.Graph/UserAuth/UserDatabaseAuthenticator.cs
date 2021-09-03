@@ -3,14 +3,14 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Auth;
-using Friflo.Json.Fliox.Auth.Rights;
-using Friflo.Json.Fliox.Database;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Auth;
+using Friflo.Json.Fliox.Db.Auth.Rights;
+using Friflo.Json.Fliox.Db.Database;
+using Friflo.Json.Fliox.Db.Sync;
 
 
 // ReSharper disable MemberCanBePrivate.Global
-namespace Friflo.Json.Fliox.UserAuth
+namespace Friflo.Json.Fliox.Db.UserAuth
 {
     /// <summary>
     /// Control the access to a <see cref="UserDatabaseHandler"/> by "clientId" (<see cref="UserStore.AuthUser"/> |

@@ -4,7 +4,7 @@
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable InconsistentNaming
-namespace Friflo.Json.Fliox.Sync
+namespace Friflo.Json.Fliox.Db.Sync
 {
     // ----------------------------------- event -----------------------------------
     [Fri.Discriminator("type")]

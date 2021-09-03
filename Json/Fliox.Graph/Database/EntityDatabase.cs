@@ -4,11 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Auth;
-using Friflo.Json.Fliox.Database.Event;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Auth;
+using Friflo.Json.Fliox.Db.Database.Event;
+using Friflo.Json.Fliox.Db.Sync;
 
-namespace Friflo.Json.Fliox.Database
+namespace Friflo.Json.Fliox.Db.Database
 {
     /// <summary>
     /// <see cref="EntityDatabase"/> is an abstraction for a specific database adapter / implementation e.g. a
@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Database
         ///   <para> 1. The implementation of an <see cref="EntityContainer"/> is missing a proper error handling.
         ///          A proper error handling requires to set a meaningful <see cref="CommandError"/> to
         ///          <see cref="ICommandResult.Error"/></para>
-        ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Fliox.Sync"/> which must to be fixed.</para> 
+        ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Fliox.Db.Sync"/> which must to be fixed.</para> 
         /// </para>
         /// </summary>
         public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {

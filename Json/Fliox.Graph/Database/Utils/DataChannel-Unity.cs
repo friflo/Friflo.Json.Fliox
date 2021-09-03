@@ -13,7 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 // Note!!    Implementation untested
-namespace Friflo.Json.Fliox.Database.Utils
+namespace Friflo.Json.Fliox.Db.Database.Utils
 {
     /// Added <see cref="DataChannel{T}"/> as a stub to enable compiling in Unity as there are no <see cref="Channel"/>'s
     /// available as of 2021-06-21.

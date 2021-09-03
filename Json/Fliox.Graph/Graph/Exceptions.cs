@@ -3,9 +3,9 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 
-namespace Friflo.Json.Fliox.Graph
+namespace Friflo.Json.Fliox.Db.Graph
 {
     public class UnresolvedRefException : Exception
     {

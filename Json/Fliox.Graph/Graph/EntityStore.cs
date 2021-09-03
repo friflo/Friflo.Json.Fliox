@@ -5,19 +5,19 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Database;
-using Friflo.Json.Fliox.Graph.Internal;
-using Friflo.Json.Fliox.Graph.Internal.Map;
+using Friflo.Json.Fliox.Db.Database;
+using Friflo.Json.Fliox.Db.Graph.Internal;
+using Friflo.Json.Fliox.Db.Graph.Internal.Map;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 
 #if !UNITY_5_3_OR_NEWER
 [assembly: CLSCompliant(true)]
 #endif
 
 // ReSharper disable UseObjectOrCollectionInitializer
-namespace Friflo.Json.Fliox.Graph
+namespace Friflo.Json.Fliox.Db.Graph
 {
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]

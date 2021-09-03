@@ -3,10 +3,10 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Database;
+using Friflo.Json.Fliox.Db.Database;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Sync
+namespace Friflo.Json.Fliox.Db.Sync
 {
     // ----------------------------------- task -----------------------------------
     [Fri.Discriminator("task")]

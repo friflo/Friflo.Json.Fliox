@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using Friflo.Json.Fliox.Graph;
+using Friflo.Json.Fliox.Db.Graph;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.UserAuth;
+using Friflo.Json.Fliox.Db.UserAuth;
 
-namespace Friflo.Json.Fliox.Sync
+namespace Friflo.Json.Fliox.Db.Sync
 {
     /// Singleton are typically a bad practice, but its okay in this case as <see cref="TypeStore"/> behaves like an
     /// immutable object because the mapped types <see cref="SyncRequest"/> and <see cref="SyncResponse"/> are

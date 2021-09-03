@@ -3,17 +3,17 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Auth.Rights;
-using Friflo.Json.Fliox.Database;
-using Friflo.Json.Fliox.Graph;
+using Friflo.Json.Fliox.Db.Auth.Rights;
+using Friflo.Json.Fliox.Db.Database;
+using Friflo.Json.Fliox.Db.Graph;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 
 // ReSharper disable UnassignedReadonlyField
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnassignedField.Global
 // ReSharper disable CollectionNeverUpdated.Global
-namespace Friflo.Json.Fliox.UserAuth
+namespace Friflo.Json.Fliox.Db.UserAuth
 {
     /// <summary>
     /// Provide access to an <see cref="EntityDatabase"/> storing user credentials ands roles.

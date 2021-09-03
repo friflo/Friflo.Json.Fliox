@@ -3,7 +3,7 @@
 
 // ReSharper disable UnassignedField.Global
 // ReSharper disable MemberCanBePrivate.Global
-namespace Friflo.Json.Fliox.Auth.Rights
+namespace Friflo.Json.Fliox.Db.Auth.Rights
 {
     public class RightAllow : Right
     {

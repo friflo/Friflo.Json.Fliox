@@ -3,7 +3,7 @@
 
 using System;
 using Friflo.Json.Fliox.Schema;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;

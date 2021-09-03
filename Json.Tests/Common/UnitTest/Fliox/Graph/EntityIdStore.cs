@@ -4,8 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Friflo.Json.Fliox.Database;
-using Friflo.Json.Fliox.Graph;
+using Friflo.Json.Fliox.Db.Database;
+using Friflo.Json.Fliox.Db.Graph;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Local

@@ -3,10 +3,10 @@
 
 using System;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Database;
+using Friflo.Json.Fliox.Db.Database;
 using Friflo.Json.Fliox.Utils;
 
-namespace Friflo.Json.Fliox.UserAuth
+namespace Friflo.Json.Fliox.Db.UserAuth
 {
     /// <summary>
     /// Used to authenticate users stored in the given user <see cref="EntityDatabase"/>.

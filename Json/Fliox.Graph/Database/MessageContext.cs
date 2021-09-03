@@ -2,11 +2,11 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using Friflo.Json.Fliox.Auth;
-using Friflo.Json.Fliox.Database.Event;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Auth;
+using Friflo.Json.Fliox.Db.Database.Event;
+using Friflo.Json.Fliox.Db.Sync;
 
-namespace Friflo.Json.Fliox.Database
+namespace Friflo.Json.Fliox.Db.Database
 {
     // ------------------------------------ MessageContext ------------------------------------
     /// <summary>

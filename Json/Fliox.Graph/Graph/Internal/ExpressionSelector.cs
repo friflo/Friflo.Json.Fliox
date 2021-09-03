@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 
-namespace Friflo.Json.Fliox.Graph.Internal
+namespace Friflo.Json.Fliox.Db.Graph.Internal
 {
     internal static class ExpressionSelector
     {

@@ -4,10 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Friflo.Json.Fliox.Graph.Internal;
+using Friflo.Json.Fliox.Db.Graph.Internal;
 using Friflo.Json.Fliox.Transform;
 
-namespace Friflo.Json.Fliox.Graph
+namespace Friflo.Json.Fliox.Db.Graph
 {
     // ----------------------------------------- QueryTask -----------------------------------------
 #if !UNITY_5_3_OR_NEWER

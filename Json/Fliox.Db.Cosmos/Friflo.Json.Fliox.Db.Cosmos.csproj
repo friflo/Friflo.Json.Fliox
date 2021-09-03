@@ -14,6 +14,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="**/*.meta" />
+    </ItemGroup>
+	
+    <ItemGroup>
       <ProjectReference Include="..\Fliox.Graph\Friflo.Json.Fliox.Db.csproj" />
     </ItemGroup>
 

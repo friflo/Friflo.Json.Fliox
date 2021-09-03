@@ -9,9 +9,9 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Sync;
 
-namespace Friflo.Json.Fliox.Database.Remote
+namespace Friflo.Json.Fliox.Db.Database.Remote
 {
     public class WebSocketClientDatabase : RemoteClientDatabase
     {

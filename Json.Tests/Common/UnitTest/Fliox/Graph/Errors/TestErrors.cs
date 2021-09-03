@@ -3,8 +3,8 @@
 using System;
 using System.Collections;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Database;
-using Friflo.Json.Fliox.Database.Remote;
+using Friflo.Json.Fliox.Db.Database;
+using Friflo.Json.Fliox.Db.Database.Remote;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using UnityEngine.TestTools;

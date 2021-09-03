@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Graph;
-using Friflo.Json.Fliox.Sync;
+using Friflo.Json.Fliox.Db.Graph;
+using Friflo.Json.Fliox.Db.Sync;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER

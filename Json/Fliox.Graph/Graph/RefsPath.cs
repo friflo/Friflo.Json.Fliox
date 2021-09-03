@@ -3,9 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Friflo.Json.Fliox.Graph.Internal;
+using Friflo.Json.Fliox.Db.Graph.Internal;
 
-namespace Friflo.Json.Fliox.Graph
+namespace Friflo.Json.Fliox.Db.Graph
 {
     public class RefsPath<TEntity, TRefKey, TRef>   where TEntity : class
                                                     where TRef    : class 
