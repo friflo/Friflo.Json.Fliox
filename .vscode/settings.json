@@ -4,21 +4,22 @@
     },
     "cSpell.words": [
         "AGPL",
+        "appsettings",
         "Arity",
         "Fliox",
         "JSONB",
+        "jsxdev",
+        "kotlinx",
         "Linq",
         "NETFX",
+        "netsh",
+        "nullary",
         "Postgres",
         "Praetz",
         "SIMD",
         "Sublicensing",
         "Ullrich",
-        "WIPO",
-        "jsxdev",
-        "kotlinx",
-        "netsh",
-        "nullary"
+        "WIPO"
     ],
     "cSpell.enableFiletypes": [
         "http"
