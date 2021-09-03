@@ -3,6 +3,7 @@
 
 #if !UNITY_5_3_OR_NEWER
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -25,7 +26,7 @@ namespace Friflo.Json.Fliox.Db.Cosmos
         }
         
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            var container = cosmosDatabase.CreateContainerIfNotExistsAsync(name, "/LastName", 400).Result; // todo make CreateContainer async
+            var container = cosmosDatabase.CreateContainerIfNotExistsAsync(name, "/id", 400).Result; // todo make CreateContainer async
             return new CosmosContainer(name, database, container, pretty);
         }
     }
@@ -34,6 +35,8 @@ namespace Friflo.Json.Fliox.Db.Cosmos
     {
         private  readonly   Container   cosmosContainer;
         public   override   bool        Pretty      { get; }
+        
+        private static readonly UTF8Encoding Utf8Encoding = new UTF8Encoding (false, true);
 
         public CosmosContainer(string name, EntityDatabase database, Container container, bool pretty) : base(name, database) {
             cosmosContainer = container;
@@ -42,12 +45,13 @@ namespace Friflo.Json.Fliox.Db.Cosmos
         
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
             var entities = command.entities;
-            using(MemoryStream memory   = new MemoryStream())
-            using(StreamWriter writer   = new StreamWriter(memory, Encoding.UTF8)) {
+            using(var memory   = new MemoryStream())
+            using(var writer   = new StreamWriter(memory, Utf8Encoding, -1, true)) {
                 foreach (var entityPair in entities) {
-                    var         id      = entityPair.Key.AsString();
-                    EntityValue payload  = entityPair.Value;
+                    var id      = entityPair.Key.AsString();
+                    var payload = entityPair.Value.Json;
                     writer.Write(payload);
+                    writer.Flush();
                     memory.Seek(0, SeekOrigin.Begin);
                     var partitionKey = new PartitionKey(id);
                     // todo handle error;
@@ -61,13 +65,14 @@ namespace Friflo.Json.Fliox.Db.Cosmos
         public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
             var entities = command.entities;
             using(MemoryStream memory   = new MemoryStream())
-            using(StreamWriter writer   = new StreamWriter(memory, Encoding.UTF8)) {
+            using(var writer   = new StreamWriter(memory, Utf8Encoding, -1, true)) {
                 foreach (var entityPair in entities) {
-                    var         key      = entityPair.Key.AsString();
-                    EntityValue payload  = entityPair.Value;
+                    var id      = entityPair.Key.AsString();
+                    var payload = entityPair.Value.Json;
                     writer.Write(payload);
+                    writer.Flush();
                     memory.Seek(0, SeekOrigin.Begin);
-                    var partitionKey = new PartitionKey(key);
+                    var partitionKey = new PartitionKey(id);
                     // todo handle error;
                     await cosmosContainer.CreateItemStreamAsync(memory, partitionKey);
                 }
@@ -84,20 +89,27 @@ namespace Friflo.Json.Fliox.Db.Cosmos
                 var partitionKey    = new PartitionKey(id);
                 // todo handle error;
                 ResponseMessage response = await cosmosContainer.ReadItemStreamAsync(id, partitionKey);
-                using (StreamReader reader = new StreamReader(response.Content)) {
-                    string payload = await reader.ReadToEndAsync();
-                    var entry = new EntityValue(payload);
-                    entities.TryAdd(key, entry);
+                var content = response.Content;
+                if (content == null) {
+                    entities.TryAdd(key, new EntityValue());
+                } else {
+                    using (StreamReader reader = new StreamReader(response.Content)) {
+                        string payload = await reader.ReadToEndAsync();
+                        var entry = new EntityValue(payload);
+                        entities.TryAdd(key, entry);
+                    }
                 }
             }
             var result = new ReadEntitiesResult{entities = entities};
             return result;
         }
         
-        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
-            // var ids     = keyValues.Keys.ToHashSet(JsonKey.Equality);
-            // var result  = await FilterEntities(command, ids, messageContext).ConfigureAwait(false);
-            return null;
+        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
+            var iterator = cosmosContainer.GetItemQueryStreamIterator();
+            while (iterator.HasMoreResults) {
+                var next = await iterator.ReadNextAsync();
+            }
+            throw new NotImplementedException("CosmosDB - QueryEntities()");
         }
         
         public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {

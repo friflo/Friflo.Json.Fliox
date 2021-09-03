@@ -31,7 +31,7 @@ namespace Friflo.Playground.CosmosDB
             var primaryKey  = config["PrimaryKey"];     // The primary key for the Azure Cosmos account.
             var options     = new CosmosClientOptions { ApplicationName = "Friflo.Playground" };
             var client      = new CosmosClient(endpointUri, primaryKey, options);
-            return await client.CreateDatabaseIfNotExistsAsync("PosStore");
+            return await client.CreateDatabaseIfNotExistsAsync("PocStore");
         }
 
         private static async Task CosmosCreate() {
