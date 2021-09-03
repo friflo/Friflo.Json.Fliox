@@ -175,7 +175,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             testDatabase.ClearErrors();
             const string missingArticle1      = "article-1";
             testArticles.missingResultErrors.Add(missingArticle1); 
-            var allArticles2 = store.articles.QueryAll()          .TaskName("allArticles2");
+            var allArticles2 = articles.QueryAll()          .TaskName("allArticles2");
             
             var result = await store.TrySync();
             AreEqual(1, result.failed.Count);

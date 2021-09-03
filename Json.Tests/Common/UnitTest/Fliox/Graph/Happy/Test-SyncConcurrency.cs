@@ -51,14 +51,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         }
         
         private static async Task SyncConcurrency(PocStore store, Customer peter, Customer paul) {
+            var customers = store.customers;
             {
-                store.customers.Update(peter);
+                customers.Update(peter);
                 AreEqual(1, store.Tasks.Count);
                 var sync1 = store.Sync();
                 AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting Sync()
                 
                 store.SendMessage("Some message"); // add additional task to second Sync() to identify the result by task.Count
-                store.customers.Update(paul);
+                customers.Update(paul);
                 AreEqual(2, store.Tasks.Count);
                 var sync2 = store.Sync();
                 AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting Sync()
@@ -68,12 +69,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 AreEqual(1, sync1.Result.tasks.Count);
                 AreEqual(2, sync2.Result.tasks.Count);
             } {
-                var readCustomers1 = store.customers.Read();
+                var readCustomers1 = customers.Read();
                 var findPeter = readCustomers1.Find("customer-peter");
                 var sync1 = store.Sync();
                 
                 store.SendMessage("Some message"); // add additional task to second Sync() to identify the result by task.Count
-                var readCustomers2 = store.customers.Read();
+                var readCustomers2 = customers.Read();
                 IsFalse(readCustomers1 == readCustomers2);
                 var findPaul = readCustomers2.Find("customer-paul");
                 var sync2 = store.Sync();
