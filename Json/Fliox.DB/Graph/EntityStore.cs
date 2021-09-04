@@ -257,7 +257,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                 var messageContext = pair.Value;
                 messageContext.Cancel();
             }
-            await Task.WhenAll(_intern.pendingSyncs.Keys);
+            await Task.WhenAll(_intern.pendingSyncs.Keys).ConfigureAwait(false);
         }
         
         public int GetPendingSyncsCount() {
