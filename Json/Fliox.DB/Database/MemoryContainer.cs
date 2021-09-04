@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.DB.Database
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
             var ids     = keyValues.Keys.ToHashSet(JsonKey.Equality);
-            var result  = await FilterEntities(command, ids, messageContext).ConfigureAwait(false);
+            var result  = await FilterEntityIds(command, ids, messageContext).ConfigureAwait(false);
             return result;
         }
         

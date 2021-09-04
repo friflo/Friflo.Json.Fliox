@@ -18,9 +18,11 @@ namespace Friflo.Json.Fliox.DB.Database
     {
         private             Bytes           jsonBytes = new Bytes(128);
         private             JsonParser      parser;
-        private             Bytes           idKey = new Bytes("id");
+        private             Bytes           idKey = new Bytes(16);
         
         public bool IsValidEntity(string json, in JsonKey id, out string error) {
+            idKey.Clear();
+            idKey.AppendString("id");
             jsonBytes.Clear();
             jsonBytes.AppendString(json);
             parser.InitParser(jsonBytes);
@@ -58,6 +60,57 @@ namespace Friflo.Json.Fliox.DB.Database
                         if (ev == JsonEvent.EOF) {
                             error = null;
                             return true;
+                        }
+                        error = "Expected EOF in JSON value";
+                        return false;
+                    case JsonEvent.ArrayEnd:
+                        throw new InvalidOperationException($"unexpected event: {ev}");
+                }
+            }
+        }
+        
+        public bool GetEntityKey(string json, string keyName, out string keyValue, out string error) {
+            idKey.Clear();
+            idKey.AppendString(keyName);
+            keyValue     = null;
+            jsonBytes.Clear();
+            jsonBytes.AppendString(json);
+            parser.InitParser(jsonBytes);
+            var ev = parser.NextEvent();
+            if (ev != JsonEvent.ObjectStart) {
+                error   = $"entity value must be an object.";
+                return false;
+            }
+            while (true) {
+                ev = parser.NextEvent();
+                switch (ev) {
+                    case JsonEvent.ValueString:
+                        if (parser.key.IsEqualBytes(ref idKey)) {
+                            error = null;
+                            keyValue = parser.value.ToString();
+                            return true;
+                        }
+                        break;
+                    case JsonEvent.ValueNumber:
+                    case JsonEvent.ValueBool:
+                    case JsonEvent.ValueNull:
+                        break;
+                    case JsonEvent.ArrayStart:
+                    case JsonEvent.ObjectStart:
+                        parser.SkipTree();
+                        if (parser.error.ErrSet) {
+                            error = parser.error.msg.ToString();
+                            return false;
+                        }
+                        break;
+                    case JsonEvent.Error:
+                        error = parser.error.msg.ToString();
+                        return false;
+                    case JsonEvent.ObjectEnd:
+                        ev = parser.NextEvent();
+                        if (ev == JsonEvent.EOF) {
+                            error = $"key not found. keyName: {keyName}";
+                            return false;
                         }
                         error = "Expected EOF in JSON value";
                         return false;

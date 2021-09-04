@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 if (content == null) {
                     entities.TryAdd(key, new EntityValue());
                 } else {
-                    using (StreamReader reader = new StreamReader(response.Content)) {
+                    using (StreamReader reader = new StreamReader(content)) {
                         string payload = await reader.ReadToEndAsync();
                         var entry = new EntityValue(payload);
                         entities.TryAdd(key, entry);
@@ -105,11 +105,38 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         }
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
-            var iterator = cosmosContainer.GetItemQueryStreamIterator();
-            while (iterator.HasMoreResults) {
-                var next = await iterator.ReadNextAsync();
+            var                 entities    = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+            FeedIterator        iterator    = cosmosContainer.GetItemQueryStreamIterator();
+            DocumentContainer   documents   = null;
+            using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
+                var reader = pooledMapper.instance.reader;
+                while (iterator.HasMoreResults) {
+                    using(ResponseMessage response = await iterator.ReadNextAsync()) {
+                        Stream content = response.Content;
+                        using (var streamReader = new StreamReader(content)) {
+                            string documentsJson = await streamReader.ReadToEndAsync();
+                            documents = reader.Read<DocumentContainer>(documentsJson);
+                        }
+                    }
+                }
             }
-            throw new NotImplementedException("CosmosDB - QueryEntities()");
+            if (documents == null)
+                throw new InvalidOperationException("no Documents in Cosmos ResponseMessage");
+
+            using (var pooledValidator = messageContext.pools.EntityValidator.Get()) {
+                var validator = pooledValidator.instance;
+                foreach (var document in documents.Documents) {
+                    var payload = document.json;
+                    if (!validator.GetEntityKey(payload, "id", out string keyValue, out _)) {
+                        continue;
+                    }
+                    var key     = new JsonKey(keyValue);
+                    var value   = new EntityValue(document.json);
+                    entities.Add(key, value);
+                }
+            }
+            var result = FilterEntities(command, entities, messageContext);
+            return result;
         }
         
         public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {

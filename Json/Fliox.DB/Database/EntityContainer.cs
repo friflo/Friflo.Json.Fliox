@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.DB.Database
             return new PatchEntitiesResult{patchErrors = patchErrors};
         }
         
-        protected async Task<QueryEntitiesResult> FilterEntities(QueryEntities command, HashSet<JsonKey> ids, MessageContext messageContext) {
+        protected async Task<QueryEntitiesResult> FilterEntityIds(QueryEntities command, HashSet<JsonKey> ids, MessageContext messageContext) {
             var readIds         = new ReadEntities {ids = ids};
             var readEntities    = await ReadEntities(readIds, messageContext).ConfigureAwait(false);
             if (readEntities.Error != null) {
@@ -149,12 +149,16 @@ namespace Friflo.Json.Fliox.DB.Database
                 var error = new CommandError{message = message};
                 return new QueryEntitiesResult {Error = error};
             }
-            
+            var result = FilterEntities(command, readEntities.entities, messageContext);
+            return result;
+        }
+        
+        protected QueryEntitiesResult FilterEntities(QueryEntities command, Dictionary <JsonKey, EntityValue> entities, MessageContext messageContext) {
             var jsonFilter      = new JsonFilter(command.filter); // filter can be reused
             var result          = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
             using (var pooledEvaluator = messageContext.pools.JsonEvaluator.Get()) {
                 JsonEvaluator evaluator = pooledEvaluator.instance;
-                foreach (var entityPair in readEntities.entities) {
+                foreach (var entityPair in entities) {
                     var key     = entityPair.Key;
                     var payload = entityPair.Value.Json;
                     if (!evaluator.Filter(payload, jsonFilter))
