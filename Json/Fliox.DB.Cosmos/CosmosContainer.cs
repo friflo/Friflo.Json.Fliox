@@ -50,6 +50,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 foreach (var entityPair in entities) {
                     var id      = entityPair.Key.AsString();
                     var payload = entityPair.Value.Json;
+                    memory.SetLength(0);
                     writer.Write(payload);
                     writer.Flush();
                     memory.Seek(0, SeekOrigin.Begin);
@@ -64,11 +65,12 @@ namespace Friflo.Json.Fliox.DB.Cosmos
 
         public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
             var entities = command.entities;
-            using(MemoryStream memory   = new MemoryStream())
+            using(var memory   = new MemoryStream())
             using(var writer   = new StreamWriter(memory, Utf8Encoding, -1, true)) {
                 foreach (var entityPair in entities) {
                     var id      = entityPair.Key.AsString();
                     var payload = entityPair.Value.Json;
+                    memory.SetLength(0);
                     writer.Write(payload);
                     writer.Flush();
                     memory.Seek(0, SeekOrigin.Begin);
