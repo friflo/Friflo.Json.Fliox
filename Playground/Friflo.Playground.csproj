@@ -32,7 +32,7 @@
       <ProjectReference Include="..\Json.Tests\Friflo.Json.Tests.csproj" />
       <ProjectReference Include="..\Json\Burst\Friflo.Json.Burst.csproj" />
       <ProjectReference Include="..\Json\Fliox\Friflo.Json.Fliox.csproj" />
-      <ProjectReference Include="..\Json\Fliox.Db.Cosmos\Friflo.Json.Fliox.DB.Cosmos.csproj" />
+      <ProjectReference Include="..\Json\Fliox.DB.Cosmos\Friflo.Json.Fliox.DB.Cosmos.csproj" />
     </ItemGroup>
 	
     <ItemGroup>

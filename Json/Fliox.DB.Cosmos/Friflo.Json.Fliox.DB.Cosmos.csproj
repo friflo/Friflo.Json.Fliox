@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Fliox.Db\Friflo.Json.Fliox.DB.csproj" />
+      <ProjectReference Include="..\Fliox.DB\Friflo.Json.Fliox.DB.csproj" />
     </ItemGroup>
 
 </Project>
