@@ -130,9 +130,9 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
             await EnsureContainerExists();
-            var                 entities    = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
-            FeedIterator        iterator    = cosmosContainer.GetItemQueryStreamIterator();
-            DocumentContainer   documents   = null;
+            var             entities    = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+            FeedIterator    iterator    = cosmosContainer.GetItemQueryStreamIterator();
+            var             documents   = new List<JsonValue>();
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 var reader = pooledMapper.instance.reader;
                 while (iterator.HasMoreResults) {
@@ -140,17 +140,19 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                         Stream content = response.Content;
                         using (var streamReader = new StreamReader(content)) {
                             string documentsJson = await streamReader.ReadToEndAsync();
-                            documents = reader.Read<DocumentContainer>(documentsJson);
+                            var docsContainer = reader.Read<DocumentContainer>(documentsJson);
+                            var docs = docsContainer.Documents;
+                            if (docs == null)
+                                throw new InvalidOperationException($"no Documents in Cosmos ResponseMessage. command: {command}");
+                            documents.AddRange(docs);
                         }
                     }
                 }
             }
-            if (documents == null)
-                throw new InvalidOperationException("no Documents in Cosmos ResponseMessage");
 
             using (var pooledValidator = messageContext.pools.EntityValidator.Get()) {
                 var validator = pooledValidator.instance;
-                foreach (var document in documents.Documents) {
+                foreach (var document in documents) {
                     var payload = document.json;
                     if (!validator.GetEntityKey(payload, "id", out string keyValue, out _)) {
                         continue;
