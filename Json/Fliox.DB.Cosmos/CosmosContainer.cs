@@ -28,29 +28,38 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         }
         
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            return new CosmosContainer(name, database, cosmosDatabase, throughput, pretty);
+            var options = new ContainerOptions(cosmosDatabase, throughput);
+            return new CosmosContainer(name, database, options, pretty);
+        }
+    }
+    
+    internal class ContainerOptions {
+        internal readonly   Microsoft.Azure.Cosmos.Database database;
+        internal readonly   int?                            throughput;
+        
+        internal  ContainerOptions (Microsoft.Azure.Cosmos.Database database, int? throughput) {
+            this.database   = database;
+            this.throughput = throughput;
         }
     }
     
     public class CosmosContainer : EntityContainer
     {
-        private  readonly   Microsoft.Azure.Cosmos.Database cosmosDatabase;
-        private  readonly   int?                            throughput;
-        private             Container                       cosmosContainer;
-        public   override   bool                            Pretty      { get; }
+        private  readonly   ContainerOptions    options;
+        private             Container           cosmosContainer;
+        public   override   bool                Pretty      { get; }
         
         private static readonly UTF8Encoding Utf8Encoding = new UTF8Encoding (false, true);
 
-        public CosmosContainer(string name, EntityDatabase database, Microsoft.Azure.Cosmos.Database cosmosDatabase, int? throughput, bool pretty) : base(name, database) {
-            this.cosmosDatabase     = cosmosDatabase;
-            this.throughput         = throughput;
-            Pretty                  = pretty;
+        internal CosmosContainer(string name, EntityDatabase database, ContainerOptions options, bool pretty) : base(name, database) {
+            this.options    = options;
+            Pretty          = pretty;
         }
 
         private async Task EnsureContainerExists() {
             if (cosmosContainer != null)
                 return;
-            cosmosContainer = await cosmosDatabase.CreateContainerIfNotExistsAsync(name, "/id", throughput);
+            cosmosContainer = await options.database.CreateContainerIfNotExistsAsync(name, "/id", options.throughput);
         }
         
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
