@@ -32,7 +32,7 @@ export class SyncRequest extends DatabaseRequest {
 
 export type DatabaseTask_Union =
     | CreateEntities
-    | UpdateEntities
+    | UpsertEntities
     | ReadEntitiesList
     | QueryEntities
     | PatchEntities
@@ -45,7 +45,7 @@ export type DatabaseTask_Union =
 export abstract class DatabaseTask {
     abstract task:
         | "create"
-        | "update"
+        | "upsert"
         | "read"
         | "query"
         | "patch"
@@ -81,8 +81,8 @@ export type EntityErrorType =
     | "PatchError"
 ;
 
-export class UpdateEntities extends DatabaseTask {
-    task       : "update";
+export class UpsertEntities extends DatabaseTask {
+    task       : "upsert";
     container  : string;
     entities   : { [key: string]: EntityValue };
 }
@@ -143,7 +143,7 @@ export class SubscribeChanges extends DatabaseTask {
 
 export type Change =
     | "create"
-    | "update"
+    | "upsert"
     | "patch"
     | "delete"
 ;
@@ -185,7 +185,7 @@ export class ErrorResponse extends DatabaseResponse {
 
 export type TaskResult_Union =
     | CreateEntitiesResult
-    | UpdateEntitiesResult
+    | UpsertEntitiesResult
     | ReadEntitiesListResult
     | QueryEntitiesResult
     | PatchEntitiesResult
@@ -199,7 +199,7 @@ export type TaskResult_Union =
 export abstract class TaskResult {
     abstract task:
         | "create"
-        | "update"
+        | "upsert"
         | "read"
         | "query"
         | "patch"
@@ -220,8 +220,8 @@ export class CommandError {
     message? : string | null;
 }
 
-export class UpdateEntitiesResult extends TaskResult {
-    task   : "update";
+export class UpsertEntitiesResult extends TaskResult {
+    task   : "upsert";
     Error? : CommandError | null;
 }
 

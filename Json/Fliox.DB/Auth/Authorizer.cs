@@ -130,7 +130,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         private  readonly   string  container;
         
         private  readonly   bool    create;
-        private  readonly   bool    update;
+        private  readonly   bool    upsert;
         private  readonly   bool    delete;
         private  readonly   bool    patch;
         //
@@ -141,27 +141,27 @@ namespace Friflo.Json.Fliox.DB.Auth
         
         public AuthorizeContainer (string container, ICollection<OperationType> types) {
             this.container = container;
-            SetRoles(types, ref create, ref update, ref delete, ref patch, ref read, ref query);
+            SetRoles(types, ref create, ref upsert, ref delete, ref patch, ref read, ref query);
         }
         
         private static void SetRoles (ICollection<OperationType> types,
-                ref bool create, ref bool update, ref bool delete, ref bool patch,
+                ref bool create, ref bool upsert, ref bool delete, ref bool patch,
                 ref bool read,   ref bool query)
         {
             foreach (var type in types) {
                 switch (type) {
                     case OperationType.create:  create  = true;   break;
-                    case OperationType.update:  update  = true;   break;
+                    case OperationType.upsert:  upsert  = true;   break;
                     case OperationType.delete:  delete  = true;   break;
                     case OperationType.patch:   patch   = true;   break;
                     //
                     case OperationType.read:    read    = true;   break;
                     case OperationType.query:   query   = true;   break;
                     case OperationType.mutate:
-                        create  = true; update  = true; delete  = true; patch   = true;
+                        create  = true; upsert  = true; delete  = true; patch   = true;
                         break;
                     case OperationType.full:
-                        create  = true; update  = true; delete  = true; patch   = true;
+                        create  = true; upsert  = true; delete  = true; patch   = true;
                         read    = true; query   = true;
                         break;
                     default:
@@ -173,7 +173,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
             switch (task.TaskType) {
                 case TaskType.create:   return create && ((CreateEntities)  task).container == container;
-                case TaskType.update:   return update && ((UpdateEntities)  task).container == container;
+                case TaskType.upsert:   return upsert && ((UpsertEntities)  task).container == container;
                 case TaskType.delete:   return delete && ((DeleteEntities)  task).container == container;
                 case TaskType.patch:    return patch  && ((PatchEntities)   task).container == container;
                 //
@@ -188,7 +188,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         private  readonly   string  container;
         
         private  readonly   bool    create;
-        private  readonly   bool    update;
+        private  readonly   bool    upsert;
         private  readonly   bool    delete;
         private  readonly   bool    patch;
         
@@ -199,7 +199,7 @@ namespace Friflo.Json.Fliox.DB.Auth
             foreach (var change in changes) {
                 switch (change) {
                     case Change.create: create = true; break;
-                    case Change.update: update = true; break;
+                    case Change.upsert: upsert = true; break;
                     case Change.delete: delete = true; break;
                     case Change.patch:  patch  = true; break;
                 }
@@ -215,7 +215,7 @@ namespace Friflo.Json.Fliox.DB.Auth
             foreach (var change in subscribe.changes) {
                 switch (change) {
                     case Change.create:     authorize &= create;    break;
-                    case Change.update:     authorize &= update;    break;
+                    case Change.upsert:     authorize &= upsert;    break;
                     case Change.delete:     authorize &= delete;    break;
                     case Change.patch:      authorize &= patch;     break;
                 }

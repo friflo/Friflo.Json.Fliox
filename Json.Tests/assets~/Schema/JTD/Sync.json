@@ -30,7 +30,7 @@
             "discriminator": "task",
             "mapping": {
                 "create":           { "ref":  "CreateEntities" },
-                "update":           { "ref":  "UpdateEntities" },
+                "upsert":           { "ref":  "UpsertEntities" },
                 "read":             { "ref":  "ReadEntitiesList" },
                 "query":            { "ref":  "QueryEntities" },
                 "patch":            { "ref":  "PatchEntities" },
@@ -71,7 +71,7 @@
                 "PatchError"
             ]
         },
-        "UpdateEntities": {
+        "UpsertEntities": {
             "properties": {
                 "container": { "type": "string" },
                 "entities":  { "values": { "ref":  "EntityValue" } }
@@ -516,7 +516,7 @@
         "Change": {
             "enum": [
                 "create",
-                "update",
+                "upsert",
                 "patch",
                 "delete"
             ]
@@ -559,7 +559,7 @@
             "discriminator": "task",
             "mapping": {
                 "create":           { "ref":  "CreateEntitiesResult" },
-                "update":           { "ref":  "UpdateEntitiesResult" },
+                "upsert":           { "ref":  "UpsertEntitiesResult" },
                 "read":             { "ref":  "ReadEntitiesListResult" },
                 "query":            { "ref":  "QueryEntitiesResult" },
                 "patch":            { "ref":  "PatchEntitiesResult" },
@@ -583,7 +583,7 @@
                 "message": { "type": "string", "nullable": true }
             }
         },
-        "UpdateEntitiesResult": {
+        "UpsertEntitiesResult": {
             "properties": {
                 "Error": { "ref":  "CommandError", "nullable": true }
             }

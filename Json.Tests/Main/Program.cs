@@ -92,7 +92,7 @@ namespace Friflo.Json.Tests.Main
             Console.WriteLine($"FileDatabase: {database}");
             var fileDatabase        = new FileDatabase(database) { eventBroker = new EventBroker(true) }; // eventBroker enables Pub-Sub
             
-            // adding DatabaseSchema is optional - it enables type validation for create, update & patch operations
+            // adding DatabaseSchema is optional - it enables type validation for create, upsert & patch operations
             var typeSchema          = GetTypeSchema(true);
             fileDatabase.schema     = new DatabaseSchema(typeSchema);
             

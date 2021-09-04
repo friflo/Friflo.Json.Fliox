@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         public  int     tasks;
         //
         public  int     create;
-        public  int     update;
+        public  int     upsert;
         public  int     reads;
         public  int     readRefs;
         public  int     queries;
@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             tasks   = 0;
             //
             create      = 0;
-            update      = 0;
+            upsert      = 0;
             reads       = 0;
             readRefs    = 0;
             queries     = 0;
@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                 first = true;
                 sb.Append(" >> ");
                 Append(sb,  "create",       create,     ref first);
-                Append(sb,  "update",       update,     ref first);
+                Append(sb,  "upsert",       upsert,     ref first);
                 AppendTasks(sb,  "reads",   reads,      ref first);
                 if (readRefs > 0) {
                     sb.Append("(");

@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         /// <br></br>
         /// Tasks notifying about database changes are applied to the <see cref="EntityStore"/> the <see cref="SubscriptionProcessor"/>
         /// is attached to.
-        /// Types of database changes refer to <see cref="Change.create"/>ed, <see cref="Change.update"/>ed,
+        /// Types of database changes refer to <see cref="Change.create"/>ed, <see cref="Change.upsert"/>ed,
         /// <see cref="Change.delete"/>ed and <see cref="Change.patch"/>ed entities.
         /// <br></br>
         /// Tasks notifying "messages" are ignored. These message subscriptions are registered by <see cref="EntityStore.SubscribeMessage"/>.
@@ -121,13 +121,13 @@ namespace Friflo.Json.Fliox.DB.Graph
                         set.SyncPeerEntities(create.entities);
                         break;
                     
-                    case TaskType.update:
-                        var update = (UpdateEntities)task;
-                        set = store.GetEntitySet(update.container);
+                    case TaskType.upsert:
+                        var upsert = (UpsertEntities)task;
+                        set = store.GetEntitySet(upsert.container);
                         // apply changes only if subscribed
                         if (set.GetSubscription() == null)
                             continue;
-                        set.SyncPeerEntities(update.entities);
+                        set.SyncPeerEntities(upsert.entities);
                         break;
                     
                     case TaskType.delete:
@@ -216,18 +216,18 @@ namespace Friflo.Json.Fliox.DB.Graph
                         result.Info.creates += create.entities.Count;
                         break;
                     
-                    case TaskType.update:
-                        var update = (UpdateEntities)task;
-                        if (update.container != entitySet.name)
+                    case TaskType.upsert:
+                        var upsert = (UpsertEntities)task;
+                        if (upsert.container != entitySet.name)
                             continue;
-                        foreach (var entityPair in update.entities) {
+                        foreach (var entityPair in upsert.entities) {
                             var     id      = entityPair.Key;
                             TKey    key     = Ref<TKey, T>.EntityKey.IdToKey(id);
                             var     peer    = entitySet.GetOrCreatePeerByKey(key, id);
                             var     entity  = peer.Entity;
                             result.updates.Add(key, entity);
                         }
-                        result.Info.updates += update.entities.Count;
+                        result.Info.updates += upsert.entities.Count;
                         break;
                     
                     case TaskType.delete:

@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             throw new InvalidOperationException("RemoteClientContainer does not execute CRUD commands");
         }
 
-        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
+        public override Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, MessageContext messageContext) {
             throw new InvalidOperationException("RemoteClientContainer does not execute CRUD commands");
         }
 

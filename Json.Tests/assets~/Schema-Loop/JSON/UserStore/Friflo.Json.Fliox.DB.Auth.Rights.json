@@ -98,7 +98,7 @@
         "OperationType": {
             "enum": [
                 "create",
-                "update",
+                "upsert",
                 "delete",
                 "patch",
                 "read",

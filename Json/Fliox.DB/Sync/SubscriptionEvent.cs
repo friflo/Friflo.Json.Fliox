@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         /// Contains the events an application subscribed. These are:
         /// <list type="bullet">
         ///   <item><see cref="CreateEntities"/></item>
-        ///   <item><see cref="UpdateEntities"/></item>
+        ///   <item><see cref="UpsertEntities"/></item>
         ///   <item><see cref="DeleteEntities"/></item>
         ///   <item><see cref="PatchEntities"/></item>
         ///   <item><see cref="SendMessage"/></item>
@@ -31,9 +31,9 @@ namespace Friflo.Json.Fliox.DB.Sync
                         var create = (CreateEntities)task;
                         info.changes.creates += create.entities.Count;
                         break;
-                    case TaskType.update:
-                        var update = (UpdateEntities)task;
-                        info.changes.updates += update.entities.Count;
+                    case TaskType.upsert:
+                        var upsert = (UpsertEntities)task;
+                        info.changes.updates += upsert.entities.Count;
                         break;
                     case TaskType.delete:
                         var delete = (DeleteEntities)task;

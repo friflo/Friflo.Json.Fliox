@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.DB.Auth.Rights
     // ReSharper disable InconsistentNaming
     public enum OperationType {
         create,
-        update,
+        upsert,
         delete,
         patch, 
         read,  

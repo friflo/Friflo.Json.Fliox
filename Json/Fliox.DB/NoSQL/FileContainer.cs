@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             return new CreateEntitiesResult{createErrors = createErrors};
         }
 
-        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
+        public override async Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, MessageContext messageContext) {
             var entities = command.entities;
             Dictionary<JsonKey, EntityError> updateErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             } finally {
                 rwLock.ReleaseWriterLock();
             }
-            return new UpdateEntitiesResult{updateErrors = updateErrors};
+            return new UpsertEntitiesResult{updateErrors = updateErrors};
         }
 
         public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {

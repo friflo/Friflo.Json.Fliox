@@ -4,7 +4,7 @@ export type TaskType =
     | "read"
     | "query"
     | "create"
-    | "update"
+    | "upsert"
     | "patch"
     | "delete"
     | "message"
@@ -15,7 +15,7 @@ export type TaskType =
 
 export type Change =
     | "create"
-    | "update"
+    | "upsert"
     | "patch"
     | "delete"
 ;

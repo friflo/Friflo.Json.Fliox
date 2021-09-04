@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         private     Dictionary<JsonKey, Peer<T>>            _creates;
         private     List<WriteTask>                         _createTasks;
         
-        private     Dictionary<JsonKey, Peer<T>>            _updates;
+        private     Dictionary<JsonKey, Peer<T>>            _upserts;
         private     List<WriteTask>                         _updateTasks;
         
         private     Dictionary<JsonKey, EntityPatch>        _patches;
@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         private     List<WriteTask>                         CreateTasks()=> _createTasks ?? (_createTasks = new List<WriteTask>());
         
         /// key: <see cref="Peer{T}.entity"/>.id
-        private     Dictionary<JsonKey, Peer<T>>            Updates()    => _updates     ?? (_updates     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
+        private     Dictionary<JsonKey, Peer<T>>            Updates()    => _upserts     ?? (_upserts     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
         private     List<WriteTask>                         UpdateTasks()=> _updateTasks ?? (_updateTasks = new List<WriteTask>());
 
         /// key: entity id
@@ -144,23 +144,23 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             return create;
         }
         
-        // --- Update
-        internal UpdateTask<T> Update(T entity) {
+        // --- Upsert
+        internal UpsertTask<T> Upsert(T entity) {
             var peer = set.CreatePeer(entity);
             AddUpdate(peer);
-            var update = new UpdateTask<T>(new List<T>{entity}, set);
-            UpdateTasks().Add(update);
-            return update;
+            var upsert = new UpsertTask<T>(new List<T>{entity}, set);
+            UpdateTasks().Add(upsert);
+            return upsert;
         }
         
-        internal UpdateTask<T> UpdateRange(ICollection<T> entities) {
+        internal UpsertTask<T> UpdateRange(ICollection<T> entities) {
             foreach (var entity in entities) {
                 var peer = set.CreatePeer(entity);
                 AddUpdate(peer);
             }
-            var update = new UpdateTask<T>(entities.ToList(), set);
-            UpdateTasks().Add(update);
-            return update;
+            var upsert = new UpsertTask<T>(entities.ToList(), set);
+            UpdateTasks().Add(upsert);
+            return upsert;
         }
         
         // --- Patch
@@ -237,7 +237,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         // ----------------------------------- add tasks methods -----------------------------------
         internal override void AddTasks(List<DatabaseTask> tasks) {
             CreateEntities  (tasks);
-            UpdateEntities  (tasks);
+            UpsertEntities  (tasks);
             ReadEntitiesList(tasks);
             QueryEntities   (tasks);
             PatchEntities   (tasks);
@@ -265,20 +265,20 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             tasks.Add(req);
         }
 
-        private void UpdateEntities(List<DatabaseTask> tasks) {
-            if (_updates == null || _updates.Count == 0)
+        private void UpsertEntities(List<DatabaseTask> tasks) {
+            if (_upserts == null || _upserts.Count == 0)
                 return;
             var writer = set.intern.jsonMapper.writer;
             var entries = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
             
-            foreach (var updatePair in _updates) {
+            foreach (var updatePair in _upserts) {
                 T entity    = updatePair.Value.Entity;
                 var json    = writer.Write(entity);
                 var entry   = new EntityValue(json);
                 var id      = Ref<TKey,T>.EntityKey.GetId(entity);
                 entries.Add(id, entry);
             }
-            var req = new UpdateEntities {
+            var req = new UpsertEntities {
                 container = set.name,
                 entities = entries
             };
@@ -435,7 +435,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 SetInfo.Any  (_reads)   +
                 SetInfo.Count(_queries) +
                 SetInfo.Any  (_creates) +
-                SetInfo.Any  (_updates) +
+                SetInfo.Any  (_upserts) +
                 SetInfo.Any  (_patches) + SetInfo.Any(_patchTasks) +
                 SetInfo.Any  (_deletes)    +
                 (subscribeChanges != null ? 1 : 0);
@@ -443,7 +443,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             info.reads      = SetInfo.Count(_reads);
             info.queries    = SetInfo.Count(_queries);
             info.create     = SetInfo.Count(_creates);
-            info.update     = SetInfo.Count(_updates);
+            info.upsert     = SetInfo.Count(_upserts);
             info.patch      = SetInfo.Count(_patches) + SetInfo.Count(_patchTasks);
             info.delete     = SetInfo.Count(_deletes);
             // info.readRefs   = readRefsMap.Count;

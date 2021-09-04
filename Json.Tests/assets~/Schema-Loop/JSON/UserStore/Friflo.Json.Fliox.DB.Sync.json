@@ -7,7 +7,7 @@
                 "read",
                 "query",
                 "create",
-                "update",
+                "upsert",
                 "patch",
                 "delete",
                 "message",
@@ -19,7 +19,7 @@
         "Change": {
             "enum": [
                 "create",
-                "update",
+                "upsert",
                 "patch",
                 "delete"
             ]

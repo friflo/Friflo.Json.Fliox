@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             
             const string deleteEntityError      = "delete-entity-error";
             const string createEntityError      = "create-entity-error";
-            const string updateEntityError      = "update-entity-error";
+            const string updateEntityError      = "upsert-entity-error";
             
             testCustomers.writeEntityErrors.Add(deleteEntityError,    () => testCustomers.WriteError(deleteEntityError));
             testCustomers.writeEntityErrors.Add(createEntityError,    () => testCustomers.WriteError(createEntityError));
@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             var customers = store.customers;
             
             var createError = customers.Create(new Customer{id = createEntityError})    .TaskName("createError");
-            var updateError = customers.Update(new Customer{id = updateEntityError})    .TaskName("updateError");
+            var updateError = customers.Upsert(new Customer{id = updateEntityError})    .TaskName("updateError");
             var deleteError = customers.Delete(new Customer{id = deleteEntityError})    .TaskName("deleteError");
 
             AreEqual(3, store.Tasks.Count);
@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
 |- createError # EntityErrors ~ count: 1
 |   WriteError: Customer 'create-entity-error', simulated write entity error
 |- updateError # EntityErrors ~ count: 1
-|   WriteError: Customer 'update-entity-error', simulated write entity error
+|   WriteError: Customer 'upsert-entity-error', simulated write entity error
 |- deleteError # EntityErrors ~ count: 1
 |   WriteError: Customer 'delete-entity-error', simulated write entity error", sync.Message);
 
@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             IsFalse(updateError.Success);
             var updateErrors = updateError.Error.entityErrors;
             AreEqual(1,        updateErrors.Count);
-            AreEqual("WriteError: Customer 'update-entity-error', simulated write entity error", updateErrors[new JsonKey(updateEntityError)].ToString());
+            AreEqual("WriteError: Customer 'upsert-entity-error', simulated write entity error", updateErrors[new JsonKey(updateEntityError)].ToString());
         }
     }
 }

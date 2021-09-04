@@ -192,15 +192,15 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
                     };
                     return createResult;
                 
-                case TaskType.update:
-                    if (!subscribe.changes.Contains(Change.update))
+                case TaskType.upsert:
+                    if (!subscribe.changes.Contains(Change.upsert))
                         return null;
-                    var update = (UpdateEntities) task;
-                    if (update.container != subscribe.container)
+                    var upsert = (UpsertEntities) task;
+                    if (upsert.container != subscribe.container)
                         return null;
-                    var updateResult = new UpdateEntities {
-                        container   = update.container,
-                        entities    = FilterEntities(subscribe.filter, update.entities)
+                    var updateResult = new UpsertEntities {
+                        container   = upsert.container,
+                        entities    = FilterEntities(subscribe.filter, upsert.entities)
                     };
                     return updateResult;
                 

@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             var intEntity  = new IntEntity { id = intId};
             // Test: EntityId<T>.GetEntityId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
-                var create  = store.intEntities.Update(intEntity);
+                var create  = store.intEntities.Upsert(intEntity);
                 
                 await store.Sync();
                 
@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             // Test: EntityId<T>.GetEntityId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var entity  = new GuidEntity { id = guidId};
-                var create  = store.guidEntities.Update(entity);
+                var create  = store.guidEntities.Upsert(entity);
                 
                 await store.Sync();
                 
@@ -119,7 +119,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             // Test: EntityId<T>.GetEntityId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var entity  = new LongEntity { Id = longId};
-                var create  = store.longEntities.Update(entity);
+                var create  = store.longEntities.Upsert(entity);
                 
                 await store.Sync();
                 
@@ -150,7 +150,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             // Test: EntityId<T>.GetEntityId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var entity  = new ShortEntity { id = shortId };
-                var create  = store.shortEntities.Update(entity);
+                var create  = store.shortEntities.Upsert(entity);
                 
                 await store.Sync();
                 
@@ -181,7 +181,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             // Test: EntityId<T>.GetEntityId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var entity  = new ByteEntity { id = byteId };
-                var create  = store.byteEntities.Update(entity);
+                var create  = store.byteEntities.Upsert(entity);
                 
                 await store.Sync();
                 
@@ -212,7 +212,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             // Test: EntityId<T>.GetEntityId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var entity  = new CustomIdEntity { customId = stringId};
-                var create  = store.customIdEntities.Update(entity);
+                var create  = store.customIdEntities.Upsert(entity);
                 
                 await store.Sync();
                 
@@ -240,7 +240,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             
             // --- write and read Ref<>'s
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
-                var create = store.entityRefs.Update(entityRef);
+                var create = store.entityRefs.Upsert(entityRef);
                 
                 await store.Sync();
                 
@@ -302,7 +302,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             // Test: EntityId<T>.GetEntityId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var entity  = new CustomIdEntity2 { customId2 = stringId2};
-                var create  = store.customIdEntities2.Update(entity);
+                var create  = store.customIdEntities2.Upsert(entity);
                 
                 await store.Sync();
                 

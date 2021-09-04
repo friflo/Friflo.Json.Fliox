@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.DB.Graph
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class UpdateTask<T> : WriteTask where T : class
+    public class UpsertTask<T> : WriteTask where T : class
     {
         private readonly    EntitySetBase<T>    set;
         private  readonly   List<T>             entities;
@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         public   override   string              Details     => $"UpdateTask<{typeof(T).Name}> (#keys: {entities.Count})";
         
         
-        internal UpdateTask(List<T> entities, EntitySetBase<T> set) {
+        internal UpsertTask(List<T> entities, EntitySetBase<T> set) {
             this.set        = set;
             this.entities   = entities;
         }

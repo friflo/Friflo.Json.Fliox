@@ -23,13 +23,13 @@ The value of each entry authorize container specific tasks by `operations` and `
 
 - `operations`  
                         Allow read and write operations on a container. These operations are:  
-                        `create`, `update`, `delete`, `patch`, `read`, `query`, `mutate`, `full`  
-                        `mutate` is shortcut for `create`, `update`, `delete`, `patch`  
+                        `create`, `upsert`, `delete`, `patch`, `read`, `query`, `mutate`, `full`  
+                        `mutate` is shortcut for `create`, `upsert`, `delete`, `patch`  
                         `all` is a shortcut for all operations
 
 - `subscribeChanges`  
                         Allow subscription to entity changes in a container. These change types are:  
-                        `create`, `update`, `delete`, `patch`
+                        `create`, `upsert`, `delete`, `patch`
 
 
 ## `message`
@@ -51,7 +51,7 @@ Task execution of a specific task type is allowed in case it is listed inside `t
 
 The following task types can be used:
 
-`read`, `query`, `create`, `update`, `delete`, `patch`, `message`, `subscribeChanges`, `subscribeMessage`
+`read`, `query`, `create`, `upsert`, `delete`, `patch`, `message`, `subscribeChanges`, `subscribeMessage`
 
 
 ## `predicate`

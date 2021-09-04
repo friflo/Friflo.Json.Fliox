@@ -63,8 +63,8 @@ enum class EntityErrorType {
 }
 
 @Serializable
-@SerialName("update")
-data class UpdateEntities (
+@SerialName("upsert")
+data class UpsertEntities (
               val container : String,
               val entities  : HashMap<String, EntityValue>,
 ) : DatabaseTask()
@@ -134,7 +134,7 @@ data class SubscribeChanges (
 
 enum class Change {
     create,
-    update,
+    upsert,
     patch,
     delete,
 }
@@ -189,8 +189,8 @@ data class CommandError (
 )
 
 @Serializable
-@SerialName("update")
-data class UpdateEntitiesResult (
+@SerialName("upsert")
+data class UpsertEntitiesResult (
               val Error : CommandError? = null,
 ) : TaskResult()
 

@@ -132,8 +132,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             return await local.CreateEntities(command, messageContext).ConfigureAwait(false);
         }
 
-        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
-            return await local.UpdateEntities(command, messageContext).ConfigureAwait(false);
+        public override async Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, MessageContext messageContext) {
+            return await local.UpsertEntities(command, messageContext).ConfigureAwait(false);
         }
 
         public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {

@@ -189,7 +189,7 @@ content-type: application/json
   "client": "client-1",
   "tasks": [{
     "task": "subscribeChanges", "container": "Article", 
-    "changes": ["create", "update", "delete", "patch"]
+    "changes": ["create", "upsert", "delete", "patch"]
   }
 ]}
 

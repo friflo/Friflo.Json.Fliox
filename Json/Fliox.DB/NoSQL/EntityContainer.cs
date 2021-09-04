@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         public  virtual     bool            Pretty      => false;
 
         public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities command, MessageContext messageContext);
-        public abstract Task<UpdateEntitiesResult>  UpdateEntities  (UpdateEntities command, MessageContext messageContext);
+        public abstract Task<UpsertEntitiesResult>  UpsertEntities  (UpsertEntities command, MessageContext messageContext);
         public abstract Task<ReadEntitiesResult>    ReadEntities    (ReadEntities   command, MessageContext messageContext);
         public abstract Task<QueryEntitiesResult>   QueryEntities   (QueryEntities  command, MessageContext messageContext);
         public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities command, MessageContext messageContext);
@@ -124,8 +124,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             database.schema?.ValidateEntities(container, targets, messageContext, EntityErrorType.PatchError, ref response.patchErrors);
             
             // Write patched entities back
-            var task = new UpdateEntities {entities = targets};
-            var updateResult = await UpdateEntities(task, messageContext).ConfigureAwait(false);
+            var task = new UpsertEntities {entities = targets};
+            var updateResult = await UpsertEntities(task, messageContext).ConfigureAwait(false);
             if (updateResult.Error != null) {
                 return new PatchEntitiesResult {Error = updateResult.Error};
             }

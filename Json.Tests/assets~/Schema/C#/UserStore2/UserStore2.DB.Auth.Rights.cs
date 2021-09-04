@@ -49,7 +49,7 @@ public class ContainerAccess {
 
 public enum OperationType {
     create,
-    update,
+    upsert,
     delete,
     patch,
     read,

@@ -12,7 +12,7 @@ var exampleRole: Role = {
         },
         {
             type:           "database",
-            containers:     { "Article": { operations:["read", "query", "update"], subscribeChanges: ["update"] }}
+            containers:     { "Article": { operations:["read", "query", "upsert"], subscribeChanges: ["upsert"] }}
         },
         {
             type:           "message",

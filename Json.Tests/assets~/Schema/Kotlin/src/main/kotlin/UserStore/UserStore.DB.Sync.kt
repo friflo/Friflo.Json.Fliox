@@ -8,7 +8,7 @@ enum class TaskType {
     read,
     query,
     create,
-    update,
+    upsert,
     patch,
     delete,
     message,
@@ -19,7 +19,7 @@ enum class TaskType {
 
 enum class Change {
     create,
-    update,
+    upsert,
     patch,
     delete,
 }

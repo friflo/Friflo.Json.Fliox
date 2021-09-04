@@ -10,7 +10,7 @@ public enum TaskType {
     read,
     query,
     create,
-    update,
+    upsert,
     patch,
     delete,
     message,
@@ -21,7 +21,7 @@ public enum TaskType {
 
 public enum Change {
     create,
-    update,
+    upsert,
     patch,
     delete,
 }

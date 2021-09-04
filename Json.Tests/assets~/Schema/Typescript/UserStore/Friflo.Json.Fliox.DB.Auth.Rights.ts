@@ -55,7 +55,7 @@ export class ContainerAccess {
 
 export type OperationType =
     | "create"
-    | "update"
+    | "upsert"
     | "delete"
     | "patch"
     | "read"

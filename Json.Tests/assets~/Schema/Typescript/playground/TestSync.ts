@@ -106,7 +106,7 @@ var exampleSync: DatabaseMessage = {
             {
                 "task":         "subscribeChanges",
                 "container":    "Article", 
-                "changes": ["create", "update", "delete", "patch"]
+                "changes": ["create", "upsert", "delete", "patch"]
             }
         ]
     }

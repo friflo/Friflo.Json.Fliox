@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
     /// An <see cref="EntityDatabase"/> instance is the single entry point used to handle all requests send by a client -
     /// e.g. an <see cref="Graph.EntityStore"/>. It handle these requests by its <see cref="ExecuteSync"/> method.
     /// A request is represented by a <see cref="SyncRequest"/> containing all database operations like create, read,
-    /// update, delete and all messages / commands send by a client in the <see cref="SyncRequest.tasks"/> list.
+    /// upsert, delete and all messages / commands send by a client in the <see cref="SyncRequest.tasks"/> list.
     /// The <see cref="EntityDatabase"/> execute these tasks by its <see cref="taskHandler"/>.
     /// <br/>
     /// Instances of <see cref="EntityDatabase"/> and all its implementation are designed to be thread safe enabling multiple

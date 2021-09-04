@@ -191,7 +191,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             
             internal    readonly string roleDatabase    = AsJson(
 @"{'id': 'role-database','description': 'test',
-    'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'update'], 'subscribeChanges': ['update'] }}} ]
+    'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'upsert'], 'subscribeChanges': ['upsert'] }}} ]
 }");
             
             internal TestTypes() {

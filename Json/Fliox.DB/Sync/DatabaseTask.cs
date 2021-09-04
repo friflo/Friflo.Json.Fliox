@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     // ----------------------------------- task -----------------------------------
     [Fri.Discriminator("task")]
     [Fri.Polymorph(typeof(CreateEntities),          Discriminant = "create")]
-    [Fri.Polymorph(typeof(UpdateEntities),          Discriminant = "update")]
+    [Fri.Polymorph(typeof(UpsertEntities),          Discriminant = "upsert")]
     [Fri.Polymorph(typeof(ReadEntitiesList),        Discriminant = "read")]
     [Fri.Polymorph(typeof(QueryEntities),           Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntities),           Discriminant = "patch")]
@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     // ----------------------------------- task result -----------------------------------
     [Fri.Discriminator("task")]
     [Fri.Polymorph(typeof(CreateEntitiesResult),    Discriminant = "create")]
-    [Fri.Polymorph(typeof(UpdateEntitiesResult),    Discriminant = "update")]
+    [Fri.Polymorph(typeof(UpsertEntitiesResult),    Discriminant = "upsert")]
     [Fri.Polymorph(typeof(ReadEntitiesListResult),  Discriminant = "read")]
     [Fri.Polymorph(typeof(QueryEntitiesResult),     Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntitiesResult),     Discriminant = "patch")]
@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         read,
         query,
         create,
-        update,
+        upsert,
         patch,
         delete,
         message,

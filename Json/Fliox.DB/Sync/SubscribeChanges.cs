@@ -50,8 +50,8 @@ namespace Friflo.Json.Fliox.DB.Sync
     public static class Changes
     {
         /// <summary>Shortcut to subscribe to all types database changes. These ase <see cref="Change.create"/>,
-        /// <see cref="Change.update"/>, <see cref="Change.patch"/> and <see cref="Change.delete"/></summary>
-        public static readonly ReadOnlyCollection<Change> All  = new List<Change> { Change.create, Change.update, Change.delete, Change.patch }.AsReadOnly();
+        /// <see cref="Change.upsert"/>, <see cref="Change.patch"/> and <see cref="Change.delete"/></summary>
+        public static readonly ReadOnlyCollection<Change> All  = new List<Change> { Change.create, Change.upsert, Change.delete, Change.patch }.AsReadOnly();
         /// <summary>Shortcut to unsubscribe from all database change types.</summary>
         public static readonly ReadOnlyCollection<Change> None = new List<Change>().AsReadOnly();
     }
@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         /// <summary>Filter database change events of new created entities.</summary>
         create,
         /// <summary>Filter database change events of updated entities.</summary>
-        update,
+        upsert,
         /// <summary>Filter database change events used to patch entities.</summary>
         patch,
         /// <summary>Filter database change events used to delete entities.</summary>

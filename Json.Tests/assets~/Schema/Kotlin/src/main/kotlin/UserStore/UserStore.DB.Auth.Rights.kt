@@ -54,7 +54,7 @@ data class ContainerAccess (
 
 enum class OperationType {
     create,
-    update,
+    upsert,
     delete,
     patch,
     read,

@@ -115,13 +115,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             return Task.FromResult(new CreateEntitiesResult());
         }
 
-        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
+        public override Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, MessageContext messageContext) {
             var error = SimulateWriteErrors(command.entities.Keys.ToHashSet(JsonKey.Equality), out var errors);
             if (error != null)
-                return Task.FromResult(new UpdateEntitiesResult {Error = error});
+                return Task.FromResult(new UpsertEntitiesResult {Error = error});
             if (errors != null)
-                return Task.FromResult(new UpdateEntitiesResult {updateErrors = errors});
-            return Task.FromResult(new UpdateEntitiesResult());
+                return Task.FromResult(new UpsertEntitiesResult {updateErrors = errors});
+            return Task.FromResult(new UpsertEntitiesResult());
         }
         
         public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {

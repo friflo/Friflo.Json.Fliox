@@ -46,14 +46,14 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             return Task.FromResult(result);
         }
 
-        public override Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
+        public override Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, MessageContext messageContext) {
             var entities = command.entities;
             foreach (var entityPair in entities) {
                 var         key      = entityPair.Key;
                 EntityValue payload  = entityPair.Value;
                 keyValues[key] = payload.Json;
             }
-            var result = new UpdateEntitiesResult();
+            var result = new UpsertEntitiesResult();
             return Task.FromResult(result);
         }
 

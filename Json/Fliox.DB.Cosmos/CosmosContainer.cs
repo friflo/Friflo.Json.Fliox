@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             return result;
         }
 
-        public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
+        public override async Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, MessageContext messageContext) {
             await EnsureContainerExists().ConfigureAwait(false);
             var entities = command.entities;
             using(var memory   = new ReusedMemoryStream())
@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                     }
                 }
             }
-            var result = new UpdateEntitiesResult();
+            var result = new UpsertEntitiesResult();
             return result;
         }
 

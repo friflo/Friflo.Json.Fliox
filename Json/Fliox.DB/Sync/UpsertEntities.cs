@@ -9,12 +9,12 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class UpdateEntities : DatabaseTask
+    public class UpsertEntities : DatabaseTask
     {
         [Fri.Required]  public  string                              container;
         [Fri.Required]  public  Dictionary<JsonKey, EntityValue>    entities = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
         
-        internal override       TaskType                        TaskType => TaskType.update;
+        internal override       TaskType                        TaskType => TaskType.upsert;
         public   override       string                          TaskName => $"container: '{container}'";
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                     }
                 }
             }
-            var result = await entityContainer.UpdateEntities(this, messageContext).ConfigureAwait(false);
+            var result = await entityContainer.UpsertEntities(this, messageContext).ConfigureAwait(false);
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
@@ -51,11 +51,11 @@ namespace Friflo.Json.Fliox.DB.Sync
     }
     
     // ----------------------------------- task result -----------------------------------
-    public class UpdateEntitiesResult : TaskResult, ICommandResult
+    public class UpsertEntitiesResult : TaskResult, ICommandResult
     {
         public              CommandError                        Error { get; set; }
         [Fri.Ignore] public Dictionary<JsonKey, EntityError>    updateErrors;
 
-        internal override   TaskType                        TaskType => TaskType.update;
+        internal override   TaskType                        TaskType => TaskType.upsert;
     }
 }

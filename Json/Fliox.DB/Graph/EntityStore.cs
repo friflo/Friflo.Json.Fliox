@@ -447,10 +447,10 @@ namespace Friflo.Json.Fliox.DB.Graph
                             var syncSet = syncSets[create.container];
                             syncSet.CreateEntitiesResult(create, result);
                             break;
-                        case TaskType.update:
-                            var update =            (UpdateEntities) task;
-                            syncSet = syncSets[update.container];
-                            syncSet.UpdateEntitiesResult(update, result);
+                        case TaskType.upsert:
+                            var upsert =            (UpsertEntities) task;
+                            syncSet = syncSets[upsert.container];
+                            syncSet.UpsertEntitiesResult(upsert, result);
                             break;
                         case TaskType.read:
                             var readList =          (ReadEntitiesList) task;

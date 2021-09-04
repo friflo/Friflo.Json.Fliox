@@ -53,13 +53,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         private static async Task SyncConcurrency(PocStore store, Customer peter, Customer paul) {
             var customers = store.customers;
             {
-                customers.Update(peter);
+                customers.Upsert(peter);
                 AreEqual(1, store.Tasks.Count);
                 var sync1 = store.Sync();
                 AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting Sync()
                 
                 store.SendMessage("Some message"); // add additional task to second Sync() to identify the result by task.Count
-                customers.Update(paul);
+                customers.Upsert(paul);
                 AreEqual(2, store.Tasks.Count);
                 var sync2 = store.Sync();
                 AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting Sync()

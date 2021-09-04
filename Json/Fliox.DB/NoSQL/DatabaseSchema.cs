@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
 {
     /// <summary>
     /// If a <see cref="DatabaseSchema"/> is assigned to a <see cref="EntityDatabase.schema"/> the JSON payloads of all
-    /// entities used in write operations (create, update and patch) are validated against their expected container types.
+    /// entities used in write operations (create, upsert and patch) are validated against their expected container types.
     /// <br/>
     /// It is intended to be used for <see cref="Remote.RemoteHostDatabase"/> instances to ensure that the entities
     /// (records) in an <see cref="EntityContainer"/> always meet the expected type. So only successful validated JSON

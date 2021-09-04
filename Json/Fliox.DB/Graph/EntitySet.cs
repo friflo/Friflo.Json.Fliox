@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.DB.Graph
     /// <summary>
     /// An EntitySet represents a collection (table) of entities (records).
     /// <br/>
-    /// The methods of an <see cref="EntitySet{TKey,T}"/> enable to create, read, update or delete container entities.
+    /// The methods of an <see cref="EntitySet{TKey,T}"/> enable to create, read, upsert or delete container entities.
     /// It also allows to subscribe to entities changes made by other database users.<br/>
     /// <see cref="EntitySet{TKey,T}"/>'s are designed to be used as fields or properties inside an <see cref="EntityStore"/>.
     /// <br/>
@@ -232,18 +232,18 @@ namespace Friflo.Json.Fliox.DB.Graph
             return task;
         }
         
-        // --- Update
-        public UpdateTask<T> Update(T entity) {
+        // --- Upsert
+        public UpsertTask<T> Upsert(T entity) {
             if (entity == null)
-                throw new ArgumentException($"EntitySet.Update() entity must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.Upsert() entity must not be null. EntitySet: {name}");
             if (EntityKey.IsEntityKeyNull(entity))
-                throw new ArgumentException($"EntitySet.Update() entity.id must not be null. EntitySet: {name}");
-            var task = GetSyncSet().Update(entity);
+                throw new ArgumentException($"EntitySet.Upsert() entity.id must not be null. EntitySet: {name}");
+            var task = GetSyncSet().Upsert(entity);
             intern.store.AddTask(task);
             return task;
         }
         
-        public UpdateTask<T> UpdateRange(ICollection<T> entities) {
+        public UpsertTask<T> UpdateRange(ICollection<T> entities) {
             if (entities == null)
                 throw new ArgumentException($"EntitySet.UpdateRange() entity must not be null. EntitySet: {name}");
             foreach (var entity in entities) {

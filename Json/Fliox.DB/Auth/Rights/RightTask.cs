@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.DB.Auth.Rights
         private static readonly Authorizer Read             = new AuthorizeTaskType(TaskType.read);
         private static readonly Authorizer Query            = new AuthorizeTaskType(TaskType.query);
         private static readonly Authorizer Create           = new AuthorizeTaskType(TaskType.create);
-        private static readonly Authorizer Update           = new AuthorizeTaskType(TaskType.update);
+        private static readonly Authorizer Upsert           = new AuthorizeTaskType(TaskType.upsert);
         private static readonly Authorizer Patch            = new AuthorizeTaskType(TaskType.patch);
         private static readonly Authorizer Delete           = new AuthorizeTaskType(TaskType.delete);
         //
@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.DB.Auth.Rights
                 case TaskType.read:                return Read;
                 case TaskType.query:               return Query;
                 case TaskType.create:              return Create;
-                case TaskType.update:              return Update;
+                case TaskType.upsert:              return Upsert;
                 case TaskType.patch:               return Patch;
                 case TaskType.delete:              return Delete;
                 //

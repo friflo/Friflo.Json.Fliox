@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
         
         internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, TaskResult result);
-        internal  abstract  void    UpdateEntitiesResult    (UpdateEntities     task, TaskResult result);
+        internal  abstract  void    UpsertEntitiesResult    (UpsertEntities     task, TaskResult result);
         internal  abstract  void    ReadEntitiesListResult  (ReadEntitiesList   task, TaskResult result, ContainerEntities readEntities);
         internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, TaskResult result, ContainerEntities queryEntities);
         internal  abstract  void    PatchEntitiesResult     (PatchEntities      task, TaskResult result);
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsCreate"/> for all
         /// <see cref="Creates"/> to enable setting <see cref="LogTask"/> to error state via <see cref="LogTask.SetResult"/>. 
         internal override void CreateEntitiesResult(CreateEntities task, TaskResult result) {
-            CreateUpdateEntitiesResult(task.entities, result, CreateTasks(), errorsCreate);
+            CreateUpsertEntitiesResult(task.entities, result, CreateTasks(), errorsCreate);
             var creates = Creates();
             if (result is TaskErrorResult taskError) {
                 if (errorsCreate == NoErrors) {
@@ -53,15 +53,15 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             CreateTasks().Clear();
         }
 
-        internal override void UpdateEntitiesResult(UpdateEntities task, TaskResult result) {
-            CreateUpdateEntitiesResult(task.entities, result, UpdateTasks(), errorsUpdate);
+        internal override void UpsertEntitiesResult(UpsertEntities task, TaskResult result) {
+            CreateUpsertEntitiesResult(task.entities, result, UpdateTasks(), errorsUpdate);
             
             // enable GC to collect references in containers which are not needed anymore
             Updates().Clear();
             UpdateTasks().Clear();
         }
 
-        private void CreateUpdateEntitiesResult(
+        private void CreateUpsertEntitiesResult(
             Dictionary<JsonKey, EntityValue>    entities,
             TaskResult                          result,
             List<WriteTask>                     writeTasks,
