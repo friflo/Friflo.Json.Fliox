@@ -7,8 +7,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Auth.Rights;
-using Friflo.Json.Fliox.DB.Database;
-using Friflo.Json.Fliox.DB.Database.Event;
+using Friflo.Json.Fliox.DB.NoSQL;
+using Friflo.Json.Fliox.DB.NoSQL.Event;
 using Friflo.Json.Fliox.DB.Sync;
 
 

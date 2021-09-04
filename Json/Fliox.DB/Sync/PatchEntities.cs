@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.Database;
+using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 

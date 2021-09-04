@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System.Collections.Generic;
-using Friflo.Json.Fliox.DB.Database;
+using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Sync
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         /// or modified from extern processes - for example by manually changing its JSON content with an editor.
         /// 
         /// A <see cref="MemoryContainer"/> does not require validation as its key/values are always written via
-        /// Database/Graph library - which generate valid JSON.
+        /// NoSQL/Graph library - which generate valid JSON.
         /// 
         /// So database adapters which can ensure the JSON value is always valid made calling <see cref="ValidateEntities"/>
         /// obsolete - like Postgres/JSONB, Azure Cosmos DB or MongoDB.

@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Schema.Validation;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Utils;
 
-namespace Friflo.Json.Fliox.DB.Database
+namespace Friflo.Json.Fliox.DB.NoSQL
 {
         public struct PoolUsage {
         internal int    patcherCount;

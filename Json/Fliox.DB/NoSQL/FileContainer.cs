@@ -7,11 +7,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.Database.Utils;
+using Friflo.Json.Fliox.DB.NoSQL.Utils;
 using Friflo.Json.Fliox.DB.Sync;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Database
+namespace Friflo.Json.Fliox.DB.NoSQL
 {
     public class FileDatabase : EntityDatabase
     {

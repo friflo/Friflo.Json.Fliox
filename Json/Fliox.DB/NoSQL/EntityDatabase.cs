@@ -5,10 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
-using Friflo.Json.Fliox.DB.Database.Event;
+using Friflo.Json.Fliox.DB.NoSQL.Event;
 using Friflo.Json.Fliox.DB.Sync;
 
-namespace Friflo.Json.Fliox.DB.Database
+namespace Friflo.Json.Fliox.DB.NoSQL
 {
     /// <summary>
     /// <see cref="EntityDatabase"/> is an abstraction for a specific database adapter / implementation e.g. a

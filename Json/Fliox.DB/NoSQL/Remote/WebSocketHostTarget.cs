@@ -9,11 +9,11 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.Database.Event;
-using Friflo.Json.Fliox.DB.Database.Utils;
+using Friflo.Json.Fliox.DB.NoSQL.Event;
+using Friflo.Json.Fliox.DB.NoSQL.Utils;
 using Friflo.Json.Fliox.DB.Sync;
 
-namespace Friflo.Json.Fliox.DB.Database.Remote
+namespace Friflo.Json.Fliox.DB.NoSQL.Remote
 {
     // [Things I Wish Someone Told Me About ASP.NET Core WebSockets | codetinkerer.com] https://www.codetinkerer.com/2018/06/05/aspnet-core-websockets.html
     internal class WebSocketHostTarget : IEventTarget

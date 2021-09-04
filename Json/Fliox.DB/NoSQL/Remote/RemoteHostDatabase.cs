@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.DB.Sync;
 using Friflo.Json.Fliox.Mapper;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
-namespace Friflo.Json.Fliox.DB.Database.Remote
+namespace Friflo.Json.Fliox.DB.NoSQL.Remote
 {
     public class RemoteHostDatabase : EntityDatabase
     {

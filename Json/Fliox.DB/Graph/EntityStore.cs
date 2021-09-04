@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.Database;
+using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.DB.Graph.Internal;
 using Friflo.Json.Fliox.DB.Graph.Internal.Map;
 using Friflo.Json.Fliox.DB.Sync;
@@ -317,7 +317,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         /// in a worker thread while calling <see cref="SyncStore"/> methods from "main" thread.
         /// 
         /// If store has <see cref="StoreIntern.subscriptionProcessor"/> acknowledge received events to clear
-        /// <see cref="Database.Event.EventSubscriber.sentEvents"/>. This avoids resending already received events on reconnect. 
+        /// <see cref="NoSQL.Event.EventSubscriber.sentEvents"/>. This avoids resending already received events on reconnect. 
         /// </summary>
         private SyncRequest CreateSyncRequest(out SyncStore syncStore) {
             syncStore = _intern.syncStore;

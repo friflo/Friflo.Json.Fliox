@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     // ----------------------------------- sub task -----------------------------------
     public class References
     {
-        /// Path to a <see cref="Ref{T}"/> field referencing an entity.
+        /// Path to a <see cref="Ref{TKey,T}"/> field referencing an entity.
         /// These referenced entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
         [Fri.Required]  public  string              selector; // e.g. ".items[*].article"
         [Fri.Required]  public  string              container;

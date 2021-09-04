@@ -8,7 +8,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     /// A container for different types of a message classified into request, response and event.
     /// It is used in communication protocols which support more than the request / response schema.
     /// Only one of its fields is set at a time.
-    /// More at: <see cref="Database.Remote.ProtocolType"/>
+    /// More at: <see cref="NoSQL.Remote.ProtocolType"/>
     /// <br></br>
     /// Note: By applying this classification the protocol can also be used in peer-to-peer networking.
     /// 
@@ -28,8 +28,8 @@ namespace Friflo.Json.Fliox.DB.Sync
     ///     This enables embedding all messages in various communication protocols like HTTP, WebSockets, TCP
     ///     or datagram based protocols.
     ///     This also means all <see cref="Fliox"/> messages doesnt (and must not) require a session.
-    ///     This principle also enables using a single <see cref="Database.EntityDatabase"/> by multiple clients like
-    ///     <see cref="Graph.EntityStore"/> even for remote clients like <see cref="Database.Remote.RemoteClientDatabase"/>.
+    ///     This principle also enables using a single <see cref="NoSQL.EntityDatabase"/> by multiple clients like
+    ///     <see cref="Graph.EntityStore"/> even for remote clients like <see cref="NoSQL.Remote.RemoteClientDatabase"/>.
     /// </para>
     /// </summary>
     public class DatabaseMessage

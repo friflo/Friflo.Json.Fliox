@@ -11,7 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Sync;
 
-namespace Friflo.Json.Fliox.DB.Database.Remote
+namespace Friflo.Json.Fliox.DB.NoSQL.Remote
 {
     public class WebSocketClientDatabase : RemoteClientDatabase
     {

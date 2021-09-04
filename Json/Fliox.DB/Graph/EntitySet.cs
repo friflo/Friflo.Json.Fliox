@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
-using Friflo.Json.Fliox.DB.Database;
+using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.DB.Graph.Internal;
 using Friflo.Json.Fliox.DB.Graph.Internal.Id;
 using Friflo.Json.Fliox.DB.Graph.Internal.Map;

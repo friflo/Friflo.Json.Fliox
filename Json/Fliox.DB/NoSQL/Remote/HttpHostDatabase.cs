@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Friflo.Json.Fliox.DB.Database.Remote
+namespace Friflo.Json.Fliox.DB.NoSQL.Remote
 {
     
     public interface IHttpContextHandler

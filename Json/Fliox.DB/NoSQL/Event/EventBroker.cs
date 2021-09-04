@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.DB.Sync;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 
-namespace Friflo.Json.Fliox.DB.Database.Event
+namespace Friflo.Json.Fliox.DB.NoSQL.Event
 {
     public interface IEventTarget {
         bool        IsOpen ();

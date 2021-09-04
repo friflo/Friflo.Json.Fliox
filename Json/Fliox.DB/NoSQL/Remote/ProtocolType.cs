@@ -3,7 +3,7 @@
 
 using Friflo.Json.Fliox.DB.Sync;
 
-namespace Friflo.Json.Fliox.DB.Database.Remote
+namespace Friflo.Json.Fliox.DB.NoSQL.Remote
 {
     /// <summary>
     /// Specify how <see cref="DatabaseRequest"/>'s and <see cref="DatabaseResponse"/>'s are send via the used

@@ -12,7 +12,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 // ReSharper disable MemberCanBeProtected.Global
 // ReSharper disable MemberCanBePrivate.Global
-namespace Friflo.Json.Fliox.DB.Database.Remote
+namespace Friflo.Json.Fliox.DB.NoSQL.Remote
 {
     public delegate byte[] CreateZip(Dictionary<string, string> files);
     

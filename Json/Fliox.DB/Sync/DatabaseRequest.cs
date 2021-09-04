@@ -9,14 +9,14 @@ namespace Friflo.Json.Fliox.DB.Sync
     [Fri.Polymorph(typeof(SyncRequest),         Discriminant = "sync")]
     public abstract class DatabaseRequest {
         // ReSharper disable once InconsistentNaming
-        /// <summary>Used only for <see cref="Database.Remote.RemoteClientDatabase"/> to enable:
+        /// <summary>Used only for <see cref="NoSQL.Remote.RemoteClientDatabase"/> to enable:
         /// <para>
         ///   1. Out of order response handling for their corresponding requests.
         /// </para>
         /// <para>
         ///   2. Multiplexing of requests and their responses for multiple clients e.g. <see cref="Graph.EntityStore"/>
         ///      using the same connection.
-        ///      This is not a common scenario but it enables using a single <see cref="Database.Remote.WebSocketClientDatabase"/>
+        ///      This is not a common scenario but it enables using a single <see cref="NoSQL.Remote.WebSocketClientDatabase"/>
         ///      used by multiple clients.
         /// </para>
         /// </summary>
