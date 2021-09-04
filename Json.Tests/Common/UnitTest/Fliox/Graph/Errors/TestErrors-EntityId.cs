@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using Friflo.Json.Fliox.Db.Database;
-using Friflo.Json.Fliox.Db.Graph;
+using Friflo.Json.Fliox.DB.Database;
+using Friflo.Json.Fliox.DB.Graph;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using static NUnit.Framework.Assert;

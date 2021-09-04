@@ -29,7 +29,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Json\Burst\Friflo.Json.Burst.csproj" />
-      <ProjectReference Include="..\Json\Fliox.Db\Friflo.Json.Fliox.Db.csproj" />
+      <ProjectReference Include="..\Json\Fliox.Db\Friflo.Json.Fliox.DB.csproj" />
       <ProjectReference Include="..\Json\Fliox\Friflo.Json.Fliox.csproj" />
     </ItemGroup>
 	

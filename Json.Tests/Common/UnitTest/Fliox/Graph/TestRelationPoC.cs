@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Db.Graph;
+using Friflo.Json.Fliox.DB.Graph;
 using static NUnit.Framework.Assert;
 using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 

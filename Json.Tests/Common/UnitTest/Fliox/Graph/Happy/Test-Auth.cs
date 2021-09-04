@@ -2,13 +2,13 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Db.Auth.Rights;
-using Friflo.Json.Fliox.Db.Database;
-using Friflo.Json.Fliox.Db.Database.Event;
-using Friflo.Json.Fliox.Db.Database.Utils;
-using Friflo.Json.Fliox.Db.Graph;
-using Friflo.Json.Fliox.Db.Sync;
-using Friflo.Json.Fliox.Db.UserAuth;
+using Friflo.Json.Fliox.DB.Auth.Rights;
+using Friflo.Json.Fliox.DB.Database;
+using Friflo.Json.Fliox.DB.Database.Event;
+using Friflo.Json.Fliox.DB.Database.Utils;
+using Friflo.Json.Fliox.DB.Graph;
+using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;

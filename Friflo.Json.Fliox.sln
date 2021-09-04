@@ -6,9 +6,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Burst", "Json\B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox", "Json\Fliox\Friflo.Json.Fliox.csproj", "{C45F68CA-9E64-4A37-8188-A93198A51E36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Db.Cosmos", "Json\Fliox.Db.Cosmos\Friflo.Json.Fliox.Db.Cosmos.csproj", "{62AB91E6-3C0E-4DD6-966E-AE4594452C01}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.DB.Cosmos", "Json\Fliox.Db.Cosmos\Friflo.Json.Fliox.DB.Cosmos.csproj", "{62AB91E6-3C0E-4DD6-966E-AE4594452C01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.Db", "Json\Fliox.Db\Friflo.Json.Fliox.Db.csproj", "{C0C7ECC7-D621-4BA0-AD31-687EEA6FE981}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.DB", "Json\Fliox.Db\Friflo.Json.Fliox.DB.csproj", "{C0C7ECC7-D621-4BA0-AD31-687EEA6FE981}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

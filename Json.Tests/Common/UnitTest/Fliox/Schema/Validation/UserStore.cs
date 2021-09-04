@@ -3,8 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Db.Graph;
-using Friflo.Json.Fliox.Db.UserAuth;
+using Friflo.Json.Fliox.DB.Graph;
+using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;
@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             using (var validationSet    = new ValidationSet(jsonSchema))
             using (var validator        = new TypeValidator()) {
                 var test = new TestTypes {
-                    roleType    = jsonSchema.TypeAsValidationType<Role>(validationSet, "Friflo.Json.Fliox.Db.UserAuth")
+                    roleType    = jsonSchema.TypeAsValidationType<Role>(validationSet, "Friflo.Json.Fliox.DB.UserAuth")
                 };
                 ValidateSuccess         (validator, test);
                 ValidateFailure         (validator, test);

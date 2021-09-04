@@ -3,9 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Db.Database;
-using Friflo.Json.Fliox.Db.Graph.Internal;
-using Friflo.Json.Fliox.Db.Sync;
+using Friflo.Json.Fliox.DB.Database;
+using Friflo.Json.Fliox.DB.Graph.Internal;
+using Friflo.Json.Fliox.DB.Sync;
 using Friflo.Json.Fliox.Mapper;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;

@@ -4,7 +4,7 @@ using Friflo.Json.Fliox.Mapper;
 
 #pragma warning disable 0169 // [CS0169] The field '...' is never used
 
-namespace UserStore2.Db.Sync {
+namespace UserStore2.DB.Sync {
 
 public enum TaskType {
     read,
