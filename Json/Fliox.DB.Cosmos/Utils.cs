@@ -4,17 +4,19 @@
 using System.Collections.Generic;
 using System.IO;
 using Friflo.Json.Fliox.Mapper;
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable InconsistentNaming
+// ReSharper disable UnassignedField.Global
 
 #if !UNITY_5_3_OR_NEWER
 
 namespace Friflo.Json.Fliox.DB.Cosmos
 {
-    public class DocumentContainer {
+    public class ResponseFeed {
         public  int             _count;
         public  List<JsonValue> Documents;
     }
-    
-    
+
     public class ReusedMemoryStream : MemoryStream {
         protected override void Dispose(bool disposing) { }
     }

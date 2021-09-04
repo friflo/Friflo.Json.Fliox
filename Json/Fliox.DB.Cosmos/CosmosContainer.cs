@@ -146,8 +146,8 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                         Stream content = response.Content;
                         using (var streamReader = new StreamReader(content)) {
                             string documentsJson = await streamReader.ReadToEndAsync().ConfigureAwait(false);
-                            var docsContainer = reader.Read<DocumentContainer>(documentsJson);
-                            var docs = docsContainer.Documents;
+                            var responseFeed = reader.Read<ResponseFeed>(documentsJson);
+                            var docs = responseFeed.Documents;
                             if (docs == null)
                                 throw new InvalidOperationException($"no Documents in Cosmos ResponseMessage. command: {command}");
                             documents.AddRange(docs);
