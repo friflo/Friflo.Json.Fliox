@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             var readArticles = store.articles.Read();
                         readArticles.Find("missing-id");
             var task =  readArticles.ReadRef(a => a.producer);
-            SubRefs subRefs;
+            SubRefs subRefs = new SubRefs();
             subRefs.AddTask("someTask", task);
 
             // ensure iterator does not allocate something on heap by boxing
