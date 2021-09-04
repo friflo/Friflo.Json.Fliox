@@ -59,11 +59,13 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         private async Task EnsureContainerExists() {
             if (cosmosContainer != null)
                 return;
-            cosmosContainer = await options.database.CreateContainerIfNotExistsAsync(name, "/id", options.throughput);
+            var db          = options.database;
+            var throughput  = options.throughput;
+            cosmosContainer = await db.CreateContainerIfNotExistsAsync(name, "/id", throughput).ConfigureAwait(false);
         }
         
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
-            await EnsureContainerExists();
+            await EnsureContainerExists().ConfigureAwait(false);
             var entities = command.entities;
             using(var memory   = new MemoryStream())
             using(var writer   = new StreamWriter(memory, Utf8Encoding, -1, true)) {
@@ -76,7 +78,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                     memory.Seek(0, SeekOrigin.Begin);
                     var partitionKey = new PartitionKey(id);
                     // todo handle error;
-                    await cosmosContainer.CreateItemStreamAsync(memory, partitionKey);
+                    await cosmosContainer.CreateItemStreamAsync(memory, partitionKey).ConfigureAwait(false);
                 }
             }
             var result = new CreateEntitiesResult();
@@ -84,7 +86,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         }
 
         public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
-            await EnsureContainerExists();
+            await EnsureContainerExists().ConfigureAwait(false);
             var entities = command.entities;
             using(var memory   = new MemoryStream())
             using(var writer   = new StreamWriter(memory, Utf8Encoding, -1, true)) {
@@ -97,7 +99,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                     memory.Seek(0, SeekOrigin.Begin);
                     var partitionKey = new PartitionKey(id);
                     // todo handle error;
-                    await cosmosContainer.UpsertItemStreamAsync(memory, partitionKey);
+                    await cosmosContainer.UpsertItemStreamAsync(memory, partitionKey).ConfigureAwait(false);
                 }
             }
             var result = new UpdateEntitiesResult();
@@ -105,20 +107,20 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         }
 
         public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {
-            await EnsureContainerExists();
+            await EnsureContainerExists().ConfigureAwait(false);
             var keys = command.ids;
             var entities = new Dictionary<JsonKey, EntityValue>(keys.Count, JsonKey.Equality);
             foreach (var key in keys) {
                 var id              = key.AsString();
                 var partitionKey    = new PartitionKey(id);
                 // todo handle error;
-                ResponseMessage response = await cosmosContainer.ReadItemStreamAsync(id, partitionKey);
+                ResponseMessage response = await cosmosContainer.ReadItemStreamAsync(id, partitionKey).ConfigureAwait(false);
                 var content = response.Content;
                 if (content == null) {
                     entities.TryAdd(key, new EntityValue());
                 } else {
                     using (StreamReader reader = new StreamReader(content)) {
-                        string payload = await reader.ReadToEndAsync();
+                        string payload = await reader.ReadToEndAsync().ConfigureAwait(false);
                         var entry = new EntityValue(payload);
                         entities.TryAdd(key, entry);
                     }
@@ -129,17 +131,17 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         }
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
-            await EnsureContainerExists();
+            await EnsureContainerExists().ConfigureAwait(false);
             var             entities    = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
             FeedIterator    iterator    = cosmosContainer.GetItemQueryStreamIterator();
             var             documents   = new List<JsonValue>();
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 var reader = pooledMapper.instance.reader;
                 while (iterator.HasMoreResults) {
-                    using(ResponseMessage response = await iterator.ReadNextAsync()) {
+                    using(ResponseMessage response = await iterator.ReadNextAsync().ConfigureAwait(false)) {
                         Stream content = response.Content;
                         using (var streamReader = new StreamReader(content)) {
-                            string documentsJson = await streamReader.ReadToEndAsync();
+                            string documentsJson = await streamReader.ReadToEndAsync().ConfigureAwait(false);
                             var docsContainer = reader.Read<DocumentContainer>(documentsJson);
                             var docs = docsContainer.Documents;
                             if (docs == null)
@@ -167,13 +169,13 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         }
         
         public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
-            await EnsureContainerExists();
+            await EnsureContainerExists().ConfigureAwait(false);
             var keys = command.ids;
             foreach (var key in keys) {
                 var id              = key.AsString();
                 var partitionKey    = new PartitionKey(id);
                 // todo handle error;
-                await cosmosContainer.DeleteItemStreamAsync(id, partitionKey);
+                await cosmosContainer.DeleteItemStreamAsync(id, partitionKey).ConfigureAwait(false);
             }
             var result = new DeleteEntitiesResult();
             return result;
