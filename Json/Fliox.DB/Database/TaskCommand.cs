@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.DB.Database
         
         internal override async Task<string> InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue) {
             var     cmd     = new Command<TValue>(messageName, messageValue.json, mapper.reader);
-            TResult result  = await handler(cmd);
+            TResult result  = await handler(cmd).ConfigureAwait(false);
             var jsonResult  = mapper.Write(result);
             return jsonResult;
         }

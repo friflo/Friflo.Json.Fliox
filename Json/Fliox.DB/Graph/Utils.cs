@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         public static async Task DisposeStore(EntityStore store) {
             if (store == null)
                 return;
-            await store.CancelPendingSyncs();
+            await store.CancelPendingSyncs().ConfigureAwait(false);
             store.Dispose();
         }
         

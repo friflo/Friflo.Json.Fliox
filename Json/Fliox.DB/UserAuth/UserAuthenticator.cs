@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         
         public async Task ValidateRoles() {
             var queryRoles = userStore.roles.QueryAll();
-            await userStore.TrySync();
+            await userStore.TrySync().ConfigureAwait(false);
             Dictionary<string, Role> roles = queryRoles.Results;
             foreach (var pair in roles) {
                 var role = pair.Value;
@@ -100,11 +100,11 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             }
             if (!credByClient.TryGetValue(clientId, out credential)) {
                 var command = new AuthenticateUser { clientId = clientId, token = token };
-                var result  = await userAuth.AuthenticateUser(command);
+                var result  = await userAuth.AuthenticateUser(command).ConfigureAwait(false);
                 
                 if (result.isValid) {
                     var authCred    = new AuthCred(token);
-                    var authorizer  = await GetAuthorizer(clientId);
+                    var authorizer  = await GetAuthorizer(clientId).ConfigureAwait(false);
                     credential      = new ClientCredentials (authCred.token, eventTarget, authorizer);
                     credByClient.TryAdd(clientId,    credential);
                     credByTarget.TryAdd(eventTarget, credential);
@@ -127,13 +127,13 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         
         private async Task<Authorizer> GetAuthorizer(string clientId) {
             var readPermission = userStore.permissions.Read().Find(clientId);
-            await userStore.Sync();
+            await userStore.Sync().ConfigureAwait(false);
             UserPermission permission = readPermission.Result;
             var roles = permission.roles;
             if (roles == null || roles.Count == 0) {
                 return unknown;
             }
-            await AddNewRoles(roles);
+            await AddNewRoles(roles).ConfigureAwait(false);
             var authorizers = new List<Authorizer>(roles.Count);
             foreach (var role in roles) {
                 // existence is checked already in AddNewRoles()
@@ -156,7 +156,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             if (newRoles.Count == 0)
                 return;
             var readRoles = userStore.roles.Read().FindRange(newRoles);
-            await userStore.Sync();
+            await userStore.Sync().ConfigureAwait(false);
             foreach (var newRolePair in readRoles.Results) {
                 string role     = newRolePair.Key;
                 Role newRole    = newRolePair.Value;

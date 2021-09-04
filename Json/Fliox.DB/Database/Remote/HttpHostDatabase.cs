@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.DB.Database.Remote
                 resp.Close();
                 return;
             }
-            bool success = await schemaHandler.HandleContext(ctx, this);
+            bool success = await schemaHandler.HandleContext(ctx, this).ConfigureAwait(false);
             if (success)
                 return;
             contextHandler?.HandleContext(ctx, this).ConfigureAwait(false);
