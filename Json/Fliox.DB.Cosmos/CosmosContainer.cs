@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
             await EnsureContainerExists().ConfigureAwait(false);
             var entities = command.entities;
-            using(var memory   = new MemoryStream())
+            using(var memory   = new ReusedMemoryStream())
             using(var writer   = new StreamWriter(memory, Utf8Encoding, -1, true)) {
                 foreach (var entityPair in entities) {
                     var id      = entityPair.Key.AsString();
@@ -78,7 +78,8 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                     memory.Seek(0, SeekOrigin.Begin);
                     var partitionKey = new PartitionKey(id);
                     // todo handle error;
-                    await cosmosContainer.CreateItemStreamAsync(memory, partitionKey).ConfigureAwait(false);
+                    using (var _ = await cosmosContainer.CreateItemStreamAsync(memory, partitionKey).ConfigureAwait(false)) {
+                    }
                 }
             }
             var result = new CreateEntitiesResult();
@@ -88,7 +89,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
             await EnsureContainerExists().ConfigureAwait(false);
             var entities = command.entities;
-            using(var memory   = new MemoryStream())
+            using(var memory   = new ReusedMemoryStream())
             using(var writer   = new StreamWriter(memory, Utf8Encoding, -1, true)) {
                 foreach (var entityPair in entities) {
                     var id      = entityPair.Key.AsString();
@@ -99,7 +100,8 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                     memory.Seek(0, SeekOrigin.Begin);
                     var partitionKey = new PartitionKey(id);
                     // todo handle error;
-                    await cosmosContainer.UpsertItemStreamAsync(memory, partitionKey).ConfigureAwait(false);
+                    using (var _ = await cosmosContainer.UpsertItemStreamAsync(memory, partitionKey).ConfigureAwait(false)) {
+                    }
                 }
             }
             var result = new UpdateEntitiesResult();
@@ -114,15 +116,17 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 var id              = key.AsString();
                 var partitionKey    = new PartitionKey(id);
                 // todo handle error;
-                ResponseMessage response = await cosmosContainer.ReadItemStreamAsync(id, partitionKey).ConfigureAwait(false);
-                var content = response.Content;
-                if (content == null) {
-                    entities.TryAdd(key, new EntityValue());
-                } else {
-                    using (StreamReader reader = new StreamReader(content)) {
-                        string payload = await reader.ReadToEndAsync().ConfigureAwait(false);
-                        var entry = new EntityValue(payload);
-                        entities.TryAdd(key, entry);
+                // todo use cosmosContainer.ReadManyItemsStreamAsync()
+                using (var response = await cosmosContainer.ReadItemStreamAsync(id, partitionKey).ConfigureAwait(false)) {
+                    var content = response.Content;
+                    if (content == null) {
+                        entities.TryAdd(key, new EntityValue());
+                    } else {
+                        using (StreamReader reader = new StreamReader(content)) {
+                            string payload = await reader.ReadToEndAsync().ConfigureAwait(false);
+                            var entry = new EntityValue(payload);
+                            entities.TryAdd(key, entry);
+                        }
                     }
                 }
             }
@@ -132,10 +136,10 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
             await EnsureContainerExists().ConfigureAwait(false);
-            var             entities    = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
-            FeedIterator    iterator    = cosmosContainer.GetItemQueryStreamIterator();
-            var             documents   = new List<JsonValue>();
-            using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
+            var entities    = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+            var documents   = new List<JsonValue>();
+            using (FeedIterator iterator    = cosmosContainer.GetItemQueryStreamIterator())
+            using (var pooledMapper         = messageContext.pools.ObjectMapper.Get()) {
                 var reader = pooledMapper.instance.reader;
                 while (iterator.HasMoreResults) {
                     using(ResponseMessage response = await iterator.ReadNextAsync().ConfigureAwait(false)) {
@@ -151,7 +155,6 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                     }
                 }
             }
-
             using (var pooledValidator = messageContext.pools.EntityValidator.Get()) {
                 var validator = pooledValidator.instance;
                 foreach (var document in documents) {
@@ -175,7 +178,8 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 var id              = key.AsString();
                 var partitionKey    = new PartitionKey(id);
                 // todo handle error;
-                await cosmosContainer.DeleteItemStreamAsync(id, partitionKey).ConfigureAwait(false);
+                using (var _ = await cosmosContainer.DeleteItemStreamAsync(id, partitionKey).ConfigureAwait(false)) {
+                }
             }
             var result = new DeleteEntitiesResult();
             return result;
