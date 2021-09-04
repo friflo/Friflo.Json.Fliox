@@ -24,8 +24,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
     /// <para>
     ///   The interface methods are designed to enable clear, compact and efficient implementations of database
     ///   operations. E.g. operations like SELECT, INSERT, DELETE or UPDATE in case of an SQL database adapter.
-    ///   <see cref="MemoryContainer"/> and <see cref="FileContainer"/> show straight forward implementation of
-    ///   <see cref="EntityContainer"/>.
+    ///   <see cref="MemoryContainer"/>, <see cref="FileContainer"/> and <c>CosmosContainer</c> show straight forward
+    ///   implementation of <see cref="EntityContainer"/>.
     ///   Additional to memory implementation <see cref="FileContainer"/> shows also how to handle database errors.
     ///   These errors fall into two categories:
     ///   <para>1. A complete database request fails. E.g. a SELECT in SQL.
