@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                     memory.Seek(0, SeekOrigin.Begin);
                     var partitionKey = new PartitionKey(id);
                     // todo handle error;
-                    await cosmosContainer.CreateItemStreamAsync(memory, partitionKey);
+                    await cosmosContainer.UpsertItemStreamAsync(memory, partitionKey);
                 }
             }
             var result = new UpdateEntitiesResult();
