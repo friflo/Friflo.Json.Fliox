@@ -3,7 +3,7 @@
 
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Cosmos;
-using Friflo.Json.Fliox.DB.Database;
+using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Graph;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy;
 using Friflo.Json.Tests.Common.Utils;

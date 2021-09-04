@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.Database;
+using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.DB.Sync;
 using Friflo.Json.Fliox.Mapper;
 using Microsoft.Azure.Cosmos;
@@ -17,11 +17,11 @@ namespace Friflo.Json.Fliox.DB.Cosmos
 {
     public class CosmosDatabase : EntityDatabase
     {
-        private  readonly   bool                            pretty;
-        private  readonly   Microsoft.Azure.Cosmos.Database cosmosDatabase;
-        private  readonly   int?                            throughput;
+        private  readonly   bool        pretty;
+        private  readonly   Database    cosmosDatabase;
+        private  readonly   int?        throughput;
 
-        public CosmosDatabase(Microsoft.Azure.Cosmos.Database cosmosDatabase, int? throughput = null, bool pretty = false) {
+        public CosmosDatabase(Database cosmosDatabase, int? throughput = null, bool pretty = false) {
             this.cosmosDatabase = cosmosDatabase;
             this.throughput     = throughput;
             this.pretty         = pretty;
@@ -34,10 +34,10 @@ namespace Friflo.Json.Fliox.DB.Cosmos
     }
     
     internal class ContainerOptions {
-        internal readonly   Microsoft.Azure.Cosmos.Database database;
-        internal readonly   int?                            throughput;
+        internal readonly   Database    database;
+        internal readonly   int?        throughput;
         
-        internal  ContainerOptions (Microsoft.Azure.Cosmos.Database database, int? throughput) {
+        internal  ContainerOptions (Database database, int? throughput) {
             this.database   = database;
             this.throughput = throughput;
         }
