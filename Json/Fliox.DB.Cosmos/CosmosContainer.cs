@@ -19,31 +19,42 @@ namespace Friflo.Json.Fliox.DB.Cosmos
     {
         private  readonly   bool                            pretty;
         private  readonly   Microsoft.Azure.Cosmos.Database cosmosDatabase;
+        private  readonly   int?                            throughput;
 
-        public CosmosDatabase(Microsoft.Azure.Cosmos.Database cosmosDatabase, bool pretty = false) {
+        public CosmosDatabase(Microsoft.Azure.Cosmos.Database cosmosDatabase, int? throughput = null, bool pretty = false) {
             this.cosmosDatabase = cosmosDatabase;
+            this.throughput     = throughput;
             this.pretty         = pretty;
         }
         
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            var container = cosmosDatabase.CreateContainerIfNotExistsAsync(name, "/id", 400).Result; // todo make CreateContainer async
-            return new CosmosContainer(name, database, container, pretty);
+            return new CosmosContainer(name, database, cosmosDatabase, throughput, pretty);
         }
     }
     
     public class CosmosContainer : EntityContainer
     {
-        private  readonly   Container   cosmosContainer;
-        public   override   bool        Pretty      { get; }
+        private  readonly   Microsoft.Azure.Cosmos.Database cosmosDatabase;
+        private  readonly   int?                            throughput;
+        private             Container                       cosmosContainer;
+        public   override   bool                            Pretty      { get; }
         
         private static readonly UTF8Encoding Utf8Encoding = new UTF8Encoding (false, true);
 
-        public CosmosContainer(string name, EntityDatabase database, Container container, bool pretty) : base(name, database) {
-            cosmosContainer = container;
-            Pretty          = pretty;
+        public CosmosContainer(string name, EntityDatabase database, Microsoft.Azure.Cosmos.Database cosmosDatabase, int? throughput, bool pretty) : base(name, database) {
+            this.cosmosDatabase     = cosmosDatabase;
+            this.throughput         = throughput;
+            Pretty                  = pretty;
+        }
+
+        private async Task EnsureContainerExists() {
+            if (cosmosContainer != null)
+                return;
+            cosmosContainer = await cosmosDatabase.CreateContainerIfNotExistsAsync(name, "/id", throughput);
         }
         
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
+            await EnsureContainerExists();
             var entities = command.entities;
             using(var memory   = new MemoryStream())
             using(var writer   = new StreamWriter(memory, Utf8Encoding, -1, true)) {
@@ -64,6 +75,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         }
 
         public override async Task<UpdateEntitiesResult> UpdateEntities(UpdateEntities command, MessageContext messageContext) {
+            await EnsureContainerExists();
             var entities = command.entities;
             using(var memory   = new MemoryStream())
             using(var writer   = new StreamWriter(memory, Utf8Encoding, -1, true)) {
@@ -84,6 +96,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         }
 
         public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {
+            await EnsureContainerExists();
             var keys = command.ids;
             var entities = new Dictionary<JsonKey, EntityValue>(keys.Count, JsonKey.Equality);
             foreach (var key in keys) {
@@ -107,6 +120,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         }
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
+            await EnsureContainerExists();
             var                 entities    = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
             FeedIterator        iterator    = cosmosContainer.GetItemQueryStreamIterator();
             DocumentContainer   documents   = null;
@@ -142,6 +156,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         }
         
         public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
+            await EnsureContainerExists();
             var keys = command.ids;
             foreach (var key in keys) {
                 var id              = key.AsString();

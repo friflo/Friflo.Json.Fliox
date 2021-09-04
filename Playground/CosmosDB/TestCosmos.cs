@@ -28,7 +28,7 @@ namespace Friflo.Playground.CosmosDB
             return new ConfigurationBuilder().AddJsonFile(appSettings).AddJsonFile(privateSettings).Build();
         }
         
-        private static async Task<Microsoft.Azure.Cosmos.DatabaseResponse> CosmosCreateDatabase() {
+        private static async Task<DatabaseResponse> CosmosCreateDatabase() {
             var config = InitConfiguration();
             var endpointUri = config["EndPointUri"];    // The Azure Cosmos DB endpoint for running this sample.
             var primaryKey  = config["PrimaryKey"];     // The primary key for the Azure Cosmos account.
@@ -40,7 +40,7 @@ namespace Friflo.Playground.CosmosDB
         private static async Task CosmosCreate() {
             var database            = await CosmosCreateDatabase();
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase = new CosmosDatabase(database))
+            using (var fileDatabase = new CosmosDatabase(database, 400))
             using (var createStore  = new PocStore(fileDatabase, "createStore"))
             using (var useStore     = new PocStore(fileDatabase, "useStore")) {
                 await TestRelationPoC.CreateStore(createStore);
