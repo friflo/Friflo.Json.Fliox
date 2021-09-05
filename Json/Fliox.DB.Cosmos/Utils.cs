@@ -33,12 +33,17 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             }
         }
             
-        internal static void AddEntities(List<JsonValue> documents, Dictionary<JsonKey, EntityValue> entities, MessageContext messageContext) {
+        internal static void AddEntities(
+            List<JsonValue>                     documents,
+            string                              keyName,
+            Dictionary<JsonKey, EntityValue>    entities,
+            MessageContext                      messageContext)
+        {
             using (var pooledValidator = messageContext.pools.EntityValidator.Get()) {
                 var validator = pooledValidator.instance;
                 foreach (var document in documents) {
                     var payload = document.json;
-                    if (!validator.GetEntityKey(payload, "id", out string keyValue, out _)) {
+                    if (!validator.GetEntityKey(payload, keyName, out string keyValue, out _)) {
                         continue;
                     }
                     var key     = new JsonKey(keyValue);
