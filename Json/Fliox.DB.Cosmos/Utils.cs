@@ -24,7 +24,8 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         protected override void Dispose(bool disposing) { }
     }
     
-    internal static class CosmosUtils {
+    internal static class CosmosUtils
+    {
         internal static async Task<List<JsonValue>> ReadDocuments(ObjectReader reader, Stream content) {
             using (StreamReader streamReader = new StreamReader(content)) {
                 string documentsJson    = await streamReader.ReadToEndAsync().ConfigureAwait(false);

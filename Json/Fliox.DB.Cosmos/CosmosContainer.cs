@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             await EnsureContainerExists().ConfigureAwait(false);
             var keys = command.ids;
             if (keys.Count > 1) {
-                return await ReadManyEntities(command, messageContext);
+                return await ReadManyEntities(command, messageContext).ConfigureAwait(false);
             }
             // optimization: single item read requires no parsing of Response message
             var entities        = new Dictionary<JsonKey, EntityValue>(keys.Count, JsonKey.Equality);
@@ -136,7 +136,8 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             // todo handle error;
             using (var response     = await cosmosContainer.ReadManyItemsStreamAsync(list).ConfigureAwait(false))
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
-                var documents = await CosmosUtils.ReadDocuments(pooledMapper.instance.reader, response.Content);
+                var reader      = pooledMapper.instance.reader;
+                var documents   = await CosmosUtils.ReadDocuments(reader, response.Content).ConfigureAwait(false);
                 CosmosUtils.AddEntities(documents, "id", entities, messageContext);
                 foreach (var key in keys) {
                     if (entities.ContainsKey(key))
@@ -155,7 +156,8 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             using (var pooledMapper         = messageContext.pools.ObjectMapper.Get()) {
                 while (iterator.HasMoreResults) {
                     using(ResponseMessage response = await iterator.ReadNextAsync().ConfigureAwait(false)) {
-                        var docs = await CosmosUtils.ReadDocuments(pooledMapper.instance.reader, response.Content);
+                        var reader  = pooledMapper.instance.reader;
+                        var docs    = await CosmosUtils.ReadDocuments(reader, response.Content).ConfigureAwait(false);
                         if (docs == null)
                             throw new InvalidOperationException($"no Documents in Cosmos ResponseMessage. command: {command}");
                         documents.AddRange(docs);
