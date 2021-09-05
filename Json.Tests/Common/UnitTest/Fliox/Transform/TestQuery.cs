@@ -421,30 +421,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             {
                 var or =    (Or)        FromFilter((Person p) => p.age >= 20 || p.name == "Peter");
                 AssertJson(mapper, or, "{'op':'or','operands':[{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}]}");
-                AreEqual(".age >= 20 || .name == 'Peter'", or.Linq);
+                AreEqual(".age >= 20 || .name == 'Peter'",          or.Linq);
+                AreEqual("WHERE c.age >= 20 || c.name = 'Peter'",   or.ToSqlWhere());
             } {            
                 var and =   (And)       FromFilter((Person p) => p.age >= 20 && p.name == "Peter");
                 AssertJson(mapper, and, "{'op':'and','operands':[{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}]}");
-                AreEqual(".age >= 20 && .name == 'Peter'", and.Linq);
+                AreEqual(".age >= 20 && .name == 'Peter'",          and.Linq);
+                AreEqual("WHERE c.age >= 20 && c.name = 'Peter'",   and.ToSqlWhere());
             } {            
                 var or2 =   (Or)        FromLambda((Person p) => p.age == 1 || p.age == 2 );
                 AssertJson(mapper, or2, "{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':2}}]}");
-                AreEqual(".age == 1 || .age == 2", or2.Linq);
+                AreEqual(".age == 1 || .age == 2",                  or2.Linq);
+                AreEqual("WHERE c.age = 1 || c.age = 2",            or2.ToSqlWhere());
             } {            
                 var and2 =  (And)       FromLambda((Person p) => p.age == 1 && p.age == 2 );
                 AssertJson(mapper, and2, "{'op':'and','operands':[{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':2}}]}");
-                AreEqual(".age == 1 && .age == 2", and2.Linq);
+                AreEqual(".age == 1 && .age == 2",                  and2.Linq);
+                AreEqual("WHERE c.age = 1 && c.age = 2",            and2.ToSqlWhere());
             } { 
                 var or3 =   (Or)        FromLambda((Person p) => p.age == 1 || p.age == 2 || p.age == 3);
                 AssertJson(mapper, or3, "{'op':'or','operands':[{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':2}}]},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':3}}]}");
-                AreEqual(".age == 1 || .age == 2 || .age == 3", or3.Linq);
+                AreEqual(".age == 1 || .age == 2 || .age == 3",         or3.Linq);
+                AreEqual("WHERE c.age = 1 || c.age = 2 || c.age = 3",   or3.ToSqlWhere());
             }
             
             // --- unary operations
             {
                 var isNot = (Not)       FromFilter((Person p) => !(p.age >= 20));
                 AssertJson(mapper, isNot, "{'op':'not','operand':{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}}");
-                AreEqual("!(.age >= 20)", isNot.Linq);
+                AreEqual("!(.age >= 20)",           isNot.Linq);
+                AreEqual("WHERE !(c.age >= 20)",    isNot.ToSqlWhere());
             }
             
             // --- quantifier operations

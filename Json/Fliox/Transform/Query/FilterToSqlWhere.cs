@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
@@ -65,12 +66,31 @@ namespace Friflo.Json.Fliox.Transform.Query
                     left    = Traverse(greaterThanOrEqual.left);
                     right   = Traverse(greaterThanOrEqual.right);
                     return $"{left} >= {right}";
-
+                
+                case Not @not:
+                    var operand = Traverse(@not.operand);
+                    return $"!({operand})";
+                
+                case Or or:
+                    var operands = GetOperands(or.operands);
+                    return string.Join(" || ", operands);
+                case And and:
+                    operands = GetOperands(and.operands);
+                    return string.Join(" && ", operands);
+                    
                 case Any any:
                     return "xxx";
                 default:
                     throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {filter}");
             }
+        }
+        
+        private string[] GetOperands (List<FilterOperation> operands) {
+            var result = new string[operands.Count];
+            for (int n = 0; n < operands.Count; n++) {
+                result[n] = Traverse(operands[n]);
+            }
+            return result;
         }
     }
 }
