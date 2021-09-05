@@ -77,6 +77,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                     writer.Flush();
                     memory.Seek(0, SeekOrigin.Begin);
                     var partitionKey = new PartitionKey(id);
+                    // consider using [Introducing Bulk support in the .NET SDK | Azure Cosmos DB Blog] https://devblogs.microsoft.com/cosmosdb/introducing-bulk-support-in-the-net-sdk/
                     // todo handle error;
                     using (var _ = await cosmosContainer.CreateItemStreamAsync(memory, partitionKey).ConfigureAwait(false)) {
                     }
@@ -98,6 +99,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                     writer.Flush();
                     memory.Seek(0, SeekOrigin.Begin);
                     var partitionKey = new PartitionKey(id);
+                    // consider using [Introducing Bulk support in the .NET SDK | Azure Cosmos DB Blog] https://devblogs.microsoft.com/cosmosdb/introducing-bulk-support-in-the-net-sdk/
                     // todo handle error;
                     using (var _ = await cosmosContainer.UpsertItemStreamAsync(memory, partitionKey).ConfigureAwait(false)) {
                     }
