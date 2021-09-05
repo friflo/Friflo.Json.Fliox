@@ -388,27 +388,33 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             {
                 var isEqual =           (Equal)             FromFilter((Person p) => p.name == "Peter");
                 AssertJson(mapper, isEqual, "{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}");
-                AreEqual(".name == 'Peter'", isEqual.Linq);
+                AreEqual(".name == 'Peter'",        isEqual.Linq);
+                AreEqual("WHERE c.name = 'Peter'",  isEqual.ToSqlWhere());
             } {
                 var isNotEqual =        (NotEqual)          FromFilter((Person p) => p.name != "Peter");
                 AssertJson(mapper, isNotEqual, "{'op':'notEqual','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}");
-                AreEqual(".name != 'Peter'", isNotEqual.Linq);
+                AreEqual(".name != 'Peter'",        isNotEqual.Linq);
+                AreEqual("WHERE c.name != 'Peter'", isNotEqual.ToSqlWhere());
             } {
                 var isLess =            (LessThan)          FromFilter((Person p) => p.age < 20);
                 AssertJson(mapper, isLess, "{'op':'lessThan','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
-                AreEqual(".age < 20", isLess.Linq);
+                AreEqual(".age < 20",               isLess.Linq);
+                AreEqual("WHERE c.age < 20",        isLess.ToSqlWhere());
             } {            
                 var isLessOrEqual =     (LessThanOrEqual)   FromFilter((Person p) => p.age <= 20);
                 AssertJson(mapper, isLessOrEqual, "{'op':'lessThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
-                AreEqual(".age <= 20", isLessOrEqual.Linq);
+                AreEqual(".age <= 20",              isLessOrEqual.Linq);
+                AreEqual("WHERE c.age <= 20",       isLessOrEqual.ToSqlWhere());
             } {
                 var isGreater =         (GreaterThan)       FromFilter((Person p) => p.age > 20);
                 AssertJson(mapper, isGreater, "{'op':'greaterThan','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
-                AreEqual(".age > 20", isGreater.Linq);
+                AreEqual(".age > 20",               isGreater.Linq);
+                AreEqual("WHERE c.age > 20",        isGreater.ToSqlWhere());
             } {            
                 var isGreaterOrEqual =  (GreaterThanOrEqual)FromFilter((Person p) => p.age >= 20);
                 AssertJson(mapper, isGreaterOrEqual, "{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
-                AreEqual(".age >= 20", isGreaterOrEqual.Linq);
+                AreEqual(".age >= 20",              isGreaterOrEqual.Linq);
+                AreEqual("WHERE c.age >= 20",       isGreaterOrEqual.ToSqlWhere());
             }
             
             // --- group operations
