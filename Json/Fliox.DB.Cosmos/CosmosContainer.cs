@@ -82,8 +82,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                     }
                 }
             }
-            var result = new CreateEntitiesResult();
-            return result;
+            return new CreateEntitiesResult();
         }
 
         public override async Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, MessageContext messageContext) {
@@ -104,8 +103,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                     }
                 }
             }
-            var result = new UpsertEntitiesResult();
-            return result;
+            return new UpsertEntitiesResult();
         }
 
         public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {
@@ -132,8 +130,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                     }
                 }
             }
-            var result = new ReadEntitiesResult{entities = entities};
-            return result;
+            return new ReadEntitiesResult{entities = entities};
         }
         
         private async Task<ReadEntitiesResult> ReadManyEntities(ReadEntities command, MessageContext messageContext) {
@@ -144,43 +141,18 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 var id = key.AsString();
                 list.Add((id, new PartitionKey(id)));
             }
-            List<JsonValue> documents;
             // todo handle error;
             using (var response     = await cosmosContainer.ReadManyItemsStreamAsync(list).ConfigureAwait(false))
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
-                documents = await ReadDocuments(pooledMapper.instance.reader, response.Content);
-            }
-            AddEntities(documents, entities, messageContext);
-            foreach (var key in keys) {
-                if (entities.ContainsKey(key))
-                    continue;
-                entities.Add(key, new EntityValue());
-            }
-            var result = new ReadEntitiesResult{entities = entities};
-            return result;
-        }
-        
-        private static async Task<List<JsonValue>> ReadDocuments(ObjectReader reader, Stream content) {
-            using (StreamReader streamReader = new StreamReader(content)) {
-                string documentsJson    = await streamReader.ReadToEndAsync().ConfigureAwait(false);
-                var responseFeed        = reader.Read<ResponseFeed>(documentsJson);
-                return responseFeed.Documents;
-            }
-        }
-        
-        private static void AddEntities(List<JsonValue> documents, Dictionary<JsonKey, EntityValue> entities, MessageContext messageContext) {
-            using (var pooledValidator = messageContext.pools.EntityValidator.Get()) {
-                var validator = pooledValidator.instance;
-                foreach (var document in documents) {
-                    var payload = document.json;
-                    if (!validator.GetEntityKey(payload, "id", out string keyValue, out _)) {
+                var documents = await CosmosUtils.ReadDocuments(pooledMapper.instance.reader, response.Content);
+                CosmosUtils.AddEntities(documents, entities, messageContext);
+                foreach (var key in keys) {
+                    if (entities.ContainsKey(key))
                         continue;
-                    }
-                    var key     = new JsonKey(keyValue);
-                    var value   = new EntityValue(document.json);
-                    entities.Add(key, value);
+                    entities.Add(key, new EntityValue());
                 }
             }
+            return new ReadEntitiesResult{entities = entities};
         }
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
@@ -191,14 +163,14 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             using (var pooledMapper         = messageContext.pools.ObjectMapper.Get()) {
                 while (iterator.HasMoreResults) {
                     using(ResponseMessage response = await iterator.ReadNextAsync().ConfigureAwait(false)) {
-                        var docs = await ReadDocuments(pooledMapper.instance.reader, response.Content);
+                        var docs = await CosmosUtils.ReadDocuments(pooledMapper.instance.reader, response.Content);
                         if (docs == null)
                             throw new InvalidOperationException($"no Documents in Cosmos ResponseMessage. command: {command}");
                         documents.AddRange(docs);
                     }
                 }
             }
-            AddEntities(documents, entities, messageContext);
+            CosmosUtils.AddEntities(documents, entities, messageContext);
             var result = FilterEntities(command, entities, messageContext);
             return result;
         }
@@ -213,8 +185,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 using (var _ = await cosmosContainer.DeleteItemStreamAsync(id, partitionKey).ConfigureAwait(false)) {
                 }
             }
-            var result = new DeleteEntitiesResult();
-            return result;
+            return new DeleteEntitiesResult();
         }
     }
 }
