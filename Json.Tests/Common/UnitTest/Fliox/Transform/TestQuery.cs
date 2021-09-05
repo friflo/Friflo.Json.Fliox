@@ -104,7 +104,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 
                 // ---
                 var  isPeter         = new Equal(new Field (".name"), new StringLiteral ("Peter")).Filter();
-                AreEqual(".name == 'Peter'", isPeter.ToString());
+                AreEqual(".name == 'Peter'",        isPeter.ToString());
+                AreEqual("WHERE c.name = 'Peter'",  isPeter.ToSqlWhere());
                 var  isPeter2        = JsonFilter.Create<Person>(p => p.name == "Peter");
                 AreEqual(".name == 'Peter'", isPeter2.ToString());
                 

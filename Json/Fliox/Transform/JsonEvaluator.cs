@@ -120,11 +120,16 @@ namespace Friflo.Json.Fliox.Transform
     public class JsonFilter : JsonLambda
     {
         public JsonFilter(FilterOperation op) : base(op) { }
-        
+
         public static JsonFilter Create<T> (Expression<Func<T, bool>> filter) {
             var op = Operation.FromFilter(filter);
             var jsonLambda = new JsonFilter(op);
             return jsonLambda;
+        }
+        
+        public string ToSqlWhere() {
+            var filter = (FilterOperation)op;
+            return filter.ToSqlWhere();
         }
     }
 }

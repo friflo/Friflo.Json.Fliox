@@ -130,10 +130,11 @@ namespace Friflo.Json.Fliox.Transform
     public abstract class FilterOperation : Operation
     {
         [Fri.Ignore]
-        internal readonly  EvalResult   evalResult = new EvalResult(new List<Scalar>());
+        internal readonly   EvalResult   evalResult = new EvalResult(new List<Scalar>());
+        public   string     ToSqlWhere() => FilterToSqlWhere.ToSqlWhere(this);
 
         public JsonFilter Filter() {
             return new JsonFilter(this);
-        }
+        }        
     }
 }
