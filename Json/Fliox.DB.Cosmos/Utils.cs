@@ -52,6 +52,13 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 }
             }
         }
+        
+        internal static void WriteJson(StreamWriter writer, MemoryStream memory, string json) {
+            memory.SetLength(0);
+            writer.Write(json);
+            writer.Flush();
+            memory.Seek(0, SeekOrigin.Begin);
+        }
     }
 }
 

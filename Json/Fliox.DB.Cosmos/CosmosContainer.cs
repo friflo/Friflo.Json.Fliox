@@ -70,13 +70,8 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             using(var memory   = new ReusedMemoryStream())
             using(var writer   = new StreamWriter(memory, Utf8Encoding, -1, true)) {
                 foreach (var entityPair in entities) {
-                    var id      = entityPair.Key.AsString();
-                    var payload = entityPair.Value.Json;
-                    memory.SetLength(0);
-                    writer.Write(payload);
-                    writer.Flush();
-                    memory.Seek(0, SeekOrigin.Begin);
-                    var partitionKey = new PartitionKey(id);
+                    CosmosUtils.WriteJson(writer, memory, entityPair.Value.Json);
+                    var partitionKey = new PartitionKey(entityPair.Key.AsString());
                     // consider using [Introducing Bulk support in the .NET SDK | Azure Cosmos DB Blog] https://devblogs.microsoft.com/cosmosdb/introducing-bulk-support-in-the-net-sdk/
                     // todo handle error;
                     using (var _ = await cosmosContainer.CreateItemStreamAsync(memory, partitionKey).ConfigureAwait(false)) {
@@ -92,13 +87,8 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             using(var memory   = new ReusedMemoryStream())
             using(var writer   = new StreamWriter(memory, Utf8Encoding, -1, true)) {
                 foreach (var entityPair in entities) {
-                    var id      = entityPair.Key.AsString();
-                    var payload = entityPair.Value.Json;
-                    memory.SetLength(0);
-                    writer.Write(payload);
-                    writer.Flush();
-                    memory.Seek(0, SeekOrigin.Begin);
-                    var partitionKey = new PartitionKey(id);
+                    CosmosUtils.WriteJson(writer, memory, entityPair.Value.Json);
+                    var partitionKey = new PartitionKey(entityPair.Key.AsString());
                     // consider using [Introducing Bulk support in the .NET SDK | Azure Cosmos DB Blog] https://devblogs.microsoft.com/cosmosdb/introducing-bulk-support-in-the-net-sdk/
                     // todo handle error;
                     using (var _ = await cosmosContainer.UpsertItemStreamAsync(memory, partitionKey).ConfigureAwait(false)) {
