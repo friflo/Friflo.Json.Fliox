@@ -27,6 +27,10 @@ namespace Friflo.Json.Fliox.Mapper
             this.jsonNaming = jsonNaming ?? new DefaultNaming();
             this.keyMappers = KeyMapper.CreateDefaultKeyMappers();
         }
+        
+        public KeyMapper GetKeyMapper (Type type) {
+            return keyMappers[type];
+        }
     }
 
     public enum TypeAccess {

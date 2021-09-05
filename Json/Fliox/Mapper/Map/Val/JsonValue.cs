@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     
-    internal class JsonValueMapper : TypeMapper<JsonValue>
+    public class JsonValueMapper : TypeMapper<JsonValue>
     {
         public override string DataTypeName() { return "JsonValue"; }
 

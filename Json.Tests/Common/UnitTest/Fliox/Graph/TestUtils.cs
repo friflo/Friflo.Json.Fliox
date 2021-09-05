@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.DB.Graph.Internal;
 using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.DB.Sync;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -48,6 +49,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             
             foreach (var _ in empty) {
                 Fail("cant be reached - dictionary is always empty");
+            }
+        }
+        
+        [Test]
+        public void TestJsonEntities() {
+            using (var typeStore = new TypeStore())
+            using (var mapper = new ObjectMapper(typeStore)) {
+                JsonEntities entities = new JsonEntities(2);
+                entities.entities.Add(new JsonKey("int"), new EntityValue("1"));
+                entities.entities.Add(new JsonKey("str"), new EntityValue("\"hello\""));
+                var json = mapper.Write(entities);
+                AreEqual("{\"int\":1,\"str\":\"hello\"}", json);
+                
+                var result = mapper.Read<JsonEntities>(json);
+                AreEqual(entities.entities[new JsonKey("int")].Json, result.entities[new JsonKey("int")].Json);
+                AreEqual(entities.entities[new JsonKey("str")].Json, result.entities[new JsonKey("str")].Json);
             }
         }
 
