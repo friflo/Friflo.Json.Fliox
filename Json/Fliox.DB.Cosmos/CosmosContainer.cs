@@ -147,12 +147,14 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             }
             return new ReadEntitiesResult{entities = entities};
         }
+
+        private readonly bool filterByClient = false; // true: used for development => query all and filter thereafter
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
             await EnsureContainerExists().ConfigureAwait(false);
             var entities    = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
             var documents   = new List<JsonValue>();
-            var sql         = $"SELECT * FROM c {command.filter.ToSqlWhere()}";
+            var sql         = filterByClient ? null : $"SELECT * FROM c {command.filter.ToSqlWhere()}";
             using (FeedIterator iterator    = cosmosContainer.GetItemQueryStreamIterator(sql))
             using (var pooledMapper         = messageContext.pools.ObjectMapper.Get()) {
                 while (iterator.HasMoreResults) {
@@ -166,9 +168,10 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 }
             }
             CosmosUtils.AddEntities(documents, "id", entities, messageContext);
+            if (filterByClient) {
+                return FilterEntities(command, entities, messageContext);
+            }
             return new QueryEntitiesResult{entities = entities};
-            // var result = FilterEntities(command, entities, messageContext);
-            // return result;
         }
         
         public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
