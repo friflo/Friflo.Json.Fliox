@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             var producersTask           = allArticles.ReadRefs(a => a.producer);
             var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"))   .TaskName("hasOrderCamera");
             var ordersWithCustomer1     = orders.Query(o => o.customer.key == "customer-1")          .TaskName("ordersWithCustomer1");
-            var read3                   = orders.Query(o => o.items.Count(i => i.amount < 1) > 0)   .TaskName("read3");
+            var ordersItemsAmount       = orders.Query(o => o.items.Count(i => i.amount < 2) > 0)   .TaskName("read3");
             var ordersAnyAmountLowerFilter = new EntityFilter<Order>(o => o.items.Any(i => i.amount < 2));
             var ordersAnyAmountLower2   = orders.QueryByFilter(ordersAnyAmountLowerFilter)          .TaskName("ordersAnyAmountLower2");
             var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0))         .TaskName("ordersAllAmountGreater0");
@@ -71,6 +71,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             AreEqual(1,                 ordersWithCustomer1.Results.Count);
             NotNull(ordersWithCustomer1["order-1"]);
             
+            AreEqual(1,                 ordersItemsAmount.Results.Count);
+            NotNull(ordersItemsAmount["order-1"]);
+
             AreEqual(1,                 ordersAnyAmountLower2.Results.Count);
             NotNull(ordersAnyAmountLower2["order-1"]);
             

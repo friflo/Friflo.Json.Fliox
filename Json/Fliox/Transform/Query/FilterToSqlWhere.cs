@@ -86,13 +86,19 @@ namespace Friflo.Json.Fliox.Transform.Query
                     string fieldName    = Traverse(any.field);
                     string arg          = any.arg;
                     return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
-                
                 case All all:
                     cx                  = new ConvertContext ("", filter);
                     operand             = cx.Traverse(all.predicate);
                     fieldName           = Traverse(all.field);
                     arg                 = all.arg;
                     return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
+                case CountWhere countWhere:
+                    cx                  = new ConvertContext ("", filter);
+                    operand             = cx.Traverse(countWhere.predicate);
+                    fieldName           = Traverse(countWhere.field);
+                    arg                 = countWhere.arg;
+                    return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand})";
+                
                 default:
                     throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {filter}");
             }
