@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.Transform
         
         public QueryFormat Query { get {
             var filter = (FilterOperation)op;
-            return filter.Query;
+            return filter.query;
         } }
     }
 }

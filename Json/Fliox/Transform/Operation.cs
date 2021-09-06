@@ -131,11 +131,11 @@ namespace Friflo.Json.Fliox.Transform
     // ----------------------------- FilterOperation --------------------------
     public abstract class FilterOperation : Operation
     {
-        [Fri.Ignore] public   readonly  QueryFormat     Query;
+        [Fri.Ignore] public   readonly  QueryFormat     query;
         [Fri.Ignore] internal readonly  EvalResult      evalResult = new EvalResult(new List<Scalar>());
                      
         protected FilterOperation() {
-            Query    = new QueryFormat(this);
+            query    = new QueryFormat(this);
         }
 
         public JsonFilter Filter() {
