@@ -33,6 +33,7 @@ import { FalseLiteral }       from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { Not }                from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { Any }                from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { All }                from "./Friflo.Json.Fliox.Transform.Query.Ops"
+import { CountWhere }         from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { Contains }           from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { StartsWith }         from "./Friflo.Json.Fliox.Transform.Query.Ops"
 import { EndsWith }           from "./Friflo.Json.Fliox.Transform.Query.Ops"
@@ -72,6 +73,7 @@ export type Operation_Union =
     | Not
     | Any
     | All
+    | CountWhere
     | Contains
     | StartsWith
     | EndsWith
@@ -113,6 +115,7 @@ export abstract class Operation {
         | "not"
         | "any"
         | "all"
+        | "countWhere"
         | "contains"
         | "startsWith"
         | "endsWith"

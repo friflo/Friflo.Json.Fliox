@@ -153,7 +153,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 IsFalse(eval.Filter(john,  allChildAgeEquals20));
                 
                 var  allEqualUnknownField  = new All (new Field (".children[=>]"), "child", new Equal (new Field ("child.unknown"), new StringLiteral ("SomeString"))).Filter();
-                IsTrue(eval.Filter(john, allEqualUnknownField)); 
+                IsTrue(eval.Filter(john, allEqualUnknownField));
+                
+                // --- Count() with lambda parameter -> is not a Filter
+                var countChildAgeEquals20 = new CountWhere (new Field (".children[=>]"), "child", new Equal(new Field ("child.age"), new LongLiteral (20))).Lambda();
+                AreEqual(2, eval.Eval(peter, countChildAgeEquals20));
+                AreEqual(0, eval.Eval(john,  countChildAgeEquals20));
 
                 // --- test with arithmetic operations
                 var  isAge40  = new Equal(new Field (".age"), new Add(new LongLiteral (35), new LongLiteral(5))).Filter();
@@ -534,10 +539,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var sum      = (Sum)  FromLambda((Person p) => p.children.Sum(child => child.age));
                 AreEqual(".children.Sum(child => child.age)", sum.Linq);
             } {
+                var count    = (CountWhere)  FromLambda((Person p) => p.children.Count(child => child.age == 20));
+                AreEqual(".children.Count(child => child.age == 20)", count.Linq);
+            } {
                 var count    = (Count)  FromLambda((Person p) => p.children.Count()); // () -> method call
                 AreEqual(".children.Count()", count.Linq);
             } { 
-                var count2    = (Count)  FromLambda((Person p) => p.children.Count); // no () -> Count property 
+                var count2   = (Count)  FromLambda((Person p) => p.children.Count); // no () -> Count property 
                 AreEqual(".children.Count()", count2.Linq);
             } {
                 var average  = (Average)  FromLambda((Person p) => p.children.Average(child => child.age));

@@ -165,6 +165,7 @@
                 "not":                { "ref":  "Not" },
                 "any":                { "ref":  "Any" },
                 "all":                { "ref":  "All" },
+                "countWhere":         { "ref":  "CountWhere" },
                 "contains":           { "ref":  "Contains" },
                 "startsWith":         { "ref":  "StartsWith" },
                 "endsWith":           { "ref":  "EndsWith" }
@@ -410,6 +411,13 @@
             }
         },
         "All": {
+            "properties": {
+                "field":     { "ref":  "Field" },
+                "arg":       { "type": "string" },
+                "predicate": { "ref":  "FilterOperation" }
+            }
+        },
+        "CountWhere": {
             "properties": {
                 "field":     { "ref":  "Field" },
                 "arg":       { "type": "string" },

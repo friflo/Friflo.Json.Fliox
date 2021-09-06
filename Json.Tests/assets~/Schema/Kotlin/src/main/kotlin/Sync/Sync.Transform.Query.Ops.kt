@@ -279,6 +279,14 @@ data class All (
 ) : BinaryQuantifyOp()
 
 @Serializable
+@SerialName("countWhere")
+data class CountWhere (
+              val field     : Field,
+              val arg       : String,
+              val predicate : FilterOperation,
+) : Operation()
+
+@Serializable
 @SerialName("contains")
 data class Contains (
     override  val left  : Operation,

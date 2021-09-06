@@ -187,6 +187,13 @@ export class All extends BinaryQuantifyOp {
     op         : "all";
 }
 
+export class CountWhere extends Operation {
+    op         : "countWhere";
+    field      : Field;
+    arg        : string;
+    predicate  : FilterOperation_Union;
+}
+
 export class Contains extends BinaryBoolOp {
     op     : "contains";
 }

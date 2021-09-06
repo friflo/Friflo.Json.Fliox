@@ -54,6 +54,7 @@ namespace Friflo.Json.Fliox.Transform
     [Fri.Polymorph(typeof(Not),                 Discriminant = "not")]
     [Fri.Polymorph(typeof(Any),                 Discriminant = "any")]
     [Fri.Polymorph(typeof(All),                 Discriminant = "all")]
+    [Fri.Polymorph(typeof(CountWhere),          Discriminant = "countWhere")]
     //
     [Fri.Polymorph(typeof(Contains),            Discriminant = "contains")]
     [Fri.Polymorph(typeof(StartsWith),          Discriminant = "startsWith")]

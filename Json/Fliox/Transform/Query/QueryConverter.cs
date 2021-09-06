@@ -160,6 +160,13 @@ namespace Friflo.Json.Fliox.Transform.Query
             
             switch (methodCall.Method.Name) {
                 case "Count":
+                    if (args.Count >= 2) {
+                        var predicate   = (LambdaExpression)args[1];
+                        var lambdaParameter = predicate.Parameters[0].Name;
+                        var lambdaCxCount = new QueryCx(lambdaParameter, cx.path, cx.exp, cx.queryPath);
+                        var predicateOp = (FilterOperation)TraceExpression(predicate, lambdaCxCount);
+                        return new CountWhere(new Field(sourceField), lambdaParameter, predicateOp);
+                    }
                     return new Count(new Field(sourceField));
                 case "Min":
                 case "Max":
