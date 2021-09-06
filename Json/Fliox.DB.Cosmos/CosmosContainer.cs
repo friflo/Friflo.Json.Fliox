@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             await EnsureContainerExists().ConfigureAwait(false);
             var entities    = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
             var documents   = new List<JsonValue>();
-            var sql         = filterByClient ? null : $"SELECT * FROM c {command.filter.query.Cosmos}";
+            var sql         = filterByClient ? null : command.filter.query.Cosmos;
             using (FeedIterator iterator    = cosmosContainer.GetItemQueryStreamIterator(sql))
             using (var pooledMapper         = messageContext.pools.ObjectMapper.Get()) {
                 while (iterator.HasMoreResults) {
