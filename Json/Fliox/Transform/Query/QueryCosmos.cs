@@ -8,9 +8,9 @@ using Friflo.Json.Fliox.Transform.Query.Ops;
 
 namespace Friflo.Json.Fliox.Transform.Query
 {
-    internal static class FilterToSqlWhere
+    internal static class QueryCosmos
     {
-        internal static string ToSqlWhere(FilterOperation filter) {
+        internal static string ToCosmos(FilterOperation filter) {
             var cx      = new ConvertContext("c", filter);
             var result  = cx.Traverse(filter);
             return "WHERE " + result;

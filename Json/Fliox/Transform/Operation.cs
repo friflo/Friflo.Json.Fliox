@@ -146,7 +146,7 @@ namespace Friflo.Json.Fliox.Transform
     public readonly struct QueryFormat {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    FilterOperation     filter;
-        public              string              Cosmos  =>  FilterToSqlWhere.ToSqlWhere(filter);
+        public              string              Cosmos  =>  QueryCosmos.ToCosmos(filter);
         
         internal QueryFormat (FilterOperation filter) {
             this.filter = filter;
