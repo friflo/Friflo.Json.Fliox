@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query;
@@ -130,12 +131,25 @@ namespace Friflo.Json.Fliox.Transform
     // ----------------------------- FilterOperation --------------------------
     public abstract class FilterOperation : Operation
     {
-        [Fri.Ignore]
-        internal readonly   EvalResult   evalResult = new EvalResult(new List<Scalar>());
-        public   string     ToSqlWhere() => FilterToSqlWhere.ToSqlWhere(this);
+        [Fri.Ignore] public   readonly  QueryFormat     Query;
+        [Fri.Ignore] internal readonly  EvalResult      evalResult = new EvalResult(new List<Scalar>());
+                     
+        protected FilterOperation() {
+            Query    = new QueryFormat(this);
+        }
 
         public JsonFilter Filter() {
             return new JsonFilter(this);
         }        
+    }
+    
+    public readonly struct QueryFormat {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly    FilterOperation     filter;
+        public              string              Cosmos  =>  FilterToSqlWhere.ToSqlWhere(filter);
+        
+        internal QueryFormat (FilterOperation filter) {
+            this.filter = filter;
+        }
     }
 }

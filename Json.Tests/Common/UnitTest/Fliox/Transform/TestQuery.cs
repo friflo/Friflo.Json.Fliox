@@ -105,7 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 // ---
                 var  isPeter         = new Equal(new Field (".name"), new StringLiteral ("Peter")).Filter();
                 AreEqual(".name == 'Peter'",        isPeter.ToString());
-                AreEqual("WHERE c.name = 'Peter'",  isPeter.ToSqlWhere());
+                AreEqual("WHERE c.name = 'Peter'",  isPeter.Query.Cosmos);
                 var  isPeter2        = JsonFilter.Create<Person>(p => p.name == "Peter");
                 AreEqual(".name == 'Peter'", isPeter2.ToString());
                 
@@ -394,32 +394,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var isEqual =           (Equal)             FromFilter((Person p) => p.name == "Peter");
                 AssertJson(mapper, isEqual, "{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}");
                 AreEqual(".name == 'Peter'",        isEqual.Linq);
-                AreEqual("WHERE c.name = 'Peter'",  isEqual.ToSqlWhere());
+                AreEqual("WHERE c.name = 'Peter'",  isEqual.Query.Cosmos);
             } {
                 var isNotEqual =        (NotEqual)          FromFilter((Person p) => p.name != "Peter");
                 AssertJson(mapper, isNotEqual, "{'op':'notEqual','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}");
                 AreEqual(".name != 'Peter'",        isNotEqual.Linq);
-                AreEqual("WHERE c.name != 'Peter'", isNotEqual.ToSqlWhere());
+                AreEqual("WHERE c.name != 'Peter'", isNotEqual.Query.Cosmos);
             } {
                 var isLess =            (LessThan)          FromFilter((Person p) => p.age < 20);
                 AssertJson(mapper, isLess, "{'op':'lessThan','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
                 AreEqual(".age < 20",               isLess.Linq);
-                AreEqual("WHERE c.age < 20",        isLess.ToSqlWhere());
+                AreEqual("WHERE c.age < 20",        isLess.Query.Cosmos);
             } {            
                 var isLessOrEqual =     (LessThanOrEqual)   FromFilter((Person p) => p.age <= 20);
                 AssertJson(mapper, isLessOrEqual, "{'op':'lessThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
                 AreEqual(".age <= 20",              isLessOrEqual.Linq);
-                AreEqual("WHERE c.age <= 20",       isLessOrEqual.ToSqlWhere());
+                AreEqual("WHERE c.age <= 20",       isLessOrEqual.Query.Cosmos);
             } {
                 var isGreater =         (GreaterThan)       FromFilter((Person p) => p.age > 20);
                 AssertJson(mapper, isGreater, "{'op':'greaterThan','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
                 AreEqual(".age > 20",               isGreater.Linq);
-                AreEqual("WHERE c.age > 20",        isGreater.ToSqlWhere());
+                AreEqual("WHERE c.age > 20",        isGreater.Query.Cosmos);
             } {            
                 var isGreaterOrEqual =  (GreaterThanOrEqual)FromFilter((Person p) => p.age >= 20);
                 AssertJson(mapper, isGreaterOrEqual, "{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}");
                 AreEqual(".age >= 20",              isGreaterOrEqual.Linq);
-                AreEqual("WHERE c.age >= 20",       isGreaterOrEqual.ToSqlWhere());
+                AreEqual("WHERE c.age >= 20",       isGreaterOrEqual.Query.Cosmos);
             }
             
             // --- group operations
@@ -427,27 +427,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var or =    (Or)        FromFilter((Person p) => p.age >= 20 || p.name == "Peter");
                 AssertJson(mapper, or, "{'op':'or','operands':[{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}]}");
                 AreEqual(".age >= 20 || .name == 'Peter'",          or.Linq);
-                AreEqual("WHERE c.age >= 20 || c.name = 'Peter'",   or.ToSqlWhere());
+                AreEqual("WHERE c.age >= 20 || c.name = 'Peter'",   or.Query.Cosmos);
             } {            
                 var and =   (And)       FromFilter((Person p) => p.age >= 20 && p.name == "Peter");
                 AssertJson(mapper, and, "{'op':'and','operands':[{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}},{'op':'equal','left':{'op':'field','name':'.name'},'right':{'op':'string','value':'Peter'}}]}");
                 AreEqual(".age >= 20 && .name == 'Peter'",          and.Linq);
-                AreEqual("WHERE c.age >= 20 && c.name = 'Peter'",   and.ToSqlWhere());
+                AreEqual("WHERE c.age >= 20 && c.name = 'Peter'",   and.Query.Cosmos);
             } {            
                 var or2 =   (Or)        FromLambda((Person p) => p.age == 1 || p.age == 2 );
                 AssertJson(mapper, or2, "{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':2}}]}");
                 AreEqual(".age == 1 || .age == 2",                  or2.Linq);
-                AreEqual("WHERE c.age = 1 || c.age = 2",            or2.ToSqlWhere());
+                AreEqual("WHERE c.age = 1 || c.age = 2",            or2.Query.Cosmos);
             } {            
                 var and2 =  (And)       FromLambda((Person p) => p.age == 1 && p.age == 2 );
                 AssertJson(mapper, and2, "{'op':'and','operands':[{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':2}}]}");
                 AreEqual(".age == 1 && .age == 2",                  and2.Linq);
-                AreEqual("WHERE c.age = 1 && c.age = 2",            and2.ToSqlWhere());
+                AreEqual("WHERE c.age = 1 && c.age = 2",            and2.Query.Cosmos);
             } { 
                 var or3 =   (Or)        FromLambda((Person p) => p.age == 1 || p.age == 2 || p.age == 3);
                 AssertJson(mapper, or3, "{'op':'or','operands':[{'op':'or','operands':[{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':1}},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':2}}]},{'op':'equal','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':3}}]}");
                 AreEqual(".age == 1 || .age == 2 || .age == 3",         or3.Linq);
-                AreEqual("WHERE c.age = 1 || c.age = 2 || c.age = 3",   or3.ToSqlWhere());
+                AreEqual("WHERE c.age = 1 || c.age = 2 || c.age = 3",   or3.Query.Cosmos);
             }
             
             // --- unary operations
@@ -455,7 +455,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var isNot = (Not)       FromFilter((Person p) => !(p.age >= 20));
                 AssertJson(mapper, isNot, "{'op':'not','operand':{'op':'greaterThanOrEqual','left':{'op':'field','name':'.age'},'right':{'op':'int64','value':20}}}");
                 AreEqual("!(.age >= 20)",           isNot.Linq);
-                AreEqual("WHERE !(c.age >= 20)",    isNot.ToSqlWhere());
+                AreEqual("WHERE !(c.age >= 20)",    isNot.Query.Cosmos);
             }
             
             // --- quantifier operations
@@ -463,12 +463,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var any =   (Any)       FromFilter((Person p) => p.children.Any(child => child.age == 20));
                 AssertJson(mapper, any, "{'op':'any','field':{'name':'.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
                 AreEqual(".children.Any(child => child.age == 20)", any.Linq);
-                AreEqual("WHERE EXISTS(SELECT VALUE child FROM child IN c.children WHERE child.age = 20)", any.ToSqlWhere());
+                AreEqual("WHERE EXISTS(SELECT VALUE child FROM child IN c.children WHERE child.age = 20)", any.Query.Cosmos);
             } { 
                 var all =   (All)       FromFilter((Person p) => p.children.All(child => child.age == 20));
                 AssertJson(mapper, all, "{'op':'all','field':{'name':'.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
                 AreEqual(".children.All(child => child.age == 20)", all.Linq);
-                AreEqual("WHERE (SELECT VALUE Count(1) FROM child IN c.children WHERE child.age = 20) = ARRAY_LENGTH(c.children)", all.ToSqlWhere());
+                AreEqual("WHERE (SELECT VALUE Count(1) FROM child IN c.children WHERE child.age = 20) = ARRAY_LENGTH(c.children)", all.Query.Cosmos);
             }
             
             // --- literals

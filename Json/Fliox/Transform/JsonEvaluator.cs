@@ -127,9 +127,9 @@ namespace Friflo.Json.Fliox.Transform
             return jsonLambda;
         }
         
-        public string ToSqlWhere() {
+        public QueryFormat Query { get {
             var filter = (FilterOperation)op;
-            return filter.ToSqlWhere();
-        }
+            return filter.Query;
+        } }
     }
 }
