@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox.Transform
         }
 
         // --- compare two scalars ---
-        public long CompareTo(Scalar other) {
+        public long CompareTo(in Scalar other) {
             int typeDiff;
             switch (type) {
                 case ScalarType.String:
@@ -224,7 +224,7 @@ namespace Friflo.Json.Fliox.Transform
         }
         
         // --- binary arithmetic operations ---
-        public Scalar Add(Scalar other) {
+        public Scalar Add(in Scalar other) {
             AssertBinaryNumbers(other);
             if (IsDouble) {
                 if (other.IsDouble)
@@ -236,7 +236,7 @@ namespace Friflo.Json.Fliox.Transform
             return         new Scalar(LongValue   + other.LongValue);
         }
         
-        public Scalar Subtract(Scalar other) {
+        public Scalar Subtract(in Scalar other) {
             AssertBinaryNumbers(other);
             if (IsDouble) {
                 if (other.IsDouble)
@@ -248,7 +248,7 @@ namespace Friflo.Json.Fliox.Transform
             return         new Scalar(LongValue   - other.LongValue);
         }
         
-        public Scalar Multiply(Scalar other) {
+        public Scalar Multiply(in Scalar other) {
             AssertBinaryNumbers(other);
             if (IsDouble) {
                 if (other.IsDouble)
@@ -260,7 +260,7 @@ namespace Friflo.Json.Fliox.Transform
             return         new Scalar(LongValue   * other.LongValue);
         }
         
-        public Scalar Divide(Scalar other) {
+        public Scalar Divide(in Scalar other) {
             AssertBinaryNumbers(other);
             if (IsDouble) {
                 if (other.IsDouble)
@@ -272,28 +272,28 @@ namespace Friflo.Json.Fliox.Transform
             return         new Scalar(LongValue   / other.LongValue);
         }
         
-        private void AssertBinaryNumbers(Scalar other) {
+        private void AssertBinaryNumbers(in Scalar other) {
             if (!IsNumber || !other.IsNumber)
                 throw new InvalidOperationException($"Expect both operands being numeric. left: {this}, right: {other}");
         }
         
         // --- binary string expressions
-        public Scalar Contains(Scalar other) {
+        public Scalar Contains(in Scalar other) {
             AssertBinaryString(other);
             return stringValue.Contains(other.stringValue) ? True : False;
         }
         
-        public Scalar StartsWith(Scalar other) {
+        public Scalar StartsWith(in Scalar other) {
             AssertBinaryString(other);
             return stringValue.StartsWith(other.stringValue) ? True : False;
         }
         
-        public Scalar EndsWith(Scalar other) {
+        public Scalar EndsWith(in Scalar other) {
             AssertBinaryString(other);
             return stringValue.EndsWith(other.stringValue) ? True : False;
         }
         
-        private void AssertBinaryString(Scalar other) {
+        private void AssertBinaryString(in Scalar other) {
             if (!IsString || !other.IsString)
                 throw new InvalidOperationException($"Expect both operands being a string. left: {this}, right: {other}");
         }

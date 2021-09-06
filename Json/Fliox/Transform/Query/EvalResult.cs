@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Transform.Query
 
         internal            int             StartIndex => startIndex;
 
-        internal EvalResult (Scalar singleValue) {
+        internal EvalResult (in Scalar singleValue) {
             values              = new List<Scalar> { singleValue };
             this.groupIndices   = null;
             startIndex          = 0;
@@ -48,12 +48,12 @@ namespace Friflo.Json.Fliox.Transform.Query
             endIndex = 0;
         }
         
-        internal void Add(Scalar value) {
+        internal void Add(in Scalar value) {
             values.Add(value);
             endIndex++;
         }
         
-        internal void SetSingle(Scalar value) {
+        internal void SetSingle(in Scalar value) {
             values[0] = value;
         }
         

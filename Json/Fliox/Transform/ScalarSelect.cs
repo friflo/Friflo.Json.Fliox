@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Transform
             lastGroupIndex = -1;
         }
 
-        internal static void Add(Scalar scalar, List<PathSelector<ScalarSelectResult>> selectors) {
+        internal static void Add(in Scalar scalar, List<PathSelector<ScalarSelectResult>> selectors) {
             foreach (var selector in selectors) {
                 var parentGroup = selector.parentGroup;
                 var result = selector.result;

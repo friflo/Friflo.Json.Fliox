@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Arity
         internal readonly   Scalar left;
         internal readonly   Scalar right;
 
-        internal BinaryPair(Scalar left, Scalar right) {
+        internal BinaryPair(in Scalar left, in Scalar right) {
             this.left  = left;
             this.right = right;
         }
