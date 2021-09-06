@@ -38,6 +38,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             var ordersAnyAmountLowerFilter = new EntityFilter<Order>(o => o.items.Any(i => i.amount < 2));
             var ordersAnyAmountLower2   = orders.QueryByFilter(ordersAnyAmountLowerFilter)          .TaskName("ordersAnyAmountLower2");
             var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0))         .TaskName("ordersAllAmountGreater0");
+            
+            // ensure API available
+            AreEqual($"SELECT * FROM c WHERE EXISTS(SELECT VALUE i FROM i IN c.items WHERE i.name = 'Camera')", hasOrderCamera.DebugQuery.Cosmos); 
 
             var orderCustomer           = orders.RefPath(o => o.customer);
             var customer                = readOrders.ReadRefPath(orderCustomer);

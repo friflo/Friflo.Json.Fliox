@@ -27,6 +27,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             
         internal override   TaskState               State           => state;
         public   override   string                  Details         => $"QueryTask<{typeof(T).Name}> (filter: {filterLinq})";
+        public              QueryFormat             DebugQuery      => filter.query;
         
 
         internal QueryTask(FilterOperation filter, EntityStore store) {
