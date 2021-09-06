@@ -152,7 +152,8 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             await EnsureContainerExists().ConfigureAwait(false);
             var entities    = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
             var documents   = new List<JsonValue>();
-            using (FeedIterator iterator    = cosmosContainer.GetItemQueryStreamIterator())
+            var sql         = $"SELECT * FROM c {command.filter.ToSqlWhere()}";
+            using (FeedIterator iterator    = cosmosContainer.GetItemQueryStreamIterator(sql))
             using (var pooledMapper         = messageContext.pools.ObjectMapper.Get()) {
                 while (iterator.HasMoreResults) {
                     using(ResponseMessage response = await iterator.ReadNextAsync().ConfigureAwait(false)) {
@@ -165,8 +166,9 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 }
             }
             CosmosUtils.AddEntities(documents, "id", entities, messageContext);
-            var result = FilterEntities(command, entities, messageContext);
-            return result;
+            return new QueryEntitiesResult{entities = entities};
+            // var result = FilterEntities(command, entities, messageContext);
+            // return result;
         }
         
         public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {

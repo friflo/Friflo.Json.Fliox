@@ -11,23 +11,25 @@ namespace Friflo.Json.Fliox.Transform.Query
     internal static class FilterToSqlWhere
     {
         internal static string ToSqlWhere(FilterOperation filter) {
-            var cx      = new ConvertContext(filter);
+            var cx      = new ConvertContext("c", filter);
             var result  = cx.Traverse(filter);
             return "WHERE " + result;
         }
     }
     
     internal class ConvertContext {
-        private readonly   FilterOperation     filter;
+        private readonly   string           collection;
+        private readonly   FilterOperation  filter;
         
-        internal ConvertContext (FilterOperation filter) {
-            this.filter = filter;
+        internal ConvertContext (string collection, FilterOperation filter) {
+            this.collection = collection;
+            this.filter     = filter;
         }
         
         internal string Traverse(Operation operation) {
             switch (operation) {
                 case Field field:
-                    return $"c{field.name}";
+                    return $"{collection}{field.name}";
                 
                 case StringLiteral stringLiteral:
                     return $"'{stringLiteral.value}'";
@@ -79,7 +81,18 @@ namespace Friflo.Json.Fliox.Transform.Query
                     return string.Join(" && ", operands);
                     
                 case Any any:
-                    return "xxx";
+                    var cx              = new ConvertContext ("", filter);
+                    operand             = cx.Traverse(any.predicate);
+                    string fieldName    = Traverse(any.field);
+                    string arg          = any.arg;
+                    return $"EXISTS(SELECT VALUE {arg} FROM {arg} IN {fieldName} WHERE {operand})";
+                
+                case All all:
+                    cx                  = new ConvertContext ("", filter);
+                    operand             = cx.Traverse(all.predicate);
+                    fieldName           = Traverse(all.field);
+                    arg                 = all.arg;
+                    return $"(SELECT VALUE Count(1) FROM {arg} IN {fieldName} WHERE {operand}) = ARRAY_LENGTH({fieldName})";
                 default:
                     throw new NotImplementedException($"missing conversion for operation: {operation}, filter: {filter}");
             }

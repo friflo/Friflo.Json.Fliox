@@ -458,10 +458,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                 var any =   (Any)       FromFilter((Person p) => p.children.Any(child => child.age == 20));
                 AssertJson(mapper, any, "{'op':'any','field':{'name':'.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
                 AreEqual(".children.Any(child => child.age == 20)", any.Linq);
+                AreEqual("WHERE EXISTS(SELECT VALUE child FROM child IN c.children WHERE child.age = 20)", any.ToSqlWhere());
             } { 
                 var all =   (All)       FromFilter((Person p) => p.children.All(child => child.age == 20));
                 AssertJson(mapper, all, "{'op':'all','field':{'name':'.children'},'arg':'child','predicate':{'op':'equal','left':{'op':'field','name':'child.age'},'right':{'op':'int64','value':20}}}");
                 AreEqual(".children.All(child => child.age == 20)", all.Linq);
+                AreEqual("WHERE (SELECT VALUE Count(1) FROM child IN c.children WHERE child.age = 20) = ARRAY_LENGTH(c.children)", all.ToSqlWhere());
             }
             
             // --- literals
