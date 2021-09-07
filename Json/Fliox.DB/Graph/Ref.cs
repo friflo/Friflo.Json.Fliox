@@ -74,6 +74,7 @@ namespace Friflo.Json.Fliox.DB.Graph
 
                                     public   readonly   TKey                key;
         [DebuggerBrowsable(Never)]  private  readonly   T                   entity;
+        [DebuggerBrowsable(Never)]  private  readonly   bool                entityAssigned;
         [DebuggerBrowsable(Never)]  private             EntitySet<TKey,T>   set;    // alternatively a Peer<T> could be used 
 
         public   override           string              ToString() => AsString();
@@ -82,30 +83,36 @@ namespace Friflo.Json.Fliox.DB.Graph
         internal static readonly    EntityKey<TKey, T>  EntityKey = EntityId.GetEntityKey<TKey, T>();
         
         public Ref(TKey key) {
-            this.key    = key;
-            this.entity = null;
-            this.set    = null;
+            this.key        = key;
+            entity          = null;
+            entityAssigned  = false;
+            set             = null;
         }
         
         public Ref(T entity) {
             TKey entityId = entity != null ? EntityKey.GetKey(entity) : default;
-            this.key    = entityId;
-            this.entity = entity;
-            this.set    = null;
+            key             = entityId;
+            this.entity     = entity;
+            entityAssigned  = true;
+            set             = null;
             if (entity != null && entityId == null)
                 throw new ArgumentException($"constructing a Ref<>(entity != null) expect entity.key not null. Type: {typeof(T)}");
         }
         
         internal Ref(Peer<T> peer, EntitySet<TKey, T> set) {
-            this.key    = EntityKey.IdToKey(peer.id);      // peer.id is never null
-            this.entity = null;
-            this.set    = set;
+            key             = EntityKey.IdToKey(peer.id);      // peer.id is never null
+            entity          = null;
+            entityAssigned  = false;
+            this.set        = set;
         }
 
         public T        Entity {
             get {
-                if (set == null)
-                    return entity;
+                if (set == null) {
+                    if (entityAssigned)
+                        return entity;
+                    throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), AsString());
+                }
                 var peer = set.GetPeerByKey(key);
                 if (peer.assigned)
                     return peer.Entity;
@@ -117,7 +124,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             // same implementation as Entity
             if (set == null) {
                 entity = this.entity;
-                return true;
+                return entityAssigned;
             }
             var peer = set.GetPeerByKey(key);
             if (peer.assigned) {
