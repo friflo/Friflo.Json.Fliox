@@ -128,7 +128,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             }
             var peer = set.GetPeerByKey(key);
             if (peer.assigned) {
-                entity = peer.Entity;
+                entity = peer.NullableEntity;
                 return true;
             }
             entity = null;

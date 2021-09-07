@@ -71,6 +71,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             
             IsNull  (newArticle1Producer.Result);
             IsNull  (newArticle1.producer.Entity);
+            IsTrue  (newArticle1.producer.TryEntity(out Producer articleProducer));
+            IsNull  (articleProducer);
             
             IsNull  (newArticle2Producer.Result);
             IsNull  (newArticle2.producer.Entity);
