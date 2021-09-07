@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Map
         }
         
         public override void Trace(Tracer tracer, Ref<TKey, T> value) {
-            if (value.IsNull())
+            if (value.IsKeyNull())
                 return;
             var store = tracer.tracerContext.Store();
             var set = store.GetEntitySet<TKey, T>();

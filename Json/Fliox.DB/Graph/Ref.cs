@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         [DebuggerBrowsable(Never)]  private             EntitySet<TKey,T>   set;    // alternatively a Peer<T> could be used 
 
         public   override           string              ToString() => AsString();
-        private                     string              AsString() => IsNull() ? "null" : EntityKey.KeyToId(key).AsString();
+        private                     string              AsString() => IsKeyNull() ? "null" : EntityKey.KeyToId(key).AsString();
 
         internal static readonly    EntityKey<TKey, T>  EntityKey = EntityId.GetEntityKey<TKey, T>();
         
@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         /// as values type cannot be null. 
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool IsNull () {
+        public bool IsKeyNull () {
             return EntityKey.IsKeyNull(key);
         }
         

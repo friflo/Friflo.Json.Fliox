@@ -399,7 +399,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         internal  bool GetPeerByRef(Ref<TKey, T> reference, out Peer<T> peer) {
-            if (reference.IsNull()) {
+            if (reference.IsKeyNull()) {
                 peer = null;
                 return false; // todo add test
             }
