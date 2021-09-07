@@ -403,16 +403,16 @@ namespace Friflo.Json.Fliox.DB.Graph
                 throw new InvalidOperationException($"Ref<{typeof(TKey).Name},{typeof(T).Name}>.key == null");
             }
             var set = reference.GetSet();
-            if (set == null) {
-                var entity = reference.GetEntity();
-                if (entity != null) {
-                    peer = CreatePeer(entity);
-                    return true;
-                }
-                peer = GetOrCreatePeerByKey(reference.key, new JsonKey());
+            if (set != null) {
+                peer = set.GetPeerByKey(reference.key);
                 return true;
             }
-            peer = set.GetPeerByKey(reference.key);
+            var entity = reference.GetEntity();
+            if (entity != null) {
+                peer = CreatePeer(entity);
+                return true;
+            }
+            peer = GetOrCreatePeerByKey(reference.key, new JsonKey());
             return true;
         }
         
