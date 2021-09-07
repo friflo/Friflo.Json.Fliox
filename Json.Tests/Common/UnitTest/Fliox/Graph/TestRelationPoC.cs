@@ -22,7 +22,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             var customers   = store.customers;
             var types       = store.types;
             
-            // delete entities already persisted to enable implicit or explicit creation below
+            // delete stored (persisted) entities to enable implicit or explicit creation below
+            // Create() entity will fail, if already stored (persisted) 
             producers.Delete("producer-samsung");
             producers.Delete("producer-apple");
             producers.Delete("producer-canon");
