@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     EntityValue payload = entityPair.Value;
                     var path = FilePath(key.AsString());
                     try {
-                        await WriteText(path, payload.Json).ConfigureAwait(false);
+                        await WriteText(path, payload.Json, FileMode.Create).ConfigureAwait(false);
                     } catch (Exception e) {
                         var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
                         AddEntityError(ref createErrors, key, error);
@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     EntityValue payload = entityPair.Value;
                     var path = FilePath(key.AsString());
                     try {
-                        await WriteText(path, payload.Json).ConfigureAwait(false);
+                        await WriteText(path, payload.Json, FileMode.Create).ConfigureAwait(false);
                     } catch (Exception e) {
                         var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
                         AddEntityError(ref updateErrors, key, error);
@@ -172,9 +172,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         /// may access the file concurrently resulting in:
         /// IOException: The process cannot access the file 'path' because it is being used by another process
         /// </summary>
-        private static async Task WriteText(string filePath, string text) {
+        private static async Task WriteText(string filePath, string text, FileMode fileMode) {
             byte[] encodedText = Encoding.UTF8.GetBytes(text);
-            using (var destStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.Read, bufferSize: 4096, useAsync: false)) {
+            using (var destStream = new FileStream(filePath, fileMode, FileAccess.Write, FileShare.Read, bufferSize: 4096, useAsync: false)) {
                 await destStream.WriteAsync(encodedText, 0, encodedText.Length).ConfigureAwait(false);
             }
         }
