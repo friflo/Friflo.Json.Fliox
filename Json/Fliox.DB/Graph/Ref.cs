@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                 }
                 var peer = set.GetPeerByKey(key);
                 if (peer.assigned)
-                    return peer.Entity;
+                    return peer.NullableEntity;
                 throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), AsString());
             }
         }

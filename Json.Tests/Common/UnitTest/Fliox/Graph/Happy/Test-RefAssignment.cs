@@ -24,15 +24,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             var producers   = store.producers;
             
             // --- assign id to reference
-            var newArticle = new Article { producer = "unknown" };
-            Exception e = Throws<UnresolvedRefException>(() => { var _ = newArticle.producer.Entity; });
-            AreEqual("Accessed unresolved reference. Ref<Producer> (id: 'unknown')", e.Message);
+            var newArticle1 = new Article { producer = "unknown-producer-1" };
+            Exception e = Throws<UnresolvedRefException>(() => { var _ = newArticle1.producer.Entity; });
+            AreEqual("Accessed unresolved reference. Ref<Producer> (id: 'unknown-producer-1')", e.Message);
             
             
             // --- assign entity instance to reference
-            var producer = new Producer { id = "producer-id" };
-            newArticle.producer = producer;
-            IsTrue(producer == newArticle.producer.Entity);
+            var producer    = new Producer { id = "unknown-producer-2" }; // producer will not synced (implicit nor explicit) to database
+            var newArticle2 = new Article { producer = producer };
+            newArticle2.producer = producer;
+            IsTrue(producer == newArticle2.producer.Entity);
             
 
             // --- read entity with an unresolved reference (galaxy.producer) from database
@@ -50,7 +51,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             
             // --- resolve reference (galaxy.producer) from database
             var readProducers = producers.Read();
-            galaxy.producer.FindBy(readProducers); // schedule resolving producer reference now
+            galaxy.producer.FindBy(readProducers);                                  // schedule resolving reference
+            var newArticle1Producer = newArticle1.producer.FindBy(readProducers);   // schedule resolving reference
+            var newArticle2Producer = newArticle2.producer.FindBy(readProducers);   // schedule resolving reference
             
             // assign producer field with id "producer-apple". Note: iphone is never synced
             var iphone = new Article  { name = "iPhone 11", producer = "producer-apple" };
@@ -66,6 +69,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
 
             await store.Sync();  // -------- Sync --------
             
+            IsNull  (newArticle1Producer.Result);
+            IsNull  (newArticle1.producer.Entity);
+            
+            IsNull  (newArticle2Producer.Result);
+            IsNull  (newArticle2.producer.Entity);
             
             AreEqual("Apple",   findProducer.Result.name);
             AreEqual("Samsung", galaxy.producer.Entity.name);   // after Sync() Entity is accessible

@@ -147,8 +147,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 var json = value.Json;  // in case of RemoteClient json is "null"
                 var isNull = json == null || json == "null";
                 if (isNull) {
-                    // remove requested peer from EntitySet which is not present in database
-                    set.DeletePeer(id);
+                    // dont remove missing requested peer from EntitySet.peers to preserve info about its absence
                     continue;
                 }
                 var key = Ref<TKey,T>.EntityKey.IdToKey(id);

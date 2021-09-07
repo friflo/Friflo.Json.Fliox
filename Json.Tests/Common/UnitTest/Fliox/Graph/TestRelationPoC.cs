@@ -105,19 +105,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             AreSimilar("Employee:  1",                                              employees);
             
             await store.Sync(); // -------- Sync --------
-            AreSimilar("entities: 11",                                  store); // tasks cleared
+            AreSimilar("entities: 12",                                  store); // tasks cleared
             
             IsTrue(createCam1.Success);
             IsTrue(createCanon.Success);
             
 
             articles.DeleteRange(newBulkArticles);
-            AreSimilar("entities: 11, tasks: 1",                        store);
-            AreSimilar("Article:   7, tasks: 1 >> delete #2",           articles);
+            AreSimilar("entities: 12, tasks: 1",                        store);
+            AreSimilar("Article:   8, tasks: 1 >> delete #2",           articles);
             
             await store.Sync(); // -------- Sync --------
-            AreSimilar("entities:  9",                                  store); // tasks cleared
-            AreSimilar("Article:   5",                                  articles);
+            AreSimilar("entities: 10",                                  store); // tasks cleared
+            AreSimilar("Article:   6",                                  articles);
 
             cameraCreate.name = "Changed name";
             var logEntity = articles.LogEntityChanges(cameraCreate);    AssertLog(logEntity, 1, 0);
@@ -136,13 +136,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             IsTrue(logStore3.Success);
             IsTrue(logStore4.Success);
             IsTrue(deleteCamera.Success);
-            AreSimilar("entities: 8",                           store);       // tasks executed and cleared
+            AreSimilar("entities: 9",                           store);       // tasks executed and cleared
 
-            AreSimilar("Article:  4",                           articles);
+            AreSimilar("Article:  5",                           articles);
             var readArticles2   = articles.Read();
             var cameraNotSynced = readArticles2.Find("article-1");
-            AreSimilar("entities: 8, tasks: 1",                 store);
-            AreSimilar("Article:  4, tasks: 1 >> reads: 1",     articles);
+            AreSimilar("entities: 9, tasks: 1",                 store);
+            AreSimilar("Article:  5, tasks: 1 >> reads: 1",     articles);
             
             var e = Throws<TaskNotSyncedException>(() => { var _ = cameraNotSynced.Result; });
             AreSimilar("Find.Result requires Sync(). Find<Article> (id: 'article-1')", e.Message);
@@ -162,32 +162,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             order.items.AddRange(new [] { item1, item2, item3 });
             order.customer = customer;  // customer created implicit
             
-            AreSimilar("entities:  8, tasks: 1",                        store);
+            AreSimilar("entities:  9, tasks: 1",                        store);
             
             AreSimilar("Order:     0",                                  orders);
             orders.Upsert(order);
             types.Upsert(type1);
-            AreSimilar("entities: 10, tasks: 3",                        store);
+            AreSimilar("entities: 11, tasks: 3",                        store);
             AreSimilar("Order:     1, tasks: 1 >> upsert #1",           orders);     // created order
             
-            AreSimilar("Article:   4, tasks: 1 >> reads: 1", articles);
+            AreSimilar("Article:   5, tasks: 1 >> reads: 1", articles);
             AreSimilar("Customer:  0",                                  customers);
             var logSet2 = orders.LogSetChanges();   AssertLog(logSet2, 0, 2);
-            AreSimilar("entities: 12, tasks: 5",                        store);
-            AreSimilar("Article:   5, tasks: 2 >> create #1, reads: 1", articles);   // created smartphone (implicit)
+            AreSimilar("entities: 13, tasks: 5",                        store);
+            AreSimilar("Article:   6, tasks: 2 >> create #1, reads: 1", articles);   // created smartphone (implicit)
             AreSimilar("Customer:  1, tasks: 1 >> create #1",           customers);  // created customer (implicit)
             
-            AreSimilar("entities: 12, tasks: 5",                        store);
+            AreSimilar("entities: 13, tasks: 5",                        store);
             var logStore5 = store.LogChanges();     AssertLog(logStore5, 0, 0);
             var logStore6 = store.LogChanges();     AssertLog(logStore6, 0, 0);
-            AreSimilar("entities: 12, tasks: 5",                        store);      // no new changes
+            AreSimilar("entities: 13, tasks: 5",                        store);      // no new changes
 
             await store.Sync(); // -------- Sync --------
             
             IsTrue(logSet2.Success);
             IsTrue(logStore5.Success);
             IsTrue(logStore6.Success);
-            AreSimilar("entities: 12",                                  store);      // tasks executed and cleared
+            AreSimilar("entities: 13",                                  store);      // tasks executed and cleared
             
             
             notebook.name = "Galaxy Book";
@@ -202,11 +202,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             AreEqual("PatchTask<Article> #ids: 1, members: [.name]",    patchNotebook.ToString());
             AreEqual("PatchTask<Article> #ids: 1, members: [.producer]",patchArticles.ToString());
             
-            AreSimilar("Article:   5, tasks: 1 >> patch #2",            articles);
-            AreSimilar("entities: 12, tasks: 1",                        store);      // tasks executed and cleared
+            AreSimilar("Article:   6, tasks: 1 >> patch #2",            articles);
+            AreSimilar("entities: 13, tasks: 1",                        store);      // tasks executed and cleared
             
             await store.Sync(); // -------- Sync --------
-            AreSimilar("entities: 12",                                  store);      // tasks executed and cleared
+            AreSimilar("entities: 13",                                  store);      // tasks executed and cleared
             
             IsTrue(patchNotebook.Success);
             IsTrue(patchArticles.Success);
