@@ -48,13 +48,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 for (int n = 0; n < max; n++) {
                     entities.Add(entity);
                 }
-                store.entities.Create(entity);
+                store.entities.Upsert(entity);
             } else {
                 // use individual entity per readerStores / writerStore
                 for (int n = 0; n < max; n++) {
                     entities.Add(new SimplyEntity{ id = n, text = "Concurrent accessed entity" });
                 }
-                store.entities.CreateRange(entities);
+                store.entities.UpdateRange(entities);
             }
             await store.Sync();
 
@@ -122,7 +122,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         private static Task WriteLoop (SimpleStore store, SimplyEntity entity, int requestCount) {
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
-                    store.entities.Create(entity);
+                    store.entities.Upsert(entity);
                     await store.Sync();
                 }
             });

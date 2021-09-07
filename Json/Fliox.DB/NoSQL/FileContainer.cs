@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     EntityValue payload = entityPair.Value;
                     var path = FilePath(key.AsString());
                     try {
-                        await WriteText(path, payload.Json, FileMode.Create).ConfigureAwait(false);
+                        await WriteText(path, payload.Json, FileMode.CreateNew).ConfigureAwait(false);
                     } catch (Exception e) {
                         var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
                         AddEntityError(ref createErrors, key, error);

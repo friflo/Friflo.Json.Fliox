@@ -21,15 +21,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             var employees   = store.employees;
             var customers   = store.customers;
             var types       = store.types;
+            
+            // delete implicit created entities
+            producers.Delete("producer-samsung");
+            producers.Delete("producer-apple");
+            producers.Delete("producer-canon");
+            articles. Delete("article-1");
+            articles. Delete("article-2");
+            employees.Delete("apple-0001");
+            customers.Delete("customer-1");
+            await store.Sync();
 
             var samsung         = new Producer { id = "producer-samsung", name = "Samsung"};
             var samsungJson     = samsung.ToString();
             AreEqual("{\"id\":\"producer-samsung\",\"name\":\"Samsung\",\"employees\":null}", samsungJson);
             
             var galaxy          = new Article  { id = "article-galaxy",   name = "Galaxy S10", producer = samsung};
-            var createGalaxy    = articles.Create(galaxy);
+            var createGalaxy    = articles.Upsert(galaxy);
             AreSimilar("entities: 1, tasks: 1",                         store);
-            AreSimilar("Article:  1, tasks: 1 >> create #1",            articles);
+            AreSimilar("Article:  1, tasks: 1 >> upsert #1",            articles);
 
             var logStore1 = store.LogChanges();  AssertLog(logStore1, 0, 1);
             
@@ -40,17 +50,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             var appleEmployees  = new List<Ref<string, Employee>>{ steveJobs };
             var apple           = new Producer { id = "producer-apple", name = "Apple", employeeList = appleEmployees};
             var ipad            = new Article  { id = "article-ipad",   name = "iPad Pro", producer = apple};
-            var createIPad      = articles.Create(ipad);
-            AreSimilar("Article:  2, tasks: 1 >> create #2",            articles);
+            var createIPad      = articles.Upsert(ipad);
+            AreSimilar("Article:  2, tasks: 1 >> upsert #2",                        articles);
             
             var deleteIPhone    = articles.Delete("article-iphone"); // delete if exist in database
-            AreSimilar("Article:  2, tasks: 2 >> create #2, delete #1", articles);
+            AreSimilar("Article:  2, tasks: 2 >> upsert #2, delete #1",             articles);
 
             var logStore2 = store.LogChanges();  AssertLog(logStore2, 0, 2);
-            AreSimilar("entities: 5, tasks: 4",                         store);
-            AreSimilar("Article:  2, tasks: 2 >> create #2, delete #1", articles);
-            AreSimilar("Employee: 1, tasks: 1 >> create #1",            employees); // created steveJobs implicit
-            AreSimilar("Producer: 2, tasks: 1 >> create #2",            producers); // created apple implicit
+            AreSimilar("entities: 5, tasks: 4",                                     store);
+            AreSimilar("Article:  2, tasks: 2 >> upsert #2, delete #1",             articles);
+            AreSimilar("Employee: 1, tasks: 1 >> create #1",                        employees); // created steveJobs implicit
+            AreSimilar("Producer: 2, tasks: 1 >> create #2",                        producers); // created apple implicit
 
             await store.Sync(); // -------- Sync --------
             AreSimilar("entities: 5",                                   store);   // tasks executed and cleared
@@ -70,7 +80,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             var derivedClass    = new DerivedClass{ article = cameraCreate };
             var type1           = new TestType { id = "type-1", dateTime = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc), derivedClass = derivedClass };
             var createCam1      = articles.Create(cameraCreate);
-                                  articles.Create(notebook);
+                                  articles.Upsert(notebook);
             var createCam2      = articles.Create(cameraCreate);   // Create new CreateTask for same entity
             AreNotSame(createCam1, createCam2);               
             AreEqual("CreateTask<Article> (#keys: 1)", createCam1.ToString());
@@ -81,21 +91,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 var newArticle = new Article { id = id, name = id };
                 newBulkArticles.Add(newArticle);
             }
-            articles.CreateRange(newBulkArticles);
+            articles.UpdateRange(newBulkArticles);
 
             var readArticles    = articles.Read();
             var cameraUnknown   = readArticles.Find("article-missing");
             var camera          = readArticles.Find("article-1");
             
             var camForDelete    = new Article { id = "article-delete", name = "Camera-Delete" };
-            articles.Create(camForDelete);
+            articles.Upsert(camForDelete);
             // StoreInfo is accessible via property an ToString()
             AreEqual(11, store.StoreInfo.peers);
-            AreEqual(3,  store.StoreInfo.tasks); 
-            AreSimilar("entities: 11, tasks: 3",                        store);
-            AreSimilar("Article:   7, tasks: 2 >> create #5, reads: 1", articles);
-            AreSimilar("Producer:  3, tasks: 1 >> create #1",           producers);
-            AreSimilar("Employee:  1",                                  employees);
+            AreEqual(4,  store.StoreInfo.tasks); 
+            AreSimilar("entities: 11, tasks: 4",                                    store);
+            AreSimilar("Article:   7, tasks: 3 >> create #1, upsert #4, reads: 1",  articles);
+            AreSimilar("Producer:  3, tasks: 1 >> create #1",                       producers);
+            AreSimilar("Employee:  1",                                              employees);
             
             await store.Sync(); // -------- Sync --------
             AreSimilar("entities: 11",                                  store); // tasks cleared
@@ -158,10 +168,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             AreSimilar("entities:  8, tasks: 1",                        store);
             
             AreSimilar("Order:     0",                                  orders);
-            orders.Create(order);
-            types.Create(type1);
+            orders.Upsert(order);
+            types.Upsert(type1);
             AreSimilar("entities: 10, tasks: 3",                        store);
-            AreSimilar("Order:     1, tasks: 1 >> create #1",           orders);     // created order
+            AreSimilar("Order:     1, tasks: 1 >> upsert #1",           orders);     // created order
             
             AreSimilar("Article:   4, tasks: 1 >> reads: 1", articles);
             AreSimilar("Customer:  0",                                  customers);
@@ -204,19 +214,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             IsTrue(patchNotebook.Success);
             IsTrue(patchArticles.Success);
 
-            customers.Create(new Customer{id = "log-patch-entity-read-error",   name = "used for successful read"});
-            customers.Create(new Customer{id = "log-patch-entity-write-error",  name = "used for successful read"});
+            customers.Upsert(new Customer{id = "log-patch-entity-read-error",   name = "used for successful read"});
+            customers.Upsert(new Customer{id = "log-patch-entity-write-error",  name = "used for successful read"});
             
-            customers.Create(new Customer{id = "patch-task-error",              name = "used for successful patch-read"});
-            customers.Create(new Customer{id = "patch-task-exception",          name = "used for successful patch-read"});
-            customers.Create(new Customer{id = "patch-write-entity-error",      name = "used for successful patch-read"});
+            customers.Upsert(new Customer{id = "patch-task-error",              name = "used for successful patch-read"});
+            customers.Upsert(new Customer{id = "patch-task-exception",          name = "used for successful patch-read"});
+            customers.Upsert(new Customer{id = "patch-write-entity-error",      name = "used for successful patch-read"});
 
-            articles.Create (new Article {id = "log-create-read-error",         name = "used for successful read"});
+            articles.Upsert (new Article {id = "log-create-read-error",         name = "used for successful read"});
             await store.Sync();
             
             var errorRefTask = new Customer{ id = "read-task-error" };
             var order2 = new Order{id = "order-2", customer = errorRefTask, created = new DateTime(2021, 7, 22, 6, 1, 0, DateTimeKind.Utc)};
-            orders.Create(order2);
+            orders.Upsert(order2);
             
             var testMessage = new TestMessage{ text = "test message" };
             var sendMessage1 = store.SendMessage(testMessage);

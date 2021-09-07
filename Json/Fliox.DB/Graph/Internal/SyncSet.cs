@@ -209,7 +209,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         /// In these cases <see cref="Map.RefMapper{TKey,T}.Trace"/> add untracked entities (== have no <see cref="Peer{T}"/>)
         /// which is not already assigned) 
         private void GetEntityChanges(Peer<T> peer, LogTask logTask) {
-            if (peer.created) {
+            if (peer.created || peer.updated) {
                 set.intern.store._intern.tracerLogTask = logTask;
                 set.intern.tracer.Trace(peer.Entity);
                 return;
