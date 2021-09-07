@@ -22,18 +22,33 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         private static async Task AssertRefAssignment(PocStore store) {
             var articles    = store.articles;
             var producers   = store.producers;
+            
+            // --- assign id to reference
+            var newArticle = new Article { producer = "unknown" };
+            Exception e = Throws<UnresolvedRefException>(() => { var _ = newArticle.producer.Entity; });
+            AreEqual("Accessed unresolved reference. Ref<Producer> (id: 'unknown')", e.Message);
+            
+            
+            // --- assign entity instance to reference
+            var producer = new Producer { id = "producer-id" };
+            newArticle.producer = producer;
+            IsTrue(producer == newArticle.producer.Entity);
+            
 
+            // --- read entity with an unresolved reference (galaxy.producer) from database
             var readArticles    = articles.Read();
             var galaxyTask      = readArticles.Find("article-galaxy"); // entity exist in database 
             await store.Sync();  // -------- Sync --------
 
             var galaxy = galaxyTask.Result;
             // the referenced entity "producer-samsung" is not resolved until now.
-            Exception e;
             e = Throws<UnresolvedRefException>(() => { var _ = galaxy.producer.Entity; });
             AreEqual("Accessed unresolved reference. Ref<Producer> (id: 'producer-samsung')", e.Message);
             IsFalse(galaxy.producer.TryEntity(out Producer result));
             IsNull(result);
+            
+            
+            // --- resolve reference (galaxy.producer) from database
             var readProducers = producers.Read();
             galaxy.producer.FindBy(readProducers); // schedule resolving producer reference now
             

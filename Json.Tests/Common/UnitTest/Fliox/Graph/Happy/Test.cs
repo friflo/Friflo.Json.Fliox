@@ -83,10 +83,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         private static async Task FileUse() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/Graph/PocStore"))
-            using (var createStore  = new PocStore(fileDatabase, "createStore"))
             using (var useStore     = new PocStore(fileDatabase, "useStore")) {
-                await TestRelationPoC.CreateStore(createStore);
-                await TestStores(createStore, useStore);
+                await TestStores(useStore, useStore);
             }
         }
         
@@ -246,11 +244,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
 
         // ------------------------------------ test assertion methods ------------------------------------
         public static async Task TestStores(PocStore createStore, PocStore useStore) {
+            await AssertRefAssignment   (useStore);
             await AssertWriteRead       (createStore);
             await AssertEntityIdentity  (createStore);
             await AssertQuery           (createStore);
             await AssertRead            (createStore);
-            await AssertRefAssignment   (useStore);
         }
         
 
