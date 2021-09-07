@@ -400,8 +400,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         
         internal  bool GetPeerByRef(Ref<TKey, T> reference, out Peer<T> peer) {
             if (reference.IsKeyNull()) {
-                peer = null;
-                return false; // todo add test
+                throw new InvalidOperationException($"Ref<{typeof(TKey).Name},{typeof(T).Name}>.key == null");
             }
             var set = reference.GetSet();
             if (set == null) {
