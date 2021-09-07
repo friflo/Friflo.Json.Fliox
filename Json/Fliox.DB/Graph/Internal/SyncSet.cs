@@ -204,23 +204,24 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             GetEntityChanges(peer, logTask);
         }
 
-        /// In case the given entity was added via <see cref="Create"/> (peer.create != null) trace the entity to
-        /// find changes in referenced entities in <see cref="Ref{TKey,T}"/> fields of the given entity.
+        /// In case the given entity is already <see cref="Peer{T}.created"/> or <see cref="Peer{T}.updated"/> trace
+        /// the entity to find changes in referenced entities in <see cref="Ref{TKey,T}"/> fields of the given entity.
         /// In these cases <see cref="Map.RefMapper{TKey,T}.Trace"/> add untracked entities (== have no <see cref="Peer{T}"/>)
         /// which is not already assigned) 
         private void GetEntityChanges(Peer<T> peer, LogTask logTask) {
+            ref var intern = ref set.intern;
             if (peer.created || peer.updated) {
-                set.intern.store._intern.tracerLogTask = logTask;
-                set.intern.tracer.Trace(peer.Entity);
+                intern.store._intern.tracerLogTask = logTask;
+                intern.tracer.Trace(peer.Entity);
                 return;
             }
             var patchSource = peer.PatchSource;
             if (patchSource != null) {
                 var entity = peer.Entity;
-                var diff = set.intern.objectPatcher.differ.GetDiff(patchSource, entity);
+                var diff = intern.objectPatcher.differ.GetDiff(patchSource, entity);
                 if (diff == null)
                     return;
-                var patchList = set.intern.objectPatcher.CreatePatches(diff);
+                var patchList = intern.objectPatcher.CreatePatches(diff);
                 var entityPatch = new EntityPatch {
                     patches = patchList
                 };
@@ -229,8 +230,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 Patches()[id] = entityPatch;
                 logTask.AddPatch(this, id);
                 
-                set.intern.store._intern.tracerLogTask = logTask;
-                set.intern.tracer.Trace(entity);
+                intern.store._intern.tracerLogTask = logTask;
+                intern.tracer.Trace(entity);
             }
         }
 

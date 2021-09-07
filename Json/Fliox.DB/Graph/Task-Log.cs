@@ -25,6 +25,7 @@ namespace Friflo.Json.Fliox.DB.Graph
 
         internal LogTask() { }
 
+        /// <summary>Log entity patch previously added to <see cref="SyncSet{TKey,T}.Patches"/></summary>
         internal void AddPatch(SyncSet sync, in JsonKey id) {
             if (id.IsNull())
                 throw new ArgumentException("id must not be null");
@@ -32,6 +33,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             patches.Add(change);
         }
         
+        /// <summary>Log created entity previously added to <see cref="SyncSet{TKey,T}.Creates"/></summary>
         internal void AddCreate(SyncSet sync, in JsonKey id) {
             if (id.IsNull())
                 throw new ArgumentException("id must not be null");
@@ -57,8 +59,8 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
     }
     
-    /// Identify entries in <see cref="SyncSet{TKey,T}.patches"/> or <see cref="SyncSet{TKey,T}.creates"/> by tuple
-    /// <see cref="sync"/> and <see cref="id"/>
+    /// Identify entries in <see cref="SyncSet{TKey,T}.Patches"/> and <see cref="SyncSet{TKey,T}.Creates"/> by
+    /// tuple <see cref="sync"/> and <see cref="id"/>
     internal readonly struct LogChange {
         internal readonly   SyncSet     sync;
         internal readonly   JsonKey     id;
