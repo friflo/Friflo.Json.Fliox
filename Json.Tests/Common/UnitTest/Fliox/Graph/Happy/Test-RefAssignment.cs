@@ -37,9 +37,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             var readProducers = producers.Read();
             galaxy.producer.FindBy(readProducers); // schedule resolving producer reference now
             
-            // assign producer field with id "producer-apple"
-            var iphone = new Article  { id = "article-iphone", name = "iPhone 11", producer = "producer-apple" };
-            iphone.producer.FindBy(readProducers);
+            // assign producer field with id "producer-apple". Note: iphone is never synced
+            var iphone = new Article  { name = "iPhone 11", producer = "producer-apple" };
+            var findProducer = iphone.producer.FindBy(readProducers); // resolve referenced Producer
             
             var tesla  = new Producer { id = "producer-tesla", name = "Tesla" };
             // assign producer field with entity instance tesla
@@ -51,6 +51,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
 
             await store.Sync();  // -------- Sync --------
             
+            
+            AreEqual("Apple",   findProducer.Result.name);
             AreEqual("Samsung", galaxy.producer.Entity.name);   // after Sync() Entity is accessible
             AreEqual("Apple",   iphone.producer.Entity.name);   // after Sync() Entity is accessible
         }

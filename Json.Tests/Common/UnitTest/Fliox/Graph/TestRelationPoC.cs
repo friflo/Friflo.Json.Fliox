@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             var customers   = store.customers;
             var types       = store.types;
             
-            // delete implicit created entities
+            // delete implicit & explicit created entities
             producers.Delete("producer-samsung");
             producers.Delete("producer-apple");
             producers.Delete("producer-canon");
@@ -48,34 +48,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 
             var steveJobs       = new Employee { id = "apple-0001", firstName = "Steve", lastName = "Jobs"};
             var appleEmployees  = new List<Ref<string, Employee>>{ steveJobs };
-            var apple           = new Producer { id = "producer-apple", name = "Apple", employeeList = appleEmployees};
+            var apple           = new Producer { id = "producer-apple", name = "Apple", employeeList = appleEmployees}; // steveJobs created implicit
             var ipad            = new Article  { id = "article-ipad",   name = "iPad Pro", producer = apple};
             var createIPad      = articles.Upsert(ipad);
             AreSimilar("Article:  2, tasks: 1 >> upsert #2",                        articles);
             
-            var deleteIPhone    = articles.Delete("article-iphone"); // delete if exist in database
-            AreSimilar("Article:  2, tasks: 2 >> upsert #2, delete #1",             articles);
-
             var logStore2 = store.LogChanges();  AssertLog(logStore2, 0, 2);
-            AreSimilar("entities: 5, tasks: 4",                                     store);
-            AreSimilar("Article:  2, tasks: 2 >> upsert #2, delete #1",             articles);
+            AreSimilar("entities: 5, tasks: 3",                                     store);
+            AreSimilar("Article:  2, tasks: 1 >> upsert #2",                        articles);
             AreSimilar("Employee: 1, tasks: 1 >> create #1",                        employees); // created steveJobs implicit
             AreSimilar("Producer: 2, tasks: 1 >> create #2",                        producers); // created apple implicit
 
             await store.Sync(); // -------- Sync --------
             AreSimilar("entities: 5",                                   store);   // tasks executed and cleared
             
-            IsTrue(deleteIPhone.Success);
             IsTrue(logStore1.Success);
             IsTrue(logStore2.Success);
             IsTrue(createGalaxy.Success);
             IsTrue(createIPad.Success);
             IsNull(createIPad.Error); // error is null if successful
             
-            var canon           = new Producer { id = "producer-canon", name = "Canon"};
-            var createCanon     = producers.Create(canon);
+            var canon           = new Producer { id = "producer-canon", name = "Canon"}; // created implicit & explicit
+            var createCanon     = producers.Create(canon); // created explicit
             var order           = new Order { id = "order-1", created = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc)};
-            var cameraCreate    = new Article { id = "article-1", name = "Camera", producer = canon };
+            var cameraCreate    = new Article { id = "article-1", name = "Camera", producer = canon }; // created implicit
             var notebook        = new Article { id = "article-3", name = "Notebook", producer = samsung };
             var derivedClass    = new DerivedClass{ article = cameraCreate };
             var type1           = new TestType { id = "type-1", dateTime = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc), derivedClass = derivedClass };
@@ -160,10 +156,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             // articles.Create(smartphone);   // redundant - implicit tracked by order
             
             var item1 = new OrderItem { article = camera.Result, amount = 1, name = "Camera" };
-            var item2 = new OrderItem { article = smartphone,    amount = 2, name = smartphone.name };
+            var item2 = new OrderItem { article = smartphone,    amount = 2, name = smartphone.name }; // smartphone created implicit
             var item3 = new OrderItem { article = camera.Result, amount = 3, name = "Camera" };
             order.items.AddRange(new [] { item1, item2, item3 });
-            order.customer = customer;
+            order.customer = customer;  // customer created implicit
             
             AreSimilar("entities:  8, tasks: 1",                        store);
             

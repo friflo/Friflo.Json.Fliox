@@ -242,12 +242,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         private  void AssertChangeEvent (EntityChanges<string, Article> articleChanges) {
             switch (EventSequence) {
                 case 2:
-                    AreEqual("(creates: 0, updates: 2, deletes: 1, patches: 0)", articleChanges.Info.ToString());
+                    AreEqual("(creates: 0, updates: 2, deletes: 0, patches: 0)", articleChanges.Info.ToString());
                     AreEqual("iPad Pro", articleChanges.updates["article-ipad"].name);
-                    IsTrue(articleChanges.deletes.Contains("article-iphone"));
                     break;
                 case 5:
                     AreEqual("(creates: 0, updates: 0, deletes: 1, patches: 1)", articleChanges.Info.ToString());
+                    IsTrue(articleChanges.deletes.Contains("article-delete"));
                     ChangePatch<Article> articlePatch = articleChanges.patches["article-1"];
                     AreEqual("article-1",               articlePatch.ToString());
                     var articlePatch0 = (PatchReplace)  articlePatch.patches[0];
@@ -265,7 +265,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             
             AreSimilar("(creates: 0, updates: 2, deletes: 0, patches: 0)", orderSum);
             AreSimilar("(creates: 1, updates: 5, deletes: 1, patches: 0)", customerSum);
-            AreSimilar("(creates: 2, updates: 7, deletes: 6, patches: 2)", articleSum);
+            AreSimilar("(creates: 2, updates: 7, deletes: 5, patches: 2)", articleSum);
             AreSimilar("(creates: 3, updates: 0, deletes: 3, patches: 0)", producerSum);
             AreSimilar("(creates: 1, updates: 0, deletes: 1, patches: 0)", employeeSum);
             
