@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             var customers   = store.customers;
             var types       = store.types;
             
-            // delete implicit & explicit created entities
+            // delete entities already persisted to enable implicit or explicit creation below
             producers.Delete("producer-samsung");
             producers.Delete("producer-apple");
             producers.Delete("producer-canon");
