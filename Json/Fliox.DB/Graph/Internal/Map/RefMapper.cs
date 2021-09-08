@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Map
         public override void InitTypeMapper(TypeStore typeStore) {
             keyMapper               = (TypeMapper<TKey>)    typeStore.GetTypeMapper(typeof(TKey));
             entityMapper            = (TypeMapper<T>)       typeStore.GetTypeMapper(typeof(T));
-            var entityId            = EntityId.GetEntityId<T>();
+            var entityId            = EntityKey.GetEntityKey<T>();
             var entityKeyType       = entityId.GetKeyType();
             var keyType             = typeof(TKey);
             // TAG_NULL_REF

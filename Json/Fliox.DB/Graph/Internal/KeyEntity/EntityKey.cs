@@ -11,17 +11,17 @@ using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
 {
     // -------------------------------------------- EntityId -----------------------------------------------
-    internal abstract class EntityId {
-        private static readonly   Dictionary<Type, EntityId> Ids = new Dictionary<Type, EntityId>();
+    internal abstract class EntityKey {
+        private static readonly   Dictionary<Type, EntityKey> Ids = new Dictionary<Type, EntityKey>();
 
-        internal static EntityKey<TKey, T> GetEntityKey<TKey, T> () where T : class {
-            return (EntityKey<TKey, T>)GetEntityId<T>();
+        internal static EntityKeyT<TKey, T> GetEntityKeyT<TKey, T> () where T : class {
+            return (EntityKeyT<TKey, T>)GetEntityKey<T>();
         }
         
-        internal static EntityId<T> GetEntityId<T> () where T : class {
+        internal static EntityKey<T> GetEntityKey<T> () where T : class {
             var type = typeof(T);
-            if (Ids.TryGetValue(type, out EntityId id)) {
-                return (EntityId<T>)id;
+            if (Ids.TryGetValue(type, out EntityKey id)) {
+                return (EntityKey<T>)id;
             }
             var member = FindKeyMember (type);
             var property = member as PropertyInfo;
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
 
         private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
         
-        private static EntityId<T> CreateEntityIdProperty<T> (PropertyInfo property)  where T : class {
+        private static EntityKey<T> CreateEntityIdProperty<T> (PropertyInfo property)  where T : class {
             var type        = typeof (T);
             var propType    = property.PropertyType;
             var idGetMethod = property.GetGetMethod(true);    
@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
             throw new InvalidOperationException(msg);
         }
             
-        private static EntityId<T> CreateEntityIdField<T> (FieldInfo field)  where T : class {
+        private static EntityKey<T> CreateEntityIdField<T> (FieldInfo field)  where T : class {
             var type        = typeof (T);
             var fieldType   = field.FieldType;
             
@@ -161,7 +161,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
     
     
     // -------------------------------------------- EntityId<T> --------------------------------------------
-    internal abstract class EntityId<T> : EntityId where T : class {
+    internal abstract class EntityKey<T> : EntityKey where T : class {
         internal abstract   Type    GetKeyType();
         internal abstract   string  GetKeyName();
         internal virtual    bool    IsEntityKeyNull (T entity) => false;
@@ -172,7 +172,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
         internal abstract   TAsType GetKeyAsType<TAsType> (T entity);    // TAG_NULL_REF
     }
     
-    internal abstract class EntityKey<TKey, T> : EntityId<T> where T : class {
+    internal abstract class EntityKeyT<TKey, T> : EntityKey<T> where T : class {
         internal abstract   TKey    GetKey  (T entity);
         internal abstract   void    SetKey  (T entity, TKey id);
 

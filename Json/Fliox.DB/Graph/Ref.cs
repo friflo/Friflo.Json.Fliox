@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         public Ref(T entity) {
             TKey entityId = default;
             if (entity != null) {
-                entityId = EntitySetBase<T>.EntityId2.GetKeyAsType<TKey>(entity); // TAG_NULL_REF
+                entityId = EntitySetBase<T>.EntityKeyMap.GetKeyAsType<TKey>(entity); // TAG_NULL_REF
             }
             key             = entityId;
             this.entity     = entity;

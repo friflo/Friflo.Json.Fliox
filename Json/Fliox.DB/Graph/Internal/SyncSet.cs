@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
     /// Each instance is mapped to a <see cref="SyncRequest"/> / <see cref="SyncResponse"/> instance.
     internal partial class SyncSet<TKey, T> : SyncSetBase<T> where T : class
     {
-        internal static readonly    EntityKey<TKey, T>  EntityKey = EntityId.GetEntityKey<TKey, T>();
+        private     static readonly EntityKeyT<TKey, T>     EntityKeyTMap = EntityKey.GetEntityKeyT<TKey, T>();
 
         // Note!
         // All fields & getters must be private by all means to ensure that all scheduled tasks of a Sync() request
@@ -259,7 +259,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 T entity    = createPair.Value.Entity;
                 var json    = writer.Write(entity);
                 var entry   = new EntityValue(json);
-                var id      = EntityKey.GetId(entity);
+                var id      = EntityKeyTMap.GetId(entity);
                 entries.Add(id, entry);
             }
             var req = new CreateEntities {
@@ -279,7 +279,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 T entity    = updatePair.Value.Entity;
                 var json    = writer.Write(entity);
                 var entry   = new EntityValue(json);
-                var id      = EntityKey.GetId(entity);
+                var id      = EntityKeyTMap.GetId(entity);
                 entries.Add(id, entry);
             }
             var req = new UpsertEntities {

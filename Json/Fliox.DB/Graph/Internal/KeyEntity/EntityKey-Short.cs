@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
 {
-    internal class EntityKeyShortField<T> : EntityKey<short, T> where T : class {
+    internal class EntityKeyShortField<T> : EntityKeyT<short, T> where T : class {
         private  readonly   FieldInfo           field;
         private  readonly   Func  <T, short>    fieldGet;
         private  readonly   Action<T, short>    fieldSet;
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
     }
     
     
-    internal class EntityKeyShortProperty<T> : EntityKey<short, T> where T : class {
+    internal class EntityKeyShortProperty<T> : EntityKeyT<short, T> where T : class {
         private  readonly   PropertyInfo        property;
         private  readonly   Func  <T, short>    propertyGet;
         private  readonly   Action<T, short>    propertySet;
