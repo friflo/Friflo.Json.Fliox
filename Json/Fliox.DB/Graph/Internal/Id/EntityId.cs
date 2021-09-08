@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
         }
         
         private static string UnsupportedTypeMessage(Type type, MemberInfo member, Type memberType) {
-            return $"unsupported Type for entity key: {type.Name}.{member.Name}, Type: {memberType.Name}";
+            return $"unsupported TKey Type: EntitySet<{memberType.Name},{type.Name}> {member.Name}";
         }
         
         internal static Func<TEntity,TField> GetFieldGet<TEntity, TField>(FieldInfo field) {

@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             e = Throws<InvalidOperationException>(() => {
                 _ = new UnsupportedKeyTypeStore(database, typeStore, "store");
             });
-            AreEqual("unsupported Type for entity key: CharEntity.id, Type: Char", e.Message);
+            AreEqual("unsupported TKey Type: EntitySet<Char,CharEntity> id", e.Message);
             
             e = Throws<InvalidTypeException>(() => {
                 _ = new InvalidMemberStore(database, typeStore, "store");

@@ -46,12 +46,12 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.IdRef
                 return new RefKeyByte<T>    ();
             }
             // add additional types here
-            var msg = UnsupportedTypeMessage(type);
+            var msg = UnsupportedTypeMessage(keyType, type);
             throw new InvalidOperationException(msg);
         }
-            
-        private static string UnsupportedTypeMessage(Type type) {
-            return $"unsupported Type for entity key: {type.Name}";
+
+        private static string UnsupportedTypeMessage(Type keyType, Type type) {
+            return $"unsupported TKey Type: Ref<{keyType.Name},{type.Name}>";
         }
     }
     
