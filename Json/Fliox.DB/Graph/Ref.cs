@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         public   override           string              ToString() => AsString();
         private                     string              AsString() => IsKeyNull() ? "null" : RefKey.KeyToId(key).AsString();
 
-        private  static readonly    RefKey<TKey, T>     RefKey = RefId.GetRefKey<TKey, T>();
+        internal static readonly    RefKey<TKey, T>     RefKey = RefId.GetRefKey<TKey, T>();
         
         public Ref(TKey key) {
             this.key        = key;
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         public Ref(T entity) {
-            TKey entityId = entity != null ? RefKey.GetKey(entity) : default;
+            TKey entityId = entity != null ? EntitySet<TKey,T>.EntityKey.GetKey(entity) : default;
             key             = entityId;
             this.entity     = entity;
             entityAssigned  = true;

@@ -176,8 +176,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.IdRef
         internal abstract   JsonKey KeyToId (in TKey key);
         internal abstract   TKey    IdToKey (in JsonKey key);
         
-        internal abstract   TKey    GetKey  (T entity);
-        internal abstract   void    SetKey  (T entity, TKey id);
+        internal abstract   TKey    GetKey  (T entity);             // todo remove deprecated method
+        internal abstract   void    SetKey  (T entity, TKey id);    // todo remove deprecated method
         
         internal virtual    bool    IsKeyNull (TKey key) => false;
     }
