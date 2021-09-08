@@ -55,9 +55,14 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         protected EntitySetBase(string name) : base(name) { }
         
         internal static void ValidateKeyType(Type keyType) {
-            var entityId        = EntityId.GetEntityId<T>();
-            var entityKeyType   = entityId.GetKeyType();
-            var entityKeyName   = entityId.GetKeyName();
+            var entityId            = EntityId.GetEntityId<T>();
+            var entityKeyType       = entityId.GetKeyType();
+            var entityKeyName       = entityId.GetKeyName();
+            /* TAG_NULL_REF
+            var underlyingKeyType   = Nullable.GetUnderlyingType(keyType);
+            if (underlyingKeyType != null) {
+                keyType = underlyingKeyType;
+            } */
             if (keyType == entityKeyType)
                 return;
             var type = typeof(T);
@@ -99,7 +104,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         /// key: <see cref="Peer{T}.entity"/>.id        Note: must be private by all means
         private  readonly   Dictionary<TKey, Peer<T>>   peers = new Dictionary<TKey, Peer<T>>();
         
-        private static readonly   EntityId<T>  EntityKey = EntityId.GetEntityKey<TKey, T>();
+        internal static readonly   EntityKey<TKey, T>  EntityKey = EntityId.GetEntityKey<TKey, T>();
 
         
         // ReSharper disable once NotAccessedField.Local
@@ -355,19 +360,19 @@ namespace Friflo.Json.Fliox.DB.Graph
         
         // ------------------------------------------- internals -------------------------------------------
         private static void SetEntityId (T entity, in JsonKey id) {
-            Ref<TKey, T>.EntityKey.SetId(entity, id);
+            EntityKey.SetId(entity, id);
         }
         
         internal override JsonKey GetEntityId (T entity) {
-            return Ref<TKey, T>.EntityKey.GetId(entity);
+            return EntityKey.GetId(entity);
         }
         
         private static void SetEntityKey (T entity, TKey key) {
-            Ref<TKey, T>.EntityKey.SetKey(entity, key);
+            EntityKey.SetKey(entity, key);
         }
         
         private static TKey GetEntityKey (T entity) {
-            return Ref<TKey, T>.EntityKey.GetKey(entity);
+            return EntityKey.GetKey(entity);
         }
 
         internal override void LogSetChangesInternal(LogTask logTask) {
@@ -387,13 +392,13 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         internal void DeletePeer (in JsonKey id) {
-            var key = Ref<TKey,T>.EntityKey.IdToKey(id);
+            var key = EntityKey.IdToKey(id);
             peers.Remove(key);
         }
         
         [Conditional("DEBUG")]
         private static void AssertId(TKey key, in JsonKey id) {
-            var expect = Ref<TKey,T>.EntityKey.KeyToId(key);
+            var expect = EntityKey.KeyToId(key);
             if (!id.IsEqual(expect))
                 throw new InvalidOperationException($"assigned invalid id: {id}, expect: {expect}");
         }
@@ -425,7 +430,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                 return peer;
             }
             if (id.IsNull()) {
-                id = Ref<TKey,T>.EntityKey.KeyToId(key);
+                id = EntityKey.KeyToId(key);
             } else {
                 AssertId(key, id);
             }
@@ -436,7 +441,7 @@ namespace Friflo.Json.Fliox.DB.Graph
 
         /// use <see cref="GetOrCreatePeerByKey"/> is possible
         internal override Peer<T> GetPeerById(in JsonKey id) {
-            var key = Ref<TKey,T>.EntityKey.IdToKey(id);
+            var key = EntityKey.IdToKey(id);
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
             }
@@ -450,7 +455,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
             }
-            var id = Ref<TKey,T>.EntityKey.KeyToId(key);
+            var id = EntityKey.KeyToId(key);
             peer = new Peer<T>(id);
             peers.Add(key, peer);
             return peer;

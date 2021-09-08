@@ -208,7 +208,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                             continue;
                         foreach (var entityPair in create.entities) {
                             var     id      = entityPair.Key;
-                            TKey    key     = Ref<TKey, T>.EntityKey.IdToKey(id);
+                            TKey    key     = EntitySet<TKey, T>.EntityKey.IdToKey(id);
                             var     peer    = entitySet.GetOrCreatePeerByKey(key, id);
                             var     entity  = peer.Entity;
                             result.creates.Add(key, entity);
@@ -222,7 +222,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                             continue;
                         foreach (var entityPair in upsert.entities) {
                             var     id      = entityPair.Key;
-                            TKey    key     = Ref<TKey, T>.EntityKey.IdToKey(id);
+                            TKey    key     = EntitySet<TKey, T>.EntityKey.IdToKey(id);
                             var     peer    = entitySet.GetOrCreatePeerByKey(key, id);
                             var     entity  = peer.Entity;
                             result.updates.Add(key, entity);
@@ -235,7 +235,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                         if (delete.container != entitySet.name)
                             continue;
                         foreach (var id in delete.ids) {
-                            TKey    key      = Ref<TKey, T>.EntityKey.IdToKey(id);
+                            TKey    key      = EntitySet<TKey, T>.EntityKey.IdToKey(id);
                             result.deletes.Add(key);
                         }
                         result.Info.deletes += delete.ids.Count;
@@ -247,7 +247,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                             continue;
                         foreach (var pair in patch.patches) {
                             var         id          = pair.Key;
-                            TKey        key         = Ref<TKey, T>.EntityKey.IdToKey(id);
+                            TKey        key         = EntitySet<TKey, T>.EntityKey.IdToKey(id);
                             var         peer        = entitySet.GetOrCreatePeerByKey(key, id);
                             var         entity      = peer.Entity;
                             EntityPatch entityPatch = pair.Value;

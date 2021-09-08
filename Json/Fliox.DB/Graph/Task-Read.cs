@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         
         internal override void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities) {
             TaskErrorInfo error = new TaskErrorInfo();
-            var id = Ref<TKey,T>.EntityKey.KeyToId(key);
+            var id = EntitySet<TKey,T>.EntityKey.KeyToId(key);
             var entityError = entities[id].Error;
             if (entityError == null) {
                 findState.Synced = true;
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         internal override void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities) {
             TaskErrorInfo error = new TaskErrorInfo();
             foreach (var key in keys) {
-                var id = Ref<TKey,T>.EntityKey.KeyToId(key);
+                var id = EntitySet<TKey,T>.EntityKey.KeyToId(key);
                 var entityError = entities[id].Error;
                 if (entityError == null) {
                     results.Add(key, values[key]);    

@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             foreach (var id in ids) {
                 var peer = entitySet.GetPeerById(id);
                 if (peer.error == null) {
-                    var key = Ref<TKey,T>.EntityKey.IdToKey(id);
+                    var key = EntitySet<TKey,T>.EntityKey.IdToKey(id);
                     results.Add(key, peer.Entity);
                 } else {
                     entityErrorInfo.AddEntityError(peer.error);
@@ -139,7 +139,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             var id = ids.First();
             var peer = entitySet.GetPeerById(id);
             if (peer.error == null) {
-                key     = Ref<TKey,T>.EntityKey.IdToKey(id);
+                key     = EntitySet<TKey,T>.EntityKey.IdToKey(id);
                 entity  = peer.Entity;
             } else {
                 var entityErrorInfo = new TaskErrorInfo();

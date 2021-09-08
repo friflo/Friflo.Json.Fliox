@@ -47,11 +47,17 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Map
         { }
 
         public override void InitTypeMapper(TypeStore typeStore) {
-            keyMapper       = (TypeMapper<TKey>)    typeStore.GetTypeMapper(typeof(TKey));
-            entityMapper    = (TypeMapper<T>)       typeStore.GetTypeMapper(typeof(T));
-            var entityId    = EntityId.GetEntityId<T>();
-            var entityKeyType  = entityId.GetKeyType();
-            if (typeof(TKey) != entityKeyType) {
+            keyMapper               = (TypeMapper<TKey>)    typeStore.GetTypeMapper(typeof(TKey));
+            entityMapper            = (TypeMapper<T>)       typeStore.GetTypeMapper(typeof(T));
+            var entityId            = EntityId.GetEntityId<T>();
+            var entityKeyType       = entityId.GetKeyType();
+            var keyType             = typeof(TKey);
+            /* TAG_NULL_REF
+            var underlyingKeyType   = Nullable.GetUnderlyingType(keyType);
+            if (underlyingKeyType != null) {
+                keyType = underlyingKeyType;
+            } */
+            if (keyType != entityKeyType) {
                 var entityName = typeof(T).Name;
                 var msg = $"Ref<{typeof(TKey).Name}, {entityName}> != EntitySet<{entityKeyType.Name}, {entityName}>";
                 throw new InvalidTypeException(msg);
