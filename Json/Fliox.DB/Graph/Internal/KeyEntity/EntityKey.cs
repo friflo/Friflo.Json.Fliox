@@ -26,13 +26,13 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
             var member = FindKeyMember (type);
             var property = member as PropertyInfo;
             if (property != null) {
-                var result  = CreateEntityIdProperty<T>(property);
+                var result  = CreateEntityKeyProperty<T>(property);
                 Map[type]   = result;
                 return result;
             }
             var field = member as FieldInfo;
             if (field != null) {
-                var result  = CreateEntityIdField<T>(field);
+                var result  = CreateEntityKeyField<T>(field);
                 Map[type]   = result;
                 return result;
             }
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
 
         private const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
         
-        private static EntityKey<T> CreateEntityIdProperty<T> (PropertyInfo property)  where T : class {
+        private static EntityKey<T> CreateEntityKeyProperty<T> (PropertyInfo property)  where T : class {
             var type        = typeof (T);
             var propType    = property.PropertyType;
             var idGetMethod = property.GetGetMethod(true);    
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
             throw new InvalidOperationException(msg);
         }
             
-        private static EntityKey<T> CreateEntityIdField<T> (FieldInfo field)  where T : class {
+        private static EntityKey<T> CreateEntityKeyField<T> (FieldInfo field)  where T : class {
             var type        = typeof (T);
             var fieldType   = field.FieldType;
             if (fieldType == typeof(string))    return new EntityKeyStringField<T>  (field);
