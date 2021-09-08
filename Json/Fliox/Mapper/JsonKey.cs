@@ -95,10 +95,7 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         public Guid? AsGuidNullable() {
-            var asStr = AsString();
-            if (asStr != null)
-                return new Guid(asStr);
-            return null;
+            return str != null ? new Guid(str) : default;
         }
     }
     
