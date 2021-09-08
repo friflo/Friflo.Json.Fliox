@@ -58,8 +58,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             var entityId            = EntityId.GetEntityId<T>();
             var entityKeyType       = entityId.GetKeyType();
             var entityKeyName       = entityId.GetKeyName();
-            /* TAG_NULL_REF
-            var underlyingKeyType   = Nullable.GetUnderlyingType(keyType);
+            // TAG_NULL_REF
+            /* var underlyingKeyType   = Nullable.GetUnderlyingType(keyType);
             if (underlyingKeyType != null) {
                 keyType = underlyingKeyType;
             } */

@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
     }
     
     public class GuidNullEntity {
-        public Guid? id;
+        public Guid? id; // TAG_NULL_REF
     }
     
     public class IntEntity {

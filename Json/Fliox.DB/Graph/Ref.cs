@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Fliox.DB.Graph.Internal;
-using Friflo.Json.Fliox.DB.Graph.Internal.Id;
+using Friflo.Json.Fliox.DB.Graph.Internal.IdRef;
 using Friflo.Json.Fliox.DB.Graph.Internal.Map;
 using Friflo.Json.Fliox.Mapper;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -78,9 +78,9 @@ namespace Friflo.Json.Fliox.DB.Graph
         [DebuggerBrowsable(Never)]  private             EntitySet<TKey,T>   set;    // alternatively a Peer<T> could be used 
 
         public   override           string              ToString() => AsString();
-        private                     string              AsString() => IsKeyNull() ? "null" : EntityKey.KeyToId(key).AsString();
+        private                     string              AsString() => IsKeyNull() ? "null" : RefKey.KeyToId(key).AsString();
 
-        private  static readonly    EntityKey<TKey, T>  EntityKey = EntityId.GetEntityKey<TKey, T>();
+        private  static readonly    RefKey<TKey, T>     RefKey = RefId.GetRefKey<TKey, T>();
         
         public Ref(TKey key) {
             this.key        = key;
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         public Ref(T entity) {
-            TKey entityId = entity != null ? EntityKey.GetKey(entity) : default;
+            TKey entityId = entity != null ? RefKey.GetKey(entity) : default;
             key             = entityId;
             this.entity     = entity;
             entityAssigned  = true;
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         internal Ref(Peer<T> peer, EntitySet<TKey, T> set) {
-            key             = EntityKey.IdToKey(peer.id);      // peer.id is never null
+            key             = RefKey.IdToKey(peer.id);      // peer.id is never null
             entity          = null;
             entityAssigned  = false;
             this.set        = set;
@@ -145,7 +145,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsKeyNull () {
-            return EntityKey.IsKeyNull(key);
+            return RefKey.IsKeyNull(key);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
