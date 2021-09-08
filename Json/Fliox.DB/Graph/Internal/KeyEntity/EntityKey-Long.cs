@@ -4,7 +4,7 @@
 using System;
 using System.Reflection;
 
-namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
+namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
 {
     internal class EntityKeyLongField<T> : EntityKeyT<long, T> where T : class {
         private  readonly   FieldInfo           field;

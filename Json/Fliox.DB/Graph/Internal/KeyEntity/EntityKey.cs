@@ -8,7 +8,7 @@ using System.Reflection;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 
-namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
+namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
 {
     // -------------------------------------------- EntityId -----------------------------------------------
     internal abstract class EntityKey {

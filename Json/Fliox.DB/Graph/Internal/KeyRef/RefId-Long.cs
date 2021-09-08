@@ -3,7 +3,7 @@
 
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Graph.Internal.IdRef
+namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyRef
 {
     internal class RefKeyLong<T> : RefKey<long, T> where T : class
     {

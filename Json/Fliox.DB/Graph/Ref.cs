@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Fliox.DB.Graph.Internal;
-using Friflo.Json.Fliox.DB.Graph.Internal.IdRef;
+using Friflo.Json.Fliox.DB.Graph.Internal.KeyRef;
 using Friflo.Json.Fliox.DB.Graph.Internal.Map;
 using Friflo.Json.Fliox.Mapper;
 using static System.Diagnostics.DebuggerBrowsableState;
@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         public   override           string              ToString() => AsString();
         private                     string              AsString() => IsKeyNull() ? "null" : RefKey.KeyToId(key).AsString();
 
-        internal static readonly    RefKey<TKey, T>     RefKey = RefId.GetRefKey<TKey, T>();
+        internal static readonly    RefKey<TKey, T>     RefKey = Internal.KeyRef.RefKey.GetRefKey<TKey, T>();
         
         public Ref(TKey key) {
             this.key        = key;

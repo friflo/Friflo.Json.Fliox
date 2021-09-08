@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.DB.Graph.Internal;
-using Friflo.Json.Fliox.DB.Graph.Internal.Id;
+using Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity;
 using Friflo.Json.Fliox.DB.Graph.Internal.Map;
 using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.DB.Sync;
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         protected EntitySetBase(string name) : base(name) { }
         
         internal static void ValidateKeyType(Type keyType) {
-            var entityId            = Id.EntityKey.GetEntityKey<T>();
+            var entityId            = EntityKey.GetEntityKey<T>();
             var entityKeyType       = entityId.GetKeyType();
             var entityKeyName       = entityId.GetKeyName();
             // TAG_NULL_REF

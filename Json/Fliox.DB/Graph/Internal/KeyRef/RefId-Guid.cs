@@ -4,7 +4,7 @@
 using System;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Graph.Internal.IdRef
+namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyRef
 {
     internal class RefKeyGuid<T> : RefKey<Guid, T> where T : class
     {

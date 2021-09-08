@@ -5,15 +5,15 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Graph.Internal.IdRef
+namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyRef
 {
-    // -------------------------------------------- EntityId -----------------------------------------------
-    internal abstract class RefId {
-        private static readonly   Dictionary<Type, RefId> Ids = new Dictionary<Type, RefId>();
+    // -------------------------------------------- RefKey -----------------------------------------------
+    internal abstract class RefKey {
+        private static readonly   Dictionary<Type, RefKey> Ids = new Dictionary<Type, RefKey>();
 
         internal static RefKey<TKey, T> GetRefKey<TKey, T> () where T : class {
             var type = typeof(Ref<TKey,T>);
-            if (Ids.TryGetValue(type, out RefId id)) {
+            if (Ids.TryGetValue(type, out RefKey id)) {
                 return (RefKey<TKey, T>)id;
             }
             var result  = CreateRefKey<TKey, T>();
@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.IdRef
             return (RefKey<TKey, T>)result;
         }
 
-        private static RefId CreateRefKey<TKey, T> () where T : class {
+        private static RefKey CreateRefKey<TKey, T> () where T : class {
             var type    = typeof (T);
             var keyType = typeof (TKey);
             if (keyType == typeof(string))  return new RefKeyString<T>   ();
@@ -47,8 +47,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.IdRef
     }
     
     
-    // -------------------------------------------- EntityId<T> --------------------------------------------
-    internal abstract class RefKey<TKey, T> : RefId {
+    // ------------------------------------------ RefKey<TKey, T> ------------------------------------------
+    internal abstract class RefKey<TKey, T> : RefKey {
         internal abstract   JsonKey KeyToId (in TKey key);
         internal abstract   TKey    IdToKey (in JsonKey key);
         
