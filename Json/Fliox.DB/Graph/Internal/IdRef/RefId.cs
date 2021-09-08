@@ -16,12 +16,12 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.IdRef
             if (Ids.TryGetValue(type, out RefId id)) {
                 return (RefKey<TKey, T>)id;
             }
-            var result  = CreateEntityIdProperty<TKey, T>();
+            var result  = CreateRefKey<TKey, T>();
             Ids[type]   = result;
             return (RefKey<TKey, T>)result;
         }
 
-        private static RefId CreateEntityIdProperty<TKey, T> () where T : class {
+        private static RefId CreateRefKey<TKey, T> () where T : class {
             var type        = typeof (T);
             var keyType     = typeof (TKey);
             if (keyType == typeof(string)) {
