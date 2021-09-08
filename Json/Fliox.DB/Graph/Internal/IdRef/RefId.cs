@@ -57,11 +57,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.IdRef
     
     
     // -------------------------------------------- EntityId<T> --------------------------------------------
-    internal abstract class RefId<T> : RefId where T : class {
-        internal abstract   Type    GetKeyType();
-    }
-    
-    internal abstract class RefKey<TKey, T> : RefId<T> where T : class {
+    internal abstract class RefKey<TKey, T> : RefId {
         internal abstract   JsonKey KeyToId (in TKey key);
         internal abstract   TKey    IdToKey (in JsonKey key);
         

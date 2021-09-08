@@ -8,7 +8,6 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.IdRef
 {
     internal class RefKeyGuidNull<T> : RefKey<Guid?, T> where T : class
     {
-        internal override   Type                GetKeyType() => typeof(Guid?);
         internal override   bool                IsKeyNull (Guid? key)       => key == null;
 
         internal override Guid? IdToKey(in JsonKey id) {
