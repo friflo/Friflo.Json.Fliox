@@ -305,11 +305,8 @@ namespace Friflo.Json.Fliox.DB.Graph
         public  readonly    T                   entity;
         public  readonly    List<JsonPatch>     patches;
 
-        public  override    string              ToString() => EntityKeyMap.GetId(entity).AsString();
+        public  override    string              ToString() => EntitySetBase<T>.EntityKeyMap.GetId(entity).AsString();
         
-        private static readonly   EntityKey<T>   EntityKeyMap = EntityKey.GetEntityKey<T>();
-
-
         public ChangePatch(T entity, List<JsonPatch> patches) {
             this.entity     = entity;
             this.patches    = patches;
