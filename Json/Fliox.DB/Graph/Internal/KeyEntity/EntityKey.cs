@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
 {
-    // -------------------------------------------- EntityId -----------------------------------------------
+    // --------------------------------------------- EntityKey ---------------------------------------------
     internal abstract class EntityKey {
         private static readonly   Dictionary<Type, EntityKey> Map = new Dictionary<Type, EntityKey>();
 
@@ -82,30 +82,16 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
             var propType    = property.PropertyType;
             var idGetMethod = property.GetGetMethod(true);    
             var idSetMethod = property.GetSetMethod(true);
-            
             if (idGetMethod == null || idSetMethod == null) {
                 var msg2 = $"entity id property must have get & set: {property.Name}, type: {propType.Name}, entity: {type.Name}";
                 throw new InvalidOperationException(msg2);
             }
-            if (propType == typeof(string)) {
-                return new EntityKeyStringProperty<T>   (property, idGetMethod, idSetMethod);
-            }
-            if (propType == typeof(Guid)) {
-                return new EntityKeyGuidProperty<T>     (property, idGetMethod, idSetMethod);
-            }
-            if (propType == typeof(int)) {
-                return new EntityKeyIntProperty<T>      (property, idGetMethod, idSetMethod);
-            }
-            if (propType == typeof(long)) {
-                return new EntityKeyLongProperty<T>     (property, idGetMethod, idSetMethod);
-            }
-            if (propType == typeof(short)) {
-                return new EntityKeyShortProperty<T>    (property, idGetMethod, idSetMethod);
-            }
-            if (propType == typeof(byte)) {
-                return new EntityKeyByteProperty<T>    (property, idGetMethod, idSetMethod);
-            }
-            // add additional types here
+            if (propType == typeof(string)) return new EntityKeyStringProperty<T>   (property, idGetMethod, idSetMethod);
+            if (propType == typeof(Guid))   return new EntityKeyGuidProperty<T>     (property, idGetMethod, idSetMethod);
+            if (propType == typeof(int))    return new EntityKeyIntProperty<T>      (property, idGetMethod, idSetMethod);
+            if (propType == typeof(long))   return new EntityKeyLongProperty<T>     (property, idGetMethod, idSetMethod);
+            if (propType == typeof(short))  return new EntityKeyShortProperty<T>    (property, idGetMethod, idSetMethod);
+            if (propType == typeof(byte))   return new EntityKeyByteProperty<T>     (property, idGetMethod, idSetMethod);
             var msg = UnsupportedTypeMessage(type, property, propType);
             throw new InvalidOperationException(msg);
         }
@@ -113,26 +99,12 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
         private static EntityKey<T> CreateEntityIdField<T> (FieldInfo field)  where T : class {
             var type        = typeof (T);
             var fieldType   = field.FieldType;
-            
-            if (fieldType == typeof(string)) {
-                return new EntityKeyStringField<T>(field);
-            }
-            if (fieldType == typeof(Guid)) {
-                return new EntityKeyGuidField<T>(field);
-            }
-            if (fieldType == typeof(int)) {
-                return new EntityKeyIntField<T>(field);
-            }
-            if (fieldType == typeof(long)) {
-                return new EntityKeyLongField<T>(field);
-            }
-            if (fieldType == typeof(short)) {
-                return new EntityKeyShortField<T>(field);
-            }
-            if (fieldType == typeof(byte)) {
-                return new EntityKeyByteField<T>(field);
-            }
-            // add additional types here
+            if (fieldType == typeof(string))    return new EntityKeyStringField<T>  (field);
+            if (fieldType == typeof(Guid))      return new EntityKeyGuidField<T>    (field);
+            if (fieldType == typeof(int))       return new EntityKeyIntField<T>     (field);
+            if (fieldType == typeof(long))      return new EntityKeyLongField<T>    (field);
+            if (fieldType == typeof(short))     return new EntityKeyShortField<T>   (field);
+            if (fieldType == typeof(byte))      return new EntityKeyByteField<T>    (field);
             var msg = UnsupportedTypeMessage(type, field, fieldType);
             throw new InvalidOperationException(msg);
         }
@@ -158,9 +130,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
             return                Expression.Lambda<Action<TEntity, TField>>(assignExpr, instExp, valueExp).Compile();
         }
     }
-    
-    
-    // -------------------------------------------- EntityId<T> --------------------------------------------
+
+    // -------------------------------------------- EntityKey<T> --------------------------------------------
     internal abstract class EntityKey<T> : EntityKey where T : class {
         internal abstract   Type    GetKeyType();
         internal abstract   string  GetKeyName();
@@ -172,6 +143,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
         internal abstract   TAsType GetKeyAsType<TAsType> (T entity);    // TAG_NULL_REF
     }
     
+    // -------------------------------------------- EntityKeyT<T> --------------------------------------------
     internal abstract class EntityKeyT<TKey, T> : EntityKey<T> where T : class {
         internal abstract   TKey    GetKey  (T entity);
         internal abstract   void    SetKey  (T entity, TKey id);

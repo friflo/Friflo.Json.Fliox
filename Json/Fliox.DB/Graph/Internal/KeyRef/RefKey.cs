@@ -35,8 +35,6 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyRef
             if (keyType == typeof(short?))  return new RefKeyShortNull<T>();
             if (keyType == typeof(byte))    return new RefKeyByte<T>     ();
             if (keyType == typeof(byte?))   return new RefKeyByteNull<T> ();
-            
-            // add additional types here
             var msg = UnsupportedTypeMessage(keyType, type);
             throw new InvalidOperationException(msg);
         }
@@ -45,8 +43,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyRef
             return $"unsupported TKey Type: Ref<{keyType.Name},{type.Name}>";
         }
     }
-    
-    
+
     // ------------------------------------------ RefKey<TKey, T> ------------------------------------------
     internal abstract class RefKey<TKey, T> : RefKey {
         internal abstract   JsonKey KeyToId (in TKey key);
