@@ -11,6 +11,10 @@ public class GuidEntity {
     Guid  id;
 }
 
+public class GuidNullEntity {
+    Guid? id;
+}
+
 public class IntEntity {
     int  id;
 }
@@ -37,6 +41,7 @@ public class EntityRefs {
     [Fri.Required]
     string     id;
     Guid       guidEntity;
+    Guid?      guidNullEntity;
     int        intEntity;
     long       longEntity;
     short      shortEntity;

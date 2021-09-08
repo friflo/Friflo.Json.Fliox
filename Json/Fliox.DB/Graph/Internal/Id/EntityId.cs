@@ -93,6 +93,9 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
             if (propType == typeof(Guid)) {
                 return new EntityKeyGuidProperty<T>     (property, idGetMethod, idSetMethod);
             }
+            if (propType == typeof(Guid?)) {
+                return new EntityKeyGuidNullProperty<T> (property, idGetMethod, idSetMethod);
+            }
             if (propType == typeof(int)) {
                 return new EntityKeyIntProperty<T>      (property, idGetMethod, idSetMethod);
             }
@@ -119,6 +122,9 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
             }
             if (fieldType == typeof(Guid)) {
                 return new EntityKeyGuidField<T>(field);
+            }
+            if (fieldType == typeof(Guid?)) {
+                return new EntityKeyGuidNullField<T>(field);
             }
             if (fieldType == typeof(int)) {
                 return new EntityKeyIntField<T>(field);

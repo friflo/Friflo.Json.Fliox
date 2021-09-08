@@ -12,6 +12,12 @@ data class GuidEntity (
 )
 
 @Serializable
+data class GuidNullEntity (
+              @Serializable(with = UUIDSerializer::class)
+              val id : UUID? = null,
+)
+
+@Serializable
 data class IntEntity (
               val id : Int,
 )
@@ -41,6 +47,8 @@ data class EntityRefs (
               val id             : String,
               @Serializable(with = UUIDSerializer::class)
               val guidEntity     : UUID,
+              @Serializable(with = UUIDSerializer::class)
+              val guidNullEntity : UUID? = null,
               val intEntity      : Int,
               val longEntity     : Long,
               val shortEntity    : Short,

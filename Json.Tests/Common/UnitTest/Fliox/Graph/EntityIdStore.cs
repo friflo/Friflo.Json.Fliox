@@ -14,6 +14,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 {
     public class EntityIdStore : EntityStore {
         public  EntitySet <Guid,    GuidEntity>      guidEntities       { get; private set; }
+        public  EntitySet <Guid?,   GuidNullEntity>  guidNullEntities   { get; private set; }
         public  EntitySet <int,     IntEntity>       intEntities        { get; private set; }
         public  EntitySet <long,    LongEntity>      longEntities       { get; private set; }
         public  EntitySet <short,   ShortEntity>     shortEntities      { get; private set; }
@@ -27,6 +28,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 
     public class GuidEntity {
         public Guid id;
+    }
+    
+    public class GuidNullEntity {
+        public Guid? id;
     }
     
     public class IntEntity {
@@ -53,6 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
     public class EntityRefs {
         [Fri.Required]  public string                       id;
                         public Ref <Guid,   GuidEntity>     guidEntity;
+                        public Ref <Guid?,  GuidNullEntity> guidNullEntity;
                         public Ref <int,    IntEntity>      intEntity;
                         public Ref <long,   LongEntity>     longEntity;
                         public Ref <short,  ShortEntity>    shortEntity;

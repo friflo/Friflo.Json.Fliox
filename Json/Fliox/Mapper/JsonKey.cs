@@ -40,6 +40,12 @@ namespace Friflo.Json.Fliox.Mapper
             this.lng    = 0;
         }
         
+        public JsonKey (in Guid? guid) {
+            this.type   = JsonKeyType.String;
+            this.str    = guid.HasValue ? guid.ToString() : null;
+            this.lng    = 0;
+        }
+        
         public bool IsNull() {
             switch (type) {
                 case JsonKeyType.String:    return str == null;
@@ -86,6 +92,13 @@ namespace Friflo.Json.Fliox.Mapper
         
         public Guid AsGuid() {
             return new Guid(AsString());
+        }
+        
+        public Guid? AsGuidNullable() {
+            var asStr = AsString();
+            if (asStr != null)
+                return new Guid(asStr);
+            return null;
         }
     }
     
