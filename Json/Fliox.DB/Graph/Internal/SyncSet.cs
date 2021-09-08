@@ -304,7 +304,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 }
                 var ids = Helper.CreateHashSet(read.results.Keys.Count, JsonKey.Equality);
                 foreach (var key in read.results.Keys) {
-                    var id = Ref<TKey,T>.RefKey.KeyToId(key);
+                    var id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
                     ids.Add(id);
                 }
                 var req = new ReadEntities {
@@ -389,7 +389,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 return;
             var ids = Helper.CreateHashSet (deletes.Count, JsonKey.Equality);
             foreach (var key in deletes) {
-                var id = Ref<TKey,T>.RefKey.KeyToId(key);
+                var id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
                 ids.Add(id);
             }
             var req = new DeleteEntities {

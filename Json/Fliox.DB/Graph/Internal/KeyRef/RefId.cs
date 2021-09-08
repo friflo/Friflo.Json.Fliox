@@ -9,15 +9,15 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyRef
 {
     // -------------------------------------------- RefKey -----------------------------------------------
     internal abstract class RefKey {
-        private static readonly   Dictionary<Type, RefKey> Ids = new Dictionary<Type, RefKey>();
+        private static readonly   Dictionary<Type, RefKey> Map = new Dictionary<Type, RefKey>();
 
         internal static RefKey<TKey, T> GetRefKey<TKey, T> () where T : class {
             var type = typeof(Ref<TKey,T>);
-            if (Ids.TryGetValue(type, out RefKey id)) {
+            if (Map.TryGetValue(type, out RefKey id)) {
                 return (RefKey<TKey, T>)id;
             }
             var result  = CreateRefKey<TKey, T>();
-            Ids[type]   = result;
+            Map[type]   = result;
             return (RefKey<TKey, T>)result;
         }
 

@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
 {
     // -------------------------------------------- EntityId -----------------------------------------------
     internal abstract class EntityKey {
-        private static readonly   Dictionary<Type, EntityKey> Ids = new Dictionary<Type, EntityKey>();
+        private static readonly   Dictionary<Type, EntityKey> Map = new Dictionary<Type, EntityKey>();
 
         internal static EntityKeyT<TKey, T> GetEntityKeyT<TKey, T> () where T : class {
             return (EntityKeyT<TKey, T>)GetEntityKey<T>();
@@ -20,20 +20,20 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
         
         internal static EntityKey<T> GetEntityKey<T> () where T : class {
             var type = typeof(T);
-            if (Ids.TryGetValue(type, out EntityKey id)) {
+            if (Map.TryGetValue(type, out EntityKey id)) {
                 return (EntityKey<T>)id;
             }
             var member = FindKeyMember (type);
             var property = member as PropertyInfo;
             if (property != null) {
                 var result  = CreateEntityIdProperty<T>(property);
-                Ids[type]   = result;
+                Map[type]   = result;
                 return result;
             }
             var field = member as FieldInfo;
             if (field != null) {
                 var result  = CreateEntityIdField<T>(field);
-                Ids[type]   = result;
+                Map[type]   = result;
                 return result;
             }
             throw new InvalidOperationException($"missing entity id member. entity: {type.Name}");
@@ -183,11 +183,11 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
 
         internal override   JsonKey GetId   (T entity) {
             TKey key = GetKey(entity);
-            return Ref<TKey,T>.RefKey.KeyToId(key);
+            return Ref<TKey,T>.RefKeyMap.KeyToId(key);
         }
         
         internal override   void    SetId   (T entity, in JsonKey id) {
-            TKey key = Ref<TKey,T>.RefKey.IdToKey(id);
+            TKey key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
             SetKey(entity, key);
         }
     }

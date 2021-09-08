@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 if (writeErrors.TryGetValue(id, out EntityError _)) {
                     continue;
                 }
-                var key = Ref<TKey,T>.RefKey.IdToKey(id);
+                var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
                 var peer = set.GetOrCreatePeerByKey(key, id);
                 peer.created = false;
                 peer.updated = false;
@@ -150,7 +150,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                     // dont remove missing requested peer from EntitySet.peers to preserve info about its absence
                     continue;
                 }
-                var key = Ref<TKey,T>.RefKey.IdToKey(id);
+                var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
                 var peer = set.GetOrCreatePeerByKey(key, id);
                 read.results[key] = peer.Entity;
             }
@@ -206,7 +206,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                     entityErrorInfo.AddEntityError(error);
                     continue;
                 }
-                var key = Ref<TKey,T>.RefKey.IdToKey(id);
+                var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
                 var peer = set.GetOrCreatePeerByKey(key, id);
                 results.Add(key, peer.Entity);
             }
@@ -325,7 +325,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 keysBuf.Clear();
                 deleteTask.GetKeys(keysBuf);
                 foreach (var key in keysBuf) {
-                    var id = Ref<TKey,T>.RefKey.KeyToId(key); // todo performance
+                    var id = Ref<TKey,T>.RefKeyMap.KeyToId(key); // todo performance
                     if (errorsDelete.TryGetValue(id, out EntityError error)) {
                         entityErrorInfo.AddEntityError(error);
                     }

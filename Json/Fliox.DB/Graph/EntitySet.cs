@@ -396,13 +396,13 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         internal void DeletePeer (in JsonKey id) {
-            var key = Ref<TKey,T>.RefKey.IdToKey(id);
+            var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
             peers.Remove(key);
         }
         
         [Conditional("DEBUG")]
         private static void AssertId(TKey key, in JsonKey id) {
-            var expect = Ref<TKey,T>.RefKey.KeyToId(key);
+            var expect = Ref<TKey,T>.RefKeyMap.KeyToId(key);
             if (!id.IsEqual(expect))
                 throw new InvalidOperationException($"assigned invalid id: {id}, expect: {expect}");
         }
@@ -413,7 +413,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             }
             var set = reference.GetSet();
             if (set != null) {
-                var id = Ref<TKey,T>.RefKey.KeyToId(reference.key); // TAG_NULL_REF
+                var id = Ref<TKey,T>.RefKeyMap.KeyToId(reference.key); // TAG_NULL_REF
                 peer = set.GetPeerById(id);
                 return true;
             }
@@ -431,7 +431,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         internal override Peer<T> GetOrCreatePeerById(JsonKey id) {
-            var key = Ref<TKey,T>.RefKey.IdToKey(id);
+            var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
             return GetOrCreatePeerByKey(key, id);
         }
         
@@ -440,7 +440,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                 return peer;
             }
             if (id.IsNull()) {
-                id = Ref<TKey,T>.RefKey.KeyToId(key);
+                id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
             } else {
                 AssertId(key, id);
             }
@@ -451,7 +451,7 @@ namespace Friflo.Json.Fliox.DB.Graph
 
         /// use <see cref="GetOrCreatePeerByKey"/> is possible
         internal override Peer<T> GetPeerById(in JsonKey id) {
-            var key = Ref<TKey,T>.RefKey.IdToKey(id);
+            var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
             }
@@ -465,7 +465,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
             }
-            var id = Ref<TKey,T>.RefKey.KeyToId(key);
+            var id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
             peer = new Peer<T>(id);
             peers.Add(key, peer);
             return peer;

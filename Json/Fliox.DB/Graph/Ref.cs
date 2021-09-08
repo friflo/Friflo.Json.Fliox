@@ -78,9 +78,9 @@ namespace Friflo.Json.Fliox.DB.Graph
         [DebuggerBrowsable(Never)]  private             EntitySetBase<T>    set;    // alternatively a Peer<T> could be used 
 
         public   override           string              ToString() => AsString();
-        private                     string              AsString() => IsKeyNull() ? "null" : RefKey.KeyToId(key).AsString();
+        private                     string              AsString() => IsKeyNull() ? "null" : RefKeyMap.KeyToId(key).AsString();
 
-        internal static readonly    RefKey<TKey, T>     RefKey = Internal.KeyRef.RefKey.GetRefKey<TKey, T>();
+        internal static readonly    RefKey<TKey, T>     RefKeyMap = RefKey.GetRefKey<TKey, T>();
         
         public Ref(TKey key) {
             this.key        = key;
@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         internal Ref(Peer<T> peer, EntitySetBase<T> set) {
-            key             = RefKey.IdToKey(peer.id);      // peer.id is never null
+            key             = RefKeyMap.IdToKey(peer.id);      // peer.id is never null
             entity          = null;
             entityAssigned  = false;
             this.set        = set;
@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                         return entity;
                     throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), AsString());
                 }
-                var id = RefKey.KeyToId(key);   // TAG_NULL_REF
+                var id = RefKeyMap.KeyToId(key);   // TAG_NULL_REF
                 var peer = set.GetPeerById(id);
                 if (peer.assigned)
                     return peer.NullableEntity;
@@ -130,7 +130,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                 entity = this.entity;
                 return entityAssigned;
             }
-            var id = RefKey.KeyToId(key);   // TAG_NULL_REF
+            var id = RefKeyMap.KeyToId(key);   // TAG_NULL_REF
             var peer = set.GetPeerById(id);
             if (peer.assigned) {
                 entity = peer.NullableEntity;
@@ -150,7 +150,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsKeyNull () {
-            return RefKey.IsKeyNull(key);
+            return RefKeyMap.IsKeyNull(key);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
