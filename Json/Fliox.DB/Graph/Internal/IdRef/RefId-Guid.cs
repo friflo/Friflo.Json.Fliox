@@ -16,4 +16,17 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.IdRef
             return new JsonKey(key);
         }
     }
+    
+    internal class RefKeyGuidNull<T> : RefKey<Guid?, T> where T : class
+    {
+        internal override   bool                IsKeyNull (Guid? key)       => key == null;
+
+        internal override Guid? IdToKey(in JsonKey id) {
+            return id.AsGuidNullable();
+        }
+
+        internal override JsonKey KeyToId(in Guid? key) {
+            return new JsonKey(key);
+        }
+    }
 }
