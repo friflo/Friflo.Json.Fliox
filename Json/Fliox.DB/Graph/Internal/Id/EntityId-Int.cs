@@ -3,7 +3,6 @@
 
 using System;
 using System.Reflection;
-using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
 {
@@ -21,14 +20,6 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
             fieldSet    = GetFieldSet<T, int>(field);
         }
 
-        internal override int IdToKey(in JsonKey id) {
-            return (int)id.AsLong();
-        }
-
-        internal override JsonKey KeyToId(in int key) {
-            return new JsonKey(key);
-        }
-        
         internal override   int  GetKey (T entity) {
             return fieldGet(entity);
         }
@@ -53,14 +44,6 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
             propertySet = (Action<T, int>) Delegate.CreateDelegate (typeof(Action<T, int>), idSetMethod);
         }
 
-        internal override int IdToKey(in JsonKey id) {
-            return (int)id.AsLong();
-        }
-
-        internal override JsonKey KeyToId(in int key) {
-            return new JsonKey(key);
-        }
-        
         internal override   int  GetKey (T entity) {
             return propertyGet(entity);
         }

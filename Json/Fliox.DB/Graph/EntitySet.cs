@@ -431,7 +431,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         internal override Peer<T> GetOrCreatePeerById(JsonKey id) {
-            var key = EntityKey.IdToKey(id);
+            var key = Ref<TKey,T>.RefKey.IdToKey(id);
             return GetOrCreatePeerByKey(key, id);
         }
         

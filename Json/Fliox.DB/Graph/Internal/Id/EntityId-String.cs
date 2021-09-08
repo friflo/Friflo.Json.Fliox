@@ -3,7 +3,6 @@
 
 using System;
 using System.Reflection;
-using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
 {
@@ -15,7 +14,6 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
         internal override   Type                GetKeyType()                => typeof(string);
         internal override   string              GetKeyName()                => field.Name;
         internal override   bool                IsEntityKeyNull (T entity)  => GetKey(entity) == null;
-        internal override   bool                IsKeyNull (string key)      => key == null;
 
         internal EntityKeyStringField(FieldInfo field) {
             this.field  = field;
@@ -23,14 +21,6 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
             fieldSet    = GetFieldSet<T, string>(field);
         }
 
-        internal override string IdToKey(in JsonKey id) {
-            return id.AsString();
-        }
-
-        internal override JsonKey KeyToId(in string key) {
-            return new JsonKey(key);
-        }
-        
         internal override   string  GetKey (T entity) {
             return fieldGet(entity);
         }
@@ -49,7 +39,6 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
         internal override   Type                GetKeyType()                => typeof(string);
         internal override   string              GetKeyName()                => property.Name;
         internal override   bool                IsEntityKeyNull (T entity)  => GetKey(entity) == null;
-        internal override   bool                IsKeyNull (string key)      => key == null;
 
         internal EntityKeyStringProperty(PropertyInfo property, MethodInfo idGetMethod, MethodInfo idSetMethod) {
             this.property = property;
@@ -57,14 +46,6 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
             propertySet = (Action<T, string>) Delegate.CreateDelegate (typeof(Action<T, string>), idSetMethod);
         }
 
-        internal override string IdToKey(in JsonKey id) {
-            return id.AsString();
-        }
-
-        internal override JsonKey KeyToId(in string key) {
-            return new JsonKey(key);
-        }
-        
         internal override   string  GetKey (T entity) {
             return propertyGet(entity);
         }
