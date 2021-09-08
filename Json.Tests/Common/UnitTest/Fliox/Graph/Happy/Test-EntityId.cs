@@ -81,7 +81,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             }
             
             // --- Guid as entity id ---
-            var guidId = new Guid("87db6552-a99d-4d53-9b20-8cc797db2b8f");
+            var guidId  = new Guid("87db6552-a99d-4d53-9b20-8cc797db2b8f");
+            var guidId2 = new Guid("22222222-2222-2222-2222-222222222222");
             // Test: EntityId<T>.GetEntityId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var entity  = new GuidEntity { id = guidId};
@@ -115,15 +116,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             // --- Guid? as entity id ---
             // Test: EntityId<T>.GetEntityId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
-                var entity  = new GuidNullEntity { id = guidId };
-                var create  = store.guidNullEntities.Upsert(entity);
+                var entity  = new GuidEntity { id = guidId2 };
+                var create  = store.guidEntities.Upsert(entity);
                 
                 await store.Sync();
                 
                 IsTrue(create.Success);
                 
-                var read = store.guidNullEntities.Read();
-                var find = read.Find(guidId);
+                var read = store.guidEntities.Read();
+                var find = read.Find(guidId2);
                     
                 await store.Sync();
                 
@@ -133,13 +134,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             }
             // Test: EntityId<T>.SetEntityId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
-                var read = store.guidNullEntities.Read();
-                var find = read.Find(guidId);
+                var read = store.guidEntities.Read();
+                var find = read.Find(guidId2);
                     
                 await store.Sync();
                 
                 IsTrue(find.Success);
-                AreEqual(guidId, find.Result.id);
+                AreEqual(guidId2, find.Result.id);
             }
             
 
@@ -305,7 +306,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 
                 IsNotNull(guidRef.Result);
                 IsTrue(guidId   == guidRef.Key);
-                IsTrue(guidId   == guidNullRef.Key);
+                IsTrue(guidId2  == guidNullRef.Key);
                 IsTrue(intId    == intRef.Key);
                 IsTrue(longId   == longRef.Key);
                 IsTrue(shortId  == shortRef.Key);
@@ -325,6 +326,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 await store.Sync();
                
                 IsNotNull(guidEntities  [guidId]);
+                IsNotNull(guidEntities  [guidId2]);
                 IsNotNull(intEntities   [intId]);
                 IsNotNull(longEntities  [longId]);
                 IsNotNull(shortEntities [shortId]);

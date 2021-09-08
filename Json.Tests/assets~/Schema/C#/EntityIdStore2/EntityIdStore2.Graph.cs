@@ -11,10 +11,6 @@ public class GuidEntity {
     Guid  id;
 }
 
-public class GuidNullEntity {
-    Guid  id;
-}
-
 public class IntEntity {
     int  id;
 }

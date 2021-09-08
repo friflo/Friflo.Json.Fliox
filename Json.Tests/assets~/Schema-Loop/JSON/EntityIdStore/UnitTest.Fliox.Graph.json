@@ -7,7 +7,6 @@
             "isAbstract": true,
             "properties": {
                 "guidEntities":      { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.GuidEntity.json#/definitions/GuidEntity" } },
-                "guidNullEntities":  { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.GuidNullEntity.json#/definitions/GuidNullEntity" } },
                 "intEntities":       { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.IntEntity.json#/definitions/IntEntity" } },
                 "longEntities":      { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.LongEntity.json#/definitions/LongEntity" } },
                 "shortEntities":     { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.ShortEntity.json#/definitions/ShortEntity" } },
@@ -18,7 +17,6 @@
             },
             "required": [
                 "guidEntities",
-                "guidNullEntities",
                 "intEntities",
                 "longEntities",
                 "shortEntities",
