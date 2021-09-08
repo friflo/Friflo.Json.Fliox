@@ -169,7 +169,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
         internal abstract   JsonKey GetId   (T entity);
         internal abstract   void    SetId   (T entity, in JsonKey id);
         
-        internal abstract   object  GetKeyAsObject   (T entity);    // TAG_NULL_REF
+        internal abstract   TAsType GetKeyAsType<TAsType> (T entity);    // TAG_NULL_REF
     }
     
     internal abstract class EntityKey<TKey, T> : EntityId<T> where T : class {
@@ -181,8 +181,9 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
         
         internal virtual    bool    IsKeyNull (TKey key) => false;  // todo remove deprecated method
 
-        internal override   object  GetKeyAsObject   (T entity) {
-            return GetKey(entity);
+        internal override   TAsType GetKeyAsType<TAsType> (T entity) {
+            // todo avoid boxing by using an expression or creating a delegate, TAG_NULL_REF
+            return (TAsType)(object)GetKey(entity);
         }
 
         internal override   JsonKey GetId   (T entity) {

@@ -44,9 +44,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Map
         // ReSharper disable once UnusedParameter.Local
         public RefMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
             base(config, type, false, true)
-        {
-            var _ = Ref<TKey, T>.RefKey; // TAG_NULL_REF
-        }
+        { }
 
         public override void InitTypeMapper(TypeStore typeStore) {
             keyMapper               = (TypeMapper<TKey>)    typeStore.GetTypeMapper(typeof(TKey));
