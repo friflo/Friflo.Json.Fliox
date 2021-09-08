@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             }
             
             // --- Guid as entity id ---
-            var guidId  = new Guid("87db6552-a99d-4d53-9b20-8cc797db2b8f");
+            var guidId  = new Guid("11111111-1111-1111-1111-111111111111");
             var guidId2 = new Guid("22222222-2222-2222-2222-222222222222");
             // Test: EntityId<T>.GetEntityId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
