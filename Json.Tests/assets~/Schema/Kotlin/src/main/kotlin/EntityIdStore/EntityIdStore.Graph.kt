@@ -14,7 +14,7 @@ data class GuidEntity (
 @Serializable
 data class GuidNullEntity (
               @Serializable(with = UUIDSerializer::class)
-              val id : UUID? = null,
+              val id : UUID,
 )
 
 @Serializable

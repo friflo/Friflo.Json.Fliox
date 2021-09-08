@@ -93,9 +93,6 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
             if (propType == typeof(Guid)) {
                 return new EntityKeyGuidProperty<T>     (property, idGetMethod, idSetMethod);
             }
-            if (propType == typeof(Guid?)) {
-                return new EntityKeyGuidNullProperty<T> (property, idGetMethod, idSetMethod);
-            }
             if (propType == typeof(int)) {
                 return new EntityKeyIntProperty<T>      (property, idGetMethod, idSetMethod);
             }
@@ -122,9 +119,6 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
             }
             if (fieldType == typeof(Guid)) {
                 return new EntityKeyGuidField<T>(field);
-            }
-            if (fieldType == typeof(Guid?)) {
-                return new EntityKeyGuidNullField<T>(field);
             }
             if (fieldType == typeof(int)) {
                 return new EntityKeyIntField<T>(field);
@@ -174,6 +168,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
 
         internal abstract   JsonKey GetId   (T entity);
         internal abstract   void    SetId   (T entity, in JsonKey id);
+        
+        internal abstract   object  GetKeyAsObject   (T entity);    // TAG_NULL_REF
     }
     
     internal abstract class EntityKey<TKey, T> : EntityId<T> where T : class {
@@ -185,6 +181,9 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Id
         
         internal virtual    bool    IsKeyNull (TKey key) => false;  // todo remove deprecated method
 
+        internal override   object  GetKeyAsObject   (T entity) {
+            return GetKey(entity);
+        }
 
         internal override   JsonKey GetId   (T entity) {
             TKey key = GetKey(entity);

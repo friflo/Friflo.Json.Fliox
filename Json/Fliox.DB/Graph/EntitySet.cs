@@ -51,6 +51,10 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         internal  abstract  Peer<T>         GetPeerByEntity (T entity);
         internal  abstract  Peer<T>         CreatePeer      (T entity);
         internal  abstract  JsonKey         GetEntityId     (T entity);
+        internal  abstract  Peer<T>         GetOrCreatePeerById(JsonKey id); // TAG_NULL_REF
+        
+        internal static readonly EntityId<T> EntityId2 = EntityId.GetEntityId<T>();
+
 
         protected EntitySetBase(string name) : base(name) { }
         
@@ -59,10 +63,10 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             var entityKeyType       = entityId.GetKeyType();
             var entityKeyName       = entityId.GetKeyName();
             // TAG_NULL_REF
-            /* var underlyingKeyType   = Nullable.GetUnderlyingType(keyType);
+            var underlyingKeyType   = Nullable.GetUnderlyingType(keyType);
             if (underlyingKeyType != null) {
                 keyType = underlyingKeyType;
-            } */
+            }
             if (keyType == entityKeyType)
                 return;
             var type = typeof(T);
@@ -104,7 +108,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         /// key: <see cref="Peer{T}.entity"/>.id        Note: must be private by all means
         private  readonly   Dictionary<TKey, Peer<T>>   peers = new Dictionary<TKey, Peer<T>>();
         
-        internal static readonly   EntityKey<TKey, T>  EntityKey = EntityId.GetEntityKey<TKey, T>();
+        internal static readonly   EntityKey<TKey, T>   EntityKey = EntityId.GetEntityKey<TKey, T>();
 
         
         // ReSharper disable once NotAccessedField.Local
@@ -409,7 +413,8 @@ namespace Friflo.Json.Fliox.DB.Graph
             }
             var set = reference.GetSet();
             if (set != null) {
-                peer = set.GetPeerByKey(reference.key);
+                var id = Ref<TKey,T>.RefKey.KeyToId(reference.key); // TAG_NULL_REF
+                peer = set.GetPeerById(id);
                 return true;
             }
             var entity = reference.GetEntity();
@@ -423,6 +428,11 @@ namespace Friflo.Json.Fliox.DB.Graph
         
         internal Peer<T> GetPeerByKey(TKey key) {
             return peers[key];
+        }
+        
+        internal override Peer<T> GetOrCreatePeerById(JsonKey id) {
+            var key = EntityKey.IdToKey(id);
+            return GetOrCreatePeerByKey(key, id);
         }
         
         internal Peer<T> GetOrCreatePeerByKey(TKey key, JsonKey id) {

@@ -12,7 +12,7 @@ public class GuidEntity {
 }
 
 public class GuidNullEntity {
-    Guid? id;
+    Guid  id;
 }
 
 public class IntEntity {

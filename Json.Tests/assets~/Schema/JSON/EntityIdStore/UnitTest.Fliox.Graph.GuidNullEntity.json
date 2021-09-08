@@ -6,8 +6,11 @@
         "GuidNullEntity": {
             "type": "object",
             "properties": {
-                "id": { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/Guid" }] }
+                "id": { "$ref": "./Standard.json#/definitions/Guid" }
             },
+            "required": [
+                "id"
+            ],
             "additionalProperties": false
         }
     }

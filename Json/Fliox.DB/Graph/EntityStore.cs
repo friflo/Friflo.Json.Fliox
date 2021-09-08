@@ -304,6 +304,14 @@ namespace Friflo.Json.Fliox.DB.Graph
                 return entitySet;
             throw new InvalidOperationException($"unknown EntitySet. name: {name}");
         }
+        
+        // TAG_NULL_REF
+        internal EntitySetBase<T> GetEntitySetBase<T>() where T : class {
+            Type entityType = typeof(T);
+            if (_intern.setByType.TryGetValue(entityType, out EntitySet set))
+                return (EntitySetBase<T>)set;
+            throw new InvalidOperationException($"unknown EntitySet<{entityType.Name}>");
+        }
 
         internal EntitySet<TKey, T> GetEntitySet<TKey, T>() where T : class {
             Type entityType = typeof(T);

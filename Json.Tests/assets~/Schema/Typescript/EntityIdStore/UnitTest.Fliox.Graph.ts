@@ -22,7 +22,7 @@ export class GuidEntity {
 }
 
 export class GuidNullEntity {
-    id? : Guid | null;
+    id  : Guid;
 }
 
 export class IntEntity {

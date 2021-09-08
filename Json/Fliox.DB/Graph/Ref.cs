@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                                     public   readonly   TKey                key;
         [DebuggerBrowsable(Never)]  private  readonly   T                   entity;
         [DebuggerBrowsable(Never)]  private  readonly   bool                entityAssigned;
-        [DebuggerBrowsable(Never)]  private             EntitySet<TKey,T>   set;    // alternatively a Peer<T> could be used 
+        [DebuggerBrowsable(Never)]  private             EntitySetBase<T>    set;    // alternatively a Peer<T> could be used 
 
         public   override           string              ToString() => AsString();
         private                     string              AsString() => IsKeyNull() ? "null" : RefKey.KeyToId(key).AsString();
@@ -90,7 +90,12 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         public Ref(T entity) {
-            TKey entityId = entity != null ? EntitySet<TKey,T>.EntityKey.GetKey(entity) : default;
+            TKey entityId = default;
+            if (entity != null) {
+                // TAG_NULL_REF
+                var entityIdObject = EntitySetBase<T>.EntityId2.GetKeyAsObject(entity); // TAG_NULL_REF
+                entityId = (TKey)entityIdObject;
+            }
             key             = entityId;
             this.entity     = entity;
             entityAssigned  = true;
@@ -99,7 +104,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                 throw new ArgumentException($"constructing a Ref<>(entity != null) expect entity.key not null. Type: {typeof(T)}");
         }
         
-        internal Ref(Peer<T> peer, EntitySet<TKey, T> set) {
+        internal Ref(Peer<T> peer, EntitySetBase<T> set) {
             key             = RefKey.IdToKey(peer.id);      // peer.id is never null
             entity          = null;
             entityAssigned  = false;
@@ -113,7 +118,8 @@ namespace Friflo.Json.Fliox.DB.Graph
                         return entity;
                     throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), AsString());
                 }
-                var peer = set.GetPeerByKey(key);
+                var id = RefKey.KeyToId(key);   // TAG_NULL_REF
+                var peer = set.GetPeerById(id);
                 if (peer.assigned)
                     return peer.NullableEntity;
                 throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), AsString());
@@ -126,7 +132,8 @@ namespace Friflo.Json.Fliox.DB.Graph
                 entity = this.entity;
                 return entityAssigned;
             }
-            var peer = set.GetPeerByKey(key);
+            var id = RefKey.KeyToId(key);   // TAG_NULL_REF
+            var peer = set.GetPeerById(id);
             if (peer.assigned) {
                 entity = peer.NullableEntity;
                 return true;
@@ -136,7 +143,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         internal T                  GetEntity() { return entity; }
-        internal EntitySet<TKey, T> GetSet()    { return set; }
+        internal EntitySetBase<T>   GetSet()    { return set; }
         
         /// <summary>
         /// Returns true only in case <see cref="TKey"/> is a reference type like string and the <see cref="key"/> is null.

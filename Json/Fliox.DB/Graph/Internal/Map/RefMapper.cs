@@ -44,7 +44,9 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Map
         // ReSharper disable once UnusedParameter.Local
         public RefMapper(StoreConfig config, Type type, ConstructorInfo constructor) :
             base(config, type, false, true)
-        { }
+        {
+            var _ = Ref<TKey, T>.RefKey; // TAG_NULL_REF
+        }
 
         public override void InitTypeMapper(TypeStore typeStore) {
             keyMapper               = (TypeMapper<TKey>)    typeStore.GetTypeMapper(typeof(TKey));
@@ -53,10 +55,10 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Map
             var entityKeyType       = entityId.GetKeyType();
             var keyType             = typeof(TKey);
             // TAG_NULL_REF
-            /* var underlyingKeyType   = Nullable.GetUnderlyingType(keyType);
+            var underlyingKeyType   = Nullable.GetUnderlyingType(keyType);
             if (underlyingKeyType != null) {
                 keyType = underlyingKeyType;
-            } */
+            }
             if (keyType != entityKeyType) {
                 var entityName = typeof(T).Name;
                 var msg = $"Ref<{typeof(TKey).Name}, {entityName}> != EntitySet<{entityKeyType.Name}, {entityName}>";
@@ -117,8 +119,9 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Map
             if (success) {
                 if (reader.tracerContext != null) {
                     var store = reader.tracerContext.Store();
-                    var set = store.GetEntitySet<TKey, T>();
-                    var peer = set.GetOrCreatePeerByKey(key, new JsonKey());
+                    var set = store.GetEntitySetBase<T>();
+                    var id = Ref<TKey, T>.RefKey.KeyToId(key);  // TAG_NULL_REF
+                    var peer = set.GetOrCreatePeerById(id);
                     slot = new Ref<TKey, T> (peer, set);
                     return slot;
                 }
