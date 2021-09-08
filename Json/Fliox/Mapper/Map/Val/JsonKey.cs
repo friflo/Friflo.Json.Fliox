@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                 case JsonKeyType.String:
                     writer.WriteString(value.str);
                     break;
-                case JsonKeyType.None:
+                case JsonKeyType.Null:
                     writer.AppendNull();
                     break;
             }

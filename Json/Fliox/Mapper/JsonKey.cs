@@ -17,6 +17,12 @@ namespace Friflo.Json.Fliox.Mapper
         public static readonly JsonKeyEqualityComparer  Equality = new JsonKeyEqualityComparer();
 
         public JsonKey (string str) {
+            if (str == null) {
+                type        = JsonKeyType.Null;
+                this.str    = null;
+                lng    = 0;
+                return;
+            }
             if (long.TryParse(str, out long result)) {
                 this.type   = JsonKeyType.Long;
                 this.str    = str;
@@ -34,6 +40,12 @@ namespace Friflo.Json.Fliox.Mapper
             this.lng    = lng;
         }
         
+        public JsonKey (long? lng) {
+            this.type   = lng.HasValue ? JsonKeyType.Long : JsonKeyType.Null;
+            this.str    = null;
+            this.lng    = lng ?? 0;
+        }
+        
         public JsonKey (in Guid guid) {
             this.type   = JsonKeyType.String;
             this.str    = guid.ToString();
@@ -41,16 +53,17 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         public JsonKey (in Guid? guid) {
-            this.type   = JsonKeyType.String;
-            this.str    = guid.HasValue ? guid.ToString() : null;
-            this.lng    = 0;
+            var hasValue= guid.HasValue;
+            type        = hasValue ? JsonKeyType.String : JsonKeyType.Null;
+            str         = hasValue ? guid.ToString() : null;
+            lng         = 0;
         }
         
         public bool IsNull() {
             switch (type) {
                 case JsonKeyType.String:    return str == null;
                 case JsonKeyType.Long:      return false;
-                case JsonKeyType.None:      return true;
+                case JsonKeyType.Null:      return true;
                 default:
                     throw new InvalidOperationException($"invalid JsonKey: {ToString()}");
             }
@@ -62,7 +75,7 @@ namespace Friflo.Json.Fliox.Mapper
             switch (type) {
                 case JsonKeyType.String:    return str == other.str;
                 case JsonKeyType.Long:      return lng == other.lng;
-                case JsonKeyType.None:      return true;
+                case JsonKeyType.Null:      return true;
                 default:
                     throw new InvalidOperationException("Invalid IdType"); 
             }
@@ -80,6 +93,7 @@ namespace Friflo.Json.Fliox.Mapper
             switch (type) {
                 case JsonKeyType.String:    return str;
                 case JsonKeyType.Long:      return str ?? lng.ToString();
+                case JsonKeyType.Null:      return null;
                 default:                    return "None";
             }
         }
@@ -100,8 +114,8 @@ namespace Friflo.Json.Fliox.Mapper
     }
     
     public enum JsonKeyType {
-        None,
+        Null,
         String,
-        Long
+        Long,
     }
 }

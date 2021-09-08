@@ -22,29 +22,20 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.IdRef
         }
 
         private static RefId CreateRefKey<TKey, T> () where T : class {
-            var type        = typeof (T);
-            var keyType     = typeof (TKey);
-            if (keyType == typeof(string)) {
-               return new RefKeyString<T>   ();
-            }
-            if (keyType == typeof(Guid)) {
-                return new RefKeyGuid<T>     ();
-            }
-            if (keyType == typeof(Guid?)) {
-                return new RefKeyGuidNull<T> ();
-            }
-            if (keyType == typeof(int)) {
-                return new RefKeyInt<T>      ();
-            }
-            if (keyType == typeof(long)) {
-                return new RefKeyLong<T>     ();
-            }
-            if (keyType == typeof(short)) {
-                return new RefKeyShort<T>    ();
-            }
-            if (keyType == typeof(byte)) {
-                return new RefKeyByte<T>    ();
-            }
+            var type    = typeof (T);
+            var keyType = typeof (TKey);
+            if (keyType == typeof(string))  return new RefKeyString<T>   ();
+            if (keyType == typeof(Guid))    return new RefKeyGuid<T>     ();
+            if (keyType == typeof(Guid?))   return new RefKeyGuidNull<T> ();
+            if (keyType == typeof(int))     return new RefKeyInt<T>      ();
+            if (keyType == typeof(int?))    return new RefKeyIntNull<T>  ();
+            if (keyType == typeof(long))    return new RefKeyLong<T>     ();
+            if (keyType == typeof(long?))   return new RefKeyLongNull<T> ();
+            if (keyType == typeof(short))   return new RefKeyShort<T>    ();
+            if (keyType == typeof(short?))  return new RefKeyShortNull<T>();
+            if (keyType == typeof(byte))    return new RefKeyByte<T>     ();
+            if (keyType == typeof(byte?))   return new RefKeyByteNull<T> ();
+            
             // add additional types here
             var msg = UnsupportedTypeMessage(keyType, type);
             throw new InvalidOperationException(msg);

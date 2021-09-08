@@ -15,4 +15,15 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.IdRef
             return new JsonKey(key);
         }
     }
+    
+    internal class RefKeyByteNull<T> : RefKey<byte?, T> where T : class
+    {
+        internal override byte? IdToKey(in JsonKey id) {
+            return (byte)id.AsLong();
+        }
+
+        internal override JsonKey KeyToId(in byte? key) {
+            return new JsonKey(key);
+        }
+    }
 }
