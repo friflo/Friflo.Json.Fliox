@@ -20,33 +20,33 @@ using static NUnit.Framework.Assert;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
 {
-    public class TestEntityId
+    public class TestEntityKey
     {
-        [UnityTest] public IEnumerator EntityIdCoroutine() { yield return RunAsync.Await(AssertEntityId(), i => Logger.Info("--- " + i)); }
-        [Test]      public async Task  EntityIdAsync() { await AssertEntityId(); }
+        [UnityTest] public IEnumerator EntityKeyCoroutine() { yield return RunAsync.Await(AssertEntityKey(), i => Logger.Info("--- " + i)); }
+        [Test]      public async Task  EntityKeyAsync() { await AssertEntityKey(); }
         
-        private static async Task AssertEntityId() {
+        private static async Task AssertEntityKey() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
             using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/Graph/EntityIdStore")) {
-                await AssertEntityIdTests (database, typeStore);
+                await AssertEntityKeyTests (database, typeStore);
             }
         }
         
-        [UnityTest] public IEnumerator EntityIdCoroutineLoopback() { yield return RunAsync.Await(AssertEntityIdLoopback(), i => Logger.Info("--- " + i)); }
-        [Test]      public async Task  EntityIdAsyncLoopback() { await AssertEntityIdLoopback(); }
+        [UnityTest] public IEnumerator EntityKeyCoroutineLoopback() { yield return RunAsync.Await(AssertEntityKeyLoopback(), i => Logger.Info("--- " + i)); }
+        [Test]      public async Task  EntityKeyAsyncLoopback() { await AssertEntityKeyLoopback(); }
         
-        private static async Task AssertEntityIdLoopback() {
+        private static async Task AssertEntityKeyLoopback() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/Graph/EntityIdStore"))
             using (var database     = new LoopbackDatabase(fileDatabase))
             {
-                await AssertEntityIdTests (database, typeStore);
+                await AssertEntityKeyTests (database, typeStore);
             }
         }
 
-        private static async Task AssertEntityIdTests(EntityDatabase database, TypeStore typeStore) {
+        private static async Task AssertEntityKeyTests(EntityDatabase database, TypeStore typeStore) {
             var entityRef = new EntityRefs { id = "entity-ref-1" };
             
             // --- int as entity id ---
@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             const int intId2 = 1222222222;
             var intEntity  = new IntEntity { id = intId };
             var intEntity2 = new IntEntity { id = intId2 };
-            // Test: EntityId<T>.GetEntityId()
+            // Test: EntityKeyT<TKey,T>.GetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var create  = store.intEntities.Upsert(intEntity);
                 var create2 = store.intEntities.Upsert(intEntity2);
@@ -75,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 entityRef.intNullEntity     = default;
                 entityRef.intNullEntity2    = intEntity2;
             }
-            // Test: EntityId<T>.SetEntityId()
+            // Test: EntityKeyT<TKey,T>.SetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var read = store.intEntities.Read();
                 var find = read.Find(intId);
@@ -89,7 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             // --- Guid as entity id ---
             var guidId  = new Guid("11111111-1111-1111-1111-111111111111");
             var guidId2 = new Guid("22222222-2222-2222-2222-222222222222");
-            // Test: EntityId<T>.GetEntityId()
+            // Test: EntityKeyT<TKey,T>.GetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var entity  = new GuidEntity { id = guidId};
                 var create  = store.guidEntities.Upsert(entity);
@@ -108,7 +108,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 entityRef.guidEntity = entity;
                 entityRef.intEntities = new List<Ref<int, IntEntity>> { intEntity };
             }
-            // Test: EntityId<T>.SetEntityId()
+            // Test: EntityKeyT<TKey,T>.SetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var read = store.guidEntities.Read();
                 var find = read.Find(guidId);
@@ -120,7 +120,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             }
             
             // --- Guid? as entity id ---
-            // Test: EntityId<T>.GetEntityId()
+            // Test: EntityKeyT<TKey,T>.GetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var entity  = new GuidEntity { id = guidId2 };
                 var create  = store.guidEntities.Upsert(entity);
@@ -138,7 +138,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 IsTrue(entity == find.Result);
                 entityRef.guidNullEntity = entity;
             }
-            // Test: EntityId<T>.SetEntityId()
+            // Test: EntityKeyT<TKey,T>.SetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var read = store.guidEntities.Read();
                 var find = read.Find(guidId2);
@@ -153,7 +153,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             
             // --- long as entity id ---
             const long longId = 1234567890123456789;
-            // Test: EntityId<T>.GetEntityId()
+            // Test: EntityKeyT<TKey,T>.GetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var entity  = new LongEntity { Id = longId};
                 var create  = store.longEntities.Upsert(entity);
@@ -171,7 +171,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 IsTrue(entity == find.Result);
                 entityRef.longEntity = entity;
             }
-            // Test: EntityId<T>.SetEntityId()
+            // Test: EntityKeyT<TKey,T>.SetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var read = store.longEntities.Read();
                 var find = read.Find(longId);
@@ -184,7 +184,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             
             // --- short as entity id ---
             const short shortId = 12345;
-            // Test: EntityId<T>.GetEntityId()
+            // Test: EntityKeyT<TKey,T>.GetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var entity  = new ShortEntity { id = shortId };
                 var create  = store.shortEntities.Upsert(entity);
@@ -202,7 +202,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 IsTrue(entity == find.Result);
                 entityRef.shortEntity = entity;
             }
-            // Test: EntityId<T>.SetEntityId()
+            // Test: EntityKeyT<TKey,T>.SetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var read = store.shortEntities.Read();
                 var find = read.Find(shortId);
@@ -215,7 +215,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             
             // --- byte as entity id ---
             const byte byteId = 123;
-            // Test: EntityId<T>.GetEntityId()
+            // Test: EntityKeyT<TKey,T>.GetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var entity  = new ByteEntity { id = byteId };
                 var create  = store.byteEntities.Upsert(entity);
@@ -233,7 +233,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 IsTrue(entity == find.Result);
                 entityRef.byteEntity = entity;
             }
-            // Test: EntityId<T>.SetEntityId()
+            // Test: EntityKeyT<TKey,T>.SetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var read = store.byteEntities.Read();
                 var find = read.Find(byteId);
@@ -246,7 +246,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             
             // --- string as custom entity id ---
             const string stringId = "abc";
-            // Test: EntityId<T>.GetEntityId()
+            // Test: EntityKeyT<TKey,T>.GetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var entity  = new CustomIdEntity { customId = stringId};
                 var create  = store.customIdEntities.Upsert(entity);
@@ -264,7 +264,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 IsTrue(entity == find.Result);
                 entityRef.customIdEntity = entity;
             }
-            // Test: EntityId<T>.SetEntityId()
+            // Test: EntityKeyT<TKey,T>.SetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var read = store.customIdEntities.Read();
                 var find = read.Find(stringId);
@@ -344,7 +344,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             
             // --- string as custom entity id ---
             const string stringId2 = "xyz";
-            // Test: EntityId<T>.GetEntityId()
+            // Test: EntityKeyT<TKey,T>.GetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var entity  = new CustomIdEntity2 { customId2 = stringId2};
                 var create  = store.customIdEntities2.Upsert(entity);
@@ -361,7 +361,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
             }
-            // Test: EntityId<T>.SetEntityId()
+            // Test: EntityKeyT<TKey,T>.SetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var read = store.customIdEntities2.Read();
                 var find = read.Find(stringId2);
