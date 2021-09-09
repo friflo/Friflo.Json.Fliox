@@ -243,8 +243,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             throw new InvalidOperationException($"no type given for field: {itemType.name}");
         }
         
-        /// Not used - was used for nullable array elements.
-        /// Supporting nullable (value type) array elements seems uh because:
+        /// Supporting nullable (value type) array elements seems uh - however it is supported. Reasons against:
         /// <list type="bullet">
         ///   <item>Application now have to check for null when accessing these types of arrays -> uh</item>
         ///   <item>Generated languages have typically no support for custom nullable values types.
