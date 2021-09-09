@@ -11,5 +11,9 @@
     "customIdEntity": "abc",
     "intEntities": [
         1234567890
+    ],
+    "intNullEntities": [
+        1234567890,
+        null
     ]
 }

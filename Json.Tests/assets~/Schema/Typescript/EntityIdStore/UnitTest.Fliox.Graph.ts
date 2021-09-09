@@ -41,17 +41,18 @@ export class CustomIdEntity {
 }
 
 export class EntityRefs {
-    id              : string;
-    guidEntity      : Guid;
-    guidNullEntity? : Guid | null;
-    intEntity       : int32;
-    intNullEntity?  : int32 | null;
-    intNullEntity2? : int32 | null;
-    longEntity      : int64;
-    shortEntity     : int16;
-    byteEntity      : uint8;
-    customIdEntity? : string | null;
-    intEntities?    : int32[] | null;
+    id               : string;
+    guidEntity       : Guid;
+    guidNullEntity?  : Guid | null;
+    intEntity        : int32;
+    intNullEntity?   : int32 | null;
+    intNullEntity2?  : int32 | null;
+    longEntity       : int64;
+    shortEntity      : int16;
+    byteEntity       : uint8;
+    customIdEntity?  : string | null;
+    intEntities?     : int32[] | null;
+    intNullEntities? : (int32 | null)[] | null;
 }
 
 export class CustomIdEntity2 {

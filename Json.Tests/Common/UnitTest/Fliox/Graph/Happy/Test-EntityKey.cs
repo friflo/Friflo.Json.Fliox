@@ -105,8 +105,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
-                entityRef.guidEntity = entity;
-                entityRef.intEntities = new List<Ref<int, IntEntity>> { intEntity };
+                entityRef.guidEntity        = entity;
+                entityRef.intEntities       = new List<Ref<int, IntEntity>> { intEntity };
+                entityRef.intNullEntities   = new List<Ref<int?, IntEntity>> { intEntity, default };
             }
             // Test: EntityKeyT<TKey,T>.SetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
@@ -296,7 +297,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 var shortRef     = read.ReadRef        (er => er.shortEntity);
                 var byteRef      = read.ReadRef        (er => er.byteEntity);
                 var customIdRef  = read.ReadRef        (er => er.customIdEntity);
-                var guidRefs     = read.ReadArrayRefs  (er => er.intEntities);
+                var intRefs      = read.ReadArrayRefs  (er => er.intEntities);
+                var intNullRefs  = read.ReadArrayRefs  (er => er.intNullEntities);
 
                 await store.Sync();                   
                
@@ -313,17 +315,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 IsNotNull(result.intEntities[0].Entity);
                 
                 IsNotNull(guidRef.Result);
-                IsTrue(guidId   == guidRef.Key);
-                IsTrue(guidId2  == guidNullRef.Key);
-                IsTrue(intId    == intRef.Key);
-                IsNull(            intNullRef.Result);
-                IsTrue(intId2   == intNullRef2.Key);
-                IsTrue(longId   == longRef.Key);
-                IsTrue(shortId  == shortRef.Key);
-                IsTrue(byteId   == byteRef.Key);
-                IsTrue(stringId == customIdRef.Key);
-                IsNotNull(guidRefs.Results[intId]);
-                IsNotNull(guidRefs[intId]);
+                IsTrue(guidId   ==  guidRef.Key);
+                IsTrue(guidId2  ==  guidNullRef.Key);
+                IsTrue(intId    ==  intRef.Key);
+                IsNull(             intNullRef.Result);
+                IsTrue(intId2   ==  intNullRef2.Key);
+                IsTrue(longId   ==  longRef.Key);
+                IsTrue(shortId  ==  shortRef.Key);
+                IsTrue(byteId   ==  byteRef.Key);
+                IsTrue(stringId ==  customIdRef.Key);
+                
+                AreEqual (1,        intRefs.Results.Count);
+                IsNotNull(          intRefs.Results[intId]);
+                IsNotNull(          intRefs[intId]);
+                
+                AreEqual (1,        intNullRefs.Results.Count);
+                IsNotNull(          intNullRefs.Results[intId]);
+                IsNotNull(          intNullRefs[intId]);
             }
             
             // ensure QueryTask<> results enables type-safe key access

@@ -38,19 +38,20 @@ data class CustomIdEntity (
 
 @Serializable
 data class EntityRefs (
-              val id             : String,
+              val id              : String,
               @Serializable(with = UUIDSerializer::class)
-              val guidEntity     : UUID,
+              val guidEntity      : UUID,
               @Serializable(with = UUIDSerializer::class)
-              val guidNullEntity : UUID? = null,
-              val intEntity      : Int,
-              val intNullEntity  : Int? = null,
-              val intNullEntity2 : Int? = null,
-              val longEntity     : Long,
-              val shortEntity    : Short,
-              val byteEntity     : Byte,
-              val customIdEntity : String? = null,
-              val intEntities    : List<Int>? = null,
+              val guidNullEntity  : UUID? = null,
+              val intEntity       : Int,
+              val intNullEntity   : Int? = null,
+              val intNullEntity2  : Int? = null,
+              val longEntity      : Long,
+              val shortEntity     : Short,
+              val byteEntity      : Byte,
+              val customIdEntity  : String? = null,
+              val intEntities     : List<Int>? = null,
+              val intNullEntities : List<Int?>? = null,
 )
 
 @Serializable
