@@ -133,9 +133,11 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         internal override void SetResult(EntitySet set, HashSet<JsonKey> ids) {
-            var entitySet = (EntitySetBase<T>) set;
+            if (ids.Count == 0)
+                return;
             if (ids.Count != 1)
                 throw new InvalidOperationException($"Expect ids result set with one element. got: {ids.Count}, task: {this}");
+            var entitySet = (EntitySetBase<T>) set;
             var id = ids.First();
             var peer = entitySet.GetPeerById(id);
             if (peer.error == null) {

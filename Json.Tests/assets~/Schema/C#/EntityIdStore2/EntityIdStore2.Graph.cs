@@ -39,6 +39,7 @@ public class EntityRefs {
     Guid       guidEntity;
     Guid?      guidNullEntity;
     int        intEntity;
+    int?       intNullEntity;
     long       longEntity;
     short      shortEntity;
     byte       byteEntity;

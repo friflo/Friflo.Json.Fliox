@@ -10,6 +10,7 @@
                 "guidEntity":     { "$ref": "./Standard.json#/definitions/Guid" },
                 "guidNullEntity": { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/Guid" }] },
                 "intEntity":      { "$ref": "./Standard.json#/definitions/int32" },
+                "intNullEntity":  { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "longEntity":     { "$ref": "./Standard.json#/definitions/int64" },
                 "shortEntity":    { "$ref": "./Standard.json#/definitions/int16" },
                 "byteEntity":     { "$ref": "./Standard.json#/definitions/uint8" },

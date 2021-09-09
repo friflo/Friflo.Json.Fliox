@@ -45,6 +45,7 @@ export class EntityRefs {
     guidEntity      : Guid;
     guidNullEntity? : Guid | null;
     intEntity       : int32;
+    intNullEntity?  : int32 | null;
     longEntity      : int64;
     shortEntity     : int16;
     byteEntity      : uint8;

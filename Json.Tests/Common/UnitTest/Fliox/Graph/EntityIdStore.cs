@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                         public      Ref <Guid,   GuidEntity>     guidEntity;
                         public      Ref <Guid?,  GuidEntity>     guidNullEntity;
                         public      Ref <int,    IntEntity>      intEntity;
-                        // public      Ref <int?,   IntEntity>      intNullEntity;
+                        public      Ref <int?,   IntEntity>      intNullEntity;
                         public      Ref <long,   LongEntity>     longEntity;
                         public      Ref <short,  ShortEntity>    shortEntity;
                         public      Ref <byte,   ByteEntity>     byteEntity;
