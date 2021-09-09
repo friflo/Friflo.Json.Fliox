@@ -152,7 +152,7 @@ namespace Friflo.Json.Fliox.Schema
                 sb.AppendLine();
                 sb.AppendLine("            ],");
             }
-            var additionalProperties = unionType != null ? "true" : "false"; 
+            var additionalProperties = unionType != null ? "true" : "false";
             sb.AppendLine($"            \"additionalProperties\": {additionalProperties}");
             sb.Append     ("        }");
             return new EmitType(type, sb);
@@ -162,6 +162,9 @@ namespace Friflo.Json.Fliox.Schema
             var type = field.type;
             if (field.isArray) {
                 var elementTypeName = GetTypeName(type, context, true);
+                if (field.isNullableElement) {
+                    // elementTypeName = $"\"oneOf\": [{{\"type\": \"null\"}}, {elementTypeName}]";
+                }
                 return $"\"type\": {Opt(required, "array")}, \"items\": {{ {elementTypeName} }}";
             }
             if (field.isDictionary) {

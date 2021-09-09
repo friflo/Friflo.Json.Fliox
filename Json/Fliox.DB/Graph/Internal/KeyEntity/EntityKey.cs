@@ -143,7 +143,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
         internal abstract   TAsType GetKeyAsType<TAsType> (T entity);    // TAG_NULL_REF
     }
     
-    // -------------------------------------------- EntityKeyT<T> --------------------------------------------
+    // ----------------------------------------- EntityKeyT<TKey, T> -----------------------------------------
     internal abstract class EntityKeyT<TKey, T> : EntityKey<T> where T : class {
         internal abstract   TKey    GetKey  (T entity);
         internal abstract   void    SetKey  (T entity, TKey id);

@@ -168,7 +168,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
             }
             var isKey    = field.isKey.HasValue && field.isKey.Value;
-            var fieldDef = new FieldDef (fieldName, required, isKey, fieldType, isArray, isDictionary, typeDef);
+            var fieldDef = new FieldDef (fieldName, required, isKey, fieldType, isArray, isDictionary, false, typeDef);
             typeDef.fields.Add(fieldDef);
         }
         

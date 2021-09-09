@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public  override    string          DataTypeName() { return "Guid"; }
 
         public GuidMapper(StoreConfig config, Type type) :
-            base (config, type, false, false)
+            base (config, type, false, true)
         {
         }
 
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override string DataTypeName() { return "Guid?"; }
         
         public NullableGuidMapper(StoreConfig config, Type type) :
-            base (config, type, true, false) {
+            base (config, type, true, true) {
         }
 
         public override void Write(ref Writer writer, Guid? value) {

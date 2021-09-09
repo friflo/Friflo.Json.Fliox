@@ -143,6 +143,7 @@ namespace Friflo.Json.Fliox.Schema
             var type = field.type;
             if (field.isArray) {
                 var elementTypeName = GetTypeName(type, context);
+                elementTypeName = field.isNullableElement ? $"({elementTypeName} | null)" : elementTypeName;
                 return $"{elementTypeName}[]";
             }
             if (field.isDictionary) {

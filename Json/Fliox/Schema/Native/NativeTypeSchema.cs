@@ -76,15 +76,22 @@ namespace Friflo.Json.Fliox.Schema.Native
                         var isArray         = fieldMapper.IsArray;
                         var isDictionary    = fieldMapper.IsDictionary;
                         NativeTypeDef type;
+                        bool isNullableElement = false;
                         if (isArray || isDictionary) {
                             var elementMapper = fieldMapper.GetElementMapper().GetUnderlyingMapper();
-                            type = nativeTypes[elementMapper.type];
+                            if(elementMapper.isValueType && elementMapper.isNullable) {
+                                IsNullableMapper(elementMapper, out var nonNullableElementType);
+                                type = nativeTypes[nonNullableElementType];
+                                isNullableElement = true;
+                            } else {
+                                type = nativeTypes[elementMapper.type];
+                            }
                         } else {
                             type            = nativeTypes[nonNullableType];
                         }
                         var required = propField.required || !isNullable;
                         var isKey    = propField.isKey;
-                        var fieldDef = new FieldDef (propField.jsonName, required, isKey, type, isArray, isDictionary, typeDef);
+                        var fieldDef = new FieldDef (propField.jsonName, required, isKey, type, isArray, isDictionary, isNullableElement, typeDef);
                         typeDef.fields.Add(fieldDef);
                     }
                 }
