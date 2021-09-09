@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             bool    isDictionary    = false;
             bool    required        = typeDef.type.required?.Contains(fieldName) ?? false;
 
-            FieldType   items       = GetItemsFieldType(field.items, out bool isNullableElement, context);
+            FieldType   items       = field.items; // GetItemsFieldType(field.items, out bool isNullableElement, context);
             string      jsonType    = field.type.json;
             FieldType   addProps    = field.additionalProperties;
 
@@ -169,7 +169,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
             }
             var isKey    = field.isKey.HasValue && field.isKey.Value;
-            var fieldDef = new FieldDef (fieldName, required, isKey, fieldType, isArray, isDictionary, isNullableElement, typeDef);
+            var fieldDef = new FieldDef (fieldName, required, isKey, fieldType, isArray, isDictionary, false, typeDef);
             typeDef.fields.Add(fieldDef);
         }
         
@@ -237,12 +237,13 @@ namespace Friflo.Json.Fliox.Schema.JSON
             var jsonType =  itemType.type.json;
             if (jsonType != null) {
                 bool isArray = true;
-                var itemTypeItems = GetItemsFieldType(itemType.items, out _, context);
+                var itemTypeItems = itemType.items; // GetItemsFieldType(itemType.items, out _, context);
                 return FindTypeFromJson(jsonType, itemTypeItems, context, ref isArray);
             }
             throw new InvalidOperationException($"no type given for field: {itemType.name}");
         }
         
+        // not used - was used for nullable array elements
         private static FieldType GetItemsFieldType (JsonValue itemTypeJson, out bool isNullableElement, in JsonTypeContext context) {
             var json = itemTypeJson.json;
             isNullableElement = false;

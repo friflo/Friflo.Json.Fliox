@@ -55,12 +55,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                         public      Ref <Guid,   GuidEntity>     guidEntity;
                         public      Ref <Guid?,  GuidEntity>     guidNullEntity;
                         public      Ref <int,    IntEntity>      intEntity;
-                        public List<Ref <int?,   IntEntity>>     intNullEntities; // using nullable references in an array is uh
+                        // public      Ref <int?,   IntEntity>      intNullEntity;
                         public      Ref <long,   LongEntity>     longEntity;
                         public      Ref <short,  ShortEntity>    shortEntity;
                         public      Ref <byte,   ByteEntity>     byteEntity;
                         public      Ref <string, CustomIdEntity> customIdEntity;
                         public List<Ref <int,    IntEntity>>     intEntities;
+                    //  public List<Ref <int?,   IntEntity>>     intNullEntities;  // nullable array elements are not supported by intention
     }
 
     public class CustomIdEntity2 {

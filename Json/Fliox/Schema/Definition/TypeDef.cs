@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public  readonly    bool            isArray;
         /// if <see cref="isDictionary"/> is true <see cref="type"/> contains the value type.
         public  readonly    bool            isDictionary;
-        public  readonly    bool            isNullableElement;
+        private readonly    bool            isNullableElement;
         public  readonly    TypeDef         ownerType;
         public              bool            IsDerivedField { get; private set; }
 

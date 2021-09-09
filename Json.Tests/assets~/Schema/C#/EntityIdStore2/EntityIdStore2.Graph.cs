@@ -35,16 +35,15 @@ public class CustomIdEntity {
 
 public class EntityRefs {
     [Fri.Required]
-    string      id;
-    Guid        guidEntity;
-    Guid?       guidNullEntity;
-    int         intEntity;
-    List<int?>  intNullEntities;
-    long        longEntity;
-    short       shortEntity;
-    byte        byteEntity;
-    string      customIdEntity;
-    List<int>   intEntities;
+    string     id;
+    Guid       guidEntity;
+    Guid?      guidNullEntity;
+    int        intEntity;
+    long       longEntity;
+    short      shortEntity;
+    byte       byteEntity;
+    string     customIdEntity;
+    List<int>  intEntities;
 }
 
 public class CustomIdEntity2 {
