@@ -243,7 +243,14 @@ namespace Friflo.Json.Fliox.Schema.JSON
             throw new InvalidOperationException($"no type given for field: {itemType.name}");
         }
         
-        // not used - was used for nullable array elements
+        /// Not used - was used for nullable array elements.
+        /// Supporting nullable (value type) array elements seems uh because:
+        /// <list type="bullet">
+        ///   <item>Application now have to check for null when accessing these types of arrays -> uh</item>
+        ///   <item>Generated languages have typically no support for custom nullable values types.
+        ///         Common element types like int, byte, ... are typically supported - custom types not.</item>
+        /// </list>
+        // ReSharper disable once UnusedMember.Local
         private static FieldType GetItemsFieldType (JsonValue itemTypeJson, out bool isNullableElement, in JsonTypeContext context) {
             var json = itemTypeJson.json;
             isNullableElement = false;
