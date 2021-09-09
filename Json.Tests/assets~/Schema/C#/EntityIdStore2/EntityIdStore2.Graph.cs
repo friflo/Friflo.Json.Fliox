@@ -42,8 +42,11 @@ public class EntityRefs {
     int?        intNullEntity;
     int?        intNullEntity2;
     long        longEntity;
+    long?       longNullEntity;
     short       shortEntity;
+    short?      shortNullEntity;
     byte        byteEntity;
+    byte?       byteNullEntity;
     string      customIdEntity;
     List<int>   intEntities;
     List<int?>  intNullEntities;

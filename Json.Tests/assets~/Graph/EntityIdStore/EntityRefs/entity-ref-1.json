@@ -6,8 +6,11 @@
     "intNullEntity": null,
     "intNullEntity2": 1222222222,
     "longEntity": 1234567890123456789,
+    "longNullEntity": null,
     "shortEntity": 12345,
+    "shortNullEntity": null,
     "byteEntity": 123,
+    "byteNullEntity": null,
     "customIdEntity": "abc",
     "intEntities": [
         1234567890

@@ -170,7 +170,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
-                entityRef.longEntity = entity;
+                entityRef.longEntity        = entity;
+                entityRef.longNullEntity    = default;
             }
             // Test: EntityKeyT<TKey,T>.SetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
@@ -201,7 +202,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
-                entityRef.shortEntity = entity;
+                entityRef.shortEntity       = entity;
+                entityRef.shortNullEntity   = default;
             }
             // Test: EntityKeyT<TKey,T>.SetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
@@ -232,7 +234,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
-                entityRef.byteEntity = entity;
+                entityRef.byteEntity        = entity;
+                entityRef.byteNullEntity    = default;
             }
             // Test: EntityKeyT<TKey,T>.SetId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
@@ -290,13 +293,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 var find = read.Find(entityRef.id);
                 var guidRef      = read.ReadRef        (er => er.guidEntity);
                 var guidNullRef  = read.ReadRef        (er => er.guidNullEntity);
+                
                 var intRef       = read.ReadRef        (er => er.intEntity);
                 var intNullRef   = read.ReadRef        (er => er.intNullEntity);
                 var intNullRef2  = read.ReadRef        (er => er.intNullEntity2);
+                
                 var longRef      = read.ReadRef        (er => er.longEntity);
+                var longNullRef  = read.ReadRef        (er => er.longNullEntity);
+                
                 var shortRef     = read.ReadRef        (er => er.shortEntity);
+                var shortNullRef = read.ReadRef        (er => er.shortNullEntity);
+                
                 var byteRef      = read.ReadRef        (er => er.byteEntity);
+                var byteNullRef  = read.ReadRef        (er => er.byteNullEntity);
+                
                 var customIdRef  = read.ReadRef        (er => er.customIdEntity);
+                
                 var intRefs      = read.ReadArrayRefs  (er => er.intEntities);
                 var intNullRefs  = read.ReadArrayRefs  (er => er.intNullEntities);
 
@@ -305,24 +317,41 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 IsTrue(find.Success);
                 var result = find.Result;
                 AreEqual(entityRef.id, result.id);
-                IsNotNull(result.guidEntity);
-                IsNotNull(result.guidNullEntity);
-                IsNotNull(result.intEntity);
-                IsNotNull(result.longEntity);
-                IsNotNull(result.shortEntity);
-                IsNotNull(result.byteEntity);
-                IsNotNull(result.customIdEntity);
+                IsNotNull(result.guidEntity.Entity);
+                IsNotNull(result.guidNullEntity.Entity);
+                
+                IsNotNull(result.intEntity.Entity);
+                IsNotNull(result.intNullEntity2.Entity);
+                
+                IsNotNull(result.longEntity.Entity);
+                // IsNull(result.longNullEntity.Entity); // todo
+                
+                IsNotNull(result.shortEntity.Entity);
+                // IsNull(result.shortNullEntity.Entity); // todo
+                
+                IsNotNull(result.byteEntity.Entity);
+                // IsNull(result.byteNullEntity.Entity); // todo
+                
+                IsNotNull(result.customIdEntity.Entity);
                 IsNotNull(result.intEntities[0].Entity);
                 
                 IsNotNull(guidRef.Result);
                 IsTrue(guidId   ==  guidRef.Key);
                 IsTrue(guidId2  ==  guidNullRef.Key);
+                
                 IsTrue(intId    ==  intRef.Key);
                 IsNull(             intNullRef.Result);
                 IsTrue(intId2   ==  intNullRef2.Key);
+                
                 IsTrue(longId   ==  longRef.Key);
+                IsNull(             longNullRef.Result);
+                
                 IsTrue(shortId  ==  shortRef.Key);
+                IsNull(             shortNullRef.Result);
+                
                 IsTrue(byteId   ==  byteRef.Key);
+                IsNull(             byteNullRef.Result);
+                
                 IsTrue(stringId ==  customIdRef.Key);
                 
                 AreEqual (1,        intRefs.Results.Count);

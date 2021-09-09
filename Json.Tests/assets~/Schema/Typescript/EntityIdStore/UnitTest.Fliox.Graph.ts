@@ -48,8 +48,11 @@ export class EntityRefs {
     intNullEntity?   : int32 | null;
     intNullEntity2?  : int32 | null;
     longEntity       : int64;
+    longNullEntity?  : int64 | null;
     shortEntity      : int16;
+    shortNullEntity? : int16 | null;
     byteEntity       : uint8;
+    byteNullEntity?  : uint8 | null;
     customIdEntity?  : string | null;
     intEntities?     : int32[] | null;
     intNullEntities? : (int32 | null)[] | null;
