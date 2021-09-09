@@ -145,8 +145,8 @@ namespace Friflo.Json.Fliox.Schema
         
         private string GetElementType(FieldDef field, TypeContext context) {
             var elementTypeName = GetTypeName(field.type, context);
-            //if (field.isNullableElement)
-            //     return $"{elementTypeName}?";
+            if (field.isNullableElement)
+                return $"{elementTypeName}?";
             return elementTypeName;
         }
         

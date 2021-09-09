@@ -98,6 +98,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 
         [Fri.Required]  public  List<int>       intArray = new List<int>();
                         public  List<int>       intArrayNull;
+                        public  List<int?>      intNullArray;
         
                         public  JsonValue       jsonValue;
         

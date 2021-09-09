@@ -30,6 +30,7 @@
                 "pocStructNull":    { "oneOf": [{"type": "null"}, { "$ref": "./UnitTest.Fliox.Graph.json#/definitions/PocStruct" }] },
                 "intArray":         { "type": "array", "items": { "$ref": "./Standard.json#/definitions/int32" } },
                 "intArrayNull":     { "type": ["array", "null"], "items": { "$ref": "./Standard.json#/definitions/int32" } },
+                "intNullArray":     { "type": ["array", "null"], "items": [{ "type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "jsonValue":        {  },
                 "derivedClass":     { "$ref": "./UnitTest.Fliox.Graph.json#/definitions/DerivedClass" },
                 "derivedClassNull": { "oneOf": [{"type": "null"}, { "$ref": "./UnitTest.Fliox.Graph.json#/definitions/DerivedClass" }] }

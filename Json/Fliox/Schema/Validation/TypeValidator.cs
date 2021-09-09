@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ObjectStart) {
-                bool success = ValidateElement(type, null, 0);
+                bool success = ValidateElement(type, false, null, 0);
                 return Return(type, success, out error);    
             }
             return RootError(type, "ValidateObjectMap() expect object. was:", out error);
@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ArrayStart) {
-                bool success = ValidateElement(type, null, 0);
+                bool success = ValidateElement(type, false, null, 0);
                 return Return(type, success, out error);    
             }
             return RootError(type, "ValidateArray() expect array. was:", out error);
@@ -147,7 +147,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                         if (!ValidationType.FindField(type, this, out field, foundFields))
                             return false;
                         if (field.isArray) {
-                            if (ValidateElement (field.type, type, depth))
+                            if (ValidateElement (field.type, field.isNullableElement, type, depth))
                                 continue;
                             return false;
                         }
@@ -158,7 +158,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                             return false;
                         if (field.typeId == TypeId.Class) {
                             if (field.isDictionary) {
-                                if (ValidateElement (field.type, type, depth))
+                                if (ValidateElement (field.type, field.isNullableElement, type, depth))
                                     continue;
                                 return false;
                             }
@@ -183,7 +183,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
         }
         
-        private bool ValidateElement (ValidationType type, ValidationType parent, int depth) {
+        private bool ValidateElement (ValidationType type, bool isNullableElement, ValidationType parent, int depth) {
             while (true) {
                 var     ev = parser.NextEvent();
                 switch (ev) {
@@ -204,6 +204,8 @@ namespace Friflo.Json.Fliox.Schema.Validation
                         return ErrorType("Incorrect type.", value, false, type.name, null, parent);
                     
                     case JsonEvent.ValueNull:
+                        if (isNullableElement)
+                            continue;
                         return Error("Element must not be null.", parent);
                     
                     case JsonEvent.ArrayStart:

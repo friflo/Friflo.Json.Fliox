@@ -73,6 +73,7 @@ public class TestType : PocEntity {
     [Fri.Required]
     List<int>     intArray;
     List<int>     intArrayNull;
+    List<int?>    intNullArray;
     JsonValue?    jsonValue;
     [Fri.Required]
     DerivedClass  derivedClass;

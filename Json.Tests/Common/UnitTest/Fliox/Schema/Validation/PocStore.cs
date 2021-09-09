@@ -173,6 +173,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
     'intArray': [
     ],
     'intArrayNull': null,
+    'intNullArray': [333, null],
     'jsonValue': null,
     'derivedClass': {
         'derivedVal': 0,

@@ -48,7 +48,7 @@
             "properties": {
                 "type":                 {  },
                 "enum":                 { "type": ["array", "null"], "items": { "type": "string" } },
-                "items":                { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] },
+                "items":                {  },
                 "oneOf":                { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" } },
                 "minimum":              { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int64" }] },
                 "maximum":              { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int64" }] },

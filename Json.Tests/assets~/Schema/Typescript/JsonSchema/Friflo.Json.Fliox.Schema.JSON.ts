@@ -27,7 +27,7 @@ export class TypeRef {
 export class FieldType {
     type?                 : any | null;
     enum?                 : string[] | null;
-    items?                : FieldType | null;
+    items?                : any | null;
     oneOf?                : FieldType[] | null;
     minimum?              : int64 | null;
     maximum?              : int64 | null;

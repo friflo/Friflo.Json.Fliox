@@ -81,6 +81,7 @@ data class TestType (
               val pocStructNull    : PocStruct? = null,
               val intArray         : List<Int>,
               val intArrayNull     : List<Int>? = null,
+              val intNullArray     : List<Int?>? = null,
               val jsonValue        : JsonElement? = null,
               val derivedClass     : DerivedClass,
               val derivedClassNull : DerivedClass? = null,

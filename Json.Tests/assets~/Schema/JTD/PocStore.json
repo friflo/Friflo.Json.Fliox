@@ -73,6 +73,7 @@
                 "pocStructNull":    { "ref":  "PocStruct", "nullable": true },
                 "intArray":         { "elements": { "type": "int32" } },
                 "intArrayNull":     { "elements": { "type": "int32" }, "nullable": true },
+                "intNullArray":     { "elements": { "type": "int32" }, "nullable": true },
                 "jsonValue":        { "nullable": true },
                 "derivedClass":     { "ref":  "DerivedClass" },
                 "derivedClassNull": { "ref":  "DerivedClass", "nullable": true }

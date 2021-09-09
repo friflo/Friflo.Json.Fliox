@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         [Fri.Property(Name =   "enum")]
         public  List<string>    discriminant;   // contains exactly one element
         
-        public  FieldType       items;
+        public  JsonValue       items;
         
         public  List<FieldType> oneOf;
         

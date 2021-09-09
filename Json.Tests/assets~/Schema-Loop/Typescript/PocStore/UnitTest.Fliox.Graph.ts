@@ -83,6 +83,7 @@ export class TestType extends PocEntity {
     pocStructNull?    : PocStruct | null;
     intArray          : int32[];
     intArrayNull?     : int32[] | null;
+    intNullArray?     : (int32 | null)[] | null;
     jsonValue?        : any | null;
     derivedClass      : DerivedClass;
     derivedClassNull? : DerivedClass | null;

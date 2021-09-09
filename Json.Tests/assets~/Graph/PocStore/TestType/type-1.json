@@ -25,6 +25,7 @@
     "intArray": [
     ],
     "intArrayNull": null,
+    "intNullArray": null,
     "jsonValue": null,
     "derivedClass": {
         "derivedVal": 0,
