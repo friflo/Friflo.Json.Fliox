@@ -45,6 +45,7 @@ data class EntityRefs (
               val guidNullEntity : UUID? = null,
               val intEntity      : Int,
               val intNullEntity  : Int? = null,
+              val intNullEntity2 : Int? = null,
               val longEntity     : Long,
               val shortEntity    : Short,
               val byteEntity     : Byte,

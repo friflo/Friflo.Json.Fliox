@@ -50,15 +50,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             var entityRef = new EntityRefs { id = "entity-ref-1" };
             
             // --- int as entity id ---
-            const int intId = 1234567890;
-            var intEntity  = new IntEntity { id = intId};
+            const int intId  = 1234567890;
+            const int intId2 = 1222222222;
+            var intEntity  = new IntEntity { id = intId };
+            var intEntity2 = new IntEntity { id = intId2 };
             // Test: EntityId<T>.GetEntityId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var create  = store.intEntities.Upsert(intEntity);
+                var create2 = store.intEntities.Upsert(intEntity2);
                 
                 await store.Sync();
                 
                 IsTrue(create.Success);
+                IsTrue(create2.Success);
                 
                 var read = store.intEntities.Read();
                 var find = read.Find(intId);
@@ -67,8 +71,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 
                 IsTrue(find.Success);
                 IsTrue(intEntity == find.Result);
-                entityRef.intEntity = intEntity;
-                entityRef.intNullEntity = default;
+                entityRef.intEntity         = intEntity;
+                entityRef.intNullEntity     = default;
+                entityRef.intNullEntity2    = intEntity2;
             }
             // Test: EntityId<T>.SetEntityId()
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
@@ -286,6 +291,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 var guidNullRef  = read.ReadRef        (er => er.guidNullEntity);
                 var intRef       = read.ReadRef        (er => er.intEntity);
                 var intNullRef   = read.ReadRef        (er => er.intNullEntity);
+                var intNullRef2  = read.ReadRef        (er => er.intNullEntity2);
                 var longRef      = read.ReadRef        (er => er.longEntity);
                 var shortRef     = read.ReadRef        (er => er.shortEntity);
                 var byteRef      = read.ReadRef        (er => er.byteEntity);
@@ -311,6 +317,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 IsTrue(guidId2  == guidNullRef.Key);
                 IsTrue(intId    == intRef.Key);
                 IsNull(            intNullRef.Result);
+                IsTrue(intId2   == intNullRef2.Key);
                 IsTrue(longId   == longRef.Key);
                 IsTrue(shortId  == shortRef.Key);
                 IsTrue(byteId   == byteRef.Key);

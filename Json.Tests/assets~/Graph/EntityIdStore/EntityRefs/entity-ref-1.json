@@ -4,6 +4,7 @@
     "guidNullEntity": "22222222-2222-2222-2222-222222222222",
     "intEntity": 1234567890,
     "intNullEntity": null,
+    "intNullEntity2": 1222222222,
     "longEntity": 1234567890123456789,
     "shortEntity": 12345,
     "byteEntity": 123,
