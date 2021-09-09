@@ -322,6 +322,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 
                 IsNotNull(result.intEntity.Entity);
                 IsNull   (result.intNullEntity.Entity);
+                IsTrue   (result.intNullEntity.TryEntity(out _));
                 IsNotNull(result.intNullEntity2.Entity);
                 
                 IsNotNull(result.longEntity.Entity);

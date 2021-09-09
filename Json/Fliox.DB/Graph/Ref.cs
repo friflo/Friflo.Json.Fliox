@@ -129,6 +129,10 @@ namespace Friflo.Json.Fliox.DB.Graph
         public bool TryEntity(out T entity) {
             // same implementation as Entity
             if (set == null) {
+                if (RefKeyMap.IsKeyNull(key)) {
+                    entity = null;
+                    return true;
+                }
                 entity = this.entity;
                 return entityAssigned;
             }
