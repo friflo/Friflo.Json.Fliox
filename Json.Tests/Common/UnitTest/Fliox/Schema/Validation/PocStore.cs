@@ -14,6 +14,7 @@ using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
+// ReSharper disable UnusedVariable
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
 {
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -55,9 +56,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         
         private static void ValidateSuccess(TypeValidator validator, TestTypes test)
         {
-            IsTrue(validator.ValidateObject(test.orderValid,                test.orderType, out _));
-            IsTrue(validator.ValidateObject(test.testTypeValid,             test.testType,  out _));
-            IsTrue(validator.ValidateObject(test.testTypeValidNull,         test.testType,  out _));
+            var result  = validator.ValidateObject(test.orderValid,         test.orderType, out var err1);
+            IsTrue(result);
+            result      = validator.ValidateObject(test.testTypeValid,      test.testType,  out var err2);
+            IsTrue(result);
+            result      =  validator.ValidateObject(test.testTypeValidNull, test.testType,  out var err3);
+            IsTrue(result);
         }
         
         private static void ValidateFailure(TypeValidator validator, TestTypes test)
