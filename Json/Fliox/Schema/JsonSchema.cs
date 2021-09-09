@@ -159,19 +159,22 @@ namespace Friflo.Json.Fliox.Schema
         }
         
         private static string GetFieldType(FieldDef field, TypeContext context, bool required) {
-            var type = field.type;
             if (field.isArray) {
-                var elementTypeName = GetTypeName(type, context, true);
-                if (field.isNullableElement) {
-                    // elementTypeName = $"\"oneOf\": [{{\"type\": \"null\"}}, {elementTypeName}]";
-                }
+                var elementTypeName = GetElementType(field, context);
                 return $"\"type\": {Opt(required, "array")}, \"items\": {{ {elementTypeName} }}";
             }
             if (field.isDictionary) {
-                var valueTypeName = GetTypeName(type, context, true);
+                var valueTypeName = GetElementType(field, context);
                 return $"\"type\": \"object\", \"additionalProperties\": {{ {valueTypeName} }}";
             }
-            return GetTypeName(type, context, required);
+            return GetTypeName(field.type, context, required);
+        }
+        
+        private static string GetElementType(FieldDef field, TypeContext context) {
+            var elementTypeName = GetTypeName(field.type, context, true);
+            // if (field.isNullableElement)
+            //    return $"\"oneOf\": [{{\"type\": \"null\"}}, {elementTypeName}]";
+            return elementTypeName;
         }
         
         private static string GetTypeName(TypeDef type, TypeContext context, bool required) {
