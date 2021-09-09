@@ -263,7 +263,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 }
                 return fieldType;
             }
-            throw new NotImplementedException("xxxxxxxxx");
+            throw new InvalidOperationException($"Expect \"items\" value as object or array. Found: {json}");
         }
 
         private static JsonTypeDef FindRef (string reference, in JsonTypeContext context) {
