@@ -82,6 +82,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
     public class TypeRef {
         [Fri.Property (Name =           "$ref")]
         [Fri.Required]  public  string  reference;
+                        public  string  type;
 
         public override         string  ToString() => reference;
     }
@@ -93,7 +94,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         [Fri.Property(Name =   "enum")]
         public  List<string>    discriminant;   // contains exactly one element
         
-        public  FieldType       items;
+        public  JsonValue       items;
         
         public  List<FieldType> oneOf;
         

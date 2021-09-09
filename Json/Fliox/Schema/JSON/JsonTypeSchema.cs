@@ -125,10 +125,10 @@ namespace Friflo.Json.Fliox.Schema.JSON
             bool    isDictionary    = false;
             bool    required        = typeDef.type.required?.Contains(fieldName) ?? false;
 
-            FieldType   items       = field.items;
+            FieldType   items       = GetItemsFieldType(field.items, out bool isNullableElement);
             string      jsonType    = field.type.json;
             FieldType   addProps    = field.additionalProperties;
-            
+
             if (field.reference != null) {
                 fieldType = FindRef(field.reference, context);
             }
@@ -168,11 +168,11 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
             }
             var isKey    = field.isKey.HasValue && field.isKey.Value;
-            var fieldDef = new FieldDef (fieldName, required, isKey, fieldType, isArray, isDictionary, false, typeDef);
+            var fieldDef = new FieldDef (fieldName, required, isKey, fieldType, isArray, isDictionary, isNullableElement, typeDef);
             typeDef.fields.Add(fieldDef);
         }
         
-        private static TypeDef FindTypeFromJson (string json, FieldType  items, in JsonTypeContext context, ref bool isArray) {
+        private static TypeDef FindTypeFromJson (string json, FieldType items, in JsonTypeContext context, ref bool isArray) {
             if     (json.StartsWith("\"")) {
                 var jsonValue = json.Substring(1, json.Length - 2);
                 if (jsonValue == "array") {
@@ -236,9 +236,39 @@ namespace Friflo.Json.Fliox.Schema.JSON
             var jsonType =  itemType.type.json;
             if (jsonType != null) {
                 bool isArray = true;
-                return FindTypeFromJson(jsonType, itemType.items, context, ref isArray);
+                var itemTypeItems = GetItemsFieldType(itemType.items, out _);
+                return FindTypeFromJson(jsonType, itemTypeItems, context, ref isArray);
             }
             throw new InvalidOperationException($"no type given for field: {itemType.name}");
+        }
+        
+        private static FieldType GetItemsFieldType (JsonValue itemTypeJson, out bool isNullableElement) {
+            var json = itemTypeJson.json;
+            isNullableElement = false;
+            if (json == null)
+                return null;
+            if (json.StartsWith("{")) {
+                using (var typeStore    = new TypeStore())
+                using (var reader       = new ObjectReader(typeStore)) {
+                    var fieldType = reader.Read<FieldType>(json);
+                    return fieldType;
+                }
+            }
+            if (json.StartsWith("[")) {
+                using (var typeStore    = new TypeStore())
+                using (var reader       = new ObjectReader(typeStore)) {
+                    var itemTypesJson = reader.Read<List<TypeRef>>(json);
+                    var fieldType = new FieldType();
+                    foreach (var item in itemTypesJson) {
+                        if (item.reference != null)
+                            fieldType.reference = item.reference;
+                        if (item.type == "null")
+                            isNullableElement = true;
+                    }
+                    return fieldType;
+                }
+            }
+            throw new NotImplementedException("xxxxxxxxx");
         }
 
         private static JsonTypeDef FindRef (string reference, in JsonTypeContext context) {
