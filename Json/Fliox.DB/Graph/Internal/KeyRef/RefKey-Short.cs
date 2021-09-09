@@ -18,6 +18,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyRef
     
     internal class RefKeyShortNull<T> : RefKey<short?, T> where T : class
     {
+        internal override   bool                IsKeyNull (short? key)       => key == null;
+        
         internal override short? IdToKey(in JsonKey id) {
             return (short)id.AsLong();
         }

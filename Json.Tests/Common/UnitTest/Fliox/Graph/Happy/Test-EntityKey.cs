@@ -321,16 +321,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 IsNotNull(result.guidNullEntity.Entity);
                 
                 IsNotNull(result.intEntity.Entity);
+                IsNull   (result.intNullEntity.Entity);
                 IsNotNull(result.intNullEntity2.Entity);
                 
                 IsNotNull(result.longEntity.Entity);
-                // IsNull(result.longNullEntity.Entity); // todo
+                IsNull   (result.longNullEntity.Entity);
                 
                 IsNotNull(result.shortEntity.Entity);
-                // IsNull(result.shortNullEntity.Entity); // todo
+                IsNull   (result.shortNullEntity.Entity);
                 
                 IsNotNull(result.byteEntity.Entity);
-                // IsNull(result.byteNullEntity.Entity); // todo
+                IsNull   (result.byteNullEntity.Entity);
                 
                 IsNotNull(result.customIdEntity.Entity);
                 IsNotNull(result.intEntities[0].Entity);

@@ -112,6 +112,8 @@ namespace Friflo.Json.Fliox.DB.Graph
         public T        Entity {
             get {
                 if (set == null) {
+                    if (RefKeyMap.IsKeyNull(key))
+                        return null;
                     if (entityAssigned)
                         return entity;
                     throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), AsString());
