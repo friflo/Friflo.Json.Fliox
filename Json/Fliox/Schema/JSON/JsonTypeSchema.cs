@@ -44,7 +44,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
             var standardTypes   = new JsonStandardTypes(typeMap);
             StandardTypes       = standardTypes;
             
-            using (var reader          = new ObjectReader(new TypeStore()))
+            using (var typeStore    = new TypeStore())
+            using (var reader       = new ObjectReader(typeStore))
             {
                 foreach (JsonSchema schema in schemaList) {
                     var context = new JsonTypeContext(schema, typeMap, standardTypes, reader);
@@ -125,7 +126,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             bool    isDictionary    = false;
             bool    required        = typeDef.type.required?.Contains(fieldName) ?? false;
 
-            FieldType   items       = GetItemsFieldType(field.items, out bool isNullableElement);
+            FieldType   items       = GetItemsFieldType(field.items, out bool isNullableElement, context);
             string      jsonType    = field.type.json;
             FieldType   addProps    = field.additionalProperties;
 
@@ -236,37 +237,31 @@ namespace Friflo.Json.Fliox.Schema.JSON
             var jsonType =  itemType.type.json;
             if (jsonType != null) {
                 bool isArray = true;
-                var itemTypeItems = GetItemsFieldType(itemType.items, out _);
+                var itemTypeItems = GetItemsFieldType(itemType.items, out _, context);
                 return FindTypeFromJson(jsonType, itemTypeItems, context, ref isArray);
             }
             throw new InvalidOperationException($"no type given for field: {itemType.name}");
         }
         
-        private static FieldType GetItemsFieldType (JsonValue itemTypeJson, out bool isNullableElement) {
+        private static FieldType GetItemsFieldType (JsonValue itemTypeJson, out bool isNullableElement, in JsonTypeContext context) {
             var json = itemTypeJson.json;
             isNullableElement = false;
             if (json == null)
                 return null;
             if (json.StartsWith("{")) {
-                using (var typeStore    = new TypeStore())
-                using (var reader       = new ObjectReader(typeStore)) {
-                    var fieldType = reader.Read<FieldType>(json);
-                    return fieldType;
-                }
+                var fieldType = context.reader.Read<FieldType>(json);
+                return fieldType;
             }
             if (json.StartsWith("[")) {
-                using (var typeStore    = new TypeStore())
-                using (var reader       = new ObjectReader(typeStore)) {
-                    var itemTypesJson = reader.Read<List<TypeRef>>(json);
-                    var fieldType = new FieldType();
-                    foreach (var item in itemTypesJson) {
-                        if (item.reference != null)
-                            fieldType.reference = item.reference;
-                        if (item.type == "null")
-                            isNullableElement = true;
-                    }
-                    return fieldType;
+                var itemTypesJson = context.reader.Read<List<TypeRef>>(json);
+                var fieldType = new FieldType();
+                foreach (var item in itemTypesJson) {
+                    if (item.reference != null)
+                        fieldType.reference = item.reference;
+                    if (item.type == "null")
+                        isNullableElement = true;
                 }
+                return fieldType;
             }
             throw new NotImplementedException("xxxxxxxxx");
         }
