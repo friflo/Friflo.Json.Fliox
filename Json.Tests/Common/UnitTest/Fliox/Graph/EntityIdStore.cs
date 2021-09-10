@@ -65,8 +65,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                         public      Ref <byte?,  ByteEntity>     byteNullEntity;
                         public      Ref <string, CustomIdEntity> customIdEntity;
                         public List<Ref <int,    IntEntity>>     intEntities;
-                        // nullable array elements are supported, but bot recommended.
-                        // It forces the application for null checks, which can simply omitted by not using nullable elements.
+                        // arrays with nullable references are supported, but bot recommended. It forces the application
+                        // for null checks, which can simply omitted by not using an array with nullable references.
                         public List<Ref <int?,   IntEntity>>     intNullEntities;
     }
 
