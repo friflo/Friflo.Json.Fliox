@@ -135,10 +135,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             AreEqual("Accessed unresolved reference. Ref<Article> (key: 'ref-id')", e.Message);
         }
         
+#if !DEBUG && !UNITY_5_3_OR_NEWER
         /// Test boxing behavior of <see cref="EntityKeyT{TKey,T}.GetKeyAsType{TAsType}"/>
         /// Will box in DEBUG - not in RELEASE
         [Test]
-        [Conditional("RELEASE")]
         public void TestRefAssignmentNoBoxing () {
             // key (string) is reference type
             var article = new Article { id = "some-id" };
@@ -161,5 +161,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             AreEqual(0, diff);
             IsTrue(intEntity == intRef.Entity);
         }
+#endif
     }
 }
