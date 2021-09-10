@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             bool    isDictionary    = false;
             bool    required        = typeDef.type.required?.Contains(fieldName) ?? false;
 
-            FieldType   items       = GetItemsFieldType(field.items, out bool isNullableElement, context);
+            FieldType   items       = GetItemsFieldType(field.items, out bool isNullableElement);
             string      jsonType    = field.type.json;
             FieldType   addProps    = field.additionalProperties;
 
@@ -146,7 +146,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                     oneOfType = itemType;
                 }
                 if (oneOfType == null)
-                    throw new InvalidOperationException($"\"oneOf\" array without a type: {field.oneOf}");
+                    throw new InvalidOperationException($"'oneOf' array without a type: {field.oneOf}");
                 fieldType = oneOfType;
             }
             else if (addProps != null) {
@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 if (addProps.reference != null) {
                     fieldType = FindRef(addProps.reference, context);
                 } else {
-                    throw new InvalidOperationException("additionalProperties requires \"$ref\"");
+                    throw new InvalidOperationException("additionalProperties requires '$ref'");
                 }
             }
             else if (jsonType != null) {
@@ -201,7 +201,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                     }
                 }
                 if (elementType == null)
-                    throw new InvalidOperationException("additionalProperties requires \"$ref\"");
+                    throw new InvalidOperationException("additionalProperties requires '$ref'");
                 return elementType;
             }
             throw new InvalidOperationException($"Unexpected type: {json}");
@@ -237,7 +237,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             var jsonType =  itemType.type.json;
             if (jsonType != null) {
                 bool isArray = true;
-                var itemTypeItems = GetItemsFieldType(itemType.items, out _, context);
+                var itemTypeItems = GetItemsFieldType(itemType.items, out _);
                 return FindTypeFromJson(jsonType, itemTypeItems, context, ref isArray);
             }
             throw new InvalidOperationException($"no type given for field: {itemType.name}");
@@ -250,27 +250,38 @@ namespace Friflo.Json.Fliox.Schema.JSON
         ///         Common element types like int, byte, ... are typically supported - custom types not.</item>
         /// </list>
         // ReSharper disable once UnusedMember.Local
-        private static FieldType GetItemsFieldType (JsonValue itemTypeJson, out bool isNullableElement, in JsonTypeContext context) {
-            var json = itemTypeJson.json;
-            isNullableElement = false;
-            if (json == null)
+        private static FieldType GetItemsFieldType (FieldType itemType, out bool isNullableElement) {
+            if (itemType == null) {
+                isNullableElement = false;
                 return null;
-            if (json.StartsWith("{")) {
-                var fieldType = context.reader.Read<FieldType>(json);
-                return fieldType;
             }
-            if (json.StartsWith("[")) {
-                var itemTypesJson = context.reader.Read<List<TypeRef>>(json);
-                var fieldType = new FieldType();
-                foreach (var item in itemTypesJson) {
-                    if (item.reference != null)
-                        fieldType.reference = item.reference;
-                    if (item.type == "null")
+            if (itemType.type.json != null) {
+                isNullableElement = false;
+                return itemType;
+            }
+            if (itemType.reference != null) {
+                isNullableElement = false;
+                return itemType;
+            }
+            var oneOf = itemType.oneOf;
+            if (oneOf != null) {
+                isNullableElement = false;
+                FieldType elementType = null;
+                foreach (var fieldType in oneOf) {
+                    if (fieldType.type.json == "\"null\"") {
                         isNullableElement = true;
+                    }
+                    if (fieldType.reference != null) {
+                        if (elementType != null)
+                            throw new InvalidOperationException($"Found multiple '$ref' in 'oneOf': {fieldType.reference}");        
+                        elementType = fieldType;
+                    }
                 }
-                return fieldType;
+                if (elementType == null)
+                    throw new InvalidOperationException("Missing '$ref' in 'oneOf'");
+                return elementType;
             }
-            throw new InvalidOperationException($"Expect \"items\" value as object or array. Found: {json}");
+            throw new InvalidOperationException("Expected 'type', '$ref' or 'oneOf'");
         }
 
         private static JsonTypeDef FindRef (string reference, in JsonTypeContext context) {
@@ -285,7 +296,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             var rootRef = schema.rootRef;
             if (rootRef != null) {
                 if (!rootRef.StartsWith("#/definitions/"))
-                    throw new InvalidOperationException($"Expect root \"$ref\" starts with: #/definitions/. was: {rootRef}");
+                    throw new InvalidOperationException($"Expect root '$ref' starts with: #/definitions/. was: {rootRef}");
                 var rootTypeName = rootRef.Substring("#/definitions/".Length);
                 if (rootTypeName == typeName) {
                     name = name.Substring(0, name.Length - typeName.Length - 1); // -1 => '.'

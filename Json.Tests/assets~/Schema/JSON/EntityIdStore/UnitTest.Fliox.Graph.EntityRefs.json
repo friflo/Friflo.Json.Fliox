@@ -20,7 +20,7 @@
                 "byteNullEntity":  { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/uint8" }] },
                 "customIdEntity":  { "type": ["string", "null"] },
                 "intEntities":     { "type": ["array", "null"], "items": { "$ref": "./Standard.json#/definitions/int32" } },
-                "intNullEntities": { "type": ["array", "null"], "items": [{ "type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] }
+                "intNullEntities": { "type": ["array", "null"], "items": { "oneOf": [{ "type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }]} }
             },
             "required": [
                 "id",

@@ -173,7 +173,7 @@ namespace Friflo.Json.Fliox.Schema
         private static string GetElementType(FieldDef field, TypeContext context) {
             var elementTypeName = GetTypeName(field.type, context, true);
             if (field.isNullableElement)
-                return $"[{{ \"type\": \"null\"}}, {{ {elementTypeName} }}]";
+                return $"{{ \"oneOf\": [{{ \"type\": \"null\"}}, {{ {elementTypeName} }}]}}";
             return $"{{ {elementTypeName} }}";
         }
         
