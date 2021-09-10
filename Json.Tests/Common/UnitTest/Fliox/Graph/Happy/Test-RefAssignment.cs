@@ -91,24 +91,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             
             // --- assign default Ref<string, Article>
             Ref<string, Article> reference = default;
-            IsNull (reference.Entity);
-            IsTrue (reference.TryEntity(out result));
-            IsNull (result);
+            IsNull  (reference.key);
+            IsNull  (reference.Entity);
+            IsTrue  (reference.TryEntity(out result));
+            IsNull  (result);
             
             // all assignments are using the implicit conversion operators from Ref<,>
             
             // --- assign entity reference (Article)
             var article = new Article { id = "some-id" };
             reference = article;
-            IsTrue (article == reference.Entity);
-            IsTrue (reference.TryEntity(out result));
-            IsTrue (article == result);
+            AreEqual("some-id", reference.key);
+            IsTrue  (article == reference.Entity);
+            IsTrue  (reference.TryEntity(out result));
+            IsTrue  (article == result);
             
             Article nullArticle = null;
             reference = nullArticle;
-            IsNull (reference.Entity);
-            IsTrue (reference.TryEntity(out result));
-            IsNull (result);
+            IsNull  (reference.key);
+            IsNull  (reference.Entity);
+            IsTrue  (reference.TryEntity(out result));
+            IsNull  (result);
             
             var invalidArticle = new Article(); // entity id = null
             var argEx = Throws<ArgumentException>(() => _ = reference = invalidArticle );
@@ -117,13 +120,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             // --- assign entity key (string)
             string nullKey = null;
             reference = nullKey;
-            IsNull (reference.Entity);
-            IsTrue (reference.TryEntity(out result));
-            IsNull (result);
+            IsNull  (reference.key);
+            IsNull  (reference.Entity);
+            IsTrue  (reference.TryEntity(out result));
+            IsNull  (result);
             
             reference = "ref-id";
-            IsFalse(reference.TryEntity(out result));
-            IsNull (result);
+            AreEqual("ref-id", reference.key);
+            IsFalse (reference.TryEntity(out result));
+            IsNull  (result);
             
             var e = Throws<UnresolvedRefException>(() => _ = reference.Entity);
             AreEqual("Accessed unresolved reference. Ref<Article> (key: 'ref-id')", e.Message);
