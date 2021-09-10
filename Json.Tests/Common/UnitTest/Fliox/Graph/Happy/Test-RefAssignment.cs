@@ -150,7 +150,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             AreEqual(0, diff);
             IsTrue(article == reference.Entity);
 
-            // key (int) is value
+            // key (int) is value type
             var intEntity = new IntEntity { id = 1 };
             Ref <int, IntEntity> intRef = intEntity; // for one time allocations
             start = GC.GetAllocatedBytesForCurrentThread();
