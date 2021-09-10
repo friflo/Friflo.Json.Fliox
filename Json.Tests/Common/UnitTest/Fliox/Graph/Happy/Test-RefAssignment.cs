@@ -131,6 +131,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             IsNull  (result);
             var e = Throws<UnresolvedRefException>(() => _ = reference.Entity);
             AreEqual("Accessed unresolved reference. Ref<Article> (key: 'ref-id')", e.Message);
+            AreEqual("ref-id", e.key);
         }
         
 #if !DEBUG && !UNITY_5_3_OR_NEWER
