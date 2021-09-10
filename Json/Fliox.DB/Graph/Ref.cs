@@ -77,10 +77,13 @@ namespace Friflo.Json.Fliox.DB.Graph
         [DebuggerBrowsable(Never)]  private  readonly   bool        entityAssigned;
         [DebuggerBrowsable(Never)]  private             Peer<T>     peer;    // alternatively a EntitySetBase<T> could be used 
 
-        public   override           string              ToString() => AsString();
-        private                     string              AsString() => IsKeyNull() ? "null" : RefKeyMap.KeyToId(key).AsString();
+        public   override           string              ToString()  => AsString();
+        private                     string              AsString()  => IsKeyNull() ? "null" : RefKeyMap.KeyToId(key).AsString();
+        internal                    T                   GetEntity() => entity;
+        internal                    Peer<T>             GetPeer()   => peer;
 
         internal static readonly    RefKey<TKey, T>     RefKeyMap = RefKey.GetRefKey<TKey, T>();
+        
         
         public Ref(TKey key) {
             this.key        = key;
@@ -135,9 +138,6 @@ namespace Friflo.Json.Fliox.DB.Graph
             entity = null;
             return false;
         }
-        
-        internal T                  GetEntity() { return entity; }
-        internal Peer<T>            GetPeer()   { return peer; }
         
         /// <summary>
         /// Returns true only in case <see cref="TKey"/> is a reference type like string and the <see cref="key"/> is null.
