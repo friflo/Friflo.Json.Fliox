@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using System.Collections.Generic;
 using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Val
@@ -32,6 +31,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     break;
                 case JsonKeyType.String:
                     writer.WriteString(value.str);
+                    break;
+                case JsonKeyType.Guid:
+                    writer.WriteString(value.AsString());
                     break;
                 case JsonKeyType.Null:
                     writer.AppendNull();

@@ -8,8 +8,9 @@ namespace Friflo.Json.Fliox.Mapper
     public readonly struct JsonKey
     {
         internal readonly   JsonKeyType type;
-        internal readonly   string      str;
+        internal readonly   string      str; // todo could be mutable to cache ToString() results got lng & guid
         internal readonly   long        lng;
+        internal readonly   Guid        guid;
         
         public override string ToString() => AsString();
         
@@ -20,16 +21,22 @@ namespace Friflo.Json.Fliox.Mapper
             if (str == null) {
                 type        = JsonKeyType.Null;
                 this.str    = null;
-                lng    = 0;
+                lng         = 0;
+                guid        = new Guid();
                 return;
             }
             if (long.TryParse(str, out long result)) {
                 this.type   = JsonKeyType.Long;
                 this.str    = str;
                 this.lng    = result;
+                guid        = new Guid();
                 return;
             }
-            this.type   = JsonKeyType.String;
+            if (Guid.TryParse(str, out guid)) {
+                type   = JsonKeyType.Guid;
+            } else {
+                type   = JsonKeyType.String;
+            }
             this.str    = str;
             this.lng    = 0;
         }
@@ -38,34 +45,39 @@ namespace Friflo.Json.Fliox.Mapper
             this.type   = JsonKeyType.Long;
             this.str    = null;
             this.lng    = lng;
+            this.guid   = new Guid();
         }
         
         public JsonKey (long? lng) {
             this.type   = lng.HasValue ? JsonKeyType.Long : JsonKeyType.Null;
             this.str    = null;
             this.lng    = lng ?? 0;
+            this.guid   = new Guid();
         }
         
         public JsonKey (in Guid guid) {
-            this.type   = JsonKeyType.String;
-            this.str    = guid.ToString();
+            this.type   = JsonKeyType.Guid;
+            this.str    = null;
             this.lng    = 0;
+            this.guid   = guid;
         }
         
         public JsonKey (in Guid? guid) {
             var hasValue= guid.HasValue;
-            type        = hasValue ? JsonKeyType.String : JsonKeyType.Null;
-            str         = hasValue ? guid.ToString() : null;
+            type        = hasValue ? JsonKeyType.Guid : JsonKeyType.Null;
+            str         = null; // hasValue ? guid.ToString() : null;
             lng         = 0;
+            this.guid   = hasValue ? guid.Value : new Guid();
         }
         
         public bool IsNull() {
             switch (type) {
-                case JsonKeyType.String:    return str == null;
                 case JsonKeyType.Long:      return false;
+                case JsonKeyType.String:    return str == null;
+                case JsonKeyType.Guid:      return false;
                 case JsonKeyType.Null:      return true;
                 default:
-                    throw new InvalidOperationException($"invalid JsonKey: {ToString()}");
+                    throw new InvalidOperationException($"invalid JsonKey: {AsString()}");
             }
         }
         public bool IsEqual(in JsonKey other) {
@@ -73,8 +85,9 @@ namespace Friflo.Json.Fliox.Mapper
                 return false;
             
             switch (type) {
-                case JsonKeyType.String:    return str == other.str;
-                case JsonKeyType.Long:      return lng == other.lng;
+                case JsonKeyType.Long:      return lng  == other.lng;
+                case JsonKeyType.String:    return str  == other.str;
+                case JsonKeyType.Guid:      return guid == other.guid;
                 case JsonKeyType.Null:      return true;
                 default:
                     throw new InvalidOperationException("Invalid IdType"); 
@@ -91,8 +104,9 @@ namespace Friflo.Json.Fliox.Mapper
 
         public string AsString() {
             switch (type) {
+                case JsonKeyType.Long:      return str ?? lng. ToString();
                 case JsonKeyType.String:    return str;
-                case JsonKeyType.Long:      return str ?? lng.ToString();
+                case JsonKeyType.Guid:      return str ?? guid.ToString();
                 case JsonKeyType.Null:      return null;
                 default:                    return "None";
             }
@@ -101,21 +115,22 @@ namespace Friflo.Json.Fliox.Mapper
         public long AsLong() {
             if (type == JsonKeyType.Long)
                 return lng;
-            throw new InvalidOperationException($"cannot return JsonKey as long. {ToString()}");
+            throw new InvalidOperationException($"cannot return JsonKey as long. {AsString()}");
         }
         
         public Guid AsGuid() {
-            return new Guid(AsString());
+            return guid;
         }
         
         public Guid? AsGuidNullable() {
-            return str != null ? new Guid(str) : default;
+            return type == JsonKeyType.Guid ? guid : default; 
         }
     }
     
     public enum JsonKeyType {
         Null,
-        String,
         Long,
+        String,
+        Guid,
     }
 }

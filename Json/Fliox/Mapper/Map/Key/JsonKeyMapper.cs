@@ -17,6 +17,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Key
                 case JsonKeyType.String:
                     writer.WriteString(key.str);
                     break;
+                case JsonKeyType.Guid:
+                    writer.WriteString(key.AsString());
+                    break;
                 default:
                     throw new InvalidOperationException($"cannot write JsonKey: {key}");
             }
