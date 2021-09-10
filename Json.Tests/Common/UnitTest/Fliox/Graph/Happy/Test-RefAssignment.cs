@@ -4,6 +4,7 @@
 using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Graph;
+using Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
@@ -84,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         
         [Test]
         // ReSharper disable ExpressionIsAlwaysNull
-        public void TestBasicRefAssignment () {
+        public void TestRefBasicAssignment () {
             // ReSharper disable once InlineOutVariableDeclaration
             Article result;
             
@@ -126,6 +127,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             
             var e = Throws<UnresolvedRefException>(() => _ = reference.Entity);
             AreEqual("Accessed unresolved reference. Ref<Article> (key: 'ref-id')", e.Message);
+        }
+        
+        /// Test boxing behavior of <see cref="EntityKeyT{TKey,T}.GetKeyAsType{TAsType}"/>
+        [Test]
+        // ReSharper disable RedundantAssignment
+        public void TestRefAssignmentNoBoxing () {
+            var article = new Article { id = "some-id" };
+            var start = GC.GetAllocatedBytesForCurrentThread();
+            Ref<string, Article> reference = article;
+            var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+            AreEqual(0, diff);
+            IsTrue(article == reference.Entity);
+            
+            
+            var intEntity = new IntEntity { id = 1 };
+            Ref <int, IntEntity> intRef = intEntity; // for one time allocations
+            start = GC.GetAllocatedBytesForCurrentThread();
+            intRef = intEntity;
+            diff = GC.GetAllocatedBytesForCurrentThread() - start;
+            
+            IsTrue(diff > 0); // todo diff should be 0
+            IsTrue(intEntity == intRef.Entity);
         }
     }
 }
