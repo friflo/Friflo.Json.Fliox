@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Graph;
 using Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity;
@@ -135,24 +136,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         }
         
         /// Test boxing behavior of <see cref="EntityKeyT{TKey,T}.GetKeyAsType{TAsType}"/>
+        /// Will box in DEBUG - not in RELEASE
         [Test]
-        // ReSharper disable RedundantAssignment
+        [Conditional("RELEASE")]
         public void TestRefAssignmentNoBoxing () {
+            // key (string) is reference type
             var article = new Article { id = "some-id" };
+            Ref<string, Article> reference = new Ref<string, Article>();
             var start = GC.GetAllocatedBytesForCurrentThread();
-            Ref<string, Article> reference = article;
+            for (int n = 0; n < 1; n++)
+                reference = article;
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
             AreEqual(0, diff);
             IsTrue(article == reference.Entity);
-            
-            
+
+            // key (int) is value
             var intEntity = new IntEntity { id = 1 };
             Ref <int, IntEntity> intRef = intEntity; // for one time allocations
             start = GC.GetAllocatedBytesForCurrentThread();
-            intRef = intEntity;
+            for (int n = 0; n < 1; n++)
+                intRef = intEntity;
             diff = GC.GetAllocatedBytesForCurrentThread() - start;
             
-            IsTrue(diff > 0); // todo diff should be 0
+            AreEqual(0, diff);
             IsTrue(intEntity == intRef.Entity);
         }
     }

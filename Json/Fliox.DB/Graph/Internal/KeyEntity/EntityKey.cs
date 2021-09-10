@@ -149,8 +149,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
         internal abstract   void    SetKey  (T entity, TKey id);
 
         internal override   TAsType GetKeyAsType<TAsType> (T entity) {
-            // todo avoid boxing by using an expression or creating a delegate, TAG_NULL_REF
-            return (TAsType)(object)GetKey(entity);
+            // Will box in DEBUG - not in RELEASE (.NET Core 3.1)
+            return (TAsType)(object)GetKey(entity); // TAG_NULL_REF
         }
 
         internal override   JsonKey GetId   (T entity) {
