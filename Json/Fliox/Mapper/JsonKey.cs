@@ -7,17 +7,18 @@ namespace Friflo.Json.Fliox.Mapper
 {
     public readonly struct JsonKey
     {
-        internal readonly   JsonKeyType type;
-        internal readonly   string      str; // todo could be mutable to cache ToString() results got lng & guid
-        internal readonly   long        lng;
-        internal readonly   Guid        guid;
+        internal readonly       JsonKeyType type;
+        internal readonly       string      str; // todo could be mutable to cache ToString() results got lng & guid
+        internal readonly       long        lng;
+        internal readonly       Guid        guid;
         
-        public override string ToString() => AsString();
+        public   override       string      ToString() => AsString();
         
-        public static readonly JsonKeyComparer          Comparer = new JsonKeyComparer();
-        public static readonly JsonKeyEqualityComparer  Equality = new JsonKeyEqualityComparer();
+        public static readonly  JsonKeyComparer         Comparer = new JsonKeyComparer();
+        public static readonly  JsonKeyEqualityComparer Equality = new JsonKeyEqualityComparer();
 
-        public JsonKey (string str) {
+        public JsonKey (string str)
+        {
             if (str == null) {
                 type        = JsonKeyType.Null;
                 this.str    = null;
@@ -80,6 +81,7 @@ namespace Friflo.Json.Fliox.Mapper
                     throw new InvalidOperationException($"invalid JsonKey: {AsString()}");
             }
         }
+        
         public bool IsEqual(in JsonKey other) {
             if (type != other.type)
                 return false;
