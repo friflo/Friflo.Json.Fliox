@@ -89,17 +89,11 @@ namespace Friflo.Json.Fliox.DB.Graph
             peer            = null;
         }
         
-        public Ref(T entity) {
-            TKey entityId = default;
-            if (entity != null) {
-                entityId = EntitySetBase<T>.EntityKeyMap.GetKeyAsType<TKey>(entity); // TAG_NULL_REF
-            }
-            key             = entityId;
+        private Ref(T entity, TKey key) {
+            this.key        = key;
             this.entity     = entity;
             entityAssigned  = true;
             peer            = null;
-            if (entity != null && entityId == null)
-                throw new ArgumentException($"constructing a Ref<>(entity != null) expect entity.key not null. Type: {typeof(T)}");
         }
         
         internal Ref(Peer<T> peer) {
@@ -173,7 +167,15 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
 
         public static implicit operator Ref<TKey, T>(T entity) {
-            return new Ref<TKey, T> (entity);
+            TKey key;
+            if (entity != null) {
+                key = EntitySetBase<T>.EntityKeyMap.GetKeyAsType<TKey>(entity); // TAG_NULL_REF
+                if (key == null)
+                    throw new ArgumentException($"cannot assign entity with key = null to Ref<{typeof(TKey).Name},{typeof(T).Name}>");
+            } else {
+                key = default;
+            }
+            return new Ref<TKey, T> (entity, key);
         }
         
         /* public static implicit operator T(Ref<T> reference) {

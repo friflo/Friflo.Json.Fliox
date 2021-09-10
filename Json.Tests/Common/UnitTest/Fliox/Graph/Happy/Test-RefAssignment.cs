@@ -89,7 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             Article result;
             
             // --- assign default Ref<string, Article>
-            Ref<string, Article> reference = new Ref<string, Article>();
+            Ref<string, Article> reference = default;
             IsNull (reference.Entity);
             IsTrue (reference.TryEntity(out result));
             IsNull (result);
@@ -108,6 +108,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             IsNull (reference.Entity);
             IsTrue (reference.TryEntity(out result));
             IsNull (result);
+            
+            var invalidArticle = new Article(); // entity id = null
+            var argEx = Throws<ArgumentException>(() => _ = reference = invalidArticle );
+            AreEqual("cannot assign entity with key = null to Ref<String,Article>", argEx.Message);
             
             // --- assign entity key (string)
             string nullKey = null;
