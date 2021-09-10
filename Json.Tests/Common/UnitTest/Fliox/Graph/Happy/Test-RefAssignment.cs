@@ -81,5 +81,47 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             AreEqual("Samsung", galaxy.producer.Entity.name);   // after Sync() Entity is accessible
             AreEqual("Apple",   iphone.producer.Entity.name);   // after Sync() Entity is accessible
         }
+        
+        [Test]
+        // ReSharper disable ExpressionIsAlwaysNull
+        public void TestBasicRefAssignment () {
+            // ReSharper disable once InlineOutVariableDeclaration
+            Article result;
+            
+            // --- assign default Ref<string, Article>
+            Ref<string, Article> reference = new Ref<string, Article>();
+            IsNull (reference.Entity);
+            IsTrue (reference.TryEntity(out result));
+            IsNull (result);
+            
+            // all assignments are using the implicit conversion operators from Ref<,>
+            
+            // --- assign entity reference (Article)
+            var article = new Article { id = "some-id" };
+            reference = article;
+            IsTrue (article == reference.Entity);
+            IsTrue (reference.TryEntity(out result));
+            IsTrue (article == result);
+            
+            Article nullArticle = null;
+            reference = nullArticle;
+            IsNull (reference.Entity);
+            IsTrue (reference.TryEntity(out result));
+            IsNull (result);
+            
+            // --- assign entity key (string)
+            string nullKey = null;
+            reference = nullKey;
+            IsNull (reference.Entity);
+            IsTrue (reference.TryEntity(out result));
+            IsNull (result);
+            
+            reference = "ref-id";
+            IsFalse(reference.TryEntity(out result));
+            IsNull (result);
+            
+            var e = Throws<UnresolvedRefException>(() => _ = reference.Entity);
+            AreEqual("Accessed unresolved reference. Ref<Article> (id: 'ref-id')", e.Message);
+        }
     }
 }
