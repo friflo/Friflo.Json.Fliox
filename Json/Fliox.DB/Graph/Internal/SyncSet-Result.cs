@@ -325,7 +325,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 keysBuf.Clear();
                 deleteTask.GetKeys(keysBuf);
                 foreach (var key in keysBuf) {
-                    var id = Ref<TKey,T>.RefKeyMap.KeyToId(key); // todo performance
+                    var id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
                     if (errorsDelete.TryGetValue(id, out EntityError error)) {
                         entityErrorInfo.AddEntityError(error);
                     }
