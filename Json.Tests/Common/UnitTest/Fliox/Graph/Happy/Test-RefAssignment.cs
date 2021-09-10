@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Graph;
 using Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity;
@@ -130,7 +129,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             AreEqual("ref-id", reference.key);
             IsFalse (reference.TryEntity(out result));
             IsNull  (result);
-            
             var e = Throws<UnresolvedRefException>(() => _ = reference.Entity);
             AreEqual("Accessed unresolved reference. Ref<Article> (key: 'ref-id')", e.Message);
         }
