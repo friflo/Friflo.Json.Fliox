@@ -14,7 +14,7 @@ using static System.Diagnostics.DebuggerBrowsableState;
 namespace Friflo.Json.Fliox.DB.Graph
 {
     /// <summary>
-    /// A <see cref="Ref{TKey,T}"/> is used to declare type safe fields being references to other entities in a data model.
+    /// A <see cref="Ref{TKey,T}"/> is used to declare type safe references (foreign keys) to entities in an <see cref="EntitySet{TKey,T}"/>.
     /// It is implemented as a struct to provide value type semantics and adding minimal overhead when accessing the
     /// <see cref="key"/> or the <see cref="Entity"/>.
     /// 
@@ -74,6 +74,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         //      set == null    =>  Ref<TKey,T> is not attached to a Peer<T> until now
         //      set != null    =>  Ref<TKey,T> is attached to a Peer<T>
 
+        /// The foreign key used to reference an entity stored in a <see cref="EntitySet{TKey,T}"/>.
                                     public   readonly   TKey        key;
         [DebuggerBrowsable(Never)]  private  readonly   T           entity;
         [DebuggerBrowsable(Never)]  private  readonly   bool        entityAssigned;
@@ -107,8 +108,11 @@ namespace Friflo.Json.Fliox.DB.Graph
             entityAssigned  = false;
             this.peer       = peer;
         }
-
-        public T        Entity {
+        
+        /// <summary>Return the referenced <see cref="Entity"/>. </summary>
+        /// <exception cref="UnresolvedRefException">The exception is thrown if the referenced <see cref="Entity"/> is
+        /// not yet resolved. To resolve the referenced entity call <see cref="EntityStore.Sync"/>.</exception>
+        public T Entity {
             get {
                 if (peer == null) {
                     if (key == null)    // RefKeyMap.IsKeyNull(key)
@@ -123,6 +127,8 @@ namespace Friflo.Json.Fliox.DB.Graph
             }
         }
 
+        /// <summary>Return the referenced <see cref="Entity"/> via the out parameter.
+        /// In contrast to <see cref="Entity"/> it returns false if the referenced entity is not yet resolved.</summary>
         public bool TryEntity(out T entity) {
             // same implementation as Entity
             if (peer == null) {
@@ -168,6 +174,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             return key.GetHashCode();
         }
 
+        /// Implicit type conversion creating as <see cref="Ref{TKey,T}"/> from the given <see cref="entity"/>
         public static implicit operator Ref<TKey, T>(T entity) {
             if (entity == null) {
                 return new Ref<TKey, T>(); // equals to return new Ref<TKey, T> (default, null);
@@ -178,14 +185,15 @@ namespace Friflo.Json.Fliox.DB.Graph
             return new Ref<TKey, T> (key, entity);
         }
         
-        /* public static implicit operator T(Ref<T> reference) {
-            return reference.entity;
-        } */
-
+        /// Implicit type conversion creating as <see cref="Ref{TKey,T}"/> from the given <see cref="key"/>
         public static implicit operator Ref<TKey, T>(TKey key) {
             return new Ref<TKey, T> (key);
         }
+        
+        // Opinion: This implicit type conversion tend to be irritating
+        // public static implicit operator TKey (Ref<TKey, T> reference) { return reference.key; }
 
+        /// Schedule resolving the reference by the given <see cref="task"/>.
         public Find<TKey, T> FindBy(ReadTask<TKey, T> task) {
             // may validate that set is the same which created the PeerEntity<>
             var find    = task.Find(key);
