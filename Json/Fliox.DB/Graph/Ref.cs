@@ -15,6 +15,8 @@ namespace Friflo.Json.Fliox.DB.Graph
 {
     /// <summary>
     /// A <see cref="Ref{TKey,T}"/> is used to declare type safe fields being references to other entities in a data model.
+    /// It is implemented as a struct to provide value type semantics and adding minimal overhead when accessing the
+    /// <see cref="key"/> or the <see cref="Entity"/>.
     /// 
     /// <para>
     /// A reference is an <see cref="key"/> of type <see cref="TKey"/>. A reference can be in two states:
