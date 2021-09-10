@@ -72,10 +72,10 @@ namespace Friflo.Json.Fliox.DB.Graph
         //      set == null    =>  Ref<TKey,T> is not attached to a Peer<T> until now
         //      set != null    =>  Ref<TKey,T> is attached to a Peer<T>
 
-                                    public   readonly   TKey                key;
-        [DebuggerBrowsable(Never)]  private  readonly   T                   entity;
-        [DebuggerBrowsable(Never)]  private  readonly   bool                entityAssigned;
-        [DebuggerBrowsable(Never)]  private             EntitySetBase<T>    set;    // alternatively a Peer<T> could be used 
+                                    public   readonly   TKey        key;
+        [DebuggerBrowsable(Never)]  private  readonly   T           entity;
+        [DebuggerBrowsable(Never)]  private  readonly   bool        entityAssigned;
+        [DebuggerBrowsable(Never)]  private             Peer<T>     peer;    // alternatively a EntitySetBase<T> could be used 
 
         public   override           string              ToString() => AsString();
         private                     string              AsString() => IsKeyNull() ? "null" : RefKeyMap.KeyToId(key).AsString();
@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             this.key        = key;
             entity          = null;
             entityAssigned  = false;
-            set             = null;
+            peer            = null;
         }
         
         public Ref(T entity) {
@@ -97,29 +97,27 @@ namespace Friflo.Json.Fliox.DB.Graph
             key             = entityId;
             this.entity     = entity;
             entityAssigned  = true;
-            set             = null;
+            peer            = null;
             if (entity != null && entityId == null)
                 throw new ArgumentException($"constructing a Ref<>(entity != null) expect entity.key not null. Type: {typeof(T)}");
         }
         
-        internal Ref(Peer<T> peer, EntitySetBase<T> set) {
+        internal Ref(Peer<T> peer) {
             key             = RefKeyMap.IdToKey(peer.id);      // peer.id is never null
             entity          = null;
             entityAssigned  = false;
-            this.set        = set;
+            this.peer       = peer;
         }
 
         public T        Entity {
             get {
-                if (set == null) {
-                    if (RefKeyMap.IsKeyNull(key))
+                if (peer == null) {
+                    if (key == null)    // RefKeyMap.IsKeyNull(key)
                         return null;
                     if (entityAssigned)
                         return entity;
                     throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), AsString());
                 }
-                var id = RefKeyMap.KeyToId(key);   // TAG_NULL_REF
-                var peer = set.GetPeerById(id);
                 if (peer.assigned)
                     return peer.NullableEntity;
                 throw new UnresolvedRefException("Accessed unresolved reference.", typeof(T), AsString());
@@ -128,16 +126,14 @@ namespace Friflo.Json.Fliox.DB.Graph
 
         public bool TryEntity(out T entity) {
             // same implementation as Entity
-            if (set == null) {
-                if (RefKeyMap.IsKeyNull(key)) {
+            if (peer == null) {
+                if (key == null) {      // RefKeyMap.IsKeyNull(key)
                     entity = null;
                     return true;
                 }
                 entity = this.entity;
                 return entityAssigned;
             }
-            var id = RefKeyMap.KeyToId(key);   // TAG_NULL_REF
-            var peer = set.GetPeerById(id);
             if (peer.assigned) {
                 entity = peer.NullableEntity;
                 return true;
@@ -147,7 +143,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         internal T                  GetEntity() { return entity; }
-        internal EntitySetBase<T>   GetSet()    { return set; }
+        internal Peer<T>            GetPeer()   { return peer; }
         
         /// <summary>
         /// Returns true only in case <see cref="TKey"/> is a reference type like string and the <see cref="key"/> is null.
@@ -190,8 +186,8 @@ namespace Friflo.Json.Fliox.DB.Graph
 
         public Find<TKey, T> FindBy(ReadTask<TKey, T> task) {
             // may validate that set is the same which created the PeerEntity<>
-            var find = task.Find(key);
-            set = task.set;
+            var find    = task.Find(key);
+            peer        = task.set.GetOrCreatePeerByKey(key, new JsonKey());
             return find;
         }
     }

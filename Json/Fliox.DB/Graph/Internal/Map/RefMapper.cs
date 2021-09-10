@@ -115,12 +115,11 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Map
             TKey key = keyMapper.Read(ref reader, default, out success);
             if (success) {
                 if (reader.tracerContext != null) {
-                    var store = reader.tracerContext.Store();
-                    var set = store.GetEntitySetBase<T>();
-                    var id = Ref<TKey, T>.RefKeyMap.KeyToId(key);  // TAG_NULL_REF
-                    var peer = set.GetOrCreatePeerById(id);
-                    slot = new Ref<TKey, T> (peer, set);
-                    return slot;
+                    var store   = reader.tracerContext.Store();
+                    var set     = store.GetEntitySetBase<T>();
+                    var id      = Ref<TKey, T>.RefKeyMap.KeyToId(key);  // TAG_NULL_REF
+                    var peer    = set.GetOrCreatePeerById(id);
+                    return new Ref<TKey, T> (peer);
                 }
                 slot = new Ref<TKey, T> (key);
                 return slot;

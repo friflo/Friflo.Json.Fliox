@@ -411,10 +411,8 @@ namespace Friflo.Json.Fliox.DB.Graph
             if (reference.IsKeyNull()) {
                 throw new InvalidOperationException($"Ref<{typeof(TKey).Name},{typeof(T).Name}>.key == null");
             }
-            var set = reference.GetSet();
-            if (set != null) {
-                var id = Ref<TKey,T>.RefKeyMap.KeyToId(reference.key); // TAG_NULL_REF
-                peer = set.GetPeerById(id);
+            peer = reference.GetPeer();
+            if (peer != null) {
                 return true;
             }
             var entity = reference.GetEntity();
