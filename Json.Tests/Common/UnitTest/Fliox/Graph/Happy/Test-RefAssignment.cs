@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             // --- assign id to reference
             var newArticle1 = new Article { producer = "unknown-producer-1" };
             Exception e = Throws<UnresolvedRefException>(() => { var _ = newArticle1.producer.Entity; });
-            AreEqual("Accessed unresolved reference. Ref<Producer> (id: 'unknown-producer-1')", e.Message);
+            AreEqual("Accessed unresolved reference. Ref<Producer> (key: 'unknown-producer-1')", e.Message);
             
             
             // --- assign entity instance to reference
@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             var galaxy = galaxyTask.Result;
             // the referenced entity "producer-samsung" is not resolved until now.
             e = Throws<UnresolvedRefException>(() => { var _ = galaxy.producer.Entity; });
-            AreEqual("Accessed unresolved reference. Ref<Producer> (id: 'producer-samsung')", e.Message);
+            AreEqual("Accessed unresolved reference. Ref<Producer> (key: 'producer-samsung')", e.Message);
             IsFalse(galaxy.producer.TryEntity(out Producer result));
             IsNull(result);
             
@@ -125,7 +125,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             IsNull (result);
             
             var e = Throws<UnresolvedRefException>(() => _ = reference.Entity);
-            AreEqual("Accessed unresolved reference. Ref<Article> (id: 'ref-id')", e.Message);
+            AreEqual("Accessed unresolved reference. Ref<Article> (key: 'ref-id')", e.Message);
         }
     }
 }

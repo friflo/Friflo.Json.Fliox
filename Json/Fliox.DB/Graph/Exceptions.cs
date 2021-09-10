@@ -9,12 +9,12 @@ namespace Friflo.Json.Fliox.DB.Graph
 {
     public class UnresolvedRefException : Exception
     {
-        public readonly     string          id;
+        public readonly     string          key;
         
-        internal UnresolvedRefException(string message, Type type, string id)
-            : base ($"{message} Ref<{type.Name}> (id: '{id}')")
+        internal UnresolvedRefException(string message, Type type, string key)
+            : base ($"{message} Ref<{type.Name}> (key: '{key}')")
         {
-            this.id = id;
+            this.key = key;
         }
     }
     
