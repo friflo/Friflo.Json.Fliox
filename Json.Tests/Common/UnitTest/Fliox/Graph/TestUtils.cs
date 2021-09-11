@@ -7,9 +7,9 @@ using Friflo.Json.Fliox.DB.Graph.Internal;
 using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.DB.Sync;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
+
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 {
@@ -113,7 +113,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 await store.Sync(); // ~ 1 µs
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var expected = IsDebug() ? 1344 : 1288; // Test Release & Debug
+                var expected = IsDebug() ? 1344 : 1288; // Test Debug & Release
                 AreEqual(expected, diff);   // Test Release also
             }
         }
@@ -132,8 +132,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 read.Find(42);
                 await store.Sync(); // ~ 1 µs
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var expected = IsDebug() ? 5768 : 5240; // Test Release & Debug
-                AreEqual(expected, diff);   // Test Release also
+                var expected = IsDebug() ? Is.InRange(5728, 5768) : Is.InRange(5240, 5240); // Test Debug & Release
+                That(diff, expected);
             }
         }
         
