@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Transform.Patch
     internal class PatchNode {
         internal            PatchType?                      patchType;
         internal            string                          json;
-        internal readonly   Dictionary<string, PatchNode>   children = new Dictionary<string, PatchNode>();
+        internal readonly   Dictionary<JsonKey, PatchNode>  children = new Dictionary<JsonKey, PatchNode>(JsonKey.Equality);
 
         public override     string                          ToString() => patchType != null ? patchType.ToString() : "---";
         
@@ -65,8 +65,7 @@ namespace Friflo.Json.Fliox.Transform.Patch
                 PatchNode curNode = rootNode;
                 PatchNode childNode = rootNode;
                 for (int i = 0; i < pathTokens.Count; i++) {
-                    var tokenKey = pathTokens[i];
-                    var token    = tokenKey.AsString();
+                    var token = pathTokens[i];
                     if (!curNode.children.TryGetValue(token, out childNode)) {
                         childNode = new PatchNode();
                         curNode.children.Add(token, childNode);

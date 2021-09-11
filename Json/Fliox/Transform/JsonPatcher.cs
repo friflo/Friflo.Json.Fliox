@@ -70,7 +70,8 @@ namespace Friflo.Json.Fliox.Transform
 
         private bool TraceObject(ref JsonParser p) {
             while (JsonSerializer.NextObjectMember(ref p)) {
-                string key = p.key.ToString();
+                string  keyStr  = p.key.ToString();
+                var     key     = new JsonKey(keyStr);
                 var node = nodeStack[nodeStack.Count - 1];
                 if (node.children.TryGetValue(key, out PatchNode patch)) {
                     switch (patch.patchType) {
@@ -132,8 +133,9 @@ namespace Friflo.Json.Fliox.Transform
                         switch (patch.patchType) {
                             case PatchType.Replace:
                             case PatchType.Add:
+                                var key = child.Key.AsString();
                                 keyBytes.Clear();
-                                keyBytes.AppendString(child.Key);
+                                keyBytes.AppendString(key);
                                 patchJson.Clear();
                                 patchJson.AppendString(patch.json);
                                 patchParser.InitParser(patchJson);
@@ -162,7 +164,7 @@ namespace Friflo.Json.Fliox.Transform
             while (JsonSerializer.NextArrayElement(ref p)) {
                 index++;
                 var node = nodeStack[nodeStack.Count - 1];
-                string key = index.ToString();
+                var key = new JsonKey(index);
                 if (node.children.TryGetValue(key, out PatchNode patch)) {
                     switch (patch.patchType) {
                         case PatchType.Replace:
