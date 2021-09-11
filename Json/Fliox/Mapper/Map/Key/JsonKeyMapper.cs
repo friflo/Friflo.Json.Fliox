@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Key
                 return new JsonKey(lng);
             }
             success = true;
-            return new JsonKey(parser.key.ToString());
+            return new JsonKey(parser.key);
         }
         
         public override JsonKey     ToJsonKey      (in JsonKey key) {

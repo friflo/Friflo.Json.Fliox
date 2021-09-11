@@ -44,12 +44,11 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 var validator = pooledValidator.instance;
                 foreach (var document in documents) {
                     var payload = document.json;
-                    if (!validator.GetEntityKey(payload, keyName, out string keyValue, out _)) {
+                    if (!validator.GetEntityKey(payload, keyName, out JsonKey keyValue, out _)) {
                         continue;
                     }
-                    var key     = new JsonKey(keyValue);
                     var value   = new EntityValue(document.json);
-                    entities.Add(key, value);
+                    entities.Add(keyValue, value);
                 }
             }
         }

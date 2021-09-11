@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                         var lng = parser.ValueAsLong(out success);
                         return new JsonKey(lng);
                     }
-                    return new JsonKey(parser.value.ToString());
+                    return new JsonKey(parser.value);
                 default:
                     throw new InvalidOperationException($"JsonKey - unexpected event: {ev}");
             }

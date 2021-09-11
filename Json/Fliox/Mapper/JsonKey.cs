@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Mapper
 {
@@ -41,6 +42,8 @@ namespace Friflo.Json.Fliox.Mapper
             this.str    = str;
             this.lng    = 0;
         }
+        
+        public JsonKey (in Bytes bytes) : this (bytes.ToString()) { } // todo optimize: could be done without ToString()
         
         public JsonKey (long lng) {
             this.type   = JsonKeyType.Long;

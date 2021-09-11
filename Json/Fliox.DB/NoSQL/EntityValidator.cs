@@ -69,10 +69,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             }
         }
         
-        public bool GetEntityKey(string json, string keyName, out string keyValue, out string error) {
+        public bool GetEntityKey(string json, string keyName, out JsonKey keyValue, out string error) {
             idKey.Clear();
             idKey.AppendString(keyName);
-            keyValue     = null;
+            keyValue     = new JsonKey();
             jsonBytes.Clear();
             jsonBytes.AppendString(json);
             parser.InitParser(jsonBytes);
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     case JsonEvent.ValueString:
                         if (parser.key.IsEqualBytes(ref idKey)) {
                             error = null;
-                            keyValue = parser.value.ToString();
+                            keyValue = new JsonKey(parser.value);
                             return true;
                         }
                         break;

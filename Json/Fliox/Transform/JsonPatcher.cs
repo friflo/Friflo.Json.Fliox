@@ -70,8 +70,7 @@ namespace Friflo.Json.Fliox.Transform
 
         private bool TraceObject(ref JsonParser p) {
             while (JsonSerializer.NextObjectMember(ref p)) {
-                string  keyStr  = p.key.ToString();
-                var     key     = new JsonKey(keyStr);
+                var key  = new JsonKey(p.key);
                 var node = nodeStack[nodeStack.Count - 1];
                 if (node.children.TryGetValue(key, out PatchNode patch)) {
                     switch (patch.patchType) {
