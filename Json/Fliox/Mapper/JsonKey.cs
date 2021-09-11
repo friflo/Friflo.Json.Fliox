@@ -19,6 +19,8 @@ namespace Friflo.Json.Fliox.Mapper
         public static readonly  JsonKeyComparer         Comparer = new JsonKeyComparer();
         public static readonly  JsonKeyEqualityComparer Equality = new JsonKeyEqualityComparer();
 
+        /// Calling this constructor should be the last option as it may force a string creation.
+        /// Use alternative constructors is input type is already refined.
         public JsonKey (string str)
         {
             if (str == null) {
