@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Burst;
+using Friflo.Json.Burst.Utils;
 
 namespace Friflo.Json.Fliox.Mapper
 {
@@ -43,7 +44,25 @@ namespace Friflo.Json.Fliox.Mapper
             this.lng    = 0;
         }
         
-        public JsonKey (in Bytes bytes) : this (bytes.ToString()) { } // todo optimize: could be done without ToString()
+        public JsonKey (ref Bytes bytes, ref ValueParser valueParser) {
+            if (bytes.IsIntegral()) {
+                this.type   = JsonKeyType.Long;
+                this.str    = null;
+                var error = new Bytes();
+                this.lng    = valueParser.ParseLong(ref bytes, ref error, out bool success);
+                if (!success)
+                    throw new InvalidOperationException("expect a valid integral type");
+                guid        = new Guid();
+                return;
+            }
+            str = bytes.ToString();
+            if (Guid.TryParse(str, out guid)) {
+                type   = JsonKeyType.Guid;
+            } else {
+                type   = JsonKeyType.String;
+            }
+            this.lng    = 0;
+        }
         
         public JsonKey (long lng) {
             this.type   = JsonKeyType.Long;

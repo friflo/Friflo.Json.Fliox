@@ -27,12 +27,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Key
         
         public override JsonKey ReadKey (ref Reader reader, out bool success) {
             ref var parser = ref reader.parser;
-            if (parser.key.IsIntegral()) {
-                var lng = parser.valueParser.ParseLong(ref parser.key, ref parser.errVal, out success);
-                return new JsonKey(lng);
-            }
             success = true;
-            return new JsonKey(parser.key);
+            return new JsonKey(ref parser.key, ref parser.valueParser);
         }
         
         public override JsonKey     ToJsonKey      (in JsonKey key) {

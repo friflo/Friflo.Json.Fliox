@@ -50,11 +50,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             switch (ev) {
                 case JsonEvent.ValueString:
                     success = true;
-                    if (parser.value.IsIntegral()) {
-                        var lng = parser.ValueAsLong(out success);
-                        return new JsonKey(lng);
-                    }
-                    return new JsonKey(parser.value);
+                    return new JsonKey(ref parser.value, ref parser.valueParser);
                 default:
                     throw new InvalidOperationException($"JsonKey - unexpected event: {ev}");
             }

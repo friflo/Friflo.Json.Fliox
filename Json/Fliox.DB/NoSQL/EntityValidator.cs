@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     case JsonEvent.ValueString:
                         if (parser.key.IsEqualBytes(ref idKey)) {
                             error = null;
-                            keyValue = new JsonKey(parser.value);
+                            keyValue = new JsonKey(ref parser.value, ref parser.valueParser);
                             return true;
                         }
                         break;
