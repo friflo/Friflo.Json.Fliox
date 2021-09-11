@@ -241,18 +241,9 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         public void WriteGuid (in Guid guid) {
-#if UNITY_5_3_OR_NEWER
-            WriteString(guid.ToString());
-#else
-            var span = new Span<char>(charBuf);
-            if (!guid.TryFormat(span, out int len))
-                throw new InvalidOperationException($"Failed writing Guid: {guid}");
             bytes.AppendChar('\"');
-            for (int n = 0; n < len; n++) {
-                bytes.AppendChar(charBuf[n]);
-            }
+            bytes.AppendGuid(guid, charBuf);
             bytes.AppendChar('\"');
-#endif
         }
     }
 }

@@ -486,5 +486,22 @@ namespace Friflo.Json.Burst
             buffer.array[end++] = (byte)c1;
             hc = BytesConst.notHashed;
         }
+        
+        public void AppendGuid (in Guid guid, char[] buf) {
+#if UNITY_5_3_OR_NEWER
+            AppendString(guid.ToString());
+#else
+            var dest = new Span<char>(buf);
+            if (!guid.TryFormat(dest, out var len))
+                throw new InvalidOperationException($"Guid.TryFormat failed: {guid}");
+            EnsureCapacity(len);
+            int thisEnd = end;
+            for (int n = 0; n < len; n++) {
+                buffer.array[thisEnd + n] = (byte)buf[n];
+            }
+            end += len;
+            hc = BytesConst.notHashed;
+#endif
+        }
     }
 }
