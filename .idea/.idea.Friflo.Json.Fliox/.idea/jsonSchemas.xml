@@ -13,7 +13,7 @@
                 <list>
                   <Item>
                     <option name="directory" value="true" />
-                    <option name="path" value="Json.Tests/assets~/Graph/UserStore/Role" />
+                    <option name="path" value="Json.Tests/assets~/DB/UserStore/Role" />
                     <option name="mappingKind" value="Directory" />
                   </Item>
                 </list>
@@ -30,7 +30,7 @@
                 <list>
                   <Item>
                     <option name="directory" value="true" />
-                    <option name="path" value="Json.Tests/assets~/Graph/UserStore/UserCredential" />
+                    <option name="path" value="Json.Tests/assets~/DB/UserStore/UserCredential" />
                     <option name="mappingKind" value="Directory" />
                   </Item>
                 </list>
@@ -47,7 +47,7 @@
                 <list>
                   <Item>
                     <option name="directory" value="true" />
-                    <option name="path" value="Json.Tests/assets~/Graph/UserStore/UserPermission" />
+                    <option name="path" value="Json.Tests/assets~/DB/UserStore/UserPermission" />
                     <option name="mappingKind" value="Directory" />
                   </Item>
                 </list>

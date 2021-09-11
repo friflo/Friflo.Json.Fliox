@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Main
         }
         
         public static async Task FileDbThroughput() {
-            var db = new FileDatabase("./Json.Tests/assets~/Graph/testConcurrencyDb");
+            var db = new FileDatabase("./Json.Tests/assets~/DB/testConcurrencyDb");
             await TestStore.ConcurrentAccess(db, 4, 0, 1_000_000, false);
         }
         
