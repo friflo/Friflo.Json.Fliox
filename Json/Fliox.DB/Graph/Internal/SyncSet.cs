@@ -298,7 +298,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             };
             foreach (var read in _reads) {
                 List<References> references = null;
-                if (read.refsTask.subRefs.Count >= 0) {
+                if (read.refsTask.subRefs.Count > 0) {
                     references = new List<References>(_reads.Count);
                     AddReferences(references, read.refsTask.subRefs);
                 }
