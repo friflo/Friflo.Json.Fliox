@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         }
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
-            var ids     = keyValues.Keys.ToHashSet(JsonKey.Equality);
+            var ids     = keyValues.Keys.ToHashSet(JsonKey.Equality);  // TAG_PERF
             var result  = await FilterEntityIds(command, ids, messageContext).ConfigureAwait(false);
             return result;
         }

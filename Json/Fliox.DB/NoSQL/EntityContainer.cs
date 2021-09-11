@@ -83,10 +83,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             var entityPatches = patchEntities.patches;
             var ids = entityPatches.Select(patch => patch.Key).ToHashSet(JsonKey.Equality);
             // Read entities to be patched
-            var readTask = new ReadEntities {ids = ids};
+            var readTask = new ReadEntities { ids = ids };
             var readResult = await ReadEntities(readTask, messageContext).ConfigureAwait(false);
             if (readResult.Error != null) {
-                return new PatchEntitiesResult {Error = readResult.Error};
+                return new PatchEntitiesResult { Error = readResult.Error };
             }
             var entities = readResult.entities;
             if (entities.Count != ids.Count)
@@ -213,7 +213,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                         // selectorResults[n] contains Select() result of selectors[n] 
                         var entityRefs = selectorResults[n].AsJsonKeys();
                         var referenceResult = referenceResults[n];
-                        referenceResult.ids.UnionWith(entityRefs);
+                        referenceResult.ids.UnionWith(entityRefs);  // TAG_PERF (count & combine)
                     }
                 }
             }
@@ -239,7 +239,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 var ids = referenceResult.ids;
                 if (ids.Count == 0)
                     continue;
-                var refIdList   = ids.ToHashSet(JsonKey.Equality);
+                var refIdList   = ids;
                 var readRefIds  = new ReadEntities {ids = refIdList};
                 var refEntities = await refCont.ReadEntities(readRefIds, messageContext).ConfigureAwait(false);
                 var subPath = $"{selectorPath} -> {reference.selector}";

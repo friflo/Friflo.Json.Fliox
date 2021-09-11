@@ -25,8 +25,8 @@ namespace Friflo.Json.Fliox.DB.Sync
                 reads = new List<ReadEntitiesResult>(reads.Count)
             };
             // Optimization:
-            // Combine all reads to a single read to call ReadEntities() only once instead of #reads times
-            var combinedRead = new ReadEntities { ids = new HashSet<JsonKey>(JsonKey.Equality) };
+            // Count & Combine all reads to a single read to call ReadEntities() only once instead of #reads times
+            var combineCount = 0;
             foreach (var read in reads) {
                 if (read == null)
                     return InvalidTask("elements in reads must not be null");
@@ -38,6 +38,11 @@ namespace Friflo.Json.Fliox.DB.Sync
                 }
                 if (!ValidReferences(read.references, out var error))
                     return error;
+                combineCount += read.ids.Count;
+            }
+            // Combine
+            var combinedRead = new ReadEntities { ids = new HashSet<JsonKey>(combineCount, JsonKey.Equality) };
+            foreach (var read in reads) {
                 combinedRead.ids.UnionWith(read.ids);
             }
             var entityContainer = database.GetOrCreateContainer(container);

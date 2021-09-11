@@ -137,7 +137,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                     await store.Sync();
                 }
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var expected = IsDebug() ? Is.InRange(61608, 61648) : Is.InRange(58744, 58744); // Test Debug & Release
+                var expected = IsDebug() ? Is.InRange(48744, 48784) : Is.InRange(45808, 45848); // Test Debug & Release
                 That(diff, expected);
             }
         }

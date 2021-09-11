@@ -308,8 +308,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                     ids.Add(id);
                 }
                 var req = new ReadEntities {
-                    ids = ids,
-                    references = references
+                    ids         = ids,
+                    references  = references
                 };
                 readList.reads.Add(req);
             }

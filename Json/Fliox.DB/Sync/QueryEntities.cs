@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.DB.Sync
             }
             result.container    = container;
             result.filterLinq   = filterLinq;
-            result.ids          = entities.Keys.ToHashSet(JsonKey.Equality);
+            result.ids          = entities.Keys.ToHashSet(JsonKey.Equality); // TAG_PERF
             result.references   = queryRefsResults.references;
             return result;
         }
