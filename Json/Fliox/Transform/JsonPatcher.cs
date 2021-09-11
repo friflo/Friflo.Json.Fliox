@@ -133,7 +133,7 @@ namespace Friflo.Json.Fliox.Transform
                         switch (patch.patchType) {
                             case PatchType.Replace:
                             case PatchType.Add:
-                                var key = child.Key.AsString();
+                                var key = child.Key.AsString();  // todo optimize: could append without new string
                                 keyBytes.Clear();
                                 keyBytes.AppendString(key);
                                 patchJson.Clear();

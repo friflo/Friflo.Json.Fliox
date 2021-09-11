@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             switch (pathNode.nodeType) {
                 case NodeType.Member:
                     sb.Append('/');
-                    sb.Append(pathNode.name.AsString());
+                    sb.Append(pathNode.name.AsString()); // todo optimize: could append without new string
                     if (!addValue)
                         return;
                     Indent(sb, startPos, indent);
