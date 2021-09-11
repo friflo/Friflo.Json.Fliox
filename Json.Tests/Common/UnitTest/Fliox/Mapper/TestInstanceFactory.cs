@@ -112,10 +112,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 AreEqual(json, jsonResult);
                 
                 reader.Read<IAnimal>("{\"animalType\":\"Tiger\"}");
-                StringAssert.Contains("No [Fri.Polymorph] type declared for discriminant: 'Tiger' on type: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestInstanceFactory+IAnimal", reader.Error.msg.ToString());
+                StringAssert.Contains("No [Fri.Polymorph] type declared for discriminant: 'Tiger' on type: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestInstanceFactory+IAnimal", reader.Error.msg.AsString());
                 
                 reader.Read<IAnimal>("{}");
-                StringAssert.Contains("Expect discriminator \"animalType\": \"...\" as first JSON member for type: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestInstanceFactory+IAnimal", reader.Error.msg.ToString());
+                StringAssert.Contains("Expect discriminator \"animalType\": \"...\" as first JSON member for type: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestInstanceFactory+IAnimal", reader.Error.msg.AsString());
                 
                 var e = Throws<InvalidOperationException>(() => reader.Read<TestIncompatiblePolymorph>("{}"));
                 AreEqual("[Fri.Polymorph(Book)] type must extend annotated type: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestInstanceFactory+TestIncompatiblePolymorph", e.Message);

@@ -150,7 +150,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     return true;
                 }
             }
-            return validator.ErrorType("Invalid enum value.", value.ToString(), true, type.name, type.@namespace, parent);
+            return validator.ErrorType("Invalid enum value.", value.AsString(), true, type.name, type.@namespace, parent);
         }
         
         internal static bool FindField (ValidationType type, TypeValidator validator, out ValidationField field, bool[] foundFields) {
@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 }
                 return true;
             }
-            validator.ErrorValue("Unknown property:", parser.key.ToString(), true, type);
+            validator.ErrorValue("Unknown property:", parser.key.AsString(), true, type);
             field = null;
             return false;
         }
@@ -180,9 +180,9 @@ namespace Friflo.Json.Fliox.Schema.Validation
             isString = false;
             switch (parser.Event) {
                 case JsonEvent.ValueString:     isString = true;
-                                                return parser.value.ToString();
+                                                return parser.value.AsString();
                 case JsonEvent.ObjectStart:     return "object";
-                case JsonEvent.ValueNumber:     return parser.value.ToString();
+                case JsonEvent.ValueNumber:     return parser.value.AsString();
                 case JsonEvent.ValueBool:       return parser.boolValue ? "true" : "false";
                 case JsonEvent.ValueNull:       return "null";
                 default:

@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Mapper
                 str     = temp;
             } else {
                 type    = JsonKeyType.String;
-                str     = temp ?? bytes.ToString();
+                str     = temp ?? bytes.AsString();
             }
             this.lng    = 0;
         }

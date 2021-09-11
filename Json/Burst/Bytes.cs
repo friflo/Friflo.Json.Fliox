@@ -338,7 +338,7 @@ namespace Friflo.Json.Burst
             return ToString(buffer, start, end - start);
         }
 
-        // todo: replace calls by AsString()
+        /// Note: Use <see cref="AsString"/> instead to simplify code navigation
         public override string ToString() {
             return ToString(buffer, start, end - start);
         }

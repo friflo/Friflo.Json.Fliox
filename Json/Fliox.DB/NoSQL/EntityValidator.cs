@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 switch (ev) {
                     case JsonEvent.ValueString:
                         if (parser.key.IsEqualBytes(ref idKey) && !parser.value.IsEqualString(id.AsString())) {
-                            error = $"entity id does not match key. id: {parser.value.ToString()}";
+                            error = $"entity id does not match key. id: {parser.value.AsString()}";
                             return false;
                         }
                         break;
@@ -48,12 +48,12 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     case JsonEvent.ObjectStart:
                         parser.SkipTree();
                         if (parser.error.ErrSet) {
-                            error = parser.error.msg.ToString();
+                            error = parser.error.msg.AsString();
                             return false;
                         }
                         break;
                     case JsonEvent.Error:
-                        error = parser.error.msg.ToString();
+                        error = parser.error.msg.AsString();
                         return false;
                     case JsonEvent.ObjectEnd:
                         ev = parser.NextEvent();
@@ -99,12 +99,12 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     case JsonEvent.ObjectStart:
                         parser.SkipTree();
                         if (parser.error.ErrSet) {
-                            error = parser.error.msg.ToString();
+                            error = parser.error.msg.AsString();
                             return false;
                         }
                         break;
                     case JsonEvent.Error:
-                        error = parser.error.msg.ToString();
+                        error = parser.error.msg.AsString();
                         return false;
                     case JsonEvent.ObjectEnd:
                         ev = parser.NextEvent();

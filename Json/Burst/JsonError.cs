@@ -52,14 +52,14 @@ namespace Friflo.Json.Burst
         }
     
         public override string ToString () {
-            return msg.ToString();
+            return msg.AsString();
         }
         
         public string GetMessageBody () {
             var body = msg;
             body.start  = msgBodyStart;
             body.end    = msgBodyEnd;
-            return body.ToString();
+            return body.AsString();
         }   
         
     }

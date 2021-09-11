@@ -83,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             {
                 read.Read<string>(invalid);
                 IsFalse(read.Success);
-                AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1", read.Error.msg.ToString());
+                AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1", read.Error.msg.AsString());
                 AreEqual(1, read.Error.Pos);
             }
         }
@@ -118,10 +118,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             {
                 // --- Write ---
                 write.Write(1, ref dst.bytes);                          // generic
-                AreEqual("1", dst.bytes.ToString());
+                AreEqual("1", dst.bytes.AsString());
                 
                 write.WriteObject(1, ref dst.bytes);                    // non generic 
-                AreEqual("1", dst.bytes.ToString());
+                AreEqual("1", dst.bytes.AsString());
             }
         }
 

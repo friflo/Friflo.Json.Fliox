@@ -151,77 +151,77 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     AreEqual(null,                      Read<double?>       (@null));
 
                     enc.Read<double>(@null);
-                    StringAssert.Contains("JsonReader/error: Cannot assign null to double. Expect: System.Double, got: null path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("JsonReader/error: Cannot assign null to double. Expect: System.Double, got: null path: '(root)'", enc.Error.msg.AsString());
 
                     enc.Read<double>(@null);
-                    StringAssert.Contains("Cannot assign null to double. Expect: System.Double, got: null path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to double. Expect: System.Double, got: null path: '(root)'", enc.Error.msg.AsString());
 
                     // error cases
                     enc.Read<double>(@true);
-                    StringAssert.Contains("Cannot assign bool to double. Expect: System.Double, got: true path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign bool to double. Expect: System.Double, got: true path: '(root)'", enc.Error.msg.AsString());
                     enc.Read<double>(hello);
-                    StringAssert.Contains("Cannot assign string to double. Expect: System.Double, got: 'hello' path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign string to double. Expect: System.Double, got: 'hello' path: '(root)'", enc.Error.msg.AsString());
                     enc.Read<double>(arrNum);
-                    StringAssert.Contains("Cannot assign array to double. Expect: System.Double, got: [...] path: '[]'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign array to double. Expect: System.Double, got: [...] path: '[]'", enc.Error.msg.AsString());
                     enc.Read<double>(mapNum);
-                    StringAssert.Contains("Cannot assign object to double. Expect: System.Double, got: {...} path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign object to double. Expect: System.Double, got: {...} path: '(root)'", enc.Error.msg.AsString());
                     enc.Read<long>(bigInt);
-                    StringAssert.Contains("Value out of range when parsing long:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Value out of range when parsing long:", enc.Error.msg.AsString());
                     enc.Read<float>(bigInt);
                     AreEqual(true, enc.Error.ErrSet);
-                    // StringAssert.Contains("float value out of range. val:", enc.Error.msg.ToString()); // Unity has different error message
+                    // StringAssert.Contains("float value out of range. val:", enc.Error.msg.AsString()); // Unity has different error message
                     enc.Read<double>   (dblOverflow);
                     AreEqual(true, enc.Error.ErrSet);
-                    // StringAssert.Contains("double value out of range. val:", enc.Error.msg.ToString());// Unity has different error message
+                    // StringAssert.Contains("double value out of range. val:", enc.Error.msg.AsString());// Unity has different error message
 
 
                     AreEqual(12.5,                      Read<float>    (@double));
                     AreEqual(12.5,                      Read<float?>   (@double));
                     AreEqual(null,                      Read<float?>   (@null));
                     enc.Read<float>(@null);
-                    StringAssert.Contains("Cannot assign null to float. Expect: System.Single, got: null path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to float. Expect: System.Single, got: null path: '(root)'", enc.Error.msg.AsString());
 
                     AreEqual(42,        Read<long>     (@long));
                     AreEqual(42,        Read<long>     (@long));
                     AreEqual(42,        Read<long?>    (@long));
                     AreEqual(null,      Read<long?>    (@null));
                     enc.Read<long>(@null);
-                    StringAssert.Contains("Cannot assign null to long. Expect: System.Int64, got: null path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to long. Expect: System.Int64, got: null path: '(root)'", enc.Error.msg.AsString());
 
                     AreEqual(42,        Read<int>      (@long));
                     AreEqual(42,        Read<int>      (@long));
                     AreEqual(42,        Read<int?>     (@long));
                     AreEqual(null,      Read<int?>     (@null));
                     enc.Read<int>(@null);
-                    StringAssert.Contains("Cannot assign null to int. Expect: System.Int32, got: null path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to int. Expect: System.Int32, got: null path: '(root)'", enc.Error.msg.AsString());
 
                     AreEqual(42,        Read<short>    (@long));
                     AreEqual(42,        Read<short>    (@long));
                     AreEqual(42,        Read<short?>   (@long));
                     AreEqual(null,      Read<short?>   (@null));
                     enc.Read<short>(@null);
-                    StringAssert.Contains("Cannot assign null to short. Expect: System.Int16, got: null path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to short. Expect: System.Int16, got: null path: '(root)'", enc.Error.msg.AsString());
 
                     AreEqual(42,        Read<byte>     (@long));
                     AreEqual(42,        Read<byte>     (@long));
                     AreEqual(42,        Read<byte?>    (@long));
                     AreEqual(null,      Read<byte?>    (@null));
                     enc.Read<byte>(@null);
-                    StringAssert.Contains("Cannot assign null to byte. Expect: System.Byte, got: null path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to byte. Expect: System.Byte, got: null path: '(root)'", enc.Error.msg.AsString());
 
                     AreEqual(true,      Read<bool>     (@true));
                     AreEqual(true,      Read<bool>     (@true));
                     AreEqual(true,      Read<bool?>    (@true));
                     AreEqual(null,      Read<bool?>    (@null));
                     enc.Read<bool>(@null);
-                    StringAssert.Contains("Cannot assign null to bool. Expect: System.Boolean, got: null path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to bool. Expect: System.Boolean, got: null path: '(root)'", enc.Error.msg.AsString());
 
                     
                     AreEqual(null,      Read<object>(@null));
                     AreEqual(JsonEvent.EOF, enc.JsonEvent);
                     
                     AreEqual(null,      enc.Read<object>(invalid));
-                    AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1",     enc.Error.msg.ToString());
+                    AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1",     enc.Error.msg.AsString());
                     
                     // ------------------------------------- class -------------------------------------
                     {
@@ -233,7 +233,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                         };
                         var value = Read<TestMapperClass>(testClass);
                         if (JsonEvent.EOF != enc.JsonEvent)
-                            Fail(enc.Error.msg.ToString());
+                            Fail(enc.Error.msg.AsString());
                         AreEqual(new SkipInfo { arrays=1, booleans= 1, floats= 0, integers= 3, nulls= 1, objects= 1, strings= 1 }, enc.SkipInfo);
                         AreEqual(expect, value);
                     }
@@ -248,20 +248,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     {
                         var result = Read<TestMapperClass>(jsonResult);
                         if (JsonEvent.Error == enc.JsonEvent)
-                            Fail(enc.Error.msg.ToString());
+                            Fail(enc.Error.msg.AsString());
                         AreEqual(root, result);
                     }
                     enc.Read<TestMapperClass>(mapNull);
-                    StringAssert.Contains("Cannot assign null to int. Expect: System.Int32, got: null path: 'key'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to int. Expect: System.Int32, got: null path: 'key'", enc.Error.msg.AsString());
                     
                     enc.Read<TestMapperClass>(mapStr);
-                    StringAssert.Contains("Cannot assign string to int. Expect: System.Int32, got: 'value' path: 'key'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign string to int. Expect: System.Int32, got: 'value' path: 'key'", enc.Error.msg.AsString());
                     
                     enc.Read<TestMapperClass>(mapNum2);
-                    StringAssert.Contains("Cannot assign number to string. Expect: System.String, got: 44 path: 'str'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign number to string. Expect: System.String, got: 44 path: 'str'", enc.Error.msg.AsString());
 
                     enc.Read<TestMapperClass>(mapBool);
-                    StringAssert.Contains("Cannot assign bool to int. Expect: System.Int32, got: true path: 'key'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign bool to int. Expect: System.Int32, got: true path: 'key'", enc.Error.msg.AsString());
                     
 
                     // ------------------------------------- Array -------------------------------------
@@ -275,11 +275,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     AreEqual(null,                Read<bool[]>      (@null));           AreEqual(JsonEvent.EOF, enc.JsonEvent);
                     
                     enc.Read<TestStruct[]>(arrNull);
-                    StringAssert.Contains("Cannot assign null to class. Expect: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestStruct, got: null", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to class. Expect: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestStruct, got: null", enc.Error.msg.AsString());
                     enc.Read<int[]>(arrNull);
-                    StringAssert.Contains("Cannot assign null to int. Expect: System.Int32, got: null path: '[0]'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to int. Expect: System.Int32, got: null path: '[0]'", enc.Error.msg.AsString());
                     enc.Read<int[]>(arrStr);
-                    StringAssert.Contains("Cannot assign string to int. Expect: System.Int32, got: 'A' path: '[0]'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign string to int. Expect: System.Int32, got: 'A' path: '[0]'", enc.Error.msg.AsString());
 
                     AreEqual(new [] {"A","B","C"},    Read<string[]>    (arrStr));          AreEqual(JsonEvent.EOF, enc.JsonEvent);
                     {
@@ -386,32 +386,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     }
                     
                     enc.Read<List<int>>(arrNull);
-                    StringAssert.Contains("Cannot assign null to int. Expect: System.Int32, got: null path: '[0]'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to int. Expect: System.Int32, got: null path: '[0]'", enc.Error.msg.AsString());
                     
                     enc.Read<List<int>>(arrStr);
-                    StringAssert.Contains("Cannot assign string to int. Expect: System.Int32, got: 'A' path: '[0]'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign string to int. Expect: System.Int32, got: 'A' path: '[0]'", enc.Error.msg.AsString());
                     
                     enc.Read<List<string>>(arrNum);
-                    StringAssert.Contains("Cannot assign number to string. Expect: System.String, got: 1 path: '[0]'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign number to string. Expect: System.String, got: 1 path: '[0]'", enc.Error.msg.AsString());
 
                     enc.Read<List<string>>(arrBln);
-                    StringAssert.Contains("Cannot assign bool to string. Expect: System.String, got: true path: '[0]'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign bool to string. Expect: System.String, got: true path: '[0]'", enc.Error.msg.AsString());
                     
                     enc.Read<List<string>>(mapStr);
-                    StringAssert.Contains("Cannot assign object to List. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign object to List. Expect:", enc.Error.msg.AsString());
 
                     // --------------------------------- Dictionary<K,V> ---------------------------------
                     enc.Read<Dictionary<string, long>>(arrNull);
-                    StringAssert.Contains("Cannot assign array to Dictionary. Expect: System.Collections.Generic.Dictionary`2[System.String,System.Int64], got: [...]", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign array to Dictionary. Expect: System.Collections.Generic.Dictionary`2[System.String,System.Int64], got: [...]", enc.Error.msg.AsString());
                         
                     enc.Read<Dictionary<string, long>>(arrStr);
-                    StringAssert.Contains("Cannot assign array to Dictionary. Expect: System.Collections.Generic.Dictionary`2[System.String,System.Int64], got: [...]", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign array to Dictionary. Expect: System.Collections.Generic.Dictionary`2[System.String,System.Int64], got: [...]", enc.Error.msg.AsString());
                         
                     enc.Read<Dictionary<string, string>>(arrNum);
-                    StringAssert.Contains("Cannot assign array to Dictionary. Expect: System.Collections.Generic.Dictionary`2[System.String,System.String], got: [...]", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign array to Dictionary. Expect: System.Collections.Generic.Dictionary`2[System.String,System.String], got: [...]", enc.Error.msg.AsString());
                         
                     enc.Read<Dictionary<string, string>>(arrBln);
-                    StringAssert.Contains("Cannot assign array to Dictionary. Expect:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign array to Dictionary. Expect:", enc.Error.msg.AsString());
                     {
                         var e = Assert.Throws<NotSupportedException>(() => enc.Read<Dictionary<UnknownKey, string>>(mapStr));
                         AreEqual("Type not supported. Found no TypeMapper in TypeStore Type: System.Collections.Generic.Dictionary`2[Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.UnknownKey,System.String]", e.Message);              
@@ -504,7 +504,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     // ---- BigInteger ---
                     AreEqual(new TestStruct{ key = 42 },        Read<TestStruct>    (mapNum));
                     AreEqual(default(TestStruct),               enc.Read<TestStruct>(@null));
-                    StringAssert.Contains("Cannot assign null to class. Expect: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestStruct, got: null path: '(root)'", enc.Error.msg.ToString());
+                    StringAssert.Contains("Cannot assign null to class. Expect: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestStruct, got: null path: '(root)'", enc.Error.msg.AsString());
                     {
                         BigInteger expect = BigInteger.Parse(bigInt);
                         AreEqual(expect, Read<BigInteger>(bigIntStr));
@@ -528,7 +528,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                         AreEqual(bigIntStr, result);
                     }
                     enc.Read<BigInteger>(hello);
-                    StringAssert.Contains("Failed parsing BigInt. value:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Failed parsing BigInt. value:", enc.Error.msg.AsString());
                     
                     // --- DateTime ---
                     {
@@ -548,7 +548,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                         AreEqual(dateTimeStr, result);
                     }
                     enc.Read<DateTime>(hello);
-                    StringAssert.Contains("Failed parsing DateTime. value:", enc.Error.msg.ToString());
+                    StringAssert.Contains("Failed parsing DateTime. value:", enc.Error.msg.AsString());
 
                     // Ensure minimum required type lookups
                     if (n > 0) {

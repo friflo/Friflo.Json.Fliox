@@ -43,12 +43,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 AreEqual(EnumClass.Value1, enc.Read<EnumClass>(value3));
                 
                 enc.Read<EnumClass>(hello);
-                StringAssert.Contains(" Cannot assign string to enum value. Value unknown. Expect: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.EnumClass, got: 'hello'", enc.Error.msg.ToString());
+                StringAssert.Contains(" Cannot assign string to enum value. Value unknown. Expect: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.EnumClass, got: 'hello'", enc.Error.msg.AsString());
 
                 AreEqual(EnumClass.Value1, enc.Read<EnumClass>(num11));
                 
                 enc.Read<EnumClass>(num999);
-                StringAssert.Contains("Cannot assign number to enum value. Value unknown. Expect: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.EnumClass, got: 999", enc.Error.msg.ToString());
+                StringAssert.Contains("Cannot assign number to enum value. Value unknown. Expect: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.EnumClass, got: 999", enc.Error.msg.AsString());
 
                 var result = write.Write(EnumClass.Value1);
                 AreEqual("\"Value1\"", result);
@@ -108,7 +108,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 IsNull(result.recField);
 
                 enc.Read<RecursiveClass>(recDepth2);
-                AreEqual("JsonParser/JSON error: nesting in JSON document exceed maxDepth: 1 path: 'recField' at position: 13", enc.Error.msg.ToString());
+                AreEqual("JsonParser/JSON error: nesting in JSON document exceed maxDepth: 1 path: 'recField' at position: 13", enc.Error.msg.AsString());
                 
                 // --- JsonWriter
                 // maxDepth: 1
@@ -163,7 +163,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 var result = reader.Read<Derived>(derivedJson);
                 result.AssertFields();
                 var jsonResult = writer.Write(result);
-                AreEqual(derivedJson.ToString(), jsonResult);
+                AreEqual(derivedJson.AsString(), jsonResult);
             }
         }
 

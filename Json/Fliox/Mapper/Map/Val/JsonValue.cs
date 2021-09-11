@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             ref var serializer = ref stub.jsonSerializer;
             serializer.InitSerializer();
             serializer.WriteTree(ref reader.parser);
-            var json = serializer.json.ToString();
+            var json = serializer.json.AsString();
             var patchValue = new JsonValue { json = json };
             success = true;
             return patchValue;

@@ -23,13 +23,13 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                 case JsonEvent.ValueString:
                     if (value.Len > 0 && value.buffer.array[value.Len - 1] == 'n')
                         value.end--;
-                    if (!BigInteger.TryParse(value.ToString(), out BigInteger ret))
-                        return reader.ErrorMsg<BigInteger>("Failed parsing BigInt. value: ", value.ToString(), out success);
+                    if (!BigInteger.TryParse(value.AsString(), out BigInteger ret))
+                        return reader.ErrorMsg<BigInteger>("Failed parsing BigInt. value: ", value.AsString(), out success);
                     success = true;
                     return ret;
                 case  JsonEvent.ValueNumber:
-                    if (!BigInteger.TryParse(value.ToString(), out BigInteger ret2))
-                        return reader.ErrorMsg<BigInteger>("Failed parsing BigInt. value: ", value.ToString(), out success);
+                    if (!BigInteger.TryParse(value.AsString(), out BigInteger ret2))
+                        return reader.ErrorMsg<BigInteger>("Failed parsing BigInt. value: ", value.AsString(), out success);
                     success = true;
                     return ret2;
                 case JsonEvent.ValueNull:

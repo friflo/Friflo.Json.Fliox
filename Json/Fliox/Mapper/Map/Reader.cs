@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             if (errorHandler != null)
                 errorHandler.HandleError(pos, ref message);
             else
-                throw new JsonReaderException(message.ToString(), pos);
+                throw new JsonReaderException(message.AsString(), pos);
         }
 
         public void Dispose() {

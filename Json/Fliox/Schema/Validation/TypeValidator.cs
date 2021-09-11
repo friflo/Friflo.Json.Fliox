@@ -100,11 +100,11 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     return ErrorType("Expect discriminator as first member.", ev.ToString(), false, unionType.discriminatorStr, null, type);
                 }
                 if (!parser.key.IsEqual(ref unionType.discriminator)) {
-                    return ErrorType("Invalid discriminator.", parser.key.ToString(), true, unionType.discriminatorStr, null, type);
+                    return ErrorType("Invalid discriminator.", parser.key.AsString(), true, unionType.discriminatorStr, null, type);
                 }
                 if (!ValidationUnion.FindUnion(unionType, ref parser.value, out var newType)) {
                     var expect = unionType.TypesAsString;
-                    return ErrorType("Invalid discriminant.", parser.value.ToString(), true, expect, null, type);
+                    return ErrorType("Invalid discriminant.", parser.value.AsString(), true, expect, null, type);
                 }
                 type = newType;
             }
@@ -277,21 +277,21 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     return true;
                 
                 case TypeId.BigInteger:
-                    var str = value.ToString();
+                    var str = value.AsString();
                     if (bigInt.IsMatch(str)) {
                         return true;
                     }
                     return ErrorValue("Invalid BigInteger:", str, true, parent);
                 
                 case TypeId.DateTime:
-                    str = value.ToString();
+                    str = value.AsString();
                     if (dateTime.IsMatch(str)) {
                         return true;
                     }
                     return ErrorValue("Invalid DateTime:", str, true, parent);
                 
                 case TypeId.Guid:
-                    str = value.ToString();
+                    str = value.AsString();
                     if (guid.IsMatch(str)) {
                         return true;
                     }
@@ -306,7 +306,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         }
         
         private static string Truncate (ref Bytes value) {
-            var str = value.ToString();
+            var str = value.AsString();
             if (str.Length < 20)
                 return str;
             return str.Substring(20) + "...";
@@ -320,11 +320,11 @@ namespace Friflo.Json.Fliox.Schema.Validation
                 case TypeId.Int32:
                 case TypeId.Int64:
                     if (parser.isFloat) {
-                        return ErrorType("Invalid integer.", parser.value.ToString(), false, type.name, type.@namespace, owner);
+                        return ErrorType("Invalid integer.", parser.value.AsString(), false, type.name, type.@namespace, owner);
                     }
                     var value = parser.ValueAsLong(out bool success);
                     if (!success) {
-                        return ErrorType("Invalid integer.", parser.value.ToString(), false, type.name, type.@namespace, owner);
+                        return ErrorType("Invalid integer.", parser.value.AsString(), false, type.name, type.@namespace, owner);
                     }
                     switch (typeId) {
                         case TypeId.Uint8: if (          0 <= value && value <=        255) { return true; } break;   
@@ -334,13 +334,13 @@ namespace Friflo.Json.Fliox.Schema.Validation
                         default:
                             throw new InvalidOperationException("cant be reached");
                     }
-                    return ErrorType("Integer out of range.", parser.value.ToString(), false, type.name, type.@namespace, owner);
+                    return ErrorType("Integer out of range.", parser.value.AsString(), false, type.name, type.@namespace, owner);
                 
                 case TypeId.Float:
                 case TypeId.Double:
                     return true;
                 default:
-                    return ErrorType("Incorrect type.", parser.value.ToString(), false, type.name, type.@namespace, owner);
+                    return ErrorType("Incorrect type.", parser.value.AsString(), false, type.name, type.@namespace, owner);
             }
         }
         

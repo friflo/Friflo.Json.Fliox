@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Transform
         private readonly    List<PathNode<JsonSelectResult>>    nodeStack = new List<PathNode<JsonSelectResult>>();
         private readonly    JsonSelect                          reusedSelect = new JsonSelect();
 
-        public              string                              ErrorMessage => targetParser.error.msg.ToString();
+        public              string                              ErrorMessage => targetParser.error.msg.AsString();
 
         public void Dispose() {
             targetParser.Dispose();
@@ -66,22 +66,22 @@ namespace Friflo.Json.Fliox.Transform
                     serializer.InitSerializer();
                     serializer.ObjectStart();
                     serializer.WriteObject(ref targetParser);
-                    var json = serializer.json.ToString();
+                    var json = serializer.json.AsString();
                     JsonSelectResult.Add(json, selectors);
                     return;
                 case JsonEvent.ArrayStart:
                     serializer.InitSerializer();
                     serializer.ArrayStart(true);
                     serializer.WriteArray(ref targetParser);
-                    json = serializer.json.ToString();
+                    json = serializer.json.AsString();
                     JsonSelectResult.Add(json, selectors);
                     return;
                 case JsonEvent.ValueString:
-                    json = targetParser.value.ToString();
+                    json = targetParser.value.AsString();
                     JsonSelectResult.Add(json, selectors);
                     return;
                 case JsonEvent.ValueNumber:
-                    json = targetParser.value.ToString();
+                    json = targetParser.value.AsString();
                     JsonSelectResult.Add(json, selectors);
                     return;
                 case JsonEvent.ValueBool:

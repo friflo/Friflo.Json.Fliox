@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Mapper.Utils
         }
 
         public override string ToString() {
-            return value.ToString();
+            return value.AsString();
         }
     }
 }

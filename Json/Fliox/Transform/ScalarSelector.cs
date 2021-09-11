@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Transform
         private readonly    List<PathNode<ScalarSelectResult>>  nodeStack = new List<PathNode<ScalarSelectResult>>();
         private readonly    ScalarSelect                        reusedSelect = new ScalarSelect();
 
-        public              string                              ErrorMessage => targetParser.error.msg.ToString();
+        public              string                              ErrorMessage => targetParser.error.msg.AsString();
 
         public void Dispose() {
             targetParser.Dispose();
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Transform
                     ScalarSelectResult.Add(new Scalar(ScalarType.Array, "(array)"), selectors);
                     return;
                 case JsonEvent.ValueString:
-                    var str = targetParser.value.ToString();
+                    var str = targetParser.value.AsString();
                     ScalarSelectResult.Add(new Scalar(str), selectors);
                     return;
                 case JsonEvent.ValueNumber:

@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             if (reader.Success)
                 return result;
             var error = reader.Error;
-            throw new JsonReaderException (error.msg.ToString(), error.Pos);
+            throw new JsonReaderException (error.msg.AsString(), error.Pos);
         }
         
         internal static bool TryRead<T>(string json, ObjectReader reader, out T result, out JsonReaderException error) {
@@ -108,7 +108,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                 return true;
             }
             var readError = reader.Error;
-            error = new JsonReaderException (readError.msg.ToString(), readError.Pos);
+            error = new JsonReaderException (readError.msg.AsString(), readError.Pos);
             return false;
         }
     }

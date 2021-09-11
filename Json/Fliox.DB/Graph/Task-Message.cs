@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                 if (reader.Success)
                     return resultValue;
                 var error = reader.Error;
-                throw new JsonReaderException (error.msg.ToString(), error.Pos);
+                throw new JsonReaderException (error.msg.AsString(), error.Pos);
             }
             throw e;
         }
@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                     return true;
                 }
                 var readError = reader.Error;
-                error = new JsonReaderException (readError.msg.ToString(), readError.Pos);
+                error = new JsonReaderException (readError.msg.AsString(), readError.Pos);
                 return false;
             }
             throw e;
