@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.DB.Sync
             sb.Append(": ");
             sb.Append(container);
             sb.Append(" '");
-            sb.Append(id);
+            sb.Append(id.AsString());
             sb.Append("', ");
             if (taskErrorType != TaskErrorResultType.None) {
                 sb.Append(taskErrorType);
