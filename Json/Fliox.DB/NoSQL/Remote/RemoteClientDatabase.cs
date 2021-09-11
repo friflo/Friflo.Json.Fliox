@@ -68,14 +68,14 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                 if (result.statusType == ResponseStatusType.Ok) {
                     var response = reader.Read<DatabaseResponse>(result.body);
                     if (reader.Error.ErrSet)
-                        return new ErrorResponse{message = reader.Error.msg.ToString()};
+                        return new ErrorResponse{message = reader.Error.msg.AsString()};
                     // At this point the returned result.body is valid JSON.
                     // => All entities of a SyncResponse.results have either a valid JSON value or an error. 
                     return response;
                 }
                 var errorResponse = reader.Read<ErrorResponse>(result.body);
                 if (reader.Error.ErrSet)
-                    return new ErrorResponse{message = reader.Error.msg.ToString()};
+                    return new ErrorResponse{message = reader.Error.msg.AsString()};
                 return errorResponse;
             }
         }

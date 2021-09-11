@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                     ObjectReader    reader  = mapper.reader;
                     DatabaseRequest request = ReadRequest (reader, jsonRequest, type);
                     if (reader.Error.ErrSet)
-                        return JsonResponse.CreateResponseError(messageContext, reader.Error.msg.ToString(), ResponseStatusType.Error);
+                        return JsonResponse.CreateResponseError(messageContext, reader.Error.msg.AsString(), ResponseStatusType.Error);
                     DatabaseResponse response = await ExecuteRequest(request, messageContext).ConfigureAwait(false);
                     mapper.WriteNullMembers = false;
                     mapper.Pretty = true;

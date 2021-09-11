@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             if (reader.parser.Event != JsonEvent.ValueString)
                 return reader.HandleEvent(this, out success);
             if (!value.TryParseGuid(reader.charBuf, out slot, out _))
-                return reader.ErrorMsg<Guid>("Failed parsing Guid. value: ", value.ToString(), out success);
+                return reader.ErrorMsg<Guid>("Failed parsing Guid. value: ", value.AsString(), out success);
             success = true;
             return slot;
         }
@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                 return reader.HandleEvent(this, out success);
             ref var value = ref reader.parser.value;
             if (!value.TryParseGuid(reader.charBuf, out var result, out _))
-                return reader.ErrorMsg<Guid?>("Failed parsing Guid. value: ", value.ToString(), out success);
+                return reader.ErrorMsg<Guid?>("Failed parsing Guid. value: ", value.AsString(), out success);
             success = true;
             return result;
         }
