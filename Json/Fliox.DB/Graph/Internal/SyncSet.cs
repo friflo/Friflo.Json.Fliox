@@ -293,7 +293,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             if (_reads == null || _reads.Count == 0)
                 return;
             var readList = new ReadEntitiesList {
-                reads       = new List<ReadEntities>(),
+                reads       = new List<ReadEntities>(_reads.Count),
                 container   = set.name
             };
             foreach (var read in _reads) {

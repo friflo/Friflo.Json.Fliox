@@ -82,6 +82,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         [Fri.Required]  public  Dictionary<JsonKey, EntityValue>    entities = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
         
         internal void AddEntities(Dictionary<JsonKey, EntityValue> add) {
+            entities.EnsureCapacity(entities.Count + add.Count);
             foreach (var entity in add) {
                 entities.TryAdd(entity.Key, entity.Value);
             }

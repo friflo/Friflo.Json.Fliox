@@ -124,7 +124,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 var database    = new MemoryDatabase();
                 var store       = new EntityIdStore(database, typeStore, null);
                 var read = store.intEntities.Read();
-                var ids = new [] { 42 };
+                var ids = new int [100];
+                for (int n = 0; n < 100; n++)
+                    ids[n] = n;
                 read.FindRange(ids);
                 await store.Sync(); // force one time allocations
                 
@@ -135,7 +137,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                     await store.Sync();
                 }
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var expected = IsDebug() ? Is.InRange(6168, 6248) : Is.InRange(5640, 5720); // Test Debug & Release
+                var expected = IsDebug() ? Is.InRange(61608, 61648) : Is.InRange(58744, 58744); // Test Debug & Release
                 That(diff, expected);
             }
         }
