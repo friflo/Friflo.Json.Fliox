@@ -55,14 +55,43 @@ namespace Friflo.Json.Fliox.Mapper
                 guid        = new Guid();
                 return;
             }
-            str = bytes.ToString();
-            if (Guid.TryParse(str, out guid)) {
-                type   = JsonKeyType.Guid;
+#if UNITY_5_3_OR_NEWER
+            var tempStr = bytes.ToString();
+            if (Guid.TryParse(tempStr, out guid)) {
+                type    = JsonKeyType.Guid;
+                str     = tempStr; // different behavior than below (str = null;) - but okay. string is only cached
             } else {
-                type   = JsonKeyType.String;
+                type    = JsonKeyType.String;
+                str     = tempStr;
             }
+#else
+            if (TryParseGuid(ref bytes, valueParser.charBuf, out guid)) {
+                type    = JsonKeyType.Guid;
+                str     = null; 
+            } else {
+                type    = JsonKeyType.String;
+                str     = bytes.ToString();
+            }
+#endif
             this.lng    = 0;
         }
+
+#if !UNITY_5_3_OR_NEWER
+        private static bool TryParseGuid(ref Bytes bytes, char[] charBuf, out Guid guid) {
+            if (charBuf.Length < ValueParser.MaxGuidLength)
+                throw new InvalidOperationException("Insufficient space. Requires: ValueParser.MaxGuidLength");
+            if (bytes.Len > ValueParser.MaxGuidLength) {
+                guid = new Guid();
+                return false;
+            }
+            ref var array   = ref bytes.buffer.array;
+            var start       = bytes.start; 
+            for (int n = 0; n < bytes.Len; n++)
+                charBuf[n] = (char)array[start + n];
+            var span = new ReadOnlySpan<char>(charBuf, 0, bytes.Len);
+            return Guid.TryParse(span, out guid);
+        }
+#endif
         
         public JsonKey (long lng) {
             this.type   = JsonKeyType.Long;
