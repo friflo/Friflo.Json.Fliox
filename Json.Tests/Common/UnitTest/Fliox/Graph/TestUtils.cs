@@ -113,12 +113,36 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 await store.Sync(); // ~ 1 µs
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-#if DEBUG
-                AreEqual(1344, diff);   // Test Release also
-#else
-                AreEqual(1288, diff);   // Test Debug also
-#endif
+                var expected = IsDebug() ? 1344 : 1288; // Test Release & Debug
+                AreEqual(expected, diff);   // Test Release also
             }
+        }
+        
+        [Test]
+        public async Task TestMemorySyncRead() {
+            using (var typeStore = new TypeStore()) {
+                var database    = new MemoryDatabase();
+                var store       = new EntityIdStore(database, typeStore, null);
+                var read = store.intEntities.Read();
+                read.Find(42);
+                await store.Sync(); // force one time allocations
+                
+                var start = GC.GetAllocatedBytesForCurrentThread();
+                read = store.intEntities.Read();
+                read.Find(42);
+                await store.Sync(); // ~ 1 µs
+                var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+                var expected = IsDebug() ? 5768 : 5240; // Test Release & Debug
+                AreEqual(expected, diff);   // Test Release also
+            }
+        }
+        
+        private static bool IsDebug() {
+#if DEBUG
+            return true;
+#else
+            return false;
+#endif
         }
 
         private class NoopDatabase : EntityDatabase
