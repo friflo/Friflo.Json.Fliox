@@ -326,11 +326,11 @@ namespace Friflo.Json.Burst
         }
 #else
         public Str32 ToStr32() {
-            return ToString();
+            return AsString();
         }
         
         public Str128 ToStr128() {
-            return ToString();
+            return AsString();
         }
 #endif
         

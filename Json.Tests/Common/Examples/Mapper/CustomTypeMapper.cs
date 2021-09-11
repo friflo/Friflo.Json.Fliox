@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         public override StringTokens Read(ref Reader reader, StringTokens slot, out bool success) {
             if (reader.parser.Event != JsonEvent.ValueString)
                 return reader.HandleEvent(this, out success);    
-            string value =  reader.parser.value.ToString();
+            string value =  reader.parser.value.AsString();
             if (value.Contains(","))
                 return reader.ErrorMsg<StringTokens>("Invalid separator in token value", value, out success);
             success = true;

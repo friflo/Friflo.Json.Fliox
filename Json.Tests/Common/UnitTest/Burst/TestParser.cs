@@ -24,14 +24,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     AreEqual(0, p.Level);
                     AreEqual(JsonEvent.EOF, p.NextEvent());
                     AreEqual(JsonEvent.Error, p.NextEvent());
-                    AreEqual("JsonParser/JSON error: Parsing already finished path: '(root)' at position: 2", p.error.msg.ToString());
+                    AreEqual("JsonParser/JSON error: Parsing already finished path: '(root)' at position: 2", p.error.msg.AsString());
                 }
                 using (var bytes = new Bytes("{\"test\":\"hello\"}")) {
                     p.InitParser(bytes);
                     AreEqual(JsonEvent.ObjectStart, p.NextEvent());
                     AreEqual(JsonEvent.ValueString, p.NextEvent());
-                    AreEqual("test", p.key.ToString());
-                    AreEqual("hello", p.value.ToString());
+                    AreEqual("test", p.key.AsString());
+                    AreEqual("hello", p.value.AsString());
                     AreEqual(JsonEvent.ObjectEnd, p.NextEvent());
                     AreEqual(0, p.Level);
                     AreEqual(JsonEvent.EOF, p.NextEvent());
@@ -42,10 +42,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     AreEqual(JsonEvent.ObjectStart, p.NextEvent());
                     AreEqual(JsonEvent.ValueString, p.NextEvent());
                     AreEqual(JsonEvent.ValueNumber, p.NextEvent());
-                    AreEqual("abc", p.key.ToString());
-                    AreEqual("123", p.value.ToString());
+                    AreEqual("abc", p.key.AsString());
+                    AreEqual("123", p.value.AsString());
                     AreEqual(JsonEvent.ValueString, p.NextEvent());
-                    AreEqual("ab\r\nc", p.value.ToString());
+                    AreEqual("ab\r\nc", p.value.AsString());
                     AreEqual(JsonEvent.ObjectEnd, p.NextEvent());
                     AreEqual(0, p.Level);
                     AreEqual(JsonEvent.EOF, p.NextEvent());
@@ -64,14 +64,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 using (var bytes = new Bytes("\"str\"")) {
                     p.InitParser(bytes);
                     AreEqual(JsonEvent.ValueString, p.NextEvent());
-                    AreEqual("str", p.value.ToString());
+                    AreEqual("str", p.value.AsString());
                     AreEqual(JsonEvent.EOF, p.NextEvent());
                     AreEqual(JsonEvent.Error, p.NextEvent());
                 }
                 using (var bytes = new Bytes("42")) {
                     p.InitParser(bytes);
                     AreEqual(JsonEvent.ValueNumber, p.NextEvent());
-                    AreEqual("42", p.value.ToString());
+                    AreEqual("42", p.value.AsString());
                     AreEqual(JsonEvent.EOF, p.NextEvent());
                     AreEqual(JsonEvent.Error, p.NextEvent());
                 }
@@ -93,26 +93,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 using (var bytes = new Bytes("")) { // empty string is not valid JSON
                     p.InitParser(bytes);
                     AreEqual(JsonEvent.Error, p.NextEvent());
-                    AreEqual("JsonParser/JSON error: unexpected EOF on root path: '(root)' at position: 0", p.error.msg.ToString());
+                    AreEqual("JsonParser/JSON error: unexpected EOF on root path: '(root)' at position: 0", p.error.msg.AsString());
                 }
                 using (var bytes = new Bytes("str")) {
                     p.InitParser(bytes);
                     AreEqual(false, p.error.ErrSet);       // ensure error is cleared
-                    AreEqual("", p.error.msg.ToString());  // ensure error message is cleared
+                    AreEqual("", p.error.msg.AsString());  // ensure error message is cleared
                     AreEqual(JsonEvent.Error, p.NextEvent());
-                    AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: s path: '(root)' at position: 1", p.error.msg.ToString());
+                    AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: s path: '(root)' at position: 1", p.error.msg.AsString());
                     AreEqual(1, p.error.Pos);              // ensuring code coverage
                 }
                 using (var bytes = new Bytes("tx")) { // start as a bool (true)
                     p.InitParser(bytes);
                     AreEqual(JsonEvent.Error, p.NextEvent());
-                    AreEqual("JsonParser/JSON error: invalid value: tx path: '(root)' at position: 2", p.error.msg.ToString());
+                    AreEqual("JsonParser/JSON error: invalid value: tx path: '(root)' at position: 2", p.error.msg.AsString());
                     AreEqual(2, p.error.Pos);
                 }
                 using (var bytes = new Bytes("1a")) { // start as a number
                     p.InitParser(bytes);
                     AreEqual(JsonEvent.Error, p.NextEvent());
-                    AreEqual("JsonParser/JSON error: unexpected character while reading number. Found : a path: '(root)' at position: 1", p.error.msg.ToString());
+                    AreEqual("JsonParser/JSON error: unexpected character while reading number. Found : a path: '(root)' at position: 1", p.error.msg.AsString());
                     AreEqual(JsonEvent.Error, p.NextEvent());
                 }
             }
@@ -126,9 +126,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 p.InitParser (bytes);                                  CheckPath(ref p, "(root)");
                 AreEqual(JsonEvent.ObjectStart, p.NextEvent());        CheckPath(ref p, "(root)");
                 AreEqual(JsonEvent.ValueString, p.NextEvent());        CheckPath(ref p, "eur");
-                AreEqual(">€<",                 p.value.ToString());
+                AreEqual(">€<",                 p.value.AsString());
                 AreEqual(JsonEvent.ValueString, p.NextEvent());        CheckPath(ref p, "eur2");
-                AreEqual("[€]",                 p.value.ToString());   
+                AreEqual("[€]",                 p.value.AsString());   
                 
                 AreEqual(JsonEvent.ValueNull,   p.NextEvent());        CheckPath(ref p, "null");
                 AreEqual(JsonEvent.ValueBool,   p.NextEvent());        CheckPath(ref p, "true");
@@ -137,7 +137,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual(false,                 p.boolValue);
                 
                 AreEqual(JsonEvent.ObjectStart, p.NextEvent());        CheckPath(ref p, "empty");
-                AreEqual("empty",               p.key.ToString());
+                AreEqual("empty",               p.key.AsString());
                 AreEqual(JsonEvent.ObjectEnd,   p.NextEvent());        CheckPath(ref p, "empty");
                 
                 AreEqual(JsonEvent.ObjectStart, p.NextEvent());        CheckPath(ref p, "obj");
@@ -146,22 +146,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual(JsonEvent.ObjectEnd,   p.NextEvent());        CheckPath(ref p, "obj");
                 
                 AreEqual(JsonEvent.ArrayStart,  p.NextEvent());        CheckPath(ref p, "arr0[]");
-                AreEqual("arr0",                p.key.ToString());
+                AreEqual("arr0",                p.key.AsString());
                 AreEqual(JsonEvent.ArrayEnd,    p.NextEvent());        CheckPath(ref p, "arr0");
                 
                 AreEqual(JsonEvent.ArrayStart,  p.NextEvent());        CheckPath(ref p, "arr1[]");
-                AreEqual("arr1",                p.key.ToString());
+                AreEqual("arr1",                p.key.AsString());
                 AreEqual(JsonEvent.ValueNumber, p.NextEvent());        CheckPath(ref p, "arr1[0]");
                 AreEqual(JsonEvent.ArrayEnd,    p.NextEvent());        CheckPath(ref p, "arr1");
                 
                 AreEqual(JsonEvent.ArrayStart,  p.NextEvent());        CheckPath(ref p, "arr2[]");
-                AreEqual("arr2",                p.key.ToString());
+                AreEqual("arr2",                p.key.AsString());
                 AreEqual(JsonEvent.ValueNumber, p.NextEvent());        CheckPath(ref p, "arr2[0]");
                 AreEqual(JsonEvent.ValueNumber, p.NextEvent());        CheckPath(ref p, "arr2[1]");
                 AreEqual(JsonEvent.ArrayEnd,    p.NextEvent());        CheckPath(ref p, "arr2");
                 
                 AreEqual(JsonEvent.ArrayStart,  p.NextEvent());        CheckPath(ref p, "arr3[]");
-                AreEqual("arr3",                p.key.ToString());
+                AreEqual("arr3",                p.key.AsString());
                 AreEqual(JsonEvent.ObjectStart, p.NextEvent());        CheckPath(ref p, "arr3[0]");
                 AreEqual(JsonEvent.ValueNumber, p.NextEvent());        CheckPath(ref p, "arr3[0].val");
                 AreEqual(JsonEvent.ObjectEnd,   p.NextEvent());        CheckPath(ref p, "arr3[0]");       
@@ -524,14 +524,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     if (ev == JsonEvent.EOF) 
                         break; // expected
                     if (ev == JsonEvent.Error)
-                        Fail(p.error.msg.ToString());
+                        Fail(p.error.msg.AsString());
                 }
                 p.InitParser(jsonDepth2);
                 p.SetMaxDepth (1);
                 while (true) {
                     var ev = p.NextEvent();
                     if (ev == JsonEvent.Error) {
-                        AreEqual("JsonParser/JSON error: nesting in JSON document exceed maxDepth: 1 path: '[0]' at position: 2", p.error.msg.ToString());
+                        AreEqual("JsonParser/JSON error: nesting in JSON document exceed maxDepth: 1 path: '[0]' at position: 2", p.error.msg.AsString());
                         break;
                     }
                 }

@@ -287,7 +287,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             
             public void AssertParseResult(ref JsonParser p) {
                 if (p.error.ErrSet)
-                    Fail(p.error.msg.ToString());
+                    Fail(p.error.msg.AsString());
                 AreEqual(JsonEvent.EOF, p.NextEvent());   // Important to ensure absence of application errors
                 AreEqual(JsonEvent.Error, p.NextEvent()); // check iteration after EOF
 
@@ -296,10 +296,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual(3,                     int3.z);
                 AreEqual(6400000000000000000,   i64);
                 AreEqual(-640,                  i64Neg);
-                AreEqual("string-ý",            str.ToString());
+                AreEqual("string-ý",            str.AsString());
                 AreEqual(true,                  t);
                 AreEqual(true,                  foundNull);
-                AreEqual("str0",                strElement.ToString());
+                AreEqual("str0",                strElement.AsString());
                 AreEqual(true,                  foundNullElement);
                 AreEqual(true,                  trueElement);
                 AreEqual(22.5,                  dbl);

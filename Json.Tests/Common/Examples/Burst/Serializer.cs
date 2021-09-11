@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
                 WriteBuddy(ref s, buddy);
 
                 var expect = @"{""firstName"":""John"",""age"":24,""hobbies"":[{""name"":""Gaming""},{""name"":""STAR WARS""}]}";
-                AreEqual(expect, s.json.ToString());
+                AreEqual(expect, s.json.AsString());
             }
         }
 

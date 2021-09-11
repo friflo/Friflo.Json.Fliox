@@ -293,7 +293,7 @@ namespace Friflo.Json.Burst
         public string GetPath() {
             getPathBuf.Clear();
             AppendPath(ref getPathBuf);
-            return getPathBuf.ToString();
+            return getPathBuf.AsString();
         }
         
         /// <summary>

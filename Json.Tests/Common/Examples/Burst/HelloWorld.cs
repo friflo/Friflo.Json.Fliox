@@ -15,8 +15,8 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             p.InitParser(new Bytes (@"{""say"": ""Hello"", ""to"": ""World 🌎""}"));
             p.ExpectRootObject(out JObj i);
             while (i.NextObjectMember(ref p)) {
-                if (i.UseMemberStr (ref p, "say"))  { say = p.value.ToString(); }
-                if (i.UseMemberStr (ref p, "to"))   { to =  p.value.ToString(); }
+                if (i.UseMemberStr (ref p, "say"))  { say = p.value.AsString(); }
+                if (i.UseMemberStr (ref p, "to"))   { to =  p.value.AsString(); }
             }
             Console.WriteLine($"Output: {say}, {to}");
             // Output: Hello, World 🌎
@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
                 s.MemberStr ("say", "Hello");
                 s.MemberStr ("to",  "World 🌎");
             s.ObjectEnd();
-            Console.WriteLine($"Output: {s.json}");
+            Console.WriteLine($"Output: {s.json.AsString()}");
             // Output: {"say":"Hello","to":"World 🌎"}
         }
 

@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 bytes32.FromBytes(ref src);
                 bytes32.ToBytes(ref dst);
                 
-                AreEqual(refStr, dst.ToString());
+                AreEqual(refStr, dst.AsString());
                 
                 builder.Append((char)('@' + n));
             }

@@ -124,13 +124,13 @@ namespace Friflo.Json.Fliox.Mapper
         public string Write<T>(T value) {
             InitJsonWriterString();
             WriteStart(value);
-            return intern.bytes.ToString();
+            return intern.bytes.AsString();
         }
 
         public string WriteObject(object value) {
             InitJsonWriterString();
             WriteStart(value);
-            return intern.bytes.ToString();
+            return intern.bytes.AsString();
         }
 
         // --------------------------------------- private --------------------------------------- 

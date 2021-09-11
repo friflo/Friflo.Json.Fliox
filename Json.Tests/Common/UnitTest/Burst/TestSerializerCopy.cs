@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     IsTrue(ser.WriteTree(ref p));
                     AreEqual(0, p.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, p.NextEvent());
-                    AreEqual("{}", ser.json.ToString());
+                    AreEqual("{}", ser.json.AsString());
                 }
 
                 using (var bytes = new Bytes("[]")) {
@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     IsTrue(ser.WriteTree(ref p));
                     AreEqual(0, p.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, p.NextEvent());
-                    AreEqual("[]", ser.json.ToString());
+                    AreEqual("[]", ser.json.AsString());
                 }
 
                 using (var bytes = new Bytes("\"abc\"")) {
@@ -98,7 +98,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     IsTrue(ser.WriteTree(ref p));
                     AreEqual(0, p.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, p.NextEvent());
-                    AreEqual("\"abc\"", ser.json.ToString());
+                    AreEqual("\"abc\"", ser.json.AsString());
                 }
 
                 using (var bytes = new Bytes("123")) {
@@ -108,7 +108,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     IsTrue(ser.WriteTree(ref p));
                     AreEqual(0, p.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, p.NextEvent());
-                    AreEqual("123", ser.json.ToString());
+                    AreEqual("123", ser.json.AsString());
                 }
 
                 using (var bytes = new Bytes("true")) {
@@ -118,7 +118,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     IsTrue(ser.WriteTree(ref p));
                     AreEqual(0, p.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, p.NextEvent());
-                    AreEqual("true", ser.json.ToString());
+                    AreEqual("true", ser.json.AsString());
                 }
 
                 using (var bytes = new Bytes("null")) {
@@ -128,7 +128,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     IsTrue(ser.WriteTree(ref p));
                     AreEqual(0, p.skipInfo.Sum);
                     AreEqual(JsonEvent.EOF, p.NextEvent());
-                    AreEqual("null", ser.json.ToString());
+                    AreEqual("null", ser.json.AsString());
                 }
 
                 // --- some error cases
@@ -138,7 +138,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     p.NextEvent();
                     IsFalse(ser.WriteTree(ref p));
                     AreEqual(JsonEvent.Error, p.NextEvent());
-                    AreEqual("JsonParser/JSON error: unexpected EOF while reading value path: '[0]' at position: 1", p.error.msg.ToString());
+                    AreEqual("JsonParser/JSON error: unexpected EOF while reading value path: '[0]' at position: 1", p.error.msg.AsString());
                 }
 
                 using (var bytes = new Bytes("{")) {
@@ -147,7 +147,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     p.NextEvent();
                     IsFalse(ser.WriteTree(ref p));
                     AreEqual(JsonEvent.Error, p.NextEvent());
-                    AreEqual("JsonParser/JSON error: unexpected EOF > expect key path: '(root)' at position: 1", p.error.msg.ToString());
+                    AreEqual("JsonParser/JSON error: unexpected EOF > expect key path: '(root)' at position: 1", p.error.msg.AsString());
                 }
 
                 using (var bytes = new Bytes("")) {
@@ -156,7 +156,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     p.NextEvent();
                     IsFalse(ser.WriteTree(ref p));
                     AreEqual(JsonEvent.Error, p.NextEvent());
-                    AreEqual("JsonParser/JSON error: unexpected EOF on root path: '(root)' at position: 0", p.error.msg.ToString());
+                    AreEqual("JsonParser/JSON error: unexpected EOF on root path: '(root)' at position: 0", p.error.msg.AsString());
                 }
 
                 using (var bytes = new Bytes("a")) {
@@ -165,7 +165,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     p.NextEvent();
                     IsFalse(ser.WriteTree(ref p));
                     AreEqual(JsonEvent.Error, p.NextEvent());
-                    AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: a path: '(root)' at position: 1", p.error.msg.ToString());
+                    AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: a path: '(root)' at position: 1", p.error.msg.AsString());
                 }
             }
         }

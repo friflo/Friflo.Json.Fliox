@@ -28,13 +28,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 s.InitSerializer();
                 s.ObjectStart();
                 s.ObjectEnd();
-                AreEqual("{}", s.json.ToString());
+                AreEqual("{}", s.json.AsString());
                 AreEqual(0, s.Level);
             } {
                 s.InitSerializer();
                 s.ArrayStart(true);
                 s.ArrayEnd();
-                AreEqual("[]", s.json.ToString());
+                AreEqual("[]", s.json.AsString());
             } {
                 s.InitSerializer();
                 s.ArrayStart(true);
@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     s.ElementBln(true);
                     s.ElementNul();
                 s.ArrayEnd();
-                AreEqual("[[],{},\"hello\",10.5,42,true,null]", s.json.ToString());
+                AreEqual("[[],{},\"hello\",10.5,42,true,null]", s.json.AsString());
             } {
                 s.InitSerializer();
                 s.ObjectStart();
@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     s.MemberBln ("bool 👋", true);
                     s.MemberNul ("null 👋");
                 s.ObjectEnd();
-                AreEqual("{\"string 👋\":\"World 🌎\",\"double 👋\":10.5,\"long 👋\":42,\"bool 👋\":true,\"null 👋\":null}", s.json.ToString());
+                AreEqual("{\"string 👋\":\"World 🌎\",\"double 👋\":10.5,\"long 👋\":42,\"bool 👋\":true,\"null 👋\":null}", s.json.AsString());
             } {
                 // Escape string (or FixedString32 when compiling with JSON_BURST)
                 s.InitSerializer();
@@ -71,7 +71,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 s.MemberNul ("6-\b");
                 s.MemberNul ("7-\f");
                 s.ObjectEnd();
-                AreEqual("{\"1-\\r\":\"World 🌎\",\"2-\\n\":10.5,\"3-\\t\":42,\"4-\\\"\":true,\"5-\\\\\":null,\"6-\\b\":null,\"7-\\f\":null}", s.json.ToString());
+                AreEqual("{\"1-\\r\":\"World 🌎\",\"2-\\n\":10.5,\"3-\\t\":42,\"4-\\\"\":true,\"5-\\\\\":null,\"6-\\b\":null,\"7-\\f\":null}", s.json.AsString());
             } {
                 using (var key1 = new Bytes("1-\r"))
                 using (var key2 = new Bytes("2-\n"))
@@ -92,7 +92,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     s.MemberNul(in key7);
                     s.ObjectEnd();
                 }
-                AreEqual("{\"1-\\r\":\"World 🌎\",\"2-\\n\":10.5,\"3-\\t\":42,\"4-\\\"\":true,\"5-\\\\\":null,\"6-\\b\":null,\"7-\\f\":null}", s.json.ToString());
+                AreEqual("{\"1-\\r\":\"World 🌎\",\"2-\\n\":10.5,\"3-\\t\":42,\"4-\\\"\":true,\"5-\\\\\":null,\"6-\\b\":null,\"7-\\f\":null}", s.json.AsString());
             } {
                 s.InitSerializer();
                 s.ObjectStart();
@@ -102,7 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                     s.MemberObjectStart ("object");
                     s.ObjectEnd();
                 s.ObjectEnd();
-                AreEqual("{\"array\":[],\"object\":{}}", s.json.ToString());
+                AreEqual("{\"array\":[],\"object\":{}}", s.json.AsString());
             }
             // --- ensure coverage of methods using Bytes as parameter
             using (var textValue = new Bytes("textValue"))
@@ -115,7 +115,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 s.ArrayStart(true);
                 s.ElementStr(in textValue);
                 s.ArrayEnd();
-                AreEqual("[\"textValue\"]", s.json.ToString());
+                AreEqual("[\"textValue\"]", s.json.AsString());
                 
                 // - object
                 s.InitSerializer();
@@ -124,30 +124,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 s.MemberDbl(in dbl, 10.5);
                 s.MemberLng(in lng, 42);
                 s.ObjectEnd();
-                AreEqual("{\"str\":\"hello\",\"dbl\":10.5,\"lng\":42}", s.json.ToString());
+                AreEqual("{\"str\":\"hello\",\"dbl\":10.5,\"lng\":42}", s.json.AsString());
             }
 
             // --- Primitives on root level ---
             {
                 s.InitSerializer();
                 s.ElementStr("hello");
-                AreEqual("\"hello\"", s.json.ToString());
+                AreEqual("\"hello\"", s.json.AsString());
             } {
                 s.InitSerializer();
                 s.ElementLng(42);
-                AreEqual("42", s.json.ToString());
+                AreEqual("42", s.json.AsString());
             } {
                 s.InitSerializer();
                 s.ElementDbl(10.5);
-                AreEqual("10.5", s.json.ToString());
+                AreEqual("10.5", s.json.AsString());
             } {
                 s.InitSerializer();
                 s.ElementBln(true);
-                AreEqual("true", s.json.ToString());
+                AreEqual("true", s.json.AsString());
             } {
                 s.InitSerializer();
                 s.ElementNul();
-                AreEqual("null", s.json.ToString());
+                AreEqual("null", s.json.AsString());
             }
 #if DEBUG
             JsonSerializer ser = s; // capture
@@ -230,7 +230,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 ser.ArrayStart(true);
                 ser.ArrayEnd();
                 AreEqual(0, ser.Level);
-                AreEqual("[]", ser.json.ToString());
+                AreEqual("[]", ser.json.AsString());
                 
                 // case exception
                 ser.ArrayStart(true);

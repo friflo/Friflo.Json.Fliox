@@ -270,7 +270,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
                     classType = reader.typeCache.GetTypeMapper(obj.GetType());
                 } else {
                     if (ev == JsonEvent.ValueString && reader.parser.key.IsEqualString(discriminator)) {
-                        string discriminant = reader.parser.value.ToString();
+                        string discriminant = reader.parser.value.AsString();
                         obj = (T) factory.CreatePolymorph(discriminant);
                         if (classType.IsNull(ref obj))
                             return reader.ErrorMsg<TypeMapper>($"No [Fri.Polymorph] type declared for discriminant: '{discriminant}' on type: ", classType.type.FullName, out success);

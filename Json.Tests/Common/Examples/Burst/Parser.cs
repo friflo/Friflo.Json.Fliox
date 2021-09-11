@@ -53,7 +53,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
                 ReadBuddy(ref p, ref i, ref buddy);
 
                 if (p.error.ErrSet)
-                    Fail(p.error.msg.ToString());
+                    Fail(p.error.msg.AsString());
                 AreEqual(JsonEvent.EOF, p.NextEvent()); // Important to ensure absence of application errors
                 AreEqual("John",        buddy.firstName);
                 AreEqual(24,            buddy.age);
@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
         
         private static void ReadBuddy(ref JsonParser p, ref JObj i, ref Buddy buddy) {
             while (i.NextObjectMember(ref p)) {
-                if      (i.UseMemberStr (ref p, "firstName"))               { buddy.firstName = p.value.ToString(); }
+                if      (i.UseMemberStr (ref p, "firstName"))               { buddy.firstName = p.value.AsString(); }
                 else if (i.UseMemberNum (ref p, "age"))                     { buddy.age = p.ValueAsInt(out _); }
                 else if (i.UseMemberArr (ref p, "hobbies", out JArr arr))   { ReadHobbyList(ref p, ref arr, ref buddy.hobbies); }
             }
@@ -83,7 +83,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
         
         private static void ReadHobby(ref JsonParser p, ref JObj i, ref Hobby hobby) {
             while (i.NextObjectMember(ref p)) {
-                if (i.UseMemberStr (ref p, "name"))  { hobby.name = p.value.ToString(); }
+                if (i.UseMemberStr (ref p, "name"))  { hobby.name = p.value.AsString(); }
             }
         }
     }

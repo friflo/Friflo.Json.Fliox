@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         [Test]
         public void TestUtf8() {
             Bytes src = CommonUtils.FromFile ("assets~/Burst/EuroSign.txt");
-            String str = src.ToString();
+            String str = src.AsString();
             AreEqual("€", str);
 
             Bytes dst = new Bytes(0);
@@ -37,14 +37,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             Bytes bytes = new Bytes("€");
             AreEqual(3, bytes.Len); // UTF-8 length of € is 3
             String eur = "€";
-            AreEqual(eur, bytes.ToString());
+            AreEqual(eur, bytes.AsString());
             IsTrue(bytes.IsEqualString(eur));
             bytes.Dispose();
             //
             Bytes xyz = new Bytes("xyz");
             String abc = "abc";
             AreEqual(abc.Length, xyz.Len); // Ensure both have same UTF-8 length (both ASCII)
-            AreNotEqual(abc, xyz.ToString());
+            AreNotEqual(abc, xyz.AsString());
             IsFalse(xyz.IsEqualString(abc));
             xyz.Dispose();          
         }
@@ -75,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             dst.EnsureCapacityAbs(dst.end + 4);
             int c = char.ConvertToUtf32 (src, 0);
             Utf8Utils.AppendUnicodeToBytes(ref dst, c);
-            AreEqual(src, dst.ToString());
+            AreEqual(src, dst.AsString());
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 Str32 src = "a©€😎🌍";
                 dst.Clear();
                 JsonSerializer.AppendEscString(ref dst, in src);
-                AreEqual("\"" + src + "\"", dst.ToString());
+                AreEqual("\"" + src + "\"", dst.AsString());
             } finally {
                 dst.Dispose();
             }
@@ -102,7 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 dst.Clear();
                 string str = char.ConvertFromUtf32 (codePoint);
                 Utf8Utils.AppendUnicodeToBytes(ref dst, codePoint);
-                AreEqual(str, dst.ToString());
+                AreEqual(str, dst.AsString());
             }
         }
         
@@ -155,7 +155,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 dst.Clear();
                 string str = char.ConvertFromUtf32 (codePoint);
                 JsonSerializer.AppendEscString(ref dst, in str);
-                AreEqual($"\"{str}\"", dst.ToString());
+                AreEqual($"\"{str}\"", dst.AsString());
             }
         }
         
@@ -163,7 +163,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             dst.Clear();
             string str = char.ConvertFromUtf32 (escChar);
             JsonSerializer.AppendEscString(ref dst, in str);
-            AreEqual($"\"\\{expect}\"", dst.ToString());
+            AreEqual($"\"\\{expect}\"", dst.AsString());
         }
 
 
@@ -190,8 +190,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 s.ObjectStart();
                 s.MemberStr ("test", "a©€😎🌍");
                 s.ObjectEnd();
-                Console.WriteLine(s.json.ToString());
-                string dst = s.json.ToString();
+                Console.WriteLine(s.json.AsString());
+                string dst = s.json.AsString();
                 AreEqual(@"{""test"":""a©€😎🌍""}", dst);
             }
         }

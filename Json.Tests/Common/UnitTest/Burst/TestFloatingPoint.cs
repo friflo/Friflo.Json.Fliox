@@ -117,7 +117,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 //  FFLog.log("  " + val .ToString());
                 //  FFLog.log("  " + bb.ToString());
                 //  FFLog.log("");
-                    double ret  =  Double. Parse( bytes.ToString() , NumberFormatInfo.InvariantInfo);
+                    double ret  =  Double. Parse( bytes.AsString() , NumberFormatInfo.InvariantInfo);
                     long l1 = BitConverter.DoubleToInt64Bits (val);
                     long l2 = BitConverter.DoubleToInt64Bits (ret);
                     if (l1 != l2)

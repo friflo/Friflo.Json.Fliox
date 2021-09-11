@@ -46,14 +46,14 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
                 p.InitParser(json);
                 p.ExpectRootObject(out JObj i1);
                 while (i1.NextObjectMember(ref p)) {
-                    if      (i1.UseMemberStr (ref p, "firstName"))   { buddy.firstName = p.value.ToString(); }
+                    if      (i1.UseMemberStr (ref p, "firstName"))   { buddy.firstName = p.value.AsString(); }
                     else if (i1.UseMemberNum (ref p, "age"))         { buddy.age = p.ValueAsInt(out _); }
                     else if (i1.UseMemberArr (ref p, "hobbies", out JArr i2)) {
                         while (i2.NextArrayElement(ref p)) {
                             if (i2.UseElementObj(ref p, out JObj i3)) {
                                 var hobby = new Hobby();
                                 while (i3.NextObjectMember(ref p)) {
-                                    if (i3.UseMemberStr (ref p, "name")) { hobby.name = p.value.ToString(); }
+                                    if (i3.UseMemberStr (ref p, "name")) { hobby.name = p.value.AsString(); }
                                 }
                                 buddy.hobbies.Add(hobby);
                             }
@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
                     }
                 }
                 if (p.error.ErrSet)
-                    Fail(p.error.msg.ToString());
+                    Fail(p.error.msg.AsString());
                 AreEqual(JsonEvent.EOF, p.NextEvent()); // Important to ensure absence of application errors
                 AreEqual("John",        buddy.firstName);
                 AreEqual(24,            buddy.age);
