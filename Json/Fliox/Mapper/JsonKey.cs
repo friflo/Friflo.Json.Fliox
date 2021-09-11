@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Mapper
 #else
             char[] charBuf = valueParser.charBuf;
 #endif
-            if (TryParseGuid(ref bytes, charBuf, out guid, out string temp)) { // temp not null in Unity. Otherwise null
+            if (bytes.TryParseGuid(charBuf, out guid, out string temp)) { // temp not null in Unity. Otherwise null
                 type    = JsonKeyType.Guid;
                 str     = temp;
             } else {
@@ -70,28 +70,6 @@ namespace Friflo.Json.Fliox.Mapper
             this.lng    = 0;
         }
 
-        public static bool TryParseGuid(ref Bytes bytes, char[] charBuf, out Guid guid, out string str) {
-#if UNITY_5_3_OR_NEWER
-            str = bytes.ToString();
-            return Guid.TryParse(str, out guid);
-#else
-            if (charBuf.Length < ValueParser.MaxGuidLength)
-                throw new InvalidOperationException("Insufficient space. Requires: ValueParser.MaxGuidLength");
-            str = null;
-            if (bytes.Len > ValueParser.MaxGuidLength) {
-                guid = new Guid();
-                return false;
-            }
-            ref var array   = ref bytes.buffer.array;
-            var start       = bytes.start;
-            var len         = bytes.Len;
-            for (int n = 0; n < len; n++)
-                charBuf[n] = (char)array[start + n];
-            var span = new Span<char>(charBuf, 0, len);
-            return Guid.TryParse(span, out guid);
-#endif
-        }
-        
         public JsonKey (long lng) {
             this.type   = JsonKeyType.Long;
             this.str    = null;

@@ -187,6 +187,28 @@ namespace Friflo.Json.Burst
             }
             return true;
         }
+        
+        /// In case of Unity <see cref="str"/> is not null. Otherwise null.
+        public bool TryParseGuid(char[] charBuf, out Guid guid, out string str) {
+#if UNITY_5_3_OR_NEWER
+            str = AsString();
+            return Guid.TryParse(str, out guid);
+#else
+            if (charBuf.Length < ValueParser.MaxGuidLength)
+                throw new InvalidOperationException("Insufficient space. Requires: ValueParser.MaxGuidLength");
+            str = null;
+            if (Len > ValueParser.MaxGuidLength) {
+                guid = new Guid();
+                return false;
+            }
+            ref var array   = ref buffer.array;
+            var len         = Len;
+            for (int n = 0; n < len; n++)
+                charBuf[n] = (char)array[start + n];
+            var span = new Span<char>(charBuf, 0, len);
+            return Guid.TryParse(span, out guid);
+#endif
+        }
 
 #if JSON_BURST
         public bool IsEqual32(in Str32 value) {
@@ -311,7 +333,12 @@ namespace Friflo.Json.Burst
             return ToString();
         }
 #endif
+        
+        public string AsString() {
+            return ToString(buffer, start, end - start);
+        }
 
+        // todo: replace calls by AsString()
         public override string ToString() {
             return ToString(buffer, start, end - start);
         }

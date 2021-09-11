@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Key
         }
         
         public override Guid ReadKey (ref Reader reader, out bool success) {
-            if (JsonKey.TryParseGuid(ref reader.parser.key, reader.charBuf, out var result, out _)) {
+            if (reader.parser.key.TryParseGuid(reader.charBuf, out var result, out _)) {
                 success = true;
                 return result;
             }
