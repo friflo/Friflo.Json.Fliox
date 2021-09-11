@@ -128,9 +128,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 await store.Sync(); // force one time allocations
                 
                 var start = GC.GetAllocatedBytesForCurrentThread();
-                read = store.intEntities.Read();
-                read.Find(42);
-                await store.Sync(); // ~ 1 µs
+                for (int n = 0; n < 1; n++) {
+                    read = store.intEntities.Read();
+                    read.Find(42);
+                    await store.Sync();
+                }
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 var expected = IsDebug() ? Is.InRange(5728, 5768) : Is.InRange(5240, 5240); // Test Debug & Release
                 That(diff, expected);
