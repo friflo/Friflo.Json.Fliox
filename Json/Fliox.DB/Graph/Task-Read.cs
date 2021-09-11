@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.DB.Graph
     public class FindRange<TKey, T> : FindTask<TKey, T> where T : class
     {
         private  readonly   HashSet<TKey>           keys;
-        private  readonly   Dictionary<TKey, T>     results = new Dictionary<TKey, T>();
+        private  readonly   Dictionary<TKey, T>     results;
 
         public              T                       this[TKey key]      => IsOk("FindRange[]", out Exception e) ? results[key] : throw e;
         public              Dictionary<TKey, T>     Results { get {
@@ -71,7 +71,8 @@ namespace Friflo.Json.Fliox.DB.Graph
         
 
         internal FindRange(ICollection<TKey> keys) {
-            this.keys    = keys.ToHashSet();
+            results     = new Dictionary<TKey, T>(keys.Count);
+            this.keys   = keys.ToHashSet();
         }
         
         internal override void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities) {
