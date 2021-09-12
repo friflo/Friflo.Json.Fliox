@@ -11,8 +11,9 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
         private  readonly   Func  <T, int>      fieldGet;
         private  readonly   Action<T, int>      fieldSet;
         
-        internal override   Type                GetKeyType() => typeof(int);
-        internal override   string              GetKeyName() => field.Name;
+        internal override   Type                GetKeyType()            => typeof(int);
+        internal override   string              GetKeyName()            => field.Name;
+        internal override   bool                IsDefaultKey(T entity)  => GetKey(entity) == default;
 
         internal EntityKeyIntField(FieldInfo field) {
             this.field  = field;

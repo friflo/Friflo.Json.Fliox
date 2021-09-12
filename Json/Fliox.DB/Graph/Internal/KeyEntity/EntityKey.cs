@@ -136,17 +136,18 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
         internal abstract   Type    GetKeyType();
         internal abstract   string  GetKeyName();
         internal virtual    bool    IsEntityKeyNull (T entity) => false;
+        internal virtual    bool    IsDefaultKey    (T entity) => false;
 
-        internal abstract   JsonKey GetId   (T entity);
-        internal abstract   void    SetId   (T entity, in JsonKey id);
+        internal abstract   JsonKey GetId           (T entity);
+        internal abstract   void    SetId           (T entity, in JsonKey id);
         
         internal abstract   TAsType GetKeyAsType<TAsType> (T entity);    // TAG_NULL_REF
     }
     
     // ----------------------------------------- EntityKeyT<TKey, T> -----------------------------------------
     internal abstract class EntityKeyT<TKey, T> : EntityKey<T> where T : class {
-        internal abstract   TKey    GetKey  (T entity);
-        internal abstract   void    SetKey  (T entity, TKey id);
+        internal abstract   TKey    GetKey      (T entity);
+        internal abstract   void    SetKey      (T entity, TKey id);
 
         internal override   TAsType GetKeyAsType<TAsType> (T entity) {
             // Will box in DEBUG - not in RELEASE (.NET Core 3.1)

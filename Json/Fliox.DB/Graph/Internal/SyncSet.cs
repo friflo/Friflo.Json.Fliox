@@ -34,6 +34,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         
         private     Dictionary<string, QueryTask<TKey, T>>  _queries;
         
+        private     HashSet<T>                              _autos;
+        
         private     Dictionary<JsonKey, Peer<T>>            _creates;
         private     List<WriteTask>                         _createTasks;
         
@@ -53,7 +55,9 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         private     Dictionary<string, QueryTask<TKey, T>>  Queries()    => _queries     ?? (_queries     = new Dictionary<string, QueryTask<TKey, T>>());
         
         private     SubscribeChangesTask<T>                 subscribeChanges;
-        
+
+        private     HashSet<T>                              Autos()      => _autos       ?? (_autos        = new HashSet<T>(EntityEqualityComparer<T>.Instance));
+
         /// key: <see cref="Peer{T}.entity"/>.id
         private     Dictionary<JsonKey, Peer<T>>            Creates()    => _creates     ?? (_creates     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
         private     List<WriteTask>                         CreateTasks()=> _createTasks ?? (_createTasks = new List<WriteTask>());
@@ -76,7 +80,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         
         internal override bool AddCreate (Peer<T> peer) {
             peer.assigned = true;
-            Creates().TryAdd(peer.id, peer);      // sole place a peer (entity) is added
+            Creates().TryAdd(peer.id, peer);    // sole place a peer (entity) is added
             if (!peer.created) {
                 peer.created = true;            // sole place created set to true
                 return true;
@@ -130,6 +134,13 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         
         // --- Create
         internal CreateTask<T> Create(T entity) {
+            if (EntityKeyTMap.IsDefaultKey(entity)) {
+                set.NewEntities().Add(entity);
+                Autos().Add(entity);
+                var create1 = new CreateTask<T>(new List<T>{entity}, set);
+                CreateTasks().Add(create1);
+                return create1;
+            }
             var peer = set.CreatePeer(entity);
             AddCreate(peer);
             var create = new CreateTask<T>(new List<T>{entity}, set);
@@ -240,35 +251,52 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
 
         // ----------------------------------- add tasks methods -----------------------------------
         internal override void AddTasks(List<DatabaseTask> tasks) {
-            CreateEntities  (tasks);
-            UpsertEntities  (tasks);
-            ReadEntitiesList(tasks);
-            QueryEntities   (tasks);
-            PatchEntities   (tasks);
-            DeleteEntities  (tasks);
-            SubscribeChanges(tasks);
+            CreateEntities      (tasks);
+            UpsertEntities      (tasks);
+            ReadEntitiesList    (tasks);
+            QueryEntities       (tasks);
+            PatchEntities       (tasks);
+            DeleteEntities      (tasks);
+            SubscribeChanges    (tasks);
         }
         
         private void CreateEntities(List<DatabaseTask> tasks) {
-            if (_creates == null || _creates.Count == 0)
+            var createCount = _creates?.Count   ?? 0; 
+            var autoCount   = _autos?.Count     ?? 0;
+            var count       = createCount + autoCount;
+            if (count == 0)
                 return;
-            var writer = set.intern.jsonMapper.writer;
-            var entries = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
-            
-            foreach (var createPair in _creates) {
-                T entity    = createPair.Value.Entity;
-                var json    = writer.Write(entity);
-                var entry   = new EntityValue(json);
-                var id      = EntityKeyTMap.GetId(entity);
-                entries.Add(id, entry);
+            var entries = new Dictionary<JsonKey, EntityValue>(count, JsonKey.Equality);
+            var writer  = set.intern.jsonMapper.writer;
+            if (_creates  != null) {
+                foreach (var createPair in _creates) {
+                    T entity    = createPair.Value.Entity;
+                    var json    = writer.Write(entity);
+                    var entry   = new EntityValue(json);
+                    var id      = EntityKeyTMap.GetId(entity);
+                    entries.Add(id, entry);
+                }
+            }
+            List<long> tempIds = null;
+            if (_autos  != null) {
+                tempIds = new List<long>(autoCount);
+                long autoId = -1;
+                foreach (var entity in _autos) {
+                    var json    = writer.Write(entity);
+                    var entry   = new EntityValue(json);
+                    var id      = new JsonKey(autoId);
+                    entries.Add(id, entry);
+                    tempIds.Add(autoId);
+                }
             }
             var req = new CreateEntities {
                 container = set.name,
-                entities = entries
+                entities = entries,
+                tempIds  = tempIds
             };
             tasks.Add(req);
         }
-
+        
         private void UpsertEntities(List<DatabaseTask> tasks) {
             if (_upserts == null || _upserts.Count == 0)
                 return;
@@ -438,7 +466,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             info.tasks =
                 SetInfo.Any  (_reads)   +
                 SetInfo.Count(_queries) +
-                SetInfo.Any  (_creates) +
+                SetInfo.Any  (_creates) +  SetInfo.Any  (_autos) +
                 SetInfo.Any  (_upserts) +
                 SetInfo.Any  (_patches) + SetInfo.Any(_patchTasks) +
                 SetInfo.Any  (_deletes)    +
@@ -446,7 +474,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             //
             info.reads      = SetInfo.Count(_reads);
             info.queries    = SetInfo.Count(_queries);
-            info.create     = SetInfo.Count(_creates);
+            info.create     = SetInfo.Count(_creates) + SetInfo.Count(_autos);
             info.upsert     = SetInfo.Count(_upserts);
             info.patch      = SetInfo.Count(_patches) + SetInfo.Count(_patchTasks);
             info.delete     = SetInfo.Count(_deletes);

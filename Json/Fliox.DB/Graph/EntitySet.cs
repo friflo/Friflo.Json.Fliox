@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
     public abstract class EntitySetBase<T> : EntitySet where T : class
     {
         private             HashSet<T>      newEntities;
-        internal            HashSet<T>      NewEntities => newEntities ?? (newEntities = new HashSet<T>(EntityEqualityComparer<T>.Instance));
+        internal            HashSet<T>      NewEntities() => newEntities ?? (newEntities = new HashSet<T>(EntityEqualityComparer<T>.Instance));
 
         internal  abstract  SyncSetBase<T>  GetSyncSetBase  ();
         
@@ -225,8 +225,6 @@ namespace Friflo.Json.Fliox.DB.Graph
         public CreateTask<T> Create(T entity) {
             if (entity == null)
                 throw new ArgumentException($"EntitySet.Create() entity must not be null. EntitySet: {name}");
-            if (EntityKeyTMap.IsEntityKeyNull(entity))
-                throw new ArgumentException($"EntitySet.Create() entity.id must not be null. EntitySet: {name}");
             var task = GetSyncSet().Create(entity);
             intern.store.AddTask(task);
             return task;
