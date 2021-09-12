@@ -2,17 +2,18 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.DB.Graph;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.NoSQL
 {
     public class AutoIncrement {
+        [Fri.Required]
         public  int         count;
     }
     
     public class AutoIncrementResult {
+        [Fri.Required]
         public  List<long>  ids;
     }
     
@@ -25,9 +26,11 @@ namespace Friflo.Json.Fliox.DB.NoSQL
     }
     
     public class AutoIncSequence {
-        [Key]
+        [Fri.Key]
         public  string  container;
+        [Fri.Required]
         public  long    autoId;
+        [Fri.Required]
         [Fri.Property(Name = "_etag")]
         public  string  etag;
     }
