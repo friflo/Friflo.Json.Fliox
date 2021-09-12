@@ -137,7 +137,8 @@ namespace Friflo.Json.Fliox.Mapper
                 case JsonKeyType.String:    return str;
                 case JsonKeyType.Guid:      return str ?? guid.ToString();
                 case JsonKeyType.Null:      return null;
-                default:                    return "None";
+                default:
+                    throw new InvalidOperationException($"unexpected type in JsonKey.AsString(). type: {type}");
             }
         }
         
