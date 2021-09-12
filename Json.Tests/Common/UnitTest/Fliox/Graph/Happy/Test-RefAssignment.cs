@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             // --- assign id to reference
             var newArticle1 = new Article { producer = "unknown-producer-1" };
             Exception e = Throws<UnresolvedRefException>(() => { var _ = newArticle1.producer.Entity; });
-            AreEqual("Accessed unresolved reference. Ref<Producer> (key: 'unknown-producer-1')", e.Message);
+            AreEqual("Accessed unresolved reference. Ref<Producer> (Key: 'unknown-producer-1')", e.Message);
             
             
             // --- assign entity instance to reference
@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             var galaxy = galaxyTask.Result;
             // the referenced entity "producer-samsung" is not resolved until now.
             e = Throws<UnresolvedRefException>(() => { var _ = galaxy.producer.Entity; });
-            AreEqual("Accessed unresolved reference. Ref<Producer> (key: 'producer-samsung')", e.Message);
+            AreEqual("Accessed unresolved reference. Ref<Producer> (Key: 'producer-samsung')", e.Message);
             IsFalse(galaxy.producer.TryEntity(out Producer result));
             IsNull(result);
             
@@ -115,7 +115,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             
             var invalidArticle = new Article(); // entity id = null
             var argEx = Throws<ArgumentException>(() => _ = reference = invalidArticle );
-            AreEqual("cannot assign entity with key = null to Ref<String,Article>", argEx.Message);
+            AreEqual("cannot assign entity with Key = null to Ref<String,Article>", argEx.Message);
             
             // --- assign entity key (string)
             string nullKey = null;
@@ -130,7 +130,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             IsFalse (reference.TryEntity(out result));
             IsNull  (result);
             var e = Throws<UnresolvedRefException>(() => _ = reference.Entity);
-            AreEqual("Accessed unresolved reference. Ref<Article> (key: 'ref-id')", e.Message);
+            AreEqual("Accessed unresolved reference. Ref<Article> (Key: 'ref-id')", e.Message);
             AreEqual("ref-id", e.key);
         }
         

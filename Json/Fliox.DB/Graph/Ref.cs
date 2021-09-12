@@ -183,7 +183,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             }
             TKey key = EntitySetBase<T>.EntityKeyMap.GetKeyAsType<TKey>(entity); // TAG_NULL_REF
             if (key == null)
-                throw new ArgumentException($"cannot assign entity with key = null to Ref<{typeof(TKey).Name},{typeof(T).Name}>");
+                throw new ArgumentException($"cannot assign entity with Key = null to Ref<{typeof(TKey).Name},{typeof(T).Name}>");
             return new Ref<TKey, T> (key, entity);
         }
         

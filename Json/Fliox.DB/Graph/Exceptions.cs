@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         public readonly     string          key;
         
         internal UnresolvedRefException(string message, Type type, string key)
-            : base ($"{message} Ref<{type.Name}> (key: '{key}')")
+            : base ($"{message} Ref<{type.Name}> (Key: '{key}')")
         {
             this.key = key;
         }
