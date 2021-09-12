@@ -57,12 +57,7 @@ namespace Friflo.Json.Fliox.Mapper
                 guid        = new Guid();
                 return;
             }
-#if UNITY_5_3_OR_NEWER
-            char[] charBuf = null;
-#else
-            char[] charBuf = valueParser.charBuf;
-#endif
-            if (bytes.TryParseGuid(charBuf, out guid, out string temp)) { // temp not null in Unity. Otherwise null
+            if (bytes.TryParseGuid(out guid, out string temp)) { // temp not null in Unity. Otherwise null
                 type    = JsonKeyType.Guid;
                 str     = temp;
             } else {
@@ -156,6 +151,25 @@ namespace Friflo.Json.Fliox.Mapper
         
         public Guid? AsGuidNullable() {
             return type == JsonKeyType.Guid ? guid : default; 
+        }
+        
+        public void AppendTo(ref Bytes dest, ref ValueFormat valueFormat) {
+            switch (type) {
+                case JsonKeyType.Long:
+                    valueFormat.AppendLong(ref dest, lng);
+                    break;
+                case JsonKeyType.String:
+                    dest.AppendString(str);
+                    break;
+                case JsonKeyType.Guid:
+                    dest.AppendGuid(guid);
+                    break;
+            //  case JsonKeyType.Null:
+            //      dest.AppendString("null");
+            //      break;
+                default:
+                    throw new InvalidOperationException($"unexpected type in JsonKey.AppendTo()");
+            }
         }
     }
     

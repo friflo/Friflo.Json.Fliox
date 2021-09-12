@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                 combineCount += read.ids.Count;
             }
             // Combine
-            var combinedRead = new ReadEntities { ids = new HashSet<JsonKey>(combineCount, JsonKey.Equality) };
+            var combinedRead = new ReadEntities { ids = Helper.CreateHashSet(combineCount, JsonKey.Equality) };
             foreach (var read in reads) {
                 combinedRead.ids.UnionWith(read.ids);
             }

@@ -24,9 +24,8 @@ namespace Friflo.Json.Burst.Utils
         private     Str32   _0;
         private     bool    initialized;
 #if !UNITY_5_3_OR_NEWER
-        public      char[]  charBuf;
+        private     char[]  charBuf;
 #endif
-        public const int MaxGuidLength = 68; // {0x12345678,0x1234,0x1234,{0x12,0x34,0x12,0x34,0x56,0x78,0x9a,0xbc}}
 
 
         public void InitValueParser() {

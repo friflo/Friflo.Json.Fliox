@@ -188,25 +188,42 @@ namespace Friflo.Json.Burst
             return true;
         }
         
+        public const int MinGuidLength = 36; // 12345678-1234-1234-1234-123456789abc
+        public const int MaxGuidLength = 68; // {0x12345678,0x1234,0x1234,{0x12,0x34,0x12,0x34,0x56,0x78,0x9a,0xbc}}
+
         /// In case of Unity <see cref="str"/> is not null. Otherwise null.
-        public bool TryParseGuid(char[] charBuf, out Guid guid, out string str) {
+        public bool TryParseGuid(out Guid guid, out string str) {
 #if UNITY_5_3_OR_NEWER
             str = AsString();
             return Guid.TryParse(str, out guid);
 #else
-            if (charBuf.Length < ValueParser.MaxGuidLength)
-                throw new InvalidOperationException("Insufficient space. Requires: ValueParser.MaxGuidLength");
             str = null;
-            if (Len > ValueParser.MaxGuidLength) {
+            if (Len < MinGuidLength || MaxGuidLength < Len) {
                 guid = new Guid();
                 return false;
             }
+            Span<char> span = stackalloc char[Len];
             ref var array   = ref buffer.array;
             var len         = Len;
             for (int n = 0; n < len; n++)
-                charBuf[n] = (char)array[start + n];
-            var span = new Span<char>(charBuf, 0, len);
+                span[n] = (char)array[start + n];
             return Guid.TryParse(span, out guid);
+#endif
+        }
+        
+        public void AppendGuid(in Guid guid) {
+#if UNITY_5_3_OR_NEWER
+            var str = guid.ToString();
+            AppendString(str);
+#else
+            Span<char> span = stackalloc char[MaxGuidLength];
+            if (!guid.TryFormat(span, out int charsWritten))
+                throw new InvalidOperationException("AppendGuid() failed");
+            ref var array   = ref buffer.array;
+            EnsureCapacity(charsWritten);
+            for (int n = 0; n < charsWritten; n++)
+                array[start + n] = (byte)span[n];
+            end += charsWritten;
 #endif
         }
 

@@ -219,6 +219,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 return bytes.IsIntegral();
             }
         }
+        
+        [Test]
+        public void TestGuid() {
+            var guid    = new Guid("11111111-0000-1111-0000-111111111111");
+            var str     = guid.ToString();
+            using (var bytes = new Bytes(str))
+            using (var dest  = new Bytes(0))
+            {
+                IsTrue(bytes.TryParseGuid(out Guid result, out _));
+                AreEqual(guid, result);
+                
+                dest.AppendGuid(guid);
+                AreEqual(str, bytes.AsString());
+            }
+        }
     }
     
     struct StructAssign

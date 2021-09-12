@@ -123,7 +123,7 @@ namespace Friflo.Json.Burst
         public      Bytes               errVal; // used for conversion of an additional value in error message creation
         private     Bytes               getPathBuf; // MUST be used only in GetPath()
     
-        private     ValueFormat         format;
+        public      ValueFormat         format;
         public      ValueParser         valueParser;
     
         private     Str32               @true;
