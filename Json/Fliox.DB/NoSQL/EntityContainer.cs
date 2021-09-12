@@ -59,6 +59,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         public abstract Task<ReadEntitiesResult>    ReadEntities    (ReadEntities   command, MessageContext messageContext);
         public abstract Task<QueryEntitiesResult>   QueryEntities   (QueryEntities  command, MessageContext messageContext);
         public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities command, MessageContext messageContext);
+        public abstract Task<AutoIncrementResult>   AutoIncrement   (AutoIncrement  command, MessageContext messageContext);
         
         
         protected EntityContainer(string name, EntityDatabase database) {

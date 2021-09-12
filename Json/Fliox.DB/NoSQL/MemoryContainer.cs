@@ -83,5 +83,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             var result = new DeleteEntitiesResult();
             return Task.FromResult(result);
         }
+        
+        public override Task<AutoIncrementResult>   AutoIncrement  (AutoIncrement  command, MessageContext messageContext) {
+            throw new NotImplementedException("");
+        }
     }
 }

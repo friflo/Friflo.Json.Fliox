@@ -186,6 +186,10 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             }
             return new DeleteEntitiesResult();
         }
+        
+        public override Task<AutoIncrementResult>   AutoIncrement  (AutoIncrement  command, MessageContext messageContext) {
+            throw new NotImplementedException("");
+        }
     }
 }
 

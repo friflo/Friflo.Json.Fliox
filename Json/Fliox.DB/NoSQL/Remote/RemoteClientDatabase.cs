@@ -117,5 +117,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
         public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
             throw new InvalidOperationException("RemoteClientContainer does not execute CRUD commands");
         }
+        
+        public override Task<AutoIncrementResult>   AutoIncrement  (AutoIncrement  command, MessageContext messageContext) {
+            throw new InvalidOperationException("RemoteClientContainer does not execute CRUD commands");
+        }
     }
 }

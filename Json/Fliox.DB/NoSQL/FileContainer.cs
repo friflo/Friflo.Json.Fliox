@@ -153,6 +153,11 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             return result;
         }
         
+        public override Task<AutoIncrementResult>   AutoIncrement  (AutoIncrement  command, MessageContext messageContext) {
+            throw new NotImplementedException("");
+        }
+
+        
         
         // -------------------------------------- helper methods -------------------------------------- 
         private static HashSet<JsonKey> GetIds(string folder) {
