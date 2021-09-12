@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Burst.Utils;
 
@@ -129,6 +130,7 @@ namespace Friflo.Json.Fliox.Mapper
             throw new NotImplementedException("not implemented by intention to avoid boxing. Use JsonKey.Equality comparer");
         }
 
+        /// Calling should be avoided is possible use <see cref="AppendTo"/> methods. 
         public string AsString() {
             switch (type) {
                 case JsonKeyType.Long:      return str ?? lng. ToString();
@@ -167,6 +169,30 @@ namespace Friflo.Json.Fliox.Mapper
             //  case JsonKeyType.Null:
             //      dest.AppendString("null");
             //      break;
+                default:
+                    throw new InvalidOperationException($"unexpected type in JsonKey.AppendTo()");
+            }
+        }
+        
+        public void AppendTo(StringBuilder sb) {
+            switch (type) {
+                case JsonKeyType.Long:
+                    sb.Append(lng);
+                    break;
+                case JsonKeyType.String:
+                    sb.Append(str);
+                    break;
+                case JsonKeyType.Guid:
+                    Span<char> span = stackalloc char[Bytes.MinGuidLength];
+                    if (!guid.TryFormat(span, out int charsWritten))
+                        throw new InvalidOperationException("AppendGuid() failed");
+                    if (charsWritten != Bytes.MinGuidLength)
+                        throw new InvalidOperationException($"Unexpected Guid length. Was: {charsWritten}");
+                    sb.Append(span);
+                    break;
+                //  case JsonKeyType.Null:
+                //      dest.AppendString("null");
+                //      break;
                 default:
                     throw new InvalidOperationException($"unexpected type in JsonKey.AppendTo()");
             }
