@@ -166,9 +166,6 @@ namespace Friflo.Json.Fliox.Mapper
                 case JsonKeyType.Guid:
                     dest.AppendGuid(guid);
                     break;
-            //  case JsonKeyType.Null:
-            //      dest.AppendString("null");
-            //      break;
                 default:
                     throw new InvalidOperationException($"unexpected type in JsonKey.AppendTo()");
             }
@@ -183,16 +180,18 @@ namespace Friflo.Json.Fliox.Mapper
                     sb.Append(str);
                     break;
                 case JsonKeyType.Guid:
+#if UNITY_5_3_OR_NEWER
+                    var guidStr = guid.ToString();
+                    sb.Append(guidStr);
+#else
                     Span<char> span = stackalloc char[Bytes.MinGuidLength];
                     if (!guid.TryFormat(span, out int charsWritten))
                         throw new InvalidOperationException("AppendGuid() failed");
                     if (charsWritten != Bytes.MinGuidLength)
                         throw new InvalidOperationException($"Unexpected Guid length. Was: {charsWritten}");
                     sb.Append(span);
+#endif
                     break;
-                //  case JsonKeyType.Null:
-                //      dest.AppendString("null");
-                //      break;
                 default:
                     throw new InvalidOperationException($"unexpected type in JsonKey.AppendTo()");
             }
