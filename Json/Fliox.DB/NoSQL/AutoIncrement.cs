@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
     }
     
     public class AutoIncrementResult {
-        public  List<int>   ids;
+        public  List<long>  ids;
     }
     
     public class SequenceStore : EntityStore
@@ -27,8 +27,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
     public class AutoIncSequence {
         [Key]
         public  string  container;
-        public  int     autoId;
+        public  long    autoId;
         [Fri.Property(Name = "_etag")]
-        public  int     etag;
+        public  string  etag;
     }
 }
