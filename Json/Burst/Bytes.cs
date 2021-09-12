@@ -193,15 +193,16 @@ namespace Friflo.Json.Burst
 
         /// In case of Unity <see cref="str"/> is not null. Otherwise null.
         public bool TryParseGuid(out Guid guid, out string str) {
+            if (Len < MinGuidLength || MaxGuidLength < Len) {
+                str = null;
+                guid = new Guid();
+                return false;
+            }
 #if UNITY_5_3_OR_NEWER
             str = AsString();
             return Guid.TryParse(str, out guid);
 #else
             str = null;
-            if (Len < MinGuidLength || MaxGuidLength < Len) {
-                guid = new Guid();
-                return false;
-            }
             Span<char> span = stackalloc char[Len];
             ref var array   = ref buffer.array;
             var len         = Len;
