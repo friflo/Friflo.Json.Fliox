@@ -16,13 +16,13 @@ namespace Friflo.Json.Fliox.DB.NoSQL
     
     public class SequenceStore : EntityStore
     {
-        public  EntitySet <string, Sequence>    sequence; 
+        public  EntitySet <string, AutoIncSequence>    sequence; 
         
         public  SequenceStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, clientId) {
         }
     }
     
-    public class Sequence {
+    public class AutoIncSequence {
         [Key]
         public  string  container;
         public  int     autoId;
