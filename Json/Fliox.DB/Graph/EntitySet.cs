@@ -420,7 +420,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                 peer = CreatePeer(entity);
                 return true;
             }
-            peer = GetOrCreatePeerByKey(reference.key, new JsonKey());
+            peer = GetOrCreatePeerByKey(reference.Key, new JsonKey());
             return true;
         }
         

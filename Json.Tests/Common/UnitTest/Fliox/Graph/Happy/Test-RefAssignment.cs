@@ -91,7 +91,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             
             // --- assign default Ref<string, Article>
             Ref<string, Article> reference = default;
-            IsNull  (reference.key);
+            IsNull  (reference.Key);
             IsNull  (reference.Entity);
             IsTrue  (reference.TryEntity(out result));
             IsNull  (result);
@@ -101,14 +101,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             // --- assign entity reference (Article)
             var article = new Article { id = "some-id" };
             reference = article;
-            AreEqual("some-id", reference.key);
+            AreEqual("some-id", reference.Key);
             IsTrue  (article == reference.Entity);
             IsTrue  (reference.TryEntity(out result));
             IsTrue  (article == result);
             
             Article nullArticle = null;
             reference = nullArticle;
-            IsNull  (reference.key);
+            IsNull  (reference.Key);
             IsNull  (reference.Entity);
             IsTrue  (reference.TryEntity(out result));
             IsNull  (result);
@@ -120,13 +120,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             // --- assign entity key (string)
             string nullKey = null;
             reference = nullKey;
-            IsNull  (reference.key);
+            IsNull  (reference.Key);
             IsNull  (reference.Entity);
             IsTrue  (reference.TryEntity(out result));
             IsNull  (result);
             
             reference = "ref-id";
-            AreEqual("ref-id", reference.key);
+            AreEqual("ref-id", reference.Key);
             IsFalse (reference.TryEntity(out result));
             IsNull  (result);
             var e = Throws<UnresolvedRefException>(() => _ = reference.Entity);

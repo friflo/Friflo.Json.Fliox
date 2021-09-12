@@ -16,19 +16,19 @@ namespace Friflo.Json.Fliox.DB.Graph
     /// <summary>
     /// A <see cref="Ref{TKey,T}"/> is used to declare type safe references (foreign keys) to entities in an <see cref="EntitySet{TKey,T}"/>.
     /// It is implemented as a struct to provide value type semantics and adding minimal overhead when accessing the
-    /// <see cref="key"/> or the <see cref="Entity"/>.
+    /// <see cref="Key"/> or the <see cref="Entity"/>.
     /// 
     /// <para>
-    /// A reference is an <see cref="key"/> of type <see cref="TKey"/>. A reference can be in two states:
+    /// A reference is an <see cref="Key"/> of type <see cref="TKey"/>. A reference can be in two states:
     ///   <para><b>unresolved</b>
-    ///     Only the access to <see cref="key"/> is valid. This is always the case.
+    ///     Only the access to <see cref="Key"/> is valid. This is always the case.
     ///     Access to the referenced entity instance via the property <see cref="Entity"/> result in an <see cref="Exception"/>.
     ///   </para> 
     ///   <para><b>resolved</b>
     ///     Access to the referenced entity instance is valid via the property <see cref="Entity"/>.
     ///   </para> 
     /// </para> 
-    /// The <see cref="key"/> is used when serializing a <see cref="Ref{TKey,T}"/> field to and from JSON.  
+    /// The <see cref="Key"/> is used when serializing a <see cref="Ref{TKey,T}"/> field to and from JSON.  
     /// <para>
     ///     A <see cref="Ref{TKey,T}"/> can be assigned in three ways:
     ///     <para>1. By assigning an key of type <see cref="TKey"/>.                        Assigning a default (null) <see cref="TKey"/> is valid.</para>
@@ -37,8 +37,8 @@ namespace Friflo.Json.Fliox.DB.Graph
     /// </para>
     /// 
     /// <para>
-    ///     Access to <see cref="key"/> and property <see cref="Entity"/>:
-    ///     <para>The <see cref="key"/> of a <see cref="Ref{TKey,T}"/> can be accessed at all time without any restrictions.</para>
+    ///     Access to <see cref="Key"/> and property <see cref="Entity"/>:
+    ///     <para>The <see cref="Key"/> of a <see cref="Ref{TKey,T}"/> can be accessed at all time without any restrictions.</para>
     ///     <para>The property <see cref="Entity"/> enables access to the referenced entity instance.
     ///         If the <see cref="Ref{TKey,T}"/> was assigned by an entity the access has no restrictions.
     ///         If the <see cref="Ref{TKey,T}"/> was assigned by an key the referenced entity instance need to
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.DB.Graph
     ///     </para>
     /// </para>
     /// <para>
-    ///   To resolve the <see cref="Entity"/> by its <see cref="key"/> various options are available:
+    ///   To resolve the <see cref="Entity"/> by its <see cref="Key"/> various options are available:
     ///   <para>By calling <see cref="FindBy"/> of a <see cref="Ref{TKey,T}"/> instance.</para>
     ///   <para>
     ///     When reading an entity instance containing a <see cref="Ref{TKey,T}"/> field
@@ -74,8 +74,10 @@ namespace Friflo.Json.Fliox.DB.Graph
         //      set == null    =>  Ref<TKey,T> is not attached to a Peer<T> until now
         //      set != null    =>  Ref<TKey,T> is attached to a Peer<T>
 
+        // ReSharper disable once ConvertToAutoPropertyWhenPossible
         /// The foreign key used to reference an entity stored in a <see cref="EntitySet{TKey,T}"/>.
-                                    public   readonly   TKey        key;
+                                    public              TKey        Key => key;
+        [DebuggerBrowsable(Never)]  private  readonly   TKey        key;
         [DebuggerBrowsable(Never)]  private  readonly   T           entity;
         [DebuggerBrowsable(Never)]  private  readonly   bool        entityAssigned;
         [DebuggerBrowsable(Never)]  private             Peer<T>     peer;    // alternatively a EntitySetBase<T> could be used 
@@ -148,7 +150,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         /// <summary>
-        /// Returns true only in case <see cref="TKey"/> is a reference type like string and the <see cref="key"/> is null.
+        /// Returns true only in case <see cref="TKey"/> is a reference type like string and the <see cref="Key"/> is null.
         /// Return always false in case <see cref="TKey"/> is a value type like <see cref="int"/> or <see cref="Guid"/>
         /// as values type cannot be null. 
         /// </summary>
@@ -185,7 +187,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             return new Ref<TKey, T> (key, entity);
         }
         
-        /// Implicit type conversion creating as <see cref="Ref{TKey,T}"/> from the given <see cref="key"/>
+        /// Implicit type conversion creating as <see cref="Ref{TKey,T}"/> from the given <see cref="Key"/>
         public static implicit operator Ref<TKey, T>(TKey key) {
             return new Ref<TKey, T> (key);
         }

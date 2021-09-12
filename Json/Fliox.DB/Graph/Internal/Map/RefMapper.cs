@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Map
         public override DiffNode Diff (Differ differ, Ref<TKey, T> left, Ref<TKey, T> right) {
             // if (!left.id.IsEqual(right.id))
             if (!left.IsEqual(right))
-                return differ.AddNotEqual(left.key, right.key);
+                return differ.AddNotEqual(left.Key, right.Key);
             return null;
         }
         
@@ -99,8 +99,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Map
         }
 
         public override void Write(ref Writer writer, Ref<TKey, T> value) {
-            if (value.key != null) {
-                keyMapper.Write(ref writer, value.key);
+            if (value.Key != null) {
+                keyMapper.Write(ref writer, value.Key);
             } else {
                 writer.AppendNull();
             }

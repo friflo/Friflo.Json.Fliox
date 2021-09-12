@@ -48,11 +48,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             var allArticles             = articles.QueryAll()                                       .TaskName("allArticles");
             var articleProducer         = allArticles.ReadRefs(a => a.producer)                     .TaskName("articleProducer");
             var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"))   .TaskName("hasOrderCamera");
-            var ordersWithCustomer1     = orders.Query(o => o.customer.key == "customer-1")          .TaskName("ordersWithCustomer1");
+            var ordersWithCustomer1     = orders.Query(o => o.customer.Key == "customer-1")          .TaskName("ordersWithCustomer1");
             var read3                   = orders.Query(o => o.items.Count(i => i.amount < 1) > 0)   .TaskName("read3");
             var ordersAnyAmountLower2   = orders.Query(o => o.items.Any(i => i.amount < 2))         .TaskName("ordersAnyAmountLower2");
             var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0))         .TaskName("ordersAllAmountGreater0");
-            var orders2WithTaskError    = orders.Query(o => o.customer.key == readTaskError)         .TaskName("orders2WithTaskError");
+            var orders2WithTaskError    = orders.Query(o => o.customer.Key == readTaskError)         .TaskName("orders2WithTaskError");
             var order2CustomerError     = orders2WithTaskError.ReadRefs(o => o.customer)            .TaskName("order2CustomerError");
             
             AreEqual("ReadTask<Order> (#ids: 1)",                                       readOrders              .Details);
@@ -161,13 +161,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             IsTrue(readOrders2.Success);
             IsTrue(order2.Success);
             IsFalse(order2Customer.Success);
-            AreEqual("read-task-error", readOrders2["order-2"].customer.key);
-            AreEqual("read-task-error", order2.Result.customer.key);
+            AreEqual("read-task-error", readOrders2["order-2"].customer.Key);
+            AreEqual("read-task-error", order2.Result.customer.Key);
             AreEqual("DatabaseError ~ read references failed: 'Order -> .customer' - simulated read task error", order2Customer.   Error.ToString());
             
             IsTrue(orders2WithTaskError.Success);
             IsFalse(order2CustomerError.Success);
-            AreEqual("read-task-error", orders2WithTaskError.Results["order-2"].customer.key);
+            AreEqual("read-task-error", orders2WithTaskError.Results["order-2"].customer.Key);
             AreEqual("DatabaseError ~ read references failed: 'Order -> .customer' - simulated read task error", order2CustomerError.  Error.ToString());
             
             // --- Test invalid response

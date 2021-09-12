@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                     var parentName  = GetQueryPath(parentMember, cx);
                     var name        = QueryConverter.GetMemberName(member, cx);
                     if (isRef) {
-                        if (name == "key")
+                        if (name == "Key")
                             return parentName;
                         throw QueryConverter.NotSupported($"Query using Ref<>.Entity intentionally not supported. Only Ref<>.id is valid: {member}", cx); 
                     }
