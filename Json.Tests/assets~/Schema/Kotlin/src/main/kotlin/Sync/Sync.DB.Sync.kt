@@ -39,6 +39,7 @@ abstract class DatabaseTask  {
 data class CreateEntities (
               val container : String,
               val entities  : HashMap<String, EntityValue>,
+              val tempIds   : List<Long>? = null,
 ) : DatabaseTask()
 
 @Serializable
@@ -180,7 +181,8 @@ abstract class TaskResult  {
 @Serializable
 @SerialName("create")
 data class CreateEntitiesResult (
-              val Error : CommandError? = null,
+              val Error  : CommandError? = null,
+              val newIds : List<Long>? = null,
 ) : TaskResult()
 
 @Serializable

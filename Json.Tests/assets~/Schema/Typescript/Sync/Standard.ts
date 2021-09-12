@@ -3,9 +3,9 @@
 /** signed integer 32-bit. Range: [-2147483648, 2147483647]                   */
 export type int32 = number;
 
-/** double precision floating point number */
-export type double = number;
-
 /** signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807] */
 export type int64 = number;
+
+/** double precision floating point number */
+export type double = number;
 

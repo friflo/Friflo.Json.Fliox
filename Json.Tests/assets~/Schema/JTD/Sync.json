@@ -46,7 +46,8 @@
         "CreateEntities": {
             "properties": {
                 "container": { "type": "string" },
-                "entities":  { "values": { "ref":  "EntityValue" } }
+                "entities":  { "values": { "ref":  "EntityValue" } },
+                "tempIds":   { "elements": { "type": "int64" }, "nullable": true }
             }
         },
         "EntityValue": {
@@ -583,7 +584,8 @@
         },
         "CreateEntitiesResult": {
             "properties": {
-                "Error": { "ref":  "CommandError", "nullable": true }
+                "Error":  { "ref":  "CommandError", "nullable": true },
+                "newIds": { "elements": { "type": "int64" }, "nullable": true }
             }
         },
         "CommandError": {

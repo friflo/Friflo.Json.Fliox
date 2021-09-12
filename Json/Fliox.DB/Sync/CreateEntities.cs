@@ -12,7 +12,8 @@ namespace Friflo.Json.Fliox.DB.Sync
     public class CreateEntities : DatabaseTask
     {
         [Fri.Required]  public  string                              container;
-        [Fri.Required]  public  Dictionary<JsonKey, EntityValue>    entities = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+        [Fri.Required]  public  Dictionary<JsonKey, EntityValue>    entities    = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+                        public  List<long>                          tempIds;
         
         internal override       TaskType                        TaskType => TaskType.create;
         public   override       string                          TaskName => $"container: '{container}'";
@@ -52,7 +53,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     
     // ----------------------------------- task result -----------------------------------
     public class CreateEntitiesResult : TaskResult, ICommandResult
-    {
+    {                public List<long>                          newIds;
                      public CommandError                        Error { get; set; }
         [Fri.Ignore] public Dictionary<JsonKey, EntityError>    createErrors;
         

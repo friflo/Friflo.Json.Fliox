@@ -91,6 +91,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             using (var typeStore = new TypeStore()) {
                 var database    = new NoopDatabase();
                 var _           = new PocStore(database, typeStore, null);
+                var __          = new PocStore(database, typeStore, null);
                 
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 // ReSharper disable once UnusedVariable
@@ -98,7 +99,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 
                 Console.WriteLine($"PocStore memory: {diff}");
-                IsTrue(diff < 7590);
+                var expected = Is.InRange(7584, 7584);
+                That(diff, expected);
             }
         }
 
