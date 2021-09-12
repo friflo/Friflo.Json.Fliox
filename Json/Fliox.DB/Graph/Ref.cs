@@ -77,6 +77,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         // ReSharper disable once ConvertToAutoPropertyWhenPossible
         /// The foreign key used to reference an entity stored in a <see cref="EntitySet{TKey,T}"/>.
                                     public              TKey        Key => key;
+        // --- private fields. Remain private by all means
         [DebuggerBrowsable(Never)]  private  readonly   TKey        key;
         [DebuggerBrowsable(Never)]  private  readonly   T           entity;
         [DebuggerBrowsable(Never)]  private  readonly   bool        entityAssigned;

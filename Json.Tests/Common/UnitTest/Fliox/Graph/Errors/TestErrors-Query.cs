@@ -48,11 +48,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             var allArticles             = articles.QueryAll()                                       .TaskName("allArticles");
             var articleProducer         = allArticles.ReadRefs(a => a.producer)                     .TaskName("articleProducer");
             var hasOrderCamera          = orders.Query(o => o.items.Any(i => i.name == "Camera"))   .TaskName("hasOrderCamera");
-            var ordersWithCustomer1     = orders.Query(o => o.customer.Key == "customer-1")          .TaskName("ordersWithCustomer1");
+            var ordersWithCustomer1     = orders.Query(o => o.customer.Key == "customer-1")         .TaskName("ordersWithCustomer1");
             var read3                   = orders.Query(o => o.items.Count(i => i.amount < 1) > 0)   .TaskName("read3");
             var ordersAnyAmountLower2   = orders.Query(o => o.items.Any(i => i.amount < 2))         .TaskName("ordersAnyAmountLower2");
             var ordersAllAmountGreater0 = orders.Query(o => o.items.All(i => i.amount > 0))         .TaskName("ordersAllAmountGreater0");
-            var orders2WithTaskError    = orders.Query(o => o.customer.Key == readTaskError)         .TaskName("orders2WithTaskError");
+            var orders2WithTaskError    = orders.Query(o => o.customer.Key == readTaskError)        .TaskName("orders2WithTaskError");
             var order2CustomerError     = orders2WithTaskError.ReadRefs(o => o.customer)            .TaskName("order2CustomerError");
             
             AreEqual("ReadTask<Order> (#ids: 1)",                                       readOrders              .Details);
