@@ -284,9 +284,11 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 tempIds = new List<long>(autoCount);
                 long autoId = -1;
                 foreach (var entity in _autos) {
+                    var id      = new JsonKey(autoId);
+                    var key     = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+                    EntityKeyTMap.SetKey(entity, key);
                     var json    = writer.Write(entity);
                     var entry   = new JsonValue(json);
-                    var id      = new JsonKey(autoId);
                     entries.Add(entry);
                     tempIds.Add(autoId);
                     keys.Add(id);
