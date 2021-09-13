@@ -60,7 +60,7 @@ export abstract class DatabaseTask {
 export class CreateEntities extends DatabaseTask {
     task       : "create";
     container  : string;
-    key        : string;
+    key?       : string | null;
     entities   : any[];
     tempIds?   : int64[] | null;
 }
@@ -68,7 +68,7 @@ export class CreateEntities extends DatabaseTask {
 export class UpsertEntities extends DatabaseTask {
     task       : "upsert";
     container  : string;
-    key        : string;
+    key?       : string | null;
     entities   : any[];
 }
 

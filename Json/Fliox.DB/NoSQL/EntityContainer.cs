@@ -287,6 +287,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             MessageContext                          messageContext,
             out string                              error
         ) {
+            keyName = keyName ?? "id";
             var keys = new List<JsonKey>(entities.Count);
             using (var poolValidator = messageContext.pools.EntityValidator.Get()) {
                 var validator = poolValidator.instance;

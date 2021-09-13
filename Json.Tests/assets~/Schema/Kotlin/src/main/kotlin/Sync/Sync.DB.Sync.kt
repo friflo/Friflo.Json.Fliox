@@ -38,7 +38,7 @@ abstract class DatabaseTask  {
 @SerialName("create")
 data class CreateEntities (
               val container : String,
-              val key       : String,
+              val key       : String? = null,
               val entities  : List<JsonElement>,
               val tempIds   : List<Long>? = null,
 ) : DatabaseTask()
@@ -47,7 +47,7 @@ data class CreateEntities (
 @SerialName("upsert")
 data class UpsertEntities (
               val container : String,
-              val key       : String,
+              val key       : String? = null,
               val entities  : List<JsonElement>,
 ) : DatabaseTask()
 

@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     case JsonEvent.ObjectEnd:
                         ev = parser.NextEvent();
                         if (ev == JsonEvent.EOF) {
-                            error = $"key not found. keyName: {keyName}";
+                            error = $"key not found. key: {keyName}";
                             return false;
                         }
                         error = "Expected EOF in JSON value";

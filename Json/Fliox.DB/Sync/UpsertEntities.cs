@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     public class UpsertEntities : DatabaseTask
     {
         [Fri.Required]  public  string                          container;
-        [Fri.Required]  public  string                          key;
+                        public  string                          key;
         [Fri.Required]  public  List<JsonValue>                 entities;
         
         [Fri.Ignore]    public  List<JsonKey>                   entityKeys;
@@ -25,8 +25,6 @@ namespace Friflo.Json.Fliox.DB.Sync
                 return MissingContainer();
             if (entities == null)
                 return MissingField(nameof(entities));
-            if (key == null)
-                return MissingField(nameof(key));
             entityKeys = EntityContainer.CreateEntityKeys(key, entities, messageContext, out string error);
             if (entityKeys == null) {
                 return InvalidTask(error);
