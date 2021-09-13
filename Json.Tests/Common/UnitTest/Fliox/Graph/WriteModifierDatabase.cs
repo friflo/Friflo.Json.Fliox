@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 {
-    public delegate EntityValue WriteModifier (EntityValue value);
+    public delegate JsonValue   WriteModifier (JsonValue value);
     public delegate EntityPatch PatchModifier (EntityPatch patch);
     
     public class WriteModifierDatabase : EntityDatabase
@@ -90,10 +90,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             this.validator = validator;
         }
         
-        internal void ModifyWrites(string keyName, List<EntityValue> entities) {
+        internal void ModifyWrites(string keyName, List<JsonValue> entities) {
             for (int n = 0; n < entities.Count; n++) {
                 var entity = entities[n];
-                var json = entity.Json;
+                var json = entity.json;
                 if (!validator.GetEntityKey(json, keyName, out JsonKey entityKey, out string error))
                     throw new InvalidOperationException($"Entity key error: {error}");
                 var key = entityKey.AsString();

@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
 
         private void CreateUpsertEntitiesResult(
             List<JsonKey>                       keys,
-            List<EntityValue>                   entities,
+            List<JsonValue>                     entities,
             TaskResult                          result,
             List<WriteTask>                     writeTasks,
             IDictionary<JsonKey, EntityError>   writeErrors)
@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             var reader = set.intern.jsonMapper.reader;
             for (int n = 0; n < entities.Count; n++) {
                 var entity = entities[n];
-                if (entity == null) // TAG_ENTITY_NULL
+                if (entity.json == null) // TAG_ENTITY_NULL
                     continue;
                 var id = keys[n];
                 if (writeErrors.TryGetValue(id, out EntityError _)) {
@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 var peer = set.GetOrCreatePeerByKey(key, id);
                 peer.created = false;
                 peer.updated = false;
-                peer.SetPatchSource(reader.Read<T>(entity.Json));
+                peer.SetPatchSource(reader.Read<T>(entity.json));
             }
             foreach (var writeTask in writeTasks) {
                 var entityErrorInfo = new TaskErrorInfo();

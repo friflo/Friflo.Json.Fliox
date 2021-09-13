@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 var payload = entities[n];
                 if (keyValues.TryGetValue(key, out string _))
                     throw new InvalidOperationException($"Entity with key '{key}' already in DatabaseContainer: {name}");
-                keyValues[key] = payload.Json;
+                keyValues[key] = payload.json;
             }
             var result = new CreateEntitiesResult();
             return Task.FromResult(result);
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             for (int n = 0; n < entities.Count; n++) {
                 var key     = command.entityKeys[n];
                 var payload = entities[n];
-                keyValues[key] = payload.Json;
+                keyValues[key] = payload.json;
             }
             var result = new UpsertEntitiesResult();
             return Task.FromResult(result);

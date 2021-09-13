@@ -179,10 +179,10 @@ namespace Friflo.Json.Fliox.DB.Graph
             subHandler(this, ev); // subHandler.Invoke(this, ev);
         }
         
-        private List<JsonKey> CreateEntityKeys(string keyName, List<EntityValue> entities) {
+        private List<JsonKey> CreateEntityKeys(string keyName, List<JsonValue> entities) {
             var keys = new List<JsonKey>(entities.Count);
             foreach (var entity in entities) {
-                var json = entity.Json;
+                var json = entity.json;
                 if (!validator.GetEntityKey(json, keyName, out JsonKey key, out string error))
                     throw new InvalidOperationException($"CreateEntityKeys() error: {error}");
                 keys.Add(key);
@@ -190,14 +190,15 @@ namespace Friflo.Json.Fliox.DB.Graph
             return keys;
         }
         
-        private static void SyncPeerEntities (EntitySet set, List<JsonKey> keys, List<EntityValue> entities) {
+        private static void SyncPeerEntities (EntitySet set, List<JsonKey> keys, List<JsonValue> entities) {
             if (keys.Count != entities.Count)
                 throw new InvalidOperationException("Expect equal counts");
             var syncEntities = new Dictionary<JsonKey, EntityValue>(entities.Count, JsonKey.Equality);
             for (int n = 0; n < entities.Count; n++) {
                 var entity  = entities[n];
                 var key     = keys[n];
-                syncEntities.Add(key, entity);
+                var value = new EntityValue(entity.json);
+                syncEntities.Add(key, value);
             }
             set.SyncPeerEntities(syncEntities);
         }

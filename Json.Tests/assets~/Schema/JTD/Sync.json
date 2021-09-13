@@ -47,37 +47,15 @@
             "properties": {
                 "container": { "type": "string" },
                 "keyName":   { "type": "string" },
-                "entities":  { "elements": { "ref":  "EntityValue" } },
+                "entities":  { "elements": {  } },
                 "tempIds":   { "elements": { "type": "int64" }, "nullable": true }
             }
-        },
-        "EntityValue": {
-            "properties": {
-                "value": { "nullable": true },
-                "error": { "ref":  "EntityError", "nullable": true }
-            }
-        },
-        "EntityError": {
-            "properties": {
-                "type":    { "ref":  "EntityErrorType" },
-                "message": { "type": "string", "nullable": true }
-            }
-        },
-        "EntityErrorType": {
-            "enum": [
-                "Undefined",
-                "ParseError",
-                "ReadError",
-                "WriteError",
-                "DeleteError",
-                "PatchError"
-            ]
         },
         "UpsertEntities": {
             "properties": {
                 "container": { "type": "string" },
                 "keyName":   { "type": "string" },
-                "entities":  { "elements": { "ref":  "EntityValue" } }
+                "entities":  { "elements": {  } }
             }
         },
         "ReadEntitiesList": {
@@ -676,6 +654,28 @@
                 "container": { "type": "string", "nullable": true },
                 "entities":  { "values": { "ref":  "EntityValue" } }
             }
+        },
+        "EntityValue": {
+            "properties": {
+                "value": { "nullable": true },
+                "error": { "ref":  "EntityError", "nullable": true }
+            }
+        },
+        "EntityError": {
+            "properties": {
+                "type":    { "ref":  "EntityErrorType" },
+                "message": { "type": "string", "nullable": true }
+            }
+        },
+        "EntityErrorType": {
+            "enum": [
+                "Undefined",
+                "ParseError",
+                "ReadError",
+                "WriteError",
+                "DeleteError",
+                "PatchError"
+            ]
         },
         "EntityErrors": {
             "properties": {

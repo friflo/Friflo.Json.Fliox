@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     {
         [Fri.Required]  public  string                          container;
         [Fri.Required]  public  string                          keyName;
-        [Fri.Required]  public  List<EntityValue>               entities;
+        [Fri.Required]  public  List<JsonValue>                 entities;
                         public  List<long>                      tempIds;
                         
         [Fri.Ignore]    public  List<JsonKey>                   entityKeys;
@@ -42,13 +42,12 @@ namespace Friflo.Json.Fliox.DB.Sync
             if (entityContainer.Pretty) {
                 using (var pooledPatcher = messageContext.pools.JsonPatcher.Get()) {
                     JsonPatcher patcher = pooledPatcher.instance;
-                    foreach (var entity in entities) {
-                        if (entity == null) // TAG_ENTITY_NULL
+                    for (int n = 0; n < entities.Count; n++) {
+                        var entity = entities[n];
+                        if (entity.json == null) // TAG_ENTITY_NULL
                             continue;
-                        var json = entity.Json;
-                        if (json == null)
-                            return InvalidTask("value of entities key/value elements not be null");
-                        entity.SetJson(patcher.Copy(json, true));
+                        var json = entity.json;
+                        entities[n] = new JsonValue(patcher.Copy(json, true));
                     }
                 }
             }

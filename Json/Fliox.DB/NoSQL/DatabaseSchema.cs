@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         public void ValidateEntities (
             string                                  container,
             List<JsonKey>                           entityKeys,
-            List<EntityValue>                       entities,
+            List<JsonValue>                         entities,
             MessageContext                          messageContext,
             EntityErrorType                         errorType,
             ref Dictionary<string, EntityErrors>    entityErrorMap
@@ -75,15 +75,15 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 TypeValidator validator = pooledValidator.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var entity = entities[n];
-                    if (entity == null)  // TAG_ENTITY_NULL
+                    if (entity.json == null)  // TAG_ENTITY_NULL
                         continue;
-                    string json = entities[n].Json;
+                    string json = entity.json;
                     if (!validator.ValidateObject(json, type, out string error)) {
                         var key = entityKeys[n];
                         if (validationErrors == null) {
                             validationErrors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
                         }
-                        entities[n] = null;
+                        entities[n] = new JsonValue();
                         validationErrors.Add(key, new EntityError(errorType, container, key, error));
                     }
                 }

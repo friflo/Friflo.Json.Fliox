@@ -8,5 +8,9 @@ namespace Friflo.Json.Fliox.Mapper
         public string       json;
         
         public override string ToString() => json ?? "null";
+        
+        public JsonValue (string json) {
+            this.json  = json;
+        }
     }
 }

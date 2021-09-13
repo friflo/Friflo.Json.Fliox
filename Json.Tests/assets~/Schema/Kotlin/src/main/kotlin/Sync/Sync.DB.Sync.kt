@@ -39,37 +39,16 @@ abstract class DatabaseTask  {
 data class CreateEntities (
               val container : String,
               val keyName   : String,
-              val entities  : List<EntityValue>,
+              val entities  : List<JsonElement>,
               val tempIds   : List<Long>? = null,
 ) : DatabaseTask()
-
-@Serializable
-data class EntityValue (
-              val value : JsonElement? = null,
-              val error : EntityError? = null,
-)
-
-@Serializable
-data class EntityError (
-              val type    : EntityErrorType,
-              val message : String? = null,
-)
-
-enum class EntityErrorType {
-    Undefined,
-    ParseError,
-    ReadError,
-    WriteError,
-    DeleteError,
-    PatchError,
-}
 
 @Serializable
 @SerialName("upsert")
 data class UpsertEntities (
               val container : String,
               val keyName   : String,
-              val entities  : List<EntityValue>,
+              val entities  : List<JsonElement>,
 ) : DatabaseTask()
 
 @Serializable
@@ -279,6 +258,27 @@ data class ContainerEntities (
               val container : String? = null,
               val entities  : HashMap<String, EntityValue>,
 )
+
+@Serializable
+data class EntityValue (
+              val value : JsonElement? = null,
+              val error : EntityError? = null,
+)
+
+@Serializable
+data class EntityError (
+              val type    : EntityErrorType,
+              val message : String? = null,
+)
+
+enum class EntityErrorType {
+    Undefined,
+    ParseError,
+    ReadError,
+    WriteError,
+    DeleteError,
+    PatchError,
+}
 
 @Serializable
 data class EntityErrors (

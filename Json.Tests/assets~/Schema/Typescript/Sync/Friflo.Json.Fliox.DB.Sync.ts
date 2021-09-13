@@ -61,34 +61,15 @@ export class CreateEntities extends DatabaseTask {
     task       : "create";
     container  : string;
     keyName    : string;
-    entities   : EntityValue[];
+    entities   : any[];
     tempIds?   : int64[] | null;
 }
-
-export class EntityValue {
-    value? : any | null;
-    error? : EntityError | null;
-}
-
-export class EntityError {
-    type     : EntityErrorType;
-    message? : string | null;
-}
-
-export type EntityErrorType =
-    | "Undefined"
-    | "ParseError"
-    | "ReadError"
-    | "WriteError"
-    | "DeleteError"
-    | "PatchError"
-;
 
 export class UpsertEntities extends DatabaseTask {
     task       : "upsert";
     container  : string;
     keyName    : string;
-    entities   : EntityValue[];
+    entities   : any[];
 }
 
 export class ReadEntitiesList extends DatabaseTask {
@@ -300,6 +281,25 @@ export class ContainerEntities {
     container? : string | null;
     entities   : { [key: string]: EntityValue };
 }
+
+export class EntityValue {
+    value? : any | null;
+    error? : EntityError | null;
+}
+
+export class EntityError {
+    type     : EntityErrorType;
+    message? : string | null;
+}
+
+export type EntityErrorType =
+    | "Undefined"
+    | "ParseError"
+    | "ReadError"
+    | "WriteError"
+    | "DeleteError"
+    | "PatchError"
+;
 
 export class EntityErrors {
     container? : string | null;

@@ -41,8 +41,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             var articles = store.articles;
             
             var articleModifier = modifyDb.GetWriteModifiers<Article>();
-            articleModifier.writes.Add("article-missing-id",     val => new EntityValue("{\"id\": \"article-missing-id\" }"));
-            articleModifier.writes.Add("article-incorrect-type", val => new EntityValue(val.Json.Replace("\"xxx\"", "123")));
+            articleModifier.writes.Add("article-missing-id",     val => new JsonValue("{\"id\": \"article-missing-id\" }"));
+            articleModifier.writes.Add("article-incorrect-type", val => new JsonValue(val.json.Replace("\"xxx\"", "123")));
 
             var articleMissingName      = new Article { id = "article-missing-name" };
             var articleMissingId        = new Article { id = "article-missing-id" };
@@ -94,7 +94,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
 
 
             // --- test validation errors for invalid JSON
-            articleModifier.writes.Add("invalid-json",       val => new EntityValue("X"));
+            articleModifier.writes.Add("invalid-json",       val => new JsonValue("X"));
             // articleModifier.writes.Add("empty-json",         val => new EntityValue(""));
             
             var invalidJson     = new Article { id = "invalid-json" };

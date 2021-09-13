@@ -229,16 +229,16 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
             }
         }
         
-        private List<EntityValue> FilterEntities (FilterOperation filter, List<EntityValue> entities)    
+        private List<JsonValue> FilterEntities (FilterOperation filter, List<JsonValue> entities)    
         {
             if (filter == null)
                 return entities;
             var jsonFilter      = new JsonFilter(filter); // filter can be reused
-            var result          = new List<EntityValue>();
+            var result          = new List<JsonValue>();
 
             for (int n = 0; n < entities.Count; n++) {
                 var value   = entities[n];
-                var payload = value.Json;
+                var payload = value.json;
                 if (jsonEvaluator.Filter(payload, jsonFilter)) {
                     result.Add(value);
                 }

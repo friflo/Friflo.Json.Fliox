@@ -266,14 +266,14 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             var count       = createCount + autoCount;
             if (count == 0)
                 return;
-            var entries = new List<EntityValue>(count);
-            var keys    = new List<JsonKey>    (count);
+            var entries = new List<JsonValue>   (count);
+            var keys    = new List<JsonKey>     (count);
             var writer  = set.intern.jsonMapper.writer;
             if (_creates  != null) {
                 foreach (var createPair in _creates) {
                     T entity    = createPair.Value.Entity;
                     var json    = writer.Write(entity);
-                    var entry   = new EntityValue(json);
+                    var entry   = new JsonValue(json);
                     var id      = EntityKeyTMap.GetId(entity);
                     entries.Add(entry);
                     keys.Add(id);
@@ -285,7 +285,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 long autoId = -1;
                 foreach (var entity in _autos) {
                     var json    = writer.Write(entity);
-                    var entry   = new EntityValue(json);
+                    var entry   = new JsonValue(json);
                     var id      = new JsonKey(autoId);
                     entries.Add(entry);
                     tempIds.Add(autoId);
@@ -306,13 +306,13 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             if (_upserts == null || _upserts.Count == 0)
                 return;
             var writer  = set.intern.jsonMapper.writer;
-            var entries = new List<EntityValue>(_upserts.Count);
+            var entries = new List<JsonValue>   (_upserts.Count);
             var keys    = new List<JsonKey>    (_upserts.Count);
             
             foreach (var updatePair in _upserts) {
                 T entity    = updatePair.Value.Entity;
                 var json    = writer.Write(entity);
-                var entry   = new EntityValue(json);
+                var entry   = new JsonValue(json);
                 var id      = EntityKeyTMap.GetId(entity);
                 entries.Add(entry);
                 keys.Add(id);

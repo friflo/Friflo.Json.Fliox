@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             
             // Apply patches
             // targets collect entities with: successful read & successful applied patch 
-            var targets     = new  List<EntityValue>(entities.Count);
+            var targets     = new  List<JsonValue>  (entities.Count);
             var targetKeys  = new  List<JsonKey>    (entities.Count);
             var container   = patchEntities.container;
             Dictionary<JsonKey, EntityError> patchErrors = null;
@@ -120,7 +120,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     }
                     var json = patcher.ApplyPatches(target, patch.patches, Pretty);
                     entity.Value.SetJson(json);
-                    targets.Add(value);
+                    targets.Add(new JsonValue(json));
                     targetKeys.Add(key);
                 }
             }
@@ -282,7 +282,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         // may move to more appropriate class
         public static List<JsonKey> CreateEntityKeys (
             string                                  keyName,
-            List<EntityValue>                       entities,
+            List<JsonValue>                         entities,
             MessageContext                          messageContext,
             out string                              error
         ) {
@@ -291,7 +291,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 var validator = poolValidator.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var entity  = entities[n];
-                    var json    = entity.Json;
+                    var json    = entity.json;
                     if (validator.GetEntityKey(json, keyName, out JsonKey key, out string entityError)) {
                         keys.Add(key);
                         continue;
@@ -305,7 +305,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             return keys;
         }
         
-        public static void AssertEntityCounts(List<JsonKey> keys, List<EntityValue> entities) {
+        public static void AssertEntityCounts(List<JsonKey> keys, List<JsonValue> entities) {
             if (keys.Count != entities.Count)
                 throw new InvalidOperationException("expect equal counts");
         }

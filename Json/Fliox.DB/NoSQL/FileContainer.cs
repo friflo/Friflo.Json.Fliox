@@ -61,12 +61,12 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             try {
                 for (int n = 0; n < entities.Count; n++) {
                     var payload = entities[n];
-                    if (payload == null) // TAG_ENTITY_NULL
+                    if (payload.json == null) // TAG_ENTITY_NULL
                         continue;
                     var key     = command.entityKeys[n];
                     var path = FilePath(key.AsString());
                     try {
-                        await WriteText(path, payload.Json, FileMode.CreateNew).ConfigureAwait(false);
+                        await WriteText(path, payload.json, FileMode.CreateNew).ConfigureAwait(false);
                     } catch (Exception e) {
                         var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
                         AddEntityError(ref createErrors, key, error);
@@ -86,12 +86,12 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             try {
                 for (int n = 0; n < entities.Count; n++) {
                     var payload = entities[n];
-                    if (payload == null) // TAG_ENTITY_NULL
+                    if (payload.json == null) // TAG_ENTITY_NULL
                         continue;
                     var key     = command.entityKeys[n];
                     var path = FilePath(key.AsString());
                     try {
-                        await WriteText(path, payload.Json, FileMode.Create).ConfigureAwait(false);
+                        await WriteText(path, payload.json, FileMode.Create).ConfigureAwait(false);
                     } catch (Exception e) {
                         var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
                         AddEntityError(ref updateErrors, key, error);
