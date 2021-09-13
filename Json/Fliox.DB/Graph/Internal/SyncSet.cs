@@ -294,7 +294,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             }
             var req = new CreateEntities {
                 container   = set.name,
-                keyName     = set.GetKeyName(),
+                key         = set.GetKeyName(),
                 entities    = entries,
                 entityKeys  = keys,
                 tempIds     = tempIds
@@ -319,7 +319,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             }
             var req = new UpsertEntities {
                 container   = set.name,
-                keyName     = set.GetKeyName(),   
+                key         = set.GetKeyName(),   
                 entities    = entries,
                 entityKeys  = keys
             };

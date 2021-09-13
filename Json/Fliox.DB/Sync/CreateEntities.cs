@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     public class CreateEntities : DatabaseTask
     {
         [Fri.Required]  public  string                          container;
-        [Fri.Required]  public  string                          keyName;
+        [Fri.Required]  public  string                          key;
         [Fri.Required]  public  List<JsonValue>                 entities;
                         public  List<long>                      tempIds;
                         
@@ -28,9 +28,9 @@ namespace Friflo.Json.Fliox.DB.Sync
                 return MissingContainer();
             if (entities == null)
                 return MissingField(nameof(entities));
-            if (keyName == null)
-                return MissingField(nameof(keyName));
-            entityKeys = EntityContainer.CreateEntityKeys(keyName, entities, messageContext, out string error);
+            if (key == null)
+                return MissingField(nameof(key));
+            entityKeys = EntityContainer.CreateEntityKeys(key, entities, messageContext, out string error);
             if (entityKeys == null) {
                 return InvalidTask(error);
             }

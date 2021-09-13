@@ -189,7 +189,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
                     var createResult = new CreateEntities {
                         container   = create.container,
                         entities    = FilterEntities(subscribe.filter, create.entities),
-                        keyName     = create.keyName   
+                        key         = create.key   
                     };
                     return createResult;
                 
@@ -202,7 +202,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
                     var updateResult = new UpsertEntities {
                         container   = upsert.container,
                         entities    = FilterEntities(subscribe.filter, upsert.entities),
-                        keyName     = upsert.keyName
+                        key         = upsert.key
                     };
                     return updateResult;
                 
