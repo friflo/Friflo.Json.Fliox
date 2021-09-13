@@ -25,6 +25,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         // readonly - owned
         internal readonly   ObjectMapper                                jsonMapper;
         internal readonly   ObjectPatcher                               objectPatcher;
+        internal readonly   EntityValidator                             validator;
         internal readonly   Dictionary<Type,   EntitySet>               setByType;
         internal readonly   Dictionary<string, EntitySet>               setByName;
         internal readonly   Dictionary<string, MessageSubscriber>       subscriptions;
@@ -67,6 +68,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             // readonly - owned
             jsonMapper                  = mapper;
             objectPatcher               = new ObjectPatcher(jsonMapper);
+            validator                   = new EntityValidator();
             setByType                   = new Dictionary<Type, EntitySet>();
             setByName                   = new Dictionary<string, EntitySet>();
             subscriptions               = new Dictionary<string, MessageSubscriber>();
@@ -99,6 +101,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             database.RemoveEventTarget(clientId);
             setByName.Clear();
             setByType.Clear();
+            validator.Dispose();
             objectPatcher.Dispose();
             // readonly
             jsonMapper.Dispose();

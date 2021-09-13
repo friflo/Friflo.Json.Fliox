@@ -95,7 +95,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             
             // Apply patches
             // targets collect entities with: successful read & successful applied patch 
-            var targets     = new  Dictionary<JsonKey,EntityValue>(entities.Count, JsonKey.Equality);
+            var targets     = new  List<EntityValue>(entities.Count);
+            var targetKeys  = new  List<JsonKey>    (entities.Count);
             var container   = patchEntities.container;
             Dictionary<JsonKey, EntityError> patchErrors = null;
             using (var pooledPatcher = messageContext.pools.JsonPatcher.Get()) {
@@ -119,13 +120,14 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     }
                     var json = patcher.ApplyPatches(target, patch.patches, Pretty);
                     entity.Value.SetJson(json);
-                    targets.Add(key, value);
+                    targets.Add(value);
+                    targetKeys.Add(key);
                 }
             }
-            database.schema?.ValidateEntities(container, targets, messageContext, EntityErrorType.PatchError, ref response.patchErrors);
+            database.schema?.ValidateEntities(container, targetKeys, targets, messageContext, EntityErrorType.PatchError, ref response.patchErrors);
             
             // Write patched entities back
-            var task = new UpsertEntities {entities = targets};
+            var task = new UpsertEntities {entities = targets, entityKeys = targetKeys };
             var updateResult = await UpsertEntities(task, messageContext).ConfigureAwait(false);
             if (updateResult.Error != null) {
                 return new PatchEntitiesResult {Error = updateResult.Error};
@@ -275,6 +277,37 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             }
             // add with TryAdd(). Only the first entity error is relevant. Subsequent entity errors are consequential failures.
             errors.TryAdd(key, error);
+        }
+        
+        // may move to more appropriate class
+        public static List<JsonKey> CreateEntityKeys (
+            string                                  keyName,
+            List<EntityValue>                       entities,
+            MessageContext                          messageContext,
+            out string                              error
+        ) {
+            var keys = new List<JsonKey>(entities.Count);
+            using (var poolValidator = messageContext.pools.EntityValidator.Get()) {
+                var validator = poolValidator.instance;
+                for (int n = 0; n < entities.Count; n++) {
+                    var entity  = entities[n];
+                    var json    = entity.Json;
+                    if (validator.GetEntityKey(json, keyName, out JsonKey key, out string entityError)) {
+                        keys.Add(key);
+                        continue;
+                    }
+                    error = $"error at entities[{n}]: {entityError}";
+                    return null;
+                }
+            }
+            AssertEntityCounts(keys, entities);
+            error = null;
+            return keys;
+        }
+        
+        public static void AssertEntityCounts(List<JsonKey> keys, List<EntityValue> entities) {
+            if (keys.Count != entities.Count)
+                throw new InvalidOperationException("expect equal counts");
         }
     }
 

@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 
                 Console.WriteLine($"PocStore memory: {diff}");
-                var expected = Is.InRange(7368, 7632);
+                var expected = Is.InRange(7368, 8392);
                 That(diff, expected);
             }
         }

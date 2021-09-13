@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             var articles = store.articles;
             
             var articleModifier = modifyDb.GetWriteModifiers<Article>();
-            articleModifier.writes.Add("article-missing-id",     val => new EntityValue("{}"));
+            articleModifier.writes.Add("article-missing-id",     val => new EntityValue("{\"id\": \"article-missing-id\" }"));
             articleModifier.writes.Add("article-incorrect-type", val => new EntityValue(val.Json.Replace("\"xxx\"", "123")));
 
             var articleMissingName      = new Article { id = "article-missing-name" };
@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             AreEqual("Required property must not be null. at Article > name, pos: 40", errors[new JsonKey("article-missing-name")].message);
             const string expectError = @"EntityErrors ~ count: 3
 | WriteError: Article 'article-incorrect-type', Incorrect type. was: 123, expect: string at Article > name, pos: 41
-| WriteError: Article 'article-missing-id', Missing required fields: [id, name] at Article > (root), pos: 2
+| WriteError: Article 'article-missing-id', Missing required fields: [name] at Article > (root), pos: 29
 | WriteError: Article 'article-missing-name', Required property must not be null. at Article > name, pos: 40";
             AreEqual(expectError, createTask.Error.Message);
             
@@ -95,20 +95,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
 
             // --- test validation errors for invalid JSON
             articleModifier.writes.Add("invalid-json",       val => new EntityValue("X"));
-            articleModifier.writes.Add("empty-json",         val => new EntityValue(""));
+            // articleModifier.writes.Add("empty-json",         val => new EntityValue(""));
             
             var invalidJson     = new Article { id = "invalid-json" };
-            var emptyJson       = new Article { id = "empty-json" };
+            // var emptyJson       = new Article { id = "empty-json" };
 
-            createTask = articles.CreateRange(new [] { invalidJson, emptyJson });
+            createTask = articles.CreateRange(new [] { invalidJson });
             
             await store.TrySync(); // -------- Sync --------
             
             IsFalse(sync.Success);
             IsFalse(createTask.Success);
-            AreEqual(@"EntityErrors ~ count: 2
-| WriteError: Article 'empty-json', unexpected EOF on root at Article > (root), pos: 0
-| WriteError: Article 'invalid-json', unexpected character while reading value. Found: X at Article > (root), pos: 1", createTask.Error.Message);
+            AreEqual("InvalidTask ~ error at entities[0]: entity value must be an object.", createTask.Error.Message);
 
         }
     }

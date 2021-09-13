@@ -38,7 +38,8 @@ abstract class DatabaseTask  {
 @SerialName("create")
 data class CreateEntities (
               val container : String,
-              val entities  : HashMap<String, EntityValue>,
+              val keyName   : String,
+              val entities  : List<EntityValue>,
               val tempIds   : List<Long>? = null,
 ) : DatabaseTask()
 
@@ -67,7 +68,8 @@ enum class EntityErrorType {
 @SerialName("upsert")
 data class UpsertEntities (
               val container : String,
-              val entities  : HashMap<String, EntityValue>,
+              val keyName   : String,
+              val entities  : List<EntityValue>,
 ) : DatabaseTask()
 
 @Serializable

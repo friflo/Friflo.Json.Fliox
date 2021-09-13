@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsCreate"/> for all
         /// <see cref="Creates"/> to enable setting <see cref="LogTask"/> to error state via <see cref="LogTask.SetResult"/>. 
         internal override void CreateEntitiesResult(CreateEntities task, TaskResult result) {
-            CreateUpsertEntitiesResult(task.entities, result, CreateTasks(), errorsCreate);
+            CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, CreateTasks(), errorsCreate);
             var creates = Creates();
             if (result is TaskErrorResult taskError) {
                 if (errorsCreate == NoErrors) {
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         }
 
         internal override void UpsertEntitiesResult(UpsertEntities task, TaskResult result) {
-            CreateUpsertEntitiesResult(task.entities, result, UpdateTasks(), errorsUpdate);
+            CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, UpdateTasks(), errorsUpdate);
             
             // enable GC to collect references in containers which are not needed anymore
             Updates().Clear();
@@ -62,7 +62,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         }
 
         private void CreateUpsertEntitiesResult(
-            Dictionary<JsonKey, EntityValue>    entities,
+            List<JsonKey>                       keys,
+            List<EntityValue>                   entities,
             TaskResult                          result,
             List<WriteTask>                     writeTasks,
             IDictionary<JsonKey, EntityError>   writeErrors)
@@ -73,9 +74,14 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 }
                 return;
             }
+            if (keys.Count != entities.Count)
+                throw new InvalidOperationException("Expect equal counts");
             var reader = set.intern.jsonMapper.reader;
-            foreach (var entry in entities) {
-                var id = entry.Key;
+            for (int n = 0; n < entities.Count; n++) {
+                var entity = entities[n];
+                if (entity == null) // TAG_ENTITY_NULL
+                    continue;
+                var id = keys[n];
                 if (writeErrors.TryGetValue(id, out EntityError _)) {
                     continue;
                 }
@@ -83,7 +89,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 var peer = set.GetOrCreatePeerByKey(key, id);
                 peer.created = false;
                 peer.updated = false;
-                peer.SetPatchSource(reader.Read<T>(entry.Value.Json));
+                peer.SetPatchSource(reader.Read<T>(entity.Json));
             }
             foreach (var writeTask in writeTasks) {
                 var entityErrorInfo = new TaskErrorInfo();

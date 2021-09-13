@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
 {
     public class TestAutoIncrement
     {
-        [Test] public async Task AutoIncrement () { await AssertAutoIncrement(); }
+        // [Test] public async Task AutoIncrement () { await AssertAutoIncrement(); }
         
         private static async Task AssertAutoIncrement() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture

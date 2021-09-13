@@ -266,7 +266,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             var count       = createCount + autoCount;
             if (count == 0)
                 return;
-            var entries = new Dictionary<JsonKey, EntityValue>(count, JsonKey.Equality);
+            var entries = new List<EntityValue>(count);
+            var keys    = new List<JsonKey>    (count);
             var writer  = set.intern.jsonMapper.writer;
             if (_creates  != null) {
                 foreach (var createPair in _creates) {
@@ -274,7 +275,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                     var json    = writer.Write(entity);
                     var entry   = new EntityValue(json);
                     var id      = EntityKeyTMap.GetId(entity);
-                    entries.Add(id, entry);
+                    entries.Add(entry);
+                    keys.Add(id);
                 }
             }
             List<long> tempIds = null;
@@ -285,14 +287,17 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                     var json    = writer.Write(entity);
                     var entry   = new EntityValue(json);
                     var id      = new JsonKey(autoId);
-                    entries.Add(id, entry);
+                    entries.Add(entry);
                     tempIds.Add(autoId);
+                    keys.Add(id);
                 }
             }
             var req = new CreateEntities {
-                container = set.name,
-                entities = entries,
-                tempIds  = tempIds
+                container   = set.name,
+                keyName     = set.GetKeyName(),
+                entities    = entries,
+                entityKeys  = keys,
+                tempIds     = tempIds
             };
             tasks.Add(req);
         }
@@ -300,19 +305,23 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         private void UpsertEntities(List<DatabaseTask> tasks) {
             if (_upserts == null || _upserts.Count == 0)
                 return;
-            var writer = set.intern.jsonMapper.writer;
-            var entries = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+            var writer  = set.intern.jsonMapper.writer;
+            var entries = new List<EntityValue>(_upserts.Count);
+            var keys    = new List<JsonKey>    (_upserts.Count);
             
             foreach (var updatePair in _upserts) {
                 T entity    = updatePair.Value.Entity;
                 var json    = writer.Write(entity);
                 var entry   = new EntityValue(json);
                 var id      = EntityKeyTMap.GetId(entity);
-                entries.Add(id, entry);
+                entries.Add(entry);
+                keys.Add(id);
             }
             var req = new UpsertEntities {
-                container = set.name,
-                entities = entries
+                container   = set.name,
+                keyName     = set.GetKeyName(),   
+                entities    = entries,
+                entityKeys  = keys
             };
             tasks.Add(req);
         }

@@ -85,13 +85,13 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
+                    case JsonEvent.ValueNumber:
                         if (parser.key.IsEqualBytes(ref idKey)) {
                             error = null;
                             keyValue = new JsonKey(ref parser.value, ref parser.valueParser);
                             return true;
                         }
                         break;
-                    case JsonEvent.ValueNumber:
                     case JsonEvent.ValueBool:
                     case JsonEvent.ValueNull:
                         break;

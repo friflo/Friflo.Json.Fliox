@@ -6,8 +6,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using Friflo.Json.Fliox.DB.Graph.Internal;
+using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.DB.NoSQL.Utils;
 using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 
 namespace Friflo.Json.Fliox.DB.Graph
@@ -26,6 +28,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         private readonly    EntityStore                         store;
         private readonly    Dictionary<Type, EntityChanges>     results   = new Dictionary<Type, EntityChanges>();
         private readonly    List<Message>                       messages  = new List<Message>();
+        private readonly    EntityValidator                     validator;
         
         /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
         private readonly    SynchronizationContext              synchronizationContext;
@@ -52,6 +55,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         public SubscriptionProcessor (EntityStore store, SynchronizationContext synchronizationContext = null) {
             synchronizationContext      = synchronizationContext ?? SynchronizationContext.Current; 
             this.store                  = store;
+            validator                   = store._intern.validator;
             this.synchronizationContext = synchronizationContext;
         }
         
@@ -64,6 +68,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         /// </summary>
         public SubscriptionProcessor (EntityStore store, SubscriptionHandling _) {
             this.store                  = store;
+            validator                   = store._intern.validator;
             this.eventQueue             = new ConcurrentQueue <SubscriptionEvent> ();
         }
         
@@ -117,7 +122,8 @@ namespace Friflo.Json.Fliox.DB.Graph
                         // apply changes only if subscribed
                         if (set.GetSubscription() == null)
                             continue;
-                        set.SyncPeerEntities(create.entities);
+                        create.entityKeys = CreateEntityKeys (set.GetKeyName(), create.entities);
+                        SyncPeerEntities(set, create.entityKeys, create.entities);
                         break;
                     
                     case TaskType.upsert:
@@ -126,7 +132,8 @@ namespace Friflo.Json.Fliox.DB.Graph
                         // apply changes only if subscribed
                         if (set.GetSubscription() == null)
                             continue;
-                        set.SyncPeerEntities(upsert.entities);
+                        upsert.entityKeys = CreateEntityKeys (set.GetKeyName(), upsert.entities);
+                        SyncPeerEntities(set, upsert.entityKeys, upsert.entities);
                         break;
                     
                     case TaskType.delete:
@@ -172,6 +179,29 @@ namespace Friflo.Json.Fliox.DB.Graph
             subHandler(this, ev); // subHandler.Invoke(this, ev);
         }
         
+        private List<JsonKey> CreateEntityKeys(string keyName, List<EntityValue> entities) {
+            var keys = new List<JsonKey>(entities.Count);
+            foreach (var entity in entities) {
+                var json = entity.Json;
+                if (!validator.GetEntityKey(json, keyName, out JsonKey key, out string error))
+                    throw new InvalidOperationException($"CreateEntityKeys() error: {error}");
+                keys.Add(key);
+            }
+            return keys;
+        }
+        
+        private static void SyncPeerEntities (EntitySet set, List<JsonKey> keys, List<EntityValue> entities) {
+            if (keys.Count != entities.Count)
+                throw new InvalidOperationException("Expect equal counts");
+            var syncEntities = new Dictionary<JsonKey, EntityValue>(entities.Count, JsonKey.Equality);
+            for (int n = 0; n < entities.Count; n++) {
+                var entity  = entities[n];
+                var key     = keys[n];
+                syncEntities.Add(key, entity);
+            }
+            set.SyncPeerEntities(syncEntities);
+        }
+        
         private EntityChanges<TKey, T> GetChanges<TKey, T> (EntitySet<TKey, T> entitySet) where T : class {
             if (!results.TryGetValue(typeof(T), out var result)) {
                 var resultTyped = new EntityChanges<TKey, T>(entitySet);
@@ -205,28 +235,28 @@ namespace Friflo.Json.Fliox.DB.Graph
                         var create = (CreateEntities)task;
                         if (create.container != entitySet.name)
                             continue;
-                        foreach (var entityPair in create.entities) {
-                            var     id      = entityPair.Key;
+                        for (int n = 0; n < create.entityKeys.Count; n++) {
+                            var     id      = create.entityKeys[n];
                             TKey    key     = Ref<TKey,T>.RefKeyMap.IdToKey(id);
                             var     peer    = entitySet.GetOrCreatePeerByKey(key, id);
                             var     entity  = peer.Entity;
                             result.creates.Add(key, entity);
                         }
-                        result.Info.creates += create.entities.Count;
+                        result.Info.creates += create.entityKeys.Count;
                         break;
                     
                     case TaskType.upsert:
                         var upsert = (UpsertEntities)task;
                         if (upsert.container != entitySet.name)
                             continue;
-                        foreach (var entityPair in upsert.entities) {
-                            var     id      = entityPair.Key;
+                        for (int n = 0; n < upsert.entityKeys.Count; n++) {
+                            var     id      = upsert.entityKeys[n];
                             TKey    key     = Ref<TKey,T>.RefKeyMap.IdToKey(id);
                             var     peer    = entitySet.GetOrCreatePeerByKey(key, id);
                             var     entity  = peer.Entity;
                             result.updates.Add(key, entity);
                         }
-                        result.Info.updates += upsert.entities.Count;
+                        result.Info.updates += upsert.entityKeys.Count;
                         break;
                     
                     case TaskType.delete:

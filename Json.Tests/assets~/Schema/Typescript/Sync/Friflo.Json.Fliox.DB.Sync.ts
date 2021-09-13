@@ -60,7 +60,8 @@ export abstract class DatabaseTask {
 export class CreateEntities extends DatabaseTask {
     task       : "create";
     container  : string;
-    entities   : { [key: string]: EntityValue };
+    keyName    : string;
+    entities   : EntityValue[];
     tempIds?   : int64[] | null;
 }
 
@@ -86,7 +87,8 @@ export type EntityErrorType =
 export class UpsertEntities extends DatabaseTask {
     task       : "upsert";
     container  : string;
-    entities   : { [key: string]: EntityValue };
+    keyName    : string;
+    entities   : EntityValue[];
 }
 
 export class ReadEntitiesList extends DatabaseTask {

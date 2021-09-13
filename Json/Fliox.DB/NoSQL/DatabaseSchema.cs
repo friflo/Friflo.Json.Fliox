@@ -62,22 +62,28 @@ namespace Friflo.Json.Fliox.DB.NoSQL
 
         public void ValidateEntities (
             string                                  container,
-            Dictionary<JsonKey, EntityValue>        entities,
+            List<JsonKey>                           entityKeys,
+            List<EntityValue>                       entities,
             MessageContext                          messageContext,
             EntityErrorType                         errorType,
             ref Dictionary<string, EntityErrors>    entityErrorMap
         ) {
+            EntityContainer.AssertEntityCounts(entityKeys, entities);
             Dictionary<JsonKey, EntityError> validationErrors = null;
             var type = containerTypes[container];
             using (var pooledValidator = messageContext.pools.TypeValidator.Get()) {
                 TypeValidator validator = pooledValidator.instance;
-                foreach (var entity in entities) {
-                    string json = entity.Value.Json;
+                for (int n = 0; n < entities.Count; n++) {
+                    var entity = entities[n];
+                    if (entity == null)  // TAG_ENTITY_NULL
+                        continue;
+                    string json = entities[n].Json;
                     if (!validator.ValidateObject(json, type, out string error)) {
-                        var key = entity.Key;
+                        var key = entityKeys[n];
                         if (validationErrors == null) {
                             validationErrors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
                         }
+                        entities[n] = null;
                         validationErrors.Add(key, new EntityError(errorType, container, key, error));
                     }
                 }
@@ -86,10 +92,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 return;
             var errors = SyncResponse.GetEntityErrors(ref entityErrorMap, container);
             errors.AddErrors(validationErrors);
-            foreach (var pair in validationErrors) {
-                var key = pair.Key;
-                entities.Remove(key);
-            }
+            // foreach (var pair in validationErrors) {
+            //     var key = pair.Key;
+            //     entities.Remove(key);
+            // }
         }
     }
  

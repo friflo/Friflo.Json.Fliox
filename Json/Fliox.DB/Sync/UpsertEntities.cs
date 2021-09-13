@@ -11,8 +11,11 @@ namespace Friflo.Json.Fliox.DB.Sync
     // ----------------------------------- task -----------------------------------
     public class UpsertEntities : DatabaseTask
     {
-        [Fri.Required]  public  string                              container;
-        [Fri.Required]  public  Dictionary<JsonKey, EntityValue>    entities = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+        [Fri.Required]  public  string                          container;
+        [Fri.Required]  public  string                          keyName;
+        [Fri.Required]  public  List<EntityValue>               entities;
+        
+        [Fri.Ignore]    public  List<JsonKey>                   entityKeys;
         
         internal override       TaskType                        TaskType => TaskType.upsert;
         public   override       string                          TaskName => $"container: '{container}'";
@@ -22,8 +25,13 @@ namespace Friflo.Json.Fliox.DB.Sync
                 return MissingContainer();
             if (entities == null)
                 return MissingField(nameof(entities));
-            
-            database.schema?.ValidateEntities (container, entities, messageContext, EntityErrorType.WriteError, ref response.updateErrors);
+            if (keyName == null)
+                return MissingField(nameof(keyName));
+            entityKeys = EntityContainer.CreateEntityKeys(keyName, entities, messageContext, out string error);
+            if (entityKeys == null) {
+                return InvalidTask(error);
+            }
+            database.schema?.ValidateEntities (container, entityKeys, entities, messageContext, EntityErrorType.WriteError, ref response.updateErrors);
             
             var entityContainer = database.GetOrCreateContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
@@ -31,10 +39,12 @@ namespace Friflo.Json.Fliox.DB.Sync
                 using (var pooledPatcher = messageContext.pools.JsonPatcher.Get()) {
                     JsonPatcher patcher = pooledPatcher.instance;
                     foreach (var entity in entities) {
-                        var value = entity.Value;
-                        if (value.Json == null)
+                        if (entity == null) // TAG_ENTITY_NULL
+                            continue;
+                        var json = entity.Json;
+                        if (json == null)
                             return InvalidTask("value of entities key/value elements not be null");
-                        value.SetJson(patcher.Copy(value.Json, true));
+                        entity.SetJson(patcher.Copy(json, true));
                     }
                 }
             }

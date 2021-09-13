@@ -188,7 +188,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
                         return null;
                     var createResult = new CreateEntities {
                         container   = create.container,
-                        entities    = FilterEntities(subscribe.filter, create.entities)
+                        entities    = FilterEntities(subscribe.filter, create.entities),
+                        keyName     = create.keyName   
                     };
                     return createResult;
                 
@@ -200,7 +201,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
                         return null;
                     var updateResult = new UpsertEntities {
                         container   = upsert.container,
-                        entities    = FilterEntities(subscribe.filter, upsert.entities)
+                        entities    = FilterEntities(subscribe.filter, upsert.entities),
+                        keyName     = upsert.keyName
                     };
                     return updateResult;
                 
@@ -227,18 +229,18 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
             }
         }
         
-        private Dictionary<JsonKey, EntityValue> FilterEntities (FilterOperation filter, Dictionary<JsonKey, EntityValue> entities) {
+        private List<EntityValue> FilterEntities (FilterOperation filter, List<EntityValue> entities)    
+        {
             if (filter == null)
                 return entities;
             var jsonFilter      = new JsonFilter(filter); // filter can be reused
-            var result          = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+            var result          = new List<EntityValue>();
 
-            foreach (var entityPair in entities) {
-                var         key     = entityPair.Key;
-                EntityValue value   = entityPair.Value;
-                var         payload = value.Json;
+            for (int n = 0; n < entities.Count; n++) {
+                var value   = entities[n];
+                var payload = value.Json;
                 if (jsonEvaluator.Filter(payload, jsonFilter)) {
-                    result.Add(key, value);
+                    result.Add(value);
                 }
             }
             return result;

@@ -107,7 +107,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
         }
 
         public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
-            var error = SimulateWriteErrors(command.entities.Keys.ToHashSet(JsonKey.Equality), out var errors);
+            AssertEntityCounts(command.entityKeys, command.entities);
+            var error = SimulateWriteErrors(command.entityKeys.ToHashSet(JsonKey.Equality), out var errors);
             if (error != null)
                 return Task.FromResult(new CreateEntitiesResult {Error = error});
             if (errors != null)
@@ -116,7 +117,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
         }
 
         public override Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, MessageContext messageContext) {
-            var error = SimulateWriteErrors(command.entities.Keys.ToHashSet(JsonKey.Equality), out var errors);
+            AssertEntityCounts(command.entityKeys, command.entities);
+            var error = SimulateWriteErrors(command.entityKeys.ToHashSet(JsonKey.Equality), out var errors);
             if (error != null)
                 return Task.FromResult(new UpsertEntitiesResult {Error = error});
             if (errors != null)

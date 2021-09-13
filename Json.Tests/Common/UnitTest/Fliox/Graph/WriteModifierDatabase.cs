@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.NoSQL;
@@ -15,13 +16,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
     public class WriteModifierDatabase : EntityDatabase
     {
         private readonly    EntityDatabase  local;
-        private readonly    Dictionary<string, WriteModifiers>   writeModifiers  = new Dictionary<string, WriteModifiers>();
-        private readonly    Dictionary<string, PatchModifiers>   patchModifiers  = new Dictionary<string, PatchModifiers>();
+        private readonly    Dictionary<string, WriteModifiers>  writeModifiers  = new Dictionary<string, WriteModifiers>();
+        private readonly    Dictionary<string, PatchModifiers>  patchModifiers  = new Dictionary<string, PatchModifiers>();
+        private readonly    EntityValidator                     validator       = new EntityValidator();
         
         public WriteModifierDatabase(EntityDatabase local) {
             this.local = local;
         }
-        
+
+        public override void Dispose() {
+            validator.Dispose();
+        }
+
         public void ClearErrors() {
             foreach (var pair in writeModifiers) {
                 var container = pair.Value;
@@ -38,12 +44,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 switch (task) {
                     case CreateEntities createEntities:
                         if (writeModifiers.TryGetValue(createEntities.container, out var write)) {
-                            write.ModifyWrites(createEntities.entities);
+                            write.ModifyWrites(createEntities.keyName, createEntities.entities);
                         }
                         break;
                     case UpsertEntities updateEntities:
                         if (writeModifiers.TryGetValue(updateEntities.container, out write)) {
-                            write.ModifyWrites(updateEntities.entities);
+                            write.ModifyWrites(updateEntities.keyName, updateEntities.entities);
                         }
                         break;
                     case PatchEntities patchEntities:
@@ -59,7 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
         public WriteModifiers GetWriteModifiers<TEntity>() where TEntity : class {
             var name = typeof(TEntity).Name;
             if (!writeModifiers.TryGetValue(name, out var writeModifier)) {
-                writeModifier = new WriteModifiers();
+                writeModifier = new WriteModifiers(validator);
                 writeModifiers.Add(name, writeModifier);
             }
             return writeModifier;
@@ -77,22 +83,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
     
     public class WriteModifiers
     {
-        public  readonly    Dictionary<string, WriteModifier>    writes    = new Dictionary<string, WriteModifier>();
+        public  readonly    Dictionary<string, WriteModifier>   writes    = new Dictionary<string, WriteModifier>();
+        private readonly    EntityValidator                     validator;
         
-        internal void ModifyWrites(Dictionary<JsonKey, EntityValue> entities) {
-            var modifications = new Dictionary<string, EntityValue>();
-            foreach (var pair in entities) {
-                var key = pair.Key.AsString();
+        internal WriteModifiers(EntityValidator validator) {
+            this.validator = validator;
+        }
+        
+        internal void ModifyWrites(string keyName, List<EntityValue> entities) {
+            for (int n = 0; n < entities.Count; n++) {
+                var entity = entities[n];
+                var json = entity.Json;
+                if (!validator.GetEntityKey(json, keyName, out JsonKey entityKey, out string error))
+                    throw new InvalidOperationException($"Entity key error: {error}");
+                var key = entityKey.AsString();
                 if (writes.TryGetValue(key, out var modifier)) {
-                    var value       = pair.Value;
-                    var modified    = modifier (value);
-                    modifications.Add(key, modified);
+                    var modified    = modifier (entity);
+                    entities[n] = modified;
                 }
-            }
-            foreach (var pair in modifications) {
-                var key     = new JsonKey(pair.Key);
-                var value   = pair.Value;
-                entities[key] = value;
             }
         }
     }

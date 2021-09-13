@@ -55,12 +55,15 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
             var entities = command.entities;
+            AssertEntityCounts(command.entityKeys, entities);
             Dictionary<JsonKey, EntityError> createErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);
             try {
-                foreach (var entityPair in entities) {
-                    var      key     = entityPair.Key;
-                    EntityValue payload = entityPair.Value;
+                for (int n = 0; n < entities.Count; n++) {
+                    var payload = entities[n];
+                    if (payload == null) // TAG_ENTITY_NULL
+                        continue;
+                    var key     = command.entityKeys[n];
                     var path = FilePath(key.AsString());
                     try {
                         await WriteText(path, payload.Json, FileMode.CreateNew).ConfigureAwait(false);
@@ -77,12 +80,15 @@ namespace Friflo.Json.Fliox.DB.NoSQL
 
         public override async Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, MessageContext messageContext) {
             var entities = command.entities;
+            AssertEntityCounts(command.entityKeys, entities);
             Dictionary<JsonKey, EntityError> updateErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);
             try {
-                foreach (var entityPair in entities) {
-                    var         key     = entityPair.Key;
-                    EntityValue payload = entityPair.Value;
+                for (int n = 0; n < entities.Count; n++) {
+                    var payload = entities[n];
+                    if (payload == null) // TAG_ENTITY_NULL
+                        continue;
+                    var key     = command.entityKeys[n];
                     var path = FilePath(key.AsString());
                     try {
                         await WriteText(path, payload.Json, FileMode.Create).ConfigureAwait(false);
