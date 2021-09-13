@@ -75,8 +75,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 TypeValidator validator = pooledValidator.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var entity = entities[n];
-                    if (entity.json == null)  // TAG_ENTITY_NULL
-                        continue;
+                    // if (entity.json == null)  continue; // TAG_ENTITY_NULL
                     string json = entity.json;
                     if (!validator.ValidateObject(json, type, out string error)) {
                         var key = entityKeys[n];
@@ -92,10 +91,21 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 return;
             var errors = SyncResponse.GetEntityErrors(ref entityErrorMap, container);
             errors.AddErrors(validationErrors);
-            // foreach (var pair in validationErrors) {
-            //     var key = pair.Key;
-            //     entities.Remove(key);
-            // }
+            
+            // Remove invalid entries from entities
+            int pos = 0;
+            for (int n = 0; n < entities.Count; n++) {
+                var entity = entities[n];
+                if (entities[n].json == null)
+                    continue;
+                entities  [pos] = entity;
+                entityKeys[pos] = entityKeys[n];
+                pos++;
+            }
+            int count = entities.Count;
+            entities.RemoveRange(pos,   count);
+            entityKeys.RemoveRange(pos, count);
+
         }
     }
  

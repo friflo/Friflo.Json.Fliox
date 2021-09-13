@@ -40,8 +40,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                     JsonPatcher patcher = pooledPatcher.instance;
                     for (int n = 0; n < entities.Count; n++) {
                         var entity = entities[n];
-                        if (entity.json == null) // TAG_ENTITY_NULL
-                            continue;
+                        // if (entity.json == null)  continue; // TAG_ENTITY_NULL
                         var json = entity.json;
                         // if (json == null)
                         //     return InvalidTask("value of entities key/value elements not be null");

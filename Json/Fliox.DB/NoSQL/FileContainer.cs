@@ -61,8 +61,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             try {
                 for (int n = 0; n < entities.Count; n++) {
                     var payload = entities[n];
-                    if (payload.json == null) // TAG_ENTITY_NULL
-                        continue;
+                    // if (payload.json == null)  continue; // TAG_ENTITY_NULL
                     var key     = command.entityKeys[n];
                     var path = FilePath(key.AsString());
                     try {
@@ -86,8 +85,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             try {
                 for (int n = 0; n < entities.Count; n++) {
                     var payload = entities[n];
-                    if (payload.json == null) // TAG_ENTITY_NULL
-                        continue;
+                    // if (payload.json == null)  continue; // TAG_ENTITY_NULL
                     var key     = command.entityKeys[n];
                     var path = FilePath(key.AsString());
                     try {

@@ -79,8 +79,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             var reader = set.intern.jsonMapper.reader;
             for (int n = 0; n < entities.Count; n++) {
                 var entity = entities[n];
-                if (entity.json == null) // TAG_ENTITY_NULL
-                    continue;
+                // if (entity.json == null)  continue; // TAG_ENTITY_NULL
                 var id = keys[n];
                 if (writeErrors.TryGetValue(id, out EntityError _)) {
                     continue;
