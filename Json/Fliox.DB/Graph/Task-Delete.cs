@@ -39,4 +39,16 @@ namespace Friflo.Json.Fliox.DB.Graph
             keys.AddRange(this.keys);
         }
     }
+    
+    public class DeleteAllTask<TKey, T> : SyncTask where T : class
+    {
+        internal            TaskState           state;
+        internal override   TaskState           State       => state;
+
+        public   override   string              Details     => $"DeleteAllTask<{typeof(T).Name}>";
+
+        internal DeleteAllTask() {
+        }
+    }
+
 }

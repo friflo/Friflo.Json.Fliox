@@ -110,7 +110,8 @@ export class EntityPatch {
 export class DeleteEntities extends DatabaseTask {
     task       : "delete";
     container  : string;
-    ids        : string[];
+    ids?       : string[] | null;
+    all?       : boolean | null;
 }
 
 export class SendMessage extends DatabaseTask {

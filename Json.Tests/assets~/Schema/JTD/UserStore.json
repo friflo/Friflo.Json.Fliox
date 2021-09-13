@@ -90,6 +90,7 @@
                 "create",
                 "upsert",
                 "delete",
+                "deleteAll",
                 "patch",
                 "read",
                 "query",

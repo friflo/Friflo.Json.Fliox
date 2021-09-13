@@ -73,6 +73,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         /// key: entity id
         private     HashSet<TKey>                           Deletes()    => _deletes     ?? (_deletes     = new HashSet   <TKey>());
         private     List<DeleteTask<TKey, T>>               DeleteTasks()=> _deleteTasks ?? (_deleteTasks = new List<DeleteTask<TKey, T>>());
+        
+        private     DeleteAllTask<TKey, T>                  _deleteTaskAll;
 
         internal SyncSet(EntitySet<TKey, T> set) {
             this.set = set;
@@ -205,6 +207,13 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             return delete;
         }
         
+        internal DeleteAllTask<TKey, T> DeleteAll() {
+            if (_deleteTaskAll != null)
+                return _deleteTaskAll;
+            _deleteTaskAll = new DeleteAllTask<TKey, T>();
+            return _deleteTaskAll;
+        }
+        
         // --- Log changes -> create patches
         internal void LogSetChanges(Dictionary<TKey, Peer<T>> peers, LogTask logTask) {
             foreach (var peerPair in peers) {
@@ -257,6 +266,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             QueryEntities       (tasks);
             PatchEntities       (tasks);
             DeleteEntities      (tasks);
+            DeleteAll           (tasks);
             SubscribeChanges    (tasks);
         }
         
@@ -439,6 +449,17 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             deletes.Clear();
         }
         
+        private void DeleteAll(List<DatabaseTask> tasks) {
+            var deleteAll = _deleteTaskAll;
+            if (deleteAll == null)
+                return;
+            var req = new DeleteEntities {
+                container   = set.name,
+                all         = true
+            };
+            tasks.Add(req);
+        }
+        
         private void SubscribeChanges(List<DatabaseTask> tasks) {
             var sub = subscribeChanges;
             if (sub == null)
@@ -480,7 +501,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 SetInfo.Any  (_creates) +  SetInfo.Any  (_autos) +
                 SetInfo.Any  (_upserts) +
                 SetInfo.Any  (_patches) + SetInfo.Any(_patchTasks) +
-                SetInfo.Any  (_deletes)    +
+                SetInfo.Any  (_deletes) +
+                (_deleteTaskAll   != null ? 1 : 0) +
                 (subscribeChanges != null ? 1 : 0);
             //
             info.reads      = SetInfo.Count(_reads);

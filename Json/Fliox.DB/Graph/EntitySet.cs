@@ -333,6 +333,12 @@ namespace Friflo.Json.Fliox.DB.Graph
             intern.store.AddTask(task);
             return task;
         }
+        
+        public DeleteAllTask<TKey, T> DeleteAll() {
+            var task = GetSyncSet().DeleteAll();
+            intern.store.AddTask(task);
+            return task;
+        }
 
         // --- Log changes -> create patches
         public LogTask LogSetChanges() {

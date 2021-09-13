@@ -486,7 +486,8 @@
         "DeleteEntities": {
             "properties": {
                 "container": { "type": "string" },
-                "ids":       { "elements": { "type": "string" } }
+                "ids":       { "elements": { "type": "string" }, "nullable": true },
+                "all":       { "type": "boolean", "nullable": true }
             }
         },
         "SendMessage": {

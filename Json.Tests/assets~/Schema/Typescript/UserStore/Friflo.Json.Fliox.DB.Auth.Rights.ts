@@ -57,6 +57,7 @@ export type OperationType =
     | "create"
     | "upsert"
     | "delete"
+    | "deleteAll"
     | "patch"
     | "read"
     | "query"

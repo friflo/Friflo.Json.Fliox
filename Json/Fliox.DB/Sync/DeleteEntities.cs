@@ -11,7 +11,8 @@ namespace Friflo.Json.Fliox.DB.Sync
     public class DeleteEntities : DatabaseTask
     {
         [Fri.Required]  public  string              container;
-        [Fri.Required]  public  HashSet<JsonKey>    ids = new HashSet<JsonKey>(JsonKey.Equality);
+                        public  HashSet<JsonKey>    ids = new HashSet<JsonKey>(JsonKey.Equality);
+                        public  bool?               all;
         
         internal override       TaskType            TaskType => TaskType.delete;
         public   override       string              TaskName => $"container: '{container}'";
@@ -20,8 +21,8 @@ namespace Friflo.Json.Fliox.DB.Sync
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
-            if (ids == null)
-                return MissingField(nameof(ids));
+            if (ids == null && all == null)
+                return MissingField($"[{nameof(ids)} | {nameof(all)}]");
             var entityContainer = database.GetOrCreateContainer(container);
             var result = await entityContainer.DeleteEntities(this, messageContext).ConfigureAwait(false);
             if (result.Error != null) {

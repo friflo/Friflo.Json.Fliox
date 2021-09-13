@@ -44,6 +44,7 @@ namespace Friflo.Json.Fliox.DB.Auth.Rights
         create,
         upsert,
         delete,
+        deleteAll,
         patch, 
         read,  
         query, 

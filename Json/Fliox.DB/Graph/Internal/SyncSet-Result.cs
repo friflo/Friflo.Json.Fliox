@@ -341,6 +341,9 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 }
                 deleteTask.state.Synced = true;
             }
+            if (_deleteTaskAll != null) {
+                _deleteTaskAll.state.Synced = true;
+            }
         }
         
         internal override void SubscribeChangesResult (SubscribeChanges task, TaskResult result) {

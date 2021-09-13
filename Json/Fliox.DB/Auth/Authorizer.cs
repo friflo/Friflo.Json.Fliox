@@ -132,6 +132,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         private  readonly   bool    create;
         private  readonly   bool    upsert;
         private  readonly   bool    delete;
+        private  readonly   bool    deleteAll;
         private  readonly   bool    patch;
         //
         private  readonly   bool    read;
@@ -141,22 +142,23 @@ namespace Friflo.Json.Fliox.DB.Auth
         
         public AuthorizeContainer (string container, ICollection<OperationType> types) {
             this.container = container;
-            SetRoles(types, ref create, ref upsert, ref delete, ref patch, ref read, ref query);
+            SetRoles(types, ref create, ref upsert, ref delete, ref deleteAll, ref patch, ref read, ref query);
         }
         
         private static void SetRoles (ICollection<OperationType> types,
-                ref bool create, ref bool upsert, ref bool delete, ref bool patch,
+                ref bool create, ref bool upsert, ref bool delete, ref bool deleteAll, ref bool patch,
                 ref bool read,   ref bool query)
         {
             foreach (var type in types) {
                 switch (type) {
-                    case OperationType.create:  create  = true;   break;
-                    case OperationType.upsert:  upsert  = true;   break;
-                    case OperationType.delete:  delete  = true;   break;
-                    case OperationType.patch:   patch   = true;   break;
+                    case OperationType.create:      create      = true;   break;
+                    case OperationType.upsert:      upsert      = true;   break;
+                    case OperationType.delete:      delete      = true;   break;
+                    case OperationType.deleteAll:   deleteAll   = true;   break;
+                    case OperationType.patch:       patch       = true;   break;
                     //
-                    case OperationType.read:    read    = true;   break;
-                    case OperationType.query:   query   = true;   break;
+                    case OperationType.read:        read        = true;   break;
+                    case OperationType.query:       query       = true;   break;
                     case OperationType.mutate:
                         create  = true; upsert  = true; delete  = true; patch   = true;
                         break;
@@ -172,13 +174,20 @@ namespace Friflo.Json.Fliox.DB.Auth
         
         public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
             switch (task.TaskType) {
-                case TaskType.create:   return create && ((CreateEntities)  task).container == container;
-                case TaskType.upsert:   return upsert && ((UpsertEntities)  task).container == container;
-                case TaskType.delete:   return delete && ((DeleteEntities)  task).container == container;
-                case TaskType.patch:    return patch  && ((PatchEntities)   task).container == container;
+                case TaskType.create:       return create       && ((CreateEntities)  task).container == container;
+                case TaskType.upsert:       return upsert       && ((UpsertEntities)  task).container == container;
+                case TaskType.delete:
+                    var deleteEntities = (DeleteEntities)  task;
+                    if (delete && deleteEntities.ids != null    && deleteEntities.container == container)
+                        return true;
+                    var all = deleteEntities.all;
+                    if (deleteAll   && all != null && all.Value && deleteEntities.container == container)
+                        return true;
+                    return false;
+                case TaskType.patch:        return patch        && ((PatchEntities)   task).container == container;
                 //
-                case TaskType.read:     return read   && ((ReadEntitiesList)task).container == container;
-                case TaskType.query:    return query  && ((QueryEntities)   task).container == container;
+                case TaskType.read:         return read         && ((ReadEntitiesList)task).container == container;
+                case TaskType.query:        return query        && ((QueryEntities)   task).container == container;
             }
             return false;
         }

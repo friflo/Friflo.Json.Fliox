@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
 {
     public class TestAutoIncrement
     {
-        // [Test] public async Task AutoIncrement () { await AssertAutoIncrement(); }
+        [Test] public async Task AutoIncrement () { await AssertAutoIncrement(); }
         
         private static async Task AssertAutoIncrement() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
@@ -30,6 +30,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         private static async Task AssertAutoIncrement(EntityDatabase database, TypeStore typeStore)
         {
             using (var store = new EntityIdStore(database, typeStore, "autoIncrement")) {
+                var delete = store.intEntities.DeleteAll();
+                await store.Sync();
+                IsTrue(delete.Success);
+                
                 var intEntity = new IntEntity();
                 var create  = store.intEntities.Create(intEntity);
                 

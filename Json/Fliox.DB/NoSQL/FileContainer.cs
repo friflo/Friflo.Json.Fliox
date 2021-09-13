@@ -141,13 +141,22 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             Dictionary<JsonKey, EntityError> deleteErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);
             try {
-                foreach (var key in keys) {
-                    string path = FilePath(key.AsString());
-                    try {
-                        DeleteFile(path);
-                    } catch (Exception e) {
-                        var error = new EntityError(EntityErrorType.DeleteError, name, key, e.Message);
-                        AddEntityError(ref deleteErrors, key, error);
+                if (keys != null && keys.Count > 0) {
+                    foreach (var key in keys) {
+                        string path = FilePath(key.AsString());
+                        try {
+                            DeleteFile(path);
+                        } catch (Exception e) {
+                            var error = new EntityError(EntityErrorType.DeleteError, name, key, e.Message);
+                            AddEntityError(ref deleteErrors, key, error);
+                        }
+                    }
+                }
+                var all = command.all;
+                if (all != null && all.Value) {
+                    string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
+                    foreach (var fileName in fileNames) {
+                        DeleteFile(fileName);
                     }
                 }
             } finally {

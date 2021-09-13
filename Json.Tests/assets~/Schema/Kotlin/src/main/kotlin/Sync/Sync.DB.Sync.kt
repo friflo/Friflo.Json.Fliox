@@ -96,7 +96,8 @@ data class EntityPatch (
 @SerialName("delete")
 data class DeleteEntities (
               val container : String,
-              val ids       : List<String>,
+              val ids       : List<String>? = null,
+              val all       : Boolean? = null,
 ) : DatabaseTask()
 
 @Serializable

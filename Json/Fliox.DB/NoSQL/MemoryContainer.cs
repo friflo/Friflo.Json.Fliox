@@ -79,8 +79,14 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         
         public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
             var keys = command.ids;
-            foreach (var key in keys) {
-                keyValues.Remove(key);
+            if (keys != null && keys.Count > 0) {
+                foreach (var key in keys) {
+                    keyValues.Remove(key);
+                }
+            }
+            var all = command.all;
+            if (all != null && all.Value) {
+                keyValues.Clear();
             }
             var result = new DeleteEntitiesResult();
             return Task.FromResult(result);
