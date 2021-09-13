@@ -19,9 +19,9 @@ namespace Friflo.Json.Fliox.DB.Sync
         
         internal bool Authorize (string container, bool delete, bool deleteAll) {
             bool allBool = all != null && all.Value;
-            if (delete    && ids != null && !allBool        && this.container == container)
+            if (delete    && ids.Count >  0 && !allBool        && this.container == container)
                 return true;
-            if (deleteAll && ids == null && allBool         && this.container == container)
+            if (deleteAll && ids.Count == 0 && allBool         && this.container == container)
                 return true;
             return false;
         }
