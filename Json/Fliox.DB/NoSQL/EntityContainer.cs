@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Sync;
@@ -305,6 +306,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             return keys;
         }
         
+        [Conditional("DEBUG")]
         public static void AssertEntityCounts(List<JsonKey> keys, List<JsonValue> entities) {
             if (keys.Count != entities.Count)
                 throw new InvalidOperationException("expect equal counts");
