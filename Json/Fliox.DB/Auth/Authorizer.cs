@@ -178,13 +178,7 @@ namespace Friflo.Json.Fliox.DB.Auth
                 case TaskType.upsert:       return upsert       && ((UpsertEntities)  task).container == container;
                 case TaskType.delete:
                     var deleteEntities = (DeleteEntities)  task;
-                    var  ids = deleteEntities.ids;
-                    bool all = deleteEntities.all != null && deleteEntities.all.Value;
-                    if (delete    && ids != null && !all        &&           deleteEntities.container == container)
-                        return true;
-                    if (deleteAll && ids == null && all         &&           deleteEntities.container == container)
-                        return true;
-                    return false;
+                    return deleteEntities.Authorize(container, delete, deleteAll);
                 case TaskType.patch:        return patch        && ((PatchEntities)   task).container == container;
                 //
                 case TaskType.read:         return read         && ((ReadEntitiesList)task).container == container;

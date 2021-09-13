@@ -17,7 +17,15 @@ namespace Friflo.Json.Fliox.DB.Sync
         internal override       TaskType            TaskType => TaskType.delete;
         public   override       string              TaskName => $"container: '{container}'";
         
-        
+        internal bool Authorize (string container, bool delete, bool deleteAll) {
+            bool allBool = all != null && all.Value;
+            if (delete    && ids != null && !allBool        && this.container == container)
+                return true;
+            if (deleteAll && ids == null && allBool         && this.container == container)
+                return true;
+            return false;
+        }
+
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
