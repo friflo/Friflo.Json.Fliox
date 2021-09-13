@@ -293,8 +293,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 var validator = poolValidator.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var entity  = entities[n];
-                    var json    = entity.json;
-                    if (validator.GetEntityKey(json, keyName, out JsonKey key, out string entityError)) {
+                    if (validator.GetEntityKey(entity.json, keyName, out JsonKey key, out string entityError)) {
                         keys.Add(key);
                         continue;
                     }

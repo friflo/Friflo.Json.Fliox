@@ -238,8 +238,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
 
             for (int n = 0; n < entities.Count; n++) {
                 var value   = entities[n];
-                var payload = value.json;
-                if (jsonEvaluator.Filter(payload, jsonFilter)) {
+                if (jsonEvaluator.Filter(value.json, jsonFilter)) {
                     result.Add(value);
                 }
             }

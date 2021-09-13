@@ -76,8 +76,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 for (int n = 0; n < entities.Count; n++) {
                     var entity = entities[n];
                     // if (entity.json == null)  continue; // TAG_ENTITY_NULL
-                    string json = entity.json;
-                    if (!validator.ValidateObject(json, type, out string error)) {
+                    if (!validator.ValidateObject(entity.json, type, out string error)) {
                         var key = entityKeys[n];
                         if (validationErrors == null) {
                             validationErrors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
@@ -96,7 +95,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             int pos = 0;
             for (int n = 0; n < entities.Count; n++) {
                 var entity = entities[n];
-                if (entities[n].json == null)
+                if (entity.json == null)
                     continue;
                 entities  [pos] = entity;
                 entityKeys[pos] = entityKeys[n];

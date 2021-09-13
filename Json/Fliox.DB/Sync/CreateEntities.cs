@@ -42,8 +42,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                     for (int n = 0; n < entities.Count; n++) {
                         var entity = entities[n];
                         // if (entity.json == null)  continue; // TAG_ENTITY_NULL
-                        var json = entity.json;
-                        entities[n] = new JsonValue(patcher.Copy(json, true));
+                        entities[n] = new JsonValue(patcher.Copy(entity.json, true));
                     }
                 }
             }
