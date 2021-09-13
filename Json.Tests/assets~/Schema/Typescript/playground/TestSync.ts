@@ -69,14 +69,10 @@ var exampleSync: DatabaseMessage = {
             {
                 "task":         "create",
                 "container":    "Article",
-                "entities": {
-                    "new-article": {
-                        "value": {
-                            "id": "new-article",
-                            "name":"New Article S10"
-                        }
-                    }
-                }
+                "keyName":      "id",
+                "entities": [
+                    { "id": "new-article", "name":"New Article S10" }
+                ]
             },
             {
                 "task":         "delete",
