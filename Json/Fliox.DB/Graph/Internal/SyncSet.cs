@@ -136,7 +136,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         
         // --- Create
         internal CreateTask<T> Create(T entity) {
-            if (EntityKeyTMap.IsDefaultKey(entity)) {
+            if (set.intern.autoIncrement) {
                 set.NewEntities().Add(entity);
                 Autos().Add(entity);
                 var create1 = new CreateTask<T>(new List<T>{entity}, set);
