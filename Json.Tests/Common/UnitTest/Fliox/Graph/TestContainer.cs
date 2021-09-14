@@ -138,7 +138,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             return Task.FromResult(new DeleteEntitiesResult());
         }
         
-        public override async Task<AutoIncrementResult>   AutoIncrement  (AutoIncrement  command, MessageContext messageContext) {
+        public override async Task<ReserveKeysResult>   AutoIncrement  (ReserveKeys  command, MessageContext messageContext) {
             return await local.AutoIncrement(command, messageContext);
         }
 

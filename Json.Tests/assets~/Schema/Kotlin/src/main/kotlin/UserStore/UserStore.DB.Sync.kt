@@ -14,6 +14,7 @@ enum class TaskType {
     message,
     subscribeChanges,
     subscribeMessage,
+    reserveKeys,
     error,
 }
 

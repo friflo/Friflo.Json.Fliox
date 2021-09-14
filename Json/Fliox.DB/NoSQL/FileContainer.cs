@@ -166,7 +166,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             return result;
         }
         
-        public override Task<AutoIncrementResult>   AutoIncrement  (AutoIncrement  command, MessageContext messageContext) {
+        public override Task<ReserveKeysResult>   AutoIncrement  (ReserveKeys  command, MessageContext messageContext) {
             throw new NotImplementedException("");
         }
 

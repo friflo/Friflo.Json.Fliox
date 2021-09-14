@@ -58,6 +58,7 @@
                 "message",
                 "subscribeChanges",
                 "subscribeMessage",
+                "reserveKeys",
                 "error"
             ]
         },

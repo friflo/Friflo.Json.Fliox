@@ -10,6 +10,7 @@ export type TaskType =
     | "message"
     | "subscribeChanges"
     | "subscribeMessage"
+    | "reserveKeys"
     | "error"
 ;
 

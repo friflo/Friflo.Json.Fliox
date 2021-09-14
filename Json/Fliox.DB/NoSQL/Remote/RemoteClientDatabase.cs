@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             throw new InvalidOperationException("RemoteClientContainer does not execute CRUD commands");
         }
         
-        public override Task<AutoIncrementResult>   AutoIncrement  (AutoIncrement  command, MessageContext messageContext) {
+        public override Task<ReserveKeysResult>   AutoIncrement  (ReserveKeys  command, MessageContext messageContext) {
             throw new InvalidOperationException("RemoteClientContainer does not execute CRUD commands");
         }
     }

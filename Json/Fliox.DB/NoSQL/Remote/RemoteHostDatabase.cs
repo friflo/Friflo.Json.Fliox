@@ -148,7 +148,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             return await local.DeleteEntities(command, messageContext).ConfigureAwait(false);
         }
         
-        public override async Task<AutoIncrementResult>   AutoIncrement  (AutoIncrement  command, MessageContext messageContext) {
+        public override async Task<ReserveKeysResult>   AutoIncrement  (ReserveKeys  command, MessageContext messageContext) {
             return await local.AutoIncrement(command, messageContext);
         }
     }

@@ -10,10 +10,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL
 {
     // --- models
     public class _ReservedKeys {
-                        public  Guid    id;     // secret to ensure the client has reserved the keys
+        [Fri.Key]       public  Guid    token;  // secret to ensure the client has reserved the keys
         [Fri.Required]  public  int     start;
         [Fri.Required]  public  int     count;
-                        public  string  user;   // to track back who reserved key in case of abusing it
+                        public  string  user;   // to track back who reserved keys in case of abuse
     }
     
     public class _Sequence {
@@ -29,15 +29,5 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         
         public  SequenceStore(EntityDatabase database, TypeStore typeStore, string clientId)
             : base(database, typeStore, clientId) { }
-    }
-
-    // --- protocol
-    public class AutoIncrement {
-        [Fri.Required]  public  int     count;
-    }
-    
-    public class AutoIncrementResult {
-        [Fri.Required]  public  int     start;
-        [Fri.Required]  public  int     count;
     }
 }

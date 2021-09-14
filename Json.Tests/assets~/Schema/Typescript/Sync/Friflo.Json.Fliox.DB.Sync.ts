@@ -41,6 +41,7 @@ export type DatabaseTask_Union =
     | SendMessage
     | SubscribeChanges
     | SubscribeMessage
+    | ReserveKeys
 ;
 
 export abstract class DatabaseTask {
@@ -54,6 +55,7 @@ export abstract class DatabaseTask {
         | "message"
         | "subscribeChanges"
         | "subscribeMessage"
+        | "reserveKeys"
     ;
 }
 
@@ -140,6 +142,12 @@ export class SubscribeMessage extends DatabaseTask {
     remove? : boolean | null;
 }
 
+export class ReserveKeys extends DatabaseTask {
+    task       : "reserveKeys";
+    count      : int32;
+    container  : string;
+}
+
 export type DatabaseResponse_Union =
     | SyncResponse
     | ErrorResponse
@@ -179,6 +187,7 @@ export type TaskResult_Union =
     | SendMessageResult
     | SubscribeChangesResult
     | SubscribeMessageResult
+    | ReserveKeysResult
     | TaskErrorResult
 ;
 
@@ -193,6 +202,7 @@ export abstract class TaskResult {
         | "message"
         | "subscribeChanges"
         | "subscribeMessage"
+        | "reserveKeys"
         | "error"
     ;
 }
@@ -260,6 +270,14 @@ export class SubscribeChangesResult extends TaskResult {
 
 export class SubscribeMessageResult extends TaskResult {
     task  : "subscribeMessage";
+}
+
+export class ReserveKeysResult extends TaskResult {
+    task   : "reserveKeys";
+    Error? : CommandError | null;
+    start  : int32;
+    count  : int32;
+    token  : string;
 }
 
 export class TaskErrorResult extends TaskResult {

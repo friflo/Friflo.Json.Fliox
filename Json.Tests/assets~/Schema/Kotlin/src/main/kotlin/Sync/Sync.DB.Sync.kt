@@ -130,6 +130,13 @@ data class SubscribeMessage (
 ) : DatabaseTask()
 
 @Serializable
+@SerialName("reserveKeys")
+data class ReserveKeys (
+              val count     : Int,
+              val container : String,
+) : DatabaseTask()
+
+@Serializable
 // @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
 abstract class DatabaseResponse  {
     abstract  val reqId : Int?
@@ -235,6 +242,15 @@ class SubscribeChangesResult (
 @Serializable
 @SerialName("subscribeMessage")
 class SubscribeMessageResult (
+) : TaskResult()
+
+@Serializable
+@SerialName("reserveKeys")
+data class ReserveKeysResult (
+              val Error : CommandError? = null,
+              val start : Int,
+              val count : Int,
+              val token : String,
 ) : TaskResult()
 
 @Serializable

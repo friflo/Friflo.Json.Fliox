@@ -19,6 +19,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     [Fri.Polymorph(typeof(SendMessage),             Discriminant = "message")]
     [Fri.Polymorph(typeof(SubscribeChanges),        Discriminant = "subscribeChanges")]
     [Fri.Polymorph(typeof(SubscribeMessage),        Discriminant = "subscribeMessage")]
+    [Fri.Polymorph(typeof(ReserveKeys),             Discriminant = "reserveKeys")]
     public abstract class DatabaseTask
     {
         [Fri.Ignore]
@@ -93,6 +94,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     [Fri.Polymorph(typeof(SendMessageResult),       Discriminant = "message")]
     [Fri.Polymorph(typeof(SubscribeChangesResult),  Discriminant = "subscribeChanges")]
     [Fri.Polymorph(typeof(SubscribeMessageResult),  Discriminant = "subscribeMessage")]
+    [Fri.Polymorph(typeof(ReserveKeysResult),       Discriminant = "reserveKeys")]
     //
     [Fri.Polymorph(typeof(TaskErrorResult),         Discriminant = "error")]
     public abstract class TaskResult
@@ -112,6 +114,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         message,
         subscribeChanges,
         subscribeMessage,
+        reserveKeys,
         //
         error
     }

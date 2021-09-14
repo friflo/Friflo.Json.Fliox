@@ -37,7 +37,8 @@
                 "delete":           { "ref":  "DeleteEntities" },
                 "message":          { "ref":  "SendMessage" },
                 "subscribeChanges": { "ref":  "SubscribeChanges" },
-                "subscribeMessage": { "ref":  "SubscribeMessage" }
+                "subscribeMessage": { "ref":  "SubscribeMessage" },
+                "reserveKeys":      { "ref":  "ReserveKeys" }
             },
             "properties": {
 
@@ -517,6 +518,12 @@
                 "remove": { "type": "boolean", "nullable": true }
             }
         },
+        "ReserveKeys": {
+            "properties": {
+                "count":     { "type": "int32" },
+                "container": { "type": "string" }
+            }
+        },
         "DatabaseResponse": {
             "discriminator": "type",
             "mapping": {
@@ -557,6 +564,7 @@
                 "message":          { "ref":  "SendMessageResult" },
                 "subscribeChanges": { "ref":  "SubscribeChangesResult" },
                 "subscribeMessage": { "ref":  "SubscribeMessageResult" },
+                "reserveKeys":      { "ref":  "ReserveKeysResult" },
                 "error":            { "ref":  "TaskErrorResult" }
             },
             "properties": {
@@ -631,6 +639,14 @@
         "SubscribeMessageResult": {
             "properties": {
 
+            }
+        },
+        "ReserveKeysResult": {
+            "properties": {
+                "Error": { "ref":  "CommandError", "nullable": true },
+                "start": { "type": "int32" },
+                "count": { "type": "int32" },
+                "token": { "type": "string" }
             }
         },
         "TaskErrorResult": {
