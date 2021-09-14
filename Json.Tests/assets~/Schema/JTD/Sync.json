@@ -652,10 +652,9 @@
         },
         "ContainerEntities": {
             "properties": {
-                "container": { "type": "string", "nullable": true },
-                "entities":  { "elements": {  } },
-                "notFound":  { "elements": { "type": "string" }, "nullable": true },
-                "errors":    { "values": { "ref":  "EntityError" }, "nullable": true }
+                "entities": { "elements": {  } },
+                "notFound": { "elements": { "type": "string" }, "nullable": true },
+                "errors":   { "values": { "ref":  "EntityError" }, "nullable": true }
             }
         },
         "EntityError": {

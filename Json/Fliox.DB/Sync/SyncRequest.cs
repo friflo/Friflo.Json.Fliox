@@ -47,7 +47,6 @@ namespace Friflo.Json.Fliox.DB.Sync
             if (results.TryGetValue(container, out ContainerEntities result))
                 return result;
             result = new ContainerEntities {
-                container = container,
                 entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality)
             };
             results.Add(container, result);
@@ -78,7 +77,6 @@ namespace Friflo.Json.Fliox.DB.Sync
     // ----------------------------------- sync results -----------------------------------
     public class ContainerEntities
     {
-                        public  string                              container; // not used - only for debugging
         [Fri.Required]  public  List<JsonValue>                     entities  = new List<JsonValue>();
                         public  List<JsonKey>                       notFound;
                         public  Dictionary<JsonKey, EntityError>    errors    = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);

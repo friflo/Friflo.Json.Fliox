@@ -279,10 +279,9 @@ export type TaskErrorResultType =
 ;
 
 export class ContainerEntities {
-    container? : string | null;
-    entities   : any[];
-    notFound?  : string[] | null;
-    errors?    : { [key: string]: EntityError } | null;
+    entities  : any[];
+    notFound? : string[] | null;
+    errors?   : { [key: string]: EntityError } | null;
 }
 
 export class EntityError {
