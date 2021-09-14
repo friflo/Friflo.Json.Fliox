@@ -136,9 +136,10 @@ namespace Friflo.Json.Fliox.Schema
                 var indent = Indent(maxFieldName, field.name);
                 if (required)
                     requiredFields.Add(field.name);
-                var keyStr = field.isKey ? ", \"isKey\": true" : "";
+                var keyStr  = field.isKey           ? ", \"isKey\": true" : "";
+                var autoStr = field.isAutoIncrement ? ", \"isAutoIncrement\": true" : "";
                 Delimiter(sb, Next, ref firstField);
-                sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{keyStr} }}");
+                sb.Append($"                \"{field.name}\":{indent} {{ {fieldType}{keyStr}{autoStr} }}");
             }
             sb.AppendLine();
             sb.AppendLine("            },");

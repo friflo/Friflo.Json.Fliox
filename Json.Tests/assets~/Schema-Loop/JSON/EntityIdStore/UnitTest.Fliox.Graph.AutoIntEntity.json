@@ -6,7 +6,7 @@
         "AutoIntEntity": {
             "type": "object",
             "properties": {
-                "id": { "$ref": "./Standard.json#/definitions/int32" }
+                "id": { "$ref": "./Standard.json#/definitions/int32", "isAutoIncrement": true }
             },
             "required": [
                 "id"
