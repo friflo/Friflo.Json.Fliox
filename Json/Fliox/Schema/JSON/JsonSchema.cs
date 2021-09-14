@@ -113,6 +113,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public  string          name;
         
         public  bool?           isKey;
+        public  bool?           isAutoIncrement;
         
         public override string  ToString() => name;
     }

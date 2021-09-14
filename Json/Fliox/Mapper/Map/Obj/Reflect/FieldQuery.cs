@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             if (property != null) {
                 memberType   = property.PropertyType;
                 AttributeUtils.Property(property.CustomAttributes, out jsonName);
-                required =IsRequired(property.CustomAttributes);
+                required = IsRequired(property.CustomAttributes);
                 if (property.GetSetMethod(false) == null)
                     required = true;
             } else {
@@ -163,6 +163,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                     return true;
                 // Unity has System.ComponentModel.DataAnnotations.KeyAttribute no available by default
                 if (attr.AttributeType.FullName == "System.ComponentModel.DataAnnotations.KeyAttribute")
+                    return true;
+            }
+            return false;
+        }
+        
+        public static bool AutoIncrement(IEnumerable<CustomAttributeData> attributes) {
+            foreach (var attr in attributes) {
+                if (attr.AttributeType == typeof(Fri.AutoIncrementAttribute))
                     return true;
             }
             return false;

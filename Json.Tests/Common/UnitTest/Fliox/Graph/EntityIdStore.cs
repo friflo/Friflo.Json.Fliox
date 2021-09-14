@@ -15,6 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
     public class EntityIdStore : EntityStore {
         public  EntitySet <Guid,    GuidEntity>      guidEntities       { get; private set; }
         public  EntitySet <int,     IntEntity>       intEntities        { get; private set; }
+        public  EntitySet <int,     AutoIntEntity>   intEntitiesAuto    { get; private set; }
         public  EntitySet <long,    LongEntity>      longEntities       { get; private set; }
         public  EntitySet <short,   ShortEntity>     shortEntities      { get; private set; }
         public  EntitySet <byte,    ByteEntity>      byteEntities       { get; private set; }
@@ -30,6 +31,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
     }
 
     public class IntEntity {
+        public int  id;
+    }
+    
+    public class AutoIntEntity {
+        [Fri.AutoIncrement]
         public int  id;
     }
     

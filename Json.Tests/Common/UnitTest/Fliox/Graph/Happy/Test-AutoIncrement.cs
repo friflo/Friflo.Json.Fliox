@@ -30,12 +30,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         private static async Task AssertAutoIncrement(EntityDatabase database, TypeStore typeStore)
         {
             using (var store = new EntityIdStore(database, typeStore, "autoIncrement")) {
-                var delete = store.intEntities.DeleteAll();
+                var delete = store.intEntitiesAuto.DeleteAll();
                 await store.Sync();
                 IsTrue(delete.Success);
                 
-                var intEntity = new IntEntity();
-                var create  = store.intEntities.Create(intEntity);
+                var intEntity = new AutoIntEntity();
+                var create  = store.intEntitiesAuto.Create(intEntity);
                 
                 await store.Sync();
                 

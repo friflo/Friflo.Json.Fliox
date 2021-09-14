@@ -27,8 +27,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         public              Bytes           firstMember;        // don't mutate
         public              Bytes           subSeqMember;       // don't mutate
         //
-        internal readonly   FieldInfo       field;
-        internal readonly   PropertyInfo    property;
+        internal readonly   FieldInfo               field;
+        internal readonly   PropertyInfo            property;
         private  readonly   MethodInfo              getMethod;
         private  readonly   Func<object, object>    getLambda;
         // private  readonly   Delegate             getDelegate;
@@ -68,6 +68,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             this.required   = required;
         }
         
+        public MemberInfo   Member { get {
+            if (field != null)
+                return field;
+            return property;
+        } }
+
         public static Expression<Func<object, object>> GetGetLambda (PropertyInfo propInfo) {
             var declaringType   = propInfo.DeclaringType;
             var instanceExp     = Expression.Parameter(typeof(object), "instance");

@@ -8,6 +8,7 @@
             "properties": {
                 "guidEntities":      { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.GuidEntity.json#/definitions/GuidEntity" } },
                 "intEntities":       { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.IntEntity.json#/definitions/IntEntity" } },
+                "intEntitiesAuto":   { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.AutoIntEntity.json#/definitions/AutoIntEntity" } },
                 "longEntities":      { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.LongEntity.json#/definitions/LongEntity" } },
                 "shortEntities":     { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.ShortEntity.json#/definitions/ShortEntity" } },
                 "byteEntities":      { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.ByteEntity.json#/definitions/ByteEntity" } },
@@ -18,6 +19,7 @@
             "required": [
                 "guidEntities",
                 "intEntities",
+                "intEntitiesAuto",
                 "longEntities",
                 "shortEntities",
                 "byteEntities",

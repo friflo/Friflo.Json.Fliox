@@ -168,8 +168,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 fieldType = context.standardTypes.JsonValue;
                 // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
             }
-            var isKey    = field.isKey.HasValue && field.isKey.Value;
-            var fieldDef = new FieldDef (fieldName, required, isKey, fieldType, isArray, isDictionary, isNullableElement, typeDef);
+            var isKey           = field.isKey.HasValue && field.isKey.Value;
+            var isAutoIncrement = field.isAutoIncrement.HasValue && field.isAutoIncrement.Value;
+            var fieldDef = new FieldDef (fieldName, required, isKey, isAutoIncrement, fieldType, isArray, isDictionary, isNullableElement, typeDef);
             typeDef.fields.Add(fieldDef);
         }
         

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.Native
@@ -91,7 +92,8 @@ namespace Friflo.Json.Fliox.Schema.Native
                         }
                         var required = propField.required || !isNullable;
                         var isKey    = propField.isKey;
-                        var fieldDef = new FieldDef (propField.jsonName, required, isKey, type, isArray, isDictionary, isNullableElement, typeDef);
+                        bool isAutoIncrement = FieldQuery.AutoIncrement(propField.Member.CustomAttributes);
+                        var fieldDef = new FieldDef (propField.jsonName, required, isKey, isAutoIncrement, type, isArray, isDictionary, isNullableElement, typeDef);
                         typeDef.fields.Add(fieldDef);
                     }
                 }

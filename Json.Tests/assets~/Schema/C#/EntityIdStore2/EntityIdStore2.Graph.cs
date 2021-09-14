@@ -15,6 +15,10 @@ public class IntEntity {
     int  id;
 }
 
+public class AutoIntEntity {
+    int  id;
+}
+
 public class LongEntity {
     long  Id;
 }

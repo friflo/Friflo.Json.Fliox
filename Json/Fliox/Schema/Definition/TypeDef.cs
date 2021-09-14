@@ -67,6 +67,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
         public  readonly    string          name;
         public  readonly    bool            required;
         public  readonly    bool            isKey;
+        public  readonly    bool            isAutoIncrement;
         public  readonly    TypeDef         type;
         /// if <see cref="isArray"/> is true <see cref="type"/> contains the element type.
         public  readonly    bool            isArray;
@@ -79,10 +80,11 @@ namespace Friflo.Json.Fliox.Schema.Definition
 
         public  override    string          ToString() => name;
         
-        public FieldDef(string name, bool required, bool isKey, TypeDef type, bool isArray, bool isDictionary, bool isNullableElement, TypeDef ownerType) {
+        public FieldDef(string name, bool required, bool isKey, bool isAutoIncrement, TypeDef type, bool isArray, bool isDictionary, bool isNullableElement, TypeDef ownerType) {
             this.name               = name;
             this.required           = required;
             this.isKey              = isKey;
+            this.isAutoIncrement    = isAutoIncrement;
             this.type               = type;
             this.isArray            = isArray;
             this.isDictionary       = isDictionary;

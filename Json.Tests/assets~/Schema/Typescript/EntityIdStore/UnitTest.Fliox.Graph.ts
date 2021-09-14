@@ -8,6 +8,7 @@ import { uint8 } from "./Standard"
 export abstract class EntityIdStore {
     guidEntities       : { [key: string]: GuidEntity };
     intEntities        : { [key: string]: IntEntity };
+    intEntitiesAuto    : { [key: string]: AutoIntEntity };
     longEntities       : { [key: string]: LongEntity };
     shortEntities      : { [key: string]: ShortEntity };
     byteEntities       : { [key: string]: ByteEntity };
@@ -21,6 +22,10 @@ export class GuidEntity {
 }
 
 export class IntEntity {
+    id  : int32;
+}
+
+export class AutoIntEntity {
     id  : int32;
 }
 
