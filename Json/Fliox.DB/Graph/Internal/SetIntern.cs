@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.DB.Sync;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Fliox.DB.Graph.Internal
 {
@@ -16,6 +17,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         internal readonly   Tracer              tracer;
         internal readonly   EntityStore         store;
         internal readonly   List<TKey>          keysBuf;
+        internal readonly   bool                autoIncrement;
 
         
         // --- non readonly
@@ -29,6 +31,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             this.store      = store;
             subscription    = null;
             keysBuf         = new List<TKey>();
+            autoIncrement   = EntitySet<TKey,T>.EntityKeyTMap.autoIncrement;
         }
     }
 }

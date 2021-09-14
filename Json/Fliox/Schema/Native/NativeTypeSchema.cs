@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                         }
                         var required = propField.required || !isNullable;
                         var isKey    = propField.isKey;
-                        bool isAutoIncrement = FieldQuery.AutoIncrement(propField.Member.CustomAttributes);
+                        bool isAutoIncrement = FieldQuery.IsAutoIncrement(propField.Member.CustomAttributes);
                         var fieldDef = new FieldDef (propField.jsonName, required, isKey, isAutoIncrement, type, isArray, isDictionary, isNullableElement, typeDef);
                         typeDef.fields.Add(fieldDef);
                     }

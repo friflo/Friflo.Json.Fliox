@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         /// key: <see cref="Peer{T}.entity"/>.id        Note: must be private by all means
         private  readonly   Dictionary<TKey, Peer<T>>   peers = new Dictionary<TKey, Peer<T>>();
         
-        private  static readonly EntityKeyT<TKey, T>    EntityKeyTMap = EntityKey.GetEntityKeyT<TKey, T>();
+        internal static readonly EntityKeyT<TKey, T>    EntityKeyTMap = EntityKey.GetEntityKeyT<TKey, T>();
 
         
         // ReSharper disable once NotAccessedField.Local

@@ -168,7 +168,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             return false;
         }
         
-        public static bool AutoIncrement(IEnumerable<CustomAttributeData> attributes) {
+        public static bool IsAutoIncrement(IEnumerable<CustomAttributeData> attributes) {
             foreach (var attr in attributes) {
                 if (attr.AttributeType == typeof(Fri.AutoIncrementAttribute))
                     return true;

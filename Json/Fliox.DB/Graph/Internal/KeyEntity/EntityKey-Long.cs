@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
         internal override   Type                GetKeyType() => typeof(long);
         internal override   string              GetKeyName() => field.Name;
 
-        internal EntityKeyLongField(FieldInfo field) {
+        internal EntityKeyLongField(FieldInfo field) : base (field) {
             this.field  = field;
             fieldGet    = GetFieldGet<T, long>(field);
             fieldSet    = GetFieldSet<T, long>(field);
@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
         internal override   Type                GetKeyType() => typeof(long);
         internal override   string              GetKeyName() => property.Name;
 
-        internal EntityKeyLongProperty(PropertyInfo property, MethodInfo idGetMethod, MethodInfo idSetMethod) {
+        internal EntityKeyLongProperty(PropertyInfo property, MethodInfo idGetMethod, MethodInfo idSetMethod) : base (property) {
             this.property = property;
             propertyGet = (Func  <T, long>) Delegate.CreateDelegate (typeof(Func  <T, long>), idGetMethod);
             propertySet = (Action<T, long>) Delegate.CreateDelegate (typeof(Action<T, long>), idSetMethod);

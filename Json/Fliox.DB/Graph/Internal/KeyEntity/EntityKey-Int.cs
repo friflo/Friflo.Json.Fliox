@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
         internal override   string              GetKeyName()            => field.Name;
         internal override   bool                IsDefaultKey(T entity)  => GetKey(entity) == default;
 
-        internal EntityKeyIntField(FieldInfo field) {
+        internal EntityKeyIntField(FieldInfo field) : base (field) {
             this.field  = field;
             fieldGet    = GetFieldGet<T, int>(field);
             fieldSet    = GetFieldSet<T, int>(field);
@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
         internal override   Type                GetKeyType() => typeof(int);
         internal override   string              GetKeyName() => property.Name;
 
-        internal EntityKeyIntProperty(PropertyInfo property, MethodInfo idGetMethod, MethodInfo idSetMethod) {
+        internal EntityKeyIntProperty(PropertyInfo property, MethodInfo idGetMethod, MethodInfo idSetMethod) : base (property) {
             this.property = property;
             propertyGet = (Func  <T, int>) Delegate.CreateDelegate (typeof(Func  <T, int>), idGetMethod);
             propertySet = (Action<T, int>) Delegate.CreateDelegate (typeof(Action<T, int>), idSetMethod);

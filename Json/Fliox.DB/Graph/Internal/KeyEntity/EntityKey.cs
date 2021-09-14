@@ -86,6 +86,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
                 var msg2 = $"entity id property must have get & set: {property.Name}, type: {propType.Name}, entity: {type.Name}";
                 throw new InvalidOperationException(msg2);
             }
+            bool auto = FieldQuery.IsAutoIncrement(property.CustomAttributes);
             if (propType == typeof(string)) return new EntityKeyStringProperty<T>   (property, idGetMethod, idSetMethod);
             if (propType == typeof(Guid))   return new EntityKeyGuidProperty<T>     (property, idGetMethod, idSetMethod);
             if (propType == typeof(int))    return new EntityKeyIntProperty<T>      (property, idGetMethod, idSetMethod);
@@ -99,6 +100,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
         private static EntityKey<T> CreateEntityKeyField<T> (FieldInfo field)  where T : class {
             var type        = typeof (T);
             var fieldType   = field.FieldType;
+            bool auto = FieldQuery.IsAutoIncrement(fieldType.CustomAttributes);
             if (fieldType == typeof(string))    return new EntityKeyStringField<T>  (field);
             if (fieldType == typeof(Guid))      return new EntityKeyGuidField<T>    (field);
             if (fieldType == typeof(int))       return new EntityKeyIntField<T>     (field);
@@ -146,8 +148,14 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
     
     // ----------------------------------------- EntityKeyT<TKey, T> -----------------------------------------
     internal abstract class EntityKeyT<TKey, T> : EntityKey<T> where T : class {
-        internal abstract   TKey    GetKey      (T entity);
-        internal abstract   void    SetKey      (T entity, TKey id);
+        internal readonly   bool        autoIncrement;
+            
+        internal abstract   TKey        GetKey      (T entity);
+        internal abstract   void        SetKey      (T entity, TKey id);
+        
+        internal EntityKeyT (MemberInfo member) {
+            autoIncrement   = FieldQuery.IsAutoIncrement(member.CustomAttributes);
+        }
 
         internal override   TAsType GetKeyAsType<TAsType> (T entity) {
             // Will box in DEBUG - not in RELEASE (.NET Core 3.1)
