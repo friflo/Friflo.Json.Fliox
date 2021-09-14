@@ -9,6 +9,9 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.NoSQL
 {
     // --- models
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(false)]
+#endif
     public class _ReservedKeys {
         [Fri.Key]       public  Guid    token;  // secret to ensure the client has reserved the keys
         [Fri.Required]  public  int     start;
@@ -16,12 +19,18 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                         public  string  user;   // to track back who reserved keys in case of abuse
     }
     
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(false)]
+#endif
     public class _Sequence {
         [Fri.Key]       public  string  container;
         [Fri.Required]  public  int     autoId;
         [Fri.Required]  public  string  _etag;
     }
 
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(false)]
+#endif
     public class SequenceStore : EntityStore
     {
         public  EntitySet <Guid,    _ReservedKeys>   reservedKeys;
