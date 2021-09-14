@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.NoSQL.Event;
 using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.NoSQL
 {
@@ -156,6 +157,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     tasks.Add(result);
                 }
             }
+            SetContainerResults(response);
             response.AssertResponse(syncRequest);
             
             var broker = eventBroker;
@@ -166,6 +168,42 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 }
             }
             return response;
+        }
+        
+        protected virtual void SetContainerResults(SyncResponse response)
+        {
+            foreach (var resultPair in response.results) {
+                var container       = resultPair.Value;
+                var entityMap       = container.entityMap;
+                var entities        = container.entities;
+                List<JsonKey> notFound = null;
+                var errors          = container.errors;
+                container.errors    = null;
+                entities.Capacity   = entityMap.Count;
+                foreach (var entityPair in entityMap) {
+                    EntityValue entity = entityPair.Value;
+                    if (entity.Error != null) {
+                        errors.Add(entityPair.Key, entity.Error);
+                        continue;
+                    }
+                    var json = entity.Json;
+                    if (json == null) {
+                        if (notFound == null) {
+                            notFound = new List<JsonKey>();
+                        }
+                        notFound.Add(entityPair.Key);
+                        continue;
+                    }
+                    entities.Add(new JsonValue(json));
+                }
+                entityMap.Clear();
+                if (notFound != null) {
+                    container.notFound = notFound;
+                }
+                if (errors != null && errors.Count > 0) {
+                    container.errors = errors;
+                }
+            }
         }
     }
 }

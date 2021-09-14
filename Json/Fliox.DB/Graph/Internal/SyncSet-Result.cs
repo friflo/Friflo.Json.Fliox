@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 return;
             }
             var entityErrorInfo = new TaskErrorInfo();
-            var entities = readEntities.entities;
+            var entities = readEntities.entityMap;
             foreach (var id in task.ids) {
                 if (!entities.TryGetValue(id, out EntityValue value)) {
                     AddEntityResponseError(id, entities, ref entityErrorInfo);
@@ -199,7 +199,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             }
             var queryResult     = (QueryEntitiesResult)result;
             var entityErrorInfo = new TaskErrorInfo();
-            var entities        = queryEntities.entities;
+            var entities        = queryEntities.entityMap;
             var results         = query.results = new Dictionary<TKey, T>(queryResult.ids.Count);
             foreach (var id in queryResult.ids) {
                 if (!entities.TryGetValue(id, out EntityValue value)) {

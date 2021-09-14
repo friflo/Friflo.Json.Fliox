@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     }
     
     // ----------------------------------- sub task result -----------------------------------
-    /// The data of requested entities are added to <see cref="ContainerEntities.entities"/> 
+    /// The data of requested entities are added to <see cref="ContainerEntities.entityMap"/> 
     public class ReadEntitiesResult: ICommandResult
     {
         [Fri.Required]  public  List<ReferencesResult>          references;

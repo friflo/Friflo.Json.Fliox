@@ -404,6 +404,56 @@ namespace Friflo.Json.Fliox.DB.Graph
                 }
             }
         }
+        
+        private void GetContainerResults(SyncResponse response) {
+            var validator = _intern.validator;
+            foreach (var resultPair in response.results) {
+                string name         = resultPair.Key;
+                if (!_intern.setByName.TryGetValue(name, out EntitySet set)) {
+                    continue;
+                }
+                var keyName         = set.GetKeyName();
+                var container       = resultPair.Value;
+                var entityMap       = container.entityMap;
+                var entities        = container.entities;
+                var notFound        = container.notFound;
+                var notFoundCount   = notFound?.Count ?? 0;
+                var errors          = container.errors;
+                var errorCount      = errors?.Count ?? 0;
+                container.errors    = null;
+                entityMap.Clear(); // Not necessary, be safe
+                entityMap.EnsureCapacity(entities.Count + notFoundCount + errorCount);
+                
+                // --- entities
+                foreach (var entity in entities) {
+                    if (!validator.GetEntityKey(entity.json, keyName, out JsonKey key, out string errorMsg)) {
+                        throw new InvalidOperationException($"GetEntityResults not found: {errorMsg}");
+                    }
+                    entityMap.Add(key, new EntityValue(entity.json));
+                }
+                entities.Clear();
+                container.entities = null;
+                
+                // --- notFound
+                if (notFound != null) {
+                    foreach (var notFoundKey in notFound) {
+                        entityMap.Add(notFoundKey, new EntityValue());
+                    }
+                    notFound.Clear();
+                    container.notFound = null;
+                }
+                
+                // --- errors
+                if (errors == null || errors.Count == 0)
+                    continue;
+                foreach (var errorPair in errors) {
+                    var key = errorPair.Key;
+                    entityMap.Add(key, new EntityValue(errorPair.Value));
+                }
+                errors.Clear();
+                container.errors = null;
+            }
+        }
 
         private SyncResult HandleSyncResponse(SyncRequest syncRequest, SyncResponse response, SyncStore syncStore) {
             SyncResult      syncResult;
@@ -415,11 +465,12 @@ namespace Friflo.Json.Fliox.DB.Graph
                 if (error == null) {
                     response.AssertResponse(syncRequest);
                     syncError = null;
+                    GetContainerResults(response);
                     containerResults = response.results;
                     foreach (var containerResult in containerResults) {
                         ContainerEntities containerEntities = containerResult.Value;
                         var set = _intern.setByName[containerResult.Key];
-                        set.SyncPeerEntities(containerEntities.entities);
+                        set.SyncPeerEntities(containerEntities.entityMap);
                     }
                     SetErrors(response, syncStore);
                 } else {

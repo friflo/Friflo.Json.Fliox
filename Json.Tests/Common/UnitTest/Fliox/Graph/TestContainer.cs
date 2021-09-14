@@ -53,12 +53,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                     return fcn();
                 }
             }
-            var response = await base.ExecuteSync(syncRequest, messageContext);
+            return await base.ExecuteSync(syncRequest, messageContext);
+        }
+        
+        protected override void SetContainerResults(SyncResponse response) {
             foreach (var pair in testContainers) {
                 TestContainer testContainer = pair.Value;
                 if (!response.results.TryGetValue(testContainer.name, out var result))
                     continue;
-                var entities = result.entities;
+                var entities = result.entityMap;
                 foreach (var id in testContainer.missingResultErrors) {
                     var key = new JsonKey(id);
                     if (entities.TryGetValue(key, out EntityValue _)) {
@@ -66,7 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                     }
                 }
             }
-            return response;
+            base.SetContainerResults(response);
         }
 
         public TestContainer GetTestContainer<TEntity>() where TEntity : class {

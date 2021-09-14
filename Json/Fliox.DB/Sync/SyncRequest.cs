@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                 return result;
             result = new ContainerEntities {
                 container = container,
-                entities = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality)
+                entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality)
             };
             results.Add(container, result);
             return result;
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.DB.Sync
             entityErrorMap.Add(container, result);
             return result;
         }
-
+        
         public void AssertResponse(SyncRequest request) {
             var expect = request.tasks.Count;
             var actual = tasks.Count;
@@ -78,13 +78,17 @@ namespace Friflo.Json.Fliox.DB.Sync
     // ----------------------------------- sync results -----------------------------------
     public class ContainerEntities
     {
-                        public  string                              container; // only for debugging
-        [Fri.Required]  public  Dictionary<JsonKey, EntityValue>    entities = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+                        public  string                              container; // not used - only for debugging
+        [Fri.Required]  public  List<JsonValue>                     entities  = new List<JsonValue>();
+                        public  List<JsonKey>                       notFound;
+                        public  Dictionary<JsonKey, EntityError>    errors    = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
+        
+        [Fri.Ignore]    public  Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
         
         internal void AddEntities(Dictionary<JsonKey, EntityValue> add) {
-            entities.EnsureCapacity(entities.Count + add.Count);
+            entityMap.EnsureCapacity(entityMap.Count + add.Count);
             foreach (var entity in add) {
-                entities.TryAdd(entity.Key, entity.Value);
+                entityMap.TryAdd(entity.Key, entity.Value);
             }
         }
     }
