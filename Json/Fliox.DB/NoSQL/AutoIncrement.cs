@@ -10,10 +10,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL
 {
     // --- models
     public class _ReservedKeys {
-        public  Guid    id;     // secret to ensure the client has reserved the keys
+                        public  Guid    id;     // secret to ensure the client has reserved the keys
         [Fri.Required]  public  int     start;
         [Fri.Required]  public  int     count;
-        public  string  user;   // to track back who reserved key in case of abusing it
+                        public  string  user;   // to track back who reserved key in case of abusing it
     }
     
     public class _Sequence {
