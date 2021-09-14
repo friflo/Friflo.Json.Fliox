@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 
                 Console.WriteLine($"PocStore memory: {diff}");
-                var expected = Is.InRange(8224, 8440);
+                var expected = Is.InRange(10024, 10024);
                 That(diff, expected);
             }
         }
@@ -115,7 +115,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 await store.Sync(); // ~ 1 µs
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var expected = IsDebug() ? 1344 : 1288; // Test Debug & Release
+                var expected = IsDebug() ? 1456 : 1400; // Test Debug & Release
                 AreEqual(expected, diff);   // Test Release also
             }
         }

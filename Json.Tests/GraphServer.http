@@ -161,6 +161,18 @@ content-type: application/json
   }
 ]}
 
+### Reserve keys for container: Article
+POST http://localhost:8081/ HTTP/1.1
+content-type: application/json
+
+{ "type": "sync",
+  "tasks": [
+  {
+    "task": "reserveKeys",       "container": "Article",
+    "count": 10
+  }
+]}
+
 
 # =============================== WebSocket only tasks ===============================
 
