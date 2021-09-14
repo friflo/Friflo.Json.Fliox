@@ -160,7 +160,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 read.results[key] = peer.Entity;
             }
             foreach (var findTask in read.findTasks) {
-                findTask.SetFindResult(read.results, entities);
+                findTask.SetFindResult(read.results, entities, set.intern.keysBuf);
             }
             // A ReadTask is set to error if at least one of its JSON results has an error.
             if (entityErrorInfo.HasErrors) {

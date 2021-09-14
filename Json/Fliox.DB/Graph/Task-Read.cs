@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using Friflo.Json.Fliox.DB.Graph.Internal;
 using Friflo.Json.Fliox.DB.Sync;
@@ -17,7 +16,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         public   abstract override  string      Details { get; }
         internal abstract override  TaskState   State   { get; }
 
-        internal abstract void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities);
+        internal abstract void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities, List<TKey> buf);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -37,7 +36,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             this.key     = key;
         }
         
-        internal override void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities) {
+        internal override void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities, List<TKey> keysBuf) {
             TaskErrorInfo error = new TaskErrorInfo();
             var id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
             var entityError = entities[id].Error;
@@ -56,7 +55,6 @@ namespace Friflo.Json.Fliox.DB.Graph
 #endif
     public class FindRange<TKey, T> : FindTask<TKey, T> where T : class
     {
-        private  readonly   HashSet<TKey>           keys;
         private  readonly   Dictionary<TKey, T>     results;
 
         public              T                       this[TKey key]      => IsOk("FindRange[]", out Exception e) ? results[key] : throw e;
@@ -67,24 +65,31 @@ namespace Friflo.Json.Fliox.DB.Graph
         } }
 
         internal override   TaskState       State       => findState;
-        public   override   string          Details     => $"FindRange<{typeof(T).Name}> (#ids: {keys.Count})";
+        public   override   string          Details     => $"FindRange<{typeof(T).Name}> (#ids: {results.Count})";
         
 
         internal FindRange(ICollection<TKey> keys) {
-            results     = new Dictionary<TKey, T>(keys.Count);
-            this.keys   = keys.ToHashSet();
+            results = new Dictionary<TKey, T>(keys.Count);
+            foreach (var key in keys) {
+                results.TryAdd(key, null);
+            }
         }
         
-        internal override void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities) {
+        internal override void SetFindResult(Dictionary<TKey, T> values, Dictionary<JsonKey, EntityValue> entities, List<TKey> keysBuf) {
             TaskErrorInfo error = new TaskErrorInfo();
-            foreach (var key in keys) {
+            keysBuf.Clear();
+            foreach (var result in results) {
+                var key = result.Key;
                 var id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
                 var entityError = entities[id].Error;
                 if (entityError == null) {
-                    results.Add(key, values[key]);    
+                    keysBuf.Add(key);
                 } else {
                     error.AddEntityError(entityError);
                 }
+            }
+            foreach (var key in keysBuf) {
+                results[key] = values[key];
             }
             if (error.HasErrors) {
                 findState.SetError(error);
