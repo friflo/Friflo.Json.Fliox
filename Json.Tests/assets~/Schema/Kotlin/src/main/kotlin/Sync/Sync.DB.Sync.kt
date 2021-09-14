@@ -5,6 +5,7 @@ import kotlinx.serialization.*
 import CustomSerializer.*
 import kotlinx.serialization.json.*
 import Sync.Transform.*
+import java.util.*
 
 @Serializable
 data class DatabaseMessage (
@@ -250,7 +251,8 @@ data class ReserveKeysResult (
               val Error : CommandError? = null,
               val start : Int,
               val count : Int,
-              val token : String,
+              @Serializable(with = UUIDSerializer::class)
+              val token : UUID,
 ) : TaskResult()
 
 @Serializable

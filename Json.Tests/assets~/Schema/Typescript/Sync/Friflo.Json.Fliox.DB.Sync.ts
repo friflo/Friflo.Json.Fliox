@@ -5,6 +5,7 @@ import { FilterOperation }       from "./Friflo.Json.Fliox.Transform"
 import { FilterOperation_Union } from "./Friflo.Json.Fliox.Transform"
 import { JsonPatch }             from "./Friflo.Json.Fliox.Transform"
 import { JsonPatch_Union }       from "./Friflo.Json.Fliox.Transform"
+import { Guid }                  from "./Standard"
 
 export class DatabaseMessage {
     req?  : DatabaseRequest_Union | null;
@@ -277,7 +278,7 @@ export class ReserveKeysResult extends TaskResult {
     Error? : CommandError | null;
     start  : int32;
     count  : int32;
-    token  : string;
+    token  : Guid;
 }
 
 export class TaskErrorResult extends TaskResult {

@@ -5,6 +5,8 @@ using System;
 using Friflo.Json.Fliox.DB.Graph;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable UnassignedField.Global
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.DB.NoSQL
 {
@@ -33,6 +35,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL
 #endif
     public class SequenceStore : EntityStore
     {
+        // public const string ReservedKeys   =   "_ReservedKeys";
+        // public const string Sequence       =   "_Sequence";
+        
         public  EntitySet <Guid,    _ReservedKeys>   reservedKeys;
         public  EntitySet <string,  _Sequence>       sequence;
         

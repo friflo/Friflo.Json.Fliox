@@ -40,8 +40,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 
                 await store.Sync();
                 
-                IsTrue(keys.Success);
-                AreEqual(42, keys.StartKey);
+                IsTrue  (keys.Success);
+                IsTrue  (keys.StartKey > 0);
+                AreEqual(10, keys.Count);
                 
                 IsTrue(create.Success);
             }

@@ -9,3 +9,6 @@ export type int64 = number;
 /** double precision floating point number */
 export type double = number;
 
+/** GUID / UUID as RFC 4122. e.g. "123e4567-e89b-12d3-a456-426614174000" */
+export type Guid = string;
+

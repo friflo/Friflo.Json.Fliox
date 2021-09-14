@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.DB.Graph
     {
         internal            int         count;
         internal            int         startKey;
-        internal            string      token;
+        internal            Guid        token;
         public              int         Count       => count;
         
         internal            TaskState   state;
