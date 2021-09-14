@@ -27,10 +27,11 @@ namespace Friflo.Json.Fliox.DB.Sync
                 sequence.autoId += count;
             }
             var reservedKeys = new _ReservedKeys {
-                count = count,
-                start = sequence.autoId,
-                token = Guid.NewGuid(),
-                user = messageContext.clientId
+                token       = Guid.NewGuid(),
+                container   = container,
+                start       = sequence.autoId,
+                count       = count,
+                user        = messageContext.clientId
             };
             store.reservedKeys.Upsert(reservedKeys);
             store.sequence.Upsert(sequence);

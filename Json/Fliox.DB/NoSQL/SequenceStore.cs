@@ -16,6 +16,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
 #endif
     public class _ReservedKeys {
         [Fri.Key]       public  Guid    token;  // secret to ensure the client has reserved the keys
+        [Fri.Required]  public  string  container;
         [Fri.Required]  public  int     start;
         [Fri.Required]  public  int     count;
                         public  string  user;   // to track back who reserved keys in case of abuse
