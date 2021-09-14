@@ -221,6 +221,13 @@ namespace Friflo.Json.Fliox.DB.Graph
             intern.store.AddTask(task);
             return task;
         }
+        
+        // --- ReserveKeys
+        public ReserveKeysTask<TKey, T> ReserveKeys(int count) {
+            var task = GetSyncSet().ReserveKeys(count);
+            intern.store.AddTask(task);
+            return task;
+        }
 
         // --- Create
         public CreateTask<T> Create(T entity) {

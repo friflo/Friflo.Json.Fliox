@@ -19,6 +19,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
 
         internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
         
+        internal  abstract  void    ReserveKeysResult       (ReserveKeys        task, TaskResult result);
         internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, TaskResult result);
         internal  abstract  void    UpsertEntitiesResult    (UpsertEntities     task, TaskResult result);
         internal  abstract  void    ReadEntitiesListResult  (ReadEntitiesList   task, TaskResult result, ContainerEntities readEntities);
@@ -30,6 +31,18 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
 
     internal partial class SyncSet<TKey, T>
     {
+        internal override void ReserveKeysResult (ReserveKeys task, TaskResult result) {
+            if (result is TaskErrorResult taskError) {
+                _reserveKeys.state.SetError(new TaskErrorInfo(taskError));
+                return;
+            }
+            var reserveKeysResult   = (ReserveKeysResult) result;
+            _reserveKeys.count      = reserveKeysResult.count;
+            _reserveKeys.startKey   = reserveKeysResult.start;
+            _reserveKeys.token      = reserveKeysResult.token;
+            _reserveKeys.state.Synced = true;
+        }
+        
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsCreate"/> for all
         /// <see cref="Creates"/> to enable setting <see cref="LogTask"/> to error state via <see cref="LogTask.SetResult"/>. 
         internal override void CreateEntitiesResult(CreateEntities task, TaskResult result) {

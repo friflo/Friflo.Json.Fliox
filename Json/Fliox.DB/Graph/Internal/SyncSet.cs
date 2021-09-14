@@ -36,6 +36,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         
         private     HashSet<T>                              _autos;
         
+        private     ReserveKeysTask<TKey,T>                 _reserveKeys;
+            
         private     Dictionary<JsonKey, Peer<T>>            _creates;
         private     List<WriteTask>                         _createTasks;
         
@@ -58,19 +60,15 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
 
         private     HashSet<T>                              Autos()      => _autos       ?? (_autos        = new HashSet<T>(EntityEqualityComparer<T>.Instance));
 
-        /// key: <see cref="Peer{T}.entity"/>.id
         private     Dictionary<JsonKey, Peer<T>>            Creates()    => _creates     ?? (_creates     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
         private     List<WriteTask>                         CreateTasks()=> _createTasks ?? (_createTasks = new List<WriteTask>());
         
-        /// key: <see cref="Peer{T}.entity"/>.id
         private     Dictionary<JsonKey, Peer<T>>            Updates()    => _upserts     ?? (_upserts     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
         private     List<WriteTask>                         UpdateTasks()=> _updateTasks ?? (_updateTasks = new List<WriteTask>());
 
-        /// key: entity id
         private     Dictionary<JsonKey, EntityPatch>        Patches()    => _patches     ?? (_patches     = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality));
         private     List<PatchTask<T>>                      PatchTasks() => _patchTasks  ?? (_patchTasks  = new List<PatchTask<T>>());
         
-        /// key: entity id
         private     HashSet<TKey>                           Deletes()    => _deletes     ?? (_deletes     = new HashSet   <TKey>());
         private     List<DeleteTask<TKey, T>>               DeleteTasks()=> _deleteTasks ?? (_deleteTasks = new List<DeleteTask<TKey, T>>());
         
@@ -132,6 +130,16 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 subscribeChanges = new SubscribeChangesTask<T>();
             subscribeChanges.Set(changes, filter);
             return subscribeChanges;
+        }
+        
+        // --- ReserveKeys
+        internal ReserveKeysTask<TKey, T> ReserveKeys(int count) {
+            if (_reserveKeys == null) {
+                _reserveKeys = new ReserveKeysTask<TKey,T>(count); 
+            } else {
+                _reserveKeys.count += count;
+            }
+            return _reserveKeys;
         }
         
         // --- Create
@@ -260,6 +268,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
 
         // ----------------------------------- add tasks methods -----------------------------------
         internal override void AddTasks(List<DatabaseTask> tasks) {
+            ReserveKeys         (tasks);
             CreateEntities      (tasks);
             UpsertEntities      (tasks);
             ReadEntitiesList    (tasks);
@@ -268,6 +277,17 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             DeleteEntities      (tasks);
             DeleteAll           (tasks);
             SubscribeChanges    (tasks);
+        }
+        
+        
+        private void ReserveKeys(List<DatabaseTask> tasks) {
+            if (_reserveKeys == null)
+                return;
+            var req = new ReserveKeys {
+                container   = set.name,
+                count       = _reserveKeys.count,
+            };
+            tasks.Add(req);
         }
         
         private void CreateEntities(List<DatabaseTask> tasks) {
@@ -496,6 +516,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
 
         internal void SetTaskInfo(ref SetInfo info) {
             info.tasks =
+                (_reserveKeys   != null ? 1 : 0) +
                 SetInfo.Any  (_reads)   +
                 SetInfo.Count(_queries) +
                 SetInfo.Any  (_creates) +  SetInfo.Any  (_autos) +

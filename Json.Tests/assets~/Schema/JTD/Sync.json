@@ -520,8 +520,8 @@
         },
         "ReserveKeys": {
             "properties": {
-                "count":     { "type": "int32" },
-                "container": { "type": "string" }
+                "container": { "type": "string" },
+                "count":     { "type": "int32" }
             }
         },
         "DatabaseResponse": {

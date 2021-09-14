@@ -36,8 +36,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 
                 var intEntity = new AutoIntEntity();
                 var create  = store.intEntitiesAuto.Create(intEntity);
+                var keys    = store.intEntitiesAuto.ReserveKeys(10);
                 
                 await store.Sync();
+                
+                IsTrue(keys.Success);
+                AreEqual(42, keys.StartKey);
                 
                 IsTrue(create.Success);
             }

@@ -144,8 +144,8 @@ export class SubscribeMessage extends DatabaseTask {
 
 export class ReserveKeys extends DatabaseTask {
     task       : "reserveKeys";
-    count      : int32;
     container  : string;
+    count      : int32;
 }
 
 export type DatabaseResponse_Union =

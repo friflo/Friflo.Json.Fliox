@@ -132,8 +132,8 @@ data class SubscribeMessage (
 @Serializable
 @SerialName("reserveKeys")
 data class ReserveKeys (
-              val count     : Int,
               val container : String,
+              val count     : Int,
 ) : DatabaseTask()
 
 @Serializable

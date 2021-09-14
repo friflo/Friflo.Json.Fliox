@@ -504,9 +504,14 @@ namespace Friflo.Json.Fliox.DB.Graph
                     }
 
                     switch (taskType) {
+                        case TaskType.reserveKeys:
+                            var reserveKeys =     (ReserveKeys) task;
+                            var syncSet = syncSets[reserveKeys.container];
+                            syncSet.ReserveKeysResult(reserveKeys, result);
+                            break;
                         case TaskType.create:
                             var create =            (CreateEntities) task;
-                            var syncSet = syncSets[create.container];
+                            syncSet = syncSets[create.container];
                             syncSet.CreateEntitiesResult(create, result);
                             break;
                         case TaskType.upsert:
