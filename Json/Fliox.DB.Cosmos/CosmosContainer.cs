@@ -192,10 +192,6 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             }
             return new DeleteEntitiesResult();
         }
-        
-        public override Task<ReserveKeysResult>   AutoIncrement  (ReserveKeys  command, MessageContext messageContext) {
-            throw new NotImplementedException("");
-        }
     }
 }
 

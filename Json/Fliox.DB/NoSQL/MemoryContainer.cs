@@ -91,9 +91,5 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             var result = new DeleteEntitiesResult();
             return Task.FromResult(result);
         }
-        
-        public override Task<ReserveKeysResult>   AutoIncrement  (ReserveKeys  command, MessageContext messageContext) {
-            throw new NotImplementedException("");
-        }
     }
 }

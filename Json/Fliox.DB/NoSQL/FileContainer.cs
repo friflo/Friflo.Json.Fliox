@@ -165,13 +165,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             var result = new DeleteEntitiesResult{deleteErrors = deleteErrors};
             return result;
         }
-        
-        public override Task<ReserveKeysResult>   AutoIncrement  (ReserveKeys  command, MessageContext messageContext) {
-            throw new NotImplementedException("");
-        }
 
-        
-        
+
         // -------------------------------------- helper methods -------------------------------------- 
         private static HashSet<JsonKey> GetIds(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);

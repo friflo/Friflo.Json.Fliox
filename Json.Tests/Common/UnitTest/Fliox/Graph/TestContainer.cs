@@ -137,10 +137,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 return Task.FromResult(new DeleteEntitiesResult {deleteErrors = errors});
             return Task.FromResult(new DeleteEntitiesResult());
         }
-        
-        public override async Task<ReserveKeysResult>   AutoIncrement  (ReserveKeys  command, MessageContext messageContext) {
-            return await local.AutoIncrement(command, messageContext);
-        }
 
         /// Validation of JSON entity values in result set is required, as this this implementation is able to
         /// simulate assign invalid JSON via .<see cref="SimulateReadErrors"/>.
