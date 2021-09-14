@@ -405,6 +405,9 @@ namespace Friflo.Json.Fliox.DB.Graph
             }
         }
         
+        /// Map <see cref="ContainerEntities.entities"/>, <see cref="ContainerEntities.notFound"/> and
+        /// <see cref="ContainerEntities.errors"/> to <see cref="ContainerEntities.entityMap"/>.
+        /// These properties are set by <see cref="EntityDatabase.SetContainerResults"/>.
         private void GetContainerResults(SyncResponse response) {
             var validator = _intern.validator;
             foreach (var resultPair in response.results) {

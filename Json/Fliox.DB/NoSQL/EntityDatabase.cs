@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
+using Friflo.Json.Fliox.DB.Graph;
 using Friflo.Json.Fliox.DB.NoSQL.Event;
 using Friflo.Json.Fliox.DB.Sync;
 using Friflo.Json.Fliox.Mapper;
@@ -170,6 +171,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             return response;
         }
         
+        /// Distribute <see cref="ContainerEntities.entityMap"/> to <see cref="ContainerEntities.entities"/>,
+        /// <see cref="ContainerEntities.notFound"/> and <see cref="ContainerEntities.errors"/> to simplify and
+        /// minimize response by removing redundancy.
+        /// <see cref="EntityStore.GetContainerResults"/> remap these properties.
         protected virtual void SetContainerResults(SyncResponse response)
         {
             foreach (var resultPair in response.results) {
