@@ -35,7 +35,10 @@ namespace Friflo.Json.Fliox.DB.Sync
             };
             store.reservedKeys.Upsert(reservedKeys);
             store.sequence.Upsert(sequence);
-            await store.Sync();
+            var sync = await store.TrySync();
+            if (!sync.Success) {
+                return  new ReserveKeysResult { Error = new CommandError{message = sync.Message} };
+            }
             var result = new ReserveKeysResult {
                 start = sequence.autoId,
                 count = count,

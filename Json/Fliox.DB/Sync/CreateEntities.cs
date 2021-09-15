@@ -32,8 +32,10 @@ namespace Friflo.Json.Fliox.DB.Sync
                 return InvalidTask(error);
             }
 
-            database.schema?.ValidateEntities (container, entityKeys, entities, messageContext, EntityErrorType.WriteError, ref response.createErrors);
-
+            error = database.schema?.ValidateEntities (container, entityKeys, entities, messageContext, EntityErrorType.WriteError, ref response.createErrors);
+            if (error != null) {
+                return TaskError(new CommandError{message = error});
+            }
             var entityContainer = database.GetOrCreateContainer(container);
             // may call patcher.Copy() always to ensure a valid JSON value
             if (entityContainer.Pretty) {

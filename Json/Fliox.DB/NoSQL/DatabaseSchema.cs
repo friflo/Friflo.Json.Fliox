@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             validationSet.Dispose();
         }
 
-        public void ValidateEntities (
+        public string ValidateEntities (
             string                                  container,
             List<JsonKey>                           entityKeys,
             List<JsonValue>                         entities,
@@ -70,7 +70,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         ) {
             EntityContainer.AssertEntityCounts(entityKeys, entities);
             Dictionary<JsonKey, EntityError> validationErrors = null;
-            var type = containerTypes[container];
+            if (!containerTypes.TryGetValue(container, out ValidationType type)) {
+                return $"No Schema definition for container Type: {container}";
+            }
             using (var pooledValidator = messageContext.pools.TypeValidator.Get()) {
                 TypeValidator validator = pooledValidator.instance;
                 for (int n = 0; n < entities.Count; n++) {
@@ -87,7 +89,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 }
             }
             if (validationErrors == null)
-                return;
+                return null;
             var errors = SyncResponse.GetEntityErrors(ref entityErrorMap, container);
             errors.AddErrors(validationErrors);
             
@@ -104,7 +106,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             int count = entities.Count;
             entities.RemoveRange(pos,   count);
             entityKeys.RemoveRange(pos, count);
-
+            return null;
         }
     }
  
