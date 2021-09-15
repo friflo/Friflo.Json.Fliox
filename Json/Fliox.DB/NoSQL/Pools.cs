@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         ObjectPool<ObjectMapper>    ObjectMapper    { get; }
         ObjectPool<EntityValidator> EntityValidator { get; }
         ObjectPool<TypeValidator>   TypeValidator   { get; }
-        ObjectPool<T>               Pooled<T> (Func<T> factory) where T : IDisposable;
+        ObjectPool<T>               Pool<T>         (Func<T> factory) where T : IDisposable;
         
         PoolUsage                   PoolUsage       { get; }
     }
@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         public  ObjectPool<EntityValidator> EntityValidator { get; }
         public  ObjectPool<TypeValidator>   TypeValidator   { get; }
         
-        public  ObjectPool<T>               Pooled<T> (Func<T> factory) where T : IDisposable {
+        public  ObjectPool<T>               Pool<T>         (Func<T> factory) where T : IDisposable {
             if (poolMap.TryGetValue(typeof(T), out var pooled)) {
                 return (ObjectPool<T>)pooled;
             }
