@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         
         public   override   string      Details     => $"ReserveKeysTask<{typeof(TKey).Name},{typeof(T).Name}>(count: {count})";
         
-        public               List<long> Keys    => IsOk("ReserveKeysTask.StartKey", out Exception e) ? keys : throw e;
+        public               List<long> Keys    => IsOk("ReserveKeysTask.Keys", out Exception e) ? keys : throw e;
         
         internal ReserveKeysTask(int count) {
             this.count  = count;
