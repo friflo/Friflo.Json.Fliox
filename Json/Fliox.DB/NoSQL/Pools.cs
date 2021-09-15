@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.DB.Sync;
 using Friflo.Json.Fliox.Mapper;
@@ -39,18 +40,30 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         ObjectPool<ObjectMapper>    ObjectMapper    { get; }
         ObjectPool<EntityValidator> EntityValidator { get; }
         ObjectPool<TypeValidator>   TypeValidator   { get; }
+        ObjectPool<T>               Pooled<T> (Func<T> factory) where T : IDisposable;
         
         PoolUsage                   PoolUsage       { get; }
     }
     
     public class Pools : IPools, IDisposable
     {
+        private readonly  Dictionary<Type, IDisposable>    poolMap = new Dictionary<Type, IDisposable>(); // object = SharedPool<T>
+        
         public  ObjectPool<JsonPatcher>     JsonPatcher     { get; }
         public  ObjectPool<ScalarSelector>  ScalarSelector  { get; }
         public  ObjectPool<JsonEvaluator>   JsonEvaluator   { get; }
         public  ObjectPool<ObjectMapper>    ObjectMapper    { get; }
         public  ObjectPool<EntityValidator> EntityValidator { get; }
         public  ObjectPool<TypeValidator>   TypeValidator   { get; }
+        
+        public  ObjectPool<T>               Pooled<T> (Func<T> factory) where T : IDisposable {
+            if (poolMap.TryGetValue(typeof(T), out var pooled)) {
+                return (ObjectPool<T>)pooled;
+            }
+            var sharedPooled = new SharedPool<T>(factory);
+            poolMap[typeof(T)] = sharedPooled;
+            return sharedPooled;
+        }
         
         public   static readonly    Pools   SharedPools = new Pools(Default.Constructor);
         
@@ -80,6 +93,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             ObjectMapper.   Dispose();
             EntityValidator.Dispose();
             TypeValidator.  Dispose();
+            foreach (var pool in poolMap) {
+                var sharedPool = pool.Value;
+                sharedPool.Dispose();
+            }
         }
 
         public PoolUsage PoolUsage { get {

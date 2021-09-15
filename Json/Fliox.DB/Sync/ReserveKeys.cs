@@ -13,39 +13,43 @@ namespace Friflo.Json.Fliox.DB.Sync
         [Fri.Required]  public  int             count;
 
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
-            var store           = new SequenceStore(database, SyncTypeStore.Get(), null);
-            var read            = store.sequence.Read();
-            var sequenceTask    = read.Find(container);
-            await store.Sync();
-            var sequence = sequenceTask.Result;
-            if (sequence == null) {
-                sequence = new Sequence {
+            // var store           = new SequenceStore(database, SyncTypeStore.Get(), null);
+            var pools = messageContext.pools;
+            using (var pooledStore = pools.Pooled(() => new SequenceStore(database, SyncTypeStore.Get(), null)).Get()) {
+                var store = pooledStore.instance;
+                var read            = store.sequence.Read();
+                var sequenceTask    = read.Find(container);
+                await store.Sync();
+                var sequence = sequenceTask.Result;
+                if (sequence == null) {
+                    sequence = new Sequence {
+                        container   = container,
+                        autoId      = count 
+                    };
+                } else {
+                    sequence.autoId += count;
+                }
+                var sequenceKeys = new SequenceKeys {
+                    token       = Guid.NewGuid(),
                     container   = container,
-                    autoId      = count 
+                    start       = sequence.autoId,
+                    count       = count,
+                    user        = messageContext.clientId
                 };
-            } else {
-                sequence.autoId += count;
+                store.sequenceKeys.Upsert(sequenceKeys);
+                store.sequence.Upsert(sequence);
+                var sync = await store.TrySync();
+                if (!sync.Success) {
+                    return  new ReserveKeysResult { Error = new CommandError(sync.Message) };
+                }
+                var keys = new ReservedKeys {
+                    start = sequence.autoId,
+                    count = count,
+                    token = sequenceKeys.token
+                };
+                var result = new ReserveKeysResult { keys = keys };
+                return result;
             }
-            var sequenceKeys = new SequenceKeys {
-                token       = Guid.NewGuid(),
-                container   = container,
-                start       = sequence.autoId,
-                count       = count,
-                user        = messageContext.clientId
-            };
-            store.sequenceKeys.Upsert(sequenceKeys);
-            store.sequence.Upsert(sequence);
-            var sync = await store.TrySync();
-            if (!sync.Success) {
-                return  new ReserveKeysResult { Error = new CommandError(sync.Message) };
-            }
-            var keys = new ReservedKeys {
-                start = sequence.autoId,
-                count = count,
-                token = sequenceKeys.token
-            };
-            var result = new ReserveKeysResult { keys = keys };
-            return result;
         }
 
         internal override       TaskType        TaskType => TaskType.reserveKeys;

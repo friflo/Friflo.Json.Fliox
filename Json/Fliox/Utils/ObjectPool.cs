@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Utils
         }
     }
     
-    public abstract class ObjectPool<T> where T : IDisposable
+    public abstract class ObjectPool<T> : IDisposable where T : IDisposable
     {
         internal abstract T     GetInstance();
         internal abstract void  Return(T instance);
