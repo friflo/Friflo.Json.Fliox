@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             StoreUtils.InitEntitySets(this);
         }
         
-        public void Dispose() {
+        public virtual void Dispose() {
             _intern.Dispose();
         }
         
