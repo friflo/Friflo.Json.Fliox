@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         public DatabaseSchema(TypeSchema typeSchema) {
             this.typeSchema = typeSchema;
             AddTypeSchema(typeSchema);
-            AddEntityStoreSchema<SequenceStore>();
+            AddStoreSchema<SequenceStore>();
         }
         
         public void Dispose() {
@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             }
         }
         
-        public void AddEntityStoreSchema<TEntityStore>() where TEntityStore : EntityStore {
+        public void AddStoreSchema<TEntityStore>() where TEntityStore : EntityStore {
             using (var typeStore    = new TypeStore()) {
                 var nativeSchema    = new NativeTypeSchema(typeStore, typeof(TEntityStore));
                 AddTypeSchema(nativeSchema);
