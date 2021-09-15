@@ -28,6 +28,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/Sync");
         }
         
+        /// C# -> JSON Schema
+        // [Test]
+        public static void CS_JSON () {
+            var options     = new NativeTypeOptions(SyncTypes);
+            var generator   = JsonSchemaGenerator.Generate(options);
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JSON/Sync");
+        }
+        
         /// C# -> C#
         // [Test]
         public static void CS_CS () {
