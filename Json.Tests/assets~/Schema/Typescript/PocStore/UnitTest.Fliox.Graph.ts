@@ -31,7 +31,7 @@ export class _ReservedKeys {
 export class _Sequence {
     container? : string | null;
     autoId     : int32;
-    _etag      : string;
+    _etag?     : string | null;
 }
 
 export abstract class PocEntity {

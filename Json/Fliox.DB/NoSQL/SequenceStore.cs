@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
     public class _Sequence {
         [Fri.Key]       public  string  container;
         [Fri.Required]  public  int     autoId;
-        [Fri.Required]  public  string  _etag;
+                        public  string  _etag;
     }
 
 #if !UNITY_5_3_OR_NEWER
@@ -39,8 +39,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         // public const string ReservedKeys   =   "_ReservedKeys";
         // public const string Sequence       =   "_Sequence";
         
-        public  EntitySet <Guid,    _ReservedKeys>   reservedKeys;
-        public  EntitySet <string,  _Sequence>       sequence;
+        public readonly EntitySet <Guid,   _ReservedKeys>   reservedKeys;
+        public readonly EntitySet <string, _Sequence>       sequence;
         
         public  SequenceStore(EntityDatabase database, TypeStore typeStore, string clientId)
             : base(database, typeStore, clientId) { }

@@ -22,7 +22,7 @@ data class _ReservedKeys (
 data class _Sequence (
               val container : String? = null,
               val autoId    : Int,
-              val _etag     : String,
+              val _etag     : String? = null,
 )
 
 @Serializable

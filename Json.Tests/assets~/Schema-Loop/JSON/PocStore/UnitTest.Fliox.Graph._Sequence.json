@@ -8,11 +8,10 @@
             "properties": {
                 "container": { "type": ["string", "null"], "isKey": true },
                 "autoId":    { "$ref": "./Standard.json#/definitions/int32" },
-                "_etag":     { "type": "string" }
+                "_etag":     { "type": ["string", "null"] }
             },
             "required": [
-                "autoId",
-                "_etag"
+                "autoId"
             ],
             "additionalProperties": false
         }

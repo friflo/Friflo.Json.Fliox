@@ -22,7 +22,6 @@ public class _Sequence {
     [Fri.Key]
     string  container;
     int     autoId;
-    [Fri.Required]
     string  _etag;
 }
 

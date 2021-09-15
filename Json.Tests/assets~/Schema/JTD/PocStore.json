@@ -14,7 +14,7 @@
             "properties": {
                 "container": { "type": "string", "nullable": true },
                 "autoId":    { "type": "int32" },
-                "_etag":     { "type": "string" }
+                "_etag":     { "type": "string", "nullable": true }
             }
         },
         "Order": {
