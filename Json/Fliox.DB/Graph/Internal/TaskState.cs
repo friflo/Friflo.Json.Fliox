@@ -43,8 +43,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             Synced = true;
         }
         
-        internal void SetError(TaskErrorType type, string message) {
-            Error  = new TaskErrorInfo(type, message);
+        internal void SetInvalidResponse(string message) {
+            Error  = new TaskErrorInfo(TaskErrorType.InvalidResponse, message);
             Synced = true;
         }
 

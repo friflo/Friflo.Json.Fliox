@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             }
             var reserveKeysResult   = (ReserveKeysResult) result;
             if (!reserveKeysResult.keys.HasValue) {
-                _reserveKeys.state.SetError(TaskErrorType.InvalidResponse, "missing keys");
+                _reserveKeys.state.SetInvalidResponse("missing keys");
                 return;
             }
             var resultKeys = reserveKeysResult.keys.Value;
