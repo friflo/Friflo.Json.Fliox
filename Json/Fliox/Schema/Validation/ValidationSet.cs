@@ -42,6 +42,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             AddStandardType(TypeId.DateTime,    standardType.DateTime);
             AddStandardType(TypeId.Guid,        standardType.Guid);
             AddStandardType(TypeId.JsonValue,   standardType.JsonValue);
+            AddStandardType(TypeId.String,      standardType.JsonKey);
 
             foreach (var type in schemaTypes) {
                 if (typeMap.ContainsKey(type))

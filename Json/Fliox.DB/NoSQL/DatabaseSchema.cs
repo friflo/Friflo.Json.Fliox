@@ -44,32 +44,34 @@ namespace Friflo.Json.Fliox.DB.NoSQL
     public class DatabaseSchema : IDisposable
     {
         public   readonly   TypeSchema                          typeSchema;
-        private  readonly   Dictionary<string, ValidationType>  containerTypes;
-        private  readonly   ValidationSet                       validationSet;
+        private  readonly   Dictionary<string, ValidationType>  containerTypes = new Dictionary<string, ValidationType>();
+        private  readonly   List<ValidationSet>                 validationSets = new List<ValidationSet>();
         
         public DatabaseSchema(TypeSchema typeSchema) {
-            validationSet   = new ValidationSet(typeSchema);
             this.typeSchema = typeSchema;
-            var entityTypes = validationSet.GetEntityTypes();
-            containerTypes  = new Dictionary<string, ValidationType>(entityTypes.Count);
-            foreach (var entityType in entityTypes) {
-                containerTypes.Add(entityType.name, entityType);
-            }
-            // AddSequenceStoreTypes();
+            AddTypeSchema(typeSchema);
+            // AddTypeSchema(typeof(SequenceStore));
         }
         
         public void Dispose() {
-            validationSet.Dispose();
+            foreach (var validationSet in validationSets) {
+                validationSet.Dispose();
+            }
         }
         
-        private void AddSequenceStoreTypes() {
-            var typeStore                = SyncTypeStore.Get();
-            using (var nativeSchema             = new NativeTypeSchema(typeStore, typeof(SequenceStore)))
-            using (var sequenceValidationSet    = new ValidationSet(nativeSchema)) {
-                var entityTypes = sequenceValidationSet.GetEntityTypes();
-                foreach (var entityType in entityTypes) {
-                    containerTypes.Add(entityType.name, entityType);
-                }
+        public void AddTypeSchema(Type rootType) {
+            using (var typeStore    = new TypeStore()) {
+                var nativeSchema    = new NativeTypeSchema(typeStore, rootType);
+                AddTypeSchema(nativeSchema);
+            }
+        }
+        
+        public void AddTypeSchema(TypeSchema typeSchema) {
+            var validationSet   = new ValidationSet(typeSchema);
+            validationSets.Add(validationSet);
+            var entityTypes     = validationSet.GetEntityTypes();
+            foreach (var entityType in entityTypes) {
+                containerTypes.Add(entityType.name, entityType);
             }
         }
 
