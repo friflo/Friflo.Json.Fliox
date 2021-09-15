@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             // var store           = new SequenceStore(database, SyncTypeStore.Get(), null);
             var pools = messageContext.pools;
-            using (var pooledStore = pools.Pool(() => new SequenceStore(database, SyncTypeStore.Get(), null)).Get()) {
+            using (var pooledStore = pools.Pool(() => new SequenceStore(database, SyncTypeStore.Get(), "ReserveKeys")).Get()) {
                 var store = pooledStore.instance;
                 var read            = store.sequence.Read();
                 var sequenceTask    = read.Find(container);
