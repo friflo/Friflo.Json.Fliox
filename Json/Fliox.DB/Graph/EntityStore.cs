@@ -348,7 +348,10 @@ namespace Friflo.Json.Fliox.DB.Graph
                 var setInfo         = set.SetInfo;
                 var curTaskCount    = tasks.Count;
                 var syncSet         = set.SyncSet;
-                syncSet?.AddTasks(tasks);
+                // ReSharper disable once UseNullPropagation
+                if (syncSet != null) {
+                    syncSet.AddTasks(tasks);
+                }
                 AssertTaskCount(setInfo, tasks.Count - curTaskCount);
             }
             syncStore.AddTasks(tasks);
