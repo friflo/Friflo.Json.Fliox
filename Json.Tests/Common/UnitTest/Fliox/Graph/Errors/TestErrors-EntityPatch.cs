@@ -32,8 +32,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             testCustomers.writeEntityErrors.Add(patchWriteEntityError,  () => testCustomers.WriteError(patchWriteEntityError));
             testCustomers.readEntityErrors. Add(patchReadEntityError,   (value) => value.SetError(testCustomers.ReadError(patchReadEntityError)));
             testCustomers.writeTaskErrors.  Add(patchTaskException,     () => throw new SimulationException("simulated patch task exception"));
-            testCustomers.writeTaskErrors.  Add(patchTaskError,         () => new CommandError {message = "simulated patch task error"});
-            testCustomers.readTaskErrors.   Add(readTaskError,          () => new CommandError{message = "simulated read task error"});
+            testCustomers.writeTaskErrors.  Add(patchTaskError,         () => new CommandError("simulated patch task error"));
+            testCustomers.readTaskErrors.   Add(readTaskError,          () => new CommandError("simulated read task error"));
             testCustomers.readTaskErrors.   Add(readTaskException,      () => throw new SimulationException("simulated read task exception"));
 
             var customers = store.customers;

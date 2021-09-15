@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
                 AreEqual(@"EntityErrors ~ count: 1
 | PatchError: Customer 'log-patch-entity-read-error', UnhandledException - SimulationException: simulated read task exception", logChanges.Error.Message);
             } {
-                testCustomers.readTaskErrors[readError]    = () => new CommandError{message = "simulated read task error"};
+                testCustomers.readTaskErrors[readError]    = () => new CommandError("simulated read task error");
                 customerReadError.Result.name   = "<change read 3>";
                 var logChanges = customers.LogSetChanges();
 
@@ -87,7 +87,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
                 AreEqual(@"EntityErrors ~ count: 1
 | PatchError: Customer 'log-patch-entity-write-error', UnhandledException - SimulationException: simulated write task exception", logChanges.Error.Message);
             } {
-                testCustomers.writeTaskErrors [writeError]    = () => new CommandError {message = "simulated write task error"} ;
+                testCustomers.writeTaskErrors [writeError]    = () => new CommandError("simulated write task error");
                 customerWriteError.Result.name   = "<change write 4>";
                 var logChanges = customers.LogSetChanges();
 

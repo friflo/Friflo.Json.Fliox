@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             }
             var valError = database.schema?.ValidateEntities(container, targetKeys, targets, messageContext, EntityErrorType.PatchError, ref response.patchErrors);
             if (valError != null) {
-                return new PatchEntitiesResult{Error = new CommandError{message = valError}};
+                return new PatchEntitiesResult{Error = new CommandError(valError)};
             }
             
             // Write patched entities back
@@ -152,7 +152,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             if (readEntities.Error != null) {
                 // todo add error test 
                 var message = $"failed filter entities of '{name}' (filter: {command.filterLinq}) - {readEntities.Error.message}";
-                var error = new CommandError{message = message};
+                var error = new CommandError (message);
                 return new QueryEntitiesResult {Error = error};
             }
             var result = FilterEntities(command, readEntities.entities, messageContext);

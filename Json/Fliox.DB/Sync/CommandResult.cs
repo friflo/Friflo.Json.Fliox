@@ -16,5 +16,10 @@ namespace Friflo.Json.Fliox.DB.Sync
         public          string      message;
 
         public override string      ToString() => message;
+        
+        public CommandError() {}
+        public CommandError(string message) {
+            this.message = message;
+        }
     }
 }
