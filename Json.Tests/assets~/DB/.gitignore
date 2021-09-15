@@ -1,6 +1,7 @@
 
 /testConcurrencyDb
 
+_ReservedKeys/
+_Sequence/
+
 AutoIntEntity/
-ReservedKeys/
-Sequence/

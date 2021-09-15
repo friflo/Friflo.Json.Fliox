@@ -67,12 +67,22 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         /// </summary>
         public              DatabaseSchema                      schema;
         
+        public              Func<string, string>                mapContainerName = MapContainerName; 
+        
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 
         public virtual void Dispose() {
             foreach (var container in containers ) {
                 container.Value.Dispose();
             }
+        }
+        
+        private static string MapContainerName (string name) {
+            if (name == nameof (ReservedKeys))
+                return "_ReservedKeys";
+            if (name == nameof (Sequence))
+                return "_Sequence";
+            return name;
         }
         
         public virtual void AddEventTarget     (string clientId, IEventTarget eventTarget) {}

@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            return new FileContainer(name, this, databaseFolder + name, pretty);
+            return new FileContainer(name, this, databaseFolder + database.mapContainerName(name), pretty);
         }
     }
     

@@ -51,7 +51,8 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         
         private static readonly UTF8Encoding Utf8Encoding = new UTF8Encoding (false, true);
 
-        internal CosmosContainer(string name, EntityDatabase database, ContainerOptions options, bool pretty) : base(name, database) {
+        internal CosmosContainer(string name, EntityDatabase database, ContainerOptions options, bool pretty)
+        : base(name, database) {
             this.options    = options;
             Pretty          = pretty;
         }
