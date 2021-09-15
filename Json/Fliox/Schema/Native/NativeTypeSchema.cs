@@ -142,7 +142,7 @@ namespace Friflo.Json.Fliox.Schema.Native
         private void AddType(List<TypeDef> types, TypeMapper typeMapper, TypeStore typeStore) {
             var mapper  = typeMapper.GetUnderlyingMapper();
             if (IsNullableMapper(mapper, out var nonNullableType)) {
-                typeStore.GetTypeMapper(nonNullableType);
+                mapper = typeStore.GetTypeMapper(nonNullableType);
             }
             if (nativeTypes.ContainsKey(nonNullableType))
                 return;
@@ -150,7 +150,7 @@ namespace Friflo.Json.Fliox.Schema.Native
             if (NativeStandardTypes.Types.TryGetValue(nonNullableType, out string name)) {
                 typeDef = new NativeTypeDef(mapper, name, "Standard");
             } else {
-                typeDef = new NativeTypeDef(mapper, mapper.type.Name, mapper.type.Namespace);
+                typeDef = new NativeTypeDef(mapper, nonNullableType.Name, nonNullableType.Namespace);
             }
             nativeTypes.Add(nonNullableType, typeDef);
             types.      Add(typeDef);

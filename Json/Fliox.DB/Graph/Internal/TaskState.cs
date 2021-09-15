@@ -15,7 +15,11 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         public      override string     ToString()  => TaskError.GetMessage(true);
 
         internal TaskErrorInfo(TaskErrorResult taskError) {
-            TaskError       = new TaskError(taskError);
+            TaskError = new TaskError(taskError);
+        }
+        
+        internal TaskErrorInfo(TaskErrorType type, string message) {
+            TaskError = new TaskError(type, message);
         }
 
         internal void AddEntityError(EntityError error) {

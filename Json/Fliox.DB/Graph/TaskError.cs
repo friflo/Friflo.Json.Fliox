@@ -43,7 +43,12 @@ namespace Friflo.Json.Fliox.DB.Graph
         /// The entity errors are available via <see cref="TaskError.entityErrors"/>.  
         /// No mapping to a <see cref="TaskErrorResultType"/> value.
         /// </summary>
-        EntityErrors
+        EntityErrors,
+        /// <summary>
+        /// Use to indicate an invalid response.
+        /// No mapping to a <see cref="TaskErrorResultType"/> value.
+        /// </summary>
+        InvalidResponse,
     }
     
     public class TaskError {
@@ -66,6 +71,14 @@ namespace Friflo.Json.Fliox.DB.Graph
             stacktrace          = error.stacktrace;
             entityErrors        = NoErrors;
         }
+        
+        internal TaskError(TaskErrorType type, string message) {
+            this.type           = type;
+            taskMessage         = message;
+            stacktrace          = null;
+            entityErrors        = NoErrors;
+        }
+
 
         internal TaskError(IDictionary<JsonKey, EntityError> entityErrors) {
             this.entityErrors   = entityErrors ?? throw new ArgumentException("entityErrors must not be null");

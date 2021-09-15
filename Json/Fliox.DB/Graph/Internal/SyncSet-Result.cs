@@ -37,14 +37,19 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 return;
             }
             var reserveKeysResult   = (ReserveKeysResult) result;
-            var count = reserveKeysResult.count;
+            if (!reserveKeysResult.keys.HasValue) {
+                _reserveKeys.state.SetError(new TaskErrorInfo (TaskErrorType.InvalidResponse, "missing keys"));
+                return;
+            }
+            var resultKeys = reserveKeysResult.keys.Value;
+            var count = resultKeys.count;
             var keys = new List<long>(count);
             for (int n = 0; n < count; n++) {
-                keys.Add(reserveKeysResult.start + n);
+                keys.Add(resultKeys.start + n);
             }
             _reserveKeys.count      = count;
             _reserveKeys.keys       = keys;
-            _reserveKeys.token      = reserveKeysResult.token;
+            _reserveKeys.token      = resultKeys.token;
             _reserveKeys.state.Synced = true;
         }
         

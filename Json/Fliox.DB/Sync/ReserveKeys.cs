@@ -39,11 +39,12 @@ namespace Friflo.Json.Fliox.DB.Sync
             if (!sync.Success) {
                 return  new ReserveKeysResult { Error = new CommandError{message = sync.Message} };
             }
-            var result = new ReserveKeysResult {
+            var keys = new AllocatedKeys {
                 start = sequence.autoId,
                 count = count,
                 token = reservedKeys.token
             };
+            var result = new ReserveKeysResult { keys = keys };
             return result;
         }
 
@@ -52,11 +53,16 @@ namespace Friflo.Json.Fliox.DB.Sync
     }
     
     public class ReserveKeysResult : TaskResult {
-        [Fri.Required]  public  long            start;
-        [Fri.Required]  public  int             count;
-        [Fri.Required]  public  Guid            token;
+        public          AllocatedKeys?  keys;
         
                         public  CommandError    Error { get; set; }
         internal override       TaskType        TaskType => TaskType.reserveKeys;
+    }
+    
+    public struct AllocatedKeys
+    {
+        [Fri.Required]  public  long    start;
+        [Fri.Required]  public  int     count;
+        [Fri.Required]  public  Guid    token;
     }
 }
