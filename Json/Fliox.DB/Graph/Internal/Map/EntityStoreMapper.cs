@@ -30,10 +30,11 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Map
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
-            var fields = new PropertyFields(type, typeStore, true);
-            FieldInfo fieldInfo = typeof(TypeMapper).GetField(nameof(propFields), BindingFlags.Public | BindingFlags.Instance);
-            // ReSharper disable once PossibleNullReferenceException
-            fieldInfo.SetValue(this, fields);
+            using (var fields = new PropertyFields(type, typeStore, true)) {
+                FieldInfo fieldInfo = typeof(TypeMapper).GetField(nameof(propFields), BindingFlags.Public | BindingFlags.Instance);
+                // ReSharper disable once PossibleNullReferenceException
+                fieldInfo.SetValue(this, fields);
+            }
         }
         
         public override void Write(ref Writer writer, T slot) {
