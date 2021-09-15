@@ -276,7 +276,7 @@ export class SubscribeMessageResult extends TaskResult {
 export class ReserveKeysResult extends TaskResult {
     task   : "reserveKeys";
     Error? : CommandError | null;
-    start  : int32;
+    start  : int64;
     count  : int32;
     token  : Guid;
 }

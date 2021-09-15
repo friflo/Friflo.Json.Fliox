@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.Mapper;
@@ -36,13 +37,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 
                 var intEntity = new AutoIntEntity();
                 var create  = store.intEntitiesAuto.Create(intEntity);
-                var keys    = store.intEntitiesAuto.ReserveKeys(10);
+                var reserve = store.intEntitiesAuto.ReserveKeys(10);
                 
                 await store.Sync();
                 
-                IsTrue  (keys.Success);
-                IsTrue  (keys.StartKey > 0);
-                AreEqual(10, keys.Count);
+                IsTrue  (reserve.Success);
+                AreEqual(10, reserve.Count);
+                var keys = reserve.Keys;
+                var diff = keys.Last() - keys.First();
+                AreEqual(9, diff);
                 
                 IsTrue(create.Success);
             }

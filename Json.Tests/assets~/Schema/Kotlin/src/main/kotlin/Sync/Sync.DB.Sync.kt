@@ -249,7 +249,7 @@ class SubscribeMessageResult (
 @SerialName("reserveKeys")
 data class ReserveKeysResult (
               val Error : CommandError? = null,
-              val start : Int,
+              val start : Long,
               val count : Int,
               @Serializable(with = UUIDSerializer::class)
               val token : UUID,

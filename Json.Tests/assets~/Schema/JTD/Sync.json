@@ -644,7 +644,7 @@
         "ReserveKeysResult": {
             "properties": {
                 "Error": { "ref":  "CommandError", "nullable": true },
-                "start": { "type": "int32" },
+                "start": { "type": "int64" },
                 "count": { "type": "int32" },
                 "token": { "ref":  "Guid" }
             }

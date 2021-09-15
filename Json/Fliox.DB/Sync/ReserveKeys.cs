@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     }
     
     public class ReserveKeysResult : TaskResult {
-        [Fri.Required]  public  int             start;
+        [Fri.Required]  public  long            start;
         [Fri.Required]  public  int             count;
         [Fri.Required]  public  Guid            token;
         
