@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         public DatabaseSchema(TypeSchema typeSchema) {
             this.typeSchema = typeSchema;
             AddTypeSchema(typeSchema);
-            // AddTypeSchema(typeof(SequenceStore));
+            AddTypeSchema(typeof(SequenceStore));
         }
         
         public void Dispose() {
