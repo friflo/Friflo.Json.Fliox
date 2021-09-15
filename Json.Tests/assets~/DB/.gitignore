@@ -1,7 +1,7 @@
 
 /testConcurrencyDb
 
-_SequenceKeys/
 _Sequence/
+_SequenceKeys/
 
 AutoIntEntity/
