@@ -7,7 +7,6 @@ import { int16 }      from "./Standard"
 import { int64 }      from "./Standard"
 import { float }      from "./Standard"
 import { double }     from "./Standard"
-import { Guid }       from "./Standard"
 
 export abstract class PocEntity {
     id  : string;
@@ -28,14 +27,12 @@ export class Employee extends PocEntity {
 }
 
 export abstract class PocStore {
-    reservedKeys  : { [key: string]: _ReservedKeys };
-    sequence      : { [key: string]: _Sequence };
-    orders        : { [key: string]: Order };
-    customers     : { [key: string]: Customer };
-    articles      : { [key: string]: Article };
-    producers     : { [key: string]: Producer };
-    employees     : { [key: string]: Employee };
-    types         : { [key: string]: TestType };
+    orders     : { [key: string]: Order };
+    customers  : { [key: string]: Customer };
+    articles   : { [key: string]: Article };
+    producers  : { [key: string]: Producer };
+    employees  : { [key: string]: Employee };
+    types      : { [key: string]: TestType };
 }
 
 export class OrderItem {
@@ -90,19 +87,5 @@ export class TestType extends PocEntity {
     jsonValue?        : any | null;
     derivedClass      : DerivedClass;
     derivedClassNull? : DerivedClass | null;
-}
-
-export class _ReservedKeys {
-    token      : Guid;
-    container  : string;
-    start      : int32;
-    count      : int32;
-    user?      : string | null;
-}
-
-export class _Sequence {
-    container? : string | null;
-    autoId     : int32;
-    _etag?     : string | null;
 }
 

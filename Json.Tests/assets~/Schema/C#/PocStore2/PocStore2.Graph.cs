@@ -8,23 +8,6 @@ using System.Numerics;
 
 namespace PocStore2.Graph {
 
-public class _ReservedKeys {
-    [Fri.Key]
-    Guid    token;
-    [Fri.Required]
-    string  container;
-    int     start;
-    int     count;
-    string  user;
-}
-
-public class _Sequence {
-    [Fri.Key]
-    string  container;
-    int     autoId;
-    string  _etag;
-}
-
 public class Order : PocEntity {
     string           customer;
     DateTime         created;

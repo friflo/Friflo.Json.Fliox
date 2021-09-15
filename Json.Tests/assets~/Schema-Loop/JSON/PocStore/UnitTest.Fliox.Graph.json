@@ -6,18 +6,14 @@
             "type": "object",
             "isAbstract": true,
             "properties": {
-                "reservedKeys": { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph._ReservedKeys.json#/definitions/_ReservedKeys" } },
-                "sequence":     { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph._Sequence.json#/definitions/_Sequence" } },
-                "orders":       { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.Order.json#/definitions/Order" } },
-                "customers":    { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.Customer.json#/definitions/Customer" } },
-                "articles":     { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.Article.json#/definitions/Article" } },
-                "producers":    { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.Producer.json#/definitions/Producer" } },
-                "employees":    { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.Employee.json#/definitions/Employee" } },
-                "types":        { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.TestType.json#/definitions/TestType" } }
+                "orders":    { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.Order.json#/definitions/Order" } },
+                "customers": { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.Customer.json#/definitions/Customer" } },
+                "articles":  { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.Article.json#/definitions/Article" } },
+                "producers": { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.Producer.json#/definitions/Producer" } },
+                "employees": { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.Employee.json#/definitions/Employee" } },
+                "types":     { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Graph.TestType.json#/definitions/TestType" } }
             },
             "required": [
-                "reservedKeys",
-                "sequence",
                 "orders",
                 "customers",
                 "articles",

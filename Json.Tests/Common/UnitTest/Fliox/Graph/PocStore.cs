@@ -13,9 +13,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 {
     public class PocStore : EntityStore
     {
-        public readonly EntitySet <Guid,   _ReservedKeys>    reservedKeys;
-        public readonly EntitySet <string, _Sequence>        sequence;
-        //
         public readonly EntitySet <string, Order>       orders;
         public readonly EntitySet <string, Customer>    customers;
         public readonly EntitySet <string, Article>     articles;

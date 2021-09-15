@@ -3,27 +3,9 @@ package UnitTest.Fliox.Graph
 
 import kotlinx.serialization.*
 import CustomSerializer.*
-import java.util.*
 import kotlinx.datetime.*
 import java.math.*
 import kotlinx.serialization.json.*
-
-@Serializable
-data class _ReservedKeys (
-              @Serializable(with = UUIDSerializer::class)
-              val token     : UUID,
-              val container : String,
-              val start     : Int,
-              val count     : Int,
-              val user      : String? = null,
-)
-
-@Serializable
-data class _Sequence (
-              val container : String? = null,
-              val autoId    : Int,
-              val _etag     : String? = null,
-)
 
 @Serializable
 data class Order (
