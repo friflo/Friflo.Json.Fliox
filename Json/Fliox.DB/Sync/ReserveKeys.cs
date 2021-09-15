@@ -19,14 +19,14 @@ namespace Friflo.Json.Fliox.DB.Sync
             await store.Sync();
             var sequence = sequenceTask.Result;
             if (sequence == null) {
-                sequence = new _Sequence {
+                sequence = new Sequence {
                     container   = container,
                     autoId      = count 
                 };
             } else {
                 sequence.autoId += count;
             }
-            var reservedKeys = new _ReservedKeys {
+            var reservedKeys = new ReservedKeys {
                 token       = Guid.NewGuid(),
                 container   = container,
                 start       = sequence.autoId,
