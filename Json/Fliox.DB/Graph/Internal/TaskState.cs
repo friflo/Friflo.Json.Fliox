@@ -42,6 +42,11 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             Error  = error;
             Synced = true;
         }
+        
+        internal void SetError(TaskErrorType type, string message) {
+            Error  = new TaskErrorInfo(type, message);
+            Synced = true;
+        }
 
         public override string ToString() => Synced ? Error.HasErrors ? $"synced with error" : "synced" : "not synced";
     }
