@@ -15,7 +15,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
 {
     public static class PocStoreGen
     {
-        private static readonly Type[]  PocStoreTypes       = EntityStore.GetEntityTypes<PocStore>();
+        private static readonly Type[]      PocStoreTypes   = EntityStore.GetEntityTypes<PocStore>();
+        private static readonly Replace[]   Replacements    =  {
+            new Replace("Friflo.Json.Tests.Common."),
+            new Replace("Friflo.Json.Fliox.DB.NoSQL", "UnitTest.Fliox.Graph")
+        };
         
         // -------------------------------------- input: C# --------------------------------------
 
@@ -24,10 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         public static void CS_Typescript () {
             // Use code generator directly
             var schema      = new NativeTypeSchema(typeof(PocStore));
-            var generator   = new Generator(schema, ".ts", new[] {
-                new Replace("Friflo.Json.Tests.Common."),
-                new Replace("Friflo.Json.Fliox.DB.NoSQL", "UnitTest.Fliox.Graph")
-            });
+            var generator   = new Generator(schema, ".ts", Replacements);
             TypescriptGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/PocStore");
         }
@@ -38,10 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             // Use code generator directly
             var schema      = new NativeTypeSchema(typeof(PocStore));
             var sepTypes    = schema.TypesAsTypeDefs(PocStoreTypes);
-            var generator   = new Generator(schema, ".json", new[] {
-                new Replace("Friflo.Json.Tests.Common."),
-                new Replace("Friflo.Json.Fliox.DB.NoSQL", "UnitTest.Fliox.Graph")
-            }, sepTypes);
+            var generator   = new Generator(schema, ".json", Replacements, sepTypes);
             JsonSchemaGenerator.Generate(generator);
             generator.WriteFiles(JsonSchemaFolder);
         }
@@ -49,12 +47,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> C#
         [Test]
         public static void CS_CS () {
-            var options     = new NativeTypeOptions(PocStoreTypes) {
-                replacements = new [] {
-                    new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "PocStore2"),
-                    new Replace("Friflo.Json.Fliox.DB.NoSQL",                "PocStore2.Graph")
-                }
+            // requires individual replacements. Otherwise the generated CS classes will result in name clashes, as
+            // their namespace / class names are equal to the original ones.
+            var replacements = new [] {
+                new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "PocStore2"),
+                new Replace("Friflo.Json.Fliox.DB.NoSQL",                "PocStore2.Graph")
             };
+            var options     = new NativeTypeOptions(PocStoreTypes) { replacements = replacements };
             var generator = CSharpGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/C#/PocStore2");
         }
@@ -62,12 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Kotlin
         [Test]
         public static void CS_Kotlin () {
-            var options     = new NativeTypeOptions(PocStoreTypes) {
-                replacements = new [] {
-                    new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "PocStore"),
-                    new Replace("Friflo.Json.Fliox.DB.NoSQL",                "PocStore.Graph")
-                }
-            };
+            var options     = new NativeTypeOptions(PocStoreTypes) { replacements = Replacements };
             var generator = KotlinGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Kotlin/src/main/kotlin/PocStore");
         }
