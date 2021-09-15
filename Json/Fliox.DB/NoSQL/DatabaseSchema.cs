@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Fliox.DB.Graph;
 using Friflo.Json.Fliox.DB.Sync;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -50,7 +51,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         public DatabaseSchema(TypeSchema typeSchema) {
             this.typeSchema = typeSchema;
             AddTypeSchema(typeSchema);
-            AddTypeSchema(typeof(SequenceStore));
+            AddEntityStoreSchema<SequenceStore>();
         }
         
         public void Dispose() {
@@ -59,9 +60,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             }
         }
         
-        public void AddTypeSchema(Type rootType) {
+        public void AddEntityStoreSchema<TEntityStore>() where TEntityStore : EntityStore {
             using (var typeStore    = new TypeStore()) {
-                var nativeSchema    = new NativeTypeSchema(typeStore, rootType);
+                var nativeSchema    = new NativeTypeSchema(typeStore, typeof(TEntityStore));
                 AddTypeSchema(nativeSchema);
             }
         }
