@@ -78,8 +78,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         }
         
         private static string MapContainerName (string name) {
-            if (name == nameof (ReservedKeys))
-                return "_ReservedKeys";
+            if (name == nameof (SequenceKeys))
+                return "_SequenceKeys";
             if (name == nameof (Sequence))
                 return "_Sequence";
             return name;

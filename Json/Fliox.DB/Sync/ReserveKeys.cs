@@ -26,23 +26,23 @@ namespace Friflo.Json.Fliox.DB.Sync
             } else {
                 sequence.autoId += count;
             }
-            var reservedKeys = new ReservedKeys {
+            var sequenceKeys = new SequenceKeys {
                 token       = Guid.NewGuid(),
                 container   = container,
                 start       = sequence.autoId,
                 count       = count,
                 user        = messageContext.clientId
             };
-            store.reservedKeys.Upsert(reservedKeys);
+            store.sequenceKeys.Upsert(sequenceKeys);
             store.sequence.Upsert(sequence);
             var sync = await store.TrySync();
             if (!sync.Success) {
                 return  new ReserveKeysResult { Error = new CommandError{message = sync.Message} };
             }
-            var keys = new AllocatedKeys {
+            var keys = new ReservedKeys {
                 start = sequence.autoId,
                 count = count,
-                token = reservedKeys.token
+                token = sequenceKeys.token
             };
             var result = new ReserveKeysResult { keys = keys };
             return result;
@@ -53,13 +53,13 @@ namespace Friflo.Json.Fliox.DB.Sync
     }
     
     public class ReserveKeysResult : TaskResult {
-        public          AllocatedKeys?  keys;
+                        public  ReservedKeys?   keys;
         
                         public  CommandError    Error { get; set; }
         internal override       TaskType        TaskType => TaskType.reserveKeys;
     }
     
-    public struct AllocatedKeys
+    public struct ReservedKeys
     {
         [Fri.Required]  public  long    start;
         [Fri.Required]  public  int     count;

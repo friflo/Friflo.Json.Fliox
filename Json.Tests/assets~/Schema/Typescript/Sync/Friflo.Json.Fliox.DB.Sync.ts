@@ -276,10 +276,10 @@ export class SubscribeMessageResult extends TaskResult {
 export class ReserveKeysResult extends TaskResult {
     task   : "reserveKeys";
     Error? : CommandError | null;
-    keys?  : AllocatedKeys | null;
+    keys?  : ReservedKeys | null;
 }
 
-export class AllocatedKeys {
+export class ReservedKeys {
     start  : int64;
     count  : int32;
     token  : Guid;

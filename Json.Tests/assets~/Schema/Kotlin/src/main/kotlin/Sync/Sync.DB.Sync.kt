@@ -249,11 +249,11 @@ class SubscribeMessageResult (
 @SerialName("reserveKeys")
 data class ReserveKeysResult (
               val Error : CommandError? = null,
-              val keys  : AllocatedKeys? = null,
+              val keys  : ReservedKeys? = null,
 ) : TaskResult()
 
 @Serializable
-data class AllocatedKeys (
+data class ReservedKeys (
               val start : Long,
               val count : Int,
               @Serializable(with = UUIDSerializer::class)

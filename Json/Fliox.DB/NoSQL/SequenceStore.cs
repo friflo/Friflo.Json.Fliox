@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.NoSQL
 {
     // --- models
-    public class ReservedKeys {
+    public class SequenceKeys {
         [Fri.Key]       public  Guid    token;  // secret to ensure the client has reserved the keys
         [Fri.Required]  public  string  container;
         [Fri.Required]  public  long    start;
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         // public const string ReservedKeys   =   "_ReservedKeys";
         // public const string Sequence       =   "_Sequence";
         
-        public readonly EntitySet <Guid,   ReservedKeys>   reservedKeys;
+        public readonly EntitySet <Guid,   SequenceKeys>   sequenceKeys;
         public readonly EntitySet <string, Sequence>       sequence;
         
         public  SequenceStore(EntityDatabase database, TypeStore typeStore, string clientId)

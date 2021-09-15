@@ -644,10 +644,10 @@
         "ReserveKeysResult": {
             "properties": {
                 "Error": { "ref":  "CommandError", "nullable": true },
-                "keys":  { "ref":  "AllocatedKeys", "nullable": true }
+                "keys":  { "ref":  "ReservedKeys", "nullable": true }
             }
         },
-        "AllocatedKeys": {
+        "ReservedKeys": {
             "properties": {
                 "start": { "type": "int64" },
                 "count": { "type": "int32" },
