@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.NoSQL;
@@ -12,15 +13,15 @@ namespace Friflo.Json.Fliox.DB.Sync
     // ----------------------------------- task -----------------------------------
     public class CreateEntities : DatabaseTask
     {
-        [Fri.Required]  public  string                          container;
-                        public  string                          key;
-        [Fri.Required]  public  List<JsonValue>                 entities;
-                        public  List<long>                      tempIds;
+        [Fri.Required]  public  string          container;
+                        public  Guid            reservedToken;
+                        public  string          key;
+        [Fri.Required]  public  List<JsonValue> entities;
                         
-        [Fri.Ignore]    public  List<JsonKey>                   entityKeys;
+        [Fri.Ignore]    public  List<JsonKey>   entityKeys;
         
-        internal override       TaskType                        TaskType => TaskType.create;
-        public   override       string                          TaskName => $"container: '{container}'";
+        internal override       TaskType        TaskType => TaskType.create;
+        public   override       string          TaskName => $"container: '{container}'";
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
@@ -62,10 +63,10 @@ namespace Friflo.Json.Fliox.DB.Sync
 
     // ----------------------------------- task result -----------------------------------
     public class CreateEntitiesResult : TaskResult, ICommandResult
-    {                public List<long>                          newIds;
+    {
                      public CommandError                        Error { get; set; }
         [Fri.Ignore] public Dictionary<JsonKey, EntityError>    createErrors;
         
-        internal override   TaskType                        TaskType => TaskType.create;
+        internal override   TaskType                            TaskType => TaskType.create;
     }
 }

@@ -46,10 +46,10 @@
         },
         "CreateEntities": {
             "properties": {
-                "container": { "type": "string" },
-                "key":       { "type": "string", "nullable": true },
-                "entities":  { "elements": {  } },
-                "tempIds":   { "elements": { "type": "int64" }, "nullable": true }
+                "container":     { "type": "string" },
+                "key":           { "type": "string", "nullable": true },
+                "reservedToken": { "ref":  "Guid" },
+                "entities":      { "elements": {  } }
             }
         },
         "UpsertEntities": {
@@ -573,8 +573,7 @@
         },
         "CreateEntitiesResult": {
             "properties": {
-                "Error":  { "ref":  "CommandError", "nullable": true },
-                "newIds": { "elements": { "type": "int64" }, "nullable": true }
+                "Error": { "ref":  "CommandError", "nullable": true }
             }
         },
         "CommandError": {

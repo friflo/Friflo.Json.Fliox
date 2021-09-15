@@ -3,9 +3,9 @@ package Sync.DB.Sync
 
 import kotlinx.serialization.*
 import CustomSerializer.*
+import java.util.*
 import kotlinx.serialization.json.*
 import Sync.Transform.*
-import java.util.*
 
 @Serializable
 data class DatabaseMessage (
@@ -38,10 +38,11 @@ abstract class DatabaseTask  {
 @Serializable
 @SerialName("create")
 data class CreateEntities (
-              val container : String,
-              val key       : String? = null,
-              val entities  : List<JsonElement>,
-              val tempIds   : List<Long>? = null,
+              val container     : String,
+              val key           : String? = null,
+              @Serializable(with = UUIDSerializer::class)
+              val reservedToken : UUID,
+              val entities      : List<JsonElement>,
 ) : DatabaseTask()
 
 @Serializable
@@ -171,8 +172,7 @@ abstract class TaskResult  {
 @Serializable
 @SerialName("create")
 data class CreateEntitiesResult (
-              val Error  : CommandError? = null,
-              val newIds : List<Long>? = null,
+              val Error : CommandError? = null,
 ) : TaskResult()
 
 @Serializable

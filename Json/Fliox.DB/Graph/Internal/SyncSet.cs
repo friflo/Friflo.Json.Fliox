@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity;
@@ -309,10 +310,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                     keys.Add(id);
                 }
             }
-            List<long> tempIds = null;
             if (_autos  != null) {
-                tempIds = new List<long>(autoCount);
-                long autoId = -1;
+                long autoId = -1;   // todo use reserved keys
                 foreach (var entity in _autos) {
                     var id      = new JsonKey(autoId);
                     var key     = Ref<TKey,T>.RefKeyMap.IdToKey(id);
@@ -320,16 +319,15 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                     var json    = writer.Write(entity);
                     var entry   = new JsonValue(json);
                     entries.Add(entry);
-                    tempIds.Add(autoId);
                     keys.Add(id);
                 }
             }
             var req = new CreateEntities {
-                container   = set.name,
-                key         = set.GetKeyName(),
-                entities    = entries,
-                entityKeys  = keys,
-                tempIds     = tempIds
+                container       = set.name,
+                key             = set.GetKeyName(),
+                entities        = entries,
+                entityKeys      = keys,
+                reservedToken   = new Guid() // todo
             };
             tasks.Add(req);
         }

@@ -3,12 +3,12 @@
 /** signed integer 32-bit. Range: [-2147483648, 2147483647]                   */
 export type int32 = number;
 
-/** signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807] */
-export type int64 = number;
+/** GUID / UUID as RFC 4122. e.g. "123e4567-e89b-12d3-a456-426614174000" */
+export type Guid = string;
 
 /** double precision floating point number */
 export type double = number;
 
-/** GUID / UUID as RFC 4122. e.g. "123e4567-e89b-12d3-a456-426614174000" */
-export type Guid = string;
+/** signed integer 64-bit. Range: [-9223372036854775808, 9223372036854775807] */
+export type int64 = number;
 
