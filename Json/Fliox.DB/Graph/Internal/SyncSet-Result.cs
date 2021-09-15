@@ -32,13 +32,14 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
     internal partial class SyncSet<TKey, T>
     {
         internal override void ReserveKeysResult (ReserveKeys task, TaskResult result) {
+            var reserve = _reserveKeys;
             if (result is TaskErrorResult taskError) {
-                _reserveKeys.state.SetError(new TaskErrorInfo(taskError));
+                reserve.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
             var reserveKeysResult   = (ReserveKeysResult) result;
             if (!reserveKeysResult.keys.HasValue) {
-                _reserveKeys.state.SetInvalidResponse("missing keys");
+                reserve.state.SetInvalidResponse("missing keys");
                 return;
             }
             var resultKeys = reserveKeysResult.keys.Value;
@@ -47,10 +48,10 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             for (int n = 0; n < count; n++) {
                 keys[n] =  resultKeys.start + n;
             }
-            _reserveKeys.count      = count;
-            _reserveKeys.keys       = keys;
-            _reserveKeys.token      = resultKeys.token;
-            _reserveKeys.state.Synced = true;
+            reserve.count      = count;
+            reserve.keys       = keys;
+            reserve.token      = resultKeys.token;
+            reserve.state.Synced = true;
         }
         
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsCreate"/> for all

@@ -134,12 +134,12 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         
         // --- ReserveKeys
         internal ReserveKeysTask<TKey, T> ReserveKeys(int count) {
-            if (_reserveKeys == null) {
-                _reserveKeys = new ReserveKeysTask<TKey,T>(count); 
-            } else {
-                _reserveKeys.count += count;
+            var reserve = _reserveKeys;
+            if (reserve == null) {
+                return _reserveKeys = new ReserveKeysTask<TKey,T>(count); 
             }
-            return _reserveKeys;
+            reserve.count += count;
+            return reserve;
         }
         
         // --- Create
