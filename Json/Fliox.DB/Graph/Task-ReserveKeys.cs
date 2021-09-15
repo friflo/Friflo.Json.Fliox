@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.DB.Graph
     public class ReserveKeysTask<TKey, T> : SyncTask where T : class
     {
         internal            int         count;
-        internal            List<long>  keys;
+        internal            long[]      keys;
         internal            Guid        token;
         public              int         Count       => count;
         
@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         
         public   override   string      Details     => $"ReserveKeysTask<{typeof(TKey).Name},{typeof(T).Name}>(count: {count})";
         
-        public               List<long> Keys    => IsOk("ReserveKeysTask.Keys", out Exception e) ? keys : throw e;
+        public              long[]      Keys    => IsOk("ReserveKeysTask.Keys", out Exception e) ? keys : throw e;
         
         internal ReserveKeysTask(int count) {
             this.count  = count;

@@ -44,9 +44,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 IsTrue  (reserve.Success);
                 AreEqual(10, reserve.Count);
                 var keys = reserve.Keys;
-                var diff = keys.Last() - keys.First();
+                var diff = keys[9] - keys[0];
                 AreEqual(9, diff);
                 
+                var reserve2 = store.intEntitiesAuto.ReserveKeys(20);
+                await store.Sync();
+                
+                var keys2 = reserve2.Keys;
+                AreEqual(20, keys2[0] - keys[0]);
+
                 IsTrue(create.Success);
             }
         }

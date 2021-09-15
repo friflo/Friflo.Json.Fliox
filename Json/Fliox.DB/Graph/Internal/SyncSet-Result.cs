@@ -43,9 +43,9 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             }
             var resultKeys = reserveKeysResult.keys.Value;
             var count = resultKeys.count;
-            var keys = new List<long>(count);
+            var keys = new long[count];
             for (int n = 0; n < count; n++) {
-                keys.Add(resultKeys.start + n);
+                keys[n] =  resultKeys.start + n;
             }
             _reserveKeys.count      = count;
             _reserveKeys.keys       = keys;
