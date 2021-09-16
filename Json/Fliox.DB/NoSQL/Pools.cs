@@ -52,6 +52,12 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         /// is available the <see cref="factory"/> method is called to create a new instance.
         /// After returning a pooled instance with <see cref="ObjectPool{T}.Return"/> it is cached and will be
         /// reused when calling <see cref="ObjectPool{T}.Get"/> anytime later.
+        /// To ensure pooled instances are not leaking use the using directive. E.g.
+        /// <code>
+        /// using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
+        ///     ...
+        /// }
+        /// </code>
         /// </summary>
         ObjectPool<T>               Pool<T>         (Func<T> factory) where T : IDisposable;
         
