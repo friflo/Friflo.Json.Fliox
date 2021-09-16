@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         /// By having the mapping function in <see cref="EntityDatabase"/> it enables uniform mapping across different
         /// <see cref="EntityDatabase"/> implementations.
         /// </summary>
-        public              CustomContainerName                 customContainerName = DefaultContainerName; 
+        public              CustomContainerName                 customContainerName = CustomContainerName; 
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 
@@ -83,11 +83,11 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             }
         }
         
-        private static string DefaultContainerName (string name) {
-            if (name == nameof (SequenceKeys))
-                return "_SequenceKeys";
-            if (name == nameof (Sequence))
-                return "_Sequence";
+        private static string CustomContainerName (string name) {
+            if (name == nameof (SequenceStore.sequenceKeys))
+                return "_sequenceKeys";
+            if (name == nameof (SequenceStore.sequence))
+                return "_sequence";
             return name;
         }
         
