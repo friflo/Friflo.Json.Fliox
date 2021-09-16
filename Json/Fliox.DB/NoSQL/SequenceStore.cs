@@ -32,6 +32,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         public  SequenceStore(EntityDatabase database, TypeStore typeStore, string clientId)
             : base(database, typeStore, clientId) { }
         
+        // ReSharper disable once RedundantOverriddenMember
         // enable set breakpoint. Ensures also EntityStore.Dispose is virtual
         public override void Dispose() { 
             base.Dispose();

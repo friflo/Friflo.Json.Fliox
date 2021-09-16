@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using Friflo.Json.Fliox.DB.Graph.Internal;
 
 namespace Friflo.Json.Fliox.DB.Graph
