@@ -29,7 +29,7 @@ content-type: application/json
   "tasks": [
   {
     "task":         "read",
-    "container":    "Article",
+    "container":    "articles",
     "reads": [
       { "ids": ["article-galaxy", "article-ipad"] }
     ]
@@ -44,14 +44,14 @@ content-type: application/json
   "tasks": [
   {
     "task":         "read",
-    "container":    "Order",
+    "container":    "orders",
     "reads": [
       {
         "ids": ["order-1"],
         "references": [
           {
             "selector": ".customer",
-            "container": "Customer"
+            "container": "customers"
           }
         ]
       }
@@ -67,7 +67,7 @@ content-type: application/json
   "tasks": [
   {
     "task":         "query",
-    "container":    "Article",
+    "container":    "articles",
     "filterLinq":   "true",
     "filter":       { "op":"true" }
   }
@@ -82,7 +82,7 @@ content-type: application/json
   "tasks": [
   {
     "task":         "query",
-    "container":    "Article",
+    "container":    "articles",
     "filterLinq":   "true",
     "filter": {"op":"equal", "left": {"op":"field",  "name":  ".name"},
                              "right":{"op":"string", "value": "Smartphone"}}
@@ -98,17 +98,17 @@ content-type: application/json
   "tasks": [
   {
     "task":         "query",
-    "container":    "Article",
+    "container":    "articles",
     "filterLinq":   "true",
     "filter":       { "op":"true" },
     "references": [
       {
         "selector": ".producer",
-        "container": "Producer",
+        "container": "producers",
         "references": [
           {
             "selector": ".employees[*]",
-            "container": "Employee"
+            "container": "employees"
           }
         ]
       }
@@ -123,7 +123,7 @@ GET http://localhost:8081/schema/index.html HTTP/1.1
 
 # =============================== mutate tasks ===============================
 
-### create an article - creates file ./Json.Tests/assets~/db/Article/new-article.json
+### create an article - creates file ./Json.Tests/assets~/db/articles/new-article.json
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
@@ -131,7 +131,7 @@ content-type: application/json
   "tasks": [
   {
     "task":         "create",
-    "container":    "Article",
+    "container":    "articles",
     "key":          "id",
     "entities": [
         { "id": "new-article","name":"New Article S10"}
@@ -147,7 +147,7 @@ content-type: application/json
   "tasks": [
   {
     "task":         "delete",
-    "container":    "Article",
+    "container":    "articles",
     "ids": ["new-article"]
   }
 ]}
@@ -160,7 +160,7 @@ content-type: application/json
   "tasks": [
   {
     "task":         "patch",
-    "container":    "Article",
+    "container":    "articles",
     "patches": {
       "new-article": {
         "patches": [
@@ -175,7 +175,7 @@ content-type: application/json
   }
 ]}
 
-### Reserve keys for container: Article
+### Reserve keys for container: articles
 POST http://localhost:8081/ HTTP/1.1
 content-type: application/json
 
@@ -183,7 +183,7 @@ content-type: application/json
   "tasks": [
   {
     "task":         "reserveKeys",
-    "container":    "Article",
+    "container":    "articles",
     "count":        10
   }
 ]}
@@ -197,7 +197,7 @@ content-type: application/json
   "tasks": [
   {
     "task":         "create",
-    "container":    "Article",
+    "container":    "articles",
     "reservedToken":"00000000-0000-0000-0000-000000000000",
     "key":          "id",
     "entities": [
@@ -233,7 +233,7 @@ content-type: application/json
   "client": "client-1",
   "tasks": [{
     "task":         "subscribeChanges",
-    "container":    "Article", 
+    "container":    "articles", 
     "changes": ["create", "upsert", "delete", "patch"]
   }
 ]}
