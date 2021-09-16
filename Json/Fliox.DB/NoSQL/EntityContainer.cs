@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         private   readonly  EntityDatabase  database;
 
         public    virtual   bool            Pretty      => false;
-        public    override  string          ToString()  => instanceName;
+        public    override  string          ToString()  => $"{GetType().Name} - {instanceName}";
 
         public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities command, MessageContext messageContext);
         public abstract Task<UpsertEntitiesResult>  UpsertEntities  (UpsertEntities command, MessageContext messageContext);
