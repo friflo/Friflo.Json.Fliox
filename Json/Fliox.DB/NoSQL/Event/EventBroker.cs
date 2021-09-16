@@ -199,12 +199,12 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
                     var upsert = (UpsertEntities) task;
                     if (upsert.container != subscribe.container)
                         return null;
-                    var updateResult = new UpsertEntities {
+                    var upsertResult = new UpsertEntities {
                         container   = upsert.container,
                         entities    = FilterEntities(subscribe.filter, upsert.entities),
                         key         = upsert.key
                     };
-                    return updateResult;
+                    return upsertResult;
                 
                 case TaskType.delete:
                     if (!subscribe.changes.Contains(Change.delete))

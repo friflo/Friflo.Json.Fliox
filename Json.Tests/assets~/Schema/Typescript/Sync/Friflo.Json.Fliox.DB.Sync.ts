@@ -63,8 +63,8 @@ export abstract class DatabaseTask {
 export class CreateEntities extends DatabaseTask {
     task           : "create";
     container      : string;
-    key?           : string | null;
     reservedToken  : Guid;
+    key?           : string | null;
     entities       : any[];
 }
 
@@ -168,7 +168,7 @@ export class SyncResponse extends DatabaseResponse {
     tasks?        : TaskResult_Union[] | null;
     results?      : { [key: string]: ContainerEntities } | null;
     createErrors? : { [key: string]: EntityErrors } | null;
-    updateErrors? : { [key: string]: EntityErrors } | null;
+    upsertErrors? : { [key: string]: EntityErrors } | null;
     patchErrors?  : { [key: string]: EntityErrors } | null;
     deleteErrors? : { [key: string]: EntityErrors } | null;
 }

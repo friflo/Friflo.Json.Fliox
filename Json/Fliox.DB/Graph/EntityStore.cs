@@ -135,7 +135,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         
         /// <summary>
         /// Set a custom <see cref="SubscriptionProcessor"/> to enable reacting on specific database change or message (or command) events.
-        /// E.g. notifying other application modules about created, updated, deleted or patches entities.
+        /// E.g. notifying other application modules about created, upserted, deleted or patches entities.
         /// To subscribe to database change events use <see cref="Graph.EntitySet{TKey,T}.SubscribeChanges"/>.
         /// The default <see cref="SubscriptionProcessor"/> apply all changes to the <see cref="EntityStore"/> as they arrive.
         /// To subscribe to message events use <see cref="SubscribeMessage"/>.
@@ -382,12 +382,12 @@ namespace Friflo.Json.Fliox.DB.Graph
                     syncSet.errorsCreate = createError.Value.errors;
                 }
             }
-            var updateErrors = response.updateErrors;
-            if (updateErrors != null) {
-                foreach (var updateError in updateErrors) {
-                    updateError.Value.SetInferredErrorFields();
-                    var syncSet = syncSets[updateError.Key];
-                    syncSet.errorsUpdate = updateError.Value.errors;
+            var upsertErrors = response.upsertErrors;
+            if (upsertErrors != null) {
+                foreach (var upsertError in upsertErrors) {
+                    upsertError.Value.SetInferredErrorFields();
+                    var syncSet = syncSets[upsertError.Key];
+                    syncSet.errorsUpdate = upsertError.Value.errors;
                 }
             }
             var patchErrors = response.patchErrors;

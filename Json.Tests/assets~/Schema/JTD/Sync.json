@@ -47,8 +47,8 @@
         "CreateEntities": {
             "properties": {
                 "container":     { "type": "string" },
-                "key":           { "type": "string", "nullable": true },
                 "reservedToken": { "ref":  "Guid" },
+                "key":           { "type": "string", "nullable": true },
                 "entities":      { "elements": {  } }
             }
         },
@@ -541,7 +541,7 @@
                 "tasks":        { "elements": { "ref":  "TaskResult" }, "nullable": true },
                 "results":      { "values": { "ref":  "ContainerEntities" }, "nullable": true },
                 "createErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
-                "updateErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
+                "upsertErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
                 "patchErrors":  { "values": { "ref":  "EntityErrors" }, "nullable": true },
                 "deleteErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true }
             }

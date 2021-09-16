@@ -78,11 +78,11 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         }
 
         internal override void UpsertEntitiesResult(UpsertEntities task, TaskResult result) {
-            CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, UpdateTasks(), errorsUpdate);
+            CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, UpsertTasks(), errorsUpdate);
             
             // enable GC to collect references in containers which are not needed anymore
-            Updates().Clear();
-            UpdateTasks().Clear();
+            Upserts().Clear();
+            UpsertTasks().Clear();
         }
 
         private void CreateUpsertEntitiesResult(

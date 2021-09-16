@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.DB.Sync
             if (entityKeys == null) {
                 return InvalidTask(error);
             }
-            error = database.schema?.ValidateEntities (container, entityKeys, entities, messageContext, EntityErrorType.WriteError, ref response.updateErrors);
+            error = database.schema?.ValidateEntities (container, entityKeys, entities, messageContext, EntityErrorType.WriteError, ref response.upsertErrors);
             if (error != null) {
                 return TaskError(new CommandError(error));
             }
@@ -51,9 +51,9 @@ namespace Friflo.Json.Fliox.DB.Sync
             if (result.Error != null) {
                 return TaskError(result.Error);
             }
-            if (result.updateErrors != null && result.updateErrors.Count > 0) {
-                var updateErrors = SyncResponse.GetEntityErrors(ref response.updateErrors, container);
-                updateErrors.AddErrors(result.updateErrors);
+            if (result.upsertErrors != null && result.upsertErrors.Count > 0) {
+                var upsertErrors = SyncResponse.GetEntityErrors(ref response.upsertErrors, container);
+                upsertErrors.AddErrors(result.upsertErrors);
             }
             return result;
         }
@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     public class UpsertEntitiesResult : TaskResult, ICommandResult
     {
         public              CommandError                        Error { get; set; }
-        [Fri.Ignore] public Dictionary<JsonKey, EntityError>    updateErrors;
+        [Fri.Ignore] public Dictionary<JsonKey, EntityError>    upsertErrors;
 
         internal override   TaskType                        TaskType => TaskType.upsert;
     }

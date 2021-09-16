@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         private readonly    EntitySetBase<T>    set;
         private  readonly   List<T>             entities;
 
-        public   override   string              Details     => $"UpdateTask<{typeof(T).Name}> (#keys: {entities.Count})";
+        public   override   string              Details     => $"UpsertTask<{typeof(T).Name}> (#keys: {entities.Count})";
         
         
         internal UpsertTask(List<T> entities, EntitySetBase<T> set) {
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                 throw new ArgumentException($"UpdateTask<{set.name}>.Add() entity must not be null.");
             var peer = set.CreatePeer(entity);
             var syncSet = set.GetSyncSetBase();
-            syncSet.AddUpdate(peer);
+            syncSet.AddUpsert(peer);
             entities.Add(entity);
         }
         
@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                     throw new ArgumentException($"UpdateTask<{set.name}>.AddRange() entities[{n}] must not be null.");
                 n++;
                 var peer = set.CreatePeer(entity);
-                syncSet.AddUpdate(peer);
+                syncSet.AddUpsert(peer);
             }
             this.entities.AddRange(entities);
         }

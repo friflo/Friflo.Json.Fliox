@@ -24,12 +24,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             TestContainer testCustomers = testDatabase.GetTestContainer<Customer>();
             const string readTaskException      = "read-task-exception"; // throws an exception also for a Query
             const string createTaskException    = "create-task-exception";
-            const string updateTaskException    = "upsert-task-exception";
+            const string upsertTaskException    = "upsert-task-exception";
             const string deleteTaskException    = "delete-task-exception";
             
             testCustomers.readTaskErrors. Add(readTaskException,    () => throw new SimulationException("simulated read task exception"));
             testCustomers.writeTaskErrors.Add(createTaskException,  () => throw new SimulationException("simulated create task exception"));
-            testCustomers.writeTaskErrors.Add(updateTaskException,  () => throw new SimulationException("simulated upsert task exception"));
+            testCustomers.writeTaskErrors.Add(upsertTaskException,  () => throw new SimulationException("simulated upsert task exception"));
             testCustomers.writeTaskErrors.Add(deleteTaskException,  () => throw new SimulationException("simulated delete task exception"));
             // Query(c => c.id == "query-task-exception")
             testCustomers.queryErrors.Add(".id == 'query-task-exception'", () => throw new SimulationException("simulated query exception"));
@@ -42,11 +42,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             var customerQuery   = customers.Query(c => c.id == "query-task-exception")      .TaskName("customerQuery");
 
             var createError     = customers.Create(new Customer{id = createTaskException})  .TaskName("createError");
-            var updateError     = customers.Upsert(new Customer{id = updateTaskException})  .TaskName("updateError");
+            var upsertError     = customers.Upsert(new Customer{id = upsertTaskException})  .TaskName("upsertError");
             var deleteError     = customers.Delete(new Customer{id = deleteTaskException})  .TaskName("deleteError");
             
             AreEqual("CreateTask<Customer> (#keys: 1)", createError.Details);
-            AreEqual("UpdateTask<Customer> (#keys: 1)", updateError.Details);
+            AreEqual("UpsertTask<Customer> (#keys: 1)", upsertError.Details);
             AreEqual("DeleteTask<Customer> (#keys: 1)", deleteError.Details);
             
             Exception e;
@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
 |- customerRead # UnhandledException ~ SimulationException: simulated read task exception
 |- customerQuery # UnhandledException ~ SimulationException: simulated query exception
 |- createError # UnhandledException ~ SimulationException: simulated create task exception
-|- updateError # UnhandledException ~ SimulationException: simulated upsert task exception
+|- upsertError # UnhandledException ~ SimulationException: simulated upsert task exception
 |- deleteError # UnhandledException ~ SimulationException: simulated delete task exception", sync.Message);
             
             TaskResultException te;
@@ -77,8 +77,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             IsFalse(createError.Success);
             AreEqual("UnhandledException ~ SimulationException: simulated create task exception", createError.Error.Message);
             
-            IsFalse(updateError.Success);
-            AreEqual("UnhandledException ~ SimulationException: simulated upsert task exception", updateError.Error.Message);
+            IsFalse(upsertError.Success);
+            AreEqual("UnhandledException ~ SimulationException: simulated upsert task exception", upsertError.Error.Message);
             
             IsFalse(deleteError.Success);
             AreEqual("UnhandledException ~ SimulationException: simulated delete task exception", deleteError.Error.Message);

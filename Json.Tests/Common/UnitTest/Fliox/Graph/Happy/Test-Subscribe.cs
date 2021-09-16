@@ -63,17 +63,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                     case 3:
                         AreEqual(6, eventInfo.Count);
                         AreEqual(6, eventInfo.changes.Count);
-                        AreEqual("(creates: 2, updates: 4, deletes: 0, patches: 0, messages: 0)", eventInfo.ToString());
+                        AreEqual("(creates: 2, upserts: 4, deletes: 0, patches: 0, messages: 0)", eventInfo.ToString());
                         var articleChanges  = handler.GetEntityChanges(store.articles,  ev);
                         var producerChanges = handler.GetEntityChanges(store.producers, ev);
                         AreEqual(1, articleChanges.creates.Count);
-                        AreEqual("(creates: 1, updates: 4, deletes: 0, patches: 0)", articleChanges.ToString());
-                        AreEqual("(creates: 1, updates: 0, deletes: 0, patches: 0)", producerChanges.ToString());
+                        AreEqual("(creates: 1, upserts: 4, deletes: 0, patches: 0)", articleChanges.ToString());
+                        AreEqual("(creates: 1, upserts: 0, deletes: 0, patches: 0)", producerChanges.ToString());
                         break;
                     case 9:
                         AreEqual(6, eventInfo.Count);
                         AreEqual(5, eventInfo.messages);
-                        AreEqual(1, eventInfo.changes.updates);
+                        AreEqual(1, eventInfo.changes.upserts);
                         var messages = handler.GetMessages(ev);
                         AreEqual(5, messages.Count);
                         break;
@@ -242,11 +242,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         private  void AssertChangeEvent (EntityChanges<string, Article> articleChanges) {
             switch (EventSequence) {
                 case 2:
-                    AreEqual("(creates: 0, updates: 2, deletes: 0, patches: 0)", articleChanges.Info.ToString());
-                    AreEqual("iPad Pro", articleChanges.updates["article-ipad"].name);
+                    AreEqual("(creates: 0, upserts: 2, deletes: 0, patches: 0)", articleChanges.Info.ToString());
+                    AreEqual("iPad Pro", articleChanges.upserts["article-ipad"].name);
                     break;
                 case 5:
-                    AreEqual("(creates: 0, updates: 0, deletes: 1, patches: 1)", articleChanges.Info.ToString());
+                    AreEqual("(creates: 0, upserts: 0, deletes: 1, patches: 1)", articleChanges.Info.ToString());
                     IsTrue(articleChanges.deletes.Contains("article-delete"));
                     ChangePatch<Article> articlePatch = articleChanges.patches["article-1"];
                     AreEqual("article-1",               articlePatch.ToString());
@@ -263,11 +263,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             AreEqual(9, EventSequence);
             AreEqual(9, subscribeEventsCalls);
             
-            AreSimilar("(creates: 0, updates: 2, deletes: 0, patches: 0)", orderSum);
-            AreSimilar("(creates: 1, updates: 5, deletes: 1, patches: 0)", customerSum);
-            AreSimilar("(creates: 2, updates: 7, deletes: 5, patches: 2)", articleSum);
-            AreSimilar("(creates: 3, updates: 0, deletes: 3, patches: 0)", producerSum);
-            AreSimilar("(creates: 1, updates: 0, deletes: 1, patches: 0)", employeeSum);
+            AreSimilar("(creates: 0, upserts: 2, deletes: 0, patches: 0)", orderSum);
+            AreSimilar("(creates: 1, upserts: 5, deletes: 1, patches: 0)", customerSum);
+            AreSimilar("(creates: 2, upserts: 7, deletes: 5, patches: 2)", articleSum);
+            AreSimilar("(creates: 3, upserts: 0, deletes: 3, patches: 0)", producerSum);
+            AreSimilar("(creates: 1, upserts: 0, deletes: 1, patches: 0)", employeeSum);
             
             AreEqual(5, messageCount);
             AreEqual(4, testWildcardCalls);
@@ -281,7 +281,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
     {
         public static void AddChanges<TKey, T> (this ChangeInfo<T> sum, EntityChanges<TKey, T> changes) where T: class {
             sum.creates += changes.creates.Count;
-            sum.updates += changes.updates.Count;
+            sum.upserts += changes.upserts.Count;
             sum.deletes += changes.deletes.Count;
             sum.patches += changes.patches.Count;
         }

@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         // key of all Dictionary's is the container name
         public  Dictionary<string, ContainerEntities>   results;
         public  Dictionary<string, EntityErrors>        createErrors; // lazy instantiation
-        public  Dictionary<string, EntityErrors>        updateErrors; // lazy instantiation
+        public  Dictionary<string, EntityErrors>        upsertErrors; // lazy instantiation
         public  Dictionary<string, EntityErrors>        patchErrors;  // lazy instantiation
         public  Dictionary<string, EntityErrors>        deleteErrors; // lazy instantiation
         

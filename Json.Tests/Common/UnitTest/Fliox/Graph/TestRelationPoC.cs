@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 var newArticle = new Article { id = id, name = id };
                 newBulkArticles.Add(newArticle);
             }
-            articles.UpdateRange(newBulkArticles);
+            articles.UpsertRange(newBulkArticles);
 
             var readArticles    = articles.Read();
             var cameraUnknown   = readArticles.Find("article-missing");

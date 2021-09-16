@@ -39,9 +39,9 @@ abstract class DatabaseTask  {
 @SerialName("create")
 data class CreateEntities (
               val container     : String,
-              val key           : String? = null,
               @Serializable(with = UUIDSerializer::class)
               val reservedToken : UUID,
+              val key           : String? = null,
               val entities      : List<JsonElement>,
 ) : DatabaseTask()
 
@@ -152,7 +152,7 @@ data class SyncResponse (
               val tasks        : List<TaskResult>? = null,
               val results      : HashMap<String, ContainerEntities>? = null,
               val createErrors : HashMap<String, EntityErrors>? = null,
-              val updateErrors : HashMap<String, EntityErrors>? = null,
+              val upsertErrors : HashMap<String, EntityErrors>? = null,
               val patchErrors  : HashMap<String, EntityErrors>? = null,
               val deleteErrors : HashMap<String, EntityErrors>? = null,
 ) : DatabaseResponse()

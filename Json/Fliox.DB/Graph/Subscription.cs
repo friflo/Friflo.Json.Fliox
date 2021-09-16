@@ -254,9 +254,9 @@ namespace Friflo.Json.Fliox.DB.Graph
                             TKey    key     = Ref<TKey,T>.RefKeyMap.IdToKey(id);
                             var     peer    = entitySet.GetOrCreatePeerByKey(key, id);
                             var     entity  = peer.Entity;
-                            result.updates.Add(key, entity);
+                            result.upserts.Add(key, entity);
                         }
-                        result.Info.updates += upsert.entityKeys.Count;
+                        result.Info.upserts += upsert.entityKeys.Count;
                         break;
                     
                     case TaskType.delete:
@@ -295,7 +295,7 @@ namespace Friflo.Json.Fliox.DB.Graph
     {
         public bool IsEqual(ChangeInfo<T> other) {
             return creates == other.creates &&
-                   updates == other.updates &&
+                   upserts == other.upserts &&
                    deletes == other.deletes &&
                    patches == other.patches;
         }
@@ -309,7 +309,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         private  readonly   EntitySet<TKey, T>                  entitySet; // only for debugging ergonomics
         
         public   readonly   Dictionary<TKey, T>                 creates = new Dictionary<TKey, T>();
-        public   readonly   Dictionary<TKey, T>                 updates = new Dictionary<TKey, T>();
+        public   readonly   Dictionary<TKey, T>                 upserts = new Dictionary<TKey, T>();
         public   readonly   HashSet   <TKey>                    deletes = new HashSet   <TKey>();
         public   readonly   Dictionary<TKey, ChangePatch<T>>    patches = new Dictionary<TKey, ChangePatch<T>>();
         
@@ -322,7 +322,7 @@ namespace Friflo.Json.Fliox.DB.Graph
 
         internal void Clear() {
             creates.Clear();
-            updates.Clear();
+            upserts.Clear();
             deletes.Clear();
             patches.Clear();
             //

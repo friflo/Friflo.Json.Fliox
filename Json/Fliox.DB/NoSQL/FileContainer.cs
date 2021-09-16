@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         public override async Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, MessageContext messageContext) {
             var entities = command.entities;
             AssertEntityCounts(command.entityKeys, entities);
-            Dictionary<JsonKey, EntityError> updateErrors = null;
+            Dictionary<JsonKey, EntityError> upsertErrors = null;
             await rwLock.AcquireWriterLock().ConfigureAwait(false);
             try {
                 for (int n = 0; n < entities.Count; n++) {
@@ -92,13 +92,13 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                         await WriteText(path, payload.json, FileMode.Create).ConfigureAwait(false);
                     } catch (Exception e) {
                         var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
-                        AddEntityError(ref updateErrors, key, error);
+                        AddEntityError(ref upsertErrors, key, error);
                     }
                 }
             } finally {
                 rwLock.ReleaseWriterLock();
             }
-            return new UpsertEntitiesResult{updateErrors = updateErrors};
+            return new UpsertEntitiesResult{upsertErrors = upsertErrors};
         }
 
         public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {

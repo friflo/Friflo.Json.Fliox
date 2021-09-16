@@ -125,7 +125,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             if (error != null)
                 return Task.FromResult(new UpsertEntitiesResult {Error = error});
             if (errors != null)
-                return Task.FromResult(new UpsertEntitiesResult {updateErrors = errors});
+                return Task.FromResult(new UpsertEntitiesResult {upsertErrors = errors});
             return Task.FromResult(new UpsertEntitiesResult());
         }
         

@@ -24,16 +24,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             
             const string deleteEntityError      = "delete-entity-error";
             const string createEntityError      = "create-entity-error";
-            const string updateEntityError      = "upsert-entity-error";
+            const string upsertEntityError      = "upsert-entity-error";
             
             testCustomers.writeEntityErrors.Add(deleteEntityError,    () => testCustomers.WriteError(deleteEntityError));
             testCustomers.writeEntityErrors.Add(createEntityError,    () => testCustomers.WriteError(createEntityError));
-            testCustomers.writeEntityErrors.Add(updateEntityError,    () => testCustomers.WriteError(updateEntityError));
+            testCustomers.writeEntityErrors.Add(upsertEntityError,    () => testCustomers.WriteError(upsertEntityError));
             
             var customers = store.customers;
             
             var createError = customers.Create(new Customer{id = createEntityError})    .TaskName("createError");
-            var updateError = customers.Upsert(new Customer{id = updateEntityError})    .TaskName("updateError");
+            var upsertError = customers.Upsert(new Customer{id = upsertEntityError})    .TaskName("upsertError");
             var deleteError = customers.Delete(new Customer{id = deleteEntityError})    .TaskName("deleteError");
 
             AreEqual(3, store.Tasks.Count);
@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             AreEqual(@"Sync() failed with task errors. Count: 3
 |- createError # EntityErrors ~ count: 1
 |   WriteError: Customer 'create-entity-error', simulated write entity error
-|- updateError # EntityErrors ~ count: 1
+|- upsertError # EntityErrors ~ count: 1
 |   WriteError: Customer 'upsert-entity-error', simulated write entity error
 |- deleteError # EntityErrors ~ count: 1
 |   WriteError: Customer 'delete-entity-error', simulated write entity error", sync.Message);
@@ -58,10 +58,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             AreEqual(1,        createErrors.Count);
             AreEqual("WriteError: Customer 'create-entity-error', simulated write entity error", createErrors[new JsonKey(createEntityError)].ToString());
             
-            IsFalse(updateError.Success);
-            var updateErrors = updateError.Error.entityErrors;
-            AreEqual(1,        updateErrors.Count);
-            AreEqual("WriteError: Customer 'upsert-entity-error', simulated write entity error", updateErrors[new JsonKey(updateEntityError)].ToString());
+            IsFalse(upsertError.Success);
+            var upsertErrors = upsertError.Error.entityErrors;
+            AreEqual(1,        upsertErrors.Count);
+            AreEqual("WriteError: Customer 'upsert-entity-error', simulated write entity error", upsertErrors[new JsonKey(upsertEntityError)].ToString());
         }
     }
 }

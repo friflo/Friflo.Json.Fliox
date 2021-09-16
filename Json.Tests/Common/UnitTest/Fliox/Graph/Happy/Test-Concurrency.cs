@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 for (int n = 0; n < max; n++) {
                     entities.Add(new SimplyEntity{ id = n, text = "Concurrent accessed entity" });
                 }
-                store.entities.UpdateRange(entities);
+                store.entities.UpsertRange(entities);
             }
             await store.Sync();
 

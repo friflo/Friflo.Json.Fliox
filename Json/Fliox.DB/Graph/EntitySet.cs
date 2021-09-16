@@ -261,14 +261,14 @@ namespace Friflo.Json.Fliox.DB.Graph
             return task;
         }
         
-        public UpsertTask<T> UpdateRange(ICollection<T> entities) {
+        public UpsertTask<T> UpsertRange(ICollection<T> entities) {
             if (entities == null)
                 throw new ArgumentException($"EntitySet.UpdateRange() entity must not be null. EntitySet: {name}");
             foreach (var entity in entities) {
                 if (EntityKeyTMap.IsEntityKeyNull(entity))
                     throw new ArgumentException($"EntitySet.UpdateRange() entity.id must not be null. EntitySet: {name}");
             }
-            var task = GetSyncSet().UpdateRange(entities);
+            var task = GetSyncSet().UpsertRange(entities);
             intern.store.AddTask(task);
             return task;
         }

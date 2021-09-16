@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     {
         /// <summary>Filter database change events of new created entities.</summary>
         create,
-        /// <summary>Filter database change events of updated entities.</summary>
+        /// <summary>Filter database change events of upserted entities.</summary>
         upsert,
         /// <summary>Filter database change events used to patch entities.</summary>
         patch,

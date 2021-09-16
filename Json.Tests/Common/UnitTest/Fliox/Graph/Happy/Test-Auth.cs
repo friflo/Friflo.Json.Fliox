@@ -219,12 +219,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         private static async Task AssertUserStore(UserStore store) {
             var allCredentials  = store.credentials.QueryAll();
             var createTask      = store.credentials.Create(new UserCredential{ id="create-id" });
-            var updateTask      = store.credentials.Upsert(new UserCredential{ id="upsert-id" });
+            var upsertTask      = store.credentials.Upsert(new UserCredential{ id="upsert-id" });
             await store.TrySync();
             
             AreEqual("PermissionDenied ~ not authorized", allCredentials.Error.Message);
             AreEqual("PermissionDenied ~ not authorized", createTask.Error.Message);
-            AreEqual("PermissionDenied ~ not authorized", updateTask.Error.Message);
+            AreEqual("PermissionDenied ~ not authorized", upsertTask.Error.Message);
         }
         
         private static async Task AssertServerStore(UserStore store) {

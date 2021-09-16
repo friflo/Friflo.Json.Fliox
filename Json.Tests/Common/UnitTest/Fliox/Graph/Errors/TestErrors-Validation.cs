@@ -63,16 +63,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
 | WriteError: Article 'article-missing-name', Required property must not be null. at Article > name, pos: 40";
             AreEqual(expectError, createTask.Error.Message);
             
-            // --- test validation errors for updates
-            var updateTask = articles.UpdateRange(new [] { articleMissingName, articleMissingId, articleIncorrectType});
+            // --- test validation errors for upserts
+            var upsertTask = articles.UpsertRange(new [] { articleMissingName, articleMissingId, articleIncorrectType});
             
             sync = await store.TrySync(); // -------- Sync --------
             
             IsFalse(sync.Success);
-            IsFalse(updateTask.Success);
-            errors = updateTask.Error.entityErrors;
+            IsFalse(upsertTask.Success);
+            errors = upsertTask.Error.entityErrors;
             AreEqual("Required property must not be null. at Article > name, pos: 40", errors[new JsonKey("article-missing-name")].message);
-            AreEqual(expectError, updateTask.Error.Message);
+            AreEqual(expectError, upsertTask.Error.Message);
             
             
             // test validation errors for patches

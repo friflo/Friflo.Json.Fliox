@@ -131,13 +131,13 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             
             // Write patched entities back
             var task = new UpsertEntities {entities = targets, entityKeys = targetKeys };
-            var updateResult = await UpsertEntities(task, messageContext).ConfigureAwait(false);
-            if (updateResult.Error != null) {
-                return new PatchEntitiesResult {Error = updateResult.Error};
+            var upsertResult = await UpsertEntities(task, messageContext).ConfigureAwait(false);
+            if (upsertResult.Error != null) {
+                return new PatchEntitiesResult {Error = upsertResult.Error};
             }
-            var updateErrors = updateResult.updateErrors;
-            if (updateErrors != null) {
-                foreach (var errorEntry in updateErrors) {
+            var upsertErrors = upsertResult.upsertErrors;
+            if (upsertErrors != null) {
+                foreach (var errorEntry in upsertErrors) {
                     var key = errorEntry.Key;
                     var error = errorEntry.Value;
                     AddEntityError(ref patchErrors, key, error);

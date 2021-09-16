@@ -47,9 +47,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                             write.ModifyWrites(createEntities.key, createEntities.entities);
                         }
                         break;
-                    case UpsertEntities updateEntities:
-                        if (writeModifiers.TryGetValue(updateEntities.container, out write)) {
-                            write.ModifyWrites(updateEntities.key, updateEntities.entities);
+                    case UpsertEntities upsertEntities:
+                        if (writeModifiers.TryGetValue(upsertEntities.container, out write)) {
+                            write.ModifyWrites(upsertEntities.key, upsertEntities.entities);
                         }
                         break;
                     case PatchEntities patchEntities:

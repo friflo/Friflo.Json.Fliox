@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                         break;
                     case TaskType.upsert:
                         var upsert = (UpsertEntities)task;
-                        info.changes.updates += upsert.entities.Count;
+                        info.changes.upserts += upsert.entities.Count;
                         break;
                     case TaskType.delete:
                         var delete = (DeleteEntities)task;
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         
         public int Count => changes.Count + messages;
         
-        public override string ToString() => $"(creates: {changes.creates}, updates: {changes.updates}, deletes: {changes.deletes}, patches: {changes.patches}, messages: {messages})";
+        public override string ToString() => $"(creates: {changes.creates}, upserts: {changes.upserts}, deletes: {changes.deletes}, patches: {changes.patches}, messages: {messages})";
         
         public void Clear() {
             changes.Clear();
@@ -88,24 +88,24 @@ namespace Friflo.Json.Fliox.DB.Sync
     /// </summary>
     public class ChangeInfo {
         public  int creates;
-        public  int updates;
+        public  int upserts;
         public  int deletes;
         public  int patches;
         
-        public int Count => creates + updates + deletes + patches;
+        public int Count => creates + upserts + deletes + patches;
         
-        public override string ToString() => $"(creates: {creates}, updates: {updates}, deletes: {deletes}, patches: {patches})";
+        public override string ToString() => $"(creates: {creates}, upserts: {upserts}, deletes: {deletes}, patches: {patches})";
         
         public void Clear() {
             creates = 0;
-            updates = 0;
+            upserts = 0;
             deletes = 0;
             patches = 0;
         }
         
         public void Add(ChangeInfo changeInfo) {
             creates += changeInfo.creates;
-            updates += changeInfo.updates;
+            upserts += changeInfo.upserts;
             deletes += changeInfo.deletes;
             patches += changeInfo.patches;
         }

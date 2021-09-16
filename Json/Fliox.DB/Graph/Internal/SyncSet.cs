@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
 {
     internal abstract class SyncSetBase <T> : SyncSet where T : class
     {
-        internal abstract void AddUpdate (Peer<T> peer);
+        internal abstract void AddUpsert (Peer<T> peer);
         internal abstract bool AddCreate (Peer<T> peer);
     }
 
@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         private     List<WriteTask>                         _createTasks;
         
         private     Dictionary<JsonKey, Peer<T>>            _upserts;
-        private     List<WriteTask>                         _updateTasks;
+        private     List<WriteTask>                         _upsertTasks;
         
         private     Dictionary<JsonKey, EntityPatch>        _patches;
         private     List<PatchTask<T>>                      _patchTasks;
@@ -64,8 +64,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         private     Dictionary<JsonKey, Peer<T>>            Creates()    => _creates     ?? (_creates     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
         private     List<WriteTask>                         CreateTasks()=> _createTasks ?? (_createTasks = new List<WriteTask>());
         
-        private     Dictionary<JsonKey, Peer<T>>            Updates()    => _upserts     ?? (_upserts     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
-        private     List<WriteTask>                         UpdateTasks()=> _updateTasks ?? (_updateTasks = new List<WriteTask>());
+        private     Dictionary<JsonKey, Peer<T>>            Upserts()    => _upserts     ?? (_upserts     = new Dictionary<JsonKey, Peer<T>>(JsonKey.Equality));
+        private     List<WriteTask>                         UpsertTasks()=> _upsertTasks ?? (_upsertTasks = new List<WriteTask>());
 
         private     Dictionary<JsonKey, EntityPatch>        Patches()    => _patches     ?? (_patches     = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality));
         private     List<PatchTask<T>>                      PatchTasks() => _patchTasks  ?? (_patchTasks  = new List<PatchTask<T>>());
@@ -89,9 +89,9 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             return false;
         }
         
-        internal override void AddUpdate (Peer<T> peer) {
+        internal override void AddUpsert (Peer<T> peer) {
             peer.assigned = true;
-            Updates().TryAdd(peer.id, peer);      // sole place a peer (entity) is added
+            Upserts().TryAdd(peer.id, peer);      // sole place a peer (entity) is added
             if (!peer.updated) {
                 peer.updated = true;            // sole place created set to true
             }
@@ -172,19 +172,19 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         // --- Upsert
         internal UpsertTask<T> Upsert(T entity) {
             var peer = set.CreatePeer(entity);
-            AddUpdate(peer);
+            AddUpsert(peer);
             var upsert = new UpsertTask<T>(new List<T>{entity}, set);
-            UpdateTasks().Add(upsert);
+            UpsertTasks().Add(upsert);
             return upsert;
         }
         
-        internal UpsertTask<T> UpdateRange(ICollection<T> entities) {
+        internal UpsertTask<T> UpsertRange(ICollection<T> entities) {
             foreach (var entity in entities) {
                 var peer = set.CreatePeer(entity);
-                AddUpdate(peer);
+                AddUpsert(peer);
             }
             var upsert = new UpsertTask<T>(entities.ToList(), set);
-            UpdateTasks().Add(upsert);
+            UpsertTasks().Add(upsert);
             return upsert;
         }
         
@@ -339,8 +339,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             var entries = new List<JsonValue>   (_upserts.Count);
             var keys    = new List<JsonKey>    (_upserts.Count);
             
-            foreach (var updatePair in _upserts) {
-                T entity    = updatePair.Value.Entity;
+            foreach (var upsertPair in _upserts) {
+                T entity    = upsertPair.Value.Entity;
                 var json    = writer.Write(entity);
                 var entry   = new JsonValue(json);
                 var id      = EntityKeyTMap.GetId(entity);
