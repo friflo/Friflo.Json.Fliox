@@ -32,10 +32,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL
     
     /// <summary>
     /// <see cref="IPools"/> is a set of pooled instances of various <see cref="Type"/>'s.
-    /// To enables pooling instances of a specific class need to implement <see cref="IDisposable"/>.
+    /// To enable pooling instances of a specific class it needs to implement <see cref="IDisposable"/>.
     /// Pools for classes used commonly within <see cref="NoSQL"/> are directly available. E.g. <see cref="ObjectMapper"/>.
     /// Custom classes can also be managed by <see cref="IPools"/> by using <see cref="Pool{T}"/>.
-    /// Its typical use case is pooling of domain specific stores extending <see cref="Graph.EntityStore"/>. 
+    /// Its typical use case is pooling of a domain specific Store extending <see cref="Graph.EntityStore"/>. 
     /// </summary>
     public interface IPools
     {
@@ -48,10 +48,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         ObjectPool<EntityValidator> EntityValidator { get; }
         ObjectPool<TypeValidator>   TypeValidator   { get; }
         /// <summary>
-        /// Enable pooled instances of the given Type <see cref="T"/>. In case no cached instance of <see cref="T"/>
+        /// Enable pooling instances of the given Type <see cref="T"/>. In case no cached instance of <see cref="T"/>
         /// is available the <see cref="factory"/> method is called to create a new instance.
-        /// After returning a pooled instance with <see cref="ObjectPool{T}.Return"/> it is cached and will be
-        /// reused when calling <see cref="ObjectPool{T}.Get"/> anytime later.
+        /// After returning a pooled instance to its pool with <see cref="ObjectPool{T}.Return"/> it is cached and
+        /// will be reused when calling <see cref="ObjectPool{T}.Get"/> anytime later.
         /// To ensure pooled instances are not leaking use the using directive. E.g.
         /// <code>
         /// using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
