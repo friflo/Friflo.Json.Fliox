@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     {
         [Fri.Required]  public  string          container;
                         public  Guid?           reservedToken;
-                        public  string          key;
+                        public  JsonKey?        key;
         [Fri.Required]  public  List<JsonValue> entities;
                         
         [Fri.Ignore]    public  List<JsonKey>   entityKeys;

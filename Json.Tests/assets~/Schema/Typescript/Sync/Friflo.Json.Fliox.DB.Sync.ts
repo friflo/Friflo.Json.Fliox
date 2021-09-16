@@ -78,6 +78,7 @@ export class UpsertEntities extends DatabaseTask {
 export class ReadEntitiesList extends DatabaseTask {
     task       : "read";
     container  : string;
+    key?       : string | null;
     reads      : ReadEntities[];
 }
 
@@ -89,12 +90,14 @@ export class ReadEntities {
 export class References {
     selector    : string;
     container   : string;
+    key?        : string | null;
     references? : References[] | null;
 }
 
 export class QueryEntities extends DatabaseTask {
     task        : "query";
     container   : string;
+    key?        : string | null;
     filterLinq? : string | null;
     filter?     : FilterOperation_Union | null;
     references? : References[] | null;

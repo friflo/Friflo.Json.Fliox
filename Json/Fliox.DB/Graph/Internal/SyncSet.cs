@@ -361,7 +361,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 return;
             var readList = new ReadEntitiesList {
                 reads       = new List<ReadEntities>(_reads.Count),
-                container   = set.name
+                container   = set.name,
+                key         = set.GetKeyName()
             };
             foreach (var read in _reads) {
                 List<References> references = null;
@@ -396,6 +397,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 }
                 var req = new QueryEntities {
                     container   = set.name,
+                    key         = set.GetKeyName(),   
                     filter      = query.filter,
                     filterLinq  = query.filterLinq,
                     references  = references
@@ -494,8 +496,9 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         private static void AddReferences(List<References> references, SubRefs refs) {
             foreach (var readRefs in refs) {
                 var queryReference = new References {
-                    container = readRefs.Container,
-                    selector  = readRefs.Selector
+                    container   = readRefs.Container,
+                    key         = readRefs.KeyName,
+                    selector    = readRefs.Selector
                 };
                 references.Add(queryReference);
                 var subRefsMap = readRefs.SubRefs;

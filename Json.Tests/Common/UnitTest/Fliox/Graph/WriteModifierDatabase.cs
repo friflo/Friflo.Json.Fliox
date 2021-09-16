@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             this.validator = validator;
         }
         
-        internal void ModifyWrites(string keyName, List<JsonValue> entities) {
+        internal void ModifyWrites(JsonKey? keyName, List<JsonValue> entities) {
             for (int n = 0; n < entities.Count; n++) {
                 var entity = entities[n];
                 var json = entity.json;

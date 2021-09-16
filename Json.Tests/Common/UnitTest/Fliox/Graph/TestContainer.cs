@@ -144,7 +144,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             var databaseError = SimulateReadErrors(result.entities);
             if (databaseError != null)
                 result.Error = databaseError;
-            result.ValidateEntities(local.name, messageContext);
+            result.ValidateEntities(local.name, command.key, messageContext);
             return result;
         }
         

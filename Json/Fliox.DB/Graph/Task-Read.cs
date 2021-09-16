@@ -183,7 +183,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             if (refsTask.subRefs.TryGetTask(path, out ReadRefsTask subRefsTask))
                 return (ReadRefTask<TRefKey, TRef>)subRefsTask;
             var refSet = set.intern.store._intern.setByType[typeof(TRef)];
-            var newQueryRefs = new ReadRefTask<TRefKey, TRef>(this, path, refSet.name, set.intern.store);
+            var newQueryRefs = new ReadRefTask<TRefKey, TRef>(this, path, refSet.name, refSet.GetKeyName(), set.intern.store);
             refsTask.subRefs.AddTask(path, newQueryRefs);
             set.intern.store.AddTask(newQueryRefs);
             return newQueryRefs;

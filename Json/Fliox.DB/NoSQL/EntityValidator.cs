@@ -20,58 +20,13 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         private             JsonParser      parser;
         private             Bytes           idKey = new Bytes(16);
         
-        public bool IsValidEntity(string json, in JsonKey id, out string error) {
+        public bool GetEntityKey(string json, JsonKey? keyName, out JsonKey keyValue, out string error) {
             idKey.Clear();
-            idKey.AppendString("id");
-            jsonBytes.Clear();
-            jsonBytes.AppendString(json);
-            parser.InitParser(jsonBytes);
-            var ev = parser.NextEvent();
-            if (ev != JsonEvent.ObjectStart) {
-                error = $"entity value must be an object.";
-                return false;
+            if (keyName == null) {
+                idKey.AppendString("id");    
+            } else {
+                keyName.Value.AppendTo(ref idKey, ref parser.format);
             }
-            while (true) {
-                ev = parser.NextEvent();
-                switch (ev) {
-                    case JsonEvent.ValueString:
-                        if (parser.key.IsEqualBytes(ref idKey) && !parser.value.IsEqualString(id.AsString())) {
-                            error = $"entity id does not match key. id: {parser.value.AsString()}";
-                            return false;
-                        }
-                        break;
-                    case JsonEvent.ValueNumber:
-                    case JsonEvent.ValueBool:
-                    case JsonEvent.ValueNull:
-                        break;
-                    case JsonEvent.ArrayStart:
-                    case JsonEvent.ObjectStart:
-                        parser.SkipTree();
-                        if (parser.error.ErrSet) {
-                            error = parser.error.msg.AsString();
-                            return false;
-                        }
-                        break;
-                    case JsonEvent.Error:
-                        error = parser.error.msg.AsString();
-                        return false;
-                    case JsonEvent.ObjectEnd:
-                        ev = parser.NextEvent();
-                        if (ev == JsonEvent.EOF) {
-                            error = null;
-                            return true;
-                        }
-                        error = "Expected EOF in JSON value";
-                        return false;
-                    case JsonEvent.ArrayEnd:
-                        throw new InvalidOperationException($"unexpected event: {ev}");
-                }
-            }
-        }
-        
-        public bool GetEntityKey(string json, string keyName, out JsonKey keyValue, out string error) {
-            idKey.Clear();
-            idKey.AppendString(keyName);
             keyValue     = new JsonKey();
             jsonBytes.Clear();
             jsonBytes.AppendString(json);

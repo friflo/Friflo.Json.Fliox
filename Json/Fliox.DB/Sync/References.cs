@@ -13,6 +13,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         /// These referenced entities are also loaded via the next <see cref="EntityStore.Sync"/> request.
         [Fri.Required]  public  string              selector; // e.g. ".items[*].article"
         [Fri.Required]  public  string              container;
+                        public  JsonKey?            key;
                         public  List<References>    references;
     }
     

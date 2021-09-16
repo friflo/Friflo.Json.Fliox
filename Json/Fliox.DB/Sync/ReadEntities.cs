@@ -9,6 +9,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     // ----------------------------------- sub task -----------------------------------
     public class ReadEntities
     {
+        [Fri.Ignore]    public  JsonKey?                        key;
         [Fri.Required]  public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<References>                references;
     }
@@ -36,7 +37,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         /// So database adapters which can ensure the JSON value is always valid made calling <see cref="ValidateEntities"/>
         /// obsolete - like Postgres/JSONB, Azure Cosmos DB or MongoDB.
         /// </summary>
-        public void ValidateEntities(string container, MessageContext messageContext) {
+        public void ValidateEntities(string container, JsonKey? keyName, MessageContext messageContext) {
             using (var pooledValidator = messageContext.pools.EntityValidator.Get()) {
                 EntityValidator validator = pooledValidator.instance;
                 foreach (var entityEntry in entities) {
@@ -44,17 +45,24 @@ namespace Friflo.Json.Fliox.DB.Sync
                     if (entity.Error != null) {
                         continue;
                     }
-                    var id      = entityEntry.Key;
                     var json    = entity.Json;
-                    if (json != null && !validator.IsValidEntity(json, id, out string error)) {
-                        var entityError = new EntityError {
-                            type        = EntityErrorType.ParseError,
-                            message     = error,
-                            id          = entityEntry.Key,
-                            container   = container
-                        };
-                        entity.SetError(entityError);
+                    if (json == null) {
+                        continue;
                     }
+                    if (validator.GetEntityKey(json, keyName, out JsonKey payloadId, out string error)) {
+                        var id      = entityEntry.Key;
+                        if (id.IsEqual(payloadId))
+                            continue;
+                        error = $"entity id does not match key. id: {payloadId.AsString()}";
+                    }
+                    var entityError = new EntityError {
+                        type        = EntityErrorType.ParseError,
+                        message     = error,
+                        id          = entityEntry.Key,
+                        container   = container
+                    };
+                    entity.SetError(entityError);
+                    
                 }
             }
         }

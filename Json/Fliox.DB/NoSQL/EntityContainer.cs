@@ -157,7 +157,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         }
         
         protected async Task<QueryEntitiesResult> FilterEntityIds(QueryEntities command, HashSet<JsonKey> ids, MessageContext messageContext) {
-            var readIds         = new ReadEntities {ids = ids};
+            var readIds         = new ReadEntities {ids = ids, key = command.key };
             var readEntities    = await ReadEntities(readIds, messageContext).ConfigureAwait(false);
             if (readEntities.Error != null) {
                 // todo add error test 
@@ -259,7 +259,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 if (ids.Count == 0)
                     continue;
                 var refIdList   = ids;
-                var readRefIds  = new ReadEntities {ids = refIdList};
+                var readRefIds  = new ReadEntities {ids = refIdList, key = reference.key };
                 var refEntities = await refCont.ReadEntities(readRefIds, messageContext).ConfigureAwait(false);
                 var subPath = $"{selectorPath} -> {reference.selector}";
                 // In case of ReadEntities error: Assign error to result and continue with other references.
@@ -297,12 +297,11 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         
         // may move to more appropriate class
         public static List<JsonKey> CreateEntityKeys (
-            string                                  keyName,
+            JsonKey?                                keyName,
             List<JsonValue>                         entities,
             MessageContext                          messageContext,
             out string                              error
         ) {
-            keyName = keyName ?? "id";
             var keys = new List<JsonKey>(entities.Count);
             using (var poolValidator = messageContext.pools.EntityValidator.Get()) {
                 var validator = poolValidator.instance;

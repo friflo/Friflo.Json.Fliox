@@ -128,7 +128,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 rwLock.ReleaseReaderLock();
             }
             var result = new ReadEntitiesResult{entities = entities};
-            result.ValidateEntities(name, messageContext);
+            result.ValidateEntities(name, command.key, messageContext);
             return result;
         }
 

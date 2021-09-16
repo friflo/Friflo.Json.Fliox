@@ -16,6 +16,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         internal            TaskState   state;
         internal abstract   string      Selector    { get; }
         internal abstract   string      Container   { get; }
+        internal abstract   JsonKey?    KeyName     { get; }
         internal abstract   SubRefs     SubRefs     { get; }
         
         internal abstract void    SetResult (EntitySet set, HashSet<JsonKey> ids);
@@ -48,16 +49,18 @@ namespace Friflo.Json.Fliox.DB.Graph
             
         internal  override  string                  Selector  { get; }
         internal  override  string                  Container { get; }
+        internal  override  JsonKey?                KeyName   { get; }
         
         internal  override  SubRefs                 SubRefs => refsTask.subRefs;
 
 
-        internal ReadRefsTask(SyncTask parent, string selector, string container, EntityStore store)
+        internal ReadRefsTask(SyncTask parent, string selector, string container, JsonKey? keyName, EntityStore store)
         {
             refsTask        = new RefsTask(this);
             this.parent     = parent;
             this.Selector   = selector;
             this.Container  = container;
+            this.KeyName    = keyName;
             this.store      = store;
         }
 
@@ -119,16 +122,18 @@ namespace Friflo.Json.Fliox.DB.Graph
                 
         internal override   string          Selector  { get; }
         internal override   string          Container { get; }
+        internal override   JsonKey?        KeyName     { get; }
             
         internal override   SubRefs         SubRefs => refsTask.subRefs;
 
 
-        internal ReadRefTask(SyncTask parent, string selector, string container, EntityStore store)
+        internal ReadRefTask(SyncTask parent, string selector, string container, JsonKey? keyName, EntityStore store)
         {
             refsTask        = new RefsTask(this);
             this.parent     = parent;
             this.Selector   = selector;
             this.Container  = container;
+            this.KeyName    = keyName;
             this.store      = store;
         }
         

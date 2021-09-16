@@ -179,7 +179,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             subHandler(this, ev); // subHandler.Invoke(this, ev);
         }
         
-        private List<JsonKey> CreateEntityKeys(string keyName, List<JsonValue> entities) {
+        private List<JsonKey> CreateEntityKeys(JsonKey? keyName, List<JsonValue> entities) {
             var keys = new List<JsonKey>(entities.Count);
             foreach (var entity in entities) {
                 if (!validator.GetEntityKey(entity.json, keyName, out JsonKey key, out string error))

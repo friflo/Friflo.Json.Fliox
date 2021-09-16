@@ -11,6 +11,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     public class ReadEntitiesList : DatabaseTask
     {
         [Fri.Required]  public  string              container;
+                        public  JsonKey?            key;
         [Fri.Required]  public  List<ReadEntities>  reads;
         
         internal override       TaskType            TaskType => TaskType.read;
@@ -41,7 +42,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                 combineCount += read.ids.Count;
             }
             // Combine
-            var combinedRead = new ReadEntities { ids = Helper.CreateHashSet(combineCount, JsonKey.Equality) };
+            var combinedRead = new ReadEntities { key = key, ids = Helper.CreateHashSet(combineCount, JsonKey.Equality) };
             foreach (var read in reads) {
                 combinedRead.ids.UnionWith(read.ids);
             }
