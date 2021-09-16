@@ -27,7 +27,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL
 
     public class SequenceStore : EntityStore
     {
+        [Fri.Property(Name =                             "_sequence")]  
         public readonly EntitySet <string, Sequence>       sequence;
+        [Fri.Property(Name =                             "_sequenceKeys")]  
         public readonly EntitySet <Guid,   SequenceKeys>   sequenceKeys;
         
         public  SequenceStore(EntityDatabase database, TypeStore typeStore, string clientId)

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Fliox.DB.Graph.Internal.Map
 {
@@ -97,7 +98,11 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Map
             FieldInfo      field,
             PropertyInfo   property)
         {
-            this.container      = container;
+            MemberInfo member   = field;
+            if (field == null)
+                member = property;
+            AttributeUtils.Property(member.CustomAttributes, out string name);
+            this.container      = name ?? container;
             this.entitySetType  = entitySetType;
             this.entityType     = entityType;
             this.field          = field;
