@@ -5,7 +5,6 @@ using System;
 using Friflo.Json.Fliox.DB.Graph;
 using Friflo.Json.Fliox.Mapper;
 
-// ReSharper disable InconsistentNaming
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Fliox.DB.NoSQL
 {
