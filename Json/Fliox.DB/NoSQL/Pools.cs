@@ -30,6 +30,13 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         }
     }
     
+    /// <summary>
+    /// <see cref="IPools"/> is a set of pooled instances of various <see cref="Type"/>'s.
+    /// To enables pooling instances of a specific class need to implement <see cref="IDisposable"/>.
+    /// Pools for classes used commonly within <see cref="NoSQL"/> are directly available. E.g. <see cref="ObjectMapper"/>.
+    /// Custom classes can also be managed by <see cref="IPools"/> by using <see cref="Pool{T}"/>.
+    /// Its typical use case is pooling of domain specific stores extending <see cref="Graph.EntityStore"/>. 
+    /// </summary>
     public interface IPools
     {
         ObjectPool<JsonPatcher>     JsonPatcher     { get; }
