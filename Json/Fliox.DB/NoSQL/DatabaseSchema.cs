@@ -68,10 +68,13 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         }
         
         public void AddTypeSchema(TypeSchema typeSchema) {
+            var rootType = typeSchema.RootType;
+            if (rootType == null)
+                throw new InvalidOperationException($"Expect {nameof(TypeSchema)}.{nameof(TypeSchema.RootType)} not null");
             var validationSet   = new ValidationSet(typeSchema);
             validationSets.Add(validationSet);
-            var rootType = validationSet.GetValidationType(typeSchema.RootType);
-            foreach (var field in rootType.fields) {
+            var validationRoot = validationSet.GetValidationType(rootType);
+            foreach (var field in validationRoot.fields) {
                 containerTypes.Add(field.fieldName, field.Type);
             }
         }
