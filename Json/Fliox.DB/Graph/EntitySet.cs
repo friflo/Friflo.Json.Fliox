@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         internal static readonly EntityKey<T> EntityKeyMap = EntityKey.GetEntityKey<T>();
 
 
-        protected EntitySetBase(string name) : base(name) { }
+        protected EntitySetBase(string name) : base(typeof(T).Name) { }
         
         internal static void ValidateKeyType(Type keyType) {
             var entityId            = EntityKey.GetEntityKey<T>();
@@ -133,7 +133,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         }}
         
         /// constructor is called via <see cref="StoreUtils.InitEntitySets"/> 
-        internal EntitySet() : base (typeof(T).Name) {
+        internal EntitySet(string name) : base (name) {
             ValidateKeyType(typeof(TKey));
         }
         

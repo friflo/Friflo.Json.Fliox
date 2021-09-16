@@ -56,9 +56,11 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Map
 
         internal static void InitEntitySets(EntityStore store) {
             var entityInfos = GetEntityInfos (store.GetType());
+            var args = new object[1];
             foreach (var entityInfo in entityInfos) {
                 var setMapper   = (IEntitySetMapper)store._intern.typeStore.GetTypeMapper(entityInfo.entitySetType);
-                var entitySet   = setMapper.CreateEntitySet();
+                args[0] = entityInfo.container;
+                var entitySet   = setMapper.CreateEntitySet(args);
                 entitySet.Init(store);
                 if (entityInfo.field != null) {
                     entityInfo.field.   SetValue(store, entitySet);
