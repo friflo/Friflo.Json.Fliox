@@ -63,7 +63,7 @@ export abstract class DatabaseTask {
 export class CreateEntities extends DatabaseTask {
     task           : "create";
     container      : string;
-    reservedToken  : Guid;
+    reservedToken? : Guid | null;
     key?           : string | null;
     entities       : any[];
 }

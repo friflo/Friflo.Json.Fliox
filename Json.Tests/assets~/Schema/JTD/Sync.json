@@ -47,7 +47,7 @@
         "CreateEntities": {
             "properties": {
                 "container":     { "type": "string" },
-                "reservedToken": { "ref":  "Guid" },
+                "reservedToken": { "ref":  "Guid", "nullable": true },
                 "key":           { "type": "string", "nullable": true },
                 "entities":      { "elements": {  } }
             }

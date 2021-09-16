@@ -40,7 +40,7 @@ abstract class DatabaseTask  {
 data class CreateEntities (
               val container     : String,
               @Serializable(with = UUIDSerializer::class)
-              val reservedToken : UUID,
+              val reservedToken : UUID? = null,
               val key           : String? = null,
               val entities      : List<JsonElement>,
 ) : DatabaseTask()
