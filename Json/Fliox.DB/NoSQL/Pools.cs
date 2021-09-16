@@ -47,6 +47,12 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         ObjectPool<ObjectMapper>    ObjectMapper    { get; }
         ObjectPool<EntityValidator> EntityValidator { get; }
         ObjectPool<TypeValidator>   TypeValidator   { get; }
+        /// <summary>
+        /// Enable pooled instances of the given Type <see cref="T"/>. In case no cached instance of <see cref="T"/>
+        /// is available the <see cref="factory"/> method is called to create a new instance.
+        /// After returning a pooled instance with <see cref="ObjectPool{T}.Return"/> it is cached and will be
+        /// reused when calling <see cref="ObjectPool{T}.Get"/> anytime later.
+        /// </summary>
         ObjectPool<T>               Pool<T>         (Func<T> factory) where T : IDisposable;
         
         PoolUsage                   PoolUsage       { get; }
