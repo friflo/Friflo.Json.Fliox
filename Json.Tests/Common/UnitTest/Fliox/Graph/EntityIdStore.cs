@@ -57,23 +57,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
     }
     
     public class EntityRefs {
-        [Fri.Required]  public string                            id;
-                        public      Ref <Guid,   GuidEntity>     guidEntity;
-                        public      Ref <Guid?,  GuidEntity>     guidNullEntity;
-                        public      Ref <int,    IntEntity>      intEntity;
-                        public      Ref <int?,   IntEntity>      intNullEntity;
-                        public      Ref <int?,   IntEntity>      intNullEntity2;
-                        public      Ref <long,   LongEntity>     longEntity;
-                        public      Ref <long?,  LongEntity>     longNullEntity;
-                        public      Ref <short,  ShortEntity>    shortEntity;
-                        public      Ref <short?, ShortEntity>    shortNullEntity;
-                        public      Ref <byte,   ByteEntity>     byteEntity;
-                        public      Ref <byte?,  ByteEntity>     byteNullEntity;
-                        public      Ref <string, CustomIdEntity> customIdEntity;
-                        public List<Ref <int,    IntEntity>>     intEntities;
-                        // arrays with nullable references are supported, but bot recommended. It forces the application
-                        // for null checks, which can simply omitted by not using an array with nullable references.
-                        public List<Ref <int?,   IntEntity>>     intNullEntities;
+        [Fri.Required]
+        public  string                              id;
+        public  Ref      <Guid,   GuidEntity>       guidEntity;
+        public  Ref      <Guid?,  GuidEntity>       guidNullEntity;
+        public  Ref      <int,    IntEntity>        intEntity;
+        public  Ref      <int?,   IntEntity>        intNullEntity;
+        public  Ref      <int?,   IntEntity>        intNullEntity2;
+        public  Ref      <long,   LongEntity>       longEntity;
+        public  Ref      <long?,  LongEntity>       longNullEntity;
+        public  Ref      <short,  ShortEntity>      shortEntity;
+        public  Ref      <short?, ShortEntity>      shortNullEntity;
+        public  Ref      <byte,   ByteEntity>       byteEntity;
+        public  Ref      <byte?,  ByteEntity>       byteNullEntity;
+        public  Ref      <string, CustomIdEntity>   customIdEntity;
+        public  List<Ref <int,    IntEntity>>       intEntities;
+        // arrays with nullable references are supported, but bot recommended. It forces the application
+        // for null checks, which can simply omitted by not using an array with nullable references.
+        public  List<Ref <int?,   IntEntity>>       intNullEntities;
     }
 
     public class CustomIdEntity2 {
