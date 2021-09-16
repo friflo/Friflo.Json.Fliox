@@ -27,7 +27,6 @@ public class NativeTypeDef : TypeDef
         public   override   List<FieldDef>      Fields          => fields;
         public   override   string              Discriminant    { get; }
         public   override   string              Discriminator   => discriminator;
-        public   override   TypeSemantic        TypeSemantic    { get; }
         public   override   UnionType           UnionType       => unionType;
         public   override   bool                IsAbstract      => isAbstract;
         public   override   ICollection<string> EnumValues      { get; }
@@ -43,7 +42,6 @@ public class NativeTypeDef : TypeDef
             IsClass         = mapper.IsComplex;
             IsStruct        = mapper.type.IsValueType;
             Discriminant    = mapper.Discriminant;
-            TypeSemantic    = mapper.GetTypeSemantic();
             EnumValues      = mapper.GetEnumValues();
         }
         

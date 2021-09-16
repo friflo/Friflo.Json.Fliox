@@ -86,15 +86,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public virtual  TypeMapper      GetElementMapper    ()  => null;
         public virtual  List<string>    GetEnumValues       ()  => null;
         public virtual  TypeMapper      GetUnderlyingMapper ()  => this;
-        public virtual  TypeSemantic    GetTypeSemantic     ()  => TypeSemantic.None;
     }
-    
-public enum TypeSemantic {
-    None,
-    Entity,
-    Reference
-}
-    
     
     
 #if !UNITY_5_3_OR_NEWER

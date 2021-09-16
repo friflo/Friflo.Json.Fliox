@@ -38,7 +38,6 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Map
         
         public  override    string              DataTypeName()          { return "Ref<>"; }
         public  override    TypeMapper          GetUnderlyingMapper()   => keyMapper;
-        public  override    TypeSemantic        GetTypeSemantic     ()  => TypeSemantic.Reference;
 
         // ReSharper disable once UnusedParameter.Local
         public RefMapper(StoreConfig config, Type type, ConstructorInfo constructor) :

@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.Text;
-using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.Utils
@@ -22,19 +21,13 @@ namespace Friflo.Json.Fliox.Schema.Utils
         internal readonly   ICollection<TypeDef>    typeDependencies;
         internal readonly   ICollection<EmitType>   emitDependencies = new List<EmitType>();
 
-        /// currently not used
-        //  ReSharper disable once NotAccessedField.Local
-        private  readonly   TypeSemantic            semantic;
-
         public   override   string                  ToString() => type.Name;
 
         public EmitType(TypeDef type,
             StringBuilder       sb,
             HashSet<TypeDef>    imports         = null,
-            List<TypeDef>       dependencies    = null,
-            TypeSemantic        semantic        = TypeSemantic.None)
+            List<TypeDef>       dependencies    = null)
         {
-            this.semantic           = semantic;
             this.type               = type;
             this.path               = type.Path;
             this.content            = sb.ToString();

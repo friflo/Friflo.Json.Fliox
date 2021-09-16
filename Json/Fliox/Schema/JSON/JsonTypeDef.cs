@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.JSON
@@ -22,7 +21,6 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public   override   string              Discriminator   => discriminator;
         public   override   bool                IsEnum          => EnumValues != null;
         public   override   ICollection<string> EnumValues      { get; }
-        public   override   TypeSemantic        TypeSemantic    => TypeSemantic.None;
 
         public   override   string              ToString()      => name; 
 

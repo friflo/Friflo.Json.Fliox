@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Mapper.Map;
 
 namespace Friflo.Json.Fliox.Schema.Definition
 {
@@ -53,8 +52,6 @@ namespace Friflo.Json.Fliox.Schema.Definition
         /// If <see cref="IsEnum"/> is true it has <see cref="EnumValues"/>
         public  abstract    bool                IsEnum          { get; }
         public  abstract    ICollection<string> EnumValues      { get; }
-        /// currently not used
-        public  abstract    TypeSemantic        TypeSemantic    { get; }
         
         protected TypeDef (string name, string @namespace) {
             Name        = name;
