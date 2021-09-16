@@ -176,10 +176,13 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 JsonEvaluator evaluator = pooledEvaluator.instance;
                 foreach (var entityPair in entities) {
                     var key     = entityPair.Key;
-                    var payload = entityPair.Value.Json;
-                    if (!evaluator.Filter(payload, jsonFilter))
+                    var value   = entityPair.Value;
+                    var json    = value.Json;   // JSON was invalid. Error != null
+                    if (json == null)
                         continue;
-                    var entry = new EntityValue(payload);
+                    if (!evaluator.Filter(json, jsonFilter))
+                        continue;
+                    var entry = new EntityValue(json);
                     result.Add(key, entry);
                 }
             }
