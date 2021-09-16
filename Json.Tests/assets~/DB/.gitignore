@@ -1,7 +1,7 @@
 
 /testConcurrencyDb
 
-_Sequence/
-_SequenceKeys/
+_sequence/
+_sequenceKeys/
 
 intEntitiesAuto/
