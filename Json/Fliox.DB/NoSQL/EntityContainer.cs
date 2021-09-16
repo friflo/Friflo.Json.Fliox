@@ -50,10 +50,17 @@ namespace Friflo.Json.Fliox.DB.NoSQL
 #endif
     public abstract class EntityContainer : IDisposable
     {
-        public  readonly    string          name;
-        private readonly    EntityDatabase  database;
+        /// <summary>The name of a container. This name is always equals to the entity Type name.</summary>
+        public    readonly  string          name;
+        /// <summary>
+        /// The name used for a container / table instance in a specific database. By default it is equal to <see cref="name"/>.
+        /// It can be customized by the <see cref="EntityDatabase.customContainerName"/> function.
+        /// </summary>
+        protected readonly  string          instanceName;
+        private   readonly  EntityDatabase  database;
 
-        public  virtual     bool            Pretty      => false;
+        public    virtual   bool            Pretty      => false;
+        public    override  string          ToString()  => instanceName;
 
         public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities command, MessageContext messageContext);
         public abstract Task<UpsertEntitiesResult>  UpsertEntities  (UpsertEntities command, MessageContext messageContext);
@@ -63,9 +70,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL
 
 
         protected EntityContainer(string name, EntityDatabase database) {
-            this.name = name;
+            this.name           = name;
+            this.instanceName   = database.customContainerName(name);
+            this.database       = database;
             database.AddContainer(this);
-            this.database = database;
         }
         
         public virtual  void                        Dispose() { }

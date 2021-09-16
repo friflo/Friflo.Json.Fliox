@@ -30,7 +30,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         public   override   bool                        Pretty      { get; }
 
         public MemoryContainer(string name, EntityDatabase database, bool pretty)
-            : base(name, database) {
+            : base(name, database)
+        {
             Pretty = pretty;
         }
         

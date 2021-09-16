@@ -52,7 +52,8 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         private static readonly UTF8Encoding Utf8Encoding = new UTF8Encoding (false, true);
 
         internal CosmosContainer(string name, EntityDatabase database, ContainerOptions options, bool pretty)
-        : base(name, database) {
+            : base(name, database)
+        {
             this.options    = options;
             Pretty          = pretty;
         }
@@ -62,7 +63,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 return;
             var db          = options.database;
             var throughput  = options.throughput;
-            cosmosContainer = await db.CreateContainerIfNotExistsAsync(name, "/id", throughput).ConfigureAwait(false);
+            cosmosContainer = await db.CreateContainerIfNotExistsAsync(instanceName, "/id", throughput).ConfigureAwait(false);
         }
         
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {

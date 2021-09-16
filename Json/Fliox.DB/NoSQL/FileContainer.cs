@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            return new FileContainer(name, this, databaseFolder + database.mapContainerName(name), pretty);
+            return new FileContainer(name, this, databaseFolder, pretty);
         }
     }
     
@@ -37,9 +37,11 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         public   override   bool                    Pretty      { get; }
 
 
-        public FileContainer(string name, EntityDatabase database, string folder, bool pretty) : base (name, database) {
+        public FileContainer(string name, EntityDatabase database, string databaseFolder, bool pretty)
+            : base (name, database)
+        {
             this.Pretty = pretty;
-            this.folder = folder + "/";
+            this.folder = databaseFolder + instanceName + "/";
             rwLock      = new AsyncReaderWriterLock();
             Directory.CreateDirectory(folder);
         }
