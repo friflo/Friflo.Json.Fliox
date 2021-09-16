@@ -67,9 +67,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         /// </summary>
         public              DatabaseSchema                      schema;
         /// <summary>
-        /// A mapping function used to assign a custom container instance name. By default the entity Type name is used.
-        /// E.g in case of using the container <see cref="EntityContainer.name"/> 'Article' it can be mapped to a
-        /// custom container / table <see cref="EntityContainer.instanceName"/> 'articles' in a DB.
+        /// A mapping function used to assign a custom container name.
+        /// If using a custom name its value is assigned to the containers <see cref="EntityContainer.instanceName"/>. 
         /// By having the mapping function in <see cref="EntityDatabase"/> it enables uniform mapping across different
         /// <see cref="EntityDatabase"/> implementations.
         /// </summary>

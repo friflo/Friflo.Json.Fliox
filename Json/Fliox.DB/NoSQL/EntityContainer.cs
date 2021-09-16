@@ -54,7 +54,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         public    readonly  string          name;
         /// <summary>
         /// The name used for a container / table instance in a specific database. By default it is equal to <see cref="name"/>.
-        /// It can be customized by the <see cref="EntityDatabase.customContainerName"/> function.
+        /// It can be customized (altered) by the <see cref="EntityDatabase.customContainerName"/> function.
+        /// This field need to be used for <see cref="EntityContainer"/> implementations when accessing a specific
+        /// databases (e.g. Mongo, Dynamo, Cosmos, Postgres, ...).
         /// </summary>
         protected readonly  string          instanceName;
         private   readonly  EntityDatabase  database;
