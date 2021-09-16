@@ -72,9 +72,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             base.SetContainerResults(response);
         }
 
-        public TestContainer GetTestContainer<TEntity>() where TEntity : class {
-            var name = typeof(TEntity).Name;
-            return (TestContainer) GetOrCreateContainer(name);
+        public TestContainer GetTestContainer(string container) {
+            return (TestContainer) GetOrCreateContainer(container);
         }
     }
     

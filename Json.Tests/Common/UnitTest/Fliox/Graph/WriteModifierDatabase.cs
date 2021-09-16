@@ -62,20 +62,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             return await local.ExecuteSync(syncRequest, messageContext);
         }
 
-        public WriteModifiers GetWriteModifiers<TEntity>() where TEntity : class {
-            var name = typeof(TEntity).Name;
-            if (!writeModifiers.TryGetValue(name, out var writeModifier)) {
+        public WriteModifiers GetWriteModifiers(string container) {
+            if (!writeModifiers.TryGetValue(container, out var writeModifier)) {
                 writeModifier = new WriteModifiers(validator);
-                writeModifiers.Add(name, writeModifier);
+                writeModifiers.Add(container, writeModifier);
             }
             return writeModifier;
         }
         
-        public PatchModifiers GetPatchModifiers<TEntity>() where TEntity : class {
-            var name = typeof(TEntity).Name;
-            if (!patchModifiers.TryGetValue(name, out var patchModifier)) {
+        public PatchModifiers GetPatchModifiers(string container) {
+            if (!patchModifiers.TryGetValue(container, out var patchModifier)) {
                 patchModifier = new PatchModifiers();
-                patchModifiers.Add(name, patchModifier);
+                patchModifiers.Add(container, patchModifier);
             }
             return patchModifier;
         }

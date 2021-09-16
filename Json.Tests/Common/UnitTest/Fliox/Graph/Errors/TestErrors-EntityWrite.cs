@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
 
         private static async Task AssertEntityWrite(PocStore store, TestDatabase testDatabase) {
             testDatabase.ClearErrors();
-            TestContainer testCustomers = testDatabase.GetTestContainer<Customer>();
+            TestContainer testCustomers = testDatabase.GetTestContainer(nameof(PocStore.customers));
             
             const string deleteEntityError      = "delete-entity-error";
             const string createEntityError      = "create-entity-error";
@@ -42,26 +42,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             AreEqual("tasks: 3, failed: 3", sync.ToString());
             AreEqual(@"Sync() failed with task errors. Count: 3
 |- createError # EntityErrors ~ count: 1
-|   WriteError: Customer 'create-entity-error', simulated write entity error
+|   WriteError: customers 'create-entity-error', simulated write entity error
 |- upsertError # EntityErrors ~ count: 1
-|   WriteError: Customer 'upsert-entity-error', simulated write entity error
+|   WriteError: customers 'upsert-entity-error', simulated write entity error
 |- deleteError # EntityErrors ~ count: 1
-|   WriteError: Customer 'delete-entity-error', simulated write entity error", sync.Message);
+|   WriteError: customers 'delete-entity-error', simulated write entity error", sync.Message);
 
             IsFalse(deleteError.Success);
             var deleteErrors = deleteError.Error.entityErrors;
             AreEqual(1,        deleteErrors.Count);
-            AreEqual("WriteError: Customer 'delete-entity-error', simulated write entity error", deleteErrors[new JsonKey(deleteEntityError)].ToString());
+            AreEqual("WriteError: customers 'delete-entity-error', simulated write entity error", deleteErrors[new JsonKey(deleteEntityError)].ToString());
             
             IsFalse(createError.Success);
             var createErrors = createError.Error.entityErrors;
             AreEqual(1,        createErrors.Count);
-            AreEqual("WriteError: Customer 'create-entity-error', simulated write entity error", createErrors[new JsonKey(createEntityError)].ToString());
+            AreEqual("WriteError: customers 'create-entity-error', simulated write entity error", createErrors[new JsonKey(createEntityError)].ToString());
             
             IsFalse(upsertError.Success);
             var upsertErrors = upsertError.Error.entityErrors;
             AreEqual(1,        upsertErrors.Count);
-            AreEqual("WriteError: Customer 'upsert-entity-error', simulated write entity error", upsertErrors[new JsonKey(upsertEntityError)].ToString());
+            AreEqual("WriteError: customers 'upsert-entity-error', simulated write entity error", upsertErrors[new JsonKey(upsertEntityError)].ToString());
         }
     }
 }

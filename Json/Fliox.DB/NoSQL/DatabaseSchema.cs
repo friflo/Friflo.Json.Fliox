@@ -70,9 +70,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         public void AddTypeSchema(TypeSchema typeSchema) {
             var validationSet   = new ValidationSet(typeSchema);
             validationSets.Add(validationSet);
-            var entityTypes     = validationSet.GetEntityTypes();
-            foreach (var entityType in entityTypes) {
-                containerTypes.Add(entityType.name, entityType);
+            var rootType = validationSet.GetValidationType(typeSchema.RootType);
+            foreach (var field in rootType.fields) {
+                containerTypes.Add(field.fieldName, field.Type);
             }
         }
 

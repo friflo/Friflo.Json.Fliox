@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         internal static readonly EntityKey<T> EntityKeyMap = EntityKey.GetEntityKey<T>();
 
 
-        protected EntitySetBase(string name) : base(typeof(T).Name) { }
+        protected EntitySetBase(string name) : base(name) { }
         
         internal static void ValidateKeyType(Type keyType) {
             var entityId            = EntityKey.GetEntityKey<T>();
@@ -127,7 +127,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         public   override   string                      ToString()      => SetInfo.ToString();
         
         internal override   SetInfo                     SetInfo { get {
-            var info = new SetInfo (name) { peers = peers.Count };
+            var info = new SetInfo (typeof(T).Name) { peers = peers.Count };
             syncSet?.SetTaskInfo(ref info);
             return info;
         }}
@@ -139,8 +139,8 @@ namespace Friflo.Json.Fliox.DB.Graph
         
         internal override void Init(EntityStore store) {
             var type = typeof(T);
-            store._intern.setByType[type]       = this;
-            store._intern.setByName[type.Name]  = this;
+            store._intern.setByType[type]   = this;
+            store._intern.setByName[name]   = this;
             container   = store._intern.database.GetOrCreateContainer(name);
             intern      = new SetIntern<TKey, T>(store);
         }

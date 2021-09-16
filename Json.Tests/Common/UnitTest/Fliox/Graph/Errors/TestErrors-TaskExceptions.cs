@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
 
         private static async Task AssertTaskExceptions(PocStore store, TestDatabase testDatabase) {
             testDatabase.ClearErrors();
-            TestContainer testCustomers = testDatabase.GetTestContainer<Customer>();
+            TestContainer testCustomers = testDatabase.GetTestContainer(nameof(PocStore.customers));
             const string readTaskException      = "read-task-exception"; // throws an exception also for a Query
             const string createTaskException    = "create-task-exception";
             const string upsertTaskException    = "upsert-task-exception";

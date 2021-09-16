@@ -25,7 +25,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         internal ReadRefsTask<TKey, TValue> ReadRefsByPath<TKey, TValue>(string selector, EntityStore store) where TValue : class {
             if (subRefs.TryGetTask(selector, out ReadRefsTask subRefsTask))
                 return (ReadRefsTask<TKey, TValue>)subRefsTask;
-            var newQueryRefs = new ReadRefsTask<TKey, TValue>(task, selector, typeof(TValue).Name, store);
+            var set = store._intern.setByType[typeof(TValue)];
+            var newQueryRefs = new ReadRefsTask<TKey, TValue>(task, selector, set.name, store);
             subRefs.AddTask(selector, newQueryRefs);
             store.AddTask(newQueryRefs);
             return newQueryRefs;

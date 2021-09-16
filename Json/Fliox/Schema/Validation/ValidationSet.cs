@@ -17,6 +17,12 @@ namespace Friflo.Json.Fliox.Schema.Validation
         private  readonly   Dictionary<TypeDef, ValidationType> typeMap;
         private  readonly   TypeDef                             rootType;
         
+        public ValidationType GetValidationType (TypeDef type) {
+            if (typeMap.TryGetValue(type, out var validationType))
+                return validationType;
+            return null;
+        }
+        
         /// <summary>
         /// Construct a <see cref="ValidationSet"/> from a given <see cref="JSON.JsonTypeSchema"/> or a
         /// <see cref="Native.NativeTypeSchema"/>. The <see cref="ValidationSet"/> is intended to be used by

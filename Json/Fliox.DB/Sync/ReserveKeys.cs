@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.Sync
             var pools = messageContext.pools;
             using (var pooledStore = pools.Pool(() => new SequenceStore(database, SyncTypeStore.Get(), "ReserveKeys")).Get()) {
                 var store = pooledStore.instance;
-                var read            = store.sequence.Read();
+                var read            = store._sequence.Read();
                 var sequenceTask    = read.Find(container);
                 var sync = await store.TrySync();
                 if (!sync.Success) {
@@ -39,8 +39,8 @@ namespace Friflo.Json.Fliox.DB.Sync
                     count       = count,
                     user        = messageContext.clientId
                 };
-                store.sequenceKeys.Upsert(sequenceKeys);
-                store.sequence.Upsert(sequence);
+                store._sequenceKeys.Upsert(sequenceKeys);
+                store._sequence.Upsert(sequence);
                 sync = await store.TrySync();
                 if (!sync.Success) {
                     return  new ReserveKeysResult { Error = new CommandError(sync.Message) };

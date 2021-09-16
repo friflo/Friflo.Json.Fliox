@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         public   readonly   string              @namespace;
         public   readonly   TypeId              typeId;
-        private  readonly   ValidationField[]   fields;
+        public   readonly   ValidationField[]   fields;
         public   readonly   int                 requiredFieldsCount;
         private  readonly   ValidationField[]   requiredFields;
         public   readonly   ValidationUnion     unionType;
@@ -228,6 +228,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         public   readonly   bool            isDictionary;
         public   readonly   bool            isNullableElement;  
         public   readonly   int             requiredPos;
+        public              ValidationType  Type => type;
     
         // --- internal
         internal            ValidationType  type;

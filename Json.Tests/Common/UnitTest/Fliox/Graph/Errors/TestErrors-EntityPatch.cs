@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
 
         private static async Task AssertEntityPatch(PocStore store, TestDatabase testDatabase) {
             testDatabase.ClearErrors();
-            TestContainer testCustomers = testDatabase.GetTestContainer<Customer>();
+            TestContainer testCustomers = testDatabase.GetTestContainer(nameof(PocStore.customers));
             const string patchReadEntityError   = "patch-read-entity-error";
             const string patchWriteEntityError  = "patch-write-entity-error";
             const string patchTaskException     = "patch-task-exception";
@@ -51,27 +51,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             AreEqual("tasks: 3, failed: 3", sync.ToString());
             AreEqual(@"Sync() failed with task errors. Count: 3
 |- patchNotFound # EntityErrors ~ count: 1
-|   PatchError: Customer 'unknown-id', patch target not found
+|   PatchError: customers 'unknown-id', patch target not found
 |- patchReadError # EntityErrors ~ count: 1
-|   ReadError: Customer 'patch-read-entity-error', simulated read entity error
+|   ReadError: customers 'patch-read-entity-error', simulated read entity error
 |- patchWriteError # EntityErrors ~ count: 1
-|   WriteError: Customer 'patch-write-entity-error', simulated write entity error", sync.Message);
+|   WriteError: customers 'patch-write-entity-error', simulated write entity error", sync.Message);
             
             {
                 IsFalse(patchNotFound.Success);
                 AreEqual(TaskErrorType.EntityErrors, patchNotFound.Error.type);
                 var patchErrors = patchNotFound.Error.entityErrors;
-                AreEqual("PatchError: Customer 'unknown-id', patch target not found", patchErrors[new JsonKey(unknownId)].ToString());
+                AreEqual("PatchError: customers 'unknown-id', patch target not found", patchErrors[new JsonKey(unknownId)].ToString());
             } {
                 IsFalse(patchReadError.Success);
                 AreEqual(TaskErrorType.EntityErrors, patchReadError.Error.type);
                 var patchErrors = patchReadError.Error.entityErrors;
-                AreEqual("ReadError: Customer 'patch-read-entity-error', simulated read entity error", patchErrors[new JsonKey(patchReadEntityError)].ToString());
+                AreEqual("ReadError: customers 'patch-read-entity-error', simulated read entity error", patchErrors[new JsonKey(patchReadEntityError)].ToString());
             } {
                 IsFalse(patchWriteError.Success);
                 AreEqual(TaskErrorType.EntityErrors, patchWriteError.Error.type);
                 var patchErrors = patchWriteError.Error.entityErrors;
-                AreEqual("WriteError: Customer 'patch-write-entity-error', simulated write entity error", patchErrors[new JsonKey(patchWriteEntityError)].ToString());
+                AreEqual("WriteError: customers 'patch-write-entity-error', simulated write entity error", patchErrors[new JsonKey(patchWriteEntityError)].ToString());
             }
             
             // --- test read task error

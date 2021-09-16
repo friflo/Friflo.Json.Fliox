@@ -4,7 +4,6 @@
 using System.Collections;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.NoSQL;
-using Friflo.Json.Fliox.DB.Sync;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Transform;
@@ -40,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             modifyDb.ClearErrors();
             var articles = store.articles;
             
-            var articleModifier = modifyDb.GetWriteModifiers<Article>();
+            var articleModifier = modifyDb.GetWriteModifiers(nameof(PocStore.articles));
             articleModifier.writes.Add("article-missing-id",     val => new JsonValue("{\"id\": \"article-missing-id\" }"));
             articleModifier.writes.Add("article-incorrect-type", val => new JsonValue(val.json.Replace("\"xxx\"", "123")));
 
@@ -58,9 +57,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             var errors = createTask.Error.entityErrors;
             AreEqual("Required property must not be null. at Article > name, pos: 40", errors[new JsonKey("article-missing-name")].message);
             const string expectError = @"EntityErrors ~ count: 3
-| WriteError: Article 'article-incorrect-type', Incorrect type. was: 123, expect: string at Article > name, pos: 41
-| WriteError: Article 'article-missing-id', Missing required fields: [name] at Article > (root), pos: 29
-| WriteError: Article 'article-missing-name', Required property must not be null. at Article > name, pos: 40";
+| WriteError: articles 'article-incorrect-type', Incorrect type. was: 123, expect: string at Article > name, pos: 41
+| WriteError: articles 'article-missing-id', Missing required fields: [name] at Article > (root), pos: 29
+| WriteError: articles 'article-missing-name', Required property must not be null. at Article > name, pos: 40";
             AreEqual(expectError, createTask.Error.Message);
             
             // --- test validation errors for upserts
@@ -76,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             
             
             // test validation errors for patches
-            var patchModifier = modifyDb.GetPatchModifiers<Article>();
+            var patchModifier = modifyDb.GetPatchModifiers(nameof(PocStore.articles));
             patchModifier.patches.Add("article-2", patch => {
                 var replace = (PatchReplace)patch.patches[0];
                 replace.value.json = "123";
@@ -90,7 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             
             IsFalse(patchArticle.Success);
             AreEqual(@"EntityErrors ~ count: 1
-| PatchError: Article 'article-2', Incorrect type. was: 123, expect: string at Article > name, pos: 40", patchArticle.Error.Message);
+| PatchError: articles 'article-2', Incorrect type. was: 123, expect: string at Article > name, pos: 40", patchArticle.Error.Message);
 
 
             // --- test validation errors for invalid JSON

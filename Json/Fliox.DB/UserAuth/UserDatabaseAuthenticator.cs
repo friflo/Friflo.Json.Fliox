@@ -29,11 +29,11 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         public static readonly    Authorizer   UnknownRights    = new AuthorizeDeny();
         public static readonly    Authorizer   AuthUserRights   = new AuthorizeAny(new Authorizer[] {
             new AuthorizeMessage(nameof(AuthenticateUser)),
-            new AuthorizeContainer(nameof(UserPermission),  new []{OperationType.read}),
-            new AuthorizeContainer(nameof(Role),            new []{OperationType.read, OperationType.query}),
+            new AuthorizeContainer(nameof(UserStore.permissions),  new []{OperationType.read}),
+            new AuthorizeContainer(nameof(UserStore.roles),        new []{OperationType.read, OperationType.query}),
         });
         public static readonly    Authorizer   ServerRights     = new AuthorizeAny(new Authorizer[] {
-            new AuthorizeContainer(nameof(UserCredential),  new []{OperationType.read})
+            new AuthorizeContainer(nameof(UserStore.credentials),  new []{OperationType.read})
         });
         
         public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
