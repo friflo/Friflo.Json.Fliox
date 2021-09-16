@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         internal static readonly IDictionary<JsonKey, EntityError> NoErrors = new EmptyDictionary<JsonKey, EntityError>();  
             
         internal    IDictionary<JsonKey, EntityError>    errorsCreate = NoErrors;
-        internal    IDictionary<JsonKey, EntityError>    errorsUpdate = NoErrors;
+        internal    IDictionary<JsonKey, EntityError>    errorsUpsert = NoErrors;
         internal    IDictionary<JsonKey, EntityError>    errorsPatch  = NoErrors;
         internal    IDictionary<JsonKey, EntityError>    errorsDelete = NoErrors;
 
@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         }
 
         internal override void UpsertEntitiesResult(UpsertEntities task, TaskResult result) {
-            CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, UpsertTasks(), errorsUpdate);
+            CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, UpsertTasks(), errorsUpsert);
             
             // enable GC to collect references in containers which are not needed anymore
             Upserts().Clear();

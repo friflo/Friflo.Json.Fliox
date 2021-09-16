@@ -387,7 +387,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                 foreach (var upsertError in upsertErrors) {
                     upsertError.Value.SetInferredErrorFields();
                     var syncSet = syncSets[upsertError.Key];
-                    syncSet.errorsUpdate = upsertError.Value.errors;
+                    syncSet.errorsUpsert = upsertError.Value.errors;
                 }
             }
             var patchErrors = response.patchErrors;

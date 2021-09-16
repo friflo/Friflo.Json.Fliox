@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         
         public void Add(T entity) {
             if (entity == null)
-                throw new ArgumentException($"UpdateTask<{set.name}>.Add() entity must not be null.");
+                throw new ArgumentException($"UpsertTask<{set.name}>.Add() entity must not be null.");
             var peer = set.CreatePeer(entity);
             var syncSet = set.GetSyncSetBase();
             syncSet.AddUpsert(peer);
@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             var syncSet = set.GetSyncSetBase();
             foreach (var entity in entities) {
                 if (entity == null)
-                    throw new ArgumentException($"UpdateTask<{set.name}>.AddRange() entities[{n}] must not be null.");
+                    throw new ArgumentException($"UpsertTask<{set.name}>.AddRange() entities[{n}] must not be null.");
                 n++;
                 var peer = set.CreatePeer(entity);
                 syncSet.AddUpsert(peer);

@@ -263,10 +263,10 @@ namespace Friflo.Json.Fliox.DB.Graph
         
         public UpsertTask<T> UpsertRange(ICollection<T> entities) {
             if (entities == null)
-                throw new ArgumentException($"EntitySet.UpdateRange() entity must not be null. EntitySet: {name}");
+                throw new ArgumentException($"EntitySet.UpsertRange() entity must not be null. EntitySet: {name}");
             foreach (var entity in entities) {
                 if (EntityKeyTMap.IsEntityKeyNull(entity))
-                    throw new ArgumentException($"EntitySet.UpdateRange() entity.id must not be null. EntitySet: {name}");
+                    throw new ArgumentException($"EntitySet.UpsertRange() entity.id must not be null. EntitySet: {name}");
             }
             var task = GetSyncSet().UpsertRange(entities);
             intern.store.AddTask(task);
