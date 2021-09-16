@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         public String           str;
         public String           strNull = "notNull";
         public String           escChars;
-        public Object           n = "x";
+        public object           n = "x";
         public ISub             subType = null;
         public bool             t;
         public bool             f;

@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
             int rank = type.GetArrayRank();
             if (rank > 1)
                 return null; // todo implement multi dimensional array support
-            if (ReflectUtils.IsAssignableFrom(typeof(Object), elementType)) {
+            if (ReflectUtils.IsAssignableFrom(typeof(object), elementType)) {
                 ConstructorInfo constructor = null; // For arrays Arrays.CreateInstance(componentType, length) is used
                 // ReSharper disable once ExpressionIsAlwaysNull
                 object[] constructorParams = {config, type, elementType, constructor};
