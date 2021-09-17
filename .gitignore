@@ -18,4 +18,5 @@ riderModule.iml
 # ignores: *.user.meta, *.cs.meta, *.asmdef.meta, *.meta (folders), ...
 *.meta
 
-Unity.Mathematics
+# contains Unity.Mathematics
+.extern/

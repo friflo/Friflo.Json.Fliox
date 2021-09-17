@@ -31,7 +31,7 @@
     </ItemGroup>
 	
     <ItemGroup>
-      <ProjectReference Include="..\..\Unity.Mathematics\src\Unity.Mathematics\Unity.Mathematics.csproj" />
+      <ProjectReference Include="..\..\.extern\Unity.Mathematics\src\Unity.Mathematics\Unity.Mathematics.csproj" />
       <ProjectReference Include="..\Burst\Friflo.Json.Burst.csproj" />
     </ItemGroup>
 
