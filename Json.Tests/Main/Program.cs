@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Main
 
             var rootCommand = new RootCommand {
                 moduleOpt,
-                new Option<string>("--endpoint", () => "http://+:8081/",                        "endpoint the server listen at"),
+                new Option<string>("--endpoint", () => "http://+:8010/",                        "endpoint the server listen at"),
                 new Option<string>("--database", () => "./Json.Tests/assets~/DB/PocStore",    "folder of the file database"),
                 new Option<string>("--www",      () => "./Json.Tests/assets~/www",               "folder of static web files")
             };
@@ -82,8 +82,8 @@ namespace Friflo.Json.Tests.Main
         // Http server may require a permission to listen to the given host/port.
         // Otherwise exception is thrown on startup: System.Net.HttpListenerException: permission denied.
         // To give access see: [add urlacl - Win32 apps | Microsoft Docs] https://docs.microsoft.com/en-us/windows/win32/http/add-urlacl
-        //     netsh http add urlacl url=http://+:8081/ user=<DOMAIN>\<USER> listen=yes
-        //     netsh http delete urlacl http://+:8081/
+        //     netsh http add urlacl url=http://+:8010/ user=<DOMAIN>\<USER> listen=yes
+        //     netsh http delete urlacl http://+:8010/
         // 
         // Get DOMAIN\USER via  PowerShell
         //     $env:UserName
