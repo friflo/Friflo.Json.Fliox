@@ -23,8 +23,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
         private static async Task AssertReadTask(PocStore store, TestDatabase testDatabase) {
             testDatabase.ClearErrors();
             const string articleError = @"EntityErrors ~ count: 2
-| ReadError: articles 'article-1', simulated read entity error
-| ParseError: articles 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
+| ReadError: articles [article-1], simulated read entity error
+| ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
             
             TestContainer testArticles = testDatabase.GetTestContainer(nameof(PocStore.articles));
             const string article1ReadError      = "article-1";
@@ -103,22 +103,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
                 AreEqual(7, sre.failed.Count);
                 const string expect = @"Sync() failed with task errors. Count: 7
 |- orderArticles # EntityErrors ~ count: 2
-|   ReadError: articles 'article-1', simulated read entity error
-|   ParseError: articles 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
+|   ReadError: articles [article-1], simulated read entity error
+|   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
 |- articleProducer # EntityErrors ~ count: 2
-|   ReadError: articles 'article-1', simulated read entity error
-|   ParseError: articles 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
+|   ReadError: articles [article-1], simulated read entity error
+|   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
 |- article1 # EntityErrors ~ count: 1
-|   ReadError: articles 'article-1', simulated read entity error
+|   ReadError: articles [article-1], simulated read entity error
 |- article1And2 # EntityErrors ~ count: 2
-|   ReadError: articles 'article-1', simulated read entity error
-|   ParseError: articles 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
+|   ReadError: articles [article-1], simulated read entity error
+|   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
 |- invalidJson # EntityErrors ~ count: 1
-|   ParseError: articles 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16
+|   ParseError: articles [article-invalidJson], JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16
 |- idDoesntMatch # EntityErrors ~ count: 1
-|   ParseError: articles 'article-idDoesntMatch', entity key mismatch. 'id': 'article-unexpected-id'
+|   ParseError: articles [article-idDoesntMatch], entity key mismatch. 'id': 'article-unexpected-id'
 |- missingEntity # EntityErrors ~ count: 1
-|   ReadError: articles 'missing-article', requested entity missing in response results";
+|   ReadError: articles [missing-article], requested entity missing in response results";
                 AreEqual(expect, sre.Message);
             }
             
@@ -151,7 +151,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             
             IsFalse(article1.Success);
             AreEqual(@"EntityErrors ~ count: 1
-| ReadError: articles 'article-1', simulated read entity error", article1.Error.ToString());
+| ReadError: articles [article-1], simulated read entity error", article1.Error.ToString());
 
             te = Throws<TaskResultException>(() => { var _ = article1And2.Results; });
             AreEqual(articleError, te.Message);
@@ -164,15 +164,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             
             IsFalse(invalidJson.Success);
             AreEqual(@"EntityErrors ~ count: 1
-| ParseError: articles 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16", invalidJson.Error.ToString());
+| ParseError: articles [article-invalidJson], JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16", invalidJson.Error.ToString());
             
             IsFalse(idDoesntMatch.Success);
             AreEqual(@"EntityErrors ~ count: 1
-| ParseError: articles 'article-idDoesntMatch', entity key mismatch. 'id': 'article-unexpected-id'", idDoesntMatch.Error.ToString());
+| ParseError: articles [article-idDoesntMatch], entity key mismatch. 'id': 'article-unexpected-id'", idDoesntMatch.Error.ToString());
             
             IsFalse(missingEntity.Success);
             AreEqual(@"EntityErrors ~ count: 1
-| ReadError: articles 'missing-article', requested entity missing in response results", missingEntity.Error.ToString());
+| ReadError: articles [missing-article], requested entity missing in response results", missingEntity.Error.ToString());
             
         }
     }

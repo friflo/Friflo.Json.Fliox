@@ -25,8 +25,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
         private static async Task AssertQueryTask(PocStore store, TestDatabase testDatabase) {
             testDatabase.ClearErrors();
             const string articleError = @"EntityErrors ~ count: 2
-| ReadError: articles 'article-1', simulated read entity error
-| ParseError: articles 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
+| ReadError: articles [article-1], simulated read entity error
+| ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
         
             const string article1ReadError      = "article-1";
             const string article2JsonError      = "article-2";
@@ -107,16 +107,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             AreEqual(5,  sync.failed.Count);
             const string msg = @"Sync() failed with task errors. Count: 5
 |- allArticles # EntityErrors ~ count: 2
-|   ReadError: articles 'article-1', simulated read entity error
-|   ParseError: articles 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
+|   ReadError: articles [article-1], simulated read entity error
+|   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
 |- articleProducer # EntityErrors ~ count: 2
-|   ReadError: articles 'article-1', simulated read entity error
-|   ParseError: articles 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
+|   ReadError: articles [article-1], simulated read entity error
+|   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
 |- order2CustomerError # DatabaseError ~ read references failed: 'orders -> .customer' - simulated read task error
 |- order2Customer # DatabaseError ~ read references failed: 'orders -> .customer' - simulated read task error
 |- producerEmployees # EntityErrors ~ count: 2
-|   ReadError: articles 'article-1', simulated read entity error
-|   ParseError: articles 'article-2', JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
+|   ReadError: articles [article-1], simulated read entity error
+|   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
             AreEqual(msg, sync.Message);
             
             AreEqual(1,                 ordersWithCustomer1.Results.Count);
@@ -181,7 +181,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             AreEqual(1, result.failed.Count);
             IsFalse(allArticles2.Success);
             AreEqual(@"EntityErrors ~ count: 1
-| ReadError: articles 'article-1', requested entity missing in response results", allArticles2.Error.ToString());
+| ReadError: articles [article-1], requested entity missing in response results", allArticles2.Error.ToString());
             
         }
     }

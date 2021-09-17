@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
                 AreEqual(@"EntityErrors ~ count: 1
-| WriteError: producers 'create-error', DatabaseError - simulated create task error", logChanges.Error.Message);
+| WriteError: producers [create-error], DatabaseError - simulated create task error", logChanges.Error.Message);
             } {
                 var createException = "create-exception";
                 testProducers.writeTaskErrors.Add(createException, () => throw new SimulationException("simulated create task exception"));
@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
                 AreEqual(@"EntityErrors ~ count: 1
-| WriteError: producers 'create-exception', UnhandledException - SimulationException: simulated create task exception", logChanges.Error.Message);
+| WriteError: producers [create-exception], UnhandledException - SimulationException: simulated create task exception", logChanges.Error.Message);
             }
 
             /*  // not required as TestContainer as database doesnt mutate
