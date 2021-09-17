@@ -49,11 +49,11 @@ namespace Friflo.Json.Fliox.DB.Sync
                     if (json == null) {
                         continue;
                     }
-                    if (validator.GetEntityKey(json, keyName, out JsonKey payloadId, out string error)) {
+                    if (validator.GetEntityKey(json, ref keyName, out JsonKey payloadId, out string error)) {
                         var id      = entityEntry.Key;
                         if (id.IsEqual(payloadId))
                             continue;
-                        error = $"entity id does not match key. id: {payloadId.AsString()}";
+                        error = $"entity key mismatch. key: {keyName}, value: {payloadId.AsString()}";
                     }
                     var entityError = new EntityError {
                         type        = EntityErrorType.ParseError,

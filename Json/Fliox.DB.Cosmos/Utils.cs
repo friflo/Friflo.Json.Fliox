@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             using (var pooledValidator = messageContext.pools.EntityValidator.Get()) {
                 var validator = pooledValidator.instance;
                 foreach (var document in documents) {
-                    if (!validator.GetEntityKey(document.json, keyName, out JsonKey keyValue, out _)) {
+                    if (!validator.GetEntityKey(document.json, ref keyName, out JsonKey keyValue, out _)) {
                         continue;
                     }
                     var value   = new EntityValue(document.json);

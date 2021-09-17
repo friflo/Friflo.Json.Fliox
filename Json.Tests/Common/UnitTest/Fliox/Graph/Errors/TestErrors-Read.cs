@@ -116,7 +116,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
 |- invalidJson # EntityErrors ~ count: 1
 |   ParseError: articles 'article-invalidJson', JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16
 |- idDoesntMatch # EntityErrors ~ count: 1
-|   ParseError: articles 'article-idDoesntMatch', entity id does not match key. id: article-unexpected-id
+|   ParseError: articles 'article-idDoesntMatch', entity key mismatch. key: id, value: article-unexpected-id
 |- missingEntity # EntityErrors ~ count: 1
 |   ReadError: articles 'missing-article', requested entity missing in response results";
                 AreEqual(expect, sre.Message);
@@ -168,7 +168,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             
             IsFalse(idDoesntMatch.Success);
             AreEqual(@"EntityErrors ~ count: 1
-| ParseError: articles 'article-idDoesntMatch', entity id does not match key. id: article-unexpected-id", idDoesntMatch.Error.ToString());
+| ParseError: articles 'article-idDoesntMatch', entity key mismatch. key: id, value: article-unexpected-id", idDoesntMatch.Error.ToString());
             
             IsFalse(missingEntity.Success);
             AreEqual(@"EntityErrors ~ count: 1
