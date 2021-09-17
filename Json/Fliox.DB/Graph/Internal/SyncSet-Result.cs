@@ -27,6 +27,12 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         internal  abstract  void    PatchEntitiesResult     (PatchEntities      task, TaskResult result);
         internal  abstract  void    DeleteEntitiesResult    (DeleteEntities     task, TaskResult result);
         internal  abstract  void    SubscribeChangesResult  (SubscribeChanges   task, TaskResult result);
+        
+        internal static string SyncKeyName (string keyName) {
+            if (keyName == "id")
+                return null;
+            return keyName;
+        }
     }
 
     internal partial class SyncSet<TKey, T>

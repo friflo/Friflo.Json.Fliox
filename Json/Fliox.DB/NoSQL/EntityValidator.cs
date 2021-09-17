@@ -20,13 +20,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         private             JsonParser      parser;
         private             Bytes           idKey = new Bytes(16);
         
-        public bool GetEntityKey(string json, JsonKey? keyName, out JsonKey keyValue, out string error) {
+        public bool GetEntityKey(string json, string keyName, out JsonKey keyValue, out string error) {
             idKey.Clear();
-            if (keyName == null) {
-                idKey.AppendString("id");    
-            } else {
-                keyName.Value.AppendTo(ref idKey, ref parser.format);
-            }
+            keyName = keyName ?? "id";
+            idKey.AppendString(keyName);
             keyValue     = new JsonKey();
             jsonBytes.Clear();
             jsonBytes.AppendString(json);

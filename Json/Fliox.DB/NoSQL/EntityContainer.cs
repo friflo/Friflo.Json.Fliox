@@ -297,7 +297,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         
         // may move to more appropriate class
         public static List<JsonKey> CreateEntityKeys (
-            JsonKey?                                keyName,
+            string                                  keyName,
             List<JsonValue>                         entities,
             MessageContext                          messageContext,
             out string                              error

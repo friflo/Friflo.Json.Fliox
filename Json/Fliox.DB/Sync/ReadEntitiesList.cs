@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     public class ReadEntitiesList : DatabaseTask
     {
         [Fri.Required]  public  string              container;
-                        public  JsonKey?            key;
+                        public  string              key;
         [Fri.Required]  public  List<ReadEntities>  reads;
         
         internal override       TaskType            TaskType => TaskType.read;

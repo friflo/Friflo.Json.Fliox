@@ -324,7 +324,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             }
             var req = new CreateEntities {
                 container       = set.name,
-                key             = set.GetKeyName(),
+                key             = SyncKeyName(set.GetKeyName()),
                 entities        = entries,
                 entityKeys      = keys,
                 reservedToken   = new Guid() // todo
@@ -349,7 +349,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             }
             var req = new UpsertEntities {
                 container   = set.name,
-                key         = set.GetKeyName(),   
+                key         = SyncKeyName(set.GetKeyName()),   
                 entities    = entries,
                 entityKeys  = keys
             };
@@ -362,7 +362,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             var readList = new ReadEntitiesList {
                 reads       = new List<ReadEntities>(_reads.Count),
                 container   = set.name,
-                key         = set.GetKeyName()
+                key         = SyncKeyName(set.GetKeyName())
             };
             foreach (var read in _reads) {
                 List<References> references = null;
@@ -397,7 +397,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 }
                 var req = new QueryEntities {
                     container   = set.name,
-                    key         = set.GetKeyName(),   
+                    key         = SyncKeyName(set.GetKeyName()),   
                     filter      = query.filter,
                     filterLinq  = query.filterLinq,
                     references  = references
@@ -497,7 +497,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             foreach (var readRefs in refs) {
                 var queryReference = new References {
                     container   = readRefs.Container,
-                    key         = readRefs.KeyName,
+                    key         = SyncKeyName(readRefs.KeyName),
                     selector    = readRefs.Selector
                 };
                 references.Add(queryReference);

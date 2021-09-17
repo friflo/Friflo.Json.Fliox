@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     // ----------------------------------- sub task -----------------------------------
     public class ReadEntities
     {
-        [Fri.Ignore]    public  JsonKey?                        key;
+        [Fri.Ignore]    public  string                          key;
         [Fri.Required]  public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<References>                references;
     }
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         /// So database adapters which can ensure the JSON value is always valid made calling <see cref="ValidateEntities"/>
         /// obsolete - like Postgres/JSONB, Azure Cosmos DB or MongoDB.
         /// </summary>
-        public void ValidateEntities(string container, JsonKey? keyName, MessageContext messageContext) {
+        public void ValidateEntities(string container, string keyName, MessageContext messageContext) {
             using (var pooledValidator = messageContext.pools.EntityValidator.Get()) {
                 EntityValidator validator = pooledValidator.instance;
                 foreach (var entityEntry in entities) {

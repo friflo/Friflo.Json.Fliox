@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         internal  abstract  void                ResetSync               ();
         internal  abstract  SyncTask            SubscribeChangesInternal(IEnumerable<Change> changes);
         internal  abstract  SubscribeChanges    GetSubscription();
-        internal  abstract  JsonKey?            GetKeyName();
+        internal  abstract  string              GetKeyName();
 
         protected EntitySet(string name) {
             this.name = name;
@@ -554,11 +554,8 @@ namespace Friflo.Json.Fliox.DB.Graph
             return intern.subscription;
         }
         
-        internal override JsonKey? GetKeyName() {
-            var key = EntityKeyTMap.GetKeyName();
-            if (key == "id")
-                return null;
-            return new JsonKey(EntityKeyTMap.GetKeyName());
+        internal override string GetKeyName() {
+            return EntityKeyTMap.GetKeyName();
         }
     }
 }

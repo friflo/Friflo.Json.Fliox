@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         internal            TaskState   state;
         internal abstract   string      Selector    { get; }
         internal abstract   string      Container   { get; }
-        internal abstract   JsonKey?    KeyName     { get; }
+        internal abstract   string      KeyName     { get; }
         internal abstract   SubRefs     SubRefs     { get; }
         
         internal abstract void    SetResult (EntitySet set, HashSet<JsonKey> ids);
@@ -49,12 +49,12 @@ namespace Friflo.Json.Fliox.DB.Graph
             
         internal  override  string                  Selector  { get; }
         internal  override  string                  Container { get; }
-        internal  override  JsonKey?                KeyName   { get; }
+        internal  override  string                  KeyName   { get; }
         
         internal  override  SubRefs                 SubRefs => refsTask.subRefs;
 
 
-        internal ReadRefsTask(SyncTask parent, string selector, string container, JsonKey? keyName, EntityStore store)
+        internal ReadRefsTask(SyncTask parent, string selector, string container, string keyName, EntityStore store)
         {
             refsTask        = new RefsTask(this);
             this.parent     = parent;
@@ -120,14 +120,14 @@ namespace Friflo.Json.Fliox.DB.Graph
         internal override   TaskState       State       => state;
         public   override   string          Details     => $"{parent.GetLabel()} -> {Selector}";
                 
-        internal override   string          Selector  { get; }
-        internal override   string          Container { get; }
-        internal override   JsonKey?        KeyName     { get; }
+        internal override   string          Selector    { get; }
+        internal override   string          Container   { get; }
+        internal override   string          KeyName     { get; }
             
         internal override   SubRefs         SubRefs => refsTask.subRefs;
 
 
-        internal ReadRefTask(SyncTask parent, string selector, string container, JsonKey? keyName, EntityStore store)
+        internal ReadRefTask(SyncTask parent, string selector, string container, string keyName, EntityStore store)
         {
             refsTask        = new RefsTask(this);
             this.parent     = parent;

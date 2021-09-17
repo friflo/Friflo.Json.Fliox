@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     public class UpsertEntities : DatabaseTask
     {
         [Fri.Required]  public  string                          container;
-                        public  JsonKey?                        key;
+                        public  string                          key;
         [Fri.Required]  public  List<JsonValue>                 entities;
         
         [Fri.Ignore]    public  List<JsonKey>                   entityKeys;

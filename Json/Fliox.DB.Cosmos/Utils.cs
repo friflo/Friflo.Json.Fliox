@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             
         internal static void AddEntities(
             List<JsonValue>                     documents,
-            JsonKey?                            keyName,
+            string                              keyName,
             Dictionary<JsonKey, EntityValue>    entities,
             MessageContext                      messageContext)
         {
