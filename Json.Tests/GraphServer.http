@@ -6,7 +6,7 @@
 
 ### send message to host
 # "Echo" is known at host as a command message. It simply echos the given value.
-POST http://localhost:8081/ HTTP/1.1
+POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync",
@@ -22,7 +22,7 @@ content-type: application/json
 # =============================== read / query tasks ===============================
 
 ### read entities by their ids
-POST http://localhost:8081/ HTTP/1.1
+POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync",
@@ -37,7 +37,7 @@ content-type: application/json
 ]}
 
 ### read entity "order-1" and its reference to .customer
-POST http://localhost:8081/ HTTP/1.1
+POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync",
@@ -60,7 +60,7 @@ content-type: application/json
 ]}
 
 ### query all articles -> "filter": { "op":"true" }
-POST http://localhost:8081/ HTTP/1.1
+POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync",
@@ -75,7 +75,7 @@ content-type: application/json
 
 
 ### query articles with a filter => .name == "Smartphone"
-POST http://localhost:8081/ HTTP/1.1
+POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync",
@@ -91,7 +91,7 @@ content-type: application/json
 
 
 ### query all articles, their referenced .producer (and the .employees[*] referenced by .producer)
-POST http://localhost:8081/ HTTP/1.1
+POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync",
@@ -118,13 +118,13 @@ content-type: application/json
 
 
 ### Get database schema
-GET http://localhost:8081/schema/index.html HTTP/1.1
+GET http://localhost:8010/schema/index.html HTTP/1.1
 
 
 # =============================== mutate tasks ===============================
 
 ### create an article - creates file ./Json.Tests/assets~/db/articles/new-article.json
-POST http://localhost:8081/ HTTP/1.1
+POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync",
@@ -140,7 +140,7 @@ content-type: application/json
 ]}
 
 ### delete an article
-POST http://localhost:8081/ HTTP/1.1
+POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync",
@@ -153,7 +153,7 @@ content-type: application/json
 ]}
 
 ### patch article member .name (article need to be present)
-POST http://localhost:8081/ HTTP/1.1
+POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync",
@@ -176,7 +176,7 @@ content-type: application/json
 ]}
 
 ### Reserve keys for container: articles
-POST http://localhost:8081/ HTTP/1.1
+POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync",
@@ -190,7 +190,7 @@ content-type: application/json
 
 ### create an article using reserved keys. The "reservedToken" is used to proof the keys were reserved before.
 # This ensures no other client is able to create entities by using reserved keys.
-POST http://localhost:8081/ HTTP/1.1
+POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 { "type": "sync",
@@ -213,7 +213,7 @@ content-type: application/json
 # Filter all messages matching to "name".
 # "name": "*"                  => subscribe all message events.
 # "name": "*", "remove": true  => unsubscribe all message events
-POST http://localhost:8081/ HTTP/1.1
+POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 { "type":   "sync",
@@ -226,7 +226,7 @@ content-type: application/json
 ]}
 
 ### subscribe to database changes - run only for WebSocket; fails for HTTP POST
-POST http://localhost:8081/ HTTP/1.1
+POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 { "type":   "sync",
@@ -240,7 +240,7 @@ content-type: application/json
 
 ### acknowledge received events - run only for WebSocket
 # "ack": N => starts resending all buffered events with "seq" > N to the client and remove events with "seq" <= N.
-POST http://localhost:8081/ HTTP/1.1
+POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 { "type":   "sync",
