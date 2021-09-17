@@ -445,8 +445,9 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             }
             if (patches != null && patches.Count > 0) {
                 var req = new PatchEntities {
-                    container = set.name,
-                    patches = new Dictionary<JsonKey, EntityPatch>(patches, JsonKey.Equality)
+                    container   = set.name,
+                    key         = SyncKeyName(set.GetKeyName()),
+                    patches     = new Dictionary<JsonKey, EntityPatch>(patches, JsonKey.Equality)
                 };
                 tasks.Add(req);
             }

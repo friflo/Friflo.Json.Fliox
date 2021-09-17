@@ -430,6 +430,7 @@
         "PatchEntities": {
             "properties": {
                 "container": { "type": "string" },
+                "key":       { "type": "string", "nullable": true },
                 "patches":   { "values": { "ref":  "EntityPatch" } }
             }
         },

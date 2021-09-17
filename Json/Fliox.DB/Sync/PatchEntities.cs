@@ -11,8 +11,9 @@ namespace Friflo.Json.Fliox.DB.Sync
     // ----------------------------------- task -----------------------------------
     public class PatchEntities : DatabaseTask
     {
-        [Fri.Required] public   string                              container;
-        [Fri.Required] public   Dictionary<JsonKey, EntityPatch>    patches = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
+        [Fri.Required]  public  string                              container;
+                        public  string                              key;
+        [Fri.Required]  public  Dictionary<JsonKey, EntityPatch>    patches = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
         
         internal override       TaskType                        TaskType => TaskType.patch;
         public   override       string                          TaskName =>  $"container: '{container}'";

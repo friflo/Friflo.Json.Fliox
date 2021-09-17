@@ -89,6 +89,7 @@ data class QueryEntities (
 @SerialName("patch")
 data class PatchEntities (
               val container : String,
+              val key       : String? = null,
               val patches   : HashMap<String, EntityPatch>,
 ) : DatabaseTask()
 

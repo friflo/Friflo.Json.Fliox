@@ -106,6 +106,7 @@ export class QueryEntities extends DatabaseTask {
 export class PatchEntities extends DatabaseTask {
     task       : "patch";
     container  : string;
+    key?       : string | null;
     patches    : { [key: string]: EntityPatch };
 }
 

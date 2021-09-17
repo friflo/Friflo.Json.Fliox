@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                             error = null;
                             return true;
                         }
-                        error = $"key not found: [{keyName}]";
+                        error = $"missing key in JSON value: [{keyName}]";
                         return false;
                     case JsonEvent.ArrayEnd:
                         throw new InvalidOperationException($"unexpected event: {ev}");
