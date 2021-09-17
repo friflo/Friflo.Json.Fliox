@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
     <!-- Renamed default output folders obj & bin to .obj & .bin to avoid importing them by Unity -->
-    <BaseIntermediateOutputPath>.obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath>.obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
   </PropertyGroup>
 </Project>
