@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                 return MissingContainer();
             if (entities == null)
                 return MissingField(nameof(entities));
-            entityKeys = EntityContainer.CreateEntityKeys(key, entities, messageContext, out string error);
+            entityKeys = EntityUtils.CreateEntityKeys(key, entities, messageContext, out string error);
             if (entityKeys == null) {
                 return InvalidTask(error);
             }

@@ -295,30 +295,6 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             errors.TryAdd(key, error);
         }
         
-        // may move to more appropriate class
-        public static List<JsonKey> CreateEntityKeys (
-            string                                  keyName,
-            List<JsonValue>                         entities,
-            MessageContext                          messageContext,
-            out string                              error
-        ) {
-            var keys = new List<JsonKey>(entities.Count);
-            using (var poolValidator = messageContext.pools.EntityValidator.Get()) {
-                var validator = poolValidator.instance;
-                for (int n = 0; n < entities.Count; n++) {
-                    var entity  = entities[n];
-                    if (validator.GetEntityKey(entity.json, ref keyName, out JsonKey key, out string entityError)) {
-                        keys.Add(key);
-                        continue;
-                    }
-                    error = $"error at entities[{n}]: {entityError}";
-                    return null;
-                }
-            }
-            AssertEntityCounts(keys, entities);
-            error = null;
-            return keys;
-        }
         
         [Conditional("DEBUG")]
         public static void AssertEntityCounts(List<JsonKey> keys, List<JsonValue> entities) {

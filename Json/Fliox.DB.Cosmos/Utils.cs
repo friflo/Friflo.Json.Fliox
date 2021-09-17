@@ -6,8 +6,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.NoSQL;
-using Friflo.Json.Fliox.DB.Sync;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -33,32 +31,15 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 return responseFeed.Documents;
             }
         }
-            
-        internal static void AddEntities(
-            List<JsonValue>                     documents,
-            string                              keyName,
-            Dictionary<JsonKey, EntityValue>    entities,
-            MessageContext                      messageContext)
-        {
-            using (var pooledValidator = messageContext.pools.EntityValidator.Get()) {
-                var validator = pooledValidator.instance;
-                foreach (var document in documents) {
-                    if (!validator.GetEntityKey(document.json, ref keyName, out JsonKey keyValue, out _)) {
-                        continue;
-                    }
-                    var value   = new EntityValue(document.json);
-                    entities.Add(keyValue, value);
-                }
-            }
-        }
         
-        internal static void WriteJson(StreamWriter writer, MemoryStream memory, string json) {
+        public static void WriteJson(StreamWriter writer, MemoryStream memory, string json) {
             memory.SetLength(0);
             writer.Write(json);
             writer.Flush();
             memory.Seek(0, SeekOrigin.Begin);
         }
     }
+    
 }
 
 #endif
