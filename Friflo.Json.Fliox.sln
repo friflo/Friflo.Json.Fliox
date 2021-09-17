@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.DB.Cosmos
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.DB", "Json\Fliox.DB\Friflo.Json.Fliox.DB.csproj", "{C0C7ECC7-D621-4BA0-AD31-687EEA6FE981}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Playground", "Playground\Friflo.Playground.csproj", "{8E134E2F-5042-445A-B306-DFF6F3E83BEA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{C0C7ECC7-D621-4BA0-AD31-687EEA6FE981}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0C7ECC7-D621-4BA0-AD31-687EEA6FE981}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0C7ECC7-D621-4BA0-AD31-687EEA6FE981}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E134E2F-5042-445A-B306-DFF6F3E83BEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E134E2F-5042-445A-B306-DFF6F3E83BEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E134E2F-5042-445A-B306-DFF6F3E83BEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E134E2F-5042-445A-B306-DFF6F3E83BEA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
