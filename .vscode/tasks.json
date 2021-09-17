@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Json.Tests/Friflo.Json.Tests.csproj",
+                "${workspaceFolder}/Friflo.Json.Fliox.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

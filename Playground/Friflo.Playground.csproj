@@ -20,18 +20,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="5.10.3" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.18" />
-        <PackageReference Include="NUnit" Version="3.12.0" />
-        <PackageReference Include="NUnit3TestAdapter" Version="3.16.1" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-        <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21216.1" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Json.Tests\Friflo.Json.Tests.csproj" />
-      <ProjectReference Include="..\Json\Burst\Friflo.Json.Burst.csproj" />
-      <ProjectReference Include="..\Json\Fliox\Friflo.Json.Fliox.csproj" />
       <ProjectReference Include="..\Json\Fliox.DB.Cosmos\Friflo.Json.Fliox.DB.Cosmos.csproj" />
     </ItemGroup>
 	
