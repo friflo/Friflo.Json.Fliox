@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.IO;
 using Friflo.Json.Fliox.DB.Sync;
 using Friflo.Json.Fliox.Mapper;
 
@@ -12,7 +11,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
     {
         /// <summary>
         /// Add the given <see cref="entities"/> to the given <see cref="entityMap"/>.
-        /// The given <see cref="keyName"/> identifies the key property of the given <see cref="entities"/>.
+        /// The given <see cref="keyName"/> identifies the key property inside the JSON value in the given list of <see cref="entities"/>.
         /// </summary>
         public static void AddEntitiesToMap(
             List<JsonValue>                     entities,
