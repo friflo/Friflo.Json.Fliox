@@ -11,14 +11,14 @@ namespace Friflo.Json.Fliox.DB.Sync
     // ----------------------------------- task -----------------------------------
     public class UpsertEntities : DatabaseTask
     {
-        [Fri.Required]  public  string                          container;
-                        public  string                          keyName;
-        [Fri.Required]  public  List<JsonValue>                 entities;
+        [Fri.Required]  public  string          container;
+                        public  string          keyName;
+        [Fri.Required]  public  List<JsonValue> entities;
         
-        [Fri.Ignore]    public  List<JsonKey>                   entityKeys;
+        [Fri.Ignore]    public  List<JsonKey>   entityKeys;
         
-        internal override       TaskType                        TaskType => TaskType.upsert;
-        public   override       string                          TaskName => $"container: '{container}'";
+        internal override       TaskType        TaskType => TaskType.upsert;
+        public   override       string          TaskName => $"container: '{container}'";
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
@@ -65,6 +65,6 @@ namespace Friflo.Json.Fliox.DB.Sync
         public              CommandError                        Error { get; set; }
         [Fri.Ignore] public Dictionary<JsonKey, EntityError>    upsertErrors;
 
-        internal override   TaskType                        TaskType => TaskType.upsert;
+        internal override   TaskType                            TaskType => TaskType.upsert;
     }
 }

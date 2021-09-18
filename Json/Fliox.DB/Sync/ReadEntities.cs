@@ -9,17 +9,17 @@ namespace Friflo.Json.Fliox.DB.Sync
     // ----------------------------------- sub task -----------------------------------
     public class ReadEntities
     {
-        [Fri.Ignore]    public  string                          keyName;
-        [Fri.Required]  public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
-                        public  List<References>                references;
+        [Fri.Ignore]    public  string                  keyName;
+        [Fri.Required]  public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
+                        public  List<References>        references;
     }
     
     // ----------------------------------- sub task result -----------------------------------
     /// The data of requested entities are added to <see cref="ContainerEntities.entityMap"/> 
     public class ReadEntitiesResult: ICommandResult
     {
-        [Fri.Required]  public  List<ReferencesResult>          references;
-                        public  CommandError                    Error { get; set; }
+        [Fri.Required]  public  List<ReferencesResult>  references;
+                        public  CommandError            Error { get; set; }
 
         [Fri.Ignore]    public  Dictionary<JsonKey,EntityValue> entities;
         

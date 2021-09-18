@@ -15,8 +15,8 @@ namespace Friflo.Json.Fliox.DB.Sync
                         public  string                              keyName;
         [Fri.Required]  public  Dictionary<JsonKey, EntityPatch>    patches = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
         
-        internal override       TaskType                        TaskType => TaskType.patch;
-        public   override       string                          TaskName =>  $"container: '{container}'";
+        internal override       TaskType                            TaskType => TaskType.patch;
+        public   override       string                              TaskName =>  $"container: '{container}'";
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
