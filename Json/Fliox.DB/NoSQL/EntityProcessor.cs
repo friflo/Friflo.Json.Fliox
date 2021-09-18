@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.DB.Sync;
 using Friflo.Json.Fliox.Mapper;
@@ -22,12 +23,13 @@ namespace Friflo.Json.Fliox.DB.NoSQL
     /// </summary>
     public class EntityProcessor : IDisposable
     {
-        private     Bytes           jsonBytes = new Bytes(128);
-        private     JsonParser      parser;
-        private     Bytes           idKey = new Bytes(16);
-        private     bool            foundKey;
-        private     int             keyStart;
-        private     int             keyEnd;
+        private             Bytes           jsonBytes   = new Bytes(128);
+        private             JsonParser      parser;
+        private             Bytes           idKey       = new Bytes(16);
+        private             bool            foundKey;
+        private             int             keyStart;
+        private             int             keyEnd;
+        private readonly    StringBuilder   sb          = new StringBuilder();
         
         public bool GetEntityKey(string json, ref string keyName, out JsonKey keyValue, out string error) {
             return Traverse(json, ref keyName, out keyValue, ProcessingType.GetKey,   out error);
@@ -37,10 +39,23 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             return Traverse(json, ref keyName, out keyValue, ProcessingType.Validate, out error);
         }
         
-        public string ReplaceKey(string json, ref string keyName, out JsonKey keyValue, out string error) {
+        public string ReplaceKey(string json, ref string keyName, string newKeyName, out JsonKey keyValue, out string error) {
             if (!Traverse  (json, ref keyName, out keyValue, ProcessingType.SetKey,   out error))
                 return null;
-            return "";
+            if (keyName == "id")
+                return json;
+            sb.Clear();
+            sb.Append(json, 0, keyStart);
+            sb.Append('\"');
+            sb.Append(newKeyName);
+            sb.Append("\":\"");
+            keyValue.AppendTo(sb);
+            sb.Append('\"');
+            var remaining = json.Length - keyEnd; 
+            sb.Append(json, keyEnd, remaining);
+            var result = sb.ToString();
+            sb.Clear();
+            return result;
         }
 
         private bool Traverse (string json, ref string keyName, out JsonKey keyValue, ProcessingType processingType, out string error) {

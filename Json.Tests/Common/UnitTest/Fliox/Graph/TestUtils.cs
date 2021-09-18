@@ -67,6 +67,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 AreEqual(entities.entities[new JsonKey("str")].Json, result.entities[new JsonKey("str")].Json);
             }
         }
+        
+        [Test]
+        public void TestEntityProcessor() {
+            using (var processor = new EntityProcessor()) {
+                {
+                    // --- return modified JSON
+                    var     keyName = "myId"; 
+                    var     result  = processor.ReplaceKey("{\"myId\": \"123\"}", ref keyName, "id", out JsonKey key, out _);
+                    AreEqual("{\"id\":\"123\"}", result);
+                    AreEqual("myId", keyName);
+                } {
+                    // --- return original JSON
+                    string  keyName = null; // defaults to "id"
+                    var     json = "{\"id\": \"abc\"}";
+                    var result = processor.ReplaceKey(json, ref keyName, "id", out JsonKey key, out _);
+                    IsTrue(ReferenceEquals(json, result));
+                    AreEqual("id", keyName);
+                }
+            }
+        }
 
 #if !UNITY_2020_1_OR_NEWER
         [Test]
