@@ -17,6 +17,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             List<JsonValue>                     entities,
             string                              keyName,
             bool?                               isIntKey,
+            string                              newKeyName,
             Dictionary<JsonKey, EntityValue>    entityMap,
             MessageContext                      messageContext)
         {
@@ -24,7 +25,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             using (var pooledProcessor = messageContext.pools.EntityProcessor.Get()) {
                 var processor = pooledProcessor.instance;
                 foreach (var entity in entities) {
-                    string  json = processor.ReplaceKey(entity.json, "id", asIntKey, keyName, out JsonKey keyValue, out _);
+                    string  json = processor.ReplaceKey(entity.json, keyName, asIntKey, newKeyName, out JsonKey keyValue, out _);
                     if (json == null) {
                         continue;
                     }
