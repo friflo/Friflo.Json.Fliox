@@ -74,14 +74,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 {
                     // --- return modified JSON
                     var     keyName = "myId"; 
-                    var     result  = processor.ReplaceKey("{\"myId\": \"123\"}", ref keyName, "id", out JsonKey key, out _);
+                    var     result  = processor.ReplaceKey("{\"myId\": \"123\"}", ref keyName, false, "id", out JsonKey key, out _);
                     AreEqual("{\"id\":\"123\"}", result);
                     AreEqual("myId", keyName);
+                } {
+                    // --- return modified JSON
+                    var     keyName = "id"; 
+                    var     result  = processor.ReplaceKey("{\"id\": 123}", ref keyName, false, "id", out JsonKey key, out _);
+                    AreEqual("{\"id\":\"123\"}", result);
+                    AreEqual("id", keyName);
+                } {
+                    // --- return modified JSON
+                    var     keyName = "id";
+                    var     json = "{\"id\": 123}";
+                    var     result  = processor.ReplaceKey(json, ref keyName, true, "id", out JsonKey key, out _);
+                    IsTrue(ReferenceEquals(json, result));
+                    AreEqual("id", keyName);
                 } {
                     // --- return original JSON
                     string  keyName = null; // defaults to "id"
                     var     json = "{\"id\": \"abc\"}";
-                    var result = processor.ReplaceKey(json, ref keyName, "id", out JsonKey key, out _);
+                    var result = processor.ReplaceKey(json, ref keyName, false, "id", out JsonKey key, out _);
                     IsTrue(ReferenceEquals(json, result));
                     AreEqual("id", keyName);
                 }
@@ -119,7 +132,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 
                 Console.WriteLine($"PocStore memory: {diff}");
-                var expected = Is.InRange(8536, 8872);
+                var expected = Is.InRange(8536, 8880);
                 That(diff, expected);
             }
         }

@@ -30,6 +30,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         //                  --- ReplaceKey
         private             int             keyStart;
         private             int             keyEnd;
+        private             bool            foundIntKey;
+        private             long            longValue;
+        private             bool            asIntKey;
         private readonly    StringBuilder   sb          = new StringBuilder();
         
         public bool GetEntityKey(string json, ref string keyName, out JsonKey keyValue, out string error) {
@@ -40,20 +43,26 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             return Traverse(json, ref keyName, out keyValue, ProcessingType.Validate, out error);
         }
         
-        public string ReplaceKey(string json, ref string keyName, string newKeyName, out JsonKey keyValue, out string error) {
+        public string ReplaceKey(string json, ref string keyName, bool asIntKey, string newKeyName, out JsonKey keyValue, out string error) {
+            this.asIntKey   = asIntKey;
             keyName         = keyName ?? "id";
             bool equalKeys  = keyName == newKeyName;
             if (!Traverse  (json, ref keyName, out keyValue, ProcessingType.SetKey,   out error))
                 return null;
-            if (equalKeys)
+            if (equalKeys && foundIntKey == asIntKey)
                 return json;
             sb.Clear();
             sb.Append(json, 0, keyStart);
             sb.Append('\"');
             sb.Append(newKeyName);
-            sb.Append("\":\"");
-            keyValue.AppendTo(sb);
-            sb.Append('\"');
+            sb.Append("\":");
+            if (asIntKey) {
+                sb.Append(longValue);
+            } else {
+                sb.Append('\"');
+                keyValue.AppendTo(sb);
+                sb.Append('\"');
+            }
             var remaining = json.Length - keyEnd; 
             sb.Append(json, keyEnd, remaining);
             var result = sb.ToString();
@@ -92,9 +101,16 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                                 error       = null;
                                 return true;
                             case ProcessingType.SetKey:
-                                error       = null;
                                 keyStart    = pos;
                                 keyEnd      = parser.Position;
+                                foundIntKey = ev == JsonEvent.ValueNumber;
+                                if (asIntKey  && ev == JsonEvent.ValueString)
+                                    continue;
+                                if (!asIntKey && ev == JsonEvent.ValueNumber) {
+                                    longValue = parser.ValueAsLong(out foundIntKey);
+                                    continue;
+                                }
+                                error       = null;
                                 return true;
                         }
                         break;
