@@ -122,7 +122,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                         // apply changes only if subscribed
                         if (set.GetSubscription() == null)
                             continue;
-                        create.entityKeys = CreateEntityKeys (set.GetKeyName(), create.entities);
+                        create.entityKeys = GetKeysFromEntities (set.GetKeyName(), create.entities);
                         SyncPeerEntities(set, create.entityKeys, create.entities);
                         break;
                     
@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                         // apply changes only if subscribed
                         if (set.GetSubscription() == null)
                             continue;
-                        upsert.entityKeys = CreateEntityKeys (set.GetKeyName(), upsert.entities);
+                        upsert.entityKeys = GetKeysFromEntities (set.GetKeyName(), upsert.entities);
                         SyncPeerEntities(set, upsert.entityKeys, upsert.entities);
                         break;
                     
@@ -179,7 +179,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             subHandler(this, ev); // subHandler.Invoke(this, ev);
         }
         
-        private List<JsonKey> CreateEntityKeys(string keyName, List<JsonValue> entities) {
+        private List<JsonKey> GetKeysFromEntities(string keyName, List<JsonValue> entities) {
             var keys = new List<JsonKey>(entities.Count);
             foreach (var entity in entities) {
                 if (!validator.GetEntityKey(entity.json, ref keyName, out JsonKey key, out string error))

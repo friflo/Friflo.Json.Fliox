@@ -31,11 +31,11 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             }
         }
         
-        internal static List<JsonKey> CreateEntityKeys (
-            string                                  keyName,
-            List<JsonValue>                         entities,
-            MessageContext                          messageContext,
-            out string                              error
+        internal static List<JsonKey> GetKeysFromEntities (
+            string              keyName,
+            List<JsonValue>     entities,
+            MessageContext      messageContext,
+            out string          error
         ) {
             var keys = new List<JsonKey>(entities.Count);
             using (var poolValidator = messageContext.pools.EntityValidator.Get()) {
