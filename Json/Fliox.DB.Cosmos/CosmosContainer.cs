@@ -97,8 +97,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 for (int n = 0; n < entities.Count; n++) {
                     var key     = command.entityKeys[n];
                     var payload = entities[n];
-                    var keyName = command.keyName;
-                    var json = processor.ReplaceKey(payload.json, ref keyName, false, "id", out _, out string error);
+                    var json = processor.ReplaceKey(payload.json, command.keyName, false, "id", out _, out string error);
                     CosmosUtils.WriteJson(writer, memory, json);
                     var partitionKey = new PartitionKey(key.AsString());
                     // consider using [Introducing Bulk support in the .NET SDK | Azure Cosmos DB Blog] https://devblogs.microsoft.com/cosmosdb/introducing-bulk-support-in-the-net-sdk/
@@ -131,9 +130,8 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 } else {
                     using (StreamReader reader = new StreamReader(content)) {
                         string  payload     = await reader.ReadToEndAsync().ConfigureAwait(false);
-                        string  keyName     = "id";
-                        bool    isIntKey    = command.isIntKey == true; 
-                        string  json = processor.ReplaceKey(payload, ref keyName, isIntKey, command.keyName, out _, out _);
+                        bool    asIntKey    = command.isIntKey == true; 
+                        string  json = processor.ReplaceKey(payload, "id", asIntKey, command.keyName, out _, out _);
                         var entry = new EntityValue(json);
                         entities.TryAdd(key, entry);
                     }
@@ -155,7 +153,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 var reader      = pooledMapper.instance.reader;
                 var documents   = await CosmosUtils.ReadDocuments(reader, response.Content).ConfigureAwait(false);
-                EntityUtils.AddEntitiesToMap(documents, command.keyName, entities, messageContext);
+                EntityUtils.AddEntitiesToMap(documents, command.keyName, command.isIntKey, entities, messageContext);
                 foreach (var key in keys) {
                     if (entities.ContainsKey(key))
                         continue;
@@ -184,7 +182,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                     }
                 }
             }
-            EntityUtils.AddEntitiesToMap(documents, command.keyName, entities, messageContext);
+            EntityUtils.AddEntitiesToMap(documents, command.keyName, command.isIntKey, entities, messageContext);
             if (filterByClient) {
                 return FilterEntities(command, entities, messageContext);
             }

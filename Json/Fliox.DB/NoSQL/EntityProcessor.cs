@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             return Traverse(json, ref keyName, out keyValue, ProcessingType.Validate, out error);
         }
         
-        public string ReplaceKey(string json, ref string keyName, bool asIntKey, string newKeyName, out JsonKey keyValue, out string error) {
+        public string ReplaceKey(string json, string keyName, bool asIntKey, string newKeyName, out JsonKey keyValue, out string error) {
             this.asIntKey   = asIntKey;
             keyName         = keyName       ?? "id";
             newKeyName      = newKeyName    ?? "id";

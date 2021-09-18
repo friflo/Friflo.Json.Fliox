@@ -16,16 +16,19 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         public static void AddEntitiesToMap(
             List<JsonValue>                     entities,
             string                              keyName,
+            bool?                               isIntKey,
             Dictionary<JsonKey, EntityValue>    entityMap,
             MessageContext                      messageContext)
         {
+            var asIntKey = isIntKey == true;
             using (var pooledProcessor = messageContext.pools.EntityProcessor.Get()) {
                 var processor = pooledProcessor.instance;
                 foreach (var entity in entities) {
-                    if (!processor.GetEntityKey(entity.json, ref keyName, out JsonKey keyValue, out _)) {
+                    string  json = processor.ReplaceKey(entity.json, "id", asIntKey, keyName, out JsonKey keyValue, out _);
+                    if (json == null) {
                         continue;
                     }
-                    var value   = new EntityValue(entity.json);
+                    var value   = new EntityValue(json);
                     entityMap.Add(keyValue, value);
                 }
             }
