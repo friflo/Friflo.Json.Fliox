@@ -259,7 +259,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 if (ids.Count == 0)
                     continue;
                 var refIdList   = ids;
-                var readRefIds  = new ReadEntities { ids = refIdList, keyName = reference.keyName };
+                var readRefIds  = new ReadEntities { ids = refIdList, keyName = reference.keyName, isIntKey = reference.isIntKey};
                 var refEntities = await refCont.ReadEntities(readRefIds, messageContext).ConfigureAwait(false);
                 var subPath = $"{selectorPath} -> {reference.selector}";
                 // In case of ReadEntities error: Assign error to result and continue with other references.

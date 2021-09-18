@@ -17,6 +17,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         internal abstract   string      Selector    { get; }
         internal abstract   string      Container   { get; }
         internal abstract   string      KeyName     { get; }
+        internal abstract   bool        IsIntKey    { get; }
         internal abstract   SubRefs     SubRefs     { get; }
         
         internal abstract void    SetResult (EntitySet set, HashSet<JsonKey> ids);
@@ -50,17 +51,19 @@ namespace Friflo.Json.Fliox.DB.Graph
         internal  override  string                  Selector  { get; }
         internal  override  string                  Container { get; }
         internal  override  string                  KeyName   { get; }
+        internal  override  bool                    IsIntKey  { get; }
         
         internal  override  SubRefs                 SubRefs => refsTask.subRefs;
 
 
-        internal ReadRefsTask(SyncTask parent, string selector, string container, string keyName, EntityStore store)
+        internal ReadRefsTask(SyncTask parent, string selector, string container, string keyName, bool isIntKey, EntityStore store)
         {
             refsTask        = new RefsTask(this);
             this.parent     = parent;
             this.Selector   = selector;
             this.Container  = container;
             this.KeyName    = keyName;
+            this.IsIntKey   = isIntKey;
             this.store      = store;
         }
 
@@ -117,23 +120,26 @@ namespace Friflo.Json.Fliox.DB.Graph
         public              TKey            Key     => IsOk("ReadRefTask.Key",    out Exception e) ? key     : throw e;
         public              T               Result  => IsOk("ReadRefTask.Result", out Exception e) ? entity  : throw e;
                 
-        internal override   TaskState       State       => state;
-        public   override   string          Details     => $"{parent.GetLabel()} -> {Selector}";
+        internal  override  TaskState       State       => state;
+        public    override  string          Details     => $"{parent.GetLabel()} -> {Selector}";
                 
-        internal override   string          Selector    { get; }
-        internal override   string          Container   { get; }
-        internal override   string          KeyName     { get; }
+        internal  override  string          Selector    { get; }
+        internal  override  string          Container   { get; }
+        internal  override  string          KeyName     { get; }
+        internal  override  bool            IsIntKey    { get; }
+
             
         internal override   SubRefs         SubRefs => refsTask.subRefs;
 
 
-        internal ReadRefTask(SyncTask parent, string selector, string container, string keyName, EntityStore store)
+        internal ReadRefTask(SyncTask parent, string selector, string container, string keyName, bool isIntKey, EntityStore store)
         {
             refsTask        = new RefsTask(this);
             this.parent     = parent;
             this.Selector   = selector;
             this.Container  = container;
             this.KeyName    = keyName;
+            this.IsIntKey   = isIntKey;
             this.store      = store;
         }
         

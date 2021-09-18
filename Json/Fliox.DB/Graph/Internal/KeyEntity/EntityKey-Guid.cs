@@ -13,6 +13,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
         
         internal override   Type                GetKeyType() => typeof(Guid);
         internal override   string              GetKeyName() => field.Name;
+        internal override   bool                IsIntKey()   => false;
 
         internal EntityKeyGuidField(FieldInfo field) : base (field) {
             this.field  = field;
@@ -37,6 +38,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
         
         internal override   Type                GetKeyType() => typeof(Guid);
         internal override   string              GetKeyName() => property.Name;
+        internal override   bool                IsIntKey()   => false;
 
         internal EntityKeyGuidProperty(PropertyInfo property, MethodInfo idGetMethod, MethodInfo idSetMethod) : base (property) {
             this.property = property;

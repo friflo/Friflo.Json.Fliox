@@ -13,6 +13,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
         
         internal override   Type                GetKeyType()                => typeof(string);
         internal override   string              GetKeyName()                => field.Name;
+        internal override   bool                IsIntKey()                  => false;
         internal override   bool                IsEntityKeyNull (T entity)  => GetKey(entity) == null;
 
         internal EntityKeyStringField(FieldInfo field) : base (field) {
@@ -38,6 +39,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
         
         internal override   Type                GetKeyType()                => typeof(string);
         internal override   string              GetKeyName()                => property.Name;
+        internal override   bool                IsIntKey()                  => false;
         internal override   bool                IsEntityKeyNull (T entity)  => GetKey(entity) == null;
 
         internal EntityKeyStringProperty(PropertyInfo property, MethodInfo idGetMethod, MethodInfo idSetMethod) : base (property) {

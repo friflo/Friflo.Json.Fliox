@@ -33,6 +33,12 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 return null;
             return keyName;
         }
+        
+        internal static bool? IsIntKey (bool isIntKey) {
+            if (isIntKey)
+                return true;
+            return null;
+        }
     }
 
     internal partial class SyncSet<TKey, T>

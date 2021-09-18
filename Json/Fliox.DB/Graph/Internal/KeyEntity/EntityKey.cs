@@ -137,6 +137,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity
     internal abstract class EntityKey<T> : EntityKey where T : class {
         internal abstract   Type    GetKeyType();
         internal abstract   string  GetKeyName();
+        internal virtual    bool    IsIntKey()                 => true;
         internal virtual    bool    IsEntityKeyNull (T entity) => false;
         internal virtual    bool    IsDefaultKey    (T entity) => false;
 

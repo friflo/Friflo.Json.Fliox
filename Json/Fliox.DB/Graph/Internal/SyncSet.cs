@@ -349,7 +349,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             }
             var req = new UpsertEntities {
                 container   = set.name,
-                keyName     = SyncKeyName(set.GetKeyName()),   
+                keyName     = SyncKeyName(set.GetKeyName()),
                 entities    = entries,
                 entityKeys  = keys
             };
@@ -362,7 +362,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             var readList = new ReadEntitiesList {
                 reads       = new List<ReadEntities>(_reads.Count),
                 container   = set.name,
-                keyName     = SyncKeyName(set.GetKeyName())
+                keyName     = SyncKeyName(set.GetKeyName()),
+                isIntKey    = IsIntKey(set.IsIntKey())
             };
             foreach (var read in _reads) {
                 List<References> references = null;
@@ -397,7 +398,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 }
                 var req = new QueryEntities {
                     container   = set.name,
-                    keyName     = SyncKeyName(set.GetKeyName()),   
+                    keyName     = SyncKeyName(set.GetKeyName()),
+                    isIntKey    = IsIntKey(set.IsIntKey()),  
                     filter      = query.filter,
                     filterLinq  = query.filterLinq,
                     references  = references
@@ -499,6 +501,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 var queryReference = new References {
                     container   = readRefs.Container,
                     keyName     = SyncKeyName(readRefs.KeyName),
+                    isIntKey    = IsIntKey(readRefs.IsIntKey), 
                     selector    = readRefs.Selector
                 };
                 references.Add(queryReference);
