@@ -58,6 +58,7 @@ data class UpsertEntities (
 data class ReadEntitiesList (
               val container : String,
               val keyName   : String? = null,
+              val isIntKey  : Boolean? = null,
               val reads     : List<ReadEntities>,
 ) : DatabaseTask()
 
@@ -72,6 +73,7 @@ data class References (
               val selector   : String,
               val container  : String,
               val keyName    : String? = null,
+              val isIntKey   : Boolean? = null,
               val references : List<References>? = null,
 )
 
@@ -80,6 +82,7 @@ data class References (
 data class QueryEntities (
               val container  : String,
               val keyName    : String? = null,
+              val isIntKey   : Boolean? = null,
               val filterLinq : String? = null,
               val filter     : FilterOperation? = null,
               val references : List<References>? = null,

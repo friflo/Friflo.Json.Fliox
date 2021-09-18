@@ -10,6 +10,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     public class ReadEntities
     {
         [Fri.Ignore]    public  string                  keyName;
+        [Fri.Ignore]    public  bool?                   isIntKey;
         [Fri.Required]  public  HashSet<JsonKey>        ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<References>        references;
     }

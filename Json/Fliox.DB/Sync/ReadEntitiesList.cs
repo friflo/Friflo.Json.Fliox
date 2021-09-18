@@ -12,6 +12,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     {
         [Fri.Required]  public  string              container;
                         public  string              keyName;
+                        public  bool?               isIntKey;
         [Fri.Required]  public  List<ReadEntities>  reads;
         
         internal override       TaskType            TaskType => TaskType.read;

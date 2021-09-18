@@ -79,6 +79,7 @@ export class ReadEntitiesList extends DatabaseTask {
     task       : "read";
     container  : string;
     keyName?   : string | null;
+    isIntKey?  : boolean | null;
     reads      : ReadEntities[];
 }
 
@@ -91,6 +92,7 @@ export class References {
     selector    : string;
     container   : string;
     keyName?    : string | null;
+    isIntKey?   : boolean | null;
     references? : References[] | null;
 }
 
@@ -98,6 +100,7 @@ export class QueryEntities extends DatabaseTask {
     task        : "query";
     container   : string;
     keyName?    : string | null;
+    isIntKey?   : boolean | null;
     filterLinq? : string | null;
     filter?     : FilterOperation_Union | null;
     references? : References[] | null;

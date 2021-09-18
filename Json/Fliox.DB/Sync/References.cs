@@ -14,6 +14,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         [Fri.Required]  public  string              selector; // e.g. ".items[*].article"
         [Fri.Required]  public  string              container;
                         public  string              keyName;
+                        public  bool?               isIntKey;
                         public  List<References>    references;
     }
     

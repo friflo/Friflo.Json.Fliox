@@ -63,6 +63,7 @@
             "properties": {
                 "container": { "type": "string" },
                 "keyName":   { "type": "string", "nullable": true },
+                "isIntKey":  { "type": "boolean", "nullable": true },
                 "reads":     { "elements": { "ref":  "ReadEntities" } }
             }
         },
@@ -77,6 +78,7 @@
                 "selector":   { "type": "string" },
                 "container":  { "type": "string" },
                 "keyName":    { "type": "string", "nullable": true },
+                "isIntKey":   { "type": "boolean", "nullable": true },
                 "references": { "elements": { "ref":  "References" }, "nullable": true }
             }
         },
@@ -84,6 +86,7 @@
             "properties": {
                 "container":  { "type": "string" },
                 "keyName":    { "type": "string", "nullable": true },
+                "isIntKey":   { "type": "boolean", "nullable": true },
                 "filterLinq": { "type": "string", "nullable": true },
                 "filter":     { "ref":  "FilterOperation", "nullable": true },
                 "references": { "elements": { "ref":  "References" }, "nullable": true }
