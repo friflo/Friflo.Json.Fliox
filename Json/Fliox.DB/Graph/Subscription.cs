@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         private readonly    EntityStore                         store;
         private readonly    Dictionary<Type, EntityChanges>     results   = new Dictionary<Type, EntityChanges>();
         private readonly    List<Message>                       messages  = new List<Message>();
-        private readonly    EntityValidator                     validator;
+        private readonly    EntityProcessor                     processor;
         
         /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
         private readonly    SynchronizationContext              synchronizationContext;
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         public SubscriptionProcessor (EntityStore store, SynchronizationContext synchronizationContext = null) {
             synchronizationContext      = synchronizationContext ?? SynchronizationContext.Current; 
             this.store                  = store;
-            validator                   = store._intern.validator;
+            processor                   = store._intern.processor;
             this.synchronizationContext = synchronizationContext;
         }
         
@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         /// </summary>
         public SubscriptionProcessor (EntityStore store, SubscriptionHandling _) {
             this.store                  = store;
-            validator                   = store._intern.validator;
+            processor                   = store._intern.processor;
             this.eventQueue             = new ConcurrentQueue <SubscriptionEvent> ();
         }
         
@@ -182,7 +182,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         private List<JsonKey> GetKeysFromEntities(string keyName, List<JsonValue> entities) {
             var keys = new List<JsonKey>(entities.Count);
             foreach (var entity in entities) {
-                if (!validator.GetEntityKey(entity.json, ref keyName, out JsonKey key, out string error))
+                if (!processor.GetEntityKey(entity.json, ref keyName, out JsonKey key, out string error))
                     throw new InvalidOperationException($"CreateEntityKeys() error: {error}");
                 keys.Add(key);
             }

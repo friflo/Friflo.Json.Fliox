@@ -8,33 +8,47 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.NoSQL
 {
+    internal enum ProcessingType {
+        Validate,
+        GetKey,
+        SetKey
+    }
+    
     /// <summary>
     /// Is used to ensure that <see cref="ReadEntitiesResult"/> returned by <see cref="EntityContainer.ReadEntities"/>
     /// contains valid <see cref="ReadEntitiesResult.entities"/>.
     /// Validation is required for <see cref="EntityDatabase"/> implementations which cannot ensure that the value of
     /// its key/values are JSON. See <see cref="ReadEntitiesResult.ValidateEntities"/>.
     /// </summary>
-    public class EntityValidator : IDisposable
+    public class EntityProcessor : IDisposable
     {
-        private             Bytes           jsonBytes = new Bytes(128);
-        private             JsonParser      parser;
-        private             Bytes           idKey = new Bytes(16);
-        private             bool            foundKey;
+        private     Bytes           jsonBytes = new Bytes(128);
+        private     JsonParser      parser;
+        private     Bytes           idKey = new Bytes(16);
+        private     bool            foundKey;
+        private     int             keyStart;
+        private     int             keyEnd;
         
         public bool GetEntityKey(string json, ref string keyName, out JsonKey keyValue, out string error) {
-            return Traverse(json, ref keyName, out keyValue, false, out error);
+            return Traverse(json, ref keyName, out keyValue, ProcessingType.GetKey,   out error);
         }
         
         public bool Validate(string json, ref string keyName, out JsonKey keyValue, out string error) {
-            return Traverse(json, ref keyName, out keyValue, true, out error);
+            return Traverse(json, ref keyName, out keyValue, ProcessingType.Validate, out error);
+        }
+        
+        public string ReplaceKey(string json, ref string keyName, out JsonKey keyValue, out string error) {
+            if (!Traverse  (json, ref keyName, out keyValue, ProcessingType.SetKey,   out error))
+                return null;
+            return "";
         }
 
-        private bool Traverse (string json, ref string keyName, out JsonKey keyValue, bool validate, out string error) {
+        private bool Traverse (string json, ref string keyName, out JsonKey keyValue, ProcessingType processingType, out string error) {
             foundKey = false;
             idKey.Clear();
-            keyName = keyName ?? "id";
+            keyName  = keyName ?? "id";
             idKey.AppendString(keyName);
-            keyValue     = new JsonKey();
+            keyValue = new JsonKey();
             jsonBytes.Clear();
             jsonBytes.AppendString(json);
             parser.InitParser(jsonBytes);
@@ -44,6 +58,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 return false;
             }
             while (true) {
+                var pos = parser.Position;
                 ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
@@ -51,10 +66,18 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                         if (!parser.key.IsEqualBytes(ref idKey))
                             break;
                         foundKey = true;
-                        error = null;
                         keyValue = new JsonKey(ref parser.value, ref parser.valueParser);
-                        if (!validate)
-                            return true;
+                        switch (processingType) {
+                            case ProcessingType.Validate:
+                                continue;
+                            case ProcessingType.GetKey:
+                                error       = null;
+                                return true;
+                            case ProcessingType.SetKey:
+                                keyStart    = pos;
+                                keyEnd      = parser.Position;
+                                continue;
+                        }
                         break;
                     case JsonEvent.ValueBool:
                     case JsonEvent.ValueNull:

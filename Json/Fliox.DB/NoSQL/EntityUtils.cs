@@ -19,10 +19,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             Dictionary<JsonKey, EntityValue>    entityMap,
             MessageContext                      messageContext)
         {
-            using (var pooledValidator = messageContext.pools.EntityValidator.Get()) {
-                var validator = pooledValidator.instance;
+            using (var pooledProcessor = messageContext.pools.EntityProcessor.Get()) {
+                var processor = pooledProcessor.instance;
                 foreach (var entity in entities) {
-                    if (!validator.GetEntityKey(entity.json, ref keyName, out JsonKey keyValue, out _)) {
+                    if (!processor.GetEntityKey(entity.json, ref keyName, out JsonKey keyValue, out _)) {
                         continue;
                     }
                     var value   = new EntityValue(entity.json);
@@ -38,11 +38,11 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             out string          error
         ) {
             var keys = new List<JsonKey>(entities.Count);
-            using (var poolValidator = messageContext.pools.EntityValidator.Get()) {
-                var validator = poolValidator.instance;
+            using (var poolProcessor = messageContext.pools.EntityProcessor.Get()) {
+                var processor = poolProcessor.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var entity  = entities[n];
-                    if (validator.GetEntityKey(entity.json, ref keyName, out JsonKey key, out string entityError)) {
+                    if (processor.GetEntityKey(entity.json, ref keyName, out JsonKey key, out string entityError)) {
                         keys.Add(key);
                         continue;
                     }

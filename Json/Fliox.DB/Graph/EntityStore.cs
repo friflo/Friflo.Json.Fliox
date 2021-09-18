@@ -412,7 +412,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         /// <see cref="ContainerEntities.errors"/> to <see cref="ContainerEntities.entityMap"/>.
         /// These properties are set by <see cref="EntityDatabase.SetContainerResults"/>.
         private void GetContainerResults(SyncResponse response) {
-            var validator = _intern.validator;
+            var processor = _intern.processor;
             foreach (var resultPair in response.results) {
                 string name         = resultPair.Key;
                 if (!_intern.setByName.TryGetValue(name, out EntitySet set)) {
@@ -432,7 +432,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                 
                 // --- entities
                 foreach (var entity in entities) {
-                    if (!validator.GetEntityKey(entity.json, ref keyName, out JsonKey key, out string errorMsg)) {
+                    if (!processor.GetEntityKey(entity.json, ref keyName, out JsonKey key, out string errorMsg)) {
                         throw new InvalidOperationException($"GetEntityResults not found: {errorMsg}");
                     }
                     entityMap.Add(key, new EntityValue(entity.json));

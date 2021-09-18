@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         internal int    selectorCount;
         internal int    evaluatorCount;
         internal int    objectMapperCount;
-        internal int    entityValidatorCount;
+        internal int    entityProcessorCount;
         internal int    typeValidatorCount;
         
         public void AssertEqual(in PoolUsage other) {
@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             if (selectorCount           != other.selectorCount)         throw new InvalidOperationException("detect ScalarSelector leak");
             if (evaluatorCount          != other.evaluatorCount)        throw new InvalidOperationException("detect JsonEvaluator leak");
             if (objectMapperCount       != other.objectMapperCount)     throw new InvalidOperationException("detect ObjectMapper leak");
-            if (entityValidatorCount    != other.entityValidatorCount)  throw new InvalidOperationException("detect EntityValidator leak");
+            if (entityProcessorCount    != other.entityProcessorCount)  throw new InvalidOperationException("detect EntityProcessor leak");
             if (typeValidatorCount      != other.typeValidatorCount)    throw new InvalidOperationException("detect TypeValidator leak");
         }
     }
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         /// <summary> Returned <see cref="Mapper.ObjectMapper"/> doesnt throw Read() exceptions. To handle errors its
         /// <see cref="Mapper.ObjectMapper.reader"/> -> <see cref="ObjectReader.Error"/> need to be checked. </summary>
         ObjectPool<ObjectMapper>    ObjectMapper    { get; }
-        ObjectPool<EntityValidator> EntityValidator { get; }
+        ObjectPool<EntityProcessor> EntityProcessor { get; }
         ObjectPool<TypeValidator>   TypeValidator   { get; }
         /// <summary>
         /// Enable pooling instances of the given Type <see cref="T"/>. In case no cached instance of <see cref="T"/>
@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         public  ObjectPool<ScalarSelector>  ScalarSelector  { get; }
         public  ObjectPool<JsonEvaluator>   JsonEvaluator   { get; }
         public  ObjectPool<ObjectMapper>    ObjectMapper    { get; }
-        public  ObjectPool<EntityValidator> EntityValidator { get; }
+        public  ObjectPool<EntityProcessor> EntityProcessor { get; }
         public  ObjectPool<TypeValidator>   TypeValidator   { get; }
         
         public  ObjectPool<T>               Pool<T>         (Func<T> factory) where T : IDisposable {
@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             ScalarSelector  = new SharedPool<ScalarSelector>    (() => new ScalarSelector());
             JsonEvaluator   = new SharedPool<JsonEvaluator>     (() => new JsonEvaluator());
             ObjectMapper    = new SharedPool<ObjectMapper>      (SyncTypeStore.CreateObjectMapper);
-            EntityValidator = new SharedPool<EntityValidator>   (() => new EntityValidator());
+            EntityProcessor = new SharedPool<EntityProcessor>   (() => new EntityProcessor());
             TypeValidator   = new SharedPool<TypeValidator>     (() => new TypeValidator());
         }
         
@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             ScalarSelector  = new LocalPool<ScalarSelector>     (sharedPools.ScalarSelector,    "ScalarSelector");
             JsonEvaluator   = new LocalPool<JsonEvaluator>      (sharedPools.JsonEvaluator,     "JsonEvaluator");
             ObjectMapper    = new LocalPool<ObjectMapper>       (sharedPools.ObjectMapper,      "ObjectMapper");
-            EntityValidator = new LocalPool<EntityValidator>    (sharedPools.EntityValidator,   "EntityValidator");
+            EntityProcessor = new LocalPool<EntityProcessor>    (sharedPools.EntityProcessor,   "EntityProcessor");
             TypeValidator   = new LocalPool<TypeValidator>      (sharedPools.TypeValidator,     "TypeValidator");
         }
 
@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             ScalarSelector. Dispose();
             JsonEvaluator.  Dispose();
             ObjectMapper.   Dispose();
-            EntityValidator.Dispose();
+            EntityProcessor.Dispose();
             TypeValidator.  Dispose();
             foreach (var pool in poolMap) {
                 var sharedPool = pool.Value;
@@ -124,7 +124,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 selectorCount           = ScalarSelector    .Usage,
                 evaluatorCount          = JsonEvaluator     .Usage,
                 objectMapperCount       = ObjectMapper      .Usage,
-                entityValidatorCount    = EntityValidator   .Usage,
+                entityProcessorCount    = EntityProcessor   .Usage,
                 typeValidatorCount      = TypeValidator     .Usage
             };
             return usage;

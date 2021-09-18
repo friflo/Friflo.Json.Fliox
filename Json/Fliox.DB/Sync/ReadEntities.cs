@@ -38,8 +38,8 @@ namespace Friflo.Json.Fliox.DB.Sync
         /// obsolete - like Postgres/JSONB, Azure Cosmos DB or MongoDB.
         /// </summary>
         public void ValidateEntities(string container, string keyName, MessageContext messageContext) {
-            using (var pooledValidator = messageContext.pools.EntityValidator.Get()) {
-                EntityValidator validator = pooledValidator.instance;
+            using (var pooledProcessor = messageContext.pools.EntityProcessor.Get()) {
+                EntityProcessor processor = pooledProcessor.instance;
                 foreach (var entityEntry in entities) {
                     var entity = entityEntry.Value;
                     if (entity.Error != null) {
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                     if (json == null) {
                         continue;
                     }
-                    if (validator.Validate(json, ref keyName, out JsonKey payloadId, out string error)) {
+                    if (processor.Validate(json, ref keyName, out JsonKey payloadId, out string error)) {
                         var id      = entityEntry.Key;
                         if (id.IsEqual(payloadId))
                             continue;

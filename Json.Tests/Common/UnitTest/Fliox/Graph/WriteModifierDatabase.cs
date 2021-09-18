@@ -18,14 +18,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
         private readonly    EntityDatabase  local;
         private readonly    Dictionary<string, WriteModifiers>  writeModifiers  = new Dictionary<string, WriteModifiers>();
         private readonly    Dictionary<string, PatchModifiers>  patchModifiers  = new Dictionary<string, PatchModifiers>();
-        private readonly    EntityValidator                     validator       = new EntityValidator();
+        private readonly    EntityProcessor                     processor       = new EntityProcessor();
         
         public WriteModifierDatabase(EntityDatabase local) {
             this.local = local;
         }
 
         public override void Dispose() {
-            validator.Dispose();
+            processor.Dispose();
         }
 
         public void ClearErrors() {
@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 
         public WriteModifiers GetWriteModifiers(string container) {
             if (!writeModifiers.TryGetValue(container, out var writeModifier)) {
-                writeModifier = new WriteModifiers(validator);
+                writeModifier = new WriteModifiers(processor);
                 writeModifiers.Add(container, writeModifier);
             }
             return writeModifier;
@@ -82,17 +82,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
     public class WriteModifiers
     {
         public  readonly    Dictionary<string, WriteModifier>   writes    = new Dictionary<string, WriteModifier>();
-        private readonly    EntityValidator                     validator;
+        private readonly    EntityProcessor                     processor;
         
-        internal WriteModifiers(EntityValidator validator) {
-            this.validator = validator;
+        internal WriteModifiers(EntityProcessor processor) {
+            this.processor = processor;
         }
         
         internal void ModifyWrites(string keyName, List<JsonValue> entities) {
             for (int n = 0; n < entities.Count; n++) {
                 var entity = entities[n];
                 var json = entity.json;
-                if (!validator.GetEntityKey(json, ref keyName, out JsonKey entityKey, out string error))
+                if (!processor.GetEntityKey(json, ref keyName, out JsonKey entityKey, out string error))
                     throw new InvalidOperationException($"Entity key error: {error}");
                 var key = entityKey.AsString();
                 if (writes.TryGetValue(key, out var modifier)) {
