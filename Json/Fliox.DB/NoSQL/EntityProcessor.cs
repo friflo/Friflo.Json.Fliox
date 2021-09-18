@@ -31,7 +31,6 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         private             int             keyStart;
         private             int             keyEnd;
         private             bool            foundIntKey;
-        private             long            longValue;
         private             bool            asIntKey;
         private readonly    StringBuilder   sb          = new StringBuilder();
         
@@ -45,7 +44,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         
         public string ReplaceKey(string json, ref string keyName, bool asIntKey, string newKeyName, out JsonKey keyValue, out string error) {
             this.asIntKey   = asIntKey;
-            keyName         = keyName ?? "id";
+            keyName         = keyName       ?? "id";
+            newKeyName      = newKeyName    ?? "id";
             bool equalKeys  = keyName == newKeyName;
             if (!Traverse  (json, ref keyName, out keyValue, ProcessingType.SetKey,   out error))
                 return null;
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             sb.Append(newKeyName);
             sb.Append("\":");
             if (asIntKey) {
-                sb.Append(longValue);
+                keyValue.AppendTo(sb);
             } else {
                 sb.Append('\"');
                 keyValue.AppendTo(sb);
@@ -107,7 +107,6 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                                 if (asIntKey  && ev == JsonEvent.ValueString)
                                     continue;
                                 if (!asIntKey && ev == JsonEvent.ValueNumber) {
-                                    longValue = parser.ValueAsLong(out foundIntKey);
                                     continue;
                                 }
                                 error       = null;

@@ -90,9 +90,9 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             await EnsureContainerExists().ConfigureAwait(false);
             var entities = command.entities;
             AssertEntityCounts(command.entityKeys, entities);
-            using(var memory   = new ReusedMemoryStream())
-            using (var pooledProcessor = messageContext.pools.EntityProcessor.Get())
-            using(var writer   = new StreamWriter(memory, Utf8Encoding, -1, true)) {
+            using (var memory           = new ReusedMemoryStream())
+            using (var pooledProcessor  = messageContext.pools.EntityProcessor.Get())
+            using(var writer            = new StreamWriter(memory, Utf8Encoding, -1, true)) {
                 var processor = pooledProcessor.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var key     = command.entityKeys[n];
@@ -122,14 +122,19 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             var id              = key.AsString();
             var partitionKey    = new PartitionKey(id);
             // todo handle error;
-            using (var response = await cosmosContainer.ReadItemStreamAsync(id, partitionKey).ConfigureAwait(false)) {
-                var content = response.Content;
+            using (var pooledProcessor  = messageContext.pools.EntityProcessor.Get())
+            using (var response         = await cosmosContainer.ReadItemStreamAsync(id, partitionKey).ConfigureAwait(false)) {
+                var processor   = pooledProcessor.instance;
+                var content     = response.Content;
                 if (content == null) {
                     entities.TryAdd(key, new EntityValue());
                 } else {
                     using (StreamReader reader = new StreamReader(content)) {
-                        string payload = await reader.ReadToEndAsync().ConfigureAwait(false);
-                        var entry = new EntityValue(payload);
+                        string  payload     = await reader.ReadToEndAsync().ConfigureAwait(false);
+                        string  keyName     = "id";
+                        bool    isIntKey    = command.isIntKey == true; 
+                        string  json = processor.ReplaceKey(payload, ref keyName, isIntKey, command.keyName, out _, out _);
+                        var entry = new EntityValue(json);
                         entities.TryAdd(key, entry);
                     }
                 }
