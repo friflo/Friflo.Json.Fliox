@@ -91,7 +91,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             var readArticles3   = articles.Read()                                                   .TaskName("readArticles3");
             var invalidJson     = readArticles3.Find(articleInvalidJson)                            .TaskName("invalidJson");
             var idDoesntMatch   = readArticles3.Find(articleIdDoesntMatch)                          .TaskName("idDoesntMatch");
-            var missingKey      = readArticles3.Find(articleMissingKey)                             .TaskName("missingKeyName");
+            var missingKey      = readArticles3.Find(articleMissingKey)                             .TaskName("missingKey");
             
             var readArticles4   = articles.Read()                                                   .TaskName("readArticles4");
             var missingEntity   = readArticles4.Find(missingArticle)                                .TaskName("missingEntity");
@@ -120,7 +120,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
 |   ParseError: articles [article-invalidJson], JsonParser/JSON error: Expected ':' after key. Found: Y path: 'invalidJson' at position: 16
 |- idDoesntMatch # EntityErrors ~ count: 1
 |   ParseError: articles [article-idDoesntMatch], entity key mismatch. 'id': 'article-unexpected-id'
-|- missingKeyName # EntityErrors ~ count: 1
+|- missingKey # EntityErrors ~ count: 1
 |   ParseError: articles [article-missingKey], missing key in JSON value. keyName: 'id'
 |- missingEntity # EntityErrors ~ count: 1
 |   ReadError: articles [missing-article], requested entity missing in response results";
