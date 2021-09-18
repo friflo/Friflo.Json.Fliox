@@ -44,12 +44,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 switch (task) {
                     case CreateEntities createEntities:
                         if (writeModifiers.TryGetValue(createEntities.container, out var write)) {
-                            write.ModifyWrites(createEntities.key, createEntities.entities);
+                            write.ModifyWrites(createEntities.keyName, createEntities.entities);
                         }
                         break;
                     case UpsertEntities upsertEntities:
                         if (writeModifiers.TryGetValue(upsertEntities.container, out write)) {
-                            write.ModifyWrites(upsertEntities.key, upsertEntities.entities);
+                            write.ModifyWrites(upsertEntities.keyName, upsertEntities.entities);
                         }
                         break;
                     case PatchEntities patchEntities:

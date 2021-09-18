@@ -146,7 +146,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 var reader      = pooledMapper.instance.reader;
                 var documents   = await CosmosUtils.ReadDocuments(reader, response.Content).ConfigureAwait(false);
-                EntityUtils.AddEntitiesToMap(documents, command.key, entities, messageContext);
+                EntityUtils.AddEntitiesToMap(documents, command.keyName, entities, messageContext);
                 foreach (var key in keys) {
                     if (entities.ContainsKey(key))
                         continue;
@@ -175,7 +175,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                     }
                 }
             }
-            EntityUtils.AddEntitiesToMap(documents, command.key, entities, messageContext);
+            EntityUtils.AddEntitiesToMap(documents, command.keyName, entities, messageContext);
             if (filterByClient) {
                 return FilterEntities(command, entities, messageContext);
             }

@@ -48,21 +48,21 @@
             "properties": {
                 "container":     { "type": "string" },
                 "reservedToken": { "ref":  "Guid", "nullable": true },
-                "key":           { "type": "string", "nullable": true },
+                "keyName":       { "type": "string", "nullable": true },
                 "entities":      { "elements": {  } }
             }
         },
         "UpsertEntities": {
             "properties": {
                 "container": { "type": "string" },
-                "key":       { "type": "string", "nullable": true },
+                "keyName":   { "type": "string", "nullable": true },
                 "entities":  { "elements": {  } }
             }
         },
         "ReadEntitiesList": {
             "properties": {
                 "container": { "type": "string" },
-                "key":       { "type": "string", "nullable": true },
+                "keyName":   { "type": "string", "nullable": true },
                 "reads":     { "elements": { "ref":  "ReadEntities" } }
             }
         },
@@ -76,14 +76,14 @@
             "properties": {
                 "selector":   { "type": "string" },
                 "container":  { "type": "string" },
-                "key":        { "type": "string", "nullable": true },
+                "keyName":    { "type": "string", "nullable": true },
                 "references": { "elements": { "ref":  "References" }, "nullable": true }
             }
         },
         "QueryEntities": {
             "properties": {
                 "container":  { "type": "string" },
-                "key":        { "type": "string", "nullable": true },
+                "keyName":    { "type": "string", "nullable": true },
                 "filterLinq": { "type": "string", "nullable": true },
                 "filter":     { "ref":  "FilterOperation", "nullable": true },
                 "references": { "elements": { "ref":  "References" }, "nullable": true }
@@ -430,7 +430,7 @@
         "PatchEntities": {
             "properties": {
                 "container": { "type": "string" },
-                "key":       { "type": "string", "nullable": true },
+                "keyName":   { "type": "string", "nullable": true },
                 "patches":   { "values": { "ref":  "EntityPatch" } }
             }
         },

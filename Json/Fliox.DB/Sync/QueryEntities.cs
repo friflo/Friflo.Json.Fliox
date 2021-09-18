@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     public class QueryEntities : DatabaseTask
     {
         [Fri.Required]  public  string              container;
-                        public  string              key;
+                        public  string              keyName;
                         public  string              filterLinq;
                         public  FilterOperation     filter;
                         public  List<References>    references;

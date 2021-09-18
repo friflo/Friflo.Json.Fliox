@@ -64,21 +64,21 @@ export class CreateEntities extends DatabaseTask {
     task           : "create";
     container      : string;
     reservedToken? : Guid | null;
-    key?           : string | null;
+    keyName?       : string | null;
     entities       : any[];
 }
 
 export class UpsertEntities extends DatabaseTask {
     task       : "upsert";
     container  : string;
-    key?       : string | null;
+    keyName?   : string | null;
     entities   : any[];
 }
 
 export class ReadEntitiesList extends DatabaseTask {
     task       : "read";
     container  : string;
-    key?       : string | null;
+    keyName?   : string | null;
     reads      : ReadEntities[];
 }
 
@@ -90,14 +90,14 @@ export class ReadEntities {
 export class References {
     selector    : string;
     container   : string;
-    key?        : string | null;
+    keyName?    : string | null;
     references? : References[] | null;
 }
 
 export class QueryEntities extends DatabaseTask {
     task        : "query";
     container   : string;
-    key?        : string | null;
+    keyName?    : string | null;
     filterLinq? : string | null;
     filter?     : FilterOperation_Union | null;
     references? : References[] | null;
@@ -106,7 +106,7 @@ export class QueryEntities extends DatabaseTask {
 export class PatchEntities extends DatabaseTask {
     task       : "patch";
     container  : string;
-    key?       : string | null;
+    keyName?   : string | null;
     patches    : { [key: string]: EntityPatch };
 }
 

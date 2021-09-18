@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             var entityPatches = patchEntities.patches;
             var ids = entityPatches.Select(patch => patch.Key).ToHashSet(JsonKey.Equality);
             // Read entities to be patched
-            var readTask = new ReadEntities { ids = ids, key = patchEntities.key };
+            var readTask = new ReadEntities { ids = ids, keyName = patchEntities.keyName };
             var readResult = await ReadEntities(readTask, messageContext).ConfigureAwait(false);
             if (readResult.Error != null) {
                 return new PatchEntitiesResult { Error = readResult.Error };
@@ -157,7 +157,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         }
         
         protected async Task<QueryEntitiesResult> FilterEntityIds(QueryEntities command, HashSet<JsonKey> ids, MessageContext messageContext) {
-            var readIds         = new ReadEntities { ids = ids, key = command.key };
+            var readIds         = new ReadEntities { ids = ids, keyName = command.keyName };
             var readEntities    = await ReadEntities(readIds, messageContext).ConfigureAwait(false);
             if (readEntities.Error != null) {
                 // todo add error test 
@@ -259,7 +259,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 if (ids.Count == 0)
                     continue;
                 var refIdList   = ids;
-                var readRefIds  = new ReadEntities { ids = refIdList, key = reference.key };
+                var readRefIds  = new ReadEntities { ids = refIdList, keyName = reference.keyName };
                 var refEntities = await refCont.ReadEntities(readRefIds, messageContext).ConfigureAwait(false);
                 var subPath = $"{selectorPath} -> {reference.selector}";
                 // In case of ReadEntities error: Assign error to result and continue with other references.

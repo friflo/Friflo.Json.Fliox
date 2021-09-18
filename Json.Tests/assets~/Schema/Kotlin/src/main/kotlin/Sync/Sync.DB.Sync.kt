@@ -41,7 +41,7 @@ data class CreateEntities (
               val container     : String,
               @Serializable(with = UUIDSerializer::class)
               val reservedToken : UUID? = null,
-              val key           : String? = null,
+              val keyName       : String? = null,
               val entities      : List<JsonElement>,
 ) : DatabaseTask()
 
@@ -49,7 +49,7 @@ data class CreateEntities (
 @SerialName("upsert")
 data class UpsertEntities (
               val container : String,
-              val key       : String? = null,
+              val keyName   : String? = null,
               val entities  : List<JsonElement>,
 ) : DatabaseTask()
 
@@ -57,7 +57,7 @@ data class UpsertEntities (
 @SerialName("read")
 data class ReadEntitiesList (
               val container : String,
-              val key       : String? = null,
+              val keyName   : String? = null,
               val reads     : List<ReadEntities>,
 ) : DatabaseTask()
 
@@ -71,7 +71,7 @@ data class ReadEntities (
 data class References (
               val selector   : String,
               val container  : String,
-              val key        : String? = null,
+              val keyName    : String? = null,
               val references : List<References>? = null,
 )
 
@@ -79,7 +79,7 @@ data class References (
 @SerialName("query")
 data class QueryEntities (
               val container  : String,
-              val key        : String? = null,
+              val keyName    : String? = null,
               val filterLinq : String? = null,
               val filter     : FilterOperation? = null,
               val references : List<References>? = null,
@@ -89,7 +89,7 @@ data class QueryEntities (
 @SerialName("patch")
 data class PatchEntities (
               val container : String,
-              val key       : String? = null,
+              val keyName   : String? = null,
               val patches   : HashMap<String, EntityPatch>,
 ) : DatabaseTask()
 

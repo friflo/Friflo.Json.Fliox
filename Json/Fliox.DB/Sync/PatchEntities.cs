@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     public class PatchEntities : DatabaseTask
     {
         [Fri.Required]  public  string                              container;
-                        public  string                              key;
+                        public  string                              keyName;
         [Fri.Required]  public  Dictionary<JsonKey, EntityPatch>    patches = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
         
         internal override       TaskType                        TaskType => TaskType.patch;
