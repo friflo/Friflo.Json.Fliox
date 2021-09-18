@@ -30,7 +30,6 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         //                  --- ReplaceKey
         private             int             keyStart;
         private             int             keyEnd;
-        private             bool            equalKeys;
         private readonly    StringBuilder   sb          = new StringBuilder();
         
         public bool GetEntityKey(string json, ref string keyName, out JsonKey keyValue, out string error) {
@@ -42,8 +41,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         }
         
         public string ReplaceKey(string json, ref string keyName, string newKeyName, out JsonKey keyValue, out string error) {
-            keyName     = keyName ?? "id";
-            equalKeys   = keyName == newKeyName;
+            keyName         = keyName ?? "id";
+            bool equalKeys  = keyName == newKeyName;
             if (!Traverse  (json, ref keyName, out keyValue, ProcessingType.SetKey,   out error))
                 return null;
             if (equalKeys)
@@ -93,14 +92,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                                 error       = null;
                                 return true;
                             case ProcessingType.SetKey:
-                                if (equalKeys) {
-                                    // JSON can be returned unchanged
-                                    error   = null;
-                                    return true;
-                                }
+                                error       = null;
                                 keyStart    = pos;
                                 keyEnd      = parser.Position;
-                                continue;
+                                return true;
                         }
                         break;
                     case JsonEvent.ValueBool:
