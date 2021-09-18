@@ -15,30 +15,34 @@ using NUnit.Framework;
 
 namespace Friflo.Playground.CosmosDB
 {
-    public static class TestCosmos
+    public static class TestCosmosDB
     {
         /// withdraw from allocation detection by <see cref="LeakTestsFixture"/> => init before tracking starts
         [OneTimeSetUp]    public static void  Init()       { TestGlobals.Init(); }
         [OneTimeTearDown] public static void  Dispose()    { TestGlobals.Dispose(); }
-        
+
         private static IConfiguration InitConfiguration() {
             var appSettings     = CommonUtils.GetBasePath() + "appsettings.test.json";
             var privateSettings = CommonUtils.GetBasePath() + "appsettings.private.json";
             return new ConfigurationBuilder().AddJsonFile(appSettings).AddJsonFile(privateSettings).Build();
         }
         
-        private static async Task<DatabaseResponse> CosmosCreateDatabase(string databaseName) {
-            var config = InitConfiguration();
+        private static CosmosClient _client;
+        
+        private static CosmosClient CreateCosmosClient() {
+            if (_client != null)
+                return _client;
+            var config      = InitConfiguration();
             var endpointUri = config["EndPointUri"];    // The Azure Cosmos DB endpoint for running this sample.
             var primaryKey  = config["PrimaryKey"];     // The primary key for the Azure Cosmos account.
             var options     = new CosmosClientOptions { ApplicationName = "Friflo.Playground" };
-            var client      = new CosmosClient(endpointUri, primaryKey, options);
-            return await client.CreateDatabaseIfNotExistsAsync(databaseName);
-        }
-
+            return _client  = new CosmosClient(endpointUri, primaryKey, options);
+        }   
+        
         [Test]
         public static async Task CosmosCreatePocStore() {
-            var cosmosDatabase      = await CosmosCreateDatabase(nameof(PocStore));
+            var client              = CreateCosmosClient();
+            var cosmosDatabase      = await client.CreateDatabaseIfNotExistsAsync(nameof(PocStore));
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var database     = new CosmosDatabase(cosmosDatabase, 400))
             using (var createStore  = new PocStore(database, "createStore"))
@@ -50,7 +54,8 @@ namespace Friflo.Playground.CosmosDB
         
         [Test] 
         public static async Task CosmosTestEntityKey() {
-            var cosmosDatabase      = await CosmosCreateDatabase(nameof(EntityIdStore));
+            var client              = CreateCosmosClient();
+            var cosmosDatabase      = await client.CreateDatabaseIfNotExistsAsync(nameof(EntityIdStore));
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
             using (var database     = new CosmosDatabase(cosmosDatabase, 400)) {
