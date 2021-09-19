@@ -8,7 +8,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
 {
     public readonly struct Command<TValue> {
         public              string          Name    { get; }
-        public              TValue          Value   => reader.Read<TValue>(json.array);
+        public              TValue          Value   => reader.Read<TValue>(json);
         
         private  readonly   Utf8Array       json;
         private  readonly   ObjectReader    reader;

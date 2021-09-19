@@ -74,29 +74,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 {
                     // --- return modified JSON
                     var     json = new Utf8Array("{\"myId\": \"123\"}");
-                    var     result  = processor.ReplaceKey(json, "myId", false, "id", out JsonKey key, out _);
+                    var     result  = processor.ReplaceKey(json, "myId", false, "id", out JsonKey _, out _);
                     AreEqual("{\"id\":\"123\"}", result.AsString());
                 } {
                     // --- return modified JSON
                     var     json =  new Utf8Array("{\"myId\": \"111\"}");
-                    var     result  = processor.ReplaceKey(json, "myId", true, "id", out JsonKey key, out _);
+                    var     result  = processor.ReplaceKey(json, "myId", true, "id", out JsonKey _, out _);
                     AreEqual("{\"id\":111}", result.AsString());
                 } {
                     // --- return modified JSON
                     var     json = new Utf8Array("{\"id\": 456}");
-                    var     result  = processor.ReplaceKey(json, "id", false, "id", out JsonKey key, out _);
+                    var     result  = processor.ReplaceKey(json, "id", false, "id", out JsonKey _, out _);
                     AreEqual("{\"id\":\"456\"}", result.AsString());
                 } {
                     // --- return original JSON
                     var     json = new Utf8Array("{\"id\": 789}");
-                    var     result  = processor.ReplaceKey(json, "id", true, "id", out JsonKey key, out _);
-                    IsTrue(ReferenceEquals(json.array, result.array));
+                    var     result  = processor.ReplaceKey(json, "id", true, "id", out JsonKey _, out _);
+                    IsTrue(json.IsEqualReference(result));
                 } {
                     // --- return original JSON
                     var     json =  new Utf8Array("{\"id\": \"abc\"}");
                     // null defaults to "id"
-                    var result = processor.ReplaceKey(json, null, false, "id", out JsonKey key, out _);
-                    IsTrue(ReferenceEquals(json.array, result.array));
+                    var result = processor.ReplaceKey(json, null, false, "id", out JsonKey _, out _);
+                    IsTrue(json.IsEqualReference(result));
                 }
             }
         }

@@ -456,21 +456,6 @@ namespace Friflo.Json.Burst
         }
         
         // ------------------------------ Append methods ------------------------------
-        public void AppendArray(byte[] array) {
-            AppendArray (array, 0, array.Length);
-        }
-        
-        public void AppendArray(byte[] array, int offset, int len) {
-            EnsureCapacity(len);
-            int pos     = end;
-            int arrEnd  = offset + len;
-            ref var buf = ref buffer.array;
-            for (int n = offset; n < arrEnd; n++)
-                buf[pos++] = array[n];
-            end += len;
-            hc = BytesConst.notHashed;
-        }
-            
         public void AppendString(string str)
         {
             AppendString (str, 0, str. Length);

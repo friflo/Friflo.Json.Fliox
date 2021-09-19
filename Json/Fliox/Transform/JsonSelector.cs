@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Transform
             nodeStack.Clear();
             nodeStack.Add(scalarSelect.nodeTree.rootNode);
             targetJson.Clear();
-            targetJson.AppendArray(json.array);
+            targetJson.AppendArray(json);
             targetParser.InitParser(targetJson);
             targetParser.NextEvent();
             serializer.SetPretty(pretty);

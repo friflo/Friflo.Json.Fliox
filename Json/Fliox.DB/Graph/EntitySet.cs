@@ -512,9 +512,9 @@ namespace Friflo.Json.Fliox.DB.Graph
                         SetEntityId(entity, id);
                         peer.SetEntity(entity);
                     }
-                    reader.ReadTo(json.array, entity);
+                    reader.ReadTo(json, entity);
                     if (reader.Success) {
-                        peer.SetPatchSource(reader.Read<T>(json.array));
+                        peer.SetPatchSource(reader.Read<T>(json));
                     } else {
                         var entityError = new EntityError(EntityErrorType.ParseError, name, id, reader.Error.msg.ToString());
                         entities[id].SetError(entityError);

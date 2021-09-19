@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal.Map
                 Utf8Array   json    = entity.Value.Json;
                 writer.WriteKey(keyMapper, key, n++);
                 if (!json.IsNull())
-                    writer.bytes.AppendArray(json.array);
+                    writer.bytes.AppendArray(json);
                 else
                     writer.AppendNull(); // todo throw exception. value.json must be not null
             }

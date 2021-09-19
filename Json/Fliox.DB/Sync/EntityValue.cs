@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         [Fri.Ignore]    public      Utf8Array   Json    => error == null ? value.json : throw new EntityException(error);
         [Fri.Ignore]    public      EntityError Error   => error;
 
-        public override             string      ToString() => error == null ? value.json.AsString() ?? "null" : error.type + ": " + error.message;
+        public override             string      ToString() => error == null ? value.json.AsString() : error.type + ": " + error.message;
 
         public void SetJson(Utf8Array json) {
             value.json = json;

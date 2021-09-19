@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         private void Init(Utf8Array json) {
             validationError = new ValidationError();
             jsonBytes.Clear();
-            jsonBytes.AppendArray(json.array);
+            jsonBytes.AppendArray(json);
             parser.InitParser(jsonBytes);
         }
         

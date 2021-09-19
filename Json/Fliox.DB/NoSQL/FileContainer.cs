@@ -187,9 +187,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         /// IOException: The process cannot access the file 'path' because it is being used by another process
         /// </summary>
         private static async Task WriteText(string filePath, Utf8Array json, FileMode fileMode) {
-            var array = json.array;
             using (var destStream = new FileStream(filePath, fileMode, FileAccess.Write, FileShare.Read, bufferSize: 4096, useAsync: false)) {
-                await destStream.WriteAsync(array, 0, array.Length).ConfigureAwait(false);
+                await destStream.WriteAsync(json, 0, json.Length).ConfigureAwait(false);
             }
         }
         

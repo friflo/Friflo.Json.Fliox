@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                     json = replace.value.json;
                     path = PathTools.PathToPathTokens(replace.path, pathNodes);
                     if (pathNodes.Count == 0) {
-                        jsonReader.ReadTo(json.array, root);
+                        jsonReader.ReadTo(json, root);
                         return;
                     }
                     break;
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
 
         public NodeAction DescendMember(TypeMapper typeMapper, object member, out object value) {
             if (++pathPos >= pathNodes.Count) {
-                value = jsonReader.ReadObject(json.array, typeMapper.type);
+                value = jsonReader.ReadObject(json, typeMapper.type);
                 switch (patchType) {
                     case PatchType.Replace:
                     case PatchType.Add:
@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         
         public NodeAction DescendElement(TypeMapper elementType, object element, out object value) {
             if (++pathPos >= pathNodes.Count) {
-                value = jsonReader.ReadObject(json.array, elementType.type);
+                value = jsonReader.ReadObject(json, elementType.type);
                 return NodeAction.Assign;
             }
             elementType.PatchObject(this, element);

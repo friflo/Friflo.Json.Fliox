@@ -27,13 +27,13 @@ namespace Friflo.Json.Fliox.DB.Cosmos
     {
         internal static async Task<List<JsonValue>> ReadDocuments(ObjectReader reader, Stream content) {
             var documentsJson   = await EntityUtils.ReadToEnd(content).ConfigureAwait(false);
-            var responseFeed    = reader.Read<ResponseFeed>(documentsJson.array);
+            var responseFeed    = reader.Read<ResponseFeed>(documentsJson);
             return responseFeed.Documents;
         }
         
         public static void WriteJson(MemoryStream memory, Utf8Array json) {
             memory.SetLength(0);
-            memory.Write(json.array, 0, json.array.Length);
+            memory.Write(json, 0, json.Length);
             memory.Flush();
             memory.Seek(0, SeekOrigin.Begin);
         }

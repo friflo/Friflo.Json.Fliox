@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             if (equalKeys && foundIntKey == asIntKey)
                 return json;
             sb.Clear();
-            sb.AppendArray(json.array, 0, keyStart);
+            sb.AppendArray(json, 0, keyStart);
             sb.AppendChar('\"');
             sb.AppendString(newKeyName);
             sb.AppendString("\":");
@@ -63,8 +63,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 keyValue.AppendTo(ref sb, ref parser.format);
                 sb.AppendChar('\"');
             }
-            var remaining = json.array.Length - keyEnd; 
-            sb.AppendArray(json.array, keyEnd, remaining);
+            var remaining = json.Length - keyEnd; 
+            sb.AppendArray(json, keyEnd, remaining);
             var result = sb.AsArray();
             sb.Clear();
             return new Utf8Array(result);
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             idKey.AppendString(keyName);
             keyValue = new JsonKey();
             jsonBytes.Clear();
-            jsonBytes.AppendArray(json.array);
+            jsonBytes.AppendArray(json);
             parser.InitParser(jsonBytes);
             var ev = parser.NextEvent();
             if (ev != JsonEvent.ObjectStart) {

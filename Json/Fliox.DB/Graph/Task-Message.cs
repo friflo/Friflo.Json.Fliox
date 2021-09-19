@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         public T ReadResult<T>() {
             var ok = IsOk("SendMessageTask.Result", out Exception e);
             if (ok) {
-                var resultValue = reader.Read<T>(result.array);
+                var resultValue = reader.Read<T>(result);
                 if (reader.Success)
                     return resultValue;
                 var error = reader.Error;
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         public bool TryReadResult<T>(out T resultValue, out JsonReaderException error) {
             var ok = IsOk("SendMessageTask.Result", out Exception e);
             if (ok) {
-                resultValue = reader.Read<T>(result.array);
+                resultValue = reader.Read<T>(result);
                 if (reader.Success) {
                     error = null;
                     return true;

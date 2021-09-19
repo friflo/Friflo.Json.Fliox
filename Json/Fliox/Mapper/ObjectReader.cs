@@ -78,9 +78,9 @@ namespace Friflo.Json.Fliox.Mapper
             intern.InitMirrorStack();
         }
         
-        private void InitJsonReaderArray(byte[] array) {
+        private void InitJsonReaderArray(Utf8Array array) {
             inputStringBuf.Clear();
-            inputStringBuf.AppendArray(array, 0, array.Length);
+            inputStringBuf.AppendArray(array, 0, array.array.Length);
             intern.parser.InitParser(inputStringBuf.buffer, inputStringBuf.start, inputStringBuf.Len);
             intern.parser.SetMaxDepth(maxDepth);
             intern.InitMirrorStack();
@@ -208,14 +208,14 @@ namespace Friflo.Json.Fliox.Mapper
         
         // --------------- byte[] ---------------
         // --- Read()
-        public T Read<T>(byte[] utf8Array) {
+        public T Read<T>(Utf8Array utf8Array) {
             InitJsonReaderArray(utf8Array);
             T result = ReadStart<T>(default);
             JsonBurstError();
             return result;
         }
         
-        public object ReadObject(byte[] utf8Array, Type type) {
+        public object ReadObject(Utf8Array utf8Array, Type type) {
             InitJsonReaderArray(utf8Array);
             object result = ReadStart(type, null);
             JsonBurstError();
@@ -223,7 +223,7 @@ namespace Friflo.Json.Fliox.Mapper
         }
 
         // --- ReadTo()
-        public T ReadTo<T>(byte[] utf8Array, T obj)  {
+        public T ReadTo<T>(Utf8Array utf8Array, T obj)  {
             InitJsonReaderArray(utf8Array);
             T result = ReadToStart(obj);
             JsonBurstError();
@@ -231,7 +231,7 @@ namespace Friflo.Json.Fliox.Mapper
 
         }
 
-        public object ReadToObject(byte[] utf8Array, object obj)  {
+        public object ReadToObject(Utf8Array utf8Array, object obj)  {
             InitJsonReaderArray(utf8Array);
             object result = ReadToStart(obj);
             JsonBurstError();

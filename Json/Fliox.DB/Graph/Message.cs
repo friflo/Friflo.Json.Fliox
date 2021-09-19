@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         
         // --- internals
         internal static T Read<T>(Utf8Array json, ObjectReader reader) {
-            var result = reader.Read<T>(json.array);
+            var result = reader.Read<T>(json);
             if (reader.Success)
                 return result;
             var error = reader.Error;
@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         internal static bool TryRead<T>(Utf8Array json, ObjectReader reader, out T result, out JsonReaderException error) {
-            result = reader.Read<T>(json.array);
+            result = reader.Read<T>(json);
             if (reader.Success) {
                 error = null;
                 return true;

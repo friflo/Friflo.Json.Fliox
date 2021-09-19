@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
 
         public override void Write(ref Writer writer, JsonValue value) {
             if (!value.json.IsNull())
-                writer.bytes.AppendArray(value.json.array);
+                writer.bytes.AppendArray(value.json);
             else
                 writer.AppendNull(); // todo throw exception. value.json must be not null
         }
