@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Mapper.Access
             if (node.selectors.Count == 0)
                 return;
             
-            var json = writer.WriteObjectArray(value);
+            var json = writer.WriteObjectAsArray(value);
             foreach (var sel in node.selectors) {
                 sel.result.Found    = true;
                 sel.result.json     = new Utf8Array(json);

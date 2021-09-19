@@ -148,7 +148,7 @@ namespace Friflo.Json.Fliox.Mapper
             return writer.WriteObject(value);
         }
         
-        // --------------- byte[] ---------------
+        // --------------- Utf8Array ---------------
         // --- Read()
         public T Read<T>(Utf8Array utf8Array) {
             return reader.Read<T>(utf8Array);
@@ -161,7 +161,6 @@ namespace Friflo.Json.Fliox.Mapper
         // --- ReadTo()
         public T ReadTo<T>(Utf8Array utf8Array, T obj)  {
             return reader.ReadTo(utf8Array, obj);
-
         }
 
         public object ReadToObject(Utf8Array utf8Array, object obj)  {
@@ -169,12 +168,12 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         // --- Write()
-        public byte[] WriteArray<T>(T value) {
-            return writer.WriteArray(value);
+        public byte[] WriteAsArray<T>(T value) {
+            return writer.WriteAsArray(value);
         }
 
-        public byte[] WriteObjectArray(object value) {
-            return writer.WriteObjectArray(value);
+        public byte[] WriteObjectAsArray(object value) {
+            return writer.WriteObjectAsArray(value);
         }
         
     }

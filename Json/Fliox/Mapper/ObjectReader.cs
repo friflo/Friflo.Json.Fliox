@@ -36,6 +36,14 @@ namespace Friflo.Json.Fliox.Mapper
 
         T       ReadTo<T>   (string json, T         obj);
         object  ReadToObject(string json, object    obj); 
+        
+        //
+        // --- Utf8Array
+        T       Read<T>     (Utf8Array utf8Array);
+        object  ReadObject  (Utf8Array utf8Array, Type type);
+
+        T       ReadTo<T>   (Utf8Array utf8Array, T         obj);
+        object  ReadToObject(Utf8Array utf8Array, object    obj);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -206,7 +214,7 @@ namespace Friflo.Json.Fliox.Mapper
             return result;
         }
         
-        // --------------- byte[] ---------------
+        // --------------- Utf8Array ---------------
         // --- Read()
         public T Read<T>(Utf8Array utf8Array) {
             InitJsonReaderArray(utf8Array);

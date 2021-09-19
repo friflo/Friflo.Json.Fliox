@@ -25,6 +25,10 @@ namespace Friflo.Json.Fliox.Mapper
         // --- string
         string  Write<T>    (T      value);
         string  WriteObject (object value);
+        
+        // --- byte[]
+        byte[]  WriteAsArray<T>     (T value);
+        byte[]  WriteObjectAsArray  (object value);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -134,13 +138,13 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         // --------------- byte[] ---------------
-        public byte[] WriteArray<T>(T value) {
+        public byte[] WriteAsArray<T>(T value) {
             InitJsonWriterString();
             WriteStart(value);
             return intern.bytes.AsArray();
         }
 
-        public byte[] WriteObjectArray(object value) {
+        public byte[] WriteObjectAsArray(object value) {
             InitJsonWriterString();
             WriteStart(value);
             return intern.bytes.AsArray();

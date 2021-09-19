@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Mapper
                 case DiffType.NotEqual:
                     sb.Clear();
                     diff.AddPath(sb);
-                    var json = mapper.WriteObjectArray(diff.right);
+                    var json = mapper.WriteObjectAsArray(diff.right);
                     JsonPatch patch = new PatchReplace {
                         path = sb.ToString(),
                         value = new JsonValue(json)
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Mapper
                 case DiffType.OnlyRight:
                     sb.Clear();
                     diff.AddPath(sb);
-                    json = mapper.WriteObjectArray(diff.right);
+                    json = mapper.WriteObjectAsArray(diff.right);
                     patch = new PatchAdd {
                         path = sb.ToString(),
                         value = new JsonValue(json)

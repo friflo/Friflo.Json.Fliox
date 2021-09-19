@@ -355,7 +355,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         private static string PatchJson<T>(JsonPatcher jsonPatcher, ObjectPatcher objectPatcher, T left, T right)
         {
             List<JsonPatch> patches = objectPatcher.GetPatches(left, right);
-            var leftJson = objectPatcher.mapper.WriteArray(left);
+            var leftJson = objectPatcher.mapper.WriteAsArray(left);
             
             var jsonPatches = objectPatcher.mapper.Write(patches);
             var destPatches = objectPatcher.mapper.Read<List<JsonPatch>>(jsonPatches);
