@@ -432,7 +432,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                 
                 // --- entities
                 foreach (var entity in entities) {
-                    if (!processor.GetEntityKey(entity.json, ref keyName, out JsonKey key, out string errorMsg)) {
+                    if (!processor.GetEntityKey(entity.json, keyName, out JsonKey key, out string errorMsg)) {
                         throw new InvalidOperationException($"GetEntityResults not found: {errorMsg}");
                     }
                     entityMap.Add(key, new EntityValue(entity.json));

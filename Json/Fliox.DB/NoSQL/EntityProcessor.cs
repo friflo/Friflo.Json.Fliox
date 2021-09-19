@@ -34,12 +34,13 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         private             bool            asIntKey;
         private readonly    StringBuilder   sb          = new StringBuilder();
         
-        public bool GetEntityKey(string json, ref string keyName, out JsonKey keyValue, out string error) {
-            return Traverse(json, ref keyName, out keyValue, ProcessingType.GetKey,   out error);
+        public bool GetEntityKey(string json, string keyName, out JsonKey keyValue, out string error) {
+            keyName  = keyName ?? "id";
+            return Traverse(json, keyName, out keyValue, ProcessingType.GetKey,   out error);
         }
         
-        public bool Validate(string json, ref string keyName, out JsonKey keyValue, out string error) {
-            return Traverse(json, ref keyName, out keyValue, ProcessingType.Validate, out error);
+        public bool Validate(string json, string keyName, out JsonKey keyValue, out string error) {
+            return Traverse(json, keyName, out keyValue, ProcessingType.Validate, out error);
         }
         
         public string ReplaceKey(string json, string keyName, bool asIntKey, string newKeyName, out JsonKey keyValue, out string error) {
@@ -47,7 +48,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             keyName         = keyName       ?? "id";
             newKeyName      = newKeyName    ?? "id";
             bool equalKeys  = keyName == newKeyName;
-            if (!Traverse  (json, ref keyName, out keyValue, ProcessingType.SetKey,   out error))
+            if (!Traverse  (json, keyName, out keyValue, ProcessingType.SetKey,   out error))
                 return null;
             if (equalKeys && foundIntKey == asIntKey)
                 return json;
@@ -70,10 +71,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             return result;
         }
 
-        private bool Traverse (string json, ref string keyName, out JsonKey keyValue, ProcessingType processingType, out string error) {
+        private bool Traverse (string json, string keyName, out JsonKey keyValue, ProcessingType processingType, out string error) {
             foundKey = false;
             idKey.Clear();
-            keyName  = keyName ?? "id";
             idKey.AppendString(keyName);
             keyValue = new JsonKey();
             jsonBytes.Clear();

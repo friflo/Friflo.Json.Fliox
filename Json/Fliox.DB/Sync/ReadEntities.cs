@@ -50,7 +50,8 @@ namespace Friflo.Json.Fliox.DB.Sync
                     if (json == null) {
                         continue;
                     }
-                    if (processor.Validate(json, ref keyName, out JsonKey payloadId, out string error)) {
+                    keyName = keyName ?? "id";
+                    if (processor.Validate(json, keyName, out JsonKey payloadId, out string error)) {
                         var id      = entityEntry.Key;
                         if (id.IsEqual(payloadId))
                             continue;

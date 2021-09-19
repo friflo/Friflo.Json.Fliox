@@ -92,7 +92,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             for (int n = 0; n < entities.Count; n++) {
                 var entity = entities[n];
                 var json = entity.json;
-                if (!processor.GetEntityKey(json, ref keyName, out JsonKey entityKey, out string error))
+                if (!processor.GetEntityKey(json, keyName, out JsonKey entityKey, out string error))
                     throw new InvalidOperationException($"Entity key error: {error}");
                 var key = entityKey.AsString();
                 if (writes.TryGetValue(key, out var modifier)) {

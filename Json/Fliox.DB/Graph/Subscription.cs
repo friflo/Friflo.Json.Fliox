@@ -182,7 +182,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         private List<JsonKey> GetKeysFromEntities(string keyName, List<JsonValue> entities) {
             var keys = new List<JsonKey>(entities.Count);
             foreach (var entity in entities) {
-                if (!processor.GetEntityKey(entity.json, ref keyName, out JsonKey key, out string error))
+                if (!processor.GetEntityKey(entity.json, keyName, out JsonKey key, out string error))
                     throw new InvalidOperationException($"CreateEntityKeys() error: {error}");
                 keys.Add(key);
             }
