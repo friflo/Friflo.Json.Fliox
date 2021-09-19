@@ -146,8 +146,12 @@ namespace Friflo.Json.Fliox.Transform
     public readonly struct QueryFormat {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    FilterOperation     filter;
-        public              string              Cosmos  =>  $"SELECT * FROM c {QueryCosmos.ToCosmos(filter)}";
         
+        public              string              Cosmos { get {
+            var collection = "c";
+            return $"SELECT * FROM {collection} {QueryCosmos.ToCosmos(collection, filter)}";
+        } }
+
         internal QueryFormat (FilterOperation filter) {
             this.filter = filter;
         }
