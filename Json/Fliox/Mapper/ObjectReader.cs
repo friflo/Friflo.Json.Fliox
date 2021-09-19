@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Mapper
         
         private void InitJsonReaderArray(Utf8Array array) {
             inputStringBuf.Clear();
-            inputStringBuf.AppendArray(array, 0, array.array.Length);
+            inputStringBuf.AppendArray(array, 0, array.Length);
             intern.parser.InitParser(inputStringBuf.buffer, inputStringBuf.start, inputStringBuf.Len);
             intern.parser.SetMaxDepth(maxDepth);
             intern.InitMirrorStack();

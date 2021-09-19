@@ -10,7 +10,7 @@ using Friflo.Json.Burst;
 namespace Friflo.Json.Fliox.Mapper
 {
     public readonly struct Utf8Array {
-        // array is internal to prevent potential side effects by application code by mutating array element
+        // array is internal to prevent potential side effects by application code mutating array elements
         internal readonly   byte[]  array;
         
         public              int     Length      => array.Length;
@@ -74,6 +74,5 @@ namespace Friflo.Json.Fliox.Mapper
         public static void Write(this Stream stream, Utf8Array array, int offset, int count) {
             stream.Write(array.array, offset, count);
         }
-
     }
 }
