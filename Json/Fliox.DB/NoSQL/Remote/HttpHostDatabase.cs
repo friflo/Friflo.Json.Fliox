@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             // (MIT License) [sta/websocket-sharp: A C# implementation of the WebSocket protocol client and server] https://github.com/sta/websocket-sharp
 #if UNITY_5_3_OR_NEWER
             if (req.Headers["Connection"] == "Upgrade" && req.Headers["Upgrade"] != null) {
-                await HandleServerWebSocket(resp);
+                await HandleServerWebSocket(resp).ConfigureAwait(false);
                 return;
             }
 #endif

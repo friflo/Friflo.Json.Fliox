@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Mapper
         }
         
         public static async Task WriteAsync(this Stream stream, Utf8Array array, int offset, int count) {
-            await stream.WriteAsync(array.array, offset, count);
+            await stream.WriteAsync(array.array, offset, count).ConfigureAwait(false);
         }
         
         public static void Write(this Stream stream, Utf8Array array, int offset, int count) {

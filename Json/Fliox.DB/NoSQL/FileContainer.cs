@@ -194,7 +194,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         
         private static async Task<Utf8Array> ReadText(string filePath) {
             using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: false)) {
-                return await EntityUtils.ReadToEnd(sourceStream);
+                return await EntityUtils.ReadToEnd(sourceStream).ConfigureAwait(false);
             }
         }
         
