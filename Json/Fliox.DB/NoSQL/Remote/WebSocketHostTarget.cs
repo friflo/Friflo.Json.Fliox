@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.WebSockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.NoSQL.Event;
@@ -50,10 +49,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                 writer.WriteNullMembers = false;
                 writer.Pretty           = true;
                 var message         = new DatabaseMessage { ev = ev };
-                var jsonMessage     = writer.Write(message);
-                byte[] jsonBytes    = Encoding.UTF8.GetBytes(jsonMessage);
+                var jsonMessage     = new Utf8Array(writer.WriteAsArray(message));
                 try {
-                    var arraySegment    = new ArraySegment<byte>(jsonBytes, 0, jsonBytes.Length);
+                    var arraySegment    = jsonMessage.AsArraySegment();
                     sendWriter.TryWrite(arraySegment);
                     return Task.FromResult(true);
                 }

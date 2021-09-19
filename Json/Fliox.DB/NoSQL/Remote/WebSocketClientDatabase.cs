@@ -6,7 +6,6 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Net.WebSockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Sync;
@@ -81,7 +80,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                             Console.WriteLine($"Expect WebSocket message type text. type: {messageType} {endpoint}");
                             continue;
                         }
-                        var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
+                        var requestContent  = new Utf8Array(memoryStream.ToArray());
                         OnReceive (requestContent);
                     } catch (Exception) {
                         foreach (var pair in requests) {
@@ -93,7 +92,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             }
         }
         
-        private void OnReceive(string messageJson) {
+        private void OnReceive(Utf8Array messageJson) {
             try {
                 var contextPools    = new Pools(Pools.SharedPools);
                 using (var pooledMapper = contextPools.ObjectMapper.Get()) {
