@@ -2,10 +2,10 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.NoSQL.Remote
 {
@@ -120,8 +120,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
 
             if (req.HttpMethod == "POST" && req.Url.AbsolutePath == "/") {
                 var inputStream = req.InputStream;
-                StreamReader reader = new StreamReader(inputStream, Encoding.UTF8);
-                string requestContent = await reader.ReadToEndAsync().ConfigureAwait(false);
+                Utf8Array requestContent = await Utf8Array.ReadToEndAsync(inputStream).ConfigureAwait(false);
 
                 // Each request require its own pool as multiple request running concurrently. Could cache a Pools instance per connection.
                 var pools           = new Pools(Pools.SharedPools);

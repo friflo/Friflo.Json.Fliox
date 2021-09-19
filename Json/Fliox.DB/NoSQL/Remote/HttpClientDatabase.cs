@@ -3,8 +3,10 @@
 
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.NoSQL.Remote
 {
@@ -24,9 +26,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             httpClient.Dispose();
         }
 
-        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, string jsonSyncRequest, MessageContext messageContext) {
-            var content = new StringContent(jsonSyncRequest);
-            content.Headers.ContentType.MediaType = "application/json";
+        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, Utf8Array jsonSyncRequest, MessageContext messageContext) {
+            var content = jsonSyncRequest.AsByteArrayContent();
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             // body.Headers.ContentEncoding = new string[]{"charset=utf-8"};
 
             try {

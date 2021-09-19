@@ -1,9 +1,11 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.IO;
 using System.Text;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Friflo.Json.Burst;
 
@@ -16,6 +18,10 @@ namespace Friflo.Json.Fliox.Mapper
         public              int     Length      => array.Length;
         public   override   string  ToString()  => AsString();
         public              string  AsString()  => array == null ? "null" : Encoding.UTF8.GetString(array, 0, array.Length);
+        
+        public  ArraySegment<byte>  AsArraySegment()        => new ArraySegment<byte>(array, 0, array.Length);
+        public  ByteArrayContent    AsByteArrayContent()    => new ByteArrayContent(array); // todo hm. dependency System.Net.Http 
+
         
         private static readonly Utf8Array Null = new Utf8Array("null");
 
@@ -46,6 +52,18 @@ namespace Friflo.Json.Fliox.Mapper
         /// <summary>Use for testing only</summary>
         public bool IsEqualReference (Utf8Array value) {
             return ReferenceEquals(array, value.array);
+        }
+        
+        public static async Task<Utf8Array> ReadToEndAsync(Stream input) {
+            byte[] buffer = new byte[16 * 1024];                // todo performance -> cache
+            using (MemoryStream ms = new MemoryStream()) {      // todo performance -> cache
+                int read;
+                while ((read = await input.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0) {
+                    ms.Write(buffer, 0, read);
+                }
+                var array = ms.ToArray(); 
+                return new Utf8Array(array);
+            }
         }
     }
     

@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             return result;
         }
 
-        public async Task<JsonResponse> ExecuteRequestJson(string jsonRequest, MessageContext messageContext, ProtocolType type) {
+        public async Task<JsonResponse> ExecuteRequestJson(Utf8Array jsonRequest, MessageContext messageContext, ProtocolType type) {
             try {
                 string jsonResponse;
                 using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
         }
         
         /// Caller need to check <see cref="reader"/> error state. 
-        private static DatabaseRequest ReadRequest (ObjectReader reader, string jsonRequest, ProtocolType type) {
+        private static DatabaseRequest ReadRequest (ObjectReader reader, Utf8Array jsonRequest, ProtocolType type) {
             switch (type) {
                 case ProtocolType.ReqResp:
                     return reader.Read<DatabaseRequest>(jsonRequest);

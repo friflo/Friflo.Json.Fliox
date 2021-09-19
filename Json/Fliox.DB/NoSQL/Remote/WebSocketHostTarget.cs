@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.NoSQL.Event;
 using Friflo.Json.Fliox.DB.NoSQL.Utils;
 using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.NoSQL.Remote
 {
@@ -96,7 +97,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                     while(!wsResult.EndOfMessage);
                     
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
-                        var requestContent  = Encoding.UTF8.GetString(memoryStream.ToArray());
+                        var requestContent  = new Utf8Array(memoryStream.ToArray());
                         var messageContext  = new MessageContext(pools, this);
                         var result          = await remoteHost.ExecuteRequestJson(requestContent, messageContext, ProtocolType.BiDirect).ConfigureAwait(false);
                         messageContext.Release();

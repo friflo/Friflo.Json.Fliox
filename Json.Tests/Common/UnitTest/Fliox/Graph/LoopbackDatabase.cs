@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.DB.NoSQL.Remote;
 using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 {
@@ -30,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             loopbackHost.Dispose();
         }
 
-        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, string jsonRequest, MessageContext messageContext) {
+        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, Utf8Array jsonRequest, MessageContext messageContext) {
             var jsonResponse = await loopbackHost.ExecuteRequestJson(jsonRequest, messageContext, ProtocolType.ReqResp).ConfigureAwait(false);
             return jsonResponse;
         }

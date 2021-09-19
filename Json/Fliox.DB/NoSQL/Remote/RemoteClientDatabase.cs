@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             messageContext.Release();
         }
 
-        protected abstract Task<JsonResponse> ExecuteRequestJson(int requestId, string jsonRequest, MessageContext messageContext);
+        protected abstract Task<JsonResponse> ExecuteRequestJson(int requestId, Utf8Array jsonRequest, MessageContext messageContext);
         
         public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             var response = await ExecuteRequest(syncRequest, messageContext).ConfigureAwait(false);
@@ -80,13 +80,13 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             }
         }
         
-        private string CreateRequest (ObjectWriter writer, DatabaseRequest request) {
+        private Utf8Array CreateRequest (ObjectWriter writer, DatabaseRequest request) {
             switch (protocolType) {
                 case ProtocolType.ReqResp:
-                    return writer.Write(request);
+                    return new Utf8Array(writer.WriteAsArray(request));
                 case ProtocolType.BiDirect:
                     var msg = new DatabaseMessage { req = request };
-                    return writer.Write(msg);
+                    return new Utf8Array(writer.WriteAsArray(msg));
             }
             throw new InvalidOperationException("cannot be reached");
         }

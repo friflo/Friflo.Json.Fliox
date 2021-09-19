@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.NoSQL.Remote
 {
@@ -130,7 +131,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             }
         }
 
-        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, string jsonSyncRequest, MessageContext messageContext) {
+        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, Utf8Array jsonSyncRequest, MessageContext messageContext) {
             if (requestId < 1)
                 throw new InvalidOperationException("Expect requestId > 0");
             try {
@@ -138,8 +139,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                 var request         = new WebsocketRequest(messageContext, cancellationToken);
                 requests.TryAdd(requestId, request);
                 
-                byte[] requestBytes = Encoding.UTF8.GetBytes(jsonSyncRequest);
-                var arraySegment    = new ArraySegment<byte>(requestBytes, 0, requestBytes.Length);
+                var arraySegment    = jsonSyncRequest.AsArraySegment();
                 await websocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                 
                 var response = await request.response.Task.ConfigureAwait(false);
