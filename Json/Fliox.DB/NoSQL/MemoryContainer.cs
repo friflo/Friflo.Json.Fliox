@@ -28,6 +28,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         private  readonly   Dictionary<JsonKey, Utf8Array>  keyValues = new Dictionary<JsonKey, Utf8Array>(JsonKey.Equality);
         
         public   override   bool                            Pretty      { get; }
+        
+        public    override  string                          ToString()  => $"{GetType().Name} - Count: {keyValues.Count}";
 
         public MemoryContainer(string name, EntityDatabase database, bool pretty)
             : base(name, database)
