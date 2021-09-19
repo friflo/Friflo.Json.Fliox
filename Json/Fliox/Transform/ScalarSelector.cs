@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Select;
 
 namespace Friflo.Json.Fliox.Transform
@@ -30,12 +31,12 @@ namespace Friflo.Json.Fliox.Transform
         /// 
         /// </summary>
         /// <returns>null in case of an error - error message is available via <see cref="ErrorMessage"/>.</returns>
-        public IReadOnlyList<ScalarSelectResult> Select(string json, ScalarSelect scalarSelect) {
+        public IReadOnlyList<ScalarSelectResult> Select(Utf8Array json, ScalarSelect scalarSelect) {
             scalarSelect.InitSelectorResults();
             nodeStack.Clear();
             nodeStack.Add(scalarSelect.nodeTree.rootNode);
             targetJson.Clear();
-            targetJson.AppendString(json);
+            targetJson.AppendArray(json.array);
             targetParser.InitParser(targetJson);
             targetParser.NextEvent();
             

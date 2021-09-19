@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform.Query;
 using Friflo.Json.Fliox.Transform.Query.Ops;
 
@@ -21,7 +22,7 @@ namespace Friflo.Json.Fliox.Transform
         }
 
         // --- Filter
-        public bool Filter(string json, JsonFilter filter) {
+        public bool Filter(Utf8Array json, JsonFilter filter) {
             if (filter.op is TrueLiteral)
                 return true;  // result is independent fom given json
             if (filter.op is FalseLiteral)
@@ -42,7 +43,7 @@ namespace Friflo.Json.Fliox.Transform
         }
 
         // --- Eval
-        public object Eval(string json, JsonLambda lambda) {
+        public object Eval(Utf8Array json, JsonLambda lambda) {
             ReadJsonFields(json, lambda);
             var cx = new EvalCx(-1);
             var evalResult = lambda.op.Eval(cx);
@@ -58,7 +59,7 @@ namespace Friflo.Json.Fliox.Transform
             return evalResults;
         }
 
-        private void ReadJsonFields(string json, JsonLambda lambda) {
+        private void ReadJsonFields(Utf8Array json, JsonLambda lambda) {
             var query = lambda.scalarSelect;
             scalarSelector.Select(json, query);
             var fields = lambda.fields;

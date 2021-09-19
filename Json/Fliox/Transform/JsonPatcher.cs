@@ -36,15 +36,15 @@ namespace Friflo.Json.Fliox.Transform
             serializer.Dispose();
         }
         
-        public string ApplyPatches(string target, IList<JsonPatch> patches, bool pretty = false) {
-            if (target == null)
+        public Utf8Array ApplyPatches(Utf8Array target, IList<JsonPatch> patches, bool pretty = false) {
+            if (target.IsNull())
                 throw new ArgumentException("ApplyPatches() target mus not be null");
                     
             PatchNode.CreatePatchTree(rootNode, patches, pathTokens);
             nodeStack.Clear();
             nodeStack.Add(rootNode);
             targetJson.Clear();
-            targetJson.AppendString(target);
+            targetJson.AppendArray(target.array);
             targetParser.InitParser(targetJson);
             targetParser.NextEvent();
             serializer.InitSerializer();
@@ -54,13 +54,13 @@ namespace Friflo.Json.Fliox.Transform
             if (nodeStack.Count != 0)
                 throw new InvalidOperationException("Expect nodeStack.Count == 0");
             rootNode.ClearChildren();
-            return serializer.json.AsString();
+            return new Utf8Array(serializer.json.AsArray());
         }
 
-        public string Copy(string json, bool pretty) {
+        public string Copy(Utf8Array json, bool pretty) {
             serializer.SetPretty(pretty);
             this.targetJson.Clear();
-            this.targetJson.AppendString(json);
+            this.targetJson.AppendArray(json.array);
             targetParser.InitParser(this.targetJson);
             targetParser.NextEvent();
             serializer.InitSerializer();
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Transform
                         case PatchType.Replace:
                         case PatchType.Add:
                             patchJson.Clear();
-                            patchJson.AppendString(patch.json);
+                            patchJson.AppendArray(patch.json.array);
                             patchParser.InitParser(patchJson);
                             patchParser.NextEvent();
                             serializer.WriteMember(ref p.key, ref patchParser);
@@ -137,7 +137,7 @@ namespace Friflo.Json.Fliox.Transform
                                 // var key = child.Key.AsString();
                                 // keyBytes.AppendString(key);
                                 patchJson.Clear();
-                                patchJson.AppendString(patch.json);
+                                patchJson.AppendArray(patch.json.array);
                                 patchParser.InitParser(patchJson);
                                 patchParser.NextEvent();
                                 serializer.WriteMember(ref keyBytes, ref patchParser);
@@ -169,7 +169,7 @@ namespace Friflo.Json.Fliox.Transform
                     switch (patch.patchType) {
                         case PatchType.Replace:
                             patchJson.Clear();
-                            patchJson.AppendString(patch.json);
+                            patchJson.AppendArray(patch.json.array);
                             patchParser.InitParser(patchJson);
                             patchParser.NextEvent();
                             serializer.WriteTree(ref patchParser);
@@ -230,7 +230,7 @@ namespace Friflo.Json.Fliox.Transform
             switch (rootNode.patchType) {
                 case PatchType.Replace:
                     patchJson.Clear();
-                    patchJson.AppendString(rootNode.json);
+                    patchJson.AppendArray(rootNode.json.array);
                     patchParser.InitParser(patchJson);
                     patchParser.NextEvent();
                     serializer.WriteTree(ref patchParser);

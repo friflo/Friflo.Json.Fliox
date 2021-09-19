@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             
             var articleModifier = modifyDb.GetWriteModifiers(nameof(PocStore.articles));
             articleModifier.writes.Add("article-missing-id",     val => new JsonValue("{\"id\": \"article-missing-id\" }"));
-            articleModifier.writes.Add("article-incorrect-type", val => new JsonValue(val.json.Replace("\"xxx\"", "123")));
+            articleModifier.writes.Add("article-incorrect-type", val => new JsonValue(val.json.AsString().Replace("\"xxx\"", "123")));
 
             var articleMissingName      = new Article { id = "article-missing-name" };
             var articleMissingId        = new Article { id = "article-missing-id" };
@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             var patchModifier = modifyDb.GetPatchModifiers(nameof(PocStore.articles));
             patchModifier.patches.Add("article-2", patch => {
                 var replace = (PatchReplace)patch.patches[0];
-                replace.value.json = "123";
+                replace.value.json = new Utf8Array("123");
                 return patch;
             });
             var articlePatch    = new Article { id = "article-2", name = "changed name"};

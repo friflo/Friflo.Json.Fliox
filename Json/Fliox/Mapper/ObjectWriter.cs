@@ -132,6 +132,19 @@ namespace Friflo.Json.Fliox.Mapper
             WriteStart(value);
             return intern.bytes.AsString();
         }
+        
+        // --------------- byte[] ---------------
+        public byte[] WriteArray<T>(T value) {
+            InitJsonWriterString();
+            WriteStart(value);
+            return intern.bytes.AsArray();
+        }
+
+        public byte[] WriteObjectArray(object value) {
+            InitJsonWriterString();
+            WriteStart(value);
+            return intern.bytes.AsArray();
+        }
 
         // --------------------------------------- private --------------------------------------- 
         private void WriteStart(object value) {

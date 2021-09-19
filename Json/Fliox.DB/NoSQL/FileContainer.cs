@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.NoSQL.Utils;
 using Friflo.Json.Fliox.DB.Sync;
@@ -187,23 +186,16 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         /// may access the file concurrently resulting in:
         /// IOException: The process cannot access the file 'path' because it is being used by another process
         /// </summary>
-        private static async Task WriteText(string filePath, string text, FileMode fileMode) {
-            byte[] encodedText = Encoding.UTF8.GetBytes(text);
+        private static async Task WriteText(string filePath, Utf8Array json, FileMode fileMode) {
+            var array = json.array;
             using (var destStream = new FileStream(filePath, fileMode, FileAccess.Write, FileShare.Read, bufferSize: 4096, useAsync: false)) {
-                await destStream.WriteAsync(encodedText, 0, encodedText.Length).ConfigureAwait(false);
+                await destStream.WriteAsync(array, 0, array.Length).ConfigureAwait(false);
             }
         }
         
-        private static async Task<string> ReadText(string filePath) {
+        private static async Task<Utf8Array> ReadText(string filePath) {
             using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: false)) {
-                var sb = new StringBuilder();
-                byte[] buffer = new byte[0x1000];
-                int numRead;
-                while ((numRead = await sourceStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) != 0) {
-                    string text = Encoding.UTF8.GetString(buffer, 0, numRead);
-                    sb.Append(text);
-                }
-                return sb.ToString();
+                return await EntityUtils.ReadToEnd(sourceStream);
             }
         }
         

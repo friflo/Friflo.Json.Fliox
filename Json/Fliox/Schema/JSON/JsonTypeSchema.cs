@@ -127,7 +127,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             bool    required        = typeDef.type.required?.Contains(fieldName) ?? false;
 
             FieldType   items       = GetItemsFieldType(field.items, out bool isNullableElement);
-            string      jsonType    = field.type.json;
+            Utf8Array   jsonType    = field.type.json;
             FieldType   addProps    = field.additionalProperties;
 
             if (field.reference != null) {
@@ -157,7 +157,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                     throw new InvalidOperationException("additionalProperties requires '$ref'");
                 }
             }
-            else if (jsonType != null) {
+            else if (!jsonType.IsNull()) {
                 fieldType = FindTypeFromJson (jsonType, items, context, ref isArray);
             }
             else if (field.discriminant != null) {
@@ -174,7 +174,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
             typeDef.fields.Add(fieldDef);
         }
         
-        private static TypeDef FindTypeFromJson (string json, FieldType items, in JsonTypeContext context, ref bool isArray) {
+        private static TypeDef FindTypeFromJson (Utf8Array jsonArray, FieldType items, in JsonTypeContext context, ref bool isArray) {
+            var json = jsonArray.AsString();
             if     (json.StartsWith("\"")) {
                 var jsonValue = json.Substring(1, json.Length - 2);
                 if (jsonValue == "array") {
@@ -236,13 +237,15 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 return context.schemas[reference];
             }
             var jsonType =  itemType.type.json;
-            if (jsonType != null) {
+            if (!jsonType.IsNull()) {
                 bool isArray = true;
                 var itemTypeItems = GetItemsFieldType(itemType.items, out _);
                 return FindTypeFromJson(jsonType, itemTypeItems, context, ref isArray);
             }
             throw new InvalidOperationException($"no type given for field: {itemType.name}");
         }
+        
+        private static readonly Utf8Array Null = new Utf8Array("\"null\"");
         
         /// Supporting nullable (value type) array elements seems uh - however it is supported. Reasons against:
         /// <list type="bullet">
@@ -256,7 +259,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 isNullableElement = false;
                 return null;
             }
-            if (itemType.type.json != null) {
+            if (!itemType.type.json.IsNull()) {
                 isNullableElement = false;
                 return itemType;
             }
@@ -269,7 +272,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 isNullableElement = false;
                 FieldType elementType = null;
                 foreach (var fieldType in oneOf) {
-                    if (fieldType.type.json == "\"null\"") {
+                    if (fieldType.type.json.IsEqual(Null)) {
                         isNullableElement = true;
                     }
                     if (fieldType.reference != null) {

@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
 
             await store.Sync(); // -------- Sync --------
             
-            AreEqual("\"Hello World 1\"",   helloTask1.ResultJson);
+            AreEqual("\"Hello World 1\"",   helloTask1.ResultJson.AsString());
             AreEqual("Hello World 1",       helloTask1.ReadResult<string>());
             
             IsTrue(helloTask1.TryReadResult<string>(out var helloTask1Result, out _));

@@ -2,6 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Sync;
 using Friflo.Json.Fliox.Mapper;
 
@@ -25,13 +27,25 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             using (var pooledProcessor = messageContext.pools.EntityProcessor.Get()) {
                 var processor = pooledProcessor.instance;
                 foreach (var entity in entities) {
-                    string  json = processor.ReplaceKey(entity.json, keyName, asIntKey, newKeyName, out JsonKey keyValue, out _);
-                    if (json == null) {
+                    var  json = processor.ReplaceKey(entity.json, keyName, asIntKey, newKeyName, out JsonKey keyValue, out _);
+                    if (json.IsNull()) {
                         continue;
                     }
                     var value   = new EntityValue(json);
                     entityMap.Add(keyValue, value);
                 }
+            }
+        }
+        
+        public static Task<Utf8Array> ReadToEnd(Stream input) {
+            byte[] buffer = new byte[16 * 1024];                // todo performance -> cache
+            using (MemoryStream ms = new MemoryStream()) {      // todo performance -> cache
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0) {
+                    ms.Write(buffer, 0, read);
+                }
+                var array = ms.ToArray(); 
+                return Task.FromResult(new Utf8Array(array));
             }
         }
         

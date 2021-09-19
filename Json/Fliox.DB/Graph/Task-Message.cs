@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         internal readonly   JsonValue       value;
         private  readonly   ObjectReader    reader;
         
-        internal            string          result;
+        internal            Utf8Array       result;
         
         internal            TaskState       state;
         internal override   TaskState       State       => state;
@@ -22,9 +22,9 @@ namespace Friflo.Json.Fliox.DB.Graph
         /// <summary>Return the result of a message used as a command as JSON.
         /// JSON is "null" if the message doesnt return a result.
         /// For type safe access of the result use <see cref="ReadResult{T}"/></summary>
-        public              string          ResultJson  => IsOk("SendMessageTask.Result", out Exception e) ? result : throw e;
+        public              Utf8Array       ResultJson  => IsOk("SendMessageTask.Result", out Exception e) ? result : throw e;
         
-        internal SendMessageTask(string name, string value, ObjectReader reader) {
+        internal SendMessageTask(string name, Utf8Array value, ObjectReader reader) {
             this.name   = name;
             this.value  = new JsonValue { json = value };
             this.reader = reader;
@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         public T ReadResult<T>() {
             var ok = IsOk("SendMessageTask.Result", out Exception e);
             if (ok) {
-                var resultValue = reader.Read<T>(result);
+                var resultValue = reader.Read<T>(result.array);
                 if (reader.Success)
                     return resultValue;
                 var error = reader.Error;
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         public bool TryReadResult<T>(out T resultValue, out JsonReaderException error) {
             var ok = IsOk("SendMessageTask.Result", out Exception e);
             if (ok) {
-                resultValue = reader.Read<T>(result);
+                resultValue = reader.Read<T>(result.array);
                 if (reader.Success) {
                     error = null;
                     return true;
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.DB.Graph
     {
         public              TResult          Result => ReadResult<TResult>();
         
-        internal SendMessageTask(string name, string value, ObjectReader reader) : base (name, value, reader) {
+        internal SendMessageTask(string name, Utf8Array value, ObjectReader reader) : base (name, value, reader) {
         }
     }
 }

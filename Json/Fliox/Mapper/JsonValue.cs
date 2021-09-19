@@ -5,12 +5,21 @@ namespace Friflo.Json.Fliox.Mapper
 {
     public struct JsonValue
     {
-        public string       json;
+        public Utf8Array       json;
         
-        public override string ToString() => json ?? "null";
+        public override string ToString() => json.AsString();
         
-        public JsonValue (string json) {
+        public JsonValue (Utf8Array json) {
             this.json  = json;
+        }
+        
+        /// <summary> Prefer using <see cref="JsonValue(Utf8Array)"/> </summary>
+        public JsonValue (string json) {
+            this.json  = new Utf8Array(json);
+        }
+        
+        public JsonValue (byte[] utf8Array) {
+            this.json  = new Utf8Array(utf8Array);
         }
     }
 }

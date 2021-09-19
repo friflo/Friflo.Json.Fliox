@@ -6,6 +6,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -25,17 +26,15 @@ namespace Friflo.Json.Fliox.DB.Cosmos
     internal static class CosmosUtils
     {
         internal static async Task<List<JsonValue>> ReadDocuments(ObjectReader reader, Stream content) {
-            using (StreamReader streamReader = new StreamReader(content)) {
-                string documentsJson    = await streamReader.ReadToEndAsync().ConfigureAwait(false);
-                var responseFeed        = reader.Read<ResponseFeed>(documentsJson);
-                return responseFeed.Documents;
-            }
+            var documentsJson   = await EntityUtils.ReadToEnd(content).ConfigureAwait(false);
+            var responseFeed    = reader.Read<ResponseFeed>(documentsJson.array);
+            return responseFeed.Documents;
         }
         
-        public static void WriteJson(StreamWriter writer, MemoryStream memory, string json) {
+        public static void WriteJson(MemoryStream memory, Utf8Array json) {
             memory.SetLength(0);
-            writer.Write(json);
-            writer.Flush();
+            memory.Write(json.array, 0, json.array.Length);
+            memory.Flush();
             memory.Seek(0, SeekOrigin.Begin);
         }
     }

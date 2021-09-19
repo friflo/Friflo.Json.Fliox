@@ -25,9 +25,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL
     
     public class MemoryContainer : EntityContainer
     {
-        private  readonly   Dictionary<JsonKey, string> keyValues = new Dictionary<JsonKey, string>(JsonKey.Equality);
+        private  readonly   Dictionary<JsonKey, Utf8Array>  keyValues = new Dictionary<JsonKey, Utf8Array>(JsonKey.Equality);
         
-        public   override   bool                        Pretty      { get; }
+        public   override   bool                            Pretty      { get; }
 
         public MemoryContainer(string name, EntityDatabase database, bool pretty)
             : base(name, database)
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             for (int n = 0; n < entities.Count; n++) {
                 var key     = command.entityKeys[n];
                 var payload = entities[n];
-                if (keyValues.TryGetValue(key, out string _))
+                if (keyValues.TryGetValue(key, out Utf8Array _))
                     throw new InvalidOperationException($"Entity with key '{key}' already in DatabaseContainer: {name}");
                 keyValues[key] = payload.json;
             }

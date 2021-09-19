@@ -8,14 +8,14 @@ namespace Friflo.Json.Fliox.DB.NoSQL
 {
     public readonly struct Command<TValue> {
         public              string          Name    { get; }
-        public              TValue          Value   => reader.Read<TValue>(json);
+        public              TValue          Value   => reader.Read<TValue>(json.array);
         
-        private  readonly   string          json;
+        private  readonly   Utf8Array       json;
         private  readonly   ObjectReader    reader;
 
         public   override   string          ToString() => Name;
 
-        internal Command(string name, string json, ObjectReader reader) {
+        internal Command(string name, Utf8Array json, ObjectReader reader) {
             Name        = name;
             this.json   = json;  
             this.reader = reader;
@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
     
     internal abstract class CommandCallback
     {
-        internal abstract Task<string> InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue);
+        internal abstract Task<Utf8Array> InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue);
     }
     
     internal class CommandCallback<TValue, TResult> : CommandCallback
@@ -41,11 +41,11 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             this.handler    = handler;
         }
         
-        internal override Task<string> InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue) {
+        internal override Task<Utf8Array> InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue) {
             var     cmd     = new Command<TValue>(messageName, messageValue.json, mapper.reader);
             TResult result  = handler(cmd);
-            var jsonResult  = mapper.Write(result);
-            return Task.FromResult(jsonResult);
+            var jsonResult  = mapper.WriteArray(result);
+            return Task.FromResult(new Utf8Array(jsonResult));
         }
     }
     
@@ -61,11 +61,11 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             this.handler    = handler;
         }
         
-        internal override async Task<string> InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue) {
+        internal override async Task<Utf8Array> InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue) {
             var     cmd     = new Command<TValue>(messageName, messageValue.json, mapper.reader);
             TResult result  = await handler(cmd).ConfigureAwait(false);
             var jsonResult  = mapper.Write(result);
-            return jsonResult;
+            return new Utf8Array(jsonResult);
         }
     }
 }

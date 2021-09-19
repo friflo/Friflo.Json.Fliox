@@ -505,16 +505,16 @@ namespace Friflo.Json.Fliox.DB.Graph
 
                 peer.error = null;
                 var json = value.Json;
-                if (json != null && "null" != json) {
+                if (!json.IsNull()) {
                     var entity = peer.NullableEntity;
                     if (entity == null) {
                         entity = (T)intern.typeMapper.CreateInstance();
                         SetEntityId(entity, id);
                         peer.SetEntity(entity);
                     }
-                    reader.ReadTo(json, entity);
+                    reader.ReadTo(json.array, entity);
                     if (reader.Success) {
-                        peer.SetPatchSource(reader.Read<T>(json));
+                        peer.SetPatchSource(reader.Read<T>(json.array));
                     } else {
                         var entityError = new EntityError(EntityErrorType.ParseError, name, id, reader.Error.msg.ToString());
                         entities[id].SetError(entityError);

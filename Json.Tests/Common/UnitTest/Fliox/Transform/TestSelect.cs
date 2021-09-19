@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var objectSelector   = new MemberAccessor(typeStore))
             {
                 var sample = new SampleIL();
-                var json = jsonWriter.Write(sample);
+                var json = new Utf8Array(jsonWriter.WriteArray(sample));
                 var selectors = new[] {
                     ".childStructNull1",
                     ".childStructNull2.val2",
@@ -57,12 +57,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 
                 var objectSelect = new MemberAccess(selectors);
                 var objectResults = objectSelector.GetValues(sample, objectSelect);
-                AreEqual(@"{""val2"":68}",          objectResults[0].Json);
-                AreEqual("69",                      objectResults[1].Json);
-                AreEqual("94.0",                    objectResults[2].Json);
-                AreEqual("true",                    objectResults[3].Json);
-                AreEqual(@"""one""",                objectResults[4].Json);
-                AreEqual("null",                    objectResults[5].Json);
+                AreEqual(@"{""val2"":68}",          objectResults[0].Json.AsString());
+                AreEqual("69",                      objectResults[1].Json.AsString());
+                AreEqual("94.0",                    objectResults[2].Json.AsString());
+                AreEqual("true",                    objectResults[3].Json.AsString());
+                AreEqual(@"""one""",                objectResults[4].Json.AsString());
+                AreEqual("null",                    objectResults[5].Json.AsString());
                 IsFalse(                            objectResults[6].Found);
 
                 var e = Throws<InvalidOperationException>(() => _ = objectResults[6].Json);
@@ -116,7 +116,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             {
                 var store = new Store();
                 store.InitSample();
-                var json = jsonWriter.Write(store);
+                var json = new Utf8Array(jsonWriter.WriteArray(store));
                 var selectors = new[] {
                     ".books[*].title",
                     ".books[*].author",
@@ -208,7 +208,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var jsonSelector = new ScalarSelector())
             {
                 jsonMapper.Pretty = true;
-                var peter  = jsonMapper.Write(TestQuery.Peter);
+                var peter  = new Utf8Array(jsonMapper.WriteArray(TestQuery.Peter));
 
                 IReadOnlyList<ScalarSelectResult> result = new List<ScalarSelectResult>();
                 for (int n = 0; n < 100; n++) {

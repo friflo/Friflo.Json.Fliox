@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                         continue;
                     }
                     var json    = entity.Json;
-                    if (json == null) {
+                    if (json.IsNull()) {
                         continue;
                     }
                     keyName = keyName ?? "id";

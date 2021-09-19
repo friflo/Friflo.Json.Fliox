@@ -63,8 +63,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 AreEqual("{\"int\":1,\"str\":\"hello\"}", json);
                 
                 var result = mapper.Read<JsonEntities>(json);
-                AreEqual(entities.entities[new JsonKey("int")].Json, result.entities[new JsonKey("int")].Json);
-                AreEqual(entities.entities[new JsonKey("str")].Json, result.entities[new JsonKey("str")].Json);
+                AreEqual(entities.entities[new JsonKey("int")].Json.AsString(), result.entities[new JsonKey("int")].Json.AsString());
+                AreEqual(entities.entities[new JsonKey("str")].Json.AsString(), result.entities[new JsonKey("str")].Json.AsString());
             }
         }
         
@@ -73,27 +73,30 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             using (var processor = new EntityProcessor()) {
                 {
                     // --- return modified JSON
-                    var     result  = processor.ReplaceKey("{\"myId\": \"123\"}", "myId", false, "id", out JsonKey key, out _);
-                    AreEqual("{\"id\":\"123\"}", result);
+                    var     json = new Utf8Array("{\"myId\": \"123\"}");
+                    var     result  = processor.ReplaceKey(json, "myId", false, "id", out JsonKey key, out _);
+                    AreEqual("{\"id\":\"123\"}", result.AsString());
                 } {
                     // --- return modified JSON
-                    var     result  = processor.ReplaceKey("{\"myId\": \"111\"}", "myId", true, "id", out JsonKey key, out _);
-                    AreEqual("{\"id\":111}", result);
+                    var     json =  new Utf8Array("{\"myId\": \"111\"}");
+                    var     result  = processor.ReplaceKey(json, "myId", true, "id", out JsonKey key, out _);
+                    AreEqual("{\"id\":111}", result.AsString());
                 } {
                     // --- return modified JSON
-                    var     result  = processor.ReplaceKey("{\"id\": 456}", "id", false, "id", out JsonKey key, out _);
-                    AreEqual("{\"id\":\"456\"}", result);
-                } {
-                    // --- return modified JSON
-                    var     json = "{\"id\": 789}";
-                    var     result  = processor.ReplaceKey(json, "id", true, "id", out JsonKey key, out _);
-                    IsTrue(ReferenceEquals(json, result));
+                    var     json = new Utf8Array("{\"id\": 456}");
+                    var     result  = processor.ReplaceKey(json, "id", false, "id", out JsonKey key, out _);
+                    AreEqual("{\"id\":\"456\"}", result.AsString());
                 } {
                     // --- return original JSON
-                    var     json = "{\"id\": \"abc\"}";
+                    var     json = new Utf8Array("{\"id\": 789}");
+                    var     result  = processor.ReplaceKey(json, "id", true, "id", out JsonKey key, out _);
+                    IsTrue(ReferenceEquals(json.array, result.array));
+                } {
+                    // --- return original JSON
+                    var     json =  new Utf8Array("{\"id\": \"abc\"}");
                     // null defaults to "id"
                     var result = processor.ReplaceKey(json, null, false, "id", out JsonKey key, out _);
-                    IsTrue(ReferenceEquals(json, result));
+                    IsTrue(ReferenceEquals(json.array, result.array));
                 }
             }
         }
@@ -169,7 +172,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                     await store.Sync();
                 }
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var expected = IsDebug() ? Is.InRange(61288, 61328) : Is.InRange(58352, 58392); // Test Debug & Release
+                var expected = IsDebug() ? Is.InRange(61288, 61352) : Is.InRange(58352, 58416); // Test Debug & Release
                 That(diff, expected);
             }
         }

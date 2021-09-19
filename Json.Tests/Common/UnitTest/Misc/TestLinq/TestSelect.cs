@@ -14,6 +14,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 
     public class TestSelect : LeakTestsFixture
     {
+        /// withdraw from allocation detection by <see cref="LeakTestsFixture"/> => init before tracking starts
+        [NUnit.Framework.OneTimeSetUp]    public static void  Init()       { TestGlobals.Init(); }
+        [NUnit.Framework.OneTimeTearDown] public static void  Dispose()    { TestGlobals.Dispose(); }
+        
         [Test]
         public void RunLinq() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture

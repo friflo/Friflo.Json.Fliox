@@ -122,8 +122,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                         AddEntityError(ref patchErrors, key, error);
                         continue;
                     }
-                    string target = value.Json;
-                    if (target == null) {
+                    var target = value.Json;
+                    if (target.IsNull()) {
                         error = new EntityError(EntityErrorType.PatchError, container, key, "patch target not found");
                         AddEntityError(ref patchErrors, key, error);
                         continue;
@@ -178,7 +178,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     var key     = entityPair.Key;
                     var value   = entityPair.Value;
                     var json    = value.Json;   // JSON was invalid. Error != null
-                    if (json == null)
+                    if (json.IsNull())
                         continue;
                     if (!evaluator.Filter(json, jsonFilter))
                         continue;
@@ -220,7 +220,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     if (entity.Error != null)
                         continue;
                     var         json    = entity.Json;
-                    if (json == null)
+                    if (json.IsNull())
                         continue;
                     var selectorResults = selector.Select(json, select);
                     if (selectorResults == null) {

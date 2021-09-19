@@ -124,7 +124,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 var peer = set.GetOrCreatePeerByKey(key, id);
                 peer.created = false;
                 peer.updated = false;
-                peer.SetPatchSource(reader.Read<T>(entity.json));
+                peer.SetPatchSource(reader.Read<T>(entity.json.array));
             }
             foreach (var writeTask in writeTasks) {
                 var entityErrorInfo = new TaskErrorInfo();
@@ -186,7 +186,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                     continue;
                 }
                 var json = value.Json;  // in case of RemoteClient json is "null"
-                var isNull = json == null || json == "null";
+                var isNull = json.IsNull();
                 if (isNull) {
                     // dont remove missing requested peer from EntitySet.peers to preserve info about its absence
                     continue;

@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             int pos = 0;
             for (int n = 0; n < entities.Count; n++) {
                 var entity = entities[n];
-                if (entity.json == null)
+                if (entity.json.IsNull())
                     continue;
                 entities  [pos] = entity;
                 entityKeys[pos] = entityKeys[n];

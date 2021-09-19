@@ -355,14 +355,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         private static string PatchJson<T>(JsonPatcher jsonPatcher, ObjectPatcher objectPatcher, T left, T right)
         {
             List<JsonPatch> patches = objectPatcher.GetPatches(left, right);
-            var leftJson = objectPatcher.mapper.Write(left);
+            var leftJson = objectPatcher.mapper.WriteArray(left);
             
             var jsonPatches = objectPatcher.mapper.Write(patches);
             var destPatches = objectPatcher.mapper.Read<List<JsonPatch>>(jsonPatches);
             AssertUtils.Equivalent(patches, destPatches);
             
-            var leftPatched = jsonPatcher.ApplyPatches(leftJson, patches, true);
-            return leftPatched;
+            var leftPatched = jsonPatcher.ApplyPatches(new Utf8Array(leftJson), patches, true);
+            return leftPatched.AsString();
         }
     }
 }

@@ -184,12 +184,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         }
         
         private static Task MessageLoop (EntityStore store, string text, int requestCount) {
-            var result = $"\"{text}\"";
+            var result = new Utf8Array( $"\"{text}\"");
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
                     var message = store.SendMessage(StdMessage.Echo, text);
                     await store.Sync();
-                    if (result != message.ResultJson)
+                    if (!result.IsEqual(message.ResultJson))
                         throw new TestException($"Expect result: {result}, was: {message.ResultJson}");
                 }
             });

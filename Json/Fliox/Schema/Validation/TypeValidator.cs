@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Schema.Validation
 {
@@ -41,10 +42,10 @@ namespace Friflo.Json.Fliox.Schema.Validation
             sb.Clear();
         }
         
-        private void Init(string json) {
+        private void Init(Utf8Array json) {
             validationError = new ValidationError();
             jsonBytes.Clear();
-            jsonBytes.AppendString(json);
+            jsonBytes.AppendArray(json.array);
             parser.InitParser(jsonBytes);
         }
         
@@ -60,8 +61,8 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
             return RootError(type, "Expected EOF after reading JSON", out error);
         }
-
-        public bool ValidateObject (string json, ValidationType type, out string error) {
+        
+        public bool ValidateObject (Utf8Array json, ValidationType type, out string error) {
             Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ObjectStart) {
@@ -71,7 +72,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return RootError(type, "ValidateObject() expect object. was:", out error);
         }
         
-        public bool ValidateObjectMap (string json, ValidationType type, out string error) {
+        public bool ValidateObjectMap (Utf8Array json, ValidationType type, out string error) {
             Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ObjectStart) {
@@ -80,8 +81,8 @@ namespace Friflo.Json.Fliox.Schema.Validation
             }
             return RootError(type, "ValidateObjectMap() expect object. was:", out error);
         }
-
-        public bool ValidateArray (string json, ValidationType type, out string error) {
+        
+        public bool ValidateArray (Utf8Array json, ValidationType type, out string error) {
             Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ArrayStart) {

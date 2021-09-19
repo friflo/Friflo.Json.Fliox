@@ -5,8 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.DB.Sync;
@@ -49,8 +47,6 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         private             Container           cosmosContainer;
         public   override   bool                Pretty      { get; }
         
-        private static readonly UTF8Encoding Utf8Encoding = new UTF8Encoding (false, true);
-
         internal CosmosContainer(string name, EntityDatabase database, ContainerOptions options, bool pretty)
             : base(name, database)
         {
@@ -70,12 +66,11 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             await EnsureContainerExists().ConfigureAwait(false);
             var entities = command.entities;
             AssertEntityCounts(command.entityKeys, entities);
-            using(var memory   = new ReusedMemoryStream())
-            using(var writer   = new StreamWriter(memory, Utf8Encoding, -1, true)) {
+            using(var memory   = new ReusedMemoryStream()) {
                 for (int n = 0; n < entities.Count; n++) {
                     var key     = command.entityKeys[n];
                     var payload = entities[n];
-                    CosmosUtils.WriteJson(writer, memory, payload.json);
+                    CosmosUtils.WriteJson(memory, payload.json);
                     var partitionKey = new PartitionKey(key.AsString());
                     // consider using [Introducing Bulk support in the .NET SDK | Azure Cosmos DB Blog] https://devblogs.microsoft.com/cosmosdb/introducing-bulk-support-in-the-net-sdk/
                     // todo handle error;
@@ -91,14 +86,13 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             var entities = command.entities;
             AssertEntityCounts(command.entityKeys, entities);
             using (var memory           = new ReusedMemoryStream())
-            using (var pooledProcessor  = messageContext.pools.EntityProcessor.Get())
-            using(var writer            = new StreamWriter(memory, Utf8Encoding, -1, true)) {
+            using (var pooledProcessor  = messageContext.pools.EntityProcessor.Get()) {
                 var processor = pooledProcessor.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var key     = command.entityKeys[n];
                     var payload = entities[n];
                     var json = processor.ReplaceKey(payload.json, command.keyName, false, "id", out _, out string error);
-                    CosmosUtils.WriteJson(writer, memory, json);
+                    CosmosUtils.WriteJson(memory, json);
                     var partitionKey = new PartitionKey(key.AsString());
                     // consider using [Introducing Bulk support in the .NET SDK | Azure Cosmos DB Blog] https://devblogs.microsoft.com/cosmosdb/introducing-bulk-support-in-the-net-sdk/
                     // todo handle error;
@@ -128,13 +122,11 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 if (content == null) {
                     entities.TryAdd(key, new EntityValue());
                 } else {
-                    using (StreamReader reader = new StreamReader(content)) {
-                        string  payload     = await reader.ReadToEndAsync().ConfigureAwait(false);
-                        bool    asIntKey    = command.isIntKey == true; 
-                        string  json = processor.ReplaceKey(payload, "id", asIntKey, command.keyName, out _, out _);
-                        var entry = new EntityValue(json);
-                        entities.TryAdd(key, entry);
-                    }
+                    var     payload     = await EntityUtils.ReadToEnd(content).ConfigureAwait(false);
+                    bool    asIntKey    = command.isIntKey == true; 
+                    var     json        = processor.ReplaceKey(payload, "id", asIntKey, command.keyName, out _, out _);
+                    var     entry       = new EntityValue(json);
+                    entities.TryAdd(key, entry);
                 }
             }
             return new ReadEntitiesResult{entities = entities};

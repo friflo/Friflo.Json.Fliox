@@ -199,7 +199,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                         continue;
                     }
                     var json = entity.Json;
-                    if (json == null) {
+                    if (json.IsNull()) {
                         if (notFound == null) {
                             notFound = new List<JsonKey>();
                         }

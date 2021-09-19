@@ -22,8 +22,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public JsonValueMapper(StoreConfig config, Type type) : base (config, type, false, false) { }
 
         public override void Write(ref Writer writer, JsonValue value) {
-            if (value.json != null)
-                writer.bytes.AppendString(value.json);
+            if (!value.json.IsNull())
+                writer.bytes.AppendArray(value.json.array);
             else
                 writer.AppendNull(); // todo throw exception. value.json must be not null
         }
@@ -36,8 +36,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             ref var serializer = ref stub.jsonSerializer;
             serializer.InitSerializer();
             serializer.WriteTree(ref reader.parser);
-            var json = serializer.json.AsString();
-            var patchValue = new JsonValue { json = json };
+            var json = serializer.json.AsArray();
+            var patchValue = new JsonValue (json);
             success = true;
             return patchValue;
         }

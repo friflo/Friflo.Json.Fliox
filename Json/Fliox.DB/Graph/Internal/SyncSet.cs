@@ -303,7 +303,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             if (_creates  != null) {
                 foreach (var createPair in _creates) {
                     T entity    = createPair.Value.Entity;
-                    var json    = writer.Write(entity);
+                    var json    = writer.WriteArray(entity);
                     var entry   = new JsonValue(json);
                     var id      = EntityKeyTMap.GetId(entity);
                     entries.Add(entry);
@@ -316,7 +316,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                     var id      = new JsonKey(autoId);
                     var key     = Ref<TKey,T>.RefKeyMap.IdToKey(id);
                     EntityKeyTMap.SetKey(entity, key);
-                    var json    = writer.Write(entity);
+                    var json    = writer.WriteArray(entity);
                     var entry   = new JsonValue(json);
                     entries.Add(entry);
                     keys.Add(id);
@@ -341,7 +341,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             
             foreach (var upsertPair in _upserts) {
                 T entity    = upsertPair.Value.Entity;
-                var json    = writer.Write(entity);
+                var json    = writer.WriteArray(entity);
                 var entry   = new JsonValue(json);
                 var id      = EntityKeyTMap.GetId(entity);
                 entries.Add(entry);

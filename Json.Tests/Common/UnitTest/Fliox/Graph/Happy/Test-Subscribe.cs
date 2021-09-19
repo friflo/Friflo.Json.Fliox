@@ -86,7 +86,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             
             var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg) => {
                 processor.receivedAll = true;
-                AreEqual("null",            msg.Json);
+                AreEqual("null",            msg.Json.AsString());
             });
             var subscribeMessage1   = store.SubscribeMessage<TestMessage>((msg) => {
                 processor.testMessageCalls++;
@@ -97,7 +97,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             var subscribeMessage2   = store.SubscribeMessage<int>(TestRelationPoC.TestMessageInt, (msg) => {
                 processor.testMessageIntCalls++;
                 AreEqual(42,                            msg.Value);
-                AreEqual("42",                          msg.Json);
+                AreEqual("42",                          msg.Json.AsString());
                 AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
                 
                 IsTrue(msg.TryReadJson(out int result, out _));
@@ -114,7 +114,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                 processor.testMessageIntCalls++;
                 var val = msg.ReadJson<int>();
                 AreEqual(42,                            val);
-                AreEqual("42",                          msg.Json);
+                AreEqual("42",                          msg.Json.AsString());
                 AreEqual(TestRelationPoC.TestMessageInt,msg.Name);
                 
                 IsTrue(msg.TryReadJson(out int result, out _));
@@ -207,7 +207,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
             foreach (var message in messages) {
                 switch (message.Name) {
                     case nameof(TestRelationPoC.EndCreate):
-                        AreEqual("null", message.Json);
+                        AreEqual("null", message.Json.AsString());
                         break;
                     case nameof(TestRelationPoC.TestMessageInt):
                         var intVal = message.ReadJson<int>();
@@ -253,7 +253,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
                     var articlePatch0 = (PatchReplace)  articlePatch.patches[0];
                     AreEqual("Changed name",            articlePatch.entity.name);
                     AreEqual("/name",                   articlePatch0.path);
-                    AreEqual("\"Changed name\"",        articlePatch0.value.json);
+                    AreEqual("\"Changed name\"",        articlePatch0.value.json.AsString());
                     break;
             }
         }

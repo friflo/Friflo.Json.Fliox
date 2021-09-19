@@ -57,8 +57,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             SimpleAssert.IsTrue(validator.ValidateObject     (test.roleDeny,        test.roleType, out _));
             SimpleAssert.IsTrue(validator.ValidateObject     (test.roleDatabase,    test.roleType, out _));
             
-            SimpleAssert.IsTrue(validator.ValidateArray      ("[]",                 test.roleType, out _));
-            SimpleAssert.IsTrue(validator.ValidateObjectMap  ("{}",                 test.roleType, out _));
+            SimpleAssert.IsTrue(validator.ValidateArray      (test.jsonArray,       test.roleType, out _));
+            SimpleAssert.IsTrue(validator.ValidateObjectMap  (test.jsonObject,      test.roleType, out _));
 
             SimpleAssert.IsTrue(validator.ValidateArray      (test.roleDenyArray,   test.roleType, out _));
             SimpleAssert.IsTrue(validator.ValidateObjectMap  (test.roleDenyMap,     test.roleType, out _));
@@ -185,18 +185,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         private class TestTypes {
             internal    ValidationType  roleType;
             
-            internal    readonly string roleDeny        = AsJson(@"{'id': 'role-deny', 'rights': [  ] }");
-            internal    readonly string roleDenyArray;
-            internal    readonly string roleDenyMap;
+            internal    readonly Utf8Array  roleDeny;
+            internal    readonly Utf8Array  roleDenyArray;
+            internal    readonly Utf8Array  roleDenyMap;
+            internal    readonly Utf8Array  jsonArray;
+            internal    readonly Utf8Array  jsonObject;
+
             
-            internal    readonly string roleDatabase    = AsJson(
+            internal    readonly Utf8Array roleDatabase    = new Utf8Array(AsJson(
 @"{'id': 'role-database','description': 'test',
     'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'upsert'], 'subscribeChanges': ['upsert'] }}} ]
-}");
+}"));
             
             internal TestTypes() {
-                roleDenyArray   = "[" + roleDeny + "]";
-                roleDenyMap     = "{\"key\": " + roleDeny + "}";
+                roleDeny        = new Utf8Array(AsJson(@"{'id': 'role-deny', 'rights': [  ] }"));
+                roleDenyArray   = new Utf8Array("[" + roleDeny + "]");
+                roleDenyMap     = new Utf8Array("{\"key\": " + roleDeny + "}");
+                jsonArray       = new Utf8Array("[]");
+                jsonObject      = new Utf8Array("{}");
             }
         }
 

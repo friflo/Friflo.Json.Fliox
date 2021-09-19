@@ -175,15 +175,15 @@ namespace Friflo.Json.Fliox.DB.Graph
 
         // --- SendMessage
         public SendMessageTask SendMessage(string name) {
-            var task = new SendMessageTask(name, null, _intern.jsonMapper.reader);
+            var task = new SendMessageTask(name, new Utf8Array(), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
         }
         
         public SendMessageTask SendMessage<TValue>(string name, TValue value) {
-            var json           = _intern.jsonMapper.Write(value);
-            var task            = new SendMessageTask(name, json, _intern.jsonMapper.reader);
+            var json           = _intern.jsonMapper.WriteArray(value);
+            var task            = new SendMessageTask(name, new Utf8Array(json), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
@@ -195,8 +195,8 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         public SendMessageTask<TResult> SendMessage<TValue, TResult>(string name, TValue value) {
-            var json           = _intern.jsonMapper.Write(value);
-            var task            = new SendMessageTask<TResult>(name, json, _intern.jsonMapper.reader);
+            var json           = _intern.jsonMapper.WriteArray(value);
+            var task            = new SendMessageTask<TResult>(name, new Utf8Array(json), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;

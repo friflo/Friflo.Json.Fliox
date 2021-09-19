@@ -148,5 +148,34 @@ namespace Friflo.Json.Fliox.Mapper
             return writer.WriteObject(value);
         }
         
+        // --------------- byte[] ---------------
+        // --- Read()
+        public T Read<T>(byte[] utf8Array) {
+            return reader.Read<T>(utf8Array);
+        }
+        
+        public object ReadObject(byte[] utf8Array, Type type) {
+            return reader.ReadObject(utf8Array, type);
+        }
+
+        // --- ReadTo()
+        public T ReadTo<T>(byte[] utf8Array, T obj)  {
+            return reader.ReadTo(utf8Array, obj);
+
+        }
+
+        public object ReadToObject(byte[] utf8Array, object obj)  {
+            return reader.ReadToObject(utf8Array, obj);
+        }
+        
+        // --- Write()
+        public byte[] WriteArray<T>(T value) {
+            return writer.WriteArray(value);
+        }
+
+        public byte[] WriteObjectArray(object value) {
+            return writer.WriteObjectArray(value);
+        }
+        
     }
 }
