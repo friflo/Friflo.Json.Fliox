@@ -101,8 +101,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                         var messageContext  = new MessageContext(pools, this);
                         var result          = await remoteHost.ExecuteRequestJson(requestContent, messageContext, ProtocolType.BiDirect).ConfigureAwait(false);
                         messageContext.Release();
-                        byte[] resultBytes  = Encoding.UTF8.GetBytes(result.body);
-                        var arraySegment    = new ArraySegment<byte>(resultBytes, 0, resultBytes.Length);
+                        var arraySegment    = result.body.AsArraySegment();
                         sendWriter.TryWrite(arraySegment);
                     }
                     continue;

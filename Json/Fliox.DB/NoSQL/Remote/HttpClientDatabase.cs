@@ -33,7 +33,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
 
             try {
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(endpoint, content).ConfigureAwait(false);
-                var body = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var bodyArray = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                var body = new Utf8Array(bodyArray);
                 ResponseStatusType statusType;
                 switch (httpResponse.StatusCode) {
                     case HttpStatusCode.OK:                     statusType = ResponseStatusType.Ok;         break; 

@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
 
         public async Task<JsonResponse> ExecuteRequestJson(Utf8Array jsonRequest, MessageContext messageContext, ProtocolType type) {
             try {
-                string jsonResponse;
+                Utf8Array jsonResponse;
                 using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                     ObjectMapper    mapper  = pooledMapper.instance;
                     ObjectReader    reader  = mapper.reader;
@@ -66,13 +66,13 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             throw new InvalidOperationException("can't be reached");
         }
         
-        private static string CreateResponse (ObjectWriter writer, DatabaseResponse response, ProtocolType type) {
+        private static Utf8Array CreateResponse (ObjectWriter writer, DatabaseResponse response, ProtocolType type) {
             switch (type) {
                 case ProtocolType.ReqResp:
-                    return writer.Write(response);
+                    return new Utf8Array(writer.WriteAsArray(response));
                 case ProtocolType.BiDirect:
                     var message = new DatabaseMessage { resp = response };
-                    return writer.Write(message);
+                    return new Utf8Array(writer.WriteAsArray(message));
             }
             throw new InvalidOperationException("can't be reached");
         }
@@ -98,10 +98,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
     
     public class JsonResponse
     {
-        public readonly     string              body;
+        public readonly     Utf8Array           body;
         public readonly     ResponseStatusType  statusType;
         
-        public JsonResponse(string body, ResponseStatusType statusType) {
+        public JsonResponse(Utf8Array body, ResponseStatusType statusType) {
             this.body       = body;
             this.statusType  = statusType;
         }
@@ -110,7 +110,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             var errorResponse = new ErrorResponse {message = message};
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
-                var body = mapper.Write(errorResponse);
+                var bodyArray = mapper.WriteAsArray(errorResponse);
+                var body = new Utf8Array(bodyArray);
                 return new JsonResponse(body, type);
             }
         }

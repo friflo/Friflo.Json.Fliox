@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                             return;
                         }
                         var writer = pooledMapper.instance.writer;
-                        var responseJson = writer.Write(resp);
+                        var responseJson = new Utf8Array(writer.WriteAsArray(resp));
                         var response = new JsonResponse(responseJson, ResponseStatusType.Ok);
                         request.response.SetResult(response);
                         return;

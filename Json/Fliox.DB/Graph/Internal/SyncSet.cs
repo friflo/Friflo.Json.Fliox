@@ -515,7 +515,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         
         private void SetNextPatchSource(Peer<T> peer) {
             var mapper = set.intern.jsonMapper;
-            var json = mapper.writer.Write(peer.Entity);
+            var jsonArray = mapper.writer.WriteAsArray(peer.Entity);
+            var json = new Utf8Array(jsonArray);
             peer.SetNextPatchSource(mapper.Read<T>(json));
         }
 
