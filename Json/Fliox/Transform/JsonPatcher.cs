@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Transform
             return new Utf8Array(serializer.json.AsArray());
         }
 
-        public string Copy(Utf8Array json, bool pretty) {
+        public Utf8Array Copy(Utf8Array json, bool pretty) {
             serializer.SetPretty(pretty);
             this.targetJson.Clear();
             this.targetJson.AppendArray(json.array);
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Transform
             targetParser.NextEvent();
             serializer.InitSerializer();
             serializer.WriteTree(ref targetParser);
-            return serializer.json.AsString();
+            return new Utf8Array(serializer.json.AsArray());
         }
 
         private bool TraceObject(ref JsonParser p) {
