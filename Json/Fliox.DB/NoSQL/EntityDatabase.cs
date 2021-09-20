@@ -180,7 +180,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         }
         
         /// Distribute <see cref="ContainerEntities.entityMap"/> to <see cref="ContainerEntities.entities"/>,
-        /// <see cref="ContainerEntities.notFound"/> and <see cref="ContainerEntities.errorMap"/> to simplify and
+        /// <see cref="ContainerEntities.notFound"/> and <see cref="ContainerEntities.errors"/> to simplify and
         /// minimize response by removing redundancy.
         /// <see cref="EntityStore.GetContainerResults"/> remap these properties.
         protected virtual void SetContainerResults(SyncResponse response)
@@ -217,16 +217,14 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     }
                     entities.Add(new JsonValue(json));
                 }
-                container.errors = errors;
+                container.errors    = errors;
+                container.notFound  = notFound;
                 entityMap.Clear();
-                if (notFound != null) {
-                    container.notFound = notFound;
-                }
             }
             resultMap.Clear();
         }
         
-        protected void SetContainerErrors(SyncResponse response) 
+        private void SetContainerErrors(SyncResponse response) 
         {
             List<EntityErrors> errors;
             var errorMap = response.createErrorMap;
