@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Transform
 {
@@ -11,9 +12,9 @@ namespace Friflo.Json.Fliox.Transform
         private             Bytes           jsonBytes = new Bytes(128);
         private             JsonParser      parser;
         
-        public bool IsValidJson(string json, out string error) {
+        public bool IsValidJson(Utf8Array json, out string error) {
             jsonBytes.Clear();
-            jsonBytes.AppendString(json);
+            jsonBytes.AppendArray(json);
             parser.InitParser(jsonBytes);
             while (true) {
                 var ev = parser.NextEvent();
