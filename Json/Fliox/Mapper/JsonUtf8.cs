@@ -77,10 +77,14 @@ namespace Friflo.Json.Fliox.Mapper
         }
     }
     
-    public static class Utf8ArrayExtensions {
+    public static class JsonUtf8Extensions {
     
         public static void AppendArray(this ref Bytes bytes, JsonUtf8 array) {
             AppendArray (ref bytes, array, 0, array.Array.Length);
+        }
+        
+        public static JsonUtf8 AsJsonUtf8(this ref Bytes bytes) {
+            return new JsonUtf8(bytes.AsArray());
         }
         
         public static void AppendArray(this ref Bytes bytes, JsonUtf8 array, int offset, int len) {
