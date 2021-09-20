@@ -22,16 +22,17 @@ namespace Friflo.Json.Fliox.DB.NoSQL
     /// </summary>
     public class EntityProcessor : IDisposable
     {
-        private             Bytes           jsonBytes   = new Bytes(128);
-        private             JsonParser      parser;
-        private             Bytes           idKey       = new Bytes(16);
-        private             bool            foundKey;
+        private             Bytes               jsonBytes   = new Bytes(128);
+        private             JsonParser          parser;
+        private             Bytes               idKey       = new Bytes(16);
+        private             bool                foundKey;
         //                  --- ReplaceKey
-        private             int             keyStart;
-        private             int             keyEnd;
-        private             bool            foundIntKey;
-        private             bool            asIntKey;
-        private             Bytes           sb          = new Bytes(0);
+        private             JsonParser.State    keyState;
+        private             int                 keyStart;
+        private             int                 keyEnd;
+        private             bool                foundIntKey;
+        private             bool                asIntKey;
+        private             Bytes               sb          = new Bytes(0);
         
         public bool GetEntityKey(Utf8Array json, string keyName, out JsonKey keyValue, out string error) {
             keyName  = keyName ?? "id";
@@ -53,8 +54,13 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 return json;
             sb.Clear();
             sb.AppendArray(json, 0, keyStart);
+            if (keyState == JsonParser.State.ExpectMember) {
+                sb.AppendChar(',');
+            }
             sb.AppendChar('\"');
-            sb.AppendString(newKeyName);
+            idKey.Clear();
+            idKey.FromString(newKeyName);
+            sb.AppendBytes(ref idKey);
             sb.AppendString("\":");
             if (asIntKey) {
                 keyValue.AppendTo(ref sb, ref parser.format);
@@ -73,7 +79,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         private bool Traverse (Utf8Array json, string keyName, out JsonKey keyValue, ProcessingType processingType, out string error) {
             foundKey = false;
             idKey.Clear();
-            idKey.AppendString(keyName);
+            idKey.FromString(keyName);
             keyValue = new JsonKey();
             jsonBytes.Clear();
             jsonBytes.AppendArray(json);
@@ -84,7 +90,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 return false;
             }
             while (true) {
-                var pos = parser.Position;
+                var pos     = parser.Position;
+                var state   = parser.CurrentState;
                 ev = parser.NextEvent();
                 switch (ev) {
                     case JsonEvent.ValueString:
@@ -100,6 +107,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                                 error       = null;
                                 return true;
                             case ProcessingType.SetKey:
+                                keyState    = state;
                                 keyStart    = pos;
                                 keyEnd      = parser.Position;
                                 foundIntKey = ev == JsonEvent.ValueNumber;

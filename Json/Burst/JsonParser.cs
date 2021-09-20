@@ -143,7 +143,8 @@ namespace Friflo.Json.Burst
         public      int                 ProcessedBytes => previousBytes + bufferCount + pos;
         
         private     int                 bufferCount;
-        public      int                 Position => bufferCount + pos - startPos;
+        public      int                 Position        => bufferCount + pos - startPos;
+        public      State               CurrentState    => state.array[stateLevel];
         
         // --- input array, stream, string, ... used in InitParser() methods
         private     const int           BufSize = 4096; // Test with 1 to find edge cases
@@ -159,7 +160,7 @@ namespace Friflo.Json.Burst
         private     int                 inputArrayEnd;
 
 
-        internal enum State {
+        public enum State {
             ExpectMember        = 0,
             ExpectMemberFirst   = 1,
 
