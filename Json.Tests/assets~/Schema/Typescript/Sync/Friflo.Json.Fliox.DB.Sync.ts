@@ -174,10 +174,10 @@ export class SyncResponse extends DatabaseResponse {
     error?        : ErrorResponse | null;
     tasks?        : TaskResult_Union[] | null;
     results?      : ContainerEntities[] | null;
-    createErrors? : { [key: string]: EntityErrors } | null;
-    upsertErrors? : { [key: string]: EntityErrors } | null;
-    patchErrors?  : { [key: string]: EntityErrors } | null;
-    deleteErrors? : { [key: string]: EntityErrors } | null;
+    createErrors? : EntityErrors[] | null;
+    upsertErrors? : EntityErrors[] | null;
+    patchErrors?  : EntityErrors[] | null;
+    deleteErrors? : EntityErrors[] | null;
 }
 
 export class ErrorResponse extends DatabaseResponse {
@@ -329,8 +329,8 @@ export type EntityErrorType =
 ;
 
 export class EntityErrors {
-    container? : string | null;
-    errors     : { [key: string]: EntityError };
+    container  : string;
+    errorMap   : { [key: string]: EntityError };
 }
 
 export type DatabaseEvent_Union =

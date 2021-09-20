@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                 return TaskError(result.Error);
             }
             if (result.deleteErrors != null && result.deleteErrors.Count > 0) {
-                var deleteErrors = SyncResponse.GetEntityErrors(ref response.deleteErrors, container);
+                var deleteErrors = SyncResponse.GetEntityErrors(ref response.deleteErrorMap, container);
                 deleteErrors.AddErrors(result.deleteErrors);
             }
             return result;

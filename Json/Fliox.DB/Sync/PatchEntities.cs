@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                 return TaskError(result.Error); 
             }
             if (result.patchErrors != null && result.patchErrors.Count > 0) {
-                var patchErrors = SyncResponse.GetEntityErrors(ref response.patchErrors, container);
+                var patchErrors = SyncResponse.GetEntityErrors(ref response.patchErrorMap, container);
                 patchErrors.AddErrors(result.patchErrors);
             }
             return result;

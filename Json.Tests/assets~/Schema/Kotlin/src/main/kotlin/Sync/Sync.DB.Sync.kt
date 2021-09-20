@@ -158,10 +158,10 @@ data class SyncResponse (
               val error        : ErrorResponse? = null,
               val tasks        : List<TaskResult>? = null,
               val results      : List<ContainerEntities>? = null,
-              val createErrors : HashMap<String, EntityErrors>? = null,
-              val upsertErrors : HashMap<String, EntityErrors>? = null,
-              val patchErrors  : HashMap<String, EntityErrors>? = null,
-              val deleteErrors : HashMap<String, EntityErrors>? = null,
+              val createErrors : List<EntityErrors>? = null,
+              val upsertErrors : List<EntityErrors>? = null,
+              val patchErrors  : List<EntityErrors>? = null,
+              val deleteErrors : List<EntityErrors>? = null,
 ) : DatabaseResponse()
 
 @Serializable
@@ -309,8 +309,8 @@ enum class EntityErrorType {
 
 @Serializable
 data class EntityErrors (
-              val container : String? = null,
-              val errors    : HashMap<String, EntityError>,
+              val container : String,
+              val errorMap  : HashMap<String, EntityError>,
 )
 
 @Serializable

@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.DB.Sync
             if (entityKeys == null) {
                 return InvalidTask(error);
             }
-            error = database.schema?.ValidateEntities (container, entityKeys, entities, messageContext, EntityErrorType.WriteError, ref response.upsertErrors);
+            error = database.schema?.ValidateEntities (container, entityKeys, entities, messageContext, EntityErrorType.WriteError, ref response.upsertErrorMap);
             if (error != null) {
                 return TaskError(new CommandError(error));
             }
@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                 return TaskError(result.Error);
             }
             if (result.upsertErrors != null && result.upsertErrors.Count > 0) {
-                var upsertErrors = SyncResponse.GetEntityErrors(ref response.upsertErrors, container);
+                var upsertErrors = SyncResponse.GetEntityErrors(ref response.upsertErrorMap, container);
                 upsertErrors.AddErrors(result.upsertErrors);
             }
             return result;

@@ -374,37 +374,53 @@ namespace Friflo.Json.Fliox.DB.Graph
 
         private static void SetErrors(SyncResponse response, SyncStore syncStore) {
             var syncSets = syncStore.SyncSets;
-            var createErrors = response.createErrors;
-            if (createErrors != null) {
-                foreach (var createError in createErrors) {
-                    createError.Value.SetInferredErrorFields();
-                    var syncSet = syncSets[createError.Key];
-                    syncSet.errorsCreate = createError.Value.errors;
+            var errors = response.createErrors;
+            response.createErrors = null;
+            if (errors != null) {
+                var map = response.createErrorMap = new Dictionary<string, EntityErrors>(errors.Count);
+                foreach (var error in errors) {
+                    map.Add(error.container, error);
+                    error.SetInferredErrorFields();
+                    var syncSet = syncSets[error.container];
+                    syncSet.errorsCreate = error.errorMap;
                 }
+                errors.Clear();
             }
-            var upsertErrors = response.upsertErrors;
-            if (upsertErrors != null) {
-                foreach (var upsertError in upsertErrors) {
-                    upsertError.Value.SetInferredErrorFields();
-                    var syncSet = syncSets[upsertError.Key];
-                    syncSet.errorsUpsert = upsertError.Value.errors;
+            errors = response.upsertErrors;
+            response.upsertErrors = null;
+            if (errors != null) {
+                var map = response.upsertErrorMap = new Dictionary<string, EntityErrors>(errors.Count);
+                foreach (var error in errors) {
+                    map.Add(error.container, error);
+                    error.SetInferredErrorFields();
+                    var syncSet = syncSets[error.container];
+                    syncSet.errorsUpsert = error.errorMap;
                 }
+                errors.Clear();
             }
-            var patchErrors = response.patchErrors;
-            if (patchErrors != null) {
-                foreach (var patchError in patchErrors) {
-                    patchError.Value.SetInferredErrorFields();
-                    var syncSet = syncSets[patchError.Key];
-                    syncSet.errorsPatch = patchError.Value.errors;
+            errors = response.patchErrors;
+            response.patchErrors = null;
+            if (errors != null) {
+                var map = response.patchErrorMap = new Dictionary<string, EntityErrors>(errors.Count);
+                foreach (var error in errors) {
+                    map.Add(error.container, error);
+                    error.SetInferredErrorFields();
+                    var syncSet = syncSets[error.container];
+                    syncSet.errorsPatch = error.errorMap;
                 }
+                errors.Clear();
             }
-            var deleteErrors = response.deleteErrors;
-            if (deleteErrors != null) {
-                foreach (var deleteError in deleteErrors) {
-                    deleteError.Value.SetInferredErrorFields();
-                    var syncSet = syncSets[deleteError.Key];
-                    syncSet.errorsDelete = deleteError.Value.errors;
+            errors = response.deleteErrors;
+            response.deleteErrors = null;
+            if (errors != null) {
+                var map = response.deleteErrorMap = new Dictionary<string, EntityErrors>(errors.Count);
+                foreach (var error in errors) {
+                    map.Add(error.container, error);
+                    error.SetInferredErrorFields();
+                    var syncSet = syncSets[error.container];
+                    syncSet.errorsDelete = error.errorMap;
                 }
+                errors.Clear();
             }
         }
         

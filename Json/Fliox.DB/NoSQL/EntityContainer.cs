@@ -134,7 +134,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     targetKeys.Add(key);
                 }
             }
-            var valError = database.schema?.ValidateEntities(container, targetKeys, targets, messageContext, EntityErrorType.PatchError, ref response.patchErrors);
+            var valError = database.schema?.ValidateEntities(container, targetKeys, targets, messageContext, EntityErrorType.PatchError, ref response.patchErrorMap);
             if (valError != null) {
                 return new PatchEntitiesResult{Error = new CommandError(valError)};
             }

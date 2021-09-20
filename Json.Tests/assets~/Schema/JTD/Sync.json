@@ -547,10 +547,10 @@
                 "error":        { "ref":  "ErrorResponse", "nullable": true },
                 "tasks":        { "elements": { "ref":  "TaskResult" }, "nullable": true },
                 "results":      { "elements": { "ref":  "ContainerEntities" }, "nullable": true },
-                "createErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
-                "upsertErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
-                "patchErrors":  { "values": { "ref":  "EntityErrors" }, "nullable": true },
-                "deleteErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true }
+                "createErrors": { "elements": { "ref":  "EntityErrors" }, "nullable": true },
+                "upsertErrors": { "elements": { "ref":  "EntityErrors" }, "nullable": true },
+                "patchErrors":  { "elements": { "ref":  "EntityErrors" }, "nullable": true },
+                "deleteErrors": { "elements": { "ref":  "EntityErrors" }, "nullable": true }
             }
         },
         "ErrorResponse": {
@@ -703,8 +703,8 @@
         },
         "EntityErrors": {
             "properties": {
-                "container": { "type": "string", "nullable": true },
-                "errors":    { "values": { "ref":  "EntityError" } }
+                "container": { "type": "string" },
+                "errorMap":  { "values": { "ref":  "EntityError" } }
             }
         },
         "DatabaseEvent": {

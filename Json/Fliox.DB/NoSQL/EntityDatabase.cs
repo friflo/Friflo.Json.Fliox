@@ -166,6 +166,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 }
             }
             SetContainerResults(response);
+            SetContainerErrors(response);
             response.AssertResponse(syncRequest);
             
             var broker = eventBroker;
@@ -223,6 +224,51 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 }
             }
             resultMap.Clear();
+        }
+        
+        protected void SetContainerErrors(SyncResponse response) 
+        {
+            List<EntityErrors> errors;
+            var errorMap = response.createErrorMap;
+            response.createErrorMap = null;
+            if (errorMap != null) {
+                errors = response.createErrors = new List<EntityErrors>(errorMap.Count);
+                foreach (var pair in errorMap) {
+                    var value = pair.Value;
+                    errors.Add(value);
+                }
+                errorMap.Clear();
+            }
+            errorMap = response.upsertErrorMap;
+            response.upsertErrorMap = null;
+            if (errorMap != null) {
+                errors = response.upsertErrors = new List<EntityErrors>(errorMap.Count);
+                foreach (var pair in errorMap) {
+                    var value = pair.Value;
+                    errors.Add(value);
+                }
+                errorMap.Clear();
+            }
+            errorMap = response.patchErrorMap;
+            response.patchErrorMap = null;
+            if (errorMap != null) {
+                errors = response.patchErrors = new List<EntityErrors>(errorMap.Count);
+                foreach (var pair in errorMap) {
+                    var value = pair.Value;
+                    errors.Add(value);
+                }
+                errorMap.Clear();
+            }
+            errorMap = response.deleteErrorMap;
+            response.deleteErrorMap = null;
+            if (errorMap != null) {
+                errors = response.deleteErrors = new List<EntityErrors>(errorMap.Count);
+                foreach (var pair in errorMap) {
+                    var value = pair.Value;
+                    errors.Add(value);
+                }
+                errorMap.Clear();
+            }
         }
     }
     
