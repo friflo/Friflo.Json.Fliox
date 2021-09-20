@@ -4,10 +4,10 @@
         "DatabaseMessage": {
             "discriminator": "type",
             "mapping": {
-                "sub":   { "ref":  "SubscriptionEvent" },
-                "sync":  { "ref":  "SyncRequest" },
-                "resp":  { "ref":  "SyncResponse" },
-                "error": { "ref":  "ErrorResponse" }
+                "sub":     { "ref":  "SubscriptionEvent" },
+                "sync":    { "ref":  "SyncRequest" },
+                "syncRes": { "ref":  "SyncResponse" },
+                "error":   { "ref":  "ErrorResponse" }
             },
             "properties": {
 

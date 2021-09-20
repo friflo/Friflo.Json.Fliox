@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     [Fri.Discriminator("type")] 
     [Fri.Polymorph(typeof(SubscriptionEvent),   Discriminant = "sub")]
     [Fri.Polymorph(typeof(SyncRequest),         Discriminant = "sync")]
-    [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "resp")]
+    [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "syncRes")]
     [Fri.Polymorph(typeof(ErrorResponse),       Discriminant = "error")]
     public abstract class DatabaseMessage
     {

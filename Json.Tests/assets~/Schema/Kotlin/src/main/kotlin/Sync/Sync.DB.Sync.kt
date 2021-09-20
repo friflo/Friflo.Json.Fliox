@@ -159,7 +159,7 @@ abstract class DatabaseRequest {
 }
 
 @Serializable
-@SerialName("resp")
+@SerialName("syncRes")
 data class SyncResponse (
     override  val reqId        : Int? = null,
               val error        : ErrorResponse? = null,

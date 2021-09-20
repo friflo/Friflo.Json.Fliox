@@ -18,7 +18,7 @@ export abstract class DatabaseMessage {
     abstract type:
         | "sub"
         | "sync"
-        | "resp"
+        | "syncRes"
         | "error"
     ;
 }
@@ -175,7 +175,7 @@ export abstract class DatabaseResponse extends DatabaseMessage {
 }
 
 export class SyncResponse extends DatabaseResponse {
-    type          : "resp";
+    type          : "syncRes";
     error?        : ErrorResponse | null;
     tasks?        : TaskResult_Union[] | null;
     results?      : ContainerEntities[] | null;
