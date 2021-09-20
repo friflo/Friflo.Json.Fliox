@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
         protected override void SetContainerResults(SyncResponse response) {
             foreach (var pair in testContainers) {
                 TestContainer testContainer = pair.Value;
-                if (!response.results.TryGetValue(testContainer.name, out var result))
+                if (!response.resultMap.TryGetValue(testContainer.name, out var result))
                     continue;
                 var entities = result.entityMap;
                 foreach (var id in testContainer.missingResultErrors) {

@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             var tasks = new List<TaskResult>(requestTasks.Count);
             var response = new SyncResponse {
                 tasks   = tasks,
-                results = new Dictionary<string, ContainerEntities>()
+                resultMap = new Dictionary<string, ContainerEntities>()
             };
             int index = -1;
             foreach (var task in requestTasks) {
@@ -184,8 +184,14 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         /// <see cref="EntityStore.GetContainerResults"/> remap these properties.
         protected virtual void SetContainerResults(SyncResponse response)
         {
-            foreach (var resultPair in response.results) {
-                var container       = resultPair.Value;
+            var resultMap = response.resultMap;
+            response.resultMap = null;
+            var results = response.results = new List<ContainerEntities>(resultMap.Count);
+            foreach (var resultPair in resultMap) {
+                ContainerEntities value = resultPair.Value;
+                results.Add(value);
+            }
+            foreach (var container in results) {
                 var entityMap       = container.entityMap;
                 var entities        = container.entities;
                 List<JsonKey> notFound = null;
@@ -216,6 +222,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     container.errors = errors;
                 }
             }
+            resultMap.Clear();
         }
     }
     

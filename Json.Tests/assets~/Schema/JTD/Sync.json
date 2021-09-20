@@ -546,7 +546,7 @@
                 "reqId":        { "type": "int32", "nullable": true },
                 "error":        { "ref":  "ErrorResponse", "nullable": true },
                 "tasks":        { "elements": { "ref":  "TaskResult" }, "nullable": true },
-                "results":      { "values": { "ref":  "ContainerEntities" }, "nullable": true },
+                "results":      { "elements": { "ref":  "ContainerEntities" }, "nullable": true },
                 "createErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
                 "upsertErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
                 "patchErrors":  { "values": { "ref":  "EntityErrors" }, "nullable": true },
@@ -679,9 +679,10 @@
         },
         "ContainerEntities": {
             "properties": {
-                "entities": { "elements": {  } },
-                "notFound": { "elements": { "type": "string" }, "nullable": true },
-                "errors":   { "values": { "ref":  "EntityError" }, "nullable": true }
+                "container": { "type": "string" },
+                "entities":  { "elements": {  } },
+                "notFound":  { "elements": { "type": "string" }, "nullable": true },
+                "errors":    { "values": { "ref":  "EntityError" }, "nullable": true }
             }
         },
         "EntityError": {

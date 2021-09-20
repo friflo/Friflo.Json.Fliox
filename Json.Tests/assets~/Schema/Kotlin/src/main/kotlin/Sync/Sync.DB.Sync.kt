@@ -157,7 +157,7 @@ data class SyncResponse (
     override  val reqId        : Int? = null,
               val error        : ErrorResponse? = null,
               val tasks        : List<TaskResult>? = null,
-              val results      : HashMap<String, ContainerEntities>? = null,
+              val results      : List<ContainerEntities>? = null,
               val createErrors : HashMap<String, EntityErrors>? = null,
               val upsertErrors : HashMap<String, EntityErrors>? = null,
               val patchErrors  : HashMap<String, EntityErrors>? = null,
@@ -286,9 +286,10 @@ enum class TaskErrorResultType {
 
 @Serializable
 data class ContainerEntities (
-              val entities : List<JsonElement>,
-              val notFound : List<String>? = null,
-              val errors   : HashMap<String, EntityError>? = null,
+              val container : String,
+              val entities  : List<JsonElement>,
+              val notFound  : List<String>? = null,
+              val errors    : HashMap<String, EntityError>? = null,
 )
 
 @Serializable

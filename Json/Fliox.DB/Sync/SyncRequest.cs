@@ -32,24 +32,26 @@ namespace Friflo.Json.Fliox.DB.Sync
     // ----------------------------------- response -----------------------------------
     public class SyncResponse : DatabaseResponse
     {
-        public  ErrorResponse                           error;
-        public  List<TaskResult>                        tasks;
+                        public  ErrorResponse                           error;
+                        public  List<TaskResult>                        tasks;
+                        public  List<ContainerEntities>                 results;
         // key of all Dictionary's is the container name
-        public  Dictionary<string, ContainerEntities>   results;
-        public  Dictionary<string, EntityErrors>        createErrors; // lazy instantiation
-        public  Dictionary<string, EntityErrors>        upsertErrors; // lazy instantiation
-        public  Dictionary<string, EntityErrors>        patchErrors;  // lazy instantiation
-        public  Dictionary<string, EntityErrors>        deleteErrors; // lazy instantiation
+        [Fri.Ignore]    public  Dictionary<string, ContainerEntities>   resultMap;
+                        public  Dictionary<string, EntityErrors>        createErrors; // lazy instantiation
+                        public  Dictionary<string, EntityErrors>        upsertErrors; // lazy instantiation
+                        public  Dictionary<string, EntityErrors>        patchErrors;  // lazy instantiation
+                        public  Dictionary<string, EntityErrors>        deleteErrors; // lazy instantiation
         
         internal override   RequestType                 RequestType => RequestType.sync;
         
         internal ContainerEntities GetContainerResult(string container) {
-            if (results.TryGetValue(container, out ContainerEntities result))
+            if (resultMap.TryGetValue(container, out ContainerEntities result))
                 return result;
             result = new ContainerEntities {
+                container = container,
                 entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality)
             };
-            results.Add(container, result);
+            resultMap.Add(container, result);
             return result;
         }
         
@@ -77,6 +79,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     // ----------------------------------- sync results -----------------------------------
     public class ContainerEntities
     {
+        [Fri.Required]  public  string                              container;
         [Fri.Required]  public  List<JsonValue>                     entities  = new List<JsonValue>();
                         public  List<JsonKey>                       notFound;
                         public  Dictionary<JsonKey, EntityError>    errors    = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);

@@ -412,14 +412,21 @@ namespace Friflo.Json.Fliox.DB.Graph
         /// <see cref="ContainerEntities.errors"/> to <see cref="ContainerEntities.entityMap"/>.
         /// These properties are set by <see cref="EntityDatabase.SetContainerResults"/>.
         private void GetContainerResults(SyncResponse response) {
+            var results     = response.results;
+            if (results == null)
+                return;
+            response.results = null;
+            var resultMap   = response.resultMap = new Dictionary<string, ContainerEntities>(results.Count);
+            foreach (var result in results) {
+                resultMap.Add(result.container, result);
+            }
             var processor = _intern.processor;
-            foreach (var resultPair in response.results) {
-                string name         = resultPair.Key;
+            foreach (var container in results) {
+                string name         = container.container;
                 if (!_intern.setByName.TryGetValue(name, out EntitySet set)) {
                     continue;
                 }
                 var keyName         = set.GetKeyName();
-                var container       = resultPair.Value;
                 var entityMap       = container.entityMap;
                 var entities        = container.entities;
                 var notFound        = container.notFound;
@@ -459,6 +466,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                 errors.Clear();
                 container.errors = null;
             }
+            results.Clear();
         }
 
         private SyncResult HandleSyncResponse(SyncRequest syncRequest, SyncResponse response, SyncStore syncStore) {
@@ -472,7 +480,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                     response.AssertResponse(syncRequest);
                     syncError = null;
                     GetContainerResults(response);
-                    containerResults = response.results;
+                    containerResults = response.resultMap;
                     foreach (var containerResult in containerResults) {
                         ContainerEntities containerEntities = containerResult.Value;
                         var set = _intern.setByName[containerResult.Key];

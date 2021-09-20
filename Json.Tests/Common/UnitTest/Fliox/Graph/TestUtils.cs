@@ -158,7 +158,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 await store.Sync(); // ~ 1 µs
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var expected = IsDebug() ? 1344 : 1288; // Test Debug & Release
+                var expected = IsDebug() ? 1352 : 1296; // Test Debug & Release
                 AreEqual(expected, diff);   // Test Release also
             }
         }
@@ -182,7 +182,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                     await store.Sync();
                 }
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var expected = IsDebug() ? Is.InRange(61288, 61352) : Is.InRange(58352, 58416); // Test Debug & Release
+                var expected = IsDebug() ? Is.InRange(61288, 61640) : Is.InRange(58352, 58416); // Test Debug & Release
                 That(diff, expected);
             }
         }
@@ -203,8 +203,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             
             public override Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
                 var result = new SyncResponse {
-                    tasks   = new List<TaskResult>(),
-                    results = new Dictionary<string, ContainerEntities>()
+                    tasks       = new List<TaskResult>(),
+                    resultMap   = new Dictionary<string, ContainerEntities>()
                 };
                 return Task.FromResult(result);
             }
