@@ -71,9 +71,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             }
             var remaining = json.Length - keyEnd; 
             sb.AppendArray(json, keyEnd, remaining);
-            var result = sb.AsJsonUtf8();
+            var result = sb.AsArray();
             sb.Clear();
-            return result;
+            return new JsonUtf8(result);
         }
 
         private bool Traverse (JsonUtf8 json, string keyName, out JsonKey keyValue, ProcessingType processingType, out string error) {

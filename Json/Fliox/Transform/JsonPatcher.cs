@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Transform
             if (nodeStack.Count != 0)
                 throw new InvalidOperationException("Expect nodeStack.Count == 0");
             rootNode.ClearChildren();
-            return serializer.json.AsJsonUtf8();
+            return new JsonUtf8(serializer.json.AsArray());
         }
 
         public JsonUtf8 Copy(JsonUtf8 json, bool pretty) {
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Transform
             targetParser.NextEvent();
             serializer.InitSerializer();
             serializer.WriteTree(ref targetParser);
-            return serializer.json.AsJsonUtf8();
+            return new JsonUtf8(serializer.json.AsArray());
         }
 
         private bool TraceObject(ref JsonParser p) {

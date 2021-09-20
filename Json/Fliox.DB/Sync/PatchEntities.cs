@@ -11,12 +11,12 @@ namespace Friflo.Json.Fliox.DB.Sync
     // ----------------------------------- task -----------------------------------
     public class PatchEntities : DatabaseTask
     {
-        [Fri.Required]  public  string              container;
-                        public  string              keyName;
-        [Fri.Required]  public  List<EntityPatch>   patches;
+        [Fri.Required]  public  string                              container;
+                        public  string                              keyName;
+        [Fri.Required]  public  Dictionary<JsonKey, EntityPatch>    patches = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
         
-        internal override       TaskType            TaskType => TaskType.patch;
-        public   override       string              TaskName =>  $"container: '{container}'";
+        internal override       TaskType                            TaskType => TaskType.patch;
+        public   override       string                              TaskName =>  $"container: '{container}'";
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                 return TaskError(result.Error); 
             }
             if (result.patchErrors != null && result.patchErrors.Count > 0) {
-                var patchErrors = SyncResponse.GetEntityErrors(ref response.patchErrorMap, container);
+                var patchErrors = SyncResponse.GetEntityErrors(ref response.patchErrors, container);
                 patchErrors.AddErrors(result.patchErrors);
             }
             return result;
@@ -38,14 +38,7 @@ namespace Friflo.Json.Fliox.DB.Sync
 
     public class EntityPatch
     {
-                        public  JsonKey                     key;
-        [Fri.Required]  public  List<JsonPatch>             operations;
-        
-        public EntityPatch() {}
-        public EntityPatch(JsonKey key, List<JsonPatch> operations) {
-            this.key            = key;
-            this.operations     = operations;
-        }
+        [Fri.Required]  public  List<JsonPatch>             patches;
     }
 
     // ----------------------------------- task result -----------------------------------

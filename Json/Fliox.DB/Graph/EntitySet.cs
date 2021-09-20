@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         internal  abstract  void                LogSetChangesInternal   (LogTask logTask);
         internal  abstract  void                SyncPeerEntities        (Dictionary<JsonKey, EntityValue> entities);
         internal  abstract  void                DeletePeerEntities      (HashSet   <JsonKey> ids);
-        internal  abstract  void                PatchPeerEntities       (List<EntityPatch> patches);
+        internal  abstract  void                PatchPeerEntities       (Dictionary<JsonKey, EntityPatch> patches);
         
         internal  abstract  void                ResetSync               ();
         internal  abstract  SyncTask            SubscribeChangesInternal(IEnumerable<Change> changes);
@@ -490,14 +490,14 @@ namespace Friflo.Json.Fliox.DB.Graph
             var reader = intern.jsonMapper.reader;
                 
             foreach (var entityPair in entities) {
-                var key = entityPair.Key;
+                var id = entityPair.Key;
                 var value = entityPair.Value;
                 var error = value.Error;
-                var peer = GetPeerById(key);
+                var peer = GetPeerById(id);
                 if (error != null) {
                     // id & container are not serialized as they are redundant data.
                     // Infer their values from containing dictionary & EntitySet<>
-                    error.key       = key;
+                    error.id        = id;
                     error.container = name;
                     peer.error      = error;
                     continue;
@@ -509,15 +509,15 @@ namespace Friflo.Json.Fliox.DB.Graph
                     var entity = peer.NullableEntity;
                     if (entity == null) {
                         entity = (T)intern.typeMapper.CreateInstance();
-                        SetEntityId(entity, key);
+                        SetEntityId(entity, id);
                         peer.SetEntity(entity);
                     }
                     reader.ReadTo(json, entity);
                     if (reader.Success) {
                         peer.SetPatchSource(reader.Read<T>(json));
                     } else {
-                        var entityError = new EntityError(EntityErrorType.ParseError, name, key, reader.Error.msg.ToString());
-                        entities[key].SetError(entityError);
+                        var entityError = new EntityError(EntityErrorType.ParseError, name, id, reader.Error.msg.ToString());
+                        entities[id].SetError(entityError);
                     }
                 } else {
                     peer.SetPatchSourceNull();
@@ -532,13 +532,14 @@ namespace Friflo.Json.Fliox.DB.Graph
             }
         }
         
-        internal  override void PatchPeerEntities (List<EntityPatch> patches) {
+        internal  override void PatchPeerEntities (Dictionary<JsonKey, EntityPatch> patches) {
             var objectPatcher = intern.store._intern.objectPatcher;
-            foreach (var entityPatch in patches) {
-                var         id          = entityPatch.key;
+            foreach (var pair in patches) {
+                var         id          = pair.Key;
+                EntityPatch entityPatch = pair.Value;
                 var         peer        = GetPeerById(id);
                 var         entity      = peer.Entity;
-                objectPatcher.ApplyPatches(entity, entityPatch.operations);
+                objectPatcher.ApplyPatches(entity, entityPatch.patches);
             }
         }
 

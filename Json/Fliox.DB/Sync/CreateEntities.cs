@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                 return InvalidTask(error);
             }
 
-            error = database.schema?.ValidateEntities (container, entityKeys, entities, messageContext, EntityErrorType.WriteError, ref response.createErrorMap);
+            error = database.schema?.ValidateEntities (container, entityKeys, entities, messageContext, EntityErrorType.WriteError, ref response.createErrors);
             if (error != null) {
                 return TaskError(new CommandError(error));
             }
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                 return TaskError(result.Error);
             }
             if (result.createErrors != null && result.createErrors.Count > 0) {
-                var createErrors = SyncResponse.GetEntityErrors(ref response.createErrorMap, container);
+                var createErrors = SyncResponse.GetEntityErrors(ref response.createErrors, container);
                 createErrors.AddErrors(result.createErrors);
             }
             return result;

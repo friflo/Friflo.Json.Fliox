@@ -35,17 +35,12 @@ namespace Friflo.Json.Fliox.DB.Sync
                         public  ErrorResponse                           error;
                         public  List<TaskResult>                        tasks;
                         public  List<ContainerEntities>                 results;
-                        public  List<EntityErrors>                      createErrors;
-                        public  List<EntityErrors>                      upsertErrors;
-                        public  List<EntityErrors>                      patchErrors;
-                        public  List<EntityErrors>                      deleteErrors;
-
         // key of all Dictionary's is the container name
         [Fri.Ignore]    public  Dictionary<string, ContainerEntities>   resultMap;
-        [Fri.Ignore]    public  Dictionary<string, EntityErrors>        createErrorMap; // lazy instantiation
-        [Fri.Ignore]    public  Dictionary<string, EntityErrors>        upsertErrorMap; // lazy instantiation
-        [Fri.Ignore]    public  Dictionary<string, EntityErrors>        patchErrorMap;  // lazy instantiation
-        [Fri.Ignore]    public  Dictionary<string, EntityErrors>        deleteErrorMap; // lazy instantiation
+                        public  Dictionary<string, EntityErrors>        createErrors; // lazy instantiation
+                        public  Dictionary<string, EntityErrors>        upsertErrors; // lazy instantiation
+                        public  Dictionary<string, EntityErrors>        patchErrors;  // lazy instantiation
+                        public  Dictionary<string, EntityErrors>        deleteErrors; // lazy instantiation
         
         internal override   RequestType                 RequestType => RequestType.sync;
         
@@ -87,9 +82,9 @@ namespace Friflo.Json.Fliox.DB.Sync
         [Fri.Required]  public  string                              container;
         [Fri.Required]  public  List<JsonValue>                     entities  = new List<JsonValue>();
                         public  List<JsonKey>                       notFound;
-                        public  List<EntityError>                   errors;
-                        
-        [Fri.Ignore]    public  Dictionary<JsonKey, EntityValue>    entityMap;
+                        public  Dictionary<JsonKey, EntityError>    errors    = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
+        
+        [Fri.Ignore]    public  Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
         
         internal void AddEntities(Dictionary<JsonKey, EntityValue> add) {
             entityMap.EnsureCapacity(entityMap.Count + add.Count);
@@ -101,28 +96,28 @@ namespace Friflo.Json.Fliox.DB.Sync
     
     public class EntityErrors
     {
-        [Fri.Required]  public  string                              container;
-                        public  List<EntityError>                   errors;
-        [Fri.Ignore]    public  Dictionary<JsonKey, EntityError>    errorMap;
+                        public  string                              container; // only for debugging
+        [Fri.Required]  public  Dictionary<JsonKey, EntityError>    errors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
         
         public EntityErrors() {} // required for TypeMapper
 
         public EntityErrors(string container) {
             this.container  = container;
-            errorMap        = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
+            errors          = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
         }
         
         internal void AddErrors(Dictionary<JsonKey, EntityError> errors) {
             foreach (var error in errors) {
-                this.errorMap.TryAdd(error.Key, error.Value);
+                this.errors.TryAdd(error.Key, error.Value);
             }
         }
 
         internal void SetInferredErrorFields() {
-            foreach (var errorEntry in errorMap) {
+            foreach (var errorEntry in errors) {
                 var error = errorEntry.Value;
-                // error.container are not serialized as they are redundant data.
+                // error .id & .container are not serialized as they are redundant data.
                 // Infer their values from containing errors dictionary
+                error.id        = errorEntry.Key;
                 error.container = container;
             }
         }

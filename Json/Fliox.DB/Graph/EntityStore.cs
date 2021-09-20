@@ -374,62 +374,37 @@ namespace Friflo.Json.Fliox.DB.Graph
 
         private static void SetErrors(SyncResponse response, SyncStore syncStore) {
             var syncSets = syncStore.SyncSets;
-            var errors = response.createErrors;
-            response.createErrors = null;
-            if (errors != null) {
-                var map = response.createErrorMap = new Dictionary<string, EntityErrors>(errors.Count);
-                CopyErrors(map, errors);
-                foreach (var error in errors) {
-                    var syncSet = syncSets[error.container];
-                    syncSet.errorsCreate = error.errorMap;
+            var createErrors = response.createErrors;
+            if (createErrors != null) {
+                foreach (var createError in createErrors) {
+                    createError.Value.SetInferredErrorFields();
+                    var syncSet = syncSets[createError.Key];
+                    syncSet.errorsCreate = createError.Value.errors;
                 }
-                errors.Clear();
             }
-            errors = response.upsertErrors;
-            response.upsertErrors = null;
-            if (errors != null) {
-                var map = response.upsertErrorMap = new Dictionary<string, EntityErrors>(errors.Count);
-                CopyErrors(map, errors);
-                foreach (var error in errors) {
-                    var syncSet = syncSets[error.container];
-                    syncSet.errorsUpsert = error.errorMap;
+            var upsertErrors = response.upsertErrors;
+            if (upsertErrors != null) {
+                foreach (var upsertError in upsertErrors) {
+                    upsertError.Value.SetInferredErrorFields();
+                    var syncSet = syncSets[upsertError.Key];
+                    syncSet.errorsUpsert = upsertError.Value.errors;
                 }
-                errors.Clear();
             }
-            errors = response.patchErrors;
-            response.patchErrors = null;
-            if (errors != null) {
-                var map = response.patchErrorMap = new Dictionary<string, EntityErrors>(errors.Count);
-                CopyErrors(map, errors);
-                foreach (var error in errors) {
-                    var syncSet = syncSets[error.container];
-                    syncSet.errorsPatch = error.errorMap;
+            var patchErrors = response.patchErrors;
+            if (patchErrors != null) {
+                foreach (var patchError in patchErrors) {
+                    patchError.Value.SetInferredErrorFields();
+                    var syncSet = syncSets[patchError.Key];
+                    syncSet.errorsPatch = patchError.Value.errors;
                 }
-                errors.Clear();
             }
-            errors = response.deleteErrors;
-            response.deleteErrors = null;
-            if (errors != null) {
-                var map = response.deleteErrorMap = new Dictionary<string, EntityErrors>(errors.Count);
-                CopyErrors(map, errors);
-                foreach (var error in errors) {
-                    var syncSet = syncSets[error.container];
-                    syncSet.errorsDelete = error.errorMap;
+            var deleteErrors = response.deleteErrors;
+            if (deleteErrors != null) {
+                foreach (var deleteError in deleteErrors) {
+                    deleteError.Value.SetInferredErrorFields();
+                    var syncSet = syncSets[deleteError.Key];
+                    syncSet.errorsDelete = deleteError.Value.errors;
                 }
-                errors.Clear();
-            }
-        }
-        
-        private static void CopyErrors(Dictionary<string, EntityErrors> dst, List<EntityErrors> src) {
-            foreach (var error in src) {
-                var map = error.errorMap = new Dictionary<JsonKey, EntityError>(error.errors.Count, JsonKey.Equality);
-                foreach (var entityError in error.errors) {
-                    map.Add(entityError.key, entityError);
-                }
-                error.SetInferredErrorFields();
-                error.errors.Clear();
-                error.errors = null;
-                dst.Add(error.container, error);
             }
         }
         
@@ -453,12 +428,6 @@ namespace Friflo.Json.Fliox.DB.Graph
                 }
                 var keyName         = set.GetKeyName();
                 var entityMap       = container.entityMap;
-                if (entityMap == null) {
-                    entityMap = container.entityMap = new Dictionary<JsonKey, EntityValue>(container.entities.Count, JsonKey.Equality);
-                } else {
-                    // reuse instance
-                    if (container.entityMap.Count > 0) throw new InvalidOperationException($"Expect cleared by EntityDatabase.SetContainerResults()");
-                }
                 var entities        = container.entities;
                 var notFound        = container.notFound;
                 var notFoundCount   = notFound?.Count ?? 0;
@@ -490,10 +459,12 @@ namespace Friflo.Json.Fliox.DB.Graph
                 // --- errors
                 if (errors == null || errors.Count == 0)
                     continue;
-                foreach (var error in errors) {
-                    entityMap.Add(error.key, new EntityValue(error));
+                foreach (var errorPair in errors) {
+                    var key = errorPair.Key;
+                    entityMap.Add(key, new EntityValue(errorPair.Value));
                 }
                 errors.Clear();
+                container.errors = null;
             }
             results.Clear();
         }

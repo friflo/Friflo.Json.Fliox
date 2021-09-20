@@ -160,10 +160,9 @@ content-type: application/json
   {
     "task":         "patch",
     "container":    "articles",
-    "patches": [
-      {
-        "key":    "new-article",
-        "operations": [
+    "patches": {
+      "new-article": {
+        "patches": [
           {
             "op":"replace",
             "path": ".name",
@@ -171,7 +170,7 @@ content-type: application/json
           }
         ]
       }
-    ]
+    }
   }
 ]}
 

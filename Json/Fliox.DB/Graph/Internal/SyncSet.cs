@@ -254,9 +254,11 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 if (diff == null)
                     return;
                 var patchList = intern.objectPatcher.CreatePatches(diff);
-                var id = peer.id;
-                var entityPatch = new EntityPatch (id, patchList);
+                var entityPatch = new EntityPatch {
+                    patches = patchList
+                };
                 SetNextPatchSource(peer); // todo next patch source need to be set on Sync() 
+                var id = peer.id;
                 Patches()[id] = entityPatch;
                 logTask.AddPatch(this, id);
                 
@@ -422,18 +424,20 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                         var entity  = peer.Entity;
                         var id      = peer.id;
                         if (!patches.TryGetValue(id, out EntityPatch patch)) {
-                            patch = new EntityPatch (id, new List<JsonPatch>());
+                            patch = new EntityPatch {
+                                patches = new List<JsonPatch>()
+                            };
                             patches.Add(id, patch);
                             SetNextPatchSource(peer);
                         }
-                        var operations      = patch.operations;
+                        var entityPatches   = patch.patches;
                         var selectResults   = memberAccessor.GetValues(entity, memberAccess);
                         int n = 0;
                         foreach (var path in patchTask.members) {
                             var value = new JsonValue {
                                 json = selectResults[n++].Json
                             };
-                            operations.Add(new PatchReplace {
+                            entityPatches.Add(new PatchReplace {
                                 path = path,
                                 value = value
                             });
@@ -445,11 +449,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 var req = new PatchEntities {
                     container   = set.name,
                     keyName     = SyncKeyName(set.GetKeyName()),
-                    patches    = new List<EntityPatch>(patches.Count)
+                    patches     = new Dictionary<JsonKey, EntityPatch>(patches, JsonKey.Equality)
                 };
-                foreach (var patch in patches) {
-                    req.patches.Add(patch.Value);
-                }
                 tasks.Add(req);
             }
         }

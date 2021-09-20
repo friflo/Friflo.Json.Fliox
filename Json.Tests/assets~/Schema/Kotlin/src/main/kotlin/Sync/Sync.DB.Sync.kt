@@ -93,13 +93,12 @@ data class QueryEntities (
 data class PatchEntities (
               val container : String,
               val keyName   : String? = null,
-              val patches   : List<EntityPatch>,
+              val patches   : HashMap<String, EntityPatch>,
 ) : DatabaseTask()
 
 @Serializable
 data class EntityPatch (
-              val key        : String,
-              val operations : List<JsonPatch>,
+              val patches : List<JsonPatch>,
 )
 
 @Serializable
@@ -159,10 +158,10 @@ data class SyncResponse (
               val error        : ErrorResponse? = null,
               val tasks        : List<TaskResult>? = null,
               val results      : List<ContainerEntities>? = null,
-              val createErrors : List<EntityErrors>? = null,
-              val upsertErrors : List<EntityErrors>? = null,
-              val patchErrors  : List<EntityErrors>? = null,
-              val deleteErrors : List<EntityErrors>? = null,
+              val createErrors : HashMap<String, EntityErrors>? = null,
+              val upsertErrors : HashMap<String, EntityErrors>? = null,
+              val patchErrors  : HashMap<String, EntityErrors>? = null,
+              val deleteErrors : HashMap<String, EntityErrors>? = null,
 ) : DatabaseResponse()
 
 @Serializable
@@ -290,12 +289,11 @@ data class ContainerEntities (
               val container : String,
               val entities  : List<JsonElement>,
               val notFound  : List<String>? = null,
-              val errors    : List<EntityError>? = null,
+              val errors    : HashMap<String, EntityError>? = null,
 )
 
 @Serializable
 data class EntityError (
-              val key     : String,
               val type    : EntityErrorType,
               val message : String? = null,
 )
@@ -311,8 +309,8 @@ enum class EntityErrorType {
 
 @Serializable
 data class EntityErrors (
-              val container : String,
-              val errors    : List<EntityError>? = null,
+              val container : String? = null,
+              val errors    : HashMap<String, EntityError>,
 )
 
 @Serializable

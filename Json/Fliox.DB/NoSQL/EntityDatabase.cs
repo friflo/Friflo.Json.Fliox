@@ -166,7 +166,6 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 }
             }
             SetContainerResults(response);
-            SetContainerErrors(response);
             response.AssertResponse(syncRequest);
             
             var broker = eventBroker;
@@ -193,18 +192,16 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 results.Add(value);
             }
             foreach (var container in results) {
-                var entityMap               = container.entityMap;
-                var entities                = container.entities;
-                List<JsonKey> notFound      = null;
-                List<EntityError> errors    = null ;
+                var entityMap       = container.entityMap;
+                var entities        = container.entities;
+                List<JsonKey> notFound = null;
+                var errors          = container.errors;
+                container.errors    = null;
                 entities.Capacity   = entityMap.Count;
                 foreach (var entityPair in entityMap) {
                     EntityValue entity = entityPair.Value;
                     if (entity.Error != null) {
-                        if (errors == null) {
-                            errors = new List<EntityError>();
-                        }
-                        errors.Add(entity.Error);
+                        errors.Add(entityPair.Key, entity.Error);
                         continue;
                     }
                     var json = entity.Json;
@@ -217,55 +214,15 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     }
                     entities.Add(new JsonValue(json));
                 }
-                container.errors    = errors;
-                container.notFound  = notFound;
                 entityMap.Clear();
+                if (notFound != null) {
+                    container.notFound = notFound;
+                }
+                if (errors != null && errors.Count > 0) {
+                    container.errors = errors;
+                }
             }
             resultMap.Clear();
-        }
-        
-        private void SetContainerErrors(SyncResponse response) 
-        {
-            List<EntityErrors> errors;
-            var errorMap = response.createErrorMap;
-            response.createErrorMap = null;
-            if (errorMap != null) {
-                errors = response.createErrors = new List<EntityErrors>(errorMap.Count);
-                CopyErrors(errors, errorMap);
-            }
-            errorMap = response.upsertErrorMap;
-            response.upsertErrorMap = null;
-            if (errorMap != null) {
-                errors = response.upsertErrors = new List<EntityErrors>(errorMap.Count);
-                CopyErrors(errors, errorMap);
-            }
-            errorMap = response.patchErrorMap;
-            response.patchErrorMap = null;
-            if (errorMap != null) {
-                errors = response.patchErrors = new List<EntityErrors>(errorMap.Count);
-                CopyErrors(errors, errorMap);
-            }
-            errorMap = response.deleteErrorMap;
-            response.deleteErrorMap = null;
-            if (errorMap != null) {
-                errors = response.deleteErrors = new List<EntityErrors>(errorMap.Count);
-                CopyErrors(errors, errorMap);
-            }
-        }
-        
-        private static void CopyErrors (List<EntityErrors> dst, Dictionary<string, EntityErrors> src) {
-            foreach (var pair in src) {
-                EntityErrors errorMap = pair.Value;
-                var errors = errorMap.errors = new List<EntityError>(errorMap.errorMap.Count);
-                foreach (var errorPair in errorMap.errorMap) {
-                    var error = errorPair.Value;
-                    errors.Add(error);
-                }
-                errorMap.errorMap.Clear();
-                errorMap.errorMap = null;
-                dst.Add(errorMap);
-            }
-            src.Clear();
         }
     }
     

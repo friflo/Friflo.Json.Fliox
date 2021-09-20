@@ -69,7 +69,7 @@ var exampleSync: DatabaseMessage = {
             {
                 "task":         "create",
                 "container":    "Article",
-                "keyName":      "id",
+                "key":          "id",
                 "entities": [
                     { "id": "new-article", "name":"New Article S10" }
                 ]
@@ -82,10 +82,9 @@ var exampleSync: DatabaseMessage = {
             {
                 "task":         "patch",
                 "container":    "Article",
-                "patches": [
-                    {
-                        "key": "new-article",
-                        "operations": [
+                "patches": {
+                    "new-article": {
+                        "patches": [
                             {
                                 "op":"replace",
                                 "path": ".name",
@@ -93,7 +92,7 @@ var exampleSync: DatabaseMessage = {
                             }
                         ]
                     }
-                ]
+                }
             },
             {
                 "task":         "subscribeMessage",

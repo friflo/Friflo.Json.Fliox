@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                     var entityError = new EntityError {
                         type        = EntityErrorType.ParseError,
                         message     = error,
-                        key         = entityEntry.Key,
+                        id          = entityEntry.Key,
                         container   = container
                     };
                     entity.SetError(entityError);

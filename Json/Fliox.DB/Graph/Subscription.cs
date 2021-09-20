@@ -274,12 +274,13 @@ namespace Friflo.Json.Fliox.DB.Graph
                         var patch = (PatchEntities)task;
                         if (patch.container != entitySet.name)
                             continue;
-                        foreach (var entityPatch in patch.patches) {
-                            var         id          = entityPatch.key;
+                        foreach (var pair in patch.patches) {
+                            var         id          = pair.Key;
                             TKey        key         = Ref<TKey,T>.RefKeyMap.IdToKey(id);
                             var         peer        = entitySet.GetOrCreatePeerByKey(key, id);
                             var         entity      = peer.Entity;
-                            var         changePatch = new ChangePatch<T>(entity, entityPatch.operations);
+                            EntityPatch entityPatch = pair.Value;
+                            var         changePatch = new ChangePatch<T>(entity, entityPatch.patches);
                             result.patches.Add(key, changePatch);
                         }
                         result.Info.patches += patch.patches.Count;

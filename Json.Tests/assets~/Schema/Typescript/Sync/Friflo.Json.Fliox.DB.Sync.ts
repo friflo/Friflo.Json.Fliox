@@ -110,12 +110,11 @@ export class PatchEntities extends DatabaseTask {
     task       : "patch";
     container  : string;
     keyName?   : string | null;
-    patches    : EntityPatch[];
+    patches    : { [key: string]: EntityPatch };
 }
 
 export class EntityPatch {
-    key         : string;
-    operations  : JsonPatch_Union[];
+    patches  : JsonPatch_Union[];
 }
 
 export class DeleteEntities extends DatabaseTask {
@@ -175,10 +174,10 @@ export class SyncResponse extends DatabaseResponse {
     error?        : ErrorResponse | null;
     tasks?        : TaskResult_Union[] | null;
     results?      : ContainerEntities[] | null;
-    createErrors? : EntityErrors[] | null;
-    upsertErrors? : EntityErrors[] | null;
-    patchErrors?  : EntityErrors[] | null;
-    deleteErrors? : EntityErrors[] | null;
+    createErrors? : { [key: string]: EntityErrors } | null;
+    upsertErrors? : { [key: string]: EntityErrors } | null;
+    patchErrors?  : { [key: string]: EntityErrors } | null;
+    deleteErrors? : { [key: string]: EntityErrors } | null;
 }
 
 export class ErrorResponse extends DatabaseResponse {
@@ -312,11 +311,10 @@ export class ContainerEntities {
     container  : string;
     entities   : any[];
     notFound?  : string[] | null;
-    errors?    : EntityError[] | null;
+    errors?    : { [key: string]: EntityError } | null;
 }
 
 export class EntityError {
-    key      : string;
     type     : EntityErrorType;
     message? : string | null;
 }
@@ -331,8 +329,8 @@ export type EntityErrorType =
 ;
 
 export class EntityErrors {
-    container  : string;
-    errors?    : EntityError[] | null;
+    container? : string | null;
+    errors     : { [key: string]: EntityError };
 }
 
 export type DatabaseEvent_Union =

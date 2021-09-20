@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             // test validation errors for patches
             var patchModifier = modifyDb.GetPatchModifiers(nameof(PocStore.articles));
             patchModifier.patches.Add("article-2", patch => {
-                var replace = (PatchReplace)patch.operations[0];
+                var replace = (PatchReplace)patch.patches[0];
                 replace.value.json = new JsonUtf8("123");
                 return patch;
             });
