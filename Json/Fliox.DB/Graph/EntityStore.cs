@@ -456,9 +456,9 @@ namespace Friflo.Json.Fliox.DB.Graph
                 var entities        = container.entities;
                 var notFound        = container.notFound;
                 var notFoundCount   = notFound?.Count ?? 0;
-                var errors          = container.errorMap;
+                var errors          = container.errors;
                 var errorCount      = errors?.Count ?? 0;
-                container.errorMap    = null;
+                container.errors    = null;
                 entityMap.Clear(); // Not necessary, be safe
                 entityMap.EnsureCapacity(entities.Count + notFoundCount + errorCount);
                 
@@ -484,12 +484,11 @@ namespace Friflo.Json.Fliox.DB.Graph
                 // --- errors
                 if (errors == null || errors.Count == 0)
                     continue;
-                foreach (var errorPair in errors) {
-                    var key = errorPair.Key;
-                    entityMap.Add(key, new EntityValue(errorPair.Value));
+                foreach (var error in errors) {
+                    var key = error.id;
+                    entityMap.Add(key, new EntityValue(error));
                 }
                 errors.Clear();
-                container.errorMap = null;
             }
             results.Clear();
         }

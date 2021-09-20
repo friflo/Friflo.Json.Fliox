@@ -193,16 +193,18 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 results.Add(value);
             }
             foreach (var container in results) {
-                var entityMap       = container.entityMap;
-                var entities        = container.entities;
-                List<JsonKey> notFound = null;
-                var errors          = container.errorMap;
-                container.errorMap    = null;
+                var entityMap               = container.entityMap;
+                var entities                = container.entities;
+                List<JsonKey> notFound      = null;
+                List<EntityError> errors    = null ;
                 entities.Capacity   = entityMap.Count;
                 foreach (var entityPair in entityMap) {
                     EntityValue entity = entityPair.Value;
                     if (entity.Error != null) {
-                        errors.Add(entityPair.Key, entity.Error);
+                        if (errors == null) {
+                            errors = new List<EntityError>();
+                        }
+                        errors.Add(entity.Error);
                         continue;
                     }
                     var json = entity.Json;
@@ -215,12 +217,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     }
                     entities.Add(new JsonValue(json));
                 }
+                container.errors = errors;
                 entityMap.Clear();
                 if (notFound != null) {
                     container.notFound = notFound;
-                }
-                if (errors != null && errors.Count > 0) {
-                    container.errorMap = errors;
                 }
             }
             resultMap.Clear();

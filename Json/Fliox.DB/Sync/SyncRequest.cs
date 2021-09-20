@@ -87,9 +87,9 @@ namespace Friflo.Json.Fliox.DB.Sync
         [Fri.Required]  public  string                              container;
         [Fri.Required]  public  List<JsonValue>                     entities  = new List<JsonValue>();
                         public  List<JsonKey>                       notFound;
-                        public  Dictionary<JsonKey, EntityError>    errorMap    = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
-        
-        [Fri.Ignore]    public  Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
+                        public  List<EntityError>                   errors;
+                        
+        [Fri.Ignore]    public  Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality); // todo remove instantiation
         
         internal void AddEntities(Dictionary<JsonKey, EntityValue> add) {
             entityMap.EnsureCapacity(entityMap.Count + add.Count);
