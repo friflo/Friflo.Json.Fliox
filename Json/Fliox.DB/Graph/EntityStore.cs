@@ -453,6 +453,12 @@ namespace Friflo.Json.Fliox.DB.Graph
                 }
                 var keyName         = set.GetKeyName();
                 var entityMap       = container.entityMap;
+                if (entityMap == null) {
+                    entityMap = container.entityMap = new Dictionary<JsonKey, EntityValue>(container.entities.Count, JsonKey.Equality);
+                } else {
+                    // reuse instance
+                    if (container.entityMap.Count > 0) throw new InvalidOperationException($"Expect cleared by EntityDatabase.SetContainerResults()");
+                }
                 var entities        = container.entities;
                 var notFound        = container.notFound;
                 var notFoundCount   = notFound?.Count ?? 0;
