@@ -40,6 +40,12 @@ namespace Friflo.Json.Fliox.DB.Sync
     {
                         public  JsonKey                     key;
         [Fri.Required]  public  List<JsonPatch>             patches;
+        
+        public EntityPatch() {}
+        public EntityPatch(JsonKey key, List<JsonPatch> patches) {
+            this.key        = key;
+            this.patches    = patches;
+        }
     }
 
     // ----------------------------------- task result -----------------------------------
