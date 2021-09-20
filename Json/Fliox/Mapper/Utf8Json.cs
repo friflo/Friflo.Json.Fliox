@@ -12,7 +12,7 @@ using Friflo.Json.Burst;
 namespace Friflo.Json.Fliox.Mapper
 {
     public readonly struct Utf8Json {
-        // array is internal to prevent potential side effects by application code mutating array elements
+        // array & Array are not public to prevent potential side effects by application code mutating array elements
         private  readonly   byte[]  array;                                          // can be null
         internal            byte[]  Array       => array ?? Null;                   // never null
         
