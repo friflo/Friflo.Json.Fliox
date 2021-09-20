@@ -490,14 +490,14 @@ namespace Friflo.Json.Fliox.DB.Graph
             var reader = intern.jsonMapper.reader;
                 
             foreach (var entityPair in entities) {
-                var id = entityPair.Key;
+                var key = entityPair.Key;
                 var value = entityPair.Value;
                 var error = value.Error;
-                var peer = GetPeerById(id);
+                var peer = GetPeerById(key);
                 if (error != null) {
                     // id & container are not serialized as they are redundant data.
                     // Infer their values from containing dictionary & EntitySet<>
-                    error.id        = id;
+                    error.key       = key;
                     error.container = name;
                     peer.error      = error;
                     continue;
@@ -509,15 +509,15 @@ namespace Friflo.Json.Fliox.DB.Graph
                     var entity = peer.NullableEntity;
                     if (entity == null) {
                         entity = (T)intern.typeMapper.CreateInstance();
-                        SetEntityId(entity, id);
+                        SetEntityId(entity, key);
                         peer.SetEntity(entity);
                     }
                     reader.ReadTo(json, entity);
                     if (reader.Success) {
                         peer.SetPatchSource(reader.Read<T>(json));
                     } else {
-                        var entityError = new EntityError(EntityErrorType.ParseError, name, id, reader.Error.msg.ToString());
-                        entities[id].SetError(entityError);
+                        var entityError = new EntityError(EntityErrorType.ParseError, name, key, reader.Error.msg.ToString());
+                        entities[key].SetError(entityError);
                     }
                 } else {
                     peer.SetPatchSourceNull();

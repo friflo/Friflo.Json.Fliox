@@ -688,7 +688,7 @@
         },
         "EntityError": {
             "properties": {
-                "id":      { "type": "string" },
+                "key":     { "type": "string" },
                 "type":    { "ref":  "EntityErrorType" },
                 "message": { "type": "string", "nullable": true }
             }

@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 var entityErrors = new SortedDictionary<JsonKey, EntityError>(JsonKey.Comparer);
                 TaskError = new TaskError(entityErrors);
             }
-            TaskError.entityErrors.Add(error.id, error);
+            TaskError.entityErrors.Add(error.key, error);
         }
     }
 

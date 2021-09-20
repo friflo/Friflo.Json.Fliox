@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     /// This implies that the previous read or query call was successful. 
     public class EntityError
     {
-                            public  JsonKey             id;
+                            public  JsonKey             key;
         [Fri.Required]      public  EntityErrorType     type;
         [Fri.Property]      public  string              message;
             
@@ -28,10 +28,10 @@ namespace Friflo.Json.Fliox.DB.Sync
 
         public EntityError() { } // required for TypeMapper
 
-        public EntityError(EntityErrorType type, string container, in JsonKey id, string message) {
+        public EntityError(EntityErrorType type, string container, in JsonKey key, string message) {
             this.type       = type;
             this.container  = container;
-            this.id         = id;
+            this.key        = key;
             this.message    = message;
         }
         
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.DB.Sync
             sb.Append(": ");
             sb.Append(container);
             sb.Append(" [");
-            id.AppendTo(sb);
+            key.AppendTo(sb);
             sb.Append("], ");
             if (taskErrorType != TaskErrorResultType.None) {
                 sb.Append(taskErrorType);

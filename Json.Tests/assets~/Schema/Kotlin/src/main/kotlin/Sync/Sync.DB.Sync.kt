@@ -295,7 +295,7 @@ data class ContainerEntities (
 
 @Serializable
 data class EntityError (
-              val id      : String,
+              val key     : String,
               val type    : EntityErrorType,
               val message : String? = null,
 )

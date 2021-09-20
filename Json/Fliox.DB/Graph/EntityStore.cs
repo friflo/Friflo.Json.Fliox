@@ -424,7 +424,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             foreach (var error in src) {
                 var map = error.errorMap = new Dictionary<JsonKey, EntityError>(error.errors.Count, JsonKey.Equality);
                 foreach (var entityError in error.errors) {
-                    map.Add(entityError.id, entityError);
+                    map.Add(entityError.key, entityError);
                 }
                 error.SetInferredErrorFields();
                 error.errors.Clear();
@@ -491,8 +491,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                 if (errors == null || errors.Count == 0)
                     continue;
                 foreach (var error in errors) {
-                    var key = error.id;
-                    entityMap.Add(key, new EntityValue(error));
+                    entityMap.Add(error.key, new EntityValue(error));
                 }
                 errors.Clear();
             }

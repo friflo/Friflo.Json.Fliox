@@ -316,7 +316,7 @@ export class ContainerEntities {
 }
 
 export class EntityError {
-    id       : string;
+    key      : string;
     type     : EntityErrorType;
     message? : string | null;
 }
