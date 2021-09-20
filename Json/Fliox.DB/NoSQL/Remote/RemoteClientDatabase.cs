@@ -66,27 +66,29 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                 
                 ObjectReader reader = mapper.reader;
                 if (result.statusType == ResponseStatusType.Ok) {
-                    var response = reader.Read<DatabaseResponse>(result.body);
+                    var msg = reader.Read<DatabaseMessage>(result.body);
                     if (reader.Error.ErrSet)
                         return new ErrorResponse{message = reader.Error.msg.AsString()};
                     // At this point the returned result.body is valid JSON.
-                    // => All entities of a SyncResponse.results have either a valid JSON value or an error. 
-                    return response;
+                    // => All entities of a SyncResponse.results have either a valid JSON value or an error.
+                    if (msg is DatabaseResponse req)
+                        return req;
+                    return new ErrorResponse{ message = $"Expect response. Was MessageType: {msg.MessageType}"};
                 }
-                var errorResponse = reader.Read<ErrorResponse>(result.body);
+                var errMsg = reader.Read<DatabaseMessage>(result.body);
                 if (reader.Error.ErrSet)
                     return new ErrorResponse{message = reader.Error.msg.AsString()};
-                return errorResponse;
+                if (errMsg is ErrorResponse errorResp)
+                    return errorResp;
+                return new ErrorResponse{ message = $"Expect error response. Was MessageType: {errMsg.MessageType}"};
             }
         }
         
         private JsonUtf8 CreateRequest (ObjectWriter writer, DatabaseRequest request) {
             switch (protocolType) {
                 case ProtocolType.ReqResp:
-                    return new JsonUtf8(writer.WriteAsArray(request));
                 case ProtocolType.BiDirect:
-                    var msg = new DatabaseMessage { req = request };
-                    return new JsonUtf8(writer.WriteAsArray(msg));
+                    return new JsonUtf8(writer.WriteAsArray<DatabaseMessage>(request));
             }
             throw new InvalidOperationException("cannot be reached");
         }

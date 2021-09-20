@@ -37,9 +37,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                 using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                     ObjectMapper    mapper  = pooledMapper.instance;
                     ObjectReader    reader  = mapper.reader;
-                    DatabaseRequest request = ReadRequest (reader, jsonRequest, type);
-                    if (reader.Error.ErrSet)
-                        return JsonResponse.CreateResponseError(messageContext, reader.Error.msg.AsString(), ResponseStatusType.Error);
+                    DatabaseRequest request = ReadRequest (reader, jsonRequest, type, out string error);
+                    if (request == null)
+                        return JsonResponse.CreateResponseError(messageContext, error, ResponseStatusType.Error);
                     DatabaseResponse response = await ExecuteRequest(request, messageContext).ConfigureAwait(false);
                     mapper.WriteNullMembers = false;
                     mapper.Pretty = true;
@@ -53,14 +53,20 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
         }
         
         /// Caller need to check <see cref="reader"/> error state. 
-        private static DatabaseRequest ReadRequest (ObjectReader reader, JsonUtf8 jsonRequest, ProtocolType type) {
+        private static DatabaseRequest ReadRequest (ObjectReader reader, JsonUtf8 jsonRequest, ProtocolType type, out string error) {
             switch (type) {
                 case ProtocolType.ReqResp:
-                    return reader.Read<DatabaseRequest>(jsonRequest);
                 case ProtocolType.BiDirect:
                     var msg = reader.Read<DatabaseMessage>(jsonRequest);
-                    if (reader.Success)
-                        return msg.req;
+                    if (reader.Error.ErrSet) {
+                        error = reader.Error.msg.AsString();
+                        return null;
+                    }
+                    if (msg is DatabaseRequest req) {
+                        error = null;
+                        return req;
+                    }
+                    error = $"Expected database request. Was: MessageType: {msg.MessageType}";
                     return null;
             }
             throw new InvalidOperationException("can't be reached");
@@ -69,17 +75,15 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
         private static JsonUtf8 CreateResponse (ObjectWriter writer, DatabaseResponse response, ProtocolType type) {
             switch (type) {
                 case ProtocolType.ReqResp:
-                    return new JsonUtf8(writer.WriteAsArray(response));
                 case ProtocolType.BiDirect:
-                    var message = new DatabaseMessage { resp = response };
-                    return new JsonUtf8(writer.WriteAsArray(message));
+                    return new JsonUtf8(writer.WriteAsArray<DatabaseMessage>(response));
             }
             throw new InvalidOperationException("can't be reached");
         }
         
         private async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, MessageContext messageContext) {
-            switch (request.RequestType) {
-                case RequestType.sync:
+            switch (request.MessageType) {
+                case MessageType.sync:
                     return await ExecuteSync((SyncRequest)request, messageContext).ConfigureAwait(false);
                 default:
                     throw new NotImplementedException();
@@ -110,7 +114,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             var errorResponse = new ErrorResponse {message = message};
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
-                var bodyArray = mapper.WriteAsArray(errorResponse);
+                var bodyArray = mapper.WriteAsArray<DatabaseMessage>(errorResponse);
                 var body = new JsonUtf8(bodyArray);
                 return new JsonResponse(body, type);
             }

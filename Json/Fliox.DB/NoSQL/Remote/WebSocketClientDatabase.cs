@@ -95,34 +95,34 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
         private void OnReceive(JsonUtf8 messageJson) {
             try {
                 var contextPools    = new Pools(Pools.SharedPools);
+                DatabaseMessage message;
                 using (var pooledMapper = contextPools.ObjectMapper.Get()) {
                     var reader = pooledMapper.instance.reader;
-                    var message = reader.Read<DatabaseMessage>(messageJson);
-                    var resp = message.resp; 
-                    if (resp != null) {
-                        var requestId = resp.reqId;
-                        if (!requestId.HasValue)
-                            throw new InvalidOperationException("WebSocketClientDatabase requires reqId in response");
-                        var id = requestId.Value;
-                        if (!requests.TryRemove(id, out WebsocketRequest request)) {
-                            throw new InvalidOperationException($"Expect corresponding request to response. id: {id}");
-                        }
-                        if (websocket.State != WebSocketState.Open) {
-                            var error = JsonResponse.CreateResponseError(request.messageContext, $"WebSocket not Open. {endpoint}", ResponseStatusType.Error);
-                            request.response.SetResult(error);
-                            return;
-                        }
-                        var writer          = pooledMapper.instance.writer;
-                        var responseJson    = new JsonUtf8(writer.WriteAsArray(resp));
-                        var response        = new JsonResponse(responseJson, ResponseStatusType.Ok);
-                        request.response.SetResult(response);
+                    message = reader.Read<DatabaseMessage>(messageJson);
+                }
+                if (message is SyncResponse resp) {
+                    var requestId = resp.reqId;
+                    if (!requestId.HasValue)
+                        throw new InvalidOperationException("WebSocketClientDatabase requires reqId in response");
+                    var id = requestId.Value;
+                    if (!requests.TryRemove(id, out WebsocketRequest request)) {
+                        throw new InvalidOperationException($"Expect corresponding request to response. id: {id}");
+                    }
+                    if (websocket.State != WebSocketState.Open) {
+                        var error = JsonResponse.CreateResponseError(request.messageContext, $"WebSocket not Open. {endpoint}", ResponseStatusType.Error);
+                        request.response.SetResult(error);
                         return;
                     }
-                    var ev = message.ev;
-                    if (ev != null) {
-                        ProcessEvent(ev);
-                    }
+                    // var writer          = pooledMapper.instance.writer;
+                    // var responseJson    = new JsonUtf8(writer.WriteAsArray<DatabaseMessage>(resp));
+                    var response        = new JsonResponse(messageJson, ResponseStatusType.Ok);
+                    request.response.SetResult(response);
+                    return;
                 }
+                if (message is SubscriptionEvent ev) {
+                    ProcessEvent(ev);
+                }
+                
             } catch (Exception e) {
                 var error = $"OnReceive failed processing WebSocket message. Exception: {e}";
                 Console.WriteLine(error);

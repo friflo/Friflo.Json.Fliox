@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         /// </summary>
         public              List<DatabaseTask>  tasks;
         
-        internal override   DatabaseEventType   EventType   => DatabaseEventType.subscription;
+        internal override   MessageType         MessageType => MessageType.subscription;
         public   override   string              ToString()  => GetEventInfo().ToString();
         
         public EventInfo    GetEventInfo() {

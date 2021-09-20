@@ -8,27 +8,25 @@ import kotlinx.serialization.json.*
 import Sync.Transform.*
 
 @Serializable
-data class DatabaseMessage (
-              val req  : DatabaseRequest? = null,
-              val resp : DatabaseResponse? = null,
-              val ev   : DatabaseEvent? = null,
-)
-
-@Serializable
 // @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
-abstract class DatabaseRequest  {
-    abstract  val reqId : Int?
+abstract class DatabaseMessage  {
 }
 
 @Serializable
-@SerialName("sync")
-data class SyncRequest (
-    override  val reqId  : Int? = null,
-              val client : String? = null,
-              val ack    : Int? = null,
-              val token  : String? = null,
-              val tasks  : List<DatabaseTask>,
-) : DatabaseRequest()
+@SerialName("sub")
+data class SubscriptionEvent (
+    override  val seq    : Int,
+    override  val target : String? = null,
+    override  val client : String? = null,
+              val tasks  : List<DatabaseTask>? = null,
+) : DatabaseEvent()
+
+@Serializable
+abstract class DatabaseEvent {
+    abstract  val seq    : Int
+    abstract  val target : String?
+    abstract  val client : String?
+}
 
 @Serializable
 // @JsonClassDiscriminator("task") https://github.com/Kotlin/kotlinx.serialization/issues/546
@@ -146,13 +144,22 @@ data class ReserveKeys (
 ) : DatabaseTask()
 
 @Serializable
-// @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
-abstract class DatabaseResponse  {
+@SerialName("sync")
+data class SyncRequest (
+    override  val reqId  : Int? = null,
+              val client : String? = null,
+              val ack    : Int? = null,
+              val token  : String? = null,
+              val tasks  : List<DatabaseTask>,
+) : DatabaseRequest()
+
+@Serializable
+abstract class DatabaseRequest {
     abstract  val reqId : Int?
 }
 
 @Serializable
-@SerialName("sync")
+@SerialName("resp")
 data class SyncResponse (
     override  val reqId        : Int? = null,
               val error        : ErrorResponse? = null,
@@ -163,6 +170,11 @@ data class SyncResponse (
               val patchErrors  : HashMap<String, EntityErrors>? = null,
               val deleteErrors : HashMap<String, EntityErrors>? = null,
 ) : DatabaseResponse()
+
+@Serializable
+abstract class DatabaseResponse {
+    abstract  val reqId : Int?
+}
 
 @Serializable
 @SerialName("error")
@@ -312,21 +324,4 @@ data class EntityErrors (
               val container : String? = null,
               val errors    : HashMap<String, EntityError>,
 )
-
-@Serializable
-// @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
-abstract class DatabaseEvent  {
-    abstract  val seq    : Int
-    abstract  val target : String?
-    abstract  val client : String?
-}
-
-@Serializable
-@SerialName("subscription")
-data class SubscriptionEvent (
-    override  val seq    : Int,
-    override  val target : String? = null,
-    override  val client : String? = null,
-              val tasks  : List<DatabaseTask>? = null,
-) : DatabaseEvent()
 

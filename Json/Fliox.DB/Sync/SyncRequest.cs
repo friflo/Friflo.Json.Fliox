@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                                         public  string              token;
         [Fri.Required]                  public  List<DatabaseTask>  tasks;
         
-        internal override                       RequestType         RequestType => RequestType.sync;
+        internal override                       MessageType         MessageType => MessageType.sync;
     }
     
     // ----------------------------------- response -----------------------------------
@@ -41,8 +41,8 @@ namespace Friflo.Json.Fliox.DB.Sync
                         public  Dictionary<string, EntityErrors>        upsertErrors; // lazy instantiation
                         public  Dictionary<string, EntityErrors>        patchErrors;  // lazy instantiation
                         public  Dictionary<string, EntityErrors>        deleteErrors; // lazy instantiation
-        
-        internal override   RequestType                 RequestType => RequestType.sync;
+                        
+        internal override        MessageType                            MessageType => MessageType.resp;
         
         internal ContainerEntities GetContainerResult(string container) {
             if (resultMap.TryGetValue(container, out ContainerEntities result))

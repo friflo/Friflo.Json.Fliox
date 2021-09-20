@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     {
         public              string      message;
         
-        internal override   RequestType RequestType => RequestType.error;
+        internal override   MessageType         MessageType => MessageType.error;
 
         public override     string      ToString() => message;
 

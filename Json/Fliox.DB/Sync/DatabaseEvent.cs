@@ -7,9 +7,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- event -----------------------------------
-    [Fri.Discriminator("type")]
-    [Fri.Polymorph(typeof(SubscriptionEvent), Discriminant = "subscription")]
-    public abstract class DatabaseEvent {
+    public abstract class DatabaseEvent : DatabaseMessage {
         // note for all fields
         // used { get; set; } to force properties on the top of JSON
         
@@ -20,12 +18,6 @@ namespace Friflo.Json.Fliox.DB.Sync
         [Fri.Property(Name = "target")] public  string              targetId { get; set; }
         /// The client which caused the event. Specifically the client which made a database change.
         [Fri.Property(Name = "client")] public  string              clientId { get; set; }
-
-        internal abstract                       DatabaseEventType   EventType { get; }
     }
-    
-    // ReSharper disable InconsistentNaming
-    public enum DatabaseEventType {
-        subscription
-    }
+   
 }

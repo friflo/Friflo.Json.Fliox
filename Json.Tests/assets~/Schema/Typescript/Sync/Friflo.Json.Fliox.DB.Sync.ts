@@ -7,29 +7,31 @@ import { JsonPatch }             from "./Friflo.Json.Fliox.Transform"
 import { JsonPatch_Union }       from "./Friflo.Json.Fliox.Transform"
 import { int64 }                 from "./Standard"
 
-export class DatabaseMessage {
-    req?  : DatabaseRequest_Union | null;
-    resp? : DatabaseResponse_Union | null;
-    ev?   : DatabaseEvent_Union | null;
-}
-
-export type DatabaseRequest_Union =
+export type DatabaseMessage_Union =
+    | SubscriptionEvent
     | SyncRequest
+    | SyncResponse
+    | ErrorResponse
 ;
 
-export abstract class DatabaseRequest {
+export abstract class DatabaseMessage {
     abstract type:
+        | "sub"
         | "sync"
+        | "resp"
+        | "error"
     ;
-    reqId? : int32 | null;
 }
 
-export class SyncRequest extends DatabaseRequest {
-    type    : "sync";
+export abstract class DatabaseEvent extends DatabaseMessage {
+    seq     : int32;
+    target? : string | null;
     client? : string | null;
-    ack?    : int32 | null;
-    token?  : string | null;
-    tasks   : DatabaseTask_Union[];
+}
+
+export class SubscriptionEvent extends DatabaseEvent {
+    type    : "sub";
+    tasks?  : DatabaseTask_Union[] | null;
 }
 
 export type DatabaseTask_Union =
@@ -156,21 +158,24 @@ export class ReserveKeys extends DatabaseTask {
     count      : int32;
 }
 
-export type DatabaseResponse_Union =
-    | SyncResponse
-    | ErrorResponse
-;
+export abstract class DatabaseRequest extends DatabaseMessage {
+    reqId? : int32 | null;
+}
 
-export abstract class DatabaseResponse {
-    abstract type:
-        | "sync"
-        | "error"
-    ;
+export class SyncRequest extends DatabaseRequest {
+    type    : "sync";
+    client? : string | null;
+    ack?    : int32 | null;
+    token?  : string | null;
+    tasks   : DatabaseTask_Union[];
+}
+
+export abstract class DatabaseResponse extends DatabaseMessage {
     reqId? : int32 | null;
 }
 
 export class SyncResponse extends DatabaseResponse {
-    type          : "sync";
+    type          : "resp";
     error?        : ErrorResponse | null;
     tasks?        : TaskResult_Union[] | null;
     results?      : ContainerEntities[] | null;
@@ -331,23 +336,5 @@ export type EntityErrorType =
 export class EntityErrors {
     container? : string | null;
     errors     : { [key: string]: EntityError };
-}
-
-export type DatabaseEvent_Union =
-    | SubscriptionEvent
-;
-
-export abstract class DatabaseEvent {
-    abstract type:
-        | "subscription"
-    ;
-    seq     : int32;
-    target? : string | null;
-    client? : string | null;
-}
-
-export class SubscriptionEvent extends DatabaseEvent {
-    type    : "subscription";
-    tasks?  : DatabaseTask_Union[] | null;
 }
 

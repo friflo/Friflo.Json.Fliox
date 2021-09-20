@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Fliox.Mapper;
+
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- message -----------------------------------
@@ -32,13 +34,21 @@ namespace Friflo.Json.Fliox.DB.Sync
     ///     <see cref="Graph.EntityStore"/> even for remote clients like <see cref="NoSQL.Remote.RemoteClientDatabase"/>.
     /// </para>
     /// </summary>
-    public class DatabaseMessage
+    [Fri.Discriminator("type")] 
+    [Fri.Polymorph(typeof(SubscriptionEvent),   Discriminant = "sub")]
+    [Fri.Polymorph(typeof(SyncRequest),         Discriminant = "sync")]
+    [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "resp")]
+    [Fri.Polymorph(typeof(ErrorResponse),       Discriminant = "error")]
+    public abstract class DatabaseMessage
     {
-        /// <summary>A request message</summary>
-        public DatabaseRequest  req;
-        /// <summary>A response message</summary>
-        public DatabaseResponse resp;
-        /// <summary>An event message</summary>
-        public DatabaseEvent    ev;
+        internal abstract   MessageType     MessageType { get; }
+    }
+    
+    public enum MessageType
+    {
+        subscription,
+        sync,
+        resp,
+        error
     }
 }

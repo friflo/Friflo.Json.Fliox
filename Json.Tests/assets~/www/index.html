@@ -37,14 +37,12 @@
 
         function sendMessage() {
             var request = {type:"sync", tasks: [{ task: "message", name: "test"}]};
-            var msg = {req: request};
-            var json = JSON.stringify(msg);
+            var json = JSON.stringify(request);
             connection.send(json);
         }
         function sendSyncRequest() {
             var jsonRequest = document.getElementById("jsonRequest").value;
-            var msg = `{"req": ${jsonRequest}}`;
-            connection.send(msg);
+            connection.send(jsonRequest);
         }
     </script>
     <style>
@@ -64,14 +62,18 @@
     <button type="button" onclick="sendMessage()">Send message</button>
     <button type="button" onclick="closeWebsocket()">Close</button> <br><br>
 
-    <textarea id="jsonRequest" title="request" cols="100" rows="15">{ "type": "sync", "tasks": [
+    <textarea id="jsonRequest" title="request" cols="100" rows="15">{
+  "type": "sync",
+  "tasks": [
     {
-        "task": "read",	"container": "Article",
-        "reads": [
-            { "ids": ["article-galaxy", "article-ipad"] }
-        ]
+      "task":         "read",
+      "container":    "articles",
+      "reads": [
+        { "ids": ["article-galaxy", "article-ipad"] }
+      ]
     }
-] }</textarea> <br>
-    <button type="button" onclick="sendSyncRequest()">Send sync</button>
+  ]
+}</textarea> <br>
+<button type="button" onclick="sendSyncRequest()">Send sync</button>
 </body>
 </html>

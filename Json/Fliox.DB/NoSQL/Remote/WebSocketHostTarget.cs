@@ -48,8 +48,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                 var writer = pooledMapper.instance.writer;
                 writer.WriteNullMembers = false;
                 writer.Pretty           = true;
-                var message             = new DatabaseMessage { ev = ev };
-                var jsonMessage         = new JsonUtf8(writer.WriteAsArray(message));
+                var jsonMessage         = new JsonUtf8(writer.WriteAsArray<DatabaseMessage>(ev));
                 try {
                     var arraySegment    = jsonMessage.AsArraySegment();
                     sendWriter.TryWrite(arraySegment);

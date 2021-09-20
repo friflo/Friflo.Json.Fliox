@@ -5,9 +5,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- request -----------------------------------
-    [Fri.Discriminator("type")]
-    [Fri.Polymorph(typeof(SyncRequest),         Discriminant = "sync")]
-    public abstract class DatabaseRequest {
+    public abstract class DatabaseRequest : DatabaseMessage {
         // ReSharper disable once InconsistentNaming
         /// <summary>Used only for <see cref="NoSQL.Remote.RemoteClientDatabase"/> to enable:
         /// <para>
@@ -21,23 +19,12 @@ namespace Friflo.Json.Fliox.DB.Sync
         /// </para>
         /// </summary>
         public              int?            reqId       { get; set; }
-        internal abstract   RequestType     RequestType { get; }
     }
     
     // ----------------------------------- response -----------------------------------
-    [Fri.Discriminator("type")]
-    [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "sync")]
-    [Fri.Polymorph(typeof(ErrorResponse),       Discriminant = "error")]
-    public abstract class DatabaseResponse {
+    public abstract class DatabaseResponse : DatabaseMessage {
         // ReSharper disable once InconsistentNaming
         /// <summary>Set to the value of the corresponding <see cref="DatabaseRequest.reqId"/></summary>
         public              int?            reqId       { get; set; }
-        internal abstract   RequestType     RequestType { get; }
-    }
-    
-    // ReSharper disable InconsistentNaming
-    public enum RequestType {
-        sync,
-        error
     }
 }
