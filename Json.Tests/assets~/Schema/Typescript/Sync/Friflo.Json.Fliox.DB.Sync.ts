@@ -110,7 +110,7 @@ export class PatchEntities extends DatabaseTask {
     task       : "patch";
     container  : string;
     keyName?   : string | null;
-    patches    : EntityPatch[];
+    entities   : EntityPatch[];
 }
 
 export class EntityPatch {

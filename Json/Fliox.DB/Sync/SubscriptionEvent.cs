@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.DB.Sync
                         break;
                     case TaskType.patch:
                         var patch = (PatchEntities)task;
-                        info.changes.patches += patch.patches.Count;
+                        info.changes.patches += patch.entities.Count;
                         break;
                     case TaskType.message:
                         info.messages++;

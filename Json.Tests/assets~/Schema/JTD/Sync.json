@@ -434,7 +434,7 @@
             "properties": {
                 "container": { "type": "string" },
                 "keyName":   { "type": "string", "nullable": true },
-                "patches":   { "elements": { "ref":  "EntityPatch" } }
+                "entities":  { "elements": { "ref":  "EntityPatch" } }
             }
         },
         "EntityPatch": {

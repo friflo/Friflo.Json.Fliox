@@ -445,10 +445,10 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 var req = new PatchEntities {
                     container   = set.name,
                     keyName     = SyncKeyName(set.GetKeyName()),
-                    patches     = new List<EntityPatch>(patches.Count)
+                    entities    = new List<EntityPatch>(patches.Count)
                 };
                 foreach (var patch in patches) {
-                    req.patches.Add(patch.Value);
+                    req.entities.Add(patch.Value);
                 }
                 tasks.Add(req);
             }
