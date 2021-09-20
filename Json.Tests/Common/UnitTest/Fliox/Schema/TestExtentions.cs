@@ -9,7 +9,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
     public static class SchemaExtensions
     {
         public static bool ValidateObject (this TypeValidator validator, string json, ValidationType type, out string error) {
-            return validator.ValidateObject(new Utf8Array(json), type, out error);
+            return validator.ValidateObject(new Utf8Json(json), type, out error);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         internal readonly   JsonValue       value;
         private  readonly   ObjectReader    reader;
         
-        internal            Utf8Array       result;
+        internal            Utf8Json        result;
         
         internal            TaskState       state;
         internal override   TaskState       State       => state;
@@ -22,9 +22,9 @@ namespace Friflo.Json.Fliox.DB.Graph
         /// <summary>Return the result of a message used as a command as JSON.
         /// JSON is "null" if the message doesnt return a result.
         /// For type safe access of the result use <see cref="ReadResult{T}"/></summary>
-        public              Utf8Array       ResultJson  => IsOk("SendMessageTask.Result", out Exception e) ? result : throw e;
+        public              Utf8Json        ResultJson  => IsOk("SendMessageTask.Result", out Exception e) ? result : throw e;
         
-        internal SendMessageTask(string name, Utf8Array value, ObjectReader reader) {
+        internal SendMessageTask(string name, Utf8Json value, ObjectReader reader) {
             this.name   = name;
             this.value  = new JsonValue { json = value };
             this.reader = reader;
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.DB.Graph
     {
         public              TResult          Result => ReadResult<TResult>();
         
-        internal SendMessageTask(string name, Utf8Array value, ObjectReader reader) : base (name, value, reader) {
+        internal SendMessageTask(string name, Utf8Json value, ObjectReader reader) : base (name, value, reader) {
         }
     }
 }

@@ -150,20 +150,20 @@ namespace Friflo.Json.Fliox.Mapper
         
         // --------------- Utf8Array ---------------
         // --- Read()
-        public T Read<T>(Utf8Array utf8Array) {
+        public T Read<T>(Utf8Json utf8Array) {
             return reader.Read<T>(utf8Array);
         }
         
-        public object ReadObject(Utf8Array utf8Array, Type type) {
+        public object ReadObject(Utf8Json utf8Array, Type type) {
             return reader.ReadObject(utf8Array, type);
         }
 
         // --- ReadTo()
-        public T ReadTo<T>(Utf8Array utf8Array, T obj)  {
+        public T ReadTo<T>(Utf8Json utf8Array, T obj)  {
             return reader.ReadTo(utf8Array, obj);
         }
 
-        public object ReadToObject(Utf8Array utf8Array, object obj)  {
+        public object ReadToObject(Utf8Json utf8Array, object obj)  {
             return reader.ReadToObject(utf8Array, obj);
         }
         

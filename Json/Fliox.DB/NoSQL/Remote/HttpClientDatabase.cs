@@ -26,15 +26,15 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             httpClient.Dispose();
         }
 
-        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, Utf8Array jsonSyncRequest, MessageContext messageContext) {
+        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, Utf8Json jsonSyncRequest, MessageContext messageContext) {
             var content = jsonSyncRequest.AsByteArrayContent();
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             // body.Headers.ContentEncoding = new string[]{"charset=utf-8"};
 
             try {
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(endpoint, content).ConfigureAwait(false);
-                var bodyArray = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                var body = new Utf8Array(bodyArray);
+                var bodyArray   = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                var body        = new Utf8Json(bodyArray);
                 ResponseStatusType statusType;
                 switch (httpResponse.StatusCode) {
                     case HttpStatusCode.OK:                     statusType = ResponseStatusType.Ok;         break; 

@@ -22,8 +22,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var jsonSelector     = new JsonSelector())
             using (var objectSelector   = new MemberAccessor(typeStore))
             {
-                var sample = new SampleIL();
-                var json = new Utf8Array(jsonWriter.WriteAsArray(sample));
+                var sample  = new SampleIL();
+                var json    = new Utf8Json(jsonWriter.WriteAsArray(sample));
                 var selectors = new[] {
                     ".childStructNull1",
                     ".childStructNull2.val2",
@@ -116,8 +116,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             {
                 var store = new Store();
                 store.InitSample();
-                var json = new Utf8Array(jsonWriter.WriteAsArray(store));
-                var selectors = new[] {
+                var json        = new Utf8Json(jsonWriter.WriteAsArray(store));
+                var selectors   = new[] {
                     ".books[*].title",
                     ".books[*].author",
                     ".books[*].chapters[*].name",
@@ -208,7 +208,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var jsonSelector = new ScalarSelector())
             {
                 jsonMapper.Pretty = true;
-                var peter  = new Utf8Array(jsonMapper.WriteAsArray(TestQuery.Peter));
+                var peter  = new Utf8Json(jsonMapper.WriteAsArray(TestQuery.Peter));
 
                 IReadOnlyList<ScalarSelectResult> result = new List<ScalarSelectResult>();
                 for (int n = 0; n < 100; n++) {

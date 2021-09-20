@@ -127,7 +127,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             bool    required        = typeDef.type.required?.Contains(fieldName) ?? false;
 
             FieldType   items       = GetItemsFieldType(field.items, out bool isNullableElement);
-            Utf8Array   jsonType    = field.type.json;
+            Utf8Json    jsonType    = field.type.json;
             FieldType   addProps    = field.additionalProperties;
 
             if (field.reference != null) {
@@ -174,7 +174,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             typeDef.fields.Add(fieldDef);
         }
         
-        private static TypeDef FindTypeFromJson (Utf8Array jsonArray, FieldType items, in JsonTypeContext context, ref bool isArray) {
+        private static TypeDef FindTypeFromJson (Utf8Json jsonArray, FieldType items, in JsonTypeContext context, ref bool isArray) {
             var json = jsonArray.AsString();
             if     (json.StartsWith("\"")) {
                 var jsonValue = json.Substring(1, json.Length - 2);
@@ -245,7 +245,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             throw new InvalidOperationException($"no type given for field: {itemType.name}");
         }
         
-        private static readonly Utf8Array Null = new Utf8Array("\"null\"");
+        private static readonly Utf8Json Null = new Utf8Json("\"null\"");
         
         /// Supporting nullable (value type) array elements seems uh - however it is supported. Reasons against:
         /// <list type="bullet">

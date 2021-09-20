@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                             Console.WriteLine($"Expect WebSocket message type text. type: {messageType} {endpoint}");
                             continue;
                         }
-                        var requestContent  = new Utf8Array(memoryStream.ToArray());
+                        var requestContent  = new Utf8Json(memoryStream.ToArray());
                         OnReceive (requestContent);
                     } catch (Exception) {
                         foreach (var pair in requests) {
@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             }
         }
         
-        private void OnReceive(Utf8Array messageJson) {
+        private void OnReceive(Utf8Json messageJson) {
             try {
                 var contextPools    = new Pools(Pools.SharedPools);
                 using (var pooledMapper = contextPools.ObjectMapper.Get()) {
@@ -112,9 +112,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                             request.response.SetResult(error);
                             return;
                         }
-                        var writer = pooledMapper.instance.writer;
-                        var responseJson = new Utf8Array(writer.WriteAsArray(resp));
-                        var response = new JsonResponse(responseJson, ResponseStatusType.Ok);
+                        var writer          = pooledMapper.instance.writer;
+                        var responseJson    = new Utf8Json(writer.WriteAsArray(resp));
+                        var response        = new JsonResponse(responseJson, ResponseStatusType.Ok);
                         request.response.SetResult(response);
                         return;
                     }
@@ -130,7 +130,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             }
         }
 
-        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, Utf8Array jsonSyncRequest, MessageContext messageContext) {
+        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, Utf8Json jsonSyncRequest, MessageContext messageContext) {
             if (requestId < 1)
                 throw new InvalidOperationException("Expect requestId > 0");
             try {

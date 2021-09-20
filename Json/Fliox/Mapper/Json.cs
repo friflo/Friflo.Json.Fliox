@@ -138,26 +138,26 @@ namespace Friflo.Json.Fliox.Mapper
         
         // --------------- Utf8Array ---------------
         // --- Read()
-        public T Read<T>(Utf8Array json) {
+        public T Read<T>(Utf8Json json) {
             using (var reader = new ObjectReader(typeStore)) {
                 return reader.Read<T>(json);
             }
         }
         
-        public object ReadObject(Utf8Array json, Type type) {
+        public object ReadObject(Utf8Json json, Type type) {
             using (var reader = new ObjectReader(typeStore)) {
                 return reader.ReadObject(json, type);
             }
         }
 
         // --- ReadTo()
-        public T ReadTo<T>(Utf8Array json, T obj)  {
+        public T ReadTo<T>(Utf8Json json, T obj)  {
             using (var reader = new ObjectReader(typeStore)) {
                 return reader.ReadTo(json, obj);
             }
         }
 
-        public object ReadToObject(Utf8Array json, object obj)  {
+        public object ReadToObject(Utf8Json json, object obj)  {
             using (var reader = new ObjectReader(typeStore)) {
                 return reader.ReadToObject(json, obj);
             }

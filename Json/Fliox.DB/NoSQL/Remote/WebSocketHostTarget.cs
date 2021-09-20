@@ -48,8 +48,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                 var writer = pooledMapper.instance.writer;
                 writer.WriteNullMembers = false;
                 writer.Pretty           = true;
-                var message         = new DatabaseMessage { ev = ev };
-                var jsonMessage     = new Utf8Array(writer.WriteAsArray(message));
+                var message             = new DatabaseMessage { ev = ev };
+                var jsonMessage         = new Utf8Json(writer.WriteAsArray(message));
                 try {
                     var arraySegment    = jsonMessage.AsArraySegment();
                     sendWriter.TryWrite(arraySegment);
@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                     while(!wsResult.EndOfMessage);
                     
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
-                        var requestContent  = new Utf8Array(memoryStream.ToArray());
+                        var requestContent  = new Utf8Json(memoryStream.ToArray());
                         var messageContext  = new MessageContext(pools, this);
                         var result          = await remoteHost.ExecuteRequestJson(requestContent, messageContext, ProtocolType.BiDirect).ConfigureAwait(false);
                         messageContext.Release();

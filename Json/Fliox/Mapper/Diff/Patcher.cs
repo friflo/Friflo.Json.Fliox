@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         public  readonly    TypeCache       typeCache;
         private readonly    ObjectReader    jsonReader;
         private             PatchType       patchType;
-        private             Utf8Array       json;
+        private             Utf8Json        json;
         private             int             pathPos;
         private readonly    List<JsonKey>   pathNodes = new List<JsonKey>();
         private             string          path;

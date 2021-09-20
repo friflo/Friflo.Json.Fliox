@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Transform
         private             Bytes           jsonBytes = new Bytes(128);
         private             JsonParser      parser;
         
-        public bool IsValidJson(Utf8Array json, out string error) {
+        public bool IsValidJson(Utf8Json json, out string error) {
             jsonBytes.Clear();
             jsonBytes.AppendArray(json);
             parser.InitParser(jsonBytes);

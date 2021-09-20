@@ -197,8 +197,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var memLog = new MemoryLogger(10, 10, MemoryLog.Enabled);
             using (var eval = new JsonEvaluator())
             using (var jsonMapper = new ObjectMapper()) {
-                jsonMapper.Pretty = true;
-                var peter = new Utf8Array(jsonMapper.WriteAsArray(Peter));
+                jsonMapper.Pretty   = true;
+                var peter           = new Utf8Json(jsonMapper.WriteAsArray(Peter));
                 
                 var anyChildAgeWithin10And20 = JsonFilter.Create<Person>(p => p.children.All(child => child.age >= 20 && child.age <= 20));
                 bool result = false;

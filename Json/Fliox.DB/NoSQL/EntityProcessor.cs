@@ -34,22 +34,22 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         private             bool                asIntKey;
         private             Bytes               sb          = new Bytes(0);
         
-        public bool GetEntityKey(Utf8Array json, string keyName, out JsonKey keyValue, out string error) {
+        public bool GetEntityKey(Utf8Json json, string keyName, out JsonKey keyValue, out string error) {
             keyName  = keyName ?? "id";
             return Traverse(json, keyName, out keyValue, ProcessingType.GetKey,   out error);
         }
         
-        public bool Validate(Utf8Array json, string keyName, out JsonKey keyValue, out string error) {
+        public bool Validate(Utf8Json json, string keyName, out JsonKey keyValue, out string error) {
             return Traverse(json, keyName, out keyValue, ProcessingType.Validate, out error);
         }
         
-        public Utf8Array ReplaceKey(Utf8Array json, string keyName, bool asIntKey, string newKeyName, out JsonKey keyValue, out string error) {
+        public Utf8Json ReplaceKey(Utf8Json json, string keyName, bool asIntKey, string newKeyName, out JsonKey keyValue, out string error) {
             this.asIntKey   = asIntKey;
             keyName         = keyName       ?? "id";
             newKeyName      = newKeyName    ?? "id";
             bool equalKeys  = keyName == newKeyName;
             if (!Traverse  (json, keyName, out keyValue, ProcessingType.SetKey,   out error))
-                return new Utf8Array();
+                return new Utf8Json();
             if (equalKeys && foundIntKey == asIntKey)
                 return json;
             sb.Clear();
@@ -73,10 +73,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             sb.AppendArray(json, keyEnd, remaining);
             var result = sb.AsArray();
             sb.Clear();
-            return new Utf8Array(result);
+            return new Utf8Json(result);
         }
 
-        private bool Traverse (Utf8Array json, string keyName, out JsonKey keyValue, ProcessingType processingType, out string error) {
+        private bool Traverse (Utf8Json json, string keyName, out JsonKey keyValue, ProcessingType processingType, out string error) {
             foundKey = false;
             idKey.Clear();
             idKey.FromString(keyName);

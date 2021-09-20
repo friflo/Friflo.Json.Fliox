@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             }
         }
         
-        public static Task<Utf8Array> ReadToEnd(Stream input) {
+        public static Task<Utf8Json> ReadToEnd(Stream input) {
             byte[] buffer = new byte[16 * 1024];                // todo performance -> cache
             using (MemoryStream ms = new MemoryStream()) {      // todo performance -> cache
                 int read;
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     ms.Write(buffer, 0, read);
                 }
                 var array = ms.ToArray(); 
-                return Task.FromResult(new Utf8Array(array));
+                return Task.FromResult(new Utf8Json(array));
             }
         }
         
