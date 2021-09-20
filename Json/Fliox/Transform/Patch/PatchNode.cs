@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.Transform.Patch
 {
     internal class PatchNode {
         internal            PatchType?                      patchType;
-        internal            Utf8Json                        json;
+        internal            JsonUtf8                        json;
         internal readonly   Dictionary<JsonKey, PatchNode>  children = new Dictionary<JsonKey, PatchNode>(JsonKey.Equality);
 
         public override     string                          ToString() => patchType != null ? patchType.ToString() : "---";

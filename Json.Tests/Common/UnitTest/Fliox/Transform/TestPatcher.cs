@@ -361,7 +361,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             var destPatches = objectPatcher.mapper.Read<List<JsonPatch>>(jsonPatches);
             AssertUtils.Equivalent(patches, destPatches);
             
-            var leftPatched = jsonPatcher.ApplyPatches(new Utf8Json(leftJson), patches, true);
+            var leftPatched = jsonPatcher.ApplyPatches(new JsonUtf8(leftJson), patches, true);
             return leftPatched.AsString();
         }
     }

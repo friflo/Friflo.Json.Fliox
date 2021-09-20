@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Transform
         /// 
         /// </summary>
         /// <returns>null in case of an error - error message is available via <see cref="ErrorMessage"/>.</returns>
-        public IReadOnlyList<ScalarSelectResult> Select(Utf8Json json, ScalarSelect scalarSelect) {
+        public IReadOnlyList<ScalarSelectResult> Select(JsonUtf8 json, ScalarSelect scalarSelect) {
             scalarSelect.InitSelectorResults();
             nodeStack.Clear();
             nodeStack.Add(scalarSelect.nodeTree.rootNode);

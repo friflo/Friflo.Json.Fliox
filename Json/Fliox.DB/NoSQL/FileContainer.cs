@@ -186,13 +186,13 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         /// may access the file concurrently resulting in:
         /// IOException: The process cannot access the file 'path' because it is being used by another process
         /// </summary>
-        private static async Task WriteText(string filePath, Utf8Json json, FileMode fileMode) {
+        private static async Task WriteText(string filePath, JsonUtf8 json, FileMode fileMode) {
             using (var destStream = new FileStream(filePath, fileMode, FileAccess.Write, FileShare.Read, bufferSize: 4096, useAsync: false)) {
                 await destStream.WriteAsync(json, 0, json.Length).ConfigureAwait(false);
             }
         }
         
-        private static async Task<Utf8Json> ReadText(string filePath) {
+        private static async Task<JsonUtf8> ReadText(string filePath) {
             using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: false)) {
                 return await EntityUtils.ReadToEnd(sourceStream).ConfigureAwait(false);
             }

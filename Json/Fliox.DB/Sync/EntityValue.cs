@@ -10,36 +10,36 @@ namespace Friflo.Json.Fliox.DB.Sync
         [Fri.Property]  private     JsonValue   value;
         [Fri.Property]  private     EntityError error;
         
-        [Fri.Ignore]    public      Utf8Json    Json    => error == null ? value.json : throw new EntityException(error);
+        [Fri.Ignore]    public      JsonUtf8    Json    => error == null ? value.json : throw new EntityException(error);
         [Fri.Ignore]    public      EntityError Error   => error;
 
         public override             string      ToString() => error == null ? value.json.AsString() : error.type + ": " + error.message;
 
-        public void SetJson(Utf8Json json) {
+        public void SetJson(JsonUtf8 json) {
             value.json = json;
         }
         
-        /// <summary> Prefer using <see cref="SetJson(Utf8Json)"/></summary>
+        /// <summary> Prefer using <see cref="SetJson(JsonUtf8)"/></summary>
         public void SetJson(string json) {
-            value.json = new Utf8Json(json);
+            value.json = new JsonUtf8(json);
         }
         
         public void SetError(EntityError error) {
             this.error = error;
             // assign "null". Invalid JSON cannot be serialized. As it is invalid, it cant be processed further anyway.
-            value.json = new Utf8Json();
+            value.json = new JsonUtf8();
         }
 
         public EntityValue() { } // required for TypeMapper
 
         
-        public EntityValue(Utf8Json json) {
+        public EntityValue(JsonUtf8 json) {
             value.json = json;
         }
         
-        /// <summary> Prefer using <see cref="EntityValue(Utf8Json)"/> </summary>
+        /// <summary> Prefer using <see cref="EntityValue(JsonUtf8)"/> </summary>
         public EntityValue(string json) {
-            value.json = new Utf8Json(json);
+            value.json = new JsonUtf8(json);
         }
         
         public EntityValue(EntityError error) {

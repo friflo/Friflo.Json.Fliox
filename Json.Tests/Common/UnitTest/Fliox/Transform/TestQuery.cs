@@ -198,7 +198,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             using (var eval = new JsonEvaluator())
             using (var jsonMapper = new ObjectMapper()) {
                 jsonMapper.Pretty   = true;
-                var peter           = new Utf8Json(jsonMapper.WriteAsArray(Peter));
+                var peter           = new JsonUtf8(jsonMapper.WriteAsArray(Peter));
                 
                 var anyChildAgeWithin10And20 = JsonFilter.Create<Person>(p => p.children.All(child => child.age >= 20 && child.age <= 20));
                 bool result = false;

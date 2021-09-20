@@ -11,7 +11,7 @@ using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Mapper
 {
-    public readonly struct Utf8Json {
+    public readonly struct JsonUtf8 {
         // array & Array are not public to prevent potential side effects by application code mutating array elements
         private  readonly   byte[]  array;                                          // can be null
         internal            byte[]  Array       => array ?? Null;                   // never null
@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Mapper
         
         private static readonly byte[] Null =  {(byte)'n', (byte)'u', (byte)'l', (byte)'l'};
 
-        public Utf8Json(byte[] array) {
+        public JsonUtf8(byte[] array) {
             if (array == null) {
                 this.array = null;
                 return;
@@ -38,8 +38,8 @@ namespace Friflo.Json.Fliox.Mapper
             this.array  = array;
         }
         
-        /// <summary> Prefer using <see cref="Utf8Json(byte[])"/> </summary>
-        public Utf8Json(string value) {
+        /// <summary> Prefer using <see cref="JsonUtf8(byte[])"/> </summary>
+        public JsonUtf8(string value) {
             if (value == null) {
                 array = null;
                 return;
@@ -55,16 +55,16 @@ namespace Friflo.Json.Fliox.Mapper
             return array == null;
         }
 
-        public bool IsEqual (Utf8Json value) {
+        public bool IsEqual (JsonUtf8 value) {
             return Array.SequenceEqual(value.Array);
         }
         
         /// <summary>Use for testing only</summary>
-        public bool IsEqualReference (Utf8Json value) {
+        public bool IsEqualReference (JsonUtf8 value) {
             return ReferenceEquals(array, value.array);
         }
         
-        public static async Task<Utf8Json> ReadToEndAsync(Stream input) {
+        public static async Task<JsonUtf8> ReadToEndAsync(Stream input) {
             byte[] buffer = new byte[16 * 1024];                // todo performance -> cache
             using (MemoryStream ms = new MemoryStream()) {      // todo performance -> cache
                 int read;
@@ -72,18 +72,18 @@ namespace Friflo.Json.Fliox.Mapper
                     ms.Write(buffer, 0, read);
                 }
                 var array = ms.ToArray(); 
-                return new Utf8Json(array);
+                return new JsonUtf8(array);
             }
         }
     }
     
     public static class Utf8ArrayExtensions {
     
-        public static void AppendArray(this ref Bytes bytes, Utf8Json array) {
+        public static void AppendArray(this ref Bytes bytes, JsonUtf8 array) {
             AppendArray (ref bytes, array, 0, array.Array.Length);
         }
         
-        public static void AppendArray(this ref Bytes bytes, Utf8Json array, int offset, int len) {
+        public static void AppendArray(this ref Bytes bytes, JsonUtf8 array, int offset, int len) {
             bytes.EnsureCapacity(len);
             int pos     = bytes.end;
             int arrEnd  = offset + len;
@@ -95,11 +95,11 @@ namespace Friflo.Json.Fliox.Mapper
             bytes.hc = BytesConst.notHashed;
         }
         
-        public static async Task WriteAsync(this Stream stream, Utf8Json array, int offset, int count) {
+        public static async Task WriteAsync(this Stream stream, JsonUtf8 array, int offset, int count) {
             await stream.WriteAsync(array.Array, offset, count).ConfigureAwait(false);
         }
         
-        public static void Write(this Stream stream, Utf8Json array, int offset, int count) {
+        public static void Write(this Stream stream, JsonUtf8 array, int offset, int count) {
             stream.Write(array.Array, offset, count);
         }
     }

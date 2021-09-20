@@ -184,7 +184,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         }
         
         private static Task MessageLoop (EntityStore store, string text, int requestCount) {
-            var result = new Utf8Json( $"\"{text}\"");
+            var result = new JsonUtf8( $"\"{text}\"");
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
                     var message = store.SendMessage(StdMessage.Echo, text);

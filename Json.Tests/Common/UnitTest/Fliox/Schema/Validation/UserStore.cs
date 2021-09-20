@@ -185,22 +185,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         private class TestTypes {
             internal    ValidationType  roleType;
             
-            internal    readonly Utf8Json   roleDeny;
-            internal    readonly Utf8Json   roleDenyArray;
-            internal    readonly Utf8Json   roleDenyMap;
-            internal    readonly Utf8Json   jsonArray;
-            internal    readonly Utf8Json   jsonObject;
-            internal    readonly Utf8Json   roleDatabase    = new Utf8Json(AsJson(
+            internal    readonly JsonUtf8   roleDeny;
+            internal    readonly JsonUtf8   roleDenyArray;
+            internal    readonly JsonUtf8   roleDenyMap;
+            internal    readonly JsonUtf8   jsonArray;
+            internal    readonly JsonUtf8   jsonObject;
+            internal    readonly JsonUtf8   roleDatabase    = new JsonUtf8(AsJson(
 @"{'id': 'role-database','description': 'test',
     'rights': [ { 'type': 'database', 'containers': {'Article': { 'operations': ['read', 'upsert'], 'subscribeChanges': ['upsert'] }}} ]
 }"));
             
             internal TestTypes() {
-                roleDeny        = new Utf8Json(AsJson(@"{'id': 'role-deny', 'rights': [  ] }"));
-                roleDenyArray   = new Utf8Json("[" + roleDeny + "]");
-                roleDenyMap     = new Utf8Json("{\"key\": " + roleDeny + "}");
-                jsonArray       = new Utf8Json("[]");
-                jsonObject      = new Utf8Json("{}");
+                roleDeny        = new JsonUtf8(AsJson(@"{'id': 'role-deny', 'rights': [  ] }"));
+                roleDenyArray   = new JsonUtf8("[" + roleDeny + "]");
+                roleDenyMap     = new JsonUtf8("{\"key\": " + roleDeny + "}");
+                jsonArray       = new JsonUtf8("[]");
+                jsonObject      = new JsonUtf8("{}");
             }
         }
 

@@ -36,12 +36,12 @@ namespace Friflo.Json.Fliox.Mapper
     // --- Select result ---
     public class MemberValue
     {
-        internal    Utf8Json    json;
+        internal    JsonUtf8    json;
         internal    object      value;
         private     string      path;
         public      bool        Found { get; internal set; }
         
-        public      Utf8Json    Json    => Found ? json  : throw new InvalidOperationException($"member not found. path: {path}");
+        public      JsonUtf8    Json    => Found ? json  : throw new InvalidOperationException($"member not found. path: {path}");
         public      object      Value   => Found ? value : throw new InvalidOperationException($"member not found. path: {path}");
 
         internal void Init(string path) {

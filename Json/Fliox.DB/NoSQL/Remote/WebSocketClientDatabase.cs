@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                             Console.WriteLine($"Expect WebSocket message type text. type: {messageType} {endpoint}");
                             continue;
                         }
-                        var requestContent  = new Utf8Json(memoryStream.ToArray());
+                        var requestContent  = new JsonUtf8(memoryStream.ToArray());
                         OnReceive (requestContent);
                     } catch (Exception) {
                         foreach (var pair in requests) {
@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             }
         }
         
-        private void OnReceive(Utf8Json messageJson) {
+        private void OnReceive(JsonUtf8 messageJson) {
             try {
                 var contextPools    = new Pools(Pools.SharedPools);
                 using (var pooledMapper = contextPools.ObjectMapper.Get()) {
@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                             return;
                         }
                         var writer          = pooledMapper.instance.writer;
-                        var responseJson    = new Utf8Json(writer.WriteAsArray(resp));
+                        var responseJson    = new JsonUtf8(writer.WriteAsArray(resp));
                         var response        = new JsonResponse(responseJson, ResponseStatusType.Ok);
                         request.response.SetResult(response);
                         return;
@@ -130,7 +130,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             }
         }
 
-        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, Utf8Json jsonSyncRequest, MessageContext messageContext) {
+        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, JsonUtf8 jsonSyncRequest, MessageContext messageContext) {
             if (requestId < 1)
                 throw new InvalidOperationException("Expect requestId > 0");
             try {

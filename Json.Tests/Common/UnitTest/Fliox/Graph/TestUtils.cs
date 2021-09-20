@@ -73,37 +73,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             using (var processor = new EntityProcessor()) {
                 {
                     // --- return modified JSON
-                    var     json = new Utf8Json("{\"myId\": \"123\"}");
+                    var     json = new JsonUtf8("{\"myId\": \"123\"}");
                     var     result  = processor.ReplaceKey(json, "myId", false, "id", out JsonKey _, out _);
                     AreEqual("{\"id\":\"123\"}", result.AsString());
                 } {
                     // --- return modified JSON
-                    var     json =  new Utf8Json("{\"myId\": \"111\"}");
+                    var     json =  new JsonUtf8("{\"myId\": \"111\"}");
                     var     result  = processor.ReplaceKey(json, "myId", true, "id", out JsonKey _, out _);
                     AreEqual("{\"id\":111}", result.AsString());
                 } {
                     // --- return modified JSON
-                    var     json = new Utf8Json("{\"id\": 456}");
+                    var     json = new JsonUtf8("{\"id\": 456}");
                     var     result  = processor.ReplaceKey(json, "id", false, "id", out JsonKey _, out _);
                     AreEqual("{\"id\":\"456\"}", result.AsString());
                 } {
                     // --- return modified JSON - key ist not first member
-                    var     json = new Utf8Json("{\"x\":42,\"id2\":222}");
+                    var     json = new JsonUtf8("{\"x\":42,\"id2\":222}");
                     var     result  = processor.ReplaceKey(json, "id2", true, "id", out JsonKey _, out _);
                     AreEqual("{\"x\":42,\"id\":222}", result.AsString());
                 } {
                     // --- return modified JSON - previous member contains unicode (☀), key is unicode (🌎)
-                    var     json = new Utf8Json("{\"☀\":1,\"🌎\": \"xyz\",\"♥\":2}");
+                    var     json = new JsonUtf8("{\"☀\":1,\"🌎\": \"xyz\",\"♥\":2}");
                     var     result  = processor.ReplaceKey(json, "🌎", false, "🪐", out JsonKey _, out _);
                     AreEqual("{\"☀\":1,\"🪐\":\"xyz\",\"♥\":2}", result.AsString());
                 } {
                     // --- return original JSON
-                    var     json = new Utf8Json("{\"id\": 789}");
+                    var     json = new JsonUtf8("{\"id\": 789}");
                     var     result  = processor.ReplaceKey(json, "id", true, "id", out JsonKey _, out _);
                     IsTrue(json.IsEqualReference(result));
                 } {
                     // --- return original JSON
-                    var     json =  new Utf8Json("{\"id\": \"abc\"}");
+                    var     json =  new JsonUtf8("{\"id\": \"abc\"}");
                     // null defaults to "id"
                     var result = processor.ReplaceKey(json, null, false, "id", out JsonKey _, out _);
                     IsTrue(json.IsEqualReference(result));

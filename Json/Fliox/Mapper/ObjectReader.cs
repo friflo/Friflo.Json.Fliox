@@ -39,11 +39,11 @@ namespace Friflo.Json.Fliox.Mapper
         
         //
         // --- Utf8Array
-        T       Read<T>     (Utf8Json utf8Array);
-        object  ReadObject  (Utf8Json utf8Array, Type type);
+        T       Read<T>     (JsonUtf8 utf8Array);
+        object  ReadObject  (JsonUtf8 utf8Array, Type type);
 
-        T       ReadTo<T>   (Utf8Json utf8Array, T         obj);
-        object  ReadToObject(Utf8Json utf8Array, object    obj);
+        T       ReadTo<T>   (JsonUtf8 utf8Array, T         obj);
+        object  ReadToObject(JsonUtf8 utf8Array, object    obj);
     }
     
 #if !UNITY_5_3_OR_NEWER
@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Mapper
             intern.InitMirrorStack();
         }
         
-        private void InitJsonReaderArray(Utf8Json array) {
+        private void InitJsonReaderArray(JsonUtf8 array) {
             inputStringBuf.Clear();
             inputStringBuf.AppendArray(array, 0, array.Length);
             intern.parser.InitParser(inputStringBuf.buffer, inputStringBuf.start, inputStringBuf.Len);
@@ -216,14 +216,14 @@ namespace Friflo.Json.Fliox.Mapper
         
         // --------------- Utf8Array ---------------
         // --- Read()
-        public T Read<T>(Utf8Json utf8Array) {
+        public T Read<T>(JsonUtf8 utf8Array) {
             InitJsonReaderArray(utf8Array);
             T result = ReadStart<T>(default);
             JsonBurstError();
             return result;
         }
         
-        public object ReadObject(Utf8Json utf8Array, Type type) {
+        public object ReadObject(JsonUtf8 utf8Array, Type type) {
             InitJsonReaderArray(utf8Array);
             object result = ReadStart(type, null);
             JsonBurstError();
@@ -231,7 +231,7 @@ namespace Friflo.Json.Fliox.Mapper
         }
 
         // --- ReadTo()
-        public T ReadTo<T>(Utf8Json utf8Array, T obj)  {
+        public T ReadTo<T>(JsonUtf8 utf8Array, T obj)  {
             InitJsonReaderArray(utf8Array);
             T result = ReadToStart(obj);
             JsonBurstError();
@@ -239,7 +239,7 @@ namespace Friflo.Json.Fliox.Mapper
 
         }
 
-        public object ReadToObject(Utf8Json utf8Array, object obj)  {
+        public object ReadToObject(JsonUtf8 utf8Array, object obj)  {
             InitJsonReaderArray(utf8Array);
             object result = ReadToStart(obj);
             JsonBurstError();

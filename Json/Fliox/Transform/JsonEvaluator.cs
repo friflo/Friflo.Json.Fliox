@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Transform
         }
 
         // --- Filter
-        public bool Filter(Utf8Json json, JsonFilter filter) {
+        public bool Filter(JsonUtf8 json, JsonFilter filter) {
             if (filter.op is TrueLiteral)
                 return true;  // result is independent fom given json
             if (filter.op is FalseLiteral)
@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Transform
         }
 
         // --- Eval
-        public object Eval(Utf8Json json, JsonLambda lambda) {
+        public object Eval(JsonUtf8 json, JsonLambda lambda) {
             ReadJsonFields(json, lambda);
             var cx = new EvalCx(-1);
             var evalResult = lambda.op.Eval(cx);
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Transform
             return evalResults;
         }
 
-        private void ReadJsonFields(Utf8Json json, JsonLambda lambda) {
+        private void ReadJsonFields(JsonUtf8 json, JsonLambda lambda) {
             var query = lambda.scalarSelect;
             scalarSelector.Select(json, query);
             var fields = lambda.fields;
