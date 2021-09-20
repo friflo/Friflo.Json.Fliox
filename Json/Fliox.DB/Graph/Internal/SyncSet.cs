@@ -254,11 +254,12 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 if (diff == null)
                     return;
                 var patchList = intern.objectPatcher.CreatePatches(diff);
+                var id = peer.id;
                 var entityPatch = new EntityPatch {
+                    key     = id,
                     patches = patchList
                 };
                 SetNextPatchSource(peer); // todo next patch source need to be set on Sync() 
-                var id = peer.id;
                 Patches()[id] = entityPatch;
                 logTask.AddPatch(this, id);
                 
@@ -425,6 +426,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                         var id      = peer.id;
                         if (!patches.TryGetValue(id, out EntityPatch patch)) {
                             patch = new EntityPatch {
+                                key     = id,
                                 patches = new List<JsonPatch>()
                             };
                             patches.Add(id, patch);
@@ -449,8 +451,11 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 var req = new PatchEntities {
                     container   = set.name,
                     keyName     = SyncKeyName(set.GetKeyName()),
-                    patches     = new Dictionary<JsonKey, EntityPatch>(patches, JsonKey.Equality)
+                    patches     = new List<EntityPatch>(patches.Count)
                 };
+                foreach (var patch in patches) {
+                    req.patches.Add(patch.Value);
+                }
                 tasks.Add(req);
             }
         }

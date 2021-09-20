@@ -107,20 +107,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
     {
         public  readonly    Dictionary<string, PatchModifier>    patches    = new Dictionary<string, PatchModifier>();
         
-        internal void ModifyPatches(Dictionary<JsonKey, EntityPatch> entityPatches) {
-            var modifications = new Dictionary<string, EntityPatch>();
-            foreach (var pair in entityPatches) {
-                var key = pair.Key.AsString();
+        internal void ModifyPatches(List<EntityPatch> entityPatches) {
+            for (int n = 0; n  < entityPatches.Count; n++) {
+                var patch = entityPatches[n];
+                var key = patch.key.AsString();
                 if (patches.TryGetValue(key, out var modifier)) {
-                    EntityPatch value       = pair.Value;
+                    EntityPatch value       = patch;
                     EntityPatch modified    = modifier (value);
-                    modifications.Add(key, modified);
+                    entityPatches[n] = modified;
                 }
-            }
-            foreach (var pair in modifications) {
-                var         key     = new JsonKey(pair.Key);
-                EntityPatch value   = pair.Value;
-                entityPatches[key] = value;
             }
         }
     }

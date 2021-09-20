@@ -92,7 +92,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         /// </summary>
         public virtual async Task<PatchEntitiesResult> PatchEntities   (PatchEntities patchEntities, SyncResponse response, MessageContext messageContext) {
             var entityPatches = patchEntities.patches;
-            var ids = entityPatches.Select(patch => patch.Key).ToHashSet(JsonKey.Equality);
+            var patchMap = entityPatches.ToDictionary(patch => patch.key, patch => patch, JsonKey.Equality);
+            var ids = entityPatches.Select(patch => patch.key).ToHashSet(JsonKey.Equality);
             // Read entities to be patched
             var readTask = new ReadEntities { ids = ids, keyName = patchEntities.keyName };
             var readResult = await ReadEntities(readTask, messageContext).ConfigureAwait(false);
@@ -115,7 +116,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                     var key = entity.Key;
                     if (!ids.Contains(key))
                         throw new InvalidOperationException($"PatchEntities: Unexpected key in ReadEntities response: key: {key}");
-                    var patch = entityPatches[key];
+                    var patch = patchMap[key];
                     var value = entity.Value;
                     var error = value.Error; 
                     if (error != null) {

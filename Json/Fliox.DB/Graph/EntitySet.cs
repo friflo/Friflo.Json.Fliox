@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         internal  abstract  void                LogSetChangesInternal   (LogTask logTask);
         internal  abstract  void                SyncPeerEntities        (Dictionary<JsonKey, EntityValue> entities);
         internal  abstract  void                DeletePeerEntities      (HashSet   <JsonKey> ids);
-        internal  abstract  void                PatchPeerEntities       (Dictionary<JsonKey, EntityPatch> patches);
+        internal  abstract  void                PatchPeerEntities       (List<EntityPatch> patches);
         
         internal  abstract  void                ResetSync               ();
         internal  abstract  SyncTask            SubscribeChangesInternal(IEnumerable<Change> changes);
@@ -532,11 +532,10 @@ namespace Friflo.Json.Fliox.DB.Graph
             }
         }
         
-        internal  override void PatchPeerEntities (Dictionary<JsonKey, EntityPatch> patches) {
+        internal  override void PatchPeerEntities (List<EntityPatch> patches) {
             var objectPatcher = intern.store._intern.objectPatcher;
-            foreach (var pair in patches) {
-                var         id          = pair.Key;
-                EntityPatch entityPatch = pair.Value;
+            foreach (var entityPatch in patches) {
+                var         id          = entityPatch.key;
                 var         peer        = GetPeerById(id);
                 var         entity      = peer.Entity;
                 objectPatcher.ApplyPatches(entity, entityPatch.patches);

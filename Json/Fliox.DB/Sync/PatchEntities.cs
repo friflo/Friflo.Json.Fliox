@@ -11,12 +11,12 @@ namespace Friflo.Json.Fliox.DB.Sync
     // ----------------------------------- task -----------------------------------
     public class PatchEntities : DatabaseTask
     {
-        [Fri.Required]  public  string                              container;
-                        public  string                              keyName;
-        [Fri.Required]  public  Dictionary<JsonKey, EntityPatch>    patches = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality);
+        [Fri.Required]  public  string              container;
+                        public  string              keyName;
+        [Fri.Required]  public  List<EntityPatch>   patches;
         
-        internal override       TaskType                            TaskType => TaskType.patch;
-        public   override       string                              TaskName =>  $"container: '{container}'";
+        internal override       TaskType            TaskType => TaskType.patch;
+        public   override       string              TaskName =>  $"container: '{container}'";
         
         internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
@@ -38,6 +38,7 @@ namespace Friflo.Json.Fliox.DB.Sync
 
     public class EntityPatch
     {
+                        public  JsonKey                     key;
         [Fri.Required]  public  List<JsonPatch>             patches;
     }
 

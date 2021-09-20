@@ -325,9 +325,8 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             } else {
                 // var patchResult = (PatchEntitiesResult)result;
                 var entityPatches = task.patches;
-                foreach (var entityPatchPair in entityPatches) {
-                    var id = entityPatchPair.Key;
-                    var peer = set.GetPeerById(id);
+                foreach (var entityPatch in entityPatches) {
+                    var peer = set.GetPeerById(entityPatch.key);
                     peer.SetPatchSource(peer.NextPatchSource);
                     peer.SetNextPatchSourceNull();
                 }
