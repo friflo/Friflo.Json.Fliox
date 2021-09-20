@@ -687,6 +687,7 @@
         },
         "EntityError": {
             "properties": {
+                "id":      { "type": "string" },
                 "type":    { "ref":  "EntityErrorType" },
                 "message": { "type": "string", "nullable": true }
             }
@@ -704,7 +705,7 @@
         "EntityErrors": {
             "properties": {
                 "container": { "type": "string" },
-                "errorMap":  { "values": { "ref":  "EntityError" } }
+                "errors":    { "elements": { "ref":  "EntityError" }, "nullable": true }
             }
         },
         "DatabaseEvent": {

@@ -378,50 +378,59 @@ namespace Friflo.Json.Fliox.DB.Graph
             response.createErrors = null;
             if (errors != null) {
                 var map = response.createErrorMap = new Dictionary<string, EntityErrors>(errors.Count);
+                CopyErrors(map, errors);
                 foreach (var error in errors) {
                     var syncSet = syncSets[error.container];
                     syncSet.errorsCreate = error.errorMap;
                 }
-                CopyErrors(map, errors);
+                errors.Clear();
             }
             errors = response.upsertErrors;
             response.upsertErrors = null;
             if (errors != null) {
                 var map = response.upsertErrorMap = new Dictionary<string, EntityErrors>(errors.Count);
+                CopyErrors(map, errors);
                 foreach (var error in errors) {
                     var syncSet = syncSets[error.container];
                     syncSet.errorsUpsert = error.errorMap;
                 }
-                CopyErrors(map, errors);
+                errors.Clear();
             }
             errors = response.patchErrors;
             response.patchErrors = null;
             if (errors != null) {
                 var map = response.patchErrorMap = new Dictionary<string, EntityErrors>(errors.Count);
+                CopyErrors(map, errors);
                 foreach (var error in errors) {
                     var syncSet = syncSets[error.container];
                     syncSet.errorsPatch = error.errorMap;
                 }
-                CopyErrors(map, errors);
+                errors.Clear();
             }
             errors = response.deleteErrors;
             response.deleteErrors = null;
             if (errors != null) {
                 var map = response.deleteErrorMap = new Dictionary<string, EntityErrors>(errors.Count);
+                CopyErrors(map, errors);
                 foreach (var error in errors) {
                     var syncSet = syncSets[error.container];
                     syncSet.errorsDelete = error.errorMap;
                 }
-                CopyErrors(map, errors);
+                errors.Clear();
             }
         }
         
         private static void CopyErrors(Dictionary<string, EntityErrors> dst, List<EntityErrors> src) {
             foreach (var error in src) {
-                dst.Add(error.container, error);
+                var map = error.errorMap = new Dictionary<JsonKey, EntityError>(error.errors.Count, JsonKey.Equality);
+                foreach (var entityError in error.errors) {
+                    map.Add(entityError.id, entityError);
+                }
                 error.SetInferredErrorFields();
+                error.errors.Clear();
+                error.errors = null;
+                dst.Add(error.container, error);
             }
-            src.Clear();
         }
         
         /// Map <see cref="ContainerEntities.entities"/>, <see cref="ContainerEntities.notFound"/> and

@@ -102,9 +102,8 @@ namespace Friflo.Json.Fliox.DB.Sync
     public class EntityErrors
     {
         [Fri.Required]  public  string                              container;
-        //              public  List<EntityError>                   errors;
-        
-        [Fri.Required]  public  Dictionary<JsonKey, EntityError>    errorMap = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
+                        public  List<EntityError>                   errors;
+        [Fri.Ignore]    public  Dictionary<JsonKey, EntityError>    errorMap;
         
         public EntityErrors() {} // required for TypeMapper
 
@@ -122,9 +121,8 @@ namespace Friflo.Json.Fliox.DB.Sync
         internal void SetInferredErrorFields() {
             foreach (var errorEntry in errorMap) {
                 var error = errorEntry.Value;
-                // error .id & .container are not serialized as they are redundant data.
+                // error.container are not serialized as they are redundant data.
                 // Infer their values from containing errors dictionary
-                error.id        = errorEntry.Key;
                 error.container = container;
             }
         }

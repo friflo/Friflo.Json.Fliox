@@ -315,6 +315,7 @@ export class ContainerEntities {
 }
 
 export class EntityError {
+    id       : string;
     type     : EntityErrorType;
     message? : string | null;
 }
@@ -330,7 +331,7 @@ export type EntityErrorType =
 
 export class EntityErrors {
     container  : string;
-    errorMap   : { [key: string]: EntityError };
+    errors?    : EntityError[] | null;
 }
 
 export type DatabaseEvent_Union =

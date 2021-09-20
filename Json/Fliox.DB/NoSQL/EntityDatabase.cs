@@ -257,8 +257,15 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         
         private static void CopyErrors (List<EntityErrors> dst, Dictionary<string, EntityErrors> src) {
             foreach (var pair in src) {
-                var value = pair.Value;
-                dst.Add(value);
+                EntityErrors errorMap = pair.Value;
+                var errors = errorMap.errors = new List<EntityError>(errorMap.errorMap.Count);
+                foreach (var errorPair in errorMap.errorMap) {
+                    var error = errorPair.Value;
+                    errors.Add(error);
+                }
+                errorMap.errorMap.Clear();
+                errorMap.errorMap = null;
+                dst.Add(errorMap);
             }
             src.Clear();
         }

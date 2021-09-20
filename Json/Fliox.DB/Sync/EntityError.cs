@@ -13,10 +13,10 @@ namespace Friflo.Json.Fliox.DB.Sync
     /// This implies that the previous read or query call was successful. 
     public class EntityError
     {
+                            public  JsonKey             id;
         [Fri.Required]      public  EntityErrorType     type;
         [Fri.Property]      public  string              message;
             
-        [Fri.Ignore]        public  JsonKey             id;
         [Fri.Ignore]        public  string              container;
         /// <summary>Is != <see cref="TaskErrorResultType.None"/> if the error is caused indirectly by a <see cref="DatabaseTask"/> error.</summary>
         [Fri.Ignore]        public  TaskErrorResultType taskErrorType;

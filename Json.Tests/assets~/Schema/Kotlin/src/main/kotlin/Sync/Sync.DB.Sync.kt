@@ -294,6 +294,7 @@ data class ContainerEntities (
 
 @Serializable
 data class EntityError (
+              val id      : String,
               val type    : EntityErrorType,
               val message : String? = null,
 )
@@ -310,7 +311,7 @@ enum class EntityErrorType {
 @Serializable
 data class EntityErrors (
               val container : String,
-              val errorMap  : HashMap<String, EntityError>,
+              val errors    : List<EntityError>? = null,
 )
 
 @Serializable
