@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                         // apply changes only if subscribed
                         if (set.GetSubscription() == null)
                             continue;
-                        set.PatchPeerEntities(patches.entities);
+                        set.PatchPeerEntities(patches.patches);
                         break;
                     
                     case TaskType.message:
@@ -274,15 +274,15 @@ namespace Friflo.Json.Fliox.DB.Graph
                         var patch = (PatchEntities)task;
                         if (patch.container != entitySet.name)
                             continue;
-                        foreach (var entityPatch in patch.entities) {
+                        foreach (var entityPatch in patch.patches) {
                             var         id          = entityPatch.key;
                             TKey        key         = Ref<TKey,T>.RefKeyMap.IdToKey(id);
                             var         peer        = entitySet.GetOrCreatePeerByKey(key, id);
                             var         entity      = peer.Entity;
-                            var         changePatch = new ChangePatch<T>(entity, entityPatch.patches);
+                            var         changePatch = new ChangePatch<T>(entity, entityPatch.operations);
                             result.patches.Add(key, changePatch);
                         }
-                        result.Info.patches += patch.entities.Count;
+                        result.Info.patches += patch.patches.Count;
                         break;
                 }
             }

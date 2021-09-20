@@ -82,10 +82,10 @@ var exampleSync: DatabaseMessage = {
             {
                 "task":         "patch",
                 "container":    "Article",
-                "entities": [
+                "patches": [
                     {
                         "key": "new-article",
-                        "patches": [
+                        "operations": [
                             {
                                 "op":"replace",
                                 "path": ".name",

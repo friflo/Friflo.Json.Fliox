@@ -434,13 +434,13 @@
             "properties": {
                 "container": { "type": "string" },
                 "keyName":   { "type": "string", "nullable": true },
-                "entities":  { "elements": { "ref":  "EntityPatch" } }
+                "patches":   { "elements": { "ref":  "EntityPatch" } }
             }
         },
         "EntityPatch": {
             "properties": {
-                "key":     { "type": "string" },
-                "patches": { "elements": { "ref":  "JsonPatch" } }
+                "key":        { "type": "string" },
+                "operations": { "elements": { "ref":  "JsonPatch" } }
             }
         },
         "JsonPatch": {

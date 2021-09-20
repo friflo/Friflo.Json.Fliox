@@ -93,13 +93,13 @@ data class QueryEntities (
 data class PatchEntities (
               val container : String,
               val keyName   : String? = null,
-              val entities  : List<EntityPatch>,
+              val patches   : List<EntityPatch>,
 ) : DatabaseTask()
 
 @Serializable
 data class EntityPatch (
-              val key     : String,
-              val patches : List<JsonPatch>,
+              val key        : String,
+              val operations : List<JsonPatch>,
 )
 
 @Serializable

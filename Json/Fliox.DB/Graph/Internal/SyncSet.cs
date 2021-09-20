@@ -426,14 +426,14 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                             patches.Add(id, patch);
                             SetNextPatchSource(peer);
                         }
-                        var entityPatches   = patch.patches;
+                        var operations      = patch.operations;
                         var selectResults   = memberAccessor.GetValues(entity, memberAccess);
                         int n = 0;
                         foreach (var path in patchTask.members) {
                             var value = new JsonValue {
                                 json = selectResults[n++].Json
                             };
-                            entityPatches.Add(new PatchReplace {
+                            operations.Add(new PatchReplace {
                                 path = path,
                                 value = value
                             });
@@ -445,10 +445,10 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
                 var req = new PatchEntities {
                     container   = set.name,
                     keyName     = SyncKeyName(set.GetKeyName()),
-                    entities    = new List<EntityPatch>(patches.Count)
+                    patches    = new List<EntityPatch>(patches.Count)
                 };
                 foreach (var patch in patches) {
-                    req.entities.Add(patch.Value);
+                    req.patches.Add(patch.Value);
                 }
                 tasks.Add(req);
             }

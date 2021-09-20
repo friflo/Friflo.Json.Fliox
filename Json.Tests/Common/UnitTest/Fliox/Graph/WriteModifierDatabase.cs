@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                         break;
                     case PatchEntities patchEntities:
                         if (patchModifiers.TryGetValue(patchEntities.container, out var patch)) {
-                            patch.ModifyPatches(patchEntities.entities);
+                            patch.ModifyPatches(patchEntities.patches);
                         }
                         break;
                 }
