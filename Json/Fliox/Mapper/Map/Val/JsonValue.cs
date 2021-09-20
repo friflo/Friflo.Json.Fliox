@@ -20,12 +20,17 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         public override string DataTypeName() { return "JsonValue"; }
 
         public JsonValueMapper(StoreConfig config, Type type) : base (config, type, false, false) { }
+        
+        public override bool IsNullObject(object value) {
+            var jsonValue = (JsonValue)value;
+            return jsonValue.json.IsNull();
+        }
 
         public override void Write(ref Writer writer, JsonValue value) {
             if (!value.json.IsNull())
                 writer.bytes.AppendArray(value.json);
             else
-                writer.AppendNull(); // todo throw exception. value.json must be not null
+                writer.AppendNull();
         }
 
         public override JsonValue Read(ref Reader reader, JsonValue slot, out bool success) {

@@ -73,7 +73,11 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public abstract bool            ReadValueIL(ref Reader reader, ClassMirror mirror, int primPos, int objPos);
         
         public abstract object CreateInstance();
-        
+
+        public virtual bool IsNullObject(object value) {
+            return value == null;
+        }
+
         public bool IsNull<T>(ref T value) {
             if (isValueType) {
                 if (nullableUnderlyingType == null)

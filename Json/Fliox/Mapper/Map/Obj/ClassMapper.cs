@@ -238,15 +238,16 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
             for (int n = 0; n < fields.Length; n++) {
                 PropField field = fields[n];
                 
-                object elemVar = field.GetField(objRef);
-                if (elemVar == null) {
+                object elemVar  = field.GetField(objRef);
+                var fieldType   = field.fieldType;
+                bool isNull     = fieldType.IsNullObject(elemVar);
+                if (isNull) {
                     if (writer.writeNullMembers) {
                         writer.WriteFieldKey(field, ref firstMember);
                         writer.AppendNull();
                     }
                 } else {
                     writer.WriteFieldKey(field, ref firstMember); 
-                    var fieldType = field.fieldType;
                     fieldType.WriteObject(ref writer, elemVar);
                     writer.FlushFilledBuffer();
                 }
