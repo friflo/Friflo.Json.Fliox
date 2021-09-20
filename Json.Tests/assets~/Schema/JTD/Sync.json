@@ -682,7 +682,7 @@
                 "container": { "type": "string" },
                 "entities":  { "elements": {  } },
                 "notFound":  { "elements": { "type": "string" }, "nullable": true },
-                "errors":    { "values": { "ref":  "EntityError" }, "nullable": true }
+                "errorMap":  { "values": { "ref":  "EntityError" }, "nullable": true }
             }
         },
         "EntityError": {

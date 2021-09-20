@@ -434,7 +434,7 @@ namespace Friflo.Json.Fliox.DB.Graph
         }
         
         /// Map <see cref="ContainerEntities.entities"/>, <see cref="ContainerEntities.notFound"/> and
-        /// <see cref="ContainerEntities.errors"/> to <see cref="ContainerEntities.entityMap"/>.
+        /// <see cref="ContainerEntities.errorMap"/> to <see cref="ContainerEntities.entityMap"/>.
         /// These properties are set by <see cref="EntityDatabase.SetContainerResults"/>.
         private void GetContainerResults(SyncResponse response) {
             var results     = response.results;
@@ -456,9 +456,9 @@ namespace Friflo.Json.Fliox.DB.Graph
                 var entities        = container.entities;
                 var notFound        = container.notFound;
                 var notFoundCount   = notFound?.Count ?? 0;
-                var errors          = container.errors;
+                var errors          = container.errorMap;
                 var errorCount      = errors?.Count ?? 0;
-                container.errors    = null;
+                container.errorMap    = null;
                 entityMap.Clear(); // Not necessary, be safe
                 entityMap.EnsureCapacity(entities.Count + notFoundCount + errorCount);
                 
@@ -489,7 +489,7 @@ namespace Friflo.Json.Fliox.DB.Graph
                     entityMap.Add(key, new EntityValue(errorPair.Value));
                 }
                 errors.Clear();
-                container.errors = null;
+                container.errorMap = null;
             }
             results.Clear();
         }

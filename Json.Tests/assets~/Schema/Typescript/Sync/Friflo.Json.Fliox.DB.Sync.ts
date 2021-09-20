@@ -311,7 +311,7 @@ export class ContainerEntities {
     container  : string;
     entities   : any[];
     notFound?  : string[] | null;
-    errors?    : { [key: string]: EntityError } | null;
+    errorMap?  : { [key: string]: EntityError } | null;
 }
 
 export class EntityError {

@@ -289,7 +289,7 @@ data class ContainerEntities (
               val container : String,
               val entities  : List<JsonElement>,
               val notFound  : List<String>? = null,
-              val errors    : HashMap<String, EntityError>? = null,
+              val errorMap  : HashMap<String, EntityError>? = null,
 )
 
 @Serializable
