@@ -233,42 +233,34 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             response.createErrorMap = null;
             if (errorMap != null) {
                 errors = response.createErrors = new List<EntityErrors>(errorMap.Count);
-                foreach (var pair in errorMap) {
-                    var value = pair.Value;
-                    errors.Add(value);
-                }
-                errorMap.Clear();
+                CopyErrors(errors, errorMap);
             }
             errorMap = response.upsertErrorMap;
             response.upsertErrorMap = null;
             if (errorMap != null) {
                 errors = response.upsertErrors = new List<EntityErrors>(errorMap.Count);
-                foreach (var pair in errorMap) {
-                    var value = pair.Value;
-                    errors.Add(value);
-                }
-                errorMap.Clear();
+                CopyErrors(errors, errorMap);
             }
             errorMap = response.patchErrorMap;
             response.patchErrorMap = null;
             if (errorMap != null) {
                 errors = response.patchErrors = new List<EntityErrors>(errorMap.Count);
-                foreach (var pair in errorMap) {
-                    var value = pair.Value;
-                    errors.Add(value);
-                }
-                errorMap.Clear();
+                CopyErrors(errors, errorMap);
             }
             errorMap = response.deleteErrorMap;
             response.deleteErrorMap = null;
             if (errorMap != null) {
                 errors = response.deleteErrors = new List<EntityErrors>(errorMap.Count);
-                foreach (var pair in errorMap) {
-                    var value = pair.Value;
-                    errors.Add(value);
-                }
-                errorMap.Clear();
+                CopyErrors(errors, errorMap);
             }
+        }
+        
+        private static void CopyErrors (List<EntityErrors> dst, Dictionary<string, EntityErrors> src) {
+            foreach (var pair in src) {
+                var value = pair.Value;
+                dst.Add(value);
+            }
+            src.Clear();
         }
     }
     
