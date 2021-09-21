@@ -3,6 +3,7 @@
 
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.DB.Protocol
 {
     // ----------------------------------- message -----------------------------------
