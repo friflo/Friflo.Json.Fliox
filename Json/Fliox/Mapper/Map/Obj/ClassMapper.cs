@@ -274,11 +274,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
                         string discriminant = reader.parser.value.AsString();
                         obj = (T) factory.CreatePolymorph(discriminant);
                         if (classType.IsNull(ref obj))
-                            return reader.ErrorMsg<TypeMapper>($"No [Fri.Polymorph] type declared for discriminant: '{discriminant}' on type: ", classType.type.FullName, out success);
+                            return reader.ErrorMsg<TypeMapper>($"No [Fri.Polymorph] type declared for discriminant: '{discriminant}' on type: ", classType.type.Name, out success);
                         classType = reader.typeCache.GetTypeMapper(obj.GetType());
                         parser.NextEvent();
                     } else
-                        return reader.ErrorMsg<TypeMapper>($"Expect discriminator \"{discriminator}\": \"...\" as first JSON member for type: ", classType.type.FullName, out success);
+                        return reader.ErrorMsg<TypeMapper>($"Expect discriminator \"{discriminator}\": \"...\" as first JSON member for type: ", classType.type.Name, out success);
                 }
             } else {
                 if (classType.IsNull(ref obj))

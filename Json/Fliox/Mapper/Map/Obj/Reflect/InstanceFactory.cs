@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
 
         internal object CreateInstance(Type type) {
             if (isAbstract)
-                throw new InvalidOperationException($"type requires instantiatable types by [Fri.Instance()] or [Fri.Polymorph()] on: {type}");
+                throw new InvalidOperationException($"type requires instantiatable types by [Fri.Instance()] or [Fri.Polymorph()] on: {type.Name}");
             return instanceMapper.CreateInstance();
         }
         
@@ -78,17 +78,17 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                     var arg = attr.ConstructorArguments;
                     var polyType = (Type) arg[0].Value;
                     if (polyType == null)
-                        throw new InvalidOperationException($"[Fri.Polymorph(null)] type must not be null on: {type}");
+                        throw new InvalidOperationException($"[Fri.Polymorph(null)] type must not be null on: {type.Name}");
                     if (!type.IsAssignableFrom(polyType))
-                        throw new InvalidOperationException($"[Fri.Polymorph({polyType.Name})] type must extend annotated type: {type}");
+                        throw new InvalidOperationException($"[Fri.Polymorph({polyType.Name})] type must extend annotated type: {type.Name}");
                     typeList.Add(new PolyType(polyType, name ?? polyType.Name));
                 } else if (attr.AttributeType == typeof(Fri.InstanceAttribute)) {
                     var arg = attr.ConstructorArguments;
                     instanceType = (Type) arg[0].Value;
                     if (instanceType == null)
-                        throw new InvalidOperationException($"[Fri.Instance(null)] type must not be null on: {type}");
+                        throw new InvalidOperationException($"[Fri.Instance(null)] type must not be null on: {type.Name}");
                     if (!type.IsAssignableFrom(instanceType))
-                        throw new InvalidOperationException($"[Fri.Instance({instanceType.Name})] type must extend annotated type: {type}");
+                        throw new InvalidOperationException($"[Fri.Instance({instanceType.Name})] type must extend annotated type: {type.Name}");
                 } else if (attr.AttributeType == typeof(Fri.DiscriminatorAttribute)) {
                     if (attr.NamedArguments != null) {
                         var arg = attr.ConstructorArguments;
@@ -97,9 +97,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                 }
             }
             if (discriminator != null && typeList.Count == 0)
-                throw new InvalidOperationException($"specified [Fri.Discriminator] require at least one [Fri.Polymorph] attribute on: {type}");
+                throw new InvalidOperationException($"specified [Fri.Discriminator] require at least one [Fri.Polymorph] attribute on: {type.Name}");
             if (discriminator == null && typeList.Count > 0)
-                throw new InvalidOperationException($"specified [Fri.Polymorph] attribute require [Fri.Discriminator] on: {type}");
+                throw new InvalidOperationException($"specified [Fri.Polymorph] attribute require [Fri.Discriminator] on: {type.Name}");
 
             if (instanceType != null || typeList.Count > 0)
                 return new InstanceFactory(discriminator, instanceType, typeList.ToArray());

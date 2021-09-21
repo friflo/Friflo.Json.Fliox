@@ -40,8 +40,8 @@ namespace Friflo.Json.Fliox.DB.Remote
                     JsonUtf8    jsonResponse    = RemoteUtils.CreateProtocolMessage(response.Result, messageContext.pools);
                     return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
                 }
-                var msg = $"Invalid response: {request.MessageType}";
-                return JsonResponse.CreateError(messageContext, msg, JsonResponseStatus.Error);
+                var error = (ErrorResponse)request; 
+                return JsonResponse.CreateError(messageContext, error.message, JsonResponseStatus.Error);
             }
             catch (Exception e) {
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();

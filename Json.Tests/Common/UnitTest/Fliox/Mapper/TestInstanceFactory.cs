@@ -55,16 +55,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 AreEqual(json, jsonResult);
                 
                 var e = Throws<InvalidOperationException>(() => reader.Read<IVehicle>("{}"));
-                AreEqual("type requires instantiatable types by [Fri.Instance()] or [Fri.Polymorph()] on: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestInstanceFactory+IVehicle", e.Message);
+                AreEqual("type requires instantiatable types by [Fri.Instance()] or [Fri.Polymorph()] on: IVehicle", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<Abstract>("{}"));
-                AreEqual("type requires instantiatable types by [Fri.Instance()] or [Fri.Polymorph()] on: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestInstanceFactory+Abstract", e.Message);
+                AreEqual("type requires instantiatable types by [Fri.Instance()] or [Fri.Polymorph()] on: Abstract", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<ITestIncompatibleInstance>("{}"));
-                AreEqual("[Fri.Instance(Book)] type must extend annotated type: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestInstanceFactory+ITestIncompatibleInstance", e.Message);
+                AreEqual("[Fri.Instance(Book)] type must extend annotated type: ITestIncompatibleInstance", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<ITestInstanceNull>("{}"));
-                AreEqual("[Fri.Instance(null)] type must not be null on: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestInstanceFactory+ITestInstanceNull", e.Message);
+                AreEqual("[Fri.Instance(null)] type must not be null on: ITestInstanceNull", e.Message);
             }
         }
         
@@ -112,22 +112,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 AreEqual(json, jsonResult);
                 
                 reader.Read<IAnimal>("{\"animalType\":\"Tiger\"}");
-                StringAssert.Contains("No [Fri.Polymorph] type declared for discriminant: 'Tiger' on type: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestInstanceFactory+IAnimal", reader.Error.msg.AsString());
+                StringAssert.Contains("No [Fri.Polymorph] type declared for discriminant: 'Tiger' on type: IAnimal", reader.Error.msg.AsString());
                 
                 reader.Read<IAnimal>("{}");
-                StringAssert.Contains("Expect discriminator \"animalType\": \"...\" as first JSON member for type: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestInstanceFactory+IAnimal", reader.Error.msg.AsString());
+                StringAssert.Contains("Expect discriminator \"animalType\": \"...\" as first JSON member for type: IAnimal", reader.Error.msg.AsString());
                 
                 var e = Throws<InvalidOperationException>(() => reader.Read<TestIncompatiblePolymorph>("{}"));
-                AreEqual("[Fri.Polymorph(Book)] type must extend annotated type: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestInstanceFactory+TestIncompatiblePolymorph", e.Message);
+                AreEqual("[Fri.Polymorph(Book)] type must extend annotated type: TestIncompatiblePolymorph", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<TestPolymorphNull>("{}"));
-                AreEqual("[Fri.Polymorph(null)] type must not be null on: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestInstanceFactory+TestPolymorphNull", e.Message);
+                AreEqual("[Fri.Polymorph(null)] type must not be null on: TestPolymorphNull", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<TestNoDiscriminator>("{}"));
-                AreEqual("specified [Fri.Polymorph] attribute require [Fri.Discriminator] on: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestInstanceFactory+TestNoDiscriminator", e.Message);
+                AreEqual("specified [Fri.Polymorph] attribute require [Fri.Discriminator] on: TestNoDiscriminator", e.Message);
                 
                 e = Throws<InvalidOperationException>(() => reader.Read<TestNoPolymorph>("{}"));
-                AreEqual("specified [Fri.Discriminator] require at least one [Fri.Polymorph] attribute on: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestInstanceFactory+TestNoPolymorph", e.Message);
+                AreEqual("specified [Fri.Discriminator] require at least one [Fri.Polymorph] attribute on: TestNoPolymorph", e.Message);
             }
         }
         
