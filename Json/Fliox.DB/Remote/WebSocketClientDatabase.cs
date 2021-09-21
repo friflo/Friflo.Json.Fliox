@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                     return;
                 }
                 var contextPools    = new Pools(Pools.SharedPools);
-                ProtocolMessage message = CreateProtocolMessage (messageJson, contextPools);
+                ProtocolMessage message = ReadProtocolMessage (messageJson, contextPools);
                 if (message is ProtocolResponse resp) {
                     var requestId = resp.reqId;
                     if (!requestId.HasValue)
@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         public override async Task<Response<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             int sendReqId = Interlocked.Increment(ref reqId);
             syncRequest.reqId = sendReqId;
-            var jsonRequest = CreateSyncRequest(syncRequest, messageContext.pools);
+            var jsonRequest = CreateProtocolMessage(syncRequest, messageContext.pools);
             try {
                 // request need to be queued _before_ sending it to be prepared for handling the response.
                 var wsRequest         = new WebsocketRequest(messageContext, cancellationToken);

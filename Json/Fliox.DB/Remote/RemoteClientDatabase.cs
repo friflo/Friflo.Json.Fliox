@@ -41,17 +41,16 @@ namespace Friflo.Json.Fliox.DB.Remote
             messageContext.Release();
         }
 
-        protected static JsonUtf8 CreateSyncRequest (SyncRequest request, IPools pools) {
+        protected static JsonUtf8 CreateProtocolMessage (ProtocolMessage request, IPools pools) {
             using (var pooledMapper = pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
                 mapper.Pretty = true;
                 mapper.WriteNullMembers = false;
-
-                return new JsonUtf8(mapper.WriteAsArray<ProtocolMessage>(request));
+                return new JsonUtf8(mapper.WriteAsArray(request));
             }
         }
         
-        protected static ProtocolMessage CreateProtocolMessage (JsonUtf8 jsonMessage, IPools pools) {
+        protected static ProtocolMessage ReadProtocolMessage (JsonUtf8 jsonMessage, IPools pools) {
             using (var pooledMapper = pools.ObjectMapper.Get()) {
                 ObjectReader reader = pooledMapper.instance.reader;
                 var response = reader.Read<ProtocolMessage>(jsonMessage);
