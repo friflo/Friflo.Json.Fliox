@@ -124,13 +124,13 @@ namespace Friflo.Json.Fliox.DB.Host
         ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Fliox.DB.Protocol"/> which must to be fixed.</para> 
         /// </para>
         /// </summary>
-        public virtual async Task<Response<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public virtual async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.clientId = syncRequest.clientId;
             await authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
             
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null)
-                return new Response<SyncResponse> ("missing field: tasks (array)");
+                return new MsgResponse<SyncResponse> ("missing field: tasks (array)");
             var tasks = new List<SyncTaskResult>(requestTasks.Count);
             var response = new SyncResponse {
                 tasks   = tasks,
@@ -177,7 +177,7 @@ namespace Friflo.Json.Fliox.DB.Host
                     await broker.SendQueuedEvents().ConfigureAwait(false); // use only for testing
                 }
             }
-            return new Response<SyncResponse>(response);
+            return new MsgResponse<SyncResponse>(response);
         }
         
         /// Distribute <see cref="ContainerEntities.entityMap"/> to <see cref="ContainerEntities.entities"/>,

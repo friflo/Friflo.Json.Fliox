@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
         
         /// <summary>A class extending  <see cref="RemoteClientDatabase"/> must implement this method.</summary>
-        public abstract override Task<Response<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext);
+        public abstract override Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext);
         
         public override void AddEventTarget(string clientId, IEventTarget eventTarget) {
             clientTargets.Add(clientId, eventTarget);

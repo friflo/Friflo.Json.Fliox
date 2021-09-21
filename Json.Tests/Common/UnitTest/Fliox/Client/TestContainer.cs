@@ -14,7 +14,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     {
         private readonly    EntityDatabase  local;
         private readonly    Dictionary<string, TestContainer>                   testContainers  = new Dictionary<string, TestContainer>();
-        public  readonly    Dictionary<string, Func<Response<SyncResponse>>>    syncErrors      = new Dictionary<string, Func<Response<SyncResponse>>>();
+        public  readonly    Dictionary<string, Func<MsgResponse<SyncResponse>>> syncErrors      = new Dictionary<string, Func<MsgResponse<SyncResponse>>>();
         
         
         
@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             return testContainer;
         }
         
-        public override async Task<Response<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             foreach (var task in syncRequest.tasks) {
                 if (task is SendMessage message) {
                     if (!syncErrors.TryGetValue(message.name, out var fcn))

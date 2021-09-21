@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             httpClient.Dispose();
         }
         
-        public override async Task<Response<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             var jsonRequest = RemoteUtils.CreateProtocolMessage(syncRequest, messageContext.pools);
             var content = jsonRequest.AsByteArrayContent();
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -41,21 +41,21 @@ namespace Friflo.Json.Fliox.DB.Remote
                 
                 if (httpResponse.StatusCode == HttpStatusCode.OK) {
                     if (message is SyncResponse syncResponse) {
-                        return new Response<SyncResponse>(syncResponse);
+                        return new MsgResponse<SyncResponse>(syncResponse);
                     }
                 }
                 if (message is ErrorResponse errorResp) {
-                    return  new Response<SyncResponse>(errorResp.message);
+                    return  new MsgResponse<SyncResponse>(errorResp.message);
                 }
                 var msg = $"Request failed. http status code: {httpResponse.StatusCode}";
-                return new Response<SyncResponse>(msg);
+                return new MsgResponse<SyncResponse>(msg);
             }
             catch (HttpRequestException e) {
                 var error = ErrorResponse.ErrorFromException(e);
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
                 var msg = $"Request failed: Exception: {error}";
-                return new Response<SyncResponse>(msg);
+                return new MsgResponse<SyncResponse>(msg);
             }
         }
     }

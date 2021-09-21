@@ -121,7 +121,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             }
         }
         
-        public override async Task<Response<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             int sendReqId = Interlocked.Increment(ref reqId);
             syncRequest.reqId = sendReqId;
             var jsonRequest = RemoteUtils.CreateProtocolMessage(syncRequest, messageContext.pools);
@@ -137,16 +137,16 @@ namespace Friflo.Json.Fliox.DB.Remote
                 // --- Wait for response
                 var response = await wsRequest.response.Task.ConfigureAwait(false);
                 if (response is SyncResponse syncResponse) {
-                    return new Response<SyncResponse>(syncResponse);
+                    return new MsgResponse<SyncResponse>(syncResponse);
                 }
-                return new Response<SyncResponse>($"invalid response: Was: {response.MessageType}");
+                return new MsgResponse<SyncResponse>($"invalid response: Was: {response.MessageType}");
             }
             catch (Exception e) {
                 var error = ErrorResponse.ErrorFromException(e);
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
                 var msg = error.ToString();
-                return new Response<SyncResponse>(msg);
+                return new MsgResponse<SyncResponse>(msg);
             }
         }
     }

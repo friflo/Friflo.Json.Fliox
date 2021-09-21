@@ -264,10 +264,10 @@ namespace Friflo.Json.Fliox.DB.Client
             return _intern.pendingSyncs.Count;
         }
         
-        private async Task<Response<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        private async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             _intern.syncCount++;
-            Response<SyncResponse>       response;
-            Task<Response<SyncResponse>> task = null;
+            MsgResponse<SyncResponse>       response;
+            Task<MsgResponse<SyncResponse>> task = null;
             var pendingSyncs = _intern.pendingSyncs;
             try {
                 task = _intern.database.ExecuteSync(syncRequest, messageContext);
@@ -279,7 +279,7 @@ namespace Friflo.Json.Fliox.DB.Client
             catch (Exception e) {
                 pendingSyncs.TryRemove(task, out _);
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                response = new Response<SyncResponse>(errorMsg);
+                response = new MsgResponse<SyncResponse>(errorMsg);
             }
             return response;
         }
@@ -469,7 +469,7 @@ namespace Friflo.Json.Fliox.DB.Client
             results.Clear();
         }
 
-        private SyncResult HandleSyncResponse(SyncRequest syncRequest, Response<SyncResponse> response, SyncStore syncStore) {
+        private SyncResult HandleSyncResponse(SyncRequest syncRequest, MsgResponse<SyncResponse> response, SyncStore syncStore) {
             SyncResult      syncResult;
             ErrorResponse   error       = response.error;
             var             syncSets    = syncStore.SyncSets;
@@ -477,8 +477,8 @@ namespace Friflo.Json.Fliox.DB.Client
                 TaskErrorResult                         syncError;
                 Dictionary<string, ContainerEntities>   containerResults;
                 if (error == null) {
-                    var result = response.sucess;
-                    response.sucess.AssertResponse(syncRequest);
+                    var result = response.success;
+                    response.success.AssertResponse(syncRequest);
                     syncError = null;
                     GetContainerResults(result);
                     containerResults = result.resultMap;
@@ -502,7 +502,7 @@ namespace Friflo.Json.Fliox.DB.Client
                     TaskType    taskType = task.TaskType;
                     SyncTaskResult  result;
                     if (syncError == null) {
-                        var results = response.sucess.tasks;
+                        var results = response.success.tasks;
                         result = results[n];
                         var actual = result.TaskType;
                         if (actual != TaskType.error) {

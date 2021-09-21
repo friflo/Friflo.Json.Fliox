@@ -158,7 +158,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 await store.Sync(); // ~ 1 µs
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var expected = IsDebug() ? 1376 : 1320; // Test Debug & Release
+                var expected = IsDebug() ? 1392 : 1304; // Test Debug & Release
                 AreEqual(expected, diff);   // Test Release also
             }
         }
@@ -201,12 +201,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 return null;
             }
             
-            public override Task<Response<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+            public override Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
                 var result = new SyncResponse {
                     tasks       = new List<SyncTaskResult>(),
                     resultMap   = new Dictionary<string, ContainerEntities>()
                 };
-                var response = new Response<SyncResponse>(result);
+                var response = new MsgResponse<SyncResponse>(result);
                 return Task.FromResult(response);
             }
         }

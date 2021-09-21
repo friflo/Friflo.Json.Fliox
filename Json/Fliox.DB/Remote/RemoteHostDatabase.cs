@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             return container;
         }
         
-        public override async Task<Response<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             var response = await local.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
             response.Result.reqId = syncRequest.reqId;
             return response;
