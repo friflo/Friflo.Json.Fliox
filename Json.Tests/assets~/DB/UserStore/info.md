@@ -2,9 +2,9 @@
 # UserStore database
 
 This folder contains an example user database used to configure user authentication and authorization by utilizing a
-[UserAuthenticator.cs](../../../../Json/Fliox.Graph/UserAuth/UserDatabaseAuthenticator.cs) instance.
+[UserAuthenticator.cs](../../../../Json/Fliox.Client/UserAuth/UserDatabaseAuthenticator.cs) instance.
 
-The schema of the database is defined via the models in [UserStore.cs](../../../../Json/Fliox.Graph/UserAuth/UserStore.cs).
+The schema of the database is defined via the models in [UserStore.cs](../../../../Json/Fliox.Client/UserAuth/UserStore.cs).
 
 folders (containers):
 

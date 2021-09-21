@@ -1,4 +1,4 @@
-import { Article, DerivedClass, Order } from "../PocStore/UnitTest.Fliox.Graph"
+import { Article, DerivedClass, Order } from "../PocStore/UnitTest.Fliox.Client"
 
 
 var exampleArticle: Article = {

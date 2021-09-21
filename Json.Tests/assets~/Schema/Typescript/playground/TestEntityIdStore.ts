@@ -1,4 +1,4 @@
-import { GuidEntity } from "../EntityIdStore/UnitTest.Fliox.Graph"
+import { GuidEntity } from "../EntityIdStore/UnitTest.Fliox.Client"
 
 
 var guidEntity: GuidEntity = {
