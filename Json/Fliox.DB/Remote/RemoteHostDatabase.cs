@@ -4,7 +4,6 @@
 using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
@@ -14,7 +13,7 @@ namespace Friflo.Json.Fliox.DB.Remote
     public class RemoteHostDatabase : EntityDatabase
     {
         internal readonly   EntityDatabase  local;
-        /// Only set to true for testing. It avoids an early out at <see cref="EventSubscriber.SendEvents"/> 
+        /// Only set to true for testing. It avoids an early out at <see cref="Host.Event.EventSubscriber.SendEvents"/> 
         public              bool            fakeOpenClosedSockets;
 
         public RemoteHostDatabase(EntityDatabase local) {
