@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             return result;
         }
 
-        public async Task<JsonResponse> ExecuteRequestJson(JsonUtf8 jsonRequest, MessageContext messageContext) {
+        public async Task<JsonResponse> ExecuteRequestJson2(JsonUtf8 jsonRequest, MessageContext messageContext) {
             try {
                 JsonUtf8 jsonResponse;
                 using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {

@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
                         var requestContent  = new JsonUtf8(memoryStream.ToArray());
                         var messageContext  = new MessageContext(pools, this);
-                        var result          = await remoteHost.ExecuteRequestJson(requestContent, messageContext).ConfigureAwait(false);
+                        var result          = await remoteHost.ExecuteRequestJson2(requestContent, messageContext).ConfigureAwait(false);
                         messageContext.Release();
                         var arraySegment    = result.body.AsArraySegment();
                         sendWriter.TryWrite(arraySegment);
