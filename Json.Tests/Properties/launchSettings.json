@@ -1,8 +1,8 @@
 {
   "profiles": {
-    "GraphServer": {
+    "FlioxServer": {
       "commandName": "Project",
-      "commandLineArgs": "--module GraphServer",
+      "commandLineArgs": "--module FlioxServer",
       "workingDirectory": "$(SolutionDir)"
     },
     "MemoryDbThroughput": {

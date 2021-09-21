@@ -1,5 +1,5 @@
 
-# Example requests bellow send to GraphServer in ./Main/Program.cs 
+# Example requests bellow send to FlioxServer in ./Main/Program.cs 
 #
 # Hint:
 # use with [REST Client - Visual Studio Marketplace] https://marketplace.visualstudio.com/items?itemName=humao.rest-client

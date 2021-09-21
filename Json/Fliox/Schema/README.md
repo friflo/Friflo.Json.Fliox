@@ -45,5 +45,5 @@ From these input schemas the following output schemas can be generate:
   [Schema generators & JSON Validation tests](../../../Json.Tests/Common/UnitTest/Fliox/Schema)
 
 - Schema validation in an `EntityDatabase` is demonstrated at:  
-  [GraphServer](../../../Json.Tests/Main/Program.cs)
+  [FlioxServer](../../../Json.Tests/Main/Program.cs)
 

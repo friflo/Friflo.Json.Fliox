@@ -18,7 +18,7 @@ namespace Friflo.Json.Tests.Main
     {
         enum Module
         {
-            GraphServer,
+            FlioxServer,
             //
             MemoryDbThroughput,
             FileDbThroughput,
@@ -27,12 +27,12 @@ namespace Friflo.Json.Tests.Main
             LoopbackDbThroughput
         }
         
-        // run GraphServer via one of the following methods:
-        //   dotnet run --project ./Json.Tests/Friflo.Json.Tests.csproj -- --module GraphServer        (also compiles project)
-        //   dotnet ./Json.Tests/.bin/Debug/netcoreapp3.1/Friflo.Json.Tests.dll --module GraphServer   (requires Debug build)
-        //   VSCode        > Run > GraphServer
-        //   Rider         > Run > GraphServer
-        //   Visual Studio > Debug > GraphServer
+        // run FlioxServer via one of the following methods:
+        //   dotnet run --project ./Json.Tests/Friflo.Json.Tests.csproj -- --module FlioxServer        (also compiles project)
+        //   dotnet ./Json.Tests/.bin/Debug/netcoreapp3.1/Friflo.Json.Tests.dll --module FlioxServer   (requires Debug build)
+        //   VSCode        > Run > FlioxServer
+        //   Rider         > Run > FlioxServer
+        //   Visual Studio > Debug > FlioxServer
         public static void Main(string[] args)
         {
             Console.WriteLine($"Friflo.Json.Tests - current directory: {Directory.GetCurrentDirectory()}");
@@ -53,8 +53,8 @@ namespace Friflo.Json.Tests.Main
             {
                 Console.WriteLine($"module: {module}");
                 switch (module) {
-                    case Module.GraphServer:
-                        GraphServer(endpoint, database, www);
+                    case Module.FlioxServer:
+                        FlioxServer(endpoint, database, www);
                         break;
                     case Module.MemoryDbThroughput:
                         await Throughput.MemoryDbThroughput();
@@ -76,7 +76,7 @@ namespace Friflo.Json.Tests.Main
             rootCommand.Invoke(args);
         }
         
-        // Example requests to the GraphServer are at: ./GraphServer.http
+        // Example requests to the FlioxServer are at: ./FlioxServer.http
         //
         //   Note:
         // Http server may require a permission to listen to the given host/port.
@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Main
         // Get DOMAIN\USER via  PowerShell
         //     $env:UserName
         //     $env:UserDomain 
-        private static void GraphServer(string endpoint, string database, string wwwRoot) {
+        private static void FlioxServer(string endpoint, string database, string wwwRoot) {
             Console.WriteLine($"FileDatabase: {database}");
             var fileDatabase        = new FileDatabase(database) { eventBroker = new EventBroker(true) }; // eventBroker enables Pub-Sub
             
