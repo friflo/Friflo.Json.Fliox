@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Friflo.Json.Fliox.DB.Graph.Internal;
 using Friflo.Json.Fliox.DB.NoSQL;
-using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Graph

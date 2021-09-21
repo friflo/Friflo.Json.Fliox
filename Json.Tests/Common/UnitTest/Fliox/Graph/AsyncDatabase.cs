@@ -3,7 +3,7 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Graph;
 using Friflo.Json.Fliox.DB.NoSQL;
-using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.DB.Protocol;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
 {

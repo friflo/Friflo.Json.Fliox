@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Sync
+namespace Friflo.Json.Fliox.DB.Protocol
 {
     public interface ICommandResult
     {

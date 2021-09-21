@@ -5,7 +5,7 @@ using System.Text;
 using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Sync
+namespace Friflo.Json.Fliox.DB.Protocol
 {
     /// An <see cref="EntityError"/> needs to be set only, if the access to <see cref="EntityValue"/>'s
     /// returned by a previous call to <see cref="EntityContainer.ReadEntities"/> or

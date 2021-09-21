@@ -3,7 +3,7 @@
 
 using System;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Val;

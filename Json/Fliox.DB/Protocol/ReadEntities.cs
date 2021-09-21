@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Sync
+namespace Friflo.Json.Fliox.DB.Protocol
 {
     // ----------------------------------- sub task -----------------------------------
     public class ReadEntities

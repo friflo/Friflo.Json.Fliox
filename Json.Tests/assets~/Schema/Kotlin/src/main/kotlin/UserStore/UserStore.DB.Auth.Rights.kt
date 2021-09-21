@@ -3,7 +3,7 @@ package UserStore.DB.Auth.Rights
 
 import kotlinx.serialization.*
 import CustomSerializer.*
-import UserStore.DB.Sync.*
+import UserStore.DB.Protocol.*
 
 @Serializable
 // @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546

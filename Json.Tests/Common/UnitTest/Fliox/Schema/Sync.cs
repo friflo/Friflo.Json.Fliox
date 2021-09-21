@@ -3,7 +3,7 @@
 
 using System;
 using Friflo.Json.Fliox.Schema;
-using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         public static void CS_Typescript () {
             var options     = new NativeTypeOptions(SyncTypes);
             var generator   = TypescriptGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/Sync");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/Protocol");
         }
         
         /// C# -> JSON Schema
@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         public static void CS_JSON () {
             var options     = new NativeTypeOptions(SyncTypes);
             var generator   = JsonSchemaGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JSON/Sync");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JSON/Protocol");
         }
         
         /// C# -> C#
@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
                 replacements = new[]{new Replace("Friflo.Json.")}
             };
             var generator = CSharpGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/C#/Sync");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/C#/Protocol");
         }
         
         /// C# -> Kotlin
@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
                     new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "Sync") }
             };
             var generator = KotlinGenerator.Generate(options);
-            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Kotlin/src/main/kotlin/Sync");
+            generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Kotlin/src/main/kotlin/Protocol");
         }
         
         /// C# -> JTD

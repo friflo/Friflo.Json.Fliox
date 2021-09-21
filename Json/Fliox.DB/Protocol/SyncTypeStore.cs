@@ -5,7 +5,7 @@ using Friflo.Json.Fliox.DB.Graph;
 using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Sync
+namespace Friflo.Json.Fliox.DB.Protocol
 {
     /// Singleton are typically a bad practice, but its okay in this case as <see cref="TypeStore"/> behaves like an
     /// immutable object because the mapped types <see cref="SyncRequest"/> and <see cref="SyncResponse"/> are

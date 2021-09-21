@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.NoSQL.Event;
 using Friflo.Json.Fliox.DB.NoSQL.Utils;
-using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.NoSQL.Remote

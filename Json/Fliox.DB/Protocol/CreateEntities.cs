@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 
-namespace Friflo.Json.Fliox.DB.Sync
+namespace Friflo.Json.Fliox.DB.Protocol
 {
     // ----------------------------------- task -----------------------------------
     public class CreateEntities : SyncRequestTask

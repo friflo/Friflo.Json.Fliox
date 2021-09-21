@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Validation;
 using Friflo.Json.Fliox.Transform;

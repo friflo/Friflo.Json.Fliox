@@ -36,7 +36,7 @@
             "extends": { "$ref": "#/definitions/Right" },
             "properties": {
                 "type":        { "enum": ["task"] },
-                "types":       { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.DB.Sync.json#/definitions/TaskType" } },
+                "types":       { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/TaskType" } },
                 "description": { "type": ["string", "null"] }
             },
             "required": [
@@ -91,7 +91,7 @@
             "type": "object",
             "properties": {
                 "operations":       { "type": ["array", "null"], "items": { "$ref": "#/definitions/OperationType" } },
-                "subscribeChanges": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.DB.Sync.json#/definitions/Change" } }
+                "subscribeChanges": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/Change" } }
             },
             "additionalProperties": false
         },

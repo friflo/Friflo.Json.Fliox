@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.DB.NoSQL.Event;
 using Friflo.Json.Fliox.DB.NoSQL.Remote;
 using Friflo.Json.Fliox.DB.NoSQL.Utils;
-using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using UnityEngine.TestTools;

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Graph;
 using Friflo.Json.Fliox.DB.NoSQL.Event;
-using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.NoSQL
@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         ///   <para> 1. The implementation of an <see cref="EntityContainer"/> is missing a proper error handling.
         ///          A proper error handling requires to set a meaningful <see cref="CommandError"/> to
         ///          <see cref="ICommandResult.Error"/></para>
-        ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Fliox.DB.Sync"/> which must to be fixed.</para> 
+        ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Fliox.DB.Protocol"/> which must to be fixed.</para> 
         /// </para>
         /// </summary>
         public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {

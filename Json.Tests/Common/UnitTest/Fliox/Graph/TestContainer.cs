@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.NoSQL;
-using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph

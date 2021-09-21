@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Friflo.Json.Fliox.DB.Graph.Internal;
-using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Transform;
 
 namespace Friflo.Json.Fliox.DB.Graph

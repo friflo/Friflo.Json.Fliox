@@ -3,7 +3,7 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Fliox.DB.Sync;
+using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Graph.Internal
