@@ -535,24 +535,19 @@
         "SyncResponse": {
             "properties": {
                 "reqId":        { "type": "int32", "nullable": true },
-                "error":        { "ref":  "ErrorResponse", "nullable": true },
                 "tasks":        { "elements": { "ref":  "SyncTaskResult" }, "nullable": true },
                 "results":      { "elements": { "ref":  "ContainerEntities" }, "nullable": true },
                 "createErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
                 "upsertErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
                 "patchErrors":  { "values": { "ref":  "EntityErrors" }, "nullable": true },
-                "deleteErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true }
+                "deleteErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
+                "error":        { "ref":  "ErrorResponse", "nullable": true }
             }
         },
         "ProtocolResponse": {
             "properties": {
-                "reqId": { "type": "int32", "nullable": true }
-            }
-        },
-        "ErrorResponse": {
-            "properties": {
-                "reqId":   { "type": "int32", "nullable": true },
-                "message": { "type": "string", "nullable": true }
+                "reqId": { "type": "int32", "nullable": true },
+                "error": { "ref":  "ErrorResponse", "nullable": true }
             }
         },
         "SyncTaskResult": {
@@ -701,6 +696,13 @@
             "properties": {
                 "container": { "type": "string", "nullable": true },
                 "errors":    { "values": { "ref":  "EntityError" } }
+            }
+        },
+        "ErrorResponse": {
+            "properties": {
+                "reqId":   { "type": "int32", "nullable": true },
+                "message": { "type": "string", "nullable": true },
+                "error":   { "ref":  "ErrorResponse", "nullable": true }
             }
         },
         "SubscriptionEvent": {

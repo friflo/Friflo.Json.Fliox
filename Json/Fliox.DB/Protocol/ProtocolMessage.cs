@@ -63,6 +63,8 @@ namespace Friflo.Json.Fliox.DB.Protocol
         // ReSharper disable once InconsistentNaming
         /// <summary>Set to the value of the corresponding <see cref="ProtocolRequest.reqId"/></summary>
                                         public          int?            reqId       { get; set; }
+                                        public          ErrorResponse   error;
+
     }
     
     // ----------------------------------- event -----------------------------------

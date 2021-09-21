@@ -161,22 +161,17 @@ export class ReserveKeys extends SyncRequestTask {
 
 export abstract class ProtocolResponse extends ProtocolMessage {
     reqId? : int32 | null;
+    error? : ErrorResponse | null;
 }
 
 export class SyncResponse extends ProtocolResponse {
     type          : "syncRes";
-    error?        : ErrorResponse | null;
     tasks?        : SyncTaskResult_Union[] | null;
     results?      : ContainerEntities[] | null;
     createErrors? : { [key: string]: EntityErrors } | null;
     upsertErrors? : { [key: string]: EntityErrors } | null;
     patchErrors?  : { [key: string]: EntityErrors } | null;
     deleteErrors? : { [key: string]: EntityErrors } | null;
-}
-
-export class ErrorResponse extends ProtocolResponse {
-    type     : "error";
-    message? : string | null;
 }
 
 export type SyncTaskResult_Union =
@@ -325,6 +320,11 @@ export type EntityErrorType =
 export class EntityErrors {
     container? : string | null;
     errors     : { [key: string]: EntityError };
+}
+
+export class ErrorResponse extends ProtocolResponse {
+    type     : "error";
+    message? : string | null;
 }
 
 export abstract class ProtocolEvent extends ProtocolMessage {

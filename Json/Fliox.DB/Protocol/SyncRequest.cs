@@ -32,8 +32,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     // ----------------------------------- response -----------------------------------
     public class SyncResponse : ProtocolResponse
     {
-                        public  ErrorResponse                           error;
-                        public  List<SyncTaskResult>                        tasks;
+                        public  List<SyncTaskResult>                    tasks;
                         public  List<ContainerEntities>                 results;
         // key of all Dictionary's is the container name
         [Fri.Ignore]    public  Dictionary<string, ContainerEntities>   resultMap;

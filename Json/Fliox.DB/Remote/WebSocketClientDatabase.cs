@@ -16,6 +16,8 @@ namespace Friflo.Json.Fliox.DB.Remote
 {
     public class WebSocketClientDatabase : RemoteClientDatabase
     {
+        private             int                                         reqId;
+
         private  readonly   string                                      endpoint;
         private             ClientWebSocket                             websocket;
         private  readonly   ConcurrentDictionary<int, WebsocketRequest> requests = new ConcurrentDictionary<int, WebsocketRequest>();
@@ -95,13 +97,17 @@ namespace Friflo.Json.Fliox.DB.Remote
         
         private void OnReceive(JsonUtf8 messageJson) {
             try {
-                var contextPools    = new Pools(Pools.SharedPools);
-                ProtocolMessage message;
-                using (var pooledMapper = contextPools.ObjectMapper.Get()) {
-                    var reader = pooledMapper.instance.reader;
-                    message = reader.Read<ProtocolMessage>(messageJson);
+                if (websocket.State != WebSocketState.Open) {
+                    var error = $"websocket.State not WebSocketState.";
+                    Console.WriteLine(error);
+                    Debug.Fail(error);
+                    // var error = JsonResponse.CreateResponseError(request.messageContext, $"WebSocket not Open. {endpoint}", ResponseStatusType.Error);
+                    // request.response.SetResult(error);
+                    return;
                 }
-                if (message is SyncResponse resp) {
+                var contextPools    = new Pools(Pools.SharedPools);
+                ProtocolMessage message = CreateProtocolMessage (messageJson, contextPools);
+                if (message is ProtocolResponse resp) {
                     var requestId = resp.reqId;
                     if (!requestId.HasValue)
                         throw new InvalidOperationException("WebSocketClientDatabase requires reqId in response");
@@ -109,57 +115,59 @@ namespace Friflo.Json.Fliox.DB.Remote
                     if (!requests.TryRemove(id, out WebsocketRequest request)) {
                         throw new InvalidOperationException($"Expect corresponding request to response. id: {id}");
                     }
-                    if (websocket.State != WebSocketState.Open) {
-                        var error = JsonResponse.CreateResponseError(request.messageContext, $"WebSocket not Open. {endpoint}", ResponseStatusType.Error);
-                        request.response.SetResult(error);
-                        return;
-                    }
-                    // var writer          = pooledMapper.instance.writer;
-                    // var responseJson    = new JsonUtf8(writer.WriteAsArray<DatabaseMessage>(resp));
-                    var response        = new JsonResponse(messageJson, ResponseStatusType.Ok);
-                    request.response.SetResult(response);
+                    request.response.SetResult(resp);
                     return;
                 }
                 if (message is SubscriptionEvent ev) {
                     ProcessEvent(ev);
                 }
-                
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 var error = $"OnReceive failed processing WebSocket message. Exception: {e}";
                 Console.WriteLine(error);
                 Debug.Fail(error);
             }
         }
-
-        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, JsonUtf8 jsonSyncRequest, MessageContext messageContext) {
-            if (requestId < 1)
-                throw new InvalidOperationException("Expect requestId > 0");
+        
+        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+            int sendReqId = Interlocked.Increment(ref reqId);
+            syncRequest.reqId = sendReqId;
+            var jsonRequest = CreateSyncRequest(syncRequest, messageContext.pools);
             try {
                 // request need to be queued _before_ sending it to be prepared for handling the response.
-                var request         = new WebsocketRequest(messageContext, cancellationToken);
-                requests.TryAdd(requestId, request);
+                var wsRequest         = new WebsocketRequest(messageContext, cancellationToken);
+                requests.TryAdd(sendReqId, wsRequest);
                 
-                var arraySegment    = jsonSyncRequest.AsArraySegment();
+                var arraySegment    = jsonRequest.AsArraySegment();
+                // --- Send message
                 await websocket.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
                 
-                var response = await request.response.Task.ConfigureAwait(false);
-                return response;
+                // --- Wait for response
+                var response = await wsRequest.response.Task.ConfigureAwait(false);
+
+                return (SyncResponse)response;
             }
             catch (Exception e) {
                 var error = ErrorResponse.ErrorFromException(e);
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
-                return JsonResponse.CreateResponseError(messageContext, error.ToString(), ResponseStatusType.Exception);
+                var response = new SyncResponse {
+                    error = new ErrorResponse {
+                        message = error.ToString(),
+                        reqId = sendReqId
+                    }
+                };
+                return response;
             }
         }
     }
     
     internal class WebsocketRequest {
-        internal readonly   MessageContext                      messageContext;
-        internal readonly   TaskCompletionSource<JsonResponse>  response;          
+        internal readonly   MessageContext                          messageContext;
+        internal readonly   TaskCompletionSource<ProtocolResponse>  response;          
         
         internal WebsocketRequest(MessageContext messageContext, CancellationTokenSource cancellationToken) {
-            response            = new TaskCompletionSource<JsonResponse>();
+            response            = new TaskCompletionSource<ProtocolResponse>();
             this.messageContext = messageContext;
             messageContext.canceler = () => {
                 cancellationToken.Cancel();

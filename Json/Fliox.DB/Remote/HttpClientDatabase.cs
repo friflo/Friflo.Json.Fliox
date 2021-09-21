@@ -26,30 +26,48 @@ namespace Friflo.Json.Fliox.DB.Remote
             httpClient.CancelPendingRequests();
             httpClient.Dispose();
         }
-
-        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, JsonUtf8 jsonSyncRequest, MessageContext messageContext) {
-            var content = jsonSyncRequest.AsByteArrayContent();
+        
+        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+            var jsonRequest = CreateSyncRequest(syncRequest, messageContext.pools);
+            var content = jsonRequest.AsByteArrayContent();
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             // body.Headers.ContentEncoding = new string[]{"charset=utf-8"};
-
+            
             try {
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(endpoint, content).ConfigureAwait(false);
                 var bodyArray   = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                var body        = new JsonUtf8(bodyArray);
-                ResponseStatusType statusType;
+                
+                var jsonBody = new JsonUtf8(bodyArray);
+                ProtocolMessage message = CreateProtocolMessage (jsonBody, messageContext.pools);
                 switch (httpResponse.StatusCode) {
-                    case HttpStatusCode.OK:                     statusType = ResponseStatusType.Ok;         break; 
-                    case HttpStatusCode.BadRequest:             statusType = ResponseStatusType.Error;      break;
-                    case HttpStatusCode.InternalServerError:    statusType = ResponseStatusType.Exception;  break;
-                    default:                                    statusType = ResponseStatusType.Exception;  break;
+                    case HttpStatusCode.OK:
+                        if (message is SyncResponse syncResponse)
+                            return syncResponse;
+                        if (message is ErrorResponse errorResp)
+                            return new SyncResponse { error = errorResp };
+                        break;
+                    default:
+                        if (message is ErrorResponse errResp)
+                            return new SyncResponse { error = errResp };
+                        break;
                 }
-                return new JsonResponse(body, statusType);
+                var errorResponse = new SyncResponse {
+                    error = new ErrorResponse {
+                        message = $"Request failed. http status code: {httpResponse.StatusCode}"
+                    }
+                };
+                return errorResponse; 
             }
             catch (HttpRequestException e) {
                 var error = ErrorResponse.ErrorFromException(e);
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
-                return JsonResponse.CreateResponseError(messageContext, error.ToString(), ResponseStatusType.Exception);
+                var errorResponse = new SyncResponse() {
+                    error = new ErrorResponse() {
+                        message = $"Request failed: Exception: {e.Message}"
+                    }
+                };
+                return errorResponse;
             }
         }
     }

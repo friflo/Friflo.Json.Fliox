@@ -30,10 +30,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             base.Dispose();
             loopbackHost.Dispose();
         }
-
-        protected override async Task<JsonResponse> ExecuteRequestJson(int requestId, JsonUtf8 jsonRequest, MessageContext messageContext) {
-            var jsonResponse = await loopbackHost.ExecuteRequestJson2(jsonRequest, messageContext).ConfigureAwait(false);
-            return jsonResponse;
+        
+        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+            var response = await loopbackHost.ExecuteSync(syncRequest, messageContext);
+            return response;
         }
     }
 }

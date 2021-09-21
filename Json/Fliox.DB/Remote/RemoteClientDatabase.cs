@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Event;
@@ -15,7 +14,6 @@ namespace Friflo.Json.Fliox.DB.Remote
 {
     public abstract class RemoteClientDatabase : EntityDatabase
     {
-        private             int                                 reqId;
         private  readonly   Dictionary<string, IEventTarget>    clientTargets = new Dictionary<string, IEventTarget>();
         private  readonly   Pools                               pools = new Pools(Pools.SharedPools);
 
@@ -43,48 +41,28 @@ namespace Friflo.Json.Fliox.DB.Remote
             messageContext.Release();
         }
 
-        protected abstract Task<JsonResponse> ExecuteRequestJson(int requestId, JsonUtf8 jsonRequest, MessageContext messageContext);
-        
-        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            var response = await ExecuteRequest(syncRequest, messageContext).ConfigureAwait(false);
-            if (response is SyncResponse syncResponse)
-                return syncResponse;
-            var error = (ErrorResponse)response;
-            return new SyncResponse {error = error};
-        }
-        
-        private async Task<ProtocolResponse> ExecuteRequest(ProtocolRequest request, MessageContext messageContext) {
-            int requestId = Interlocked.Increment(ref reqId);
-            request.reqId = requestId; 
-            using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
+        protected static JsonUtf8 CreateSyncRequest (SyncRequest request, IPools pools) {
+            using (var pooledMapper = pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
                 mapper.Pretty = true;
                 mapper.WriteNullMembers = false;
-                var jsonRequest = CreateRequest(mapper.writer, request);
-                var result = await ExecuteRequestJson(requestId, jsonRequest, messageContext).ConfigureAwait(false);
-                
-                ObjectReader reader = mapper.reader;
-                if (result.statusType == ResponseStatusType.Ok) {
-                    var msg = reader.Read<ProtocolMessage>(result.body);
-                    if (reader.Error.ErrSet)
-                        return new ErrorResponse{message = reader.Error.msg.AsString()};
-                    // At this point the returned result.body is valid JSON.
-                    // => All entities of a SyncResponse.results have either a valid JSON value or an error.
-                    if (msg is ProtocolResponse req)
-                        return req;
-                    return new ErrorResponse{ message = $"Expect response. Was MessageType: {msg.MessageType}"};
-                }
-                var errMsg = reader.Read<ProtocolMessage>(result.body);
-                if (reader.Error.ErrSet)
-                    return new ErrorResponse{message = reader.Error.msg.AsString()};
-                if (errMsg is ErrorResponse errorResp)
-                    return errorResp;
-                return new ErrorResponse{ message = $"Expect error response. Was MessageType: {errMsg.MessageType}"};
+
+                return new JsonUtf8(mapper.WriteAsArray<ProtocolMessage>(request));
             }
         }
         
-        private JsonUtf8 CreateRequest (ObjectWriter writer, ProtocolRequest request) {
-            return new JsonUtf8(writer.WriteAsArray<ProtocolMessage>(request));
+        protected static ProtocolMessage CreateProtocolMessage (JsonUtf8 jsonMessage, IPools pools) {
+            using (var pooledMapper = pools.ObjectMapper.Get()) {
+                ObjectReader reader = pooledMapper.instance.reader;
+                var response = reader.Read<ProtocolMessage>(jsonMessage);
+                if (reader.Error.ErrSet) {
+                    var message = reader.Error.msg.ToString();
+                    response = new ErrorResponse {
+                        message = message
+                    };
+                }
+                return response;
+            }
         }
     }
     
