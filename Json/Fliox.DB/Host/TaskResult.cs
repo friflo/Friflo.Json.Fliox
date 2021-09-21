@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+/* not used
 using Friflo.Json.Fliox.DB.Protocol;
 
 namespace Friflo.Json.Fliox.DB.Host
@@ -30,3 +31,4 @@ namespace Friflo.Json.Fliox.DB.Host
         
     }
 }
+*/
