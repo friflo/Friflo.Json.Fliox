@@ -201,12 +201,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
                 return null;
             }
             
-            public override Task<MessageResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+            public override Task<Response<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
                 var result = new SyncResponse {
                     tasks       = new List<SyncTaskResult>(),
                     resultMap   = new Dictionary<string, ContainerEntities>()
                 };
-                var response = new MessageResponse<SyncResponse>(result);
+                var response = new Response<SyncResponse>(result);
                 return Task.FromResult(response);
             }
         }

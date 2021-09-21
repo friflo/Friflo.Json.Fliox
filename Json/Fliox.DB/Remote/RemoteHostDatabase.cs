@@ -27,9 +27,9 @@ namespace Friflo.Json.Fliox.DB.Remote
             return container;
         }
         
-        public override async Task<MessageResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public override async Task<Response<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             var response = await local.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
-            response.Response.reqId = syncRequest.reqId;
+            response.Result.reqId = syncRequest.reqId;
             return response;
         }
 
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             switch (request.MessageType) {
                 case MessageType.sync:
                     var response = await ExecuteSync((SyncRequest)request, messageContext).ConfigureAwait(false);
-                    return response.Response;
+                    return response.Result;
                 default:
                     throw new NotImplementedException();
             }

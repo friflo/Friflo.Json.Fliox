@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             return local.CreateContainer(name, database);
         }
         
-        public override async Task<MessageResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public override async Task<Response<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             foreach (var task in syncRequest.tasks) {
                 switch (task) {
                     case CreateEntities createEntities:

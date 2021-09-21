@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             // use SendMessage() to simulate error/exception
             const string msgSyncError      = "msg-sync-error";
             const string msgSyncException  = "msg-sync-exception";
-            testDatabase.syncErrors.Add(msgSyncError,       () => new MessageResponse<SyncResponse>("simulated SyncError"));
+            testDatabase.syncErrors.Add(msgSyncError,       () => new Response<SyncResponse>("simulated SyncError"));
             testDatabase.syncErrors.Add(msgSyncException,   () => throw new SimulationException ("simulated SyncException"));
             
             var helloTask1 = store.SendMessage(StdMessage.Echo, "Hello World 1");

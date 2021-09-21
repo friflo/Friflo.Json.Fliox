@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             return local.GetOrCreateContainer(name);
         }
         
-        public override async Task<MessageResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public override async Task<Response<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             const bool originalContext = true;
             // force release the thread back to the caller so continuation will not be executed synchronously.
             await Task.Delay(1).ConfigureAwait(originalContext);
