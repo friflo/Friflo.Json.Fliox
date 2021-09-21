@@ -4,7 +4,6 @@
 using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Client;
-using Friflo.Json.Fliox.DB.Client.Internal.KeyEntity;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
