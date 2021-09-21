@@ -152,13 +152,11 @@ data class SyncResponse (
               val upsertErrors : HashMap<String, EntityErrors>? = null,
               val patchErrors  : HashMap<String, EntityErrors>? = null,
               val deleteErrors : HashMap<String, EntityErrors>? = null,
-    override  val error        : ErrorResponse? = null,
 ) : ProtocolResponse()
 
 @Serializable
 abstract class ProtocolResponse {
     abstract  val reqId : Int?
-    abstract  val error : ErrorResponse?
 }
 
 @Serializable
@@ -304,14 +302,6 @@ data class EntityErrors (
 )
 
 @Serializable
-@SerialName("error")
-data class ErrorResponse (
-    override  val reqId   : Int? = null,
-              val message : String? = null,
-    override  val error   : ErrorResponse? = null,
-) : ProtocolResponse()
-
-@Serializable
 @SerialName("sub")
 data class SubscriptionEvent (
     override  val seq    : Int,
@@ -326,4 +316,11 @@ abstract class ProtocolEvent {
     abstract  val target : String?
     abstract  val client : String?
 }
+
+@Serializable
+@SerialName("error")
+data class ErrorResponse (
+    override  val reqId   : Int? = null,
+              val message : String? = null,
+) : ProtocolResponse()
 

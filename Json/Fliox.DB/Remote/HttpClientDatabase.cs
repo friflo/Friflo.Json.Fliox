@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             httpClient.Dispose();
         }
         
-        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public override async Task<MessageResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             var jsonRequest = CreateSyncRequest(syncRequest, messageContext.pools);
             var content = jsonRequest.AsByteArrayContent();
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -42,31 +42,25 @@ namespace Friflo.Json.Fliox.DB.Remote
                 switch (httpResponse.StatusCode) {
                     case HttpStatusCode.OK:
                         if (message is SyncResponse syncResponse)
-                            return syncResponse;
+                            return new MessageResponse<SyncResponse>(syncResponse);
                         if (message is ErrorResponse errorResp)
-                            return new SyncResponse { error = errorResp };
+                            return  new MessageResponse<SyncResponse>(errorResp.message);
                         break;
                     default:
                         if (message is ErrorResponse errResp)
-                            return new SyncResponse { error = errResp };
+                            return new MessageResponse<SyncResponse>(errResp.message);
                         break;
                 }
-                var errorResponse = new SyncResponse {
-                    error = new ErrorResponse {
-                        message = $"Request failed. http status code: {httpResponse.StatusCode}"
-                    }
-                };
+                var msg = $"Request failed. http status code: {httpResponse.StatusCode}";
+                var errorResponse = new MessageResponse<SyncResponse>(msg);
                 return errorResponse; 
             }
             catch (HttpRequestException e) {
                 var error = ErrorResponse.ErrorFromException(e);
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
-                var errorResponse = new SyncResponse() {
-                    error = new ErrorResponse() {
-                        message = $"Request failed: Exception: {e.Message}"
-                    }
-                };
+                var msg = $"Request failed: Exception: {error}";
+                var errorResponse = new MessageResponse<SyncResponse>(msg);
                 return errorResponse;
             }
         }

@@ -540,14 +540,12 @@
                 "createErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
                 "upsertErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
                 "patchErrors":  { "values": { "ref":  "EntityErrors" }, "nullable": true },
-                "deleteErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
-                "error":        { "ref":  "ErrorResponse", "nullable": true }
+                "deleteErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true }
             }
         },
         "ProtocolResponse": {
             "properties": {
-                "reqId": { "type": "int32", "nullable": true },
-                "error": { "ref":  "ErrorResponse", "nullable": true }
+                "reqId": { "type": "int32", "nullable": true }
             }
         },
         "SyncTaskResult": {
@@ -698,13 +696,6 @@
                 "errors":    { "values": { "ref":  "EntityError" } }
             }
         },
-        "ErrorResponse": {
-            "properties": {
-                "reqId":   { "type": "int32", "nullable": true },
-                "message": { "type": "string", "nullable": true },
-                "error":   { "ref":  "ErrorResponse", "nullable": true }
-            }
-        },
         "SubscriptionEvent": {
             "properties": {
                 "seq":    { "type": "int32" },
@@ -718,6 +709,12 @@
                 "seq":    { "type": "int32" },
                 "target": { "type": "string", "nullable": true },
                 "client": { "type": "string", "nullable": true }
+            }
+        },
+        "ErrorResponse": {
+            "properties": {
+                "reqId":   { "type": "int32", "nullable": true },
+                "message": { "type": "string", "nullable": true }
             }
         }
     }

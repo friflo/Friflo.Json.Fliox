@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Client;
+using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using static NUnit.Framework.Assert;
@@ -24,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Errors
             // use SendMessage() to simulate error/exception
             const string msgSyncError      = "msg-sync-error";
             const string msgSyncException  = "msg-sync-exception";
-            testDatabase.syncErrors.Add(msgSyncError,       () => new SyncResponse{error = new ErrorResponse{message = "simulated SyncError"}});
+            testDatabase.syncErrors.Add(msgSyncError,       () => new MessageResponse<SyncResponse>("simulated SyncError"));
             testDatabase.syncErrors.Add(msgSyncException,   () => throw new SimulationException ("simulated SyncException"));
             
             var helloTask1 = store.SendMessage(StdMessage.Echo, "Hello World 1");

@@ -12,6 +12,8 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host
 {
+
+    
     /// <summary>
     /// <see cref="EntityDatabase"/> is an abstraction for a specific database adapter / implementation e.g. a
     /// <see cref="MemoryDatabase"/> or a <see cref="FileDatabase"/>.
@@ -122,13 +124,13 @@ namespace Friflo.Json.Fliox.DB.Host
         ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Fliox.DB.Protocol"/> which must to be fixed.</para> 
         /// </para>
         /// </summary>
-        public virtual async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public virtual async Task<MessageResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.clientId = syncRequest.clientId;
             await authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
             
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null)
-                return new SyncResponse{error = new ErrorResponse{message = "missing field: tasks (array)"}};
+                return new MessageResponse<SyncResponse> ("missing field: tasks (array)");
             var tasks = new List<SyncTaskResult>(requestTasks.Count);
             var response = new SyncResponse {
                 tasks   = tasks,
@@ -175,7 +177,7 @@ namespace Friflo.Json.Fliox.DB.Host
                     await broker.SendQueuedEvents().ConfigureAwait(false); // use only for testing
                 }
             }
-            return response;
+            return new MessageResponse<SyncResponse>(response);
         }
         
         /// Distribute <see cref="ContainerEntities.entityMap"/> to <see cref="ContainerEntities.entities"/>,

@@ -55,16 +55,14 @@ namespace Friflo.Json.Fliox.DB.Protocol
         ///      used by multiple clients.
         /// </para>
         /// </summary>
-                                        public          int?            reqId       { get; set; }
+                                        public  int?    reqId       { get; set; }
     }
     
     // ----------------------------------- response -----------------------------------
     public abstract class ProtocolResponse : ProtocolMessage {
         // ReSharper disable once InconsistentNaming
         /// <summary>Set to the value of the corresponding <see cref="ProtocolRequest.reqId"/></summary>
-                                        public          int?            reqId       { get; set; }
-                                        public          ErrorResponse   error;
-
+                                        public  int?    reqId       { get; set; }
     }
     
     // ----------------------------------- event -----------------------------------

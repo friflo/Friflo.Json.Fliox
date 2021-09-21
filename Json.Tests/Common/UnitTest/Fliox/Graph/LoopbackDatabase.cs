@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             loopbackHost.Dispose();
         }
         
-        public override async Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public override async Task<MessageResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             var response = await loopbackHost.ExecuteSync(syncRequest, messageContext);
             return response;
         }
