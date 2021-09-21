@@ -40,11 +40,13 @@ namespace Friflo.Json.Fliox.DB.Remote
                 ProtocolMessage message = RemoteUtils.ReadProtocolMessage (jsonBody, messageContext.pools);
                 
                 if (httpResponse.StatusCode == HttpStatusCode.OK) {
-                    if (message is SyncResponse syncResponse)
+                    if (message is SyncResponse syncResponse) {
                         return new Response<SyncResponse>(syncResponse);
+                    }
                 }
-                if (message is ErrorResponse errorResp)
+                if (message is ErrorResponse errorResp) {
                     return  new Response<SyncResponse>(errorResp.message);
+                }
                 var msg = $"Request failed. http status code: {httpResponse.StatusCode}";
                 var errorResponse = new Response<SyncResponse>(msg);
                 return errorResponse; 
@@ -54,8 +56,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
                 var msg = $"Request failed: Exception: {error}";
-                var errorResponse = new Response<SyncResponse>(msg);
-                return errorResponse;
+                return new Response<SyncResponse>(msg);
             }
         }
     }

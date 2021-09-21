@@ -144,8 +144,9 @@ namespace Friflo.Json.Fliox.DB.Remote
                 
                 // --- Wait for response
                 var response = await wsRequest.response.Task.ConfigureAwait(false);
-                if (response is SyncResponse syncResponse)
+                if (response is SyncResponse syncResponse) {
                     return new Response<SyncResponse>(syncResponse);
+                }
                 return new Response<SyncResponse>($"invalid response: Was: {response.MessageType}");
             }
             catch (Exception e) {
@@ -158,13 +159,12 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
     }
     
-    internal class WebsocketRequest {
-        internal readonly   MessageContext                          messageContext;
+    internal class WebsocketRequest
+    {
         internal readonly   TaskCompletionSource<ProtocolResponse>  response;          
         
         internal WebsocketRequest(MessageContext messageContext, CancellationTokenSource cancellationToken) {
             response            = new TaskCompletionSource<ProtocolResponse>();
-            this.messageContext = messageContext;
             messageContext.canceler = () => {
                 cancellationToken.Cancel();
             };

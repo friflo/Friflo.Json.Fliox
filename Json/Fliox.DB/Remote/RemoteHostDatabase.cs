@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             return response;
         }
 
-        public async Task<JsonResponse> ExecuteRequestJson2(JsonUtf8 jsonRequest, MessageContext messageContext) {
+        public async Task<JsonResponse> ExecuteJsonRequest(JsonUtf8 jsonRequest, MessageContext messageContext) {
             try {
                 var request = RemoteUtils.ReadProtocolMessage(jsonRequest, messageContext.pools);
                 if (request is SyncRequest syncRequest) {
@@ -41,8 +41,10 @@ namespace Friflo.Json.Fliox.DB.Remote
                     JsonUtf8    jsonResponse    = RemoteUtils.CreateProtocolMessage(response.Result, messageContext.pools);
                     return new JsonResponse(jsonResponse, ResponseStatusType.Ok);
                 }
-                return JsonResponse.CreateResponseError(messageContext, $"Invalid response: {request.MessageType}", ResponseStatusType.Error);
-            } catch (Exception e) {
+                var msg = $"Invalid response: {request.MessageType}";
+                return JsonResponse.CreateResponseError(messageContext, msg, ResponseStatusType.Error);
+            }
+            catch (Exception e) {
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
                 return JsonResponse.CreateResponseError(messageContext, errorMsg, ResponseStatusType.Exception);
             }
@@ -72,8 +74,8 @@ namespace Friflo.Json.Fliox.DB.Remote
             var errorResponse = new ErrorResponse {message = message};
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
-                var bodyArray = mapper.WriteAsArray<ProtocolMessage>(errorResponse);
-                var body = new JsonUtf8(bodyArray);
+                var bodyArray       = mapper.WriteAsArray<ProtocolMessage>(errorResponse);
+                var body            = new JsonUtf8(bodyArray);
                 return new JsonResponse(body, type);
             }
         }
