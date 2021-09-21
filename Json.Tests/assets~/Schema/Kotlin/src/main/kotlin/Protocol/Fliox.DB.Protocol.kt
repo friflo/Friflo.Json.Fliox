@@ -173,7 +173,7 @@ data class CreateEntitiesResult (
 @Serializable
 data class CommandError (
               val message : String? = null,
-)
+) : SyncTaskResult()
 
 @Serializable
 @SerialName("upsert")
