@@ -125,7 +125,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                 // Each request require its own pool as multiple request running concurrently. Could cache a Pools instance per connection.
                 var pools           = new Pools(Pools.SharedPools);
                 var messageContext  = new MessageContext(pools, null);
-                var result          = await ExecuteRequestJson(requestContent, messageContext, ProtocolType.ReqResp).ConfigureAwait(false);
+                var result          = await ExecuteRequestJson(requestContent, messageContext).ConfigureAwait(false);
                 messageContext.Release();
                 var  body = result.body;
                 HttpStatusCode statusCode;

@@ -15,13 +15,11 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
     public abstract class RemoteClientDatabase : EntityDatabase
     {
         private             int                                 reqId;
-        private  readonly   ProtocolType                        protocolType;
         private  readonly   Dictionary<string, IEventTarget>    clientTargets = new Dictionary<string, IEventTarget>();
         private  readonly   Pools                               pools = new Pools(Pools.SharedPools);
 
         // ReSharper disable once EmptyConstructor - added for source navigation
-        protected RemoteClientDatabase(ProtocolType protocolType) {
-            this.protocolType = protocolType;
+        protected RemoteClientDatabase() {
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
@@ -85,12 +83,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
         }
         
         private JsonUtf8 CreateRequest (ObjectWriter writer, DatabaseRequest request) {
-            switch (protocolType) {
-                case ProtocolType.ReqResp:
-                case ProtocolType.BiDirect:
-                    return new JsonUtf8(writer.WriteAsArray<DatabaseMessage>(request));
-            }
-            throw new InvalidOperationException("cannot be reached");
+            return new JsonUtf8(writer.WriteAsArray<DatabaseMessage>(request));
         }
     }
     

@@ -7,21 +7,18 @@ namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- message -----------------------------------
     /// <summary>
-    /// A container for different types of a message classified into request, response and event.
-    /// It is used in communication protocols which support more than the request / response schema.
-    /// Only one of its fields is set at a time.
-    /// More at: <see cref="NoSQL.Remote.ProtocolType"/>
+    /// <see cref="DatabaseMessage"/> is the base type for all messages which are classified into request, response and event.
+    /// It can be used in communication protocols which support more than the request / response schema.
+    /// <br/>
+    /// A <see cref="DatabaseMessage"/> is either one of the following types:
+    /// <list type="bullet">
+    ///   <item> <see cref="DatabaseRequest"/>  send by clients / received by hosts</item>
+    ///   <item> <see cref="DatabaseResponse"/> send by hosts / received by clients</item>
+    ///   <item> <see cref="DatabaseEvent"/>    send by hosts / received by clients</item>
+    /// </list>   
     /// <br></br>
     /// Note: By applying this classification the protocol can also be used in peer-to-peer networking.
     /// 
-    /// <para>
-    ///     <see cref="DatabaseMessage"/>'s are used for WebSocket communication to notify multiple
-    ///     <see cref="DatabaseEvent"/> to a client having sent only a single subscription request upfront.
-    /// </para>
-    /// <para>
-    ///     <see cref="DatabaseMessage"/>' are not applicable for HTTP as HTTP support only a
-    ///     request / response pattern and has no mechanism to implement <see cref="DatabaseEvent"/>'s.
-    /// </para>
     /// <br></br>
     /// General principle of the application communication of <see cref="Fliox"/>
     /// <para>

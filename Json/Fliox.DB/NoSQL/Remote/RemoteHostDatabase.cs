@@ -31,19 +31,19 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             return result;
         }
 
-        public async Task<JsonResponse> ExecuteRequestJson(JsonUtf8 jsonRequest, MessageContext messageContext, ProtocolType type) {
+        public async Task<JsonResponse> ExecuteRequestJson(JsonUtf8 jsonRequest, MessageContext messageContext) {
             try {
                 JsonUtf8 jsonResponse;
                 using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                     ObjectMapper    mapper  = pooledMapper.instance;
                     ObjectReader    reader  = mapper.reader;
-                    DatabaseRequest request = ReadRequest (reader, jsonRequest, type, out string error);
+                    DatabaseRequest request = ReadRequest (reader, jsonRequest, out string error);
                     if (request == null)
                         return JsonResponse.CreateResponseError(messageContext, error, ResponseStatusType.Error);
                     DatabaseResponse response = await ExecuteRequest(request, messageContext).ConfigureAwait(false);
                     mapper.WriteNullMembers = false;
                     mapper.Pretty = true;
-                    jsonResponse = CreateResponse(mapper.writer, response, type);
+                    jsonResponse = CreateResponse(mapper.writer, response);
                 }
                 return new JsonResponse(jsonResponse, ResponseStatusType.Ok);
             } catch (Exception e) {
@@ -53,32 +53,22 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
         }
         
         /// Caller need to check <see cref="reader"/> error state. 
-        private static DatabaseRequest ReadRequest (ObjectReader reader, JsonUtf8 jsonRequest, ProtocolType type, out string error) {
-            switch (type) {
-                case ProtocolType.ReqResp:
-                case ProtocolType.BiDirect:
-                    var msg = reader.Read<DatabaseMessage>(jsonRequest);
-                    if (reader.Error.ErrSet) {
-                        error = reader.Error.msg.AsString();
-                        return null;
-                    }
-                    if (msg is DatabaseRequest req) {
-                        error = null;
-                        return req;
-                    }
-                    error = $"Expected database request. Was: MessageType: {msg.MessageType}";
-                    return null;
+        private static DatabaseRequest ReadRequest (ObjectReader reader, JsonUtf8 jsonRequest, out string error) {
+            var msg = reader.Read<DatabaseMessage>(jsonRequest);
+            if (reader.Error.ErrSet) {
+                error = reader.Error.msg.AsString();
+                return null;
             }
-            throw new InvalidOperationException("can't be reached");
+            if (msg is DatabaseRequest req) {
+                error = null;
+                return req;
+            }
+            error = $"Expected database request. Was: MessageType: {msg.MessageType}";
+            return null;
         }
         
-        private static JsonUtf8 CreateResponse (ObjectWriter writer, DatabaseResponse response, ProtocolType type) {
-            switch (type) {
-                case ProtocolType.ReqResp:
-                case ProtocolType.BiDirect:
-                    return new JsonUtf8(writer.WriteAsArray<DatabaseMessage>(response));
-            }
-            throw new InvalidOperationException("can't be reached");
+        private static JsonUtf8 CreateResponse (ObjectWriter writer, DatabaseResponse response) {
+            return new JsonUtf8(writer.WriteAsArray<DatabaseMessage>(response));
         }
         
         private async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, MessageContext messageContext) {
