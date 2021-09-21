@@ -28,6 +28,7 @@
             connection.onmessage = function (e) {
                 // var data = JSON.parse(e.data);
                 console.log('Server:', e.data);
+                var jsonRequest = document.getElementById("jsonResponse").value = e.data;
             };
         }
 
@@ -41,7 +42,7 @@
             connection.send(json);
         }
         function sendSyncRequest() {
-            var jsonRequest = document.getElementById("jsonRequest").value;
+            var jsonRequest = document.getElementById("jsonRequest").value;            
             connection.send(jsonRequest);
         }
     </script>
@@ -61,7 +62,8 @@
     <button type="button" onclick="connectWebsocket()">Connect</button>
     <button type="button" onclick="sendMessage()">Send message</button>
     <button type="button" onclick="closeWebsocket()">Close</button> <br><br>
-
+    Request
+    <br>
     <textarea id="jsonRequest" title="request" cols="100" rows="15">{
   "type": "sync",
   "tasks": [
@@ -74,6 +76,10 @@
     }
   ]
 }</textarea> <br>
-<button type="button" onclick="sendSyncRequest()">Send sync</button>
+<button type="button" onclick="sendSyncRequest()">Send sync</button><br>
+<br>
+Response - DevTools (F12) for all websocket messages
+<br>
+<textarea id="jsonResponse" title="request" cols="100" rows="15"></textarea>
 </body>
 </html>
