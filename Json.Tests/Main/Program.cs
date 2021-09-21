@@ -6,7 +6,7 @@ using System.CommandLine.Invocation;
 using System.IO;
 using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.DB.NoSQL.Event;
-using Friflo.Json.Fliox.DB.NoSQL.Remote;
+using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;

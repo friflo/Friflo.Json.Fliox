@@ -5,12 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.DB.NoSQL.Event;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
-namespace Friflo.Json.Fliox.DB.NoSQL.Remote
+namespace Friflo.Json.Fliox.DB.Remote
 {
     public abstract class RemoteClientDatabase : EntityDatabase
     {

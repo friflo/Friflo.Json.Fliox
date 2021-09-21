@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     ///     or datagram based protocols.
     ///     This also means all <see cref="Fliox"/> messages doesnt (and must not) require a session.
     ///     This principle also enables using a single <see cref="NoSQL.EntityDatabase"/> by multiple clients like
-    ///     <see cref="Graph.EntityStore"/> even for remote clients like <see cref="NoSQL.Remote.RemoteClientDatabase"/>.
+    ///     <see cref="Graph.EntityStore"/> even for remote clients like <see cref="Friflo.Json.Fliox.DB.Remote.RemoteClientDatabase"/>.
     /// </para>
     /// </summary>
     [Fri.Discriminator("type")] 
@@ -44,14 +44,14 @@ namespace Friflo.Json.Fliox.DB.Protocol
     // ----------------------------------- request -----------------------------------
     public abstract class ProtocolRequest   : ProtocolMessage {
         // ReSharper disable once InconsistentNaming
-        /// <summary>Used only for <see cref="NoSQL.Remote.RemoteClientDatabase"/> to enable:
+        /// <summary>Used only for <see cref="Friflo.Json.Fliox.DB.Remote.RemoteClientDatabase"/> to enable:
         /// <para>
         ///   1. Out of order response handling for their corresponding requests.
         /// </para>
         /// <para>
         ///   2. Multiplexing of requests and their responses for multiple clients e.g. <see cref="Graph.EntityStore"/>
         ///      using the same connection.
-        ///      This is not a common scenario but it enables using a single <see cref="NoSQL.Remote.WebSocketClientDatabase"/>
+        ///      This is not a common scenario but it enables using a single <see cref="Friflo.Json.Fliox.DB.Remote.WebSocketClientDatabase"/>
         ///      used by multiple clients.
         /// </para>
         /// </summary>

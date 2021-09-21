@@ -8,10 +8,11 @@ using System.IO;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.NoSQL.Remote
+namespace Friflo.Json.Fliox.DB.Remote
 {
     public class WebSocketClientDatabase : RemoteClientDatabase
     {

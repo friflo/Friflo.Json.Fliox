@@ -6,13 +6,14 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.DB.NoSQL;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Definition;
 
 // ReSharper disable MemberCanBeProtected.Global
 // ReSharper disable MemberCanBePrivate.Global
-namespace Friflo.Json.Fliox.DB.NoSQL.Remote
+namespace Friflo.Json.Fliox.DB.Remote
 {
     public delegate byte[] CreateZip(Dictionary<string, string> files);
     
