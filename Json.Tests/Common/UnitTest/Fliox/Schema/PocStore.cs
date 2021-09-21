@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;
-using Friflo.Json.Tests.Common.UnitTest.Fliox.Graph;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
@@ -18,7 +18,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         private static readonly Type[]      PocStoreTypes   = EntityStore.GetEntityTypes<PocStore>();
         private static readonly Replace[]   Replacements    =  {
             new Replace("Friflo.Json.Tests.Common."),
-            new Replace("Friflo.Json.Fliox.DB.NoSQL", "UnitTest.Fliox.Graph")
+            new Replace("Friflo.Json.Fliox.DB.NoSQL", "UnitTest.Fliox.Client")
         };
         
         // -------------------------------------- input: C# --------------------------------------
@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             // their namespace / class names are equal to the original ones.
             var replacements = new [] {
                 new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "PocStore2"),
-                new Replace("Friflo.Json.Fliox.DB.NoSQL",                "PocStore2.Graph")
+                new Replace("Friflo.Json.Fliox.DB.NoSQL",                "PocStore2.Client")
             };
             var options     = new NativeTypeOptions(PocStoreTypes) { replacements = replacements };
             var generator = CSharpGenerator.Generate(options);
@@ -83,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         public static void JSON_JSON () {
             var schemas     = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
             var schema      = new JsonTypeSchema(schemas);
-            var jsonTypes   = SchemaTest.TypesAsJsonTypes (PocStoreTypes, "UnitTest.Fliox.Graph.");
+            var jsonTypes   = SchemaTest.TypesAsJsonTypes (PocStoreTypes, "UnitTest.Fliox.Client.");
             var typeDefs    = schema.TypesAsTypeDefs(jsonTypes);
             var options     = new JsonTypeOptions(schema) { separateTypes = typeDefs };
             var generator   = JsonSchemaGenerator.Generate(options);

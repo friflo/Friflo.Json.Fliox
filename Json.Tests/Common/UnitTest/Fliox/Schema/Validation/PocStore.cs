@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Schema.Validation;
-using Friflo.Json.Tests.Common.UnitTest.Fliox.Graph;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using NUnit.Framework;
@@ -30,8 +30,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             using (var validationSet    = new ValidationSet(jsonSchema))
             using (var validator        = new TypeValidator()) {
                 var test = new TestTypes {
-                    testType    = jsonSchema.TypeAsValidationType<TestType>(validationSet, "UnitTest.Fliox.Graph"),
-                    orderType   = jsonSchema.TypeAsValidationType<Order>   (validationSet, "UnitTest.Fliox.Graph")
+                    testType    = jsonSchema.TypeAsValidationType<TestType>(validationSet, "UnitTest.Fliox.Client"),
+                    orderType   = jsonSchema.TypeAsValidationType<Order>   (validationSet, "UnitTest.Fliox.Client")
                 };
                 ValidateSuccess(validator, test);
                 ValidateFailure(validator, test);

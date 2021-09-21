@@ -11,7 +11,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
 {
     /// <summary>
     /// The sync models define a protocol. The generated Typescript are useful for client applications.
-    /// JSON Schema files are not generated as the Graph host / server validate protocol messages by code.  
+    /// JSON Schema files are not generated as the host (server) validate protocol messages by code.  
     /// </summary>
     public static class JsonSchemaGen
     {

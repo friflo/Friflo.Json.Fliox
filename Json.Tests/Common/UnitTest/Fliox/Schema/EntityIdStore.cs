@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;
-using Friflo.Json.Tests.Common.UnitTest.Fliox.Graph;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         [Test, Order(2)]
         public static void JSON_JSON () {
             var schemas     = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
-            var schema      = new JsonTypeSchema(schemas, "./UnitTest.Fliox.Graph.json#/definitions/EntityIdStore");
+            var schema      = new JsonTypeSchema(schemas, "./UnitTest.Fliox.Client.json#/definitions/EntityIdStore");
             var entityTypes = schema.GetEntityTypes();
             var options     = new JsonTypeOptions(schema) { separateTypes = entityTypes };
             var generator   = JsonSchemaGenerator.Generate(options);

@@ -3,8 +3,8 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Remote;
-using Friflo.Json.Tests.Common.UnitTest.Fliox.Graph;
-using Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy;
 
 namespace Friflo.Json.Tests.Main
 {

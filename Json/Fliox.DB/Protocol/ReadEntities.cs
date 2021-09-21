@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// or modified from extern processes - for example by manually changing its JSON content with an editor.
         /// 
         /// A <see cref="MemoryContainer"/> does not require validation as its key/values are always written via
-        /// NoSQL/Graph library - which generate valid JSON.
+        /// NoSQL/Client library - which generate valid JSON.
         /// 
         /// So database adapters which can ensure the JSON value is always valid made calling <see cref="ValidateEntities"/>
         /// obsolete - like Postgres/JSONB, Azure Cosmos DB or MongoDB.

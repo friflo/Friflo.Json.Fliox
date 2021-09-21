@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;
-using Friflo.Json.Tests.Common.UnitTest.Fliox.Graph;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 
 namespace Friflo.Json.Tests.Main
 {
@@ -106,7 +106,7 @@ namespace Friflo.Json.Tests.Main
         private static TypeSchema GetTypeSchema(bool fromJsonSchema) {
             if (fromJsonSchema) {
                 var schemas = JsonTypeSchema.ReadSchemas("./Json.Tests/assets~/Schema/JSON/PocStore");
-                return new JsonTypeSchema(schemas, "./UnitTest.Fliox.Graph.json#/definitions/PocStore");
+                return new JsonTypeSchema(schemas, "./UnitTest.Fliox.Client.json#/definitions/PocStore");
             }
             // using a NativeTypeSchema add an additional dependency by using the EntityStore: PocStore
             return new NativeTypeSchema(typeof(PocStore));
