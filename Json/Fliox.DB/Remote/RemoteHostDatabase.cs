@@ -3,8 +3,8 @@
 
 using System;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.NoSQL;
-using Friflo.Json.Fliox.DB.NoSQL.Event;
+using Friflo.Json.Fliox.DB.Host;
+using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 

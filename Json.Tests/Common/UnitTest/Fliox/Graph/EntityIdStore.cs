@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Friflo.Json.Fliox.DB.Graph;
-using Friflo.Json.Fliox.DB.NoSQL;
+using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Local

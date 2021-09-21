@@ -6,7 +6,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.NoSQL;
+using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable ClassNeverInstantiated.Global

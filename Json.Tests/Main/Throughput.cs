@@ -1,7 +1,7 @@
 ﻿#if !UNITY_2020_1_OR_NEWER
 
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.NoSQL;
+using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Graph;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy;

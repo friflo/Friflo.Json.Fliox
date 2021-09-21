@@ -3,7 +3,7 @@
 
 using System;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.NoSQL;
+using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.DB.UserAuth

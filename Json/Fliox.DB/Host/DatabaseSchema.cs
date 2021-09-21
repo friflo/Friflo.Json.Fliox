@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Fliox.Schema.Validation;
 
-namespace Friflo.Json.Fliox.DB.NoSQL
+namespace Friflo.Json.Fliox.DB.Host
 {
     /// <summary>
     /// If a <see cref="DatabaseSchema"/> is assigned to a <see cref="EntityDatabase.schema"/> the JSON payloads of all

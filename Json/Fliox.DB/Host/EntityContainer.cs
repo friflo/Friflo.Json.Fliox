@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 
-namespace Friflo.Json.Fliox.DB.NoSQL
+namespace Friflo.Json.Fliox.DB.Host
 {
     /// <summary>
     /// An <see cref="EntityContainer"/> is the abstraction of a collection / table used to store their entities / records 

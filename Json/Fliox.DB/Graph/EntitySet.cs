@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using Friflo.Json.Fliox.DB.Graph.Internal;
 using Friflo.Json.Fliox.DB.Graph.Internal.KeyEntity;
 using Friflo.Json.Fliox.DB.Graph.Internal.Map;
-using Friflo.Json.Fliox.DB.NoSQL;
+using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;

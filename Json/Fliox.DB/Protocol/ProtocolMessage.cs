@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     ///     This enables embedding all messages in various communication protocols like HTTP, WebSockets, TCP
     ///     or datagram based protocols.
     ///     This also means all <see cref="Fliox"/> messages doesnt (and must not) require a session.
-    ///     This principle also enables using a single <see cref="NoSQL.EntityDatabase"/> by multiple clients like
+    ///     This principle also enables using a single <see cref="Host.EntityDatabase"/> by multiple clients like
     ///     <see cref="Graph.EntityStore"/> even for remote clients like <see cref="Friflo.Json.Fliox.DB.Remote.RemoteClientDatabase"/>.
     /// </para>
     /// </summary>

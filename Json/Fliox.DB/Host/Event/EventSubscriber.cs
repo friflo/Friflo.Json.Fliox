@@ -5,10 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.NoSQL.Utils;
+using Friflo.Json.Fliox.DB.Host.Utils;
 using Friflo.Json.Fliox.DB.Protocol;
 
-namespace Friflo.Json.Fliox.DB.NoSQL.Event
+namespace Friflo.Json.Fliox.DB.Host.Event
 {
     internal enum TriggerType {
         None,

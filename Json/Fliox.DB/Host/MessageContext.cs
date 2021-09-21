@@ -3,10 +3,10 @@
 
 using System;
 using Friflo.Json.Fliox.DB.Auth;
-using Friflo.Json.Fliox.DB.NoSQL.Event;
+using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Protocol;
 
-namespace Friflo.Json.Fliox.DB.NoSQL
+namespace Friflo.Json.Fliox.DB.Host
 {
     // ------------------------------------ MessageContext ------------------------------------
     /// <summary>

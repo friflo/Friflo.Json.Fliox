@@ -4,7 +4,7 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.NoSQL
+namespace Friflo.Json.Fliox.DB.Host
 {
     public readonly struct Command<TValue> {
         public              string          Name    { get; }

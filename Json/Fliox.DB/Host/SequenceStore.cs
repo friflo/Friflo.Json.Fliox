@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.DB.Graph;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable UnassignedReadonlyField
-namespace Friflo.Json.Fliox.DB.NoSQL
+namespace Friflo.Json.Fliox.DB.Host
 {
     // --- models
     public class Sequence {
