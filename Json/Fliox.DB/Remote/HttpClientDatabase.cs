@@ -36,21 +36,15 @@ namespace Friflo.Json.Fliox.DB.Remote
             try {
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(endpoint, content).ConfigureAwait(false);
                 var bodyArray   = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                
-                var jsonBody = new JsonUtf8(bodyArray);
+                var jsonBody    = new JsonUtf8(bodyArray);
                 ProtocolMessage message = RemoteUtils.ReadProtocolMessage (jsonBody, messageContext.pools);
-                switch (httpResponse.StatusCode) {
-                    case HttpStatusCode.OK:
-                        if (message is SyncResponse syncResponse)
-                            return new Response<SyncResponse>(syncResponse);
-                        if (message is ErrorResponse errorResp)
-                            return  new Response<SyncResponse>(errorResp.message);
-                        break;
-                    default:
-                        if (message is ErrorResponse errResp)
-                            return new Response<SyncResponse>(errResp.message);
-                        break;
+                
+                if (httpResponse.StatusCode == HttpStatusCode.OK) {
+                    if (message is SyncResponse syncResponse)
+                        return new Response<SyncResponse>(syncResponse);
                 }
+                if (message is ErrorResponse errorResp)
+                    return  new Response<SyncResponse>(errorResp.message);
                 var msg = $"Request failed. http status code: {httpResponse.StatusCode}";
                 var errorResponse = new Response<SyncResponse>(msg);
                 return errorResponse; 

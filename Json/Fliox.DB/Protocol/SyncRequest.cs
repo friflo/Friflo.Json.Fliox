@@ -22,11 +22,11 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// it has subscribed to database changes by a <see cref="SubscribeChanges"/> task.
         /// Otherwise <see cref="eventAck"/> is null.
         /// </summary>
-        [Fri.Property(Name = "ack")]    public  int?                eventAck;
-                                        public  string              token;
-        [Fri.Required]                  public  List<SyncRequestTask>      tasks;
+        [Fri.Property(Name = "ack")]    public  int?                    eventAck;
+                                        public  string                  token;
+        [Fri.Required]                  public  List<SyncRequestTask>   tasks;
         
-        internal override                       MessageType         MessageType => MessageType.sync;
+        internal override                       MessageType             MessageType => MessageType.sync;
     }
     
     // ----------------------------------- response -----------------------------------

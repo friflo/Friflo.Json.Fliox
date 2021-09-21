@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     {
         public              string      message;
         
-        internal override   MessageType         MessageType => MessageType.error;
+        internal override   MessageType MessageType => MessageType.error;
 
         public override     string      ToString() => message;
 

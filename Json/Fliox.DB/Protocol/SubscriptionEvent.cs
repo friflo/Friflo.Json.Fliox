@@ -18,10 +18,10 @@ namespace Friflo.Json.Fliox.DB.Protocol
         ///   <item><see cref="SendMessage"/></item>
         /// </list>
         /// </summary>
-        public              List<SyncRequestTask>  tasks;
+        public              List<SyncRequestTask>   tasks;
         
-        internal override   MessageType         MessageType => MessageType.subscription;
-        public   override   string              ToString()  => GetEventInfo().ToString();
+        internal override   MessageType             MessageType => MessageType.subscription;
+        public   override   string                  ToString()  => GetEventInfo().ToString();
         
         public EventInfo    GetEventInfo() {
             var info = new EventInfo(new ChangeInfo());
