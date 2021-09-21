@@ -35,51 +35,16 @@ namespace Friflo.Json.Fliox.DB.Remote
 
         public async Task<JsonResponse> ExecuteRequestJson2(JsonUtf8 jsonRequest, MessageContext messageContext) {
             try {
-                JsonUtf8 jsonResponse;
-                using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
-                    ObjectMapper    mapper  = pooledMapper.instance;
-                    ObjectReader    reader  = mapper.reader;
-                    ProtocolRequest request = ReadRequest (reader, jsonRequest, out string error);
-                    if (request == null)
-                        return JsonResponse.CreateResponseError(messageContext, error, ResponseStatusType.Error);
-                    ProtocolResponse response = await ExecuteRequest(request, messageContext).ConfigureAwait(false);
-                    mapper.WriteNullMembers = false;
-                    mapper.Pretty = true;
-                    jsonResponse = CreateResponse(mapper.writer, response);
+                var request = RemoteUtils.ReadProtocolMessage(jsonRequest, messageContext.pools);
+                if (request is SyncRequest syncRequest) {
+                    var         response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
+                    JsonUtf8    jsonResponse    = RemoteUtils.CreateProtocolMessage(response.Result, messageContext.pools);
+                    return new JsonResponse(jsonResponse, ResponseStatusType.Ok);
                 }
-                return new JsonResponse(jsonResponse, ResponseStatusType.Ok);
+                return JsonResponse.CreateResponseError(messageContext, $"Invalid response: {request.MessageType}", ResponseStatusType.Error);
             } catch (Exception e) {
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
                 return JsonResponse.CreateResponseError(messageContext, errorMsg, ResponseStatusType.Exception);
-            }
-        }
-        
-        /// Caller need to check <see cref="reader"/> error state. 
-        private static ProtocolRequest ReadRequest (ObjectReader reader, JsonUtf8 jsonRequest, out string error) {
-            var msg = reader.Read<ProtocolMessage>(jsonRequest);
-            if (reader.Error.ErrSet) {
-                error = reader.Error.msg.AsString();
-                return null;
-            }
-            if (msg is ProtocolRequest req) {
-                error = null;
-                return req;
-            }
-            error = $"Expected database request. Was: MessageType: {msg.MessageType}";
-            return null;
-        }
-        
-        private static JsonUtf8 CreateResponse (ObjectWriter writer, ProtocolResponse response) {
-            return new JsonUtf8(writer.WriteAsArray<ProtocolMessage>(response));
-        }
-        
-        private async Task<ProtocolResponse> ExecuteRequest(ProtocolRequest request, MessageContext messageContext) {
-            switch (request.MessageType) {
-                case MessageType.sync:
-                    var response = await ExecuteSync((SyncRequest)request, messageContext).ConfigureAwait(false);
-                    return response.Result;
-                default:
-                    throw new NotImplementedException();
             }
         }
     }
