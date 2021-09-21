@@ -98,20 +98,23 @@ namespace Friflo.Json.Fliox.DB.Remote
         private void OnReceive(JsonUtf8 messageJson) {
             try {
                 var contextPools    = new Pools(Pools.SharedPools);
-                ProtocolMessage message = RemoteUtils.ReadProtocolMessage (messageJson, contextPools);
-                if (message is ProtocolResponse resp) {
-                    var requestId = resp.reqId;
-                    if (!requestId.HasValue)
-                        throw new InvalidOperationException("WebSocketClientDatabase requires reqId in response");
-                    var id = requestId.Value;
-                    if (!requests.TryRemove(id, out WebsocketRequest request)) {
-                        throw new InvalidOperationException($"Expect corresponding request to response. id: {id}");
-                    }
-                    request.response.SetResult(resp);
-                    return;
-                }
-                if (message is SubscriptionEvent ev) {
-                    ProcessEvent(ev);
+                ProtocolMessage message = RemoteUtils.ReadProtocolMessage (messageJson, contextPools, out _);
+                switch (message) {
+                    case null:
+                        break; // errors are ignored. 
+                    case ProtocolResponse resp:
+                        var requestId = resp.reqId;
+                        if (!requestId.HasValue)
+                            throw new InvalidOperationException("WebSocketClientDatabase requires reqId in response");
+                        var id = requestId.Value;
+                        if (!requests.TryRemove(id, out WebsocketRequest request)) {
+                            throw new InvalidOperationException($"Expect corresponding request to response. id: {id}");
+                        }
+                        request.response.SetResult(resp);
+                        return;
+                    case SubscriptionEvent ev:
+                        ProcessEvent(ev);
+                        break;
                 }
             }
             catch (Exception e) {

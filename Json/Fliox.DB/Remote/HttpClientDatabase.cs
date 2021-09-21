@@ -37,18 +37,22 @@ namespace Friflo.Json.Fliox.DB.Remote
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(endpoint, content).ConfigureAwait(false);
                 var bodyArray   = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
                 var jsonBody    = new JsonUtf8(bodyArray);
-                ProtocolMessage message = RemoteUtils.ReadProtocolMessage (jsonBody, messageContext.pools);
-                
-                if (httpResponse.StatusCode == HttpStatusCode.OK) {
-                    if (message is SyncResponse syncResponse) {
-                        return new MsgResponse<SyncResponse>(syncResponse);
-                    }
+                var response    = RemoteUtils.ReadProtocolMessage (jsonBody, messageContext.pools, out string error);
+                switch (response) {
+                    case null:
+                        return  new MsgResponse<SyncResponse>(error);
+                    case SyncResponse syncResponse:
+                        if (httpResponse.StatusCode == HttpStatusCode.OK) {
+                            return new MsgResponse<SyncResponse>(syncResponse);
+                        }
+                        var msg = $"Request failed. StatusCode: {httpResponse.StatusCode}, error: {jsonBody.AsString()}";
+                        return new MsgResponse<SyncResponse>(msg);
+                    case ErrorResponse errorResponse:
+                        return new MsgResponse<SyncResponse>(errorResponse.message);
+                    default:
+                        var msg2 = $"Unknown response. StatusCode: {httpResponse.StatusCode}, Type: {response.GetType().Name}";
+                        return new MsgResponse<SyncResponse>(msg2);
                 }
-                if (message is ErrorResponse errorResp) {
-                    return  new MsgResponse<SyncResponse>(errorResp.message);
-                }
-                var msg = $"Request failed. http status code: {httpResponse.StatusCode}";
-                return new MsgResponse<SyncResponse>(msg);
             }
             catch (HttpRequestException e) {
                 var error = ErrorResponse.ErrorFromException(e);

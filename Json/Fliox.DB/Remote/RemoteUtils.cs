@@ -19,17 +19,16 @@ namespace Friflo.Json.Fliox.DB.Remote
             }
         }
         
-        public static ProtocolMessage ReadProtocolMessage (JsonUtf8 jsonMessage, IPools pools)
+        public static ProtocolMessage ReadProtocolMessage (JsonUtf8 jsonMessage, IPools pools, out string error)
         {
             using (var pooledMapper = pools.ObjectMapper.Get()) {
                 ObjectReader reader = pooledMapper.instance.reader;
                 var response = reader.Read<ProtocolMessage>(jsonMessage);
                 if (reader.Error.ErrSet) {
-                    var message = reader.Error.msg.ToString();
-                    response = new ErrorResponse {
-                        message = message
-                    };
+                    error = reader.Error.msg.ToString();
+                    return null;
                 }
+                error = null;
                 return response;
             }
         }
