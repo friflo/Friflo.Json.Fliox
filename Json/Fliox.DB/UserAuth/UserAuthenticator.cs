@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     }
     
     /// <summary>
-    /// Performs user authentication by validating the "clientId" and the "token" assigned to an <see cref="Graph.EntityStore"/>
+    /// Performs user authentication by validating the "clientId" and the "token" assigned to an <see cref="Client.EntityStore"/>
     /// <br></br>
     /// If authentication succeed it set the <see cref="AuthState.Authorizer"/> derived from the roles assigned to the user.
     /// If authentication fails the given default <see cref="Authorizer"/> is used for the user.

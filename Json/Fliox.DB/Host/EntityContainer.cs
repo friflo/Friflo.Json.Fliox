@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.DB.Host
     /// another one for storing 'orders'.
     /// <para>
     ///   <see cref="EntityContainer"/> define the entire set of interfaces a database adapter needs to implement to
-    ///   enable the complete feature set of <see cref="Graph.EntitySet{TKey,T}"/> and <see cref="Graph.EntityStore"/>.
+    ///   enable the complete feature set of <see cref="Client.EntitySet{TKey,T}"/> and <see cref="Client.EntityStore"/>.
     ///   <see cref="EntityContainer"/> and all its implementations must be thread safe.
     /// </para>
     /// <para>

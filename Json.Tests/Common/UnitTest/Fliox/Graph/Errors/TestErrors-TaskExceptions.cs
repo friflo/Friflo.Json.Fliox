@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.Graph;
+using Friflo.Json.Fliox.DB.Client;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER

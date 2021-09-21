@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.DB.Host
     /// To enable pooling instances of a specific class it needs to implement <see cref="IDisposable"/>.
     /// Pools for classes used commonly within <see cref="Host"/> are directly available. E.g. <see cref="ObjectMapper"/>.
     /// Custom classes can also be managed by <see cref="IPools"/> by using <see cref="Pool{T}"/>.
-    /// Its typical use case is pooling of a domain specific Store extending <see cref="Graph.EntityStore"/>. 
+    /// Its typical use case is pooling of a domain specific Store extending <see cref="Client.EntityStore"/>. 
     /// </summary>
     public interface IPools
     {

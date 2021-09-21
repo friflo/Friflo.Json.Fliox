@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
-using Friflo.Json.Fliox.DB.Graph;
+using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
@@ -20,13 +20,13 @@ namespace Friflo.Json.Fliox.DB.Host
     /// E.g. one container for storing JSON objects representing 'articles' another one for storing 'orders'.
     /// <br/>
     /// An <see cref="EntityDatabase"/> instance is the single entry point used to handle all requests send by a client -
-    /// e.g. an <see cref="Graph.EntityStore"/>. It handle these requests by its <see cref="ExecuteSync"/> method.
+    /// e.g. an <see cref="Client.EntityStore"/>. It handle these requests by its <see cref="ExecuteSync"/> method.
     /// A request is represented by a <see cref="SyncRequest"/> containing all database operations like create, read,
     /// upsert, delete and all messages / commands send by a client in the <see cref="SyncRequest.tasks"/> list.
     /// The <see cref="EntityDatabase"/> execute these tasks by its <see cref="taskHandler"/>.
     /// <br/>
     /// Instances of <see cref="EntityDatabase"/> and all its implementation are designed to be thread safe enabling multiple
-    /// clients e.g. <see cref="Graph.EntityStore"/> operating on the same <see cref="EntityDatabase"/> instance.
+    /// clients e.g. <see cref="Client.EntityStore"/> operating on the same <see cref="EntityDatabase"/> instance.
     /// To maintain thread safety <see cref="EntityDatabase"/> implementations must not have any mutable state.
     /// <br/>
     /// The <see cref="EntityDatabase"/> can be configured to support.
