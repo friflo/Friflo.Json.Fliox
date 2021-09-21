@@ -1,7 +1,7 @@
-import { DatabaseMessage_Union } from "../Sync/Friflo.Json.Fliox.DB.Sync"
+import { ProtocolMessage_Union } from "../Protocol/Friflo.Json.Fliox.DB.Protocol"
 
 // check assignment with using a type compiles successful
-var exampleSync: DatabaseMessage_Union =
+var exampleSync: ProtocolMessage_Union =
 {
     type: "sync",
     tasks: [

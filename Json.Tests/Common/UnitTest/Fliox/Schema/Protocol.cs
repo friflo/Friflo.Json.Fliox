@@ -14,16 +14,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
     /// The sync models define a protocol. The generated Typescript are useful for client applications.
     /// JSON Schema files are not generated as the Graph host / server validate protocol messages by code.  
     /// </summary>
-    public static class SyncGen
+    public static class ProtocolGen
     {
-        private static readonly Type[] SyncTypes        = { typeof(ProtocolMessage) };
+        private static readonly Type[] ProtocolTypes        = { typeof(ProtocolMessage) };
 
         // -------------------------------------- input: C# --------------------------------------
         
         /// C# -> Typescript
         [Test]
         public static void CS_Typescript () {
-            var options     = new NativeTypeOptions(SyncTypes);
+            var options     = new NativeTypeOptions(ProtocolTypes);
             var generator   = TypescriptGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/Protocol");
         }
@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> JSON Schema
         // [Test]
         public static void CS_JSON () {
-            var options     = new NativeTypeOptions(SyncTypes);
+            var options     = new NativeTypeOptions(ProtocolTypes);
             var generator   = JsonSchemaGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JSON/Protocol");
         }
@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> C#
         // [Test]
         public static void CS_CS () {
-            var options     = new NativeTypeOptions(SyncTypes) {
+            var options     = new NativeTypeOptions(ProtocolTypes) {
                 replacements = new[]{new Replace("Friflo.Json.")}
             };
             var generator = CSharpGenerator.Generate(options);
@@ -49,10 +49,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> Kotlin
         [Test]
         public static void CS_Kotlin () {
-            var options     = new NativeTypeOptions(SyncTypes) {
+            var options     = new NativeTypeOptions(ProtocolTypes) {
                 replacements = new [] {
-                    new Replace("Friflo.Json.Fliox.",                        "Sync."),
-                    new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "Sync") }
+                    new Replace("Friflo.Json.Fliox.",                        "Fliox."),
+                    new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "Fliox") }
             };
             var generator = KotlinGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Kotlin/src/main/kotlin/Protocol");
@@ -61,8 +61,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> JTD
         [Test]
         public static void CS_JTD () {
-            var options     = new NativeTypeOptions(SyncTypes);
-            var generator   = JsonTypeDefinition.Generate(options, "Sync");
+            var options     = new NativeTypeOptions(ProtocolTypes);
+            var generator   = JsonTypeDefinition.Generate(options, "Fliox");
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JTD/", false);
         }
     }
