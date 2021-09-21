@@ -130,9 +130,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
             subscriber.AcknowledgeEvents(value);
         }
         
-        private static void AddTask(ref List<SyncTask> tasks, SyncTask task) {
+        private static void AddTask(ref List<SyncRequestTask> tasks, SyncRequestTask task) {
             if (tasks == null) {
-                tasks = new List<SyncTask>();
+                tasks = new List<SyncRequestTask>();
             }
             tasks.Add(task);
         }
@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
             ProcessSubscriber (syncRequest, messageContext);
             
             foreach (var pair in subscribers) {
-                List<SyncTask>  tasks = null;
+                List<SyncRequestTask>  tasks = null;
                 EventSubscriber     subscriber = pair.Value;
                 if (subscriber.SubscriptionCount == 0)
                     throw new InvalidOperationException("Expect SubscriptionCount > 0");
@@ -177,7 +177,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
             }
         }
         
-        private SyncTask FilterChanges (SyncTask task, SubscribeChanges subscribe) {
+        private SyncRequestTask FilterChanges (SyncRequestTask task, SubscribeChanges subscribe) {
             switch (task.TaskType) {
                 
                 case TaskType.create:

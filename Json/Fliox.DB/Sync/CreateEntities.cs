@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class CreateEntities : SyncTask
+    public class CreateEntities : SyncRequestTask
     {
         [Fri.Required]  public  string          container;
                         public  Guid?           reservedToken;

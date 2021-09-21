@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class SubscribeMessage : SyncTask
+    public class SubscribeMessage : SyncRequestTask
     {
         /// <summary>
         ///   Filter all <see cref="SendMessage.name"/>'s starting with one of the given <see cref="name"/> strings.

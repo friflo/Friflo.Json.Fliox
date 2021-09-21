@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         /// <summary>
         /// Execute all <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
         /// <para>
-        ///   <see cref="ExecuteSync"/> catches exceptions thrown by a <see cref="Sync.SyncTask"/> but 
+        ///   <see cref="ExecuteSync"/> catches exceptions thrown by a <see cref="SyncRequestTask"/> but 
         ///   this is only a fail safe mechanism.
         ///   Thrown exceptions need to be handled by proper error handling in the first place.
         ///

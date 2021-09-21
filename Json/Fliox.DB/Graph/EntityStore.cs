@@ -331,7 +331,7 @@ namespace Friflo.Json.Fliox.DB.Graph
             syncStore = _intern.syncStore;
             syncStore.SetSyncSets(this);
             
-            var tasks       = new List<Sync.SyncTask>();
+            var tasks       = new List<SyncRequestTask>();
             var syncRequest = new SyncRequest {
                 tasks       = tasks,
                 clientId    = _intern.clientId,

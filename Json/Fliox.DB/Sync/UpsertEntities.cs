@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class UpsertEntities : SyncTask
+    public class UpsertEntities : SyncRequestTask
     {
         [Fri.Required]  public  string          container;
                         public  string          keyName;

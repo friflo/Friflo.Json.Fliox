@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     [Fri.Polymorph(typeof(SubscribeChanges),        Discriminant = "subscribeChanges")]
     [Fri.Polymorph(typeof(SubscribeMessage),        Discriminant = "subscribeMessage")]
     [Fri.Polymorph(typeof(ReserveKeys),             Discriminant = "reserveKeys")]
-    public abstract class SyncTask
+    public abstract class SyncRequestTask
     {
         [Fri.Ignore]
         public              int                     index;

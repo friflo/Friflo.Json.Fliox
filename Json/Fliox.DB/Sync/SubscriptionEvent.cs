@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         ///   <item><see cref="SendMessage"/></item>
         /// </list>
         /// </summary>
-        public              List<SyncTask>  tasks;
+        public              List<SyncRequestTask>  tasks;
         
         internal override   MessageType         MessageType => MessageType.subscription;
         public   override   string              ToString()  => GetEventInfo().ToString();

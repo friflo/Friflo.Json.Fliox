@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class ReadEntitiesList : SyncTask
+    public class ReadEntitiesList : SyncRequestTask
     {
         [Fri.Required]  public  string              container;
                         public  string              keyName;

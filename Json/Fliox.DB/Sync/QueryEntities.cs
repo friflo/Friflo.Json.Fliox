@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class QueryEntities : SyncTask
+    public class QueryEntities : SyncRequestTask
     {
         [Fri.Required]  public  string              container;
                         public  string              keyName;

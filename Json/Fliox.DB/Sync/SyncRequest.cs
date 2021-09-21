@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         /// </summary>
         [Fri.Property(Name = "ack")]    public  int?                eventAck;
                                         public  string              token;
-        [Fri.Required]                  public  List<SyncTask>      tasks;
+        [Fri.Required]                  public  List<SyncRequestTask>      tasks;
         
         internal override                       MessageType         MessageType => MessageType.sync;
     }

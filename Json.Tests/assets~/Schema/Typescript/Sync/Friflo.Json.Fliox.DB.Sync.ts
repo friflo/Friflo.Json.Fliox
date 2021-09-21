@@ -32,10 +32,10 @@ export class SyncRequest extends ProtocolRequest {
     client? : string | null;
     ack?    : int32 | null;
     token?  : string | null;
-    tasks   : SyncTask_Union[];
+    tasks   : SyncRequestTask_Union[];
 }
 
-export type SyncTask_Union =
+export type SyncRequestTask_Union =
     | CreateEntities
     | UpsertEntities
     | ReadEntitiesList
@@ -48,7 +48,7 @@ export type SyncTask_Union =
     | ReserveKeys
 ;
 
-export abstract class SyncTask {
+export abstract class SyncRequestTask {
     abstract task:
         | "create"
         | "upsert"
@@ -63,7 +63,7 @@ export abstract class SyncTask {
     ;
 }
 
-export class CreateEntities extends SyncTask {
+export class CreateEntities extends SyncRequestTask {
     task           : "create";
     container      : string;
     reservedToken? : Guid | null;
@@ -71,14 +71,14 @@ export class CreateEntities extends SyncTask {
     entities       : any[];
 }
 
-export class UpsertEntities extends SyncTask {
+export class UpsertEntities extends SyncRequestTask {
     task       : "upsert";
     container  : string;
     keyName?   : string | null;
     entities   : any[];
 }
 
-export class ReadEntitiesList extends SyncTask {
+export class ReadEntitiesList extends SyncRequestTask {
     task       : "read";
     container  : string;
     keyName?   : string | null;
@@ -99,7 +99,7 @@ export class References {
     references? : References[] | null;
 }
 
-export class QueryEntities extends SyncTask {
+export class QueryEntities extends SyncRequestTask {
     task        : "query";
     container   : string;
     keyName?    : string | null;
@@ -109,7 +109,7 @@ export class QueryEntities extends SyncTask {
     references? : References[] | null;
 }
 
-export class PatchEntities extends SyncTask {
+export class PatchEntities extends SyncRequestTask {
     task       : "patch";
     container  : string;
     keyName?   : string | null;
@@ -120,20 +120,20 @@ export class EntityPatch {
     patches  : JsonPatch_Union[];
 }
 
-export class DeleteEntities extends SyncTask {
+export class DeleteEntities extends SyncRequestTask {
     task       : "delete";
     container  : string;
     ids?       : string[] | null;
     all?       : boolean | null;
 }
 
-export class SendMessage extends SyncTask {
+export class SendMessage extends SyncRequestTask {
     task   : "message";
     name   : string;
     value  : any;
 }
 
-export class SubscribeChanges extends SyncTask {
+export class SubscribeChanges extends SyncRequestTask {
     task       : "subscribeChanges";
     container  : string;
     changes    : Change[];
@@ -147,13 +147,13 @@ export type Change =
     | "delete"
 ;
 
-export class SubscribeMessage extends SyncTask {
+export class SubscribeMessage extends SyncRequestTask {
     task    : "subscribeMessage";
     name    : string;
     remove? : boolean | null;
 }
 
-export class ReserveKeys extends SyncTask {
+export class ReserveKeys extends SyncRequestTask {
     task       : "reserveKeys";
     container  : string;
     count      : int32;
@@ -335,6 +335,6 @@ export abstract class ProtocolEvent extends ProtocolMessage {
 
 export class SubscriptionEvent extends ProtocolEvent {
     type    : "sub";
-    tasks?  : SyncTask_Union[] | null;
+    tasks?  : SyncRequestTask_Union[] | null;
 }
 

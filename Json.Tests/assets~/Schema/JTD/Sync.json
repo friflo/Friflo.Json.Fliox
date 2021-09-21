@@ -19,7 +19,7 @@
                 "client": { "type": "string", "nullable": true },
                 "ack":    { "type": "int32", "nullable": true },
                 "token":  { "type": "string", "nullable": true },
-                "tasks":  { "elements": { "ref":  "SyncTask" } }
+                "tasks":  { "elements": { "ref":  "SyncRequestTask" } }
             }
         },
         "ProtocolRequest": {
@@ -27,7 +27,7 @@
                 "reqId": { "type": "int32", "nullable": true }
             }
         },
-        "SyncTask": {
+        "SyncRequestTask": {
             "discriminator": "task",
             "mapping": {
                 "create":           { "ref":  "CreateEntities" },
@@ -708,7 +708,7 @@
                 "seq":    { "type": "int32" },
                 "target": { "type": "string", "nullable": true },
                 "client": { "type": "string", "nullable": true },
-                "tasks":  { "elements": { "ref":  "SyncTask" }, "nullable": true }
+                "tasks":  { "elements": { "ref":  "SyncRequestTask" }, "nullable": true }
             }
         },
         "ProtocolEvent": {

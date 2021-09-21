@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class DeleteEntities : SyncTask
+    public class DeleteEntities : SyncRequestTask
     {
         [Fri.Required]  public  string              container;
                         public  HashSet<JsonKey>    ids = new HashSet<JsonKey>(JsonKey.Equality);

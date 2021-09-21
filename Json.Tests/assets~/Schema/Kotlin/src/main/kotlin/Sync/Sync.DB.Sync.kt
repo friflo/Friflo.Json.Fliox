@@ -19,7 +19,7 @@ data class SyncRequest (
               val client : String? = null,
               val ack    : Int? = null,
               val token  : String? = null,
-              val tasks  : List<SyncTask>,
+              val tasks  : List<SyncRequestTask>,
 ) : ProtocolRequest()
 
 @Serializable
@@ -29,7 +29,7 @@ abstract class ProtocolRequest {
 
 @Serializable
 // @JsonClassDiscriminator("task") https://github.com/Kotlin/kotlinx.serialization/issues/546
-abstract class SyncTask  {
+abstract class SyncRequestTask  {
 }
 
 @Serializable
@@ -40,7 +40,7 @@ data class CreateEntities (
               val reservedToken : UUID? = null,
               val keyName       : String? = null,
               val entities      : List<JsonElement>,
-) : SyncTask()
+) : SyncRequestTask()
 
 @Serializable
 @SerialName("upsert")
@@ -48,7 +48,7 @@ data class UpsertEntities (
               val container : String,
               val keyName   : String? = null,
               val entities  : List<JsonElement>,
-) : SyncTask()
+) : SyncRequestTask()
 
 @Serializable
 @SerialName("read")
@@ -57,7 +57,7 @@ data class ReadEntitiesList (
               val keyName   : String? = null,
               val isIntKey  : Boolean? = null,
               val reads     : List<ReadEntities>,
-) : SyncTask()
+) : SyncRequestTask()
 
 @Serializable
 data class ReadEntities (
@@ -83,7 +83,7 @@ data class QueryEntities (
               val filterLinq : String? = null,
               val filter     : FilterOperation? = null,
               val references : List<References>? = null,
-) : SyncTask()
+) : SyncRequestTask()
 
 @Serializable
 @SerialName("patch")
@@ -91,7 +91,7 @@ data class PatchEntities (
               val container : String,
               val keyName   : String? = null,
               val patches   : HashMap<String, EntityPatch>,
-) : SyncTask()
+) : SyncRequestTask()
 
 @Serializable
 data class EntityPatch (
@@ -104,14 +104,14 @@ data class DeleteEntities (
               val container : String,
               val ids       : List<String>? = null,
               val all       : Boolean? = null,
-) : SyncTask()
+) : SyncRequestTask()
 
 @Serializable
 @SerialName("message")
 data class SendMessage (
               val name  : String,
               val value : JsonElement,
-) : SyncTask()
+) : SyncRequestTask()
 
 @Serializable
 @SerialName("subscribeChanges")
@@ -119,7 +119,7 @@ data class SubscribeChanges (
               val container : String,
               val changes   : List<Change>,
               val filter    : FilterOperation? = null,
-) : SyncTask()
+) : SyncRequestTask()
 
 enum class Change {
     create,
@@ -133,14 +133,14 @@ enum class Change {
 data class SubscribeMessage (
               val name   : String,
               val remove : Boolean? = null,
-) : SyncTask()
+) : SyncRequestTask()
 
 @Serializable
 @SerialName("reserveKeys")
 data class ReserveKeys (
               val container : String,
               val count     : Int,
-) : SyncTask()
+) : SyncRequestTask()
 
 @Serializable
 @SerialName("syncRes")
@@ -315,7 +315,7 @@ data class SubscriptionEvent (
     override  val seq    : Int,
     override  val target : String? = null,
     override  val client : String? = null,
-              val tasks  : List<SyncTask>? = null,
+              val tasks  : List<SyncRequestTask>? = null,
 ) : ProtocolEvent()
 
 @Serializable

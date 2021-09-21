@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         internal    IDictionary<JsonKey, EntityError>    errorsPatch  = NoErrors;
         internal    IDictionary<JsonKey, EntityError>    errorsDelete = NoErrors;
 
-        internal  abstract  void    AddTasks                (List<Sync.SyncTask> tasks);
+        internal  abstract  void    AddTasks                (List<SyncRequestTask> tasks);
         
         internal  abstract  void    ReserveKeysResult       (ReserveKeys        task, SyncTaskResult result);
         internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, SyncTaskResult result);
@@ -169,7 +169,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
 
         private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ReadTask<TKey, T> read, ContainerEntities readEntities) {
             if (result.Error != null) {
-                var taskError = Sync.SyncTask.TaskError(result.Error);
+                var taskError = SyncRequestTask.TaskError(result.Error);
                 SetReadTaskError(read, taskError);
                 return;
             }

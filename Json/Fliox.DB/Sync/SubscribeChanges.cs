@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class SubscribeChanges : SyncTask
+    public class SubscribeChanges : SyncRequestTask
     {
         [Fri.Required]  public  string          container;
         [Fri.Required]  public  List<Change>    changes;

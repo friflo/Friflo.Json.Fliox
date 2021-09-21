@@ -12,7 +12,6 @@ using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
-using SyncTask = Friflo.Json.Fliox.DB.Sync.SyncTask;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
 {
@@ -49,7 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph.Happy
         /// If called its parameters are intended to filter the aspired condition and return true if task execution is granted.
         /// To reject task execution it returns false.
         /// </summary>
-        private static bool TestPredicate (SyncTask task, MessageContext messageContext) {
+        private static bool TestPredicate (SyncRequestTask task, MessageContext messageContext) {
             switch (task) {
                 case ReadEntitiesList read:
                     return read.container   == nameof(PocStore.articles);
