@@ -302,6 +302,13 @@ data class EntityErrors (
 )
 
 @Serializable
+@SerialName("error")
+data class ErrorResponse (
+    override  val reqId   : Int? = null,
+              val message : String? = null,
+) : ProtocolResponse()
+
+@Serializable
 @SerialName("sub")
 data class SubscriptionEvent (
     override  val seq    : Int,
@@ -316,11 +323,4 @@ abstract class ProtocolEvent {
     abstract  val target : String?
     abstract  val client : String?
 }
-
-@Serializable
-@SerialName("error")
-data class ErrorResponse (
-    override  val reqId   : Int? = null,
-              val message : String? = null,
-) : ProtocolResponse()
 

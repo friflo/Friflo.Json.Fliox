@@ -10,16 +10,16 @@ import { int64 }                 from "./Standard"
 export type ProtocolMessage_Union =
     | SyncRequest
     | SyncResponse
-    | SubscriptionEvent
     | ErrorResponse
+    | SubscriptionEvent
 ;
 
 export abstract class ProtocolMessage {
     abstract type:
         | "sync"
         | "syncRes"
-        | "sub"
         | "error"
+        | "sub"
     ;
 }
 
@@ -321,6 +321,11 @@ export class EntityErrors {
     errors     : { [key: string]: EntityError };
 }
 
+export class ErrorResponse extends ProtocolResponse {
+    type     : "error";
+    message? : string | null;
+}
+
 export abstract class ProtocolEvent extends ProtocolMessage {
     seq     : int32;
     target? : string | null;
@@ -330,10 +335,5 @@ export abstract class ProtocolEvent extends ProtocolMessage {
 export class SubscriptionEvent extends ProtocolEvent {
     type    : "sub";
     tasks?  : SyncRequestTask_Union[] | null;
-}
-
-export class ErrorResponse extends ProtocolResponse {
-    type     : "error";
-    message? : string | null;
 }
 

@@ -34,8 +34,8 @@ namespace Friflo.Json.Fliox.DB.Protocol
     [Fri.Discriminator("type")] 
     [Fri.Polymorph(typeof(SyncRequest),         Discriminant = "sync")]
     [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "syncRes")]
-    [Fri.Polymorph(typeof(SubscriptionEvent),   Discriminant = "sub")]
     [Fri.Polymorph(typeof(ErrorResponse),       Discriminant = "error")]
+    [Fri.Polymorph(typeof(SubscriptionEvent),   Discriminant = "sub")]
     public abstract class ProtocolMessage
     {
         internal abstract   MessageType     MessageType { get; }

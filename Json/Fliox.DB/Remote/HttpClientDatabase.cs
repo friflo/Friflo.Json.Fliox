@@ -48,8 +48,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                     return  new Response<SyncResponse>(errorResp.message);
                 }
                 var msg = $"Request failed. http status code: {httpResponse.StatusCode}";
-                var errorResponse = new Response<SyncResponse>(msg);
-                return errorResponse; 
+                return new Response<SyncResponse>(msg);
             }
             catch (HttpRequestException e) {
                 var error = ErrorResponse.ErrorFromException(e);
