@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Protocol;
-using Friflo.Json.Fliox.Mapper;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.DB.Remote
@@ -39,29 +38,6 @@ namespace Friflo.Json.Fliox.DB.Remote
             var messageContext  = new MessageContext(pools, eventTarget);
             eventTarget.ProcessEvent(ev, messageContext);
             messageContext.Release();
-        }
-
-        protected static JsonUtf8 CreateProtocolMessage (ProtocolMessage request, IPools pools) {
-            using (var pooledMapper = pools.ObjectMapper.Get()) {
-                ObjectMapper mapper = pooledMapper.instance;
-                mapper.Pretty = true;
-                mapper.WriteNullMembers = false;
-                return new JsonUtf8(mapper.WriteAsArray(request));
-            }
-        }
-        
-        protected static ProtocolMessage ReadProtocolMessage (JsonUtf8 jsonMessage, IPools pools) {
-            using (var pooledMapper = pools.ObjectMapper.Get()) {
-                ObjectReader reader = pooledMapper.instance.reader;
-                var response = reader.Read<ProtocolMessage>(jsonMessage);
-                if (reader.Error.ErrSet) {
-                    var message = reader.Error.msg.ToString();
-                    response = new ErrorResponse {
-                        message = message
-                    };
-                }
-                return response;
-            }
         }
     }
     

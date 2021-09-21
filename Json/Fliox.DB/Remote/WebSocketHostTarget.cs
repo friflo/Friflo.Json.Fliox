@@ -45,19 +45,14 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
 
         public Task<bool> ProcessEvent(ProtocolEvent ev, MessageContext messageContext) {
-            using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
-                var writer = pooledMapper.instance.writer;
-                writer.WriteNullMembers = false;
-                writer.Pretty           = true;
-                var jsonMessage         = new JsonUtf8(writer.WriteAsArray<ProtocolMessage>(ev));
-                try {
-                    var arraySegment    = jsonMessage.AsArraySegment();
-                    sendWriter.TryWrite(arraySegment);
-                    return Task.FromResult(true);
-                }
-                catch (Exception) {
-                    return Task.FromResult(false);
-                }
+            try {
+                var json            = RemoteUtils.CreateProtocolMessage(ev, messageContext.pools);
+                var arraySegment    = json.AsArraySegment();
+                sendWriter.TryWrite(arraySegment);
+                return Task.FromResult(true);
+            }
+            catch (Exception) {
+                return Task.FromResult(false);
             }
         }
         

@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
         
         public override async Task<Response<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            var jsonRequest = CreateProtocolMessage(syncRequest, messageContext.pools);
+            var jsonRequest = RemoteUtils.CreateProtocolMessage(syncRequest, messageContext.pools);
             var content = jsonRequest.AsByteArrayContent();
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             // body.Headers.ContentEncoding = new string[]{"charset=utf-8"};
@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                 var bodyArray   = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
                 
                 var jsonBody = new JsonUtf8(bodyArray);
-                ProtocolMessage message = ReadProtocolMessage (jsonBody, messageContext.pools);
+                ProtocolMessage message = RemoteUtils.ReadProtocolMessage (jsonBody, messageContext.pools);
                 switch (httpResponse.StatusCode) {
                     case HttpStatusCode.OK:
                         if (message is SyncResponse syncResponse)
