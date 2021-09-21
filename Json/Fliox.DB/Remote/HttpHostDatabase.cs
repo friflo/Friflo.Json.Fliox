@@ -130,10 +130,10 @@ namespace Friflo.Json.Fliox.DB.Remote
                 messageContext.Release();
                 var  body = result.body;
                 HttpStatusCode statusCode;
-                switch (result.statusType){
-                    case ResponseStatusType.Ok:         statusCode = HttpStatusCode.OK;                     break;
-                    case ResponseStatusType.Error:      statusCode = HttpStatusCode.BadRequest;             break;
-                    case ResponseStatusType.Exception:  statusCode = HttpStatusCode.InternalServerError;    break;
+                switch (result.status){
+                    case JsonResponseStatus.Ok:         statusCode = HttpStatusCode.OK;                     break;
+                    case JsonResponseStatus.Error:      statusCode = HttpStatusCode.BadRequest;             break;
+                    case JsonResponseStatus.Exception:  statusCode = HttpStatusCode.InternalServerError;    break;
                     default:                            statusCode = HttpStatusCode.InternalServerError;    break;
                 } 
                 SetResponseHeader(resp, "application/json", statusCode, body.Length);
@@ -191,6 +191,4 @@ namespace Friflo.Json.Fliox.DB.Remote
 #endif
         }
     }
-    
-
 }

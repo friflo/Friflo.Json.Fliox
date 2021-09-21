@@ -39,48 +39,18 @@ namespace Friflo.Json.Fliox.DB.Remote
                 if (request is SyncRequest syncRequest) {
                     var         response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
                     JsonUtf8    jsonResponse    = RemoteUtils.CreateProtocolMessage(response.Result, messageContext.pools);
-                    return new JsonResponse(jsonResponse, ResponseStatusType.Ok);
+                    return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
                 }
                 var msg = $"Invalid response: {request.MessageType}";
-                return JsonResponse.CreateResponseError(messageContext, msg, ResponseStatusType.Error);
+                return JsonResponse.CreateError(messageContext, msg, JsonResponseStatus.Error);
             }
             catch (Exception e) {
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                return JsonResponse.CreateResponseError(messageContext, errorMsg, ResponseStatusType.Exception);
+                return JsonResponse.CreateError(messageContext, errorMsg, JsonResponseStatus.Exception);
             }
         }
     }
-    
-    public enum ResponseStatusType {
-        /// maps to HTTP 200 OK
-        Ok,         
-        /// maps to HTTP 400 Bad Request
-        Error,
-        /// maps to HTTP 500 Internal Server Error
-        Exception
-    }
-    
-    public class JsonResponse
-    {
-        public readonly     JsonUtf8            body;
-        public readonly     ResponseStatusType  statusType;
-        
-        public JsonResponse(JsonUtf8 body, ResponseStatusType statusType) {
-            this.body       = body;
-            this.statusType  = statusType;
-        }
-        
-        public static JsonResponse CreateResponseError(MessageContext messageContext, string message, ResponseStatusType type) {
-            var errorResponse = new ErrorResponse {message = message};
-            using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
-                ObjectMapper mapper = pooledMapper.instance;
-                var bodyArray       = mapper.WriteAsArray<ProtocolMessage>(errorResponse);
-                var body            = new JsonUtf8(bodyArray);
-                return new JsonResponse(body, type);
-            }
-        }
-    }
-    
+
     public class RemoteHostContainer : EntityContainer
     {
         private readonly    EntityContainer local;
@@ -91,7 +61,6 @@ namespace Friflo.Json.Fliox.DB.Remote
             : base(name, database) {
             local = localContainer;
         }
-
 
         public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
             return await local.CreateEntities(command, messageContext).ConfigureAwait(false);
