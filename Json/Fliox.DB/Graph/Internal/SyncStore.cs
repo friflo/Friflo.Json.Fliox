@@ -52,13 +52,13 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         }
         
         // ----------------------------------- add tasks methods -----------------------------------
-        internal void AddTasks(List<DatabaseTask> tasks) {
+        internal void AddTasks(List<Sync.SyncTask> tasks) {
             Message             (tasks);
             SubscribeMessage    (tasks);
         }
                 
         // --- Message
-        private void Message(List<DatabaseTask> tasks) {
+        private void Message(List<Sync.SyncTask> tasks) {
             if (messageTasks == null)
                 return;
             foreach (var messageTask in messageTasks) {
@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             }
         }
         
-        internal void MessageResult (SendMessage task, TaskResult result) {
+        internal void MessageResult (SendMessage task, SyncTaskResult result) {
             // consider invalid response
             if (messageTasks == null || messageTasksIndex >= messageTasks.Count)
                 return;
@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         }
         
         // --- SubscribeMessage
-        private void SubscribeMessage(List<DatabaseTask> tasks) {
+        private void SubscribeMessage(List<Sync.SyncTask> tasks) {
             if (subscribeMessage == null)
                 return;
             foreach (var subscribe in subscribeMessage) {
@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             }
         }
         
-        internal void SubscribeMessageResult (SubscribeMessage task, TaskResult result) {
+        internal void SubscribeMessageResult (SubscribeMessage task, SyncTaskResult result) {
             // consider invalid response
             if (subscribeMessage == null || subscribeMessageIndex >= subscribeMessage.Count)
                 return;

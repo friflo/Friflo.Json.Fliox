@@ -9,28 +9,27 @@ import Sync.Transform.*
 
 @Serializable
 // @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
-abstract class DatabaseMessage  {
+abstract class ProtocolMessage  {
 }
 
 @Serializable
-@SerialName("sub")
-data class SubscriptionEvent (
-    override  val seq    : Int,
-    override  val target : String? = null,
-    override  val client : String? = null,
-              val tasks  : List<DatabaseTask>? = null,
-) : DatabaseEvent()
+@SerialName("sync")
+data class SyncRequest (
+    override  val reqId  : Int? = null,
+              val client : String? = null,
+              val ack    : Int? = null,
+              val token  : String? = null,
+              val tasks  : List<SyncTask>,
+) : ProtocolRequest()
 
 @Serializable
-abstract class DatabaseEvent {
-    abstract  val seq    : Int
-    abstract  val target : String?
-    abstract  val client : String?
+abstract class ProtocolRequest {
+    abstract  val reqId : Int?
 }
 
 @Serializable
 // @JsonClassDiscriminator("task") https://github.com/Kotlin/kotlinx.serialization/issues/546
-abstract class DatabaseTask  {
+abstract class SyncTask  {
 }
 
 @Serializable
@@ -41,7 +40,7 @@ data class CreateEntities (
               val reservedToken : UUID? = null,
               val keyName       : String? = null,
               val entities      : List<JsonElement>,
-) : DatabaseTask()
+) : SyncTask()
 
 @Serializable
 @SerialName("upsert")
@@ -49,7 +48,7 @@ data class UpsertEntities (
               val container : String,
               val keyName   : String? = null,
               val entities  : List<JsonElement>,
-) : DatabaseTask()
+) : SyncTask()
 
 @Serializable
 @SerialName("read")
@@ -58,7 +57,7 @@ data class ReadEntitiesList (
               val keyName   : String? = null,
               val isIntKey  : Boolean? = null,
               val reads     : List<ReadEntities>,
-) : DatabaseTask()
+) : SyncTask()
 
 @Serializable
 data class ReadEntities (
@@ -84,7 +83,7 @@ data class QueryEntities (
               val filterLinq : String? = null,
               val filter     : FilterOperation? = null,
               val references : List<References>? = null,
-) : DatabaseTask()
+) : SyncTask()
 
 @Serializable
 @SerialName("patch")
@@ -92,7 +91,7 @@ data class PatchEntities (
               val container : String,
               val keyName   : String? = null,
               val patches   : HashMap<String, EntityPatch>,
-) : DatabaseTask()
+) : SyncTask()
 
 @Serializable
 data class EntityPatch (
@@ -105,14 +104,14 @@ data class DeleteEntities (
               val container : String,
               val ids       : List<String>? = null,
               val all       : Boolean? = null,
-) : DatabaseTask()
+) : SyncTask()
 
 @Serializable
 @SerialName("message")
 data class SendMessage (
               val name  : String,
               val value : JsonElement,
-) : DatabaseTask()
+) : SyncTask()
 
 @Serializable
 @SerialName("subscribeChanges")
@@ -120,7 +119,7 @@ data class SubscribeChanges (
               val container : String,
               val changes   : List<Change>,
               val filter    : FilterOperation? = null,
-) : DatabaseTask()
+) : SyncTask()
 
 enum class Change {
     create,
@@ -134,45 +133,30 @@ enum class Change {
 data class SubscribeMessage (
               val name   : String,
               val remove : Boolean? = null,
-) : DatabaseTask()
+) : SyncTask()
 
 @Serializable
 @SerialName("reserveKeys")
 data class ReserveKeys (
               val container : String,
               val count     : Int,
-) : DatabaseTask()
-
-@Serializable
-@SerialName("sync")
-data class SyncRequest (
-    override  val reqId  : Int? = null,
-              val client : String? = null,
-              val ack    : Int? = null,
-              val token  : String? = null,
-              val tasks  : List<DatabaseTask>,
-) : DatabaseRequest()
-
-@Serializable
-abstract class DatabaseRequest {
-    abstract  val reqId : Int?
-}
+) : SyncTask()
 
 @Serializable
 @SerialName("syncRes")
 data class SyncResponse (
     override  val reqId        : Int? = null,
               val error        : ErrorResponse? = null,
-              val tasks        : List<TaskResult>? = null,
+              val tasks        : List<SyncTaskResult>? = null,
               val results      : List<ContainerEntities>? = null,
               val createErrors : HashMap<String, EntityErrors>? = null,
               val upsertErrors : HashMap<String, EntityErrors>? = null,
               val patchErrors  : HashMap<String, EntityErrors>? = null,
               val deleteErrors : HashMap<String, EntityErrors>? = null,
-) : DatabaseResponse()
+) : ProtocolResponse()
 
 @Serializable
-abstract class DatabaseResponse {
+abstract class ProtocolResponse {
     abstract  val reqId : Int?
 }
 
@@ -181,18 +165,18 @@ abstract class DatabaseResponse {
 data class ErrorResponse (
     override  val reqId   : Int? = null,
               val message : String? = null,
-) : DatabaseResponse()
+) : ProtocolResponse()
 
 @Serializable
 // @JsonClassDiscriminator("task") https://github.com/Kotlin/kotlinx.serialization/issues/546
-abstract class TaskResult  {
+abstract class SyncTaskResult  {
 }
 
 @Serializable
 @SerialName("create")
 data class CreateEntitiesResult (
               val Error : CommandError? = null,
-) : TaskResult()
+) : SyncTaskResult()
 
 @Serializable
 data class CommandError (
@@ -203,13 +187,13 @@ data class CommandError (
 @SerialName("upsert")
 data class UpsertEntitiesResult (
               val Error : CommandError? = null,
-) : TaskResult()
+) : SyncTaskResult()
 
 @Serializable
 @SerialName("read")
 data class ReadEntitiesListResult (
               val reads : List<ReadEntitiesResult>,
-) : TaskResult()
+) : SyncTaskResult()
 
 @Serializable
 data class ReadEntitiesResult (
@@ -233,43 +217,43 @@ data class QueryEntitiesResult (
               val filterLinq : String? = null,
               val ids        : List<String>,
               val references : List<ReferencesResult>? = null,
-) : TaskResult()
+) : SyncTaskResult()
 
 @Serializable
 @SerialName("patch")
 data class PatchEntitiesResult (
               val Error : CommandError? = null,
-) : TaskResult()
+) : SyncTaskResult()
 
 @Serializable
 @SerialName("delete")
 data class DeleteEntitiesResult (
               val Error : CommandError? = null,
-) : TaskResult()
+) : SyncTaskResult()
 
 @Serializable
 @SerialName("message")
 data class SendMessageResult (
               val Error  : CommandError? = null,
               val result : JsonElement? = null,
-) : TaskResult()
+) : SyncTaskResult()
 
 @Serializable
 @SerialName("subscribeChanges")
 class SubscribeChangesResult (
-) : TaskResult()
+) : SyncTaskResult()
 
 @Serializable
 @SerialName("subscribeMessage")
 class SubscribeMessageResult (
-) : TaskResult()
+) : SyncTaskResult()
 
 @Serializable
 @SerialName("reserveKeys")
 data class ReserveKeysResult (
               val Error : CommandError? = null,
               val keys  : ReservedKeys? = null,
-) : TaskResult()
+) : SyncTaskResult()
 
 @Serializable
 data class ReservedKeys (
@@ -285,7 +269,7 @@ data class TaskErrorResult (
               val type       : TaskErrorResultType,
               val message    : String? = null,
               val stacktrace : String? = null,
-) : TaskResult()
+) : SyncTaskResult()
 
 enum class TaskErrorResultType {
     None,
@@ -324,4 +308,20 @@ data class EntityErrors (
               val container : String? = null,
               val errors    : HashMap<String, EntityError>,
 )
+
+@Serializable
+@SerialName("sub")
+data class SubscriptionEvent (
+    override  val seq    : Int,
+    override  val target : String? = null,
+    override  val client : String? = null,
+              val tasks  : List<SyncTask>? = null,
+) : ProtocolEvent()
+
+@Serializable
+abstract class ProtocolEvent {
+    abstract  val seq    : Int
+    abstract  val target : String?
+    abstract  val client : String?
+}
 

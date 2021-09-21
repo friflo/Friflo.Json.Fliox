@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             clientTargets.Remove(clientId);
         }
         
-        protected void ProcessEvent(DatabaseEvent ev) {
+        protected void ProcessEvent(ProtocolEvent ev) {
             var eventTarget     = clientTargets[ev.targetId];
             var messageContext  = new MessageContext(pools, eventTarget);
             eventTarget.ProcessEvent(ev, messageContext);
@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             return new SyncResponse {error = error};
         }
         
-        private async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, MessageContext messageContext) {
+        private async Task<ProtocolResponse> ExecuteRequest(ProtocolRequest request, MessageContext messageContext) {
             int requestId = Interlocked.Increment(ref reqId);
             request.reqId = requestId; 
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
@@ -64,16 +64,16 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                 
                 ObjectReader reader = mapper.reader;
                 if (result.statusType == ResponseStatusType.Ok) {
-                    var msg = reader.Read<DatabaseMessage>(result.body);
+                    var msg = reader.Read<ProtocolMessage>(result.body);
                     if (reader.Error.ErrSet)
                         return new ErrorResponse{message = reader.Error.msg.AsString()};
                     // At this point the returned result.body is valid JSON.
                     // => All entities of a SyncResponse.results have either a valid JSON value or an error.
-                    if (msg is DatabaseResponse req)
+                    if (msg is ProtocolResponse req)
                         return req;
                     return new ErrorResponse{ message = $"Expect response. Was MessageType: {msg.MessageType}"};
                 }
-                var errMsg = reader.Read<DatabaseMessage>(result.body);
+                var errMsg = reader.Read<ProtocolMessage>(result.body);
                 if (reader.Error.ErrSet)
                     return new ErrorResponse{message = reader.Error.msg.AsString()};
                 if (errMsg is ErrorResponse errorResp)
@@ -82,8 +82,8 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             }
         }
         
-        private JsonUtf8 CreateRequest (ObjectWriter writer, DatabaseRequest request) {
-            return new JsonUtf8(writer.WriteAsArray<DatabaseMessage>(request));
+        private JsonUtf8 CreateRequest (ObjectWriter writer, ProtocolRequest request) {
+            return new JsonUtf8(writer.WriteAsArray<ProtocolMessage>(request));
         }
     }
     

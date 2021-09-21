@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class QueryEntities : DatabaseTask
+    public class QueryEntities : SyncTask
     {
         [Fri.Required]  public  string              container;
                         public  string              keyName;
@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         internal override       TaskType            TaskType => TaskType.query;
         public   override       string              TaskName => $"container: '{container}', filter: {filterLinq}";
         
-        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
             if (filter == null)
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     }
     
     // ----------------------------------- task result -----------------------------------
-    public class QueryEntitiesResult : TaskResult, ICommandResult
+    public class QueryEntitiesResult : SyncTaskResult, ICommandResult
     {
                         public  string                          container;  // only for debugging ergonomics
                         public  string                          filterLinq;

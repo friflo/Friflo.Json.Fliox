@@ -82,7 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
     /// These are:
     /// <para>1. A task error set to <see cref="ICommandResult.Error"/> in a <see cref="ICommandResult"/>.</para>
     /// <para>2. Exceptions thrown by a <see cref="EntityContainer"/> command by a buggy implementation.</para>
-    /// <para>3. One or more <see cref="ReadError"/>'s added to a <see cref="TaskResult"/> entity error dictionary.</para>
+    /// <para>3. One or more <see cref="ReadError"/>'s added to a <see cref="SyncTaskResult"/> entity error dictionary.</para>
     /// <br></br>
     /// Note: The <see cref="TestContainer"/> doesnt modify the underlying <see cref="local"/> <see cref="EntityContainer"/>
     /// to avoid side effects by error tests.

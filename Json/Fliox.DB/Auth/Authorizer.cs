@@ -18,17 +18,17 @@ namespace Friflo.Json.Fliox.DB.Auth
     /// </summary>
     public abstract class Authorizer
     {
-        public abstract bool Authorize(DatabaseTask task, MessageContext messageContext);
+        public abstract bool Authorize(SyncTask task, MessageContext messageContext);
     }
     
     public class AuthorizeAllow : Authorizer {
-        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+        public override bool Authorize(SyncTask task, MessageContext messageContext) {
             return true;
         }
     }    
     
     public class AuthorizeDeny : Authorizer {
-        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+        public override bool Authorize(SyncTask task, MessageContext messageContext) {
             return false;
         }
     }
@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.DB.Auth
             this.list = list;    
         }
         
-        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+        public override bool Authorize(SyncTask task, MessageContext messageContext) {
             foreach (var item in list) {
                 if (!item.Authorize(task, messageContext))
                     return false;
@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.DB.Auth
             this.list = list;    
         }
         
-        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+        public override bool Authorize(SyncTask task, MessageContext messageContext) {
             foreach (var item in list) {
                 if (item.Authorize(task, messageContext))
                     return true;
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.DB.Auth
             this.type = type;    
         }
         
-        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+        public override bool Authorize(SyncTask task, MessageContext messageContext) {
             return task.TaskType == type;
         }
     }
@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.DB.Auth
             messageName = message;
         }
         
-        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+        public override bool Authorize(SyncTask task, MessageContext messageContext) {
             if (!(task is SendMessage message))
                 return false;
             if (prefix) {
@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.DB.Auth
             messageName = message;
         }
         
-        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+        public override bool Authorize(SyncTask task, MessageContext messageContext) {
             if (!(task is SubscribeMessage subscribe))
                 return false;
             if (prefix) {
@@ -172,7 +172,7 @@ namespace Friflo.Json.Fliox.DB.Auth
             }
         }
         
-        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+        public override bool Authorize(SyncTask task, MessageContext messageContext) {
             switch (task.TaskType) {
                 case TaskType.create:       return create       && ((CreateEntities)  task).container == container;
                 case TaskType.upsert:       return upsert       && ((UpsertEntities)  task).container == container;
@@ -210,7 +210,7 @@ namespace Friflo.Json.Fliox.DB.Auth
             }
         }
         
-        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+        public override bool Authorize(SyncTask task, MessageContext messageContext) {
             if (!(task is SubscribeChanges subscribe))
                 return false;
             if (subscribe.container != container)
@@ -228,7 +228,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         }
     }
     
-    public delegate bool AuthPredicate (DatabaseTask task, MessageContext messageContext);
+    public delegate bool AuthPredicate (SyncTask task, MessageContext messageContext);
     
     public class AuthorizePredicate : Authorizer {
         private readonly string         name;
@@ -240,7 +240,7 @@ namespace Friflo.Json.Fliox.DB.Auth
             this.predicate  = predicate;    
         }
             
-        public override bool Authorize(DatabaseTask task, MessageContext messageContext) {
+        public override bool Authorize(SyncTask task, MessageContext messageContext) {
             return predicate(task, messageContext);
         }
     }

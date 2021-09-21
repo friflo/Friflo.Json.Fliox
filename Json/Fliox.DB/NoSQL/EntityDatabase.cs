@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
         /// <summary>
         /// Execute all <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
         /// <para>
-        ///   <see cref="ExecuteSync"/> catches exceptions thrown by a <see cref="DatabaseTask"/> but 
+        ///   <see cref="ExecuteSync"/> catches exceptions thrown by a <see cref="Sync.SyncTask"/> but 
         ///   this is only a fail safe mechanism.
         ///   Thrown exceptions need to be handled by proper error handling in the first place.
         ///
@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null)
                 return new SyncResponse{error = new ErrorResponse{message = "missing field: tasks (array)"}};
-            var tasks = new List<TaskResult>(requestTasks.Count);
+            var tasks = new List<SyncTaskResult>(requestTasks.Count);
             var response = new SyncResponse {
                 tasks   = tasks,
                 resultMap = new Dictionary<string, ContainerEntities>()
@@ -148,7 +148,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
                 task.index = index;
                     
                 try {
-                    TaskResult result = await taskHandler.ExecuteTask(task, this, response, messageContext).ConfigureAwait(false);
+                    SyncTaskResult result = await taskHandler.ExecuteTask(task, this, response, messageContext).ConfigureAwait(false);
                     tasks.Add(result);
                 }
                 catch (Exception e) {

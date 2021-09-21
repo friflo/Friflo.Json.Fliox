@@ -37,10 +37,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
                 using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                     ObjectMapper    mapper  = pooledMapper.instance;
                     ObjectReader    reader  = mapper.reader;
-                    DatabaseRequest request = ReadRequest (reader, jsonRequest, out string error);
+                    ProtocolRequest request = ReadRequest (reader, jsonRequest, out string error);
                     if (request == null)
                         return JsonResponse.CreateResponseError(messageContext, error, ResponseStatusType.Error);
-                    DatabaseResponse response = await ExecuteRequest(request, messageContext).ConfigureAwait(false);
+                    ProtocolResponse response = await ExecuteRequest(request, messageContext).ConfigureAwait(false);
                     mapper.WriteNullMembers = false;
                     mapper.Pretty = true;
                     jsonResponse = CreateResponse(mapper.writer, response);
@@ -53,13 +53,13 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
         }
         
         /// Caller need to check <see cref="reader"/> error state. 
-        private static DatabaseRequest ReadRequest (ObjectReader reader, JsonUtf8 jsonRequest, out string error) {
-            var msg = reader.Read<DatabaseMessage>(jsonRequest);
+        private static ProtocolRequest ReadRequest (ObjectReader reader, JsonUtf8 jsonRequest, out string error) {
+            var msg = reader.Read<ProtocolMessage>(jsonRequest);
             if (reader.Error.ErrSet) {
                 error = reader.Error.msg.AsString();
                 return null;
             }
-            if (msg is DatabaseRequest req) {
+            if (msg is ProtocolRequest req) {
                 error = null;
                 return req;
             }
@@ -67,11 +67,11 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             return null;
         }
         
-        private static JsonUtf8 CreateResponse (ObjectWriter writer, DatabaseResponse response) {
-            return new JsonUtf8(writer.WriteAsArray<DatabaseMessage>(response));
+        private static JsonUtf8 CreateResponse (ObjectWriter writer, ProtocolResponse response) {
+            return new JsonUtf8(writer.WriteAsArray<ProtocolMessage>(response));
         }
         
-        private async Task<DatabaseResponse> ExecuteRequest(DatabaseRequest request, MessageContext messageContext) {
+        private async Task<ProtocolResponse> ExecuteRequest(ProtocolRequest request, MessageContext messageContext) {
             switch (request.MessageType) {
                 case MessageType.sync:
                     return await ExecuteSync((SyncRequest)request, messageContext).ConfigureAwait(false);
@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             var errorResponse = new ErrorResponse {message = message};
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
-                var bodyArray = mapper.WriteAsArray<DatabaseMessage>(errorResponse);
+                var bodyArray = mapper.WriteAsArray<ProtocolMessage>(errorResponse);
                 var body = new JsonUtf8(bodyArray);
                 return new JsonResponse(body, type);
             }

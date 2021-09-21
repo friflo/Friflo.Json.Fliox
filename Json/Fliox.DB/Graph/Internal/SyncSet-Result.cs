@@ -17,16 +17,16 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         internal    IDictionary<JsonKey, EntityError>    errorsPatch  = NoErrors;
         internal    IDictionary<JsonKey, EntityError>    errorsDelete = NoErrors;
 
-        internal  abstract  void    AddTasks                (List<DatabaseTask> tasks);
+        internal  abstract  void    AddTasks                (List<Sync.SyncTask> tasks);
         
-        internal  abstract  void    ReserveKeysResult       (ReserveKeys        task, TaskResult result);
-        internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, TaskResult result);
-        internal  abstract  void    UpsertEntitiesResult    (UpsertEntities     task, TaskResult result);
-        internal  abstract  void    ReadEntitiesListResult  (ReadEntitiesList   task, TaskResult result, ContainerEntities readEntities);
-        internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, TaskResult result, ContainerEntities queryEntities);
-        internal  abstract  void    PatchEntitiesResult     (PatchEntities      task, TaskResult result);
-        internal  abstract  void    DeleteEntitiesResult    (DeleteEntities     task, TaskResult result);
-        internal  abstract  void    SubscribeChangesResult  (SubscribeChanges   task, TaskResult result);
+        internal  abstract  void    ReserveKeysResult       (ReserveKeys        task, SyncTaskResult result);
+        internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, SyncTaskResult result);
+        internal  abstract  void    UpsertEntitiesResult    (UpsertEntities     task, SyncTaskResult result);
+        internal  abstract  void    ReadEntitiesListResult  (ReadEntitiesList   task, SyncTaskResult result, ContainerEntities readEntities);
+        internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, SyncTaskResult result, ContainerEntities queryEntities);
+        internal  abstract  void    PatchEntitiesResult     (PatchEntities      task, SyncTaskResult result);
+        internal  abstract  void    DeleteEntitiesResult    (DeleteEntities     task, SyncTaskResult result);
+        internal  abstract  void    SubscribeChangesResult  (SubscribeChanges   task, SyncTaskResult result);
         
         internal static string SyncKeyName (string keyName) {
             if (keyName == "id")
@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
 
     internal partial class SyncSet<TKey, T>
     {
-        internal override void ReserveKeysResult (ReserveKeys task, TaskResult result) {
+        internal override void ReserveKeysResult (ReserveKeys task, SyncTaskResult result) {
             var reserve = _reserveKeys;
             if (result is TaskErrorResult taskError) {
                 reserve.state.SetError(new TaskErrorInfo(taskError));
@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsCreate"/> for all
         /// <see cref="Creates"/> to enable setting <see cref="LogTask"/> to error state via <see cref="LogTask.SetResult"/>. 
-        internal override void CreateEntitiesResult(CreateEntities task, TaskResult result) {
+        internal override void CreateEntitiesResult(CreateEntities task, SyncTaskResult result) {
             CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, CreateTasks(), errorsCreate);
             var creates = Creates();
             if (result is TaskErrorResult taskError) {
@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             CreateTasks().Clear();
         }
 
-        internal override void UpsertEntitiesResult(UpsertEntities task, TaskResult result) {
+        internal override void UpsertEntitiesResult(UpsertEntities task, SyncTaskResult result) {
             CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, UpsertTasks(), errorsUpsert);
             
             // enable GC to collect references in containers which are not needed anymore
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         private void CreateUpsertEntitiesResult(
             List<JsonKey>                       keys,
             List<JsonValue>                     entities,
-            TaskResult                          result,
+            SyncTaskResult                          result,
             List<WriteTask>                     writeTasks,
             IDictionary<JsonKey, EntityError>   writeErrors)
         {
@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             }
         }
 
-        internal override void ReadEntitiesListResult(ReadEntitiesList taskList, TaskResult result, ContainerEntities readEntities) {
+        internal override void ReadEntitiesListResult(ReadEntitiesList taskList, SyncTaskResult result, ContainerEntities readEntities) {
             var reads = Reads();
             if (result is TaskErrorResult taskError) {
                 foreach (var read in reads) {
@@ -169,7 +169,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
 
         private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ReadTask<TKey, T> read, ContainerEntities readEntities) {
             if (result.Error != null) {
-                var taskError = DatabaseTask.TaskError(result.Error);
+                var taskError = Sync.SyncTask.TaskError(result.Error);
                 SetReadTaskError(read, taskError);
                 return;
             }
@@ -224,7 +224,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             entities.Add(id, value);
         }
         
-        internal override void QueryEntitiesResult(QueryEntities task, TaskResult result, ContainerEntities queryEntities) {
+        internal override void QueryEntitiesResult(QueryEntities task, SyncTaskResult result, ContainerEntities queryEntities) {
             var filterLinq = task.filterLinq;
             var query = Queries()[filterLinq];
             if (result is TaskErrorResult taskError) {
@@ -304,7 +304,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
 
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsPatch"/> for all
         /// <see cref="Patches"/> to enable setting <see cref="LogTask"/> to error state via <see cref="LogTask.SetResult"/>. 
-        internal override void PatchEntitiesResult(PatchEntities task, TaskResult result) {
+        internal override void PatchEntitiesResult(PatchEntities task, SyncTaskResult result) {
             var patchTasks  = PatchTasks();
             var patches     = Patches();
             if (result is TaskErrorResult taskError) {
@@ -350,7 +350,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             patchTasks.Clear();
         }
 
-        internal override void DeleteEntitiesResult(DeleteEntities task, TaskResult result) {
+        internal override void DeleteEntitiesResult(DeleteEntities task, SyncTaskResult result) {
             if (result is TaskErrorResult taskError) {
                 foreach (var deleteTask in DeleteTasks()) {
                     deleteTask.state.SetError(new TaskErrorInfo(taskError));
@@ -382,7 +382,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             }
         }
         
-        internal override void SubscribeChangesResult (SubscribeChanges task, TaskResult result) {
+        internal override void SubscribeChangesResult (SubscribeChanges task, SyncTaskResult result) {
             if (result is TaskErrorResult taskError) {
                 subscribeChanges.state.SetError(new TaskErrorInfo(taskError));
                 return;

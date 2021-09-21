@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class DeleteEntities : DatabaseTask
+    public class DeleteEntities : SyncTask
     {
         [Fri.Required]  public  string              container;
                         public  HashSet<JsonKey>    ids = new HashSet<JsonKey>(JsonKey.Equality);
@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.DB.Sync
             return false;
         }
 
-        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
             if (ids == null && all == null)
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     }
     
     // ----------------------------------- task result -----------------------------------
-    public class DeleteEntitiesResult : TaskResult, ICommandResult
+    public class DeleteEntitiesResult : SyncTaskResult, ICommandResult
     {
                      public CommandError                        Error { get; set; }
         [Fri.Ignore] public Dictionary<JsonKey, EntityError>    deleteErrors;

@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class SendMessage : DatabaseTask
+    public class SendMessage : SyncTask
     {
         [Fri.Required]  public  string          name;
         [Fri.Required]  public  JsonValue       value;
@@ -16,20 +16,20 @@ namespace Friflo.Json.Fliox.DB.Sync
         internal override       TaskType        TaskType => TaskType.message;
         public   override       string          TaskName => $"name: '{name}'";
 
-        internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (name == null)
-                return Task.FromResult<TaskResult>(MissingField(nameof(name)));
+                return Task.FromResult<SyncTaskResult>(MissingField(nameof(name)));
             var messageResult = new SendMessageResult();
             if (name == StdMessage.Echo) {
                 messageResult.result = value;
             }
-            TaskResult result = messageResult;
+            SyncTaskResult result = messageResult;
             return Task.FromResult(result);
         }
     }
     
     // ----------------------------------- task result -----------------------------------
-    public class SendMessageResult : TaskResult, ICommandResult
+    public class SendMessageResult : SyncTaskResult, ICommandResult
     {
         /// <summary>
         /// By default it echos <see cref="SendMessage.value"/>.

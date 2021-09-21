@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- task result -----------------------------------
-    public class TaskErrorResult : TaskResult
+    public class TaskErrorResult : SyncTaskResult
     {
         [Fri.Required]  public  TaskErrorResultType type;
                         public  string              message;

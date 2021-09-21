@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class SubscribeMessage : DatabaseTask
+    public class SubscribeMessage : SyncTask
     {
         /// <summary>
         ///   Filter all <see cref="SendMessage.name"/>'s starting with one of the given <see cref="name"/> strings.
@@ -21,21 +21,21 @@ namespace Friflo.Json.Fliox.DB.Sync
         internal override       TaskType    TaskType    => TaskType.subscribeMessage;
         public   override       string      TaskName    => $"name: '{name}'";
 
-        internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             var eventBroker = database.eventBroker;
             if (eventBroker == null)
-                return Task.FromResult<TaskResult>(InvalidTask("database has no eventBroker"));
+                return Task.FromResult<SyncTaskResult>(InvalidTask("database has no eventBroker"));
             if (messageContext.clientId == null)
-                return Task.FromResult<TaskResult>(InvalidTask("subscribe task requires client id set in sync request"));
+                return Task.FromResult<SyncTaskResult>(InvalidTask("subscribe task requires client id set in sync request"));
             if (name == null)
-                return Task.FromResult<TaskResult>(MissingField(nameof(name)));
+                return Task.FromResult<SyncTaskResult>(MissingField(nameof(name)));
             
             var eventTarget = messageContext.eventTarget;
             if (eventTarget == null)
-                return Task.FromResult<TaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
+                return Task.FromResult<SyncTaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
             eventBroker.SubscribeMessage(this, messageContext.clientId, eventTarget);
-            return Task.FromResult<TaskResult>(new SubscribeMessageResult());
+            return Task.FromResult<SyncTaskResult>(new SubscribeMessageResult());
         }
         
         internal static string GetPrefix (string name) {
@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     }
     
     // ----------------------------------- task result -----------------------------------
-    public class SubscribeMessageResult : TaskResult
+    public class SubscribeMessageResult : SyncTaskResult
     {
         internal override   TaskType    TaskType => TaskType.subscribeMessage;
     }

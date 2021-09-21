@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class PatchEntities : DatabaseTask
+    public class PatchEntities : SyncTask
     {
         [Fri.Required]  public  string                              container;
                         public  string                              keyName;
@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         internal override       TaskType                            TaskType => TaskType.patch;
         public   override       string                              TaskName =>  $"container: '{container}'";
         
-        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
             if (patches == null)
@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     }
 
     // ----------------------------------- task result -----------------------------------
-    public class PatchEntitiesResult : TaskResult, ICommandResult
+    public class PatchEntitiesResult : SyncTaskResult, ICommandResult
     {
                      public CommandError                        Error { get; set; }
         [Fri.Ignore] public Dictionary<JsonKey, EntityError>    patchErrors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);

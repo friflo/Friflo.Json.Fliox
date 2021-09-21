@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.DB.Sync
             if (_singleton == null) {
                 _singleton = new TypeStore();
                 // Sync models
-                _singleton.GetTypeMapper(typeof(DatabaseMessage));
+                _singleton.GetTypeMapper(typeof(ProtocolMessage));
                 _singleton.GetTypeMapper(typeof(ErrorResponse));
                 
                 // UserStore models

@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
 {
     public interface IEventTarget {
         bool        IsOpen ();
-        Task<bool>  ProcessEvent(DatabaseEvent ev, MessageContext messageContext);
+        Task<bool>  ProcessEvent(ProtocolEvent ev, MessageContext messageContext);
     }
     
     public class EventBroker : IDisposable
@@ -130,9 +130,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
             subscriber.AcknowledgeEvents(value);
         }
         
-        private static void AddTask(ref List<DatabaseTask> tasks, DatabaseTask task) {
+        private static void AddTask(ref List<SyncTask> tasks, SyncTask task) {
             if (tasks == null) {
-                tasks = new List<DatabaseTask>();
+                tasks = new List<SyncTask>();
             }
             tasks.Add(task);
         }
@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
             ProcessSubscriber (syncRequest, messageContext);
             
             foreach (var pair in subscribers) {
-                List<DatabaseTask>  tasks = null;
+                List<SyncTask>  tasks = null;
                 EventSubscriber     subscriber = pair.Value;
                 if (subscriber.SubscriptionCount == 0)
                     throw new InvalidOperationException("Expect SubscriptionCount > 0");
@@ -177,7 +177,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
             }
         }
         
-        private DatabaseTask FilterChanges (DatabaseTask task, SubscribeChanges subscribe) {
+        private SyncTask FilterChanges (SyncTask task, SubscribeChanges subscribe) {
             switch (task.TaskType) {
                 
                 case TaskType.create:

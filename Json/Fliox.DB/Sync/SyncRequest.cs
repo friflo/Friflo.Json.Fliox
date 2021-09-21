@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- request -----------------------------------
-    public class SyncRequest : DatabaseRequest
+    public class SyncRequest : ProtocolRequest
     {
         /// <summary>
         /// Specify an optional id to identify the client performing a request by a host.
@@ -18,22 +18,22 @@ namespace Friflo.Json.Fliox.DB.Sync
         [Fri.Property(Name = "client")] public  string              clientId;
         /// <summary>
         /// <see cref="eventAck"/> is used to ensure (change) events are delivered reliable.
-        /// A client set <see cref="eventAck"/> to the last received <see cref="DatabaseEvent.seq"/> in case
+        /// A client set <see cref="eventAck"/> to the last received <see cref="ProtocolEvent.seq"/> in case
         /// it has subscribed to database changes by a <see cref="SubscribeChanges"/> task.
         /// Otherwise <see cref="eventAck"/> is null.
         /// </summary>
         [Fri.Property(Name = "ack")]    public  int?                eventAck;
                                         public  string              token;
-        [Fri.Required]                  public  List<DatabaseTask>  tasks;
+        [Fri.Required]                  public  List<SyncTask>      tasks;
         
         internal override                       MessageType         MessageType => MessageType.sync;
     }
     
     // ----------------------------------- response -----------------------------------
-    public class SyncResponse : DatabaseResponse
+    public class SyncResponse : ProtocolResponse
     {
                         public  ErrorResponse                           error;
-                        public  List<TaskResult>                        tasks;
+                        public  List<SyncTaskResult>                        tasks;
                         public  List<ContainerEntities>                 results;
         // key of all Dictionary's is the container name
         [Fri.Ignore]    public  Dictionary<string, ContainerEntities>   resultMap;

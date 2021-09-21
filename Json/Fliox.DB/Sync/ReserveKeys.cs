@@ -8,11 +8,11 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Sync
 {
-    public class ReserveKeys  : DatabaseTask {
+    public class ReserveKeys  : SyncTask {
         [Fri.Required]  public  string          container;
         [Fri.Required]  public  int             count;
 
-        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             // var store           = new SequenceStore(database, SyncTypeStore.Get(), null);
             var pools = messageContext.pools;
             using (var pooledStore = pools.Pool(() => new SequenceStore(database, SyncTypeStore.Get(), "ReserveKeys")).Get()) {
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         public   override       string          TaskName => $"container: '{container}'";
     }
     
-    public class ReserveKeysResult : TaskResult {
+    public class ReserveKeysResult : SyncTaskResult {
                         public  ReservedKeys?   keys;
         
                         public  CommandError    Error { get; set; }

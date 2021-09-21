@@ -43,12 +43,12 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
             return webSocket.State == WebSocketState.Open;
         }
 
-        public Task<bool> ProcessEvent(DatabaseEvent ev, MessageContext messageContext) {
+        public Task<bool> ProcessEvent(ProtocolEvent ev, MessageContext messageContext) {
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 var writer = pooledMapper.instance.writer;
                 writer.WriteNullMembers = false;
                 writer.Pretty           = true;
-                var jsonMessage         = new JsonUtf8(writer.WriteAsArray<DatabaseMessage>(ev));
+                var jsonMessage         = new JsonUtf8(writer.WriteAsArray<ProtocolMessage>(ev));
                 try {
                     var arraySegment    = jsonMessage.AsArraySegment();
                     sendWriter.TryWrite(arraySegment);

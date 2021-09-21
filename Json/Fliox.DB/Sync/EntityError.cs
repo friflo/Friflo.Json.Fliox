@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Sync
             
         [Fri.Ignore]        public  JsonKey             id;
         [Fri.Ignore]        public  string              container;
-        /// <summary>Is != <see cref="TaskErrorResultType.None"/> if the error is caused indirectly by a <see cref="DatabaseTask"/> error.</summary>
+        /// <summary>Is != <see cref="TaskErrorResultType.None"/> if the error is caused indirectly by a <see cref="SyncTask"/> error.</summary>
         [Fri.Ignore]        public  TaskErrorResultType taskErrorType;
         /// <summary>Show the stacktrace if <see cref="taskErrorType"/> == <see cref="TaskErrorResultType.UnhandledException"/>
         /// and the accessed <see cref="EntityDatabase"/> expose this data.</summary>

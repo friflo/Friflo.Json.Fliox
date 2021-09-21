@@ -7,34 +7,35 @@ import { JsonPatch }             from "./Friflo.Json.Fliox.Transform"
 import { JsonPatch_Union }       from "./Friflo.Json.Fliox.Transform"
 import { int64 }                 from "./Standard"
 
-export type DatabaseMessage_Union =
-    | SubscriptionEvent
+export type ProtocolMessage_Union =
     | SyncRequest
     | SyncResponse
+    | SubscriptionEvent
     | ErrorResponse
 ;
 
-export abstract class DatabaseMessage {
+export abstract class ProtocolMessage {
     abstract type:
-        | "sub"
         | "sync"
         | "syncRes"
+        | "sub"
         | "error"
     ;
 }
 
-export abstract class DatabaseEvent extends DatabaseMessage {
-    seq     : int32;
-    target? : string | null;
+export abstract class ProtocolRequest extends ProtocolMessage {
+    reqId? : int32 | null;
+}
+
+export class SyncRequest extends ProtocolRequest {
+    type    : "sync";
     client? : string | null;
+    ack?    : int32 | null;
+    token?  : string | null;
+    tasks   : SyncTask_Union[];
 }
 
-export class SubscriptionEvent extends DatabaseEvent {
-    type    : "sub";
-    tasks?  : DatabaseTask_Union[] | null;
-}
-
-export type DatabaseTask_Union =
+export type SyncTask_Union =
     | CreateEntities
     | UpsertEntities
     | ReadEntitiesList
@@ -47,7 +48,7 @@ export type DatabaseTask_Union =
     | ReserveKeys
 ;
 
-export abstract class DatabaseTask {
+export abstract class SyncTask {
     abstract task:
         | "create"
         | "upsert"
@@ -62,7 +63,7 @@ export abstract class DatabaseTask {
     ;
 }
 
-export class CreateEntities extends DatabaseTask {
+export class CreateEntities extends SyncTask {
     task           : "create";
     container      : string;
     reservedToken? : Guid | null;
@@ -70,14 +71,14 @@ export class CreateEntities extends DatabaseTask {
     entities       : any[];
 }
 
-export class UpsertEntities extends DatabaseTask {
+export class UpsertEntities extends SyncTask {
     task       : "upsert";
     container  : string;
     keyName?   : string | null;
     entities   : any[];
 }
 
-export class ReadEntitiesList extends DatabaseTask {
+export class ReadEntitiesList extends SyncTask {
     task       : "read";
     container  : string;
     keyName?   : string | null;
@@ -98,7 +99,7 @@ export class References {
     references? : References[] | null;
 }
 
-export class QueryEntities extends DatabaseTask {
+export class QueryEntities extends SyncTask {
     task        : "query";
     container   : string;
     keyName?    : string | null;
@@ -108,7 +109,7 @@ export class QueryEntities extends DatabaseTask {
     references? : References[] | null;
 }
 
-export class PatchEntities extends DatabaseTask {
+export class PatchEntities extends SyncTask {
     task       : "patch";
     container  : string;
     keyName?   : string | null;
@@ -119,20 +120,20 @@ export class EntityPatch {
     patches  : JsonPatch_Union[];
 }
 
-export class DeleteEntities extends DatabaseTask {
+export class DeleteEntities extends SyncTask {
     task       : "delete";
     container  : string;
     ids?       : string[] | null;
     all?       : boolean | null;
 }
 
-export class SendMessage extends DatabaseTask {
+export class SendMessage extends SyncTask {
     task   : "message";
     name   : string;
     value  : any;
 }
 
-export class SubscribeChanges extends DatabaseTask {
+export class SubscribeChanges extends SyncTask {
     task       : "subscribeChanges";
     container  : string;
     changes    : Change[];
@@ -146,38 +147,26 @@ export type Change =
     | "delete"
 ;
 
-export class SubscribeMessage extends DatabaseTask {
+export class SubscribeMessage extends SyncTask {
     task    : "subscribeMessage";
     name    : string;
     remove? : boolean | null;
 }
 
-export class ReserveKeys extends DatabaseTask {
+export class ReserveKeys extends SyncTask {
     task       : "reserveKeys";
     container  : string;
     count      : int32;
 }
 
-export abstract class DatabaseRequest extends DatabaseMessage {
+export abstract class ProtocolResponse extends ProtocolMessage {
     reqId? : int32 | null;
 }
 
-export class SyncRequest extends DatabaseRequest {
-    type    : "sync";
-    client? : string | null;
-    ack?    : int32 | null;
-    token?  : string | null;
-    tasks   : DatabaseTask_Union[];
-}
-
-export abstract class DatabaseResponse extends DatabaseMessage {
-    reqId? : int32 | null;
-}
-
-export class SyncResponse extends DatabaseResponse {
+export class SyncResponse extends ProtocolResponse {
     type          : "syncRes";
     error?        : ErrorResponse | null;
-    tasks?        : TaskResult_Union[] | null;
+    tasks?        : SyncTaskResult_Union[] | null;
     results?      : ContainerEntities[] | null;
     createErrors? : { [key: string]: EntityErrors } | null;
     upsertErrors? : { [key: string]: EntityErrors } | null;
@@ -185,12 +174,12 @@ export class SyncResponse extends DatabaseResponse {
     deleteErrors? : { [key: string]: EntityErrors } | null;
 }
 
-export class ErrorResponse extends DatabaseResponse {
+export class ErrorResponse extends ProtocolResponse {
     type     : "error";
     message? : string | null;
 }
 
-export type TaskResult_Union =
+export type SyncTaskResult_Union =
     | CreateEntitiesResult
     | UpsertEntitiesResult
     | ReadEntitiesListResult
@@ -204,7 +193,7 @@ export type TaskResult_Union =
     | TaskErrorResult
 ;
 
-export abstract class TaskResult {
+export abstract class SyncTaskResult {
     abstract task:
         | "create"
         | "upsert"
@@ -220,7 +209,7 @@ export abstract class TaskResult {
     ;
 }
 
-export class CreateEntitiesResult extends TaskResult {
+export class CreateEntitiesResult extends SyncTaskResult {
     task   : "create";
     Error? : CommandError | null;
 }
@@ -229,12 +218,12 @@ export class CommandError {
     message? : string | null;
 }
 
-export class UpsertEntitiesResult extends TaskResult {
+export class UpsertEntitiesResult extends SyncTaskResult {
     task   : "upsert";
     Error? : CommandError | null;
 }
 
-export class ReadEntitiesListResult extends TaskResult {
+export class ReadEntitiesListResult extends SyncTaskResult {
     task   : "read";
     reads  : ReadEntitiesResult[];
 }
@@ -251,7 +240,7 @@ export class ReferencesResult {
     references? : ReferencesResult[] | null;
 }
 
-export class QueryEntitiesResult extends TaskResult {
+export class QueryEntitiesResult extends SyncTaskResult {
     task        : "query";
     Error?      : CommandError | null;
     container?  : string | null;
@@ -260,31 +249,31 @@ export class QueryEntitiesResult extends TaskResult {
     references? : ReferencesResult[] | null;
 }
 
-export class PatchEntitiesResult extends TaskResult {
+export class PatchEntitiesResult extends SyncTaskResult {
     task   : "patch";
     Error? : CommandError | null;
 }
 
-export class DeleteEntitiesResult extends TaskResult {
+export class DeleteEntitiesResult extends SyncTaskResult {
     task   : "delete";
     Error? : CommandError | null;
 }
 
-export class SendMessageResult extends TaskResult {
+export class SendMessageResult extends SyncTaskResult {
     task    : "message";
     Error?  : CommandError | null;
     result? : any | null;
 }
 
-export class SubscribeChangesResult extends TaskResult {
+export class SubscribeChangesResult extends SyncTaskResult {
     task  : "subscribeChanges";
 }
 
-export class SubscribeMessageResult extends TaskResult {
+export class SubscribeMessageResult extends SyncTaskResult {
     task  : "subscribeMessage";
 }
 
-export class ReserveKeysResult extends TaskResult {
+export class ReserveKeysResult extends SyncTaskResult {
     task   : "reserveKeys";
     Error? : CommandError | null;
     keys?  : ReservedKeys | null;
@@ -296,7 +285,7 @@ export class ReservedKeys {
     token  : Guid;
 }
 
-export class TaskErrorResult extends TaskResult {
+export class TaskErrorResult extends SyncTaskResult {
     task        : "error";
     type        : TaskErrorResultType;
     message?    : string | null;
@@ -336,5 +325,16 @@ export type EntityErrorType =
 export class EntityErrors {
     container? : string | null;
     errors     : { [key: string]: EntityError };
+}
+
+export abstract class ProtocolEvent extends ProtocolMessage {
+    seq     : int32;
+    target? : string | null;
+    client? : string | null;
+}
+
+export class SubscriptionEvent extends ProtocolEvent {
+    type    : "sub";
+    tasks?  : SyncTask_Union[] | null;
 }
 

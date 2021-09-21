@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class SubscribeChanges : DatabaseTask
+    public class SubscribeChanges : SyncTask
     {
         [Fri.Required]  public  string          container;
         [Fri.Required]  public  List<Change>    changes;
@@ -20,28 +20,28 @@ namespace Friflo.Json.Fliox.DB.Sync
         internal override       TaskType        TaskType  => TaskType.subscribeChanges;
         public   override       string          TaskName  => $"container: '{container}'";
 
-        internal override Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             var eventBroker = database.eventBroker;
             if (eventBroker == null)
-                return Task.FromResult<TaskResult>(InvalidTask("database has no eventBroker"));
+                return Task.FromResult<SyncTaskResult>(InvalidTask("database has no eventBroker"));
             if (messageContext.clientId == null)
-                return Task.FromResult<TaskResult>(InvalidTask("subscribe task requires client id set in sync request"));
+                return Task.FromResult<SyncTaskResult>(InvalidTask("subscribe task requires client id set in sync request"));
             if (container == null)
-                return Task.FromResult<TaskResult>(MissingContainer());
+                return Task.FromResult<SyncTaskResult>(MissingContainer());
             if (changes == null)
-                return Task.FromResult<TaskResult>(MissingField(nameof(changes)));
+                return Task.FromResult<SyncTaskResult>(MissingField(nameof(changes)));
             
             var eventTarget = messageContext.eventTarget;
             if (eventTarget == null)
-                return Task.FromResult<TaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
+                return Task.FromResult<SyncTaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
             eventBroker.SubscribeChanges(this, messageContext.clientId, eventTarget);
-            return Task.FromResult<TaskResult>(new SubscribeChangesResult());
+            return Task.FromResult<SyncTaskResult>(new SubscribeChangesResult());
         }
     }
     
     // ----------------------------------- task result -----------------------------------
-    public class SubscribeChangesResult : TaskResult
+    public class SubscribeChangesResult : SyncTaskResult
     {
         internal override   TaskType    TaskType => TaskType.subscribeChanges;
     }

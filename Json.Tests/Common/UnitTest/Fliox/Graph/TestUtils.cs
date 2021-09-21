@@ -203,7 +203,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Graph
             
             public override Task<SyncResponse> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
                 var result = new SyncResponse {
-                    tasks       = new List<TaskResult>(),
+                    tasks       = new List<SyncTaskResult>(),
                     resultMap   = new Dictionary<string, ContainerEntities>()
                 };
                 return Task.FromResult(result);

@@ -95,10 +95,10 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Remote
         private void OnReceive(JsonUtf8 messageJson) {
             try {
                 var contextPools    = new Pools(Pools.SharedPools);
-                DatabaseMessage message;
+                ProtocolMessage message;
                 using (var pooledMapper = contextPools.ObjectMapper.Get()) {
                     var reader = pooledMapper.instance.reader;
-                    message = reader.Read<DatabaseMessage>(messageJson);
+                    message = reader.Read<ProtocolMessage>(messageJson);
                 }
                 if (message is SyncResponse resp) {
                     var requestId = resp.reqId;

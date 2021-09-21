@@ -7,14 +7,14 @@ namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- message -----------------------------------
     /// <summary>
-    /// <see cref="DatabaseMessage"/> is the base type for all messages which are classified into request, response and event.
+    /// <see cref="ProtocolMessage"/> is the base type for all messages which are classified into request, response and event.
     /// It can be used in communication protocols which support more than the request / response schema.
     /// <br/>
-    /// A <see cref="DatabaseMessage"/> is either one of the following types:
+    /// A <see cref="ProtocolMessage"/> is either one of the following types:
     /// <list type="bullet">
-    ///   <item> <see cref="DatabaseRequest"/>  send by clients / received by hosts</item>
-    ///   <item> <see cref="DatabaseResponse"/> send by hosts / received by clients</item>
-    ///   <item> <see cref="DatabaseEvent"/>    send by hosts / received by clients</item>
+    ///   <item> <see cref="ProtocolRequest"/>  send by clients / received by hosts</item>
+    ///   <item> <see cref="ProtocolResponse"/> send by hosts / received by clients</item>
+    ///   <item> <see cref="ProtocolEvent"/>    send by hosts / received by clients</item>
     /// </list>   
     /// <br></br>
     /// Note: By applying this classification the protocol can also be used in peer-to-peer networking.
@@ -32,17 +32,17 @@ namespace Friflo.Json.Fliox.DB.Sync
     /// </para>
     /// </summary>
     [Fri.Discriminator("type")] 
-    [Fri.Polymorph(typeof(SubscriptionEvent),   Discriminant = "sub")]
     [Fri.Polymorph(typeof(SyncRequest),         Discriminant = "sync")]
     [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "syncRes")]
+    [Fri.Polymorph(typeof(SubscriptionEvent),   Discriminant = "sub")]
     [Fri.Polymorph(typeof(ErrorResponse),       Discriminant = "error")]
-    public abstract class DatabaseMessage
+    public abstract class ProtocolMessage
     {
         internal abstract   MessageType     MessageType { get; }
     }
     
     // ----------------------------------- request -----------------------------------
-    public abstract class DatabaseRequest   : DatabaseMessage {
+    public abstract class ProtocolRequest   : ProtocolMessage {
         // ReSharper disable once InconsistentNaming
         /// <summary>Used only for <see cref="NoSQL.Remote.RemoteClientDatabase"/> to enable:
         /// <para>
@@ -59,14 +59,14 @@ namespace Friflo.Json.Fliox.DB.Sync
     }
     
     // ----------------------------------- response -----------------------------------
-    public abstract class DatabaseResponse : DatabaseMessage {
+    public abstract class ProtocolResponse : ProtocolMessage {
         // ReSharper disable once InconsistentNaming
-        /// <summary>Set to the value of the corresponding <see cref="DatabaseRequest.reqId"/></summary>
+        /// <summary>Set to the value of the corresponding <see cref="ProtocolRequest.reqId"/></summary>
                                         public          int?            reqId       { get; set; }
     }
     
     // ----------------------------------- event -----------------------------------
-    public abstract class DatabaseEvent     : DatabaseMessage {
+    public abstract class ProtocolEvent     : ProtocolMessage {
         // note for all fields
         // used { get; set; } to force properties on the top of JSON
         

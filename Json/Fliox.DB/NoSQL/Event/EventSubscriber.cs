@@ -29,9 +29,9 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
         
         /// lock (<see cref="eventQueue"/>) {
         private             int                                     eventCounter;
-        private  readonly   LinkedList<DatabaseEvent>               eventQueue = new LinkedList<DatabaseEvent>();
+        private  readonly   LinkedList<ProtocolEvent>               eventQueue = new LinkedList<ProtocolEvent>();
         /// contains all events which are sent but not acknowledged
-        private  readonly   List<DatabaseEvent>                     sentEvents = new List<DatabaseEvent>();
+        private  readonly   List<ProtocolEvent>                     sentEvents = new List<ProtocolEvent>();
         // }
         
         private  readonly   bool                                    background;
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
             this.eventTarget = eventTarget;
         }
         
-        internal void EnqueueEvent(DatabaseEvent ev) {
+        internal void EnqueueEvent(ProtocolEvent ev) {
             lock (eventQueue) {
                 ev.seq = ++eventCounter;
                 eventQueue.AddLast(ev);
@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL.Event
             }
         }
         
-        private bool DequeueEvent(out DatabaseEvent ev) {
+        private bool DequeueEvent(out ProtocolEvent ev) {
             lock (eventQueue) {
                 var node = eventQueue.First;
                 if (node == null) {

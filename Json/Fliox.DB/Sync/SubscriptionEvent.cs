@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- event -----------------------------------
-    public class SubscriptionEvent : DatabaseEvent
+    public class SubscriptionEvent : ProtocolEvent
     {
         /// <summary>
         /// Contains the events an application subscribed. These are:
@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         ///   <item><see cref="SendMessage"/></item>
         /// </list>
         /// </summary>
-        public              List<DatabaseTask>  tasks;
+        public              List<SyncTask>  tasks;
         
         internal override   MessageType         MessageType => MessageType.subscription;
         public   override   string              ToString()  => GetEventInfo().ToString();

@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Sync
 {
     // ----------------------------------- task -----------------------------------
-    public class ReadEntitiesList : DatabaseTask
+    public class ReadEntitiesList : SyncTask
     {
         [Fri.Required]  public  string              container;
                         public  string              keyName;
@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Sync
         internal override       TaskType            TaskType => TaskType.read;
         public   override       string              TaskName =>  $"container: '{container}'";
 
-        internal override async Task<TaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
             if (reads == null)
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     }
     
     // ----------------------------------- task result -----------------------------------
-    public class ReadEntitiesListResult : TaskResult
+    public class ReadEntitiesListResult : SyncTaskResult
     {
         [Fri.Required]  public  List<ReadEntitiesResult>    reads;
         

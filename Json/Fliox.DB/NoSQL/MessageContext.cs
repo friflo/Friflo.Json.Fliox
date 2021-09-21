@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
     /// </summary>
     public class MessageContext
     {
-        /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="DatabaseRequest"/></summary>
+        /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
         public              string          clientId;
         public  readonly    IPools          pools;
         public  readonly    IEventTarget    eventTarget;

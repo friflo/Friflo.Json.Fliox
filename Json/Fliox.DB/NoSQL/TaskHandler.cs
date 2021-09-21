@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             commands.Add(name, command);
         }
 
-        private static bool AuthorizeTask(DatabaseTask task, MessageContext messageContext, out TaskResult error) {
+        private static bool AuthorizeTask(SyncTask task, MessageContext messageContext, out SyncTaskResult error) {
             var authorizer = messageContext.authState.Authorizer;
             if (authorizer.Authorize(task, messageContext)) {
                 error = null;
@@ -45,11 +45,11 @@ namespace Friflo.Json.Fliox.DB.NoSQL
             if (authError != null) {
                 message = $"{message} ({authError})";
             }
-            error = DatabaseTask.PermissionDenied(message);
+            error = SyncTask.PermissionDenied(message);
             return false;
         }
         
-        public virtual async Task<TaskResult> ExecuteTask (DatabaseTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+        public virtual async Task<SyncTaskResult> ExecuteTask (SyncTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (!AuthorizeTask(task, messageContext, out var error)) {
                 return error;
             }

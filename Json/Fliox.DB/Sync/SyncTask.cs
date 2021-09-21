@@ -20,12 +20,12 @@ namespace Friflo.Json.Fliox.DB.Sync
     [Fri.Polymorph(typeof(SubscribeChanges),        Discriminant = "subscribeChanges")]
     [Fri.Polymorph(typeof(SubscribeMessage),        Discriminant = "subscribeMessage")]
     [Fri.Polymorph(typeof(ReserveKeys),             Discriminant = "reserveKeys")]
-    public abstract class DatabaseTask
+    public abstract class SyncTask
     {
         [Fri.Ignore]
         public              int                     index;
             
-        internal abstract   Task<TaskResult>        Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext);
+        internal abstract   Task<SyncTaskResult>        Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext);
         internal abstract   TaskType                TaskType { get; }
         public   abstract   string                  TaskName { get; }
 
@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.DB.Sync
     [Fri.Polymorph(typeof(ReserveKeysResult),       Discriminant = "reserveKeys")]
     //
     [Fri.Polymorph(typeof(TaskErrorResult),         Discriminant = "error")]
-    public abstract class TaskResult
+    public abstract class SyncTaskResult
     {
         internal abstract TaskType          TaskType { get; }
     }

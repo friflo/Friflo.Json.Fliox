@@ -268,7 +268,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         }
 
         // ----------------------------------- add tasks methods -----------------------------------
-        internal override void AddTasks(List<DatabaseTask> tasks) {
+        internal override void AddTasks(List<Sync.SyncTask> tasks) {
             ReserveKeys         (tasks);
             CreateEntities      (tasks);
             UpsertEntities      (tasks);
@@ -281,7 +281,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
         }
         
         
-        private void ReserveKeys(List<DatabaseTask> tasks) {
+        private void ReserveKeys(List<Sync.SyncTask> tasks) {
             if (_reserveKeys == null)
                 return;
             var req = new ReserveKeys {
@@ -291,7 +291,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             tasks.Add(req);
         }
         
-        private void CreateEntities(List<DatabaseTask> tasks) {
+        private void CreateEntities(List<Sync.SyncTask> tasks) {
             var createCount = _creates?.Count   ?? 0; 
             var autoCount   = _autos?.Count     ?? 0;
             var count       = createCount + autoCount;
@@ -332,7 +332,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             tasks.Add(req);
         }
         
-        private void UpsertEntities(List<DatabaseTask> tasks) {
+        private void UpsertEntities(List<Sync.SyncTask> tasks) {
             if (_upserts == null || _upserts.Count == 0)
                 return;
             var writer  = set.intern.jsonMapper.writer;
@@ -356,7 +356,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             tasks.Add(req);
         }
 
-        private void ReadEntitiesList(List<DatabaseTask> tasks) {
+        private void ReadEntitiesList(List<Sync.SyncTask> tasks) {
             if (_reads == null || _reads.Count == 0)
                 return;
             var readList = new ReadEntitiesList {
@@ -385,7 +385,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             tasks.Add(readList);
         }
         
-        private void QueryEntities(List<DatabaseTask> tasks) {
+        private void QueryEntities(List<Sync.SyncTask> tasks) {
             if (_queries == null || _queries.Count == 0)
                 return;
             foreach (var queryPair in _queries) {
@@ -408,7 +408,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             }
         }
 
-        private void PatchEntities(List<DatabaseTask> tasks)
+        private void PatchEntities(List<Sync.SyncTask> tasks)
         {
             var patches     = _patches;
             var patchTasks  = _patchTasks;
@@ -455,7 +455,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             }
         }
 
-        private void DeleteEntities(List<DatabaseTask> tasks) {
+        private void DeleteEntities(List<Sync.SyncTask> tasks) {
             var deletes = _deletes;
             if (deletes == null || deletes.Count == 0)
                 return;
@@ -472,7 +472,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             deletes.Clear();
         }
         
-        private void DeleteAll(List<DatabaseTask> tasks) {
+        private void DeleteAll(List<Sync.SyncTask> tasks) {
             var deleteAll = _deleteTaskAll;
             if (deleteAll == null)
                 return;
@@ -483,7 +483,7 @@ namespace Friflo.Json.Fliox.DB.Graph.Internal
             tasks.Add(req);
         }
         
-        private void SubscribeChanges(List<DatabaseTask> tasks) {
+        private void SubscribeChanges(List<Sync.SyncTask> tasks) {
             var sub = subscribeChanges;
             if (sub == null)
                 return;

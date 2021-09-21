@@ -16,7 +16,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
     /// </summary>
     public static class SyncGen
     {
-        private static readonly Type[] SyncTypes        = { typeof(DatabaseMessage) };
+        private static readonly Type[] SyncTypes        = { typeof(ProtocolMessage) };
 
         // -------------------------------------- input: C# --------------------------------------
         
