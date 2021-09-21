@@ -97,14 +97,6 @@ namespace Friflo.Json.Fliox.DB.Remote
         
         private void OnReceive(JsonUtf8 messageJson) {
             try {
-                if (websocket.State != WebSocketState.Open) {
-                    var error = $"websocket.State not WebSocketState.";
-                    Console.WriteLine(error);
-                    Debug.Fail(error);
-                    // var error = JsonResponse.CreateResponseError(request.messageContext, $"WebSocket not Open. {endpoint}", ResponseStatusType.Error);
-                    // request.response.SetResult(error);
-                    return;
-                }
                 var contextPools    = new Pools(Pools.SharedPools);
                 ProtocolMessage message = RemoteUtils.ReadProtocolMessage (messageJson, contextPools);
                 if (message is ProtocolResponse resp) {
