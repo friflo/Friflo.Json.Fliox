@@ -208,7 +208,7 @@ export class CreateEntitiesResult extends SyncTaskResult {
     Error? : CommandError | null;
 }
 
-export class CommandError extends SyncTaskResult {
+export class CommandError {
     message? : string | null;
 }
 

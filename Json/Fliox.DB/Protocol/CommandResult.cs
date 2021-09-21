@@ -11,11 +11,10 @@ namespace Friflo.Json.Fliox.DB.Protocol
         CommandError                Error { get; set;  }
     }
     
-    public class CommandError : SyncTaskResult
+    public class CommandError // : SyncTaskResult
     {
         public              string      message;
 
-        internal override   TaskType    TaskType => TaskType.error;
         public   override   string      ToString() => message;
         
         public CommandError() {}
