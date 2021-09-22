@@ -64,7 +64,7 @@
     <button type="button" onclick="closeWebsocket()">Close</button> <br><br>
     Request
     <br>
-    <textarea id="jsonRequest" title="request" cols="100" rows="15">{
+    <textarea id="jsonRequest" title="Request send to host" cols="100" rows="15">{
   "type": "sync",
   "tasks": [
     {
@@ -78,8 +78,8 @@
 }</textarea> <br>
 <button type="button" onclick="sendSyncRequest()">Send sync</button><br>
 <br>
-Response - all websocket messages: DevTools > Network (F12)
+Response - see all messages: DevTools > Network (F12)
 <br>
-<textarea id="jsonResponse" title="request" cols="100" rows="15"></textarea>
+<textarea id="jsonResponse" title="Response received fom host" cols="100" rows="15"></textarea>
 </body>
 </html>
