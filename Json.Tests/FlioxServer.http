@@ -9,7 +9,8 @@
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
-{ "type": "sync",
+{
+  "type": "sync",
   "tasks": [
   {
     "task":  "message",
@@ -25,7 +26,8 @@ content-type: application/json
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
-{ "type": "sync",
+{
+  "type": "sync",
   "tasks": [
   {
     "task":         "read",
@@ -40,7 +42,8 @@ content-type: application/json
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
-{ "type": "sync",
+{
+  "type": "sync",
   "tasks": [
   {
     "task":         "read",
@@ -63,7 +66,8 @@ content-type: application/json
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
-{ "type": "sync",
+{
+  "type": "sync",
   "tasks": [
   {
     "task":         "query",
@@ -78,7 +82,8 @@ content-type: application/json
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
-{ "type": "sync",
+{
+  "type": "sync",
   "tasks": [
   {
     "task":         "query",
@@ -94,7 +99,8 @@ content-type: application/json
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
-{ "type": "sync",
+{
+  "type": "sync",
   "tasks": [
   {
     "task":         "query",
@@ -127,7 +133,8 @@ GET http://localhost:8010/schema/index.html HTTP/1.1
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
-{ "type": "sync",
+{
+  "type": "sync",
   "tasks": [
   {
     "task":         "create",
@@ -142,7 +149,8 @@ content-type: application/json
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
-{ "type": "sync",
+{
+  "type": "sync",
   "tasks": [
   {
     "task":         "delete",
@@ -155,7 +163,8 @@ content-type: application/json
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
-{ "type": "sync",
+{
+  "type": "sync",
   "tasks": [
   {
     "task":         "patch",
@@ -178,7 +187,8 @@ content-type: application/json
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
-{ "type": "sync",
+{
+  "type": "sync",
   "tasks": [
   {
     "task":         "reserveKeys",
@@ -192,7 +202,8 @@ content-type: application/json
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
-{ "type": "sync",
+{
+  "type": "sync",
   "tasks": [
   {
     "task":         "create",
@@ -214,7 +225,8 @@ content-type: application/json
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
-{ "type":   "sync",
+{
+  "type":   "sync",
   "client": "client-1",
   "tasks": [{
     "task":     "subscribeMessage",
@@ -227,7 +239,8 @@ content-type: application/json
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
-{ "type":   "sync",
+{
+  "type":   "sync",
   "client": "client-1",
   "tasks": [{
     "task":         "subscribeChanges",
@@ -241,7 +254,8 @@ content-type: application/json
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
-{ "type":   "sync",
+{
+  "type":   "sync",
   "ack":    0,
   "client": "client-1",
   "tasks": []
