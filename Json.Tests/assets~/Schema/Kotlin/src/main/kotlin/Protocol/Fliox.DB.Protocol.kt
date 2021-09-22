@@ -190,7 +190,7 @@ data class ReadEntitiesListResult (
 @Serializable
 data class ReadEntitiesResult (
               val Error      : CommandError? = null,
-              val references : List<ReferencesResult>,
+              val references : List<ReferencesResult>? = null,
 )
 
 @Serializable

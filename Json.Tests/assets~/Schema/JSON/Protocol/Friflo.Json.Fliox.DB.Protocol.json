@@ -323,11 +323,8 @@
             "type": "object",
             "properties": {
                 "Error":      { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/CommandError" }] },
-                "references": { "type": "array", "items": { "$ref": "#/definitions/ReferencesResult" } }
+                "references": { "type": ["array", "null"], "items": { "$ref": "#/definitions/ReferencesResult" } }
             },
-            "required": [
-                "references"
-            ],
             "additionalProperties": false
         },
         "ReferencesResult": {

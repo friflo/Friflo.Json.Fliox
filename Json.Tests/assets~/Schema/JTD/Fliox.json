@@ -590,7 +590,7 @@
         "ReadEntitiesResult": {
             "properties": {
                 "Error":      { "ref":  "CommandError", "nullable": true },
-                "references": { "elements": { "ref":  "ReferencesResult" } }
+                "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
             }
         },
         "ReferencesResult": {

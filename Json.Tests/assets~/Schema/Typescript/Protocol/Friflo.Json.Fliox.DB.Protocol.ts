@@ -224,7 +224,7 @@ export class ReadEntitiesListResult extends SyncTaskResult {
 
 export class ReadEntitiesResult {
     Error?      : CommandError | null;
-    references  : ReferencesResult[];
+    references? : ReferencesResult[] | null;
 }
 
 export class ReferencesResult {
