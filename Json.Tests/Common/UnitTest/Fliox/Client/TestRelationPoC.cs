@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var createCanon     = producers.Create(canon); // created explicit
             var order           = new Order { id = "order-1", created = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc)};
             var cameraCreate    = new Article { id = "article-1", name = "Camera", producer = canon }; // created implicit
-            var notebook        = new Article { id = "article-3", name = "Notebook", producer = samsung };
+            var notebook        = new Article { id = "article-notebook-💻-unicode", name = "Notebook", producer = samsung };
             var derivedClass    = new DerivedClass{ article = cameraCreate };
             var type1           = new TestType { id = "type-1", dateTime = new DateTime(2021, 7, 22, 6, 0, 0, DateTimeKind.Utc), derivedClass = derivedClass };
             var createCam1      = articles.Create(cameraCreate);
