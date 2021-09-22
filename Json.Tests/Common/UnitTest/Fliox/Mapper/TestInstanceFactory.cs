@@ -115,7 +115,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 StringAssert.Contains("No [Fri.Polymorph] type declared for discriminant: 'Tiger' on type: IAnimal", reader.Error.msg.AsString());
                 
                 reader.Read<IAnimal>("{}");
-                StringAssert.Contains("Expect discriminator \"animalType\": \"...\" as first JSON member for type: IAnimal", reader.Error.msg.AsString());
+                StringAssert.Contains("Expect discriminator 'animalType': '...' as first JSON member for type: IAnimal", reader.Error.msg.AsString());
                 
                 var e = Throws<InvalidOperationException>(() => reader.Read<TestIncompatiblePolymorph>("{}"));
                 AreEqual("[Fri.Polymorph(Book)] type must extend annotated type: TestIncompatiblePolymorph", e.Message);

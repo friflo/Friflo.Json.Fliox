@@ -278,7 +278,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
                         classType = reader.typeCache.GetTypeMapper(obj.GetType());
                         parser.NextEvent();
                     } else
-                        return reader.ErrorMsg<TypeMapper>($"Expect discriminator \"{discriminator}\": \"...\" as first JSON member for type: ", classType.type.Name, out success);
+                        return reader.ErrorMsg<TypeMapper>($"Expect discriminator '{discriminator}': '...' as first JSON member for type: ", classType.type.Name, out success);
                 }
             } else {
                 if (classType.IsNull(ref obj))
