@@ -21,7 +21,7 @@ content-type: application/json
 
 # =============================== read / query tasks ===============================
 
-### read entities by their ids
+### read entities by their ids in given container
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
@@ -123,7 +123,7 @@ GET http://localhost:8010/schema/index.html HTTP/1.1
 
 # =============================== mutate tasks ===============================
 
-### create an article - creates file ./Json.Tests/assets~/db/articles/new-article.json
+### create an article - create file given container
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
@@ -138,7 +138,7 @@ content-type: application/json
   }
 ]}
 
-### delete an article
+### delete an article in given container
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
@@ -174,7 +174,7 @@ content-type: application/json
   }
 ]}
 
-### Reserve keys for container: articles
+### Reserve keys for given container
 POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
