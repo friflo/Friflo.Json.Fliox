@@ -6,13 +6,13 @@
         <LangVersion>7.3</LangVersion>
         <Title>friflo Json.EntityGraph</Title>
         <Authors>Ullrich Praetz</Authors>
-        <Description>Json.Fliox.Graph is an Entity/Graph-Mapper - E/G-M used to map objects represented as .NET types to entities in a NoSQL database or records in a relational database.
-The EGM strives to overcome the "Object-relational impedance mismatch" inherent to Object–relational mapping (ORM) by relaxing constraints.
-This enables simple and performant database adapters for various database types.
-Fliox.Graph provides a clear &amp; compact API. It is trimmed towards performance by maximizing CPU utilization and minimizing memory footprint.
+        <Description>Fliox.DB is an ORM (Object-relational Mapper) for NoSQL databases used to map objects represented as .NET types to entities in a NoSQL database.
+Fliox.DB strives to overcome the "Object-relational impedance mismatch" inherent to Object–relational mapping by relaxing constraints.
+This enables simple and performant database adapters for various databases.
+Fliox.DB provides a clear &amp; compact API. It is trimmed towards performance by minimizing CPU utilization and memory footprint.
 The API enables collecting multiple database task into a single Sync request to minimize latency caused by a chatty protocol via Internet.
-The Fliox.Graph client &amp; server implementation is asynchronous to be responsive even under high load.
-The Fliox.Graph server requires no database schema to enable running as a microservice in distributed environments and avoiding database migrations.
+The Fliox.DB client &amp; host implementations are 100% asynchronous to be responsive even under high load.
+A Fliox.DB host requires no database schema to enable running as a microservice in distributed environments and avoiding database migrations.
 Compatible to .NET &amp; Unity.</Description>
         <Copyright>Ullrich Praetz</Copyright>
         <PackageProjectUrl>https://github.com/friflo/Friflo.Json.Burst</PackageProjectUrl>
