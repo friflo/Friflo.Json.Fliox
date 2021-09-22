@@ -29,9 +29,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         }
         
         /// C# -> JSON Schema
-        // [Test]
+        [Test]
         public static void CS_JSON () {
-            var options     = new NativeTypeOptions(ProtocolTypes);
+            var types = new [] { typeof(SyncRequest), typeof(SyncResponse), typeof(SubscriptionEvent) };
+            var options     = new NativeTypeOptions(ProtocolTypes) {separateTypes = types };
             var generator   = JsonSchemaGenerator.Generate(options);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/JSON/Protocol");
         }
