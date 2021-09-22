@@ -17,8 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
     {
         private static readonly Type[]      PocStoreTypes   = EntityStore.GetEntityTypes<PocStore>();
         private static readonly Replace[]   Replacements    =  {
-            new Replace("Friflo.Json.Tests.Common."),
-            new Replace("Friflo.Json.Fliox.DB.NoSQL", "UnitTest.Fliox.Client")
+            new Replace("Friflo.Json.Tests.Common.")
         };
         
         // -------------------------------------- input: C# --------------------------------------
@@ -50,8 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
             // requires individual replacements. Otherwise the generated CS classes will result in name clashes, as
             // their namespace / class names are equal to the original ones.
             var replacements = new [] {
-                new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "PocStore2"),
-                new Replace("Friflo.Json.Fliox.DB.NoSQL",                "PocStore2.Client")
+                new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox",   "PocStore2")
             };
             var options     = new NativeTypeOptions(PocStoreTypes) { replacements = replacements };
             var generator = CSharpGenerator.Generate(options);
