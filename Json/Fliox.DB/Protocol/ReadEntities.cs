@@ -19,8 +19,8 @@ namespace Friflo.Json.Fliox.DB.Protocol
     /// The data of requested entities are added to <see cref="ContainerEntities.entityMap"/> 
     public class ReadEntitiesResult: ICommandResult
     {
-                        public  List<ReferencesResult>  references;
-                        public  CommandError            Error { get; set; }
+                        public  List<ReferencesResult>          references;
+                        public  CommandError                    Error { get; set; }
 
         [Fri.Ignore]    public  Dictionary<JsonKey,EntityValue> entities;
         

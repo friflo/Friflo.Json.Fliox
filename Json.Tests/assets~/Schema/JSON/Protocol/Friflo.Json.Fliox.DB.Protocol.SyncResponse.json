@@ -7,7 +7,7 @@
             "type": "object",
             "extends": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/ProtocolResponse" },
             "properties": {
-                "type":         { "enum": ["syncRes"] },
+                "type":         { "enum": ["syncResp"] },
                 "reqId":        { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "tasks":        { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/SyncTaskResult" } },
                 "results":      { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/ContainerEntities" } },

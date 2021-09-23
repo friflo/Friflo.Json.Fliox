@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
                         public  Dictionary<string, EntityErrors>        patchErrors;  // lazy instantiation
                         public  Dictionary<string, EntityErrors>        deleteErrors; // lazy instantiation
                         
-        internal override        MessageType                            MessageType => MessageType.resp;
+        internal override        MessageType                            MessageType => MessageType.syncResp;
         
         internal ContainerEntities GetContainerResult(string container) {
             if (resultMap.TryGetValue(container, out ContainerEntities result))

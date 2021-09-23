@@ -79,7 +79,7 @@ content-type: application/json
 
 
 ### query articles with a filter => .name == "Smartphone"
-POST http://localhost:8010/ HTTP/1.1
+POST http://google.com:8010// HTTP/1.1
 content-type: application/json
 
 {

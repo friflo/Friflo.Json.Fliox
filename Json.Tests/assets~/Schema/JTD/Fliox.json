@@ -4,10 +4,10 @@
         "ProtocolMessage": {
             "discriminator": "type",
             "mapping": {
-                "sync":    { "ref":  "SyncRequest" },
-                "syncRes": { "ref":  "SyncResponse" },
-                "error":   { "ref":  "ErrorResponse" },
-                "sub":     { "ref":  "SubscriptionEvent" }
+                "sync":     { "ref":  "SyncRequest" },
+                "syncResp": { "ref":  "SyncResponse" },
+                "error":    { "ref":  "ErrorResponse" },
+                "sub":      { "ref":  "SubscriptionEvent" }
             },
             "properties": {
 

@@ -17,7 +17,7 @@ export type ProtocolMessage_Union =
 export abstract class ProtocolMessage {
     abstract type:
         | "sync"
-        | "syncRes"
+        | "syncResp"
         | "error"
         | "sub"
     ;
@@ -164,7 +164,7 @@ export abstract class ProtocolResponse extends ProtocolMessage {
 }
 
 export class SyncResponse extends ProtocolResponse {
-    type          : "syncRes";
+    type          : "syncResp";
     tasks?        : SyncTaskResult_Union[] | null;
     results?      : ContainerEntities[] | null;
     createErrors? : { [key: string]: EntityErrors } | null;
