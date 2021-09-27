@@ -1,0 +1,21 @@
+{
+    "type": "sync",
+    "tasks": [
+    {
+      "task":         "read",
+      "container":    "orders",
+      "reads": [
+        {
+          "ids": ["order-1"],
+          "references": [
+            {
+              "selector": ".customer",
+              "container": "customers"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+  

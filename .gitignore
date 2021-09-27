@@ -22,3 +22,4 @@ riderModule.iml
 .extern/
 
 *.sync.resp.md
+*.sync.resp.json

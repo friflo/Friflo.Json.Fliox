@@ -1,0 +1,23 @@
+{
+    "type": "sync",
+    "tasks": [
+    {
+      "task":         "query",
+      "container":    "articles",
+      "filterLinq":   "true",
+      "filter":       { "op":"true" },
+      "references": [
+        {
+          "selector": ".producer",
+          "container": "producers",
+          "references": [
+            {
+              "selector": ".employees[*]",
+              "container": "employees"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+    "type": "sync",
+    "tasks": [
+    {
+      "task":         "patch",
+      "container":    "articles",
+      "patches": {
+        "new-article": {
+          "patches": [
+            {
+              "op":"replace",
+              "path": ".name",
+              "value": "patched Name"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

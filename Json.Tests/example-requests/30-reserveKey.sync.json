@@ -1,0 +1,10 @@
+{
+    "type": "sync",
+    "tasks": [
+    {
+      "task":         "reserveKeys",
+      "container":    "articles",
+      "count":        10
+    }
+  ]
+}

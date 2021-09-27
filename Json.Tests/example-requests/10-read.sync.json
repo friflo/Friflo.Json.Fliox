@@ -1,0 +1,12 @@
+{
+    "type": "sync",
+    "tasks": [
+    {
+      "task":         "read",
+      "container":    "articles",
+      "reads": [
+        { "ids": ["article-galaxy", "article-ipad"] }
+      ]
+    }
+  ]
+}
