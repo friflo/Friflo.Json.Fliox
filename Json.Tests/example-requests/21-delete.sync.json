@@ -2,8 +2,9 @@
     "type": "sync",
     "tasks": [
     {
-      "task":         "delete",
-      "container":    "articles",
+      "task":       "delete",
+      "info":       "delete an article in given container",
+      "container":  "articles",
       "ids": ["new-article"]
     }
   ]

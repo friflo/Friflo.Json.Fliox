@@ -2,8 +2,9 @@
     "type": "sync",
     "tasks": [
     {
-      "task":         "read",
-      "container":    "orders",
+      "task":       "read",
+      "info":       "read entity 'order-1' and its reference to .customer",
+      "container":  "orders",
       "reads": [
         {
           "ids": ["order-1"],

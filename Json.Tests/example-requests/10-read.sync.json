@@ -2,8 +2,9 @@
     "type": "sync",
     "tasks": [
     {
-      "task":         "read",
-      "container":    "articles",
+      "task":       "read",
+      "info":       "read entities by their ids in given container",
+      "container":  "articles",
       "reads": [
         { "ids": ["article-galaxy", "article-ipad"] }
       ]

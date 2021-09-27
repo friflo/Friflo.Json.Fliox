@@ -2,8 +2,9 @@
     "type": "sync",
     "tasks": [
     {
-      "task":         "reserveKeys",
-      "container":    "articles",
+      "task":       "reserveKeys",
+      "info":       "Reserve keys for given container",
+      "container":  "articles",
       "count":        10
     }
   ]

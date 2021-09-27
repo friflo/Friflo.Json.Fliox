@@ -42,7 +42,7 @@
                 "reserveKeys":      { "ref":  "ReserveKeys" }
             },
             "properties": {
-
+                "info": { "type": "string", "nullable": true }
             }
         },
         "CreateEntities": {
@@ -50,14 +50,16 @@
                 "container":     { "type": "string" },
                 "reservedToken": { "ref":  "Guid", "nullable": true },
                 "keyName":       { "type": "string", "nullable": true },
-                "entities":      { "elements": {  } }
+                "entities":      { "elements": {  } },
+                "info":          { "type": "string", "nullable": true }
             }
         },
         "UpsertEntities": {
             "properties": {
                 "container": { "type": "string" },
                 "keyName":   { "type": "string", "nullable": true },
-                "entities":  { "elements": {  } }
+                "entities":  { "elements": {  } },
+                "info":      { "type": "string", "nullable": true }
             }
         },
         "ReadEntitiesList": {
@@ -65,7 +67,8 @@
                 "container": { "type": "string" },
                 "keyName":   { "type": "string", "nullable": true },
                 "isIntKey":  { "type": "boolean", "nullable": true },
-                "reads":     { "elements": { "ref":  "ReadEntities" } }
+                "reads":     { "elements": { "ref":  "ReadEntities" } },
+                "info":      { "type": "string", "nullable": true }
             }
         },
         "ReadEntities": {
@@ -90,7 +93,8 @@
                 "isIntKey":   { "type": "boolean", "nullable": true },
                 "filterLinq": { "type": "string", "nullable": true },
                 "filter":     { "ref":  "FilterOperation", "nullable": true },
-                "references": { "elements": { "ref":  "References" }, "nullable": true }
+                "references": { "elements": { "ref":  "References" }, "nullable": true },
+                "info":       { "type": "string", "nullable": true }
             }
         },
         "FilterOperation": {
@@ -435,7 +439,8 @@
             "properties": {
                 "container": { "type": "string" },
                 "keyName":   { "type": "string", "nullable": true },
-                "patches":   { "values": { "ref":  "EntityPatch" } }
+                "patches":   { "values": { "ref":  "EntityPatch" } },
+                "info":      { "type": "string", "nullable": true }
             }
         },
         "EntityPatch": {
@@ -496,20 +501,23 @@
             "properties": {
                 "container": { "type": "string" },
                 "ids":       { "elements": { "type": "string" }, "nullable": true },
-                "all":       { "type": "boolean", "nullable": true }
+                "all":       { "type": "boolean", "nullable": true },
+                "info":      { "type": "string", "nullable": true }
             }
         },
         "SendMessage": {
             "properties": {
                 "name":  { "type": "string" },
-                "value": {  }
+                "value": {  },
+                "info":  { "type": "string", "nullable": true }
             }
         },
         "SubscribeChanges": {
             "properties": {
                 "container": { "type": "string" },
                 "changes":   { "elements": { "ref":  "Change" } },
-                "filter":    { "ref":  "FilterOperation", "nullable": true }
+                "filter":    { "ref":  "FilterOperation", "nullable": true },
+                "info":      { "type": "string", "nullable": true }
             }
         },
         "Change": {
@@ -523,13 +531,15 @@
         "SubscribeMessage": {
             "properties": {
                 "name":   { "type": "string" },
-                "remove": { "type": "boolean", "nullable": true }
+                "remove": { "type": "boolean", "nullable": true },
+                "info":   { "type": "string", "nullable": true }
             }
         },
         "ReserveKeys": {
             "properties": {
                 "container": { "type": "string" },
-                "count":     { "type": "int32" }
+                "count":     { "type": "int32" },
+                "info":      { "type": "string", "nullable": true }
             }
         },
         "SyncResponse": {

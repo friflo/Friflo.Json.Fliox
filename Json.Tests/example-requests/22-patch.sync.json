@@ -2,8 +2,9 @@
     "type": "sync",
     "tasks": [
     {
-      "task":         "patch",
-      "container":    "articles",
+      "task":       "patch",
+      "info":       "patch article member .name (article need to be present)",
+      "container":  "articles",
       "patches": {
         "new-article": {
           "patches": [

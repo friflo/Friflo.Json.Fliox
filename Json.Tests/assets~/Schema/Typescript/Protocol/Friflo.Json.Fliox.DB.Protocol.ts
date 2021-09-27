@@ -61,6 +61,7 @@ export abstract class SyncRequestTask {
         | "subscribeMessage"
         | "reserveKeys"
     ;
+    info? : string | null;
 }
 
 export class CreateEntities extends SyncRequestTask {

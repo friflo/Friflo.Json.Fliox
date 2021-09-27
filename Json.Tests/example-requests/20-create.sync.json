@@ -2,8 +2,9 @@
     "type": "sync",
     "tasks": [
     {
-      "task":         "create",
-      "container":    "articles",
+      "task":       "create",
+      "info":       "create an article in given container",
+      "container":  "articles",
       "entities": [
           { "id": "new-article","name":"New Article S10"}
       ]

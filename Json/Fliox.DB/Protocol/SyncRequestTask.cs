@@ -22,10 +22,12 @@ namespace Friflo.Json.Fliox.DB.Protocol
     [Fri.Polymorph(typeof(ReserveKeys),             Discriminant = "reserveKeys")]
     public abstract class SyncRequestTask
     {
-        [Fri.Ignore]
-        public              int                     index;
+                     public string                  info;
+        [Fri.Ignore] public int                     index;
+        
+
             
-        internal abstract   Task<SyncTaskResult>        Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext);
+        internal abstract   Task<SyncTaskResult>     Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext);
         internal abstract   TaskType                TaskType { get; }
         public   abstract   string                  TaskName { get; }
 

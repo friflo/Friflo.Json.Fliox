@@ -2,10 +2,11 @@
     "type": "sync",
     "tasks": [
     {
-      "task":         "query",
-      "container":    "articles",
-      "filterLinq":   "true",
-      "filter":       { "op":"true" },
+      "task":       "query",
+      "info":       "query all articles, their referenced .producer (and the .employees[*] referenced by .producer)",
+      "container":  "articles",
+      "filterLinq": "true",
+      "filter":     { "op":"true" },
       "references": [
         {
           "selector": ".producer",

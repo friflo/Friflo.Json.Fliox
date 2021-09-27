@@ -2,8 +2,9 @@
     "type": "sync",
     "tasks": [
     {
-      "task":         "create",
-      "container":    "articles",
+      "task":           "create",
+      "info":           "create an article using reserved keys. The 'reservedToken' is used to proof the keys were reserved before. This ensures no other client is able to create entities by using reserved keys.",
+      "container":      "articles",
       "reservedToken":"00000000-0000-0000-0000-000000000000",
       "entities": [
           { "id": "new-article","name":"New Article S10"}

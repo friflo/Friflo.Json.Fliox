@@ -2,9 +2,10 @@
     "type": "sync",
     "tasks": [
     {
-      "task":         "query",
-      "container":    "articles",
-      "filterLinq":   "true",
+      "task":       "query",
+      "info":       "query articles with a filter => .name == 'Smartphone'",
+      "container":  "articles",
+      "filterLinq": "true",
       "filter": {"op":"equal", "left": {"op":"field",  "name":  ".name"},
                                "right":{"op":"string", "value": "Smartphone"}}
     }
