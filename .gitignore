@@ -20,3 +20,5 @@ riderModule.iml
 
 # contains Unity.Mathematics
 .extern/
+
+*.sync.resp.md

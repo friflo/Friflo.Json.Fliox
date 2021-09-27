@@ -47,7 +47,10 @@
         { "fileMatch": ["/Json.Tests/assets~/DB/EntityIdStore/byteEntities/*.json"],        "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Fliox.Client.ByteEntity.json" },
         { "fileMatch": ["/Json.Tests/assets~/DB/EntityIdStore/customIdEntities/*.json"],    "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Fliox.Client.CustomIdEntity.json" },
         { "fileMatch": ["/Json.Tests/assets~/DB/EntityIdStore/customIdEntities2/*.json"],   "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Fliox.Client.CustomIdEntity2.json" },
-        { "fileMatch": ["/Json.Tests/assets~/DB/EntityIdStore/entityRefs/*.json"],          "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Fliox.Client.EntityRefs.json" }
+        { "fileMatch": ["/Json.Tests/assets~/DB/EntityIdStore/entityRefs/*.json"],          "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Fliox.Client.EntityRefs.json" },
+
+        { "fileMatch": ["/**/*.sync.json"],        "url": "./Json.Tests/assets~/Schema/JSON/Protocol/Friflo.Json.Fliox.DB.Protocol.SyncRequest.json"  },
+        { "fileMatch": ["/**/*.sync.resp.json"],   "url": "./Json.Tests/assets~/Schema/JSON/Protocol/Friflo.Json.Fliox.DB.Protocol.SyncResponse.json" }        
         
     ]
 }

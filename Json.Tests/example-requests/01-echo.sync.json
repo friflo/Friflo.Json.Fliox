@@ -1,0 +1,11 @@
+{
+    "type": "sync",
+    "tasks": [
+    {
+      "task":  "message",
+      "name":  "Echo",
+      "value": "some value"
+    }
+  ]
+}
+  

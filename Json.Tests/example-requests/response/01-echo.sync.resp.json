@@ -1,0 +1,11 @@
+{
+    "type":"syncResp",
+    "tasks": [
+        {
+            "task":"message",
+            "result": "some value"
+        }
+    ],
+    "results": [
+    ]
+}
