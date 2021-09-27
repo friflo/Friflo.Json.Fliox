@@ -1,6 +1,8 @@
 {
 	"files.exclude": {
-		"**/*.meta": true
+		"**/*.meta": true,
+		"**/*.sync.resp.json": true,
+		"**/*.sync.resp.md": true,
     },
     "cSpell.words": [
         "AGPL",
