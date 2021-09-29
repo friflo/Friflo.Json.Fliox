@@ -25,6 +25,7 @@
             connection.onopen = function () {
                 socketStatus.innerText = "connected 🟢";
                 console.log('WebSocket connected');
+                reqId = 1;
             };
 
             connection.onclose = function (e) {
