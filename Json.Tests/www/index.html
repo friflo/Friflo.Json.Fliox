@@ -48,8 +48,17 @@
         }
 
         (async() => {
-            var response = await fetch('example-requests');
-            window.exampleRequests = await response.json();
+            var folder = './example-requests'
+            var response = await fetch(folder);
+            var exampleRequests = await response.json();
+            var selectElement = document.getElementById("example");
+            for (var example of exampleRequests) {
+                if (!example.endsWith(".json"))
+                    continue;
+                var option = document.createElement("option");
+                option.text = example.substring(folder.length);
+                selectElement.add(option);
+            }
         })();
 
     </script>
@@ -69,7 +78,9 @@
     <button type="button" onclick="connectWebsocket()">Connect</button>
     <button type="button" onclick="sendMessage()">Send message</button>
     <button type="button" onclick="closeWebsocket()">Close</button> <br><br>
-    Request
+    Request - 
+    <label for="cars">example-request:</label>
+    <select name="cars" id="example"></select>
     <br>
     <textarea id="jsonRequest" title="Request send to host" cols="100" rows="15">{
   "type": "sync",
