@@ -58,6 +58,8 @@ namespace Friflo.Json.Fliox.DB.Remote
                             Log($"Request failed - {e.GetType()}: {e.Message}");
                             var     req             = ctx.Request;
                             var     resp            = ctx.Response;
+                            if (!resp.OutputStream.CanWrite)
+                                return;
                             var     response        = $"invalid url: {req.Url}, method: {req.HttpMethod}";
                             byte[]  responseBytes   = Encoding.UTF8.GetBytes(response);
                             SetResponseHeader(resp, "text/plain", HttpStatusCode.BadRequest, responseBytes.Length);

@@ -43,9 +43,9 @@ namespace Friflo.Json.Tests.Main
 
             var rootCommand = new RootCommand {
                 moduleOpt,
-                new Option<string>("--endpoint", () => "http://+:8010/",                        "endpoint the server listen at"),
-                new Option<string>("--database", () => "./Json.Tests/assets~/DB/PocStore",    "folder of the file database"),
-                new Option<string>("--www",      () => "./Json.Tests/assets~/www",               "folder of static web files")
+                new Option<string>("--endpoint", () => "http://+:8010/",                    "endpoint the server listen at"),
+                new Option<string>("--database", () => "./Json.Tests/assets~/DB/PocStore",  "folder of the file database"),
+                new Option<string>("--www",      () => "./Json.Tests/www",                  "folder of static web files")
             };
             rootCommand.Description = "small tests within Friflo.Json.Tests";
 
