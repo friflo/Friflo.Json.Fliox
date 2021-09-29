@@ -12,15 +12,23 @@
         var websocketCount = 0;
 
         function connectWebsocket() {
-            var loc = window.location;
-            var uri = `ws://${loc.host}/websocket-${++websocketCount}`;
+            var loc             = window.location;
+            var uri             = `ws://${loc.host}/websocket-${++websocketCount}`;
+            var socketStatus    = document.getElementById("socketStatus");
             connection = new WebSocket(uri);
             connection.onopen = function () {
+                socketStatus.innerText = "connected 🙂";
                 console.log('WebSocket connected');
+            };
+
+            connection.onclose = function () {
+                socketStatus.innerText = "closed";
+                console.log('WebSocket closed');
             };
 
             // Log errors
             connection.onerror = function (error) {
+                socketStatus.innerText = "error";
                 console.log('WebSocket Error ' + error);
             };
 
@@ -67,8 +75,10 @@
 
     </script>
     <style>
-        a  { text-decoration: none; }
-        tr { vertical-align: top; }
+        a       { text-decoration:  none; }
+        tr      { vertical-align:   top; }
+        button  { width:            80px;}
+        div     { display:          inline; }
     </style>
 </head>
 
@@ -79,9 +89,11 @@
   <p>The FlioxServer is the 'Hello World' example to demonstrate its database access, messaging and Pub-Sub implementation.</p> 
   database: <a href="./schema/index.html">schema</a>
   <br><br>
-  Websocket
-  <button type="button" onclick="connectWebsocket()">Connect</button>
-  <button type="button" onclick="closeWebsocket()">Close</button> <br><br>
+  Websocket &nbsp;&nbsp;
+  <button type="button" onclick="connectWebsocket()">Connect</button> 
+  <button type="button" onclick="closeWebsocket()">Close</button> &nbsp;&nbsp;
+  status: <div id="socketStatus">disconnected</div>
+  <br><br>
 
   <table>
     <tr>
