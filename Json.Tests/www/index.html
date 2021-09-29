@@ -15,14 +15,19 @@
             var loc             = window.location;
             var uri             = `ws://${loc.host}/websocket-${++websocketCount}`;
             var socketStatus    = document.getElementById("socketStatus");
-            connection = new WebSocket(uri);
+            try {
+                connection = new WebSocket(uri);
+            } catch (err) {
+                socketStatus.innerText = "connect failed: err";
+                return;
+            }
             connection.onopen = function () {
                 socketStatus.innerText = "connected 🟢";
                 console.log('WebSocket connected');
             };
 
-            connection.onclose = function () {
-                socketStatus.innerText = "closed";
+            connection.onclose = function (e) {
+                socketStatus.innerText = "closed. code: " + e.code;
                 console.log('WebSocket closed');
             };
 
