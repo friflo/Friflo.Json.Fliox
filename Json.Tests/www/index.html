@@ -37,14 +37,17 @@
             connection.close();
         }
 
-        function sendMessage() {
-            var request = {type:"sync", tasks: [{ task: "message", name: "test"}]};
-            var json = JSON.stringify(request);
-            connection.send(json);
-        }
         function sendSyncRequest() {
             var jsonRequest = document.getElementById("jsonRequest").value;            
             connection.send(jsonRequest);
+        }
+
+        async function onExampleChange() {
+            var selectElement = document.getElementById("example");
+            var exampleName = selectElement.value;
+            var response = await fetch(exampleName);
+            var example = await response.text();
+            document.getElementById("jsonRequest").value = example;
         }
 
         (async() => {
@@ -56,7 +59,8 @@
                 if (!example.endsWith(".json"))
                     continue;
                 var option = document.createElement("option");
-                option.text = example.substring(folder.length);
+                option.value    = example;
+                option.text     = example.substring(folder.length);
                 selectElement.add(option);
             }
         })();
@@ -76,11 +80,10 @@
     <br><br>
     Websocket
     <button type="button" onclick="connectWebsocket()">Connect</button>
-    <button type="button" onclick="sendMessage()">Send message</button>
     <button type="button" onclick="closeWebsocket()">Close</button> <br><br>
     Request - 
     <label for="cars">example-request:</label>
-    <select name="cars" id="example"></select>
+    <select name="cars" id="example" onchange="onExampleChange()"></select>
     <br>
     <textarea id="jsonRequest" title="Request send to host" cols="100" rows="15">{
   "type": "sync",
