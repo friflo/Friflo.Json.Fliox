@@ -3,11 +3,11 @@
     "tasks": [
     {
       "task":       "read",
-      "info":       "read entities by their ids in given container",
       "container":  "articles",
       "reads": [
         { "ids": ["article-galaxy", "article-ipad"] }
       ]
     }
-  ]
+  ],
+  "info": "read entities by their ids in given container"
 }

@@ -3,10 +3,10 @@
     "tasks": [
     {
       "task":       "delete",
-      "info":       "delete an article in given container",
       "container":  "articles",
       "ids": ["new-article"]
     }
-  ]
+  ],
+  "info": "delete an article in given container"
 }
   

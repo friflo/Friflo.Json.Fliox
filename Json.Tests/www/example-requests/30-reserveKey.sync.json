@@ -3,9 +3,9 @@
     "tasks": [
     {
       "task":       "reserveKeys",
-      "info":       "Reserve keys for given container",
       "container":  "articles",
       "count":        10
     }
-  ]
+  ],
+  "info": "Reserve keys for given container"
 }

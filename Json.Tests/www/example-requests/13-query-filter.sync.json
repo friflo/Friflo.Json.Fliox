@@ -3,11 +3,11 @@
     "tasks": [
     {
       "task":       "query",
-      "info":       "query articles with a filter => .name == 'Smartphone'",
       "container":  "articles",
       "filterLinq": "true",
       "filter": {"op":"equal", "left": {"op":"field",  "name":  ".name"},
                                "right":{"op":"string", "value": "Smartphone"}}
     }
-  ]
+  ],
+  "info": "query articles with a filter => .name == 'Smartphone'"
 }

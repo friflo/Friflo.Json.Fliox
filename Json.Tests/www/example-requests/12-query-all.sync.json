@@ -3,10 +3,10 @@
     "tasks": [
     {
       "task":       "query",
-      "info":       "query all articles -> 'filter': { 'op': 'true' }",
       "container":  "articles",
       "filterLinq": "true",
       "filter":     { "op":"true" }
     }
-  ]
+  ],
+  "info": "query all articles -> 'filter': { 'op': 'true' }"
 }

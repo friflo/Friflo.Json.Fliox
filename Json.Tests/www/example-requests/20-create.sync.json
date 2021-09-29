@@ -3,12 +3,12 @@
     "tasks": [
     {
       "task":       "create",
-      "info":       "create an article in given container",
       "container":  "articles",
       "entities": [
           { "id": "new-article","name":"New Article S10"}
       ]
     }
-  ]
+  ],
+  "info": "create an article in given container"
 }
   

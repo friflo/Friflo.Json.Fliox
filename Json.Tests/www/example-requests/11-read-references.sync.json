@@ -3,7 +3,6 @@
     "tasks": [
     {
       "task":       "read",
-      "info":       "read entity 'order-1' and its reference to .customer",
       "container":  "orders",
       "reads": [
         {
@@ -17,6 +16,7 @@
         }
       ]
     }
-  ]
+  ],
+  "info":       "read entity 'order-1' and its reference to .customer"
 }
   

@@ -3,7 +3,6 @@
     "tasks": [
     {
       "task":       "patch",
-      "info":       "patch article member .name (article need to be present)",
       "container":  "articles",
       "patches": {
         "new-article": {
@@ -17,5 +16,6 @@
         }
       }
     }
-  ]
+  ],
+  "info": "patch article member .name (article need to be present)"
 }
