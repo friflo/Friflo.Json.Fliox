@@ -17,7 +17,7 @@
             var socketStatus    = document.getElementById("socketStatus");
             connection = new WebSocket(uri);
             connection.onopen = function () {
-                socketStatus.innerText = "connected 🙂";
+                socketStatus.innerText = "connected 🟢";
                 console.log('WebSocket connected');
             };
 
