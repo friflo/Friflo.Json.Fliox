@@ -10,6 +10,7 @@
     <script>
         var connection;
         var websocketCount = 0;
+        var reqId = 1;
 
         function connectWebsocket() {
             var loc             = window.location;
@@ -51,8 +52,15 @@
         }
 
         function sendSyncRequest() {
-            var jsonRequest = document.getElementById("jsonRequest").value;            
+            var jsonRequest = document.getElementById("jsonRequest").value;
+            try {
+                var request = JSON.parse(jsonRequest);
+                request.reqId = reqId;
+                jsonRequest = JSON.stringify(request);                
+            } catch { }
+            var reqIdElement = document.getElementById("reqId").innerText = reqId;
             connection.send(jsonRequest);
+            reqId++;
         }
 
         async function onExampleChange() {
@@ -118,7 +126,8 @@
   ]
 }</textarea>
         <br>
-        <button type="button" onclick="sendSyncRequest()">Send sync</button><br>
+        <button type="button" onclick="sendSyncRequest()">Send sync</button> &nbsp;&nbsp;
+        reqId: <div id="reqId">n/a</div>
       </td>
       <td>
         Response - see all messages: DevTools > Network (F12)
