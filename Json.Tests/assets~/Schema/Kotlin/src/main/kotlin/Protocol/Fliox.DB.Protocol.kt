@@ -20,6 +20,7 @@ data class SyncRequest (
               val ack    : Int? = null,
               val token  : String? = null,
               val tasks  : List<SyncRequestTask>,
+              val info   : String? = null,
 ) : ProtocolRequest()
 
 @Serializable

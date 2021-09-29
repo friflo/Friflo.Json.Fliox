@@ -158,7 +158,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 await store.Sync(); // ~ 1 µs
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var expected = IsDebug() ? 1392 : 1304; // Test Debug & Release
+                var expected = IsDebug() ? 1400 : 1312; // Test Debug & Release
                 AreEqual(expected, diff);   // Test Release also
             }
         }

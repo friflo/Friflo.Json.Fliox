@@ -33,6 +33,7 @@ export class SyncRequest extends ProtocolRequest {
     ack?    : int32 | null;
     token?  : string | null;
     tasks   : SyncRequestTask_Union[];
+    info?   : string | null;
 }
 
 export type SyncRequestTask_Union =

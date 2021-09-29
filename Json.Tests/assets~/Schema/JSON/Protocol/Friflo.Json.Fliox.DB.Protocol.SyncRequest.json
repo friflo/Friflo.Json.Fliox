@@ -12,7 +12,8 @@
                 "client": { "type": ["string", "null"] },
                 "ack":    { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "token":  { "type": ["string", "null"] },
-                "tasks":  { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/SyncRequestTask" } }
+                "tasks":  { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/SyncRequestTask" } },
+                "info":   { "type": ["string", "null"] }
             },
             "required": [
                 "type",

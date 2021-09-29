@@ -19,7 +19,8 @@
                 "client": { "type": "string", "nullable": true },
                 "ack":    { "type": "int32", "nullable": true },
                 "token":  { "type": "string", "nullable": true },
-                "tasks":  { "elements": { "ref":  "SyncRequestTask" } }
+                "tasks":  { "elements": { "ref":  "SyncRequestTask" } },
+                "info":   { "type": "string", "nullable": true }
             }
         },
         "ProtocolRequest": {
