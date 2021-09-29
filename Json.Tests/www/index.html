@@ -30,6 +30,7 @@
                 console.log('Server:', e.data);
                 var jsonRequest = document.getElementById("jsonResponse").value = e.data;
             };
+
         }
 
         function closeWebsocket() {
@@ -45,6 +46,12 @@
             var jsonRequest = document.getElementById("jsonRequest").value;            
             connection.send(jsonRequest);
         }
+
+        (async() => {
+            var response = await fetch('example-requests');
+            window.exampleRequests = await response.json();
+        })();
+
     </script>
     <style>
         a {text-decoration: none; }

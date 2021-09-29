@@ -66,7 +66,7 @@ namespace Friflo.Json.Tests.Main
                 }
                 string[] fileNames = Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly);
                 for (int n = 0; n < fileNames.Length; n++) {
-                    fileNames[n] = fileNames[n].Substring(wwwRoot.Length);
+                    fileNames[n] = fileNames[n].Substring(wwwRoot.Length).Replace('\\', '/');
                 }
                 var jsonList = JsonDebug.ToJson(fileNames, true);
                 writer.Write(jsonList);
