@@ -64,6 +64,6 @@
         ".git/objects",
         ".vscode",
         ".vscode-insiders",
-        "Json.Tests/www/example-requests/**.*"
+        "Json.Tests/www/example-requests/**/*.*"
     ]
 }
