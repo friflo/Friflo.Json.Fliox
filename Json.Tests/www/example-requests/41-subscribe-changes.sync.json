@@ -1,0 +1,10 @@
+{
+    "type":     "sync",
+    "client":   "client-1",
+    "tasks": [{
+      "task":       "subscribeChanges",
+      "info":       "subscribe to database changes. (Websocket only)",
+      "container":  "articles", 
+      "changes": ["create", "upsert", "delete", "patch"]
+    }
+  ]}

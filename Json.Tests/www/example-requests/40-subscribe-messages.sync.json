@@ -1,0 +1,11 @@
+{
+    "type":     "sync",
+    "client":   "client-1",
+    "tasks": [{
+      "task":     "subscribeMessage",
+      "info":     "Filter all messages matching to 'name'. (Websocket only)",
+      "name":     "*",
+      "remove":   false
+    }
+  ]
+}
