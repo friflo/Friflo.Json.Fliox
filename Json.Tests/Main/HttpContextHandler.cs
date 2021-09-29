@@ -55,25 +55,19 @@ namespace Friflo.Json.Tests.Main
         }
         
         private async Task<bool> ListDirectory (HttpListenerRequest req,  HttpListenerResponse resp) {
-            var result = new MemoryStream();
-            using (var writer = new StreamWriter(result) { AutoFlush = true }) {
-                var path = wwwRoot + req.Url.AbsolutePath;
-                if (!Directory.Exists(path)) {
-                    writer.Write($"directory doesnt exist: {req.Url.AbsolutePath}");
-                    HttpHostDatabase.SetResponseHeader(resp, "text/plain", HttpStatusCode.OK, (int)result.Length);
-                    await resp.OutputStream.WriteAsync(result.ToArray(), 0, (int)result.Length).ConfigureAwait(false);
-                    return false;
-                }
-                string[] fileNames = Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly);
-                for (int n = 0; n < fileNames.Length; n++) {
-                    fileNames[n] = fileNames[n].Substring(wwwRoot.Length).Replace('\\', '/');
-                }
-                var jsonList = JsonDebug.ToJson(fileNames, true);
-                writer.Write(jsonList);
-                HttpHostDatabase.SetResponseHeader(resp, "application/json", HttpStatusCode.OK, (int)result.Length);
-                await resp.OutputStream.WriteAsync(result.ToArray(), 0, (int)result.Length).ConfigureAwait(false);
-                return true;
+            var path = wwwRoot + req.Url.AbsolutePath;
+            if (!Directory.Exists(path)) {
+                var msg = $"directory doesnt exist: {req.Url.AbsolutePath}";
+                await HttpHostDatabase.WriteString(resp, msg, "text/plain", HttpStatusCode.NotFound).ConfigureAwait(false);
+                return false;
             }
+            string[] fileNames = Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly);
+            for (int n = 0; n < fileNames.Length; n++) {
+                fileNames[n] = fileNames[n].Substring(wwwRoot.Length).Replace('\\', '/');
+            }
+            var jsonList = JsonDebug.ToJson(fileNames, true);
+            await HttpHostDatabase.WriteString(resp, jsonList, "application/json", HttpStatusCode.OK).ConfigureAwait(false);
+            return true;
         }
         
         private static string ContentTypeFromPath(string path) {

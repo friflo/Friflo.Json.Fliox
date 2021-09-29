@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -154,6 +155,17 @@ namespace Friflo.Json.Fliox.DB.Remote
             resp.ContentEncoding    = Encoding.UTF8;
             resp.ContentLength64    = len;
             resp.StatusCode         = (int)statusCode;
+        }
+        
+        public static async Task WriteString (HttpListenerResponse resp, string value, string contentType, HttpStatusCode statusCode) {
+            var result = new MemoryStream();
+            using (var writer = new StreamWriter(result, Encoding.UTF8) { AutoFlush = true }) {
+                writer.Write(value);
+                writer.Flush();
+                SetResponseHeader(resp, contentType, statusCode, (int)result.Length);
+                await resp.OutputStream.WriteAsync(result.ToArray(), 0, (int)result.Length);
+                resp.OutputStream.Close();
+            }
         }
 
         // Http server requires setting permission to run an http server.
