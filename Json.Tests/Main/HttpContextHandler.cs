@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Main
         private async Task ListDirectory (HttpListenerRequest req,  HttpListenerResponse resp) {
             var path = wwwRoot + req.Url.AbsolutePath;
             if (!Directory.Exists(path)) {
-                var msg = $"directory doesnt exist: {req.Url.AbsolutePath}";
+                var msg = $"directory doesnt exist: {path}";
                 await HttpHostDatabase.WriteString(resp, msg, "text/plain", HttpStatusCode.NotFound).ConfigureAwait(false);
                 return;
             }
