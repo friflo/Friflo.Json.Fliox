@@ -167,6 +167,12 @@ namespace Friflo.Json.Fliox.DB.Remote
                 resp.OutputStream.Close();
             }
         }
+        
+        public static async Task Write (HttpListenerResponse resp, byte[] value, int offset, int count, string contentType, HttpStatusCode statusCode) {
+            SetResponseHeader(resp, contentType, statusCode, count);
+            await resp.OutputStream.WriteAsync(value, offset, count);
+            resp.OutputStream.Close();
+        }
 
         // Http server requires setting permission to run an http server.
         // Otherwise exception is thrown on startup: System.Net.HttpListenerException: permission denied.

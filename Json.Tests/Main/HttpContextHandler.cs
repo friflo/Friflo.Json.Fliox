@@ -3,7 +3,6 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.Mapper;
@@ -29,10 +28,8 @@ namespace Friflo.Json.Tests.Main
                 }
             }
             catch (Exception ) {
-                var     response        = $"error: method: {req.HttpMethod}, url: {req.Url.AbsolutePath}";
-                byte[]  responseBytes   = Encoding.UTF8.GetBytes(response);
-                HttpHostDatabase.SetResponseHeader(resp, "text/plain", HttpStatusCode.BadRequest, responseBytes.Length);
-                await resp.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
+                var response = $"error: method: {req.HttpMethod}, url: {req.Url.AbsolutePath}";
+                await HttpHostDatabase.WriteString(resp, response, "text/plain", HttpStatusCode.OK).ConfigureAwait(false);
                 resp.Close();
             }
             return true;
@@ -49,8 +46,7 @@ namespace Friflo.Json.Tests.Main
             var filePath = wwwRoot + path;
             var content = await ReadFile(filePath).ConfigureAwait(false);
             var contentType = ContentTypeFromPath(path);
-            HttpHostDatabase.SetResponseHeader(resp, contentType, HttpStatusCode.OK, content.Length);
-            await resp.OutputStream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
+            await HttpHostDatabase.Write(resp, content, 0, content.Length, contentType, HttpStatusCode.OK).ConfigureAwait(false);
             return true;
         }
         
