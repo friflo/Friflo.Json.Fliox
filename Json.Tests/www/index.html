@@ -7,6 +7,7 @@
     <meta name="color-scheme" content="dark light">
     <link rel="icon" href="/Json-Fliox-53x43.svg" type="image/x-icon">
     <title>Json.Fliox.DB server</title>
+
     <script>
         var connection;
         var websocketCount = 0;
@@ -100,17 +101,23 @@
             }
         })();
 
+
     </script>
     <style>
         a               { text-decoration:  none; }
         tr              { vertical-align:   top; }
         button          { width:            80px;}
-        div             { display:          inline; }
+        .inline         { display:          inline; }
         h2              { display:          inline;  }
         textarea        { white-space:      pre;  }
         .alignBottom    { vertical-align:   bottom; }
         .nobreak        { white-space:      pre; }
     </style>
+    <link
+    rel="stylesheet"
+    data-name="vs/editor/editor.main"
+    href="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.css"
+/>
 </head>
 
 <body style="font-family: sans-serif">
@@ -131,7 +138,7 @@
   Websocket &nbsp;&nbsp;
   <button type="button" onclick="connectWebsocket()">Connect</button> 
   <button type="button" onclick="closeWebsocket()">Close</button> &nbsp;&nbsp;
-  status: <div id="socketStatus">disconnected</div>
+  status: <div id="socketStatus" class="inline">disconnected</div>
   <br><br>
 
   <table>
@@ -141,19 +148,10 @@
     </tr>
     <tr>
       <td>
-        <textarea id="jsonRequest" title="Request send to host" cols="60" rows="25">{
-    "type": "sync",
-    "tasks": [
-    {
-      "task":  "message",
-      "name":  "Echo",
-      "value": "some value"
-    }
-  ]
-}</textarea>
-        <br>
+        <div id="container" style="width: 400px; height: 400px; border: 1px solid grey"></div>
+        
         <button type="button" onclick="sendSyncRequest()">Send sync</button> &nbsp;&nbsp;
-        reqId: <div id="reqId">n/a</div>
+        reqId: <div id="reqId" class="inline">n/a</div>
       </td>
       <td>
         <textarea id="jsonResponse" title="Response received fom host" cols="60" rows="25"></textarea><br>
@@ -161,5 +159,78 @@
       </td>
     </tr>
   </table>
+<script>
+    var require = { paths: { vs: 'https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs' } };
+</script>
+<script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/loader.js"></script>
+<script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.nls.js"></script>
+<script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.js"></script>
+
+<script>
+async function setupMonaco() {
+    var jsonCode = [
+        '{',
+        '    "p1": "v3",',
+        '    "p2": false',
+        "}"
+    ].join('\n');
+
+    var modelUri = monaco.Uri.parse("request://b/foo.json"); // a made up unique URI for our model
+    var model = monaco.editor.createModel(jsonCode, "json", modelUri);
+
+    // configure the JSON language support with schemas and schema associations
+    var schemaUrlsResponse  = await fetch("/schema/json-schema/directory");
+    var schemaUrls          = await schemaUrlsResponse.json();
+    var schemas = [{
+            uri: "http://myserver/foo-schema.json", // id of the first schema
+            // fileMatch: [modelUri.toString()], // associate with our model
+            schema: {
+                type: "object",
+                properties: {
+                    p1: {
+                        enum: ["v1", "v2"]
+                    },
+                    p2: {
+                        $ref: "http://myserver/bar-schema.json" // reference the second schema
+                    }
+                }
+            }
+        }, {
+            uri: "http://myserver/bar-schema.json", // id of the second schema
+            schema: {
+                type: "object",
+                properties: {
+                    q1: {
+                        enum: ["x1", "x2"]
+                    }
+                }
+            }
+        }];
+    for (let i = 0; i < schemaUrls.length; i++) {
+        var schemaName      = schemaUrls[i]
+        var url             = "/schema/json-schema/" + schemaName;
+        var schemaResponse  = await fetch(url);
+        var schema          = await schemaResponse.json();
+        var schemaEntry = {
+            uri:    "http:/" + url,
+            schema: schema            
+        }
+        schemas.push(schemaEntry);
+        if (schemaName == "UnitTest.Fliox.Client.Order.json") {
+            schemaEntry.fileMatch = [modelUri.toString()]; // associate with our model
+        }
+    }
+
+    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+        validate: true,
+        schemas: schemas
+    });
+
+    monaco.editor.create(document.getElementById("container"), {
+        model: model
+    });
+}
+setupMonaco();
+</script>
 </body>
 </html>
