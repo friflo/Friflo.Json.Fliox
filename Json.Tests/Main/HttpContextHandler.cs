@@ -23,37 +23,36 @@ namespace Friflo.Json.Tests.Main
             try {
                 if (req.HttpMethod == "GET") {
                     await GetHandler(req, resp);
-                    return true;
                 }
             }
             catch (Exception ) {
                 var response = $"error - method: {req.HttpMethod}, url: {req.Url.AbsolutePath}";
                 await HttpHostDatabase.WriteString(resp, response, "text/plain", HttpStatusCode.OK).ConfigureAwait(false);
             }
-            return true;
+            return true; // return true to signal request was handled -> no subsequent handlers are invoked 
         }
         
-        private async Task<bool> GetHandler (HttpListenerRequest req,  HttpListenerResponse resp) {
+        private async Task GetHandler (HttpListenerRequest req,  HttpListenerResponse resp) {
             var path = req.Url.AbsolutePath;
             if (path.EndsWith("/"))
                 path += "index.html";
             string ext = Path.GetExtension (path);
             if (string.IsNullOrEmpty(ext)) {
-                return await ListDirectory(req, resp);
+                await ListDirectory(req, resp);
+                return;
             }
             var filePath = wwwRoot + path;
             var content = await ReadFile(filePath).ConfigureAwait(false);
             var contentType = ContentTypeFromPath(path);
             await HttpHostDatabase.Write(resp, content, 0, content.Length, contentType, HttpStatusCode.OK).ConfigureAwait(false);
-            return true;
         }
         
-        private async Task<bool> ListDirectory (HttpListenerRequest req,  HttpListenerResponse resp) {
+        private async Task ListDirectory (HttpListenerRequest req,  HttpListenerResponse resp) {
             var path = wwwRoot + req.Url.AbsolutePath;
             if (!Directory.Exists(path)) {
                 var msg = $"directory doesnt exist: {req.Url.AbsolutePath}";
                 await HttpHostDatabase.WriteString(resp, msg, "text/plain", HttpStatusCode.NotFound).ConfigureAwait(false);
-                return false;
+                return;
             }
             string[] fileNames = Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly);
             for (int n = 0; n < fileNames.Length; n++) {
@@ -61,7 +60,6 @@ namespace Friflo.Json.Tests.Main
             }
             var jsonList = JsonDebug.ToJson(fileNames, true);
             await HttpHostDatabase.WriteString(resp, jsonList, "application/json", HttpStatusCode.OK).ConfigureAwait(false);
-            return true;
         }
         
         private static string ContentTypeFromPath(string path) {
