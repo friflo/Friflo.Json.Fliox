@@ -23,14 +23,12 @@ namespace Friflo.Json.Tests.Main
             try {
                 if (req.HttpMethod == "GET") {
                     await GetHandler(req, resp);
-                    resp.Close();
                     return true;
                 }
             }
             catch (Exception ) {
-                var response = $"error: method: {req.HttpMethod}, url: {req.Url.AbsolutePath}";
+                var response = $"error - method: {req.HttpMethod}, url: {req.Url.AbsolutePath}";
                 await HttpHostDatabase.WriteString(resp, response, "text/plain", HttpStatusCode.OK).ConfigureAwait(false);
-                resp.Close();
             }
             return true;
         }
