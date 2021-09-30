@@ -6,7 +6,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -20,23 +19,25 @@ namespace Friflo.Json.Fliox.DB.Remote
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     public class SchemaHandler : IHttpContextHandler
     {
+        public  readonly    TypeSchema                      typeSchema;
         public              string                          image = "/Json-Fliox-53x43.svg";
         public  readonly    CreateZip                       zip;
         
         private             Dictionary<string, SchemaSet>   schemas;
         private const       string                          BasePath = "/schema/";
         
-        public SchemaHandler(CreateZip zip = null) {
+        public SchemaHandler(TypeSchema typeSchema, CreateZip zip = null) {
+            this.typeSchema = typeSchema;
             this.zip = zip;
         }
         
-        public async Task<bool> HandleContext(HttpListenerContext context, HttpHostDatabase hostDatabase) {
+        public async Task<bool> HandleContext(HttpListenerContext context) {
             HttpListenerRequest  req  = context.Request;
             HttpListenerResponse resp = context.Response;
             if (req.HttpMethod == "GET" && req.Url.AbsolutePath.StartsWith(BasePath)) {
                 var path = req.Url.AbsolutePath.Substring(BasePath.Length);
                 Result result = new Result();
-                bool success = GetSchemaFile(path, hostDatabase.local.schema, ref result);
+                bool success = GetSchemaFile(path, typeSchema, ref result);
                 byte[]  response;
                 if (result.isText) {
                     response    = Encoding.UTF8.GetBytes(result.content);
@@ -52,15 +53,15 @@ namespace Friflo.Json.Fliox.DB.Remote
             return false;
         }
         
-        public bool GetSchemaFile(string path, DatabaseSchema schema, ref Result result) {
-            if (schema == null) {
+        public bool GetSchemaFile(string path, TypeSchema typeSchema, ref Result result) {
+            if (typeSchema == null) {
                 return result.Error("no schema attached to database");
             }
-            var storeName = schema.typeSchema.RootType.Name;
+            var storeName = typeSchema.RootType.Name;
             if (schemas == null) {
                 using (var writer = new ObjectWriter(new TypeStore())) {
                     writer.Pretty = true;
-                    schemas = GenerateSchemas(writer, schema.typeSchema);
+                    schemas = GenerateSchemas(writer, typeSchema);
                 }
             }
             if (path == "index.html") {

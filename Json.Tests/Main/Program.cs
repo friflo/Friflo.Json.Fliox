@@ -98,7 +98,7 @@ namespace Friflo.Json.Tests.Main
             
             var contextHandler      = new HttpContextHandler(wwwRoot);
             var hostDatabase        = new HttpHostDatabase(fileDatabase, endpoint, contextHandler);
-            hostDatabase.schemaHandler = new SchemaHandler(Utils.Zip); // optional - generate zip archives for schemas
+            hostDatabase.schemaHandler = new SchemaHandler(typeSchema, Utils.Zip); // optional - generate zip archives for schemas
             hostDatabase.Start();
             hostDatabase.Run();
         }

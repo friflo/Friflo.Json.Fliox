@@ -181,7 +181,7 @@ async function setupMonaco() {
     // configure the JSON language support with schemas and schema associations
     var schemaUrlsResponse  = await fetch("/schema/json-schema/directory");
     var schemaUrls          = await schemaUrlsResponse.json();
-    var schemas = [{
+    /* var schemas = [{
             uri: "http://myserver/foo-schema.json", // id of the first schema
             // fileMatch: [modelUri.toString()], // associate with our model
             schema: {
@@ -205,7 +205,8 @@ async function setupMonaco() {
                     }
                 }
             }
-        }];
+        }]; */
+    var schemas = [];
     for (let i = 0; i < schemaUrls.length; i++) {
         var schemaName      = schemaUrls[i]
         var url             = "/schema/json-schema/" + schemaName;

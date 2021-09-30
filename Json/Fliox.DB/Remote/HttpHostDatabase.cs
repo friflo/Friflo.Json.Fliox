@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.DB.Remote
     
     public interface IHttpContextHandler
     {
-        Task<bool> HandleContext(HttpListenerContext context, HttpHostDatabase hostDatabase);
+        Task<bool> HandleContext(HttpListenerContext context);
     }
     
     // [A Simple HTTP server in C#] https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7
@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.DB.Remote
     // See: [Configure options for the ASP.NET Core Kestrel web server | Microsoft Docs] https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/options?view=aspnetcore-5.0
     public class HttpHostDatabase : RemoteHostDatabase
     {
-        public              IHttpContextHandler schemaHandler = new SchemaHandler();
+        public              IHttpContextHandler schemaHandler;
         
         private  readonly   string              endpoint;
         private  readonly   HttpListener        listener;
@@ -144,10 +144,12 @@ namespace Friflo.Json.Fliox.DB.Remote
                 resp.Close();
                 return;
             }
-            bool success = await schemaHandler.HandleContext(ctx, this).ConfigureAwait(false);
-            if (success)
-                return;
-            contextHandler?.HandleContext(ctx, this).ConfigureAwait(false);
+            if (schemaHandler != null) {
+                bool success = await schemaHandler.HandleContext(ctx).ConfigureAwait(false);
+                if (success)
+                    return;
+            }
+            contextHandler?.HandleContext(ctx).ConfigureAwait(false);
         }
 
         public static void SetResponseHeader (HttpListenerResponse resp, string contentType, HttpStatusCode statusCode, int len) {

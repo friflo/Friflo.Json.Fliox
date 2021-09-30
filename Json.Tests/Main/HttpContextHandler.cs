@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Main
             this.wwwRoot = wwwRoot;    
         }
             
-        public async Task<bool> HandleContext(HttpListenerContext context, HttpHostDatabase hostDatabase) {
+        public async Task<bool> HandleContext(HttpListenerContext context) {
             var req = context.Request;
             var resp = context.Response;
             try {
