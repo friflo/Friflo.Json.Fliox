@@ -42,7 +42,7 @@
             // Log messages from the server
             connection.onmessage = function (e) {
                 // var data = JSON.parse(e.data);
-                console.log('Server:', e.data);
+                // console.log('Server:', e.data);
                 var jsonRequest = document.getElementById("jsonResponse").value = e.data;
             };
 
