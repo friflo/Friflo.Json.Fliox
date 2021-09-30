@@ -6,7 +6,7 @@
     <meta name="description" content="Test page for Json.Fliox.DB server to send server commands via WebSocket's">
     <meta name="color-scheme" content="dark light">
     <link rel="icon" href="/Json-Fliox-53x43.svg" type="image/x-icon">
-    <title>Json.Fliox.DB Server</title>
+    <title>Json.Fliox.DB server</title>
     <script>
         var connection;
         var websocketCount = 0;
@@ -42,7 +42,7 @@
             // Log messages from the server
             connection.onmessage = function (e) {
                 // var data = JSON.parse(e.data);
-                // console.log('Server:', e.data);
+                // console.log('server:', e.data);
                 var jsonRequest = document.getElementById("jsonResponse").value = e.data;
             };
 
@@ -102,21 +102,32 @@
 
     </script>
     <style>
-        a           { text-decoration:  none; }
-        tr          { vertical-align:   top; }
-        button      { width:            80px;}
-        div         { display:          inline; }
-        textarea    { white-space:      pre;  }
+        a               { text-decoration:  none; }
+        tr              { vertical-align:   top; }
+        button          { width:            80px;}
+        div             { display:          inline; }
+        h2              { display:          inline;  }
+        textarea        { white-space:      pre;  }
+        .alignBottom    { vertical-align:   bottom; }
+        .nobreak        { white-space:      pre; }
     </style>
 </head>
 
 <body style="font-family: sans-serif">
-  <h2><a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json.Tests/Main/Program.cs" target='_blank' rel='noopener'><img src='/Json-Fliox-53x43.svg' alt="friflo JSON Fliox"></a>
-      &nbsp;&nbsp;&nbsp;&nbsp;Json.Fliox.DB Server
-  </h2>
-  <p>This server is a 'Hello World' example to demonstrate its database access, messaging and Pub-Sub capabilities.</p> 
-  database: <a href="./schema/index.html">schema</a>
-  <br><br>
+  <table>
+    <tr>
+      <td><a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json.Tests/Main/Program.cs" target='_blank' rel='noopener'><img src='/Json-Fliox-53x43.svg' alt="friflo JSON Fliox"></a></td>
+      <td>&nbsp;&nbsp;&nbsp;</td>
+      <td class="alignBottom"><h2>Json.Fliox.DB server</h2>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td><a href="./schema/index.html">· schema</a></td>
+    </tr>
+  </table>
+  <p class="nobreak">This server is a 'Hello World' example to demonstrate its database access, messaging and Pub-Sub capabilities.</p> 
+
   Websocket &nbsp;&nbsp;
   <button type="button" onclick="connectWebsocket()">Connect</button> 
   <button type="button" onclick="closeWebsocket()">Close</button> &nbsp;&nbsp;
@@ -125,9 +136,11 @@
 
   <table>
     <tr>
+      <td>Request &nbsp;&nbsp;<select title="example-requests" id="example" onchange="onExampleChange()"></select></td>
+      <td>Response *</td>
+    </tr>
+    <tr>
       <td>
-        Request &nbsp;&nbsp;<select title="example-requests" id="example" onchange="onExampleChange()"></select>
-        <br><br>
         <textarea id="jsonRequest" title="Request send to host" cols="60" rows="25">{
     "type": "sync",
     "tasks": [
@@ -143,9 +156,8 @@
         reqId: <div id="reqId">n/a</div>
       </td>
       <td>
-        Response - see all messages: DevTools > Network > websocket-* > Messages
-        <br><br>
-        <textarea id="jsonResponse" title="Response received fom host" cols="60" rows="25"></textarea>
+        <textarea id="jsonResponse" title="Response received fom host" cols="60" rows="25"></textarea><br>
+        <small>* all messages: DevTools > Network > websocket-* > Messages</small>
       </td>
     </tr>
   </table>

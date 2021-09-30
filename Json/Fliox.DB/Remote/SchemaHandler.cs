@@ -141,14 +141,14 @@ namespace Friflo.Json.Fliox.DB.Remote
         
         // override intended
         public virtual void HtmlHeader(StringBuilder sb, string[] titlePath, string description) {
-            var title = string.Join(" - ", titlePath);
+            var title = string.Join(" · ", titlePath);
             var titleElements = new List<string>();
             int n = titlePath.Length -1;
             foreach (var name in titlePath) {
                 var link = string.Join("", Enumerable.Repeat("../", n--));
                 titleElements.Add($"<a href='{link}index.html'>{name}</a>");
             }
-            var titleLinks = string.Join(" - ", titleElements);
+            var titleLinks = string.Join(" · ", titleElements);
             
             sb.AppendLine("<!DOCTYPE html>");
             sb.AppendLine("<html lang='en'>");
