@@ -97,10 +97,11 @@
 
     </script>
     <style>
-        a       { text-decoration:  none; }
-        tr      { vertical-align:   top; }
-        button  { width:            80px;}
-        div     { display:          inline; }
+        a           { text-decoration:  none; }
+        tr          { vertical-align:   top; }
+        button      { width:            80px;}
+        div         { display:          inline; }
+        textarea    { white-space:      pre;  }
     </style>
 </head>
 
@@ -120,11 +121,9 @@
   <table>
     <tr>
       <td>
-        Request - 
-        <label for="cars">example-request:</label>
-        <select name="cars" id="example" onchange="onExampleChange()"></select>
+        Request &nbsp;&nbsp;<select title="example-requests" id="example" onchange="onExampleChange()"></select>
         <br><br>
-        <textarea id="jsonRequest" title="Request send to host" cols="100" rows="25">{
+        <textarea id="jsonRequest" title="Request send to host" cols="60" rows="25">{
     "type": "sync",
     "tasks": [
     {
@@ -141,7 +140,7 @@
       <td>
         Response - see all messages: DevTools > Network > websocket-* > Messages
         <br><br>
-        <textarea id="jsonResponse" title="Response received fom host" cols="100" rows="25"></textarea>
+        <textarea id="jsonResponse" title="Response received fom host" cols="60" rows="25"></textarea>
       </td>
     </tr>
   </table>
