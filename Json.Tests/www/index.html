@@ -53,14 +53,19 @@
         }
 
         function sendSyncRequest() {
+            var reqIdElement = document.getElementById("reqId");
+            if (!connection || connection.readyState != 1) { // 1 == OPEN {
+                reqIdElement.innerText = "n/a (Request failed. WebSocket not connected)";
+                return;
+            }
             var jsonRequest = document.getElementById("jsonRequest").value;
             try {
                 var request = JSON.parse(jsonRequest);
                 request.reqId = reqId;
                 jsonRequest = JSON.stringify(request);                
             } catch { }
-            var reqIdElement = document.getElementById("reqId").innerText = reqId;
             connection.send(jsonRequest);
+            reqIdElement.innerText = reqId;
             reqId++;
         }
 
