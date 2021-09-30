@@ -28,7 +28,8 @@ namespace Friflo.Json.Fliox.DB.Remote
     public class HttpHostDatabase : RemoteHostDatabase
     {
         public              IHttpContextHandler schemaHandler;
-        public   readonly   SchemaHandler       protocolSchemaHandler;
+        private   readonly  SchemaHandler       protocolSchemaHandler;
+        private   readonly  TypeStore           protocolTypeStore = new TypeStore();
         
         private  readonly   string              endpoint;
         private  readonly   HttpListener        listener;
@@ -43,12 +44,17 @@ namespace Friflo.Json.Fliox.DB.Remote
             this.contextHandler = contextHandler;
             listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);
-            var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
+            var protocolSchema      = new NativeTypeSchema(protocolTypeStore, typeof(ProtocolMessage));
             var types               = new [] { typeof(SyncRequest), typeof(SyncResponse), typeof(SubscriptionEvent) };
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
             protocolSchemaHandler   = new SchemaHandler("/protocol/", protocolSchema, sepTypes);
         }
-        
+
+        public override void Dispose() {
+            protocolTypeStore.Dispose();
+            base.Dispose();
+        }
+
         private async Task HandleIncomingConnections()
         {
             runServer = true;
