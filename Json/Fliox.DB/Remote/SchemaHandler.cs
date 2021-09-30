@@ -20,6 +20,7 @@ namespace Friflo.Json.Fliox.DB.Remote
     public class SchemaHandler : IHttpContextHandler
     {
         public  readonly    TypeSchema                      typeSchema;
+        private readonly    ICollection<TypeDef>            separateTypes;
         public              string                          image = "/Json-Fliox-53x43.svg";
         public  readonly    CreateZip                       zip;
         
@@ -31,6 +32,15 @@ namespace Friflo.Json.Fliox.DB.Remote
             this.basePath       = basePath;
             this.displayName    = basePath.Trim('/');
             this.typeSchema     = typeSchema;
+            this.separateTypes  = typeSchema.GetEntityTypes();
+            this.zip = zip;
+        }
+        
+        public SchemaHandler(string basePath, TypeSchema typeSchema, ICollection<TypeDef> separateTypes, CreateZip zip = null) {
+            this.basePath       = basePath;
+            this.displayName    = basePath.Trim('/');
+            this.typeSchema     = typeSchema;
+            this.separateTypes  = separateTypes;
             this.zip = zip;
         }
         
@@ -40,7 +50,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             if (req.HttpMethod == "GET" && req.Url.AbsolutePath.StartsWith(basePath)) {
                 var path = req.Url.AbsolutePath.Substring(basePath.Length);
                 Result result = new Result();
-                bool success = GetSchemaFile(path, typeSchema, ref result);
+                bool success = GetSchemaFile(path, ref result);
                 byte[]  response;
                 if (result.isText) {
                     response    = Encoding.UTF8.GetBytes(result.content);
@@ -56,7 +66,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             return false;
         }
         
-        public bool GetSchemaFile(string path, TypeSchema typeSchema, ref Result result) {
+        public bool GetSchemaFile(string path, ref Result result) {
             if (typeSchema == null) {
                 return result.Error("no schema attached to database");
             }
@@ -64,7 +74,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             if (schemas == null) {
                 using (var writer = new ObjectWriter(new TypeStore())) {
                     writer.Pretty = true;
-                    schemas = GenerateSchemas(writer, typeSchema);
+                    schemas = GenerateSchemas(writer);
                 }
             }
             if (path == "index.html") {
@@ -119,11 +129,10 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
         
         // override intended
-        public virtual Dictionary<string, SchemaSet> GenerateSchemas(ObjectWriter writer, TypeSchema typeSchema) {
+        public virtual Dictionary<string, SchemaSet> GenerateSchemas(ObjectWriter writer) {
             var result              = new Dictionary<string, SchemaSet>();
             
-            var entityTypes         = typeSchema.GetEntityTypes();
-            var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = entityTypes };
+            var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = separateTypes };
             var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
             var jsonSchema          = new SchemaSet (writer, "JSON Schema", "application/json", jsonGenerator.files);
             result.Add("json-schema",  jsonSchema);

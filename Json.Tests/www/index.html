@@ -179,7 +179,7 @@ async function setupMonaco() {
     var model = monaco.editor.createModel(jsonCode, "json", modelUri);
 
     // configure the JSON language support with schemas and schema associations
-    var schemaUrlsResponse  = await fetch("/schema/json-schema/directory");
+    var schemaUrlsResponse  = await fetch("/protocol/json-schema/directory");
     var schemaUrls          = await schemaUrlsResponse.json();
     /* var schemas = [{
             uri: "http://myserver/foo-schema.json", // id of the first schema
@@ -209,7 +209,7 @@ async function setupMonaco() {
     var schemas = [];
     for (let i = 0; i < schemaUrls.length; i++) {
         var schemaName      = schemaUrls[i]
-        var url             = "/schema/json-schema/" + schemaName;
+        var url             = "/protocol/json-schema/" + schemaName;
         var schemaResponse  = await fetch(url);
         var schema          = await schemaResponse.json();
         var schemaEntry = {
@@ -217,7 +217,7 @@ async function setupMonaco() {
             schema: schema            
         }
         schemas.push(schemaEntry);
-        if (schemaName == "UnitTest.Fliox.Client.Order.json") {
+        if (schemaName == "Friflo.Json.Fliox.DB.Protocol.SyncRequest.json") {
             schemaEntry.fileMatch = [modelUri.toString()]; // associate with our model
         }
     }

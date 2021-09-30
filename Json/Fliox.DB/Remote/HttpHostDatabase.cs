@@ -44,7 +44,9 @@ namespace Friflo.Json.Fliox.DB.Remote
             listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
-            protocolSchemaHandler   = new SchemaHandler("/protocol/", protocolSchema);
+            var types               = new [] { typeof(SyncRequest), typeof(SyncResponse), typeof(SubscriptionEvent) };
+            var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
+            protocolSchemaHandler   = new SchemaHandler("/protocol/", protocolSchema, sepTypes);
         }
         
         private async Task HandleIncomingConnections()
