@@ -7,7 +7,9 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
+using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.DB.Remote
 {
@@ -26,6 +28,7 @@ namespace Friflo.Json.Fliox.DB.Remote
     public class HttpHostDatabase : RemoteHostDatabase
     {
         public              IHttpContextHandler schemaHandler;
+        public   readonly   SchemaHandler       protocolSchemaHandler;
         
         private  readonly   string              endpoint;
         private  readonly   HttpListener        listener;
@@ -40,6 +43,8 @@ namespace Friflo.Json.Fliox.DB.Remote
             this.contextHandler = contextHandler;
             listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);
+            var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
+            protocolSchemaHandler   = new SchemaHandler("/protocol/", protocolSchema);
         }
         
         private async Task HandleIncomingConnections()
@@ -146,6 +151,11 @@ namespace Friflo.Json.Fliox.DB.Remote
             }
             if (schemaHandler != null) {
                 bool success = await schemaHandler.HandleContext(ctx).ConfigureAwait(false);
+                if (success)
+                    return;
+            }
+            if (protocolSchemaHandler != null) {
+                bool success = await protocolSchemaHandler.HandleContext(ctx).ConfigureAwait(false);
                 if (success)
                     return;
             }

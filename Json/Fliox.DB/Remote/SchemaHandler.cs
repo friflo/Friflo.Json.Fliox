@@ -24,18 +24,21 @@ namespace Friflo.Json.Fliox.DB.Remote
         public  readonly    CreateZip                       zip;
         
         private             Dictionary<string, SchemaSet>   schemas;
-        private const       string                          BasePath = "/schema/";
+        private readonly    string                          basePath;
+        private readonly    string                          displayName;
         
-        public SchemaHandler(TypeSchema typeSchema, CreateZip zip = null) {
-            this.typeSchema = typeSchema;
+        public SchemaHandler(string basePath, TypeSchema typeSchema, CreateZip zip = null) {
+            this.basePath       = basePath;
+            this.displayName    = basePath.Trim('/');
+            this.typeSchema     = typeSchema;
             this.zip = zip;
         }
         
         public async Task<bool> HandleContext(HttpListenerContext context) {
             HttpListenerRequest  req  = context.Request;
             HttpListenerResponse resp = context.Response;
-            if (req.HttpMethod == "GET" && req.Url.AbsolutePath.StartsWith(BasePath)) {
-                var path = req.Url.AbsolutePath.Substring(BasePath.Length);
+            if (req.HttpMethod == "GET" && req.Url.AbsolutePath.StartsWith(basePath)) {
+                var path = req.Url.AbsolutePath.Substring(basePath.Length);
                 Result result = new Result();
                 bool success = GetSchemaFile(path, typeSchema, ref result);
                 byte[]  response;
@@ -66,7 +69,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             }
             if (path == "index.html") {
                 var sb = new StringBuilder();
-                HtmlHeader(sb, new []{"server", "schema"}, $"Available schemas / languages for database schema <b>{storeName}</b>");
+                HtmlHeader(sb, new []{"server", displayName}, $"Available schemas / languages for database schema <b>{storeName}</b>");
                 sb.AppendLine("<ul>");
                 foreach (var pair in schemas) {
                     sb.AppendLine($"<li><a href='./{pair.Key}/index.html'>{pair.Value.name}</a></li>");
@@ -87,7 +90,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             var fileName = path.Substring(schemaTypeEnd + 1);
             if (fileName == "index.html") {
                 var sb = new StringBuilder();
-                HtmlHeader(sb, new[]{"server", "schema", schemaSet.name}, $"{schemaSet.name} files for database schema <b>{storeName}</b>");
+                HtmlHeader(sb, new[]{"server", displayName, schemaSet.name}, $"{schemaSet.name} files for database schema <b>{storeName}</b>");
                 sb.AppendLine($"<a href='{zipFile}'>{zipFile}</a><br/>");
                 sb.AppendLine($"<a href='directory' target='_blank'>{storeName} {schemaSet.name} files</a>");
                 sb.AppendLine("<ul>");
