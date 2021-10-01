@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Fliox.DB.Client;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;
@@ -26,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         [Test]
         public static void CS_Typescript () {
             // Use code generator directly
-            var schema      = new NativeTypeSchema(typeof(PocStore));
+            var schema      = new NativeTypeSchema(new TypeStore(),typeof(PocStore));
             var generator   = new Generator(schema, ".ts", Replacements);
             TypescriptGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/PocStore");
@@ -36,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         [Test, Order(1)]
         public static void CS_JsonSchema () {
             // Use code generator directly
-            var schema      = new NativeTypeSchema(typeof(PocStore));
+            var schema      = new NativeTypeSchema(new TypeStore(), typeof(PocStore));
             var sepTypes    = schema.TypesAsTypeDefs(PocStoreTypes);
             var generator   = new Generator(schema, ".json", Replacements, sepTypes);
             JsonSchemaGenerator.Generate(generator);

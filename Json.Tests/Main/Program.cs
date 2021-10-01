@@ -7,6 +7,7 @@ using System.IO;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Remote;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;
@@ -109,7 +110,7 @@ namespace Friflo.Json.Tests.Main
                 return new JsonTypeSchema(schemas, "./UnitTest.Fliox.Client.json#/definitions/PocStore");
             }
             // using a NativeTypeSchema add an additional dependency by using the EntityStore: PocStore
-            return new NativeTypeSchema(typeof(PocStore));
+            return new NativeTypeSchema(new TypeStore(), typeof(PocStore));
         }
     }
 }

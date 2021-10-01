@@ -21,12 +21,8 @@ namespace Friflo.Json.Fliox.Schema.Native
         /// <summary>Contains only non <see cref="Nullable"/> Type's</summary>
         private  readonly   Dictionary<Type, NativeTypeDef> nativeTypes;
         
-        public NativeTypeSchema (Type rootType) : this (null, rootType) { }
-        
         public NativeTypeSchema (TypeStore typeStore, Type rootType = null) {
-            if (typeStore == null) {
-                typeStore = new TypeStore();
-            }
+            if (typeStore == null) throw new ArgumentNullException(nameof(typeStore));
             if (rootType != null) {
                 typeStore.GetTypeMapper(rootType);
             }
