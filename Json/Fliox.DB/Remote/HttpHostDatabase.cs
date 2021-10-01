@@ -26,8 +26,7 @@ namespace Friflo.Json.Fliox.DB.Remote
     public sealed class HttpHostDatabase : RemoteHostDatabase
     {
         public              IHttpContextHandler schemaHandler;
-        private   readonly  SchemaHandler       protocolSchemaHandler;
-        private   readonly  TypeStore           protocolTypeStore = new TypeStore();
+        private  readonly   SchemaHandler       protocolSchemaHandler;
         
         private  readonly   string              endpoint;
         private  readonly   HttpListener        listener;
@@ -42,15 +41,13 @@ namespace Friflo.Json.Fliox.DB.Remote
             this.contextHandler = contextHandler;
             listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);
-            var protocolSchema      = new NativeTypeSchema(protocolTypeStore, typeof(ProtocolMessage));
-            var types               = new [] { typeof(SyncRequest), typeof(SyncResponse), typeof(SubscriptionEvent) };
-            var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
-            protocolSchemaHandler   = new SchemaHandler("/protocol/", protocolSchema, sepTypes);
-        }
-
-        public override void Dispose() {
-            protocolTypeStore.Dispose();
-            base.Dispose();
+            
+            using (var typeStore = new TypeStore()) {
+                var protocolSchema      = new NativeTypeSchema(typeStore, typeof(ProtocolMessage));
+                var types               = new [] { typeof(SyncRequest), typeof(SyncResponse), typeof(SubscriptionEvent) };
+                var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
+                protocolSchemaHandler   = new SchemaHandler("/protocol/", protocolSchema, sepTypes);
+            }
         }
 
         private async Task HandleIncomingConnections()
@@ -179,7 +176,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             return false;
         }
 
-        public static void SetResponseHeader (HttpListenerResponse resp, string contentType, HttpStatusCode statusCode, int len) {
+        private static void SetResponseHeader (HttpListenerResponse resp, string contentType, HttpStatusCode statusCode, int len) {
             resp.ContentType        = contentType;
             resp.ContentEncoding    = Encoding.UTF8;
             resp.ContentLength64    = len;
