@@ -16,6 +16,13 @@
         window.onExampleChange  = onExampleChange;
         loadExampleRequestList();
         addTableResize();
+        window.addEventListener("keydown", function(event) {
+            if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
+                sendSyncRequest();
+                event.preventDefault();
+            }
+            // console.log(`KeyboardEvent: code='${event.code}', ctrl:${event.ctrlKey}, alt:${event.altKey}`);
+        }, true);
     </script>
     <style>
         a               { text-decoration:  none; }
@@ -72,7 +79,7 @@
     <tr>
       <td>
         <div id="requestContainer" style="width: 500px; height: 500px; border: 1px solid grey"></div>
-        <button type="button" onclick="sendSyncRequest()">Send</button> &nbsp;&nbsp;
+        <button type="button" onclick="sendSyncRequest()">Send</button> <small>(Ctrl+Alt+Enter)</small> &nbsp;
         reqId: <div id="reqId" class="inline">n/a</div>
       </td>
       <td>
