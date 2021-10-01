@@ -36,7 +36,7 @@ export function connectWebsocket() {
     connection.onmessage = function (e) {
         // var data = JSON.parse(e.data);
         // console.log('server:', e.data);
-        var jsonRequest = document.getElementById("jsonResponse").value = e.data;
+        responseModel.setValue(e.data)
     };
 }
 
@@ -50,7 +50,7 @@ export function sendSyncRequest() {
         reqIdElement.innerText = "n/a (Request failed. WebSocket not connected)";
         return;
     }
-    var jsonRequest = document.getElementById("jsonRequest").value;
+    var jsonRequest = requestModel.getValue();
     try {
         var request = JSON.parse(jsonRequest);
         request.reqId = reqId;
@@ -68,7 +68,7 @@ export async function onExampleChange() {
         return;
     var response = await fetch(exampleName);
     var example = await response.text();
-    document.getElementById("jsonRequest").value = example;
+    requestModel.setValue(example)
 }
 
 export async function loadExampleRequestList() {
@@ -139,36 +139,39 @@ async function createProtocolSchemas() {
     return schemas;
 }
 
-export async function setupEditors() {
+var requestModel;
+var responseModel;
+
+export async function setupEditors()
+{
+    // --- setup JSON Schema for monaco
     var requestUri  = monaco.Uri.parse("request://jsonRequest.json"); // a made up unique URI for our model
+    var responseUri = monaco.Uri.parse("request://jsonResponse.json"); // a made up unique URI for our model
     var schemas     = await createProtocolSchemas();
 
     for (let i = 0; i < schemas.length; i++) {
         if (schemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.DB.Protocol.SyncRequest.json") {
             schemas[i].fileMatch = [requestUri.toString()]; // associate with our model
         }
+        if (schemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.DB.Protocol.SyncResponse.json") {
+            schemas[i].fileMatch = [responseUri.toString()]; // associate with our model
+        }
     }
-
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
         validate: true,
         schemas: schemas
     });
+    // --- create request editor
+    { 
+        var requestEditor = monaco.editor.create(document.getElementById("requestContainer"), { /* model: model */ });
+        requestEditor.updateOptions({
+            lineNumbers:    "off",
+            minimap:        { enabled: false }
+        });
+        requestModel = monaco.editor.createModel(null, "json", requestUri);
+        requestEditor.setModel (requestModel);
 
-    var requestEditor = monaco.editor.create(document.getElementById("container"), {
-        // model: model
-    });
-    requestEditor.updateOptions({
-		lineNumbers: "off",
-        minimap:  {
-            enabled: false
-        }
-	});
-
-    var requestModel = monaco.editor.createModel(null, "json", requestUri);
-
-    requestEditor.setModel (requestModel);
-
-    var defaultRequest = `{
+        var defaultRequest = `{
     "type": "syncX",
     "tasks": [
         {
@@ -178,5 +181,17 @@ export async function setupEditors() {
         }
     ]
 }`;
-    requestModel.setValue(defaultRequest);
+        requestModel.setValue(defaultRequest);
+    }
+
+    // --- create response editor
+    {
+        var responseEditor = monaco.editor.create(document.getElementById("responseContainer"), { /* model: model */ });
+        responseEditor.updateOptions({
+            lineNumbers:    "off",
+            minimap:        { enabled: false }
+        });
+        responseModel = monaco.editor.createModel(null, "json", responseUri);
+        responseEditor.setModel (responseModel);
+    }
 }
