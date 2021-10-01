@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable UnassignedField.Global
 namespace Friflo.Json.Fliox.DB.Auth.Rights
 {
-    public class RightMessage : Right
+    public sealed class RightMessage : Right
     {
         [Fri.Required]  public  List<string>    names;
         public  override        RightType       RightType => RightType.message;

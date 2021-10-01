@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Client
 {
-    public class LogTask : SyncTask
+    public sealed class LogTask : SyncTask
     {
         private  readonly   List<LogChange>     patches = new List<LogChange>();
         private  readonly   List<LogChange>     creates = new List<LogChange>();

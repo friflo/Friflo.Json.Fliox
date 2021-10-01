@@ -13,7 +13,7 @@ using Friflo.Json.Fliox.Mapper.Utils;
 namespace Friflo.Json.Fliox.DB.Client.Internal.Map
 {
     // -------------------------------------------------------------------------------------
-    internal class RefMatcher : ITypeMatcher {
+    internal sealed class RefMatcher : ITypeMatcher {
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (TypeUtils.IsStandardType(type)) // doesnt handle standard types
                 return null;
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal.Map
         }
     }
 
-    internal class RefMapper<TKey, T> : TypeMapper<Ref<TKey, T>> where T : class
+    internal sealed class RefMapper<TKey, T> : TypeMapper<Ref<TKey, T>> where T : class
     {
         private             TypeMapper<TKey>    keyMapper;
         private             TypeMapper<T>       entityMapper;

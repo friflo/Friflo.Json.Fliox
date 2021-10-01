@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         }
     }
     
-    public class AuthenticateNone : Authenticator
+    public sealed class AuthenticateNone : Authenticator
     {
         private readonly Authorizer unknown;
 

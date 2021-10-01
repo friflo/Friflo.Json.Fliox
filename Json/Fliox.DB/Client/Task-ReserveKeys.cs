@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.DB.Client.Internal;
 
 namespace Friflo.Json.Fliox.DB.Client
 {
-    public class ReserveKeysTask<TKey, T> : SyncTask where T : class
+    public sealed class ReserveKeysTask<TKey, T> : SyncTask where T : class
     {
         internal            int         count;
         internal            long[]      keys;

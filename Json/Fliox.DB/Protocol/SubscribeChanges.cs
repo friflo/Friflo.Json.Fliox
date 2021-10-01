@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.DB.Protocol
 {
     // ----------------------------------- task -----------------------------------
-    public class SubscribeChanges : SyncRequestTask
+    public sealed class SubscribeChanges : SyncRequestTask
     {
         [Fri.Required]  public  string          container;
         [Fri.Required]  public  List<Change>    changes;
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     }
     
     // ----------------------------------- task result -----------------------------------
-    public class SubscribeChangesResult : SyncTaskResult
+    public sealed class SubscribeChangesResult : SyncTaskResult
     {
         internal override   TaskType    TaskType => TaskType.subscribeChanges;
     }

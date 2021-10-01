@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.DB.Protocol
 {
     // ----------------------------------- task -----------------------------------
-    public class CreateEntities : SyncRequestTask
+    public sealed class CreateEntities : SyncRequestTask
     {
         [Fri.Required]  public  string          container;
                         public  Guid?           reservedToken;
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     }
 
     // ----------------------------------- task result -----------------------------------
-    public class CreateEntitiesResult : SyncTaskResult, ICommandResult
+    public sealed class CreateEntitiesResult : SyncTaskResult, ICommandResult
     {
                      public CommandError                        Error { get; set; }
         [Fri.Ignore] public Dictionary<JsonKey, EntityError>    createErrors;

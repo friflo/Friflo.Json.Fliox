@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.DB.Host
     /// <br></br>
     /// Note: In case of adding transaction support in future transaction data/state will be stored here.
     /// </summary>
-    public class MessageContext
+    public sealed class MessageContext
     {
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
         public              string          clientId;

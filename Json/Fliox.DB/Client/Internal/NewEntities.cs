@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace Friflo.Json.Fliox.DB.Client.Internal
 {
-    internal class EntityEqualityComparer<T> : IEqualityComparer<T> where T : class
+    internal sealed class EntityEqualityComparer<T> : IEqualityComparer<T> where T : class
     {
         internal static readonly EntityEqualityComparer<T> Instance = new EntityEqualityComparer<T>();
         

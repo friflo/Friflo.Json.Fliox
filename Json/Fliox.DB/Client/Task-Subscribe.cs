@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Transform;
 
 namespace Friflo.Json.Fliox.DB.Client
 {
-    public class SubscribeChangesTask<T> : SyncTask where T : class
+    public sealed class SubscribeChangesTask<T> : SyncTask where T : class
     {
         internal            TaskState               state;
         internal            List<Change>            changes;

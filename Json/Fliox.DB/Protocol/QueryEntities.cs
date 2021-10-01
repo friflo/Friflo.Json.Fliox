@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.DB.Protocol
 {
     // ----------------------------------- task -----------------------------------
-    public class QueryEntities : SyncRequestTask
+    public sealed class QueryEntities : SyncRequestTask
     {
         [Fri.Required]  public  string              container;
                         public  string              keyName;
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     }
     
     // ----------------------------------- task result -----------------------------------
-    public class QueryEntitiesResult : SyncTaskResult, ICommandResult
+    public sealed class QueryEntitiesResult : SyncTaskResult, ICommandResult
     {
                         public  string                          container;  // only for debugging ergonomics
                         public  string                          filterLinq;

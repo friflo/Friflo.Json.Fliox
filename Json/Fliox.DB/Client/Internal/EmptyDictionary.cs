@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
     /// Used for methods returning an empty dictionary instead of null reference to avoid null checks or throwing
     /// a <see cref="NullReferenceException"/> when accessing the return value. 
     /// </summary>
-    public class EmptyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+    public sealed class EmptyDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         public  override    string  ToString() => "Count: 0";
 

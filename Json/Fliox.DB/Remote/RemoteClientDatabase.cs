@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
     }
     
-    public class RemoteClientContainer : EntityContainer
+    public sealed class RemoteClientContainer : EntityContainer
     {
         public RemoteClientContainer(string name, EntityDatabase database)
             : base(name, database) {

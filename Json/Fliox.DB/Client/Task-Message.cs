@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.DB.Client
     }
     
     
-    public class SendMessageTask<TResult> : SendMessageTask
+    public sealed class SendMessageTask<TResult> : SendMessageTask
     {
         public              TResult          Result => ReadResult<TResult>();
         

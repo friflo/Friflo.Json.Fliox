@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.DB.Protocol;
 
 namespace Friflo.Json.Fliox.DB.Client.Internal
 {
-    internal class EventTarget : IEventTarget
+    internal sealed class EventTarget : IEventTarget
     {
         private readonly EntityStore    store;
         

@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host
 {
-    public class MemoryDatabase : EntityDatabase
+    public sealed class MemoryDatabase : EntityDatabase
     {
         private  readonly   bool    pretty;
 
@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.DB.Host
         }
     }
     
-    public class MemoryContainer : EntityContainer
+    public sealed class MemoryContainer : EntityContainer
     {
         private  readonly   Dictionary<JsonKey, JsonUtf8>  keyValues = new Dictionary<JsonKey, JsonUtf8>(JsonKey.Equality);
         

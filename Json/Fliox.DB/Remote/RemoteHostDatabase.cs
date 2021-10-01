@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
     }
 
-    public class RemoteHostContainer : EntityContainer
+    public sealed class RemoteHostContainer : EntityContainer
     {
         private readonly    EntityContainer local;
         

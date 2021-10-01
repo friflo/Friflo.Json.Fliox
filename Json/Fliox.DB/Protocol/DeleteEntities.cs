@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Protocol
 {
     // ----------------------------------- task -----------------------------------
-    public class DeleteEntities : SyncRequestTask
+    public sealed class DeleteEntities : SyncRequestTask
     {
         [Fri.Required]  public  string              container;
                         public  HashSet<JsonKey>    ids = new HashSet<JsonKey>(JsonKey.Equality);
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     }
     
     // ----------------------------------- task result -----------------------------------
-    public class DeleteEntitiesResult : SyncTaskResult, ICommandResult
+    public sealed class DeleteEntitiesResult : SyncTaskResult, ICommandResult
     {
                      public CommandError                        Error { get; set; }
         [Fri.Ignore] public Dictionary<JsonKey, EntityError>    deleteErrors;

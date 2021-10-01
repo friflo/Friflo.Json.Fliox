@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
     // are entirely contained by EntitySet<TKey,T>.peers Dictionary<TKey,Peer<T>>.
     // In case entities are already tracked by EntitySet<TKey,T>.peers no Peer<T> is instantiated on the heap
     // neither Peer<T> is a class nor a struct.
-    internal class Peer<T> where T : class
+    internal sealed class Peer<T> where T : class
     {
         internal  readonly  JsonKey         id;      // never null
         private             T               entity;

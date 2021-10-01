@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Friflo.Json.Fliox.DB.Protocol
 {
     // ----------------------------------- event -----------------------------------
-    public class SubscriptionEvent : ProtocolEvent
+    public sealed class SubscriptionEvent : ProtocolEvent
     {
         /// <summary>
         /// Contains the events an application subscribed. These are:

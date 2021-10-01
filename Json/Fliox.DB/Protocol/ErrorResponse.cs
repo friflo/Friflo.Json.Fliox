@@ -6,7 +6,7 @@ using System.Text;
 namespace Friflo.Json.Fliox.DB.Protocol
 {
     // ----------------------------------- response -----------------------------------
-    public class ErrorResponse : ProtocolResponse
+    public sealed class ErrorResponse : ProtocolResponse
     {
         public              string      message;
         

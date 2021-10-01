@@ -5,7 +5,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Protocol
 {
-    public class EntityValue
+    public sealed class EntityValue
     {
         [Fri.Property]  private     JsonValue   value;
         [Fri.Property]  private     EntityError error;

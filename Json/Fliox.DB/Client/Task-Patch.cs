@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.DB.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class PatchTask<T> : SyncTask where T : class
+    public sealed class PatchTask<T> : SyncTask where T : class
     {
         internal readonly   List<string>        members = new List<string>();
         internal readonly   List<Peer<T>>       peers   = new List<Peer<T>>();

@@ -21,19 +21,19 @@ namespace Friflo.Json.Fliox.DB.Auth
         public abstract bool Authorize(SyncRequestTask task, MessageContext messageContext);
     }
     
-    public class AuthorizeAllow : Authorizer {
+    public sealed class AuthorizeAllow : Authorizer {
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
             return true;
         }
     }    
     
-    public class AuthorizeDeny : Authorizer {
+    public sealed class AuthorizeDeny : Authorizer {
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
             return false;
         }
     }
     
-    public class AuthorizeAll : Authorizer {
+    public sealed class AuthorizeAll : Authorizer {
         private readonly    ICollection<Authorizer>     list;
         
         public AuthorizeAll(ICollection<Authorizer> list) {
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         }
     }
     
-    public class AuthorizeAny : Authorizer {
+    public sealed class AuthorizeAny : Authorizer {
         private readonly    ICollection<Authorizer>     list;
         
         public AuthorizeAny(ICollection<Authorizer> list) {
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         }
     }
     
-    public class AuthorizeTaskType : Authorizer {
+    public sealed class AuthorizeTaskType : Authorizer {
         private  readonly   TaskType    type;
         public   override   string      ToString() => type.ToString();
 
@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         }
     }
     
-    public class AuthorizeMessage : Authorizer {
+    public sealed class AuthorizeMessage : Authorizer {
         private  readonly   string      messageName;
         private  readonly   bool        prefix;
         public   override   string      ToString() => prefix ? $"{messageName}*" : messageName;
@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         }
     }
     
-    public class AuthorizeSubscribeMessage : Authorizer {
+    public sealed class AuthorizeSubscribeMessage : Authorizer {
         private  readonly   string      messageName;
         private  readonly   bool        prefix;
         public   override   string      ToString() => prefix ? $"{messageName}*" : messageName;
@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         }
     }
     
-    public class AuthorizeContainer : Authorizer {
+    public sealed class AuthorizeContainer : Authorizer {
         private  readonly   string  container;
         
         private  readonly   bool    create;
@@ -188,7 +188,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         }
     }
     
-    public class AuthorizeSubscribeChanges : Authorizer {
+    public sealed class AuthorizeSubscribeChanges : Authorizer {
         private  readonly   string  container;
         
         private  readonly   bool    create;
@@ -230,7 +230,7 @@ namespace Friflo.Json.Fliox.DB.Auth
     
     public delegate bool AuthPredicate (SyncRequestTask task, MessageContext messageContext);
     
-    public class AuthorizePredicate : Authorizer {
+    public sealed class AuthorizePredicate : Authorizer {
         private readonly string         name;
         private readonly AuthPredicate  predicate;
         public  override string         ToString() => name;
@@ -244,5 +244,4 @@ namespace Friflo.Json.Fliox.DB.Auth
             return predicate(task, messageContext);
         }
     }
-    
 }

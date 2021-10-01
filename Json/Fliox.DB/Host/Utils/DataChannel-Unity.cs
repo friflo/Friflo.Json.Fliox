@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.Host.Utils
 {
     /// Added <see cref="DataChannel{T}"/> as a stub to enable compiling in Unity as there are no <see cref="Channel"/>'s
     /// available as of 2021-06-21.
-    public class DataChannel<T>
+    public sealed class DataChannel<T>
     {
         public   readonly DataChannelReader<T>   reader; 
         public   readonly DataChannelWriter<T>   writer;

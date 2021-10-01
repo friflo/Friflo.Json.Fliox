@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Fliox.DB.Client.Internal.Map
 {
-    internal class EntitySetMatcher : ITypeMatcher {
+    internal sealed class EntitySetMatcher : ITypeMatcher {
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             bool isEntitySet = StoreUtils.IsEntitySet(type);
             if (!isEntitySet)
@@ -29,8 +29,8 @@ namespace Friflo.Json.Fliox.DB.Client.Internal.Map
         EntitySet   CreateEntitySet (object[] args);
     }
     
-    internal class EntitySetMapper<T, TEntity> : TypeMapper<T>, IEntitySetMapper    where T       : class
-                                                                                    where TEntity : class
+    internal sealed class EntitySetMapper<T, TEntity> : TypeMapper<T>, IEntitySetMapper where T       : class
+                                                                                        where TEntity : class
     {
         private             TypeMapper      elementType;
         private readonly    ConstructorInfo setConstructor;

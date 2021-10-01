@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.DB.Protocol;
 
 namespace Friflo.Json.Fliox.DB.Client
 {
-    public class UnresolvedRefException : Exception
+    public sealed class UnresolvedRefException : Exception
     {
         public readonly     string          key;
         
@@ -18,17 +18,17 @@ namespace Friflo.Json.Fliox.DB.Client
         }
     }
     
-    public class TaskNotSyncedException : Exception
+    public sealed class TaskNotSyncedException : Exception
     {
         internal TaskNotSyncedException(string message) : base (message) { }
     }
     
-    public class TaskAlreadySyncedException : Exception
+    public sealed class TaskAlreadySyncedException : Exception
     {
         internal TaskAlreadySyncedException(string message) : base (message) { }
     }
     
-    public class TaskResultException : Exception
+    public sealed class TaskResultException : Exception
     {
         public readonly     TaskError       error;
         
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.DB.Client
         }
     }
 
-    public class SyncResultException : Exception
+    public sealed class SyncResultException : Exception
     {
         public readonly     List<SyncTask>  failed;
 

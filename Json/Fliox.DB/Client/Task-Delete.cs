@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.DB.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class DeleteTask<TKey, T> : SyncTask where T : class
+    public sealed class DeleteTask<TKey, T> : SyncTask where T : class
     {
         private  readonly   SyncSet<TKey, T>    syncSet;
         private  readonly   List<TKey>          keys;
@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.DB.Client
         }
     }
     
-    public class DeleteAllTask<TKey, T> : SyncTask where T : class
+    public sealed class DeleteAllTask<TKey, T> : SyncTask where T : class
     {
         internal            TaskState           state;
         internal override   TaskState           State       => state;

@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class CreateTask<T> : WriteTask where T : class
+    public sealed class CreateTask<T> : WriteTask where T : class
     {
         private readonly    EntitySetBase<T>    set;
         private readonly    List<T>             entities;

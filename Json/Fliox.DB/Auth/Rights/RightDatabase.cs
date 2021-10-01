@@ -5,12 +5,13 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable CollectionNeverUpdated.Global
 // ReSharper disable UnassignedField.Global
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.DB.Auth.Rights
 {
-    public class RightDatabase : Right
+    public sealed class RightDatabase : Right
     {
         [Fri.Required]  public  Dictionary<string, ContainerAccess> containers;
         public  override        RightType                           RightType => RightType.database;
@@ -33,7 +34,7 @@ namespace Friflo.Json.Fliox.DB.Auth.Rights
         }
     }
     
-    public class ContainerAccess
+    public sealed class ContainerAccess
     {
         public          List<OperationType>     operations;
         public          List<Change>            subscribeChanges;

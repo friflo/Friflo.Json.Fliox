@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Transform.Query;
 
 namespace Friflo.Json.Fliox.DB.Client.Internal
 {
-    internal class RefQueryPath : QueryPath
+    internal sealed class RefQueryPath : QueryPath
     {
         public override string GetQueryPath(MemberExpression member, QueryCx cx) {
             switch (member.Expression) {

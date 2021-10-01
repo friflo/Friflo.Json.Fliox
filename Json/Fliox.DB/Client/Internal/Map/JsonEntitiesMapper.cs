@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper.Map.Val;
 
 namespace Friflo.Json.Fliox.DB.Client.Internal.Map
 {
-    internal class JsonEntitiesMatcher : ITypeMatcher {
+    internal sealed class JsonEntitiesMatcher : ITypeMatcher {
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (type != typeof(JsonEntities))
@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal.Map
         }
     }
 
-    internal class JsonEntitiesMapper : TypeMapper<JsonEntities>
+    internal sealed class JsonEntitiesMapper : TypeMapper<JsonEntities>
     {
         private readonly    KeyMapper<JsonKey>  keyMapper;
         private             JsonValueMapper     jsonValueMapper;

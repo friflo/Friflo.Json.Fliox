@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         Task<bool>  ProcessEvent(ProtocolEvent ev, MessageContext messageContext);
     }
     
-    public class EventBroker : IDisposable
+    public sealed class EventBroker : IDisposable
     {
         private  readonly   JsonEvaluator                                   jsonEvaluator;
         /// key: <see cref="EventSubscriber.clientId"/>

@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
 
     /// Multiple instances of this class can be created when calling EntitySet.Sync() without awaiting the result.
     /// Each instance is mapped to a <see cref="SyncRequest"/> / <see cref="SyncResponse"/> instance.
-    internal partial class SyncSet<TKey, T> : SyncSetBase<T> where T : class
+    internal sealed partial class SyncSet<TKey, T> : SyncSetBase<T> where T : class
     {
         private     static readonly EntityKeyT<TKey, T>     EntityKeyTMap = EntityKey.GetEntityKeyT<TKey, T>();
 

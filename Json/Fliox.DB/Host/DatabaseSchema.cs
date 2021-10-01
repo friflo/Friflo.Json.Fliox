@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.DB.Host
     ///   </item>
     /// </list>   
     /// </summary>
-    public class DatabaseSchema : IDisposable
+    public sealed class DatabaseSchema : IDisposable
     {
         public   readonly   TypeSchema                          typeSchema;
         private  readonly   Dictionary<string, ValidationType>  containerTypes = new Dictionary<string, ValidationType>();

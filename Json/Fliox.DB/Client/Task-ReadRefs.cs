@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.DB.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ReadRefsTask<TKey, T> : ReadRefsTask, IReadRefsTask<T>  where T : class
+    public sealed class ReadRefsTask<TKey, T> : ReadRefsTask, IReadRefsTask<T>  where T : class
     {
         private             RefsTask                refsTask;
         private             Dictionary<TKey, T>     results;
@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.DB.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ReadRefTask<TKey, T> : ReadRefsTask, IReadRefsTask<T> where T : class
+    public sealed class ReadRefTask<TKey, T> : ReadRefsTask, IReadRefsTask<T> where T : class
     {
         private             RefsTask        refsTask;
         private             TKey            key;

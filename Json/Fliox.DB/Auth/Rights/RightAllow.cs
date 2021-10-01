@@ -5,7 +5,7 @@
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.DB.Auth.Rights
 {
-    public class RightAllow : Right
+    public sealed class RightAllow : Right
     {
         public              bool        grant;
         public  override    RightType   RightType => RightType.allow;

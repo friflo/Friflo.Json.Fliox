@@ -14,7 +14,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Remote
 {
-    public class WebSocketClientDatabase : RemoteClientDatabase
+    public sealed class WebSocketClientDatabase : RemoteClientDatabase
     {
         private             int                                         reqId;
 
@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
     }
     
-    internal class WebsocketRequest
+    internal sealed class WebsocketRequest
     {
         internal readonly   TaskCompletionSource<ProtocolResponse>  response;          
         

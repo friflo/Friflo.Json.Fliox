@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.DB.Remote
     // Alternatively a HTTP web server could be implemented by using Kestrel.
     // See: [Deprecate HttpListener · Issue #88 · dotnet/platform-compat] https://github.com/dotnet/platform-compat/issues/88#issuecomment-592395933
     // See: [Configure options for the ASP.NET Core Kestrel web server | Microsoft Docs] https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/options?view=aspnetcore-5.0
-    public class HttpHostDatabase : RemoteHostDatabase
+    public sealed class HttpHostDatabase : RemoteHostDatabase
     {
         public              IHttpContextHandler schemaHandler;
         private   readonly  SchemaHandler       protocolSchemaHandler;

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Friflo.Json.Fliox.DB.Host.Utils
 {
     // [Await, SynchronizationContext, and Console Apps | .NET Parallel Programming] https://devblogs.microsoft.com/pfxteam/await-synchronizationcontext-and-console-apps/
-    public class SingleThreadSynchronizationContext : SynchronizationContext
+    public sealed class SingleThreadSynchronizationContext : SynchronizationContext
     {
         private  readonly   BlockingCollection<ActionPair>  queue = new BlockingCollection<ActionPair>();
 

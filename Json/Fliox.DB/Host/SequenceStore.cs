@@ -9,14 +9,14 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Host
 {
     // --- models
-    public class Sequence {
+    public sealed class Sequence {
         [Fri.Key]       public  string  container;
         [Fri.Required]  public  long    autoId;
         [Fri.Property  (Name =        "_etag")]
                         public  string  etag;
     }
     
-    public class SequenceKeys {
+    public sealed class SequenceKeys {
         [Fri.Key]       public  Guid    token;  // secret to ensure the client has reserved the keys
         [Fri.Required]  public  string  container;
         [Fri.Required]  public  long    start;
@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.DB.Host
                         public  string  user;   // to track back who reserved keys in case of abuse
     }
 
-    public class SequenceStore : EntityStore
+    public sealed class SequenceStore : EntityStore
     {
         [Fri.Property(Name =                             "_sequence")]  
         public readonly EntitySet <string, Sequence>       sequence;

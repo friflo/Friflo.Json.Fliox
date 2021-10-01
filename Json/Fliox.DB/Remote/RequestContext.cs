@@ -8,7 +8,7 @@ using System.Text;
 
 namespace Friflo.Json.Fliox.DB.Remote
 {
-    public class RequestContext
+    public sealed class RequestContext
     {
         public readonly Uri             url;
         public readonly string          method;

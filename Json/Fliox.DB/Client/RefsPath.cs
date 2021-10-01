@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.DB.Client
         }
     }
     
-    public class RefPath<TEntity, TRefKey, TRef> : RefsPath<TEntity, TRefKey, TRef>
+    public sealed class RefPath<TEntity, TRefKey, TRef> : RefsPath<TEntity, TRefKey, TRef>
                                             where TEntity : class
                                             where TRef    : class 
     {

@@ -5,7 +5,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Client.Internal.KeyRef
 {
-    internal class RefKeyLong<T> : RefKey<long, T> where T : class
+    internal sealed class RefKeyLong<T> : RefKey<long, T> where T : class
     {
         internal override long IdToKey(in JsonKey id) {
             return id.AsLong();
@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal.KeyRef
         }
     }
     
-    internal class RefKeyLongNull<T> : RefKey<long?, T> where T : class
+    internal sealed class RefKeyLongNull<T> : RefKey<long?, T> where T : class
     {
         internal override   bool                IsKeyNull (long? key)       => key == null;
         

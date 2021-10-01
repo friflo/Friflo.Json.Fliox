@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Fliox.DB.Client.Internal.Map
 {
-    internal class EntityStoreMatcher : ITypeMatcher {
+    internal sealed class EntityStoreMatcher : ITypeMatcher {
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
             if (!type.IsSubclassOf(typeof(EntityStore)))
                 return null;
@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal.Map
         }
     }
     
-    internal class EntityStoreMapper<T> : TypeMapper<T>
+    internal sealed class EntityStoreMapper<T> : TypeMapper<T>
     {
         public  override    bool    IsComplex => true;
 

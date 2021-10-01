@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.DB.Client
         InvalidResponse,
     }
     
-    public class TaskError {
+    public sealed class TaskError {
         public   readonly   TaskErrorType                       type;
         /// The entities caused that task failed. Return empty dictionary in case of no entity errors. Is never null.
         public   readonly   IDictionary<JsonKey, EntityError>   entityErrors;

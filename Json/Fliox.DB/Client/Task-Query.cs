@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DB.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class QueryTask<TKey, T> : SyncTask, IReadRefsTask<T> where T : class
+    public sealed class QueryTask<TKey, T> : SyncTask, IReadRefsTask<T> where T : class
     {
         internal            TaskState               state;
         internal            RefsTask                refsTask;
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.DB.Client
     }
     
     
-    public class EntityFilter<T>
+    public sealed class EntityFilter<T>
     {
         internal readonly FilterOperation op;
 

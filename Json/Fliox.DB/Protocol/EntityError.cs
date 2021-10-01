@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     /// returned by a previous call to <see cref="EntityContainer.ReadEntities"/> or
     /// <see cref="EntityContainer.QueryEntities"/> fails.
     /// This implies that the previous read or query call was successful. 
-    public class EntityError
+    public sealed class EntityError
     {
         [Fri.Required]      public  EntityErrorType     type;
         [Fri.Property]      public  string              message;

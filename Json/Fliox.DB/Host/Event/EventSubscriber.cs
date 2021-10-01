@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         Event
     }
     
-    public class EventSubscriber {
+    public sealed class EventSubscriber {
         internal readonly   string                                  clientId;
         private             IEventTarget                            eventTarget;
         /// key: <see cref="SubscribeChanges.container"/>

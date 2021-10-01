@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable UnassignedField.Global
 namespace Friflo.Json.Fliox.DB.Auth.Rights
 {
-    public class RightTask : Right
+    public sealed class RightTask : Right
     {
         [Fri.Required]  public  List<TaskType>  types;
         

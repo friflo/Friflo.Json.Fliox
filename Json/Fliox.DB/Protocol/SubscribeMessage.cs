@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Protocol
 {
     // ----------------------------------- task -----------------------------------
-    public class SubscribeMessage : SyncRequestTask
+    public sealed class SubscribeMessage : SyncRequestTask
     {
         /// <summary>
         ///   Filter all <see cref="SendMessage.name"/>'s starting with one of the given <see cref="name"/> strings.
@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     }
     
     // ----------------------------------- task result -----------------------------------
-    public class SubscribeMessageResult : SyncTaskResult
+    public sealed class SubscribeMessageResult : SyncTaskResult
     {
         internal override   TaskType    TaskType => TaskType.subscribeMessage;
     }

@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         CommandError                Error { get; set;  }
     }
     
-    public class CommandError // : SyncTaskResult
+    public sealed class CommandError // : SyncTaskResult
     {
         public              string      message;
 

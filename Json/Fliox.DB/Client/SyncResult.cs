@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.DB.Protocol;
 
 namespace Friflo.Json.Fliox.DB.Client
 {
-    public class SyncResult
+    public sealed class SyncResult
     {
         public  readonly    List<SyncTask>  tasks;
         public  readonly    List<SyncTask>  failed;

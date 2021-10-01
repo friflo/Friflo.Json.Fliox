@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Client.Internal
 {
-    internal class MessageSubscriber
+    internal sealed class MessageSubscriber
     {
         internal readonly   bool                    isPrefix;
         internal readonly   string                  name;
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         } 
     }
     
-    internal class NonGenericMessageCallback : MessageCallback
+    internal sealed class NonGenericMessageCallback : MessageCallback
     {
         private  readonly   MessageHandler   handler;
         
@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         }
     }
     
-    internal class GenericMessageCallback<TValue> : MessageCallback
+    internal sealed class GenericMessageCallback<TValue> : MessageCallback
     {
         private  readonly   MessageHandler<TValue>   handler;
         

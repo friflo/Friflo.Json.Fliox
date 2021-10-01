@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.DB.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class Find<TKey, T> : FindTask<TKey, T> where T : class
+    public sealed class Find<TKey, T> : FindTask<TKey, T> where T : class
     {
         private  readonly   TKey        key;
         private             T           result;
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.DB.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class FindRange<TKey, T> : FindTask<TKey, T> where T : class
+    public sealed class FindRange<TKey, T> : FindTask<TKey, T> where T : class
     {
         private  readonly   Dictionary<TKey, T>     results;
 
@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.DB.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ReadTask<TKey, T> : SyncTask, IReadRefsTask<T> where T : class
+    public sealed class ReadTask<TKey, T> : SyncTask, IReadRefsTask<T> where T : class
     {
         internal            TaskState               state;
         internal readonly   EntitySet<TKey, T>      set;

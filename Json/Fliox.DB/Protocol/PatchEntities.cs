@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Transform;
 namespace Friflo.Json.Fliox.DB.Protocol
 {
     // ----------------------------------- task -----------------------------------
-    public class PatchEntities : SyncRequestTask
+    public sealed class PatchEntities : SyncRequestTask
     {
         [Fri.Required]  public  string                              container;
                         public  string                              keyName;
@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     }
 
     // ----------------------------------- task result -----------------------------------
-    public class PatchEntitiesResult : SyncTaskResult, ICommandResult
+    public sealed class PatchEntitiesResult : SyncTaskResult, ICommandResult
     {
                      public CommandError                        Error { get; set; }
         [Fri.Ignore] public Dictionary<JsonKey, EntityError>    patchErrors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);

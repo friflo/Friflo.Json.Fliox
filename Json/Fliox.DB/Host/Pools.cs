@@ -12,7 +12,7 @@ using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.DB.Host
 {
-        public struct PoolUsage {
+    public struct PoolUsage {
         internal int    patcherCount;
         internal int    selectorCount;
         internal int    evaluatorCount;
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.DB.Host
         PoolUsage                   PoolUsage       { get; }
     }
     
-    public class Pools : IPools, IDisposable
+    public sealed class Pools : IPools, IDisposable
     {
         private readonly  Dictionary<Type, IDisposable>    poolMap = new Dictionary<Type, IDisposable>(); // object = SharedPool<T>
         

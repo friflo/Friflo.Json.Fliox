@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.DB.Host
     /// Validation is required for <see cref="EntityDatabase"/> implementations which cannot ensure that the value of
     /// its key/values are JSON. See <see cref="ReadEntitiesResult.ValidateEntities"/>.
     /// </summary>
-    public class EntityProcessor : IDisposable
+    public sealed class EntityProcessor : IDisposable
     {
         private             Bytes               jsonBytes   = new Bytes(128);
         private             JsonParser          parser;

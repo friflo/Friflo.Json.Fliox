@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.DB.Protocol;
 
 namespace Friflo.Json.Fliox.DB.Client.Internal
 {
-    internal class SyncStore
+    internal sealed class SyncStore
     {
         internal            Dictionary<string, SyncSet> SyncSets { get; private set; }
         

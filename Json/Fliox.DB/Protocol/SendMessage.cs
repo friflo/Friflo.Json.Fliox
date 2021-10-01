@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Protocol
 {
     // ----------------------------------- task -----------------------------------
-    public class SendMessage : SyncRequestTask
+    public sealed class SendMessage : SyncRequestTask
     {
         [Fri.Required]  public  string          name;
         [Fri.Required]  public  JsonValue       value;
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     }
     
     // ----------------------------------- task result -----------------------------------
-    public class SendMessageResult : SyncTaskResult, ICommandResult
+    public sealed class SendMessageResult : SyncTaskResult, ICommandResult
     {
         /// <summary>
         /// By default it echos <see cref="SendMessage.value"/>.

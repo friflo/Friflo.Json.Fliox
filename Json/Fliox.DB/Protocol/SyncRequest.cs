@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Protocol
 {
     // ----------------------------------- request -----------------------------------
-    public class SyncRequest : ProtocolRequest
+    public sealed class SyncRequest : ProtocolRequest
     {
         /// <summary>
         /// Specify an optional id to identify the client performing a request by a host.
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     }
     
     // ----------------------------------- response -----------------------------------
-    public class SyncResponse : ProtocolResponse
+    public sealed class SyncResponse : ProtocolResponse
     {
                         public  List<SyncTaskResult>                    tasks;
                         public  List<ContainerEntities>                 results;
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     }
     
     // ----------------------------------- sync results -----------------------------------
-    public class ContainerEntities
+    public sealed class ContainerEntities
     {
         [Fri.Required]  public  string                              container;
         [Fri.Required]  public  List<JsonValue>                     entities  = new List<JsonValue>();
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         }
     }
     
-    public class EntityErrors
+    public sealed class EntityErrors
     {
                         public  string                              container; // only for debugging
         [Fri.Required]  public  Dictionary<JsonKey, EntityError>    errors = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);

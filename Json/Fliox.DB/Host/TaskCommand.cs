@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.DB.Host
         internal abstract Task<JsonUtf8> InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue);
     }
     
-    internal class CommandCallback<TValue, TResult> : CommandCallback
+    internal sealed class CommandCallback<TValue, TResult> : CommandCallback
     {
         private  readonly   string                              name;
         private  readonly   CommandHandler<TValue, TResult>     handler;
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.DB.Host
         }
     }
     
-    internal class CommandAsyncCallback<TValue, TResult> : CommandCallback
+    internal sealed class CommandAsyncCallback<TValue, TResult> : CommandCallback
     {
         private  readonly   string                                  name;
         private  readonly   CommandHandler<TValue, Task<TResult>>   handler;

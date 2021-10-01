@@ -12,7 +12,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host
 {
-    public class FileDatabase : EntityDatabase
+    public sealed class FileDatabase : EntityDatabase
     {
         private  readonly   string  databaseFolder;
         private  readonly   bool    pretty;
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.DB.Host
         }
     }
     
-    public class FileContainer : EntityContainer
+    public sealed class FileContainer : EntityContainer
     {
         private  readonly   string                  folder;
         private  readonly   AsyncReaderWriterLock   rwLock;

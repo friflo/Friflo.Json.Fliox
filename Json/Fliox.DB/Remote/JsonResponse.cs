@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         Exception
     }
     
-    public class JsonResponse
+    public sealed class JsonResponse
     {
         public readonly     JsonUtf8            body;
         public readonly     JsonResponseStatus  status;

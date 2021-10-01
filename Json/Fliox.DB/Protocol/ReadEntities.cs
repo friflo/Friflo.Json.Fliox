@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Protocol
 {
     // ----------------------------------- sub task -----------------------------------
-    public class ReadEntities
+    public sealed class ReadEntities
     {
         [Fri.Ignore]    public  string                  keyName;
         [Fri.Ignore]    public  bool?                   isIntKey;
@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     
     // ----------------------------------- sub task result -----------------------------------
     /// The data of requested entities are added to <see cref="ContainerEntities.entityMap"/> 
-    public class ReadEntitiesResult: ICommandResult
+    public sealed class ReadEntitiesResult: ICommandResult
     {
                         public  List<ReferencesResult>          references;
                         public  CommandError                    Error { get; set; }

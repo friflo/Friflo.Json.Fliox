@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable UnassignedField.Global
 namespace Friflo.Json.Fliox.DB.Auth.Rights
 {
-    public class RightPredicate : Right
+    public sealed class RightPredicate : Right
     {
         [Fri.Required]  public  List<string>    names;
         
