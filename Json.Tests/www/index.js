@@ -93,6 +93,7 @@ export async function loadExampleRequestList() {
 }
 
 // --------------------------------------- monaco editor ---------------------------------------
+// [Monaco Editor Playground] https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-configure-json-defaults
 
 async function createProtocolSchemas() {
 

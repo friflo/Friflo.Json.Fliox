@@ -26,8 +26,20 @@
         .alignBottom    { vertical-align:   bottom; }
         .nobreak        { white-space:      pre; }
     </style>
-    <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.css"
-/>
+
+    <!--- [monaco-editor-samples/index.html at main · microsoft/monaco-editor-samples]
+          https://github.com/microsoft/monaco-editor-samples/blob/main/browser-script-editor/index.html --->
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.css"/>
+    <script>
+        var require = { paths: { vs: 'https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs' } };
+    </script>
+    <script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/loader.js"></script>
+    <script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.nls.js"></script>
+    <script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.js"></script>
+    <script type="module">
+        import { setupEditors } from  "./index.js";
+        setupEditors();
+    </script>
 </head>
 
 <body style="font-family: sans-serif">
@@ -69,15 +81,6 @@
       </td>
     </tr>
   </table>
-<script>
-    var require = { paths: { vs: 'https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs' } };
-</script>
-<script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/loader.js"></script>
-<script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.nls.js"></script>
-<script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.js"></script>
-<script type="module">
-    import { setupEditors } from  "./index.js";
-    setupEditors();
-</script>
+  
 </body>
 </html>
