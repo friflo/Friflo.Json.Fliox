@@ -153,10 +153,10 @@ export async function setupEditors()
     var schemas     = await createProtocolSchemas();
 
     for (let i = 0; i < schemas.length; i++) {
-        if (schemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.DB.Protocol.SyncRequest.json") {
+        if (schemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.DB.Protocol.ProtocolRequest.json") {
             schemas[i].fileMatch = [requestUri.toString()]; // associate with our model
         }
-        if (schemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.DB.Protocol.SyncResponse.json") {
+        if (schemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.DB.Protocol.ProtocolResponse.json") {
             schemas[i].fileMatch = [responseUri.toString()]; // associate with our model
         }
     }

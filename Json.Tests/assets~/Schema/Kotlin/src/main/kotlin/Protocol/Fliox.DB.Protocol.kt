@@ -24,7 +24,8 @@ data class SyncRequest (
 ) : ProtocolRequest()
 
 @Serializable
-abstract class ProtocolRequest {
+// @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
+abstract class ProtocolRequest  : ProtocolMessage() {
     abstract  val reqId : Int?
 }
 
@@ -167,7 +168,8 @@ data class SyncResponse (
 ) : ProtocolResponse()
 
 @Serializable
-abstract class ProtocolResponse {
+// @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
+abstract class ProtocolResponse  : ProtocolMessage() {
     abstract  val reqId : Int?
 }
 

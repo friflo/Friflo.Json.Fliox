@@ -23,7 +23,14 @@ export abstract class ProtocolMessage {
     ;
 }
 
+export type ProtocolRequest_Union =
+    | SyncRequest
+;
+
 export abstract class ProtocolRequest extends ProtocolMessage {
+    abstract type:
+        | "sync"
+    ;
     reqId? : int32 | null;
 }
 
@@ -161,7 +168,16 @@ export class ReserveKeys extends SyncRequestTask {
     count      : int32;
 }
 
+export type ProtocolResponse_Union =
+    | SyncResponse
+    | ErrorResponse
+;
+
 export abstract class ProtocolResponse extends ProtocolMessage {
+    abstract type:
+        | "syncResp"
+        | "error"
+    ;
     reqId? : int32 | null;
 }
 

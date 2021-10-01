@@ -43,6 +43,8 @@ namespace Friflo.Json.Fliox.DB.Protocol
     }
     
     // ----------------------------------- request -----------------------------------
+    [Fri.Discriminator("type")] 
+    [Fri.Polymorph(typeof(SyncRequest),         Discriminant = "sync")]
     public abstract class ProtocolRequest   : ProtocolMessage {
         // ReSharper disable once InconsistentNaming
         /// <summary>Used only for <see cref="Friflo.Json.Fliox.DB.Remote.RemoteClientDatabase"/> to enable:
@@ -60,6 +62,9 @@ namespace Friflo.Json.Fliox.DB.Protocol
     }
     
     // ----------------------------------- response -----------------------------------
+    [Fri.Discriminator("type")] 
+    [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "syncResp")]
+    [Fri.Polymorph(typeof(ErrorResponse),       Discriminant = "error")]
     public abstract class ProtocolResponse : ProtocolMessage {
         // ReSharper disable once InconsistentNaming
         /// <summary>Set to the value of the corresponding <see cref="ProtocolRequest.reqId"/></summary>

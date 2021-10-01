@@ -24,6 +24,10 @@
             }
         },
         "ProtocolRequest": {
+            "discriminator": "type",
+            "mapping": {
+                "sync": { "ref":  "SyncRequest" }
+            },
             "properties": {
                 "reqId": { "type": "int32", "nullable": true }
             }
@@ -555,6 +559,11 @@
             }
         },
         "ProtocolResponse": {
+            "discriminator": "type",
+            "mapping": {
+                "syncResp": { "ref":  "SyncResponse" },
+                "error":    { "ref":  "ErrorResponse" }
+            },
             "properties": {
                 "reqId": { "type": "int32", "nullable": true }
             }
