@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             }
             if (path == "index.html") {
                 var sb = new StringBuilder();
-                HtmlHeader(sb, new []{"server", displayName}, $"Available schemas / languages for database schema <b>{storeName}</b>");
+                HtmlHeader(sb, new []{"server", displayName}, $"Available schemas / languages for schema <b>{storeName}</b>");
                 sb.AppendLine("<ul>");
                 foreach (var pair in schemas) {
                     sb.AppendLine($"<li><a href='./{pair.Key}/index.html'>{pair.Value.name}</a></li>");
