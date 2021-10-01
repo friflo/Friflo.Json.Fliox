@@ -71,7 +71,7 @@ export async function onExampleChange() {
     document.getElementById("jsonRequest").value = example;
 }
 
-(async() => {
+export async function loadExampleRequestList() {
     var folder = './example-requests'
     var response = await fetch(folder);
     var exampleRequests = await response.json();
@@ -90,7 +90,7 @@ export async function onExampleChange() {
         option.text     = name;
         selectElement.add(option);
     }
-})();
+}
 
 // --------------------------------------- monaco editor ---------------------------------------
 
@@ -140,37 +140,43 @@ async function createProtocolSchemas() {
 }
 
 export async function setupEditors() {
-    var requestUri    = monaco.Uri.parse("request://jsonRequest.json"); // a made up unique URI for our model
+    var requestUri  = monaco.Uri.parse("request://jsonRequest.json"); // a made up unique URI for our model
     var schemas     = await createProtocolSchemas();
 
     for (let i = 0; i < schemas.length; i++) {
         if (schemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.DB.Protocol.SyncRequest.json") {
             schemas[i].fileMatch = [requestUri.toString()]; // associate with our model
         }
-    }    
+    }
 
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
         validate: true,
         schemas: schemas
     });
 
-    var editor = monaco.editor.create(document.getElementById("container"), {
+    var requestEditor = monaco.editor.create(document.getElementById("container"), {
         // model: model
     });
-    editor.updateOptions({
+    requestEditor.updateOptions({
 		lineNumbers: "off",
         minimap:  {
             enabled: false
         }
 	});
 
-    var model = monaco.editor.createModel(null, "json", requestUri);
+    var requestModel = monaco.editor.createModel(null, "json", requestUri);
 
-    editor.setModel (model);
+    requestEditor.setModel (requestModel);
 
-    var jsonCode = `{
-    "p1": "v3",
-    "p2": false
+    var defaultRequest = `{
+    "type": "syncX",
+    "tasks": [
+        {
+            "task":  "message",
+            "name":  "Echo",
+            "value": "some value"
+        }
+    ]
 }`;
-    model.setValue(jsonCode);
+    requestModel.setValue(defaultRequest);
 }

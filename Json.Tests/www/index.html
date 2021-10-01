@@ -9,12 +9,12 @@
     <title>Json.Fliox.DB server</title>
 
     <script type="module">
-        import { connectWebsocket, closeWebsocket, sendSyncRequest, onExampleChange } from  "./index.js";
+        import { connectWebsocket, closeWebsocket, sendSyncRequest, onExampleChange, loadExampleRequestList } from  "./index.js";
         window.connectWebsocket = connectWebsocket;
         window.closeWebsocket   = closeWebsocket;
         window.sendSyncRequest  = sendSyncRequest;
         window.onExampleChange  = onExampleChange;
-
+        loadExampleRequestList();
     </script>
     <style>
         a               { text-decoration:  none; }
