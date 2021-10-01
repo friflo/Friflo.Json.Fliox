@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Count : UnaryAggregateOp
+    public sealed class Count : UnaryAggregateOp
     {
         public Count() { }
         public Count(Field field) : base(field) { }
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Min : BinaryAggregateOp
+    public sealed class Min : BinaryAggregateOp
     {
         public Min() { }
         public Min(Field field, string arg, Operation array) : base(field, arg, array) { }
@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Max : BinaryAggregateOp
+    public sealed class Max : BinaryAggregateOp
     {
         public Max() { }
         public Max(Field field, string arg, Operation array) : base(field, arg, array) { }
@@ -108,7 +108,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Sum : BinaryAggregateOp
+    public sealed class Sum : BinaryAggregateOp
     {
         public Sum() { }
         public Sum(Field field, string arg, Operation array) : base(field, arg, array) { }
@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Average : BinaryAggregateOp
+    public sealed class Average : BinaryAggregateOp
     {
         public Average() { }
         public Average(Field field, string arg, Operation array) : base(field, arg, array) { }
@@ -146,6 +146,4 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             return evalResult;
         }
     }
-    
-
 }

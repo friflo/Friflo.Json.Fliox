@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Schema.Validation
 {
-    public class TypeValidator : IDisposable
+    public sealed class TypeValidator : IDisposable
     {
         internal            JsonParser      parser; // on top enabling instance offset 0
         private             Bytes           jsonBytes = new Bytes(128);

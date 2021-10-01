@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Mapper.Map.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
 {
-    public class  FieldQuery
+    public sealed class  FieldQuery
     {
         internal readonly   List<PropField>     fieldList = new List <PropField>();
         internal            int                 primCount;

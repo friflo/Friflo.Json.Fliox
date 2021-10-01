@@ -7,7 +7,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         
     }
     
-    public class Tracer
+    public sealed class Tracer
     {
         public readonly     TypeCache       typeCache;
         public readonly     ITracerContext  tracerContext;

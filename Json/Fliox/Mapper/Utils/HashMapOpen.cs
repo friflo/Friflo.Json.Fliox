@@ -7,7 +7,7 @@ namespace Friflo.Json.Fliox.Mapper.Utils
     /// <summary>
     /// Requirement/feature: Allocation free hash map when using Get()
     /// </summary>
-    public class HashMapOpen <K,V>  /* FFMap<K,V> */ where K : struct, IMapKey<K>
+    public sealed class HashMapOpen <K,V>  /* FFMap<K,V> */ where K : struct, IMapKey<K>
     {
         private     K[]     key;
         private     V[]     val;

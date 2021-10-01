@@ -6,7 +6,7 @@ using Friflo.Json.Burst;
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
     // ------------------------- PatchValueMatcher / PatchValueMapper -------------------------
-    internal class JsonKeyMatcher : ITypeMatcher {
+    internal sealed class JsonKeyMatcher : ITypeMatcher {
         public static readonly JsonKeyMatcher Instance = new JsonKeyMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     
-    internal class JsonKeyMapper : TypeMapper<JsonKey>
+    internal sealed class JsonKeyMapper : TypeMapper<JsonKey>
     {
         public override string DataTypeName() { return "JsonKey"; }
 

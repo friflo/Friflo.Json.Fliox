@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Abs : UnaryArithmeticOp
+    public sealed class Abs : UnaryArithmeticOp
     {
         public Abs() { }
         public Abs(Operation value) : base(value) { }
@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Ceiling : UnaryArithmeticOp
+    public sealed class Ceiling : UnaryArithmeticOp
     {
         public Ceiling() { }
         public Ceiling(Operation value) : base(value) { }
@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Floor : UnaryArithmeticOp
+    public sealed class Floor : UnaryArithmeticOp
     {
         public Floor() { }
         public Floor(Operation value) : base(value) { }
@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Exp : UnaryArithmeticOp
+    public sealed class Exp : UnaryArithmeticOp
     {
         public Exp() { }
         public Exp(Operation value) : base(value) { }
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Log : UnaryArithmeticOp
+    public sealed class Log : UnaryArithmeticOp
     {
         public Log() { }
         public Log(Operation value) : base(value) { }
@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Sqrt : UnaryArithmeticOp
+    public sealed class Sqrt : UnaryArithmeticOp
     {
         public Sqrt() { }
         public Sqrt(Operation value) : base(value) { }
@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Negate : UnaryArithmeticOp
+    public sealed class Negate : UnaryArithmeticOp
     {
         public Negate() { }
         public Negate(Operation value) : base(value) { }

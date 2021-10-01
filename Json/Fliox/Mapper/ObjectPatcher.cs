@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Mapper
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ObjectPatcher : IDisposable
+    public sealed class ObjectPatcher : IDisposable
     {
         public  readonly    ObjectMapper    mapper;
         public  readonly    Differ          differ;

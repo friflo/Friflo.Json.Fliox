@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Schema.Definition
     }
     
     // could by a readonly struct - but may be used by reference in future 
-    public class FieldDef {
+    public sealed class FieldDef {
         public  readonly    string          name;
         public  readonly    bool            required;
         public  readonly    bool            isKey;

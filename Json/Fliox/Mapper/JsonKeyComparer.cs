@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Fliox.Mapper
 {
-    public class JsonKeyComparer : IComparer<JsonKey>
+    public sealed class JsonKeyComparer : IComparer<JsonKey>
     {
         public int Compare(JsonKey x, JsonKey y) {
             int dif = x.type - y.type;
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Mapper
         }
     }
     
-    public class JsonKeyEqualityComparer : IEqualityComparer<JsonKey>
+    public sealed class JsonKeyEqualityComparer : IEqualityComparer<JsonKey>
     {
         public bool Equals(JsonKey x, JsonKey y) {
             if (x.type != y.type)

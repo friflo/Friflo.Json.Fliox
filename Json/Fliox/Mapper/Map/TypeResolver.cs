@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class DefaultTypeResolver : ITypeResolver
+    public sealed class DefaultTypeResolver : ITypeResolver
     {
         
         /// <summary>This matcher list is not used by the type resolver itself. Its only available for debugging purposes.</summary>
@@ -147,8 +147,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
             };
             QueryTypeMapper(null, null, query);
         }
-
-
     }
 }
 

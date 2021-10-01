@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Fliox.Transform.Select
 {
-    internal class PathNodeTree<T>
+    internal sealed class PathNodeTree<T>
     {
         internal readonly   PathNode<T>             rootNode        = new PathNode<T>(new SelectorNode("$", -1, SelectorType.Root), null);
         internal readonly   List<PathSelector<T>>   selectors       = new List<PathSelector<T>>();

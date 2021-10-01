@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Transform.Select;
 
 namespace Friflo.Json.Fliox.Mapper.Access
 {
-    public class Accessor : IDisposable
+    public sealed class Accessor : IDisposable
     {
         private readonly    ObjectWriter    writer;
         

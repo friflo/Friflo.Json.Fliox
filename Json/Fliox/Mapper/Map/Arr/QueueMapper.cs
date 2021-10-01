@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Arr
 {
-    internal class QueueMatcher : ITypeMatcher {
+    internal sealed class QueueMatcher : ITypeMatcher {
         public static readonly QueueMatcher Instance = new QueueMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
         }        
     }
     
-    internal class QueueMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : Queue<TElm>
+    internal sealed class QueueMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : Queue<TElm>
     {
         public override string  DataTypeName() { return "Queue"; }
         public override int     Count(object array) => ((TCol) array).Count;

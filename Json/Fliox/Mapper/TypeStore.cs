@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Mapper
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class StoreConfig {
+    public sealed class StoreConfig {
         public   readonly   bool                        useIL;
         public   readonly   IJsonNaming                 jsonNaming;
         internal readonly   Dictionary<Type, KeyMapper> keyMappers;
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Mapper
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class TypeStore : IDisposable
+    public sealed class TypeStore : IDisposable
     {
         private     readonly    Dictionary <Type,  TypeMapper>  typeMap=        new Dictionary <Type,  TypeMapper >();
         

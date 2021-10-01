@@ -12,7 +12,7 @@ using static Friflo.Json.Fliox.Schema.Generator;
 
 namespace Friflo.Json.Fliox.Schema
 {
-    public partial class JsonSchemaGenerator
+    public sealed partial class JsonSchemaGenerator
     {
         private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardTypes;

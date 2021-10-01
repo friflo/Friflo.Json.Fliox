@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         OnlyRight,
     }
 
-    public class DiffNode
+    public sealed class DiffNode
     {
         public  readonly    DiffType        diffType;
         public  readonly    DiffNode        parent; 

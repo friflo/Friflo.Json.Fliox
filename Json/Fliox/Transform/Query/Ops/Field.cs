@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
 
     
     // ------------------------------------- unary operations -------------------------------------
-    public class Field : Operation
+    public sealed class Field : Operation
     {
         [Fri.Required]  public      string      name;
         [Fri.Ignore]    internal    string      selector;   // == field if field starts with . otherwise appended to a lambda parameter
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         ArrayField = 1
     }
 
-    internal class OperationContext
+    internal sealed class OperationContext
     {
         internal readonly List<Field>                   selectors = new List<Field>();
         private  readonly HashSet<Operation>            operations = new HashSet<Operation>();

@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Arr
 {
-    internal class ArrayMatcher : ITypeMatcher {
+    internal sealed class ArrayMatcher : ITypeMatcher {
         public static readonly ArrayMatcher Instance = new ArrayMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
     }
     
     
-    internal class ArrayMapper<TElm> : CollectionMapper <TElm[], TElm>
+    internal sealed class ArrayMapper<TElm> : CollectionMapper <TElm[], TElm>
     {
         public override string  DataTypeName() { return "array"; }
         public override int     Count(object array) => ((TElm[]) array).Length; 

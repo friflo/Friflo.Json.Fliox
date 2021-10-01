@@ -3,7 +3,7 @@
 
 namespace Friflo.Json.Fliox.Transform.Select
 {
-    internal class PathSelector<T>
+    internal sealed class PathSelector<T>
     {
         private  readonly   string          path;
         private  readonly   PathNode<T>     node; // only used to give context when debugging

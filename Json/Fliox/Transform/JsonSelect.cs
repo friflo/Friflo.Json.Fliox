@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.Transform
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class JsonSelect
+    public sealed class JsonSelect
     {
         internal readonly   PathNodeTree<JsonSelectResult>    nodeTree = new PathNodeTree<JsonSelectResult>();
         internal readonly   List<JsonSelectResult>            results = new List<JsonSelectResult>();
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Transform
     }
     
     // --- Select result ---
-    public class JsonSelectResult
+    public sealed class JsonSelectResult
     {
         public   readonly   List<string>    values          = new List<string>();
 

@@ -5,7 +5,7 @@ using System;
 
 namespace Friflo.Json.Fliox.Mapper.Map
 {
-    public class InvalidTypeException : Exception {
+    public sealed class InvalidTypeException : Exception {
         public InvalidTypeException (string msg) : base(msg) { }
     }
 }

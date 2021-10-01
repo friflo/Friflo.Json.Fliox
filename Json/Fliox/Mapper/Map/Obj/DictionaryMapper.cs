@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Obj
 {
-    internal class DictionaryMatcher : ITypeMatcher {
+    internal sealed class DictionaryMatcher : ITypeMatcher {
         public static readonly DictionaryMatcher Instance = new DictionaryMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
         }
     }
     
-    internal class DictionaryMapper<TMap, TKey, TElm> : CollectionMapper<TMap, TElm> where TMap : IDictionary<TKey, TElm>
+    internal sealed class DictionaryMapper<TMap, TKey, TElm> : CollectionMapper<TMap, TElm> where TMap : IDictionary<TKey, TElm>
     {
         private readonly    KeyMapper<TKey> keyMapper;
         

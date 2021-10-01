@@ -220,7 +220,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
     }
     
     // could by a struct 
-    public class ValidationField : IDisposable {
+    public sealed class ValidationField : IDisposable {
         public   readonly   string          fieldName;
         public              Bytes           name;
         public   readonly   bool            required;
@@ -255,7 +255,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         }
     }
 
-    public class ValidationUnion : IDisposable {
+    public sealed class ValidationUnion : IDisposable {
         private  readonly   UnionType   unionType;
         public   readonly   string      discriminatorStr;
         public              Bytes       discriminator;

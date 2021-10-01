@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Schema
     /// <br></br>
     /// All other properties are optional (can be null) and enable customization of the generated output: a schema or code.
     /// </summary>
-    public class JsonTypeOptions
+    public sealed class JsonTypeOptions
     {
         public  readonly    TypeSchema              schema;
         /// <summary>the file extension of the generated files</summary>
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Schema
     /// <br></br>
     /// All other properties are optional (can be null) and enable customization of the generated output: a schema or code.
     /// </summary>
-    public class NativeTypeOptions
+    public sealed class NativeTypeOptions
     {
         public  readonly    TypeStore               typeStore; 
         public  readonly    ICollection<Type>       rootTypes;
@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Schema
         }
     }
     
-    public class Replace {
+    public sealed class Replace {
         /// <summary>The namespace which need to be replaced</summary>
         public  readonly    string @namespace;
         /// <summary>The <see cref="replacement"/> (can be "") for the given <see cref="@namespace"/>.</summary>

@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.Native
 {
-    public class NativeTypeSchema : TypeSchema, IDisposable
+    public sealed class NativeTypeSchema : TypeSchema, IDisposable
     {
         public   override   ICollection<TypeDef>    Types           { get; }
         public   override   StandardTypes           StandardTypes   { get; }

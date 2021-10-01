@@ -6,7 +6,7 @@ using Friflo.Json.Burst;
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
     
-    internal class GuidMatcher  : ITypeMatcher {
+    internal sealed class GuidMatcher  : ITypeMatcher {
         public static readonly GuidMatcher Instance = new GuidMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     
-    internal class GuidMapper : TypeMapper<Guid>
+    internal sealed class GuidMapper : TypeMapper<Guid>
     {
         public  override    string          DataTypeName() { return "Guid"; }
 

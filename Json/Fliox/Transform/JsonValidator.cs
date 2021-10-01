@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Transform
 {
-    public class JsonValidator : IDisposable
+    public sealed class JsonValidator : IDisposable
     {
         private             Bytes           jsonBytes = new Bytes(128);
         private             JsonParser      parser;

@@ -5,7 +5,7 @@ using System;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Key
 {
-    internal class JsonKeyMapper : KeyMapper<JsonKey>
+    internal sealed class JsonKeyMapper : KeyMapper<JsonKey>
     {
         public override void WriteKey (ref Writer writer, in JsonKey key) {
             switch (key.type) {

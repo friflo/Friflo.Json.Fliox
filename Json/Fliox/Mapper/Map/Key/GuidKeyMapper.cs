@@ -5,7 +5,7 @@ using System;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Key
 {
-    internal class GuidKeyMapper : KeyMapper<Guid>
+    internal sealed class GuidKeyMapper : KeyMapper<Guid>
     {
         public override void WriteKey (ref Writer writer, in Guid key) {
             writer.WriteGuid (key);

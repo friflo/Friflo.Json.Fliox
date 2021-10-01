@@ -6,7 +6,7 @@ using Friflo.Json.Burst;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
-    internal class BigIntMatcher : ITypeMatcher {
+    internal sealed class BigIntMatcher : ITypeMatcher {
         public static readonly BigIntMatcher Instance = new BigIntMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     
-    internal class BigIntMapper : TypeMapper<BigInteger>
+    internal sealed class BigIntMapper : TypeMapper<BigInteger>
     {
         public override string DataTypeName() { return "BigInteger"; }
 
@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     
-    internal class NullableBigIntMapper : TypeMapper<BigInteger?>
+    internal sealed class NullableBigIntMapper : TypeMapper<BigInteger?>
     {
         public override string DataTypeName() { return "BigInteger?"; }
 

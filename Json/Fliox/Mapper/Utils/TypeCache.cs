@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Mapper.Utils
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class TypeCache
+    public sealed class TypeCache
     {
         private readonly    Dictionary <Type,  TypeMapper>  typeMap =      new Dictionary <Type,  TypeMapper >();
         

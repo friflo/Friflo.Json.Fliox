@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper.Access;
 
 namespace Friflo.Json.Fliox.Mapper
 {
-    public class MemberAccessor : IDisposable
+    public sealed class MemberAccessor : IDisposable
     {
         private readonly Accessor accessor;
 

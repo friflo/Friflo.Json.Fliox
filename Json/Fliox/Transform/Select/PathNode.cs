@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Transform.Select
     /// A <see cref="PathSelector{T}"/> is intended to store the result when reaching a node while traversing having an
     /// associated <see cref="PathSelector{T}"/> in <see cref="selectors"/>.
     /// </summary>
-    public class PathNode<TResult>
+    public sealed class PathNode<TResult>
     {
         /// direct access to <see cref="children"/>[*]
         internal            PathNode<TResult>                       wildcardNode;

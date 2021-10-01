@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Schema
     ///   </item>
     /// </list>
     /// </summary>
-    public class Generator
+    public sealed class Generator
     {
         public   readonly   string                          fileExt;
         

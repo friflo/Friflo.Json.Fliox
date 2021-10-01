@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Transform
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class JsonEvaluator : IDisposable
+    public sealed class JsonEvaluator : IDisposable
     {
         private readonly ScalarSelector   scalarSelector    = new ScalarSelector();
 
@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.Transform
         }
     }
 
-    public class JsonFilter : JsonLambda
+    public sealed class JsonFilter : JsonLambda
     {
         public JsonFilter(FilterOperation op) : base(op) { }
 

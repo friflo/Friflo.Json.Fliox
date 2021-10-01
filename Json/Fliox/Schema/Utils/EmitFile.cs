@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.Utils
 {
-    public class EmitFile
+    public sealed class EmitFile
     {
         /// contain all types of a file and their generated piece of code for each type
         public   readonly   List<EmitType>              emitTypes   = new List<EmitType>();

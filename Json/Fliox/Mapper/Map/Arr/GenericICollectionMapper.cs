@@ -12,7 +12,7 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Arr
 {
-    internal class GenericICollectionMatcher : ITypeMatcher {
+    internal sealed class GenericICollectionMatcher : ITypeMatcher {
         public static readonly GenericICollectionMatcher Instance = new GenericICollectionMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
         }        
     }
     
-    internal class GenericICollectionMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : ICollection<TElm>
+    internal sealed class GenericICollectionMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : ICollection<TElm>
     {
         private readonly    bool    diffElements;
         

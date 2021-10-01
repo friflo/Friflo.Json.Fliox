@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Not : UnaryLogicalOp
+    public sealed class Not : UnaryLogicalOp
     {
         public override string      Linq => $"!({operand})";
 
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class And : BinaryLogicalOp
+    public sealed class And : BinaryLogicalOp
     {
         public override string      Linq => string.Join(" && ", operands);
 
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Or : BinaryLogicalOp
+    public sealed class Or : BinaryLogicalOp
     {
         public override string      Linq => string.Join(" || ", operands);
         
@@ -121,5 +121,4 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             return evalResult;
         }
     }
-    
 }

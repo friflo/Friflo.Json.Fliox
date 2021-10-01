@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     }
     
     // --- associative comparison operations ---
-    public class Equal : BinaryBoolOp
+    public sealed class Equal : BinaryBoolOp
     {
         public Equal() { }
         public Equal(Operation left, Operation right) : base(left, right) { }
@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class NotEqual : BinaryBoolOp
+    public sealed class NotEqual : BinaryBoolOp
     {
         public NotEqual() { }
         public NotEqual(Operation left, Operation right) : base(left, right) { }
@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
     }
 
     // --- non-associative comparison operations -> call Order() --- 
-    public class LessThan : BinaryBoolOp
+    public sealed class LessThan : BinaryBoolOp
     {
         public LessThan() { }
         public LessThan(Operation left, Operation right) : base(left, right) { }
@@ -78,7 +78,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class LessThanOrEqual : BinaryBoolOp
+    public sealed class LessThanOrEqual : BinaryBoolOp
     {
         public LessThanOrEqual() { }
         public LessThanOrEqual(Operation left, Operation right) : base(left, right) { }
@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class GreaterThan : BinaryBoolOp
+    public sealed class GreaterThan : BinaryBoolOp
     {
         public GreaterThan() { }
         public GreaterThan(Operation left, Operation right) : base(left, right) { }
@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class GreaterThanOrEqual : BinaryBoolOp
+    public sealed class GreaterThanOrEqual : BinaryBoolOp
     {
         public GreaterThanOrEqual() { }
         public GreaterThanOrEqual(Operation left, Operation right) : base(left, right) { }

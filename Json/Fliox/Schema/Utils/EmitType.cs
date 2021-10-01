@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.Utils
 {
-    public class EmitType
+    public sealed class EmitType
     {
         public   readonly   TypeDef                 type;
         /// the mapper assigned to the type

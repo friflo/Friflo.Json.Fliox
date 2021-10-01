@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map
 {
-    public class JsonSerializerStub : IDisposable
+    public sealed class JsonSerializerStub : IDisposable
     {
         public JsonSerializer jsonSerializer;
         

@@ -4,7 +4,7 @@ using System;
 
 namespace Friflo.Json.Fliox.Mapper.Map
 {
-    internal class TypeNotSupportedMatcher : ITypeMatcher {
+    internal sealed class TypeNotSupportedMatcher : ITypeMatcher {
         public static readonly TypeNotSupportedMatcher Instance = new TypeNotSupportedMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class TypeNotSupportedMapper<T> : TypeMapper<T>
+    public sealed class TypeNotSupportedMapper<T> : TypeMapper<T>
     {
         private readonly string msg;
         

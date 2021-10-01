@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper.MapIL.Val;
 // ReSharper disable PossibleInvalidOperationException
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
-    internal class StringMatcher : ITypeMatcher {
+    internal sealed class StringMatcher : ITypeMatcher {
         public static readonly StringMatcher Instance = new StringMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     
-    internal class StringMapper : TypeMapper<string>
+    internal sealed class StringMapper : TypeMapper<string>
     {
         public override string DataTypeName() { return "string"; }
         

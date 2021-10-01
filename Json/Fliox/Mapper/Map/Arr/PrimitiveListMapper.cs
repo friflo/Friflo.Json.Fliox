@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
         }
     }
     
-    internal class PrimitiveListMatcher : ITypeMatcher {
+    internal sealed class PrimitiveListMatcher : ITypeMatcher {
         public static readonly PrimitiveListMatcher Instance = new PrimitiveListMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
         }
     }
     
-    internal class PrimitiveListMapper<T> : CollectionMapper<List<T>, T>
+    internal sealed class PrimitiveListMapper<T> : CollectionMapper<List<T>, T>
     {
         public override string  DataTypeName() { return "List"; }
         public override int     Count(object array) => ((List<T>) array).Count;

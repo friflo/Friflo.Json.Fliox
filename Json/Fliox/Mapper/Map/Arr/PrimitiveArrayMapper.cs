@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper.Diff;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Arr
 {
-    internal class PrimitiveArrayMatcher : ITypeMatcher {
+    internal sealed class PrimitiveArrayMatcher : ITypeMatcher {
         public static readonly PrimitiveArrayMatcher Instance = new PrimitiveArrayMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
         }
     }
     
-    internal class PrimitiveArrayMapper<T> : CollectionMapper <T[], T>
+    internal sealed class PrimitiveArrayMapper<T> : CollectionMapper <T[], T>
     {
         public override string  DataTypeName() { return "array"; }
         public override int     Count(object array) => ((T[]) array).Length;

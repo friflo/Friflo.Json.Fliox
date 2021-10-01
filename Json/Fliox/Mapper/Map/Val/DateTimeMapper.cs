@@ -6,7 +6,7 @@ using Friflo.Json.Burst;
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
     
-    internal class DateTimeMatcher  : ITypeMatcher {
+    internal sealed class DateTimeMatcher  : ITypeMatcher {
         public static readonly DateTimeMatcher Instance = new DateTimeMatcher();
 
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     
-    internal class DateTimeMapper : TypeMapper<DateTime>
+    internal sealed class DateTimeMapper : TypeMapper<DateTime>
     {
         public override string DataTypeName() { return "DateTime"; }
         
@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     
-    internal class NullableDateTimeMapper : TypeMapper<DateTime?>
+    internal sealed class NullableDateTimeMapper : TypeMapper<DateTime?>
     {
         public override string DataTypeName() { return "DateTime?"; }
         

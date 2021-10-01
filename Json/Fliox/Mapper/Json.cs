@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Mapper
         public static readonly Json JSON = new Json();
     }
 
-    internal class Json : IJsonReader, IJsonWriter
+    internal sealed class Json : IJsonReader, IJsonWriter
     {
         public readonly TypeStore typeStore = new TypeStore();
         

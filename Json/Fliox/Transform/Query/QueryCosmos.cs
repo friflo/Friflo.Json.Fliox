@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Transform.Query
         }
     }
     
-    internal class ConvertContext {
+    internal sealed class ConvertContext {
         private readonly   string           collection;
         private readonly   FilterOperation  filter;
         

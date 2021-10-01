@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Diff
 {
-    public class Differ : IDisposable
+    public sealed class Differ : IDisposable
     {
         public  readonly    TypeCache       typeCache;
         private readonly    ObjectWriter    jsonWriter;
@@ -160,7 +160,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         }
     }
 
-    internal class Parent
+    internal sealed class Parent
     {
         public readonly     object      left;
         public readonly     object      right;

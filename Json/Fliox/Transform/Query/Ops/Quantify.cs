@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Any : BinaryQuantifyOp
+    public sealed class Any : BinaryQuantifyOp
     {
         public override string      Linq => $"{field.Linq}.Any({arg} => {predicate.Linq})";
 
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class All : BinaryQuantifyOp
+    public sealed class All : BinaryQuantifyOp
     {
         public override string      Linq => $"{field.Linq}.All({arg} => {predicate.Linq})";
         
@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class CountWhere : Operation // Note: must not extend: FilterOperation
+    public sealed class CountWhere : Operation // Note: must not extend: FilterOperation
     {
         [Fri.Required]  public  Field           field;
         [Fri.Required]  public  string          arg;

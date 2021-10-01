@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Diff
 {
-    public class Patcher : IDisposable
+    public sealed class Patcher : IDisposable
     {
         public  readonly    TypeCache       typeCache;
         private readonly    ObjectReader    jsonReader;

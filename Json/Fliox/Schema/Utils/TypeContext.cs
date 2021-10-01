@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.Utils
 {
-    public class TypeContext
+    public sealed class TypeContext
     {
         public readonly     Generator           generator;
         public readonly     HashSet<TypeDef>    imports;

@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
     /// The utility method <see cref="JsonTypeSchema.ReadSchemas"/> can be used to read a set of
     /// <see cref="JsonSchema"/>'s as files in a folder.
     /// </summary>
-    public class JsonTypeSchema : TypeSchema, IDisposable
+    public sealed class JsonTypeSchema : TypeSchema, IDisposable
     {
         public  override    ICollection<TypeDef>            Types           { get; }
         public  override    StandardTypes                   StandardTypes   { get; }

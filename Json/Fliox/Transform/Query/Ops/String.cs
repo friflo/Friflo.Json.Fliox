@@ -5,8 +5,7 @@ using Friflo.Json.Fliox.Transform.Query.Arity;
 
 namespace Friflo.Json.Fliox.Transform.Query.Ops
 {
-    
-    public class Contains : BinaryBoolOp
+    public sealed class Contains : BinaryBoolOp
     {
         public override string      Linq => $"{left.Linq}.Contains({right.Linq})";
 
@@ -24,7 +23,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class StartsWith : BinaryBoolOp
+    public sealed class StartsWith : BinaryBoolOp
     {
         public override string      Linq => $"{left.Linq}.StartsWith({right.Linq})";
 
@@ -42,7 +41,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class EndsWith : BinaryBoolOp
+    public sealed class EndsWith : BinaryBoolOp
     {
         public override string      Linq => $"{left.Linq}.EndsWith({right.Linq})";
 
@@ -59,6 +58,4 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
             return evalResult;
         }
     }
-
-
 }

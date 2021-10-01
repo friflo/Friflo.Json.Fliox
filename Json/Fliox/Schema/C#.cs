@@ -10,7 +10,7 @@ using static Friflo.Json.Fliox.Schema.Generator;
 
 namespace Friflo.Json.Fliox.Schema
 {
-    public partial class CSharpGenerator
+    public sealed partial class CSharpGenerator
     {
         private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardTypes;

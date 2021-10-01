@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Transform
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class JsonPatcher : IDisposable
+    public sealed class JsonPatcher : IDisposable
     {
         private             JsonSerializer  serializer;
         

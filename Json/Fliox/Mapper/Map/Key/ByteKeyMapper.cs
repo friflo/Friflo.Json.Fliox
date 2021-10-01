@@ -3,7 +3,7 @@
 
 namespace Friflo.Json.Fliox.Mapper.Map.Key
 {
-    internal class ByteKeyMapper : KeyMapper<byte>
+    internal sealed class ByteKeyMapper : KeyMapper<byte>
     {
         public override void WriteKey (ref Writer writer, in byte key) {
             writer.bytes.AppendChar('\"');

@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Obj
     public delegate void LoadObject<in T1, in T2, T3>(T1 arg1, T2 arg2, ref T3 arg3);
     public delegate void StoreObject<T1, in T2, in T3>(ref T1 arg1, T2 arg2, T3 arg3);
 
-    public class ClassLayout<T> : ClassLayout
+    public sealed class ClassLayout<T> : ClassLayout
     {
         private readonly LoadObject<long?[], object[], T> loadObjectToMirror;
         private readonly StoreObject<T, long?[], object[]> storeMirrorToObject;

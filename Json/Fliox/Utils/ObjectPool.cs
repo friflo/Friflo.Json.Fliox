@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Utils
         }
     }
     
-    public class SharedPool<T> : ObjectPool<T> where T : IDisposable
+    public sealed class SharedPool<T> : ObjectPool<T> where T : IDisposable
     {
         private readonly    ConcurrentStack<T>  stack       = new ConcurrentStack<T>();
         private readonly    ConcurrentStack<T>  instances   = new ConcurrentStack<T>();
@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.Utils
         }
     }
     
-    public class LocalPool<T> : ObjectPool<T> where T : IDisposable
+    public sealed class LocalPool<T> : ObjectPool<T> where T : IDisposable
     {
         private readonly    ObjectPool<T>   pool;
         private readonly    string          field;

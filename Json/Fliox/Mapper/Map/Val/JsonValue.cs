@@ -5,7 +5,7 @@ using System;
 namespace Friflo.Json.Fliox.Mapper.Map.Val
 {
     // ------------------------- PatchValueMatcher / PatchValueMapper -------------------------
-    internal class JsonValueMatcher : ITypeMatcher {
+    internal sealed class JsonValueMatcher : ITypeMatcher {
         public static readonly JsonValueMatcher Instance = new JsonValueMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     
-    public class JsonValueMapper : TypeMapper<JsonValue>
+    public sealed class JsonValueMapper : TypeMapper<JsonValue>
     {
         public override string DataTypeName() { return "JsonValue"; }
 

@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Mapper
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ObjectReader : IJsonReader, IDisposable
+    public sealed class ObjectReader : IJsonReader, IDisposable
     {
         private             int                 maxDepth;
         private             Reader              intern;
@@ -358,12 +358,12 @@ namespace Friflo.Json.Fliox.Mapper
         public static readonly NoThrowHandler NoThrow = new NoThrowHandler();
     }
     
-    public class NoThrowHandler : IErrorHandler
+    public sealed class NoThrowHandler : IErrorHandler
     {
         public void HandleError(int pos, ref Bytes message) { }
     }
     
-    public class JsonReaderException : Exception {
+    public sealed class JsonReaderException : Exception {
         public readonly int position;
         
         public JsonReaderException(string message, int position) : base(message) {

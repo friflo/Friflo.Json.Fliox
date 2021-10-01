@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
     /// <see cref="ValidationSet"/> provide the validation rules for <see cref="TypeValidator"/> to validate
     /// arbitrary JSON payloads by <see cref="TypeValidator.ValidateObject"/>.
     /// </summary>
-    public class ValidationSet : IDisposable
+    public sealed class ValidationSet : IDisposable
     {
         private  readonly   List<ValidationType>                types;
         private  readonly   Dictionary<TypeDef, ValidationType> typeMap;

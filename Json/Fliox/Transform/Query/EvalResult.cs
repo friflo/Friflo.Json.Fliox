@@ -6,7 +6,7 @@ using System.Collections.Generic;
 // ReSharper disable ConvertToAutoPropertyWithPrivateSetter
 namespace Friflo.Json.Fliox.Transform.Query
 {
-    internal class EvalResult
+    internal sealed class EvalResult
     {
         internal readonly   List<Scalar>    values;
         internal readonly   List<int>       groupIndices;
@@ -56,6 +56,5 @@ namespace Friflo.Json.Fliox.Transform.Query
         internal void SetSingle(in Scalar value) {
             values[0] = value;
         }
-        
     }
 }

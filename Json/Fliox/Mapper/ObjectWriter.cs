@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Mapper
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ObjectWriter : IJsonWriter, IDisposable
+    public sealed class ObjectWriter : IJsonWriter, IDisposable
     {
         private     Writer      intern;
 

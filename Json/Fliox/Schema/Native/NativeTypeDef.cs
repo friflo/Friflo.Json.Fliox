@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.Native
 {
-public class NativeTypeDef : TypeDef
+public sealed class NativeTypeDef : TypeDef
     {
         // --- internal
         internal readonly   Type                native;

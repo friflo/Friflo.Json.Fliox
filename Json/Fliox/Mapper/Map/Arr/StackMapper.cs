@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Arr
 {
-    internal class StackMatcher : ITypeMatcher {
+    internal sealed class StackMatcher : ITypeMatcher {
         public static readonly StackMatcher Instance = new StackMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
         }        
     }
     
-    internal class StackMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : Stack<TElm>
+    internal sealed class StackMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : Stack<TElm>
     {
         public override string  DataTypeName() { return "Stack"; }
         public override int     Count(object array) => ((TCol) array).Count;

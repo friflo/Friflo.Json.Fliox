@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class PropField : IDisposable
+    public sealed class PropField : IDisposable
     {
         public   readonly   string          name;
         public   readonly   JsonKey         key;

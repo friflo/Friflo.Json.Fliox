@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         internal override void Init(OperationContext cx, InitFlags flags) { }
     }
         
-    public class StringLiteral : Literal
+    public sealed class StringLiteral : Literal
     {
         [Fri.Required]  public  string      value;
         
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class DoubleLiteral : Literal
+    public sealed class DoubleLiteral : Literal
     {
         public          double      value;
 
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class LongLiteral : Literal
+    public sealed class LongLiteral : Literal
     {
         public          long        value;
 
@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class TrueLiteral : FilterOperation
+    public sealed class TrueLiteral : FilterOperation
     {
         public override string      Linq => "true";
 
@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class FalseLiteral : FilterOperation
+    public sealed class FalseLiteral : FilterOperation
     {
         public override string      Linq => "false";
 
@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
 
-    public class NullLiteral : Literal
+    public sealed class NullLiteral : Literal
     {
         public override string      Linq => "null";
 

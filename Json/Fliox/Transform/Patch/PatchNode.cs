@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.Transform.Select;
 
 namespace Friflo.Json.Fliox.Transform.Patch
 {
-    internal class PatchNode {
+    internal sealed class PatchNode {
         internal            PatchType?                      patchType;
         internal            JsonUtf8                        json;
         internal readonly   Dictionary<JsonKey, PatchNode>  children = new Dictionary<JsonKey, PatchNode>(JsonKey.Equality);

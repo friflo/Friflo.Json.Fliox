@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Val
     }
     
    
-    public class EnumILMapper<T> : TypeMapper<T>
+    public sealed class EnumILMapper<T> : TypeMapper<T>
     {
         private   readonly  Type                                    underlyingEnumType;
         private   readonly  Dictionary<BytesString, EnumIntegral>   stringToIntegral = new Dictionary<BytesString,  EnumIntegral>();

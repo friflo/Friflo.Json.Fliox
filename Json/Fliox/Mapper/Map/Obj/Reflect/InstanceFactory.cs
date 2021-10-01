@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
 {
-    public class PolyType
+    public sealed class PolyType
     {
         internal PolyType(Type type, string name) {
             this.type = type;
@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
     }
 
     // Is public to support external schema / code generators
-    public class InstanceFactory {
+    public sealed class InstanceFactory {
         public   readonly   string                          discriminator;
         private  readonly   Type                            instanceType;
         public   readonly   PolyType[]                      polyTypes;

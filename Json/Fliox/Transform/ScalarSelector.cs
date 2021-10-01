@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Transform
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ScalarSelector : IDisposable
+    public sealed class ScalarSelector : IDisposable
     {
         private             Bytes                               targetJson = new Bytes(128);
         private             JsonParser                          targetParser;

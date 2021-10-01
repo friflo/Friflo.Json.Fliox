@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Arr
 {
-    internal class GenericIEnumerableMatcher : ITypeMatcher {
+    internal sealed class GenericIEnumerableMatcher : ITypeMatcher {
         public static readonly GenericIEnumerableMatcher Instance = new GenericIEnumerableMatcher();
         
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
         }        
     }
     
-    internal class GenericIEnumerableMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : IEnumerable<TElm>
+    internal sealed class GenericIEnumerableMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : IEnumerable<TElm>
     {
         public override string DataTypeName() { return "IEnumerable"; }
         

@@ -11,7 +11,7 @@ using static Friflo.Json.Fliox.Schema.Generator;
 
 namespace Friflo.Json.Fliox.Schema
 {
-    public partial class TypescriptGenerator
+    public sealed partial class TypescriptGenerator
     {
         private  readonly   Generator                   generator;
         private  readonly   Dictionary<TypeDef, string> standardTypes;

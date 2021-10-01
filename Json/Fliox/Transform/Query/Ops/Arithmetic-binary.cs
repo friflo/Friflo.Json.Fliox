@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Add : BinaryArithmeticOp
+    public sealed class Add : BinaryArithmeticOp
     {
         public Add() { }
         public Add(Operation left, Operation right) : base(left, right) { }
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Subtract : BinaryArithmeticOp
+    public sealed class Subtract : BinaryArithmeticOp
     {
         public Subtract() { }
         public Subtract(Operation left, Operation right) : base(left, right) { }
@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Multiply : BinaryArithmeticOp
+    public sealed class Multiply : BinaryArithmeticOp
     {
         public Multiply() { }
         public Multiply(Operation left, Operation right) : base(left, right) { }
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Transform.Query.Ops
         }
     }
     
-    public class Divide : BinaryArithmeticOp
+    public sealed class Divide : BinaryArithmeticOp
     {
         public Divide() { }
         public Divide(Operation left, Operation right) : base(left, right) { }

@@ -9,7 +9,7 @@ namespace Friflo.Json.Fliox.Schema
     /// Generate Typescript from the given options. Examples available at:
     /// <see href="https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Common/UnitTest/Fliox/Schema"/>
     /// </summary>
-    public partial class TypescriptGenerator
+    public sealed partial class TypescriptGenerator
     {
         public static Generator Generate(NativeTypeOptions options) {
             options.typeStore.AddMappers(options.rootTypes);
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Schema
     /// Generate JSON Schema from the given options. Examples available at:
     /// <see href="https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Common/UnitTest/Fliox/Schema"/>
     /// </summary>
-    public partial class JsonSchemaGenerator
+    public sealed partial class JsonSchemaGenerator
     {
         public static Generator Generate (NativeTypeOptions options) {
             options.typeStore.AddMappers(options.rootTypes);
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Schema
     /// Generate C# from the given options. Examples available at:
     /// <see href="https://github.com/friflo/Friflo.Json.Fliox/tree/main/Json.Tests/Common/UnitTest/Fliox/Schema"/>
     /// </summary>
-    public partial class CSharpGenerator
+    public sealed partial class CSharpGenerator
     {
         public static Generator Generate(NativeTypeOptions options) {
             options.typeStore.AddMappers(options.rootTypes);

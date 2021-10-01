@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
     ///   </item>
     /// </list>
     /// </summary>
-    public class JsonSchema
+    public sealed class JsonSchema
     {
         [Fri.Property(Name ="$ref")]public  string                          rootRef;
         
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public override                     string                          ToString() => fileName;
     }
     
-    public class JsonType
+    public sealed class JsonType
     {
         public  TypeRef                         extends;
         
@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public override string                  ToString() => name;
     }
     
-    public class TypeRef {
+    public sealed class TypeRef {
         [Fri.Property (Name =           "$ref")]
         [Fri.Required]  public  string  reference;
                         public  string  type;   // not used - was used for nullable array elements
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public override         string  ToString() => reference;
     }
     
-    public class FieldType
+    public sealed class FieldType
     {
         public  JsonValue       type;           // SchemaType or SchemaType[]
         

@@ -7,21 +7,21 @@ namespace Friflo.Json.Fliox.Mapper
         string PropertyName(string name);
     }
     
-    public class DefaultNaming : IJsonNaming
+    public sealed class DefaultNaming : IJsonNaming
     {
         public string PropertyName(string name) {
             return name;
         }
     }
     
-    public class CamelCaseNaming : IJsonNaming
+    public sealed class CamelCaseNaming : IJsonNaming
     {
         public string PropertyName(string name) {
             return char.ToLower(name[0]) + name.Substring(1);
         }
     }
     
-    public class PascalCaseNaming : IJsonNaming
+    public sealed class PascalCaseNaming : IJsonNaming
     {
         public string PropertyName(string name) {
             return char.ToUpper(name[0]) + name.Substring(1);

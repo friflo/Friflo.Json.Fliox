@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Transform
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class ScalarSelect
+    public sealed class ScalarSelect
     {
         internal readonly   PathNodeTree<ScalarSelectResult>    nodeTree = new PathNodeTree<ScalarSelectResult>();
         internal readonly   List<ScalarSelectResult>            results = new List<ScalarSelectResult>();
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Transform
     }
     
     // --- Select result ---
-    public class ScalarSelectResult
+    public sealed class ScalarSelectResult
     {
         public   readonly   List<Scalar>    values          = new List<Scalar>();
         public   readonly   List<int>       groupIndices    = new List<int>();

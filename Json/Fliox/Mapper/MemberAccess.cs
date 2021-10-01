@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Transform.Select;
 
 namespace Friflo.Json.Fliox.Mapper
 {
-    public class MemberAccess
+    public sealed class MemberAccess
     {
         internal readonly   PathNodeTree<MemberValue>    nodeTree = new PathNodeTree<MemberValue>();
         internal readonly   List<MemberValue>            results = new List<MemberValue>();
