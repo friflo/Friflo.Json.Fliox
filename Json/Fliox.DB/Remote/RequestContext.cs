@@ -10,14 +10,14 @@ namespace Friflo.Json.Fliox.DB.Remote
 {
     public class RequestContext
     {
-        public readonly Uri     url;
-        public readonly string  method;
+        public readonly Uri             url;
+        public readonly string          method;
         
         public          string          ResponseContentType { get; private set; }
         public          HttpStatusCode  Status              { get; private set; }
         public          byte[]          Response            { get; private set; }
         public          int             Offset              { get; private set; }
-        public          int             Length               { get; private set; }
+        public          int             Length              { get; private set; }
         
         public RequestContext (Uri url, string  method) {
             this.url    = url;
@@ -26,10 +26,10 @@ namespace Friflo.Json.Fliox.DB.Remote
         
         public void Write (byte[] value, int offset, int count, string contentType, HttpStatusCode status) {
             ResponseContentType = contentType;
-            this.Status         = status;
+            Status              = status;
             Response            = value;
-            this.Offset         = offset;
-            this.Length          = count;
+            Offset              = offset;
+            Length              = count;
         }
         
         public void WriteString (string value, string contentType, HttpStatusCode status) {
@@ -38,10 +38,10 @@ namespace Friflo.Json.Fliox.DB.Remote
                 writer.Write(value);
                 writer.Flush();
                 ResponseContentType = contentType;
-                this.Status         = status;
+                Status              = status;
                 Response            = result.ToArray();
                 Offset              = 0;
-                Length               = (int)result.Length;
+                Length              = (int)result.Length;
             }
         }
     }
