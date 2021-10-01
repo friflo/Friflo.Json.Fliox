@@ -142,6 +142,8 @@ async function createProtocolSchemas() {
 
 var requestModel;
 var responseModel;
+var requestEditor;
+var responseEditor;
 
 export async function setupEditors()
 {
@@ -164,7 +166,7 @@ export async function setupEditors()
     });
     // --- create request editor
     { 
-        var requestEditor = monaco.editor.create(document.getElementById("requestContainer"), { /* model: model */ });
+        requestEditor = monaco.editor.create(document.getElementById("requestContainer"), { /* model: model */ });
         requestEditor.updateOptions({
             lineNumbers:    "off",
             minimap:        { enabled: false }
@@ -187,7 +189,7 @@ export async function setupEditors()
 
     // --- create response editor
     {
-        var responseEditor = monaco.editor.create(document.getElementById("responseContainer"), { /* model: model */ });
+        responseEditor = monaco.editor.create(document.getElementById("responseContainer"), { /* model: model */ });
         responseEditor.updateOptions({
             lineNumbers:    "off",
             minimap:        { enabled: false }
@@ -195,4 +197,47 @@ export async function setupEditors()
         responseModel = monaco.editor.createModel(null, "json", responseUri);
         responseEditor.setModel (responseModel);
     }
+}
+
+export function addTableResize () {
+    var thElm;
+    var startOffset;
+
+    Array.prototype.forEach.call(
+      document.querySelectorAll("table td"),
+      function (th) {
+        th.style.position = 'relative';
+
+        var grip = document.createElement('div');
+        grip.innerHTML = "&nbsp;";
+        grip.style.top = 0;
+        grip.style.right = 0;
+        grip.style.bottom = 0;
+        grip.style.width = '5px';
+        grip.style.position = 'absolute';
+        grip.style.cursor = 'col-resize';
+        grip.style.userSelect = 'none'; // disable text selection while dragging
+        grip.addEventListener('mousedown', function (e) {
+            thElm = th;
+            startOffset = th.offsetWidth - e.pageX;
+        });
+
+        th.appendChild(grip);
+      });
+
+    document.addEventListener('mousemove', function (e) {
+      if (thElm) {
+        var width = startOffset + e.pageX + 'px'
+        thElm.style.width = width;
+        var elem = thElm.children[0];
+        elem.style.width    = width;
+        requestEditor.layout();
+        responseEditor.layout();
+        // console.log("---", width)
+      }
+    });
+
+    document.addEventListener('mouseup', function () {
+        thElm = undefined;
+    });
 }
