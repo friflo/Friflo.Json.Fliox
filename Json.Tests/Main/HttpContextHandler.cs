@@ -17,41 +17,39 @@ namespace Friflo.Json.Tests.Main
             this.wwwRoot = wwwRoot;    
         }
             
-        public async Task<bool> HandleContext(HttpListenerContext context) {
-            var req = context.Request;
-            var resp = context.Response;
+        public async Task<bool> HandleRequest(RequestContext context) {
             try {
-                if (req.HttpMethod == "GET") {
-                    await GetHandler(req, resp);
+                if (context.method == "GET") {
+                    await GetHandler(context);
                 }
             }
             catch (Exception ) {
-                var response = $"error - method: {req.HttpMethod}, url: {req.Url.AbsolutePath}";
-                await HttpHostDatabase.WriteString(resp, response, "text/plain", HttpStatusCode.OK).ConfigureAwait(false);
+                var response = $"error - method: {context.method}, url: {context.url.AbsolutePath}";
+                context.WriteString(response, "text/plain", HttpStatusCode.OK);
             }
             return true; // return true to signal request was handled -> no subsequent handlers are invoked 
         }
         
-        private async Task GetHandler (HttpListenerRequest req,  HttpListenerResponse resp) {
-            var path = req.Url.AbsolutePath;
+        private async Task GetHandler (RequestContext context) {
+            var path = context.url.AbsolutePath;
             if (path.EndsWith("/"))
                 path += "index.html";
             string ext = Path.GetExtension (path);
             if (string.IsNullOrEmpty(ext)) {
-                await ListDirectory(req, resp);
+                ListDirectory(context);
                 return;
             }
             var filePath = wwwRoot + path;
             var content = await ReadFile(filePath).ConfigureAwait(false);
             var contentType = ContentTypeFromPath(path);
-            await HttpHostDatabase.Write(resp, content, 0, content.Length, contentType, HttpStatusCode.OK).ConfigureAwait(false);
+            context.Write(content, 0, content.Length, contentType, HttpStatusCode.OK);
         }
         
-        private async Task ListDirectory (HttpListenerRequest req,  HttpListenerResponse resp) {
-            var path = wwwRoot + req.Url.AbsolutePath;
+        private void ListDirectory (RequestContext context) {
+            var path = wwwRoot + context.url.AbsolutePath;
             if (!Directory.Exists(path)) {
                 var msg = $"directory doesnt exist: {path}";
-                await HttpHostDatabase.WriteString(resp, msg, "text/plain", HttpStatusCode.NotFound).ConfigureAwait(false);
+                context.WriteString(msg, "text/plain", HttpStatusCode.NotFound);
                 return;
             }
             string[] fileNames = Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly);
@@ -59,7 +57,7 @@ namespace Friflo.Json.Tests.Main
                 fileNames[n] = fileNames[n].Substring(wwwRoot.Length).Replace('\\', '/');
             }
             var jsonList = JsonDebug.ToJson(fileNames, true);
-            await HttpHostDatabase.WriteString(resp, jsonList, "application/json", HttpStatusCode.OK).ConfigureAwait(false);
+            context.WriteString(jsonList, "application/json", HttpStatusCode.OK);
         }
         
         private static string ContentTypeFromPath(string path) {

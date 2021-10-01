@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,10 +12,9 @@ using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.DB.Remote
 {
-    
     public interface IHttpContextHandler
     {
-        Task<bool> HandleContext(HttpListenerContext context);
+        Task<bool> HandleRequest(RequestContext context);
     }
     
     // [A Simple HTTP server in C#] https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7
@@ -157,17 +155,28 @@ namespace Friflo.Json.Fliox.DB.Remote
                 resp.Close();
                 return;
             }
+            var request = new RequestContext(ctx.Request.Url, ctx.Request.HttpMethod);
+            bool handled = await HandleRequest(request);
+            if (handled) {
+                SetResponseHeader (ctx.Response, request.ResponseContentType, request.Status, request.Length);
+                await ctx.Response.OutputStream.WriteAsync(request.Response, request.Offset, request.Length).ConfigureAwait(false);
+            }
+        }
+        
+        private async Task<bool> HandleRequest(RequestContext request) {
             if (schemaHandler != null) {
-                bool success = await schemaHandler.HandleContext(ctx).ConfigureAwait(false);
-                if (success)
-                    return;
+                if (await schemaHandler.HandleRequest(request).ConfigureAwait(false))
+                    return true;
             }
             if (protocolSchemaHandler != null) {
-                bool success = await protocolSchemaHandler.HandleContext(ctx).ConfigureAwait(false);
-                if (success)
-                    return;
+                if (await protocolSchemaHandler.HandleRequest(request).ConfigureAwait(false))
+                    return true;
             }
-            contextHandler?.HandleContext(ctx).ConfigureAwait(false);
+            if (contextHandler != null) { 
+                if (await contextHandler.HandleRequest(request).ConfigureAwait(false))
+                    return true;
+            }
+            return false;
         }
 
         public static void SetResponseHeader (HttpListenerResponse resp, string contentType, HttpStatusCode statusCode, int len) {
@@ -177,23 +186,6 @@ namespace Friflo.Json.Fliox.DB.Remote
             resp.StatusCode         = (int)statusCode;
         }
         
-        public static async Task WriteString (HttpListenerResponse resp, string value, string contentType, HttpStatusCode statusCode) {
-            var result = new MemoryStream();
-            using (var writer = new StreamWriter(result, Encoding.UTF8) { AutoFlush = true }) {
-                writer.Write(value);
-                writer.Flush();
-                SetResponseHeader(resp, contentType, statusCode, (int)result.Length);
-                await resp.OutputStream.WriteAsync(result.ToArray(), 0, (int)result.Length);
-                resp.OutputStream.Close();
-            }
-        }
-        
-        public static async Task Write (HttpListenerResponse resp, byte[] value, int offset, int count, string contentType, HttpStatusCode statusCode) {
-            SetResponseHeader(resp, contentType, statusCode, count);
-            await resp.OutputStream.WriteAsync(value, offset, count);
-            resp.OutputStream.Close();
-        }
-
         // Http server requires setting permission to run an http server.
         // Otherwise exception is thrown on startup: System.Net.HttpListenerException: permission denied.
         // To give access see: [add urlacl - Win32 apps | Microsoft Docs] https://docs.microsoft.com/en-us/windows/win32/http/add-urlacl

@@ -44,11 +44,10 @@ namespace Friflo.Json.Fliox.DB.Remote
             this.zip = zip;
         }
         
-        public async Task<bool> HandleContext(HttpListenerContext context) {
-            HttpListenerRequest  req  = context.Request;
-            HttpListenerResponse resp = context.Response;
-            if (req.HttpMethod == "GET" && req.Url.AbsolutePath.StartsWith(basePath)) {
-                var path = req.Url.AbsolutePath.Substring(basePath.Length);
+        public Task<bool> HandleRequest(RequestContext context) {
+
+            if (context.method == "GET" && context.url.AbsolutePath.StartsWith(basePath)) {
+                var path = context.url.AbsolutePath.Substring(basePath.Length);
                 Result result = new Result();
                 bool success = GetSchemaFile(path, ref result);
                 byte[]  response;
@@ -57,13 +56,10 @@ namespace Friflo.Json.Fliox.DB.Remote
                 } else {
                     response    = result.bytes;
                 }
-                HttpStatusCode status = success ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
-                HttpHostDatabase.SetResponseHeader(resp, result.contentType, status, response.Length);
-                await resp.OutputStream.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
-                resp.Close();
-                return true;
+                context.Write(response, 0, response.Length, result.contentType, HttpStatusCode.OK);
+                return Task.FromResult(true);
             }
-            return false;
+            return Task.FromResult(false);
         }
         
         public bool GetSchemaFile(string path, ref Result result) {
