@@ -167,17 +167,8 @@
 <script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.js"></script>
 
 <script>
-async function setupMonaco() {
-    var jsonCode = [
-        '{',
-        '    "p1": "v3",',
-        '    "p2": false',
-        "}"
-    ].join('\n');
 
-    var modelUri = monaco.Uri.parse("request://b/foo.json"); // a made up unique URI for our model
-    var model = monaco.editor.createModel(jsonCode, "json", modelUri);
-
+async function createProtocolSchemas() {
     // configure the JSON language support with schemas and schema associations
     var schemaUrlsResponse  = await fetch("/protocol/json-schema/directory");
     var schemaUrls          = await schemaUrlsResponse.json();
@@ -209,29 +200,54 @@ async function setupMonaco() {
     var schemas = [];
     for (let i = 0; i < schemaUrls.length; i++) {
         var schemaName      = schemaUrls[i]
-        var url             = "/protocol/json-schema/" + schemaName;
+        var url             = "protocol/json-schema/" + schemaName;
         var schemaResponse  = await fetch(url);
         var schema          = await schemaResponse.json();
         var schemaEntry = {
-            uri:    "http:/" + url,
+            uri:    "http://" + url,
             schema: schema            
         }
         schemas.push(schemaEntry);
-        if (schemaName == "Friflo.Json.Fliox.DB.Protocol.SyncRequest.json") {
-            schemaEntry.fileMatch = [modelUri.toString()]; // associate with our model
-        }
     }
+    return schemas;
+}
+
+async function setupEditors() {
+    var requestUri    = monaco.Uri.parse("request://jsonRequest.json"); // a made up unique URI for our model
+    var schemas     = await createProtocolSchemas();
+
+    for (let i = 0; i < schemas.length; i++) {
+        if (schemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.DB.Protocol.SyncRequest.json") {
+            schemas[i].fileMatch = [requestUri.toString()]; // associate with our model
+        }
+    }    
 
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
         validate: true,
         schemas: schemas
     });
 
-    monaco.editor.create(document.getElementById("container"), {
-        model: model
+    var editor = monaco.editor.create(document.getElementById("container"), {
+        // model: model
     });
+    editor.updateOptions({
+		lineNumbers: "off",
+        minimap:  {
+            enabled: false
+        }
+	});
+
+    var model = monaco.editor.createModel(null, "json", requestUri);
+
+    editor.setModel (model);
+
+    var jsonCode = `{
+    "p1": "v3",
+    "p2": false
+}`;
+    model.setValue(jsonCode);
 }
-setupMonaco();
+setupEditors();
 </script>
 </body>
 </html>
