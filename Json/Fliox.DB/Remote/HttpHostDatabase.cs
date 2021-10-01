@@ -165,10 +165,8 @@ namespace Friflo.Json.Fliox.DB.Remote
                 if (await schemaHandler.HandleRequest(request).ConfigureAwait(false))
                     return true;
             }
-            if (protocolSchemaHandler != null) {
-                if (await protocolSchemaHandler.HandleRequest(request).ConfigureAwait(false))
-                    return true;
-            }
+            if (await protocolSchemaHandler.HandleRequest(request).ConfigureAwait(false))
+                return true;
             if (contextHandler != null) { 
                 if (await contextHandler.HandleRequest(request).ConfigureAwait(false))
                     return true;
