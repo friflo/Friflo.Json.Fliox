@@ -45,18 +45,16 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
         
         public Task<bool> HandleRequest(RequestContext context) {
-
             if (context.method == "GET" && context.url.AbsolutePath.StartsWith(basePath)) {
                 var path = context.url.AbsolutePath.Substring(basePath.Length);
-                Result result = new Result();
-                bool success = GetSchemaFile(path, ref result);
-                byte[]  response;
+                Result result   = new Result();
+                bool success    = GetSchemaFile(path, ref result);
+                var  status     = success ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
                 if (result.isText) {
-                    response    = Encoding.UTF8.GetBytes(result.content);
-                } else {
-                    response    = result.bytes;
+                    context.WriteString(result.content, result.contentType, status);
+                    return Task.FromResult(true);
                 }
-                context.Write(response, 0, response.Length, result.contentType, HttpStatusCode.OK);
+                context.Write(result.bytes, 0, result.bytes.Length, result.contentType, HttpStatusCode.OK);
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);
