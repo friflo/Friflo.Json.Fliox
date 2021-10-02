@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.Remote
     public delegate byte[] CreateZip(Dictionary<string, string> files);
     
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
-    public class SchemaHandler : IRequestHandler
+    public class SchemaHub : IRequestHandler
     {
         public  readonly    TypeSchema                      typeSchema;
         private readonly    ICollection<TypeDef>            separateTypes;
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         private readonly    string                          basePath;
         private readonly    string                          displayName;
         
-        public SchemaHandler(string basePath, TypeSchema typeSchema, CreateZip zip = null) {
+        public SchemaHub(string basePath, TypeSchema typeSchema, CreateZip zip = null) {
             this.basePath       = basePath;
             this.displayName    = basePath.Trim('/');
             this.typeSchema     = typeSchema;
@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             this.zip = zip;
         }
         
-        public SchemaHandler(string basePath, TypeSchema typeSchema, ICollection<TypeDef> separateTypes, CreateZip zip = null) {
+        public SchemaHub(string basePath, TypeSchema typeSchema, ICollection<TypeDef> separateTypes, CreateZip zip = null) {
             this.basePath       = basePath;
             this.displayName    = basePath.Trim('/');
             this.typeSchema     = typeSchema;

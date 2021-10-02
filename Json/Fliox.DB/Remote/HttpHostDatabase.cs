@@ -20,8 +20,8 @@ namespace Friflo.Json.Fliox.DB.Remote
     // See: [Configure options for the ASP.NET Core Kestrel web server | Microsoft Docs] https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/options?view=aspnetcore-5.0
     public sealed class HttpHostDatabase : RemoteHostDatabase
     {
-        public              IRequestHandler     schemaHandler;
-        private  readonly   SchemaHandler       protocolSchemaHandler;
+        public              SchemaHub           databaseSchemaHub;
+        private  readonly   SchemaHub           protocolSchemaHub;
         
         private  readonly   string              endpoint;
         private  readonly   HttpListener        listener;
@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                 var protocolSchema      = new NativeTypeSchema(typeStore, typeof(ProtocolMessage));
                 var types               = new [] { typeof(ProtocolRequest), typeof(ProtocolResponse), typeof(SubscriptionEvent) };
                 var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
-                protocolSchemaHandler   = new SchemaHandler("/protocol/", protocolSchema, sepTypes);
+                protocolSchemaHub       = new SchemaHub("/protocol/", protocolSchema, sepTypes);
             }
         }
 
@@ -156,11 +156,11 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
         
         private async Task<bool> HandleRequest(RequestContext request) {
-            if (schemaHandler != null) {
-                if (await schemaHandler.HandleRequest(request).ConfigureAwait(false))
+            if (databaseSchemaHub != null) {
+                if (await databaseSchemaHub.HandleRequest(request).ConfigureAwait(false))
                     return true;
             }
-            if (await protocolSchemaHandler.HandleRequest(request).ConfigureAwait(false))
+            if (await protocolSchemaHub.HandleRequest(request).ConfigureAwait(false))
                 return true;
             if (contextHandler != null) { 
                 if (await contextHandler.HandleRequest(request).ConfigureAwait(false))

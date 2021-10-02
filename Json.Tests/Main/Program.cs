@@ -99,9 +99,9 @@ namespace Friflo.Json.Tests.Main
             var typeSchema              = GetTypeSchema(true);
             fileDatabase.schema         = new DatabaseSchema(typeSchema);
             
-            var requestHandler          = new RequestHandler(wwwRoot); // optional. Used to serve static web pages 
-            var hostDatabase            = new HttpHostDatabase(fileDatabase, endpoint, requestHandler);
-            hostDatabase.schemaHandler  = new SchemaHandler("/schema/", typeSchema, Utils.Zip); // optional. generate zip archives for schemas
+            var requestHandler              = new RequestHandler(wwwRoot); // optional. Used to serve static web pages 
+            var hostDatabase                = new HttpHostDatabase(fileDatabase, endpoint, requestHandler);
+            hostDatabase.databaseSchemaHub  = new SchemaHub("/schema/", typeSchema, Utils.Zip); // optional. generate zip archives for schemas
             hostDatabase.Start();
             hostDatabase.Run();
         }
