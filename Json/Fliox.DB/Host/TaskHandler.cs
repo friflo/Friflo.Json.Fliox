@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.DB.Host
             var message = "not authorized";
             var authError = messageContext.authState.Error; 
             if (authError != null) {
-                message = $"{message} ({authError})";
+                message = $"{message}. {authError}";
             }
             error = SyncRequestTask.PermissionDenied(message);
             return false;

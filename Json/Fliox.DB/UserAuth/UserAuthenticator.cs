@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         {
             var clientId = syncRequest.clientId;
             if (clientId == null) {
-                messageContext.authState.SetFailed("user authentication requires clientId", unknown);
+                messageContext.authState.SetFailed("user authentication requires client id", unknown);
                 return;
             }
             var eventTarget = messageContext.eventTarget;

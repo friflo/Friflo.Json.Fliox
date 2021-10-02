@@ -1,0 +1,4 @@
+{
+    "id": "user-full-access",
+    "roles": ["role-allow"]
+}

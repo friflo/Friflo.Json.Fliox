@@ -7,6 +7,7 @@ using System.IO;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Remote;
+using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.JSON;
@@ -91,15 +92,16 @@ namespace Friflo.Json.Tests.Main
         //     $env:UserDomain 
         private static void FlioxServer(string endpoint, string database, string wwwRoot) {
             Console.WriteLine($"FileDatabase: {database}");
-            var fileDatabase        = new FileDatabase(database) { eventBroker = new EventBroker(true) }; // eventBroker enables Pub-Sub
+            var fileDatabase            = new FileDatabase(database) { eventBroker = new EventBroker(true) }; // eventBroker enables Pub-Sub
+            fileDatabase.authenticator  = CreateUserAuthenticator(); // optional. Otherwise every request is authorized
             
             // adding DatabaseSchema is optional - it enables type validation for create, upsert & patch operations
-            var typeSchema          = GetTypeSchema(true);
-            fileDatabase.schema     = new DatabaseSchema(typeSchema);
+            var typeSchema              = GetTypeSchema(true);
+            fileDatabase.schema         = new DatabaseSchema(typeSchema);
             
-            var contextHandler      = new RequestHandler(wwwRoot);
-            var hostDatabase        = new HttpHostDatabase(fileDatabase, endpoint, contextHandler);
-            hostDatabase.schemaHandler = new SchemaHandler("/schema/", typeSchema, Utils.Zip); // optional - generate zip archives for schemas
+            var contextHandler          = new RequestHandler(wwwRoot);
+            var hostDatabase            = new HttpHostDatabase(fileDatabase, endpoint, contextHandler);
+            hostDatabase.schemaHandler  = new SchemaHandler("/schema/", typeSchema, Utils.Zip); // optional - generate zip archives for schemas
             hostDatabase.Start();
             hostDatabase.Run();
         }
@@ -111,6 +113,13 @@ namespace Friflo.Json.Tests.Main
             }
             // using a NativeTypeSchema add an additional dependency by using the EntityStore: PocStore
             return new NativeTypeSchema(new TypeStore(), typeof(PocStore));
+        }
+        
+        private static UserAuthenticator CreateUserAuthenticator () {
+            var userDatabase    = new FileDatabase("./Json.Tests/assets~/DB/UserStore");
+            var authUserStore   = new UserStore (userDatabase, UserStore.AuthUser);
+            var _               = new UserDatabaseHandler   (userDatabase);
+            return new UserAuthenticator(authUserStore, authUserStore);
         }
     }
 }
