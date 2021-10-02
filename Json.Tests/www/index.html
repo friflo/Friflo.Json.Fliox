@@ -81,7 +81,9 @@
   Websocket &nbsp;&nbsp;
   <button type="button" onclick="connectWebsocket()">Connect</button> 
   <button type="button" onclick="closeWebsocket()">Close</button> &nbsp;&nbsp;
-  status: <div id="socketStatus" class="inline">disconnected</div>
+  status: <div id="socketStatus" class="inline">disconnected</div> &nbsp;&nbsp;&nbsp;&nbsp;
+  <label for="form-user"><code>{{user}}</code></label>   <input type="text" id="user"  name="form-user"  style="width: 100px;" value="admin">
+  <label for="form-token"><code>{{token}}</code></label> <input type="text" id="token" name="form-token" style="width: 200px;" value="admin-token">
   <br><br>
 
   <table>

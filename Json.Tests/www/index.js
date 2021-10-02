@@ -10,6 +10,8 @@ const responseState = document.getElementById("response-state");
 const selectExample = document.getElementById("example");
 const socketStatus  = document.getElementById("socketStatus");
 const reqIdElement  = document.getElementById("reqId");
+const defaultUser   = document.getElementById("user");
+const defaultToken  = document.getElementById("token");
 
 
 export function connectWebsocket() {
@@ -61,6 +63,8 @@ export function sendSyncRequest() {
         responseState.innerHTML = "";
     } else {
         var jsonRequest = requestModel.getValue();
+        jsonRequest = jsonRequest.replace("{{user}}",  defaultUser.value);
+        jsonRequest = jsonRequest.replace("{{token}}", defaultToken.value);
         try {
             var request = JSON.parse(jsonRequest);
             request.reqId = reqId;
@@ -195,7 +199,9 @@ export async function setupEditors()
             "name":  "Echo",
             "value": "some value"
         }
-    ]
+    ],
+    "user":   "{{user}}",
+    "token":  "{{token}}"
 }`;
         requestModel.setValue(defaultRequest);
     }
