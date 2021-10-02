@@ -79,6 +79,8 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                 }
             }
         }
+
+        private const string InvalidUserToken = "invalid user token";
         
         public override async Task Authenticate(SyncRequest syncRequest, MessageContext messageContext)
         {
@@ -87,15 +89,19 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                 messageContext.authState.SetFailed("user authentication requires client id", unknown);
                 return;
             }
-            var eventTarget = messageContext.eventTarget;
-            // already authorized?
-            if (eventTarget != null && credByTarget.TryGetValue(eventTarget, out ClientCredentials credential)) {
-                messageContext.authState.SetSuccess(credential.authorizer);
-                return;
-            }
             var token = syncRequest.token;
             if (token == null) {
                 messageContext.authState.SetFailed("user authentication requires token", unknown);
+                return;
+            }
+            var eventTarget = messageContext.eventTarget;
+            // already authorized?
+            if (eventTarget != null && credByTarget.TryGetValue(eventTarget, out ClientCredentials credential)) {
+                if (credential.token == token) {
+                    messageContext.authState.SetSuccess(credential.authorizer);
+                    return;
+                }
+                messageContext.authState.SetFailed(InvalidUserToken, unknown);
                 return;
             }
             if (!credByClient.TryGetValue(userId, out credential)) {
@@ -111,7 +117,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                 }
             }
             if (credential == null || token != credential.token) {
-                messageContext.authState.SetFailed("invalid user token", unknown);
+                messageContext.authState.SetFailed(InvalidUserToken, unknown);
                 return;
             }
             // Update target if changed for early out when already authorized.

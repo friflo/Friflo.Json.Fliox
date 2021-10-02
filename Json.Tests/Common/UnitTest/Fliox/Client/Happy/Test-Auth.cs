@@ -104,6 +104,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var sync = await mutateUser.TrySync();
                 AreEqual(0, sync.failed.Count);
                 IsTrue(tasks.Success);
+                
+                // test: same tasks, but changed token
+                mutateUser.SetToken("arbitrary token");
+                await mutateUser.TrySync(); // authenticate to simplify debugging below
+                
+                tasks = new ReadWriteTasks(mutateUser, newArticle);
+                sync = await mutateUser.TrySync();
+                
+                AreEqual(2, sync.failed.Count);
+                AreEqual("PermissionDenied ~ not authorized. invalid user token", tasks.findArticle.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. invalid user token", tasks.upsertArticles.Error.Message);
+                
+                // test: same tasks, but cleared token
+                mutateUser.SetToken(null);
+                await mutateUser.TrySync(); // authenticate to simplify debugging below
+                
+                tasks = new ReadWriteTasks(mutateUser, newArticle);
+                sync = await mutateUser.TrySync();
+                AreEqual(2, sync.failed.Count);
+                AreEqual("PermissionDenied ~ not authorized. user authentication requires token", tasks.findArticle.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. user authentication requires token", tasks.upsertArticles.Error.Message);
             }
             using (var readUser         = new PocStore(database, "user-task")) {
                 // test: allow read
