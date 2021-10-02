@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     ///   <item> <see cref="ProtocolResponse"/> send by hosts / received by clients</item>
     ///   <item> <see cref="ProtocolEvent"/>    send by hosts / received by clients</item>
     /// </list>
-    /// The list of these types is returned by <see cref="RootTypes"/> 
+    /// The list of these types is returned by <see cref="Types"/> 
     /// <br></br>
     /// Note: By applying this classification the protocol can also be used in peer-to-peer networking.
     /// 
@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     {
         internal abstract   MessageType     MessageType { get; }
         
-        public static Type[] RootTypes => new [] { typeof(ProtocolMessage), typeof(ProtocolRequest), typeof(ProtocolResponse), typeof(ProtocolEvent) }; 
+        public static Type[] Types => new [] { typeof(ProtocolMessage), typeof(ProtocolRequest), typeof(ProtocolResponse), typeof(ProtocolEvent) }; 
     }
     
     // ----------------------------------- request -----------------------------------
