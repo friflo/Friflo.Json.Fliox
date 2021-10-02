@@ -17,5 +17,7 @@
       }
     }
   ],
-  "info": "patch article member .name (article need to be present)"
+  "info": "patch article member .name (article need to be present)",
+  "user":   "{{user}}",
+  "token":  "{{token}}"
 }

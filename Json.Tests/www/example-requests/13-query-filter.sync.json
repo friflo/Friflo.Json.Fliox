@@ -9,5 +9,7 @@
                                "right":{"op":"string", "value": "Smartphone"}}
     }
   ],
-  "info": "query articles with a filter => .name == 'Smartphone'"
+  "info": "query articles with a filter => .name == 'Smartphone'",
+  "user":   "{{user}}",
+  "token":  "{{token}}"
 }

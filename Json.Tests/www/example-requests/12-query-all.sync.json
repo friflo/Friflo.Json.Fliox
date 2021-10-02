@@ -8,5 +8,7 @@
       "filter":     { "op":"true" }
     }
   ],
-  "info": "query all articles -> 'filter': { 'op': 'true' }"
+  "info": "query all articles -> 'filter': { 'op': 'true' }",
+  "user":   "{{user}}",
+  "token":  "{{token}}"
 }

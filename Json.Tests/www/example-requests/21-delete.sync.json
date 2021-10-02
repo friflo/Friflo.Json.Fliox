@@ -7,6 +7,8 @@
       "ids": ["new-article"]
     }
   ],
-  "info": "delete an article in given container"
+  "info":   "delete an article in given container",
+  "user":   "{{user}}",
+  "token":  "{{token}}"
 }
   

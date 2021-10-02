@@ -1,6 +1,7 @@
 {
-    "type":     "sync",
-    "client":   "client-1",
+    "type": "sync",
+    "user": "{{user}}",
+    "token":"{{token}}",
     "tasks": [{
       "task":       "subscribeChanges",
       "container":  "articles", 

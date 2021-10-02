@@ -7,5 +7,7 @@
       "count":        10
     }
   ],
-  "info": "Reserve keys for given container"
+  "info": "Reserve keys for given container",
+  "user":   "{{user}}",
+  "token":  "{{token}}"
 }

@@ -1,7 +1,8 @@
 {
     "type":   "sync",
     "ack":    0,
-    "client": "client-1",
+    "user":   "{{user}}",
+    "token":  "{{token}}",
     "tasks": [],
     "info": "'ack': N => starts resending all buffered events with 'seq' > N to the client and remove events with 'seq' <= N."
 }

@@ -9,5 +9,7 @@
       ]
     }
   ],
-  "info": "read entities by their ids in given container"
+  "info": "read entities by their ids in given container",
+  "user":   "{{user}}",
+  "token":  "{{token}}"
 }
