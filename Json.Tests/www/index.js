@@ -5,15 +5,17 @@ var connection;
 var websocketCount = 0;
 var reqId = 1;
 var requestStart;
+var subSeq   = 0;
 var subCount = 0;
 
-const responseState = document.getElementById("response-state");
-const subscriptions = document.getElementById("subscriptions");
-const selectExample = document.getElementById("example");
-const socketStatus  = document.getElementById("socketStatus");
-const reqIdElement  = document.getElementById("reqId");
-const defaultUser   = document.getElementById("user");
-const defaultToken  = document.getElementById("token");
+const responseState     = document.getElementById("response-state");
+const subscriptionCount = document.getElementById("subscriptionCount");
+const subscriptionSeq   = document.getElementById("subscriptionSeq");
+const selectExample     = document.getElementById("example");
+const socketStatus      = document.getElementById("socketStatus");
+const reqIdElement      = document.getElementById("reqId");
+const defaultUser       = document.getElementById("user");
+const defaultToken      = document.getElementById("token");
 
 
 export function connectWebsocket() {
@@ -57,7 +59,8 @@ export function connectWebsocket() {
                 responseState.innerHTML = `· ${duration} ms`;
                 break;
             case "sub":
-                subscriptions.innerText = ++subCount;
+                subscriptionCount.innerText = ++subCount;
+                subscriptionSeq.innerText = data.seq;
                 break;
         }
     };
