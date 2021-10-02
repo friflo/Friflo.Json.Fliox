@@ -35,12 +35,12 @@ export abstract class ProtocolRequest extends ProtocolMessage {
 }
 
 export class SyncRequest extends ProtocolRequest {
-    type    : "sync";
-    client? : string | null;
-    ack?    : int32 | null;
-    token?  : string | null;
-    tasks   : SyncRequestTask_Union[];
-    info?   : string | null;
+    type   : "sync";
+    user?  : string | null;
+    token? : string | null;
+    ack?   : int32 | null;
+    tasks  : SyncRequestTask_Union[];
+    info?  : string | null;
 }
 
 export type SyncRequestTask_Union =

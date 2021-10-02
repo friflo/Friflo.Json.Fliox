@@ -15,7 +15,8 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// In case the request contains a <see cref="SubscribeChanges"/> <see cref="userId"/> is required to
         /// enable sending <see cref="SubscriptionEvent"/>'s to the desired subscriber.
         /// </summary>
-        [Fri.Property(Name = "client")] public  string              userId;
+        [Fri.Property(Name = "user")]   public  string                  userId;
+                                        public  string                  token;
         /// <summary>
         /// <see cref="eventAck"/> is used to ensure (change) events are delivered reliable.
         /// A client set <see cref="eventAck"/> to the last received <see cref="ProtocolEvent.seq"/> in case
@@ -23,7 +24,6 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// Otherwise <see cref="eventAck"/> is null.
         /// </summary>
         [Fri.Property(Name = "ack")]    public  int?                    eventAck;
-                                        public  string                  token;
         [Fri.Required]                  public  List<SyncRequestTask>   tasks;
                                         public  string                  info;
         

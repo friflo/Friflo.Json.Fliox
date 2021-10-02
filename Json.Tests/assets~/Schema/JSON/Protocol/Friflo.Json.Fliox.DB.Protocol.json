@@ -19,13 +19,13 @@
             "type": "object",
             "extends": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.ProtocolRequest.json#/definitions/ProtocolRequest" },
             "properties": {
-                "type":   { "enum": ["sync"] },
-                "reqId":  { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
-                "client": { "type": ["string", "null"] },
-                "ack":    { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
-                "token":  { "type": ["string", "null"] },
-                "tasks":  { "type": "array", "items": { "$ref": "#/definitions/SyncRequestTask" } },
-                "info":   { "type": ["string", "null"] }
+                "type":  { "enum": ["sync"] },
+                "reqId": { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
+                "user":  { "type": ["string", "null"] },
+                "token": { "type": ["string", "null"] },
+                "ack":   { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
+                "tasks": { "type": "array", "items": { "$ref": "#/definitions/SyncRequestTask" } },
+                "info":  { "type": ["string", "null"] }
             },
             "required": [
                 "type",
