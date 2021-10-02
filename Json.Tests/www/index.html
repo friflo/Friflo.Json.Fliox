@@ -33,6 +33,19 @@
         textarea        { white-space:      pre;  }
         .alignBottom    { vertical-align:   bottom; }
         .nobreak        { white-space:      pre; }
+        .spinner {
+            border:         3px solid #f3f3f3;
+            border-top:     3px solid #3498db;
+            border-radius:  50%;
+            width:          8px;
+            height:         8px;
+            animation:      spin 1s linear infinite;
+            display:inline-block
+        }
+        @keyframes spin {
+            0%      { transform: rotate(0deg); }
+            100%    { transform: rotate(360deg); }
+        }
     </style>
 
     <!--- [monaco-editor-samples/index.html at main · microsoft/monaco-editor-samples]
@@ -74,7 +87,7 @@
   <table>
     <tr>
       <td>Request &nbsp;&nbsp;<select title="example-requests" id="example" onchange="onExampleChange()"></select></td>
-      <td>Response *</td>
+      <td><span>Response </span><span id="response-state"></span></td>
     </tr>
     <tr>
       <td>
@@ -84,7 +97,7 @@
       </td>
       <td>
         <div id="responseContainer" style="width: 500px; height: 500px; border: 1px solid grey"></div>
-        <small>* all messages: DevTools > Network > websocket-* > Messages</small>
+        <small>see all messages: DevTools > Network > websocket-* > Messages</small>
       </td>
     </tr>
   </table>

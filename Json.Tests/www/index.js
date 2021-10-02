@@ -4,6 +4,7 @@
 var connection;
 var websocketCount = 0;
 var reqId = 1;
+var requestStart;
 
 export function connectWebsocket() {
     var loc             = window.location;
@@ -34,9 +35,12 @@ export function connectWebsocket() {
 
     // Log messages from the server
     connection.onmessage = function (e) {
+        var duration = new Date().getTime() - requestStart;
         // var data = JSON.parse(e.data);
         // console.log('server:', e.data);
         responseModel.setValue(e.data)
+        var requestState = document.getElementById("response-state");
+        requestState.innerHTML = `· ${duration} ms`;
     };
 }
 
@@ -47,6 +51,8 @@ export function closeWebsocket() {
 export function sendSyncRequest() {
     if (!connection || connection.readyState != 1) { // 1 == OPEN {
         responseModel.setValue(`Request ${reqId} failed. WebSocket not connected`)
+        var requestState = document.getElementById("response-state");
+        requestState.innerHTML = "";
     } else {
         var jsonRequest = requestModel.getValue();
         try {
@@ -55,10 +61,13 @@ export function sendSyncRequest() {
             jsonRequest = JSON.stringify(request);                
         } catch { }
         connection.send(jsonRequest);
+        var requestState = document.getElementById("response-state");
+        requestState.innerHTML = '<span class="spinner"></span>';
     }
     var reqIdElement = document.getElementById("reqId");
     reqIdElement.innerText = reqId;
     reqId++;
+    requestStart = new Date().getTime();
 }
 
 export async function onExampleChange() {
@@ -175,7 +184,7 @@ export async function setupEditors()
         requestEditor.setModel (requestModel);
 
         var defaultRequest = `{
-    "type": "syncX",
+    "type": "sync",
     "tasks": [
         {
             "task":  "message",
