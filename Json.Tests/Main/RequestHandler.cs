@@ -9,11 +9,11 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Tests.Main
 {
-    public class HttpContextHandler : IHttpContextHandler
+    public class RequestHandler : IRequestHandler
     {
         private readonly string wwwRoot;
         
-        public HttpContextHandler (string wwwRoot) {
+        public RequestHandler (string wwwRoot) {
             this.wwwRoot = wwwRoot;    
         }
             

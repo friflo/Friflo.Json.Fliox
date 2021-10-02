@@ -12,11 +12,6 @@ using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.DB.Remote
 {
-    public interface IHttpContextHandler
-    {
-        Task<bool> HandleRequest(RequestContext context);
-    }
-    
     // [A Simple HTTP server in C#] https://gist.github.com/define-private-public/d05bc52dd0bed1c4699d49e2737e80e7
     //
     // Note:
@@ -25,18 +20,18 @@ namespace Friflo.Json.Fliox.DB.Remote
     // See: [Configure options for the ASP.NET Core Kestrel web server | Microsoft Docs] https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/options?view=aspnetcore-5.0
     public sealed class HttpHostDatabase : RemoteHostDatabase
     {
-        public              IHttpContextHandler schemaHandler;
+        public              IRequestHandler     schemaHandler;
         private  readonly   SchemaHandler       protocolSchemaHandler;
         
         private  readonly   string              endpoint;
         private  readonly   HttpListener        listener;
-        private  readonly   IHttpContextHandler contextHandler;
+        private  readonly   IRequestHandler     contextHandler;
         private             bool                runServer;
         
         private             int                 requestCount;
 
         
-        public HttpHostDatabase(EntityDatabase local, string endpoint, IHttpContextHandler contextHandler) : base(local) {
+        public HttpHostDatabase(EntityDatabase local, string endpoint, IRequestHandler contextHandler) : base(local) {
             this.endpoint       = endpoint;
             this.contextHandler = contextHandler;
             listener            = new HttpListener();

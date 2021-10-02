@@ -5,9 +5,15 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Friflo.Json.Fliox.DB.Remote
 {
+    public interface IRequestHandler
+    {
+        Task<bool> HandleRequest(RequestContext context);
+    }
+    
     public sealed class RequestContext
     {
         public readonly Uri             url;

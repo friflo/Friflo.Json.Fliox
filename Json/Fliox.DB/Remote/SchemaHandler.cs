@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.Remote
     public delegate byte[] CreateZip(Dictionary<string, string> files);
     
     // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
-    public class SchemaHandler : IHttpContextHandler
+    public class SchemaHandler : IRequestHandler
     {
         public  readonly    TypeSchema                      typeSchema;
         private readonly    ICollection<TypeDef>            separateTypes;

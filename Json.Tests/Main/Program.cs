@@ -15,9 +15,9 @@ using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 
 namespace Friflo.Json.Tests.Main
 {
-    static class Program
+    internal static class Program
     {
-        enum Module
+        private enum Module
         {
             FlioxServer,
             //
@@ -97,7 +97,7 @@ namespace Friflo.Json.Tests.Main
             var typeSchema          = GetTypeSchema(true);
             fileDatabase.schema     = new DatabaseSchema(typeSchema);
             
-            var contextHandler      = new HttpContextHandler(wwwRoot);
+            var contextHandler      = new RequestHandler(wwwRoot);
             var hostDatabase        = new HttpHostDatabase(fileDatabase, endpoint, contextHandler);
             hostDatabase.schemaHandler = new SchemaHandler("/schema/", typeSchema, Utils.Zip); // optional - generate zip archives for schemas
             hostDatabase.Start();
