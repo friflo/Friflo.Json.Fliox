@@ -45,18 +45,18 @@ export function closeWebsocket() {
 }
 
 export function sendSyncRequest() {
-    var reqIdElement = document.getElementById("reqId");
     if (!connection || connection.readyState != 1) { // 1 == OPEN {
-        reqIdElement.innerText = "n/a (Request failed. WebSocket not connected)";
-        return;
+        responseModel.setValue(`Request ${reqId} failed. WebSocket not connected`)
+    } else {
+        var jsonRequest = requestModel.getValue();
+        try {
+            var request = JSON.parse(jsonRequest);
+            request.reqId = reqId;
+            jsonRequest = JSON.stringify(request);                
+        } catch { }
+        connection.send(jsonRequest);
     }
-    var jsonRequest = requestModel.getValue();
-    try {
-        var request = JSON.parse(jsonRequest);
-        request.reqId = reqId;
-        jsonRequest = JSON.stringify(request);                
-    } catch { }
-    connection.send(jsonRequest);
+    var reqIdElement = document.getElementById("reqId");
     reqIdElement.innerText = reqId;
     reqId++;
 }
