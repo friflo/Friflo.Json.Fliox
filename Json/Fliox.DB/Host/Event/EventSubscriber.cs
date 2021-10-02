@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
     }
     
     public sealed class EventSubscriber {
-        internal readonly   string                                  clientId;
+        internal readonly   string                                  userId;
         private             IEventTarget                            eventTarget;
         /// key: <see cref="SubscribeChanges.container"/>
         internal readonly   Dictionary<string, SubscribeChanges>    changeSubscriptions         = new Dictionary<string, SubscribeChanges>();
@@ -38,13 +38,13 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         internal readonly   Task                                    triggerLoop;
         private  readonly   DataChannelWriter<TriggerType>          triggerWriter;
 
-        public   override   string                                  ToString() => clientId;
+        public   override   string                                  ToString() => userId;
         
         /// used for test assertion
         public              int                                     SentEventsCount => sentEvents.Count;
 
-        public EventSubscriber (string clientId, IEventTarget eventTarget, bool background) {
-            this.clientId       = clientId;
+        public EventSubscriber (string userId, IEventTarget eventTarget, bool background) {
+            this.userId       = userId;
             this.eventTarget    = eventTarget;
             this.background     = background;
             if (!this.background)
@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         internal void UpdateTarget(IEventTarget eventTarget) {
             if (this.eventTarget == eventTarget)
                 return;
-            Console.WriteLine($"EventSubscriber: eventTarget changed. clientId: {clientId}");
+            Console.WriteLine($"EventSubscriber: eventTarget changed. userId: {userId}");
             this.eventTarget = eventTarget;
         }
         

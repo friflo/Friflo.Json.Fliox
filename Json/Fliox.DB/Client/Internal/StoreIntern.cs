@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
     internal struct StoreIntern
     {
         // readonly
-        internal readonly   string                                      clientId;
+        internal readonly   string                                      userId;
         internal readonly   TypeStore                                   typeStore;
         internal readonly   TypeCache                                   typeCache;
         internal readonly   EntityDatabase                              database;
@@ -45,11 +45,11 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         internal            int                                     syncCount;
         internal            string                                  token;
 
-        public   override   string                                  ToString() => clientId;
+        public   override   string                                  ToString() => userId;
 
 
         internal StoreIntern(
-            string                  clientId,
+            string                  userId,
             TypeStore               typeStore,
             EntityDatabase          database,
             ITracerContext          tracerContext,
@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             var mapper                  = new ObjectMapper(typeStore, new NoThrowHandler());
             mapper.TracerContext        = tracerContext;
             // readonly
-            this.clientId               = clientId;
+            this.userId               = userId;
             this.typeStore              = typeStore;
             this.typeCache              = mapper.writer.TypeCache;
             this.database               = database;
@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             // messageReader.Dispose();
             subscriptionsPrefix.Clear();
             subscriptions.Clear();
-            database.RemoveEventTarget(clientId);
+            database.RemoveEventTarget(userId);
             setByName.Clear();
             setByType.Clear();
             processor.Dispose();

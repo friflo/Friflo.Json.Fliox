@@ -12,10 +12,10 @@ namespace Friflo.Json.Fliox.DB.Protocol
     {
         /// <summary>
         /// Specify an optional id to identify the client performing a request by a host.
-        /// In case the request contains a <see cref="SubscribeChanges"/> <see cref="clientId"/> is required to
+        /// In case the request contains a <see cref="SubscribeChanges"/> <see cref="userId"/> is required to
         /// enable sending <see cref="SubscriptionEvent"/>'s to the desired subscriber.
         /// </summary>
-        [Fri.Property(Name = "client")] public  string              clientId;
+        [Fri.Property(Name = "client")] public  string              userId;
         /// <summary>
         /// <see cref="eventAck"/> is used to ensure (change) events are delivered reliable.
         /// A client set <see cref="eventAck"/> to the last received <see cref="ProtocolEvent.seq"/> in case

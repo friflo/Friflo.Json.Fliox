@@ -26,12 +26,12 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         public  readonly    EntitySet <string, UserCredential>  credentials;
         public  readonly    EntitySet <string, Role>            roles;
         
-        /// <summary>"clientId" used for a <see cref="UserStore"/> to perform user authentication.</summary>
+        /// <summary>"userId" used for a <see cref="UserStore"/> to perform user authentication.</summary>
         public const string Server      = "Server";
-        /// <summary>"clientId" used for a <see cref="UserStore"/> to request a user authentication with its token</summary>
+        /// <summary>"userId" used for a <see cref="UserStore"/> to request a user authentication with its token</summary>
         public const string AuthUser    = "AuthUser";
         
-        public UserStore(EntityDatabase database, string clientId) : base(database, SyncTypeStore.Get(), clientId) {}
+        public UserStore(EntityDatabase database, string userId) : base(database, SyncTypeStore.Get(), userId) {}
         
         public async Task<AuthenticateUserResult> AuthenticateUser(AuthenticateUser command) {
             var commandTask = SendMessage<AuthenticateUser, AuthenticateUserResult>(command);
@@ -66,10 +66,10 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     
     // -------------------------------------- commands -------------------------------------
     public class AuthenticateUser {
-        public          string  clientId;
+        public          string  userId;
         public          string  token;
 
-        public override string  ToString() => clientId;
+        public override string  ToString() => userId;
     }
     
     public class AuthenticateUserResult {

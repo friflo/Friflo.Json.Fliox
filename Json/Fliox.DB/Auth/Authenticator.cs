@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.DB.Protocol;
 namespace Friflo.Json.Fliox.DB.Auth
 {
     /// <summary>
-    /// Performs authentication and authorization by checking <see cref="SyncRequest.clientId"/> and <see cref="SyncRequest.token"/>
+    /// Performs authentication and authorization by checking <see cref="SyncRequest.userId"/> and <see cref="SyncRequest.token"/>
     /// in every <see cref="EntityDatabase.ExecuteSync"/> call.
     /// </summary>
     public abstract class Authenticator

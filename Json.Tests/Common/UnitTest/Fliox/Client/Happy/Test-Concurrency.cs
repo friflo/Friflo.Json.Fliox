@@ -200,7 +200,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     {
         public readonly EntitySet <int, SimplyEntity>   entities;
         
-        public SimpleStore(EntityDatabase database, TypeStore typeStore, string clientId) : base (database, typeStore, clientId) {}
+        public SimpleStore(EntityDatabase database, TypeStore typeStore, string userId) : base (database, typeStore, userId) {}
     }
     
     // ------------------------------ models ------------------------------

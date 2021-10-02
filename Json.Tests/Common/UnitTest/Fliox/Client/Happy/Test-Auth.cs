@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task AssertNotAuthenticated(EntityDatabase database) {
             var newArticle = new Article{ id="new-article" };
             using (var nullUser         = new PocStore(database, null)) {
-                // test: clientId == null
+                // test: userId == null
                 var tasks = new ReadWriteTasks(nullUser, newArticle);
                 var sync = await nullUser.TrySync();
                 AreEqual(2, sync.failed.Count);

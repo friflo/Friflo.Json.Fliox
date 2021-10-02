@@ -84,8 +84,8 @@ namespace Friflo.Json.Fliox.DB.Host
             }
         }
         
-        public virtual void AddEventTarget     (string clientId, IEventTarget eventTarget) {}
-        public virtual void RemoveEventTarget  (string clientId) {}
+        public virtual void AddEventTarget     (string userId, IEventTarget eventTarget) {}
+        public virtual void RemoveEventTarget  (string userId) {}
 
         internal void AddContainer(EntityContainer container)
         {
@@ -125,7 +125,7 @@ namespace Friflo.Json.Fliox.DB.Host
         /// </para>
         /// </summary>
         public virtual async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            messageContext.clientId = syncRequest.clientId;
+            messageContext.userId = syncRequest.userId;
             await authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
             
             var requestTasks = syncRequest.tasks;

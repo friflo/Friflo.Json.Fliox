@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
                     container   = container,
                     start       = sequence.autoId,
                     count       = count,
-                    user        = messageContext.clientId
+                    user        = messageContext.userId
                 };
                 store.sequenceKeys.Upsert(sequenceKeys);
                 store.sequence.Upsert(sequence);

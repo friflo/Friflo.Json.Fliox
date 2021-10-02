@@ -13,7 +13,7 @@ using Friflo.Json.Fliox.DB.Protocol;
 namespace Friflo.Json.Fliox.DB.UserAuth
 {
     /// <summary>
-    /// Control the access to a <see cref="UserDatabaseHandler"/> by "clientId" (<see cref="UserStore.AuthUser"/> |
+    /// Control the access to a <see cref="UserDatabaseHandler"/> by "userId" (<see cref="UserStore.AuthUser"/> |
     /// <see cref="UserStore.Server"/>) of a user.
     /// <br></br>
     /// A <see cref="UserStore.AuthUser"/> user is only able to <see cref="Authenticate"/> itself.
@@ -37,12 +37,12 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         });
         
         public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
-            var clientId = syncRequest.clientId;
-            if (userRights.TryGetValue(clientId, out Authorizer rights)) {
+            var userId = syncRequest.userId;
+            if (userRights.TryGetValue(userId, out Authorizer rights)) {
                 messageContext.authState.SetSuccess(rights);
                 return Task.CompletedTask;
             }
-            // authState.SetFailed() is not called to avoid giving a hint for a valid clientId (user)
+            // authState.SetFailed() is not called to avoid giving a hint for a valid userId (user)
             messageContext.authState.SetSuccess(UnknownRights);
             return Task.CompletedTask;
         }
