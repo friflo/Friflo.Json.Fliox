@@ -23,14 +23,16 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     }
     
     internal class ClientCredentials {
+        internal readonly   string          userId;
         internal readonly   string          token;
         internal            IEventTarget    target;
         internal readonly   Authorizer      authorizer;
         
-        internal ClientCredentials (string token, IEventTarget target, Authorizer authorizer) {
-            this.token          = token;
-            this.target         = target;
-            this.authorizer    = authorizer;
+        internal ClientCredentials (string userId, string token, IEventTarget target, Authorizer authorizer) {
+            this.userId     = userId;
+            this.token      = token;
+            this.target     = target;
+            this.authorizer = authorizer;
         }
     }
     
@@ -95,13 +97,17 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                 return;
             }
             var eventTarget = messageContext.eventTarget;
-            // already authorized?
+            // eventTarget (HTTP Socket / WebSocket) already authenticated? 
             if (eventTarget != null && credByTarget.TryGetValue(eventTarget, out ClientCredentials credential)) {
-                if (credential.token == token) {
-                    messageContext.authState.SetSuccess(credential.authorizer);
+                if (credential.userId != userId) {
+                    messageContext.authState.SetFailed(InvalidUserToken, unknown);
                     return;
                 }
-                messageContext.authState.SetFailed(InvalidUserToken, unknown);
+                if (credential.token != token) {
+                    messageContext.authState.SetFailed(InvalidUserToken, unknown);
+                    return;
+                }
+                messageContext.authState.SetSuccess(credential.authorizer);
                 return;
             }
             if (!credByClient.TryGetValue(userId, out credential)) {
@@ -111,7 +117,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                 if (result.isValid) {
                     var authCred    = new AuthCred(token);
                     var authorizer  = await GetAuthorizer(userId).ConfigureAwait(false);
-                    credential      = new ClientCredentials (authCred.token, eventTarget, authorizer);
+                    credential      = new ClientCredentials (userId, authCred.token, eventTarget, authorizer);
                     credByClient.TryAdd(userId,    credential);
                     credByTarget.TryAdd(eventTarget, credential);
                 }
