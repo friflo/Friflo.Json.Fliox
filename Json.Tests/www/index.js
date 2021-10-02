@@ -173,7 +173,7 @@ export async function setupEditors()
         if (schemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.DB.Protocol.ProtocolRequest.json") {
             schemas[i].fileMatch = [requestUri.toString()]; // associate with our model
         }
-        if (schemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.DB.Protocol.ProtocolResponse.json") {
+        if (schemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.DB.Protocol.ProtocolMessage.json") {
             schemas[i].fileMatch = [responseUri.toString()]; // associate with our model
         }
     }

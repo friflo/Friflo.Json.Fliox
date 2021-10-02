@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     {
         internal abstract   MessageType     MessageType { get; }
         
-        public static Type[] RootTypes => new [] { typeof(ProtocolRequest), typeof(ProtocolResponse), typeof(SubscriptionEvent) }; 
+        public static Type[] RootTypes => new [] { typeof(ProtocolMessage), typeof(ProtocolRequest), typeof(ProtocolResponse), typeof(ProtocolEvent) }; 
     }
     
     // ----------------------------------- request -----------------------------------
@@ -76,6 +76,8 @@ namespace Friflo.Json.Fliox.DB.Protocol
     }
     
     // ----------------------------------- event -----------------------------------
+    [Fri.Discriminator("type")] 
+    [Fri.Polymorph(typeof(SubscriptionEvent),   Discriminant = "sub")]
     public abstract class ProtocolEvent     : ProtocolMessage {
         // note for all fields
         // used { get; set; } to force properties on the top of JSON

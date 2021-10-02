@@ -731,6 +731,10 @@
             }
         },
         "ProtocolEvent": {
+            "discriminator": "type",
+            "mapping": {
+                "sub": { "ref":  "SubscriptionEvent" }
+            },
             "properties": {
                 "seq":    { "type": "int32" },
                 "target": { "type": "string", "nullable": true },

@@ -332,7 +332,8 @@ data class SubscriptionEvent (
 ) : ProtocolEvent()
 
 @Serializable
-abstract class ProtocolEvent {
+// @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
+abstract class ProtocolEvent  : ProtocolMessage() {
     abstract  val seq    : Int
     abstract  val target : String?
     abstract  val client : String?

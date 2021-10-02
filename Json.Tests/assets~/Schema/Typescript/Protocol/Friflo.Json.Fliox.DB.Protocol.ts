@@ -344,7 +344,14 @@ export class ErrorResponse extends ProtocolResponse {
     message? : string | null;
 }
 
+export type ProtocolEvent_Union =
+    | SubscriptionEvent
+;
+
 export abstract class ProtocolEvent extends ProtocolMessage {
+    abstract type:
+        | "sub"
+    ;
     seq     : int32;
     target? : string | null;
     client? : string | null;
