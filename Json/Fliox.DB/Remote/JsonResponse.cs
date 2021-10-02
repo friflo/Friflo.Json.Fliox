@@ -31,6 +31,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             var errorResponse = new ErrorResponse {message = message};
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
+                mapper.Pretty       = true;
                 var bodyArray       = mapper.WriteAsArray<ProtocolMessage>(errorResponse);
                 var body            = new JsonUtf8(bodyArray);
                 return new JsonResponse(body, type);
