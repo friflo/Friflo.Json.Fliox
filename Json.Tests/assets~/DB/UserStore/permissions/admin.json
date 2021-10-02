@@ -1,4 +1,4 @@
 {
-    "id": "user-full-access",
+    "id": "admin",
     "roles": ["role-allow"]
 }
