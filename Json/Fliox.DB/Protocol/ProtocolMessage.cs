@@ -17,7 +17,8 @@ namespace Friflo.Json.Fliox.DB.Protocol
     ///   <item> <see cref="ProtocolRequest"/>  send by clients / received by hosts</item>
     ///   <item> <see cref="ProtocolResponse"/> send by hosts / received by clients</item>
     ///   <item> <see cref="ProtocolEvent"/>    send by hosts / received by clients</item>
-    /// </list>   
+    /// </list>
+    /// The list of these types is returned by <see cref="RootTypes"/> 
     /// <br></br>
     /// Note: By applying this classification the protocol can also be used in peer-to-peer networking.
     /// 
