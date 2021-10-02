@@ -6,11 +6,16 @@ var websocketCount = 0;
 var reqId = 1;
 var requestStart;
 
+const responseState = document.getElementById("response-state");
+const selectExample = document.getElementById("example");
+const socketStatus  = document.getElementById("socketStatus");
+const reqIdElement  = document.getElementById("reqId");
+
+
 export function connectWebsocket() {
     var loc             = window.location;
     var uri             = `ws://${loc.host}/websocket-${++websocketCount}`;
     // var uri          = `ws://google.com:8080/`; // test connection timeout
-    var socketStatus    = document.getElementById("socketStatus");
     socketStatus.innerHTML = 'connecting <span class="spinner"></span>';
     try {
         connection = new WebSocket(uri);
@@ -41,8 +46,7 @@ export function connectWebsocket() {
         // var data = JSON.parse(e.data);
         // console.log('server:', e.data);
         responseModel.setValue(e.data)
-        var requestState = document.getElementById("response-state");
-        requestState.innerHTML = `· ${duration} ms`;
+        responseState.innerHTML = `· ${duration} ms`;
     };
 }
 
@@ -51,10 +55,10 @@ export function closeWebsocket() {
 }
 
 export function sendSyncRequest() {
+    reqIdElement.innerText = reqId;
     if (!connection || connection.readyState != 1) { // 1 == OPEN {
         responseModel.setValue(`Request ${reqId} failed. WebSocket not connected`)
-        var requestState = document.getElementById("response-state");
-        requestState.innerHTML = "";
+        responseState.innerHTML = "";
     } else {
         var jsonRequest = requestModel.getValue();
         try {
@@ -62,19 +66,15 @@ export function sendSyncRequest() {
             request.reqId = reqId;
             jsonRequest = JSON.stringify(request);                
         } catch { }
+        responseState.innerHTML = '<span class="spinner"></span>';
         connection.send(jsonRequest);
-        var requestState = document.getElementById("response-state");
-        requestState.innerHTML = '<span class="spinner"></span>';
+        requestStart = new Date().getTime();
     }
-    var reqIdElement = document.getElementById("reqId");
-    reqIdElement.innerText = reqId;
     reqId++;
-    requestStart = new Date().getTime();
 }
 
 export async function onExampleChange() {
-    var selectElement = document.getElementById("example");
-    var exampleName = selectElement.value;
+    var exampleName = selectExample.value;
     if (exampleName == "")
         return;
     var response = await fetch(exampleName);
@@ -86,20 +86,19 @@ export async function loadExampleRequestList() {
     var folder = './example-requests'
     var response = await fetch(folder);
     var exampleRequests = await response.json();
-    var selectElement = document.getElementById("example");
     var exampleGroup = "0";
     for (var example of exampleRequests) {
         if (!example.endsWith(".json"))
             continue;
         var name = example.substring(folder.length);
         if (exampleGroup != name[0]) {
-            selectElement.add(document.createElement("option"));
+            selectExample.add(document.createElement("option"));
             exampleGroup = name[0];
         }
         var option = document.createElement("option");
         option.value    = example;
         option.text     = name;
-        selectElement.add(option);
+        selectExample.add(option);
     }
 }
 
@@ -156,6 +155,9 @@ var responseModel;
 var requestEditor;
 var responseEditor;
 
+const requestContainer  = document.getElementById("requestContainer");
+const responseContainer = document.getElementById("responseContainer")
+
 export async function setupEditors()
 {
     // --- setup JSON Schema for monaco
@@ -177,7 +179,7 @@ export async function setupEditors()
     });
     // --- create request editor
     { 
-        requestEditor = monaco.editor.create(document.getElementById("requestContainer"), { /* model: model */ });
+        requestEditor = monaco.editor.create(requestContainer, { /* model: model */ });
         requestEditor.updateOptions({
             lineNumbers:    "off",
             minimap:        { enabled: false }
@@ -200,7 +202,7 @@ export async function setupEditors()
 
     // --- create response editor
     {
-        responseEditor = monaco.editor.create(document.getElementById("responseContainer"), { /* model: model */ });
+        responseEditor = monaco.editor.create(responseContainer, { /* model: model */ });
         responseEditor.updateOptions({
             lineNumbers:    "off",
             minimap:        { enabled: false }
