@@ -5,8 +5,10 @@ var connection;
 var websocketCount = 0;
 var reqId = 1;
 var requestStart;
+var subCount = 0;
 
 const responseState = document.getElementById("response-state");
+const subscriptions = document.getElementById("subscriptions");
 const selectExample = document.getElementById("example");
 const socketStatus  = document.getElementById("socketStatus");
 const reqIdElement  = document.getElementById("reqId");
@@ -28,7 +30,8 @@ export function connectWebsocket() {
     connection.onopen = function () {
         socketStatus.innerText = "connected 🟢";
         console.log('WebSocket connected');
-        reqId = 1;
+        reqId       = 1;
+        subCount    = 0;
     };
 
     connection.onclose = function (e) {
@@ -45,10 +48,18 @@ export function connectWebsocket() {
     // Log messages from the server
     connection.onmessage = function (e) {
         var duration = new Date().getTime() - requestStart;
-        // var data = JSON.parse(e.data);
+        var data = JSON.parse(e.data);
         // console.log('server:', e.data);
-        responseModel.setValue(e.data)
-        responseState.innerHTML = `· ${duration} ms`;
+        switch (data.type){ 
+            case "syncResp":
+            case "error":
+                responseModel.setValue(e.data)
+                responseState.innerHTML = `· ${duration} ms`;
+                break;
+            case "sub":
+                subscriptions.innerText = ++subCount;
+                break;
+        }
     };
 }
 
