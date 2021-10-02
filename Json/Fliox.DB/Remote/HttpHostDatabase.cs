@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             
             using (var typeStore = new TypeStore()) {
                 var protocolSchema      = new NativeTypeSchema(typeStore, typeof(ProtocolMessage));
-                var types               = new [] { typeof(ProtocolRequest), typeof(ProtocolResponse), typeof(SubscriptionEvent) };
+                var types               = ProtocolMessage.RootTypes;
                 var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
                 protocolSchemaHub       = new SchemaHub("/protocol/", protocolSchema, sepTypes);
             }

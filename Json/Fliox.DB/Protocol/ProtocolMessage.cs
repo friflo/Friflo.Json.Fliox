@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable InconsistentNaming
@@ -40,6 +41,8 @@ namespace Friflo.Json.Fliox.DB.Protocol
     public abstract class ProtocolMessage
     {
         internal abstract   MessageType     MessageType { get; }
+        
+        public static Type[] RootTypes => new [] { typeof(ProtocolRequest), typeof(ProtocolResponse), typeof(SubscriptionEvent) }; 
     }
     
     // ----------------------------------- request -----------------------------------
