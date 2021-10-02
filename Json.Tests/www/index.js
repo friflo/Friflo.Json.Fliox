@@ -32,7 +32,7 @@ export function connectWebsocket() {
     };
 
     connection.onclose = function (e) {
-        socketStatus.innerText = "closed. code: " + e.code;
+        socketStatus.innerText = "closed (code: " + e.code + ")";
         console.log('WebSocket closed');
     };
 

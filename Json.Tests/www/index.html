@@ -30,6 +30,8 @@
         button          { width:            80px;}
         .inline         { display:          inline; }
         h2              { display:          inline;  }
+        label           { display:          inline;  }
+        input           { display:          inline;  }
         textarea        { white-space:      pre;  }
         .alignBottom    { vertical-align:   bottom; }
         .nobreak        { white-space:      pre; }
@@ -76,14 +78,15 @@
       <td><a href="./schema/index.html">database schema</a> | <a href="./protocol/index.html">protocol</a></td>
     </tr>
   </table>
-  <p class="nobreak">'Hello World' server example to demonstrate database access, authorization, messaging and Pub-Sub capabilities.</p>
-
-  Websocket &nbsp;&nbsp;
-  <button type="button" onclick="connectWebsocket()">Connect</button> 
-  <button type="button" onclick="closeWebsocket()">Close</button> &nbsp;&nbsp;
-  status: <div id="socketStatus" class="inline">disconnected</div> &nbsp;&nbsp;&nbsp;&nbsp;
-  <label for="form-user"><code>{{user}}</code></label>   <input type="text" id="user"  name="form-user"  style="width: 100px;" value="admin">
-  <label for="form-token"><code>{{token}}</code></label> <input type="text" id="token" name="form-token" style="width: 200px;" value="admin-token">
+  <p class="nobreak">'Hello World' server example to demonstrate database operations operations, role based authorization, messaging and Pub-Sub capabilities.</p>
+  <span style="overflow:auto;white-space:nowrap">
+    WebSocket &nbsp;
+    <button type="button" onclick="connectWebsocket()">Connect</button> 
+    <button type="button" onclick="closeWebsocket()">Close</button> &nbsp;
+    <div id="socketStatus" class="inline">disconnected</div> &nbsp;&nbsp;&nbsp;&nbsp;
+    <label for="form-user"><code>{{user}}</code></label>   <input type="text" id="user"  name="form-user"  style="width: 100px;" value="admin">
+    <label for="form-token"><code>{{token}}</code></label> <input type="text" id="token" name="form-token" style="width: 200px;" value="admin-token">
+  </span>
   <br><br>
 
   <table>
