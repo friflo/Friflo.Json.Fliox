@@ -88,12 +88,12 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         {
             var userId = syncRequest.userId;
             if (userId == null) {
-                messageContext.authState.SetFailed("user authentication requires client id", unknown);
+                messageContext.authState.SetFailed("user authentication requires 'user' id", unknown);
                 return;
             }
             var token = syncRequest.token;
             if (token == null) {
-                messageContext.authState.SetFailed("user authentication requires token", unknown);
+                messageContext.authState.SetFailed("user authentication requires 'token'", unknown);
                 return;
             }
             var eventTarget = messageContext.eventTarget;

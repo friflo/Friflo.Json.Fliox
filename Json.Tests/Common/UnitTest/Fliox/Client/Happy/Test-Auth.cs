@@ -67,8 +67,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var tasks = new ReadWriteTasks(nullUser, newArticle);
                 var sync = await nullUser.TrySync();
                 AreEqual(2, sync.failed.Count);
-                AreEqual("PermissionDenied ~ not authorized. user authentication requires client id", tasks.findArticle.Error.Message);
-                AreEqual("PermissionDenied ~ not authorized. user authentication requires client id", tasks.upsertArticles.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. user authentication requires 'user' id", tasks.findArticle.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. user authentication requires 'user' id", tasks.upsertArticles.Error.Message);
             }
             using (var unknownUser      = new PocStore(database, "unknown")) {
                 // test: token ==  null
@@ -77,8 +77,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var tasks = new ReadWriteTasks(unknownUser, newArticle);
                 var sync = await unknownUser.TrySync();
                 AreEqual(2, sync.failed.Count);
-                AreEqual("PermissionDenied ~ not authorized. user authentication requires token", tasks.findArticle.Error.Message);
-                AreEqual("PermissionDenied ~ not authorized. user authentication requires token", tasks.upsertArticles.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'", tasks.findArticle.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'", tasks.upsertArticles.Error.Message);
                 
                 // test: invalid token 
                 unknownUser.SetToken("some token");
@@ -123,8 +123,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 tasks = new ReadWriteTasks(mutateUser, newArticle);
                 sync = await mutateUser.TrySync();
                 AreEqual(2, sync.failed.Count);
-                AreEqual("PermissionDenied ~ not authorized. user authentication requires token", tasks.findArticle.Error.Message);
-                AreEqual("PermissionDenied ~ not authorized. user authentication requires token", tasks.upsertArticles.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'", tasks.findArticle.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'", tasks.upsertArticles.Error.Message);
             }
             using (var readUser         = new PocStore(database, "user-task")) {
                 // test: allow read
