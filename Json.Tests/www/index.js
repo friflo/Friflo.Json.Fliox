@@ -60,7 +60,8 @@ export function connectWebsocket() {
                 break;
             case "sub":
                 subscriptionCount.innerText = ++subCount;
-                subscriptionSeq.innerText = data.seq;
+                subSeq = data.seq;
+                subscriptionSeq.innerText = subSeq;
                 break;
         }
     };
@@ -80,8 +81,9 @@ export function sendSyncRequest() {
         jsonRequest = jsonRequest.replace("{{user}}",  defaultUser.value);
         jsonRequest = jsonRequest.replace("{{token}}", defaultToken.value);
         try {
-            var request = JSON.parse(jsonRequest);
-            request.reqId = reqId;
+            var request     = JSON.parse(jsonRequest);
+            request.reqId   = reqId;
+            request.ack     = subSeq;
             jsonRequest = JSON.stringify(request);                
         } catch { }
         responseState.innerHTML = '<span class="spinner"></span>';
