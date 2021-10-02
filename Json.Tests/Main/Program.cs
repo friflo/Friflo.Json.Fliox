@@ -93,7 +93,7 @@ namespace Friflo.Json.Tests.Main
         private static void FlioxServer(string endpoint, string database, string wwwRoot) {
             Console.WriteLine($"FileDatabase: {database}");
             var fileDatabase            = new FileDatabase(database) { eventBroker = new EventBroker(true) }; // optional. eventBroker enables Pub-Sub
-            fileDatabase.authenticator  = CreateUserAuthenticator(); // optional. Otherwise every request is authorized
+            fileDatabase.authenticator  = CreateUserAuthenticator(); // optional. Otherwise all request tasks are authorized
             
             // adding DatabaseSchema is optional. It enables type validation for create, upsert & patch operations
             var typeSchema              = GetTypeSchema(true);
