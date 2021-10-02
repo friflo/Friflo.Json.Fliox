@@ -9,7 +9,9 @@ var requestStart;
 export function connectWebsocket() {
     var loc             = window.location;
     var uri             = `ws://${loc.host}/websocket-${++websocketCount}`;
+    // var uri          = `ws://google.com:8080/`; // test connection timeout
     var socketStatus    = document.getElementById("socketStatus");
+    socketStatus.innerHTML = 'connecting <span class="spinner"></span>';
     try {
         connection = new WebSocket(uri);
     } catch (err) {
