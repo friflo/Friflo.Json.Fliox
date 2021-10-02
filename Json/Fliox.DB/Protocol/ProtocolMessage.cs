@@ -61,6 +61,8 @@ namespace Friflo.Json.Fliox.DB.Protocol
         ///      This is not a common scenario but it enables using a single <see cref="Friflo.Json.Fliox.DB.Remote.WebSocketClientDatabase"/>
         ///      used by multiple clients.
         /// </para>
+        /// The host itself only echos the <see cref="reqId"/> to <see cref="ProtocolResponse.reqId"/> and doesn't do
+        /// anythings else with it.
         /// </summary>
                                         public  int?    reqId       { get; set; }
     }
