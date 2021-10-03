@@ -2,7 +2,11 @@
   "type":   "sync",
   "ack":    0,
   "tasks": [],
-  "info": "'ack': N => starts resending all buffered events with 'seq' > N to the client and remove events with 'seq' <= N.",
+  "info": [
+    "'ack': N => starts resending all buffered subscription events (subs)",
+    "with 'seq' > N to the client and remove events with 'seq' <= N.",
+    "'ack' needs to be set by client to 'seq' of the last received event"
+  ],
   "user":   "{{user}}",
   "token":  "{{token}}"
 }

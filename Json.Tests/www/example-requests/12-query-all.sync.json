@@ -5,10 +5,13 @@
       "task":       "query",
       "container":  "articles",
       "filterLinq": "true",
-      "filter":     { "op":"true" }
+      "filter":     { "op": "true" }
     }
   ],
-  "info": "query all articles -> 'filter': { 'op': 'true' }",
+  "info": [
+    "query all articles",
+    "'filter': { 'op': 'true' } - a predicate function - means return all"
+  ],
   "user":   "{{user}}",
   "token":  "{{token}}"
 }

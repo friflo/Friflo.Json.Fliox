@@ -12,7 +12,7 @@
                 "token": { "type": ["string", "null"] },
                 "ack":   { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "tasks": { "type": "array", "items": { "$ref": "#/definitions/SyncRequestTask" } },
-                "info":  { "type": ["string", "null"] }
+                "info":  {  }
             },
             "required": [
                 "type",

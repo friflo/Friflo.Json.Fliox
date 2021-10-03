@@ -7,7 +7,12 @@
       "remove":   false
     }
   ],  
-  "info": "Filter all messages matching to 'name'. (Websocket only)",
+  "info": [
+    "Subscribe to all messages (Websocket only).",
+    "Subscribe all messages by         'name' == '*'",
+    "Subscribe a specific message by   'name' == 'MyMessage'",
+    "Subscribe messages by prefix with 'name' == 'MyMessage*'"
+  ],
   "user": "{{user}}",
   "token":"{{token}}"
 }

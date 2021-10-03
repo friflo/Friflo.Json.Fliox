@@ -20,7 +20,7 @@
                 "token": { "type": "string", "nullable": true },
                 "ack":   { "type": "int32", "nullable": true },
                 "tasks": { "elements": { "ref":  "SyncRequestTask" } },
-                "info":  { "type": "string", "nullable": true }
+                "info":  { "nullable": true }
             }
         },
         "ProtocolRequest": {

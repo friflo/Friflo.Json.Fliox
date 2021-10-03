@@ -9,7 +9,7 @@
       ]
     }
   ],
-  "info": "create an article in given container",
+  "info": "create an article in the given container",
   "user":   "{{user}}",
   "token":  "{{token}}"
 }

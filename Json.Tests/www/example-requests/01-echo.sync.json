@@ -7,7 +7,11 @@
       "value": "echo value"
     }
   ],
-  "info": "send message to host. 'Echo' is known at host as a command message. It simply echos the given value.",
+  "info": [
+      "send message to host.",
+      "'Echo' is known at host as a command message.",
+      "It simply echos the given value."
+  ],
   "user":   "{{user}}",
   "token":  "{{token}}"
 }

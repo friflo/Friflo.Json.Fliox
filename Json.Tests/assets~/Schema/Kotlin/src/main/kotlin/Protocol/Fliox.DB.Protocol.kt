@@ -3,8 +3,8 @@ package Fliox.DB.Protocol
 
 import kotlinx.serialization.*
 import CustomSerializer.*
-import java.util.*
 import kotlinx.serialization.json.*
+import java.util.*
 import Fliox.Transform.*
 
 @Serializable
@@ -20,7 +20,7 @@ data class SyncRequest (
               val token : String? = null,
               val ack   : Int? = null,
               val tasks : List<SyncRequestTask>,
-              val info  : String? = null,
+              val info  : JsonElement? = null,
 ) : ProtocolRequest()
 
 @Serializable
