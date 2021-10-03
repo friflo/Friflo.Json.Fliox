@@ -102,16 +102,14 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         /// Enqueue all not acknowledged events back to <see cref="eventQueue"/> in their original order
         internal void AcknowledgeEvents(int eventAck) {
             lock (eventQueue) {
-                bool pendingSendEvents = false;
                 for (int i = sentEvents.Count - 1; i >= 0; i--) {
                     var ev = sentEvents[i];
                     if (ev.seq <= eventAck)
                         continue;
                     eventQueue.AddFirst(ev);
-                    pendingSendEvents = true;
                 }
                 sentEvents.Clear();
-                if (background && pendingSendEvents) {
+                if (background && eventQueue.Count > 0) {
                     EnqueueTrigger (TriggerType.Event);
                 }
             }

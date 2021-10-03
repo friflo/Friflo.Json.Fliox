@@ -103,6 +103,7 @@ export async function onExampleChange() {
 }
 
 export async function loadExampleRequestList() {
+    selectExample.add(document.createElement("option")); // empty entry on top
     var folder = './example-requests'
     var response = await fetch(folder);
     var exampleRequests = await response.json();
@@ -219,7 +220,7 @@ export async function setupEditors()
     "user":   "{{user}}",
     "token":  "{{token}}"
 }`;
-        requestModel.setValue(defaultRequest);
+        requestModel.setValue("");
     }
 
     // --- create response editor
@@ -248,7 +249,7 @@ export function addTableResize () {
         grip.style.top = 0;
         grip.style.right = 0;
         grip.style.bottom = 0;
-        grip.style.width = '5px';
+        grip.style.width = '7px'; // 
         grip.style.position = 'absolute';
         grip.style.cursor = 'col-resize';
         grip.style.userSelect = 'none'; // disable text selection while dragging

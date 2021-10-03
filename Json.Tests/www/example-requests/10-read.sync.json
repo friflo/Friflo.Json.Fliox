@@ -5,7 +5,12 @@
       "task":       "read",
       "container":  "articles",
       "reads": [
-        { "ids": ["article-galaxy", "article-ipad"] }
+        {
+            "ids": [
+                "article-galaxy",
+                "article-ipad-XXX"
+            ]
+        }
       ]
     }
   ],
