@@ -95,8 +95,10 @@ export function sendSyncRequest() {
 
 export async function onExampleChange() {
     var exampleName = selectExample.value;
-    if (exampleName == "")
+    if (exampleName == "") {
+        requestModel.setValue("")
         return;
+    }
     var response = await fetch(exampleName);
     var example = await response.text();
     requestModel.setValue(example)
