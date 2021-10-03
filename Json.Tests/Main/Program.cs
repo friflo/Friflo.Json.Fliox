@@ -101,7 +101,7 @@ namespace Friflo.Json.Tests.Main
             
             var hostDatabase            = new HttpHostDatabase(fileDatabase, endpoint);
             hostDatabase.requestHandler = new RequestHandler(wwwRoot);      // optional. Used to serve static web pages
-            hostDatabase.databaseSchemaHub  = new SchemaHub("/schema/", typeSchema, Utils.Zip); // optional. generate zip archives for schemas
+            hostDatabase.schemaHub      = new SchemaHub("/schema/", typeSchema, Utils.Zip); // optional. generate zip archives for schemas
             hostDatabase.Start();
             hostDatabase.Run();
         }

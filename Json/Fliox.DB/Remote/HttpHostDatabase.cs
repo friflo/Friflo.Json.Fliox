@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.DB.Remote
     // See: [Configure options for the ASP.NET Core Kestrel web server | Microsoft Docs] https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/options?view=aspnetcore-5.0
     public sealed class HttpHostDatabase : RemoteHostDatabase
     {
-        public              SchemaHub           databaseSchemaHub;
+        public              SchemaHub           schemaHub;
         public              IRequestHandler     requestHandler;
         
         private  readonly   SchemaHub           protocolSchemaHub;
@@ -155,8 +155,8 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
         
         private async Task<bool> HandleRequest(RequestContext request) {
-            if (databaseSchemaHub != null) {
-                if (await databaseSchemaHub.HandleRequest(request).ConfigureAwait(false))
+            if (schemaHub != null) {
+                if (await schemaHub.HandleRequest(request).ConfigureAwait(false))
                     return true;
             }
             if (await protocolSchemaHub.HandleRequest(request).ConfigureAwait(false))
