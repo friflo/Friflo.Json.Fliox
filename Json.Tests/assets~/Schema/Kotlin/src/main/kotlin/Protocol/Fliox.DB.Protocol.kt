@@ -326,17 +326,17 @@ data class ErrorResponse (
 @Serializable
 @SerialName("sub")
 data class SubscriptionEvent (
-    override  val seq    : Int,
-    override  val source : String,
-    override  val target : String,
-              val tasks  : List<SyncRequestTask>? = null,
+    override  val seq   : Int,
+    override  val src   : String,
+    override  val dst   : String,
+              val tasks : List<SyncRequestTask>? = null,
 ) : ProtocolEvent()
 
 @Serializable
 // @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
 abstract class ProtocolEvent  : ProtocolMessage() {
-    abstract  val seq    : Int
-    abstract  val source : String
-    abstract  val target : String
+    abstract  val seq : Int
+    abstract  val src : String
+    abstract  val dst : String
 }
 

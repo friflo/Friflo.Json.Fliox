@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
         
         protected void ProcessEvent(ProtocolEvent ev) {
-            var eventTarget     = clientTargets[ev.targetId];
+            var eventTarget     = clientTargets[ev.dstId];
             var messageContext  = new MessageContext(pools, eventTarget);
             eventTarget.ProcessEvent(ev, messageContext);
             messageContext.Release();

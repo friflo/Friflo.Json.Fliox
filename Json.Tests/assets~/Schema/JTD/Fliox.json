@@ -725,10 +725,10 @@
         },
         "SubscriptionEvent": {
             "properties": {
-                "seq":    { "type": "int32" },
-                "source": { "type": "string" },
-                "target": { "type": "string" },
-                "tasks":  { "elements": { "ref":  "SyncRequestTask" }, "nullable": true }
+                "seq":   { "type": "int32" },
+                "src":   { "type": "string" },
+                "dst":   { "type": "string" },
+                "tasks": { "elements": { "ref":  "SyncRequestTask" }, "nullable": true }
             }
         },
         "ProtocolEvent": {
@@ -737,9 +737,9 @@
                 "sub": { "ref":  "SubscriptionEvent" }
             },
             "properties": {
-                "seq":    { "type": "int32" },
-                "source": { "type": "string" },
-                "target": { "type": "string" }
+                "seq": { "type": "int32" },
+                "src": { "type": "string" },
+                "dst": { "type": "string" }
             }
         }
     }

@@ -9,14 +9,14 @@
                 { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/SubscriptionEvent" }
             ],
             "properties": {
-                "seq":    { "$ref": "./Standard.json#/definitions/int32" },
-                "source": { "type": "string" },
-                "target": { "type": "string" }
+                "seq": { "$ref": "./Standard.json#/definitions/int32" },
+                "src": { "type": "string" },
+                "dst": { "type": "string" }
             },
             "required": [
                 "seq",
-                "source",
-                "target"
+                "src",
+                "dst"
             ],
             "additionalProperties": true
         }

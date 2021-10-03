@@ -548,17 +548,17 @@
             "type": "object",
             "extends": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.ProtocolEvent.json#/definitions/ProtocolEvent" },
             "properties": {
-                "type":   { "enum": ["sub"] },
-                "seq":    { "$ref": "./Standard.json#/definitions/int32" },
-                "source": { "type": "string" },
-                "target": { "type": "string" },
-                "tasks":  { "type": ["array", "null"], "items": { "$ref": "#/definitions/SyncRequestTask" } }
+                "type":  { "enum": ["sub"] },
+                "seq":   { "$ref": "./Standard.json#/definitions/int32" },
+                "src":   { "type": "string" },
+                "dst":   { "type": "string" },
+                "tasks": { "type": ["array", "null"], "items": { "$ref": "#/definitions/SyncRequestTask" } }
             },
             "required": [
                 "type",
                 "seq",
-                "source",
-                "target"
+                "src",
+                "dst"
             ],
             "additionalProperties": false
         }

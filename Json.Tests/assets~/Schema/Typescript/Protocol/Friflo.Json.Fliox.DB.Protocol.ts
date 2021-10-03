@@ -353,13 +353,13 @@ export abstract class ProtocolEvent extends ProtocolMessage {
     abstract type:
         | "sub"
     ;
-    seq     : int32;
-    source  : string;
-    target  : string;
+    seq  : int32;
+    src  : string;
+    dst  : string;
 }
 
 export class SubscriptionEvent extends ProtocolEvent {
-    type    : "sub";
-    tasks?  : SyncRequestTask_Union[] | null;
+    type   : "sub";
+    tasks? : SyncRequestTask_Union[] | null;
 }
 
