@@ -171,6 +171,10 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                 }
                 if (tasks == null)
                     continue;
+                // todo performance - in case of a remote connection the tasks can be serialized to SubscriptionEvent.tasksJson
+                // benefits from doing this:
+                // - serialize only once for multiple targets
+                // - storing only a single byte[] instead of a complex List<SyncRequestTask> which is not used anymore  
                 var subscriptionEvent = new SubscriptionEvent {
                     tasks       = tasks,
                     userId      = userId,
