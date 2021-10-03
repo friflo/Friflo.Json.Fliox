@@ -10,11 +10,13 @@
             ],
             "properties": {
                 "seq":    { "$ref": "./Standard.json#/definitions/int32" },
-                "target": { "type": ["string", "null"] },
-                "client": { "type": ["string", "null"] }
+                "target": { "type": "string" },
+                "client": { "type": "string" }
             },
             "required": [
-                "seq"
+                "seq",
+                "target",
+                "client"
             ],
             "additionalProperties": true
         }

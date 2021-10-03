@@ -353,8 +353,8 @@ export abstract class ProtocolEvent extends ProtocolMessage {
         | "sub"
     ;
     seq     : int32;
-    target? : string | null;
-    client? : string | null;
+    target  : string;
+    client  : string;
 }
 
 export class SubscriptionEvent extends ProtocolEvent {

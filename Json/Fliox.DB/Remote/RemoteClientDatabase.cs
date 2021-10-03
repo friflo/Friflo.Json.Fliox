@@ -38,8 +38,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
         
         protected void ProcessEvent(ProtocolEvent ev) {
-            if (ev.targetId == null) throw new NullReferenceException();
-            var eventTarget     = clientTargets[ev.targetId.Value];
+            var eventTarget     = clientTargets[ev.targetId];
             var messageContext  = new MessageContext(pools, eventTarget);
             eventTarget.ProcessEvent(ev, messageContext);
             messageContext.Release();
