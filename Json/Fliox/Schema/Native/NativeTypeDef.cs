@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Schema.Definition;
 
@@ -40,7 +41,7 @@ public sealed class NativeTypeDef : TypeDef
             this.mapper     = mapper;
             IsEnum          = native.IsEnum;
             IsClass         = mapper.IsComplex;
-            IsStruct        = mapper.type.IsValueType;
+            IsStruct        = mapper.type.IsValueType && mapper.type != typeof(JsonKey); // JsonKey is "nullable"
             Discriminant    = mapper.Discriminant;
             EnumValues      = mapper.GetEnumValues();
         }
