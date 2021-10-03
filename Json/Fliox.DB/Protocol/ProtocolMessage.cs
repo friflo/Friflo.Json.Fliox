@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// The host itself only echos the <see cref="reqId"/> to <see cref="ProtocolResponse.reqId"/> and doesn't do
         /// anythings else with it.
         /// </summary>
-                                        public  int?    reqId       { get; set; }
+                        public  int?        reqId   { get; set; }
     }
     
     // ----------------------------------- response -----------------------------------
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     public abstract class ProtocolResponse : ProtocolMessage {
         // ReSharper disable once InconsistentNaming
         /// <summary>Set to the value of the corresponding <see cref="ProtocolRequest.reqId"/></summary>
-                                        public  int?    reqId       { get; set; }
+                        public  int?        reqId   { get; set; }
     }
     
     // ----------------------------------- event -----------------------------------
@@ -86,13 +86,14 @@ namespace Friflo.Json.Fliox.DB.Protocol
         
         /// Increasing event sequence number starting with 1.
         /// Each target (subscriber) has its own sequence.  
-                                        public  int         seq      { get; set; }
-        /// The target the event is sent to
-        [Fri.Property(Name =              "target")]
-        [Fri.Required] public  JsonKey     targetId { get; set; }
+                        public  int         seq      { get; set; }
         /// The user (client) which caused the event. Specifically the user which made a database change or sent a message.
-        [Fri.Property(Name =              "source")]
-        [Fri.Required] public  JsonKey     sourceId { get; set; }
+        [Fri.Property(Name =               "source")]
+        [Fri.Required]  public  JsonKey     sourceId { get; set; }
+        
+        /// The target the event is sent to
+        [Fri.Property(Name =               "target")]
+        [Fri.Required]  public  JsonKey     targetId { get; set; }
     }
     
     public enum MessageType

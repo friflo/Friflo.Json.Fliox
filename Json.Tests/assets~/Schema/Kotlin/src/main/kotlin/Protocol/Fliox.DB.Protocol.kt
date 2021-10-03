@@ -326,8 +326,8 @@ data class ErrorResponse (
 @SerialName("sub")
 data class SubscriptionEvent (
     override  val seq    : Int,
-    override  val target : String,
     override  val source : String,
+    override  val target : String,
               val tasks  : List<SyncRequestTask>? = null,
 ) : ProtocolEvent()
 
@@ -335,7 +335,7 @@ data class SubscriptionEvent (
 // @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
 abstract class ProtocolEvent  : ProtocolMessage() {
     abstract  val seq    : Int
-    abstract  val target : String
     abstract  val source : String
+    abstract  val target : String
 }
 

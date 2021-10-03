@@ -725,8 +725,8 @@
         "SubscriptionEvent": {
             "properties": {
                 "seq":    { "type": "int32" },
-                "target": { "type": "string" },
                 "source": { "type": "string" },
+                "target": { "type": "string" },
                 "tasks":  { "elements": { "ref":  "SyncRequestTask" }, "nullable": true }
             }
         },
@@ -737,8 +737,8 @@
             },
             "properties": {
                 "seq":    { "type": "int32" },
-                "target": { "type": "string" },
-                "source": { "type": "string" }
+                "source": { "type": "string" },
+                "target": { "type": "string" }
             }
         }
     }
