@@ -92,15 +92,15 @@ namespace Friflo.Json.Tests.Main
         //     $env:UserDomain 
         private static void FlioxServer(string endpoint, string database, string wwwRoot) {
             Console.WriteLine($"FileDatabase: {database}");
-            var fileDatabase            = new FileDatabase(database) { eventBroker = new EventBroker(true) }; // optional. eventBroker enables Pub-Sub
-            fileDatabase.authenticator  = CreateUserAuthenticator(); // optional. Otherwise all request tasks are authorized
+            var fileDatabase            = new FileDatabase(database);
+            fileDatabase.eventBroker    = new EventBroker(true);            // optional. eventBroker enables Pub-Sub
+            fileDatabase.authenticator  = CreateUserAuthenticator();        // optional. Otherwise all request tasks are authorized
             
-            // adding DatabaseSchema is optional. It enables type validation for create, upsert & patch operations
-            var typeSchema                  = GetTypeSchema(true);
-            fileDatabase.schema             = new DatabaseSchema(typeSchema);
+            var typeSchema              = GetTypeSchema(true);              // optional. used by DatabaseSchema & SchemaHub
+            fileDatabase.schema         = new DatabaseSchema(typeSchema);   // optional. It enables type validation for create, upsert & patch operations
             
-            var hostDatabase                = new HttpHostDatabase(fileDatabase, endpoint);
-            hostDatabase.requestHandler     = new RequestHandler(wwwRoot); // optional. Used to serve static web pages
+            var hostDatabase            = new HttpHostDatabase(fileDatabase, endpoint);
+            hostDatabase.requestHandler = new RequestHandler(wwwRoot);      // optional. Used to serve static web pages
             hostDatabase.databaseSchemaHub  = new SchemaHub("/schema/", typeSchema, Utils.Zip); // optional. generate zip archives for schemas
             hostDatabase.Start();
             hostDatabase.Run();
