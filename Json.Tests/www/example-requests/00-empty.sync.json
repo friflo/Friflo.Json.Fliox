@@ -1,7 +1,7 @@
 {
-    "type": "sync",
-    "tasks": [],
-    "info": "sync request without any tasks is valid",
-    "user":   "{{user}}",
-    "token":  "{{token}}"
+  "type": "sync",
+  "tasks": [],
+  "info": "sync request without any tasks is valid",
+  "user":   "{{user}}",
+  "token":  "{{token}}"
 }

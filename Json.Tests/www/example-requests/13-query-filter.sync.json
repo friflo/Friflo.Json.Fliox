@@ -1,12 +1,14 @@
 {
-    "type": "sync",
-    "tasks": [
+  "type": "sync",
+  "tasks": [
     {
       "task":       "query",
       "container":  "articles",
       "filterLinq": "true",
-      "filter": {"op":"equal", "left": {"op":"field",  "name":  ".name"},
-                               "right":{"op":"string", "value": "Smartphone"}}
+      "filter": {
+        "op":"equal", "left": {"op":"field",  "name":  ".name"},
+                      "right":{"op":"string", "value": "Smartphone"}
+      }
     }
   ],
   "info": "query articles with a filter => .name == 'Smartphone'",

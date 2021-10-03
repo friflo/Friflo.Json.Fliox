@@ -1,12 +1,13 @@
 {
-    "type": "sync",
-    "user": "{{user}}",
-    "token":"{{token}}",
-    "tasks": [{
+  "type": "sync",
+  "tasks": [
+    {
       "task":       "subscribeChanges",
       "container":  "articles", 
       "changes": ["create", "upsert", "delete", "patch"]
     }
   ],
-  "info": "subscribe to database changes. (Websocket only)"
+  "info": "subscribe to database changes. (Websocket only)",
+  "user": "{{user}}",
+  "token":"{{token}}"
 }

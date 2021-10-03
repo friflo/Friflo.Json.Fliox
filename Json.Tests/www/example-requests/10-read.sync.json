@@ -1,6 +1,6 @@
 {
-    "type": "sync",
-    "tasks": [
+  "type": "sync",
+  "tasks": [
     {
       "task":       "read",
       "container":  "articles",

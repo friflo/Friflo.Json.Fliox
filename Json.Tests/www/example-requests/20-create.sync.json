@@ -1,11 +1,11 @@
 {
-    "type": "sync",
-    "tasks": [
+  "type": "sync",
+  "tasks": [
     {
       "task":       "create",
       "container":  "articles",
       "entities": [
-          { "id": "new-article","name":"New Article S10"}
+        { "id": "new-article", "name":"New Article S10"}
       ]
     }
   ],

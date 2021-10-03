@@ -1,12 +1,13 @@
 {
-    "type": "sync",
-    "user": "{{user}}",
-    "token":"{{token}}",  
-    "tasks": [{
+  "type": "sync",
+  "tasks": [
+    {
       "task":     "subscribeMessage",
       "name":     "*",
       "remove":   false
     }
-  ],
-  "info": "Filter all messages matching to 'name'. (Websocket only)"
+  ],  
+  "info": "Filter all messages matching to 'name'. (Websocket only)",
+  "user": "{{user}}",
+  "token":"{{token}}"
 }
