@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// The target the event is sent to
         [Fri.Property(Name =              "target")]
         [Fri.Required] public  JsonKey     targetId { get; set; }
-        /// The client which caused the event. Specifically the client which made a database change.
+        /// The client which caused the event. Specifically the client which made a database change or sent a message.
         [Fri.Property(Name =              "client")]
         [Fri.Required] public  JsonKey     userId { get; set; }
     }
