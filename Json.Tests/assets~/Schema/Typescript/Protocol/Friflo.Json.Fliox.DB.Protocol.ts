@@ -69,7 +69,7 @@ export abstract class SyncRequestTask {
         | "subscribeMessage"
         | "reserveKeys"
     ;
-    info? : string | null;
+    info? : any | null;
 }
 
 export class CreateEntities extends SyncRequestTask {
@@ -189,6 +189,7 @@ export class SyncResponse extends ProtocolResponse {
     upsertErrors? : { [key: string]: EntityErrors } | null;
     patchErrors?  : { [key: string]: EntityErrors } | null;
     deleteErrors? : { [key: string]: EntityErrors } | null;
+    info?         : any | null;
 }
 
 export type SyncTaskResult_Union =

@@ -41,6 +41,8 @@ namespace Friflo.Json.Fliox.DB.Protocol
                         public  Dictionary<string, EntityErrors>        upsertErrors; // lazy instantiation
                         public  Dictionary<string, EntityErrors>        patchErrors;  // lazy instantiation
                         public  Dictionary<string, EntityErrors>        deleteErrors; // lazy instantiation
+        /// Can be utilized to return debug / development data - e.g. execution times or resource usage. 
+                        public  JsonValue                               info;
                         
         internal override        MessageType                            MessageType => MessageType.syncResp;
         

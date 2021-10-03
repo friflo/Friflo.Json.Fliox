@@ -35,7 +35,7 @@
                 { "$ref": "#/definitions/ReserveKeys" }
             ],
             "properties": {
-                "info": { "type": ["string", "null"] }
+                "info": {  }
             },
             "additionalProperties": true
         },
@@ -48,7 +48,7 @@
                 "reservedToken": { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/Guid" }] },
                 "keyName":       { "type": ["string", "null"] },
                 "entities":      { "type": "array", "items": {  } },
-                "info":          { "type": ["string", "null"] }
+                "info":          {  }
             },
             "required": [
                 "task",
@@ -65,7 +65,7 @@
                 "container": { "type": "string" },
                 "keyName":   { "type": ["string", "null"] },
                 "entities":  { "type": "array", "items": {  } },
-                "info":      { "type": ["string", "null"] }
+                "info":      {  }
             },
             "required": [
                 "task",
@@ -83,7 +83,7 @@
                 "keyName":   { "type": ["string", "null"] },
                 "isIntKey":  { "type": ["boolean", "null"] },
                 "reads":     { "type": "array", "items": { "$ref": "#/definitions/ReadEntities" } },
-                "info":      { "type": ["string", "null"] }
+                "info":      {  }
             },
             "required": [
                 "task",
@@ -129,7 +129,7 @@
                 "filterLinq": { "type": ["string", "null"] },
                 "filter":     { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/FilterOperation" }] },
                 "references": { "type": ["array", "null"], "items": { "$ref": "#/definitions/References" } },
-                "info":       { "type": ["string", "null"] }
+                "info":       {  }
             },
             "required": [
                 "task",
@@ -145,7 +145,7 @@
                 "container": { "type": "string" },
                 "keyName":   { "type": ["string", "null"] },
                 "patches":   { "type": "object", "additionalProperties": { "$ref": "#/definitions/EntityPatch" } },
-                "info":      { "type": ["string", "null"] }
+                "info":      {  }
             },
             "required": [
                 "task",
@@ -172,7 +172,7 @@
                 "container": { "type": "string" },
                 "ids":       { "type": ["array", "null"], "items": { "type": "string" } },
                 "all":       { "type": ["boolean", "null"] },
-                "info":      { "type": ["string", "null"] }
+                "info":      {  }
             },
             "required": [
                 "task",
@@ -187,7 +187,7 @@
                 "task":  { "enum": ["message"] },
                 "name":  { "type": "string" },
                 "value": {  },
-                "info":  { "type": ["string", "null"] }
+                "info":  {  }
             },
             "required": [
                 "task",
@@ -204,7 +204,7 @@
                 "container": { "type": "string" },
                 "changes":   { "type": "array", "items": { "$ref": "#/definitions/Change" } },
                 "filter":    { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/FilterOperation" }] },
-                "info":      { "type": ["string", "null"] }
+                "info":      {  }
             },
             "required": [
                 "task",
@@ -228,7 +228,7 @@
                 "task":   { "enum": ["subscribeMessage"] },
                 "name":   { "type": "string" },
                 "remove": { "type": ["boolean", "null"] },
-                "info":   { "type": ["string", "null"] }
+                "info":   {  }
             },
             "required": [
                 "task",
@@ -243,7 +243,7 @@
                 "task":      { "enum": ["reserveKeys"] },
                 "container": { "type": "string" },
                 "count":     { "$ref": "./Standard.json#/definitions/int32" },
-                "info":      { "type": ["string", "null"] }
+                "info":      {  }
             },
             "required": [
                 "task",
@@ -263,7 +263,8 @@
                 "createErrors": { "type": "object", "additionalProperties": { "$ref": "#/definitions/EntityErrors" } },
                 "upsertErrors": { "type": "object", "additionalProperties": { "$ref": "#/definitions/EntityErrors" } },
                 "patchErrors":  { "type": "object", "additionalProperties": { "$ref": "#/definitions/EntityErrors" } },
-                "deleteErrors": { "type": "object", "additionalProperties": { "$ref": "#/definitions/EntityErrors" } }
+                "deleteErrors": { "type": "object", "additionalProperties": { "$ref": "#/definitions/EntityErrors" } },
+                "info":         {  }
             },
             "required": [
                 "type"

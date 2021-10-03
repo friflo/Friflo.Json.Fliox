@@ -47,7 +47,7 @@
                 "reserveKeys":      { "ref":  "ReserveKeys" }
             },
             "properties": {
-                "info": { "type": "string", "nullable": true }
+                "info": { "nullable": true }
             }
         },
         "CreateEntities": {
@@ -56,7 +56,7 @@
                 "reservedToken": { "ref":  "Guid", "nullable": true },
                 "keyName":       { "type": "string", "nullable": true },
                 "entities":      { "elements": {  } },
-                "info":          { "type": "string", "nullable": true }
+                "info":          { "nullable": true }
             }
         },
         "UpsertEntities": {
@@ -64,7 +64,7 @@
                 "container": { "type": "string" },
                 "keyName":   { "type": "string", "nullable": true },
                 "entities":  { "elements": {  } },
-                "info":      { "type": "string", "nullable": true }
+                "info":      { "nullable": true }
             }
         },
         "ReadEntitiesList": {
@@ -73,7 +73,7 @@
                 "keyName":   { "type": "string", "nullable": true },
                 "isIntKey":  { "type": "boolean", "nullable": true },
                 "reads":     { "elements": { "ref":  "ReadEntities" } },
-                "info":      { "type": "string", "nullable": true }
+                "info":      { "nullable": true }
             }
         },
         "ReadEntities": {
@@ -99,7 +99,7 @@
                 "filterLinq": { "type": "string", "nullable": true },
                 "filter":     { "ref":  "FilterOperation", "nullable": true },
                 "references": { "elements": { "ref":  "References" }, "nullable": true },
-                "info":       { "type": "string", "nullable": true }
+                "info":       { "nullable": true }
             }
         },
         "FilterOperation": {
@@ -445,7 +445,7 @@
                 "container": { "type": "string" },
                 "keyName":   { "type": "string", "nullable": true },
                 "patches":   { "values": { "ref":  "EntityPatch" } },
-                "info":      { "type": "string", "nullable": true }
+                "info":      { "nullable": true }
             }
         },
         "EntityPatch": {
@@ -507,14 +507,14 @@
                 "container": { "type": "string" },
                 "ids":       { "elements": { "type": "string" }, "nullable": true },
                 "all":       { "type": "boolean", "nullable": true },
-                "info":      { "type": "string", "nullable": true }
+                "info":      { "nullable": true }
             }
         },
         "SendMessage": {
             "properties": {
                 "name":  { "type": "string" },
                 "value": {  },
-                "info":  { "type": "string", "nullable": true }
+                "info":  { "nullable": true }
             }
         },
         "SubscribeChanges": {
@@ -522,7 +522,7 @@
                 "container": { "type": "string" },
                 "changes":   { "elements": { "ref":  "Change" } },
                 "filter":    { "ref":  "FilterOperation", "nullable": true },
-                "info":      { "type": "string", "nullable": true }
+                "info":      { "nullable": true }
             }
         },
         "Change": {
@@ -537,14 +537,14 @@
             "properties": {
                 "name":   { "type": "string" },
                 "remove": { "type": "boolean", "nullable": true },
-                "info":   { "type": "string", "nullable": true }
+                "info":   { "nullable": true }
             }
         },
         "ReserveKeys": {
             "properties": {
                 "container": { "type": "string" },
                 "count":     { "type": "int32" },
-                "info":      { "type": "string", "nullable": true }
+                "info":      { "nullable": true }
             }
         },
         "SyncResponse": {
@@ -555,7 +555,8 @@
                 "createErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
                 "upsertErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
                 "patchErrors":  { "values": { "ref":  "EntityErrors" }, "nullable": true },
-                "deleteErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true }
+                "deleteErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
+                "info":         { "nullable": true }
             }
         },
         "ProtocolResponse": {
