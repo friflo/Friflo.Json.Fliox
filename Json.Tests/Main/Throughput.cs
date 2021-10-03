@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Main
         
         public static async Task WebsocketDbThroughput() {
             var db = new MemoryDatabase();
-            using (var hostDatabase     = new HttpHostDatabase(db, "http://+:8080/", null))
+            using (var hostDatabase     = new HttpHostDatabase(db, "http://+:8080/"))
             using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/")) {
                 await TestStore.RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Main
         
         public static async Task HttpDbThroughput() {
             var db = new MemoryDatabase();
-            using (var hostDatabase     = new HttpHostDatabase(db, "http://+:8080/", null))
+            using (var hostDatabase     = new HttpHostDatabase(db, "http://+:8080/"))
             using (var remoteDatabase   = new HttpClientDatabase("ws://localhost:8080/")) {
                 await TestStore.RunRemoteHost(hostDatabase, async () => {
                     await TestStore.ConcurrentAccess(remoteDatabase, 4, 0, 1_000_000, false);

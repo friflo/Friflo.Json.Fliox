@@ -21,19 +21,18 @@ namespace Friflo.Json.Fliox.DB.Remote
     public sealed class HttpHostDatabase : RemoteHostDatabase
     {
         public              SchemaHub           databaseSchemaHub;
-        private  readonly   SchemaHub           protocolSchemaHub;
+        public              IRequestHandler     requestHandler;
         
+        private  readonly   SchemaHub           protocolSchemaHub;
         private  readonly   string              endpoint;
         private  readonly   HttpListener        listener;
-        private  readonly   IRequestHandler     contextHandler;
         private             bool                runServer;
         
         private             int                 requestCount;
 
         
-        public HttpHostDatabase(EntityDatabase local, string endpoint, IRequestHandler contextHandler) : base(local) {
+        public HttpHostDatabase(EntityDatabase local, string endpoint) : base(local) {
             this.endpoint       = endpoint;
-            this.contextHandler = contextHandler;
             listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);
             
@@ -162,8 +161,8 @@ namespace Friflo.Json.Fliox.DB.Remote
             }
             if (await protocolSchemaHub.HandleRequest(request).ConfigureAwait(false))
                 return true;
-            if (contextHandler != null) { 
-                if (await contextHandler.HandleRequest(request).ConfigureAwait(false))
+            if (requestHandler != null) { 
+                if (await requestHandler.HandleRequest(request).ConfigureAwait(false))
                     return true;
             }
             return false;

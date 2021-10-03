@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var testDatabase = new TestDatabase(fileDatabase))
-            using (var hostDatabase = new HttpHostDatabase(testDatabase, "http://+:8080/", null)) {
+            using (var hostDatabase = new HttpHostDatabase(testDatabase, "http://+:8080/")) {
                 await Happy.TestStore.RunRemoteHost(hostDatabase, async () => {
                     using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/"))
                     using (var useStore         = new PocStore(remoteDatabase, "useStore")) {

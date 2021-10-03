@@ -96,11 +96,11 @@ namespace Friflo.Json.Tests.Main
             fileDatabase.authenticator  = CreateUserAuthenticator(); // optional. Otherwise all request tasks are authorized
             
             // adding DatabaseSchema is optional. It enables type validation for create, upsert & patch operations
-            var typeSchema              = GetTypeSchema(true);
-            fileDatabase.schema         = new DatabaseSchema(typeSchema);
+            var typeSchema                  = GetTypeSchema(true);
+            fileDatabase.schema             = new DatabaseSchema(typeSchema);
             
-            var requestHandler              = new RequestHandler(wwwRoot); // optional. Used to serve static web pages 
-            var hostDatabase                = new HttpHostDatabase(fileDatabase, endpoint, requestHandler);
+            var hostDatabase                = new HttpHostDatabase(fileDatabase, endpoint);
+            hostDatabase.requestHandler     = new RequestHandler(wwwRoot); // optional. Used to serve static web pages
             hostDatabase.databaseSchemaHub  = new SchemaHub("/schema/", typeSchema, Utils.Zip); // optional. generate zip archives for schemas
             hostDatabase.Start();
             hostDatabase.Run();
