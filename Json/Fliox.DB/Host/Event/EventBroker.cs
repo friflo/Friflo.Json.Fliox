@@ -146,10 +146,10 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                 if (subscriber.SubscriptionCount == 0)
                     throw new InvalidOperationException("Expect SubscriptionCount > 0");
                 
-                // Enqueue only change events for (change) tasks which are not send by the client itself
                 if (syncRequest.userId == null)
                     continue;
                 JsonKey userId = syncRequest.userId.Value;
+                // Enqueue only change events for (change) tasks which are not send by the client itself
                 bool subscriberIsSender = userId.IsEqual(subscriber.userId);
                 
                 foreach (var task in syncRequest.tasks) {
