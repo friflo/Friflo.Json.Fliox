@@ -97,6 +97,21 @@ namespace Friflo.Json.Fliox.Mapper
             this.guid   = hasValue ? guid.Value : new Guid();
         }
         
+        public JsonKey (in JsonKey? jsonKey) {
+            if (jsonKey.HasValue) {
+                var value = jsonKey.Value; 
+                type        = value.type;
+                str         = value.str;
+                lng         = value.lng;
+                guid        = value.guid;
+                return;
+            }
+            type        = JsonKeyType.Null;
+            str         = null;
+            lng         = 0;
+            guid        = new Guid();
+        }
+        
         public bool IsNull() {
             switch (type) {
                 case JsonKeyType.Long:      return false;

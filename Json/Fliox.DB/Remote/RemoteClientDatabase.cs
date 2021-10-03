@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.Mapper;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.DB.Remote
 {
     public abstract class RemoteClientDatabase : EntityDatabase
     {
-        private  readonly   Dictionary<string, IEventTarget>    clientTargets = new Dictionary<string, IEventTarget>();
+        private  readonly   Dictionary<JsonKey, IEventTarget>   clientTargets = new Dictionary<JsonKey, IEventTarget>(JsonKey.Equality);
         private  readonly   Pools                               pools = new Pools(Pools.SharedPools);
 
         // ReSharper disable once EmptyConstructor - added for source navigation
@@ -28,16 +29,17 @@ namespace Friflo.Json.Fliox.DB.Remote
         /// <summary>A class extending  <see cref="RemoteClientDatabase"/> must implement this method.</summary>
         public abstract override Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext);
         
-        public override void AddEventTarget(string userId, IEventTarget eventTarget) {
+        public override void AddEventTarget(in JsonKey userId, IEventTarget eventTarget) {
             clientTargets.Add(userId, eventTarget);
         }
         
-        public override void RemoveEventTarget(string userId) {
+        public override void RemoveEventTarget(in JsonKey userId) {
             clientTargets.Remove(userId);
         }
         
         protected void ProcessEvent(ProtocolEvent ev) {
-            var eventTarget     = clientTargets[ev.targetId];
+            if (ev.targetId == null) throw new NullReferenceException();
+            var eventTarget     = clientTargets[ev.targetId.Value];
             var messageContext  = new MessageContext(pools, eventTarget);
             eventTarget.ProcessEvent(ev, messageContext);
             messageContext.Release();

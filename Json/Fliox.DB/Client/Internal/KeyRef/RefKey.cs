@@ -35,6 +35,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal.KeyRef
             if (keyType == typeof(short?))  return new RefKeyShortNull<T>();
             if (keyType == typeof(byte))    return new RefKeyByte<T>     ();
             if (keyType == typeof(byte?))   return new RefKeyByteNull<T> ();
+            if (keyType == typeof(JsonKey)) return new RefKeyJsonKey<T>  ();
             var msg = UnsupportedTypeMessage(keyType, type);
             throw new InvalidOperationException(msg);
         }

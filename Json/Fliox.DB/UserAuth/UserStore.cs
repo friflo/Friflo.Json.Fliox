@@ -22,16 +22,16 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     /// </summary>
     public class UserStore : EntityStore, IUserAuth
     {
-        public  readonly    EntitySet <string, UserPermission>  permissions;
-        public  readonly    EntitySet <string, UserCredential>  credentials;
-        public  readonly    EntitySet <string, Role>            roles;
+        public  readonly    EntitySet <JsonKey, UserPermission>  permissions;
+        public  readonly    EntitySet <JsonKey, UserCredential>  credentials;
+        public  readonly    EntitySet <string,  Role>            roles;
         
         /// <summary>"userId" used for a <see cref="UserStore"/> to perform user authentication.</summary>
         public const string Server      = "Server";
         /// <summary>"userId" used for a <see cref="UserStore"/> to request a user authentication with its token</summary>
         public const string AuthUser    = "AuthUser";
         
-        public UserStore(EntityDatabase database, string userId) : base(database, SyncTypeStore.Get(), userId) {}
+        public UserStore(EntityDatabase database, string userId) : base(database, SyncTypeStore.Get(), userId) { }
         
         public async Task<AuthenticateUserResult> AuthenticateUser(AuthenticateUser command) {
             var commandTask = SendMessage<AuthenticateUser, AuthenticateUserResult>(command);
@@ -42,14 +42,14 @@ namespace Friflo.Json.Fliox.DB.UserAuth
 
     // -------------------------------------- models ---------------------------------------
     public class UserPermission {
-        [Fri.Required]  public  string          id;
+        [Fri.Required]  public  JsonKey         id;
                         public  List<string>    roles;
 
         public override         string ToString() => JsonDebug.ToJson(this, false);
     }
     
     public class UserCredential {
-        [Fri.Required]  public  string          id;
+        [Fri.Required]  public  JsonKey         id;
                         public  string          passHash;
                         public  string          token;
                         
@@ -66,10 +66,10 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     
     // -------------------------------------- commands -------------------------------------
     public class AuthenticateUser {
-        public          string  userId;
+        public          JsonKey userId;
         public          string  token;
 
-        public override string  ToString() => userId;
+        public override string  ToString() => userId.ToString();
     }
     
     public class AuthenticateUserResult {

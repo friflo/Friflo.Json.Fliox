@@ -20,12 +20,12 @@ namespace Friflo.Json.Fliox.DB.Host.Event
     {
         private  readonly   JsonEvaluator                                   jsonEvaluator;
         /// key: <see cref="EventSubscriber.userId"/>
-        private  readonly   ConcurrentDictionary<string, EventSubscriber>   subscribers;
+        private  readonly   ConcurrentDictionary<JsonKey, EventSubscriber>  subscribers;
         internal readonly   bool                                            background;
 
         public EventBroker (bool background) {
             jsonEvaluator   = new JsonEvaluator();
-            subscribers     = new ConcurrentDictionary<string, EventSubscriber>();
+            subscribers     = new ConcurrentDictionary<JsonKey, EventSubscriber>(JsonKey.Equality);
             this.background = background;
         }
 
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         }
         
         // -------------------------------- add / remove subscriptions --------------------------------
-        internal void SubscribeMessage(SubscribeMessage subscribe, string userId, IEventTarget eventTarget) {
+        internal void SubscribeMessage(SubscribeMessage subscribe, in JsonKey userId, IEventTarget eventTarget) {
             EventSubscriber subscriber;
             var remove = subscribe.remove;
             var prefix = Protocol.SubscribeMessage.GetPrefix(subscribe.name);
@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
             }
         }
 
-        internal void SubscribeChanges (SubscribeChanges subscribe, string userId, IEventTarget eventTarget) {
+        internal void SubscribeChanges (SubscribeChanges subscribe, in JsonKey userId, IEventTarget eventTarget) {
             EventSubscriber subscriber;
             if (subscribe.changes.Count == 0) {
                 if (!subscribers.TryGetValue(userId, out subscriber))
@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
             subscriber.changeSubscriptions[subscribe.container] = subscribe;
         }
         
-        private EventSubscriber GetOrCreateSubscriber(string userId, IEventTarget eventTarget) {
+        private EventSubscriber GetOrCreateSubscriber(in JsonKey userId, IEventTarget eventTarget) {
             subscribers.TryGetValue(userId, out EventSubscriber subscriber);
             if (subscriber != null)
                 return subscriber;
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
             return subscriber;
         }
         
-        private void RemoveEmptySubscriber(EventSubscriber subscriber, string userId) {
+        private void RemoveEmptySubscriber(EventSubscriber subscriber, in JsonKey userId) {
             if (subscriber.SubscriptionCount > 0)
                 return;
             subscribers.TryRemove(userId, out _);
@@ -114,8 +114,8 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         }
         
         private void ProcessSubscriber(SyncRequest syncRequest, MessageContext messageContext) {
-            string  userId = syncRequest.userId;
-            if (userId == null)
+            JsonKey  userId = new JsonKey(syncRequest.userId);
+            if (userId.IsNull())
                 return;
             
             if (!subscribers.TryGetValue(userId, out var subscriber))
@@ -147,7 +147,8 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                     throw new InvalidOperationException("Expect SubscriptionCount > 0");
                 
                 // Enqueue only change events for (change) tasks which are not send by the client itself
-                bool subscriberIsSender = syncRequest.userId == subscriber.userId;
+                JsonKey userId = new JsonKey(syncRequest.userId);
+                bool subscriberIsSender = userId.IsEqual(subscriber.userId);
                 
                 foreach (var task in syncRequest.tasks) {
                     foreach (var changesPair in subscriber.changeSubscriptions) {
@@ -170,7 +171,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                     continue;
                 var subscriptionEvent = new SubscriptionEvent {
                     tasks       = tasks,
-                    userId    = syncRequest.userId,
+                    userId      = syncRequest.userId,
                     targetId    = subscriber.userId
                 };
                 subscriber.EnqueueEvent(subscriptionEvent);

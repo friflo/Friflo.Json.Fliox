@@ -93,6 +93,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal.KeyEntity
             if (propType == typeof(long))   return new EntityKeyLongProperty<T>     (property, idGetMethod, idSetMethod);
             if (propType == typeof(short))  return new EntityKeyShortProperty<T>    (property, idGetMethod, idSetMethod);
             if (propType == typeof(byte))   return new EntityKeyByteProperty<T>     (property, idGetMethod, idSetMethod);
+            if (propType == typeof(JsonKey))return new EntityKeyJsonKeyProperty<T>  (property, idGetMethod, idSetMethod);
             var msg = UnsupportedTypeMessage(type, property, propType);
             throw new InvalidOperationException(msg);
         }
@@ -107,6 +108,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal.KeyEntity
             if (fieldType == typeof(long))      return new EntityKeyLongField<T>    (field);
             if (fieldType == typeof(short))     return new EntityKeyShortField<T>   (field);
             if (fieldType == typeof(byte))      return new EntityKeyByteField<T>    (field);
+            if (fieldType == typeof(JsonKey))   return new EntityKeyJsonKeyField<T> (field);
             var msg = UnsupportedTypeMessage(type, field, fieldType);
             throw new InvalidOperationException(msg);
         }

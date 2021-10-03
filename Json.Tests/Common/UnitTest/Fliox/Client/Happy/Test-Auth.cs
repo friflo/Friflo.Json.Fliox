@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Host.Utils;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.UserAuth;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -239,8 +240,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task AssertUserStore(UserStore store) {
             var allCredentials  = store.credentials.QueryAll();
-            var createTask      = store.credentials.Create(new UserCredential{ id="create-id" });
-            var upsertTask      = store.credentials.Upsert(new UserCredential{ id="upsert-id" });
+            var createTask      = store.credentials.Create(new UserCredential{ id= new JsonKey("create-id") });
+            var upsertTask      = store.credentials.Upsert(new UserCredential{ id= new JsonKey("upsert-id") });
             await store.TrySync();
             
             AreEqual("PermissionDenied ~ not authorized", allCredentials.Error.Message);
@@ -249,7 +250,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task AssertServerStore(UserStore store) {
-            var credTask        = store.credentials.Read().Find("user-database");
+            var credTask        = store.credentials.Read().Find(new JsonKey("user-database"));
             await store.TrySync();
             
             var cred = credTask.Result;
@@ -257,7 +258,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task AssertAuthUserStore(UserStore store) {
-            var credTask        = store.credentials.Read().Find("user-database");
+            var credTask        = store.credentials.Read().Find(new JsonKey("user-database"));
             await store.TrySync();
             
             AreEqual("PermissionDenied ~ not authorized", credTask.Error.Message);

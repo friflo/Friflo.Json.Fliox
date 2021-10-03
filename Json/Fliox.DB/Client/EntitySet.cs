@@ -43,6 +43,13 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         protected EntitySet(string name) {
             this.name = name;
         }
+        
+        internal static Dictionary<TKey, T> CreateKeyDictionary<TKey, T>() where T : class {
+            if (typeof(TKey) == typeof(JsonKey)) {
+                return (Dictionary<TKey, T>)(object)new Dictionary<JsonKey, T>(JsonKey.Equality);
+            }
+            return new Dictionary<TKey, T>();
+        }
     }
     
     public abstract class EntitySetBase<T> : EntitySet where T : class
@@ -111,7 +118,7 @@ namespace Friflo.Json.Fliox.DB.Client
         internal            SetIntern<TKey, T>          intern;
         
         /// key: <see cref="Peer{T}.entity"/>.id        Note: must be private by all means
-        private  readonly   Dictionary<TKey, Peer<T>>   peers = new Dictionary<TKey, Peer<T>>();
+        private  readonly   Dictionary<TKey, Peer<T>>   peers = CreateKeyDictionary<TKey,Peer<T>>();
         
         internal static readonly EntityKeyT<TKey, T>    EntityKeyTMap = EntityKey.GetEntityKeyT<TKey, T>();
 

@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     public sealed class ReserveKeys  : SyncRequestTask {
         [Fri.Required]  public  string          container;
         [Fri.Required]  public  int             count;
-
+        
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             // var store           = new SequenceStore(database, SyncTypeStore.Get(), null);
             var pools = messageContext.pools;
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
                     container   = container,
                     start       = sequence.autoId,
                     count       = count,
-                    user        = messageContext.userId
+                    user        = new JsonKey(messageContext.userId)
                 };
                 store.sequenceKeys.Upsert(sequenceKeys);
                 store.sequence.Upsert(sequence);

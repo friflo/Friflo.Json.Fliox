@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.DB.Auth.Rights;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.Mapper;
 
 
 namespace Friflo.Json.Fliox.DB.UserAuth
@@ -23,12 +24,12 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     }
     
     internal class ClientCredentials {
-        internal readonly   string          userId;
+        internal readonly   JsonKey         userId;
         internal readonly   string          token;
         internal            IEventTarget    target;
         internal readonly   Authorizer      authorizer;
         
-        internal ClientCredentials (string userId, string token, IEventTarget target, Authorizer authorizer) {
+        internal ClientCredentials (in JsonKey userId, string token, IEventTarget target, Authorizer authorizer) {
             this.userId     = userId;
             this.token      = token;
             this.target     = target;
@@ -51,17 +52,17 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         private   readonly  UserStore                                               userStore;
         private   readonly  IUserAuth                                               userAuth;
         private   readonly  ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
-        private   readonly  ConcurrentDictionary<string,       ClientCredentials>   credByClient;
+        private   readonly  ConcurrentDictionary<JsonKey,      ClientCredentials>   credByClient;
         private   readonly  Authorizer                                              unknown;
-        private   readonly  ConcurrentDictionary<string,       Authorizer>          authorizerByRole;
+        private   readonly  ConcurrentDictionary<string,        Authorizer>         authorizerByRole;
 
         public UserAuthenticator (UserStore userStore, IUserAuth userAuth, Authorizer unknown = null) {
             this.userStore      = userStore;
             this.userAuth       = userAuth;
             credByTarget        = new ConcurrentDictionary <IEventTarget, ClientCredentials>();
-            credByClient        = new ConcurrentDictionary <string,       ClientCredentials>();
+            credByClient        = new ConcurrentDictionary <JsonKey,      ClientCredentials>(JsonKey.Equality);
             this.unknown        = unknown ?? new AuthorizeDeny();
-            authorizerByRole    = new ConcurrentDictionary <string,       Authorizer>();
+            authorizerByRole    = new ConcurrentDictionary <string,      Authorizer>();
         }
         
         public async Task ValidateRoles() {
@@ -86,8 +87,8 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         
         public override async Task Authenticate(SyncRequest syncRequest, MessageContext messageContext)
         {
-            var userId = syncRequest.userId;
-            if (userId == null) {
+            var userId = new JsonKey(syncRequest.userId);
+            if (userId.IsNull()) {
                 messageContext.authState.SetFailed("user authentication requires 'user' id", unknown);
                 return;
             }
@@ -99,7 +100,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             var eventTarget = messageContext.eventTarget;
             // eventTarget (HTTP Socket / WebSocket) already authenticated? 
             if (eventTarget != null && credByTarget.TryGetValue(eventTarget, out ClientCredentials credential)) {
-                if (credential.userId != userId) {
+                if (!credential.userId.IsEqual(userId)) {
                     messageContext.authState.SetFailed(InvalidUserToken, unknown);
                     return;
                 }
@@ -137,7 +138,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             messageContext.authState.SetSuccess(credential.authorizer);
         }
         
-        private async Task<Authorizer> GetAuthorizer(string userId) {
+        private async Task<Authorizer> GetAuthorizer(JsonKey userId) {
             var readPermission = userStore.permissions.Read().Find(userId);
             await userStore.Sync().ConfigureAwait(false);
             UserPermission permission = readPermission.Result;

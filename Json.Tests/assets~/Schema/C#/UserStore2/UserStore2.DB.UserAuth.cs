@@ -8,13 +8,11 @@ using UserStore2.DB.Auth.Rights;
 namespace UserStore2.DB.UserAuth {
 
 public class UserPermission {
-    [Fri.Required]
     string        id;
     List<string>  roles;
 }
 
 public class UserCredential {
-    [Fri.Required]
     string  id;
     string  passHash;
     string  token;

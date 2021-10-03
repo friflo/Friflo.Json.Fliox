@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Auth.Rights;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.Mapper;
 
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -21,9 +22,9 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     /// </summary>
     public class UserDatabaseAuthenticator : Authenticator
     {
-        public  readonly    Dictionary<string, Authorizer>  userRights = new Dictionary<string, Authorizer> {
-            { UserStore.AuthUser,   AuthUserRights },
-            { UserStore.Server,     ServerRights   },
+        public  readonly    Dictionary<JsonKey, Authorizer>  userRights = new Dictionary<JsonKey, Authorizer> (JsonKey.Equality) {
+            { new JsonKey(UserStore.AuthUser),   AuthUserRights },
+            { new JsonKey(UserStore.Server),     ServerRights   },
         };
             
         public static readonly    Authorizer   UnknownRights    = new AuthorizeDeny();
@@ -37,7 +38,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         });
         
         public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
-            var userId = syncRequest.userId;
+            var userId = new JsonKey(syncRequest.userId);
             if (userRights.TryGetValue(userId, out Authorizer rights)) {
                 messageContext.authState.SetSuccess(rights);
                 return Task.CompletedTask;

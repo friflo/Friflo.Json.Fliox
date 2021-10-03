@@ -86,11 +86,11 @@ namespace Friflo.Json.Fliox.DB.Protocol
         
         /// Increasing event sequence number starting with 1.
         /// Each target (subscriber) has its own sequence.  
-                                        public  int     seq      { get; set; }
+                                        public  int         seq      { get; set; }
         /// The target the event is sent to
-        [Fri.Property(Name = "target")] public  string  targetId { get; set; }
+        [Fri.Property(Name = "target")] public  JsonKey?    targetId { get; set; }
         /// The client which caused the event. Specifically the client which made a database change.
-        [Fri.Property(Name = "client")] public  string  userId { get; set; }
+        [Fri.Property(Name = "client")] public  JsonKey?    userId { get; set; }
     }
     
     public enum MessageType

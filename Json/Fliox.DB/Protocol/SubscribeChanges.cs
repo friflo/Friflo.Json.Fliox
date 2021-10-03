@@ -24,7 +24,8 @@ namespace Friflo.Json.Fliox.DB.Protocol
             var eventBroker = database.eventBroker;
             if (eventBroker == null)
                 return Task.FromResult<SyncTaskResult>(InvalidTask("database has no eventBroker"));
-            if (messageContext.userId == null)
+            JsonKey userId = new JsonKey(messageContext.userId); 
+            if (userId.IsNull())
                 return Task.FromResult<SyncTaskResult>(InvalidTask("subscribe task requires client id set in sync request"));
             if (container == null)
                 return Task.FromResult<SyncTaskResult>(MissingContainer());
@@ -35,7 +36,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
             if (eventTarget == null)
                 return Task.FromResult<SyncTaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
-            eventBroker.SubscribeChanges(this, messageContext.userId, eventTarget);
+            eventBroker.SubscribeChanges(this, userId, eventTarget);
             return Task.FromResult<SyncTaskResult>(new SubscribeChangesResult());
         }
     }

@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.DB.Host
         [Fri.Required]  public  string  container;
         [Fri.Required]  public  long    start;
         [Fri.Required]  public  int     count;
-                        public  string  user;   // to track back who reserved keys in case of abuse
+                        public  JsonKey user;   // to track back who reserved keys in case of abuse
     }
 
     public sealed class SequenceStore : EntityStore

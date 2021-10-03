@@ -109,7 +109,7 @@ namespace Friflo.Json.Fliox.DB.Client
         internal            TaskState               state;
         internal readonly   EntitySet<TKey, T>      set;
         internal            RefsTask                refsTask;
-        internal readonly   Dictionary<TKey, T>     results     = new Dictionary<TKey, T>();
+        internal readonly   Dictionary<TKey, T>     results     = EntitySet.CreateKeyDictionary<TKey,T>();
         internal readonly   List<FindTask<TKey, T>> findTasks   = new List<FindTask<TKey, T>>();
 
         public              Dictionary<TKey, T>     Results         => IsOk("ReadTask.Results", out Exception e) ? results      : throw e;
