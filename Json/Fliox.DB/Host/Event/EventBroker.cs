@@ -177,7 +177,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                 // - storing only a single byte[] instead of a complex List<SyncRequestTask> which is not used anymore  
                 var subscriptionEvent = new SubscriptionEvent {
                     tasks       = tasks,
-                    userId      = userId,
+                    sourceId    = userId,
                     targetId    = subscriber.userId
                 };
                 subscriber.EnqueueEvent(subscriptionEvent);

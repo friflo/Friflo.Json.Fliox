@@ -726,7 +726,7 @@
             "properties": {
                 "seq":    { "type": "int32" },
                 "target": { "type": "string" },
-                "client": { "type": "string" },
+                "source": { "type": "string" },
                 "tasks":  { "elements": { "ref":  "SyncRequestTask" }, "nullable": true }
             }
         },
@@ -738,7 +738,7 @@
             "properties": {
                 "seq":    { "type": "int32" },
                 "target": { "type": "string" },
-                "client": { "type": "string" }
+                "source": { "type": "string" }
             }
         }
     }
