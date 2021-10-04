@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         internal ClientCredentials (in JsonKey userId, string token, IEventTarget target, Authorizer authorizer) {
             this.userId     = userId;
             this.token      = token;
-            this.target     = target;
+            this.target     = target;   // not null for WebSocket's. null for HTTP request
             this.authorizer = authorizer;
         }
     }
@@ -119,8 +119,10 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                     var authCred    = new AuthCred(token);
                     var authorizer  = await GetAuthorizer(userId).ConfigureAwait(false);
                     credential      = new ClientCredentials (userId, authCred.token, eventTarget, authorizer);
-                    credByClient.TryAdd(userId,    credential);
-                    credByTarget.TryAdd(eventTarget, credential);
+                    credByClient.TryAdd(userId,      credential);
+                    if (eventTarget != null) {
+                        credByTarget.TryAdd(eventTarget, credential);
+                    }
                 }
             }
             if (credential == null || token != credential.token) {
