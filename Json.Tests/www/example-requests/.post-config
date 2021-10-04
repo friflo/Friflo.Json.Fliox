@@ -9,7 +9,7 @@
     "folder":       "response"
   },
   "variables": {
-    "{{user}}":     "admin",
-    "{{token}}":    "admin-token"
+    "{{user}}":     "admin2",
+    "{{token}}":    "admin-token2"
   }
 }

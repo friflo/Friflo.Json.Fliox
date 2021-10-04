@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Auth.Rights;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
-
 
 namespace Friflo.Json.Fliox.DB.UserAuth
 {
@@ -26,13 +24,11 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     internal class ClientCredentials {
         internal readonly   JsonKey         userId;
         internal readonly   string          token;
-        internal            IEventTarget    target;
         internal readonly   Authorizer      authorizer;
         
-        internal ClientCredentials (in JsonKey userId, string token, IEventTarget target, Authorizer authorizer) {
+        internal ClientCredentials (in JsonKey userId, string token, Authorizer authorizer) {
             this.userId     = userId;
             this.token      = token;
-            this.target     = target;   // not null for WebSocket's. null for HTTP request
             this.authorizer = authorizer;
         }
     }
@@ -49,17 +45,15 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     /// </summary>
     public class UserAuthenticator : Authenticator
     {
-        private   readonly  UserStore                                               userStore;
-        private   readonly  IUserAuth                                               userAuth;
-        private   readonly  ConcurrentDictionary<IEventTarget, ClientCredentials>   credByTarget;
-        private   readonly  ConcurrentDictionary<JsonKey,      ClientCredentials>   credByClient;
-        private   readonly  Authorizer                                              unknown;
-        private   readonly  ConcurrentDictionary<string,        Authorizer>         authorizerByRole;
+        private   readonly  UserStore                                           userStore;
+        private   readonly  IUserAuth                                           userAuth;
+        private   readonly  ConcurrentDictionary<JsonKey, ClientCredentials>    credByClient;
+        private   readonly  Authorizer                                          unknown;
+        private   readonly  ConcurrentDictionary<string,  Authorizer>           authorizerByRole;
 
         public UserAuthenticator (UserStore userStore, IUserAuth userAuth, Authorizer unknown = null) {
             this.userStore      = userStore;
             this.userAuth       = userAuth;
-            credByTarget        = new ConcurrentDictionary <IEventTarget, ClientCredentials>();
             credByClient        = new ConcurrentDictionary <JsonKey,      ClientCredentials>(JsonKey.Equality);
             this.unknown        = unknown ?? new AuthorizeDeny();
             authorizerByRole    = new ConcurrentDictionary <string,      Authorizer>();
@@ -97,13 +91,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                 messageContext.authState.SetFailed("user authentication requires 'token'", unknown);
                 return;
             }
-            var eventTarget = messageContext.eventTarget;
-            // eventTarget (HTTP Socket / WebSocket) already authenticated? 
-            if (eventTarget != null && credByTarget.TryGetValue(eventTarget, out ClientCredentials credential)) {
-                if (!credential.userId.IsEqual(userId)) {
-                    messageContext.authState.SetFailed(InvalidUserToken, unknown);
-                    return;
-                }
+            if (credByClient.TryGetValue(userId, out ClientCredentials credential)) {
                 if (credential.token != token) {
                     messageContext.authState.SetFailed(InvalidUserToken, unknown);
                     return;
@@ -111,31 +99,19 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                 messageContext.authState.SetSuccess(credential.authorizer);
                 return;
             }
-            if (!credByClient.TryGetValue(userId, out credential)) {
-                var command = new AuthenticateUser { userId = userId, token = token };
-                var result  = await userAuth.AuthenticateUser(command).ConfigureAwait(false);
-                
-                if (result.isValid) {
-                    var authCred    = new AuthCred(token);
-                    var authorizer  = await GetAuthorizer(userId).ConfigureAwait(false);
-                    credential      = new ClientCredentials (userId, authCred.token, eventTarget, authorizer);
-                    credByClient.TryAdd(userId,      credential);
-                    if (eventTarget != null) {
-                        credByTarget.TryAdd(eventTarget, credential);
-                    }
-                }
+            var command = new AuthenticateUser { userId = userId, token = token };
+            var result  = await userAuth.AuthenticateUser(command).ConfigureAwait(false);
+            
+            if (result.isValid) {
+                var authCred    = new AuthCred(token);
+                var authorizer  = await GetAuthorizer(userId).ConfigureAwait(false);
+                credential      = new ClientCredentials (userId, authCred.token, authorizer);
+                credByClient.TryAdd(userId,      credential);
             }
+            
             if (credential == null || token != credential.token) {
                 messageContext.authState.SetFailed(InvalidUserToken, unknown);
                 return;
-            }
-            // Update target if changed for early out when already authorized.
-            if (credential.target != eventTarget) {
-                if (credential.target != null) {
-                    credByTarget.TryRemove(credential.target, out _);
-                    credential.target = eventTarget;
-                    credByTarget.TryAdd(eventTarget, credential);
-                }
             }
             messageContext.authState.SetSuccess(credential.authorizer);
         }
