@@ -178,25 +178,30 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                         dstId   = subscriber.dstId
                     };
                     if (SerializeRemoteEvents && subscriber.IsRemoteTarget) {
-                        // Optimization: in case of a remote connection the tasks are serialized to SubscriptionEvent.tasksJson
-                        // benefits of doing this:
-                        // - serialize a task only once for multiple targets
-                        // - storing only a single byte[] for a task instead of a complex SyncRequestTask which is not used anymore
-                        var tasksJson = new List<JsonValue>(tasks.Count);
-                        subscriptionEvent.tasksJson = tasksJson;
-                        for (int n = 0; n < tasks.Count; n++) {
-                            var task = tasks[n];
-                            if (task.json == null) {
-                                task.json = new JsonUtf8(writer.WriteAsArray(task));
-                            }
-                            tasksJson.Add(new JsonValue(task.json.Value));
-                        }
-                        tasks.Clear();
-                        subscriptionEvent.tasks = null;
+                        SerializeRemoteEvent(subscriptionEvent, tasks, writer);
                     }
                     subscriber.EnqueueEvent(subscriptionEvent);
                 }
             }
+        }
+        
+        /// Optimization: For remote connections the tasks are serialized to <see cref="SubscriptionEvent.tasksJson"/>.
+        /// Benefits of doing this:
+        /// - serialize a task only once for multiple targets
+        /// - storing only a single byte[] for a task instead of a complex SyncRequestTask which is not used anymore
+        private static void SerializeRemoteEvent(SubscriptionEvent subscriptionEvent,List<SyncRequestTask> tasks, ObjectWriter writer) {
+
+            var tasksJson = new List<JsonValue>(tasks.Count);
+            subscriptionEvent.tasksJson = tasksJson;
+            for (int n = 0; n < tasks.Count; n++) {
+                var task = tasks[n];
+                if (task.json == null) {
+                    task.json = new JsonUtf8(writer.WriteAsArray(task));
+                }
+                tasksJson.Add(new JsonValue(task.json.Value));
+            }
+            tasks.Clear();
+            subscriptionEvent.tasks = null;
         }
 
         internal const bool SerializeRemoteEvents = true; // set to false for development
