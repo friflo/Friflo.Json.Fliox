@@ -20,6 +20,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// </list>
         /// </summary>
                         public      List<SyncRequestTask>   tasks;
+        /// Used for optimization. Either <see cref="tasks"/> or <see cref="tasksJson"/> is set
         [Fri.Ignore]    internal    List<JsonValue>         tasksJson;
         
         internal override   MessageType             MessageType => MessageType.sub;

@@ -187,7 +187,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
             }
         }
         
-        internal const bool SerializeRemoteEvents = true; // set to false for development
+        private const bool SerializeRemoteEvents = true; // set to false for development
 
         /// Optimization: For remote connections the tasks are serialized to <see cref="SubscriptionEvent.tasksJson"/>.
         /// Benefits of doing this:
