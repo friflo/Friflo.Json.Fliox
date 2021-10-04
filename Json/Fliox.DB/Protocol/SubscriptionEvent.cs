@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Protocol
 {
@@ -18,7 +19,8 @@ namespace Friflo.Json.Fliox.DB.Protocol
         ///   <item><see cref="SendMessage"/></item>
         /// </list>
         /// </summary>
-        public              List<SyncRequestTask>   tasks;
+                        public      List<SyncRequestTask>   tasks;
+        [Fri.Ignore]    internal    List<JsonValue>         tasksJson;
         
         internal override   MessageType             MessageType => MessageType.sub;
         public   override   string                  ToString()  => GetEventInfo().ToString();

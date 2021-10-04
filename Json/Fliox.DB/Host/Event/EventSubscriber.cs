@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host.Utils;
 using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host.Event
@@ -43,6 +44,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         
         /// used for test assertion
         public              int                                     SentEventsCount => sentEvents.Count;
+        internal            bool                                    IsRemoteTarget => eventTarget is WebSocketHostTarget;
 
         public EventSubscriber (in JsonKey dstId, IEventTarget eventTarget, bool background) {
             this.dstId          = dstId;

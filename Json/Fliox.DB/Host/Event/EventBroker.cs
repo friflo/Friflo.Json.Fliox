@@ -139,50 +139,67 @@ namespace Friflo.Json.Fliox.DB.Host.Event
 
         internal void EnqueueSyncTasks (SyncRequest syncRequest, MessageContext messageContext) {
             ProcessSubscriber (syncRequest, messageContext);
-            
-            foreach (var pair in subscribers) {
-                List<SyncRequestTask>  tasks = null;
-                EventSubscriber     subscriber = pair.Value;
-                if (subscriber.SubscriptionCount == 0)
-                    throw new InvalidOperationException("Expect SubscriptionCount > 0");
-                
-                if (syncRequest.userId == null)
-                    continue;
-                JsonKey userId = syncRequest.userId.Value;
-                // Enqueue only change events for (change) tasks which are not send by the client itself
-                bool subscriberIsSender = userId.IsEqual(subscriber.dstId);
-                
-                foreach (var task in syncRequest.tasks) {
-                    foreach (var changesPair in subscriber.changeSubscriptions) {
-                        if (subscriberIsSender)
-                            continue;
-                        SubscribeChanges subscribeChanges = changesPair.Value;
-                        var taskResult = FilterChanges(task, subscribeChanges);
-                        if (taskResult == null)
-                            continue;
-                        AddTask(ref tasks, taskResult);
+            using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
+                ObjectWriter writer = pooledMapper.instance.writer;
+                foreach (var pair in subscribers) {
+                    List<SyncRequestTask>  tasks = null;
+                    EventSubscriber     subscriber = pair.Value;
+                    if (subscriber.SubscriptionCount == 0)
+                        throw new InvalidOperationException("Expect SubscriptionCount > 0");
+                    
+                    if (syncRequest.userId == null)
+                        continue;
+                    JsonKey userId = syncRequest.userId.Value;
+                    // Enqueue only change events for (change) tasks which are not send by the client itself
+                    bool subscriberIsSender = userId.IsEqual(subscriber.dstId);
+                    
+                    foreach (var task in syncRequest.tasks) {
+                        foreach (var changesPair in subscriber.changeSubscriptions) {
+                            if (subscriberIsSender)
+                                continue;
+                            SubscribeChanges subscribeChanges = changesPair.Value;
+                            var taskResult = FilterChanges(task, subscribeChanges);
+                            if (taskResult == null)
+                                continue;
+                            AddTask(ref tasks, taskResult);
+                        }
+                        if (task.TaskType == TaskType.message) {
+                            var message = (SendMessage) task;
+                            if (!subscriber.FilterMessage(message.name))
+                                continue;
+                            AddTask(ref tasks, task);
+                        }
                     }
-                    if (task.TaskType == TaskType.message) {
-                        var message = (SendMessage) task;
-                        if (!subscriber.FilterMessage(message.name))
-                            continue;
-                        AddTask(ref tasks, task);
+                    if (tasks == null)
+                        continue;
+                    var subscriptionEvent = new SubscriptionEvent {
+                        tasks   = tasks,
+                        srcId   = userId,
+                        dstId   = subscriber.dstId
+                    };
+                    if (SerializeRemoteEvents && subscriber.IsRemoteTarget) {
+                        // Optimization: in case of a remote connection the tasks are serialized to SubscriptionEvent.tasksJson
+                        // benefits of doing this:
+                        // - serialize a task only once for multiple targets
+                        // - storing only a single byte[] for a task instead of a complex SyncRequestTask which is not used anymore
+                        var tasksJson = new List<JsonValue>(tasks.Count);
+                        subscriptionEvent.tasksJson = tasksJson;
+                        for (int n = 0; n < tasks.Count; n++) {
+                            var task = tasks[n];
+                            if (task.json == null) {
+                                task.json = new JsonUtf8(writer.WriteAsArray(task));
+                            }
+                            tasksJson.Add(new JsonValue(task.json.Value));
+                        }
+                        tasks.Clear();
+                        subscriptionEvent.tasks = null;
                     }
+                    subscriber.EnqueueEvent(subscriptionEvent);
                 }
-                if (tasks == null)
-                    continue;
-                // todo performance - in case of a remote connection the tasks can be serialized to SubscriptionEvent.tasksJson
-                // benefits from doing this:
-                // - serialize only once for multiple targets
-                // - storing only a single byte[] instead of a complex List<SyncRequestTask> which is not used anymore  
-                var subscriptionEvent = new SubscriptionEvent {
-                    tasks   = tasks,
-                    srcId   = userId,
-                    dstId   = subscriber.dstId
-                };
-                subscriber.EnqueueEvent(subscriptionEvent);
             }
         }
+
+        internal const bool SerializeRemoteEvents = true; // set to false for development
         
         private SyncRequestTask FilterChanges (SyncRequestTask task, SubscribeChanges subscribe) {
             switch (task.TaskType) {

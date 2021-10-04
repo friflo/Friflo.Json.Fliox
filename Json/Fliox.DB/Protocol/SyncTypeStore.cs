@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Fliox.DB.Client;
+using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 
@@ -39,6 +40,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
                 // UserStore commands
                 _singleton.GetTypeMapper(typeof(AuthenticateUser));
                 _singleton.GetTypeMapper(typeof(AuthenticateUserResult));
+                _singleton.GetTypeMapper(typeof(RemoteSubscriptionEvent));
             }
             return _singleton;
         }

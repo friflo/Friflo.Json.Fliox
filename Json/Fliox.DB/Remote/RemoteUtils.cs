@@ -1,12 +1,23 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Collections.Generic;
 using Friflo.Json.Fliox.DB.Host;
+using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Remote
 {
+    internal class RemoteSubscriptionEvent
+    {
+        /** map to <see cref="ProtocolEvent"/> Discriminator */ public  string          type;
+        /** map to <see cref="ProtocolEvent.seq"/> */           public  int             seq; 
+        /** map to <see cref="ProtocolEvent.srcId"/> */         public  JsonKey         src;
+        /** map to <see cref="ProtocolEvent.dstId"/> */         public  JsonKey         dst;
+        /** map to <see cref="SubscriptionEvent.tasks"/> */     public  List<JsonValue> tasks;
+    }
+    
     public static class RemoteUtils
     {
         public static JsonUtf8 CreateProtocolMessage (ProtocolMessage message, IPools pools)
@@ -15,6 +26,16 @@ namespace Friflo.Json.Fliox.DB.Remote
                 ObjectMapper mapper = pooledMapper.instance;
                 mapper.Pretty = true;
                 mapper.WriteNullMembers = false;
+                if (EventBroker.SerializeRemoteEvents && message is SubscriptionEvent sub) {
+                    var remoteEv = new RemoteSubscriptionEvent {
+                        type    = "sub",
+                        seq     = sub.seq,
+                        src     = sub.srcId,
+                        dst     = sub.dstId,
+                        tasks   = sub.tasksJson
+                    };
+                    return new JsonUtf8(mapper.WriteAsArray(remoteEv));
+                }
                 return new JsonUtf8(mapper.WriteAsArray(message));
             }
         }
