@@ -141,6 +141,8 @@ namespace Friflo.Json.Fliox.DB.Host.Event
             ProcessSubscriber (syncRequest, messageContext);
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 ObjectWriter writer = pooledMapper.instance.writer;
+                writer.Pretty           = false;    // write sub's as one liner
+                writer.WriteNullMembers = false;
                 foreach (var pair in subscribers) {
                     List<SyncRequestTask>  tasks = null;
                     EventSubscriber     subscriber = pair.Value;
