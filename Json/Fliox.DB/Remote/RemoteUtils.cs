@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
@@ -26,7 +25,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                 ObjectMapper mapper = pooledMapper.instance;
                 mapper.Pretty = true;
                 mapper.WriteNullMembers = false;
-                if (EventBroker.SerializeRemoteEvents && message is SubscriptionEvent sub) {
+                if (message is SubscriptionEvent sub && sub.tasksJson != null) {
                     var remoteEv = new RemoteSubscriptionEvent {
                         type    = "sub",
                         seq     = sub.seq,
