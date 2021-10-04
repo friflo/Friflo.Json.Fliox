@@ -19,12 +19,12 @@ namespace Friflo.Json.Fliox.DB.Protocol
         ///   <item><see cref="SendMessage"/></item>
         /// </list>
         /// </summary>
-                        public      List<SyncRequestTask>   tasks;
+                        public      SyncRequestTask[]   tasks;
         /// Used for optimization. Either <see cref="tasks"/> or <see cref="tasksJson"/> is set
-        [Fri.Ignore]    internal    List<JsonValue>         tasksJson;
+        [Fri.Ignore]    internal    JsonValue[]         tasksJson;
         
-        internal override   MessageType             MessageType => MessageType.sub;
-        public   override   string                  ToString()  => GetEventInfo().ToString();
+        internal override   MessageType                 MessageType => MessageType.sub;
+        public   override   string                      ToString()  => GetEventInfo().ToString();
         
         public EventInfo    GetEventInfo() {
             var info = new EventInfo(new ChangeInfo());

@@ -175,7 +175,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                     if (tasks == null)
                         continue;
                     var subscriptionEvent = new SubscriptionEvent {
-                        tasks   = tasks,
+                        tasks   = tasks.ToArray(),
                         srcId   = userId,
                         dstId   = subscriber.dstId
                     };
@@ -194,14 +194,14 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         /// - serialize a task only once for multiple targets
         /// - storing only a single byte[] for a task instead of a complex SyncRequestTask which is not used anymore
         private static void SerializeRemoteEvent(SubscriptionEvent subscriptionEvent, List<SyncRequestTask> tasks, ObjectWriter writer) {
-            var tasksJson = new List<JsonValue>(tasks.Count);
+            var tasksJson = new JsonValue [tasks.Count];
             subscriptionEvent.tasksJson = tasksJson;
             for (int n = 0; n < tasks.Count; n++) {
                 var task = tasks[n];
                 if (task.json == null) {
                     task.json = new JsonUtf8(writer.WriteAsArray(task));
                 }
-                tasksJson.Add(new JsonValue(task.json.Value));
+                tasksJson[n] = new JsonValue(task.json.Value);
             }
             tasks.Clear();
             subscriptionEvent.tasks = null;

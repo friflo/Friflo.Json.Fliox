@@ -10,11 +10,11 @@ namespace Friflo.Json.Fliox.DB.Remote
 {
     internal class RemoteSubscriptionEvent
     {
-        /** map to <see cref="ProtocolEvent"/> Discriminator */ public  string          type;
-        /** map to <see cref="ProtocolEvent.seq"/> */           public  int             seq; 
-        /** map to <see cref="ProtocolEvent.srcId"/> */         public  JsonKey         src;
-        /** map to <see cref="ProtocolEvent.dstId"/> */         public  JsonKey         dst;
-        /** map to <see cref="SubscriptionEvent.tasks"/> */     public  List<JsonValue> tasks;
+        /** map to <see cref="ProtocolEvent"/> Discriminator */ public  string      type;
+        /** map to <see cref="ProtocolEvent.seq"/> */           public  int         seq; 
+        /** map to <see cref="ProtocolEvent.srcId"/> */         public  JsonKey     src;
+        /** map to <see cref="ProtocolEvent.dstId"/> */         public  JsonKey     dst;
+        /** map to <see cref="SubscriptionEvent.tasks"/> */     public  JsonValue[] tasks;
     }
     
     public static class RemoteUtils
