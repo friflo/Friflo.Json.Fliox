@@ -90,14 +90,17 @@
 
   <table>
     <tr>
-      <td>Request &nbsp;&nbsp;<select title="example-requests" id="example" onchange="onExampleChange()"></select></td>
+      <td>
+        Request &nbsp;
+        <select title="example-requests" id="example" onchange="onExampleChange()"></select> &nbsp;&nbsp;
+        <button type="button" onclick="sendSyncRequest()" title="Send request to server (Ctrl+Alt+Enter)">Send</button>
+      </td>
       <td><span>Response</span> <span id="response-state"></span>
         <span style="float:right;">Sub seq: <span id="subscriptionSeq">0</span> · count: <span id="subscriptionCount">0</span></span></td>
     </tr>
     <tr>
       <td>
-        <div id="requestContainer" style="width: 500px; height: 500px; border: 1px solid grey"></div>
-        <button type="button" onclick="sendSyncRequest()">Send</button> <small>(Ctrl+Alt+Enter)</small> &nbsp;
+        <div id="requestContainer" style="width: 500px; height: 500px; border: 1px solid grey"></div>        
         reqId: <div id="reqId" class="inline">n/a</div>
       </td>
       <td>

@@ -113,7 +113,7 @@ export async function loadExampleRequestList() {
     for (var example of exampleRequests) {
         if (!example.endsWith(".json"))
             continue;
-        var name = example.substring(folder.length);
+        var name = example.substring(folder.length).replace(".sync.json", "");
         if (exampleGroup != name[0]) {
             selectExample.add(document.createElement("option"));
             exampleGroup = name[0];
