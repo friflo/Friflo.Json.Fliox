@@ -7,7 +7,10 @@
       "changes": ["create", "upsert", "delete", "patch"]
     }
   ],
-  "info": "Subscribe to database changes. (Websocket only)",
+  "info":[
+    "Subscribe to database changes from other clients. (Websocket only)",
+    "No events are send for changes the client made by itself"
+  ],
   "user": "{{user}}",
   "token":"{{token}}"
 }
