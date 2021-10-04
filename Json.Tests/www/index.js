@@ -19,9 +19,14 @@ const defaultToken      = document.getElementById("token");
 
 
 export function connectWebsocket() {
-    var loc             = window.location;
-    var uri             = `ws://${loc.host}/websocket-${++websocketCount}`;
-    // var uri          = `ws://google.com:8080/`; // test connection timeout
+    if (connection) {
+        connection.close();
+        connection = null;
+    }
+    var loc     = window.location;
+    var nr      = ("" + (++websocketCount)).padStart(3,0)
+    var uri     = `ws://${loc.host}/websocket-${nr}`;
+    // var uri  = `ws://google.com:8080/`; // test connection timeout
     socketStatus.innerHTML = 'connecting <span class="spinner"></span>';
     try {
         connection = new WebSocket(uri);
