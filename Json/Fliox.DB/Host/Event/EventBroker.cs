@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
     public sealed class EventBroker : IDisposable
     {
         private  readonly   JsonEvaluator                                   jsonEvaluator;
-        /// key: <see cref="EventSubscriber.userId"/>
+        /// key: <see cref="EventSubscriber.dstId"/>
         private  readonly   ConcurrentDictionary<JsonKey, EventSubscriber>  subscribers;
         internal readonly   bool                                            background;
 
@@ -150,7 +150,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                     continue;
                 JsonKey userId = syncRequest.userId.Value;
                 // Enqueue only change events for (change) tasks which are not send by the client itself
-                bool subscriberIsSender = userId.IsEqual(subscriber.userId);
+                bool subscriberIsSender = userId.IsEqual(subscriber.dstId);
                 
                 foreach (var task in syncRequest.tasks) {
                     foreach (var changesPair in subscriber.changeSubscriptions) {
@@ -178,7 +178,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                 var subscriptionEvent = new SubscriptionEvent {
                     tasks   = tasks,
                     srcId   = userId,
-                    dstId   = subscriber.userId
+                    dstId   = subscriber.dstId
                 };
                 subscriber.EnqueueEvent(subscriptionEvent);
             }
