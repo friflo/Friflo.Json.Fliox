@@ -71,6 +71,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         }
         
         internal void UpdateTarget(IEventTarget eventTarget) {
+            if (this.eventTarget == null) throw new NullReferenceException(nameof(eventTarget));
             if (this.eventTarget == eventTarget)
                 return;
             Console.WriteLine($"EventSubscriber: eventTarget changed. dstId: {dstId}");

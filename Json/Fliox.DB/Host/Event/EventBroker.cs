@@ -113,7 +113,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
             }
         }
         
-        private void ProcessSubscriber(SyncRequest syncRequest, MessageContext messageContext) {
+        private void ProcessSubscriber(SyncRequest syncRequest, IEventTarget eventTarget) {
             JsonKey  userId = new JsonKey(syncRequest.userId);
             if (userId.IsNull())
                 return;
@@ -121,7 +121,9 @@ namespace Friflo.Json.Fliox.DB.Host.Event
             if (!subscribers.TryGetValue(userId, out var subscriber))
                 return;
             
-            subscriber.UpdateTarget (messageContext.eventTarget);
+            if (eventTarget != null) {
+                subscriber.UpdateTarget (eventTarget);
+            }
             
             var eventAck = syncRequest.eventAck;
             if (!eventAck.HasValue)
@@ -138,7 +140,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         }
 
         internal void EnqueueSyncTasks (SyncRequest syncRequest, MessageContext messageContext) {
-            ProcessSubscriber (syncRequest, messageContext);
+            ProcessSubscriber (syncRequest, messageContext.eventTarget);
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 ObjectWriter writer = pooledMapper.instance.writer;
                 writer.Pretty           = false;    // write sub's as one liner
