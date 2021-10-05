@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         [Fri.Property(Name =               "req")]
                         public  int?        reqId       { get; set; }
         [Fri.Property(Name =               "clt")]
-                        public  JsonKey?    clientId    { get; set; }
+                        public  JsonKey     clientId    { get; set; }
 
     }
     
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         [Fri.Property(Name =               "req")]
                         public  int?        reqId       { get; set; }
         [Fri.Property(Name =               "clt")]
-                        public  JsonKey?    clientId    { get; set; }
+                        public  JsonKey     clientId    { get; set; }
     }
     
     // ----------------------------------- event -----------------------------------

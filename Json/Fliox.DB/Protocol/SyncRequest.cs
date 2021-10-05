@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// In case the request contains a <see cref="SubscribeChanges"/> <see cref="ProtocolRequest.clientId"/> is required to
         /// enable sending <see cref="SubscriptionEvent"/>'s to the desired subscriber.
         /// </summary>
-        [Fri.Property(Name = "user")]   public  JsonKey?                userId;
+        [Fri.Property(Name = "user")]   public  JsonKey                 userId;
                                         public  string                  token;
         /// <summary>
         /// <see cref="eventAck"/> is used to ensure (change) events are delivered reliable.

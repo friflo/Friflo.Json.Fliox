@@ -19,6 +19,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         protected readonly Dictionary<string, AuthorizePredicate> registeredPredicates = new Dictionary<string, AuthorizePredicate>();
             
         public abstract Task Authenticate(SyncRequest syncRequest, MessageContext messageContext);
+        public abstract bool GetClientId(IClientIdProvider clientIdProvider, MessageContext messageContext);
         
         /// <summary>
         /// Register a predicate function by the given <see cref="name"/> which enables custom authorization via code,
@@ -56,6 +57,10 @@ namespace Friflo.Json.Fliox.DB.Auth
         public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.authState.SetFailed("not authenticated", unknown);
             return Task.CompletedTask;
+        }
+        
+        public override bool GetClientId(IClientIdProvider clientIdProvider, MessageContext messageContext) {
+            return true;
         }
     }
 }

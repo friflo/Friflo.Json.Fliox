@@ -20,7 +20,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
     {
         public override string DataTypeName() { return "JsonKey"; }
 
-        public JsonKeyMapper(StoreConfig config, Type type) : base (config, type, false, false) { }
+        public JsonKeyMapper(StoreConfig config, Type type) : base (config, type, true, false) { }
+        
+        public override bool IsNullObject(object value) {
+            var key = (JsonKey)value;
+            return key.IsNull();
+        }
 
         public override void Write(ref Writer writer, JsonKey value) {
             switch (value.type) {
@@ -48,6 +53,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
             ref var parser = ref reader.parser;
             var ev = parser.Event;
             switch (ev) {
+                case JsonEvent.ValueNull:
+                    success = true;
+                    return new JsonKey();
                 case JsonEvent.ValueString:
                     success = true;
                     return new JsonKey(ref parser.value, ref parser.valueParser);
@@ -57,6 +65,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
     }
     
+    /*
     internal class JsonKeyNullMatcher : ITypeMatcher {
         public static readonly JsonKeyNullMatcher Instance = new JsonKeyNullMatcher();
         
@@ -114,5 +123,5 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     throw new InvalidOperationException($"JsonKey? - unexpected event: {ev}");
             }
         }
-    }
+    } */
 }

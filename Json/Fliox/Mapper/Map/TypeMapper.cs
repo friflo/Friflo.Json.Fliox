@@ -43,10 +43,11 @@ namespace Friflo.Json.Fliox.Mapper.Map
             this.isNullable             = isNullable;
             this.isValueType            = isValueType;
             this.nullableUnderlyingType = Nullable.GetUnderlyingType(type);
-            bool isNull = nullableUnderlyingType != null || !type.IsValueType;
-            if (isNull != isNullable)
-                throw new InvalidOperationException("invalid parameter: isNullable");
-
+            if (type != typeof(JsonKey)) { // todo more elegant
+                bool isNull = nullableUnderlyingType != null || !type.IsValueType;
+                if (isNull != isNullable)
+                    throw new InvalidOperationException("invalid parameter: isNullable");
+            }
             this.useIL                  = config != null && config.useIL && isValueType && !type.IsPrimitive;
         }
 

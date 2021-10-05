@@ -15,8 +15,8 @@ namespace Friflo.Json.Fliox.Mapper
         internal readonly       long        lng;
         internal readonly       Guid        guid;
         
-        public   override       string      ToString() => AsString();
-        
+        public   override       string      ToString() { var value = AsString(); return value ?? "null"; }
+
         public static readonly  JsonKeyComparer         Comparer = new JsonKeyComparer();
         public static readonly  JsonKeyEqualityComparer Equality = new JsonKeyEqualityComparer();
 
@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Mapper
             this.guid   = hasValue ? guid.Value : new Guid();
         }
         
-        public JsonKey (in JsonKey? jsonKey) {
+    /*  public JsonKey (in JsonKey? jsonKey) {
             if (jsonKey.HasValue) {
                 var value = jsonKey.Value; 
                 type        = value.type;
@@ -110,7 +110,7 @@ namespace Friflo.Json.Fliox.Mapper
             str         = null;
             lng         = 0;
             guid        = new Guid();
-        }
+        } */
         
         public bool IsNull() {
             switch (type) {

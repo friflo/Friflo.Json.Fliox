@@ -164,7 +164,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await mutateUser.TrySync();
                 AreEqual("PermissionDenied ~ not authorized", articleDeletes.Error.Message);
             }
-            using (var mutateUser       = new PocStore(database, "change-sub", "user-database")) {
+            using (var mutateUser       = new PocStore(database, ClientId, "user-database")) {
                 mutateUser.SetToken("user-database-token");
                 await mutateUser.TrySync(); // authenticate to simplify debugging below
 
@@ -181,7 +181,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         /// test authorization of sending messages and subscriptions to messages. Commands are messages too.
         private static async Task AssertAuthMessage(EntityDatabase database) {
-            using (var denyUser      = new PocStore(database, "msg-sub", "user-deny"))
+            using (var denyUser      = new PocStore(database, ClientId, "user-deny"))
             {
                 // test: deny message
                 denyUser.SetToken("user-deny-token");
@@ -193,7 +193,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 AreEqual("PermissionDenied ~ not authorized", message.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized", subscribe.Error.Message);
             }
-            using (var messageUser   = new PocStore(database, "msg-sub", "user-message")){
+            using (var messageUser   = new PocStore(database, ClientId, "user-message")){
                 // test: allow message
                 messageUser.SetToken("user-message-token");
                 await messageUser.TrySync(); // authenticate to simplify debugging below

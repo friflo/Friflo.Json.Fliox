@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         });
         
         public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
-            var userId = new JsonKey(syncRequest.userId);
+            var userId = syncRequest.userId;
             if (userRights.TryGetValue(userId, out Authorizer rights)) {
                 messageContext.authState.SetSuccess(rights);
                 return Task.CompletedTask;
@@ -46,6 +46,9 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             // authState.SetFailed() is not called to avoid giving a hint for a valid userId (user)
             messageContext.authState.SetSuccess(UnknownRights);
             return Task.CompletedTask;
+        }
+        public override bool GetClientId(IClientIdProvider clientIdProvider, MessageContext messageContext) {
+            return true;
         }
     }
 }

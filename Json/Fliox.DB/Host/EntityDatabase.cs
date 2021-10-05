@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.DB.Host
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public abstract class EntityDatabase : IDisposable
+    public abstract class EntityDatabase : IDisposable, IClientIdProvider
     {
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
@@ -233,14 +233,20 @@ namespace Friflo.Json.Fliox.DB.Host
         
         private long clientIdSequence;
         
+        
+        public JsonKey NewClientId() {
+            return new JsonKey(++clientIdSequence);
+        }
+        
         internal bool GetClientId(MessageContext messageContext, out JsonKey clientId) {
-            if (messageContext.clientId == null) {
-                messageContext.clientId = clientId = new JsonKey(++clientIdSequence);
-                return true;
-            }
-            clientId = messageContext.clientId.Value;
+            bool ret = authenticator.GetClientId(this, messageContext);
+            clientId = messageContext.clientId;
             return true;
         }
+    }
+    
+    public interface IClientIdProvider {
+        JsonKey NewClientId();
     }
     
     public delegate string CustomContainerName(string name);
