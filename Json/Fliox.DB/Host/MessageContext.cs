@@ -20,6 +20,7 @@ namespace Friflo.Json.Fliox.DB.Host
     {
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
         public              JsonKey?        userId;
+        public              JsonKey?        clientId;
         public  readonly    IPools          pools;
         public  readonly    IEventTarget    eventTarget;
         public              AuthState       authState;
@@ -34,11 +35,12 @@ namespace Friflo.Json.Fliox.DB.Host
             this.eventTarget    = eventTarget;
         }
         
-        public MessageContext (IPools pools, IEventTarget eventTarget, in JsonKey userId) {
+        public MessageContext (IPools pools, IEventTarget eventTarget, in JsonKey userId, in JsonKey clientId) {
             this.pools          = pools;
             startUsage          = pools.PoolUsage;
             this.eventTarget    = eventTarget;
             this.userId         = userId;
+            this.clientId       = clientId;
         }
         
         public void Cancel() {

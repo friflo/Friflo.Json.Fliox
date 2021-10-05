@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// a <see cref="typeStore"/>. <see cref="TypeStore"/> instances are designed to be reused from multiple threads.
         /// Their creation is expensive compared to the instantiation of an <see cref="EntityStore"/>. 
         /// </summary>
-        public EntityStore(EntityDatabase database, TypeStore typeStore, string userId)
+        public EntityStore(EntityDatabase database, TypeStore typeStore, string userId, string clientId = null)
         {
             if (database  == null) throw new ArgumentNullException(nameof(database));
             if (typeStore == null) throw new ArgumentNullException(nameof(typeStore));
@@ -54,8 +54,9 @@ namespace Friflo.Json.Fliox.DB.Client
             ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
             var subscriptionProcessor   = new SubscriptionProcessor(this);
-            var userIdKey = new JsonKey(userId);
-            _intern = new StoreIntern(userIdKey, typeStore, database, tracer, eventTarget, subscriptionProcessor);
+            var userIdKey               = new JsonKey(userId);
+            var clientIdKey             = new JsonKey(clientId);
+            _intern = new StoreIntern(userIdKey, clientIdKey, typeStore, database, tracer, eventTarget, subscriptionProcessor);
             _intern.syncStore = new SyncStore();
             database.AddEventTarget(userIdKey, eventTarget);
             StoreUtils.InitEntitySets(this);
@@ -80,7 +81,7 @@ namespace Friflo.Json.Fliox.DB.Client
         // --- Sync / TrySync
         public async Task<SyncResult> Sync() {
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
-            var messageContext  = new MessageContext(_intern.pools, _intern.eventTarget, _intern.userId);
+            var messageContext  = new MessageContext(_intern.pools, _intern.eventTarget, _intern.userId, _intern.clientId);
             var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
             
             var result = HandleSyncResponse(syncRequest, response, syncStore);
@@ -92,7 +93,7 @@ namespace Friflo.Json.Fliox.DB.Client
         
         public async Task<SyncResult> TrySync() {
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
-            var messageContext  = new MessageContext(_intern.pools, _intern.eventTarget, _intern.userId);
+            var messageContext  = new MessageContext(_intern.pools, _intern.eventTarget, _intern.userId, _intern.clientId);
             var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
             
             var result = HandleSyncResponse(syncRequest, response, syncStore);
