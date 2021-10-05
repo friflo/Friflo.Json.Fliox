@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             messageContext.authState.SetSuccess(UnknownRights);
             return Task.CompletedTask;
         }
-        public override bool GetClientId(IClientIdProvider clientIdProvider, MessageContext messageContext) {
+        public override bool EnsureClientId(IClientIdProvider clientIdProvider, MessageContext messageContext) {
             return true;
         }
     }

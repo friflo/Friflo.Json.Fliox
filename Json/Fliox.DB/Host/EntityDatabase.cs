@@ -128,7 +128,7 @@ namespace Friflo.Json.Fliox.DB.Host
             messageContext.userId   = syncRequest.userId;
             messageContext.clientId = syncRequest.clientId;
             await authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
-            
+            authenticator.EnsureClientId(this, messageContext);
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null)
                 return new MsgResponse<SyncResponse> ("missing field: tasks (array)");
@@ -236,12 +236,6 @@ namespace Friflo.Json.Fliox.DB.Host
         
         public JsonKey NewClientId() {
             return new JsonKey(++clientIdSequence);
-        }
-        
-        internal bool GetClientId(MessageContext messageContext, out JsonKey clientId) {
-            bool ret = authenticator.GetClientId(this, messageContext);
-            clientId = messageContext.clientId;
-            return true;
         }
     }
     
