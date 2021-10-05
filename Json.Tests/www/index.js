@@ -95,7 +95,9 @@ export function sendSyncRequest() {
             var request     = JSON.parse(jsonRequest);
             request.req     = req;
             request.ack     = subSeq;
-            request.clt     = clt;
+            if (clt) {
+                request.clt     = clt;
+            }
             jsonRequest = JSON.stringify(request);                
         } catch { }
         responseState.innerHTML = '<span class="spinner"></span>';
