@@ -32,6 +32,7 @@ export abstract class ProtocolRequest extends ProtocolMessage {
         | "sync"
     ;
     req? : int32 | null;
+    clt? : string | null;
 }
 
 export class SyncRequest extends ProtocolRequest {
@@ -179,6 +180,7 @@ export abstract class ProtocolResponse extends ProtocolMessage {
         | "error"
     ;
     req? : int32 | null;
+    clt? : string | null;
 }
 
 export class SyncResponse extends ProtocolResponse {

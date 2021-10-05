@@ -8,6 +8,7 @@
             "properties": {
                 "type":  { "enum": ["sync"] },
                 "req":   { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
+                "clt":   { "type": ["string", "null"] },
                 "user":  { "type": ["string", "null"] },
                 "token": { "type": ["string", "null"] },
                 "ack":   { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
@@ -258,6 +259,7 @@
             "properties": {
                 "type":         { "enum": ["syncResp"] },
                 "req":          { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
+                "clt":          { "type": ["string", "null"] },
                 "tasks":        { "type": ["array", "null"], "items": { "$ref": "#/definitions/SyncTaskResult" } },
                 "results":      { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" } },
                 "createErrors": { "type": "object", "additionalProperties": { "$ref": "#/definitions/EntityErrors" } },
@@ -537,6 +539,7 @@
             "properties": {
                 "type":    { "enum": ["error"] },
                 "req":     { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
+                "clt":     { "type": ["string", "null"] },
                 "message": { "type": ["string", "null"] }
             },
             "required": [

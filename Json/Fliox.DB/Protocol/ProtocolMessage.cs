@@ -65,7 +65,10 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// anythings else with it.
         /// </summary>
         [Fri.Property(Name =               "req")]
-                        public  int?        reqId   { get; set; }
+                        public  int?        reqId       { get; set; }
+        [Fri.Property(Name =               "clt")]
+                        public  JsonKey?    clientId    { get; set; }
+
     }
     
     // ----------------------------------- response -----------------------------------
@@ -75,8 +78,10 @@ namespace Friflo.Json.Fliox.DB.Protocol
     public abstract class ProtocolResponse : ProtocolMessage {
         // ReSharper disable once InconsistentNaming
         /// <summary>Set to the value of the corresponding <see cref="ProtocolRequest.reqId"/></summary>
-        [Fri.Property(Name =               "req")] 
-                        public  int?        reqId   { get; set; }
+        [Fri.Property(Name =               "req")]
+                        public  int?        reqId       { get; set; }
+        [Fri.Property(Name =               "clt")]
+                        public  JsonKey?    clientId    { get; set; }
     }
     
     // ----------------------------------- event -----------------------------------

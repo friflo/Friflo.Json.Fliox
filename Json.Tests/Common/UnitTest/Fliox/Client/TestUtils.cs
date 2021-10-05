@@ -158,7 +158,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 await store.Sync(); // ~ 1 µs
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var expected = IsDebug() ? 1488 : 1400; // Test Debug & Release
+                var expected = IsDebug() ? 1584 : 1496; // Test Debug & Release
                 AreEqual(expected, diff);   // Test Release also
             }
         }
@@ -182,7 +182,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                     await store.Sync();
                 }
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var expected = IsDebug() ? Is.InRange(61288, 61760) : Is.InRange(58352, 58792); // Test Debug & Release
+                var expected = IsDebug() ? Is.InRange(61288, 61896) : Is.InRange(58352, 58928); // Test Debug & Release
                 That(diff, expected);
             }
         }

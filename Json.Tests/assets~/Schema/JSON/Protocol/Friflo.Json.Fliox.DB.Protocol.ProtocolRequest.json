@@ -9,7 +9,8 @@
                 { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/SyncRequest" }
             ],
             "properties": {
-                "req": { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] }
+                "req": { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
+                "clt": { "type": ["string", "null"] }
             },
             "additionalProperties": true
         }
