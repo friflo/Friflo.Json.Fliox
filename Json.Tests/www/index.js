@@ -14,6 +14,7 @@ const subscriptionSeq   = document.getElementById("subscriptionSeq");
 const selectExample     = document.getElementById("example");
 const socketStatus      = document.getElementById("socketStatus");
 const reqIdElement      = document.getElementById("reqId");
+const ackElement        = document.getElementById("ack");
 const defaultUser       = document.getElementById("user");
 const defaultToken      = document.getElementById("token");
 
@@ -77,7 +78,8 @@ export function closeWebsocket() {
 }
 
 export function sendSyncRequest() {
-    reqIdElement.innerText = reqId;
+    reqIdElement.innerText  = reqId;
+    ackElement.innerText    = subSeq;
     if (!connection || connection.readyState != 1) { // 1 == OPEN {
         responseModel.setValue(`Request ${reqId} failed. WebSocket not connected`)
         responseState.innerHTML = "";
