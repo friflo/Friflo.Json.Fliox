@@ -84,8 +84,8 @@ namespace Friflo.Json.Fliox.DB.Host
             }
         }
         
-        public virtual void AddEventTarget     (in JsonKey userId, IEventTarget eventTarget) {}
-        public virtual void RemoveEventTarget  (in JsonKey userId) {}
+        public virtual void AddEventTarget     (in JsonKey clientId, IEventTarget eventTarget) {}
+        public virtual void RemoveEventTarget  (in JsonKey clientId) {}
 
         internal void AddContainer(EntityContainer container)
         {
