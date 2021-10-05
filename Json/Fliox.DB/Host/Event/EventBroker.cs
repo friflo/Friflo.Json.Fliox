@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
     public sealed class EventBroker : IDisposable
     {
         private  readonly   JsonEvaluator                                   jsonEvaluator;
-        /// key: <see cref="EventSubscriber.dstId"/>
+        /// key: <see cref="EventSubscriber.clientId"/>
         private  readonly   ConcurrentDictionary<JsonKey, EventSubscriber>  subscribers;
         internal readonly   bool                                            background;
 
@@ -49,22 +49,22 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         }
         
         // -------------------------------- add / remove subscriptions --------------------------------
-        internal void SubscribeMessage(SubscribeMessage subscribe, in JsonKey userId, IEventTarget eventTarget) {
+        internal void SubscribeMessage(SubscribeMessage subscribe, in JsonKey clientId, IEventTarget eventTarget) {
             EventSubscriber subscriber;
             var remove = subscribe.remove;
             var prefix = Protocol.SubscribeMessage.GetPrefix(subscribe.name);
             if (remove.HasValue && remove.Value) {
-                if (!subscribers.TryGetValue(userId, out subscriber))
+                if (!subscribers.TryGetValue(clientId, out subscriber))
                     return;
                 if (prefix == null) {
                     subscriber.messageSubscriptions.Remove(subscribe.name);
                 } else {
                     subscriber.messagePrefixSubscriptions.Remove(prefix);
                 }
-                RemoveEmptySubscriber(subscriber, userId);
+                RemoveEmptySubscriber(subscriber, clientId);
                 return;
             }
-            subscriber = GetOrCreateSubscriber(userId, eventTarget);
+            subscriber = GetOrCreateSubscriber(clientId, eventTarget);
             if (prefix == null) {
                 subscriber.messageSubscriptions.Add(subscribe.name);
             } else {
@@ -72,32 +72,32 @@ namespace Friflo.Json.Fliox.DB.Host.Event
             }
         }
 
-        internal void SubscribeChanges (SubscribeChanges subscribe, in JsonKey userId, IEventTarget eventTarget) {
+        internal void SubscribeChanges (SubscribeChanges subscribe, in JsonKey clientId, IEventTarget eventTarget) {
             EventSubscriber subscriber;
             if (subscribe.changes.Count == 0) {
-                if (!subscribers.TryGetValue(userId, out subscriber))
+                if (!subscribers.TryGetValue(clientId, out subscriber))
                     return;
                 subscriber.changeSubscriptions.Remove(subscribe.container);
-                RemoveEmptySubscriber(subscriber, userId);
+                RemoveEmptySubscriber(subscriber, clientId);
                 return;
             }
-            subscriber = GetOrCreateSubscriber(userId, eventTarget);
+            subscriber = GetOrCreateSubscriber(clientId, eventTarget);
             subscriber.changeSubscriptions[subscribe.container] = subscribe;
         }
         
-        private EventSubscriber GetOrCreateSubscriber(in JsonKey userId, IEventTarget eventTarget) {
-            subscribers.TryGetValue(userId, out EventSubscriber subscriber);
+        private EventSubscriber GetOrCreateSubscriber(in JsonKey clientId, IEventTarget eventTarget) {
+            subscribers.TryGetValue(clientId, out EventSubscriber subscriber);
             if (subscriber != null)
                 return subscriber;
-            subscriber = new EventSubscriber(userId, eventTarget, background);
-            subscribers.TryAdd(userId, subscriber);
+            subscriber = new EventSubscriber(clientId, eventTarget, background);
+            subscribers.TryAdd(clientId, subscriber);
             return subscriber;
         }
         
-        private void RemoveEmptySubscriber(EventSubscriber subscriber, in JsonKey userId) {
+        private void RemoveEmptySubscriber(EventSubscriber subscriber, in JsonKey clientId) {
             if (subscriber.SubscriptionCount > 0)
                 return;
-            subscribers.TryRemove(userId, out _);
+            subscribers.TryRemove(clientId, out _);
         }
         
         
@@ -114,11 +114,11 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         }
         
         private void ProcessSubscriber(SyncRequest syncRequest, IEventTarget eventTarget) {
-            JsonKey  userId = new JsonKey(syncRequest.userId);
-            if (userId.IsNull())
+            JsonKey  clientId = new JsonKey(syncRequest.clientId);
+            if (clientId.IsNull())
                 return;
             
-            if (!subscribers.TryGetValue(userId, out var subscriber))
+            if (!subscribers.TryGetValue(clientId, out var subscriber))
                 return;
             
             if (eventTarget != null) {
@@ -151,11 +151,11 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                     if (subscriber.SubscriptionCount == 0)
                         throw new InvalidOperationException("Expect SubscriptionCount > 0");
                     
-                    if (syncRequest.userId == null)
+                    if (syncRequest.clientId == null)
                         continue;
-                    JsonKey userId = syncRequest.userId.Value;
+                    JsonKey clientId = syncRequest.clientId.Value;
                     // Enqueue only change events for (change) tasks which are not send by the client itself
-                    bool subscriberIsSender = userId.IsEqual(subscriber.dstId);
+                    bool subscriberIsSender = clientId.IsEqual(subscriber.clientId);
                     
                     foreach (var task in syncRequest.tasks) {
                         foreach (var changesPair in subscriber.changeSubscriptions) {
@@ -178,8 +178,8 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                         continue;
                     var subscriptionEvent = new SubscriptionEvent {
                         tasks   = tasks.ToArray(),
-                        srcId   = userId,
-                        dstId   = subscriber.dstId
+                        srcId   = clientId,
+                        dstId   = subscriber.clientId
                     };
                     if (SerializeRemoteEvents && subscriber.IsRemoteTarget) {
                         SerializeRemoteEvent(subscriptionEvent, tasks, writer);

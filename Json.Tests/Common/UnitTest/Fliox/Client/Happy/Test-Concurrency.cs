@@ -166,7 +166,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             try {
                 var typeStore = new TypeStore();
                 for (int n = 0; n < clientCount; n++) {
-                    stores.Add(new EntityStore(database, typeStore,$"reader-{n}"));
+                    stores.Add(new EntityStore(database, typeStore, null, $"reader-{n}"));
                 }
                 var tasks = new List<Task>();
                 
@@ -200,7 +200,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     {
         public readonly EntitySet <int, SimplyEntity>   entities;
         
-        public SimpleStore(EntityDatabase database, TypeStore typeStore, string userId) : base (database, typeStore, userId) {}
+        public SimpleStore(EntityDatabase database, TypeStore typeStore, string clientId) : base (database, typeStore, null, clientId) {}
     }
     
     // ------------------------------ models ------------------------------

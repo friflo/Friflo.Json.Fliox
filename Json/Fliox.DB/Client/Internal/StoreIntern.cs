@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             // messageReader.Dispose();
             subscriptionsPrefix.Clear();
             subscriptions.Clear();
-            database.RemoveEventTarget(userId);
+            database.RemoveEventTarget(clientId);
             setByName.Clear();
             setByType.Clear();
             processor.Dispose();

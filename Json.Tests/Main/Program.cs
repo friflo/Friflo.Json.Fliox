@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Main
         
         private static UserAuthenticator CreateUserAuthenticator () {
             var userDatabase    = new FileDatabase("./Json.Tests/assets~/DB/UserStore");
-            var authUserStore   = new UserStore (userDatabase, UserStore.AuthUser);
+            var authUserStore   = new UserStore (userDatabase, UserStore.AuthUser, null);
             var _               = new UserDatabaseHandler   (userDatabase);
             return new UserAuthenticator(authUserStore, authUserStore);
         }

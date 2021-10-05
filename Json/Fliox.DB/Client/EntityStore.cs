@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// a <see cref="typeStore"/>. <see cref="TypeStore"/> instances are designed to be reused from multiple threads.
         /// Their creation is expensive compared to the instantiation of an <see cref="EntityStore"/>. 
         /// </summary>
-        public EntityStore(EntityDatabase database, TypeStore typeStore, string userId, string clientId = null)
+        public EntityStore(EntityDatabase database, TypeStore typeStore, string userId, string clientId)
         {
             if (database  == null) throw new ArgumentNullException(nameof(database));
             if (typeStore == null) throw new ArgumentNullException(nameof(typeStore));
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.DB.Client
             var clientIdKey             = new JsonKey(clientId);
             _intern = new StoreIntern(userIdKey, clientIdKey, typeStore, database, tracer, eventTarget, subscriptionProcessor);
             _intern.syncStore = new SyncStore();
-            database.AddEventTarget(userIdKey, eventTarget);
+            database.AddEventTarget(clientIdKey, eventTarget);
             StoreUtils.InitEntitySets(this);
         }
         
@@ -338,6 +338,7 @@ namespace Friflo.Json.Fliox.DB.Client
             var syncRequest = new SyncRequest {
                 tasks       = tasks,
                 userId      = _intern.userId,
+                clientId    = _intern.clientId, 
                 token       = _intern.token 
             };
 

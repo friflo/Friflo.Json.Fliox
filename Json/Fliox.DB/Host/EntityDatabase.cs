@@ -125,7 +125,8 @@ namespace Friflo.Json.Fliox.DB.Host
         /// </para>
         /// </summary>
         public virtual async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            messageContext.userId = syncRequest.userId;
+            messageContext.userId   = syncRequest.userId;
+            messageContext.clientId = syncRequest.clientId;
             await authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
             
             var requestTasks = syncRequest.tasks;

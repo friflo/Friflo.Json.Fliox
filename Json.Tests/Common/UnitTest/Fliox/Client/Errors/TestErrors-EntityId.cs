@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class TypeMismatchStore : EntityStore {
         public  readonly    EntitySet <long, IntEntity> intEntities;
 
-        public TypeMismatchStore(EntityDatabase database, TypeStore typeStore, string userId) : base(database, typeStore, userId) {}
+        public TypeMismatchStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, null, clientId) {}
     }
     
     // --------
@@ -74,7 +74,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         // ReSharper disable once UnassignedReadonlyField
         public  readonly    EntitySet <long, IntEntity2> intEntities; // test without assignment
 
-        public TypeMismatchStore2(EntityDatabase database, TypeStore typeStore, string userId) : base(database, typeStore, userId) {}
+        public TypeMismatchStore2(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, null, clientId) {}
     }
 
     // --------
@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class UnsupportedKeyTypeStore : EntityStore {
         public  readonly    EntitySet <char, CharEntity>    charEntities;
 
-        public UnsupportedKeyTypeStore(EntityDatabase database, TypeStore typeStore, string userId) : base(database, typeStore, userId) {}
+        public UnsupportedKeyTypeStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, null, clientId) {}
     }
     
     // --------
@@ -97,6 +97,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class InvalidMemberStore : EntityStore {
         public  readonly    EntitySet <string,    StringEntity> stringEntities;
 
-        public InvalidMemberStore(EntityDatabase database, TypeStore typeStore, string userId) : base(database, typeStore, userId) {}
+        public InvalidMemberStore(EntityDatabase database, TypeStore typeStore, string clientId) : base(database, typeStore, null, clientId) {}
     }
 }

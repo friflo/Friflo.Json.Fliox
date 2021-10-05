@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
     }
     
     public sealed class EventSubscriber {
-        internal readonly   JsonKey                                 dstId;
+        internal readonly   JsonKey                                 clientId;
         private             IEventTarget                            eventTarget;
         /// key: <see cref="SubscribeChanges.container"/>
         internal readonly   Dictionary<string, SubscribeChanges>    changeSubscriptions         = new Dictionary<string, SubscribeChanges>();
@@ -40,14 +40,14 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         internal readonly   Task                                    triggerLoop;
         private  readonly   DataChannelWriter<TriggerType>          triggerWriter;
 
-        public   override   string                                  ToString() => dstId.ToString();
+        public   override   string                                  ToString() => clientId.ToString();
         
         /// used for test assertion
         public              int                                     SentEventsCount => sentEvents.Count;
         internal            bool                                    IsRemoteTarget => eventTarget is WebSocketHostTarget;
 
-        public EventSubscriber (in JsonKey dstId, IEventTarget eventTarget, bool background) {
-            this.dstId          = dstId;
+        public EventSubscriber (in JsonKey clientId, IEventTarget eventTarget, bool background) {
+            this.clientId       = clientId;
             this.eventTarget    = eventTarget;
             this.background     = background;
             if (!this.background)
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
             if (this.eventTarget == null) throw new NullReferenceException(nameof(eventTarget));
             if (this.eventTarget == eventTarget)
                 return;
-            Console.WriteLine($"EventSubscriber: eventTarget changed. dstId: {dstId}");
+            Console.WriteLine($"EventSubscriber: eventTarget changed. dstId: {clientId}");
             this.eventTarget = eventTarget;
         }
         
