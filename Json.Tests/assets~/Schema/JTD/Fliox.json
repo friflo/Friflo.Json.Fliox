@@ -15,7 +15,7 @@
         },
         "SyncRequest": {
             "properties": {
-                "reqId": { "type": "int32", "nullable": true },
+                "req":   { "type": "int32", "nullable": true },
                 "user":  { "type": "string", "nullable": true },
                 "token": { "type": "string", "nullable": true },
                 "ack":   { "type": "int32", "nullable": true },
@@ -29,7 +29,7 @@
                 "sync": { "ref":  "SyncRequest" }
             },
             "properties": {
-                "reqId": { "type": "int32", "nullable": true }
+                "req": { "type": "int32", "nullable": true }
             }
         },
         "SyncRequestTask": {
@@ -549,7 +549,7 @@
         },
         "SyncResponse": {
             "properties": {
-                "reqId":        { "type": "int32", "nullable": true },
+                "req":          { "type": "int32", "nullable": true },
                 "tasks":        { "elements": { "ref":  "SyncTaskResult" }, "nullable": true },
                 "results":      { "elements": { "ref":  "ContainerEntities" }, "nullable": true },
                 "createErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
@@ -566,7 +566,7 @@
                 "error":    { "ref":  "ErrorResponse" }
             },
             "properties": {
-                "reqId": { "type": "int32", "nullable": true }
+                "req": { "type": "int32", "nullable": true }
             }
         },
         "SyncTaskResult": {
@@ -719,7 +719,7 @@
         },
         "ErrorResponse": {
             "properties": {
-                "reqId":   { "type": "int32", "nullable": true },
+                "req":     { "type": "int32", "nullable": true },
                 "message": { "type": "string", "nullable": true }
             }
         },

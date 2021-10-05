@@ -3,7 +3,7 @@
 // --------------------------------------- WebSocket ---------------------------------------
 var connection;
 var websocketCount = 0;
-var reqId = 1;
+var req = 1;
 var requestStart;
 var subSeq   = 0;
 var subCount = 0;
@@ -13,7 +13,7 @@ const subscriptionCount = document.getElementById("subscriptionCount");
 const subscriptionSeq   = document.getElementById("subscriptionSeq");
 const selectExample     = document.getElementById("example");
 const socketStatus      = document.getElementById("socketStatus");
-const reqIdElement      = document.getElementById("reqId");
+const reqIdElement      = document.getElementById("req");
 const ackElement        = document.getElementById("ack");
 const defaultUser       = document.getElementById("user");
 const defaultToken      = document.getElementById("token");
@@ -38,7 +38,7 @@ export function connectWebsocket() {
     connection.onopen = function () {
         socketStatus.innerText = "connected 🟢";
         console.log('WebSocket connected');
-        reqId       = 1;
+        req         = 1;
         subCount    = 0;
     };
 
@@ -78,10 +78,10 @@ export function closeWebsocket() {
 }
 
 export function sendSyncRequest() {
-    reqIdElement.innerText  = reqId;
+    reqIdElement.innerText  = req;
     ackElement.innerText    = subSeq ? subSeq : "-";
     if (!connection || connection.readyState != 1) { // 1 == OPEN {
-        responseModel.setValue(`Request ${reqId} failed. WebSocket not connected`)
+        responseModel.setValue(`Request ${req} failed. WebSocket not connected`)
         responseState.innerHTML = "";
     } else {
         var jsonRequest = requestModel.getValue();
@@ -89,7 +89,7 @@ export function sendSyncRequest() {
         jsonRequest = jsonRequest.replace("{{token}}", defaultToken.value);
         try {
             var request     = JSON.parse(jsonRequest);
-            request.reqId   = reqId;
+            request.req     = req;
             request.ack     = subSeq;
             jsonRequest = JSON.stringify(request);                
         } catch { }
@@ -97,7 +97,7 @@ export function sendSyncRequest() {
         connection.send(jsonRequest);
         requestStart = new Date().getTime();
     }
-    reqId++;
+    req++;
 }
 
 export async function onExampleChange() {

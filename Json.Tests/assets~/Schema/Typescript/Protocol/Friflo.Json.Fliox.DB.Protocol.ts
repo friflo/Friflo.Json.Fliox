@@ -31,7 +31,7 @@ export abstract class ProtocolRequest extends ProtocolMessage {
     abstract type:
         | "sync"
     ;
-    reqId? : int32 | null;
+    req? : int32 | null;
 }
 
 export class SyncRequest extends ProtocolRequest {
@@ -178,7 +178,7 @@ export abstract class ProtocolResponse extends ProtocolMessage {
         | "syncResp"
         | "error"
     ;
-    reqId? : int32 | null;
+    req? : int32 | null;
 }
 
 export class SyncResponse extends ProtocolResponse {

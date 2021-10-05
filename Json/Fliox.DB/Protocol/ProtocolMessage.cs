@@ -64,6 +64,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// The host itself only echos the <see cref="reqId"/> to <see cref="ProtocolResponse.reqId"/> and doesn't do
         /// anythings else with it.
         /// </summary>
+        [Fri.Property(Name =               "req")]
                         public  int?        reqId   { get; set; }
     }
     
@@ -74,6 +75,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     public abstract class ProtocolResponse : ProtocolMessage {
         // ReSharper disable once InconsistentNaming
         /// <summary>Set to the value of the corresponding <see cref="ProtocolRequest.reqId"/></summary>
+        [Fri.Property(Name =               "req")] 
                         public  int?        reqId   { get; set; }
     }
     

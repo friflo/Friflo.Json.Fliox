@@ -10,7 +10,7 @@
                 { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/ErrorResponse" }
             ],
             "properties": {
-                "reqId": { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] }
+                "req": { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] }
             },
             "additionalProperties": true
         }

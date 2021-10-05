@@ -15,7 +15,7 @@ abstract class ProtocolMessage  {
 @Serializable
 @SerialName("sync")
 data class SyncRequest (
-    override  val reqId : Int? = null,
+    override  val req   : Int? = null,
               val user  : String? = null,
               val token : String? = null,
               val ack   : Int? = null,
@@ -26,7 +26,7 @@ data class SyncRequest (
 @Serializable
 // @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
 abstract class ProtocolRequest  : ProtocolMessage() {
-    abstract  val reqId : Int?
+    abstract  val req : Int?
 }
 
 @Serializable
@@ -158,7 +158,7 @@ data class ReserveKeys (
 @Serializable
 @SerialName("syncResp")
 data class SyncResponse (
-    override  val reqId        : Int? = null,
+    override  val req          : Int? = null,
               val tasks        : List<SyncTaskResult>? = null,
               val results      : List<ContainerEntities>? = null,
               val createErrors : HashMap<String, EntityErrors>? = null,
@@ -171,7 +171,7 @@ data class SyncResponse (
 @Serializable
 // @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
 abstract class ProtocolResponse  : ProtocolMessage() {
-    abstract  val reqId : Int?
+    abstract  val req : Int?
 }
 
 @Serializable
@@ -319,7 +319,7 @@ data class EntityErrors (
 @Serializable
 @SerialName("error")
 data class ErrorResponse (
-    override  val reqId   : Int? = null,
+    override  val req     : Int? = null,
               val message : String? = null,
 ) : ProtocolResponse()
 

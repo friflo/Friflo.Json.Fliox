@@ -7,7 +7,7 @@
             "extends": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.ProtocolRequest.json#/definitions/ProtocolRequest" },
             "properties": {
                 "type":  { "enum": ["sync"] },
-                "reqId": { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
+                "req":   { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "user":  { "type": ["string", "null"] },
                 "token": { "type": ["string", "null"] },
                 "ack":   { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
@@ -257,7 +257,7 @@
             "extends": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.ProtocolResponse.json#/definitions/ProtocolResponse" },
             "properties": {
                 "type":         { "enum": ["syncResp"] },
-                "reqId":        { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
+                "req":          { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "tasks":        { "type": ["array", "null"], "items": { "$ref": "#/definitions/SyncTaskResult" } },
                 "results":      { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" } },
                 "createErrors": { "type": "object", "additionalProperties": { "$ref": "#/definitions/EntityErrors" } },
@@ -536,7 +536,7 @@
             "extends": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.ProtocolResponse.json#/definitions/ProtocolResponse" },
             "properties": {
                 "type":    { "enum": ["error"] },
-                "reqId":   { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
+                "req":     { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "message": { "type": ["string", "null"] }
             },
             "required": [
