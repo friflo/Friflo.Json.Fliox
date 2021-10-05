@@ -99,8 +99,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/"))
             using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
-                    using (var createStore      = new PocStore(remoteDatabase, "createStore"))
-                    using (var useStore         = new PocStore(remoteDatabase, "useStore")) {
+                    using (var createStore      = new PocStore(remoteDatabase, "createStore", "create-client"))
+                    using (var useStore         = new PocStore(remoteDatabase, "useStore", "use-client")) {
                         await TestRelationPoC.CreateStore(createStore);
                         await TestStores(createStore, useStore);
                     }
@@ -123,13 +123,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/"))
             using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/"))
-            using (var listenDb         = new PocStore(remoteDatabase, "listenDb")) {
+            using (var listenDb         = new PocStore(remoteDatabase, "listenDb", "listen-client")) {
                 fileDatabase.eventBroker = eventBroker;
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
                     var listenProcessor     = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
-                    using (var createStore  = new PocStore(remoteDatabase, "create-client", "createStore"))
-                    using (var useStore     = new PocStore(remoteDatabase, "useStore")) {
+                    using (var createStore  = new PocStore(remoteDatabase, "createStore", "create-client"))
+                    using (var useStore     = new PocStore(remoteDatabase, "useStore", "use-client")) {
                         var createSubscriber = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
                         await TestRelationPoC.CreateStore(createStore);
                         
@@ -156,13 +156,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/"))
             using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/"))
-            using (var listenDb         = new PocStore(remoteDatabase, "listenDb")) {
+            using (var listenDb         = new PocStore(remoteDatabase, "listenDb", "listen-client")) {
                 hostDatabase.fakeOpenClosedSockets = true;
                 fileDatabase.eventBroker = eventBroker;
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
                     var listenProcessor    = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
-                    using (var createStore  = new PocStore(fileDatabase, "create-client", "createStore")) {
+                    using (var createStore  = new PocStore(fileDatabase, "createStore", "create-client")) {
                         await remoteDatabase.Close();
                         // all change events sent by createStore doesnt arrive at listenDb
                         await TestRelationPoC.CreateStore(createStore);
@@ -204,11 +204,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var eventBroker      = new EventBroker(false))
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase))
-            using (var listenDb         = new PocStore(fileDatabase, "listenDb")) {
+            using (var listenDb         = new PocStore(fileDatabase, "listenDb", "listen-client")) {
                 fileDatabase.eventBroker    = eventBroker;
                 var listenProcessor        = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
-                using (var createStore      = new PocStore(loopbackDatabase, "create-client", "createStore"))
-                using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
+                using (var createStore      = new PocStore(loopbackDatabase, "createStore", "create-client"))
+                using (var useStore         = new PocStore(loopbackDatabase, "useStore", "use-client")) {
                     var createSubscriber        = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
                     

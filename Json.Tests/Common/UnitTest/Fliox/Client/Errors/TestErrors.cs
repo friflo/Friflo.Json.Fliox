@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var testDatabase     = new TestDatabase(fileDatabase))
             using (var loopbackDatabase = new LoopbackDatabase(testDatabase))
-            using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
+            using (var useStore         = new PocStore(loopbackDatabase, "useStore", "use-client")) {
                 await TestStoresErrors(useStore, testDatabase);
             }
         }
@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             using (var hostDatabase = new HttpHostDatabase(testDatabase, "http://+:8080/")) {
                 await Happy.TestStore.RunRemoteHost(hostDatabase, async () => {
                     using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/"))
-                    using (var useStore         = new PocStore(remoteDatabase, "useStore")) {
+                    using (var useStore         = new PocStore(remoteDatabase, "useStore", "use-client")) {
                         await TestStoresErrors(useStore, testDatabase);
                     }
                 });

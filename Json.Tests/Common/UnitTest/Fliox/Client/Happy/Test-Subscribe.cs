@@ -36,10 +36,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var eventBroker  = new EventBroker(false))
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var listenDb     = new PocStore(fileDatabase, "listenDb")) {
+            using (var listenDb     = new PocStore(fileDatabase, "listenDb", "listen-client")) {
                 fileDatabase.eventBroker = eventBroker;
                 var listenProcessor   = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
-                using (var createStore  = new PocStore(fileDatabase, "create-client", "createStore")) {
+                using (var createStore  = new PocStore(fileDatabase, "createStore", "create-client")) {
                     var createProcessor = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
                     
