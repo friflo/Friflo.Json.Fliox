@@ -169,6 +169,8 @@ namespace Friflo.Json.Fliox.DB.Host
                     tasks.Add(result);
                 }
             }
+            response.clientId = messageContext.clientId;
+            
             SetContainerResults(response);
             response.AssertResponse(syncRequest);
             
@@ -227,6 +229,12 @@ namespace Friflo.Json.Fliox.DB.Host
                 }
             }
             resultMap.Clear();
+        }
+        
+        private long clientIdSequence;
+        
+        internal JsonKey NewClientId() {
+            return new JsonKey(++clientIdSequence);
         }
     }
     

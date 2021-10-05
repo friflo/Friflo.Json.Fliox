@@ -4,6 +4,7 @@
 var connection;
 var websocketCount = 0;
 var req = 1;
+var clt = null;
 var requestStart;
 var subSeq   = 0;
 var subCount = 0;
@@ -15,6 +16,7 @@ const selectExample     = document.getElementById("example");
 const socketStatus      = document.getElementById("socketStatus");
 const reqIdElement      = document.getElementById("req");
 const ackElement        = document.getElementById("ack");
+const cltElement        = document.getElementById("clt");
 const defaultUser       = document.getElementById("user");
 const defaultToken      = document.getElementById("token");
 
@@ -61,13 +63,15 @@ export function connectWebsocket() {
         switch (data.type){ 
             case "syncResp":
             case "error":
+                clt = data.clt;
+                cltElement.innerText  = clt ?? " - ";
                 responseModel.setValue(e.data)
                 responseState.innerHTML = `· ${duration} ms`;
                 break;
             case "sub":
                 subscriptionCount.innerText = ++subCount;
                 subSeq = data.seq;
-                subscriptionSeq.innerText = subSeq ? subSeq : "-";
+                subscriptionSeq.innerText = subSeq ? subSeq : " - ";
                 break;
         }
     };
@@ -79,7 +83,7 @@ export function closeWebsocket() {
 
 export function sendSyncRequest() {
     reqIdElement.innerText  = req;
-    ackElement.innerText    = subSeq ? subSeq : "-";
+    ackElement.innerText    = subSeq ? subSeq : " - ";
     if (!connection || connection.readyState != 1) { // 1 == OPEN {
         responseModel.setValue(`Request ${req} failed. WebSocket not connected`)
         responseState.innerHTML = "";
@@ -91,6 +95,7 @@ export function sendSyncRequest() {
             var request     = JSON.parse(jsonRequest);
             request.req     = req;
             request.ack     = subSeq;
+            request.clt     = clt;
             jsonRequest = JSON.stringify(request);                
         } catch { }
         responseState.innerHTML = '<span class="spinner"></span>';
