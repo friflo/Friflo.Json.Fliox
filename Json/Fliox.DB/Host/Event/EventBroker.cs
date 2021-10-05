@@ -113,14 +113,14 @@ namespace Friflo.Json.Fliox.DB.Host.Event
             }
         }
         
-        private void ProcessSubscriber(SyncRequest syncRequest, IEventTarget eventTarget) {
-            JsonKey  clientId = syncRequest.clientId;
+        private void ProcessSubscriber(SyncRequest syncRequest, MessageContext messageContext) {
+            JsonKey  clientId = messageContext.clientId;
             if (clientId.IsNull())
                 return;
             
             if (!subscribers.TryGetValue(clientId, out var subscriber))
                 return;
-            
+            var eventTarget = messageContext.eventTarget;
             if (eventTarget != null) {
                 subscriber.UpdateTarget (eventTarget);
             }
@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         }
 
         internal void EnqueueSyncTasks (SyncRequest syncRequest, MessageContext messageContext) {
-            ProcessSubscriber (syncRequest, messageContext.eventTarget);
+            ProcessSubscriber (syncRequest, messageContext);
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 ObjectWriter writer = pooledMapper.instance.writer;
                 writer.Pretty           = false;    // write sub's as one liner
@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                         continue;
                     var subscriptionEvent = new SubscriptionEvent {
                         tasks   = tasks.ToArray(),
-                        srcId   = clientId,
+                        srcId   = messageContext.userId,
                         dstId   = subscriber.clientId
                     };
                     if (SerializeRemoteEvents && subscriber.IsRemoteTarget) {

@@ -128,7 +128,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
                     var listenProcessor     = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
-                    using (var createStore  = new PocStore(remoteDatabase, "createStore"))
+                    using (var createStore  = new PocStore(remoteDatabase, "create-client", "createStore"))
                     using (var useStore     = new PocStore(remoteDatabase, "useStore")) {
                         var createSubscriber = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
                         await TestRelationPoC.CreateStore(createStore);
@@ -162,7 +162,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();
                     var listenProcessor    = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
-                    using (var createStore  = new PocStore(fileDatabase, "createStore")) {
+                    using (var createStore  = new PocStore(fileDatabase, "create-client", "createStore")) {
                         await remoteDatabase.Close();
                         // all change events sent by createStore doesnt arrive at listenDb
                         await TestRelationPoC.CreateStore(createStore);
@@ -207,7 +207,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var listenDb         = new PocStore(fileDatabase, "listenDb")) {
                 fileDatabase.eventBroker    = eventBroker;
                 var listenProcessor        = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
-                using (var createStore      = new PocStore(loopbackDatabase, "createStore"))
+                using (var createStore      = new PocStore(loopbackDatabase, "create-client", "createStore"))
                 using (var useStore         = new PocStore(loopbackDatabase, "useStore")) {
                     var createSubscriber        = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
