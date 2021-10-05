@@ -233,8 +233,13 @@ namespace Friflo.Json.Fliox.DB.Host
         
         private long clientIdSequence;
         
-        internal JsonKey NewClientId() {
-            return new JsonKey(++clientIdSequence);
+        internal JsonKey GetClientId(MessageContext messageContext) {
+            if (messageContext.clientId == null) {
+                var clientId = new JsonKey(++clientIdSequence);
+                messageContext.clientId = clientId;
+                return clientId;
+            }
+            return messageContext.clientId.Value;
         }
     }
     
