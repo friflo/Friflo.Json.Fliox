@@ -133,8 +133,9 @@ namespace Friflo.Json.Fliox.DB.Host
                 return new MsgResponse<SyncResponse> ("missing field: tasks (array)");
             var tasks = new List<SyncTaskResult>(requestTasks.Count);
             var response = new SyncResponse {
-                tasks   = tasks,
-                resultMap = new Dictionary<string, ContainerEntities>()
+                tasks       = tasks,
+                resultMap   = new Dictionary<string, ContainerEntities>(),
+                authError   = messageContext.authState.Error 
             };
             int index = -1;
             foreach (var task in requestTasks) {
