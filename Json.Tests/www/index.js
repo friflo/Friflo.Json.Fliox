@@ -116,18 +116,20 @@ export async function loadExampleRequestList() {
     var folder = './example-requests'
     var response = await fetch(folder);
     var exampleRequests = await response.json();
-    var exampleGroup = "0";
+    var groupPrefix = "0";
+    var groupCount  = 0;
     for (var example of exampleRequests) {
         if (!example.endsWith(".json"))
             continue;
         var name = example.substring(folder.length).replace(".sync.json", "");
-        if (exampleGroup != name[0]) {
-            selectExample.add(document.createElement("option"));
-            exampleGroup = name[0];
+        if (groupPrefix != name[0]) {
+            groupPrefix = name[0];
+            groupCount++;
         }
         var option = document.createElement("option");
         option.value    = example;
         option.text     = name;
+        option.style    = groupCount % 2 ? "background-color: #ffffff;" : "background-color: #e8e8e8;"
         selectExample.add(option);
     }
 }
