@@ -108,13 +108,13 @@
         <button type="button" onclick="sendSyncRequest()" title="Send request to server (Ctrl+Alt+Enter)">Send</button>
       </td>
       <td><span>Response</span> <span id="response-state"></span>
-        <span style="float:right;">Sub seq: <span id="subscriptionSeq">0</span> · count: <span id="subscriptionCount">0</span></span></td>
+        <span style="float:right;">Sub seq: <span id="subscriptionSeq">-</span> · count: <span id="subscriptionCount">0</span></span></td>
     </tr>
     <tr>
       <td>
         <div id="requestContainer" style="width: 500px; height: 500px; border: 1px solid grey"></div>        
-        <code>"reqId": <div id="reqId" class="inline">n/a</div></code>, 
-        <code>"ack": <div id="ack" class="inline">n/a</div></code>
+        <code>"reqId": <div id="reqId" class="inline">- </div></code>, 
+        <code>"ack": <div id="ack" class="inline">- </div></code>
       </td>
       <td>
         <div id="responseContainer" style="width: 500px; height: 500px; border: 1px solid grey"></div>

@@ -67,7 +67,7 @@ export function connectWebsocket() {
             case "sub":
                 subscriptionCount.innerText = ++subCount;
                 subSeq = data.seq;
-                subscriptionSeq.innerText = subSeq;
+                subscriptionSeq.innerText = subSeq ? subSeq : "-";
                 break;
         }
     };
@@ -79,7 +79,7 @@ export function closeWebsocket() {
 
 export function sendSyncRequest() {
     reqIdElement.innerText  = reqId;
-    ackElement.innerText    = subSeq;
+    ackElement.innerText    = subSeq ? subSeq : "-";
     if (!connection || connection.readyState != 1) { // 1 == OPEN {
         responseModel.setValue(`Request ${reqId} failed. WebSocket not connected`)
         responseState.innerHTML = "";
