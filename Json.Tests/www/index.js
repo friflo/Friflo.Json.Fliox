@@ -128,8 +128,8 @@ export async function loadExampleRequestList() {
         }
         var option = document.createElement("option");
         option.value    = example;
-        option.text     = name;
-        option.style    = groupCount % 2 ? "background-color: #ffffff;" : "background-color: #e8e8e8;"
+        option.text     = (groupCount % 2 ? "\xA0\xA0" : "") + name;
+        option.style    = groupCount % 2 ? "background-color: #ffffff;" : "background-color: #eeeeff;"
         selectExample.add(option);
     }
 }
