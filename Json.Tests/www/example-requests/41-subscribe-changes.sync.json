@@ -8,7 +8,9 @@
     }
   ],
   "info":[
-    "Subscribe to database changes from other clients. (Websocket only)",
+    "Subscribe to database changes from other clients",
+
+    "Websocket only. Requires client id: 'clt'",
     "No events are send for changes the client made by itself"
   ],
   "user": "{{user}}",

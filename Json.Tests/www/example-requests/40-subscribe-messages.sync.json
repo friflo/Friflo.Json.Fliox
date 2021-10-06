@@ -8,7 +8,9 @@
     }
   ],  
   "info": [
-    "Subscribe to all messages (Websocket only).",
+    "Subscribe to all messages",
+
+    "Websocket only. Requires client id: 'clt'",
     "Subscribe all messages by         'name' == '*'",
     "Subscribe a specific message by   'name' == 'MyMessage'",
     "Subscribe messages by prefix with 'name' == 'MyMessage*'"
