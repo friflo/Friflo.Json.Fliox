@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.DB.Host
             
             await authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
             // return an invalid client id in case validation of the given one fails 
-            messageContext.clientId = authenticator.ValidateClientId(this, syncRequest);
+            messageContext.clientId = authenticator.ValidateClientId(syncRequest);
             
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null)

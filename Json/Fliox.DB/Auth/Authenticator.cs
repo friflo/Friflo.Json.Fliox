@@ -21,12 +21,20 @@ namespace Friflo.Json.Fliox.DB.Auth
             
         public abstract Task    Authenticate    (SyncRequest syncRequest, MessageContext messageContext);
         
-        public virtual JsonKey ValidateClientId(IClientIdProvider clientIdProvider, SyncRequest syncRequest) {
-            if (syncRequest.clientId.IsNull())
-                return clientIdProvider.NewClientId();
+        public virtual JsonKey ValidateClientId(SyncRequest syncRequest) {
             return syncRequest.clientId;
         }
         
+        /// <summary>
+        /// Used by tasks which require a client id. E.g. <see cref="SubscribeMessage"/> or <see cref="SubscribeChanges"/> 
+        /// In case <see cref="MessageContext.clientId"/> is null a new one is created and assigned
+        /// </summary>
+        public virtual void EnsureValidClientId(IClientIdProvider clientIdProvider, MessageContext messageContext) {
+            if (!messageContext.clientId.IsNull())
+                return;
+            messageContext.clientId = clientIdProvider.NewClientId();
+        }
+
         /// <summary>
         /// Register a predicate function by the given <see cref="name"/> which enables custom authorization via code,
         /// which cannot be expressed by one of the provided <see cref="Right"/> implementations.

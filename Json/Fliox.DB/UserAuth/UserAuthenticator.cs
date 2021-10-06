@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             messageContext.authState.SetSuccess(credential.authorizer);
         }
         
-        public override JsonKey ValidateClientId(IClientIdProvider clientIdProvider, SyncRequest syncRequest) {
+        public override JsonKey ValidateClientId(SyncRequest syncRequest) {
             if (syncRequest.userId.IsNull()) {
                 return new JsonKey();
             }
@@ -123,14 +123,25 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                 return new JsonKey();
             }
             if (syncRequest.clientId.IsNull()) {
-                var clientId = clientIdProvider.NewClientId();
-                userCredentials.clients.Add(clientId);
-                return clientId;
+                return new JsonKey();
             }
             if (userCredentials.clients.Contains(syncRequest.clientId)) {
                 return syncRequest.clientId;
             }
             return new JsonKey();
+        }
+        
+        public override void EnsureValidClientId(IClientIdProvider clientIdProvider, MessageContext messageContext) {
+            if (!messageContext.clientId.IsNull()) {
+                // non null =>  clientId already validated
+                return;
+            }
+            if (!credByUser.TryGetValue(messageContext.userId, out UserCredentials userCredentials)) {
+                throw new InvalidOperationException("unexpected. userId already validated");
+            }
+            var clientId = clientIdProvider.NewClientId();
+            userCredentials.clients.Add(clientId);
+            messageContext.clientId = clientId;
         }
 
         private async Task<Authorizer> GetAuthorizer(JsonKey userId) {
