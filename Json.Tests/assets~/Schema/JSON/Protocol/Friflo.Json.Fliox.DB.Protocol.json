@@ -260,7 +260,7 @@
                 "type":         { "enum": ["syncResp"] },
                 "req":          { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "clt":          { "type": ["string", "null"] },
-                "authError":    { "type": ["string", "null"] },
+                "authState":    { "type": ["string", "null"] },
                 "tasks":        { "type": ["array", "null"], "items": { "$ref": "#/definitions/SyncTaskResult" } },
                 "results":      { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" } },
                 "createErrors": { "type": "object", "additionalProperties": { "$ref": "#/definitions/EntityErrors" } },

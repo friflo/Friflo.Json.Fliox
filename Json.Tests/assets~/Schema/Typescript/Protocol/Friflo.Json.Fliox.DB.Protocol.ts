@@ -185,7 +185,7 @@ export abstract class ProtocolResponse extends ProtocolMessage {
 
 export class SyncResponse extends ProtocolResponse {
     type          : "syncResp";
-    authError?    : string | null;
+    authState?    : string | null;
     tasks?        : SyncTaskResult_Union[] | null;
     results?      : ContainerEntities[] | null;
     createErrors? : { [key: string]: EntityErrors } | null;
