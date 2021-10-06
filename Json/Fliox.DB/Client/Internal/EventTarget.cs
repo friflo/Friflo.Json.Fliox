@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
 
         public Task<bool> ProcessEvent(ProtocolEvent ev, MessageContext messageContext) {
             if (!ev.dstId.IsEqual(store._intern.clientId))
-                throw new InvalidOperationException("Expect ProtocolEvent.targetId == EntityStore.userId");
+                throw new InvalidOperationException("Expect ProtocolEvent.dstId == EntityStore.clientId");
             
             // Skip already received events
             if (store._intern.lastEventSeq >= ev.seq)
