@@ -88,8 +88,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 tasks = new ReadWriteTasks(unknownUser, newArticle);
                 sync = await unknownUser.TrySync();
                 AreEqual(2, sync.failed.Count);
-                AreEqual("PermissionDenied ~ not authorized. invalid user token", tasks.findArticle.Error.Message);
-                AreEqual("PermissionDenied ~ not authorized. invalid user token", tasks.upsertArticles.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. Authentication failed", tasks.findArticle.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. Authentication failed", tasks.upsertArticles.Error.Message);
             }
         }
 
@@ -114,8 +114,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 sync = await mutateUser.TrySync();
                 
                 AreEqual(2, sync.failed.Count);
-                AreEqual("PermissionDenied ~ not authorized. invalid user token", tasks.findArticle.Error.Message);
-                AreEqual("PermissionDenied ~ not authorized. invalid user token", tasks.upsertArticles.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. Authentication failed", tasks.findArticle.Error.Message);
+                AreEqual("PermissionDenied ~ not authorized. Authentication failed", tasks.upsertArticles.Error.Message);
                 
                 // test: same tasks, but cleared token
                 mutateUser.SetToken(null);

@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             }
         }
 
-        private const string InvalidUserToken = "invalid user token";
+        private const string InvalidUserToken = "Authentication failed";
         
         public override async Task Authenticate(SyncRequest syncRequest, MessageContext messageContext)
         {
