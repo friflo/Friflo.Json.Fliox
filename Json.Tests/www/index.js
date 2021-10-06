@@ -93,10 +93,18 @@ export function sendSyncRequest() {
         jsonRequest = jsonRequest.replace("{{token}}", defaultToken.value);
         try {
             var request     = JSON.parse(jsonRequest);
-            request.req     = req;
-            request.ack     = subSeq;
-            if (clt) {
-                request.clt     = clt;
+            if (request) {
+                // Allow overrides of WebSocket specific members
+                if (request.req) { req      = request.req; }
+                if (request.ack) { subSeq   = request.ack; }
+                if (request.clt) { clt      = request.clt; }
+                
+                // Add WebSocket specific members to request
+                request.req     = req;
+                request.ack     = subSeq;
+                if (clt) {
+                    request.clt     = clt;
+                }
             }
             jsonRequest = JSON.stringify(request);                
         } catch { }
