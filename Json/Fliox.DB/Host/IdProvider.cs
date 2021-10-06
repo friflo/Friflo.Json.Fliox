@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Threading;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host
@@ -18,7 +19,8 @@ namespace Friflo.Json.Fliox.DB.Host
         private long clientIdSequence;
 
         public override JsonKey NewId() {
-            return new JsonKey(++clientIdSequence);
+            var id = Interlocked.Increment(ref clientIdSequence);
+            return new JsonKey(id);
         }
     }
     
