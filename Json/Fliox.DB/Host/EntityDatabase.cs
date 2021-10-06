@@ -126,9 +126,11 @@ namespace Friflo.Json.Fliox.DB.Host
         /// </summary>
         public virtual async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.userId   = syncRequest.userId;
-            messageContext.clientId = syncRequest.clientId;
+            
             await authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
-            authenticator.EnsureClientId(this, messageContext);
+            // return an invalid client id in case validation of the given one fails 
+            messageContext.clientId = authenticator.ValidateClientId(this, syncRequest);
+            
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null)
                 return new MsgResponse<SyncResponse> ("missing field: tasks (array)");

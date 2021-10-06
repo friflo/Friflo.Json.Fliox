@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth.Rights;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Auth
 {
@@ -18,8 +19,8 @@ namespace Friflo.Json.Fliox.DB.Auth
     {
         protected readonly Dictionary<string, AuthorizePredicate> registeredPredicates = new Dictionary<string, AuthorizePredicate>();
             
-        public abstract Task Authenticate(SyncRequest syncRequest, MessageContext messageContext);
-        public abstract bool EnsureClientId(IClientIdProvider clientIdProvider, MessageContext messageContext);
+        public abstract Task    Authenticate    (SyncRequest syncRequest, MessageContext messageContext);
+        public abstract JsonKey ValidateClientId(IClientIdProvider clientIdProvider, SyncRequest syncRequest);
         
         /// <summary>
         /// Register a predicate function by the given <see cref="name"/> which enables custom authorization via code,
@@ -59,8 +60,8 @@ namespace Friflo.Json.Fliox.DB.Auth
             return Task.CompletedTask;
         }
         
-        public override bool EnsureClientId(IClientIdProvider clientIdProvider, MessageContext messageContext) {
-            return true;
+        public override JsonKey ValidateClientId(IClientIdProvider clientIdProvider, SyncRequest syncRequest) {
+            return syncRequest.clientId;
         }
     }
 }

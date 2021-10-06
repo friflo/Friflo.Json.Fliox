@@ -115,20 +115,22 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             messageContext.authState.SetSuccess(credential.authorizer);
         }
         
-        public override bool EnsureClientId(IClientIdProvider clientIdProvider, MessageContext messageContext) {
-            if (messageContext.userId.IsNull()) {
-                return false;
+        public override JsonKey ValidateClientId(IClientIdProvider clientIdProvider, SyncRequest syncRequest) {
+            if (syncRequest.userId.IsNull()) {
+                return new JsonKey();
             }
-            if (!credByUser.TryGetValue(messageContext.userId, out UserCredentials userCredentials)) {
-                return false;
+            if (!credByUser.TryGetValue(syncRequest.userId, out UserCredentials userCredentials)) {
+                return new JsonKey();
             }
-            if (messageContext.clientId.IsNull()) {
-                messageContext.clientId = clientIdProvider.NewClientId();
-                userCredentials.clients.Add(messageContext.clientId);
-                return true;
+            if (syncRequest.clientId.IsNull()) {
+                var clientId = clientIdProvider.NewClientId();
+                userCredentials.clients.Add(clientId);
+                return clientId;
             }
-            var knownClient = userCredentials.clients.Contains(messageContext.clientId);
-            return knownClient;
+            if (userCredentials.clients.Contains(syncRequest.clientId)) {
+                return syncRequest.clientId;
+            }
+            return new JsonKey();
         }
 
         private async Task<Authorizer> GetAuthorizer(JsonKey userId) {
