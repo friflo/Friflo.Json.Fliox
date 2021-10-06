@@ -175,9 +175,9 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                     if (tasks == null)
                         continue;
                     var subscriptionEvent = new SubscriptionEvent {
-                        tasks   = tasks.ToArray(),
-                        srcId   = messageContext.userId,
-                        dstId   = subscriber.clientId
+                        tasks       = tasks.ToArray(),
+                        srcUserId   = messageContext.userId,
+                        dstClientId = subscriber.clientId
                     };
                     if (SerializeRemoteEvents && subscriber.IsRemoteTarget) {
                         SerializeRemoteEvent(subscriptionEvent, tasks, writer);

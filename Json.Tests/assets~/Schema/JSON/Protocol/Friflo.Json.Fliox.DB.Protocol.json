@@ -555,14 +555,14 @@
                 "type":  { "enum": ["sub"] },
                 "seq":   { "$ref": "./Standard.json#/definitions/int32" },
                 "src":   { "type": "string" },
-                "dst":   { "type": "string" },
+                "clt":   { "type": "string" },
                 "tasks": { "type": ["array", "null"], "items": { "$ref": "#/definitions/SyncRequestTask" } }
             },
             "required": [
                 "type",
                 "seq",
                 "src",
-                "dst"
+                "clt"
             ],
             "additionalProperties": false
         }

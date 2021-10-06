@@ -334,7 +334,7 @@ data class ErrorResponse (
 data class SubscriptionEvent (
     override  val seq   : Int,
     override  val src   : String,
-    override  val dst   : String,
+    override  val clt   : String,
               val tasks : List<SyncRequestTask>? = null,
 ) : ProtocolEvent()
 
@@ -343,6 +343,6 @@ data class SubscriptionEvent (
 abstract class ProtocolEvent  : ProtocolMessage() {
     abstract  val seq : Int
     abstract  val src : String
-    abstract  val dst : String
+    abstract  val clt : String
 }
 

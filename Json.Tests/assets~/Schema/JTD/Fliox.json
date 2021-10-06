@@ -733,7 +733,7 @@
             "properties": {
                 "seq":   { "type": "int32" },
                 "src":   { "type": "string" },
-                "dst":   { "type": "string" },
+                "clt":   { "type": "string" },
                 "tasks": { "elements": { "ref":  "SyncRequestTask" }, "nullable": true }
             }
         },
@@ -745,7 +745,7 @@
             "properties": {
                 "seq": { "type": "int32" },
                 "src": { "type": "string" },
-                "dst": { "type": "string" }
+                "clt": { "type": "string" }
             }
         }
     }

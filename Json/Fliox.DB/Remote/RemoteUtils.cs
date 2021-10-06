@@ -12,8 +12,8 @@ namespace Friflo.Json.Fliox.DB.Remote
     {
         /** map to <see cref="ProtocolEvent"/> Discriminator */ public  string      type;
         /** map to <see cref="ProtocolEvent.seq"/> */           public  int         seq; 
-        /** map to <see cref="ProtocolEvent.srcId"/> */         public  JsonKey     src;
-        /** map to <see cref="ProtocolEvent.dstId"/> */         public  JsonKey     dst;
+        /** map to <see cref="ProtocolEvent.srcUserId"/> */     public  JsonKey     src;
+        /** map to <see cref="ProtocolEvent.dstClientId"/> */   public  JsonKey     clt;
         /** map to <see cref="SubscriptionEvent.tasks"/> */     public  JsonValue[] tasks;
     }
     
@@ -29,8 +29,8 @@ namespace Friflo.Json.Fliox.DB.Remote
                     var remoteEv = new RemoteSubscriptionEvent {
                         type    = "sub",
                         seq     = sub.seq,
-                        src     = sub.srcId,
-                        dst     = sub.dstId,
+                        src     = sub.srcUserId,
+                        clt     = sub.dstClientId,
                         tasks   = sub.tasksJson
                     };
                     return new JsonUtf8(mapper.WriteAsArray(remoteEv));

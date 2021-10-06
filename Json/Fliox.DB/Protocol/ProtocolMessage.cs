@@ -91,16 +91,17 @@ namespace Friflo.Json.Fliox.DB.Protocol
         // note for all fields
         // used { get; set; } to force properties on the top of JSON
         
-        /// Increasing event sequence number starting with 1.
-        /// Each target (subscriber) has its own sequence.  
-                        public  int         seq     { get; set; }
-        /// The user (client) which caused the event. Specifically the user which made a database change or sent a message.
+        /// Increasing event sequence number starting with 1 for a specific target client <see cref="dstClientId"/>.
+        /// Each target client (subscriber) has its own sequence.
+                        public  int         seq         { get; set; }
+        /// The user which caused the event. Specifically the user which made a database change or sent a message / command.
+        /// The user client is not preserved by en extra property as a use case for this is not obvious.
         [Fri.Property(Name =               "src")]
-        [Fri.Required]  public  JsonKey     srcId   { get; set; }
+        [Fri.Required]  public  JsonKey     srcUserId   { get; set; }
         
-        /// The destination (target) the event is sent to
-        [Fri.Property(Name =               "dst")]
-        [Fri.Required]  public  JsonKey     dstId   { get; set; }
+        /// The target client the event is sent to. This enabled sharing a single (WebSocket) connection by multiple clients. 
+        [Fri.Property(Name =               "clt")]
+        [Fri.Required]  public  JsonKey     dstClientId { get; set; }
     }
     
     public enum MessageType
