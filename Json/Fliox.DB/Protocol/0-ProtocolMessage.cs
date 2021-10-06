@@ -50,7 +50,6 @@ namespace Friflo.Json.Fliox.DB.Protocol
     [Fri.Discriminator("type")] 
     [Fri.Polymorph(typeof(SyncRequest),         Discriminant = "sync")]
     public abstract class ProtocolRequest   : ProtocolMessage {
-        // ReSharper disable once InconsistentNaming
         /// <summary>Used only for <see cref="Friflo.Json.Fliox.DB.Remote.RemoteClientDatabase"/> to enable:
         /// <para>
         ///   1. Out of order response handling for their corresponding requests.
@@ -58,7 +57,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// <para>
         ///   2. Multiplexing of requests and their responses for multiple clients e.g. <see cref="Client.EntityStore"/>
         ///      using the same connection.
-        ///      This is not a common scenario but it enables using a single <see cref="Friflo.Json.Fliox.DB.Remote.WebSocketClientDatabase"/>
+        ///      This is not a common scenario but it enables using a single <see cref="Remote.WebSocketClientDatabase"/>
         ///      used by multiple clients.
         /// </para>
         /// The host itself only echos the <see cref="reqId"/> to <see cref="ProtocolResponse.reqId"/> and doesn't do
@@ -66,9 +65,12 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// </summary>
         [Fri.Property(Name =               "req")]
                         public  int?        reqId       { get; set; }
+        /// As a user can access an <see cref="Host.EntityDatabase"/> by multiple clients the <see cref="clientId"/>
+        /// enables identifying each client individually.
+        /// The <see cref="clientId"/> is used for <see cref="SubscribeMessage"/> and <see cref="SubscribeChanges"/>
+        /// to enable sending <see cref="SubscriptionEvent"/>'s to the desired subscriber.
         [Fri.Property(Name =               "clt")]
                         public  JsonKey     clientId    { get; set; }
-
     }
     
     // ----------------------------------- response -----------------------------------
@@ -76,10 +78,18 @@ namespace Friflo.Json.Fliox.DB.Protocol
     [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "syncResp")]
     [Fri.Polymorph(typeof(ErrorResponse),       Discriminant = "error")]
     public abstract class ProtocolResponse : ProtocolMessage {
-        // ReSharper disable once InconsistentNaming
         /// <summary>Set to the value of the corresponding <see cref="ProtocolRequest.reqId"/></summary>
         [Fri.Property(Name =               "req")]
                         public  int?        reqId       { get; set; }
+        /// <summary>
+        /// Set to <see cref="ProtocolRequest.clientId"/> of a <see cref="SyncRequest"/>. Can be null.
+        /// Calling <see cref="Auth.Authenticator.EnsureValidClientId"/> when <see cref="clientId"/> == null a
+        /// new unique id will be assigned.
+        /// For tasks which require a <see cref="clientId"/> a client need to set <see cref="ProtocolRequest.clientId"/>
+        /// to <see cref="clientId"/>.   
+        /// This enables tasks like <see cref="SubscribeMessage"/> or <see cref="SubscribeChanges"/> identifying the
+        /// <see cref="SubscriptionEvent"/> target. 
+        /// </summary>
         [Fri.Property(Name =               "clt")]
                         public  JsonKey     clientId    { get; set; }
     }

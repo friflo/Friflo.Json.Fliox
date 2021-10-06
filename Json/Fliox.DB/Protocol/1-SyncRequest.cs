@@ -10,9 +10,9 @@ namespace Friflo.Json.Fliox.DB.Protocol
     public sealed class SyncRequest : ProtocolRequest
     {
         /// <summary>
-        /// Specify an optional id to identify the client performing a request by a host.
-        /// In case the request contains a <see cref="SubscribeChanges"/> <see cref="ProtocolRequest.clientId"/> is required to
-        /// enable sending <see cref="SubscriptionEvent"/>'s to the desired subscriber.
+        /// Identify the user performing a sync request.
+        /// In case using of using <see cref="UserAuth.UserAuthenticator"/> the <see cref="userId"/> and <see cref="token"/>
+        /// are use for user authentication.
         /// </summary>
         [Fri.Property(Name = "user")]   public  JsonKey                 userId;
                                         public  string                  token;
