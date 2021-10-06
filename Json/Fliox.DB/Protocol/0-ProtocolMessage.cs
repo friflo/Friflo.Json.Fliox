@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     ///     or datagram based protocols.
     ///     This also means all <see cref="Fliox"/> messages doesnt (and must not) require a session.
     ///     This principle also enables using a single <see cref="Host.EntityDatabase"/> by multiple clients like
-    ///     <see cref="Client.EntityStore"/> even for remote clients like <see cref="Friflo.Json.Fliox.DB.Remote.RemoteClientDatabase"/>.
+    ///     <see cref="Client.EntityStore"/> even for remote clients like <see cref="Remote.RemoteClientDatabase"/>.
     /// </para>
     /// </summary>
     [Fri.Discriminator("type")] 
@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     [Fri.Discriminator("type")] 
     [Fri.Polymorph(typeof(SyncRequest),         Discriminant = "sync")]
     public abstract class ProtocolRequest   : ProtocolMessage {
-        /// <summary>Used only for <see cref="Friflo.Json.Fliox.DB.Remote.RemoteClientDatabase"/> to enable:
+        /// <summary>Used only for <see cref="Remote.RemoteClientDatabase"/> to enable:
         /// <para>
         ///   1. Out of order response handling for their corresponding requests.
         /// </para>
