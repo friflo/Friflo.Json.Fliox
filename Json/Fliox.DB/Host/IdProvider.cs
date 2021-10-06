@@ -6,7 +6,6 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host
 {
-    // ReSharper disable once ClassWithVirtualMembersNeverInherited.Global
     /// <summary>
     /// Create a unique id when calling <see cref="NewId"/>.
     /// Its used to create unique client ids by <see cref="EntityDatabase.clientIdProvider"/>
