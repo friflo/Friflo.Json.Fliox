@@ -94,7 +94,7 @@ export function sendSyncRequest() {
         try {
             var request     = JSON.parse(jsonRequest);
             if (request) {
-                // Allow overrides of WebSocket specific members
+                // Enable overrides of WebSocket specific members
                 if (request.req) { req      = request.req; }
                 if (request.ack) { subSeq   = request.ack; }
                 if (request.clt) { clt      = request.clt; }
