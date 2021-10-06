@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             messageContext.authState.SetSuccess(credential.authorizer);
         }
         
-        public override bool EnsureValidClientId(IClientIdProvider clientIdProvider, MessageContext messageContext) {
+        public override bool EnsureValidClientId(IdProvider clientIdProvider, MessageContext messageContext) {
             if (!credByUser.TryGetValue(messageContext.userId, out UserCredentials userCredentials)) {
                 throw new InvalidOperationException("unexpected. userId already validated");
             }
@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                 var isKnownClient = userCredentials.clients.Contains(messageContext.clientId);
                 return isKnownClient;
             }
-            var clientId = clientIdProvider.NewClientId();
+            var clientId = clientIdProvider.NewId();
             userCredentials.clients.Add(clientId);
             messageContext.clientId = clientId;
             return true;

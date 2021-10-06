@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.DB.Host
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public abstract class EntityDatabase : IDisposable, IClientIdProvider
+    public abstract class EntityDatabase : IDisposable
     {
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
@@ -51,6 +51,7 @@ namespace Friflo.Json.Fliox.DB.Host
         /// In case of remote database connections WebSockets are used to send Pub-Sub events to clients.   
         /// </summary>
         public              EventBroker                         eventBroker;
+        // ReSharper disable once FieldCanBeMadeReadOnly.Global
         /// <summary>
         /// The <see cref="TaskHandler"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
         /// Custom task (request) handler can be added to the <see cref="taskHandler"/> or
@@ -63,6 +64,13 @@ namespace Friflo.Json.Fliox.DB.Host
         /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="taskHandler"/>.
         /// </summary>
         public              Authenticator                       authenticator = new AuthenticateNone(new AuthorizeAllow());
+        // ReSharper disable once FieldCanBeMadeReadOnly.Global
+        /// <summary>
+        /// <see cref="clientIdProvider"/> is used to create unique ids assigned to new user clients.
+        /// This enables sending subscription events to a specific user clients.
+        /// Without this possibility it would only be possible to send events to all clients used by a single user. 
+        /// </summary>
+        public              IdProvider                          clientIdProvider = new IncrementIdProvider();
         /// <summary>
         /// An optional <see cref="DatabaseSchema"/> used to validate the JSON payloads in all write operations
         /// performed on the <see cref="EntityContainer"/>'s of the database
@@ -231,17 +239,6 @@ namespace Friflo.Json.Fliox.DB.Host
             }
             resultMap.Clear();
         }
-        
-        private long clientIdSequence;
-        
-        
-        public JsonKey NewClientId() {
-            return new JsonKey(++clientIdSequence);
-        }
-    }
-    
-    public interface IClientIdProvider {
-        JsonKey NewClientId();
     }
     
     public delegate string CustomContainerName(string name);
