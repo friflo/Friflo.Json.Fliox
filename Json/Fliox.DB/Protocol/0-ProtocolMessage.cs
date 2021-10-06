@@ -109,7 +109,8 @@ namespace Friflo.Json.Fliox.DB.Protocol
         [Fri.Property(Name =               "src")]
         [Fri.Required]  public  JsonKey     srcUserId   { get; set; }
         
-        /// The target client the event is sent to. This enabled sharing a single (WebSocket) connection by multiple clients. 
+        /// The target client the event is sent to. This enabled sharing a single (WebSocket) connection by multiple clients.
+        /// In many scenarios this property is redundant as every client uses a WebSocket exclusively.
         [Fri.Property(Name =               "clt")]
         [Fri.Required]  public  JsonKey     dstClientId { get; set; }
     }
