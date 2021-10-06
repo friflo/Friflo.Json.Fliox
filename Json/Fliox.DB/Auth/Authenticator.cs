@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth.Rights;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Protocol;
-using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Auth
 {
@@ -21,18 +20,16 @@ namespace Friflo.Json.Fliox.DB.Auth
             
         public abstract Task    Authenticate    (SyncRequest syncRequest, MessageContext messageContext);
         
-        public virtual JsonKey ValidateClientId(SyncRequest syncRequest) {
-            return syncRequest.clientId;
-        }
-        
         /// <summary>
         /// Used by tasks which require a client id. E.g. <see cref="SubscribeMessage"/> or <see cref="SubscribeChanges"/> 
-        /// In case <see cref="MessageContext.clientId"/> is null a new one is created and assigned
+        /// In case <see cref="MessageContext.clientId"/> is null a new one is created.
+        /// In case the given client id is invalid it return true. Otherwise false. 
         /// </summary>
-        public virtual void EnsureValidClientId(IClientIdProvider clientIdProvider, MessageContext messageContext) {
+        public virtual bool EnsureValidClientId(IClientIdProvider clientIdProvider, MessageContext messageContext) {
             if (!messageContext.clientId.IsNull())
-                return;
+                return true;
             messageContext.clientId = clientIdProvider.NewClientId();
+            return true;
         }
 
         /// <summary>

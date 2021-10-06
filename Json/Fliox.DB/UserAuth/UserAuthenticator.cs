@@ -115,33 +115,18 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             messageContext.authState.SetSuccess(credential.authorizer);
         }
         
-        public override JsonKey ValidateClientId(SyncRequest syncRequest) {
-            if (syncRequest.userId.IsNull()) {
-                return new JsonKey();
-            }
-            if (!credByUser.TryGetValue(syncRequest.userId, out UserCredentials userCredentials)) {
-                return new JsonKey();
-            }
-            if (syncRequest.clientId.IsNull()) {
-                return new JsonKey();
-            }
-            if (userCredentials.clients.Contains(syncRequest.clientId)) {
-                return syncRequest.clientId;
-            }
-            return new JsonKey();
-        }
-        
-        public override void EnsureValidClientId(IClientIdProvider clientIdProvider, MessageContext messageContext) {
-            if (!messageContext.clientId.IsNull()) {
-                // non null =>  clientId already validated
-                return;
-            }
+        public override bool EnsureValidClientId(IClientIdProvider clientIdProvider, MessageContext messageContext) {
             if (!credByUser.TryGetValue(messageContext.userId, out UserCredentials userCredentials)) {
                 throw new InvalidOperationException("unexpected. userId already validated");
+            }
+            if (!messageContext.clientId.IsNull()) {
+                var isKnownClient = userCredentials.clients.Contains(messageContext.clientId);
+                return isKnownClient;
             }
             var clientId = clientIdProvider.NewClientId();
             userCredentials.clients.Add(clientId);
             messageContext.clientId = clientId;
+            return true;
         }
 
         private async Task<Authorizer> GetAuthorizer(JsonKey userId) {
