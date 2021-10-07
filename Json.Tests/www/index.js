@@ -72,7 +72,8 @@ export function connectWebsocket() {
             case "ev":
                 subscriptionCount.innerText = ++subCount;
                 subSeq = data.seq;
-                subscriptionSeq.innerText = subSeq ? subSeq : " - ";
+                subscriptionSeq.innerText   = subSeq ? subSeq : " - ";
+                ackElement.innerText        = subSeq ? subSeq : " - ";
                 break;
         }
     };
@@ -113,7 +114,6 @@ export function sendSyncRequest() {
     }
     req++;
     reqIdElement.innerText  = req;
-    ackElement.innerText    = subSeq;
 }
 
 export async function onExampleChange() {
