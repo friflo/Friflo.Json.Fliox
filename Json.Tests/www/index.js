@@ -83,8 +83,6 @@ export function closeWebsocket() {
 }
 
 export function sendSyncRequest() {
-    reqIdElement.innerText  = req;
-    ackElement.innerText    = subSeq ? subSeq : " - ";
     if (!connection || connection.readyState != 1) { // 1 == OPEN {
         responseModel.setValue(`Request ${req} failed. WebSocket not connected`)
         responseState.innerHTML = "";
@@ -114,6 +112,8 @@ export function sendSyncRequest() {
         requestStart = new Date().getTime();
     }
     req++;
+    reqIdElement.innerText  = req;
+    ackElement.innerText    = subSeq;
 }
 
 export async function onExampleChange() {
