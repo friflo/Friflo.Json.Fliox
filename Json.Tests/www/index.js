@@ -72,8 +72,11 @@ export function connectWebsocket() {
             case "ev":
                 subscriptionCount.innerText = ++subCount;
                 subSeq = data.seq;
-                subscriptionSeq.innerText   = subSeq ? subSeq : " - ";
-                ackElement.innerText        = subSeq ? subSeq : " - ";
+                // multiple clients can use the same WebSocket. Use the latest
+                if (clt == data.clt) {
+                    subscriptionSeq.innerText   = subSeq ? subSeq : " - ";
+                    ackElement.innerText        = subSeq ? subSeq : " - ";
+                }
                 break;
         }
     };
