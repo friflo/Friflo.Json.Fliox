@@ -34,6 +34,7 @@
         label           { display:          inline;  }
         input           { display:          inline;  }
         .nobreak *      { white-space:      nowrap; }
+        .pre *          { white-space:      pre; }
         table.header td { padding-right:    20px; }
         li              { font-size: 14px;}
         ul              { margin: 5px; padding-left: 15px; } 
@@ -119,10 +120,10 @@
     <tr>
       <td style="width: 400px;">
         <div id="requestContainer" style="height: 500px; border: 1px solid grey"></div>
-        <small style="opacity: 0.5;">client adds on Send:</small>
-        <code>"req": <div id="req" class="inline">- </div></code>,
-        <code>"ack": <div id="ack" class="inline">- </div></code>,
-        <code>"clt": <div id="clt" class="inline">- </div></code>
+        <code style="font-weight: bold">"req": <div id="req" class="inline">- </div></code>,
+        <code style="font-weight: bold">"ack": <div id="ack" class="inline">- </div></code>,
+        <code style="font-weight: bold">"clt": <div id="clt" class="inline">- </div></code><br>
+        <small style="opacity: 0.5;">added by client on Send</small>
       </td>
       <td style="display: grid;">
         <div id="responseContainer" style="min-width:100px; height: 500px; border: 1px solid grey"></div>
