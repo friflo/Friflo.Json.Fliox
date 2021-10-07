@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         public abstract Task    Authenticate    (SyncRequest syncRequest, MessageContext messageContext);
         
         /// <summary>
-        /// Validate <see cref="MessageContext.clientId"/>.
+        /// Validate <see cref="MessageContext.clientId"/>. Return true if it was valid or null.
         /// </summary>
         /// <param name="messageContext"></param>
         public virtual bool ValidateClientId(MessageContext messageContext) {
