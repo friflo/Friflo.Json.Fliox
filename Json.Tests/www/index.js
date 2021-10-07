@@ -260,6 +260,11 @@ export async function setupEditors()
         responseModel = monaco.editor.createModel(null, "json", responseUri);
         responseEditor.setModel (responseModel);
     }
+
+    window.onresize = () => {
+        requestEditor.layout();
+        responseEditor.layout();
+    };
 }
 
 export function addTableResize () {
