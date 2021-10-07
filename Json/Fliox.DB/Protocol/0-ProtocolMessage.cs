@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     /// </summary>
     [Fri.Discriminator("type")] 
     [Fri.Polymorph(typeof(SyncRequest),    Discriminant = "sync")]
-    [Fri.Polymorph(typeof(SyncResponse),   Discriminant = "syncResp")]
+    [Fri.Polymorph(typeof(SyncResponse),   Discriminant = "resp")]
     [Fri.Polymorph(typeof(ErrorResponse),  Discriminant = "error")]
     [Fri.Polymorph(typeof(EventMessage),   Discriminant = "ev")]
     public abstract class ProtocolMessage
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     
     // ----------------------------------- response -----------------------------------
     [Fri.Discriminator("type")] 
-    [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "syncResp")]
+    [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "resp")]
     [Fri.Polymorph(typeof(ErrorResponse),       Discriminant = "error")]
     public abstract class ProtocolResponse : ProtocolMessage {
         /// <summary>Set to the value of the corresponding <see cref="ProtocolRequest.reqId"/></summary>
@@ -120,7 +120,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     {
         sub,
         sync,
-        syncResp,
+        resp,
         error
     }
 }

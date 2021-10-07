@@ -4,10 +4,10 @@
         "ProtocolMessage": {
             "discriminator": "type",
             "mapping": {
-                "sync":     { "ref":  "SyncRequest" },
-                "syncResp": { "ref":  "SyncResponse" },
-                "error":    { "ref":  "ErrorResponse" },
-                "ev":       { "ref":  "EventMessage" }
+                "sync":  { "ref":  "SyncRequest" },
+                "resp":  { "ref":  "SyncResponse" },
+                "error": { "ref":  "ErrorResponse" },
+                "ev":    { "ref":  "EventMessage" }
             },
             "properties": {
 
@@ -566,8 +566,8 @@
         "ProtocolResponse": {
             "discriminator": "type",
             "mapping": {
-                "syncResp": { "ref":  "SyncResponse" },
-                "error":    { "ref":  "ErrorResponse" }
+                "resp":  { "ref":  "SyncResponse" },
+                "error": { "ref":  "ErrorResponse" }
             },
             "properties": {
                 "req": { "type": "int32", "nullable": true },

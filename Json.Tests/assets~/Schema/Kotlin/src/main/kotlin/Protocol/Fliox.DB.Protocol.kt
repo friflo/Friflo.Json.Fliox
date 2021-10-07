@@ -158,7 +158,7 @@ data class ReserveKeys (
 ) : SyncRequestTask()
 
 @Serializable
-@SerialName("syncResp")
+@SerialName("resp")
 data class SyncResponse (
     override  val req          : Int? = null,
     override  val clt          : String? = null,

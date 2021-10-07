@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// Can be utilized to return debug / development data - e.g. execution times or resource usage. 
                         public  JsonValue                               info;
                         
-        internal override        MessageType                            MessageType => MessageType.syncResp;
+        internal override        MessageType                            MessageType => MessageType.resp;
         
         internal ContainerEntities GetContainerResult(string container) {
             if (resultMap.TryGetValue(container, out ContainerEntities result))

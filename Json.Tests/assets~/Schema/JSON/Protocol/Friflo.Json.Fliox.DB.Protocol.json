@@ -257,7 +257,7 @@
             "type": "object",
             "extends": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.ProtocolResponse.json#/definitions/ProtocolResponse" },
             "properties": {
-                "type":         { "enum": ["syncResp"] },
+                "type":         { "enum": ["resp"] },
                 "req":          { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "clt":          { "type": ["string", "null"] },
                 "authState":    { "type": ["string", "null"] },

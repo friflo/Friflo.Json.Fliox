@@ -62,7 +62,7 @@ export function connectWebsocket() {
         var data = JSON.parse(e.data);
         // console.log('server:', e.data);
         switch (data.type){ 
-            case "syncResp":
+            case "resp":
             case "error":
                 clt = data.clt;
                 cltElement.innerText  = clt ?? " - ";
