@@ -548,11 +548,11 @@
             ],
             "additionalProperties": false
         },
-        "SubscriptionEvent": {
+        "EventMessage": {
             "type": "object",
             "extends": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.ProtocolEvent.json#/definitions/ProtocolEvent" },
             "properties": {
-                "type":  { "enum": ["sub"] },
+                "type":  { "enum": ["ev"] },
                 "seq":   { "$ref": "./Standard.json#/definitions/int32" },
                 "src":   { "type": "string" },
                 "clt":   { "type": "string" },

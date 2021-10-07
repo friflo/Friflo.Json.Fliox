@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         /** map to <see cref="ProtocolEvent.seq"/> */           public  int         seq; 
         /** map to <see cref="ProtocolEvent.srcUserId"/> */     public  JsonKey     src;
         /** map to <see cref="ProtocolEvent.dstClientId"/> */   public  JsonKey     clt;
-        /** map to <see cref="SubscriptionEvent.tasks"/> */     public  JsonValue[] tasks;
+        /** map to <see cref="EventMessage.tasks"/> */          public  JsonValue[] tasks;
     }
     
     public static class RemoteUtils
@@ -25,13 +25,13 @@ namespace Friflo.Json.Fliox.DB.Remote
                 ObjectMapper mapper = pooledMapper.instance;
                 mapper.Pretty = true;
                 mapper.WriteNullMembers = false;
-                if (message is SubscriptionEvent sub && sub.tasksJson != null) {
+                if (message is EventMessage ev && ev.tasksJson != null) {
                     var remoteEv = new RemoteSubscriptionEvent {
-                        type    = "sub",
-                        seq     = sub.seq,
-                        src     = sub.srcUserId,
-                        clt     = sub.dstClientId,
-                        tasks   = sub.tasksJson
+                        type    = "ev",
+                        seq     = ev.seq,
+                        src     = ev.srcUserId,
+                        clt     = ev.dstClientId,
+                        tasks   = ev.tasksJson
                     };
                     return new JsonUtf8(mapper.WriteAsArray(remoteEv));
                 }

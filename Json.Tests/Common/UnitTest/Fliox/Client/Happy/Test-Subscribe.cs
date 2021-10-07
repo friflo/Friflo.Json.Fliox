@@ -187,7 +187,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
             
         /// All tests using <see cref="PocSubscriptionProcessor"/> are required to use "createStore" as userId
-        protected override void ProcessEvent (SubscriptionEvent ev) {
+        protected override void ProcessEvent (EventMessage ev) {
             AreEqual("createStore", ev.srcUserId.ToString());
             base.ProcessEvent(ev);
             var orderChanges    = GetEntityChanges(store.orders,    ev);

@@ -330,8 +330,8 @@ data class ErrorResponse (
 ) : ProtocolResponse()
 
 @Serializable
-@SerialName("sub")
-data class SubscriptionEvent (
+@SerialName("ev")
+data class EventMessage (
     override  val seq   : Int,
     override  val src   : String,
     override  val clt   : String,

@@ -9,7 +9,7 @@
                 { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/SyncRequest" },
                 { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/SyncResponse" },
                 { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/ErrorResponse" },
-                { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/SubscriptionEvent" }
+                { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/EventMessage" }
             ],
             "properties": {
 

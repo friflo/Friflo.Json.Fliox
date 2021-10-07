@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                         }
                         request.response.SetResult(resp);
                         return;
-                    case SubscriptionEvent ev:
+                    case EventMessage ev:
                         ProcessEvent(ev);
                         break;
                 }

@@ -1,13 +1,12 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Protocol
 {
     // ----------------------------------- event -----------------------------------
-    public sealed class SubscriptionEvent : ProtocolEvent
+    public sealed class EventMessage : ProtocolEvent
     {
         /// <summary>
         /// Contains the events an application subscribed. These are:
@@ -63,7 +62,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
 
     /// <summary>
     /// <see cref="EventInfo"/> is never de-/serialized.
-    /// It purpose is to get all aggregated information about a <see cref="SubscriptionEvent"/> by  by <see cref="SubscriptionEvent.GetEventInfo"/>.
+    /// It purpose is to get all aggregated information about a <see cref="EventMessage"/> by  by <see cref="EventMessage.GetEventInfo"/>.
     /// </summary>
     public struct EventInfo {
         public  readonly    ChangeInfo  changes;
@@ -87,7 +86,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     
     /// <summary>
     /// <see cref="ChangeInfo"/> is never de-/serialized.
-    /// It purpose is to get aggregated change information about a <see cref="SubscriptionEvent"/> by <see cref="SubscriptionEvent.GetChangeInfo"/>.
+    /// It purpose is to get aggregated change information about a <see cref="EventMessage"/> by <see cref="EventMessage.GetChangeInfo"/>.
     /// </summary>
     public class ChangeInfo {
         public  int creates;

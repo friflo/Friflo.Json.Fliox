@@ -150,7 +150,7 @@ namespace Friflo.Json.Fliox.DB.Client
         ///   E.g. by doing nothing in an override of <see cref="SubscriptionProcessor.ProcessEvent"/>.  
         /// </para>
         /// <para>
-        ///   Manipulation of the received <see cref="SubscriptionEvent"/> in an override of
+        ///   Manipulation of the received <see cref="EventMessage"/> in an override of
         ///   <see cref="SubscriptionProcessor.ProcessEvent"/> before processing it.
         /// </para>
         /// </summary>

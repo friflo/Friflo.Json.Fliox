@@ -7,7 +7,7 @@
                 "sync":     { "ref":  "SyncRequest" },
                 "syncResp": { "ref":  "SyncResponse" },
                 "error":    { "ref":  "ErrorResponse" },
-                "sub":      { "ref":  "SubscriptionEvent" }
+                "ev":       { "ref":  "EventMessage" }
             },
             "properties": {
 
@@ -729,7 +729,7 @@
                 "message": { "type": "string", "nullable": true }
             }
         },
-        "SubscriptionEvent": {
+        "EventMessage": {
             "properties": {
                 "seq":   { "type": "int32" },
                 "src":   { "type": "string" },
@@ -740,7 +740,7 @@
         "ProtocolEvent": {
             "discriminator": "type",
             "mapping": {
-                "sub": { "ref":  "SubscriptionEvent" }
+                "ev": { "ref":  "EventMessage" }
             },
             "properties": {
                 "seq": { "type": "int32" },

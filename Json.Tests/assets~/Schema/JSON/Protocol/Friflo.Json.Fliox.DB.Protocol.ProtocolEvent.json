@@ -6,7 +6,7 @@
         "ProtocolEvent": {
             "discriminator": "type",
             "oneOf": [
-                { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/SubscriptionEvent" }
+                { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/EventMessage" }
             ],
             "properties": {
                 "seq": { "$ref": "./Standard.json#/definitions/int32" },

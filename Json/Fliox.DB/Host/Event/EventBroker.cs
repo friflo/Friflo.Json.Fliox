@@ -174,28 +174,28 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                     }
                     if (tasks == null)
                         continue;
-                    var subscriptionEvent = new SubscriptionEvent {
+                    var eventMessage = new EventMessage {
                         tasks       = tasks.ToArray(),
                         srcUserId   = messageContext.userId,
                         dstClientId = subscriber.clientId
                     };
                     if (SerializeRemoteEvents && subscriber.IsRemoteTarget) {
-                        SerializeRemoteEvent(subscriptionEvent, tasks, writer);
+                        SerializeRemoteEvent(eventMessage, tasks, writer);
                     }
-                    subscriber.EnqueueEvent(subscriptionEvent);
+                    subscriber.EnqueueEvent(eventMessage);
                 }
             }
         }
         
         private const bool SerializeRemoteEvents = true; // set to false for development
 
-        /// Optimization: For remote connections the tasks are serialized to <see cref="SubscriptionEvent.tasksJson"/>.
+        /// Optimization: For remote connections the tasks are serialized to <see cref="EventMessage.tasksJson"/>.
         /// Benefits of doing this:
         /// - serialize a task only once for multiple targets
         /// - storing only a single byte[] for a task instead of a complex SyncRequestTask which is not used anymore
-        private static void SerializeRemoteEvent(SubscriptionEvent subscriptionEvent, List<SyncRequestTask> tasks, ObjectWriter writer) {
+        private static void SerializeRemoteEvent(EventMessage eventMessage, List<SyncRequestTask> tasks, ObjectWriter writer) {
             var tasksJson = new JsonValue [tasks.Count];
-            subscriptionEvent.tasksJson = tasksJson;
+            eventMessage.tasksJson = tasksJson;
             for (int n = 0; n < tasks.Count; n++) {
                 var task = tasks[n];
                 if (task.json == null) {
@@ -204,7 +204,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                 tasksJson[n] = new JsonValue(task.json.Value);
             }
             tasks.Clear();
-            subscriptionEvent.tasks = null;
+            eventMessage.tasks = null;
         }
 
         private SyncRequestTask FilterChanges (SyncRequestTask task, SubscribeChanges subscribe) {

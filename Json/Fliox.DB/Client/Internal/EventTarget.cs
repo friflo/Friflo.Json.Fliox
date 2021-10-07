@@ -29,11 +29,11 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                 return Task.FromResult(true);
             
             store._intern.lastEventSeq = ev.seq;
-            var subscriptionEvent = ev as SubscriptionEvent;
-            if (subscriptionEvent == null)
+            var eventMessage = ev as EventMessage;
+            if (eventMessage == null)
                 return Task.FromResult(true);
 
-            store._intern.subscriptionProcessor?.EnqueueEvent(subscriptionEvent);
+            store._intern.subscriptionProcessor?.EnqueueEvent(eventMessage);
 
             return Task.FromResult(true);
         }

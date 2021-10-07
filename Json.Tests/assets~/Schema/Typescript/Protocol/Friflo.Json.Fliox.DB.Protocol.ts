@@ -11,7 +11,7 @@ export type ProtocolMessage_Union =
     | SyncRequest
     | SyncResponse
     | ErrorResponse
-    | SubscriptionEvent
+    | EventMessage
 ;
 
 export abstract class ProtocolMessage {
@@ -19,7 +19,7 @@ export abstract class ProtocolMessage {
         | "sync"
         | "syncResp"
         | "error"
-        | "sub"
+        | "ev"
     ;
 }
 
@@ -349,20 +349,20 @@ export class ErrorResponse extends ProtocolResponse {
 }
 
 export type ProtocolEvent_Union =
-    | SubscriptionEvent
+    | EventMessage
 ;
 
 export abstract class ProtocolEvent extends ProtocolMessage {
     abstract type:
-        | "sub"
+        | "ev"
     ;
     seq  : int32;
     src  : string;
     clt  : string;
 }
 
-export class SubscriptionEvent extends ProtocolEvent {
-    type   : "sub";
+export class EventMessage extends ProtocolEvent {
+    type   : "ev";
     tasks? : SyncRequestTask_Union[] | null;
 }
 

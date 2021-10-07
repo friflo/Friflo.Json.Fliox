@@ -35,10 +35,10 @@ namespace Friflo.Json.Fliox.DB.Protocol
     /// </para>
     /// </summary>
     [Fri.Discriminator("type")] 
-    [Fri.Polymorph(typeof(SyncRequest),         Discriminant = "sync")]
-    [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "syncResp")]
-    [Fri.Polymorph(typeof(ErrorResponse),       Discriminant = "error")]
-    [Fri.Polymorph(typeof(SubscriptionEvent),   Discriminant = "sub")]
+    [Fri.Polymorph(typeof(SyncRequest),    Discriminant = "sync")]
+    [Fri.Polymorph(typeof(SyncResponse),   Discriminant = "syncResp")]
+    [Fri.Polymorph(typeof(ErrorResponse),  Discriminant = "error")]
+    [Fri.Polymorph(typeof(EventMessage),   Discriminant = "ev")]
     public abstract class ProtocolMessage
     {
         internal abstract   MessageType     MessageType { get; }
@@ -68,7 +68,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// As a user can access an <see cref="Host.EntityDatabase"/> by multiple clients the <see cref="clientId"/>
         /// enables identifying each client individually.
         /// The <see cref="clientId"/> is used for <see cref="SubscribeMessage"/> and <see cref="SubscribeChanges"/>
-        /// to enable sending <see cref="SubscriptionEvent"/>'s to the desired subscriber.
+        /// to enable sending <see cref="EventMessage"/>'s to the desired subscriber.
         [Fri.Property(Name =               "clt")]
                         public  JsonKey     clientId    { get; set; }
     }
@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// For tasks which require a <see cref="clientId"/> a client need to set <see cref="ProtocolRequest.clientId"/>
         /// to <see cref="clientId"/>.
         /// This enables tasks like <see cref="SubscribeMessage"/> or <see cref="SubscribeChanges"/> identifying the
-        /// <see cref="SubscriptionEvent"/> target. 
+        /// <see cref="EventMessage"/> target. 
         /// </summary>
         [Fri.Property(Name =               "clt")]
                         public  JsonKey     clientId    { get; set; }
@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     
     // ----------------------------------- event -----------------------------------
     [Fri.Discriminator("type")] 
-    [Fri.Polymorph(typeof(SubscriptionEvent),   Discriminant = "sub")]
+    [Fri.Polymorph(typeof(EventMessage),   Discriminant = "ev")]
     public abstract class ProtocolEvent     : ProtocolMessage {
         // note for all fields
         // used { get; set; } to force properties on the top of JSON

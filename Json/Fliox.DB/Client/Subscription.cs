@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.DB.Client
         Manual
     }
     
-    public delegate void SubscriptionHandler (SubscriptionProcessor processor, SubscriptionEvent ev);
+    public delegate void SubscriptionHandler (SubscriptionProcessor processor, EventMessage ev);
     
     public class SubscriptionProcessor
     {
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
         private readonly    SynchronizationContext              synchronizationContext;
         /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
-        private readonly    ConcurrentQueue <SubscriptionEvent> eventQueue;
+        private readonly    ConcurrentQueue <EventMessage>      eventQueue;
         
         public              int                                 EventSequence { get; private set ;}
 
@@ -63,16 +63,16 @@ namespace Friflo.Json.Fliox.DB.Client
         /// Creates a <see cref="SubscriptionProcessor"/> without a <see cref="synchronizationContext"/>
         /// In this case the application must frequently call <see cref="ProcessEvents"/> to apply changes to the
         /// <see cref="EntityStore"/>.
-        /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="SubscriptionEvent"/>'s
+        /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="EventMessage"/>'s
         /// are applied to the <see cref="EntityStore"/>.
         /// </summary>
         public SubscriptionProcessor (EntityStore store, SubscriptionHandling _) {
             this.store                  = store;
             processor                   = store._intern.processor;
-            this.eventQueue             = new ConcurrentQueue <SubscriptionEvent> ();
+            this.eventQueue             = new ConcurrentQueue <EventMessage> ();
         }
         
-        public virtual void EnqueueEvent(SubscriptionEvent ev) {
+        public virtual void EnqueueEvent(EventMessage ev) {
             if (eventQueue != null) {
                 eventQueue.Enqueue(ev);
                 return;
@@ -89,14 +89,14 @@ namespace Friflo.Json.Fliox.DB.Client
             if (synchronizationContext != null) {
                 throw new InvalidOperationException("SubscriptionHandler initialized with SynchronizationContext");
             }
-            while (eventQueue.TryDequeue(out SubscriptionEvent subscribeEvent)) {
-                ProcessEvent(subscribeEvent);
+            while (eventQueue.TryDequeue(out EventMessage eventMessage)) {
+                ProcessEvent(eventMessage);
             }
         }
 
         /// <summary>
-        /// Process the <see cref="SubscriptionEvent.tasks"/> of the given <see cref="SubscriptionEvent"/>.
-        /// These <see cref="SubscriptionEvent.tasks"/> are "messages" resulting from subscriptions registered by
+        /// Process the <see cref="EventMessage.tasks"/> of the given <see cref="EventMessage"/>.
+        /// These <see cref="EventMessage.tasks"/> are "messages" resulting from subscriptions registered by
         /// methods like <see cref="EntitySet{TKey,T}.SubscribeChanges"/>, <see cref="EntityStore.SubscribeAllChanges"/> or
         /// <see cref="EntityStore.SubscribeMessage"/>.
         /// <br></br>
@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// <br></br>
         /// Tasks notifying "messages" are ignored. These message subscriptions are registered by <see cref="EntityStore.SubscribeMessage"/>.
         /// </summary>
-        protected virtual void ProcessEvent(SubscriptionEvent ev) {
+        protected virtual void ProcessEvent(EventMessage ev) {
             if (store._intern.disposed)  // store may already be disposed
                 return;
             EventSequence++;
@@ -211,9 +211,9 @@ namespace Friflo.Json.Fliox.DB.Client
             return (EntityChanges<TKey, T>)result;
         }
         
-        public List<Message> GetMessages(SubscriptionEvent subscriptionEvent) {
+        public List<Message> GetMessages(EventMessage eventMessage) {
             messages.Clear();
-            foreach (var task in subscriptionEvent.tasks) {
+            foreach (var task in eventMessage.tasks) {
                 if (task.TaskType != TaskType.message)
                     continue;
                 var sendMessage = (SendMessage)task;
@@ -224,11 +224,11 @@ namespace Friflo.Json.Fliox.DB.Client
             return messages;
         }
         
-        public EntityChanges<TKey, T> GetEntityChanges<TKey, T>(EntitySet<TKey, T> entitySet, SubscriptionEvent subscriptionEvent) where T : class {
+        public EntityChanges<TKey, T> GetEntityChanges<TKey, T>(EntitySet<TKey, T> entitySet, EventMessage eventMessage) where T : class {
             var result  = GetChanges(entitySet);
             result.Clear();
             
-            foreach (var task in subscriptionEvent.tasks) {
+            foreach (var task in eventMessage.tasks) {
                 switch (task.TaskType) {
                     
                     case TaskType.create:

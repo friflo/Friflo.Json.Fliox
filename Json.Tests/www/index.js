@@ -69,7 +69,7 @@ export function connectWebsocket() {
                 responseModel.setValue(e.data)
                 responseState.innerHTML = `· ${duration} ms`;
                 break;
-            case "sub":
+            case "ev":
                 subscriptionCount.innerText = ++subCount;
                 subSeq = data.seq;
                 subscriptionSeq.innerText = subSeq ? subSeq : " - ";
