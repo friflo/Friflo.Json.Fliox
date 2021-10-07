@@ -4,7 +4,7 @@
     "$ref": "#/definitions/ProtocolRequest",
     "definitions": {
         "ProtocolRequest": {
-            "discriminator": "type",
+            "discriminator": "msg",
             "oneOf": [
                 { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/SyncRequest" }
             ],

@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     ///     <see cref="Client.EntityStore"/> even for remote clients like <see cref="Remote.RemoteClientDatabase"/>.
     /// </para>
     /// </summary>
-    [Fri.Discriminator("type")] 
+    [Fri.Discriminator("msg")] 
     [Fri.Polymorph(typeof(SyncRequest),    Discriminant = "sync")]
     [Fri.Polymorph(typeof(SyncResponse),   Discriminant = "resp")]
     [Fri.Polymorph(typeof(ErrorResponse),  Discriminant = "error")]
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     }
     
     // ----------------------------------- request -----------------------------------
-    [Fri.Discriminator("type")] 
+    [Fri.Discriminator("msg")] 
     [Fri.Polymorph(typeof(SyncRequest),         Discriminant = "sync")]
     public abstract class ProtocolRequest   : ProtocolMessage {
         /// <summary>Used only for <see cref="Remote.RemoteClientDatabase"/> to enable:
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     }
     
     // ----------------------------------- response -----------------------------------
-    [Fri.Discriminator("type")] 
+    [Fri.Discriminator("msg")] 
     [Fri.Polymorph(typeof(SyncResponse),        Discriminant = "resp")]
     [Fri.Polymorph(typeof(ErrorResponse),       Discriminant = "error")]
     public abstract class ProtocolResponse : ProtocolMessage {
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     }
     
     // ----------------------------------- event -----------------------------------
-    [Fri.Discriminator("type")] 
+    [Fri.Discriminator("msg")] 
     [Fri.Polymorph(typeof(EventMessage),   Discriminant = "ev")]
     public abstract class ProtocolEvent     : ProtocolMessage {
         // note for all fields

@@ -1,5 +1,5 @@
 {
-  "type": "sync",
+  "msg": "sync",
   "tasks": [
     {
       "task":       "patch",

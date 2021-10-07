@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.DB.Remote
 {
     internal class RemoteSubscriptionEvent
     {
-        /** map to <see cref="ProtocolEvent"/> Discriminator */ public  string      type;
+        /** map to <see cref="ProtocolEvent"/> Discriminator */ public  string      msg;
         /** map to <see cref="ProtocolEvent.seq"/> */           public  int         seq; 
         /** map to <see cref="ProtocolEvent.srcUserId"/> */     public  JsonKey     src;
         /** map to <see cref="ProtocolEvent.dstClientId"/> */   public  JsonKey     clt;
@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                 mapper.WriteNullMembers = false;
                 if (message is EventMessage ev && ev.tasksJson != null) {
                     var remoteEv = new RemoteSubscriptionEvent {
-                        type    = "ev",
+                        msg     = "ev",
                         seq     = ev.seq,
                         src     = ev.srcUserId,
                         clt     = ev.dstClientId,

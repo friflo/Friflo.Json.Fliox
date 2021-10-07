@@ -10,7 +10,7 @@ POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 {
-  "type": "sync",
+  "msg": "sync",
   "tasks": [
   {
     "task":  "message",
@@ -27,7 +27,7 @@ POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 {
-  "type": "sync",
+  "msg": "sync",
   "tasks": [
   {
     "task":         "read",
@@ -43,7 +43,7 @@ POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 {
-  "type": "sync",
+  "msg": "sync",
   "tasks": [
   {
     "task":         "read",
@@ -67,7 +67,7 @@ POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 {
-  "type": "sync",
+  "msg": "sync",
   "tasks": [
   {
     "task":         "query",
@@ -83,7 +83,7 @@ POST http://google.com:8010// HTTP/1.1
 content-type: application/json
 
 {
-  "type": "sync",
+  "msg": "sync",
   "tasks": [
   {
     "task":         "query",
@@ -100,7 +100,7 @@ POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 {
-  "type": "sync",
+  "msg": "sync",
   "tasks": [
   {
     "task":         "query",
@@ -134,7 +134,7 @@ POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 {
-  "type": "sync",
+  "msg": "sync",
   "tasks": [
   {
     "task":         "create",
@@ -150,7 +150,7 @@ POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 {
-  "type": "sync",
+  "msg": "sync",
   "tasks": [
   {
     "task":         "delete",
@@ -164,7 +164,7 @@ POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 {
-  "type": "sync",
+  "msg": "sync",
   "tasks": [
   {
     "task":         "patch",
@@ -188,7 +188,7 @@ POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 {
-  "type": "sync",
+  "msg": "sync",
   "tasks": [
   {
     "task":         "reserveKeys",
@@ -203,7 +203,7 @@ POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 {
-  "type": "sync",
+  "msg": "sync",
   "tasks": [
   {
     "task":         "create",
@@ -226,7 +226,7 @@ POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 {
-  "type":   "sync",
+  "msg":   "sync",
   "client": "client-1",
   "tasks": [{
     "task":     "subscribeMessage",
@@ -240,7 +240,7 @@ POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 {
-  "type":   "sync",
+  "msg":   "sync",
   "client": "client-1",
   "tasks": [{
     "task":         "subscribeChanges",
@@ -255,7 +255,7 @@ POST http://localhost:8010/ HTTP/1.1
 content-type: application/json
 
 {
-  "type":   "sync",
+  "msg":   "sync",
   "ack":    0,
   "client": "client-1",
   "tasks": []

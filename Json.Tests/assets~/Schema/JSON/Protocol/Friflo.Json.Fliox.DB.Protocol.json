@@ -6,7 +6,7 @@
             "type": "object",
             "extends": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.ProtocolRequest.json#/definitions/ProtocolRequest" },
             "properties": {
-                "type":  { "enum": ["sync"] },
+                "msg":   { "enum": ["sync"] },
                 "req":   { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "clt":   { "type": ["string", "null"] },
                 "user":  { "type": ["string", "null"] },
@@ -16,7 +16,7 @@
                 "info":  {  }
             },
             "required": [
-                "type",
+                "msg",
                 "tasks"
             ],
             "additionalProperties": false
@@ -257,7 +257,7 @@
             "type": "object",
             "extends": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.ProtocolResponse.json#/definitions/ProtocolResponse" },
             "properties": {
-                "type":         { "enum": ["resp"] },
+                "msg":          { "enum": ["resp"] },
                 "req":          { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "clt":          { "type": ["string", "null"] },
                 "authState":    { "type": ["string", "null"] },
@@ -270,7 +270,7 @@
                 "info":         {  }
             },
             "required": [
-                "type"
+                "msg"
             ],
             "additionalProperties": false
         },
@@ -538,13 +538,13 @@
             "type": "object",
             "extends": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.ProtocolResponse.json#/definitions/ProtocolResponse" },
             "properties": {
-                "type":    { "enum": ["error"] },
+                "msg":     { "enum": ["error"] },
                 "req":     { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "clt":     { "type": ["string", "null"] },
                 "message": { "type": ["string", "null"] }
             },
             "required": [
-                "type"
+                "msg"
             ],
             "additionalProperties": false
         },
@@ -552,14 +552,14 @@
             "type": "object",
             "extends": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.ProtocolEvent.json#/definitions/ProtocolEvent" },
             "properties": {
-                "type":  { "enum": ["ev"] },
+                "msg":   { "enum": ["ev"] },
                 "seq":   { "$ref": "./Standard.json#/definitions/int32" },
                 "src":   { "type": "string" },
                 "clt":   { "type": "string" },
                 "tasks": { "type": ["array", "null"], "items": { "$ref": "#/definitions/SyncRequestTask" } }
             },
             "required": [
-                "type",
+                "msg",
                 "seq",
                 "src",
                 "clt"

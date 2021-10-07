@@ -4,7 +4,7 @@
     "$ref": "#/definitions/ProtocolEvent",
     "definitions": {
         "ProtocolEvent": {
-            "discriminator": "type",
+            "discriminator": "msg",
             "oneOf": [
                 { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/EventMessage" }
             ],

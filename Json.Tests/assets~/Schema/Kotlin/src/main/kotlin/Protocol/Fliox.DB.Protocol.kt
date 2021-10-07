@@ -8,7 +8,7 @@ import java.util.*
 import Fliox.Transform.*
 
 @Serializable
-// @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
+// @JsonClassDiscriminator("msg") https://github.com/Kotlin/kotlinx.serialization/issues/546
 abstract class ProtocolMessage  {
 }
 
@@ -25,7 +25,7 @@ data class SyncRequest (
 ) : ProtocolRequest()
 
 @Serializable
-// @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
+// @JsonClassDiscriminator("msg") https://github.com/Kotlin/kotlinx.serialization/issues/546
 abstract class ProtocolRequest  : ProtocolMessage() {
     abstract  val req : Int?
     abstract  val clt : String?
@@ -173,7 +173,7 @@ data class SyncResponse (
 ) : ProtocolResponse()
 
 @Serializable
-// @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
+// @JsonClassDiscriminator("msg") https://github.com/Kotlin/kotlinx.serialization/issues/546
 abstract class ProtocolResponse  : ProtocolMessage() {
     abstract  val req : Int?
     abstract  val clt : String?
@@ -339,7 +339,7 @@ data class EventMessage (
 ) : ProtocolEvent()
 
 @Serializable
-// @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
+// @JsonClassDiscriminator("msg") https://github.com/Kotlin/kotlinx.serialization/issues/546
 abstract class ProtocolEvent  : ProtocolMessage() {
     abstract  val seq : Int
     abstract  val src : String

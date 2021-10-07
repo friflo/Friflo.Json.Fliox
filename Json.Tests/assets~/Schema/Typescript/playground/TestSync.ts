@@ -3,7 +3,7 @@ import { ProtocolMessage_Union } from "../Protocol/Friflo.Json.Fliox.DB.Protocol
 // check assignment with using a type compiles successful
 var exampleSync: ProtocolMessage_Union =
 {
-    type: "sync",
+    msg: "sync",
     tasks: [
         {
             "task":         "message",

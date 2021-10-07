@@ -4,7 +4,7 @@
     "$ref": "#/definitions/ProtocolResponse",
     "definitions": {
         "ProtocolResponse": {
-            "discriminator": "type",
+            "discriminator": "msg",
             "oneOf": [
                 { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/SyncResponse" },
                 { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/ErrorResponse" }

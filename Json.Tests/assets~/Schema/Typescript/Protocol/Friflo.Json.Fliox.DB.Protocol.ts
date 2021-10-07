@@ -15,7 +15,7 @@ export type ProtocolMessage_Union =
 ;
 
 export abstract class ProtocolMessage {
-    abstract type:
+    abstract msg:
         | "sync"
         | "resp"
         | "error"
@@ -28,7 +28,7 @@ export type ProtocolRequest_Union =
 ;
 
 export abstract class ProtocolRequest extends ProtocolMessage {
-    abstract type:
+    abstract msg:
         | "sync"
     ;
     req? : int32 | null;
@@ -36,7 +36,7 @@ export abstract class ProtocolRequest extends ProtocolMessage {
 }
 
 export class SyncRequest extends ProtocolRequest {
-    type   : "sync";
+    msg    : "sync";
     user?  : string | null;
     token? : string | null;
     ack?   : int32 | null;
@@ -175,7 +175,7 @@ export type ProtocolResponse_Union =
 ;
 
 export abstract class ProtocolResponse extends ProtocolMessage {
-    abstract type:
+    abstract msg:
         | "resp"
         | "error"
     ;
@@ -184,7 +184,7 @@ export abstract class ProtocolResponse extends ProtocolMessage {
 }
 
 export class SyncResponse extends ProtocolResponse {
-    type          : "resp";
+    msg           : "resp";
     authState?    : string | null;
     tasks?        : SyncTaskResult_Union[] | null;
     results?      : ContainerEntities[] | null;
@@ -344,7 +344,7 @@ export class EntityErrors {
 }
 
 export class ErrorResponse extends ProtocolResponse {
-    type     : "error";
+    msg      : "error";
     message? : string | null;
 }
 
@@ -353,7 +353,7 @@ export type ProtocolEvent_Union =
 ;
 
 export abstract class ProtocolEvent extends ProtocolMessage {
-    abstract type:
+    abstract msg:
         | "ev"
     ;
     seq  : int32;
@@ -362,7 +362,7 @@ export abstract class ProtocolEvent extends ProtocolMessage {
 }
 
 export class EventMessage extends ProtocolEvent {
-    type   : "ev";
+    msg    : "ev";
     tasks? : SyncRequestTask_Union[] | null;
 }
 

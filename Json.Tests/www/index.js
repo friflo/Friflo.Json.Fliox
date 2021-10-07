@@ -61,7 +61,7 @@ export function connectWebsocket() {
         var duration = new Date().getTime() - requestStart;
         var data = JSON.parse(e.data);
         // console.log('server:', e.data);
-        switch (data.type){ 
+        switch (data.msg){ 
             case "resp":
             case "error":
                 clt = data.clt;
@@ -236,7 +236,7 @@ export async function setupEditors()
         requestEditor.setModel (requestModel);
 
         var defaultRequest = `{
-    "type": "sync",
+    "msg": "sync",
     "tasks": [
         {
             "task":  "message",
