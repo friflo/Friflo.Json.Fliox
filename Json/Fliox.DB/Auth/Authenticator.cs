@@ -21,11 +21,19 @@ namespace Friflo.Json.Fliox.DB.Auth
         public abstract Task    Authenticate    (SyncRequest syncRequest, MessageContext messageContext);
         
         /// <summary>
+        /// Validate <see cref="MessageContext.clientId"/>.
+        /// </summary>
+        /// <param name="messageContext"></param>
+        public virtual bool ValidateClientId(MessageContext messageContext) {
+            return true;
+        }
+        /// <summary>
         /// Used by tasks which require a client id. E.g. <see cref="SubscribeMessage"/> or <see cref="SubscribeChanges"/> 
         /// In case <see cref="MessageContext.clientId"/> is null a new one is created.
-        /// In case the given client id is invalid it return true. Otherwise false. 
+        /// In case the given client id is valid it returns true. Otherwise false. 
         /// </summary>
-        public virtual bool EnsureValidClientId(IdProvider clientIdProvider, MessageContext messageContext) {
+        public virtual bool EnsureValidClientId(IdProvider clientIdProvider, MessageContext messageContext, out string error) {
+            error = null;
             if (!messageContext.clientId.IsNull())
                 return true;
             messageContext.clientId = clientIdProvider.NewId();
