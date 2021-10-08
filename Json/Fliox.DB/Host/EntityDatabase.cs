@@ -5,15 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
-using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host
 {
-
-    
     /// <summary>
     /// <see cref="EntityDatabase"/> is an abstraction for a specific database adapter / implementation e.g. a
     /// <see cref="MemoryDatabase"/> or a <see cref="FileDatabase"/>.
@@ -186,7 +183,6 @@ namespace Friflo.Json.Fliox.DB.Host
             // So next request will create a new valid client id.
             response.clientId = messageContext.clientIdValid ? messageContext.clientId : new JsonKey();
             
-            SetContainerResults(response);
             response.AssertResponse(syncRequest);
             
             var broker = eventBroker;
@@ -197,53 +193,6 @@ namespace Friflo.Json.Fliox.DB.Host
                 }
             }
             return new MsgResponse<SyncResponse>(response);
-        }
-        
-        /// Distribute <see cref="ContainerEntities.entityMap"/> to <see cref="ContainerEntities.entities"/>,
-        /// <see cref="ContainerEntities.notFound"/> and <see cref="ContainerEntities.errors"/> to simplify and
-        /// minimize response by removing redundancy.
-        /// <see cref="EntityStore.GetContainerResults"/> remap these properties.
-        protected virtual void SetContainerResults(SyncResponse response)
-        {
-            var resultMap = response.resultMap;
-            response.resultMap = null;
-            var results = response.results = new List<ContainerEntities>(resultMap.Count);
-            foreach (var resultPair in resultMap) {
-                ContainerEntities value = resultPair.Value;
-                results.Add(value);
-            }
-            foreach (var container in results) {
-                var entityMap       = container.entityMap;
-                var entities        = container.entities;
-                List<JsonKey> notFound = null;
-                var errors          = container.errors;
-                container.errors    = null;
-                entities.Capacity   = entityMap.Count;
-                foreach (var entityPair in entityMap) {
-                    EntityValue entity = entityPair.Value;
-                    if (entity.Error != null) {
-                        errors.Add(entityPair.Key, entity.Error);
-                        continue;
-                    }
-                    var json = entity.Json;
-                    if (json.IsNull()) {
-                        if (notFound == null) {
-                            notFound = new List<JsonKey>();
-                        }
-                        notFound.Add(entityPair.Key);
-                        continue;
-                    }
-                    entities.Add(new JsonValue(json));
-                }
-                entityMap.Clear();
-                if (notFound != null) {
-                    container.notFound = notFound;
-                }
-                if (errors != null && errors.Count > 0) {
-                    container.errors = errors;
-                }
-            }
-            resultMap.Clear();
         }
     }
     

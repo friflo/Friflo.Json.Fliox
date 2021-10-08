@@ -50,17 +50,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 if (task is SendMessage message) {
                     if (!syncErrors.TryGetValue(message.name, out var fcn))
                         continue;
-                    var response = fcn();
-                    return response;
+                    var resp = fcn();
+                    return resp;
                 }
             }
-            return await base.ExecuteSync(syncRequest, messageContext);
-        }
-        
-        protected override void SetContainerResults(SyncResponse response) {
+            var response = await base.ExecuteSync(syncRequest, messageContext);
             foreach (var pair in testContainers) {
                 TestContainer testContainer = pair.Value;
-                if (!response.resultMap.TryGetValue(testContainer.name, out var result))
+                if (!response.success.resultMap.TryGetValue(testContainer.name, out var result))
                     continue;
                 var entities = result.entityMap;
                 foreach (var id in testContainer.missingResultErrors) {
@@ -70,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                     }
                 }
             }
-            base.SetContainerResults(response);
+            return response;
         }
 
         public TestContainer GetTestContainer(string container) {

@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.DB.Client.Internal;
 using Friflo.Json.Fliox.DB.Client.Internal.Map;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 
@@ -484,7 +485,8 @@ namespace Friflo.Json.Fliox.DB.Client
                     var result = response.success;
                     response.success.AssertResponse(syncRequest);
                     syncError = null;
-                    GetContainerResults(result);
+                    if (_intern.database is RemoteClientDatabase)
+                        GetContainerResults(result);
                     containerResults = result.resultMap;
                     foreach (var containerResult in containerResults) {
                         ContainerEntities containerEntities = containerResult.Value;
