@@ -9,10 +9,13 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host
 {
+    // ReSharper disable UnassignedReadonlyField
+    // ReSharper disable ClassNeverInstantiated.Global
+    // ReSharper disable CollectionNeverUpdated.Global
     public class AdminStore :  EntityStore
     {
-        internal readonly   EntitySet <JsonKey, ClientInfo>     clients;
-        internal readonly   EntitySet <JsonKey, UserInfo>       users;
+        public  readonly   EntitySet <JsonKey, ClientInfo>     clients;
+        public  readonly   EntitySet <JsonKey, UserInfo>       users;
         
         public AdminStore(EntityDatabase database, TypeStore typeStore, string userId, string clientId) : base(database, typeStore, userId, clientId) {
         }
@@ -68,7 +71,6 @@ namespace Friflo.Json.Fliox.DB.Host
                     clientInfo = new ClientInfo { id          = client };
                 }
                 store.clients.Upsert(clientInfo);
-                
                 var subscriber  = defaultDb.eventBroker.GetSubscriber(client);
                 var msgSubs     = clientInfo.messageSubs;
                 msgSubs?.Clear();
@@ -82,9 +84,9 @@ namespace Friflo.Json.Fliox.DB.Host
                         msgSubs = new List<string>();
                     msgSubs.Add(messageSub + "*");
                 }
-                clientInfo.messageSubs = msgSubs;
-                clientInfo.seq                  = subscriber.Seq;
-                clientInfo.queuedEvents      = subscriber.EventQueueCount;
+                clientInfo.messageSubs  = msgSubs;
+                clientInfo.seq          = subscriber.Seq;
+                clientInfo.queuedEvents = subscriber.EventQueueCount;
             }
             /* 
             var user1 = new UserInfo {
