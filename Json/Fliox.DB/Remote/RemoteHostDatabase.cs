@@ -56,6 +56,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             }
         }
         
+        /// Required only by <see cref="RemoteHostDatabase"/>
         /// Distribute <see cref="ContainerEntities.entityMap"/> to <see cref="ContainerEntities.entities"/>,
         /// <see cref="ContainerEntities.notFound"/> and <see cref="ContainerEntities.errors"/> to simplify and
         /// minimize response by removing redundancy.

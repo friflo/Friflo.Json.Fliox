@@ -60,9 +60,13 @@ namespace Friflo.Json.Fliox.DB.Protocol
     // ----------------------------------- sync results -----------------------------------
     public sealed class ContainerEntities
     {
+        /// Required only by <see cref="Remote.RemoteHostDatabase"/> for serialization
         [Fri.Required]  public  string                              container;
+        /// Required only by <see cref="Remote.RemoteHostDatabase"/> for serialization
         [Fri.Required]  public  List<JsonValue>                     entities  = new List<JsonValue>();
+        /// Required only by <see cref="Remote.RemoteHostDatabase"/> for serialization
                         public  List<JsonKey>                       notFound;
+        /// Required only by <see cref="Remote.RemoteHostDatabase"/> for serialization
                         public  Dictionary<JsonKey, EntityError>    errors    = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
         
         [Fri.Ignore]    public  Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
