@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// Required only by <see cref="Remote.RemoteHostDatabase"/> for serialization
         [Fri.Required]  public  string                              container;
         /// Required only by <see cref="Remote.RemoteHostDatabase"/> for serialization
-        [Fri.Required]  public  List<JsonValue>                     entities  = new List<JsonValue>();
+        [Fri.Required]  public  List<JsonValue>                     entities;
         /// Required only by <see cref="Remote.RemoteHostDatabase"/> for serialization
                         public  List<JsonKey>                       notFound;
         /// Required only by <see cref="Remote.RemoteHostDatabase"/> for serialization

@@ -74,7 +74,8 @@ namespace Friflo.Json.Fliox.DB.Remote
             }
             foreach (var container in results) {
                 var entityMap       = container.entityMap;
-                var entities        = container.entities;
+                var entities        = new List<JsonValue> (entityMap.Count);
+                container.entities  = entities;
                 List<JsonKey> notFound = null;
                 var errors          = container.errors;
                 container.errors    = null;
