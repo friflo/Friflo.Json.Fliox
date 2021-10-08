@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
                 _singleton.GetTypeMapper(typeof(AuthenticateUser));
                 _singleton.GetTypeMapper(typeof(AuthenticateUserResult));
                 _singleton.GetTypeMapper(typeof(RemoteSubscriptionEvent));
-                _singleton.GetTypeMapper(typeof(AdminStore));
+                _singleton.GetTypeMapper(typeof(NodeStore));
             }
             return _singleton;
         }

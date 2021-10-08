@@ -29,15 +29,15 @@ namespace Friflo.Json.Fliox.DB.Remote
         private             bool                runServer;
         
         private             int                 requestCount;
-        private  readonly   AdminDatabase       adminDb;
+        private  readonly   NodeDatabase        nodeDb;
 
         public HttpHostDatabase(EntityDatabase local, string endpoint) : base(local) {
             this.endpoint       = endpoint;
             listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);
             
-            adminDb = new AdminDatabase(new MemoryDatabase(), local);
-            addOnDbs.Add("admin", adminDb);
+            nodeDb = new NodeDatabase(new MemoryDatabase(), local);
+            addOnDbs.Add("node", nodeDb);
             
             using (var typeStore = new TypeStore()) {
                 var protocolSchema      = new NativeTypeSchema(typeStore, typeof(ProtocolMessage));
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
 
         public override void Dispose() {
-            adminDb.Dispose();
+            nodeDb.Dispose();
             base.Dispose();
         }
 

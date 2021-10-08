@@ -13,12 +13,12 @@ namespace Friflo.Json.Fliox.DB.Host
     // ReSharper disable UnassignedReadonlyField
     // ReSharper disable ClassNeverInstantiated.Global
     // ReSharper disable CollectionNeverUpdated.Global
-    public class AdminStore :  EntityStore
+    public class NodeStore :  EntityStore
     {
         public  readonly   EntitySet <JsonKey, ClientInfo>     clients;
         public  readonly   EntitySet <JsonKey, UserInfo>       users;
         
-        public AdminStore(EntityDatabase database, TypeStore typeStore, string userId, string clientId) : base(database, typeStore, userId, clientId) {
+        public NodeStore(EntityDatabase database, TypeStore typeStore, string userId, string clientId) : base(database, typeStore, userId, clientId) {
         }
     }
     
@@ -40,16 +40,16 @@ namespace Friflo.Json.Fliox.DB.Host
         public override         string ToString() => JsonDebug.ToJson(this, false);
     }
     
-    public class AdminDatabase :  EntityDatabase
+    public class NodeDatabase :  EntityDatabase
     {
-        private readonly    EntityDatabase      adminDb;
+        private readonly    EntityDatabase      nodeDb;
         private readonly    EntityDatabase      defaultDb;
-        private readonly    AdminStore          store;
+        private readonly    NodeStore           store;
         
-        public AdminDatabase (EntityDatabase adminDb, EntityDatabase defaultDb) : base ("admin") {
-            this.adminDb    = adminDb;
+        public NodeDatabase (EntityDatabase nodeDb, EntityDatabase defaultDb) : base ("node") {
+            this.nodeDb     = nodeDb;
             this.defaultDb  = defaultDb;
-            store           = new AdminStore(adminDb, SyncTypeStore.Get(), "admin", "admin-token");
+            store           = new NodeStore(nodeDb, SyncTypeStore.Get(), "admin", "admin-token");
         }
 
         public override void Dispose() {
@@ -58,12 +58,12 @@ namespace Friflo.Json.Fliox.DB.Host
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            return adminDb.CreateContainer(name, database);
+            return nodeDb.CreateContainer(name, database);
         }
         
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             await UpdateStore();
-            return await adminDb.ExecuteSync(syncRequest, messageContext);
+            return await nodeDb.ExecuteSync(syncRequest, messageContext);
         }
 
         private async Task UpdateStore() {
