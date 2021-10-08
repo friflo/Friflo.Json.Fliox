@@ -87,6 +87,8 @@ namespace Friflo.Json.Fliox.DB.Host
                 clientInfo.messageSubs  = msgSubs;
                 clientInfo.seq          = subscriber.Seq;
                 clientInfo.queuedEvents = subscriber.EventQueueCount;
+                
+                clientInfo.changeSubs = subscriber.GetChangeSubscriptions (clientInfo.changeSubs);
             }
             /* 
             var user1 = new UserInfo {

@@ -48,6 +48,16 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         /// used for test assertion
         public              int                                     SentEventsCount => sentEvents.Count;
         internal            bool                                    IsRemoteTarget => eventTarget is WebSocketHostTarget;
+        
+        public Dictionary<string, SubscribeChanges> GetChangeSubscriptions (Dictionary<string, SubscribeChanges> subs) {
+            if (subs == null)
+                return new Dictionary<string, SubscribeChanges>(changeSubscriptions);
+            subs.Clear();
+            subs.EnsureCapacity(changeSubscriptions.Count);
+            foreach (var pair in changeSubscriptions)
+                subs.Add(pair.Key, pair.Value);
+            return subs;
+        }
 
         public EventSubscriber (in JsonKey clientId, IEventTarget eventTarget, bool background) {
             this.clientId       = clientId;
