@@ -137,6 +137,7 @@ namespace Friflo.Json.Fliox.DB.Host
             messageContext.clientId = syncRequest.clientId;
             
             await authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
+            // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
             messageContext.clientIdValid = authenticator.ValidateClientId(messageContext);
             
             var requestTasks = syncRequest.tasks;
@@ -180,6 +181,7 @@ namespace Friflo.Json.Fliox.DB.Host
                 }
             }
             
+            // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
             // As a client is required to use response.clientId it is set to null if given clientId was invalid.
             // So next request will create a new valid client id.
             response.clientId = messageContext.clientIdValid ? messageContext.clientId : new JsonKey();
