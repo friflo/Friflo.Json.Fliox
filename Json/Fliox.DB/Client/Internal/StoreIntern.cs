@@ -17,7 +17,6 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
     internal struct StoreIntern
     {
         // readonly
-        internal readonly   JsonKey                                     userId;
         internal readonly   JsonKey                                     clientId;
         internal readonly   TypeStore                                   typeStore;
         internal readonly   TypeCache                                   typeCache;
@@ -44,6 +43,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         internal            bool                                    disposed;
         internal            int                                     lastEventSeq;
         internal            int                                     syncCount;
+        internal            JsonKey                                 userId;
         internal            string                                  token;
 
         public   override   string                                  ToString() => userId.ToString();

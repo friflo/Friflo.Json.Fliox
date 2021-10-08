@@ -101,7 +101,11 @@ namespace Friflo.Json.Fliox.DB.Client
             messageContext.Release();
             return result;
         }
-        
+
+        public void SetUser (JsonKey user) {
+            _intern.userId = user;
+        }
+
         public void SetToken (string token) {
             _intern.token = token;
         }

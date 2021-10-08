@@ -47,9 +47,10 @@ namespace Friflo.Json.Fliox.DB.Host
         private readonly    NodeStore           store;
         
         public NodeDatabase (EntityDatabase nodeDb, EntityDatabase defaultDb) : base ("node") {
-            this.nodeDb     = nodeDb;
-            this.defaultDb  = defaultDb;
-            store           = new NodeStore(nodeDb, SyncTypeStore.Get(), "admin", "admin-token");
+            this.nodeDb             = nodeDb;
+            this.defaultDb          = defaultDb;
+            nodeDb.authenticator    = defaultDb.authenticator;
+            store = new NodeStore(nodeDb, SyncTypeStore.Get(), null, null);
         }
 
         public override void Dispose() {
@@ -62,11 +63,13 @@ namespace Friflo.Json.Fliox.DB.Host
         }
         
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            await UpdateStore();
+            await UpdateStore(syncRequest.userId, syncRequest.token);
             return await nodeDb.ExecuteSync(syncRequest, messageContext);
         }
 
-        private async Task UpdateStore() {
+        private async Task UpdateStore(JsonKey userId, string token) {
+            store.SetUser (userId);
+            store.SetToken(token);
             foreach (var client in defaultDb.clientController.clients) {
                 if (!store.clients.TryGet(client, out var clientInfo)) {
                     clientInfo = new ClientInfo { id          = client };
@@ -112,7 +115,7 @@ namespace Friflo.Json.Fliox.DB.Host
                 clients     = new List<Ref<JsonKey, ClientInfo>> { new JsonKey("some-client") },
             }; */
 
-            await store.Sync();
+            await store.TrySync();
         }
     }
 }
