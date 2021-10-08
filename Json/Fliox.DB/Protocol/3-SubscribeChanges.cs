@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
             if (eventTarget == null)
                 return Task.FromResult<SyncTaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
-            if (!database.authenticator.EnsureValidClientId(database.clientIdProvider, messageContext, out string error))
+            if (!database.authenticator.EnsureValidClientId(database.clientController, messageContext, out string error))
                 return Task.FromResult<SyncTaskResult>(InvalidTask(error));
             
             eventBroker.SubscribeChanges(this, messageContext.clientId, eventTarget);

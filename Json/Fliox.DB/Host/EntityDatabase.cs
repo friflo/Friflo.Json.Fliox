@@ -65,11 +65,11 @@ namespace Friflo.Json.Fliox.DB.Host
         public              Authenticator                       authenticator = new AuthenticateNone(new AuthorizeAllow());
         // ReSharper disable once FieldCanBeMadeReadOnly.Global
         /// <summary>
-        /// <see cref="clientIdProvider"/> is used to create unique ids assigned to new user clients.
+        /// <see cref="clientController"/> is used to create unique ids assigned to new user clients.
         /// This enables sending subscription events to a specific user clients.
         /// Without this possibility it would only be possible to send events to all clients used by a single user. 
         /// </summary>
-        public              IdProvider                          clientIdProvider = new IncrementIdProvider();
+        public              ClientController                    clientController = new IncrementClientController();
         /// <summary>
         /// An optional <see cref="DatabaseSchema"/> used to validate the JSON payloads in all write operations
         /// performed on the <see cref="EntityContainer"/>'s of the database

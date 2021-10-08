@@ -1,0 +1,15 @@
+{
+  "msg": "sync",
+  "database": "admin",
+  "tasks": [
+    {
+      "task":       "query",
+      "container":  "clients",
+      "filterLinq": "true",
+      "filter":     { "op": "true" }
+    }
+  ],
+  "info": ["query all clients"],
+  "user":   "{{user}}",
+  "token":  "{{token}}"
+}

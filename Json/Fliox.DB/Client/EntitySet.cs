@@ -154,6 +154,18 @@ namespace Friflo.Json.Fliox.DB.Client
         }
         
         // --------------------------------------- public interface ---------------------------------------
+        public bool TryGet (TKey key, out T entity) {
+            if (peers.TryGetValue(key, out Peer<T> peer)) {
+                entity = peer.Entity;
+                return true;
+            }
+            entity = null;
+            return false;
+        }
+        
+        public bool Contains (TKey key) {
+            return peers.ContainsKey(key);
+        }
         
         // --- Read
         public ReadTask<TKey, T> Read() {

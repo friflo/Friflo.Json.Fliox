@@ -32,11 +32,11 @@ namespace Friflo.Json.Fliox.DB.Auth
         /// In case <see cref="MessageContext.clientId"/> is null a new one is created.
         /// In case the given client id is valid it returns true. Otherwise false. 
         /// </summary>
-        public virtual bool EnsureValidClientId(IdProvider clientIdProvider, MessageContext messageContext, out string error) {
+        public virtual bool EnsureValidClientId(ClientController clientController, MessageContext messageContext, out string error) {
             error = null;
             if (!messageContext.clientId.IsNull())
                 return true;
-            messageContext.clientId = clientIdProvider.NewId();
+            messageContext.clientId = clientController.NewClientId();
             return true;
         }
 

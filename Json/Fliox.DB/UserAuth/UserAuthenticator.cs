@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             return userCredentials.clients.Contains(messageContext.clientId);
         }
         
-        public override bool EnsureValidClientId(IdProvider clientIdProvider, MessageContext messageContext, out string error) {
+        public override bool EnsureValidClientId(ClientController clientController, MessageContext messageContext, out string error) {
             if (!messageContext.clientIdValid) {
                 error = $"invalid client id. 'clt': {messageContext.clientId}";
                 return false;
@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             if (!messageContext.clientId.IsNull()) {
                 return true; // clientId already validated -> can be used in further processing
             }
-            var clientId = clientIdProvider.NewId();
+            var clientId = clientController.NewClientId();
             userCredentials.clients.Add(clientId);
             messageContext.clientId = clientId;
             return true;
