@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     {
         private   readonly  UserStore                                       userStore;
         private   readonly  IUserAuth                                       userAuth;
-        private   readonly  ConcurrentDictionary<JsonKey, UserCredentials>  credByUser;
+        internal  readonly  ConcurrentDictionary<JsonKey, UserCredentials>  credByUser;
         private   readonly  Authorizer                                      unknown;
         private   readonly  ConcurrentDictionary<string,  Authorizer>       authorizerByRole;
 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host
@@ -89,6 +90,21 @@ namespace Friflo.Json.Fliox.DB.Host
                 clientInfo.queuedEvents = subscriber.EventQueueCount;
                 
                 clientInfo.changeSubs = subscriber.GetChangeSubscriptions (clientInfo.changeSubs);
+            }
+            if (defaultDb.authenticator is UserAuthenticator userAuth) {
+                foreach (var user in userAuth.credByUser) {
+                    if (!store.users.TryGet(user.Key, out var userInfo)) {
+                        userInfo = new UserInfo { id = user.Key };
+                    }
+                    if (userInfo.clients == null)
+                        userInfo.clients = new List<Ref<JsonKey, ClientInfo>>(user.Value.clients.Count);
+                    else
+                        userInfo.clients.Clear();
+                    foreach (var client in user.Value.clients) {
+                        userInfo.clients.Add(client);
+                    }
+                    store.users.Upsert(userInfo);
+                }
             }
             /* 
             var user1 = new UserInfo {
