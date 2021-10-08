@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable UnassignedField.Global
 namespace Friflo.Json.Fliox.DB.Protocol
 {
     // ----------------------------------- request -----------------------------------
@@ -24,6 +25,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// </summary>
         [Fri.Property(Name = "ack")]    public  int?                    eventAck;
         [Fri.Required]                  public  List<SyncRequestTask>   tasks;
+                                        public  string                  database;
                                         public  JsonValue               info;
         
         internal override                       MessageType             MessageType => MessageType.sync;

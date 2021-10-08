@@ -18,6 +18,10 @@ namespace Friflo.Json.Fliox.DB.Host
             this.pretty = pretty;
         }
         
+        public MemoryDatabase(string name, bool pretty = false) : base(name) {
+            this.pretty = pretty;
+        }
+        
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             return new MemoryContainer(name, database, pretty);
         }

@@ -40,6 +40,8 @@ namespace Friflo.Json.Fliox.DB.Host
 #endif
     public abstract class EntityDatabase : IDisposable
     {
+        public readonly     string                              name;
+        
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         /// <summary>
@@ -79,7 +81,15 @@ namespace Friflo.Json.Fliox.DB.Host
         /// By having the mapping function in <see cref="EntityDatabase"/> it enables uniform mapping across different
         /// <see cref="EntityDatabase"/> implementations.
         /// </summary>
-        public              CustomContainerName                 customContainerName = name => name; 
+        public              CustomContainerName                 customContainerName = name => name;
+        
+        public EntityDatabase () {
+            this.name = "app";
+        }
+        
+        public EntityDatabase (string name) {
+            this.name = name;
+        }
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 

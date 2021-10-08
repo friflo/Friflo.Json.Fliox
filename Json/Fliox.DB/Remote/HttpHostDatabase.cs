@@ -36,6 +36,9 @@ namespace Friflo.Json.Fliox.DB.Remote
             listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);
             
+            var adminDb = new MemoryDatabase("admin");
+            addOnDbs.Add("admin", adminDb);
+            
             using (var typeStore = new TypeStore()) {
                 var protocolSchema      = new NativeTypeSchema(typeStore, typeof(ProtocolMessage));
                 var types               = ProtocolMessage.Types;

@@ -14,12 +14,22 @@ namespace Friflo.Json.Fliox.DB.Remote
 {
     public class RemoteHostDatabase : EntityDatabase
     {
-        private  readonly   EntityDatabase  local;
+        private  readonly   EntityDatabase                      local;
+        public   readonly   Dictionary<string, EntityDatabase>  addOnDbs = new Dictionary<string, EntityDatabase>();
+        
         /// Only set to true for testing. It avoids an early out at <see cref="Host.Event.EventSubscriber.SendEvents"/> 
         public              bool            fakeOpenClosedSockets;
 
         public RemoteHostDatabase(EntityDatabase local) {
             this.local = local;
+        }
+        
+        private EntityDatabase GetDatabase(string database) {
+            if (database == null)
+                return local;
+            if (addOnDbs.TryGetValue(database, out var db))
+                return db;
+            return null;
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
@@ -29,7 +39,8 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
         
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            var response = await local.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
+            var database    = GetDatabase(syncRequest.database);
+            var response    = await database.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
             SetContainerResults(response.success);
             response.Result.reqId       = syncRequest.reqId;
             return response;
