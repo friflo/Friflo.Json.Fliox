@@ -67,7 +67,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// Required only by <see cref="Remote.RemoteHostDatabase"/> for serialization
                         public  List<JsonKey>                       notFound;
         /// Required only by <see cref="Remote.RemoteHostDatabase"/> for serialization
-                        public  Dictionary<JsonKey, EntityError>    errors    = new Dictionary<JsonKey, EntityError>(JsonKey.Equality);
+                        public  Dictionary<JsonKey, EntityError>    errors    = new Dictionary<JsonKey, EntityError>(JsonKey.Equality); // todo should be instantiated only if required
         
         [Fri.Ignore]    public  Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
         
