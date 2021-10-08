@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);
             
-            adminDb = new AdminDatabase(new MemoryDatabase(), local.clientController);
+            adminDb = new AdminDatabase(new MemoryDatabase(), local);
             addOnDbs.Add("admin", adminDb);
             
             using (var typeStore = new TypeStore()) {

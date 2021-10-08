@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable ConvertToAutoPropertyWhenPossible
 namespace Friflo.Json.Fliox.DB.Host.Event
 {
     internal enum TriggerType {
@@ -40,7 +41,9 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         internal readonly   Task                                    triggerLoop;
         private  readonly   DataChannelWriter<TriggerType>          triggerWriter;
 
-        public   override   string                                  ToString() => clientId.ToString();
+        public              int                                     Seq             => eventCounter;
+        public              int                                     EventQueueCount => eventQueue.Count;
+        public   override   string                                  ToString()      => clientId.ToString();
         
         /// used for test assertion
         public              int                                     SentEventsCount => sentEvents.Count;

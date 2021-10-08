@@ -33,6 +33,10 @@ namespace Friflo.Json.Fliox.DB.Host.Event
             jsonEvaluator.Dispose();
         }
         
+        public EventSubscriber GetSubscriber(JsonKey key) {
+            return subscribers[key];
+        }
+        
         /// used for test assertion (returned subscribers cant be manipulated)
         public ICollection<EventSubscriber> GetSubscribers() => subscribers.Values;
 

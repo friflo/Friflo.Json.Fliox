@@ -11,8 +11,8 @@ namespace Friflo.Json.Fliox.DB.Host
 {
     public class AdminStore :  EntityStore
     {
-        public  readonly EntitySet <JsonKey, ClientInfo>     clients;
-        public  readonly EntitySet <JsonKey, UserInfo>       users;
+        internal readonly   EntitySet <JsonKey, ClientInfo>     clients;
+        internal readonly   EntitySet <JsonKey, UserInfo>       users;
         
         public AdminStore(EntityDatabase database, TypeStore typeStore, string userId, string clientId) : base(database, typeStore, userId, clientId) {
         }
@@ -22,9 +22,9 @@ namespace Friflo.Json.Fliox.DB.Host
         [Fri.Required]  public  JsonKey                                 id;
         [Fri.Required]  public  Ref<JsonKey, UserInfo>                  user;
                         public  int                                     seq;
-                        public  int                                     eventQueue;
-                        public  Dictionary<string, SubscribeChanges>    changeSubscriptions;
-                        public  List<string>                            messageSubscriptions;
+                        public  int                                     queuedEvents;
+                        public  List<string>                            messageSubs;
+                        public  Dictionary<string, SubscribeChanges>    changeSubs;
                         
         public override         string ToString() => JsonDebug.ToJson(this, false);
     }
@@ -38,14 +38,14 @@ namespace Friflo.Json.Fliox.DB.Host
     
     public class AdminDatabase :  EntityDatabase
     {
-        private readonly    EntityDatabase      local;
+        private readonly    EntityDatabase      adminDb;
+        private readonly    EntityDatabase      defaultDb;
         private readonly    AdminStore          store;
-        private readonly    ClientController    dbClientController;
         
-        public AdminDatabase (EntityDatabase local, ClientController clientController) : base ("admin") {
-            this.local              = local;
-            this.dbClientController = clientController;
-            store = new AdminStore(local, SyncTypeStore.Get(), "admin", "admin-token");
+        public AdminDatabase (EntityDatabase adminDb, EntityDatabase defaultDb) : base ("admin") {
+            this.adminDb    = adminDb;
+            this.defaultDb  = defaultDb;
+            store           = new AdminStore(adminDb, SyncTypeStore.Get(), "admin", "admin-token");
         }
 
         public override void Dispose() {
@@ -54,24 +54,37 @@ namespace Friflo.Json.Fliox.DB.Host
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            return local.CreateContainer(name, database);
+            return adminDb.CreateContainer(name, database);
         }
         
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             await UpdateStore();
-            return await local.ExecuteSync(syncRequest, messageContext);
+            return await adminDb.ExecuteSync(syncRequest, messageContext);
         }
 
         private async Task UpdateStore() {
-            foreach (var client in dbClientController.clients) {
-                if (store.clients.Contains(client))
-                    continue;
-                var clientInfo = new ClientInfo {
-                    id          = client,
-                    seq         = 111,
-                    eventQueue  = 222
-                };
+            foreach (var client in defaultDb.clientController.clients) {
+                if (!store.clients.TryGet(client, out var clientInfo)) {
+                    clientInfo = new ClientInfo { id          = client };
+                }
                 store.clients.Upsert(clientInfo);
+                
+                var subscriber  = defaultDb.eventBroker.GetSubscriber(client);
+                var msgSubs     = clientInfo.messageSubs;
+                msgSubs?.Clear();
+                foreach (var messageSub in subscriber.messageSubscriptions) {
+                    if (msgSubs == null)
+                        msgSubs = new List<string>();
+                    msgSubs.Add(messageSub);
+                }
+                foreach (var messageSub in subscriber.messagePrefixSubscriptions) {
+                    if (msgSubs == null)
+                        msgSubs = new List<string>();
+                    msgSubs.Add(messageSub + "*");
+                }
+                clientInfo.messageSubs = msgSubs;
+                clientInfo.seq                  = subscriber.Seq;
+                clientInfo.queuedEvents      = subscriber.EventQueueCount;
             }
             /* 
             var user1 = new UserInfo {
