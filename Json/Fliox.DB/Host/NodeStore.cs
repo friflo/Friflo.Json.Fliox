@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DB.Host
     // ReSharper disable UnassignedReadonlyField
     // ReSharper disable ClassNeverInstantiated.Global
     // ReSharper disable CollectionNeverUpdated.Global
-    public class NodeStore :  EntityStore
+    public partial class  NodeStore :  EntityStore
     {
         public  readonly   EntitySet <JsonKey, ClientInfo>     clients;
         public  readonly   EntitySet <JsonKey, UserInfo>       users;
@@ -63,26 +63,28 @@ namespace Friflo.Json.Fliox.DB.Host
         }
         
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            await UpdateNodeStore(syncRequest.userId, syncRequest.token);
+            store.UpdateNodeStore(db, syncRequest.userId, syncRequest.token);
+            await store.TrySync();
             return await nodeDb.ExecuteSync(syncRequest, messageContext);
         }
-
-        private async Task UpdateNodeStore(JsonKey userId, string token) {
-            store.SetUser (userId);
-            store.SetToken(token);
-            UpdateClients();
-            UpdateUsers();
-            await store.TrySync();
+    }
+    
+    public partial class NodeStore {
+        internal void UpdateNodeStore(EntityDatabase db, JsonKey userId, string token) {
+            SetUser (userId);
+            SetToken(token);
+            UpdateClients(db);
+            UpdateUsers(db);
         }
         
-        private void UpdateClients() {
+        private void UpdateClients(EntityDatabase db) {
             foreach (var pair in db.clientController.clients) {
                 var client = pair.Key;
-                if (!store.clients.TryGet(client, out var clientInfo)) {
+                if (!clients.TryGet(client, out var clientInfo)) {
                     clientInfo = new ClientInfo { id = client };
                 }
                 clientInfo.user = pair.Value;
-                store.clients.Upsert(clientInfo);
+                clients.Upsert(clientInfo);
                 var subscriber  = db.eventBroker.GetSubscriber(client);
                 var msgSubs     = clientInfo.messageSubs;
                 msgSubs?.Clear();
@@ -102,11 +104,11 @@ namespace Friflo.Json.Fliox.DB.Host
             }
         }
         
-        private void UpdateUsers() {
+        private void UpdateUsers(EntityDatabase db) {
             if (!(db.authenticator is UserAuthenticator userAuth))
                 return;
             foreach (var user in userAuth.credByUser) {
-                if (!store.users.TryGet(user.Key, out var userInfo)) {
+                if (!users.TryGet(user.Key, out var userInfo)) {
                     userInfo = new UserInfo { id = user.Key };
                 }
                 if (userInfo.clients == null)
@@ -116,7 +118,7 @@ namespace Friflo.Json.Fliox.DB.Host
                 foreach (var client in user.Value.clients) {
                     userInfo.clients.Add(client);
                 }
-                store.users.Upsert(userInfo);
+                users.Upsert(userInfo);
             }
         }
     }
