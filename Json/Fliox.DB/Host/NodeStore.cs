@@ -24,19 +24,19 @@ namespace Friflo.Json.Fliox.DB.Host
     }
     
     public class ClientInfo {
-        [Fri.Required]  public  JsonKey                                 id;
-        [Fri.Required]  public  Ref<JsonKey, UserInfo>                  user;
-                        public  int                                     seq;
-                        public  int                                     queuedEvents;
-                        public  List<string>                            messageSubs;
-                        public  Dictionary<string, SubscribeChanges>    changeSubs;
+        [Fri.Required]  public  JsonKey                         id;
+        [Fri.Required]  public  Ref<JsonKey, UserInfo>          user;
+                        public  int                             seq;
+                        public  int                             queuedEvents;
+                        public  List<string>                    messageSubs;
+                        public  List<SubscribeChanges>          changeSubs;
                         
         public override         string ToString() => JsonDebug.ToJson(this, false);
     }
     
     public class UserInfo {
-        [Fri.Required]  public  JsonKey                                 id;
-        [Fri.Required]  public  List<Ref<JsonKey, ClientInfo>>          clients;
+        [Fri.Required]  public  JsonKey                         id;
+        [Fri.Required]  public  List<Ref<JsonKey, ClientInfo>>  clients;
                         
         public override         string ToString() => JsonDebug.ToJson(this, false);
     }

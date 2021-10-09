@@ -49,13 +49,14 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         public              int                                     SentEventsCount => sentEvents.Count;
         internal            bool                                    IsRemoteTarget => eventTarget is WebSocketHostTarget;
         
-        public Dictionary<string, SubscribeChanges> GetChangeSubscriptions (Dictionary<string, SubscribeChanges> subs) {
-            if (subs == null)
-                return new Dictionary<string, SubscribeChanges>(changeSubscriptions);
+        public List<SubscribeChanges> GetChangeSubscriptions (List<SubscribeChanges> subs) {
+            if (changeSubscriptions.Count == 0)
+                return null;
+            if (subs == null) subs = new List<SubscribeChanges>(changeSubscriptions.Count);
             subs.Clear();
-            subs.EnsureCapacity(changeSubscriptions.Count);
+            subs.Capacity = changeSubscriptions.Count;
             foreach (var pair in changeSubscriptions)
-                subs.Add(pair.Key, pair.Value);
+                subs.Add(pair.Value);
             return subs;
         }
 
