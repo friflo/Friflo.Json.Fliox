@@ -8,11 +8,12 @@ using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnassignedReadonlyField
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable CollectionNeverUpdated.Global
 namespace Friflo.Json.Fliox.DB.Host
 {
-    // ReSharper disable UnassignedReadonlyField
-    // ReSharper disable ClassNeverInstantiated.Global
-    // ReSharper disable CollectionNeverUpdated.Global
     public partial class  NodeStore :  EntityStore
     {
         public  readonly   EntitySet <JsonKey, ClientInfo>     clients;
@@ -63,16 +64,16 @@ namespace Friflo.Json.Fliox.DB.Host
         }
         
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            store.UpdateNodeStore(db, syncRequest.userId, syncRequest.token);
+            store.UpdateNodeStore(db);
+            store.SetUser (syncRequest.userId);
+            store.SetToken(syncRequest.token);
             await store.TrySync();
             return await nodeDb.ExecuteSync(syncRequest, messageContext);
         }
     }
     
     public partial class NodeStore {
-        internal void UpdateNodeStore(EntityDatabase db, JsonKey userId, string token) {
-            SetUser (userId);
-            SetToken(token);
+        internal void UpdateNodeStore(EntityDatabase db) {
             UpdateClients(db);
             UpdateUsers(db);
         }
