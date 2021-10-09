@@ -1,4 +1,5 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
+// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
@@ -8,50 +9,19 @@ using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable UnassignedReadonlyField
-// ReSharper disable ClassNeverInstantiated.Global
-// ReSharper disable CollectionNeverUpdated.Global
-namespace Friflo.Json.Fliox.DB.Host
+namespace Friflo.Json.Fliox.DB.Host.NodeInfo
 {
-    public partial class  NodeStore :  EntityStore
-    {
-        public  readonly   EntitySet <JsonKey, ClientInfo>     clients;
-        public  readonly   EntitySet <JsonKey, UserInfo>       users;
-        
-        public NodeStore(EntityDatabase database, TypeStore typeStore, string userId, string clientId) : base(database, typeStore, userId, clientId) {
-        }
-    }
-    
-    public class ClientInfo {
-        [Fri.Required]  public  JsonKey                         id;
-        [Fri.Required]  public  Ref<JsonKey, UserInfo>          user;
-                        public  int                             seq;
-                        public  int                             queuedEvents;
-                        public  List<string>                    messageSubs;
-                        public  List<SubscribeChanges>          changeSubs;
-                        
-        public override         string ToString() => JsonDebug.ToJson(this, false);
-    }
-    
-    public class UserInfo {
-        [Fri.Required]  public  JsonKey                         id;
-        [Fri.Required]  public  List<Ref<JsonKey, ClientInfo>>  clients;
-                        
-        public override         string ToString() => JsonDebug.ToJson(this, false);
-    }
-    
     public class NodeDatabase :  EntityDatabase
     {
         private readonly    EntityDatabase      nodeDb;
         private readonly    EntityDatabase      db;
-        private readonly    NodeStore           store;
+        private readonly    NodeInfoStore       store;
         
         public NodeDatabase (EntityDatabase nodeDb, EntityDatabase db) : base ("node") {
             this.nodeDb             = nodeDb;
             this.db                 = db;
             nodeDb.authenticator    = db.authenticator;
-            store = new NodeStore(nodeDb, SyncTypeStore.Get(), null, null);
+            store = new NodeInfoStore(nodeDb, SyncTypeStore.Get(), null, null);
         }
 
         public override void Dispose() {
@@ -72,7 +42,7 @@ namespace Friflo.Json.Fliox.DB.Host
         }
     }
     
-    public partial class NodeStore {
+    public partial class NodeInfoStore {
         internal void UpdateNodeStore(EntityDatabase db) {
             UpdateClients(db);
             UpdateUsers(db);

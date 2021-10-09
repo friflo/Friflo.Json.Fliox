@@ -3,6 +3,7 @@
 
 using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Host;
+using Friflo.Json.Fliox.DB.Host.NodeInfo;
 using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
@@ -42,7 +43,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
                 _singleton.GetTypeMapper(typeof(AuthenticateUser));
                 _singleton.GetTypeMapper(typeof(AuthenticateUserResult));
                 _singleton.GetTypeMapper(typeof(RemoteSubscriptionEvent));
-                _singleton.GetTypeMapper(typeof(NodeStore));
+                _singleton.GetTypeMapper(typeof(NodeInfoStore));
             }
             return _singleton;
         }
