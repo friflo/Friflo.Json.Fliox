@@ -21,6 +21,8 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         
         // --- non readonly
         internal            SubscribeChanges    subscription;
+        internal            bool                writePretty;
+        internal            bool                writeNull;
 
         internal SetIntern(EntityStore store) {
             jsonMapper      = store._intern.jsonMapper;
@@ -31,6 +33,8 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             subscription    = null;
             keysBuf         = new List<TKey>();
             autoIncrement   = EntitySet<TKey,T>.EntityKeyTMap.autoIncrement;
+            writePretty     = false;
+            writeNull       = false;
         }
     }
 }

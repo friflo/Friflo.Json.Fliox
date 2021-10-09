@@ -300,6 +300,8 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             var entries = new List<JsonValue>   (count);
             var keys    = new List<JsonKey>     (count);
             var writer  = set.intern.jsonMapper.writer;
+            writer.Pretty           = set.intern.writePretty;
+            writer.WriteNullMembers = set.intern.writeNull;
             if (_creates  != null) {
                 foreach (var createPair in _creates) {
                     T entity    = createPair.Value.Entity;
@@ -336,6 +338,8 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             if (_upserts == null || _upserts.Count == 0)
                 return;
             var writer  = set.intern.jsonMapper.writer;
+            writer.Pretty           = set.intern.writePretty;
+            writer.WriteNullMembers = set.intern.writeNull;
             var entries = new List<JsonValue>   (_upserts.Count);
             var keys    = new List<JsonKey>    (_upserts.Count);
             

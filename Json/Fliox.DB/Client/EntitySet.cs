@@ -134,6 +134,11 @@ namespace Friflo.Json.Fliox.DB.Client
         internal override   SyncSet                     SyncSet         => syncSet;
         public   override   string                      ToString()      => SetInfo.ToString();
         
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public              bool                        WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        public              bool                        WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
+
         internal override   SetInfo                     SetInfo { get {
             var info = new SetInfo (typeof(T).Name) { peers = peers.Count };
             syncSet?.SetTaskInfo(ref info);

@@ -21,6 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var employees   = store.employees;
             var customers   = store.customers;
             var types       = store.types;
+            store.types.WriteNull = true;
             
             // delete stored (persisted) entities to enable implicit or explicit creation below
             // Create() entity will fail, if already stored (persisted) 
