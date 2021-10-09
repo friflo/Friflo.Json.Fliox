@@ -76,22 +76,22 @@ namespace Friflo.Json.Fliox.DB.Host
         }
         
         private void UpdateClients() {
-            foreach (var client in db.clientController.clients) {
+            foreach (var pair in db.clientController.clients) {
+                var client = pair.Key;
                 if (!store.clients.TryGet(client, out var clientInfo)) {
-                    clientInfo = new ClientInfo { id          = client };
+                    clientInfo = new ClientInfo { id = client };
                 }
+                clientInfo.user = pair.Value;
                 store.clients.Upsert(clientInfo);
                 var subscriber  = db.eventBroker.GetSubscriber(client);
                 var msgSubs     = clientInfo.messageSubs;
                 msgSubs?.Clear();
                 foreach (var messageSub in subscriber.messageSubscriptions) {
-                    if (msgSubs == null)
-                        msgSubs = new List<string>();
+                    if (msgSubs == null) msgSubs = new List<string>();
                     msgSubs.Add(messageSub);
                 }
                 foreach (var messageSub in subscriber.messagePrefixSubscriptions) {
-                    if (msgSubs == null)
-                        msgSubs = new List<string>();
+                    if (msgSubs == null) msgSubs = new List<string>();
                     msgSubs.Add(messageSub + "*");
                 }
                 clientInfo.messageSubs  = msgSubs;

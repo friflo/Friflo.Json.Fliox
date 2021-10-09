@@ -13,11 +13,12 @@ namespace Friflo.Json.Fliox.DB.Host
     /// Its used to create unique client ids by <see cref="EntityDatabase.clientController"/>
     /// </summary>
     public abstract class ClientController {
-        public readonly HashSet<JsonKey> clients = new HashSet<JsonKey>(JsonKey.Equality);
+        /// key: clientId, value: userId
+        public readonly Dictionary<JsonKey, JsonKey> clients = new Dictionary<JsonKey, JsonKey>(JsonKey.Equality);
 
-        public JsonKey NewClientId() {
+        public JsonKey NewClientIdFor(in JsonKey userId) {
             var id = NewId();
-            clients.Add(id);
+            clients.Add(id, userId);
             return id;
         }
         

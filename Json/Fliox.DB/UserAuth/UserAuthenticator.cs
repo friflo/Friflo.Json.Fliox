@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             if (!messageContext.clientId.IsNull()) {
                 return true; // clientId already validated -> can be used in further processing
             }
-            var clientId = clientController.NewClientId();
+            var clientId = clientController.NewClientIdFor(messageContext.userId);
             userCredentials.clients.Add(clientId);
             messageContext.clientId = clientId;
             return true;

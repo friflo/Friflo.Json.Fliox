@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.DB.Auth
             error = null;
             if (!messageContext.clientId.IsNull())
                 return true;
-            messageContext.clientId = clientController.NewClientId();
+            messageContext.clientId = clientController.NewClientIdFor(messageContext.userId);
             return true;
         }
 
