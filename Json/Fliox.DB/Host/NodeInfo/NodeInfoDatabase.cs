@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
         private readonly    EntityDatabase      db;
         private readonly    NodeInfoStore       store;
         
-        public NodeDatabase (EntityDatabase nodeDb, EntityDatabase db) : base ("node") {
+        public NodeDatabase (EntityDatabase nodeDb, EntityDatabase db) : base ("node_info") {
             this.nodeDb             = nodeDb;
             this.db                 = db;
             nodeDb.authenticator    = db.authenticator;

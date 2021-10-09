@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             listener.Prefixes.Add(endpoint);
             
             nodeDb = new NodeDatabase(new MemoryDatabase(), local);
-            addOnDbs.Add("node", nodeDb);
+            addOnDbs.Add("node_info", nodeDb);
             
             using (var typeStore = new TypeStore()) {
                 var protocolSchema      = new NativeTypeSchema(typeStore, typeof(ProtocolMessage));

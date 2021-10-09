@@ -40,6 +40,8 @@ namespace Friflo.Json.Fliox.DB.Remote
         
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             var database    = GetDatabase(syncRequest.database);
+            if (database == null)
+                return new MsgResponse<SyncResponse>($"database not found: '{syncRequest.database}'");
             var response    = await database.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
             SetContainerResults(response.success);
             response.Result.reqId       = syncRequest.reqId;

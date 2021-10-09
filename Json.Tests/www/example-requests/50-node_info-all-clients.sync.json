@@ -1,6 +1,6 @@
 {
   "msg": "sync",
-  "database": "node",
+  "database": "node_info",
   "tasks": [
     {
       "task":       "query",
