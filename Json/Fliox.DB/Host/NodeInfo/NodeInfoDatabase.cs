@@ -51,7 +51,8 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
         private void UpdateClients(EntityDatabase db) {
             foreach (var pair in db.clientController.clients) {
                 var client = pair.Key;
-                if (!clients.TryGet(client, out var clientInfo)) {
+                clients.TryGet(client, out var clientInfo);
+                if (clientInfo == null) {
                     clientInfo = new ClientInfo { id = client };
                 }
                 if (!db.eventBroker.TryGetSubscriber(client, out var subscriber)) {

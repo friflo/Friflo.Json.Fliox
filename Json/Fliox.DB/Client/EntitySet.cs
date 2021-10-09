@@ -161,7 +161,7 @@ namespace Friflo.Json.Fliox.DB.Client
         // --------------------------------------- public interface ---------------------------------------
         public bool TryGet (TKey key, out T entity) {
             if (peers.TryGetValue(key, out Peer<T> peer)) {
-                entity = peer.Entity;
+                entity = peer.NullableEntity;
                 return true;
             }
             entity = null;
