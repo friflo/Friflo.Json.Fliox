@@ -54,9 +54,12 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
                 if (!clients.TryGet(client, out var clientInfo)) {
                     clientInfo = new ClientInfo { id = client };
                 }
+                if (!db.eventBroker.TryGetSubscriber(client, out var subscriber)) {
+                    clients.Delete(client);    
+                    continue;
+                }
                 clientInfo.user = pair.Value;
                 clients.Upsert(clientInfo);
-                var subscriber  = db.eventBroker.GetSubscriber(client);
                 var msgSubs     = clientInfo.messageSubs;
                 msgSubs?.Clear();
                 foreach (var messageSub in subscriber.messageSubscriptions) {
