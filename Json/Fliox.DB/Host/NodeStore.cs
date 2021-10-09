@@ -63,13 +63,19 @@ namespace Friflo.Json.Fliox.DB.Host
         }
         
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            await UpdateStore(syncRequest.userId, syncRequest.token);
+            await UpdateNodeStore(syncRequest.userId, syncRequest.token);
             return await nodeDb.ExecuteSync(syncRequest, messageContext);
         }
 
-        private async Task UpdateStore(JsonKey userId, string token) {
+        private async Task UpdateNodeStore(JsonKey userId, string token) {
             store.SetUser (userId);
             store.SetToken(token);
+            UpdateClients();
+            UpdateUsers();
+            await store.TrySync();
+        }
+        
+        private void UpdateClients() {
             foreach (var client in defaultDb.clientController.clients) {
                 if (!store.clients.TryGet(client, out var clientInfo)) {
                     clientInfo = new ClientInfo { id          = client };
@@ -94,28 +100,24 @@ namespace Friflo.Json.Fliox.DB.Host
                 
                 clientInfo.changeSubs = subscriber.GetChangeSubscriptions (clientInfo.changeSubs);
             }
-            if (defaultDb.authenticator is UserAuthenticator userAuth) {
-                foreach (var user in userAuth.credByUser) {
-                    if (!store.users.TryGet(user.Key, out var userInfo)) {
-                        userInfo = new UserInfo { id = user.Key };
-                    }
-                    if (userInfo.clients == null)
-                        userInfo.clients = new List<Ref<JsonKey, ClientInfo>>(user.Value.clients.Count);
-                    else
-                        userInfo.clients.Clear();
-                    foreach (var client in user.Value.clients) {
-                        userInfo.clients.Add(client);
-                    }
-                    store.users.Upsert(userInfo);
+        }
+        
+        private void UpdateUsers() {
+            if (!(defaultDb.authenticator is UserAuthenticator userAuth))
+                return;
+            foreach (var user in userAuth.credByUser) {
+                if (!store.users.TryGet(user.Key, out var userInfo)) {
+                    userInfo = new UserInfo { id = user.Key };
                 }
+                if (userInfo.clients == null)
+                    userInfo.clients = new List<Ref<JsonKey, ClientInfo>>(user.Value.clients.Count);
+                else
+                    userInfo.clients.Clear();
+                foreach (var client in user.Value.clients) {
+                    userInfo.clients.Add(client);
+                }
+                store.users.Upsert(userInfo);
             }
-            /* 
-            var user1 = new UserInfo {
-                id          = new JsonKey("user-1"),
-                clients     = new List<Ref<JsonKey, ClientInfo>> { new JsonKey("some-client") },
-            }; */
-
-            await store.TrySync();
         }
     }
 }
