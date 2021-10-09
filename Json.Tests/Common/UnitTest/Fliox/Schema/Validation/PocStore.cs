@@ -31,7 +31,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             using (var validator        = new TypeValidator()) {
                 var test = new TestTypes {
                     testType    = jsonSchema.TypeAsValidationType<TestType>(validationSet, "UnitTest.Fliox.Client"),
-                    orderType   = jsonSchema.TypeAsValidationType<Order>   (validationSet, "UnitTest.Fliox.Client")
+                    orderType   = jsonSchema.TypeAsValidationType<Order>   (validationSet, "UnitTest.Fliox.Client"),
+                    articleType = jsonSchema.TypeAsValidationType<Article> (validationSet, "UnitTest.Fliox.Client"),
                 };
                 ValidateSuccess(validator, test);
                 ValidateFailure(validator, test);
@@ -47,7 +48,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
                 validator.qualifiedTypeErrors = false; // ensure API available
                 var test = new TestTypes {
                     testType    = nativeSchema.TypeAsValidationType<TestType>(validationSet),
-                    orderType   = nativeSchema.TypeAsValidationType<Order>   (validationSet)
+                    orderType   = nativeSchema.TypeAsValidationType<Order>   (validationSet),
+                    articleType = nativeSchema.TypeAsValidationType<Article> (validationSet),
                 };
                 ValidateSuccess(validator, test);
                 ValidateFailure(validator, test);
@@ -115,12 +117,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             AreEqual("Integer out of range. was: -2147483649, expect: int32 at TestType > int32, pos: 22", error);
             IsFalse(validator.ValidateObject("{ \"int32\": 2147483648 }",               test.testType, out error));
             AreEqual("Integer out of range. was: 2147483648, expect: int32 at TestType > int32, pos: 21", error);
-
+            
+            // --- Article
+            IsFalse(validator.ValidateObject("{ \"id\": \"article\" }",                 test.articleType, out error));
+            AreEqual("Missing required fields: [name] at Article > (root), pos: 19", error);
+            
+            IsFalse(validator.ValidateObject("{ \"id\": \"article\", \"name\": null }", test.articleType, out error));
+            AreEqual("Required property must not be null. at Article > name, pos: 31", error);
         }
         
         private class TestTypes {
             internal    ValidationType  testType;
             internal    ValidationType  orderType;
+            internal    ValidationType  articleType;
             
             internal    readonly string orderValid      = AsJson("{ 'id': 'order-1', 'created': '2021-07-22T06:00:00.000Z' }");
             
