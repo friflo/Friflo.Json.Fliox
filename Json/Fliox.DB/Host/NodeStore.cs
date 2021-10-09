@@ -43,13 +43,13 @@ namespace Friflo.Json.Fliox.DB.Host
     public class NodeDatabase :  EntityDatabase
     {
         private readonly    EntityDatabase      nodeDb;
-        private readonly    EntityDatabase      defaultDb;
+        private readonly    EntityDatabase      db;
         private readonly    NodeStore           store;
         
-        public NodeDatabase (EntityDatabase nodeDb, EntityDatabase defaultDb) : base ("node") {
+        public NodeDatabase (EntityDatabase nodeDb, EntityDatabase db) : base ("node") {
             this.nodeDb             = nodeDb;
-            this.defaultDb          = defaultDb;
-            nodeDb.authenticator    = defaultDb.authenticator;
+            this.db                 = db;
+            nodeDb.authenticator    = db.authenticator;
             store = new NodeStore(nodeDb, SyncTypeStore.Get(), null, null);
         }
 
@@ -76,12 +76,12 @@ namespace Friflo.Json.Fliox.DB.Host
         }
         
         private void UpdateClients() {
-            foreach (var client in defaultDb.clientController.clients) {
+            foreach (var client in db.clientController.clients) {
                 if (!store.clients.TryGet(client, out var clientInfo)) {
                     clientInfo = new ClientInfo { id          = client };
                 }
                 store.clients.Upsert(clientInfo);
-                var subscriber  = defaultDb.eventBroker.GetSubscriber(client);
+                var subscriber  = db.eventBroker.GetSubscriber(client);
                 var msgSubs     = clientInfo.messageSubs;
                 msgSubs?.Clear();
                 foreach (var messageSub in subscriber.messageSubscriptions) {
@@ -103,7 +103,7 @@ namespace Friflo.Json.Fliox.DB.Host
         }
         
         private void UpdateUsers() {
-            if (!(defaultDb.authenticator is UserAuthenticator userAuth))
+            if (!(db.authenticator is UserAuthenticator userAuth))
                 return;
             foreach (var user in userAuth.credByUser) {
                 if (!store.users.TryGet(user.Key, out var userInfo)) {
