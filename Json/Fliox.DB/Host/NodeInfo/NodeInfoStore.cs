@@ -17,8 +17,8 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
         public  readonly   EntitySet <JsonKey, ClientInfo>  clients;
         public  readonly   EntitySet <JsonKey, UserInfo>    users;
         
-        public NodeInfoStore(EntityDatabase database, TypeStore typeStore, string userId, string clientId) : base(database, typeStore, userId, clientId) {
-        }
+        public NodeInfoStore(EntityDatabase database, TypeStore typeStore)
+            : base(database, typeStore, null, null) { }
     }
     
     public class ClientInfo {

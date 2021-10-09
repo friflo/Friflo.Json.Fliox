@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
             this.nodeDb             = nodeDb;
             this.db                 = db;
             nodeDb.authenticator    = db.authenticator;
-            store = new NodeInfoStore(nodeDb, SyncTypeStore.Get(), null, null);
+            store = new NodeInfoStore(nodeDb, SyncTypeStore.Get());
         }
 
         public override void Dispose() {
