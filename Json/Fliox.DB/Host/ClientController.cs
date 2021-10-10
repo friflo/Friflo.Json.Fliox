@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host
@@ -17,16 +18,22 @@ namespace Friflo.Json.Fliox.DB.Host
         private readonly    Dictionary<JsonKey, JsonKey>            clients = new Dictionary<JsonKey, JsonKey>(JsonKey.Equality);
         public              IReadOnlyDictionary<JsonKey, JsonKey>   Clients => clients;
 
-        public JsonKey NewClientIdFor(in JsonKey userId) {
+        public JsonKey NewClientIdFor(AuthUser authUser) {
             while (true) { 
-                var id = NewId();
-                if (clients.TryAdd(id, userId))
-                    return id;
+                var clientId = NewId();
+                if (clients.TryAdd(clientId, authUser.userId)) {
+                    authUser.clients.Add(clientId);
+                    return clientId;
+                }
             }
         }
         
-        public bool AddClientIdFor(in JsonKey userId, in JsonKey clientId) {
-            return clients.TryAdd(clientId, userId);
+        public bool AddClientIdFor(AuthUser authUser, in JsonKey clientId) {
+            if (clients.TryAdd(clientId, authUser.userId)) {
+                authUser.clients.Add(clientId);
+                return true;
+            }
+            return false; 
         }
         
         protected abstract JsonKey NewId();

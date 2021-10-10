@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.DB.Auth
                 return ClientIdValidation.IsNull;
             }
             var authUser = messageContext.authState.User;
-            authUser.clients.Add(messageContext.clientId);
+            clientController.AddClientIdFor(authUser, messageContext.clientId);
             return ClientIdValidation.Valid;
         }
         
@@ -47,12 +47,9 @@ namespace Friflo.Json.Fliox.DB.Auth
                 case ClientIdValidation.Valid:
                     return true;
                 case ClientIdValidation.IsNull:
-                    if (messageContext.userId.IsNull()) {
-                        messageContext.clientId = clientController.NewClientIdFor(anonymous);
-                    } else { 
-                        messageContext.clientId = clientController.NewClientIdFor(messageContext.userId);
-                    }
-                    messageContext.clientIdValidation = ClientIdValidation.Valid;
+                    var authUSer                        = messageContext.authState.User;
+                    messageContext.clientId             = clientController.NewClientIdFor(authUSer);
+                    messageContext.clientIdValidation   = ClientIdValidation.Valid;
                     return true;
             }
             throw new InvalidOperationException ("unexpected clientIdValidation state");

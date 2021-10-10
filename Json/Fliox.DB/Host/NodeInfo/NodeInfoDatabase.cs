@@ -79,15 +79,17 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
         }
         
         private void UpdateUsers(EntityDatabase db) {
-            foreach (var user in db.authenticator.authUsers) {
-                if (!users.TryGet(user.Key, out var userInfo)) {
-                    userInfo = new UserInfo { id = user.Key };
+            foreach (var pair in db.authenticator.authUsers) {
+                if (!users.TryGet(pair.Key, out var userInfo)) {
+                    userInfo = new UserInfo { id = pair.Key };
                 }
+                var authUser    = pair.Value;
+                var userClients = authUser.clients;
                 if (userInfo.clients == null)
-                    userInfo.clients = new List<Ref<JsonKey, ClientInfo>>(user.Value.clients.Count);
+                    userInfo.clients = new List<Ref<JsonKey, ClientInfo>>(userClients.Count);
                 else
                     userInfo.clients.Clear();
-                foreach (var client in user.Value.clients) {
+                foreach (var client in userClients) {
                     userInfo.clients.Add(client);
                 }
                 users.Upsert(userInfo);

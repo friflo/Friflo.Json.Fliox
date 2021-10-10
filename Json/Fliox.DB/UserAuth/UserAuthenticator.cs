@@ -109,15 +109,16 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             if (!messageContext.authState.Authenticated) {
                 return ClientIdValidation.Invalid;
             }
-            var authUser = messageContext.authState.User;
-            if (authUser.clients.Contains(messageContext.clientId)) {
+            var authUser    = messageContext.authState.User;
+            var userClients = authUser.clients; 
+            if (userClients.Contains(messageContext.clientId)) {
                 return ClientIdValidation.Valid;
             }
             if (clientController.Clients.ContainsKey(messageContext.clientId)) {
                 return ClientIdValidation.Invalid;
             }
-            authUser.clients.Add(messageContext.clientId);
-            if (clientController.AddClientIdFor(messageContext.userId, messageContext.clientId))
+            userClients.Add(messageContext.clientId);
+            if (clientController.AddClientIdFor(authUser, messageContext.clientId))
                 return ClientIdValidation.Valid;
             return ClientIdValidation.Invalid;
         }
@@ -132,9 +133,8 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                     return false;
                 case ClientIdValidation.IsNull:
                     var authUser                        = messageContext.authState.User; 
-                    messageContext.clientId             = clientController.NewClientIdFor(messageContext.userId);
+                    messageContext.clientId             = clientController.NewClientIdFor(authUser);
                     messageContext.clientIdValidation   = ClientIdValidation.Valid;
-                    authUser.clients.Add(messageContext.clientId);
                     error = null;
                     return true;
             }

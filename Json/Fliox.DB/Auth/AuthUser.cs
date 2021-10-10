@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Auth
 {
     public class AuthUser {
-        private  readonly   JsonKey             userId;
+        internal readonly   JsonKey             userId;
         internal readonly   string              token;
         internal readonly   Authorizer          authorizer;
         internal readonly   HashSet<JsonKey>    clients = new HashSet<JsonKey>(JsonKey.Equality);
