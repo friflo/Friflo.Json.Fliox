@@ -55,15 +55,12 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
                     clientInfo = new ClientInfo { id = client };
                 }
                 if (!db.eventBroker.TryGetSubscriber(client, out var subscriber)) {
-                    clientInfo.messageSubs  = null;    
-                    clientInfo.changeSubs   = null;
-                    clientInfo.seq          = null;
-                    clientInfo.queuedEvents = null;
+                    clientInfo.ev           = null;
                     clients.Upsert(clientInfo);
                     continue;
                 }
                 clientInfo.user = pair.Value;
-                var msgSubs     = clientInfo.messageSubs;
+                var msgSubs     = clientInfo.ev?.messageSubs;
                 msgSubs?.Clear();
                 foreach (var messageSub in subscriber.messageSubscriptions) {
                     if (msgSubs == null) msgSubs = new List<string>();
@@ -73,10 +70,13 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
                     if (msgSubs == null) msgSubs = new List<string>();
                     msgSubs.Add(messageSub + "*");
                 }
-                clientInfo.messageSubs  = msgSubs;
-                clientInfo.seq          = subscriber.Seq;
-                clientInfo.queuedEvents = subscriber.EventQueueCount;
-                clientInfo.changeSubs   = subscriber.GetChangeSubscriptions (clientInfo.changeSubs);
+                var changeSubs  = subscriber.GetChangeSubscriptions (clientInfo.ev?.changeSubs);
+                clientInfo.ev = new EventInfo {
+                    seq         = subscriber.Seq,
+                    queued      = subscriber.EventQueueCount,
+                    messageSubs = msgSubs,
+                    changeSubs  = changeSubs
+                };
                 clients.Upsert(clientInfo);
             }
         }
