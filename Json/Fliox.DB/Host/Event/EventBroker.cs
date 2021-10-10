@@ -180,7 +180,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                         continue;
                     var eventMessage = new EventMessage {
                         tasks       = tasks.ToArray(),
-                        srcUserId   = messageContext.userId,
+                        srcUserId   = syncRequest.userId,
                         dstClientId = subscriber.clientId
                     };
                     if (SerializeRemoteEvents && subscriber.IsRemoteTarget) {

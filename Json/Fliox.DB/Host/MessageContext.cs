@@ -19,7 +19,6 @@ namespace Friflo.Json.Fliox.DB.Host
     public sealed class MessageContext
     {
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
-        public              JsonKey             userId;
         public              JsonKey             clientId;
         public              ClientIdValidation  clientIdValidation;
         public  readonly    IPools              pools;
@@ -28,7 +27,7 @@ namespace Friflo.Json.Fliox.DB.Host
         
         private             PoolUsage           startUsage;
         public              Action              canceler = () => {};
-        public override     string              ToString() => $"userId: {userId.ToString()}, auth: {authState}";
+        public override     string              ToString() => $"userId: {authState.User}, auth: {authState}";
 
         public MessageContext (IPools pools, IEventTarget eventTarget) {
             this.pools          = pools;
@@ -40,7 +39,6 @@ namespace Friflo.Json.Fliox.DB.Host
             this.pools          = pools;
             startUsage          = pools.PoolUsage;
             this.eventTarget    = eventTarget;
-            this.userId         = userId;
             this.clientId       = clientId;
         }
         
