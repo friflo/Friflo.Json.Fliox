@@ -2,11 +2,13 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth.Rights;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Auth
@@ -17,10 +19,16 @@ namespace Friflo.Json.Fliox.DB.Auth
     /// </summary>
     public abstract class Authenticator
     {
-        protected readonly  Dictionary<string, AuthorizePredicate>  registeredPredicates = new Dictionary<string, AuthorizePredicate>();
-        private   readonly  JsonKey                                 anonymous = new JsonKey("anonymous");  
+        protected readonly  Dictionary<string, AuthorizePredicate>  registeredPredicates;
+        protected readonly  JsonKey                                 anonymous = new JsonKey("anonymous");  
+        internal  readonly  ConcurrentDictionary<JsonKey, AuthUser> authUsers;
             
         public abstract Task    Authenticate    (SyncRequest syncRequest, MessageContext messageContext);
+        
+        protected Authenticator () {
+            registeredPredicates    = new Dictionary<string, AuthorizePredicate>();
+            authUsers               = new ConcurrentDictionary <JsonKey, AuthUser>(JsonKey.Equality);
+        }
         
         /// <summary>
         /// Validate <see cref="MessageContext.clientId"/>. Return true if it was valid or null.
@@ -29,11 +37,12 @@ namespace Friflo.Json.Fliox.DB.Auth
             if (messageContext.clientId.IsNull()) {
                 return ClientIdValidation.IsNull;
             }
-            if (messageContext.userId.IsNull()) {
-                clientController.AddClientIdFor(anonymous, messageContext.clientId);
-            } else { 
-                clientController.AddClientIdFor(messageContext.userId, messageContext.clientId);
+            var userId = messageContext.userId.IsNull() ? anonymous : messageContext.userId;  
+            clientController.AddClientIdFor(userId, messageContext.clientId);
+            if (!authUsers.TryGetValue(userId, out var credentials)) {
+                throw new InvalidOperationException("Expect user already added");
             }
+            credentials.clients.Add(messageContext.clientId);
             return ClientIdValidation.Valid;
         }
         
@@ -95,6 +104,11 @@ namespace Friflo.Json.Fliox.DB.Auth
         
         public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.authState.SetFailed("not authenticated", unknown);
+            if (messageContext.userId.IsNull()) {
+                authUsers.TryAdd(anonymous, new AuthUser(null, unknown));
+            } else {
+                authUsers.TryAdd(messageContext.userId, new AuthUser(null, unknown));
+            }
             return Task.CompletedTask;
         }
     }

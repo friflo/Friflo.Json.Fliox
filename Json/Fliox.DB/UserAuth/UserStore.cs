@@ -27,9 +27,9 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         public  readonly    EntitySet <string,  Role>            roles;
         
         /// <summary>"userId" used for a <see cref="UserStore"/> to perform user authentication.</summary>
-        public const string Server      = "Server";
+        public const string Server              = "Server";
         /// <summary>"userId" used for a <see cref="UserStore"/> to request a user authentication with its token</summary>
-        public const string AuthUser    = "AuthUser";
+        public const string AuthenticationUser  = "AuthenticationUser";
         
         public UserStore(EntityDatabase database, string userId, string clientId) : base(database, SyncTypeStore.Get(), userId, clientId) { }
         

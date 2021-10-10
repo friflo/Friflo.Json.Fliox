@@ -14,17 +14,17 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.UserAuth
 {
     /// <summary>
-    /// Control the access to a <see cref="UserDatabaseHandler"/> by "userId" (<see cref="UserStore.AuthUser"/> |
+    /// Control the access to a <see cref="UserDatabaseHandler"/> by "userId" (<see cref="UserStore.AuthenticationUser"/> |
     /// <see cref="UserStore.Server"/>) of a user.
     /// <br></br>
-    /// A <see cref="UserStore.AuthUser"/> user is only able to <see cref="Authenticate"/> itself.
+    /// A <see cref="UserStore.AuthenticationUser"/> user is only able to <see cref="Authenticate"/> itself.
     /// A <see cref="UserStore.Server"/> user is able to read credentials and roles stored in a <see cref="UserDatabaseHandler"/>.
     /// </summary>
     public class UserDatabaseAuthenticator : Authenticator
     {
         public  readonly    Dictionary<JsonKey, Authorizer>  userRights = new Dictionary<JsonKey, Authorizer> (JsonKey.Equality) {
-            { new JsonKey(UserStore.AuthUser),   AuthUserRights },
-            { new JsonKey(UserStore.Server),     ServerRights   },
+            { new JsonKey(UserStore.AuthenticationUser),    AuthUserRights },
+            { new JsonKey(UserStore.Server),                ServerRights   },
         };
             
         public static readonly    Authorizer   UnknownRights    = new AuthorizeDeny();

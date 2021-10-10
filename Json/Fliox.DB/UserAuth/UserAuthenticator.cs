@@ -21,12 +21,12 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         }
     }
     
-    internal class UserCredentials {
-        internal readonly   string                                  token;
-        internal readonly   Authorizer                              authorizer;
-        internal readonly   HashSet<JsonKey>                        clients = new HashSet<JsonKey>(JsonKey.Equality);
+    internal class AuthUser {
+        internal readonly   string              token;
+        internal readonly   Authorizer          authorizer;
+        internal readonly   HashSet<JsonKey>    clients = new HashSet<JsonKey>(JsonKey.Equality);
         
-        internal UserCredentials (string token, Authorizer authorizer) {
+        internal AuthUser (string token, Authorizer authorizer) {
             this.token      = token;
             this.authorizer = authorizer;
         }
@@ -46,14 +46,12 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     {
         private   readonly  UserStore                                       userStore;
         private   readonly  IUserAuth                                       userAuth;
-        internal  readonly  ConcurrentDictionary<JsonKey, UserCredentials>  credByUser;
         private   readonly  Authorizer                                      unknown;
         private   readonly  ConcurrentDictionary<string,  Authorizer>       authorizerByRole;
 
         public UserAuthenticator (UserStore userStore, IUserAuth userAuth, Authorizer unknown = null) {
             this.userStore      = userStore;
             this.userAuth       = userAuth;
-            credByUser          = new ConcurrentDictionary <JsonKey, UserCredentials>(JsonKey.Equality);
             this.unknown        = unknown ?? new AuthorizeDeny();
             authorizerByRole    = new ConcurrentDictionary <string, Authorizer>();
         }
@@ -90,7 +88,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                 messageContext.authState.SetFailed("user authentication requires 'token'", unknown);
                 return;
             }
-            if (credByUser.TryGetValue(userId, out UserCredentials credential)) {
+            if (authUsers.TryGetValue(userId, out AuthUser credential)) {
                 if (credential.token != token) {
                     messageContext.authState.SetFailed(InvalidUserToken, unknown);
                     return;
@@ -104,8 +102,8 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             if (result.isValid) {
                 var authCred    = new AuthCred(token);
                 var authorizer  = await GetAuthorizer(userId).ConfigureAwait(false);
-                credential      = new UserCredentials (authCred.token, authorizer);
-                credByUser.TryAdd(userId,      credential);
+                credential      = new AuthUser (authCred.token, authorizer);
+                authUsers.TryAdd(userId,      credential);
             }
             
             if (credential == null || token != credential.token) {
@@ -122,7 +120,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             if (!messageContext.authState.Authenticated) {
                 return ClientIdValidation.Invalid;
             }
-            if (!credByUser.TryGetValue(messageContext.userId, out UserCredentials userCredentials)) {
+            if (!authUsers.TryGetValue(messageContext.userId, out AuthUser userCredentials)) {
                 throw new InvalidOperationException ("expect user is authenticated");
             }
             if (userCredentials.clients.Contains(messageContext.clientId)) {
@@ -145,7 +143,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                     error = $"invalid client id. 'clt': {messageContext.clientId}";
                     return false;
                 case ClientIdValidation.IsNull:
-                    if (!credByUser.TryGetValue(messageContext.userId, out UserCredentials userCredentials))
+                    if (!authUsers.TryGetValue(messageContext.userId, out AuthUser userCredentials))
                         throw new InvalidOperationException ("expect user is authenticated");
                     messageContext.clientId = clientController.NewClientIdFor(messageContext.userId);
                     messageContext.clientIdValidation = ClientIdValidation.Valid;

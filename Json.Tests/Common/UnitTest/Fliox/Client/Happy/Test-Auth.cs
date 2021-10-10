@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
                     using (                       new UserDatabaseHandler   (userDatabase)) // authorize access to UserStore db and handle AuthenticateUser command
-                    using (var userStore        = new UserStore(userDatabase, UserStore.AuthUser, null))
+                    using (var userStore        = new UserStore(userDatabase, UserStore.AuthenticationUser, null))
                     using (var database         = new MemoryDatabase())
                     using (var eventBroker      = new EventBroker(false)) // require for SubscribeMessage() and SubscribeChanges()
                     {
@@ -226,9 +226,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
                     using (var serverStore      = new UserStore             (userDatabase, UserStore.Server, null))
-                    using (var authUserStore    = new UserStore             (userDatabase, UserStore.AuthUser, null))
+                    using (var authUserStore    = new UserStore             (userDatabase, UserStore.AuthenticationUser, null))
                     using (                       new UserDatabaseHandler   (userDatabase)) {
-                        // assert access to user database with different users: "Server" & "AuthUser"
+                        // assert access to user database with different users: "Server" & "AuthenticationUser"
                         await AssertUserStore       (serverStore);
                         await AssertUserStore       (authUserStore);
                         await AssertServerStore     (serverStore);

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Protocol;
-using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host.NodeInfo
@@ -80,9 +79,7 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
         }
         
         private void UpdateUsers(EntityDatabase db) {
-            if (!(db.authenticator is UserAuthenticator userAuth))
-                return;
-            foreach (var user in userAuth.credByUser) {
+            foreach (var user in db.authenticator.authUsers) {
                 if (!users.TryGet(user.Key, out var userInfo)) {
                     userInfo = new UserInfo { id = user.Key };
                 }
