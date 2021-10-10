@@ -22,9 +22,9 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     }
     
     internal class UserCredentials {
-        internal readonly   string              token;
-        internal readonly   Authorizer          authorizer;
-        internal readonly   HashSet<JsonKey>    clients = new HashSet<JsonKey>(JsonKey.Equality);
+        internal readonly   string                                  token;
+        internal readonly   Authorizer                              authorizer;
+        internal readonly   HashSet<JsonKey>                        clients = new HashSet<JsonKey>(JsonKey.Equality);
         
         internal UserCredentials (string token, Authorizer authorizer) {
             this.token      = token;
@@ -115,33 +115,45 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             messageContext.authState.SetSuccess(credential.authorizer);
         }
         
-        public override bool ValidateClientId(MessageContext messageContext) {
-            if (messageContext.userId.IsNull())
-                return false;
-            if (!credByUser.TryGetValue(messageContext.userId, out UserCredentials userCredentials))
-                return false;
-            if (messageContext.clientId.IsNull()){
-                return true;
+        public override ClientIdValidation ValidateClientId(ClientController clientController, MessageContext messageContext) {
+            if (messageContext.clientId.IsNull()) {
+                return ClientIdValidation.IsNull;
             }
-            return userCredentials.clients.Contains(messageContext.clientId);
+            if (!messageContext.authState.Authenticated) {
+                return ClientIdValidation.Invalid;
+            }
+            if (!credByUser.TryGetValue(messageContext.userId, out UserCredentials userCredentials)) {
+                throw new InvalidOperationException ("expect user is authenticated");
+            }
+            if (userCredentials.clients.Contains(messageContext.clientId)) {
+                return ClientIdValidation.Valid;
+            }
+            if (clientController.Clients.ContainsKey(messageContext.clientId)) {
+                return ClientIdValidation.Invalid;
+            }
+            userCredentials.clients.Add(messageContext.clientId);
+            clientController.AddClientIdFor(messageContext.userId, messageContext.clientId);
+            return ClientIdValidation.Valid;
         }
         
         public override bool EnsureValidClientId(ClientController clientController, MessageContext messageContext, out string error) {
-            if (!messageContext.clientIdValid) {
-                error = $"invalid client id. 'clt': {messageContext.clientId}";
-                return false;
+            switch (messageContext.clientIdValidation) {
+                case ClientIdValidation.Valid:
+                    error = null;
+                    return true;
+                case ClientIdValidation.Invalid:
+                    error = $"invalid client id. 'clt': {messageContext.clientId}";
+                    return false;
+                case ClientIdValidation.IsNull:
+                    if (!credByUser.TryGetValue(messageContext.userId, out UserCredentials userCredentials))
+                        throw new InvalidOperationException ("expect user is authenticated");
+                    messageContext.clientId = clientController.NewClientIdFor(messageContext.userId);
+                    messageContext.clientIdValidation = ClientIdValidation.Valid;
+                    userCredentials.clients.Add(messageContext.clientId);
+                    error = null;
+                    return true;
             }
-            error = null;
-            if (!credByUser.TryGetValue(messageContext.userId, out UserCredentials userCredentials)) {
-                throw new InvalidOperationException("unexpected. userId already validated");
-            }
-            if (!messageContext.clientId.IsNull()) {
-                return true; // clientId already validated -> can be used in further processing
-            }
-            var clientId = clientController.NewClientIdFor(messageContext.userId);
-            userCredentials.clients.Add(clientId);
-            messageContext.clientId = clientId;
-            return true;
+            throw new InvalidOperationException ("unexpected clientIdValidation state");
         }
 
         private async Task<Authorizer> GetAuthorizer(JsonKey userId) {

@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
         }
         
         private void UpdateClients(EntityDatabase db) {
-            foreach (var pair in db.clientController.clients) {
+            foreach (var pair in db.clientController.Clients) {
                 var client = pair.Key;
                 clients.TryGet(client, out var clientInfo);
                 if (clientInfo == null) {

@@ -14,12 +14,17 @@ namespace Friflo.Json.Fliox.DB.Host
     /// </summary>
     public abstract class ClientController {
         /// key: clientId, value: userId
-        public readonly Dictionary<JsonKey, JsonKey> clients = new Dictionary<JsonKey, JsonKey>(JsonKey.Equality);
+        private readonly    Dictionary<JsonKey, JsonKey>            clients = new Dictionary<JsonKey, JsonKey>(JsonKey.Equality);
+        public              IReadOnlyDictionary<JsonKey, JsonKey>   Clients => clients;
 
         public JsonKey NewClientIdFor(in JsonKey userId) {
             var id = NewId();
             clients.Add(id, userId);
             return id;
+        }
+        
+        public bool AddClientIdFor(in JsonKey userId, in JsonKey clientId) {
+            return clients.TryAdd(clientId, userId);
         }
         
         protected abstract JsonKey NewId();

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth.Rights;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Auth
 {
@@ -16,28 +17,41 @@ namespace Friflo.Json.Fliox.DB.Auth
     /// </summary>
     public abstract class Authenticator
     {
-        protected readonly Dictionary<string, AuthorizePredicate> registeredPredicates = new Dictionary<string, AuthorizePredicate>();
+        protected readonly  Dictionary<string, AuthorizePredicate>  registeredPredicates = new Dictionary<string, AuthorizePredicate>();
+        private   readonly  JsonKey                                 anonymous = new JsonKey("anonymous");  
             
         public abstract Task    Authenticate    (SyncRequest syncRequest, MessageContext messageContext);
         
         /// <summary>
         /// Validate <see cref="MessageContext.clientId"/>. Return true if it was valid or null.
         /// </summary>
-        /// <param name="messageContext"></param>
-        public virtual bool ValidateClientId(MessageContext messageContext) {
-            return true;
+        public virtual ClientIdValidation ValidateClientId(ClientController clientController, MessageContext messageContext) {
+            if (messageContext.clientId.IsNull()) {
+                return ClientIdValidation.IsNull;
+            }
+            if (messageContext.userId.IsNull()) {
+                clientController.AddClientIdFor(anonymous, messageContext.clientId);
+            } else { 
+                clientController.AddClientIdFor(messageContext.userId, messageContext.clientId);
+            }
+            return ClientIdValidation.Valid;
         }
-        /// <summary>
-        /// Used by tasks which require a client id. E.g. <see cref="SubscribeMessage"/> or <see cref="SubscribeChanges"/> 
-        /// In case <see cref="MessageContext.clientId"/> is null a new one is created.
-        /// In case the given client id is valid it returns true. Otherwise false. 
-        /// </summary>
+        
         public virtual bool EnsureValidClientId(ClientController clientController, MessageContext messageContext, out string error) {
             error = null;
-            if (!messageContext.clientId.IsNull())
-                return true;
-            messageContext.clientId = clientController.NewClientIdFor(messageContext.userId);
-            return true;
+            switch (messageContext.clientIdValidation) {
+                case ClientIdValidation.Valid:
+                    return true;
+                case ClientIdValidation.IsNull:
+                    if (messageContext.userId.IsNull()) {
+                        messageContext.clientId = clientController.NewClientIdFor(anonymous);
+                    } else { 
+                        messageContext.clientId = clientController.NewClientIdFor(messageContext.userId);
+                    }
+                    messageContext.clientIdValidation = ClientIdValidation.Valid;
+                    return true;
+            }
+            throw new InvalidOperationException ("unexpected clientIdValidation state");
         }
 
         /// <summary>
@@ -63,6 +77,12 @@ namespace Friflo.Json.Fliox.DB.Auth
             var authorizer = new AuthorizePredicate (name, predicate);
             registeredPredicates.Add(name, authorizer);
         }
+    }
+    
+    public enum ClientIdValidation {
+        IsNull,
+        Invalid,
+        Valid
     }
     
     public sealed class AuthenticateNone : Authenticator
