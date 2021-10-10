@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
             var userId = messageContext.userId.IsNull() ? anonymous : messageContext.userId;
             if (!authUsers.TryGetValue(userId, out var authUser)) {
-                authUser = new AuthUser(null, unknown);
+                authUser = new AuthUser(userId, null, unknown);
                 authUsers.TryAdd(userId, authUser);
             }
             messageContext.authState.SetFailed(authUser, "not authenticated", unknown);

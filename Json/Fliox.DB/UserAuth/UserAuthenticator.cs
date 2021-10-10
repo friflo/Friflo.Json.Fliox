@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             if (result.isValid) {
                 var authCred    = new AuthCred(token);
                 var authorizer  = await GetAuthorizer(userId).ConfigureAwait(false);
-                authUser      = new AuthUser (authCred.token, authorizer);
+                authUser        = new AuthUser (userId, authCred.token, authorizer);
                 authUsers.TryAdd(userId, authUser);
             }
             
