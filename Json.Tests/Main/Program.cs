@@ -3,6 +3,7 @@
 using System;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Event;
+using Friflo.Json.Fliox.DB.Host.NodeInfo;
 using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
@@ -35,8 +36,10 @@ namespace Friflo.Json.Tests.Main
             
             var typeSchema              = CreateTypeSchema(true);                   // optional. used by DatabaseSchema & SchemaHub
             fileDatabase.schema         = new DatabaseSchema(typeSchema);           // optional. Enables type validation for create, upsert & patch operations
+            fileDatabase.nodeDb         = new NodeDatabase(new MemoryDatabase(), fileDatabase);
             
             var hostDatabase            = new HttpHostDatabase(fileDatabase, endpoint);
+            hostDatabase.addOnDbs.Add("node_info", fileDatabase.nodeDb);
             hostDatabase.requestHandler = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
             hostDatabase.schemaHub      = new SchemaHub("/schema/", typeSchema, Utils.Zip); // optional. Web UI for database schema 
             hostDatabase.Start();

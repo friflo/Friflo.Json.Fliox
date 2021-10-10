@@ -6,7 +6,6 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Host.NodeInfo;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Native;
@@ -30,15 +29,11 @@ namespace Friflo.Json.Fliox.DB.Remote
         private             bool                runServer;
         
         private             int                 requestCount;
-        private  readonly   NodeDatabase        nodeDb;
 
         public HttpHostDatabase(EntityDatabase local, string endpoint) : base(local) {
             this.endpoint       = endpoint;
             listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);
-            
-            nodeDb = new NodeDatabase(new MemoryDatabase(), local);
-            addOnDbs.Add("node_info", nodeDb);
             
             using (var typeStore = new TypeStore()) {
                 var protocolSchema      = new NativeTypeSchema(typeStore, typeof(ProtocolMessage));
@@ -46,11 +41,6 @@ namespace Friflo.Json.Fliox.DB.Remote
                 var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
                 protocolSchemaHub       = new SchemaHub("/protocol/", protocolSchema, sepTypes);
             }
-        }
-
-        public override void Dispose() {
-            nodeDb.Dispose();
-            base.Dispose();
         }
 
         private async Task HandleIncomingConnections()

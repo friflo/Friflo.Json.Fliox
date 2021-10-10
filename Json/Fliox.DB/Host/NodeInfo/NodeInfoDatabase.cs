@@ -4,6 +4,7 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
@@ -38,6 +39,12 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
             store.SetToken(syncRequest.token);
             await store.TrySync();
             return await nodeDb.ExecuteSync(syncRequest, messageContext);
+        }
+
+        public void LogUserRequest (AuthUser authUser, SyncRequest synRequest) {
+            if (!store.users.TryGet(authUser.userId, out var userInfo))
+                return;
+            userInfo.requests++;
         }
     }
     
