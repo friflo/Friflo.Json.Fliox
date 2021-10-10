@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth.Rights;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Protocol;
-using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Auth
@@ -103,12 +102,12 @@ namespace Friflo.Json.Fliox.DB.Auth
         }
         
         public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
-            messageContext.authState.SetFailed("not authenticated", unknown);
-            if (messageContext.userId.IsNull()) {
-                authUsers.TryAdd(anonymous, new AuthUser(null, unknown));
-            } else {
-                authUsers.TryAdd(messageContext.userId, new AuthUser(null, unknown));
+            var userId = messageContext.userId.IsNull() ? anonymous : messageContext.userId;
+            if (!authUsers.TryGetValue(userId, out var authUser)) {
+                authUser = new AuthUser(null, unknown);
+                authUsers.TryAdd(userId, authUser);
             }
+            messageContext.authState.SetFailed(authUser, "not authenticated", unknown);
             return Task.CompletedTask;
         }
     }

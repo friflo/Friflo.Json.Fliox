@@ -21,17 +21,6 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         }
     }
     
-    internal class AuthUser {
-        internal readonly   string              token;
-        internal readonly   Authorizer          authorizer;
-        internal readonly   HashSet<JsonKey>    clients = new HashSet<JsonKey>(JsonKey.Equality);
-        
-        internal AuthUser (string token, Authorizer authorizer) {
-            this.token      = token;
-            this.authorizer = authorizer;
-        }
-    }
-    
     public interface IUserAuth {
         Task<AuthenticateUserResult> AuthenticateUser(AuthenticateUser value);
     }
@@ -80,20 +69,20 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         {
             var userId = syncRequest.userId;
             if (userId.IsNull()) {
-                messageContext.authState.SetFailed("user authentication requires 'user' id", unknown);
+                messageContext.authState.SetFailed(null, "user authentication requires 'user' id", unknown);
                 return;
             }
             var token = syncRequest.token;
             if (token == null) {
-                messageContext.authState.SetFailed("user authentication requires 'token'", unknown);
+                messageContext.authState.SetFailed(null, "user authentication requires 'token'", unknown);
                 return;
             }
-            if (authUsers.TryGetValue(userId, out AuthUser credential)) {
-                if (credential.token != token) {
-                    messageContext.authState.SetFailed(InvalidUserToken, unknown);
+            if (authUsers.TryGetValue(userId, out AuthUser authUser)) {
+                if (authUser.token != token) {
+                    messageContext.authState.SetFailed(authUser, InvalidUserToken, unknown);
                     return;
                 }
-                messageContext.authState.SetSuccess(credential.authorizer);
+                messageContext.authState.SetSuccess(authUser, authUser.authorizer);
                 return;
             }
             var command = new AuthenticateUser { userId = userId, token = token };
@@ -102,15 +91,15 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             if (result.isValid) {
                 var authCred    = new AuthCred(token);
                 var authorizer  = await GetAuthorizer(userId).ConfigureAwait(false);
-                credential      = new AuthUser (authCred.token, authorizer);
-                authUsers.TryAdd(userId,      credential);
+                authUser      = new AuthUser (authCred.token, authorizer);
+                authUsers.TryAdd(userId,      authUser);
             }
             
-            if (credential == null || token != credential.token) {
-                messageContext.authState.SetFailed(InvalidUserToken, unknown);
+            if (authUser == null || token != authUser.token) {
+                messageContext.authState.SetFailed(authUser, InvalidUserToken, unknown);
                 return;
             }
-            messageContext.authState.SetSuccess(credential.authorizer);
+            messageContext.authState.SetSuccess(authUser, authUser.authorizer);
         }
         
         public override ClientIdValidation ValidateClientId(ClientController clientController, MessageContext messageContext) {

@@ -13,18 +13,21 @@ namespace Friflo.Json.Fliox.DB.Auth
         public              string      Error           { get; private set;}  
         public              bool        Authenticated   { get; private set;}
         public              Authorizer  Authorizer      { get; private set;}
+        public              AuthUser    User            { get; private set;}
         private             bool        authExecuted;
         
         public  override    string      ToString() => authExecuted ? Authenticated ? "success" : "failed" : "pending";
         
-        public void SetFailed(string error, Authorizer authorizer) {
+        public void SetFailed(AuthUser user, string error, Authorizer authorizer) {
+            User            = user;
             authExecuted    = true;
             Authenticated   = false;
             Authorizer      = authorizer;
             Error           = error;
         }
         
-        public void SetSuccess (Authorizer authorizer) {
+        public void SetSuccess (AuthUser user, Authorizer authorizer) {
+            User            = user;
             authExecuted    = true;
             Authenticated   = true;
             Authorizer      = authorizer;
