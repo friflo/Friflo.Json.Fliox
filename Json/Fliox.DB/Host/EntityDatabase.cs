@@ -190,7 +190,7 @@ namespace Friflo.Json.Fliox.DB.Host
                     tasks.Add(result);
                 }
             }
-            nodeDb?.LogUserRequest(messageContext.authState.User, syncRequest);
+            nodeDb?.MonitorRequest(messageContext, syncRequest);
 
             // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
             // As a client is required to use response.clientId it is set to null if given clientId was invalid.

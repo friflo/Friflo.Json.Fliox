@@ -40,7 +40,8 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
     public class UserInfo {
         [Fri.Required]  public  JsonKey                         id;
         [Fri.Required]  public  List<Ref<JsonKey, ClientInfo>>  clients;
-                        public  int                             requests;                        
+                        public  int                             requests;
+                        public  int                             tasks;
                         
         public override         string ToString() => JsonDebug.ToJson(this, false);
     }

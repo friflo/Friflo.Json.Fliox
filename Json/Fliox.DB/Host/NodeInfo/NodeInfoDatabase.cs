@@ -41,10 +41,11 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
             return await nodeInfoDb.ExecuteSync(syncRequest, messageContext);
         }
 
-        public void LogUserRequest (AuthUser authUser, SyncRequest synRequest) {
-            if (!store.users.TryGet(authUser.userId, out var userInfo))
-                return;
-            userInfo.requests++;
+        public void MonitorRequest (MessageContext messageContext, SyncRequest synRequest) {
+            if (store.users.TryGet(messageContext.authState.User.userId, out var userInfo)) {
+                userInfo.requests++;
+                userInfo.tasks += synRequest.tasks.Count;
+            }
         }
     }
     
