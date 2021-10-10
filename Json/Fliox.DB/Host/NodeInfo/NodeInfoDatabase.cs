@@ -13,15 +13,15 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
 {
     public class NodeDatabase :  EntityDatabase
     {
-        private readonly    EntityDatabase      nodeDb;
+        private readonly    EntityDatabase      nodeInfoDb;
         private readonly    EntityDatabase      db;
         private readonly    NodeInfoStore       store;
         
-        public NodeDatabase (EntityDatabase nodeDb, EntityDatabase db) : base ("node_info") {
-            this.nodeDb             = nodeDb;
-            this.db                 = db;
-            nodeDb.authenticator    = db.authenticator;
-            store = new NodeInfoStore(nodeDb, SyncTypeStore.Get());
+        public NodeDatabase (EntityDatabase nodeInfoDb, EntityDatabase db) : base ("node_info") {
+            this.nodeInfoDb             = nodeInfoDb;
+            this.db                     = db;
+            nodeInfoDb.authenticator    = db.authenticator;
+            store = new NodeInfoStore(nodeInfoDb, SyncTypeStore.Get());
         }
 
         public override void Dispose() {
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            return nodeDb.CreateContainer(name, database);
+            return nodeInfoDb.CreateContainer(name, database);
         }
         
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
             store.SetUser (syncRequest.userId);
             store.SetToken(syncRequest.token);
             await store.TrySync();
-            return await nodeDb.ExecuteSync(syncRequest, messageContext);
+            return await nodeInfoDb.ExecuteSync(syncRequest, messageContext);
         }
 
         public void LogUserRequest (AuthUser authUser, SyncRequest synRequest) {
