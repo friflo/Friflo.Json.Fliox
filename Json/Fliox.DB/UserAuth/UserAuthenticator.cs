@@ -109,9 +109,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             if (!messageContext.authState.Authenticated) {
                 return ClientIdValidation.Invalid;
             }
-            if (!authUsers.TryGetValue(messageContext.userId, out AuthUser authUser)) {
-                throw new InvalidOperationException ("expect user is authenticated");
-            }
+            var authUser = messageContext.authState.User;
             if (authUser.clients.Contains(messageContext.clientId)) {
                 return ClientIdValidation.Valid;
             }
@@ -133,10 +131,9 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                     error = $"invalid client id. 'clt': {messageContext.clientId}";
                     return false;
                 case ClientIdValidation.IsNull:
-                    if (!authUsers.TryGetValue(messageContext.userId, out AuthUser authUser))
-                        throw new InvalidOperationException ("expect user is authenticated");
-                    messageContext.clientId = clientController.NewClientIdFor(messageContext.userId);
-                    messageContext.clientIdValidation = ClientIdValidation.Valid;
+                    var authUser                        = messageContext.authState.User; 
+                    messageContext.clientId             = clientController.NewClientIdFor(messageContext.userId);
+                    messageContext.clientIdValidation   = ClientIdValidation.Valid;
                     authUser.clients.Add(messageContext.clientId);
                     error = null;
                     return true;
