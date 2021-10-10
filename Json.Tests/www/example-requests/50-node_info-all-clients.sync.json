@@ -1,15 +1,21 @@
 {
-  "msg": "sync",
-  "database": "node_info",
-  "tasks": [
-    {
-      "task":       "query",
-      "container":  "clients",
-      "filterLinq": "true",
-      "filter":     { "op": "true" }
-    }
-  ],
-  "info": ["query all clients"],
-  "user":   "{{user}}",
-  "token":  "{{token}}"
-}
+    "msg": "sync",
+    "database": "node_info",
+    "tasks": [
+      {
+        "task":       "query",
+        "container":  "clients",
+        "filterLinq": "true",
+        "filter":     { "op": "true" }
+      },
+      {
+        "task":       "query",
+        "container":  "users",
+        "filterLinq": "true",
+        "filter":     { "op": "true" }
+      }
+    ],
+    "info": ["query all clients"],
+    "user":   "{{user}}",
+    "token":  "{{token}}"
+  }

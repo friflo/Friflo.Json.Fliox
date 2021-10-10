@@ -24,8 +24,8 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
     public class ClientInfo {
         [Fri.Required]  public  JsonKey                         id;
         [Fri.Required]  public  Ref<JsonKey, UserInfo>          user;
-                        public  int                             seq;
-                        public  int                             queuedEvents;
+                        public  int?                            seq;
+                        public  int?                            queuedEvents;
                         public  List<string>                    messageSubs;
                         public  List<SubscribeChanges>          changeSubs;
                         
