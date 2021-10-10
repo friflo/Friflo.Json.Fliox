@@ -18,9 +18,11 @@ namespace Friflo.Json.Fliox.DB.Host
         public              IReadOnlyDictionary<JsonKey, JsonKey>   Clients => clients;
 
         public JsonKey NewClientIdFor(in JsonKey userId) {
-            var id = NewId();
-            clients.Add(id, userId);
-            return id;
+            while (true) { 
+                var id = NewId();
+                if (clients.TryAdd(id, userId))
+                    return id;
+            }
         }
         
         public bool AddClientIdFor(in JsonKey userId, in JsonKey clientId) {

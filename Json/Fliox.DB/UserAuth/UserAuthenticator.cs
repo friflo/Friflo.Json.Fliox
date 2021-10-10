@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                 var authCred    = new AuthCred(token);
                 var authorizer  = await GetAuthorizer(userId).ConfigureAwait(false);
                 authUser      = new AuthUser (authCred.token, authorizer);
-                authUsers.TryAdd(userId,      authUser);
+                authUsers.TryAdd(userId, authUser);
             }
             
             if (authUser == null || token != authUser.token) {
@@ -109,18 +109,19 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             if (!messageContext.authState.Authenticated) {
                 return ClientIdValidation.Invalid;
             }
-            if (!authUsers.TryGetValue(messageContext.userId, out AuthUser userCredentials)) {
+            if (!authUsers.TryGetValue(messageContext.userId, out AuthUser authUser)) {
                 throw new InvalidOperationException ("expect user is authenticated");
             }
-            if (userCredentials.clients.Contains(messageContext.clientId)) {
+            if (authUser.clients.Contains(messageContext.clientId)) {
                 return ClientIdValidation.Valid;
             }
             if (clientController.Clients.ContainsKey(messageContext.clientId)) {
                 return ClientIdValidation.Invalid;
             }
-            userCredentials.clients.Add(messageContext.clientId);
-            clientController.AddClientIdFor(messageContext.userId, messageContext.clientId);
-            return ClientIdValidation.Valid;
+            authUser.clients.Add(messageContext.clientId);
+            if (clientController.AddClientIdFor(messageContext.userId, messageContext.clientId))
+                return ClientIdValidation.Valid;
+            return ClientIdValidation.Invalid;
         }
         
         public override bool EnsureValidClientId(ClientController clientController, MessageContext messageContext, out string error) {
@@ -132,11 +133,11 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                     error = $"invalid client id. 'clt': {messageContext.clientId}";
                     return false;
                 case ClientIdValidation.IsNull:
-                    if (!authUsers.TryGetValue(messageContext.userId, out AuthUser userCredentials))
+                    if (!authUsers.TryGetValue(messageContext.userId, out AuthUser authUser))
                         throw new InvalidOperationException ("expect user is authenticated");
                     messageContext.clientId = clientController.NewClientIdFor(messageContext.userId);
                     messageContext.clientIdValidation = ClientIdValidation.Valid;
-                    userCredentials.clients.Add(messageContext.clientId);
+                    authUser.clients.Add(messageContext.clientId);
                     error = null;
                     return true;
             }

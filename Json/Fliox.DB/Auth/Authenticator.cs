@@ -38,10 +38,10 @@ namespace Friflo.Json.Fliox.DB.Auth
             }
             var userId = messageContext.userId.IsNull() ? anonymous : messageContext.userId;  
             clientController.AddClientIdFor(userId, messageContext.clientId);
-            if (!authUsers.TryGetValue(userId, out var credentials)) {
+            if (!authUsers.TryGetValue(userId, out var authUser)) {
                 throw new InvalidOperationException("Expect user already added");
             }
-            credentials.clients.Add(messageContext.clientId);
+            authUser.clients.Add(messageContext.clientId);
             return ClientIdValidation.Valid;
         }
         
