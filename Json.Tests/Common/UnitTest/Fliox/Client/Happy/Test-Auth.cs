@@ -220,19 +220,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         // ------------------------------------- Test access to user database -------------------------------------
-        [Test] public static void TestAuthUserStore () {
+        [Test] public static void TestUserStore () {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore", "UserStore"))
                     using (var serverStore      = new UserStore             (userDatabase, UserStore.Server, null))
-                    using (var authUserStore    = new UserStore             (userDatabase, UserStore.AuthenticationUser, null))
+                    using (var userStore        = new UserStore             (userDatabase, UserStore.AuthenticationUser, null))
                     using (                       new UserDatabaseHandler   (userDatabase)) {
                         // assert access to user database with different users: "Server" & "AuthenticationUser"
                         await AssertUserStore       (serverStore);
-                        await AssertUserStore       (authUserStore);
+                        await AssertUserStore       (userStore);
                         await AssertServerStore     (serverStore);
-                        await AssertAuthUserStore   (authUserStore);
+                        await AssertAuthUserStore   (userStore);
                     }
                 });
             }

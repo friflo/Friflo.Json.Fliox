@@ -43,22 +43,22 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         
         public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
             ref var userId = ref syncRequest.userId;
-            AuthUser authUser;
+            User user;
             if (userId.IsNull()) {
-                authUser = anonymousUser;
+                user = anonymousUser;
             } else {
-                if (!authUsers.TryGetValue(userId, out  authUser)) {
-                    authUser = new AuthUser(userId, null, null);
-                    authUsers.TryAdd(userId, authUser);
+                if (!users.TryGetValue(userId, out  user)) {
+                    user = new User(userId, null, null);
+                    users.TryAdd(userId, user);
                 }
             }
 
             if (userRights.TryGetValue(userId, out Authorizer rights)) {
-                messageContext.authState.SetSuccess(authUser, rights);
+                messageContext.authState.SetSuccess(user, rights);
                 return Task.CompletedTask;
             }
             // authState.SetFailed() is not called to avoid giving a hint for a valid userId (user)
-            messageContext.authState.SetSuccess(authUser, UnknownRights);
+            messageContext.authState.SetSuccess(user, UnknownRights);
             return Task.CompletedTask;
         }
     }

@@ -80,12 +80,12 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                 messageContext.authState.SetFailed(anonymousUser, "user authentication requires 'token'", unknown);
                 return;
             }
-            if (authUsers.TryGetValue(userId, out AuthUser authUser)) {
-                if (authUser.token != token) {
-                    messageContext.authState.SetFailed(authUser, InvalidUserToken, unknown);
+            if (users.TryGetValue(userId, out User user)) {
+                if (user.token != token) {
+                    messageContext.authState.SetFailed(user, InvalidUserToken, unknown);
                     return;
                 }
-                messageContext.authState.SetSuccess(authUser, authUser.authorizer);
+                messageContext.authState.SetSuccess(user, user.authorizer);
                 return;
             }
             var command = new AuthenticateUser { userId = userId, token = token };
@@ -94,15 +94,15 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             if (result.isValid) {
                 var authCred    = new AuthCred(token);
                 var authorizer  = await GetAuthorizer(userId).ConfigureAwait(false);
-                authUser        = new AuthUser (userId, authCred.token, authorizer);
-                authUsers.TryAdd(userId, authUser);
+                user        = new User (userId, authCred.token, authorizer);
+                users.TryAdd(userId, user);
             }
             
-            if (authUser == null || token != authUser.token) {
+            if (user == null || token != user.token) {
                 messageContext.authState.SetFailed(anonymousUser, InvalidUserToken, unknown);
                 return;
             }
-            messageContext.authState.SetSuccess(authUser, authUser.authorizer);
+            messageContext.authState.SetSuccess(user, user.authorizer);
         }
         
         public override ClientIdValidation ValidateClientId(ClientController clientController, MessageContext messageContext) {
@@ -113,8 +113,8 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             if (!messageContext.authState.Authenticated) {
                 return ClientIdValidation.Invalid;
             }
-            var authUser    = messageContext.authState.User;
-            var userClients = authUser.clients; 
+            var user        = messageContext.authState.User;
+            var userClients = user.clients; 
             if (userClients.Contains(clientId)) {
                 return ClientIdValidation.Valid;
             }
@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                 return ClientIdValidation.Invalid;
             }
             userClients.Add(clientId);
-            if (clientController.AddClientIdFor(authUser, clientId))
+            if (clientController.AddClientIdFor(user, clientId))
                 return ClientIdValidation.Valid;
             return ClientIdValidation.Invalid;
         }
@@ -137,8 +137,8 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                     error = $"invalid client id. 'clt': {messageContext.clientId}";
                     return false;
                 case ClientIdValidation.IsNull:
-                    var authUser                        = messageContext.authState.User; 
-                    messageContext.clientId             = clientController.NewClientIdFor(authUser);
+                    var user                            = messageContext.authState.User; 
+                    messageContext.clientId             = clientController.NewClientIdFor(user);
                     messageContext.clientIdValidation   = ClientIdValidation.Valid;
                     error = null;
                     return true;

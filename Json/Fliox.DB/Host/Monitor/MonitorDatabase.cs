@@ -50,14 +50,14 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         
         private void UpdateClients(EntityDatabase db) {
             foreach (var pair in db.clientController.Clients) {
-                AuthClient authClient = pair.Value;
-                var clientId = pair.Key;
+                UserClient client   = pair.Value;
+                var clientId        = pair.Key;
                 clients.TryGet(clientId, out var clientInfo);
                 if (clientInfo == null) {
                     clientInfo = new ClientInfo { id = clientId };
                 }
-                clientInfo.user     = authClient.userId;
-                RequestStats.StatsToList(clientInfo.stats, authClient.stats, monitorName);
+                clientInfo.user     = client.userId;
+                RequestStats.StatsToList(clientInfo.stats, client.stats, monitorName);
                 clientInfo.ev       = GetEventInfo(db, clientInfo);
 
                 clients.Upsert(clientInfo);
@@ -88,14 +88,14 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         }
         
         private void UpdateUsers(EntityDatabase db) {
-            foreach (var pair in db.authenticator.authUsers) {
+            foreach (var pair in db.authenticator.users) {
                 if (!users.TryGet(pair.Key, out var userInfo)) {
                     userInfo = new UserInfo { id = pair.Key };
                 }
-                AuthUser authUser   = pair.Value;
-                RequestStats.StatsToList(userInfo.stats, authUser.stats, monitorName);
+                User user   = pair.Value;
+                RequestStats.StatsToList(userInfo.stats, user.stats, monitorName);
 
-                var userClients     = authUser.clients;
+                var userClients = user.clients;
                 if (userInfo.clients == null)
                     userInfo.clients = new List<Ref<JsonKey, ClientInfo>>(userClients.Count);
                 else

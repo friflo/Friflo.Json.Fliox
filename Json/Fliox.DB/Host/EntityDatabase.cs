@@ -208,7 +208,7 @@ namespace Friflo.Json.Fliox.DB.Host
             ref var clientId = ref messageContext.clientId;
             if (clientId.IsNull())
                 return;
-            if (clientController.clients.TryGetValue(clientId, out AuthClient client)) {
+            if (clientController.clients.TryGetValue(clientId, out UserClient client)) {
                 RequestStats.Update(client.stats, this, syncRequest);
             }
         }

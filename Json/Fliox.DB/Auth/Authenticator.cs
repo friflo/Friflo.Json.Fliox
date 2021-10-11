@@ -19,8 +19,8 @@ namespace Friflo.Json.Fliox.DB.Auth
     public abstract class Authenticator
     {
         protected readonly  Dictionary<string, AuthorizePredicate>  registeredPredicates;
-        internal  readonly  ConcurrentDictionary<JsonKey, AuthUser> authUsers;
-        protected readonly  AuthUser                                anonymousUser;
+        internal  readonly  ConcurrentDictionary<JsonKey, User>     users;
+        protected readonly  User                                    anonymousUser;
         
         private static readonly  JsonKey   Anonymous = new JsonKey("anonymous");
 
@@ -29,9 +29,9 @@ namespace Friflo.Json.Fliox.DB.Auth
         
         protected Authenticator (Authorizer anonymousAuthorizer) {
             registeredPredicates    = new Dictionary<string, AuthorizePredicate>();
-            authUsers               = new ConcurrentDictionary <JsonKey, AuthUser>(JsonKey.Equality);
-            anonymousUser           = new AuthUser(Anonymous, null, anonymousAuthorizer); 
-            authUsers.TryAdd(Anonymous, anonymousUser);
+            users                   = new ConcurrentDictionary <JsonKey, User>(JsonKey.Equality);
+            anonymousUser           = new User(Anonymous, null, anonymousAuthorizer); 
+            users.TryAdd(Anonymous, anonymousUser);
         }
         
         /// <summary>
@@ -42,8 +42,8 @@ namespace Friflo.Json.Fliox.DB.Auth
             if (clientId.IsNull()) {
                 return ClientIdValidation.IsNull;
             }
-            var authUser = messageContext.authState.User;
-            if (clientController.AddClientIdFor(authUser, clientId))
+            var user = messageContext.authState.User;
+            if (clientController.AddClientIdFor(user, clientId))
                 return ClientIdValidation.Valid;
             return ClientIdValidation.Invalid;
         }
@@ -54,8 +54,8 @@ namespace Friflo.Json.Fliox.DB.Auth
                 case ClientIdValidation.Valid:
                     return true;
                 case ClientIdValidation.IsNull:
-                    var authUSer                        = messageContext.authState.User;
-                    messageContext.clientId             = clientController.NewClientIdFor(authUSer);
+                    var user                            = messageContext.authState.User;
+                    messageContext.clientId             = clientController.NewClientIdFor(user);
                     messageContext.clientIdValidation   = ClientIdValidation.Valid;
                     return true;
             }

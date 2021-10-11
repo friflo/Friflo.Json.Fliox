@@ -21,26 +21,26 @@ namespace Friflo.Json.Fliox.DB.Auth
     /// </summary>
     public abstract class ClientController {
         /// key: clientId
-        internal readonly   Dictionary<JsonKey, AuthClient>            clients = new Dictionary<JsonKey, AuthClient>(JsonKey.Equality);
-        public              IReadOnlyDictionary<JsonKey, AuthClient>   Clients => clients;
+        internal readonly   Dictionary<JsonKey, UserClient>            clients = new Dictionary<JsonKey, UserClient>(JsonKey.Equality);
+        public              IReadOnlyDictionary<JsonKey, UserClient>   Clients => clients;
         
         protected abstract  JsonKey     NewId();
 
-        public JsonKey NewClientIdFor(AuthUser authUser) {
+        public JsonKey NewClientIdFor(User user) {
             while (true) { 
                 var clientId = NewId();
-                var client = new AuthClient(authUser.userId);
+                var client = new UserClient(user.userId);
                 if (clients.TryAdd(clientId, client)) {
-                    authUser.clients.Add(clientId);
+                    user.clients.Add(clientId);
                     return clientId;
                 }
             }
         }
         
-        public bool AddClientIdFor(AuthUser authUser, in JsonKey clientId) {
-            var client = new AuthClient(authUser.userId);
+        public bool AddClientIdFor(User user, in JsonKey clientId) {
+            var client = new UserClient(user.userId);
             if (clients.TryAdd(clientId, client)) {
-                authUser.clients.Add(clientId);
+                user.clients.Add(clientId);
                 return true;
             }
             return false; 

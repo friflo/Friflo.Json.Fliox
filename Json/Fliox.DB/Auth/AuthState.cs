@@ -15,12 +15,12 @@ namespace Friflo.Json.Fliox.DB.Auth
         public              bool        Authenticated   { get; private set;}
         public              Authorizer  Authorizer      { get; private set;}
         /// <summary><see cref="User"/> is never null after calling <see cref="SetFailed"/> or <see cref="SetSuccess"/></summary>
-        public              AuthUser    User            { get; private set;}
+        public              User        User            { get; private set;}
         private             bool        authExecuted;
         
         public  override    string      ToString() => authExecuted ? Authenticated ? "success" : "failed" : "pending";
         
-        public void SetFailed(AuthUser user, string error, Authorizer authorizer) {
+        public void SetFailed(User user, string error, Authorizer authorizer) {
             User            = user ?? throw new ArgumentNullException(nameof(user));
             authExecuted    = true;
             Authenticated   = false;
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.DB.Auth
             Error           = error;
         }
         
-        public void SetSuccess (AuthUser user, Authorizer authorizer) {
+        public void SetSuccess (User user, Authorizer authorizer) {
             User            = user ?? throw new ArgumentNullException(nameof(user));
             authExecuted    = true;
             Authenticated   = true;
