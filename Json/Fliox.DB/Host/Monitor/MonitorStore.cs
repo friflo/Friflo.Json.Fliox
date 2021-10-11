@@ -10,14 +10,14 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable UnassignedReadonlyField
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable CollectionNeverUpdated.Global
-namespace Friflo.Json.Fliox.DB.Host.NodeInfo
+namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
-    public partial class  NodeInfoStore :  EntityStore
+    public partial class  MonitorStore :  EntityStore
     {
         public  readonly   EntitySet <JsonKey, ClientInfo>  clients;
         public  readonly   EntitySet <JsonKey, UserInfo>    users;
         
-        public NodeInfoStore(EntityDatabase database, TypeStore typeStore)
+        public MonitorStore(EntityDatabase database, TypeStore typeStore)
             : base(database, typeStore, null, null) { }
     }
     

@@ -9,19 +9,19 @@ using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Host.NodeInfo
+namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
-    public class NodeDatabase :  EntityDatabase
+    public class MonitorDatabase :  EntityDatabase
     {
-        private readonly    EntityDatabase      nodeInfoDb;
+        private readonly    EntityDatabase      monitorDb;
         private readonly    EntityDatabase      db;
-        private readonly    NodeInfoStore       store;
+        private readonly    MonitorStore        store;
         
-        public NodeDatabase (EntityDatabase nodeInfoDb, EntityDatabase db) : base ("node_info") {
-            this.nodeInfoDb             = nodeInfoDb;
-            this.db                     = db;
-            nodeInfoDb.authenticator    = db.authenticator;
-            store = new NodeInfoStore(nodeInfoDb, SyncTypeStore.Get());
+        public MonitorDatabase (EntityDatabase monitorDb, EntityDatabase db) : base ("monitor") {
+            this.monitorDb          = monitorDb;
+            this.db                 = db;
+            monitorDb.authenticator = db.authenticator;
+            store = new MonitorStore(monitorDb, SyncTypeStore.Get());
         }
 
         public override void Dispose() {
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            return nodeInfoDb.CreateContainer(name, database);
+            return monitorDb.CreateContainer(name, database);
         }
         
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
@@ -38,11 +38,11 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
             store.SetUser (syncRequest.userId);
             store.SetToken(syncRequest.token);
             await store.TrySync();
-            return await nodeInfoDb.ExecuteSync(syncRequest, messageContext);
+            return await monitorDb.ExecuteSync(syncRequest, messageContext);
         }
     }
     
-    public partial class NodeInfoStore {
+    public partial class MonitorStore {
         internal void UpdateNodeStore(EntityDatabase db) {
             UpdateClients(db);
             UpdateUsers(db);
