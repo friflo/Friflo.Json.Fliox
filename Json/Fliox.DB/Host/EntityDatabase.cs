@@ -143,7 +143,6 @@ namespace Friflo.Json.Fliox.DB.Host
             messageContext.clientId = syncRequest.clientId;
             
             await authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
-            // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
             messageContext.clientIdValidation = authenticator.ValidateClientId(clientController, messageContext);
             
             var requestTasks = syncRequest.tasks;

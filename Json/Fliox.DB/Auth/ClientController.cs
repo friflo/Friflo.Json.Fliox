@@ -28,6 +28,7 @@ namespace Friflo.Json.Fliox.DB.Auth
     /// Its used to:
     /// <list type="bullet">
     ///   <item> create / add unique client ids by <see cref="EntityDatabase.clientController"/> </item>
+    ///   <item> enables sending Push messages (events) for protocols supporting this like WebSocket's </item>
     ///   <item> enables monitoring execution statistics of <see cref="EntityDatabase.ExecuteSync"/> </item>
     /// </list>
     /// </summary>
