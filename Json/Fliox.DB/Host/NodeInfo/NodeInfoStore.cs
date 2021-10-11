@@ -24,6 +24,8 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
     public class ClientInfo {
         [Fri.Required]  public  JsonKey                         id;
         [Fri.Required]  public  Ref<JsonKey, UserInfo>          user;
+                        public  int                             requests;
+                        public  int                             tasks;
         [Fri.Property (Name =                                  "event")]  
                         public  EventInfo?                      ev;
                         

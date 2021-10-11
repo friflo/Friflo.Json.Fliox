@@ -189,7 +189,7 @@ namespace Friflo.Json.Fliox.DB.Host
                     tasks.Add(result);
                 }
             }
-            nodeDb?.MonitorRequest(messageContext, syncRequest);
+            MonitorRequest(syncRequest, messageContext);
 
             // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
             // As a client is required to use response.clientId it is set to null if given clientId was invalid.
@@ -207,6 +207,19 @@ namespace Friflo.Json.Fliox.DB.Host
                 }
             }
             return new MsgResponse<SyncResponse>(response);
+        }
+        
+        private void MonitorRequest(SyncRequest syncRequest, MessageContext messageContext) {
+            var user = messageContext.authState.User; 
+            user.requests++;
+            user.tasks += syncRequest.tasks.Count;
+            if (!syncRequest.clientId.IsNull()) {
+                var clients = clientController.Clients;
+                if (clients.TryGetValue(syncRequest.clientId, out AuthClient client)) {
+                    client.requests++;
+                    client.tasks += syncRequest.tasks.Count;
+                }
+            }
         }
     }
     

@@ -11,6 +11,8 @@ namespace Friflo.Json.Fliox.DB.Auth
         internal readonly   string              token;
         internal readonly   Authorizer          authorizer;
         internal readonly   HashSet<JsonKey>    clients = new HashSet<JsonKey>(JsonKey.Equality);
+        internal            int                 requests;
+        internal            int                 tasks;
 
         public   override   string              ToString() => userId.AsString();
 

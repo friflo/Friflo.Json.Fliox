@@ -40,13 +40,6 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
             await store.TrySync();
             return await nodeInfoDb.ExecuteSync(syncRequest, messageContext);
         }
-
-        public void MonitorRequest (MessageContext messageContext, SyncRequest synRequest) {
-            if (store.users.TryGet(messageContext.authState.User.userId, out var userInfo)) {
-                userInfo.requests++;
-                userInfo.tasks += synRequest.tasks.Count;
-            }
-        }
     }
     
     public partial class NodeInfoStore {
@@ -57,34 +50,36 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
         
         private void UpdateClients(EntityDatabase db) {
             foreach (var pair in db.clientController.Clients) {
-                var client = pair.Key;
-                clients.TryGet(client, out var clientInfo);
+                AuthClient authClient = pair.Value;
+                var clientId = pair.Key;
+                clients.TryGet(clientId, out var clientInfo);
                 if (clientInfo == null) {
-                    clientInfo = new ClientInfo { id = client };
+                    clientInfo = new ClientInfo { id = clientId };
                 }
-                if (!db.eventBroker.TryGetSubscriber(client, out var subscriber)) {
+                clientInfo.requests = authClient.requests;
+                clientInfo.tasks    = authClient.tasks;
+                if (!db.eventBroker.TryGetSubscriber(clientId, out var subscriber)) {
                     clientInfo.ev           = null;
-                    clients.Upsert(clientInfo);
-                    continue;
+                } else {
+                    clientInfo.user = authClient.userId;
+                    var msgSubs     = clientInfo.ev?.messageSubs;
+                    msgSubs?.Clear();
+                    foreach (var messageSub in subscriber.messageSubscriptions) {
+                        if (msgSubs == null) msgSubs = new List<string>();
+                        msgSubs.Add(messageSub);
+                    }
+                    foreach (var messageSub in subscriber.messagePrefixSubscriptions) {
+                        if (msgSubs == null) msgSubs = new List<string>();
+                        msgSubs.Add(messageSub + "*");
+                    }
+                    var changeSubs  = subscriber.GetChangeSubscriptions (clientInfo.ev?.changeSubs);
+                    clientInfo.ev = new EventInfo {
+                        seq         = subscriber.Seq,
+                        queued      = subscriber.EventQueueCount,
+                        messageSubs = msgSubs,
+                        changeSubs  = changeSubs
+                    };
                 }
-                clientInfo.user = pair.Value;
-                var msgSubs     = clientInfo.ev?.messageSubs;
-                msgSubs?.Clear();
-                foreach (var messageSub in subscriber.messageSubscriptions) {
-                    if (msgSubs == null) msgSubs = new List<string>();
-                    msgSubs.Add(messageSub);
-                }
-                foreach (var messageSub in subscriber.messagePrefixSubscriptions) {
-                    if (msgSubs == null) msgSubs = new List<string>();
-                    msgSubs.Add(messageSub + "*");
-                }
-                var changeSubs  = subscriber.GetChangeSubscriptions (clientInfo.ev?.changeSubs);
-                clientInfo.ev = new EventInfo {
-                    seq         = subscriber.Seq,
-                    queued      = subscriber.EventQueueCount,
-                    messageSubs = msgSubs,
-                    changeSubs  = changeSubs
-                };
                 clients.Upsert(clientInfo);
             }
         }
@@ -94,8 +89,10 @@ namespace Friflo.Json.Fliox.DB.Host.NodeInfo
                 if (!users.TryGet(pair.Key, out var userInfo)) {
                     userInfo = new UserInfo { id = pair.Key };
                 }
-                var authUser    = pair.Value;
-                var userClients = authUser.clients;
+                AuthUser authUser   = pair.Value;
+                userInfo.requests   = authUser.requests;
+                userInfo.tasks      = authUser.tasks;
+                var userClients     = authUser.clients;
                 if (userInfo.clients == null)
                     userInfo.clients = new List<Ref<JsonKey, ClientInfo>>(userClients.Count);
                 else

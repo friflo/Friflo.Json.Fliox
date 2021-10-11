@@ -19,14 +19,19 @@ namespace Friflo.Json.Fliox.DB.Auth
     public abstract class Authenticator
     {
         protected readonly  Dictionary<string, AuthorizePredicate>  registeredPredicates;
-        protected readonly  JsonKey                                 anonymous = new JsonKey("anonymous");  
         internal  readonly  ConcurrentDictionary<JsonKey, AuthUser> authUsers;
+        protected readonly  AuthUser                                anonymousUser;
+        
+        private static readonly  JsonKey   Anonymous = new JsonKey("anonymous");
+
             
         public abstract Task    Authenticate    (SyncRequest syncRequest, MessageContext messageContext);
         
-        protected Authenticator () {
+        protected Authenticator (Authorizer anonymousAuthorizer) {
             registeredPredicates    = new Dictionary<string, AuthorizePredicate>();
             authUsers               = new ConcurrentDictionary <JsonKey, AuthUser>(JsonKey.Equality);
+            anonymousUser           = new AuthUser(Anonymous, null, anonymousAuthorizer); 
+            authUsers.TryAdd(Anonymous, anonymousUser);
         }
         
         /// <summary>
@@ -86,19 +91,28 @@ namespace Friflo.Json.Fliox.DB.Auth
         Valid
     }
     
+    // todo move to separate file
     public sealed class AuthenticateNone : Authenticator
     {
         private readonly Authorizer unknown;
+        
 
-        public AuthenticateNone(Authorizer unknown) {
+        public AuthenticateNone(Authorizer unknown)
+            : base (unknown)
+        {
             this.unknown = unknown ?? throw new NullReferenceException(nameof(unknown));
         }
         
         public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
-            var userId = syncRequest.userId.IsNull() ? anonymous : syncRequest.userId;
-            if (!authUsers.TryGetValue(userId, out var authUser)) {
-                authUser = new AuthUser(userId, null, unknown);
-                authUsers.TryAdd(userId, authUser);
+            AuthUser authUser;
+            ref var userId = ref syncRequest.userId;
+            if (userId.IsNull()) {
+                authUser = anonymousUser;
+            } else {
+                if (!authUsers.TryGetValue(userId, out authUser)) {
+                    authUser = new AuthUser(userId, null, unknown);
+                    authUsers.TryAdd(userId, authUser);
+                }
             }
             messageContext.authState.SetFailed(authUser, "not authenticated", unknown);
             return Task.CompletedTask;

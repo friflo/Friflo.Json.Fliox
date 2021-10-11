@@ -9,19 +9,33 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Auth
 {
+    public class AuthClient {
+        internal readonly   JsonKey             userId;
+        internal            int                 requests;
+        internal            int                 tasks;
+        
+        public   override   string              ToString() => userId.AsString();
+
+        internal AuthClient (in JsonKey userId) {
+            this.userId     = userId;
+        }
+    }
+    
     /// <summary>
-    /// Create a unique id when calling <see cref="NewId"/>.
+    /// Create a unique client id for a given user by <see cref="NewClientIdFor"/> or
+    /// checks if a given client id can be added to a given user by <see cref="AddClientIdFor"/> 
     /// Its used to create unique client ids by <see cref="EntityDatabase.clientController"/>
     /// </summary>
     public abstract class ClientController {
-        /// key: clientId, value: userId
-        private readonly    Dictionary<JsonKey, JsonKey>            clients = new Dictionary<JsonKey, JsonKey>(JsonKey.Equality);
-        public              IReadOnlyDictionary<JsonKey, JsonKey>   Clients => clients;
+        /// key: clientId
+        private readonly    Dictionary<JsonKey, AuthClient>            clients = new Dictionary<JsonKey, AuthClient>(JsonKey.Equality);
+        public              IReadOnlyDictionary<JsonKey, AuthClient>   Clients => clients;
 
         public JsonKey NewClientIdFor(AuthUser authUser) {
             while (true) { 
                 var clientId = NewId();
-                if (clients.TryAdd(clientId, authUser.userId)) {
+                var client = new AuthClient(authUser.userId);
+                if (clients.TryAdd(clientId, client)) {
                     authUser.clients.Add(clientId);
                     return clientId;
                 }
@@ -29,7 +43,8 @@ namespace Friflo.Json.Fliox.DB.Auth
         }
         
         public bool AddClientIdFor(AuthUser authUser, in JsonKey clientId) {
-            if (clients.TryAdd(clientId, authUser.userId)) {
+            var client = new AuthClient(authUser.userId);
+            if (clients.TryAdd(clientId, client)) {
                 authUser.clients.Add(clientId);
                 return true;
             }

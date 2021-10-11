@@ -37,14 +37,28 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             new AuthorizeContainer(nameof(UserStore.credentials),  new []{OperationType.read})
         });
         
+        public UserDatabaseAuthenticator()
+            : base (null)
+        { }
+        
         public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
-            var userId = syncRequest.userId;
+            ref var userId = ref syncRequest.userId;
+            AuthUser authUser;
+            if (userId.IsNull()) {
+                authUser = anonymousUser;
+            } else {
+                if (!authUsers.TryGetValue(userId, out  authUser)) {
+                    authUser = new AuthUser(userId, null, null);
+                    authUsers.TryAdd(userId, authUser);
+                }
+            }
+
             if (userRights.TryGetValue(userId, out Authorizer rights)) {
-                messageContext.authState.SetSuccess(null, rights);  // todo fill null
+                messageContext.authState.SetSuccess(authUser, rights);
                 return Task.CompletedTask;
             }
             // authState.SetFailed() is not called to avoid giving a hint for a valid userId (user)
-            messageContext.authState.SetSuccess(null, UnknownRights); // todo fill null
+            messageContext.authState.SetSuccess(authUser, UnknownRights);
             return Task.CompletedTask;
         }
     }

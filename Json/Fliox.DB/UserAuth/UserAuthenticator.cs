@@ -33,12 +33,15 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     /// </summary>
     public class UserAuthenticator : Authenticator
     {
-        private   readonly  UserStore                                       userStore;
-        private   readonly  IUserAuth                                       userAuth;
-        private   readonly  Authorizer                                      unknown;
-        private   readonly  ConcurrentDictionary<string,  Authorizer>       authorizerByRole;
+        private   readonly  UserStore                                   userStore;
+        private   readonly  IUserAuth                                   userAuth;
+        private   readonly  Authorizer                                  unknown;
+        private   readonly  ConcurrentDictionary<string,  Authorizer>   authorizerByRole;
 
-        public UserAuthenticator (UserStore userStore, IUserAuth userAuth, Authorizer unknown = null) {
+
+        public UserAuthenticator (UserStore userStore, IUserAuth userAuth, Authorizer unknown = null)
+            : base (unknown)
+        {
             this.userStore      = userStore;
             this.userAuth       = userAuth;
             this.unknown        = unknown ?? new AuthorizeDeny();
@@ -69,12 +72,12 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         {
             var userId = syncRequest.userId;
             if (userId.IsNull()) {
-                messageContext.authState.SetFailed(null, "user authentication requires 'user' id", unknown);
+                messageContext.authState.SetFailed(anonymousUser, "user authentication requires 'user' id", unknown);
                 return;
             }
             var token = syncRequest.token;
             if (token == null) {
-                messageContext.authState.SetFailed(null, "user authentication requires 'token'", unknown);
+                messageContext.authState.SetFailed(anonymousUser, "user authentication requires 'token'", unknown);
                 return;
             }
             if (authUsers.TryGetValue(userId, out AuthUser authUser)) {
@@ -96,7 +99,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             }
             
             if (authUser == null || token != authUser.token) {
-                messageContext.authState.SetFailed(authUser, InvalidUserToken, unknown);
+                messageContext.authState.SetFailed(anonymousUser, InvalidUserToken, unknown);
                 return;
             }
             messageContext.authState.SetSuccess(authUser, authUser.authorizer);
@@ -114,6 +117,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             if (userClients.Contains(messageContext.clientId)) {
                 return ClientIdValidation.Valid;
             }
+            // Is clientId already used by another user?
             if (clientController.Clients.ContainsKey(messageContext.clientId)) {
                 return ClientIdValidation.Invalid;
             }
