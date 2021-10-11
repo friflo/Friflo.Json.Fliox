@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
     public class ClientInfo {
         [Fri.Required]  public  JsonKey                         id;
         [Fri.Required]  public  Ref<JsonKey, UserInfo>          user;
-                        public  RequestStats                    stats;
+                        public  List<RequestStats>              stats = new List<RequestStats>();
         [Fri.Property (Name =                                  "event")]  
                         public  EventInfo?                      ev;
                         
@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
     public class UserInfo {
         [Fri.Required]  public  JsonKey                         id;
         [Fri.Required]  public  List<Ref<JsonKey, ClientInfo>>  clients;
-                        public  RequestStats                    stats;
+                        public  List<RequestStats>              stats = new List<RequestStats>();
                         
         public override         string ToString() => JsonDebug.ToJson(this, false);
     }

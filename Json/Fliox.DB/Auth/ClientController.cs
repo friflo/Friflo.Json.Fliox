@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.DB.Auth
 {
     public class AuthClient {
         internal readonly   JsonKey                                     userId;
-        internal readonly   Dictionary<EntityDatabase, RequestStats>    dbStats = new Dictionary<EntityDatabase, RequestStats>();
+        internal readonly   Dictionary<EntityDatabase, RequestStats>    stats = new Dictionary<EntityDatabase, RequestStats>();
         
         public   override   string              ToString() => userId.AsString();
 

@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         internal readonly   string                                      token;
         internal readonly   Authorizer                                  authorizer;
         internal readonly   HashSet<JsonKey>                            clients = new HashSet<JsonKey>(JsonKey.Equality);
-        internal readonly   Dictionary<EntityDatabase, RequestStats>    dbStats = new Dictionary<EntityDatabase, RequestStats>();
+        internal readonly   Dictionary<EntityDatabase, RequestStats>    stats = new Dictionary<EntityDatabase, RequestStats>();
 
         public   override   string              ToString() => userId.AsString();
 
@@ -25,16 +25,18 @@ namespace Friflo.Json.Fliox.DB.Auth
     }
     
     public struct RequestStats {
+        public            string              database;
         public            int                 requests;
         public            int                 tasks;
         
-        internal static void Update (Dictionary<EntityDatabase, RequestStats> dbStats, EntityDatabase db, SyncRequest syncRequest) {
-            if (!dbStats.TryGetValue(db, out RequestStats stats)) {
-                dbStats.TryAdd(db, new RequestStats());
+        internal static void Update (Dictionary<EntityDatabase, RequestStats> stats, EntityDatabase db, SyncRequest syncRequest) {
+            if (!stats.TryGetValue(db, out RequestStats requestStats)) {
+                requestStats = new RequestStats { database = db.name };
+                stats.TryAdd(db, requestStats);
             }
-            stats.requests  ++;
-            stats.tasks     += syncRequest.tasks.Count;
-            dbStats[db] = stats;
+            requestStats.requests  ++;
+            requestStats.tasks     += syncRequest.tasks.Count;
+            stats[db] = requestStats;
         }
     }
 }

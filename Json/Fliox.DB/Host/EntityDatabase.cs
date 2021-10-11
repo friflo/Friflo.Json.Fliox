@@ -83,11 +83,10 @@ namespace Friflo.Json.Fliox.DB.Host
         /// </summary>
         public              CustomContainerName                 customContainerName = name => name;
         
-        public EntityDatabase () {
-            this.name = "app";
+        protected EntityDatabase () {
         }
         
-        public EntityDatabase (string name) {
+        protected EntityDatabase (string name) {
             this.name = name;
         }
         
@@ -207,12 +206,12 @@ namespace Friflo.Json.Fliox.DB.Host
         
         private void UpdateRequestStats(SyncRequest syncRequest, MessageContext messageContext) {
             var user = messageContext.authState.User;
-            RequestStats.Update(user.dbStats, this, syncRequest);
+            RequestStats.Update(user.stats, this, syncRequest);
             ref var clientId = ref messageContext.clientId;
             if (clientId.IsNull())
                 return;
             if (clientController.clients.TryGetValue(clientId, out AuthClient client)) {
-                RequestStats.Update(client.dbStats, this, syncRequest);
+                RequestStats.Update(client.stats, this, syncRequest);
             }
         }
     }

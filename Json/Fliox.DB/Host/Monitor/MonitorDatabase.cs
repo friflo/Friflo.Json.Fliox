@@ -3,6 +3,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Client;
@@ -11,13 +12,13 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
-    public class MonitorDatabase :  EntityDatabase
+    public class MonitorDatabase : EntityDatabase
     {
         private readonly    EntityDatabase      monitorDb;
         private readonly    EntityDatabase      db;
         private readonly    MonitorStore        store;
         
-        public MonitorDatabase (EntityDatabase monitorDb, EntityDatabase db) : base ("monitor") {
+        public MonitorDatabase (EntityDatabase monitorDb, EntityDatabase db) : base ("monitor-db") {
             this.monitorDb          = monitorDb;
             this.db                 = db;
             monitorDb.authenticator = db.authenticator;
@@ -57,7 +58,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     clientInfo = new ClientInfo { id = clientId };
                 }
                 clientInfo.user     = authClient.userId;
-                clientInfo.stats    = authClient.dbStats[db];
+                clientInfo.stats    = authClient.stats.Values.ToList();
                 clientInfo.ev       = GetEventInfo(db, clientInfo);
 
                 clients.Upsert(clientInfo);
@@ -93,7 +94,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     userInfo = new UserInfo { id = pair.Key };
                 }
                 AuthUser authUser   = pair.Value;
-                authUser.dbStats.TryGetValue(db, out userInfo.stats);
+                userInfo.stats      = authUser.stats.Values.ToList(); 
 
                 var userClients     = authUser.clients;
                 if (userInfo.clients == null)
