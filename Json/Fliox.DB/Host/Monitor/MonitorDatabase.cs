@@ -56,32 +56,36 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                 if (clientInfo == null) {
                     clientInfo = new ClientInfo { id = clientId };
                 }
+                clientInfo.user     = authClient.userId;
                 clientInfo.requests = authClient.requests;
                 clientInfo.tasks    = authClient.tasks;
-                if (!db.eventBroker.TryGetSubscriber(clientId, out var subscriber)) {
-                    clientInfo.ev           = null;
-                } else {
-                    clientInfo.user = authClient.userId;
-                    var msgSubs     = clientInfo.ev?.messageSubs;
-                    msgSubs?.Clear();
-                    foreach (var messageSub in subscriber.messageSubscriptions) {
-                        if (msgSubs == null) msgSubs = new List<string>();
-                        msgSubs.Add(messageSub);
-                    }
-                    foreach (var messageSub in subscriber.messagePrefixSubscriptions) {
-                        if (msgSubs == null) msgSubs = new List<string>();
-                        msgSubs.Add(messageSub + "*");
-                    }
-                    var changeSubs  = subscriber.GetChangeSubscriptions (clientInfo.ev?.changeSubs);
-                    clientInfo.ev = new EventInfo {
-                        seq         = subscriber.Seq,
-                        queued      = subscriber.EventQueueCount,
-                        messageSubs = msgSubs,
-                        changeSubs  = changeSubs
-                    };
-                }
+                clientInfo.ev       = GetEventInfo(db, clientInfo);
+
                 clients.Upsert(clientInfo);
             }
+        }
+        
+        private static EventInfo? GetEventInfo (EntityDatabase db, ClientInfo clientInfo) {
+            if (!db.eventBroker.TryGetSubscriber(clientInfo.id, out var subscriber)) {
+                return null;
+            }
+            var msgSubs     = clientInfo.ev?.messageSubs;
+            msgSubs?.Clear();
+            foreach (var messageSub in subscriber.messageSubscriptions) {
+                if (msgSubs == null) msgSubs = new List<string>();
+                msgSubs.Add(messageSub);
+            }
+            foreach (var messageSub in subscriber.messagePrefixSubscriptions) {
+                if (msgSubs == null) msgSubs = new List<string>();
+                msgSubs.Add(messageSub + "*");
+            }
+            var changeSubs  = subscriber.GetChangeSubscriptions (clientInfo.ev?.changeSubs);
+            return new EventInfo {
+                seq         = subscriber.Seq,
+                queued      = subscriber.EventQueueCount,
+                messageSubs = msgSubs,
+                changeSubs  = changeSubs
+            };
         }
         
         private void UpdateUsers(EntityDatabase db) {
