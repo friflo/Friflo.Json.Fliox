@@ -96,10 +96,11 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                 RequestStats.StatsToList(userInfo.stats, user.stats, monitorName);
 
                 var userClients = user.clients;
-                if (userInfo.clients == null)
+                if (userInfo.clients == null) {
                     userInfo.clients = new List<Ref<JsonKey, ClientInfo>>(userClients.Count);
-                else
+                } else {
                     userInfo.clients.Clear();
+                }
                 foreach (var client in userClients) {
                     userInfo.clients.Add(client);
                 }

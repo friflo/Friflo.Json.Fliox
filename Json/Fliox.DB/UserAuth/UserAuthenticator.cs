@@ -122,9 +122,10 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             if (clientController.Clients.ContainsKey(clientId)) {
                 return ClientIdValidation.Invalid;
             }
-            userClients.Add(clientId);
-            if (clientController.AddClientIdFor(user, clientId))
+            if (clientController.AddClientIdFor(user, clientId)) {
+                userClients.Add(clientId);
                 return ClientIdValidation.Valid;
+            }
             return ClientIdValidation.Invalid;
         }
         
