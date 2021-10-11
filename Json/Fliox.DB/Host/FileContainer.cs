@@ -17,7 +17,9 @@ namespace Friflo.Json.Fliox.DB.Host
         private  readonly   string  databaseFolder;
         private  readonly   bool    pretty;
 
-        public FileDatabase(string databaseFolder, bool pretty = true) {
+        public FileDatabase(string databaseFolder, string name = null, bool pretty = true)
+            : base (name)
+        {
             this.pretty = pretty;
             this.databaseFolder = databaseFolder + "/";
             Directory.CreateDirectory(databaseFolder);

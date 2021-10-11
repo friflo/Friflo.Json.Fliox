@@ -83,9 +83,6 @@ namespace Friflo.Json.Fliox.DB.Host
         /// </summary>
         public              CustomContainerName                 customContainerName = name => name;
         
-        protected EntityDatabase () {
-        }
-        
         protected EntityDatabase (string name) {
             this.name = name;
         }

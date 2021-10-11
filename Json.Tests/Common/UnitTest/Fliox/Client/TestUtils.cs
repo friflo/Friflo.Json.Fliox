@@ -197,6 +197,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
         private class NoopDatabase : EntityDatabase
         {
+            public NoopDatabase (string name = null) : base (name) { }
+                
             public override EntityContainer CreateContainer(string name, EntityDatabase database) {
                 return null;
             }

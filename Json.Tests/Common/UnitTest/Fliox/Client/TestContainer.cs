@@ -18,7 +18,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         
         
-        public TestDatabase(EntityDatabase local) {
+        public TestDatabase(EntityDatabase local, string name = null) : base (name) {
             this.local = local;
         }
         
