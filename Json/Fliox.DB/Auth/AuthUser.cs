@@ -25,13 +25,13 @@ namespace Friflo.Json.Fliox.DB.Auth
     }
     
     public struct RequestStats {
-        public            string              database;
+        public            string              db;
         public            int                 requests;
         public            int                 tasks;
         
         internal static void Update (Dictionary<EntityDatabase, RequestStats> stats, EntityDatabase db, SyncRequest syncRequest) {
             if (!stats.TryGetValue(db, out RequestStats requestStats)) {
-                requestStats = new RequestStats { database = db.name };
+                requestStats = new RequestStats { db = db.name };
                 stats.TryAdd(db, requestStats);
             }
             requestStats.requests  ++;
