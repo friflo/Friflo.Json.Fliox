@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Auth
@@ -21,40 +20,6 @@ namespace Friflo.Json.Fliox.DB.Auth
             this.userId     = userId;
             this.token      = token;
             this.authorizer = authorizer;
-        }
-    }
-    
-    public struct RequestStats {
-        public            string              db;
-        public            int                 requests;
-        public            int                 tasks;
-        
-        internal static void Update (
-            Dictionary<EntityDatabase, RequestStats>    stats,
-            EntityDatabase                              db,
-            SyncRequest                                 syncRequest)
-        {
-            if (!stats.TryGetValue(db, out RequestStats requestStats)) {
-                requestStats = new RequestStats { db = db.name };
-                stats.TryAdd(db, requestStats);
-            }
-            requestStats.requests  ++;
-            requestStats.tasks     += syncRequest.tasks.Count;
-            stats[db] = requestStats;
-        }
-        
-        internal static void StatsToList(
-            List<RequestStats>                          dst,
-            Dictionary<EntityDatabase, RequestStats>    src,
-            string                                      exclude)
-        {
-            dst.Clear();
-            foreach (var pair in src) {
-                var stats = pair.Value;
-                if (stats.db == exclude)
-                    continue;
-                dst.Add(stats);
-            }
         }
     }
 }
