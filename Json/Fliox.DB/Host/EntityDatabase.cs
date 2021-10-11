@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Host.Event;
-using Friflo.Json.Fliox.DB.Host.NodeInfo;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
@@ -71,8 +70,6 @@ namespace Friflo.Json.Fliox.DB.Host
         /// Without this possibility it would only be possible to send events to all clients used by a single user. 
         /// </summary>
         public              ClientController                    clientController = new IncrementClientController();
-        
-        public              NodeDatabase                        nodeDb;
         /// <summary>
         /// An optional <see cref="DatabaseSchema"/> used to validate the JSON payloads in all write operations
         /// performed on the <see cref="EntityContainer"/>'s of the database
