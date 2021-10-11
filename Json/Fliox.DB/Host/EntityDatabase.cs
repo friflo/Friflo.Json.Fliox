@@ -82,6 +82,8 @@ namespace Friflo.Json.Fliox.DB.Host
         /// <see cref="EntityDatabase"/> implementations.
         /// </summary>
         public              CustomContainerName                 customContainerName = name => name;
+
+        public override     string                              ToString() => name != null ? $"'{name}'" : "";
         
         protected EntityDatabase (string name) {
             this.name = name;

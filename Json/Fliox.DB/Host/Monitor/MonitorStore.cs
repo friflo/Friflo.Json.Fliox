@@ -7,10 +7,9 @@ using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnassignedReadonlyField
-// ReSharper disable ClassNeverInstantiated.Global
-// ReSharper disable CollectionNeverUpdated.Global
 namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
     public partial class  MonitorStore :  EntityStore

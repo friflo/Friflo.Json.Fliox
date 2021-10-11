@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         private  readonly   MonitorDatabase     monitorDb;
 
 
-        public HttpHostDatabase(EntityDatabase local, string endpoint) : base(local) {
+        public HttpHostDatabase(EntityDatabase local, string endpoint, string name = null) : base(local, name) {
             this.endpoint       = endpoint;
             listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);

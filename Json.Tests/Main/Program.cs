@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Main
         //     $env:UserDomain 
         private static void FlioxServer(string endpoint, string databaseFolder) {
             Console.WriteLine($"FileDatabase: {databaseFolder}");
-            var fileDatabase            = new FileDatabase(databaseFolder);
+            var fileDatabase            = new FileDatabase(databaseFolder, "PocStore");
             fileDatabase.eventBroker    = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
             fileDatabase.authenticator  = CreateUserAuthenticator();                // optional. Otherwise all request tasks are authorized
             
@@ -53,7 +53,7 @@ namespace Friflo.Json.Tests.Main
         }
         
         private static UserAuthenticator CreateUserAuthenticator () {
-            var userDatabase    = new FileDatabase("./Json.Tests/assets~/DB/UserStore");
+            var userDatabase    = new FileDatabase("./Json.Tests/assets~/DB/UserStore", "UserStore");
             var authUserStore   = new UserStore (userDatabase, UserStore.AuthenticationUser, null);
             var _               = new UserDatabaseHandler   (userDatabase);
             return new UserAuthenticator(authUserStore, authUserStore);

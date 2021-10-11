@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.DB.Host
         
         public   override   bool                            Pretty      { get; }
         
-        public    override  string                          ToString()  => $"{GetType().Name} - Count: {keyValues.Count}";
+        public    override  string                          ToString()  => $"{base.ToString()}, Count: {keyValues.Count}";
 
         public MemoryContainer(string name, EntityDatabase database, bool pretty)
             : base(name, database)

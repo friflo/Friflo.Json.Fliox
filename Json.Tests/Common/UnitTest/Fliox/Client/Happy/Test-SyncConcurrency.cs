@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var memoryDb = new MemoryDatabase())
-                    using (var database = new AsyncDatabase(memoryDb))
+                    using (var database = new AsyncDatabase(memoryDb, "PocStore"))
                     using (var store  = new PocStore(database, "store")) {
                         await SyncConcurrencyInit(store);
                     }
