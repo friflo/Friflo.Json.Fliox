@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         public            int                 requests;
         public            int                 tasks;
         
-        internal static void UpdateStats (Dictionary<EntityDatabase, RequestStats> dbStats, EntityDatabase db, SyncRequest syncRequest) {
+        internal static void Update (Dictionary<EntityDatabase, RequestStats> dbStats, EntityDatabase db, SyncRequest syncRequest) {
             if (!dbStats.TryGetValue(db, out RequestStats stats)) {
                 dbStats.TryAdd(db, new RequestStats());
             }

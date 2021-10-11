@@ -185,7 +185,7 @@ namespace Friflo.Json.Fliox.DB.Host
                     tasks.Add(result);
                 }
             }
-            clientController.UpdateRequestStats(this, syncRequest, messageContext);
+            UpdateRequestStats(syncRequest, messageContext);
 
             // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
             // As a client is required to use response.clientId it is set to null if given clientId was invalid.
@@ -203,6 +203,17 @@ namespace Friflo.Json.Fliox.DB.Host
                 }
             }
             return new MsgResponse<SyncResponse>(response);
+        }
+        
+        private void UpdateRequestStats(SyncRequest syncRequest, MessageContext messageContext) {
+            var user = messageContext.authState.User;
+            RequestStats.Update(user.dbStats, this, syncRequest);
+            ref var clientId = ref messageContext.clientId;
+            if (clientId.IsNull())
+                return;
+            if (clientController.clients.TryGetValue(clientId, out AuthClient client)) {
+                RequestStats.Update(client.dbStats, this, syncRequest);
+            }
         }
     }
     

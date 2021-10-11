@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Auth
@@ -33,7 +32,7 @@ namespace Friflo.Json.Fliox.DB.Auth
     /// </summary>
     public abstract class ClientController {
         /// key: clientId
-        private readonly    Dictionary<JsonKey, AuthClient>            clients = new Dictionary<JsonKey, AuthClient>(JsonKey.Equality);
+        internal readonly   Dictionary<JsonKey, AuthClient>            clients = new Dictionary<JsonKey, AuthClient>(JsonKey.Equality);
         public              IReadOnlyDictionary<JsonKey, AuthClient>   Clients => clients;
         
         protected abstract  JsonKey     NewId();
@@ -56,17 +55,6 @@ namespace Friflo.Json.Fliox.DB.Auth
                 return true;
             }
             return false; 
-        }
-        
-        internal void UpdateRequestStats(EntityDatabase db, SyncRequest syncRequest, MessageContext messageContext) {
-            var user = messageContext.authState.User;
-            RequestStats.UpdateStats(user.dbStats, db, syncRequest);
-            ref var clientId = ref messageContext.clientId;
-            if (!clientId.IsNull()) {
-                if (clients.TryGetValue(clientId, out AuthClient client)) {
-                    RequestStats.UpdateStats(client.dbStats, db, syncRequest);
-                }
-            }
         }
     }
     
