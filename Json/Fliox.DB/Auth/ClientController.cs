@@ -11,9 +11,8 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Auth
 {
     public class AuthClient {
-        internal readonly   JsonKey             userId;
-        internal            int                 requests;
-        internal            int                 tasks;
+        internal readonly   JsonKey                                     userId;
+        internal readonly   Dictionary<EntityDatabase, RequestStats>    dbStats = new Dictionary<EntityDatabase, RequestStats>();
         
         public   override   string              ToString() => userId.AsString();
 
@@ -59,15 +58,13 @@ namespace Friflo.Json.Fliox.DB.Auth
             return false; 
         }
         
-        internal void UpdateRequestStats(SyncRequest syncRequest, MessageContext messageContext) {
+        internal void UpdateRequestStats(EntityDatabase db, SyncRequest syncRequest, MessageContext messageContext) {
             var user = messageContext.authState.User;
-            user.requests++;
-            user.tasks += syncRequest.tasks.Count;
+            RequestStats.UpdateStats(user.dbStats, db, syncRequest);
             ref var clientId = ref messageContext.clientId;
             if (!clientId.IsNull()) {
                 if (clients.TryGetValue(clientId, out AuthClient client)) {
-                    client.requests++;
-                    client.tasks += syncRequest.tasks.Count;
+                    RequestStats.UpdateStats(client.dbStats, db, syncRequest);
                 }
             }
         }

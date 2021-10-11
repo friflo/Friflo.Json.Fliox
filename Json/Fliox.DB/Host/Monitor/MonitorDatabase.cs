@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         }
         
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            store.UpdateNodeStore(db);
+            store.UpdateStore(db);
             store.SetUser (syncRequest.userId);
             store.SetToken(syncRequest.token);
             await store.TrySync();
@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
     }
     
     public partial class MonitorStore {
-        internal void UpdateNodeStore(EntityDatabase db) {
+        internal void UpdateStore(EntityDatabase db) {
             UpdateClients(db);
             UpdateUsers(db);
         }
@@ -57,8 +57,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     clientInfo = new ClientInfo { id = clientId };
                 }
                 clientInfo.user     = authClient.userId;
-                clientInfo.requests = authClient.requests;
-                clientInfo.tasks    = authClient.tasks;
+                clientInfo.stats    = authClient.dbStats[db];
                 clientInfo.ev       = GetEventInfo(db, clientInfo);
 
                 clients.Upsert(clientInfo);
@@ -94,8 +93,8 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     userInfo = new UserInfo { id = pair.Key };
                 }
                 AuthUser authUser   = pair.Value;
-                userInfo.requests   = authUser.requests;
-                userInfo.tasks      = authUser.tasks;
+                authUser.dbStats.TryGetValue(db, out userInfo.stats);
+
                 var userClients     = authUser.clients;
                 if (userInfo.clients == null)
                     userInfo.clients = new List<Ref<JsonKey, ClientInfo>>(userClients.Count);
