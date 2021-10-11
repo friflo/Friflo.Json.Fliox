@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Friflo.Json.Fliox.DB.Host;
+using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Auth
@@ -34,6 +35,8 @@ namespace Friflo.Json.Fliox.DB.Auth
         /// key: clientId
         private readonly    Dictionary<JsonKey, AuthClient>            clients = new Dictionary<JsonKey, AuthClient>(JsonKey.Equality);
         public              IReadOnlyDictionary<JsonKey, AuthClient>   Clients => clients;
+        
+        protected abstract  JsonKey     NewId();
 
         public JsonKey NewClientIdFor(AuthUser authUser) {
             while (true) { 
@@ -55,7 +58,18 @@ namespace Friflo.Json.Fliox.DB.Auth
             return false; 
         }
         
-        protected abstract JsonKey NewId();
+        internal void UpdateRequestStats(SyncRequest syncRequest, MessageContext messageContext) {
+            var user = messageContext.authState.User;
+            user.requests++;
+            user.tasks += syncRequest.tasks.Count;
+            ref var clientId = ref messageContext.clientId;
+            if (!clientId.IsNull()) {
+                if (clients.TryGetValue(clientId, out AuthClient client)) {
+                    client.requests++;
+                    client.tasks += syncRequest.tasks.Count;
+                }
+            }
+        }
     }
     
     public class IncrementClientController : ClientController {
