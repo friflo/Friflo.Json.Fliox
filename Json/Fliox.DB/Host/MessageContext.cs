@@ -24,8 +24,10 @@ namespace Friflo.Json.Fliox.DB.Host
         public  readonly    IPools              pools;
         public  readonly    IEventTarget        eventTarget;
         public              AuthState           authState;
+        public              object              customData;
         
         private             PoolUsage           startUsage;
+
         public              Action              canceler = () => {};
         public override     string              ToString() => $"userId: {authState.User}, auth: {authState}";
 

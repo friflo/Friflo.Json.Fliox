@@ -1,5 +1,4 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
-// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
@@ -21,6 +20,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             this.monitorDb          = monitorDb;
             this.db                 = db;
             monitorDb.authenticator = db.authenticator;
+            monitorDb.taskHandler   = new MonitorHandler();
             store = new MonitorStore(monitorDb, SyncTypeStore.Get());
         }
 
@@ -38,6 +38,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             store.SetUser (syncRequest.userId);
             store.SetToken(syncRequest.token);
             await store.TrySync();
+            messageContext.customData = monitorDb.taskHandler;
             return await monitorDb.ExecuteSync(syncRequest, messageContext);
         }
     }
