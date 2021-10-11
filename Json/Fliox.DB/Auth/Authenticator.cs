@@ -90,32 +90,4 @@ namespace Friflo.Json.Fliox.DB.Auth
         Invalid,
         Valid
     }
-    
-    // todo move to separate file
-    public sealed class AuthenticateNone : Authenticator
-    {
-        private readonly Authorizer unknown;
-        
-
-        public AuthenticateNone(Authorizer unknown)
-            : base (unknown)
-        {
-            this.unknown = unknown ?? throw new NullReferenceException(nameof(unknown));
-        }
-        
-        public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
-            AuthUser authUser;
-            ref var userId = ref syncRequest.userId;
-            if (userId.IsNull()) {
-                authUser = anonymousUser;
-            } else {
-                if (!authUsers.TryGetValue(userId, out authUser)) {
-                    authUser = new AuthUser(userId, null, unknown);
-                    authUsers.TryAdd(userId, authUser);
-                }
-            }
-            messageContext.authState.SetFailed(authUser, "not authenticated", unknown);
-            return Task.CompletedTask;
-        }
-    }
 }
