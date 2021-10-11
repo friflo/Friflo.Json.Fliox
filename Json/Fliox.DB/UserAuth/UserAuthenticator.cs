@@ -106,7 +106,8 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         }
         
         public override ClientIdValidation ValidateClientId(ClientController clientController, MessageContext messageContext) {
-            if (messageContext.clientId.IsNull()) {
+            ref var clientId = ref messageContext.clientId; 
+            if (clientId.IsNull()) {
                 return ClientIdValidation.IsNull;
             }
             if (!messageContext.authState.Authenticated) {
@@ -114,15 +115,15 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             }
             var authUser    = messageContext.authState.User;
             var userClients = authUser.clients; 
-            if (userClients.Contains(messageContext.clientId)) {
+            if (userClients.Contains(clientId)) {
                 return ClientIdValidation.Valid;
             }
             // Is clientId already used by another user?
-            if (clientController.Clients.ContainsKey(messageContext.clientId)) {
+            if (clientController.Clients.ContainsKey(clientId)) {
                 return ClientIdValidation.Invalid;
             }
-            userClients.Add(messageContext.clientId);
-            if (clientController.AddClientIdFor(authUser, messageContext.clientId))
+            userClients.Add(clientId);
+            if (clientController.AddClientIdFor(authUser, clientId))
                 return ClientIdValidation.Valid;
             return ClientIdValidation.Invalid;
         }

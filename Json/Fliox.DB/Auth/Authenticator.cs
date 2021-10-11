@@ -38,11 +38,12 @@ namespace Friflo.Json.Fliox.DB.Auth
         /// Validate <see cref="MessageContext.clientId"/>. Return true if it was valid or null.
         /// </summary>
         public virtual ClientIdValidation ValidateClientId(ClientController clientController, MessageContext messageContext) {
-            if (messageContext.clientId.IsNull()) {
+            ref var clientId = ref messageContext.clientId; 
+            if (clientId.IsNull()) {
                 return ClientIdValidation.IsNull;
             }
             var authUser = messageContext.authState.User;
-            clientController.AddClientIdFor(authUser, messageContext.clientId);
+            clientController.AddClientIdFor(authUser, clientId);
             return ClientIdValidation.Valid;
         }
         

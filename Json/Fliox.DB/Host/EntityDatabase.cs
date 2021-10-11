@@ -213,9 +213,10 @@ namespace Friflo.Json.Fliox.DB.Host
             var user = messageContext.authState.User; 
             user.requests++;
             user.tasks += syncRequest.tasks.Count;
-            if (!syncRequest.clientId.IsNull()) {
+            ref var clientId = ref messageContext.clientId;
+            if (!clientId.IsNull()) {
                 var clients = clientController.Clients;
-                if (clients.TryGetValue(syncRequest.clientId, out AuthClient client)) {
+                if (clients.TryGetValue(clientId, out AuthClient client)) {
                     client.requests++;
                     client.tasks += syncRequest.tasks.Count;
                 }

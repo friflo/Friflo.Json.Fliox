@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         }
         
         private void ProcessSubscriber(SyncRequest syncRequest, MessageContext messageContext) {
-            JsonKey  clientId = messageContext.clientId;
+            ref JsonKey  clientId = ref messageContext.clientId;
             if (clientId.IsNull())
                 return;
             
@@ -155,9 +155,8 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                     if (subscriber.SubscriptionCount == 0)
                         throw new InvalidOperationException("Expect SubscriptionCount > 0");
                     
-                    JsonKey clientId = messageContext.clientId;
                     // Enqueue only change events for (change) tasks which are not send by the client itself
-                    bool subscriberIsSender = clientId.IsEqual(subscriber.clientId);
+                    bool subscriberIsSender = messageContext.clientId.IsEqual(subscriber.clientId);
                     
                     foreach (var task in syncRequest.tasks) {
                         foreach (var changesPair in subscriber.changeSubscriptions) {
