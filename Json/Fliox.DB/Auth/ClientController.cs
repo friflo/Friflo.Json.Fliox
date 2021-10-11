@@ -24,7 +24,11 @@ namespace Friflo.Json.Fliox.DB.Auth
     /// <summary>
     /// Create a unique client id for a given user by <see cref="NewClientIdFor"/> or
     /// checks if a given client id can be added to a given user by <see cref="AddClientIdFor"/> 
-    /// Its used to create unique client ids by <see cref="EntityDatabase.clientController"/>
+    /// Its used to:
+    /// <list type="bullet">
+    ///   <item> create / add unique client ids by <see cref="EntityDatabase.clientController"/> </item>
+    ///   <item> enables monitoring execution statistics of <see cref="EntityDatabase.ExecuteSync"/> </item>
+    /// </list>
     /// </summary>
     public abstract class ClientController {
         /// key: clientId
