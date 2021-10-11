@@ -98,9 +98,9 @@ export function sendSyncRequest() {
             var request     = JSON.parse(jsonRequest);
             if (request) {
                 // Enable overrides of WebSocket specific members
-                if (request.req) { req      = request.req; }
-                if (request.ack) { subSeq   = request.ack; }
-                if (request.clt) { clt      = request.clt; }
+                if (request.req !== undefined) { req      = request.req; }
+                if (request.ack !== undefined) { subSeq   = request.ack; }
+                if (request.clt !== undefined) { clt      = request.clt; }
                 
                 // Add WebSocket specific members to request
                 request.req     = req;
