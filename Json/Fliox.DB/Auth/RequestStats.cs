@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Protocol;
 
+// ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.DB.Auth
 {
     public struct RequestStats {
