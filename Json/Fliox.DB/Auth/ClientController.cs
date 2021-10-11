@@ -9,17 +9,6 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Auth
 {
-    public class AuthClient {
-        internal readonly   JsonKey                                     userId;
-        internal readonly   Dictionary<EntityDatabase, RequestStats>    stats = new Dictionary<EntityDatabase, RequestStats>();
-        
-        public   override   string              ToString() => userId.AsString();
-
-        internal AuthClient (in JsonKey userId) {
-            this.userId     = userId;
-        }
-    }
-    
     /// <summary>
     /// Create a unique client id for a given user by <see cref="NewClientIdFor"/> or
     /// checks if a given client id can be added to a given user by <see cref="AddClientIdFor"/> 
