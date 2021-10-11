@@ -29,7 +29,11 @@ namespace Friflo.Json.Fliox.DB.Auth
         public            int                 requests;
         public            int                 tasks;
         
-        internal static void Update (Dictionary<EntityDatabase, RequestStats> stats, EntityDatabase db, SyncRequest syncRequest) {
+        internal static void Update (
+            Dictionary<EntityDatabase, RequestStats>    stats,
+            EntityDatabase                              db,
+            SyncRequest                                 syncRequest)
+        {
             if (!stats.TryGetValue(db, out RequestStats requestStats)) {
                 requestStats = new RequestStats { db = db.name };
                 stats.TryAdd(db, requestStats);
@@ -37,6 +41,20 @@ namespace Friflo.Json.Fliox.DB.Auth
             requestStats.requests  ++;
             requestStats.tasks     += syncRequest.tasks.Count;
             stats[db] = requestStats;
+        }
+        
+        internal static void StatsToList(
+            List<RequestStats>                          dst,
+            Dictionary<EntityDatabase, RequestStats>    src,
+            string                                      exclude)
+        {
+            dst.Clear();
+            foreach (var pair in src) {
+                var stats = pair.Value;
+                if (stats.db == exclude)
+                    continue;
+                dst.Add(stats);
+            }
         }
     }
 }

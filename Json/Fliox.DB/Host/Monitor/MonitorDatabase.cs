@@ -3,7 +3,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Client;
@@ -58,7 +57,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     clientInfo = new ClientInfo { id = clientId };
                 }
                 clientInfo.user     = authClient.userId;
-                clientInfo.stats    = authClient.stats.Values.ToList();
+                RequestStats.StatsToList(clientInfo.stats, authClient.stats, monitorName);
                 clientInfo.ev       = GetEventInfo(db, clientInfo);
 
                 clients.Upsert(clientInfo);
@@ -94,7 +93,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     userInfo = new UserInfo { id = pair.Key };
                 }
                 AuthUser authUser   = pair.Value;
-                userInfo.stats      = authUser.stats.Values.ToList(); 
+                RequestStats.StatsToList(userInfo.stats, authUser.stats, monitorName);
 
                 var userClients     = authUser.clients;
                 if (userInfo.clients == null)
