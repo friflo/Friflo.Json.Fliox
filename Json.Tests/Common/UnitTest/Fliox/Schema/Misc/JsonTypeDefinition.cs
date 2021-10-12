@@ -112,12 +112,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
                 sb.AppendLine($"            \"discriminator\": \"{unionType.discriminator}\",");
                 sb.AppendLine( "            \"mapping\": {");
                 bool firstElem = true;
-                int maxDiscriminant = unionType.types.MaxLength(t => t.Discriminant.Length);
+                int maxDiscriminant = unionType.types.MaxLength(t => t.discriminant.Length);
                 foreach (var polyType in unionType.types) {
                     Delimiter(sb, Next, ref firstElem);
-                    var discName = polyType.Discriminant;
+                    var discName = polyType.discriminant;
                     var indent = Indent(maxDiscriminant, discName);
-                    sb.Append($"                \"{discName}\": {indent}{{ {Ref(polyType)} }}");
+                    sb.Append($"                \"{discName}\": {indent}{{ {Ref(polyType.typeDef)} }}");
                 }
                 sb.AppendLine();
                 sb.AppendLine("            },");

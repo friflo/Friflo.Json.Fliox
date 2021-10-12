@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                 typeStore.GetTypeMapper(rootType);
             }
             var typeMappers = typeStore.GetTypeMappers();
-            
+
             // Collect all types into containers to simplify further processing
             nativeTypes     = new Dictionary<Type, NativeTypeDef>(typeMappers.Count);
             var types       = new List<TypeDef>                  (typeMappers.Count);
@@ -35,6 +35,17 @@ namespace Friflo.Json.Fliox.Schema.Native
                 TypeMapper  mapper  = pair.Value;
                 AddType(types, mapper, typeStore);
             }
+            /* typeMappers = typeStore.GetTypeMappers();
+            foreach (var pair in typeMappers) {
+                TypeMapper  mapper  = pair.Value;
+                if (mapper.type == typeof(Guid?)) {
+                    int x = 1;
+                }
+                if (mapper.type == typeof(Guid)) {
+                    int x = 1;
+                }
+                AddType(types, mapper, typeStore);
+            } */
             // in case any Nullable<> was found - typeStore contain now also their non-nullable counterparts.
             typeMappers = typeStore.GetTypeMappers();
             
@@ -44,7 +55,7 @@ namespace Friflo.Json.Fliox.Schema.Native
 
             // set the base type (base class or parent class) for all types. 
             foreach (var pair in nativeTypes) {
-                NativeTypeDef   typeDef        = pair.Value;
+                NativeTypeDef   typeDef     = pair.Value;
                 Type            baseType    = typeDef.native.BaseType;
                 TypeMapper      mapper;
                 // When searching for polymorph base class there may be are classes in this hierarchy. E.g. BinaryBoolOp. 
@@ -113,10 +124,11 @@ namespace Friflo.Json.Fliox.Schema.Native
                     // expect polyTypes if not abstract
                     if (!instanceFactory.isAbstract) {
                         var polyTypes   = instanceFactory.polyTypes;
-                        var unionTypes  = new List<TypeDef>(polyTypes.Length);
+                        var unionTypes  = new List<UnionItem>(polyTypes.Length);
                         foreach (var polyType in polyTypes) {
                             TypeDef element = nativeTypes[polyType.type];
-                            unionTypes.Add(element);
+                            var item = new UnionItem (element, polyType.name);
+                            unionTypes.Add(item);
                         }
                         typeDef.unionType  = new UnionType (instanceFactory.discriminator, unionTypes);
                     }
@@ -156,6 +168,17 @@ namespace Friflo.Json.Fliox.Schema.Native
                 var baseMapper = typeStore.GetTypeMapper(baseType);
                 AddType(types, baseMapper, typeStore);
             }
+            /* var instanceFactory = mapper.instanceFactory;
+            if (instanceFactory != null) {
+                // expect polyTypes if not abstract
+                if (!instanceFactory.isAbstract) {
+                    var polyTypes   = instanceFactory.polyTypes;
+                    foreach (var polyType in polyTypes) {
+                        var polyTypeDef = typeStore.GetTypeMapper(polyType.type);
+                        AddType(types, polyTypeDef, typeStore);
+                    }
+                }
+            } */
         }
         
         private static bool IsNullableMapper(TypeMapper mapper, out Type nonNullableType) {

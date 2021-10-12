@@ -7,12 +7,15 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
 {
     public sealed class PolyType
     {
+        public   readonly   Type    type;
+        public   readonly   string  name;
+        
+        public override     string  ToString() => $"{name} - {type.Name}";
+        
         internal PolyType(Type type, string name) {
             this.type = type;
             this.name = name;
         }
-        public   readonly Type   type;
-        public   readonly string name;
     }
 
     // Is public to support external schema / code generators

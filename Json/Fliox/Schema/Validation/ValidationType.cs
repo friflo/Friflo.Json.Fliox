@@ -280,9 +280,9 @@ namespace Friflo.Json.Fliox.Schema.Validation
 
         internal void SetUnionTypes(Dictionary<TypeDef, ValidationType> typeMap) {
             int n = 0;
-            foreach (var typeDef in unionType.types) {
-                ValidationType validationType = typeMap[typeDef];
-                var item = new UnionItem(typeDef.Discriminant, validationType);
+            foreach (var unionItem in unionType.types) {
+                ValidationType validationType = typeMap[unionItem.typeDef];
+                var item = new UnionItem(unionItem.discriminant, validationType);
                 types[n++] = item;
             }
             TypesAsString       = GetTypesAsString();
@@ -327,7 +327,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
         public   override   string          ToString() => discriminantStr;
 
         public UnionItem (string discriminant, ValidationType type) {
-            discriminantStr     = discriminant;
+            discriminantStr     = discriminant ?? throw new ArgumentNullException(nameof(discriminant));
             this.discriminant   = new Bytes(discriminant);
             this.type           = type;
         }

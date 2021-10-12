@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 
 namespace Friflo.Json.Fliox.Schema.Definition
@@ -105,13 +106,24 @@ namespace Friflo.Json.Fliox.Schema.Definition
 
     public class UnionType {
         public  readonly    string          discriminator;
-        public  readonly    List<TypeDef>   types;
+        public  readonly    List<UnionItem> types;
         
         public   override   string          ToString() => discriminator;
         
-        public UnionType(string discriminator, List<TypeDef> types) {
+        public UnionType(string discriminator, List<UnionItem> types) {
             this.discriminator  = discriminator;
             this.types          = types;
+        }
+    }
+    
+    public readonly struct UnionItem
+    {
+        public readonly TypeDef     typeDef;
+        public readonly string      discriminant;
+        
+        public UnionItem (TypeDef typeDef, string discriminant) {
+            this.typeDef        = typeDef;
+            this.discriminant   = discriminant ?? throw new ArgumentNullException(nameof(discriminant));
         }
     }
 }

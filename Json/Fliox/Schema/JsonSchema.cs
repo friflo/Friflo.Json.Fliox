@@ -111,7 +111,7 @@ namespace Friflo.Json.Fliox.Schema
                 bool firstElem = true;
                 foreach (var polyType in unionType.types) {
                     Delimiter(sb, Next, ref firstElem);
-                    sb.Append($"                {{ {Ref(polyType, true, context)} }}");
+                    sb.Append($"                {{ {Ref(polyType.typeDef, true, context)} }}");
                 }
                 sb.AppendLine();
                 sb.AppendLine($"            ],");

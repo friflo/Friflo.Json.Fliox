@@ -105,15 +105,16 @@ namespace Friflo.Json.Fliox.Schema
             } else {
                 sb.AppendLine($"export type {type.Name}{Union} =");
                 foreach (var polyType in unionType.types) {
-                    sb.AppendLine($"    | {polyType.Name}");
-                    imports.Add(polyType);
+                    var polyTypeDef = polyType.typeDef;
+                    sb.AppendLine($"    | {polyTypeDef.Name}");
+                    imports.Add(polyTypeDef);
                 }
                 sb.AppendLine($";");
                 sb.AppendLine();
                 sb.AppendLine($"export abstract class {type.Name} {extendsStr}{{");
                 sb.AppendLine($"    abstract {unionType.discriminator}:");
                 foreach (var polyType in unionType.types) {
-                    sb.AppendLine($"        | \"{polyType.Discriminant}\"");
+                    sb.AppendLine($"        | \"{polyType.discriminant}\"");
                 }
                 sb.AppendLine($"    ;");
             }

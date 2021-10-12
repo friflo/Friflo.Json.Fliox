@@ -23,6 +23,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             typeStore.GetTypeMapper(typeof(TestMessage));
             
             // create all TypeMappers required by PocStore model classes before leak tracking of LeakTestsFixture starts.
+            // typeStore.GetTypeMapper(typeof(ProtocolMessage));
+            // typeStore.AddMappers(ProtocolMessage.Types);
             typeStore.GetTypeMapper(typeof(PocStore));
             typeStore.GetTypeMapper(typeof(PocEntity)); // todo necessary?
             typeStore.GetTypeMapper(typeof(SimpleStore));
