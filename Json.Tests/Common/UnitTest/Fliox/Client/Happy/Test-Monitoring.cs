@@ -20,33 +20,37 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var monitorMemory    = new MemoryDatabase())
             using (var monitorDb        = new MonitorDatabase(monitorMemory, fileDatabase)) {
-                await AssertMonitoring (fileDatabase, monitorDb);
+                await AssertMonitoringDB (fileDatabase, monitorDb);
             }
         }
         
-        private  static async Task AssertMonitoring(EntityDatabase database, EntityDatabase monitorDb) {
+        private  static async Task AssertMonitoringDB(EntityDatabase database, EntityDatabase monitorDb) {
             using (var store    = new PocStore(database, "poc-user", "poc-client"))
             using (var monitor  = new MonitorStore(monitorDb, TestGlobals.typeStore)) {
-                store.articles.Read().Find("xxx");
-                await store.Sync();
-                
-                var allUsers    = monitor.users.QueryAll();
-                var allClients  = monitor.clients.QueryAll();
-                await monitor.Sync();
-                
-                var users   = allUsers.Results;
-                var clients = allClients.Results;
-                var pocUser     = users     [new JsonKey("poc-user")]; 
-                var anonymous   = users     [new JsonKey("anonymous")];
-                var userClient  = clients   [new JsonKey("poc-client")];
-                
-                AreEqual("{'id':'anonymous','clients':[],'stats':[]}",                                      anonymous.ToString());
-                AreEqual("{'id':'poc-user','clients':['poc-client'],'stats':[{'requests':1,'tasks':1}]}",   pocUser.ToString());
-                AreEqual(2, users.Count);
-                
-                AreEqual("{'id':'poc-client','user':'poc-user','stats':[{'requests':1,'tasks':1}]}",        userClient.ToString());
-                AreEqual(1, clients.Count);
+                await AssertMonitoringStore(store, monitor);
             }
+        }
+        
+        private  static async Task AssertMonitoringStore(PocStore store, MonitorStore monitor) {
+            store.articles.Read().Find("xxx");
+            await store.Sync();
+            
+            var allUsers    = monitor.users.QueryAll();
+            var allClients  = monitor.clients.QueryAll();
+            await monitor.Sync();
+            
+            var users   = allUsers.Results;
+            var clients = allClients.Results;
+            var pocUser     = users     [new JsonKey("poc-user")]; 
+            var anonymous   = users     [new JsonKey("anonymous")];
+            var userClient  = clients   [new JsonKey("poc-client")];
+            
+            AreEqual("{'id':'anonymous','clients':[],'stats':[]}",                                      anonymous.ToString());
+            AreEqual("{'id':'poc-user','clients':['poc-client'],'stats':[{'requests':1,'tasks':1}]}",   pocUser.ToString());
+            AreEqual(2, users.Count);
+            
+            AreEqual("{'id':'poc-client','user':'poc-user','stats':[{'requests':1,'tasks':1}]}",        userClient.ToString());
+            AreEqual(1, clients.Count);
         }
 
         private static UserAuthenticator CreateUserAuthenticator () {
