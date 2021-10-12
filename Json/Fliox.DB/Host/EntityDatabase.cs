@@ -145,10 +145,14 @@ namespace Friflo.Json.Fliox.DB.Host
         /// </para>
         /// </summary>
         public virtual async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            if (syncRequest.database != null) {
-                if (extensionDbs.TryGetValue(syncRequest.database, out var db)) {
-                    syncRequest.database = null;
-                    return await db.ExecuteSync(syncRequest, messageContext);
+            var database = syncRequest.database; 
+            if (database != null) {
+                if (extensionDbs.TryGetValue(database, out var db)) {
+                    syncRequest.database    = null;
+                    var extResponse = await db.ExecuteSync(syncRequest, messageContext);
+                    if (extResponse.success != null)
+                        extResponse.success.database = database;
+                    return extResponse;
                 }
                 return new MsgResponse<SyncResponse>($"database not found: '{syncRequest.database}'");
             }

@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     // ----------------------------------- response -----------------------------------
     public sealed class SyncResponse : ProtocolResponse
     {
-                        public  string                                  database;
+                        public  string                                  database; // not used - only for debugging
                         public  List<SyncTaskResult>                    tasks;
                         public  List<ContainerEntities>                 results;
         // key of all Dictionary's is the container name

@@ -490,7 +490,8 @@ namespace Friflo.Json.Fliox.DB.Client
                     var result = response.success;
                     response.success.AssertResponse(syncRequest);
                     syncError = null;
-                    if (_intern.database is RemoteClientDatabase)
+                    var db = _intern.database; 
+                    if (db is RemoteClientDatabase || db is ExtensionDatabase)
                         GetContainerResults(result);
                     containerResults = result.resultMap;
                     foreach (var containerResult in containerResults) {
