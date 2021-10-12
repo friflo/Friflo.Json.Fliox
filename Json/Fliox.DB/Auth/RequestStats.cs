@@ -9,17 +9,19 @@ using Friflo.Json.Fliox.DB.Protocol;
 namespace Friflo.Json.Fliox.DB.Auth
 {
     public struct RequestStats {
-        public            string              db;
-        public            int                 requests;
-        public            int                 tasks;
-        
+        public              string  db;
+        public              int     requests;
+        public              int     tasks;
+
+        public override     string  ToString() => $"db: {db}, requests: {requests}, tasks: {tasks}";
+
         internal static void Update (
             Dictionary<EntityDatabase, RequestStats>    stats,
             EntityDatabase                              db,
             SyncRequest                                 syncRequest)
         {
             if (!stats.TryGetValue(db, out RequestStats requestStats)) {
-                requestStats = new RequestStats { db = db.addOnName };
+                requestStats = new RequestStats { db = db.ExtensionName };
                 stats.TryAdd(db, requestStats);
             }
             requestStats.requests  ++;
@@ -35,8 +37,8 @@ namespace Friflo.Json.Fliox.DB.Auth
             dst.Clear();
             foreach (var pair in src) {
                 var stats = pair.Value;
-                if (stats.db == exclude)
-                    continue;
+                /* if (exclude != null && stats.db == exclude)
+                    continue; */
                 dst.Add(stats);
             }
         }

@@ -70,11 +70,11 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         private     Dictionary<JsonKey, EntityPatch>        Patches()    => _patches     ?? (_patches     = new Dictionary<JsonKey, EntityPatch>(JsonKey.Equality));
         private     List<PatchTask<T>>                      PatchTasks() => _patchTasks  ?? (_patchTasks  = new List<PatchTask<T>>());
         
-        private     HashSet<TKey>                           Deletes()    => _deletes     ?? (_deletes     = typeof(TKey) == typeof(JsonKey) ? (HashSet<TKey>)(object)Helper.CreateHashSet(0, JsonKey.Equality) : new HashSet <TKey>());
+        private     HashSet<TKey>                           Deletes()    => _deletes     ?? (_deletes     = CreateHashSet<TKey>(0));
         private     List<DeleteTask<TKey, T>>               DeleteTasks()=> _deleteTasks ?? (_deleteTasks = new List<DeleteTask<TKey, T>>());
         
         private     DeleteAllTask<TKey, T>                  _deleteTaskAll;
-
+        
         internal SyncSet(EntitySet<TKey, T> set) {
             this.set = set;
         }

@@ -39,6 +39,18 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                 return true;
             return null;
         }
+        
+        internal static HashSet<TKey2> CreateHashSet<TKey2>(int capacity) {
+            if (typeof(TKey2) == typeof(JsonKey))
+                return (HashSet<TKey2>)(object)Helper.CreateHashSet(capacity, JsonKey.Equality);
+            return new HashSet <TKey2>();
+        }
+        
+        internal static Dictionary<TKey2, T2> CreateDictionary<TKey2, T2>(int capacity) where T2 : class {
+            if (typeof(TKey2) == typeof(JsonKey))
+                return (Dictionary<TKey2, T2>)(object)new Dictionary<JsonKey, T2>(capacity, JsonKey.Equality);
+            return new Dictionary<TKey2, T2>(capacity);
+        }
     }
 
     internal partial class SyncSet<TKey, T>
@@ -236,7 +248,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             var queryResult     = (QueryEntitiesResult)result;
             var entityErrorInfo = new TaskErrorInfo();
             var entities        = queryEntities.entityMap;
-            var results         = query.results = new Dictionary<TKey, T>(queryResult.ids.Count);
+            var results         = query.results = CreateDictionary<TKey, T>(queryResult.ids.Count);
             foreach (var id in queryResult.ids) {
                 if (!entities.TryGetValue(id, out EntityValue value)) {
                     AddEntityResponseError(id, entities, ref entityErrorInfo);

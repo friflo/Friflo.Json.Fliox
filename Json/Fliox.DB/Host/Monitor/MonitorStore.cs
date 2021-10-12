@@ -14,9 +14,11 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
     public partial class  MonitorStore :  EntityStore
     {
-        public  readonly   EntitySet <JsonKey, ClientInfo>  clients;
-        public  readonly   EntitySet <JsonKey, UserInfo>    users;
-        
+        public  readonly    EntitySet <JsonKey, ClientInfo>  clients;
+        public  readonly    EntitySet <JsonKey, UserInfo>    users;
+
+        public const string MonitorName = "monitor";
+
         public MonitorStore(EntityDatabase database, TypeStore typeStore)
             : base(database, typeStore, null, null)
         {
@@ -30,7 +32,9 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         [Fri.Property (Name =                                  "event")]  
                         public  EventInfo?                      ev;
                         
-        public override         string ToString() => JsonDebug.ToJson(this, false);
+        public override         string ToString() {
+            return $"id: {id}, user: {user.Key.AsString()}, stats: ({string.Join(",", stats)})";
+        }
     }
     
     public struct EventInfo {
@@ -45,6 +49,8 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         [Fri.Required]  public  List<Ref<JsonKey, ClientInfo>>  clients;
                         public  List<RequestStats>              stats = new List<RequestStats>();
                         
-        public override         string ToString() => JsonDebug.ToJson(this, false);
+        public override         string ToString() {
+            return $"id: {id}, stats: ({string.Join(",", stats)})";
+        }
     }
 }

@@ -16,13 +16,14 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         private readonly    EntityDatabase      db;
         private readonly    MonitorStore        store;
         
-        public MonitorDatabase (EntityDatabase monitorDb, EntityDatabase db) : base ("monitor") {
+        public MonitorDatabase (EntityDatabase monitorDb, EntityDatabase db) {
+            monitorDb.ExtensionName = MonitorStore.MonitorName;
             this.monitorDb          = monitorDb;
             this.db                 = db;
             monitorDb.authenticator = db.authenticator;
             monitorDb.taskHandler   = new MonitorHandler();
             store = new MonitorStore(monitorDb, SyncTypeStore.Get());
-            db.addOnDbs.Add(addOnName, this);
+            db.addOnDbs.Add(monitorDb.ExtensionName, this);
         }
 
         public override void Dispose() {
@@ -59,7 +60,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     clientInfo = new ClientInfo { id = clientId };
                 }
                 clientInfo.user     = client.userId;
-                RequestStats.StatsToList(clientInfo.stats, client.stats, AddOnName);
+                RequestStats.StatsToList(clientInfo.stats, client.stats, MonitorName);
                 clientInfo.ev       = GetEventInfo(db, clientInfo);
 
                 clients.Upsert(clientInfo);
@@ -67,6 +68,8 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         }
         
         private static EventInfo? GetEventInfo (EntityDatabase db, ClientInfo clientInfo) {
+            if (db.eventBroker == null)
+                return null;
             if (!db.eventBroker.TryGetSubscriber(clientInfo.id, out var subscriber)) {
                 return null;
             }
@@ -95,7 +98,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     userInfo = new UserInfo { id = pair.Key };
                 }
                 User user   = pair.Value;
-                RequestStats.StatsToList(userInfo.stats, user.stats, AddOnName);
+                RequestStats.StatsToList(userInfo.stats, user.stats, MonitorName);
 
                 var userClients = user.clients;
                 if (userInfo.clients == null) {

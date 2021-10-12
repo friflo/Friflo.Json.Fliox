@@ -38,7 +38,6 @@ namespace Friflo.Json.Fliox.DB.Client
         public              IReadOnlyList<SyncTask> Tasks           => _intern.syncStore.appTasks;
         
         public              int                     GetSyncCount()  => _intern.syncCount;
-        public              string                  AddOnName       => _intern.database.addOnName;
         
         /// <summary>
         /// Instantiate an <see cref="EntityStore"/> with a given <see cref="database"/> and an optional <see cref="typeStore"/>.
@@ -342,10 +341,11 @@ namespace Friflo.Json.Fliox.DB.Client
             
             var tasks       = new List<SyncRequestTask>();
             var syncRequest = new SyncRequest {
+                // database    = _intern.database.ExtensionName, 
                 tasks       = tasks,
                 userId      = _intern.userId,
                 clientId    = _intern.clientId, 
-                token       = _intern.token 
+                token       = _intern.token
             };
 
             // see method docs
