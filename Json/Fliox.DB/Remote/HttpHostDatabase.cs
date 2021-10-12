@@ -38,7 +38,6 @@ namespace Friflo.Json.Fliox.DB.Remote
             listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);
             monitorDb           = new MonitorDatabase(new MemoryDatabase("monitor"), local);
-            addOnDbs.Add("monitor", monitorDb);
 
             using (var typeStore = new TypeStore()) {
                 var protocolSchema      = new NativeTypeSchema(typeStore, typeof(ProtocolMessage));

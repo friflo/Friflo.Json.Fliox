@@ -82,6 +82,8 @@ namespace Friflo.Json.Fliox.DB.Host
         /// <see cref="EntityDatabase"/> implementations.
         /// </summary>
         public              CustomContainerName                 customContainerName = name => name;
+        public   readonly   Dictionary<string, EntityDatabase>  addOnDbs = new Dictionary<string, EntityDatabase>();
+
 
         public override     string                              ToString() => name != null ? $"'{name}'" : "";
         
@@ -138,6 +140,13 @@ namespace Friflo.Json.Fliox.DB.Host
         /// </para>
         /// </summary>
         public virtual async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+            if (syncRequest.database != null) {
+                if (addOnDbs.TryGetValue(syncRequest.database, out var db)) {
+                    syncRequest.database = null;
+                    return await db.ExecuteSync(syncRequest, messageContext);
+                }
+                return new MsgResponse<SyncResponse>($"database not found: '{syncRequest.database}'");
+            }
             messageContext.clientId = syncRequest.clientId;
             
             await authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);

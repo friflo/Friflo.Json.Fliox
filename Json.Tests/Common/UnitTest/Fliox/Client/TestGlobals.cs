@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Fliox.DB.Host.Monitor;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy;
@@ -25,6 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             typeStore.GetTypeMapper(typeof(PocStore));
             typeStore.GetTypeMapper(typeof(PocEntity)); // todo necessary?
             typeStore.GetTypeMapper(typeof(SimpleStore));
+            // typeStore.GetTypeMapper(typeof(MonitorStore));
         }
         
         public static void Dispose() {

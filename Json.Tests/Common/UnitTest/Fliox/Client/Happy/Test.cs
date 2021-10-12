@@ -21,7 +21,6 @@ using static NUnit.Framework.Assert;
     using NUnit.Framework;
 #endif
 
-// ReSharper disable JoinDeclarationAndInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     public partial class TestStore : LeakTestsFixture
