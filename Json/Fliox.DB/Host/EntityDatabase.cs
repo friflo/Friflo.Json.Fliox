@@ -80,12 +80,13 @@ namespace Friflo.Json.Fliox.DB.Host
         /// <see cref="EntityDatabase"/> implementations.
         /// </summary>
         public              CustomContainerName                 customContainerName = name => name;
-        public   readonly   Dictionary<string, EntityDatabase>  addOnDbs = new Dictionary<string, EntityDatabase>();
+        
+        public   readonly   Dictionary<string, EntityDatabase>  extensionDbs = new Dictionary<string, EntityDatabase>();
 
         private string      extensionName;
         public  string      ExtensionName {
             get => extensionName;
-            set => extensionName = extensionName == null ? value : throw new InvalidOperationException("extensionName already assigned"); 
+            set => extensionName = extensionName == null ? value : throw new InvalidOperationException($"extensionName already assigned: {extensionName}"); 
         }
 
         public override     string                              ToString() => ExtensionName != null ? $"'{ExtensionName}'" : "";
@@ -143,7 +144,7 @@ namespace Friflo.Json.Fliox.DB.Host
         /// </summary>
         public virtual async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             if (syncRequest.database != null) {
-                if (addOnDbs.TryGetValue(syncRequest.database, out var db)) {
+                if (extensionDbs.TryGetValue(syncRequest.database, out var db)) {
                     syncRequest.database = null;
                     return await db.ExecuteSync(syncRequest, messageContext);
                 }
