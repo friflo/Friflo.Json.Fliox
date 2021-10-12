@@ -163,6 +163,7 @@ data class ReserveKeys (
 data class SyncResponse (
     override  val req          : Int? = null,
     override  val clt          : String? = null,
+              val database     : String? = null,
               val tasks        : List<SyncTaskResult>? = null,
               val results      : List<ContainerEntities>? = null,
               val createErrors : HashMap<String, EntityErrors>? = null,

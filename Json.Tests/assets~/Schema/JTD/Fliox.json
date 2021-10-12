@@ -554,6 +554,7 @@
             "properties": {
                 "req":          { "type": "int32", "nullable": true },
                 "clt":          { "type": "string", "nullable": true },
+                "database":     { "type": "string", "nullable": true },
                 "tasks":        { "elements": { "ref":  "SyncTaskResult" }, "nullable": true },
                 "results":      { "elements": { "ref":  "ContainerEntities" }, "nullable": true },
                 "createErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },

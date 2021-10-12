@@ -4,6 +4,7 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Monitor;
+using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.Utils;
@@ -20,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     public partial class TestStore
     {
         [Test]
-        public static async Task TestMonitoring() {
+        public static async Task TestMonitoringFile() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var monitorMemory    = new MemoryDatabase())
@@ -29,6 +30,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
+        // [Test]
+        public static async Task TestMonitoringHttp() {
+            using (var _                = Pools.SharedPools) // for LeakTestsFixture
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/"))
+            using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {
+                await RunRemoteHost(hostDatabase, async () => {
+                    var remoteMonitor   = new ExtensionDatabase(remoteDatabase, "monitor");
+                    await AssertMonitoringDB(remoteDatabase, remoteMonitor);
+                });
+            }
+        }
+
         private  static async Task AssertMonitoringDB(EntityDatabase database, EntityDatabase monitorDb) {
             using (var store    = new PocStore(database, "poc-user", "poc-client"))
             using (var monitor  = new MonitorStore(monitorDb, TestGlobals.typeStore)) {

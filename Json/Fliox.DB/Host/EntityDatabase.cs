@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Host.Event;
@@ -83,6 +84,7 @@ namespace Friflo.Json.Fliox.DB.Host
         
         public   readonly   Dictionary<string, EntityDatabase>  extensionDbs = new Dictionary<string, EntityDatabase>();
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string      extensionName;
         public  string      ExtensionName {
             get => extensionName;

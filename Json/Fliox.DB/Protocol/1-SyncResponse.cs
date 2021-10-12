@@ -10,6 +10,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     // ----------------------------------- response -----------------------------------
     public sealed class SyncResponse : ProtocolResponse
     {
+                        public  string                                  database;
                         public  List<SyncTaskResult>                    tasks;
                         public  List<ContainerEntities>                 results;
         // key of all Dictionary's is the container name
@@ -68,7 +69,9 @@ namespace Friflo.Json.Fliox.DB.Protocol
                         public  Dictionary<JsonKey, EntityError>    errors    = new Dictionary<JsonKey, EntityError>(JsonKey.Equality); // todo should be instantiated only if required
         
         [Fri.Ignore]    public  Dictionary<JsonKey, EntityValue>    entityMap = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
-        
+
+        public override         string                              ToString() => container;
+
         internal void AddEntities(Dictionary<JsonKey, EntityValue> add) {
             entityMap.EnsureCapacity(entityMap.Count + add.Count);
             foreach (var entity in add) {

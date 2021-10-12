@@ -186,6 +186,7 @@ export abstract class ProtocolResponse extends ProtocolMessage {
 
 export class SyncResponse extends ProtocolResponse {
     msg           : "resp";
+    database?     : string | null;
     tasks?        : SyncTaskResult_Union[] | null;
     results?      : ContainerEntities[] | null;
     createErrors? : { [key: string]: EntityErrors } | null;
