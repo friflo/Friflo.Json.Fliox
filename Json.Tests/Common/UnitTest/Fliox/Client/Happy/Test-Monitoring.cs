@@ -40,11 +40,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var anonymous   = users     [new JsonKey("anonymous")];
                 var userClient  = clients   [new JsonKey("poc-client")];
                 
-                AreEqual("id: anonymous, stats: ()",                                                anonymous.ToString());
-                AreEqual("id: poc-user, stats: (db: , requests: 1, tasks: 1)",                      pocUser.ToString());
+                AreEqual("{'id':'anonymous','clients':[],'stats':[]}",                                      anonymous.ToString());
+                AreEqual("{'id':'poc-user','clients':['poc-client'],'stats':[{'requests':1,'tasks':1}]}",   pocUser.ToString());
                 AreEqual(2, users.Count);
                 
-                AreEqual("id: poc-client, user: poc-user, stats: (db: , requests: 1, tasks: 1)",    userClient.ToString());
+                AreEqual("{'id':'poc-client','user':'poc-user','stats':[{'requests':1,'tasks':1}]}",        userClient.ToString());
                 AreEqual(1, clients.Count);
             }
         }

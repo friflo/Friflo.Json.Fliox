@@ -32,9 +32,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         [Fri.Property (Name =                                  "event")]  
                         public  EventInfo?                      ev;
                         
-        public override         string ToString() {
-            return $"id: {id}, user: {user.Key.AsString()}, stats: ({string.Join(",", stats)})";
-        }
+        public override         string                          ToString() => JsonDebug.ToJson(this, false).Replace("\"", "'");
     }
     
     public struct EventInfo {
@@ -49,8 +47,6 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         [Fri.Required]  public  List<Ref<JsonKey, ClientInfo>>  clients;
                         public  List<RequestStats>              stats = new List<RequestStats>();
                         
-        public override         string ToString() {
-            return $"id: {id}, stats: ({string.Join(",", stats)})";
-        }
+        public override         string                          ToString() => JsonDebug.ToJson(this, false).Replace("\"", "'");
     }
 }

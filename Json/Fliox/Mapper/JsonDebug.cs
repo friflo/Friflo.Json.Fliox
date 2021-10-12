@@ -27,6 +27,7 @@ namespace Friflo.Json.Fliox.Mapper
             }
             using (var pooledWriter = WriterPool.Get()) {
                 var writer = pooledWriter.instance;
+                writer.WriteNullMembers = false;
                 writer.Pretty = pretty;
                 return writer.Write(value);
             }

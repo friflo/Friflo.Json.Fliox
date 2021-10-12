@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
             var samsung         = new Producer { id = "producer-samsung", name = "Samsung"};
             var samsungJson     = samsung.ToString();
-            AreEqual("{\"id\":\"producer-samsung\",\"name\":\"Samsung\",\"employees\":null}", samsungJson);
+            AreEqual("{\"id\":\"producer-samsung\",\"name\":\"Samsung\"}", samsungJson);
             
             var galaxy          = new Article  { id = "article-galaxy",   name = "Galaxy S10", producer = samsung};
             var createGalaxy    = articles.Upsert(galaxy);
