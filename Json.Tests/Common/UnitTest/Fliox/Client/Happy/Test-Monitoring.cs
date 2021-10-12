@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/"))
             using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
-                    var remoteMonitor   = new ExtensionDatabase(remoteDatabase, "monitor");
+                    var remoteMonitor   = new ExtensionDatabase(remoteDatabase, MonitorDatabase.Name);
                     await AssertMonitoringDB(remoteDatabase, remoteMonitor);
                 });
             }

@@ -16,8 +16,10 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         private readonly    EntityDatabase      db;
         private readonly    MonitorStore        store;
         
+        public const string Name = "monitor";
+        
         public MonitorDatabase (EntityDatabase monitorDb, EntityDatabase db) {
-            monitorDb.ExtensionName = MonitorStore.MonitorName;
+            monitorDb.ExtensionName = Name;
             this.monitorDb          = monitorDb;
             this.db                 = db;
             monitorDb.authenticator = db.authenticator;
@@ -60,7 +62,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     clientInfo = new ClientInfo { id = clientId };
                 }
                 clientInfo.user     = client.userId;
-                RequestStats.StatsToList(clientInfo.stats, client.stats, MonitorName);
+                RequestStats.StatsToList(clientInfo.stats, client.stats, MonitorDatabase.Name);
                 clientInfo.ev       = GetEventInfo(db, clientInfo);
 
                 clients.Upsert(clientInfo);
@@ -98,7 +100,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     userInfo = new UserInfo { id = pair.Key };
                 }
                 User user   = pair.Value;
-                RequestStats.StatsToList(userInfo.stats, user.stats, MonitorName);
+                RequestStats.StatsToList(userInfo.stats, user.stats, MonitorDatabase.Name);
 
                 var userClients = user.clients;
                 if (userInfo.clients == null) {
