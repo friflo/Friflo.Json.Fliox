@@ -21,11 +21,19 @@ namespace Friflo.Json.Fliox.Schema.Native
         /// <summary>Contains only non <see cref="Nullable"/> Type's</summary>
         private  readonly   Dictionary<Type, NativeTypeDef> nativeTypes;
         
-        public NativeTypeSchema (TypeStore typeStore, Type rootType = null) {
-            if (typeStore == null) throw new ArgumentNullException(nameof(typeStore));
-            if (rootType != null) {
-                typeStore.GetTypeMapper(rootType);
-            }
+
+        public NativeTypeSchema (Type rootType) : this (new [] { rootType }){
+            var rootTypeDef = TypeAsTypeDef(rootType);
+            if (rootTypeDef == null)
+                throw new InvalidOperationException($"rootType not found: {rootType}");
+            if (!rootTypeDef.IsClass)
+                throw new InvalidOperationException($"rootType must be a class: {rootType}");
+            RootType = rootTypeDef;
+        }
+
+        public NativeTypeSchema (ICollection<Type> typeList) {
+          using (var typeStore = new TypeStore()) {
+            typeStore.AddMappers(typeList);
             var typeMappers = typeStore.GetTypeMappers();
 
             // Collect all types into containers to simplify further processing
@@ -135,14 +143,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                 }
             }
             MarkDerivedFields();
-            if (rootType != null) {
-                var rootTypeDef = TypeAsTypeDef(rootType);
-                if (rootTypeDef == null)
-                    throw new InvalidOperationException($"rootType not found: {rootType}");
-                if (!rootTypeDef.IsClass)
-                    throw new InvalidOperationException($"rootType must be a class: {rootType}");
-                RootType = rootTypeDef;
-            }
+          }
         }
         
         public void Dispose() { }

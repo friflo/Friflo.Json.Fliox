@@ -36,14 +36,12 @@ namespace Friflo.Json.Fliox.Schema
     
     /// <summary>
     /// <see cref="NativeTypeOptions"/> contains the configuration used by schema and code generators using the
-    /// .NET type system - typically C# model classes - as input. These types are given via a <see cref="typeStore"/> and
-    /// the <see cref="rootTypes"/>. The <see cref="typeStore"/> can be empty.
+    /// .NET type system - typically C# model classes - as input. These types are given via a the <see cref="rootTypes"/>.
     /// <br></br>
     /// All other properties are optional (can be null) and enable customization of the generated output: a schema or code.
     /// </summary>
     public sealed class NativeTypeOptions
     {
-        public  readonly    TypeStore               typeStore; 
         public  readonly    ICollection<Type>       rootTypes;
         /// <summary>the file extension of the generated files</summary>
         public              string                  fileExt;
@@ -55,15 +53,10 @@ namespace Friflo.Json.Fliox.Schema
         /// <summary><see cref="getPath"/> allow customization of generated file names</summary>
         public              Func<TypeDef, string>   getPath;
         
-        public NativeTypeOptions (ICollection<Type> rootTypes) :    this (null, rootTypes) { }
         
-        public NativeTypeOptions (Type rootType) :                  this (null, new List<Type> {rootType}) { }
+        public NativeTypeOptions (Type rootType) : this (new List<Type> { rootType }) { }
         
-        public NativeTypeOptions (TypeStore typeStore, ICollection<Type> rootTypes) {
-            if (typeStore == null) {
-                typeStore = new TypeStore();
-            }
-            this.typeStore  = typeStore;
+        public NativeTypeOptions (ICollection<Type> rootTypes) {
             this.rootTypes  = rootTypes ?? throw new ArgumentException("rootTypes must not be null");
         }
     }

@@ -3,7 +3,6 @@
 
 using System;
 using Friflo.Json.Fliox.DB.Client;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;
@@ -23,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         [Test]
         public static void CS_Typescript () {
             // Use code generator directly
-            var schema      = new NativeTypeSchema(new TypeStore(),typeof(EntityIdStore));
+            var schema      = new NativeTypeSchema(typeof(EntityIdStore));
             var generator   = new Generator(schema, ".ts", new[]{new Replace("Friflo.Json.Tests.Common.")});
             TypescriptGenerator.Generate(generator);
             generator.WriteFiles(CommonUtils.GetBasePath() + "assets~/Schema/Typescript/EntityIdStore");
@@ -43,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         /// C# -> C#
         [Test]
         public static void CS_CS () {
-            var options     = new NativeTypeOptions(new TypeStore(), EntityIdStoreTypes) { // call constructor with two params
+            var options     = new NativeTypeOptions(EntityIdStoreTypes) { // call constructor with two params
                 replacements = new [] {new Replace("Friflo.Json.Tests.Common.UnitTest.Fliox", "EntityIdStore2") }
             };
             var generator = CSharpGenerator.Generate(options);

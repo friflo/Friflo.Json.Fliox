@@ -61,10 +61,8 @@ namespace Friflo.Json.Fliox.DB.Host
         }
         
         public void AddStoreSchema<TEntityStore>() where TEntityStore : EntityStore {
-            using (var typeStore    = new TypeStore()) {
-                var nativeSchema    = new NativeTypeSchema(typeStore, typeof(TEntityStore));
-                AddTypeSchema(nativeSchema);
-            }
+            var nativeSchema    = new NativeTypeSchema(typeof(TEntityStore));
+            AddTypeSchema(nativeSchema);
         }
         
         public void AddTypeSchema(TypeSchema typeSchema) {

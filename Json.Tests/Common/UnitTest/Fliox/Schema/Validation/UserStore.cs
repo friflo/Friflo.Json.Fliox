@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
@@ -39,8 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
         
         [Test]
         public static void ValidateByTypes() {
-            using (var typeStore        = CreateTypeStore(UserStoreTypes))
-            using (var nativeSchema     = new NativeTypeSchema(typeStore))
+            using (var nativeSchema     = new NativeTypeSchema(UserStoreTypes))
             using (var validationSet    = new ValidationSet(nativeSchema))
             using (var validator        = new TypeValidator()) {
                 var test = new TestTypes {
@@ -203,14 +201,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
                 jsonObject      = new JsonUtf8("{}");
             }
         }
-
-        // --- helper
-        private static TypeStore CreateTypeStore (ICollection<Type> types) {
-            var typeStore = new TypeStore();
-            typeStore.AddMappers(types);
-            return typeStore;
-        } 
-        
+       
         private static string AsJson (string str) {
             return str.Replace('\'', '"');
         }

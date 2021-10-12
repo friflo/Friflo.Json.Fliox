@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore", DbName))
             using (var createStore      = new PocStore(fileDatabase, "createStore"))
-            using (var nativeSchema     = new NativeTypeSchema(TestGlobals.typeStore, typeof(PocStore)))
+            using (var nativeSchema     = new NativeTypeSchema(typeof(PocStore)))
             using (fileDatabase.schema  = new DatabaseSchema(nativeSchema)) {
                 // All write operation performed in following call produce JSON payload which meet the types defined
                 // in the assigned schema => the call succeed without any validation error. 

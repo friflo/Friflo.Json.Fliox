@@ -39,12 +39,10 @@ namespace Friflo.Json.Fliox.DB.Remote
             listener.Prefixes.Add(endpoint);
             monitorDb           = new MonitorDatabase(new MemoryDatabase("monitor"), local);
 
-            using (var typeStore = new TypeStore()) {
-                var protocolSchema      = new NativeTypeSchema(typeStore, typeof(ProtocolMessage));
-                var types               = ProtocolMessage.Types;
-                var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
-                protocolSchemaHub       = new SchemaHub("/protocol/", protocolSchema, sepTypes);
-            }
+            var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
+            var types               = ProtocolMessage.Types;
+            var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
+            protocolSchemaHub       = new SchemaHub("/protocol/", protocolSchema, sepTypes);
         }
 
         public override void Dispose() {
