@@ -7,8 +7,13 @@ using Friflo.Json.Fliox.DB.Host.Monitor;
 using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.Utils;
-using NUnit.Framework;
 using static NUnit.Framework.Assert;
+
+#if UNITY_5_3_OR_NEWER
+    using UnitTest.Dummy;
+#else
+    using NUnit.Framework;
+#endif
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
