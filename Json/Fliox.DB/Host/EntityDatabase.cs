@@ -87,6 +87,9 @@ namespace Friflo.Json.Fliox.DB.Host
 
         public override     string                              ToString() => name != null ? $"'{name}'" : "";
         
+        protected EntityDatabase () {
+        }
+        
         protected EntityDatabase (string name) {
             this.name = name;
         }

@@ -16,13 +16,13 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         private readonly    EntityDatabase      db;
         private readonly    MonitorStore        store;
         
-        public MonitorDatabase (EntityDatabase monitorDb, EntityDatabase db) : base ("monitor-db") {
+        public MonitorDatabase (EntityDatabase monitorDb, EntityDatabase db) : base ("monitor") {
             this.monitorDb          = monitorDb;
             this.db                 = db;
             monitorDb.authenticator = db.authenticator;
             monitorDb.taskHandler   = new MonitorHandler();
             store = new MonitorStore(monitorDb, SyncTypeStore.Get());
-            db.addOnDbs.Add("monitor", this);
+            db.addOnDbs.Add(name, this);
         }
 
         public override void Dispose() {

@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     {
         private readonly    EntityDatabase  local;
 
-        public AsyncDatabase(EntityDatabase local, string name = null) : base (name) {
+        public AsyncDatabase(EntityDatabase local) {
             this.local = local;
         }
         

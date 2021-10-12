@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task AssertSubscribe() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var eventBroker  = new EventBroker(false))
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore", DbName))
+            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var listenDb     = new PocStore(fileDatabase, "listenDb", "listen-client")) {
                 fileDatabase.eventBroker = eventBroker;
                 var listenProcessor   = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
@@ -293,7 +293,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task AssertAcknowledgeMessages() {
             using (var _            = Pools.SharedPools) // for LeakTestsFixture
             using (var eventBroker  = new EventBroker(false))
-            using (var database     = new MemoryDatabase("EntityStore"))
+            using (var database     = new MemoryDatabase())
             using (var typeStore    = new TypeStore())
             using (var listenDb     = new EntityStore(database, typeStore, null, "listenDb")) {
                 database.eventBroker = eventBroker;

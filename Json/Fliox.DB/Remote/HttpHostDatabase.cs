@@ -33,11 +33,11 @@ namespace Friflo.Json.Fliox.DB.Remote
         private  readonly   MonitorDatabase     monitorDb;
 
 
-        public HttpHostDatabase(EntityDatabase local, string endpoint, string name = null) : base(local, name) {
+        public HttpHostDatabase(EntityDatabase local, string endpoint) : base(local) {
             this.endpoint       = endpoint;
             listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);
-            monitorDb           = new MonitorDatabase(new MemoryDatabase("monitor"), local);
+            monitorDb           = new MonitorDatabase(new MemoryDatabase(), local);
 
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;

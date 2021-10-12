@@ -13,11 +13,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     public partial class TestStore
     {
-        // [Test]
+        [Test]
         public static async Task TestMonitoring() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore", DbName))
-            using (var monitorMemory    = new MemoryDatabase("monitor"))
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var monitorMemory    = new MemoryDatabase())
             using (var monitorDb        = new MonitorDatabase(monitorMemory, fileDatabase)) {
                 await AssertMonitoring (fileDatabase, monitorDb);
             }
@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
 
         private static UserAuthenticator CreateUserAuthenticator () {
-            var userDatabase    = new FileDatabase("./Json.Tests/assets~/DB/UserStore", "UserStore");
+            var userDatabase    = new FileDatabase("./Json.Tests/assets~/DB/UserStore");
             var userStore       = new UserStore (userDatabase, UserStore.AuthenticationUser, null);
             var _               = new UserDatabaseHandler   (userDatabase);
             return new UserAuthenticator(userStore, userStore);

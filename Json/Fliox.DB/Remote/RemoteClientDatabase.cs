@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         private  readonly   Pools                               pools = new Pools(Pools.SharedPools);
 
         // ReSharper disable once EmptyConstructor - added for source navigation
-        protected RemoteClientDatabase(string name = null) : base (name) { }
+        protected RemoteClientDatabase() { }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             RemoteClientContainer container = new RemoteClientContainer(name, this);
