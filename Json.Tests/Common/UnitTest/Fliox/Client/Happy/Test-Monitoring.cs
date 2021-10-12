@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private  static async Task AssertMonitoring(EntityDatabase database, EntityDatabase monitorDb) {
-            using (var store    = new PocStore(database, "poc-user", "poc-user-client"))
+            using (var store    = new PocStore(database, "poc-user", "poc-client"))
             using (var monitor  = new MonitorStore(monitorDb, TestGlobals.typeStore)) {
                 store.articles.Read().Find("xxx");
                 await store.Sync();
@@ -37,10 +37,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var users   = allUsers.Results;
                 var clients = allClients.Results;
                 var pocUser     = users     [new JsonKey("poc-user")]; 
-                var userClient  = clients   [new JsonKey("poc-user-client")];
+                var anonymous   = users     [new JsonKey("anonymous")];
+                var userClient  = clients   [new JsonKey("poc-client")];
                 
-                AreEqual("id: poc-user, stats: (db: , requests: 1, tasks: 1)", pocUser.ToString());
-                AreEqual("id: poc-user-client, user: poc-user, stats: (db: , requests: 1, tasks: 1)", userClient.ToString());
+                AreEqual("id: anonymous, stats: ()",                                                anonymous.ToString());
+                AreEqual("id: poc-user, stats: (db: , requests: 1, tasks: 1)",                      pocUser.ToString());
+                AreEqual(2, users.Count);
+                
+                AreEqual("id: poc-client, user: poc-user, stats: (db: , requests: 1, tasks: 1)",    userClient.ToString());
+                AreEqual(1, clients.Count);
             }
         }
 
