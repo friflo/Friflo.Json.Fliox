@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             monitorDb.authenticator = db.authenticator;
             monitorDb.taskHandler   = new MonitorHandler();
             store = new MonitorStore(monitorDb, SyncTypeStore.Get());
-            db.addOnDbs.Add(name, this);
+            db.addOnDbs.Add(addOnName, this);
         }
 
         public override void Dispose() {
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     clientInfo = new ClientInfo { id = clientId };
                 }
                 clientInfo.user     = client.userId;
-                RequestStats.StatsToList(clientInfo.stats, client.stats, monitorName);
+                RequestStats.StatsToList(clientInfo.stats, client.stats, AddOnName);
                 clientInfo.ev       = GetEventInfo(db, clientInfo);
 
                 clients.Upsert(clientInfo);
@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     userInfo = new UserInfo { id = pair.Key };
                 }
                 User user   = pair.Value;
-                RequestStats.StatsToList(userInfo.stats, user.stats, monitorName);
+                RequestStats.StatsToList(userInfo.stats, user.stats, AddOnName);
 
                 var userClients = user.clients;
                 if (userInfo.clients == null) {

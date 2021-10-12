@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.DB.Auth
             SyncRequest                                 syncRequest)
         {
             if (!stats.TryGetValue(db, out RequestStats requestStats)) {
-                requestStats = new RequestStats { db = db.name };
+                requestStats = new RequestStats { db = db.addOnName };
                 stats.TryAdd(db, requestStats);
             }
             requestStats.requests  ++;

@@ -16,12 +16,10 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
     {
         public  readonly   EntitySet <JsonKey, ClientInfo>  clients;
         public  readonly   EntitySet <JsonKey, UserInfo>    users;
-        public  readonly   string                           monitorName;
         
         public MonitorStore(EntityDatabase database, TypeStore typeStore)
             : base(database, typeStore, null, null)
         {
-            monitorName = database.name;
         }
     }
     

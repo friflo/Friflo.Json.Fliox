@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.DB.Host
 #endif
     public abstract class EntityDatabase : IDisposable
     {
-        public readonly     string                              name;
+        public readonly     string                              addOnName;
         
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
@@ -85,13 +85,13 @@ namespace Friflo.Json.Fliox.DB.Host
         public   readonly   Dictionary<string, EntityDatabase>  addOnDbs = new Dictionary<string, EntityDatabase>();
 
 
-        public override     string                              ToString() => name != null ? $"'{name}'" : "";
+        public override     string                              ToString() => addOnName != null ? $"'{addOnName}'" : "";
         
         protected EntityDatabase () {
         }
         
-        protected EntityDatabase (string name) {
-            this.name = name;
+        protected EntityDatabase (string addOnName) {
+            this.addOnName = addOnName;
         }
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
