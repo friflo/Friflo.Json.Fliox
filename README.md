@@ -6,7 +6,7 @@
 [![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/friflo/Friflo.Json.Fliox)
 
 
-`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`
+__`SELECT * FROM table1 LEFT JOIN table2 ON 💩 WHERE 💩`__
 
 A JSON parser/serializer and object mapper trimmed towards performance.  
 The implementation strives towards maximizing CPU utilization and minimizing memory footprint.  
