@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.DB.Client
 
         internal override void SetResult(EntitySet set, HashSet<JsonKey> ids) {
             var entitySet = (EntitySetBase<T>) set;
-            results = new Dictionary<TKey, T>(ids.Count);
+            results = SyncSet.CreateDictionary<TKey, T>(ids.Count);
             var entityErrorInfo = new TaskErrorInfo();
             foreach (var id in ids) {
                 var peer = entitySet.GetPeerById(id);

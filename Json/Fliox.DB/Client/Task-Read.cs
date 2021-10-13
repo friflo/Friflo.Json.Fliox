@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.DB.Client
         
 
         internal FindRange(ICollection<TKey> keys) {
-            results = new Dictionary<TKey, T>(keys.Count);
+            results = SyncSet.CreateDictionary<TKey, T>(keys.Count);
             foreach (var key in keys) {
                 results.TryAdd(key, null);
             }
