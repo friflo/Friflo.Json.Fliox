@@ -8,7 +8,6 @@ using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable FieldCanBeMadeReadOnly.Global
-// ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
