@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.DB.Host
         
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             syncRequest.database = extensionName;
-            return await defaultDatabase.ExecuteSync(syncRequest, messageContext);
+            return await defaultDatabase.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
         }
     }
 }

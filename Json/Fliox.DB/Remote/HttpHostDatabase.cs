@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                 return;
             }
             var request = new RequestContext(ctx.Request.Url, ctx.Request.HttpMethod);
-            bool handled = await HandleRequest(request);
+            bool handled = await HandleRequest(request).ConfigureAwait(false);
             if (handled) {
                 SetResponseHeader (ctx.Response, request.ResponseContentType, request.Status, request.Length);
                 await ctx.Response.OutputStream.WriteAsync(request.Response, request.Offset, request.Length).ConfigureAwait(false);

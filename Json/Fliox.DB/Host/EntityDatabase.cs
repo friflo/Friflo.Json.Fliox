@@ -151,7 +151,7 @@ namespace Friflo.Json.Fliox.DB.Host
             if (database != null) {
                 if (extensionDbs.TryGetValue(database, out var db)) {
                     syncRequest.database    = null;
-                    var extResponse = await db.ExecuteSync(syncRequest, messageContext);
+                    var extResponse = await db.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
                     if (extResponse.success != null)
                         extResponse.success.database = database;
                     return extResponse;

@@ -41,9 +41,9 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             store.UpdateStore(db);
             store.SetUser (syncRequest.userId);
             store.SetToken(syncRequest.token);
-            await store.TrySync();
+            await store.TrySync().ConfigureAwait(false);
             messageContext.customData = monitorDb.taskHandler;
-            return await monitorDb.ExecuteSync(syncRequest, messageContext);
+            return await monitorDb.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
         }
     }
     
