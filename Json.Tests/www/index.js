@@ -38,7 +38,7 @@ export function connectWebsocket() {
         return;
     }
     connection.onopen = function () {
-        socketStatus.innerText = "connected 🟢";
+        socketStatus.innerHTML = "connected <small>🟢</small>";
         console.log('WebSocket connected');
         req         = 1;
         subCount    = 0;
