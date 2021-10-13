@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host.Utils;
 using Friflo.Json.Fliox.DB.Protocol;
@@ -69,7 +70,7 @@ namespace Friflo.Json.Fliox.DB.Host
                     try {
                         await WriteText(path, payload.json, FileMode.CreateNew).ConfigureAwait(false);
                     } catch (Exception e) {
-                        var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
+                        var error = CreateEntityError(EntityErrorType.WriteError, key, e);
                         AddEntityError(ref createErrors, key, error);
                     }
                 }
@@ -93,7 +94,7 @@ namespace Friflo.Json.Fliox.DB.Host
                     try {
                         await WriteText(path, payload.json, FileMode.Create).ConfigureAwait(false);
                     } catch (Exception e) {
-                        var error = new EntityError(EntityErrorType.WriteError, name, key, e.Message);
+                        var error = CreateEntityError(EntityErrorType.WriteError, key, e);
                         AddEntityError(ref upsertErrors, key, error);
                     }
                 }
@@ -116,7 +117,7 @@ namespace Friflo.Json.Fliox.DB.Host
                             var payload = await ReadText(filePath).ConfigureAwait(false);
                             entry = new EntityValue(payload);
                         } catch (Exception e) {
-                            var error = new EntityError(EntityErrorType.ReadError, name, key, e.Message);
+                            var error = CreateEntityError(EntityErrorType.ReadError, key, e);
                             entry = new EntityValue(error);
                         }
                     } else {
@@ -149,7 +150,7 @@ namespace Friflo.Json.Fliox.DB.Host
                         try {
                             DeleteFile(path);
                         } catch (Exception e) {
-                            var error = new EntityError(EntityErrorType.DeleteError, name, key, e.Message);
+                            var error = CreateEntityError(EntityErrorType.DeleteError, key, e);
                             AddEntityError(ref deleteErrors, key, error);
                         }
                     }
@@ -169,7 +170,32 @@ namespace Friflo.Json.Fliox.DB.Host
         }
 
 
-        // -------------------------------------- helper methods -------------------------------------- 
+        // -------------------------------------- helper methods --------------------------------------
+        private static string GetHResultDetails(int hresult) {
+            var lng = hresult & 0xffffffffL;
+            switch (lng) {
+                case 0x0000007B:   return "invalid file name";
+                case 0x80070002:   return "file not found";
+                case 0x80070050:   return "file already exists";
+                case 0x80070052:   return "file cannot be created";
+                case 0x80070570:   return "file corrupt";
+            }
+            return null;
+        }
+        
+        private EntityError CreateEntityError (EntityErrorType type, in JsonKey key, Exception e) {
+            var hresult = e.HResult;
+            var details = GetHResultDetails(hresult);
+            var sb = new StringBuilder();
+            sb.Append($"HResult: 0x{hresult:X8}");
+            if (details != null) {
+                sb.Append(" - ");
+                sb.Append(details);
+            }
+            var error = new EntityError(type, name, key, sb.ToString());
+            return error;
+        }
+        
         private static HashSet<JsonKey> GetIds(string folder) {
             string[] fileNames = Directory.GetFiles(folder, "*.json", SearchOption.TopDirectoryOnly);
             var ids = Helper.CreateHashSet(fileNames.Length, JsonKey.Equality);
