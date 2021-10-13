@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Validation;
 using Friflo.Json.Fliox.Transform;
@@ -91,7 +90,7 @@ namespace Friflo.Json.Fliox.DB.Host
             JsonPatcher     = new SharedPool<JsonPatcher>       (() => new JsonPatcher());
             ScalarSelector  = new SharedPool<ScalarSelector>    (() => new ScalarSelector());
             JsonEvaluator   = new SharedPool<JsonEvaluator>     (() => new JsonEvaluator());
-            ObjectMapper    = new SharedPool<ObjectMapper>      (SyncTypeStore.CreateObjectMapper);
+            ObjectMapper    = new SharedPool<ObjectMapper>      (HostTypeStore.CreateObjectMapper);
             EntityProcessor = new SharedPool<EntityProcessor>   (() => new EntityProcessor());
             TypeValidator   = new SharedPool<TypeValidator>     (() => new TypeValidator());
         }

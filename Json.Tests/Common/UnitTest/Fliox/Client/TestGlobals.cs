@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Monitor;
-using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy;
 
@@ -12,7 +12,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public static TypeStore typeStore;
         
         public static void Init() {
-            SyncTypeStore.Init();
+            HostTypeStore.Init();
             // LeakTestsFixture requires to register all types used by TypeStore before leak tracking starts
             typeStore = new TypeStore();
             RegisterTypeMatcher(typeStore);
@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public static void Dispose() {
             typeStore.Dispose();
             typeStore = null;
-            SyncTypeStore.Dispose();
+            HostTypeStore.Dispose();
         }
     }
 }

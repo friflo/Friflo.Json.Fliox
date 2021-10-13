@@ -3,7 +3,6 @@
 
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Protocol;
 
 namespace Friflo.Json.Fliox.DB.Client
 {
@@ -38,7 +37,7 @@ namespace Friflo.Json.Fliox.DB.Client
         
         public static void DisposeCaches() {
             Pools.SharedPools.Dispose();
-            SyncTypeStore.Dispose();
+            HostTypeStore.Dispose();
         }
     }
 }

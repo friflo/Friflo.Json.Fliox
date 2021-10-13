@@ -3,16 +3,17 @@
 
 using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Host.Monitor;
+using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Protocol
+namespace Friflo.Json.Fliox.DB.Host
 {
     /// Singleton are typically a bad practice, but its okay in this case as <see cref="TypeStore"/> behaves like an
     /// immutable object because the mapped types <see cref="SyncRequest"/> and <see cref="SyncResponse"/> are
     /// a fixed set of types. 
-    public static class SyncTypeStore
+    public static class HostTypeStore
     {
         private static TypeStore _singleton;
 

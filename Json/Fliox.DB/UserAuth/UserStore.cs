@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth.Rights;
 using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable UnassignedReadonlyField
@@ -31,7 +30,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         /// <summary>"userId" used for a <see cref="UserStore"/> to request a user authentication with its token</summary>
         public const string AuthenticationUser  = "AuthenticationUser";
         
-        public UserStore(EntityDatabase database, string userId, string clientId) : base(database, SyncTypeStore.Get(), userId, clientId) { }
+        public UserStore(EntityDatabase database, string userId, string clientId) : base(database, HostTypeStore.Get(), userId, clientId) { }
         
         public async Task<AuthenticateUserResult> AuthenticateUser(AuthenticateUser command) {
             var commandTask = SendMessage<AuthenticateUser, AuthenticateUserResult>(command);
