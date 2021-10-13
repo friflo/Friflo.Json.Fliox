@@ -54,15 +54,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             store.articles.Read().Find("xxx");
             await store.Sync();
             
-            var allUsers    = monitor.users.QueryAll();
-            var allClients  = monitor.clients.QueryAll();
+            var allUsers        = monitor.users.QueryAll();
+            var allClients      = monitor.clients.QueryAll();
+            var findPocUser     = monitor.users.Read().Find(new JsonKey("poc-user"));
+            var findUserClient  = monitor.clients.Read().Find(new JsonKey("poc-client"));
+
             await monitor.Sync();
             
-            var users   = allUsers.Results;
-            var clients = allClients.Results;
+            var users       = allUsers.Results;
+            var clients     = allClients.Results;
             var pocUser     = users     [new JsonKey("poc-user")]; 
             var anonymous   = users     [new JsonKey("anonymous")];
             var userClient  = clients   [new JsonKey("poc-client")];
+            
+            NotNull(findPocUser.Result);
+            NotNull(findUserClient.Result);
             
             AreEqual("{'id':'anonymous','clients':[],'stats':[]}",                                      anonymous.ToString());
             AreEqual("{'id':'poc-user','clients':['poc-client'],'stats':[{'requests':1,'tasks':1}]}",   pocUser.ToString());
