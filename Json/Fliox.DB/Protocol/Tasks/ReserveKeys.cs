@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace Friflo.Json.Fliox.DB.Protocol.Tasks
 {
     public sealed class ReserveKeys  : SyncRequestTask {

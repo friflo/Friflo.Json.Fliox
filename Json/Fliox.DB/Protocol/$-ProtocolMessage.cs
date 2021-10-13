@@ -5,6 +5,7 @@ using System;
 using Friflo.Json.Fliox.DB.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.DB.Protocol
 {
