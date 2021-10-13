@@ -40,7 +40,7 @@
             "mapping": {
                 "create":           { "ref":  "CreateEntities" },
                 "upsert":           { "ref":  "UpsertEntities" },
-                "read":             { "ref":  "ReadEntitiesList" },
+                "read":             { "ref":  "ReadEntities" },
                 "query":            { "ref":  "QueryEntities" },
                 "patch":            { "ref":  "PatchEntities" },
                 "delete":           { "ref":  "DeleteEntities" },
@@ -70,16 +70,16 @@
                 "info":      { "nullable": true }
             }
         },
-        "ReadEntitiesList": {
+        "ReadEntities": {
             "properties": {
                 "container": { "type": "string" },
                 "keyName":   { "type": "string", "nullable": true },
                 "isIntKey":  { "type": "boolean", "nullable": true },
-                "reads":     { "elements": { "ref":  "ReadEntities" } },
+                "reads":     { "elements": { "ref":  "ReadEntitiesSet" } },
                 "info":      { "nullable": true }
             }
         },
-        "ReadEntities": {
+        "ReadEntitiesSet": {
             "properties": {
                 "ids":        { "elements": { "type": "string" } },
                 "references": { "elements": { "ref":  "References" }, "nullable": true }
@@ -580,7 +580,7 @@
             "mapping": {
                 "create":           { "ref":  "CreateEntitiesResult" },
                 "upsert":           { "ref":  "UpsertEntitiesResult" },
-                "read":             { "ref":  "ReadEntitiesListResult" },
+                "read":             { "ref":  "ReadEntitiesResult" },
                 "query":            { "ref":  "QueryEntitiesResult" },
                 "patch":            { "ref":  "PatchEntitiesResult" },
                 "delete":           { "ref":  "DeleteEntitiesResult" },
@@ -609,12 +609,12 @@
                 "Error": { "ref":  "CommandError", "nullable": true }
             }
         },
-        "ReadEntitiesListResult": {
+        "ReadEntitiesResult": {
             "properties": {
-                "reads": { "elements": { "ref":  "ReadEntitiesResult" } }
+                "reads": { "elements": { "ref":  "ReadEntitiesSetResult" } }
             }
         },
-        "ReadEntitiesResult": {
+        "ReadEntitiesSetResult": {
             "properties": {
                 "Error":      { "ref":  "CommandError", "nullable": true },
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }

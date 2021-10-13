@@ -274,7 +274,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             ReserveKeys         (tasks);
             CreateEntities      (tasks);
             UpsertEntities      (tasks);
-            ReadEntitiesList    (tasks);
+            ReadEntities        (tasks);
             QueryEntities       (tasks);
             PatchEntities       (tasks);
             DeleteEntities      (tasks);
@@ -362,11 +362,11 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             tasks.Add(req);
         }
 
-        private void ReadEntitiesList(List<SyncRequestTask> tasks) {
+        private void ReadEntities(List<SyncRequestTask> tasks) {
             if (_reads == null || _reads.Count == 0)
                 return;
-            var readList = new ReadEntitiesList {
-                reads       = new List<ReadEntities>(_reads.Count),
+            var readList = new ReadEntities {
+                reads       = new List<ReadEntitiesSet>(_reads.Count),
                 container   = set.name,
                 keyName     = SyncKeyName(set.GetKeyName()),
                 isIntKey    = IsIntKey(set.IsIntKey())
@@ -382,7 +382,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                     var id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
                     ids.Add(id);
                 }
-                var req = new ReadEntities {
+                var req = new ReadEntitiesSet {
                     ids         = ids,
                     references  = references
                 };

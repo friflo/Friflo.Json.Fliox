@@ -546,10 +546,10 @@ namespace Friflo.Json.Fliox.DB.Client
                             syncSet.UpsertEntitiesResult(upsert, result);
                             break;
                         case TaskType.read:
-                            var readList =          (ReadEntitiesList) task;
+                            var readList =          (ReadEntities) task;
                             syncSet = syncSets[readList.container];
                             containerResults.TryGetValue(readList.container, out ContainerEntities entities);
-                            syncSet.ReadEntitiesListResult(readList, result, entities);
+                            syncSet.ReadEntitiesResult(readList, result, entities);
                             break;
                         case TaskType.query:
                             var query =             (QueryEntities) task;

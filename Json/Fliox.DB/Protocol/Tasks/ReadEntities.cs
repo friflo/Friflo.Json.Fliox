@@ -10,26 +10,26 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
-    public sealed class ReadEntitiesList : SyncRequestTask
+    public sealed class ReadEntities : SyncRequestTask
     {
-        [Fri.Required]  public  string              container;
-                        public  string              keyName;
-                        public  bool?               isIntKey;
-        [Fri.Required]  public  List<ReadEntities>  reads;
+        [Fri.Required]  public  string                  container;
+                        public  string                  keyName;
+                        public  bool?                   isIntKey;
+        [Fri.Required]  public  List<ReadEntitiesSet>   reads;
         
-        internal override       TaskType            TaskType => TaskType.read;
-        public   override       string              TaskName =>  $"container: '{container}'";
+        internal override       TaskType                TaskType => TaskType.read;
+        public   override       string                  TaskName =>  $"container: '{container}'";
 
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
             if (reads == null)
                 return MissingField(nameof(reads));
-            var result = new ReadEntitiesListResult {
-                reads = new List<ReadEntitiesResult>(reads.Count)
+            var result = new ReadEntitiesResult {
+                reads = new List<ReadEntitiesSetResult>(reads.Count)
             };
             // Optimization:
-            // Count & Combine all reads to a single read to call ReadEntities() only once instead of #reads times
+            // Count & Combine all reads to a single read to call ReadEntitiesSet() only once instead of #reads times
             var combineCount = 0;
             foreach (var read in reads) {
                 if (read == null)
@@ -45,12 +45,12 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
                 combineCount += read.ids.Count;
             }
             // Combine
-            var combinedRead = new ReadEntities { keyName = keyName, isIntKey = isIntKey, ids = Helper.CreateHashSet(combineCount, JsonKey.Equality) };
+            var combinedRead = new ReadEntitiesSet { keyName = keyName, isIntKey = isIntKey, ids = Helper.CreateHashSet(combineCount, JsonKey.Equality) };
             foreach (var read in reads) {
                 combinedRead.ids.UnionWith(read.ids);
             }
             var entityContainer = database.GetOrCreateContainer(container);
-            var combinedResult = await entityContainer.ReadEntities(combinedRead, messageContext).ConfigureAwait(false);
+            var combinedResult = await entityContainer.ReadEntitiesSet(combinedRead, messageContext).ConfigureAwait(false);
             if (combinedResult.Error != null) {
                 return TaskError(combinedResult.Error);
             }
@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
             containerResult.AddEntities(combinedEntities);
             
             foreach (var read in reads) {
-                var readResult  = new ReadEntitiesResult {
+                var readResult  = new ReadEntitiesSetResult {
                     entities = new Dictionary<JsonKey, EntityValue>(read.ids.Count, JsonKey.Equality)
                 };
                 // distribute combinedEntities
@@ -83,9 +83,9 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
     }
     
     // ----------------------------------- task result -----------------------------------
-    public sealed class ReadEntitiesListResult : SyncTaskResult
+    public sealed class ReadEntitiesResult : SyncTaskResult
     {
-        [Fri.Required]  public  List<ReadEntitiesResult>    reads;
+        [Fri.Required]  public  List<ReadEntitiesSetResult>    reads;
         
         internal override       TaskType                    TaskType => TaskType.read;
     }

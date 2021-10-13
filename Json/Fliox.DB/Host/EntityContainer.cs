@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.DB.Host
     ///   </para>
     ///   
     ///   All ...Result types returned by the interface methods of <see cref="EntityContainer"/> like
-    ///   <see cref="CreateEntities"/>, <see cref="ReadEntities"/>, ... implement <see cref="ICommandResult"/>.
+    ///   <see cref="CreateEntities"/>, <see cref="ReadEntitiesSet"/>, ... implement <see cref="ICommandResult"/>.
     ///   In case a database command fails completely  <see cref="ICommandResult.Error"/> needs to be set.
     ///   See <see cref="EntityDatabase.ExecuteSync"/> for proper error handling.
     /// </para>
@@ -66,11 +66,11 @@ namespace Friflo.Json.Fliox.DB.Host
         public    virtual   bool            Pretty      => false;
         public    override  string          ToString()  => $"{GetType().Name} - {instanceName}";
 
-        public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities command, MessageContext messageContext);
-        public abstract Task<UpsertEntitiesResult>  UpsertEntities  (UpsertEntities command, MessageContext messageContext);
-        public abstract Task<ReadEntitiesResult>    ReadEntities    (ReadEntities   command, MessageContext messageContext);
-        public abstract Task<QueryEntitiesResult>   QueryEntities   (QueryEntities  command, MessageContext messageContext);
-        public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities command, MessageContext messageContext);
+        public abstract Task<CreateEntitiesResult>  CreateEntities  (CreateEntities  command, MessageContext messageContext);
+        public abstract Task<UpsertEntitiesResult>  UpsertEntities  (UpsertEntities  command, MessageContext messageContext);
+        public abstract Task<ReadEntitiesSetResult> ReadEntitiesSet (ReadEntitiesSet command, MessageContext messageContext);
+        public abstract Task<QueryEntitiesResult>   QueryEntities   (QueryEntities   command, MessageContext messageContext);
+        public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities  command, MessageContext messageContext);
 
 
         protected EntityContainer(string name, EntityDatabase database) {
@@ -96,8 +96,8 @@ namespace Friflo.Json.Fliox.DB.Host
             var entityPatches = patchEntities.patches;
             var ids = entityPatches.Select(patch => patch.Key).ToHashSet(JsonKey.Equality);
             // Read entities to be patched
-            var readTask = new ReadEntities { ids = ids, keyName = patchEntities.keyName };
-            var readResult = await ReadEntities(readTask, messageContext).ConfigureAwait(false);
+            var readTask    = new ReadEntitiesSet { ids = ids, keyName = patchEntities.keyName };
+            var readResult  = await ReadEntitiesSet(readTask, messageContext).ConfigureAwait(false);
             if (readResult.Error != null) {
                 return new PatchEntitiesResult { Error = readResult.Error };
             }
@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.DB.Host
                 foreach (var entity in entities) {
                     var key = entity.Key;
                     if (!ids.Contains(key))
-                        throw new InvalidOperationException($"PatchEntities: Unexpected key in ReadEntities response: key: {key}");
+                        throw new InvalidOperationException($"PatchEntities: Unexpected key in ReadEntitiesSet response: key: {key}");
                     var patch = entityPatches[key];
                     var value = entity.Value;
                     var error = value.Error; 
@@ -159,8 +159,8 @@ namespace Friflo.Json.Fliox.DB.Host
         }
         
         protected async Task<QueryEntitiesResult> FilterEntityIds(QueryEntities command, HashSet<JsonKey> ids, MessageContext messageContext) {
-            var readIds         = new ReadEntities { ids = ids, keyName = command.keyName };
-            var readEntities    = await ReadEntities(readIds, messageContext).ConfigureAwait(false);
+            var readIds         = new ReadEntitiesSet { ids = ids, keyName = command.keyName };
+            var readEntities    = await ReadEntitiesSet(readIds, messageContext).ConfigureAwait(false);
             if (readEntities.Error != null) {
                 // todo add error test 
                 var message = $"failed filter entities of '{name}' (filter: {command.filterLinq}) - {readEntities.Error.message}";
@@ -261,10 +261,10 @@ namespace Friflo.Json.Fliox.DB.Host
                 if (ids.Count == 0)
                     continue;
                 var refIdList   = ids;
-                var readRefIds  = new ReadEntities { ids = refIdList, keyName = reference.keyName, isIntKey = reference.isIntKey};
-                var refEntities = await refCont.ReadEntities(readRefIds, messageContext).ConfigureAwait(false);
+                var readRefIds  = new ReadEntitiesSet { ids = refIdList, keyName = reference.keyName, isIntKey = reference.isIntKey};
+                var refEntities = await refCont.ReadEntitiesSet(readRefIds, messageContext).ConfigureAwait(false);
                 var subPath = $"{selectorPath} -> {reference.selector}";
-                // In case of ReadEntities error: Assign error to result and continue with other references.
+                // In case of ReadEntitiesSet error: Assign error to result and continue with other references.
                 // Resolving other references are independent may be successful.
                 if (refEntities.Error != null) {
                     var message = $"read references failed: '{container}{subPath}' - {refEntities.Error.message}";

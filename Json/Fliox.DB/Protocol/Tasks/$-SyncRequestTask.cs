@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
     [Fri.Discriminator("task")]
     [Fri.Polymorph(typeof(CreateEntities),          Discriminant = "create")]
     [Fri.Polymorph(typeof(UpsertEntities),          Discriminant = "upsert")]
-    [Fri.Polymorph(typeof(ReadEntitiesList),        Discriminant = "read")]
+    [Fri.Polymorph(typeof(ReadEntities),            Discriminant = "read")]
     [Fri.Polymorph(typeof(QueryEntities),           Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntities),           Discriminant = "patch")]
     [Fri.Polymorph(typeof(DeleteEntities),          Discriminant = "delete")]

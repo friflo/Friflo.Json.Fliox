@@ -179,10 +179,10 @@ namespace Friflo.Json.Fliox.DB.Auth
                 case TaskType.delete:
                     var deleteEntities = (DeleteEntities)  task;
                     return deleteEntities.Authorize(container, delete, deleteAll);
-                case TaskType.patch:        return patch        && ((PatchEntities)   task).container == container;
+                case TaskType.patch:        return patch        && ((PatchEntities) task).container == container;
                 //
-                case TaskType.read:         return read         && ((ReadEntitiesList)task).container == container;
-                case TaskType.query:        return query        && ((QueryEntities)   task).container == container;
+                case TaskType.read:         return read         && ((ReadEntities)  task).container == container;
+                case TaskType.query:        return query        && ((QueryEntities) task).container == container;
             }
             return false;
         }

@@ -5,7 +5,7 @@ import kotlinx.serialization.*
 import CustomSerializer.*
 
 @Serializable
-data class ReadEntities (
+data class ReadEntitiesSet (
               val ids        : List<String>,
               val references : List<References>? = null,
 )
@@ -25,7 +25,7 @@ data class CommandError (
 )
 
 @Serializable
-data class ReadEntitiesResult (
+data class ReadEntitiesSetResult (
               val Error      : CommandError? = null,
               val references : List<ReferencesResult>? = null,
 )

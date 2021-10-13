@@ -15,10 +15,10 @@ namespace Friflo.Json.Fliox.DB.Host
     }
     
     /// <summary>
-    /// Is used to ensure that <see cref="ReadEntitiesResult"/> returned by <see cref="EntityContainer.ReadEntities"/>
-    /// contains valid <see cref="ReadEntitiesResult.entities"/>.
+    /// Is used to ensure that <see cref="ReadEntitiesSetResult"/> returned by <see cref="EntityContainer.ReadEntitiesSet"/>
+    /// contains valid <see cref="ReadEntitiesSetResult.entities"/>.
     /// Validation is required for <see cref="EntityDatabase"/> implementations which cannot ensure that the value of
-    /// its key/values are JSON. See <see cref="ReadEntitiesResult.ValidateEntities"/>.
+    /// its key/values are JSON. See <see cref="ReadEntitiesSetResult.ValidateEntities"/>.
     /// </summary>
     public sealed class EntityProcessor : IDisposable
     {

@@ -130,8 +130,8 @@ namespace Friflo.Json.Fliox.DB.Remote
             return await local.UpsertEntities(command, messageContext).ConfigureAwait(false);
         }
 
-        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {
-            return await local.ReadEntities(command, messageContext).ConfigureAwait(false);
+        public override async Task<ReadEntitiesSetResult> ReadEntitiesSet(ReadEntitiesSet command, MessageContext messageContext) {
+            return await local.ReadEntitiesSet(command, messageContext).ConfigureAwait(false);
         }
         
         public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {

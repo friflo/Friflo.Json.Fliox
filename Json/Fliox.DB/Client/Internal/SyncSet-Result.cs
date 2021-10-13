@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         internal  abstract  void    ReserveKeysResult       (ReserveKeys        task, SyncTaskResult result);
         internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, SyncTaskResult result);
         internal  abstract  void    UpsertEntitiesResult    (UpsertEntities     task, SyncTaskResult result);
-        internal  abstract  void    ReadEntitiesListResult  (ReadEntitiesList   task, SyncTaskResult result, ContainerEntities readEntities);
+        internal  abstract  void    ReadEntitiesResult      (ReadEntities       task, SyncTaskResult result, ContainerEntities readEntities);
         internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, SyncTaskResult result, ContainerEntities queryEntities);
         internal  abstract  void    PatchEntitiesResult     (PatchEntities      task, SyncTaskResult result);
         internal  abstract  void    DeleteEntitiesResult    (DeleteEntities     task, SyncTaskResult result);
@@ -158,7 +158,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             }
         }
 
-        internal override void ReadEntitiesListResult(ReadEntitiesList taskList, SyncTaskResult result, ContainerEntities readEntities) {
+        internal override void ReadEntitiesResult(ReadEntities taskList, SyncTaskResult result, ContainerEntities readEntities) {
             var reads = Reads();
             if (result is TaskErrorResult taskError) {
                 foreach (var read in reads) {
@@ -166,7 +166,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                 }
                 return;
             }
-            var readListResult = (ReadEntitiesListResult) result;
+            var readListResult = (ReadEntitiesResult) result;
             var expect = reads.Count;
             var actual = taskList.reads.Count;
             if (expect != actual) {
@@ -177,11 +177,11 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                 var task = taskList.reads[i];
                 var read = reads[i];
                 var readResult = readListResult.reads[i];
-                ReadEntitiesResult(task, readResult, read, readEntities);
+                ReadEntitiesSetResult(task, readResult, read, readEntities);
             }
         }
 
-        private void ReadEntitiesResult(ReadEntities task, ReadEntitiesResult result, ReadTask<TKey, T> read, ContainerEntities readEntities) {
+        private void ReadEntitiesSetResult(ReadEntitiesSet task, ReadEntitiesSetResult result, ReadTask<TKey, T> read, ContainerEntities readEntities) {
             if (result.Error != null) {
                 var taskError = SyncRequestTask.TaskError(result.Error);
                 SetReadTaskError(read, taskError);

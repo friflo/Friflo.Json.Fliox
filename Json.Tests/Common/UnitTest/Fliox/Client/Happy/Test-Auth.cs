@@ -51,9 +51,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// </summary>
         private static bool TestPredicate (SyncRequestTask task, MessageContext messageContext) {
             switch (task) {
-                case ReadEntitiesList read:
+                case ReadEntities   read:
                     return read.container   == nameof(PocStore.articles);
-                case UpsertEntities   upsert:
+                case UpsertEntities upsert:
                     return upsert.container == nameof(PocStore.articles);
             }
             return false;

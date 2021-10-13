@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.DB.Host
             return new UpsertEntitiesResult{upsertErrors = upsertErrors};
         }
 
-        public override async Task<ReadEntitiesResult> ReadEntities(ReadEntities command, MessageContext messageContext) {
+        public override async Task<ReadEntitiesSetResult> ReadEntitiesSet(ReadEntitiesSet command, MessageContext messageContext) {
             var keys        = command.ids;
             var entities    = new Dictionary<JsonKey, EntityValue>(keys.Count, JsonKey.Equality);
             await rwLock.AcquireReaderLock().ConfigureAwait(false);
@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.DB.Host
             } finally {
                 rwLock.ReleaseReaderLock();
             }
-            var result = new ReadEntitiesResult{entities = entities};
+            var result = new ReadEntitiesSetResult{entities = entities};
             result.ValidateEntities(name, command.keyName, messageContext);
             return result;
         }
