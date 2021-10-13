@@ -1,13 +1,15 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
+using Friflo.Json.Fliox.DB.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 
-namespace Friflo.Json.Fliox.DB.Protocol
+namespace Friflo.Json.Fliox.DB.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
     public sealed class QueryEntities : SyncRequestTask

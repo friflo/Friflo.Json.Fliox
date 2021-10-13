@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 
-namespace Friflo.Json.Fliox.DB.Protocol
+namespace Friflo.Json.Fliox.DB.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
     public sealed class SubscribeChanges : SyncRequestTask

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.DB.Auth.Rights;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.DB.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.DB.Auth
 {

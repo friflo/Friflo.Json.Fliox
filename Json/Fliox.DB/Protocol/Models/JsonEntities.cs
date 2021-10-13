@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.DB.Client.Internal.Map;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Protocol
+namespace Friflo.Json.Fliox.DB.Protocol.Models
 {
     // Currently not used - intended to replace usage of Dictionary<JsonKey, EntityValue> types
     [Fri.TypeMapper(typeof(JsonEntitiesMatcher))]

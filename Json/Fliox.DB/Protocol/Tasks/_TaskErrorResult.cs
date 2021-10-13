@@ -4,7 +4,7 @@
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Protocol
+namespace Friflo.Json.Fliox.DB.Protocol.Tasks
 {
     // ----------------------------------- task result -----------------------------------
     public sealed class TaskErrorResult : SyncTaskResult

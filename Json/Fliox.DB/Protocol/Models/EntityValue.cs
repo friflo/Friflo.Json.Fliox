@@ -3,7 +3,7 @@
 
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Protocol
+namespace Friflo.Json.Fliox.DB.Protocol.Models
 {
     public sealed class EntityValue
     {

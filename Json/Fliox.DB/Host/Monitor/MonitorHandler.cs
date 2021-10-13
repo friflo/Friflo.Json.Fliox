@@ -3,6 +3,7 @@
 
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.DB.Protocol.Tasks;
 
 
 namespace Friflo.Json.Fliox.DB.Host.Monitor

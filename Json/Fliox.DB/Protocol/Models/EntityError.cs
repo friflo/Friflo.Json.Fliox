@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
 using System.Text;
 using Friflo.Json.Fliox.DB.Host;
+using Friflo.Json.Fliox.DB.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Protocol
+namespace Friflo.Json.Fliox.DB.Protocol.Models
 {
     /// An <see cref="EntityError"/> needs to be set only, if the access to <see cref="EntityValue"/>'s
     /// returned by a previous call to <see cref="EntityContainer.ReadEntities"/> or

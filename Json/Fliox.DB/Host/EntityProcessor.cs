@@ -3,7 +3,7 @@
 
 using System;
 using Friflo.Json.Burst;
-using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.DB.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host

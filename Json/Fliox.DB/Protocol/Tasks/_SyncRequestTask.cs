@@ -4,9 +4,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
+using Friflo.Json.Fliox.DB.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Protocol
+namespace Friflo.Json.Fliox.DB.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
     [Fri.Discriminator("task")]

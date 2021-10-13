@@ -1,10 +1,11 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System.Collections.Generic;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Protocol
+namespace Friflo.Json.Fliox.DB.Protocol.Models
 {
     // ----------------------------------- sub task -----------------------------------
     public sealed class ReadEntities

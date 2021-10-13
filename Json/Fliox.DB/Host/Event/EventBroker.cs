@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.DB.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Transform;
 
@@ -56,7 +57,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         internal void SubscribeMessage(SubscribeMessage subscribe, in JsonKey clientId, IEventTarget eventTarget) {
             EventSubscriber subscriber;
             var remove = subscribe.remove;
-            var prefix = Protocol.SubscribeMessage.GetPrefix(subscribe.name);
+            var prefix = Protocol.Tasks.SubscribeMessage.GetPrefix(subscribe.name);
             if (remove.HasValue && remove.Value) {
                 if (!subscribers.TryGetValue(clientId, out subscriber))
                     return;

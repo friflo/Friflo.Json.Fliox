@@ -9,6 +9,8 @@ using Friflo.Json.Fliox.DB.Client.Internal;
 using Friflo.Json.Fliox.DB.Client.Internal.Map;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.DB.Protocol.Models;
+using Friflo.Json.Fliox.DB.Protocol.Tasks;
 using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
