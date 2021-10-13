@@ -15,7 +15,10 @@
         "filter":     { "op": "true" }
       }
     ],
-    "info": ["query all clients"],
+    "info": [
+      "monitor: query all clients & users",
+      "list request, task & event statistics"
+    ],
     "user":   "{{user}}",
     "token":  "{{token}}"
   }
