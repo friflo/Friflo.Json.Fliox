@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.DB.Host
             this.eventTarget    = eventTarget;
         }
         
-        public MessageContext (IPools pools, IEventTarget eventTarget, in JsonKey userId, in JsonKey clientId) {
+        public MessageContext (IPools pools, IEventTarget eventTarget, in JsonKey clientId) {
             this.pools          = pools;
             startUsage          = pools.PoolUsage;
             this.eventTarget    = eventTarget;

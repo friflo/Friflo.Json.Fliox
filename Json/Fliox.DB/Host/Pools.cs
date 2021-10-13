@@ -85,7 +85,8 @@ namespace Friflo.Json.Fliox.DB.Host
         
         public   static readonly    Pools   SharedPools = new Pools(Default.Constructor);
         
-        // constructor present for code navigation
+
+        // ReSharper disable once UnusedParameter.Local - keep for code navigation
         private Pools(Default _) {
             JsonPatcher     = new SharedPool<JsonPatcher>       (() => new JsonPatcher());
             ScalarSelector  = new SharedPool<ScalarSelector>    (() => new ScalarSelector());

@@ -95,8 +95,8 @@ namespace Friflo.Json.Fliox.DB.Host
 
         public override     string                              ToString() => ExtensionName != null ? $"'{ExtensionName}'" : "";
         
-        protected EntityDatabase () {
-        }
+        // ReSharper disable once EmptyConstructor - keep for code navigation
+        protected EntityDatabase () { }
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 
