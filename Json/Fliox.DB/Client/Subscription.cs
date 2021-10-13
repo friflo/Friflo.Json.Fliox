@@ -310,7 +310,7 @@ namespace Friflo.Json.Fliox.DB.Client
         
         public   readonly   Dictionary<TKey, T>                 creates = SyncSet.CreateDictionary<TKey, T>();
         public   readonly   Dictionary<TKey, T>                 upserts = SyncSet.CreateDictionary<TKey, T>();
-        public   readonly   HashSet   <TKey>                    deletes = new HashSet   <TKey>();
+        public   readonly   HashSet   <TKey>                    deletes = SyncSet.CreateHashSet<TKey>();
         public   readonly   Dictionary<TKey, ChangePatch<T>>    patches = SyncSet.CreateDictionary<TKey, ChangePatch<T>>();
         
         public override     string                              ToString() => Info.ToString();       
