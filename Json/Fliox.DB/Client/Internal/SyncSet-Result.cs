@@ -46,10 +46,14 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             return new HashSet <TKey>();
         }
         
-        internal static Dictionary<TKey, T> CreateDictionary<TKey, T>(int capacity) where T : class {
+        internal static Dictionary<TKey, T> CreateDictionary<TKey, T>(int capacity) {
             if (typeof(TKey) == typeof(JsonKey))
                 return (Dictionary<TKey, T>)(object)new Dictionary<JsonKey, T>(capacity, JsonKey.Equality);
             return new Dictionary<TKey, T>(capacity);
+        }
+        
+        internal static Dictionary<TKey, T> CreateDictionary<TKey, T>() {
+            return CreateDictionary<TKey, T>(0);
         }
     }
 

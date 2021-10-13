@@ -308,10 +308,10 @@ namespace Friflo.Json.Fliox.DB.Client
         // ReSharper disable once NotAccessedField.Local
         private  readonly   EntitySet<TKey, T>                  entitySet; // only for debugging ergonomics
         
-        public   readonly   Dictionary<TKey, T>                 creates = new Dictionary<TKey, T>();
-        public   readonly   Dictionary<TKey, T>                 upserts = new Dictionary<TKey, T>();
+        public   readonly   Dictionary<TKey, T>                 creates = SyncSet.CreateDictionary<TKey, T>();
+        public   readonly   Dictionary<TKey, T>                 upserts = SyncSet.CreateDictionary<TKey, T>();
         public   readonly   HashSet   <TKey>                    deletes = new HashSet   <TKey>();
-        public   readonly   Dictionary<TKey, ChangePatch<T>>    patches = new Dictionary<TKey, ChangePatch<T>>();
+        public   readonly   Dictionary<TKey, ChangePatch<T>>    patches = SyncSet.CreateDictionary<TKey, ChangePatch<T>>();
         
         public override     string                              ToString() => Info.ToString();       
 
