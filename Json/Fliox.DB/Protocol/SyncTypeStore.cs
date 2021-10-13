@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Fliox.DB.Client;
-using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Monitor;
 using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.DB.UserAuth;
