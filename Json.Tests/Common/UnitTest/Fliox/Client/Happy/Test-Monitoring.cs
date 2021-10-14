@@ -70,6 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             await monitor.Sync();
             
             store.articles.Read().Find("xxx");
+            store.customers.Read().Find("yyy");
             await store.Sync();
             
             var allUsers        = monitor.users.QueryAll();
@@ -89,10 +90,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             NotNull(findUserClient.Result);
             
             AreEqual("{'id':'anonymous','clients':[],'stats':[{'db':'monitor','requests':1,'tasks':1}]}", anonymous.ToString());
-            AreEqual("{'id':'poc-user','clients':['poc-client'],'stats':[{'requests':1,'tasks':1}]}",   pocUser.ToString());
+            AreEqual("{'id':'poc-user','clients':['poc-client'],'stats':[{'requests':1,'tasks':2}]}",   pocUser.ToString());
             AreEqual(2, users.Count);
             
-            AreEqual("{'id':'poc-client','user':'poc-user','stats':[{'requests':1,'tasks':1}]}",        userClient.ToString());
+            AreEqual("{'id':'poc-client','user':'poc-user','stats':[{'requests':1,'tasks':2}]}",        userClient.ToString());
             AreEqual(1, clients.Count);
         }
 
