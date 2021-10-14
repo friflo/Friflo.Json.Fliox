@@ -17,7 +17,6 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
     internal struct StoreIntern
     {
         // readonly
-        internal readonly   JsonKey                                     clientId;
         internal readonly   TypeStore                                   typeStore;
         internal readonly   TypeCache                                   typeCache;
         internal readonly   EntityDatabase                              database;
@@ -44,14 +43,13 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         internal            int                                     lastEventSeq;
         internal            int                                     syncCount;
         internal            JsonKey                                 userId;
+        internal            JsonKey                                 clientId;
         internal            string                                  token;
 
         public   override   string                                  ToString() => userId.ToString();
 
 
         internal StoreIntern(
-            in JsonKey              userId,
-            in JsonKey              clientId,
             TypeStore               typeStore,
             EntityDatabase          database,
             ITracerContext          tracerContext,
@@ -62,8 +60,6 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             var mapper                  = new ObjectMapper(typeStore, new NoThrowHandler());
             mapper.TracerContext        = tracerContext;
             // readonly
-            this.userId                 = userId;
-            this.clientId               = clientId;
             this.typeStore              = typeStore;
             this.typeCache              = mapper.writer.TypeCache;
             this.database               = database;
@@ -89,6 +85,8 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             disposed                    = false;
             lastEventSeq                = 0;
             syncCount                   = 0;
+            userId                      = new JsonKey();
+            clientId                    = new JsonKey();
             token                       = null;
         }
         

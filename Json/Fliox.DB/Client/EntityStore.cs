@@ -57,11 +57,9 @@ namespace Friflo.Json.Fliox.DB.Client
             ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
             var subscriptionProcessor   = new SubscriptionProcessor(this);
-            var userIdKey               = new JsonKey(userId);
-            var clientIdKey             = new JsonKey(clientId);
-            _intern = new StoreIntern(userIdKey, clientIdKey, typeStore, database, tracer, eventTarget, subscriptionProcessor);
+            _intern = new StoreIntern(typeStore, database, tracer, eventTarget, subscriptionProcessor);
             _intern.syncStore = new SyncStore();
-            database.AddEventTarget(clientIdKey, eventTarget);
+            SetUserClient(userId, clientId);
             StoreUtils.InitEntitySets(this);
         }
         
@@ -103,13 +101,21 @@ namespace Friflo.Json.Fliox.DB.Client
             messageContext.Release();
             return result;
         }
-
-        public void SetUser (JsonKey user) {
-            _intern.userId = user;
+        
+        public void SetUserClient (string userId, string clientId) {
+            _intern.userId      = new JsonKey(userId);
+            _intern.clientId    = new JsonKey(clientId);
+            if (!_intern.clientId.IsNull()) {
+                _intern.database.AddEventTarget(_intern.clientId, _intern.eventTarget);
+            }
         }
 
+        internal void SetUser (JsonKey user) {
+            _intern.userId  = user;
+        }
+        
         public void SetToken (string token) {
-            _intern.token = token;
+            _intern.token   = token;
         }
 
         // --- LogChanges

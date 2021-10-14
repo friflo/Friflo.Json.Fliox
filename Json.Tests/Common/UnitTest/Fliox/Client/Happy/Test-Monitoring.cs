@@ -44,13 +44,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
 
         private  static async Task AssertMonitoringDB(EntityDatabase database, EntityDatabase monitorDb) {
-            using (var store    = new PocStore(database, "poc-user", "poc-client"))
+            using (var store    = new PocStore(database, null))
             using (var monitor  = new MonitorStore(monitorDb, TestGlobals.typeStore)) {
                 await AssertMonitoringStore(store, monitor);
             }
         }
         
         private  static async Task AssertMonitoringStore(PocStore store, MonitorStore monitor) {
+            store.SetUserClient("poc-user", "poc-client");
             store.articles.Read().Find("xxx");
             await store.Sync();
             
