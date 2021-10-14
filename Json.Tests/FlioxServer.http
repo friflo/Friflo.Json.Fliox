@@ -72,7 +72,6 @@ content-type: application/json
   {
     "task":         "query",
     "container":    "articles",
-    "filterLinq":   "true",
     "filter":       { "op":"true" }
   }
 ]}
@@ -88,7 +87,6 @@ content-type: application/json
   {
     "task":         "query",
     "container":    "articles",
-    "filterLinq":   "true",
     "filter": {"op":"equal", "left": {"op":"field",  "name":  ".name"},
                              "right":{"op":"string", "value": "Smartphone"}}
   }
@@ -105,7 +103,6 @@ content-type: application/json
   {
     "task":         "query",
     "container":    "articles",
-    "filterLinq":   "true",
     "filter":       { "op":"true" },
     "references": [
       {

@@ -5,13 +5,11 @@
       {
         "task":       "query",
         "container":  "clients",
-        "filterLinq": "true",
         "filter":     { "op": "true" }
       },
       {
         "task":       "query",
         "container":  "users",
-        "filterLinq": "true",
         "filter":     { "op": "true" }
       }
     ],

@@ -35,13 +35,11 @@ var exampleSync: ProtocolMessage_Union =
         {
             "task": "query",
             "container": "Article",
-            "filterLinq": "true",
             "filter": { "op":"true" }
         },
         {
             "task":         "query",
             "container":    "Article",
-            "filterLinq":   "true",
             "filter": {
                 "op":"equal",
                 "left": {"op":"field",  "name":  ".name"},
@@ -51,7 +49,6 @@ var exampleSync: ProtocolMessage_Union =
         {
             "task":         "query",
             "container":    "Article",
-            "filterLinq":   "true",
             "filter":       { "op":"true" },
             "references": [
                 {

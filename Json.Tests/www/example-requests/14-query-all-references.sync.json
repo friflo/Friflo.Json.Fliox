@@ -4,7 +4,6 @@
     {
       "task":       "query",
       "container":  "articles",
-      "filterLinq": "true",
       "filter":     { "op":"true" },
       "references": [
         {
