@@ -45,6 +45,12 @@ namespace Friflo.Json.Fliox.DB.Auth
             }
             return false; 
         }
+        
+        internal void ClearClientStats() {
+            foreach (var pair in clients) {
+                pair.Value.stats.Clear();
+            }
+        }
     }
     
     public class IncrementClientController : ClientController {

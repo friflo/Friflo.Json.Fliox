@@ -20,6 +20,8 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             : base(database, typeStore, null, null)
         {
         }
+        
+        public const string ClearStats = nameof(ClearStats); 
     }
     
     public class ClientInfo {

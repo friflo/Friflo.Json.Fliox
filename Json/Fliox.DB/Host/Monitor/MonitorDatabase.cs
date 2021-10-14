@@ -12,9 +12,9 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
     public class MonitorDatabase : EntityDatabase
     {
-        private readonly    EntityDatabase      monitorDb;
-        private readonly    EntityDatabase      db;
-        private readonly    MonitorStore        store;
+        private  readonly    EntityDatabase      monitorDb;
+        internal readonly    EntityDatabase      db;
+        private  readonly    MonitorStore        store;
         
         public const string Name = "monitor";
         
@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             this.monitorDb          = monitorDb;
             this.db                 = db;
             monitorDb.authenticator = db.authenticator;
-            monitorDb.taskHandler   = new MonitorHandler();
+            monitorDb.taskHandler   = new MonitorHandler(this);
             store                   = new MonitorStore(monitorDb, HostTypeStore.Get());
             db.extensionDbs.Add(monitorDb.ExtensionName, this);
         }

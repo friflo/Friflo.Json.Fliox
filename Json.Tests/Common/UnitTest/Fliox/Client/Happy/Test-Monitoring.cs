@@ -47,14 +47,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private  static async Task AssertMonitoringDB(EntityDatabase database, EntityDatabase monitorDb) {
             using (var store    = new PocStore(database, null))
             using (var monitor  = new MonitorStore(monitorDb, TestGlobals.typeStore)) {
-                await AssertMonitoringStore(store, monitor);
+                await AssertMonitoring(store, monitor);
+                await AssertMonitoring(store, monitor);
+                await AssertMonitoringErrors(monitor);
             }
         }
         
-        private  static async Task AssertMonitoringStore(PocStore store, MonitorStore monitor) {
+        private  static async Task AssertMonitoringErrors(MonitorStore monitor) {
+            var deleteUser      = monitor.users.Delete(new JsonKey("123"));
+            var createUser      = monitor.users.Create(new UserInfo{id = new JsonKey("abc")});
+            await monitor.TrySync();
+            AreEqual("InvalidTask ~ MonitorDatabase does not support task: 'create'",   createUser.Error.Message);
+            AreEqual("InvalidTask ~ MonitorDatabase does not support task: 'delete'",   deleteUser.Error.Message);
+        }
+        
+        private  static async Task AssertMonitoring(PocStore store, MonitorStore monitor) {
             var user    = new JsonKey("poc-user");
             var client  = new JsonKey("poc-client");
             store.SetUserClient(user, client);
+            
+            monitor.SendMessage(MonitorStore.ClearStats);
+            await monitor.Sync();
+            
             store.articles.Read().Find("xxx");
             await store.Sync();
             
@@ -62,10 +76,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var allClients      = monitor.clients.QueryAll();
             var findPocUser     = monitor.users.Read().Find(user);
             var findUserClient  = monitor.clients.Read().Find(client);
-            var deleteUser      = monitor.users.Delete(new JsonKey("123"));
-            var createUser      = monitor.users.Create(new UserInfo{id = new JsonKey("abc")});
 
-            await monitor.TrySync();
+            await monitor.Sync();
             
             var users       = allUsers.Results;
             var clients     = allClients.Results;
@@ -76,15 +88,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             NotNull(findPocUser.Result);
             NotNull(findUserClient.Result);
             
-            AreEqual("{'id':'anonymous','clients':[],'stats':[]}",                                      anonymous.ToString());
+            AreEqual("{'id':'anonymous','clients':[],'stats':[{'db':'monitor','requests':1,'tasks':1}]}", anonymous.ToString());
             AreEqual("{'id':'poc-user','clients':['poc-client'],'stats':[{'requests':1,'tasks':1}]}",   pocUser.ToString());
             AreEqual(2, users.Count);
             
             AreEqual("{'id':'poc-client','user':'poc-user','stats':[{'requests':1,'tasks':1}]}",        userClient.ToString());
             AreEqual(1, clients.Count);
-            
-            AreEqual("InvalidTask ~ MonitorDatabase does not support task: 'delete'",                   deleteUser.Error.Message);
-            AreEqual("InvalidTask ~ MonitorDatabase does not support task: 'create'",                   createUser.Error.Message);
         }
 
         private static UserAuthenticator CreateUserAuthenticator () {

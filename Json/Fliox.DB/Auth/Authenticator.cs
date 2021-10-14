@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.DB.Auth
     public abstract class Authenticator
     {
         protected readonly  Dictionary<string, AuthorizePredicate>  registeredPredicates;
-        internal  readonly  ConcurrentDictionary<JsonKey, User>     users;
+        internal  readonly  ConcurrentDictionary<JsonKey, User>     users;  // todo make private
         protected readonly  User                                    anonymousUser;
         
             
@@ -82,6 +82,12 @@ namespace Friflo.Json.Fliox.DB.Auth
             var name = predicate.Method.Name;
             var authorizer = new AuthorizePredicate (name, predicate);
             registeredPredicates.Add(name, authorizer);
+        }
+        
+        internal void ClearUserStats() {
+            foreach (var pair in users) {
+                pair.Value.stats.Clear();
+            }
         }
     }
     
