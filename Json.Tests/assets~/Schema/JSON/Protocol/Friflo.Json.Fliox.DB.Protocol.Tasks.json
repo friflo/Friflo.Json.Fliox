@@ -82,7 +82,6 @@
                 "container":  { "type": "string" },
                 "keyName":    { "type": ["string", "null"] },
                 "isIntKey":   { "type": ["boolean", "null"] },
-                "filterLinq": { "type": ["string", "null"] },
                 "filter":     { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/FilterOperation" }] },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.Models.json#/definitions/References" } },
                 "info":       {  }
@@ -272,7 +271,6 @@
                 "task":       { "enum": ["query"] },
                 "Error":      { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.DB.Protocol.Models.json#/definitions/CommandError" }] },
                 "container":  { "type": ["string", "null"] },
-                "filterLinq": { "type": ["string", "null"] },
                 "ids":        { "type": "array", "items": { "type": "string" } },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.Models.json#/definitions/ReferencesResult" } }
             },

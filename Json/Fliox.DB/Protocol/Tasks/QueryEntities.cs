@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
         [Fri.Required]  public  string              container;
                         public  string              keyName;
                         public  bool?               isIntKey;
-                        public  string              filterLinq;
+        [Fri.Ignore]    public  string              filterLinq;
                         public  FilterOperation     filter;
                         public  List<References>    references;
         
@@ -29,8 +29,6 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
                 return MissingContainer();
             if (filter == null)
                 return MissingField(nameof(filter));
-            if (filterLinq == null)
-                return MissingField(nameof(filterLinq));
             if (!ValidReferences(references, out var error))
                 return error;
             var entityContainer = database.GetOrCreateContainer(container);
@@ -49,7 +47,6 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
                 // returned queryRefsResults.references is always set. Each references[] item contain either a result or an error.
             }
             result.container    = container;
-            result.filterLinq   = filterLinq;
             result.ids          = entities.Keys.ToHashSet(JsonKey.Equality); // TAG_PERF
             result.references   = queryRefsResults.references;
             return result;
@@ -60,7 +57,6 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
     public sealed class QueryEntitiesResult : SyncTaskResult, ICommandResult
     {
                         public  string                          container;  // only for debugging ergonomics
-                        public  string                          filterLinq;
         [Fri.Required]  public  HashSet<JsonKey>                ids = new HashSet<JsonKey>(JsonKey.Equality);
                         public  List<ReferencesResult>          references;
         [Fri.Ignore]    public  Dictionary<JsonKey,EntityValue> entities;
@@ -68,6 +64,6 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
 
         
         internal override   TaskType            TaskType => TaskType.query;
-        public   override   string              ToString() => $"(container: {container}, filter: {filterLinq})";
+        public   override   string              ToString() => $"(container: {container})";
     }
 }

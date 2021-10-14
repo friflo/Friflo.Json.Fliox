@@ -99,7 +99,6 @@
                 "container":  { "type": "string" },
                 "keyName":    { "type": "string", "nullable": true },
                 "isIntKey":   { "type": "boolean", "nullable": true },
-                "filterLinq": { "type": "string", "nullable": true },
                 "filter":     { "ref":  "FilterOperation", "nullable": true },
                 "references": { "elements": { "ref":  "References" }, "nullable": true },
                 "info":       { "nullable": true }
@@ -632,7 +631,6 @@
             "properties": {
                 "Error":      { "ref":  "CommandError", "nullable": true },
                 "container":  { "type": "string", "nullable": true },
-                "filterLinq": { "type": "string", "nullable": true },
                 "ids":        { "elements": { "type": "string" } },
                 "references": { "elements": { "ref":  "ReferencesResult" }, "nullable": true }
             }

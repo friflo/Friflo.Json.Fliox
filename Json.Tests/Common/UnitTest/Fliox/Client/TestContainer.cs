@@ -155,7 +155,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 result.Error = databaseError;
                 return result;
             }
-            if (queryErrors.TryGetValue(command.filterLinq, out var func)) {
+            var linq = command.filter.Linq;
+            if (queryErrors.TryGetValue(linq, out var func)) {
                 return func();
             }
             return result;

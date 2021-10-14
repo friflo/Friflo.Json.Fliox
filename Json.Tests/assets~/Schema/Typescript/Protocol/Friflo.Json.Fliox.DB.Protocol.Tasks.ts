@@ -69,7 +69,6 @@ export class QueryEntities extends SyncRequestTask {
     container   : string;
     keyName?    : string | null;
     isIntKey?   : boolean | null;
-    filterLinq? : string | null;
     filter?     : FilterOperation_Union | null;
     references? : References[] | null;
 }
@@ -173,7 +172,6 @@ export class QueryEntitiesResult extends SyncTaskResult {
     task        : "query";
     Error?      : CommandError | null;
     container?  : string | null;
-    filterLinq? : string | null;
     ids         : string[];
     references? : ReferencesResult[] | null;
 }

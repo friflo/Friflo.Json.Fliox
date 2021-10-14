@@ -50,7 +50,6 @@ data class QueryEntities (
               val container  : String,
               val keyName    : String? = null,
               val isIntKey   : Boolean? = null,
-              val filterLinq : String? = null,
               val filter     : FilterOperation? = null,
               val references : List<References>? = null,
     override  val info       : JsonElement? = null,
@@ -147,7 +146,6 @@ data class ReadEntitiesResult (
 data class QueryEntitiesResult (
               val Error      : CommandError? = null,
               val container  : String? = null,
-              val filterLinq : String? = null,
               val ids        : List<String>,
               val references : List<ReferencesResult>? = null,
 ) : SyncTaskResult()
