@@ -14,7 +14,7 @@ using Friflo.Json.Fliox.Schema.Validation;
 namespace Friflo.Json.Fliox.DB.Host
 {
     /// <summary>
-    /// If a <see cref="DatabaseSchema"/> is assigned to a <see cref="EntityDatabase.schema"/> the JSON payloads of all
+    /// If a <see cref="DatabaseSchema"/> is assigned to a <see cref="EntityDatabase.Schema"/> the JSON payloads of all
     /// entities used in write operations (create, upsert and patch) are validated against their expected container types.
     /// <br/>
     /// It is intended to be used for <see cref="Remote.RemoteHostDatabase"/> instances to ensure that the entities

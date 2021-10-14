@@ -29,11 +29,11 @@ namespace Friflo.Json.Tests.Main
         private static void FlioxServer(string endpoint, string databaseFolder) {
             Console.WriteLine($"FileDatabase: {databaseFolder}");
             var fileDatabase            = new FileDatabase(databaseFolder);
-            fileDatabase.eventBroker    = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
-            fileDatabase.authenticator  = CreateUserAuthenticator();                // optional. Otherwise all request tasks are authorized
+            fileDatabase.EventBroker    = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
+            fileDatabase.Authenticator  = CreateUserAuthenticator();                // optional. Otherwise all request tasks are authorized
             
             var typeSchema              = CreateTypeSchema(true);                   // optional. used by DatabaseSchema & SchemaHub
-            fileDatabase.schema         = new DatabaseSchema(typeSchema);           // optional. Enables type validation for create, upsert & patch operations
+            fileDatabase.Schema         = new DatabaseSchema(typeSchema);           // optional. Enables type validation for create, upsert & patch operations
             
             var hostDatabase            = new HttpHostDatabase(fileDatabase, endpoint);
             hostDatabase.requestHandler = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content

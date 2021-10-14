@@ -2,7 +2,6 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Client;
@@ -58,10 +57,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task RunWithUserAuth(EntityDatabase database, Func<Task> action) {
-            using (var userDatabase    = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
-            using (var userStore       = new UserStore (userDatabase, UserStore.AuthenticationUser, null))
+            using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
+            using (var userStore        = new UserStore (userDatabase, UserStore.AuthenticationUser, null))
             using (var _                = new UserDatabaseHandler   (userDatabase)) {
-                database.authenticator = new UserAuthenticator(userStore, userStore);
+                database.Authenticator  = new UserAuthenticator(userStore, userStore);
                 await action();
             }
         }

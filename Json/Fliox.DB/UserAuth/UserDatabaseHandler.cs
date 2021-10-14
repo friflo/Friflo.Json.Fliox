@@ -19,8 +19,8 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         
         public UserDatabaseHandler(EntityDatabase authDatabase) {
             storePool = new SharedPool<UserStore> (() => new UserStore(authDatabase, UserStore.Server, null));
-            authDatabase.authenticator = new UserDatabaseAuthenticator();
-            authDatabase.taskHandler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(AuthenticateUser); 
+            authDatabase.Authenticator = new UserDatabaseAuthenticator();
+            authDatabase.TaskHandler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(AuthenticateUser); 
         }
         
         public void Dispose() {

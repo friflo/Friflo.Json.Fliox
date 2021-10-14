@@ -23,8 +23,8 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             monitorDb.ExtensionName = Name;
             this.monitorDb          = monitorDb;
             this.db                 = db;
-            monitorDb.authenticator = db.authenticator;
-            monitorDb.taskHandler   = new MonitorHandler(this);
+            monitorDb.Authenticator = db.Authenticator;
+            monitorDb.TaskHandler   = new MonitorHandler(this);
             store                   = new MonitorStore(monitorDb, HostTypeStore.Get());
             db.extensionDbs.Add(monitorDb.ExtensionName, this);
         }
@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             store.SetUser (syncRequest.userId);
             store.SetToken(syncRequest.token);
             await store.TrySync().ConfigureAwait(false);
-            messageContext.customData = monitorDb.taskHandler;
+            messageContext.customData = monitorDb.TaskHandler;
             return await monitorDb.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
         }
         
@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
     public partial class MonitorStore
     {
         internal void UpdateClients(EntityDatabase db) {
-            foreach (var pair in db.clientController.Clients) {
+            foreach (var pair in db.ClientController.Clients) {
                 UserClient client   = pair.Value;
                 var clientId        = pair.Key;
                 clients.TryGet(clientId, out var clientInfo);
@@ -82,9 +82,9 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         }
         
         private static EventInfo? GetEventInfo (EntityDatabase db, ClientInfo clientInfo) {
-            if (db.eventBroker == null)
+            if (db.EventBroker == null)
                 return null;
-            if (!db.eventBroker.TryGetSubscriber(clientInfo.id, out var subscriber)) {
+            if (!db.EventBroker.TryGetSubscriber(clientInfo.id, out var subscriber)) {
                 return null;
             }
             var msgSubs     = clientInfo.ev?.messageSubs;
@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         }
         
         internal void UpdateUsers(EntityDatabase db) {
-            foreach (var pair in db.authenticator.users) {
+            foreach (var pair in db.Authenticator.users) {
                 if (!users.TryGet(pair.Key, out var userInfo)) {
                     userInfo = new UserInfo { id = pair.Key };
                 }

@@ -27,9 +27,9 @@ namespace Friflo.Json.Fliox.DB.Client
         public static void DisposeDatabase(EntityDatabase database) {
             if (database == null)
                 return;
-            if (database.eventBroker != null) {
-                var eb = database.eventBroker;
-                database.eventBroker = null;
+            if (database.EventBroker != null) {
+                var eb = database.EventBroker;
+                database.EventBroker = null;
                 eb.Dispose();
             }
             database.Dispose();

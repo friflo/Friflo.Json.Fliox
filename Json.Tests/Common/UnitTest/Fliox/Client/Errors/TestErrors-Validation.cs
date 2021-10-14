@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             using (var modifierDatabase = new WriteModifierDatabase(fileDatabase))
             using (var createStore      = new PocStore(modifierDatabase, "createStore"))
             using (var nativeSchema     = new NativeTypeSchema(typeof(PocStore)))
-            using (fileDatabase.schema  = new DatabaseSchema(nativeSchema)) {
+            using (fileDatabase.Schema  = new DatabaseSchema(nativeSchema)) {
                 await AssertValidation(createStore, modifierDatabase);
             }
         }

@@ -31,8 +31,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     {
                         var authenticator = new UserAuthenticator(userStore, userStore);
                         authenticator.RegisterPredicate(TestPredicate);
-                        database.authenticator  = authenticator;
-                        database.eventBroker    = eventBroker;
+                        database.Authenticator  = authenticator;
+                        database.EventBroker    = eventBroker;
                         await authenticator.ValidateRoles();
                         await AssertNotAuthenticated        (database);
                         await AssertAuthAccessOperations    (database);

@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
                 return InvalidTask(error);
             }
 
-            error = database.schema?.ValidateEntities (container, entityKeys, entities, messageContext, EntityErrorType.WriteError, ref response.createErrors);
+            error = database.Schema?.ValidateEntities (container, entityKeys, entities, messageContext, EntityErrorType.WriteError, ref response.createErrors);
             if (error != null) {
                 return TaskError(new CommandError(error));
             }

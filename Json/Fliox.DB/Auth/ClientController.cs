@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.DB.Auth
     /// checks if a given client id can be added to a given user by <see cref="AddClientIdFor"/> 
     /// Its used to:
     /// <list type="bullet">
-    ///   <item> create / add unique client ids by <see cref="EntityDatabase.clientController"/> </item>
+    ///   <item> create / add unique client ids by <see cref="EntityDatabase.ClientController"/> </item>
     ///   <item> enables sending Push messages (events) for protocols supporting this like WebSocket's </item>
     ///   <item> enables monitoring execution statistics of <see cref="EntityDatabase.ExecuteSync"/> </item>
     /// </list>

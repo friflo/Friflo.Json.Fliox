@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.DB.Host
         public    readonly  string          name;
         /// <summary>
         /// The name used for a container / table instance in a specific database. By default it is equal to <see cref="name"/>.
-        /// It can be customized (altered) by the <see cref="EntityDatabase.customContainerName"/> function.
+        /// It can be customized (altered) by the <see cref="EntityDatabase.CustomContainerName"/> function.
         /// This field need to be used for <see cref="EntityContainer"/> implementations when accessing a specific
         /// databases (e.g. Mongo, Dynamo, Cosmos, Postgres, ...).
         /// </summary>
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.DB.Host
 
         protected EntityContainer(string name, EntityDatabase database) {
             this.name           = name;
-            this.instanceName   = database.customContainerName(name);
+            this.instanceName   = database.CustomContainerName(name);
             this.database       = database;
             database.AddContainer(this);
         }
@@ -136,7 +136,7 @@ namespace Friflo.Json.Fliox.DB.Host
                     targetKeys.Add(key);
                 }
             }
-            var valError = database.schema?.ValidateEntities(container, targetKeys, targets, messageContext, EntityErrorType.PatchError, ref response.patchErrors);
+            var valError = database.Schema?.ValidateEntities(container, targetKeys, targets, messageContext, EntityErrorType.PatchError, ref response.patchErrors);
             if (valError != null) {
                 return new PatchEntitiesResult{Error = new CommandError(valError)};
             }

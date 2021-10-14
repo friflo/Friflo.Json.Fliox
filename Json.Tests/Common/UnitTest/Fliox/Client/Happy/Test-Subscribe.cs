@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var eventBroker  = new EventBroker(false))
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var listenDb     = new PocStore(fileDatabase, "listenDb", "listen-client")) {
-                fileDatabase.eventBroker = eventBroker;
+                fileDatabase.EventBroker = eventBroker;
                 var listenProcessor   = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
                 using (var createStore  = new PocStore(fileDatabase, "createStore", "create-client")) {
                     var createProcessor = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
@@ -297,7 +297,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var database     = new MemoryDatabase())
             using (var typeStore    = new TypeStore())
             using (var listenDb     = new EntityStore(database, typeStore, null, "listenDb")) {
-                database.eventBroker = eventBroker;
+                database.EventBroker = eventBroker;
                 bool receivedHello = false;
                 listenDb.SubscribeMessage("Hello", msg => {
                     receivedHello = true;

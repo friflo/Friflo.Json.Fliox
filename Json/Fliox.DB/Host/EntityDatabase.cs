@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.DB.Host
     /// e.g. an <see cref="Client.EntityStore"/>. It handle these requests by its <see cref="ExecuteSync"/> method.
     /// A request is represented by a <see cref="SyncRequest"/> containing all database operations like create, read,
     /// upsert, delete and all messages / commands send by a client in the <see cref="SyncRequest.tasks"/> list.
-    /// The <see cref="EntityDatabase"/> execute these tasks by its <see cref="taskHandler"/>.
+    /// The <see cref="EntityDatabase"/> execute these tasks by its <see cref="TaskHandler"/>.
     /// <br/>
     /// Instances of <see cref="EntityDatabase"/> and all its implementation are designed to be thread safe enabling multiple
     /// clients e.g. <see cref="Client.EntityStore"/> operating on the same <see cref="EntityDatabase"/> instance.
@@ -46,43 +46,43 @@ namespace Friflo.Json.Fliox.DB.Host
         // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         /// <summary>
-        /// An optional <see cref="EventBroker"/> used to enable Pub-Sub. If enabled the database send
+        /// An optional <see cref="Event.EventBroker"/> used to enable Pub-Sub. If enabled the database send
         /// events to a client for database changes and messages the client has subscribed.
         /// In case of remote database connections WebSockets are used to send Pub-Sub events to clients.   
         /// </summary>
-        public              EventBroker                         eventBroker;
+        public              EventBroker                         EventBroker { get; set; }
         // ReSharper disable once FieldCanBeMadeReadOnly.Global
         /// <summary>
-        /// The <see cref="TaskHandler"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
-        /// Custom task (request) handler can be added to the <see cref="taskHandler"/> or
-        /// the <see cref="taskHandler"/> can be replaced by a custom implementation.
+        /// The <see cref="Host.TaskHandler"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
+        /// Custom task (request) handler can be added to the <see cref="TaskHandler"/> or
+        /// the <see cref="TaskHandler"/> can be replaced by a custom implementation.
         /// </summary>
-        public              TaskHandler                         taskHandler = new TaskHandler();
+        public              TaskHandler                         TaskHandler { get; set; } = new TaskHandler();
         /// <summary>
-        /// An <see cref="Authenticator"/> performs authentication and authorization for all
+        /// An <see cref="Auth.Authenticator"/> performs authentication and authorization for all
         /// <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/> sent by a client.
-        /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="taskHandler"/>.
+        /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="TaskHandler"/>.
         /// </summary>
-        public              Authenticator                       authenticator = new AuthenticateNone(new AuthorizeAllow());
+        public              Authenticator                       Authenticator { get; set; } = new AuthenticateNone(new AuthorizeAllow());
         // ReSharper disable once FieldCanBeMadeReadOnly.Global
         /// <summary>
-        /// <see cref="clientController"/> is used to create / add unique client ids to enable sending events to
+        /// <see cref="ClientController"/> is used to create / add unique client ids to enable sending events to
         /// specific user clients.
         /// It also enables monitoring execution statistics of <see cref="EntityDatabase.ExecuteSync"/> 
         /// </summary>
-        public              ClientController                    clientController = new IncrementClientController();
+        public              ClientController                    ClientController { get; set; } = new IncrementClientController();
         /// <summary>
         /// An optional <see cref="DatabaseSchema"/> used to validate the JSON payloads in all write operations
         /// performed on the <see cref="EntityContainer"/>'s of the database
         /// </summary>
-        public              DatabaseSchema                      schema;
+        public              DatabaseSchema                      Schema { get; set; }
         /// <summary>
         /// A mapping function used to assign a custom container name.
         /// If using a custom name its value is assigned to the containers <see cref="EntityContainer.instanceName"/>. 
         /// By having the mapping function in <see cref="EntityDatabase"/> it enables uniform mapping across different
         /// <see cref="EntityDatabase"/> implementations.
         /// </summary>
-        public              CustomContainerName                 customContainerName = name => name;
+        public              CustomContainerName                 CustomContainerName { get; set; } = name => name;
         
         public   readonly   Dictionary<string, EntityDatabase>  extensionDbs = new Dictionary<string, EntityDatabase>();
 
@@ -160,8 +160,8 @@ namespace Friflo.Json.Fliox.DB.Host
             }
             messageContext.clientId = syncRequest.clientId;
             
-            await authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
-            messageContext.clientIdValidation = authenticator.ValidateClientId(clientController, messageContext);
+            await Authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
+            messageContext.clientIdValidation = Authenticator.ValidateClientId(ClientController, messageContext);
             
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null)
@@ -185,7 +185,7 @@ namespace Friflo.Json.Fliox.DB.Host
                 task.index = index;
                     
                 try {
-                    SyncTaskResult result = await taskHandler.ExecuteTask(task, this, response, messageContext).ConfigureAwait(false);
+                    SyncTaskResult result = await TaskHandler.ExecuteTask(task, this, response, messageContext).ConfigureAwait(false);
                     tasks.Add(result);
                 }
                 catch (Exception e) {
@@ -212,7 +212,7 @@ namespace Friflo.Json.Fliox.DB.Host
             
             response.AssertResponse(syncRequest);
             
-            var broker = eventBroker;
+            var broker = EventBroker;
             if (broker != null) {
                 broker.EnqueueSyncTasks(syncRequest, messageContext);
                 if (!broker.background) {
@@ -228,7 +228,7 @@ namespace Friflo.Json.Fliox.DB.Host
             ref var clientId = ref messageContext.clientId;
             if (clientId.IsNull())
                 return;
-            if (clientController.clients.TryGetValue(clientId, out UserClient client)) {
+            if (ClientController.clients.TryGetValue(clientId, out UserClient client)) {
                 RequestStats.Update(client.stats, this, syncRequest);
             }
         }

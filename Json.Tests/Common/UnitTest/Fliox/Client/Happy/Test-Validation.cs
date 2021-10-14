@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var createStore      = new PocStore(fileDatabase, "createStore"))
             using (var nativeSchema     = new NativeTypeSchema(typeof(PocStore)))
-            using (fileDatabase.schema  = new DatabaseSchema(nativeSchema)) {
+            using (fileDatabase.Schema  = new DatabaseSchema(nativeSchema)) {
                 // All write operation performed in following call produce JSON payload which meet the types defined
                 // in the assigned schema => the call succeed without any validation error. 
                 await TestRelationPoC.CreateStore(createStore);
@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var createStore      = new PocStore(fileDatabase, "createStore"))
             using (var jsonSchema       = new JsonTypeSchema(schemas, "./UnitTest.Fliox.Client.json#/definitions/PocStore"))
-            using (fileDatabase.schema  = new DatabaseSchema(jsonSchema)) {
+            using (fileDatabase.Schema  = new DatabaseSchema(jsonSchema)) {
                 // All write operation performed in following call produce JSON payload which meet the types defined
                 // in the assigned schema => the call succeed without any validation error. 
                 await TestRelationPoC.CreateStore(createStore);
