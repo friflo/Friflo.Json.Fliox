@@ -1,0 +1,15 @@
+{
+    "msg": "sync",
+    "database": "monitor",
+    "tasks": [
+      {
+        "task":     "message",
+        "name":     "ClearStats"
+      }
+    ],
+    "info": [
+      "monitor: clear user & client stats"
+    ],
+    "user":   "{{user}}",
+    "token":  "{{token}}"
+  }
