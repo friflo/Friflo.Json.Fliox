@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var store    = new PocStore(database, null))
             using (var monitor  = new MonitorStore(monitorDb, TestGlobals.typeStore)) {
                 await AssertMonitoring(store, monitor);
-                await AssertMonitoring(store, monitor);
+                await AssertMonitoring(store, monitor); // as clearing monitor stats subsequent call has same result 
                 await AssertMonitoringErrors(monitor);
             }
         }
