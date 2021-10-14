@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Host;
@@ -28,10 +29,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var monitorMemory    = new MemoryDatabase())
             using (var monitorDb        = new MonitorDatabase(monitorMemory, fileDatabase)) {
-                await AssertMonitoringDB (fileDatabase, monitorDb, "poc-user", "poc-client", false);
+                await AssertNoAuthMonitoringDB (fileDatabase, monitorDb);
                 
                 await RunWithUserAuth(fileDatabase, async () => {
-                    await AssertMonitoringDB (fileDatabase, monitorDb, "admin", "admin-client", true);
+                    await AssertAuthMonitoringDB (fileDatabase, monitorDb);
                 });
             }
         }
@@ -44,10 +45,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
                     var remoteMonitor   = new ExtensionDatabase(remoteDatabase, MonitorDatabase.Name);
-                    await AssertMonitoringDB(remoteDatabase, remoteMonitor, "poc-user", "poc-client", false);
+                    await AssertNoAuthMonitoringDB(remoteDatabase, remoteMonitor);
                     
                     await RunWithUserAuth(fileDatabase, async () => {
-                        await AssertMonitoringDB (fileDatabase, remoteMonitor, "admin", "admin-client", true);
+                        await AssertAuthMonitoringDB (fileDatabase, remoteMonitor);
                     });
                 });
             }
@@ -62,15 +63,53 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
 
-        private  static async Task AssertMonitoringDB(EntityDatabase database, EntityDatabase monitorDb, string userId, string clientId, bool userAuth) {
+        private  static async Task AssertNoAuthMonitoringDB(EntityDatabase database, EntityDatabase monitorDb) {
+            const string userId     = "poc-user";
+            const string clientId   = "poc-client"; 
+            using (var store    = new PocStore(database, null))
+            using (var monitor  = new MonitorStore(monitorDb, TestGlobals.typeStore)) {
+                var result = await Monitor(store, monitor, userId, clientId);
+                AssertNoAuthResult(result);
+                
+                // as clearing monitor stats subsequent call has same result
+                result = await Monitor(store, monitor, userId, clientId);
+                AssertNoAuthResult(result);
+                
+                await AssertMonitoringErrors(monitor);
+            }
+        }
+
+        private static void AssertNoAuthResult(MonitorResult result) {
+            AreEqual("{'id':'anonymous','clients':[],'stats':[{'db':'monitor','requests':1,'tasks':1}]}",   result.anonymous.ToString());
+            AreEqual("{'id':'poc-user','clients':['poc-client'],'stats':[{'requests':1,'tasks':2}]}",       result.user.ToString());
+            AreEqual(2, result.users.Count);
+                
+            AreEqual("{'id':'poc-client','user':'poc-user','stats':[{'requests':1,'tasks':2}]}",            result.client.ToString());
+            AreEqual(1, result.clients.Count);
+        }
+        
+        private  static async Task AssertAuthMonitoringDB(EntityDatabase database, EntityDatabase monitorDb) {
+            const string userId     = "admin";
+            const string clientId   = "admin-client"; 
             using (var store    = new PocStore(database, null))
             using (var monitor  = new MonitorStore(monitorDb, TestGlobals.typeStore)) {
                 store.SetToken("admin-token");
-                await AssertMonitoring(store, monitor, userId, clientId, userAuth);
+                var result = await Monitor(store, monitor, userId, clientId);
+                AssertAuthResult(result);
+                
                 // as clearing monitor stats subsequent call has same result
-                await AssertMonitoring(store, monitor, userId, clientId, userAuth); 
+                result = await Monitor(store, monitor, userId, clientId);
+                AssertAuthResult(result);
+                
                 await AssertMonitoringErrors(monitor);
             }
+        }
+
+        private static void AssertAuthResult(MonitorResult result) {
+            AreEqual("{'id':'anonymous','clients':[],'stats':[]}",                                          result.anonymous.ToString());
+            AreEqual("{'id':'admin','clients':['admin-client'],'stats':[{'requests':1,'tasks':2}]}",        result.user.ToString());
+                
+            AreEqual("{'id':'admin-client','user':'admin','stats':[{'requests':1,'tasks':2}]}",             result.client.ToString());
         }
         
         private  static async Task AssertMonitoringErrors(MonitorStore monitor) {
@@ -81,7 +120,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("InvalidTask ~ MonitorDatabase does not support task: 'delete'",   deleteUser.Error.Message);
         }
         
-        private  static async Task AssertMonitoring(PocStore store, MonitorStore monitor, string userId, string clientId, bool userAuth) {
+        private  static async Task<MonitorResult> Monitor(PocStore store, MonitorStore monitor, string userId, string clientId) {
             var userKey    = new JsonKey(userId);
             var clientKey  = new JsonKey(clientId);
             store.SetUserClient(userKey, clientKey);
@@ -95,33 +134,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             var allUsers        = monitor.users.QueryAll();
             var allClients      = monitor.clients.QueryAll();
-            var findPocUser     = monitor.users.Read().Find(userKey);
+            var findUser        = monitor.users.Read().Find(userKey);
             var findUserClient  = monitor.clients.Read().Find(clientKey);
 
             await monitor.Sync();
             
             var users       = allUsers.Results;
             var clients     = allClients.Results;
-            var user        = users     [userKey]; 
-            var anonymous   = users     [User.AnonymousId];
-            var client      = clients   [clientKey];
             
-            NotNull(findPocUser.Result);
+            var result = new MonitorResult() {
+                users       = users,
+                clients     = clients,
+                user        = users     [userKey], 
+                anonymous   = users     [User.AnonymousId],
+                client      = clients   [clientKey],
+            };
+            NotNull(findUser.Result);
             NotNull(findUserClient.Result);
-            
-            if (userAuth) {
-                AreEqual("{'id':'anonymous','clients':[],'stats':[]}",                                          anonymous.ToString());
-                AreEqual("{'id':'admin','clients':['admin-client'],'stats':[{'requests':1,'tasks':2}]}",        user.ToString());
-                
-                AreEqual("{'id':'admin-client','user':'admin','stats':[{'requests':1,'tasks':2}]}",             client.ToString());
-            } else {
-                AreEqual("{'id':'anonymous','clients':[],'stats':[{'db':'monitor','requests':1,'tasks':1}]}",   anonymous.ToString());
-                AreEqual("{'id':'poc-user','clients':['poc-client'],'stats':[{'requests':1,'tasks':2}]}",       user.ToString());
-                AreEqual(2, users.Count);
-                
-                AreEqual("{'id':'poc-client','user':'poc-user','stats':[{'requests':1,'tasks':2}]}",            client.ToString());
-                AreEqual(1, clients.Count);
-            }
+            return result;
+        }
+        
+        internal class MonitorResult {
+            internal    Dictionary<JsonKey, UserInfo>   users;     
+            internal    Dictionary<JsonKey, ClientInfo> clients;  
+            internal    UserInfo                        user;      
+            internal    UserInfo                        anonymous; 
+            internal    ClientInfo                      client; 
         }
     }
 }
