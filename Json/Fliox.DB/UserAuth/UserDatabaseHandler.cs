@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             using (var pooledStore = storePool.Get()) {
                 var store           = pooledStore.instance;
                 var validateToken   = command.Value;
-                var userId        = validateToken.userId;
+                var userId          = validateToken.userId;
                 var readCredentials = store.credentials.Read();
                 var findCred        = readCredentials.Find(userId);
                 

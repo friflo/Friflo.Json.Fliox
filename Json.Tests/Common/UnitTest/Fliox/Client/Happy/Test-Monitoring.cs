@@ -47,9 +47,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private  static async Task AssertMonitoringDB(EntityDatabase database, EntityDatabase monitorDb) {
             using (var store    = new PocStore(database, null))
             using (var monitor  = new MonitorStore(monitorDb, TestGlobals.typeStore)) {
-                await AssertMonitoring(store, monitor);
-                await AssertMonitoring(store, monitor); // as clearing monitor stats subsequent call has same result 
+                await AssertMonitoring(store, monitor, "poc-user", "poc-client");
+                // as clearing monitor stats subsequent call has same result
+                await AssertMonitoring(store, monitor, "poc-user", "poc-client"); 
                 await AssertMonitoringErrors(monitor);
+                
+                using (var userDatabase    = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
+                using (var userStore       = new UserStore (userDatabase, UserStore.AuthenticationUser, null))
+                using (var _               = new UserDatabaseHandler   (userDatabase)) {
+                    database.authenticator = new UserAuthenticator(userStore, userStore);
+                    store.SetToken("admin-token");
+                    // await AssertMonitoring(store, monitor, "admin", "poc-client");
+                }
             }
         }
         
@@ -61,9 +70,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("InvalidTask ~ MonitorDatabase does not support task: 'delete'",   deleteUser.Error.Message);
         }
         
-        private  static async Task AssertMonitoring(PocStore store, MonitorStore monitor) {
-            var user    = new JsonKey("poc-user");
-            var client  = new JsonKey("poc-client");
+        private  static async Task AssertMonitoring(PocStore store, MonitorStore monitor, string userId, string clientId) {
+            var user    = new JsonKey(userId);
+            var client  = new JsonKey(clientId);
             store.SetUserClient(user, client);
             
             monitor.SendMessage(MonitorStore.ClearStats);
@@ -95,13 +104,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             AreEqual("{'id':'poc-client','user':'poc-user','stats':[{'requests':1,'tasks':2}]}",        userClient.ToString());
             AreEqual(1, clients.Count);
-        }
-
-        private static UserAuthenticator CreateUserAuthenticator () {
-            var userDatabase    = new FileDatabase("./Json.Tests/assets~/DB/UserStore");
-            var userStore       = new UserStore (userDatabase, UserStore.AuthenticationUser, null);
-            var _               = new UserDatabaseHandler   (userDatabase);
-            return new UserAuthenticator(userStore, userStore);
         }
     }
 }
