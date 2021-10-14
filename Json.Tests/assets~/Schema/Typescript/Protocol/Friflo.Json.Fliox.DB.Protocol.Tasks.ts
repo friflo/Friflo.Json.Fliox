@@ -94,7 +94,7 @@ export class DeleteEntities extends SyncRequestTask {
 export class SendMessage extends SyncRequestTask {
     task   : "message";
     name   : string;
-    value  : any;
+    value? : any | null;
 }
 
 export class SubscribeChanges extends SyncRequestTask {

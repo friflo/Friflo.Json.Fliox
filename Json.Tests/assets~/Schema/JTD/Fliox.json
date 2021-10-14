@@ -515,7 +515,7 @@
         "SendMessage": {
             "properties": {
                 "name":  { "type": "string" },
-                "value": {  },
+                "value": { "nullable": true },
                 "info":  { "nullable": true }
             }
         },

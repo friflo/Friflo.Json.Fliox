@@ -146,8 +146,7 @@
             },
             "required": [
                 "task",
-                "name",
-                "value"
+                "name"
             ],
             "additionalProperties": false
         },

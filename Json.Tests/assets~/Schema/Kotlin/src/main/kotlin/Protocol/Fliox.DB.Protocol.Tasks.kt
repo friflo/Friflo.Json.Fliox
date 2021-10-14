@@ -82,7 +82,7 @@ data class DeleteEntities (
 @SerialName("message")
 data class SendMessage (
               val name  : String,
-              val value : JsonElement,
+              val value : JsonElement? = null,
     override  val info  : JsonElement? = null,
 ) : SyncRequestTask()
 

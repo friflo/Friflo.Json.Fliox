@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
     public sealed class SendMessage : SyncRequestTask
     {
         [Fri.Required]  public  string          name;
-        [Fri.Required]  public  JsonValue       value;
+                        public  JsonValue       value;
             
         internal override       TaskType        TaskType => TaskType.message;
         public   override       string          TaskName => $"name: '{name}'";
