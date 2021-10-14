@@ -82,13 +82,14 @@
                 "container":  { "type": "string" },
                 "keyName":    { "type": ["string", "null"] },
                 "isIntKey":   { "type": ["boolean", "null"] },
-                "filter":     { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/FilterOperation" }] },
+                "filter":     { "$ref": "./Friflo.Json.Fliox.Transform.json#/definitions/FilterOperation" },
                 "references": { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.Models.json#/definitions/References" } },
                 "info":       {  }
             },
             "required": [
                 "task",
-                "container"
+                "container",
+                "filter"
             ],
             "additionalProperties": false
         },

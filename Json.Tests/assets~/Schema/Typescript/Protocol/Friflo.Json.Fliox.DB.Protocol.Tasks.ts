@@ -69,7 +69,7 @@ export class QueryEntities extends SyncRequestTask {
     container   : string;
     keyName?    : string | null;
     isIntKey?   : boolean | null;
-    filter?     : FilterOperation_Union | null;
+    filter      : FilterOperation_Union;
     references? : References[] | null;
 }
 

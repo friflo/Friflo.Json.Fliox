@@ -99,7 +99,7 @@
                 "container":  { "type": "string" },
                 "keyName":    { "type": "string", "nullable": true },
                 "isIntKey":   { "type": "boolean", "nullable": true },
-                "filter":     { "ref":  "FilterOperation", "nullable": true },
+                "filter":     { "ref":  "FilterOperation" },
                 "references": { "elements": { "ref":  "References" }, "nullable": true },
                 "info":       { "nullable": true }
             }

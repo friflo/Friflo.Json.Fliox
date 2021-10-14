@@ -17,8 +17,8 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
         [Fri.Required]  public  string              container;
                         public  string              keyName;
                         public  bool?               isIntKey;
+        [Fri.Required]  public  FilterOperation     filter;
         [Fri.Ignore]    public  string              filterLinq;
-                        public  FilterOperation     filter;
                         public  List<References>    references;
         
         internal override       TaskType            TaskType => TaskType.query;
