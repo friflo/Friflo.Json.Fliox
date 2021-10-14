@@ -104,9 +104,15 @@ namespace Friflo.Json.Fliox.DB.Client
         
         public void SetUserClient (string userId, string clientId) {
             _intern.userId      = new JsonKey(userId);
-            _intern.clientId    = new JsonKey(clientId);
+            var newClientId     = new JsonKey(clientId);
+            if (newClientId.IsEqual(_intern.clientId))
+                return;
             if (!_intern.clientId.IsNull()) {
-                _intern.database.AddEventTarget(_intern.clientId, _intern.eventTarget);
+                _intern.database.RemoveEventTarget(_intern.clientId);
+            }
+            _intern.clientId    = newClientId;
+            if (!_intern.clientId.IsNull()) {
+                _intern.database.AddEventTarget(newClientId, _intern.eventTarget);
             }
         }
 
