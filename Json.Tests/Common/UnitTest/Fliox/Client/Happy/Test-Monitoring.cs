@@ -79,15 +79,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
 
-        private static void AssertNoAuthResult(MonitorResult result) {
-            AreEqual("{'id':'anonymous','clients':[],'stats':[{'db':'monitor','requests':1,'tasks':1}]}",   result.anonymous.ToString());
-            AreEqual("{'id':'poc-user','clients':['poc-client'],'stats':[{'requests':1,'tasks':2}]}",       result.user.ToString());
-            AreEqual(2, result.users.Count);
-                
-            AreEqual("{'id':'poc-client','user':'poc-user','stats':[{'requests':1,'tasks':2}]}",            result.client.ToString());
-            AreEqual(1, result.clients.Count);
-        }
-        
         private  static async Task AssertAuthMonitoringDB(EntityDatabase database, EntityDatabase monitorDb) {
             const string userId     = "admin";
             const string clientId   = "admin-client"; 
@@ -103,6 +94,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 await AssertMonitoringErrors(monitor);
             }
+        }
+        
+        private static void AssertNoAuthResult(MonitorResult result) {
+            AreEqual("{'id':'anonymous','clients':[],'stats':[{'db':'monitor','requests':1,'tasks':1}]}",   result.anonymous.ToString());
+            AreEqual("{'id':'poc-user','clients':['poc-client'],'stats':[{'requests':1,'tasks':2}]}",       result.user.ToString());
+            AreEqual(2, result.users.Count);
+                
+            AreEqual("{'id':'poc-client','user':'poc-user','stats':[{'requests':1,'tasks':2}]}",            result.client.ToString());
+            AreEqual(1, result.clients.Count);
         }
 
         private static void AssertAuthResult(MonitorResult result) {
