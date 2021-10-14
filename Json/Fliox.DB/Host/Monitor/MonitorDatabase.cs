@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.DB.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host.Monitor
@@ -38,22 +39,33 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         }
         
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            store.UpdateStore(db);
+            if (FindReadEntities(nameof(MonitorStore.clients), syncRequest.tasks)) {
+                store.UpdateClients(db);
+            }
+            if (FindReadEntities(nameof(MonitorStore.users), syncRequest.tasks)) {
+                store.UpdateUsers(db);
+            }
             store.SetUser (syncRequest.userId);
             store.SetToken(syncRequest.token);
             await store.TrySync().ConfigureAwait(false);
             messageContext.customData = monitorDb.taskHandler;
             return await monitorDb.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
         }
+        
+        private static bool FindReadEntities(string container, List<SyncRequestTask> tasks) {
+            foreach (var task in tasks) {
+                if (task is ReadEntities read && read.container == container)
+                    return true;
+                if (task is QueryEntities query && query.container == container)
+                    return true;
+            }
+            return false;
+        }
     }
     
-    public partial class MonitorStore {
-        internal void UpdateStore(EntityDatabase db) {
-            UpdateClients(db);
-            UpdateUsers(db);
-        }
-        
-        private void UpdateClients(EntityDatabase db) {
+    public partial class MonitorStore
+    {
+        internal void UpdateClients(EntityDatabase db) {
             foreach (var pair in db.clientController.Clients) {
                 UserClient client   = pair.Value;
                 var clientId        = pair.Key;
@@ -94,7 +106,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             };
         }
         
-        private void UpdateUsers(EntityDatabase db) {
+        internal void UpdateUsers(EntityDatabase db) {
             foreach (var pair in db.authenticator.users) {
                 if (!users.TryGet(pair.Key, out var userInfo)) {
                     userInfo = new UserInfo { id = pair.Key };
