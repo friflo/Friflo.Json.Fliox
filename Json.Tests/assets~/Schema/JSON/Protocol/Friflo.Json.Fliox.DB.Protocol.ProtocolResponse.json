@@ -10,9 +10,13 @@
                 { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/ErrorResponse" }
             ],
             "properties": {
+                "msg": { "enum": ["resp", "error"] },
                 "req": { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "clt": { "type": ["string", "null"] }
             },
+            "required": [
+                "msg"
+            ],
             "additionalProperties": true
         }
     }

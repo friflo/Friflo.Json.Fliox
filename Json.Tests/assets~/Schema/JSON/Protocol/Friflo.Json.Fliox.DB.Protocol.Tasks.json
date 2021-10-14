@@ -17,8 +17,12 @@
                 { "$ref": "#/definitions/ReserveKeys" }
             ],
             "properties": {
+                "task": { "enum": ["create", "upsert", "read", "query", "patch", "delete", "message", "subscribeChanges", "subscribeMessage", "reserveKeys"] },
                 "info": {  }
             },
+            "required": [
+                "task"
+            ],
             "additionalProperties": true
         },
         "CreateEntities": {
@@ -223,8 +227,11 @@
                 { "$ref": "#/definitions/TaskErrorResult" }
             ],
             "properties": {
-
+                "task": { "enum": ["create", "upsert", "read", "query", "patch", "delete", "message", "subscribeChanges", "subscribeMessage", "reserveKeys", "error"] }
             },
+            "required": [
+                "task"
+            ],
             "additionalProperties": true
         },
         "CreateEntitiesResult": {

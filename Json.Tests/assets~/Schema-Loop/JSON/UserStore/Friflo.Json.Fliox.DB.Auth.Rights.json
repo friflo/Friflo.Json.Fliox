@@ -13,8 +13,12 @@
                 { "$ref": "#/definitions/RightPredicate" }
             ],
             "properties": {
+                "type":        { "enum": ["allow", "task", "message", "subscribeMessage", "database", "predicate"] },
                 "description": { "type": ["string", "null"] }
             },
+            "required": [
+                "type"
+            ],
             "additionalProperties": true
         },
         "RightAllow": {

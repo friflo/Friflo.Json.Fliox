@@ -23,8 +23,11 @@
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/EndsWith" }
             ],
             "properties": {
-
+                "op": { "enum": ["equal", "notEqual", "lessThan", "lessThanOrEqual", "greaterThan", "greaterThanOrEqual", "and", "or", "true", "false", "not", "any", "all", "contains", "startsWith", "endsWith"] }
             },
+            "required": [
+                "op"
+            ],
             "additionalProperties": true
         },
         "Operation": {
@@ -70,8 +73,11 @@
                 { "$ref": "./Friflo.Json.Fliox.Transform.Query.Ops.json#/definitions/EndsWith" }
             ],
             "properties": {
-
+                "op": { "enum": ["field", "string", "double", "int64", "null", "abs", "ceiling", "floor", "exp", "log", "sqrt", "negate", "add", "subtract", "multiply", "divide", "min", "max", "sum", "average", "count", "equal", "notEqual", "lessThan", "lessThanOrEqual", "greaterThan", "greaterThanOrEqual", "and", "or", "true", "false", "not", "any", "all", "countWhere", "contains", "startsWith", "endsWith"] }
             },
+            "required": [
+                "op"
+            ],
             "additionalProperties": true
         },
         "JsonPatch": {
@@ -85,8 +91,11 @@
                 { "$ref": "#/definitions/PatchTest" }
             ],
             "properties": {
-
+                "op": { "enum": ["replace", "add", "remove", "copy", "move", "test"] }
             },
+            "required": [
+                "op"
+            ],
             "additionalProperties": true
         },
         "PatchReplace": {

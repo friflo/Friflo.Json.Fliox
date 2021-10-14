@@ -128,6 +128,15 @@ namespace Friflo.Json.Fliox.Schema
                 firstField = false;
                 requiredFields.Add(discriminator);
             }
+            if (unionType != null ) {
+                var disc = unionType.discriminator;
+                maxFieldName    = Math.Max(maxFieldName, disc.Length);
+                var indent      = Indent(maxFieldName, disc);
+                var discriminators = string.Join(", ", unionType.types.Select(polyType => $"\"{polyType.discriminant}\""));
+                sb.Append($"                \"{disc}\":{indent} {{ \"enum\": [{discriminators}] }}");
+                firstField = false;
+                requiredFields.Add(disc);
+            }
             foreach (var field in fields) {
                 // if (generator.IsDerivedField(type, field))  JSON Schema list all properties
                 //    continue;

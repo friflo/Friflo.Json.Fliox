@@ -12,8 +12,11 @@
                 { "$ref": "./Friflo.Json.Fliox.DB.Protocol.json#/definitions/EventMessage" }
             ],
             "properties": {
-
+                "msg": { "enum": ["sync", "resp", "error", "ev"] }
             },
+            "required": [
+                "msg"
+            ],
             "additionalProperties": true
         }
     }

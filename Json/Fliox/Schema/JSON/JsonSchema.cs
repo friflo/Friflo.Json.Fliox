@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public  JsonValue       type;           // SchemaType or SchemaType[]
         
         [Fri.Property(Name =   "enum")]
-        public  List<string>    discriminant;   // contains exactly one element
+        public  List<string>    discriminant;   // contains exactly one element for a specific type or a list is inside an abstract type
         
         public  FieldType       items;
         

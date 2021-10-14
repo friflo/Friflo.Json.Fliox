@@ -72,6 +72,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
                                 foreach (var propPair in properties) {
                                     string      fieldName   = propPair.Key;
                                     FieldType   field       = propPair.Value;
+                                    // discriminator field is not a real member -> skip it
+                                    if (type.discriminator == fieldName)
+                                        continue;
                                     SetField(typeDef, fieldName, field, context);
                                 }
                             }
