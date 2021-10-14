@@ -101,10 +101,14 @@ namespace Friflo.Json.Fliox.DB.Client
             messageContext.Release();
             return result;
         }
-        
+
         public void SetUserClient (string userId, string clientId) {
-            _intern.userId      = new JsonKey(userId);
-            var newClientId     = new JsonKey(clientId);
+            SetUserClient(new JsonKey(userId), new JsonKey(clientId));
+        }
+
+        public void SetUserClient (in JsonKey userId, in JsonKey clientId) {
+            _intern.userId      = userId;
+            var newClientId     = clientId;
             if (newClientId.IsEqual(_intern.clientId))
                 return;
             if (!_intern.clientId.IsNull()) {

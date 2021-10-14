@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Monitor;
 using Friflo.Json.Fliox.DB.Remote;
@@ -51,14 +52,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private  static async Task AssertMonitoringStore(PocStore store, MonitorStore monitor) {
-            store.SetUserClient("poc-user", "poc-client");
+            var user    = new JsonKey("poc-user");
+            var client  = new JsonKey("poc-client");
+            store.SetUserClient(user, client);
             store.articles.Read().Find("xxx");
             await store.Sync();
             
             var allUsers        = monitor.users.QueryAll();
             var allClients      = monitor.clients.QueryAll();
-            var findPocUser     = monitor.users.Read().Find(new JsonKey("poc-user"));
-            var findUserClient  = monitor.clients.Read().Find(new JsonKey("poc-client"));
+            var findPocUser     = monitor.users.Read().Find(user);
+            var findUserClient  = monitor.clients.Read().Find(client);
             var deleteUser      = monitor.users.Delete(new JsonKey("123"));
             var createUser      = monitor.users.Create(new UserInfo{id = new JsonKey("abc")});
 
@@ -66,9 +69,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             var users       = allUsers.Results;
             var clients     = allClients.Results;
-            var pocUser     = users     [new JsonKey("poc-user")]; 
-            var anonymous   = users     [new JsonKey("anonymous")];
-            var userClient  = clients   [new JsonKey("poc-client")];
+            var pocUser     = users     [user]; 
+            var anonymous   = users     [User.AnonymousId];
+            var userClient  = clients   [client];
             
             NotNull(findPocUser.Result);
             NotNull(findUserClient.Result);

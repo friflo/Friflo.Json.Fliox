@@ -22,16 +22,14 @@ namespace Friflo.Json.Fliox.DB.Auth
         internal  readonly  ConcurrentDictionary<JsonKey, User>     users;
         protected readonly  User                                    anonymousUser;
         
-        private static readonly  JsonKey   Anonymous = new JsonKey("anonymous");
-
             
         public abstract Task    Authenticate    (SyncRequest syncRequest, MessageContext messageContext);
         
         protected Authenticator (Authorizer anonymousAuthorizer) {
             registeredPredicates    = new Dictionary<string, AuthorizePredicate>();
             users                   = new ConcurrentDictionary <JsonKey, User>(JsonKey.Equality);
-            anonymousUser           = new User(Anonymous, null, anonymousAuthorizer); 
-            users.TryAdd(Anonymous, anonymousUser);
+            anonymousUser           = new User(User.AnonymousId, null, anonymousAuthorizer); 
+            users.TryAdd(User.AnonymousId, anonymousUser);
         }
         
         /// <summary>

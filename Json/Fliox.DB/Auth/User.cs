@@ -15,6 +15,9 @@ namespace Friflo.Json.Fliox.DB.Auth
         internal readonly   Dictionary<EntityDatabase, RequestStats>    stats = new Dictionary<EntityDatabase, RequestStats>();
 
         public   override   string                                      ToString() => userId.AsString();
+        
+        public static readonly  JsonKey   AnonymousId = new JsonKey("anonymous");
+
 
         internal User (in JsonKey userId, string token, Authorizer authorizer) {
             this.userId     = userId;
