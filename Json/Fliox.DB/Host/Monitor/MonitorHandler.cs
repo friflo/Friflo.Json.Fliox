@@ -28,9 +28,10 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                         monitorDb.clientController.ClearClientStats();
                         monitorDb.db.authenticator.ClearUserStats();
                         monitorDb.db.clientController.ClearClientStats();
+                        SyncTaskResult messageResult = new SendMessageResult();
+                        return Task.FromResult(messageResult);
                     }
-                    SyncTaskResult messageResult = new SendMessageResult();
-                    return Task.FromResult(messageResult);
+                    return base.ExecuteTask(task, database, response, messageContext);
                 case TaskType.read:
                 case TaskType.query:
                     return base.ExecuteTask(task, database, response, messageContext);
