@@ -6,15 +6,14 @@ using Friflo.Json.Fliox.DB.Protocol;
 
 namespace Friflo.Json.Fliox.DB.Host
 {
-    public class ExtensionDatabase : EntityDatabase
+    internal class ExtensionDatabase : EntityDatabase
     {
         private readonly    EntityDatabase  defaultDatabase;
         private readonly    string          extensionName;
         
-        public ExtensionDatabase (EntityDatabase defaultDatabase, string extensionName) {
+        internal ExtensionDatabase (EntityDatabase defaultDatabase, string extensionName) {
             this.defaultDatabase    = defaultDatabase;
             this.extensionName      = extensionName;
-            extensionDbs.Add(extensionName, this);
         }
         
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {

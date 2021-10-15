@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var monitorMemory    = new MemoryDatabase())
             using (                       new MonitorDatabase(monitorMemory, fileDatabase))
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase)) {
-                var monitorDB = new ExtensionDatabase(loopbackDatabase, MonitorDatabase.Name);
+                var monitorDB = loopbackDatabase.AddExtensionDB(MonitorDatabase.Name);
                 await AssertNoAuthMonitoringDB(loopbackDatabase, monitorDB);
                 
                 await RunWithUserAuth(fileDatabase, async () => {
@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/"))
             using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
-                    var monitorDB   = new ExtensionDatabase(remoteDatabase, MonitorDatabase.Name);
+                    var monitorDB   = remoteDatabase.AddExtensionDB(MonitorDatabase.Name);
                     await AssertNoAuthMonitoringDB(remoteDatabase, monitorDB);
                     
                     await RunWithUserAuth(fileDatabase, async () => {

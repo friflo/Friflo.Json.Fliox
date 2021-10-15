@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.DB.Host
         /// </summary>
         public              CustomContainerName CustomContainerName { get => customContainerName; set => customContainerName = NotNull(value, nameof(CustomContainerName)); }
         
-        public   readonly   Dictionary<string, EntityDatabase>  extensionDbs = new Dictionary<string, EntityDatabase>();
+        private  readonly   Dictionary<string, EntityDatabase>  extensionDbs = new Dictionary<string, EntityDatabase>();
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string      extensionName;
@@ -237,6 +237,13 @@ namespace Friflo.Json.Fliox.DB.Host
             if (ClientController.clients.TryGetValue(clientId, out UserClient client)) {
                 RequestStats.Update(client.stats, this, syncRequest);
             }
+        }
+        
+        public EntityDatabase AddExtensionDB (string databaseName, EntityDatabase extensionDB = null) {
+            if (extensionDB == null)
+                extensionDB = new ExtensionDatabase (this, databaseName);
+            extensionDbs.Add(databaseName, extensionDB);
+            return extensionDB;
         }
     }
     
