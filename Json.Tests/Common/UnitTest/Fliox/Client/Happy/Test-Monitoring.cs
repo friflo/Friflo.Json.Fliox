@@ -28,12 +28,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var monitorMemory    = new MemoryDatabase())
-            using (var monitorDb        = new MonitorDatabase(monitorMemory, fileDatabase)) {
-                await AssertNoAuthMonitoringDB (fileDatabase, monitorDb);
+            using (var monitorDB        = new MonitorDatabase(monitorMemory, fileDatabase)) {
+                await AssertNoAuthMonitoringDB (fileDatabase, monitorDB);
                 
                 await RunWithUserAuth(fileDatabase, async () => {
-                    await AssertAuthMonitoringDB        (fileDatabase, monitorDb);
-                    await AssertAuthFailedMonitoringDB  (fileDatabase, monitorDb);
+                    await AssertAuthMonitoringDB        (fileDatabase, monitorDB);
+                    await AssertAuthFailedMonitoringDB  (fileDatabase, monitorDB);
+                });
+            }
+        }
+        
+        [Test]
+        public static async Task TestMonitoringLoopback() {
+            using (var _                = Pools.SharedPools) // for LeakTestsFixture
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var monitorMemory    = new MemoryDatabase())
+            using (                       new MonitorDatabase(monitorMemory, fileDatabase))
+            using (var loopbackDatabase = new LoopbackDatabase(fileDatabase)) {
+                var monitorDB = new ExtensionDatabase(loopbackDatabase, MonitorDatabase.Name);
+                await AssertNoAuthMonitoringDB(loopbackDatabase, monitorDB);
+                
+                await RunWithUserAuth(fileDatabase, async () => {
+                    await AssertAuthMonitoringDB        (loopbackDatabase, monitorDB);
+                    await AssertAuthFailedMonitoringDB  (loopbackDatabase, monitorDB);
                 });
             }
         }
@@ -45,12 +62,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/"))
             using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
-                    var remoteMonitor   = new ExtensionDatabase(remoteDatabase, MonitorDatabase.Name);
-                    await AssertNoAuthMonitoringDB(remoteDatabase, remoteMonitor);
+                    var monitorDB   = new ExtensionDatabase(remoteDatabase, MonitorDatabase.Name);
+                    await AssertNoAuthMonitoringDB(remoteDatabase, monitorDB);
                     
                     await RunWithUserAuth(fileDatabase, async () => {
-                        await AssertAuthMonitoringDB        (fileDatabase, remoteMonitor);
-                        await AssertAuthFailedMonitoringDB  (fileDatabase, remoteMonitor);
+                        await AssertAuthMonitoringDB        (remoteDatabase, monitorDB);
+                        await AssertAuthFailedMonitoringDB  (remoteDatabase, monitorDB);
                     });
                 });
             }
