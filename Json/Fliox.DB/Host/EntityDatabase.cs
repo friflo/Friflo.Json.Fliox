@@ -43,55 +43,67 @@ namespace Friflo.Json.Fliox.DB.Host
 #endif
     public abstract class EntityDatabase : IDisposable
     {
-        // [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         /// <summary>
         /// An optional <see cref="Event.EventBroker"/> used to enable Pub-Sub. If enabled the database send
         /// events to a client for database changes and messages the client has subscribed.
         /// In case of remote database connections WebSockets are used to send Pub-Sub events to clients.   
         /// </summary>
-        public              EventBroker                         EventBroker { get; set; }
+        public              EventBroker         EventBroker     { get;
+                                                                  set; }
         // ReSharper disable once FieldCanBeMadeReadOnly.Global
         /// <summary>
         /// The <see cref="Host.TaskHandler"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
         /// Custom task (request) handler can be added to the <see cref="TaskHandler"/> or
         /// the <see cref="TaskHandler"/> can be replaced by a custom implementation.
         /// </summary>
-        public              TaskHandler                         TaskHandler { get; set; } = new TaskHandler();
+        public              TaskHandler         TaskHandler     { get => taskHandler;
+                                                                  set => taskHandler = Check(value, nameof(TaskHandler)); }
         /// <summary>
         /// An <see cref="Auth.Authenticator"/> performs authentication and authorization for all
         /// <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/> sent by a client.
         /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="TaskHandler"/>.
         /// </summary>
-        public              Authenticator                       Authenticator { get; set; } = new AuthenticateNone(new AuthorizeAllow());
+        public              Authenticator       Authenticator   { get => authenticator;
+                                                                  set => authenticator = Check(value, nameof(Authenticator)); }
         // ReSharper disable once FieldCanBeMadeReadOnly.Global
         /// <summary>
         /// <see cref="ClientController"/> is used to create / add unique client ids to enable sending events to
         /// specific user clients.
         /// It also enables monitoring execution statistics of <see cref="EntityDatabase.ExecuteSync"/> 
         /// </summary>
-        public              ClientController                    ClientController { get; set; } = new IncrementClientController();
+        public              ClientController    ClientController {  get => clientController;
+                                                                    set => clientController = Check(value, nameof(ClientController)); }
         /// <summary>
         /// An optional <see cref="DatabaseSchema"/> used to validate the JSON payloads in all write operations
         /// performed on the <see cref="EntityContainer"/>'s of the database
         /// </summary>
-        public              DatabaseSchema                      Schema { get; set; }
+        public              DatabaseSchema      Schema { get;
+                                                         set; }
         /// <summary>
         /// A mapping function used to assign a custom container name.
         /// If using a custom name its value is assigned to the containers <see cref="EntityContainer.instanceName"/>. 
         /// By having the mapping function in <see cref="EntityDatabase"/> it enables uniform mapping across different
         /// <see cref="EntityDatabase"/> implementations.
         /// </summary>
-        public              CustomContainerName                 CustomContainerName { get; set; } = name => name;
+        public              CustomContainerName CustomContainerName { get => customContainerName;
+                                                                      set => customContainerName = Check(value, nameof(CustomContainerName)); }
         
         public   readonly   Dictionary<string, EntityDatabase>  extensionDbs = new Dictionary<string, EntityDatabase>();
-
+        
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string      extensionName;
         public  string      ExtensionName {
             get => extensionName;
             set => extensionName = extensionName == null ? value : throw new InvalidOperationException($"extensionName already assigned: {extensionName}"); 
         }
+        
+        private static T    Check<T> (T value, string name ) where T : class => value ?? throw new NullReferenceException(name);
+        
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   TaskHandler         taskHandler         = new TaskHandler();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow());
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   ClientController    clientController    = new IncrementClientController();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   CustomContainerName customContainerName = name => name;
 
         public override     string                              ToString() => ExtensionName != null ? $"'{ExtensionName}'" : "";
         
