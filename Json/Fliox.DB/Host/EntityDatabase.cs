@@ -239,11 +239,16 @@ namespace Friflo.Json.Fliox.DB.Host
             }
         }
         
-        public EntityDatabase AddExtensionDB (string databaseName, EntityDatabase extensionDB = null) {
-            if (extensionDB == null)
-                extensionDB = new ExtensionDatabase (this, databaseName);
-            extensionDbs.Add(databaseName, extensionDB);
+        public EntityDatabase AddExtensionDB (string extensionName) {
+            if (extensionName == null) throw new ArgumentNullException(nameof(extensionName));
+            var extensionDB = new ExtensionDatabase (this, extensionName);
+            extensionDbs.Add(extensionName, extensionDB);
             return extensionDB;
+        }
+        
+        public void AddExtensionDB (string extensionName, EntityDatabase extensionDB) {
+            if (extensionName == null) throw new ArgumentNullException(nameof(extensionName));
+            extensionDbs.Add(extensionName, extensionDB);
         }
     }
     

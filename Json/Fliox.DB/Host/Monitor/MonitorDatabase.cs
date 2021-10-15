@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             monitorDb.Authenticator = db.Authenticator;
             monitorDb.TaskHandler   = new MonitorHandler(this);
             store                   = new MonitorStore(monitorDb, HostTypeStore.Get());
-            db.AddExtensionDB(monitorDb.ExtensionName, this);
+            db.AddExtensionDB(Name, this);
         }
 
         public override void Dispose() {
