@@ -83,15 +83,6 @@ namespace Friflo.Json.Fliox.DB.Host
         /// </summary>
         public              CustomContainerName CustomContainerName { get => customContainerName; set => customContainerName = NotNull(value, nameof(CustomContainerName)); }
         
-        private  readonly   Dictionary<string, EntityDatabase>  extensionDbs = new Dictionary<string, EntityDatabase>();
-        
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string      extensionName;
-        public  string      ExtensionName {
-            get => extensionName;
-            set => extensionName = extensionName == null ? value : throw new InvalidOperationException($"extensionName already assigned: {extensionName}"); 
-        }
-        
         private static T    NotNull<T> (T value, string name) where T : class => value ?? throw new NullReferenceException(name);
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   TaskHandler         taskHandler         = new TaskHandler();
@@ -238,7 +229,17 @@ namespace Friflo.Json.Fliox.DB.Host
                 RequestStats.Update(client.stats, this, syncRequest);
             }
         }
+
+        // --------------------------------- extension databases ---------------------------------
+        private  readonly   Dictionary<string, EntityDatabase>  extensionDbs = new Dictionary<string, EntityDatabase>();
         
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string      extensionName;
+        public  string      ExtensionName {
+            get => extensionName;
+            set => extensionName = extensionName == null ? value : throw new InvalidOperationException($"extensionName already assigned: {extensionName}"); 
+        }
+
         public EntityDatabase AddExtensionDB (string extensionName) {
             if (extensionName == null) throw new ArgumentNullException(nameof(extensionName));
             var extensionDB = new ExtensionDatabase (this, extensionName);
