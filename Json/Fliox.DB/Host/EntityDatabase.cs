@@ -95,8 +95,8 @@ namespace Friflo.Json.Fliox.DB.Host
         // ReSharper disable once EmptyConstructor - keep for code navigation
         protected EntityDatabase () { }
         protected EntityDatabase (EntityDatabase extensionBase, string extensionName) {
-            this.extensionBase = extensionBase;
-            this.extensionName = extensionName;
+            this.extensionBase = extensionBase ?? throw new ArgumentException(nameof(extensionBase));
+            this.extensionName = extensionName ?? throw new ArgumentException(nameof(extensionName));
         }
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);

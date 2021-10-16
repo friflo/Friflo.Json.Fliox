@@ -14,13 +14,12 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
     public class MonitorDatabase : EntityDatabase
     {
         internal readonly    EntityDatabase      extDb;
-        internal readonly    EntityDatabase      baseDB;
         private  readonly    MonitorStore        store;
         
         public const string Name = "monitor";
         
-        public MonitorDatabase (EntityDatabase baseDB) : base (baseDB, Name) {
-            this.baseDB = baseDB;
+        public MonitorDatabase (EntityDatabase extensionBase) : base (extensionBase, Name) {
+
             extDb       = new MemoryDatabase();
             TaskHandler = new MonitorHandler(this);
             store       = new MonitorStore(extDb, HostTypeStore.Get());
@@ -37,10 +36,10 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
 
         protected override async Task ExecuteSyncPrepare(SyncRequest syncRequest, MessageContext messageContext) {
             if (FindReadEntities(nameof(MonitorStore.clients), syncRequest.tasks)) {
-                store.UpdateClients(baseDB, extensionName);
+                store.UpdateClients(extensionBase, extensionName);
             }
             if (FindReadEntities(nameof(MonitorStore.users), syncRequest.tasks)) {
-                store.UpdateUsers(baseDB, extensionName);
+                store.UpdateUsers(extensionBase, extensionName);
             }
             await store.TrySync().ConfigureAwait(false);
         }

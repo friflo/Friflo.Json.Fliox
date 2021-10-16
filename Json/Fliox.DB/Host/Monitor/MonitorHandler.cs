@@ -23,8 +23,8 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     if (message.name == MonitorStore.ClearStats) {
                         monitorDb.Authenticator.ClearUserStats();
                         monitorDb.ClientController.ClearClientStats();
-                        monitorDb.baseDB.Authenticator.ClearUserStats();
-                        monitorDb.baseDB.ClientController.ClearClientStats();
+                        monitorDb.extensionBase.Authenticator.ClearUserStats();
+                        monitorDb.extensionBase.ClientController.ClearClientStats();
                         SyncTaskResult messageResult = new SendMessageResult();
                         return Task.FromResult(messageResult);
                     }
