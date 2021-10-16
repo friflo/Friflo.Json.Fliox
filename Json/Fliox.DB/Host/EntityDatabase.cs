@@ -159,7 +159,7 @@ namespace Friflo.Json.Fliox.DB.Host
             if (database != null) {
                 if (!extensionDbs.TryGetValue(database, out db))
                     return new MsgResponse<SyncResponse>($"database not found: '{syncRequest.database}'");
-                await db.ExecuteSyncPrepare(syncRequest, messageContext);
+                await db.ExecuteSyncPrepare(syncRequest, messageContext).ConfigureAwait(false);
             }
             if (database != db.extensionName)
                 throw new InvalidOperationException($"Unexpected ExtensionName. expect: {database}, was: {db.extensionName}");
