@@ -160,7 +160,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var userKey    = new JsonKey(userId);
             var clientKey  = new JsonKey(clientId);
             store.SetUserClient(userKey, clientKey);
-            // monitor.SetUserClient(userKey, clientKey);
             
             monitor.SendMessage(MonitorStore.ClearStats);
             await monitor.Sync();
