@@ -145,8 +145,7 @@ namespace Friflo.Json.Fliox.DB.Host
         /// </para>
         /// </summary>
         public virtual async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            if (messageContext.authState.AuthExecuted)
-                throw new InvalidOperationException("Expect AuthExecuted == false");
+            if (messageContext.authState.AuthExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             messageContext.clientId = syncRequest.clientId;
             
             await Authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
@@ -160,7 +159,7 @@ namespace Friflo.Json.Fliox.DB.Host
                 await db.ExecuteSyncPrepare(syncRequest, messageContext);
             }
             if (database != db.ExtensionName)
-               throw new InvalidOperationException($"Unexpected ExtensionName. expect: {database}, was: {db.ExtensionName}");
+                throw new InvalidOperationException($"Unexpected ExtensionName. expect: {database}, was: {db.ExtensionName}");
                     
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null) {
@@ -169,15 +168,13 @@ namespace Friflo.Json.Fliox.DB.Host
             var tasks       = new List<SyncTaskResult>(requestTasks.Count);
             var resultMap   = new Dictionary<string, ContainerEntities>();
             var response    = new SyncResponse { tasks = tasks, resultMap = resultMap, database = database };
-            int index = -1;
+            int index = 0;
             foreach (var task in requestTasks) {
-                index++;
                 if (task == null) {
-                    var taskResult = SyncRequestTask.InvalidTask($"element must not be null. tasks[{index}]");
-                    tasks.Add(taskResult);
+                    tasks.Add(SyncRequestTask.InvalidTask($"element must not be null. tasks[{index}]"));
                     continue;
                 }
-                task.index = index;
+                task.index = index++;
                 try {
                     SyncTaskResult result = await db.taskHandler.ExecuteTask(task, db, response, messageContext).ConfigureAwait(false);
                     tasks.Add(result);
@@ -185,13 +182,9 @@ namespace Friflo.Json.Fliox.DB.Host
                 catch (Exception e) {
                     // Note!  Should not happen - see documentation of this method.
                     var exceptionName   = e.GetType().Name;
-                    var message         = $"{exceptionName}: {e.Message}";
-                    var stacktrace      = e.StackTrace;
-                    var result = new TaskErrorResult{
-                        type        = TaskErrorResultType.UnhandledException,
-                        message     = message,
-                        stacktrace  = stacktrace
-                    };
+                    var msg             = $"{exceptionName}: {e.Message}";
+                    var stack           = e.StackTrace;
+                    var result = new TaskErrorResult{ type = TaskErrorResultType.UnhandledException, message = msg, stacktrace  = stack };
                     tasks.Add(result);
                 }
             }
@@ -200,8 +193,7 @@ namespace Friflo.Json.Fliox.DB.Host
             // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
             // As a client is required to use response.clientId it is set to null if given clientId was invalid.
             // So next request will create a new valid client id.
-            response.clientId = messageContext.clientIdValidation == ClientIdValidation.Invalid
-                ? new JsonKey() : messageContext.clientId;
+            response.clientId = messageContext.clientIdValidation == ClientIdValidation.Invalid ? new JsonKey() : messageContext.clientId;
             
             response.AssertResponse(syncRequest);
             
