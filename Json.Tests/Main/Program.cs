@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Main
             var fileDatabase            = new FileDatabase(databaseFolder);
             
             var monitor                 = new MonitorDatabase(fileDatabase);
-            fileDatabase.AddExtensionDB(MonitorDatabase.Name, monitor);
+            fileDatabase.AddExtensionDB(monitor);
             fileDatabase.EventBroker    = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
             fileDatabase.Authenticator  = CreateUserAuthenticator();                // optional. Otherwise all request tasks are authorized
             

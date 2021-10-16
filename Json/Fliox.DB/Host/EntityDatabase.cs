@@ -94,6 +94,7 @@ namespace Friflo.Json.Fliox.DB.Host
         
         // ReSharper disable once EmptyConstructor - keep for code navigation
         protected EntityDatabase () { }
+        protected EntityDatabase (string extensionName) { ExtensionName = extensionName; }
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 
@@ -236,12 +237,16 @@ namespace Friflo.Json.Fliox.DB.Host
         
         private  readonly   Dictionary<string, EntityDatabase>  extensionDbs = new Dictionary<string, EntityDatabase>();
 
-        public void AddExtensionDB(string extensionName, EntityDatabase extensionDB) {
+        private void AddExtensionDB(string extensionName, EntityDatabase extensionDB) {
             if (ExtensionBase != null)
                 throw new InvalidOperationException($"database already added as extension: {ExtensionName}");
             extensionDB.ExtensionName   = extensionName ?? throw new ArgumentNullException(nameof(extensionName));
             extensionDB.ExtensionBase   = this;
             extensionDbs.Add(extensionName, extensionDB);
+        }
+        
+        public void AddExtensionDB(EntityDatabase extensionDB) {
+            AddExtensionDB(extensionDB.ExtensionName, extensionDB);
         }
 
         public EntityDatabase AddExtensionDB (string extensionName) {

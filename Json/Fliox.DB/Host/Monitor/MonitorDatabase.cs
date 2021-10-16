@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         
         public const string Name = "monitor";
         
-        public MonitorDatabase (EntityDatabase db) {
+        public MonitorDatabase (EntityDatabase db) : base (Name) {
             this.db       = db;
             monitorDb     = new MemoryDatabase();
             TaskHandler   = new MonitorHandler(this);
@@ -37,10 +37,10 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
 
         protected override async Task ExecuteSyncPrepare(SyncRequest syncRequest, MessageContext messageContext) {
             if (FindReadEntities(nameof(MonitorStore.clients), syncRequest.tasks)) {
-                store.UpdateClients(db);
+                store.UpdateClients(db, ExtensionName);
             }
             if (FindReadEntities(nameof(MonitorStore.users), syncRequest.tasks)) {
-                store.UpdateUsers(db);
+                store.UpdateUsers(db, ExtensionName);
             }
             // store.SetUserClient(syncRequest.userId, syncRequest.clientId);
             // store.SetToken(syncRequest.token);
@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
     
     public partial class MonitorStore
     {
-        internal void UpdateClients(EntityDatabase db) {
+        internal void UpdateClients(EntityDatabase db, string monitorName) {
             foreach (var pair in db.ClientController.Clients) {
                 UserClient client   = pair.Value;
                 var clientId        = pair.Key;
@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     clientInfo = new ClientInfo { id = clientId };
                 }
                 clientInfo.user     = client.userId;
-                RequestStats.StatsToList(clientInfo.stats, client.stats, MonitorDatabase.Name);
+                RequestStats.StatsToList(clientInfo.stats, client.stats, monitorName);
                 clientInfo.ev       = GetEventInfo(db, clientInfo);
 
                 clients.Upsert(clientInfo);
@@ -101,13 +101,13 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             };
         }
         
-        internal void UpdateUsers(EntityDatabase db) {
+        internal void UpdateUsers(EntityDatabase db, string monitorName) {
             foreach (var pair in db.Authenticator.users) {
                 if (!users.TryGet(pair.Key, out var userInfo)) {
                     userInfo = new UserInfo { id = pair.Key };
                 }
                 User user   = pair.Value;
-                RequestStats.StatsToList(userInfo.stats, user.stats, MonitorDatabase.Name);
+                RequestStats.StatsToList(userInfo.stats, user.stats, monitorName);
 
                 var userClients = user.clients;
                 if (userInfo.clients == null) {
