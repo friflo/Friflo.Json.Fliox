@@ -90,11 +90,14 @@ namespace Friflo.Json.Fliox.DB.Host
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   ClientController    clientController    = new IncrementClientController();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   CustomContainerName customContainerName = name => name;
 
-        public override     string                              ToString() => ExtensionName != null ? $"'{ExtensionName}'" : "";
+        public override     string                              ToString() => extensionName != null ? $"'{extensionName}'" : "";
         
         // ReSharper disable once EmptyConstructor - keep for code navigation
         protected EntityDatabase () { }
-        protected EntityDatabase (string extensionName) { ExtensionName = extensionName; }
+        protected EntityDatabase (EntityDatabase extensionBase, string extensionName) {
+            this.extensionBase = extensionBase;
+            this.extensionName = extensionName;
+        }
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
 
@@ -158,8 +161,8 @@ namespace Friflo.Json.Fliox.DB.Host
                     return new MsgResponse<SyncResponse>($"database not found: '{syncRequest.database}'");
                 await db.ExecuteSyncPrepare(syncRequest, messageContext);
             }
-            if (database != db.ExtensionName)
-                throw new InvalidOperationException($"Unexpected ExtensionName. expect: {database}, was: {db.ExtensionName}");
+            if (database != db.extensionName)
+                throw new InvalidOperationException($"Unexpected ExtensionName. expect: {database}, was: {db.extensionName}");
                     
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null) {
@@ -223,26 +226,17 @@ namespace Friflo.Json.Fliox.DB.Host
         }
 
         // --------------------------------- extension databases ---------------------------------
-        internal            string                              ExtensionName   { get; private set; }
-        internal            EntityDatabase                      ExtensionBase   { get; private set; }
-        
+        internal readonly   string                              extensionName;
+        internal readonly   EntityDatabase                      extensionBase;
         private  readonly   Dictionary<string, EntityDatabase>  extensionDbs = new Dictionary<string, EntityDatabase>();
-
-        private void AddExtensionDB(string extensionName, EntityDatabase extensionDB) {
-            if (ExtensionBase != null)
-                throw new InvalidOperationException($"database already added as extension: {ExtensionName}");
-            extensionDB.ExtensionName   = extensionName ?? throw new ArgumentNullException(nameof(extensionName));
-            extensionDB.ExtensionBase   = this;
-            extensionDbs.Add(extensionName, extensionDB);
-        }
         
         public void AddExtensionDB(EntityDatabase extensionDB) {
-            AddExtensionDB(extensionDB.ExtensionName, extensionDB);
+            extensionDbs.Add(extensionDB.extensionName, extensionDB);
         }
 
         public EntityDatabase AddExtensionDB (string extensionName) {
             var extensionDB = new ExtensionDatabase (this, extensionName);
-            AddExtensionDB(extensionName, extensionDB);
+            extensionDbs.Add(extensionName, extensionDB);
             return extensionDB;
         }
     }

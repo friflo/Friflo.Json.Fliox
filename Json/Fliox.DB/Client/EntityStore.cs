@@ -316,8 +316,8 @@ namespace Friflo.Json.Fliox.DB.Client
             var pendingSyncs = _intern.pendingSyncs;
             try {
                 var database            = _intern.database; 
-                syncRequest.database    = database.ExtensionName;
-                var execDB              = database.ExtensionBase ?? database;
+                syncRequest.database    = database.extensionName;
+                var execDB              = database.extensionBase ?? database;
                 task = execDB.ExecuteSync(syncRequest, messageContext);
 
                 pendingSyncs.TryAdd(task, messageContext);

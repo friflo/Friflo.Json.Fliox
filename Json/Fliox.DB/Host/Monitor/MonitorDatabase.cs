@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         
         public const string Name = "monitor";
         
-        public MonitorDatabase (EntityDatabase baseDB) : base (Name) {
+        public MonitorDatabase (EntityDatabase baseDB) : base (baseDB, Name) {
             this.baseDB = baseDB;
             extDb       = new MemoryDatabase();
             TaskHandler = new MonitorHandler(this);
@@ -37,10 +37,10 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
 
         protected override async Task ExecuteSyncPrepare(SyncRequest syncRequest, MessageContext messageContext) {
             if (FindReadEntities(nameof(MonitorStore.clients), syncRequest.tasks)) {
-                store.UpdateClients(baseDB, ExtensionName);
+                store.UpdateClients(baseDB, extensionName);
             }
             if (FindReadEntities(nameof(MonitorStore.users), syncRequest.tasks)) {
-                store.UpdateUsers(baseDB, ExtensionName);
+                store.UpdateUsers(baseDB, extensionName);
             }
             await store.TrySync().ConfigureAwait(false);
         }
