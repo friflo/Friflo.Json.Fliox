@@ -57,9 +57,20 @@ namespace Friflo.Json.Fliox.DB.Client
             ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
             var subscriptionProcessor   = new SubscriptionProcessor(this);
-            _intern = new StoreIntern(typeStore, database, tracer, eventTarget, subscriptionProcessor);
+            _intern = new StoreIntern(null, typeStore, database, tracer, eventTarget, subscriptionProcessor);
             _intern.syncStore = new SyncStore();
             SetUserClient(userId, clientId);
+            StoreUtils.InitEntitySets(this);
+        }
+        
+        protected EntityStore(EntityDatabase database, EntityStore baseStore) {
+            if (database  == null) throw new ArgumentNullException(nameof(database));
+            if (baseStore == null) throw new ArgumentNullException(nameof(baseStore));
+            
+            ITracerContext tracer       = this;
+            var subscriptionProcessor   = new SubscriptionProcessor(this);
+            _intern = new StoreIntern(baseStore, baseStore._intern.typeStore, database, tracer, null, subscriptionProcessor);
+            _intern.syncStore = new SyncStore();
             StoreUtils.InitEntitySets(this);
         }
         
@@ -101,12 +112,18 @@ namespace Friflo.Json.Fliox.DB.Client
             messageContext.Release();
             return result;
         }
+        
+        private void AssertBaseStore() {
+            if (_intern.baseStore != null)
+                throw new InvalidOperationException("only base store can set: userId, clientId & token");
+        } 
 
         public void SetUserClient (string userId, string clientId) {
             SetUserClient(new JsonKey(userId), new JsonKey(clientId));
         }
 
         public void SetUserClient (in JsonKey userId, in JsonKey clientId) {
+            AssertBaseStore();
             _intern.userId      = userId;
             var newClientId     = clientId;
             if (newClientId.IsEqual(_intern.clientId))
@@ -121,10 +138,12 @@ namespace Friflo.Json.Fliox.DB.Client
         }
 
         internal void SetUser (JsonKey user) {
+            AssertBaseStore();
             _intern.userId  = user;
         }
         
         public void SetToken (string token) {
+            AssertBaseStore();
             _intern.token   = token;
         }
 
@@ -361,17 +380,18 @@ namespace Friflo.Json.Fliox.DB.Client
             syncStore.SetSyncSets(this);
             
             var tasks       = new List<SyncRequestTask>();
+            var baseStore   = _intern.baseStore ?? this;
             var syncRequest = new SyncRequest {
                 // database    = _intern.database.ExtensionName, 
                 tasks       = tasks,
-                userId      = _intern.userId,
-                clientId    = _intern.clientId, 
-                token       = _intern.token
+                userId      = baseStore._intern.userId,
+                clientId    = baseStore._intern.clientId, 
+                token       = baseStore._intern.token
             };
 
             // see method docs
-            if (_intern.subscriptionProcessor != null) {
-                syncRequest.eventAck = _intern.lastEventSeq;
+            if (baseStore._intern.subscriptionProcessor != null) {
+                syncRequest.eventAck = baseStore._intern.lastEventSeq;
             }
 
             foreach (var setPair in _intern.setByType) {

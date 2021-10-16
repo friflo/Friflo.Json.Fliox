@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Client;
@@ -77,7 +76,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             const string userId     = "poc-user";
             const string clientId   = "poc-client"; 
             using (var store    = new PocStore(database, null))
-            using (var monitor  = new MonitorStore(monitorDb, TestGlobals.typeStore)) {
+            using (var monitor  = new MonitorStore(monitorDb, store)) {
                 var result = await Monitor(store, monitor, userId, clientId);
                 AssertNoAuthResult(result);
                 
@@ -93,9 +92,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             const string userId     = "admin";
             const string clientId   = "admin-client"; 
             using (var store    = new PocStore(database, null))
-            using (var monitor  = new MonitorStore(monitorDb, TestGlobals.typeStore)) {
+            using (var monitor  = new MonitorStore(monitorDb, store)) {
                 store.SetToken("admin-token");
-                monitor.SetToken("admin-token");
                 var result = await Monitor(store, monitor, userId, clientId);
                 AssertAuthResult(result);
                 
@@ -109,7 +107,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             const string userId     = "admin";
             const string clientId   = "admin-xxx"; 
             using (var store    = new PocStore(database, null))
-            using (var monitor  = new MonitorStore(monitorDb, TestGlobals.typeStore)) {
+            using (var monitor  = new MonitorStore(monitorDb, store)) {
                 store.SetToken("invalid");
                 var result = await Monitor(store, monitor, userId, clientId);
                 AssertAuthFailedResult(result);
@@ -162,7 +160,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var userKey    = new JsonKey(userId);
             var clientKey  = new JsonKey(clientId);
             store.SetUserClient(userKey, clientKey);
-            monitor.SetUserClient(userKey, clientKey);
+            // monitor.SetUserClient(userKey, clientKey);
             
             monitor.SendMessage(MonitorStore.ClearStats);
             await monitor.Sync();

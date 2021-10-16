@@ -144,7 +144,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 
                 Console.WriteLine($"PocStore memory: {diff}");
-                var expected = Is.InRange(8536, 8880);
+                var expected = Is.InRange(8536, 8888);
                 That(diff, expected);
             }
         }
@@ -160,7 +160,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 await store.Sync(); // ~ 1 µs
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var expected = IsDebug() ? 1600 : 1504; // Test Debug & Release
+                var expected = IsDebug() ? 1600 : 1496; // Test Debug & Release
                 AreEqual(expected, diff);   // Test Release also
             }
         }
@@ -199,8 +199,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
         private class NoopDatabase : EntityDatabase
         {
-            public NoopDatabase () { }
-                
             public override EntityContainer CreateContainer(string name, EntityDatabase database) {
                 return null;
             }

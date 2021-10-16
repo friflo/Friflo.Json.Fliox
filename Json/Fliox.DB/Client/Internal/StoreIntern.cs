@@ -17,6 +17,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
     internal struct StoreIntern
     {
         // readonly
+        internal readonly   EntityStore                                 baseStore;
         internal readonly   TypeStore                                   typeStore;
         internal readonly   TypeCache                                   typeCache;
         internal readonly   EntityDatabase                              database;
@@ -50,6 +51,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
 
 
         internal StoreIntern(
+            EntityStore             baseStore,
             TypeStore               typeStore,
             EntityDatabase          database,
             ITracerContext          tracerContext,
@@ -60,6 +62,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             var mapper                  = new ObjectMapper(typeStore, new NoThrowHandler());
             mapper.TracerContext        = tracerContext;
             // readonly
+            this.baseStore              = baseStore;
             this.typeStore              = typeStore;
             this.typeCache              = mapper.writer.TypeCache;
             this.database               = database;
