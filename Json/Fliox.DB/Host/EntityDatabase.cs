@@ -148,8 +148,8 @@ namespace Friflo.Json.Fliox.DB.Host
             if (messageContext.authState.AuthExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             messageContext.clientId = syncRequest.clientId;
             
-            await Authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
-            messageContext.clientIdValidation = Authenticator.ValidateClientId(ClientController, messageContext);
+            await authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
+            messageContext.clientIdValidation = authenticator.ValidateClientId(clientController, messageContext);
 
             var database = syncRequest.database;
             EntityDatabase db = this;
@@ -218,7 +218,7 @@ namespace Friflo.Json.Fliox.DB.Host
             ref var clientId = ref messageContext.clientId;
             if (clientId.IsNull())
                 return;
-            if (ClientController.clients.TryGetValue(clientId, out UserClient client)) {
+            if (clientController.clients.TryGetValue(clientId, out UserClient client)) {
                 RequestStats.Update(client.stats, database, syncRequest);
             }
         }
