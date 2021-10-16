@@ -29,12 +29,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var monitorDB        = new MonitorDatabase(fileDatabase)) {
                 fileDatabase.AddExtensionDB(MonitorDatabase.Name, monitorDB);
-                await AssertNoAuthMonitoringDB(fileDatabase, monitorDB);
-                
-                await RunWithUserAuth(fileDatabase, async () => {
-                    await AssertAuthMonitoringDB        (fileDatabase, monitorDB);
-                    await AssertAuthFailedMonitoringDB  (fileDatabase, monitorDB);
-                });
+                await AssertNoAuthMonitoringDB  (fileDatabase, monitorDB);
+                await AssertAuthMonitoringDB    (fileDatabase, monitorDB, fileDatabase);
             }
         }
         
@@ -46,12 +42,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase)) {
                 fileDatabase.AddExtensionDB(MonitorDatabase.Name, monitor);
                 var monitorDB = loopbackDatabase.AddExtensionDB(MonitorDatabase.Name);
-                await AssertNoAuthMonitoringDB(loopbackDatabase, monitorDB);
-                
-                await RunWithUserAuth(fileDatabase, async () => {
-                    await AssertAuthMonitoringDB        (loopbackDatabase, monitorDB);
-                    await AssertAuthFailedMonitoringDB  (loopbackDatabase, monitorDB);
-                });
+                await AssertNoAuthMonitoringDB  (loopbackDatabase, monitorDB);
+                await AssertAuthMonitoringDB    (loopbackDatabase, monitorDB, fileDatabase);
             }
         }
         
@@ -65,22 +57,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 fileDatabase.AddExtensionDB(MonitorDatabase.Name, monitor);
                 await RunRemoteHost(hostDatabase, async () => {
                     var monitorDB   = remoteDatabase.AddExtensionDB(MonitorDatabase.Name);
-                    await AssertNoAuthMonitoringDB(remoteDatabase, monitorDB);
-                    
-                    await RunWithUserAuth(fileDatabase, async () => {
-                        await AssertAuthMonitoringDB        (remoteDatabase, monitorDB);
-                        await AssertAuthFailedMonitoringDB  (remoteDatabase, monitorDB);
-                    });
+                    await AssertNoAuthMonitoringDB  (remoteDatabase, monitorDB);
+                    await AssertAuthMonitoringDB    (remoteDatabase, monitorDB, fileDatabase);
                 });
             }
         }
         
-        private static async Task RunWithUserAuth(EntityDatabase database, Func<Task> action) {
+        private static async Task AssertAuthMonitoringDB(EntityDatabase storeDB, EntityDatabase monitorDB, EntityDatabase database) {
             using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
             using (var userStore        = new UserStore (userDatabase, UserStore.AuthenticationUser, null))
             using (var _                = new UserDatabaseHandler   (userDatabase)) {
                 database.Authenticator  = new UserAuthenticator(userStore, userStore);
-                await action();
+                await AssertAuthSuccessMonitoringDB (storeDB, monitorDB);
+                await AssertAuthFailedMonitoringDB  (storeDB, monitorDB);
             }
         }
 
@@ -100,7 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
 
-        private  static async Task AssertAuthMonitoringDB(EntityDatabase database, EntityDatabase monitorDb) {
+        private  static async Task AssertAuthSuccessMonitoringDB(EntityDatabase database, EntityDatabase monitorDb) {
             const string userId     = "admin";
             const string clientId   = "admin-client"; 
             using (var store    = new PocStore(database, null))
