@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.DB.Host
     {
         private readonly    EntityDatabase  defaultDatabase;
         
-        internal ExtensionDatabase (EntityDatabase defaultDatabase, string extensionName) {
+        internal ExtensionDatabase (EntityDatabase defaultDatabase, string extensionName) : base (extensionName) {
             this.defaultDatabase    = defaultDatabase;
         }
         

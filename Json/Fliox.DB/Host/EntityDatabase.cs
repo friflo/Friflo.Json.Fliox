@@ -178,8 +178,7 @@ namespace Friflo.Json.Fliox.DB.Host
                 try {
                     SyncTaskResult result = await db.taskHandler.ExecuteTask(task, db, response, messageContext).ConfigureAwait(false);
                     tasks.Add(result);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     // Note!  Should not happen - see documentation of this method.
                     var exceptionName   = e.GetType().Name;
                     var msg             = $"{exceptionName}: {e.Message}";
