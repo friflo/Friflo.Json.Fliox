@@ -42,8 +42,6 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             if (FindReadEntities(nameof(MonitorStore.users), syncRequest.tasks)) {
                 store.UpdateUsers(db, ExtensionName);
             }
-            // store.SetUserClient(syncRequest.userId, syncRequest.clientId);
-            // store.SetToken(syncRequest.token);
             await store.TrySync().ConfigureAwait(false);
         }
         
