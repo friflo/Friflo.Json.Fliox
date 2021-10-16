@@ -47,15 +47,19 @@ namespace Friflo.Json.Fliox.DB.Auth
         }
         
         public virtual bool EnsureValidClientId(ClientController clientController, MessageContext messageContext, out string error) {
-            error = null;
             switch (messageContext.clientIdValidation) {
                 case ClientIdValidation.Valid:
+                    error = null;
                     return true;
                 case ClientIdValidation.IsNull:
+                    error = null;
                     var user                            = messageContext.authState.User;
                     messageContext.clientId             = clientController.NewClientIdFor(user);
                     messageContext.clientIdValidation   = ClientIdValidation.Valid;
                     return true;
+                case ClientIdValidation.Invalid:
+                    error = "invalid clientId";
+                    return false;
             }
             throw new InvalidOperationException ("unexpected clientIdValidation state");
         }

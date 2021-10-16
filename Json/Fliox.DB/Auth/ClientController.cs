@@ -38,7 +38,10 @@ namespace Friflo.Json.Fliox.DB.Auth
         }
         
         public bool AddClientIdFor(User user, in JsonKey clientId) {
-            var client = new UserClient(user.userId);
+            if (clients.TryGetValue(clientId, out UserClient client )) {
+                return client.userId.IsEqual(user.userId);
+            }
+            client = new UserClient(user.userId);
             if (clients.TryAdd(clientId, client)) {
                 user.clients.Add(clientId);
                 return true;
