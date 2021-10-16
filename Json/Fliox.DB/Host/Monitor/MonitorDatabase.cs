@@ -13,17 +13,17 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
     public class MonitorDatabase : EntityDatabase
     {
-        internal readonly    EntityDatabase      monitorDb;
-        internal readonly    EntityDatabase      db;
+        internal readonly    EntityDatabase      extDb;
+        internal readonly    EntityDatabase      baseDB;
         private  readonly    MonitorStore        store;
         
         public const string Name = "monitor";
         
-        public MonitorDatabase (EntityDatabase db) : base (Name) {
-            this.db       = db;
-            monitorDb     = new MemoryDatabase();
-            TaskHandler   = new MonitorHandler(this);
-            store         = new MonitorStore(monitorDb, HostTypeStore.Get());
+        public MonitorDatabase (EntityDatabase baseDB) : base (Name) {
+            this.baseDB = baseDB;
+            extDb       = new MemoryDatabase();
+            TaskHandler = new MonitorHandler(this);
+            store       = new MonitorStore(extDb, HostTypeStore.Get());
         }
 
         public override void Dispose() {
@@ -32,15 +32,15 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            return monitorDb.CreateContainer(name, database);
+            return extDb.CreateContainer(name, database);
         }
 
         protected override async Task ExecuteSyncPrepare(SyncRequest syncRequest, MessageContext messageContext) {
             if (FindReadEntities(nameof(MonitorStore.clients), syncRequest.tasks)) {
-                store.UpdateClients(db, ExtensionName);
+                store.UpdateClients(baseDB, ExtensionName);
             }
             if (FindReadEntities(nameof(MonitorStore.users), syncRequest.tasks)) {
-                store.UpdateUsers(db, ExtensionName);
+                store.UpdateUsers(baseDB, ExtensionName);
             }
             await store.TrySync().ConfigureAwait(false);
         }

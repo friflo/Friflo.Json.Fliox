@@ -23,15 +23,15 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     if (message.name == MonitorStore.ClearStats) {
                         monitorDb.Authenticator.ClearUserStats();
                         monitorDb.ClientController.ClearClientStats();
-                        monitorDb.db.Authenticator.ClearUserStats();
-                        monitorDb.db.ClientController.ClearClientStats();
+                        monitorDb.baseDB.Authenticator.ClearUserStats();
+                        monitorDb.baseDB.ClientController.ClearClientStats();
                         SyncTaskResult messageResult = new SendMessageResult();
                         return Task.FromResult(messageResult);
                     }
-                    return base.ExecuteTask(task, monitorDb.monitorDb, response, messageContext);
+                    return base.ExecuteTask(task, monitorDb.extDb, response, messageContext);
                 case TaskType.read:
                 case TaskType.query:
-                    return base.ExecuteTask(task, monitorDb.monitorDb, response, messageContext);
+                    return base.ExecuteTask(task, monitorDb.extDb, response, messageContext);
                 default:
                     SyncTaskResult result = SyncRequestTask.InvalidTask ($"MonitorDatabase does not support task: '{task.TaskType}'");
                     return Task.FromResult(result);
