@@ -179,15 +179,10 @@ namespace Friflo.Json.Fliox.DB.Host
                 }
                 task.index = index++;
                 try {
-                    SyncTaskResult result = await db.taskHandler.ExecuteTask(task, db, response, messageContext).ConfigureAwait(false);
+                    var result = await db.taskHandler.ExecuteTask(task, db, response, messageContext).ConfigureAwait(false);
                     tasks.Add(result);
                 } catch (Exception e) {
-                    // Note!  Should not happen - see documentation of this method.
-                    var exceptionName   = e.GetType().Name;
-                    var msg             = $"{exceptionName}: {e.Message}";
-                    var stack           = e.StackTrace;
-                    var result = new TaskErrorResult{ type = TaskErrorResultType.UnhandledException, message = msg, stacktrace  = stack };
-                    tasks.Add(result);
+                    tasks.Add(TaskExceptionError(e)); // Note!  Should not happen - see documentation of this method.
                 }
             }
             UpdateRequestStats(database, syncRequest, messageContext);
@@ -207,6 +202,13 @@ namespace Friflo.Json.Fliox.DB.Host
                 }
             }
             return new MsgResponse<SyncResponse>(response);
+        }
+        
+        private static TaskErrorResult TaskExceptionError (Exception e) {
+            var exceptionName   = e.GetType().Name;
+            var msg             = $"{exceptionName}: {e.Message}";
+            var stack           = e.StackTrace;
+            return new TaskErrorResult{ type = TaskErrorResultType.UnhandledException, message = msg, stacktrace  = stack };
         }
 
         protected virtual Task ExecuteSyncPrepare (SyncRequest syncRequest, MessageContext messageContext) {
