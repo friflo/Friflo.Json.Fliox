@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Main
             Console.WriteLine($"FileDatabase: {databaseFolder}");
             var fileDatabase            = new FileDatabase(databaseFolder);
             
-            fileDatabase.AddExtensionDB(new MonitorDatabase(fileDatabase));         // optional. enables monitoring database access
+            fileDatabase.AddExtensionDB  (new MonitorDatabase(fileDatabase));       // optional. enables monitoring database access
             fileDatabase.EventBroker    = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
             fileDatabase.Authenticator  = CreateUserAuthenticator();                // optional. Otherwise all request tasks are authorized
             
