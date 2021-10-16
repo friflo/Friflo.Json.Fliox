@@ -144,53 +144,48 @@ namespace Friflo.Json.Fliox.DB.Host
         /// </para>
         /// </summary>
         public virtual async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            var database = syncRequest.database; 
-            if (database != null) {
-                if (extensionDbs.TryGetValue(database, out var db)) {
-                    syncRequest.database    = null;
-                    var extResponse = await db.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
-                    if (extResponse.success != null)
-                        extResponse.success.database = database;
-                    return extResponse;
-                }
-                return new MsgResponse<SyncResponse>($"database not found: '{syncRequest.database}'");
-            }
+            if (messageContext.authState.AuthExecuted)
+                throw new InvalidOperationException("Expect AuthExecuted == false");
             messageContext.clientId = syncRequest.clientId;
             
             await Authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
             messageContext.clientIdValidation = Authenticator.ValidateClientId(ClientController, messageContext);
-            
+
+            var database = syncRequest.database;
+            EntityDatabase db = this;
+            if (database != null) {
+                if (!extensionDbs.TryGetValue(database, out db))
+                    return new MsgResponse<SyncResponse>($"database not found: '{syncRequest.database}'");
+                await db.ExecuteSyncPrepare(syncRequest, messageContext);
+            }
+            if (database != db.ExtensionName)
+               throw new InvalidOperationException($"Unexpected ExtensionName. expect: {database}, was: {db.ExtensionName}");
+                    
             var requestTasks = syncRequest.tasks;
-            if (requestTasks == null)
+            if (requestTasks == null) {
                 return new MsgResponse<SyncResponse> ("missing field: tasks (array)");
-            var tasks = new List<SyncTaskResult>(requestTasks.Count);
-            var response = new SyncResponse {
-                tasks       = tasks,
-                resultMap   = new Dictionary<string, ContainerEntities>()
-            };
+            }
+            var tasks       = new List<SyncTaskResult>(requestTasks.Count);
+            var resultMap   = new Dictionary<string, ContainerEntities>();
+            var response    = new SyncResponse { tasks = tasks, resultMap = resultMap, database = database };
             int index = -1;
             foreach (var task in requestTasks) {
                 index++;
                 if (task == null) {
-                    var taskResult = new TaskErrorResult{
-                        type        = TaskErrorResultType.InvalidTask,
-                        message     = $"element must not be null. tasks[{index}]"
-                    };
+                    var taskResult = SyncRequestTask.InvalidTask($"element must not be null. tasks[{index}]");
                     tasks.Add(taskResult);
                     continue;
                 }
                 task.index = index;
-                    
                 try {
-                    SyncTaskResult result = await TaskHandler.ExecuteTask(task, this, response, messageContext).ConfigureAwait(false);
+                    SyncTaskResult result = await db.taskHandler.ExecuteTask(task, db, response, messageContext).ConfigureAwait(false);
                     tasks.Add(result);
                 }
                 catch (Exception e) {
-                    // Note!
-                    // Should not happen - see documentation of this method.
-                    var exceptionName = e.GetType().Name;
-                    var message = $"{exceptionName}: {e.Message}";
-                    var stacktrace = e.StackTrace;
+                    // Note!  Should not happen - see documentation of this method.
+                    var exceptionName   = e.GetType().Name;
+                    var message         = $"{exceptionName}: {e.Message}";
+                    var stacktrace      = e.StackTrace;
                     var result = new TaskErrorResult{
                         type        = TaskErrorResultType.UnhandledException,
                         message     = message,
@@ -199,7 +194,7 @@ namespace Friflo.Json.Fliox.DB.Host
                     tasks.Add(result);
                 }
             }
-            UpdateRequestStats(syncRequest, messageContext);
+            UpdateRequestStats(database, syncRequest, messageContext);
 
             // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
             // As a client is required to use response.clientId it is set to null if given clientId was invalid.
@@ -218,38 +213,41 @@ namespace Friflo.Json.Fliox.DB.Host
             }
             return new MsgResponse<SyncResponse>(response);
         }
+
+        protected virtual Task ExecuteSyncPrepare (SyncRequest syncRequest, MessageContext messageContext) {
+            return Task.CompletedTask;
+        }
         
-        private void UpdateRequestStats(SyncRequest syncRequest, MessageContext messageContext) {
+        private void UpdateRequestStats(string database, SyncRequest syncRequest, MessageContext messageContext) {
+            if (database == null) database = "DEF";
             var user = messageContext.authState.User;
-            RequestStats.Update(user.stats, this, syncRequest);
+            RequestStats.Update(user.stats, database, syncRequest);
             ref var clientId = ref messageContext.clientId;
             if (clientId.IsNull())
                 return;
             if (ClientController.clients.TryGetValue(clientId, out UserClient client)) {
-                RequestStats.Update(client.stats, this, syncRequest);
+                RequestStats.Update(client.stats, database, syncRequest);
             }
         }
 
         // --------------------------------- extension databases ---------------------------------
-        private  readonly   Dictionary<string, EntityDatabase>  extensionDbs = new Dictionary<string, EntityDatabase>();
+        internal            string                              ExtensionName   { get; private set; }
+        internal            EntityDatabase                      ExtensionBase   { get; private set; }
         
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string      extensionName;
-        public  string      ExtensionName {
-            get => extensionName;
-            set => extensionName = extensionName == null ? value : throw new InvalidOperationException($"extensionName already assigned: {extensionName}"); 
+        private  readonly   Dictionary<string, EntityDatabase>  extensionDbs = new Dictionary<string, EntityDatabase>();
+
+        public void AddExtensionDB(string extensionName, EntityDatabase extensionDB) {
+            if (ExtensionBase != null)
+                throw new InvalidOperationException($"database already added as extension: {ExtensionName}");
+            extensionDB.ExtensionName   = extensionName ?? throw new ArgumentNullException(nameof(extensionName));
+            extensionDB.ExtensionBase   = this;
+            extensionDbs.Add(extensionName, extensionDB);
         }
 
         public EntityDatabase AddExtensionDB (string extensionName) {
-            if (extensionName == null) throw new ArgumentNullException(nameof(extensionName));
             var extensionDB = new ExtensionDatabase (this, extensionName);
-            extensionDbs.Add(extensionName, extensionDB);
+            AddExtensionDB(extensionName, extensionDB);
             return extensionDB;
-        }
-        
-        public void AddExtensionDB (string extensionName, EntityDatabase extensionDB) {
-            if (extensionName == null) throw new ArgumentNullException(nameof(extensionName));
-            extensionDbs.Add(extensionName, extensionDB);
         }
     }
     

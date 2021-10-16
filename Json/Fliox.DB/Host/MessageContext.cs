@@ -24,7 +24,6 @@ namespace Friflo.Json.Fliox.DB.Host
         public  readonly    IPools              pools;
         public  readonly    IEventTarget        eventTarget;
         public              AuthState           authState;
-        public              object              customData;
         
         private             PoolUsage           startUsage;
 

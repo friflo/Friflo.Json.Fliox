@@ -3,6 +3,7 @@
 using System;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Event;
+using Friflo.Json.Fliox.DB.Host.Monitor;
 using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Schema.Definition;
@@ -29,6 +30,9 @@ namespace Friflo.Json.Tests.Main
         private static void FlioxServer(string endpoint, string databaseFolder) {
             Console.WriteLine($"FileDatabase: {databaseFolder}");
             var fileDatabase            = new FileDatabase(databaseFolder);
+            
+            var monitor                 = new MonitorDatabase(fileDatabase);
+            fileDatabase.AddExtensionDB(MonitorDatabase.Name, monitor);
             fileDatabase.EventBroker    = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
             fileDatabase.Authenticator  = CreateUserAuthenticator();                // optional. Otherwise all request tasks are authorized
             

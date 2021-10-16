@@ -9,11 +9,9 @@ namespace Friflo.Json.Fliox.DB.Host
     internal class ExtensionDatabase : EntityDatabase
     {
         private readonly    EntityDatabase  defaultDatabase;
-        private readonly    string          extensionName;
         
         internal ExtensionDatabase (EntityDatabase defaultDatabase, string extensionName) {
             this.defaultDatabase    = defaultDatabase;
-            this.extensionName      = extensionName;
         }
         
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
@@ -21,7 +19,6 @@ namespace Friflo.Json.Fliox.DB.Host
         }
         
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            syncRequest.database = extensionName;
             return await defaultDatabase.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
         }
     }

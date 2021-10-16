@@ -27,9 +27,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static async Task TestMonitoringFile() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var monitorMemory    = new MemoryDatabase())
-            using (var monitorDB        = new MonitorDatabase(monitorMemory, fileDatabase)) {
-                await AssertNoAuthMonitoringDB (fileDatabase, monitorDB);
+            using (var monitorDB        = new MonitorDatabase(fileDatabase)) {
+                fileDatabase.AddExtensionDB(MonitorDatabase.Name, monitorDB);
+                await AssertNoAuthMonitoringDB(fileDatabase, monitorDB);
                 
                 await RunWithUserAuth(fileDatabase, async () => {
                     await AssertAuthMonitoringDB        (fileDatabase, monitorDB);
@@ -42,9 +42,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static async Task TestMonitoringLoopback() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var monitorMemory    = new MemoryDatabase())
-            using (                       new MonitorDatabase(monitorMemory, fileDatabase))
+            using (var monitor          = new MonitorDatabase(fileDatabase))
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase)) {
+                fileDatabase.AddExtensionDB(MonitorDatabase.Name, monitor);
                 var monitorDB = loopbackDatabase.AddExtensionDB(MonitorDatabase.Name);
                 await AssertNoAuthMonitoringDB(loopbackDatabase, monitorDB);
                 
@@ -59,8 +59,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static async Task TestMonitoringHttp() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/"))
+            using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/")) 
+            using (var monitor          = new MonitorDatabase(fileDatabase))
             using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {
+                fileDatabase.AddExtensionDB(MonitorDatabase.Name, monitor);
                 await RunRemoteHost(hostDatabase, async () => {
                     var monitorDB   = remoteDatabase.AddExtensionDB(MonitorDatabase.Name);
                     await AssertNoAuthMonitoringDB(remoteDatabase, monitorDB);
@@ -104,6 +106,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var store    = new PocStore(database, null))
             using (var monitor  = new MonitorStore(monitorDb, TestGlobals.typeStore)) {
                 store.SetToken("admin-token");
+                monitor.SetToken("admin-token");
                 var result = await Monitor(store, monitor, userId, clientId);
                 AssertAuthResult(result);
                 
@@ -131,11 +134,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static void AssertNoAuthResult(MonitorResult result) {
             var users   = result.users.Results;
             var clients = result.clients.Results;
-            AreEqual("{'id':'anonymous','clients':[],'stats':[{'db':'monitor','requests':1,'tasks':1}]}",   users[User.AnonymousId].ToString());
-            AreEqual("{'id':'poc-user','clients':['poc-client'],'stats':[{'requests':1,'tasks':2}]}",       users[new JsonKey("poc-user")].ToString());
+            AreEqual("{'id':'anonymous','clients':[],'stats':[]}",   users[User.AnonymousId].ToString());
+            AreEqual("{'id':'poc-user','clients':['poc-client'],'stats':[{'db':'monitor','requests':1,'tasks':1},{'db':'DEF','requests':1,'tasks':2}]}",       users[new JsonKey("poc-user")].ToString());
             AreEqual(2, users.Count);
                 
-            AreEqual("{'id':'poc-client','user':'poc-user','stats':[{'requests':1,'tasks':2}]}",            clients[new JsonKey("poc-client")].ToString());
+            AreEqual("{'id':'poc-client','user':'poc-user','stats':[{'db':'monitor','requests':1,'tasks':1},{'db':'DEF','requests':1,'tasks':2}]}",            clients[new JsonKey("poc-client")].ToString());
             AreEqual(1, clients.Count);
             
             NotNull(result.user.Result);
@@ -146,16 +149,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var users   = result.users.Results;
             var clients = result.clients.Results;
             AreEqual("{'id':'anonymous','clients':[],'stats':[]}",                                          users[User.AnonymousId].ToString());
-            AreEqual("{'id':'admin','clients':['admin-client'],'stats':[{'requests':1,'tasks':2}]}",        users[new JsonKey("admin")].ToString());
+            AreEqual("{'id':'admin','clients':['admin-client'],'stats':[{'db':'monitor','requests':1,'tasks':1},{'db':'DEF','requests':1,'tasks':2}]}",        users[new JsonKey("admin")].ToString());
                 
-            AreEqual("{'id':'admin-client','user':'admin','stats':[{'requests':1,'tasks':2}]}",             clients[new JsonKey("admin-client")].ToString());
+            AreEqual("{'id':'admin-client','user':'admin','stats':[{'db':'monitor','requests':1,'tasks':1},{'db':'DEF','requests':1,'tasks':2}]}",             clients[new JsonKey("admin-client")].ToString());
             NotNull(result.user.Result);
             NotNull(result.client.Result);
         }
         
         private static void AssertAuthFailedResult(MonitorResult result) {
-            // IsFalse(result.users.Success);
-            // IsFalse(result.clients.Success);
+            IsFalse(result.users.Success);
+            IsFalse(result.clients.Success);
         }
 
         private  static async Task AssertMonitoringErrors(MonitorStore monitor) {
@@ -170,6 +173,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var userKey    = new JsonKey(userId);
             var clientKey  = new JsonKey(clientId);
             store.SetUserClient(userKey, clientKey);
+            monitor.SetUserClient(userKey, clientKey);
             
             monitor.SendMessage(MonitorStore.ClearStats);
             await monitor.Sync();
@@ -183,7 +187,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 clients     = monitor.clients.QueryAll(),
                 user        = monitor.users.Read().Find(userKey),
                 client      = monitor.clients.Read().Find(clientKey),
-                sync        = await monitor.Sync()
+                sync        = await monitor.TrySync()
             };
             return result;
         }

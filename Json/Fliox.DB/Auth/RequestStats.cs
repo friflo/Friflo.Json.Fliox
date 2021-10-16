@@ -16,23 +16,23 @@ namespace Friflo.Json.Fliox.DB.Auth
         public override     string  ToString() => $"db: {db}, requests: {requests}, tasks: {tasks}";
 
         internal static void Update (
-            Dictionary<EntityDatabase, RequestStats>    stats,
-            EntityDatabase                              db,
-            SyncRequest                                 syncRequest)
+            Dictionary<string, RequestStats>    stats,
+            string                              database,
+            SyncRequest                         syncRequest)
         {
-            if (!stats.TryGetValue(db, out RequestStats requestStats)) {
-                requestStats = new RequestStats { db = db.ExtensionName };
-                stats.TryAdd(db, requestStats);
+            if (!stats.TryGetValue(database, out RequestStats requestStats)) {
+                requestStats = new RequestStats { db = database };
+                stats.TryAdd(database, requestStats);
             }
             requestStats.requests  ++;
             requestStats.tasks     += syncRequest.tasks.Count;
-            stats[db] = requestStats;
+            stats[database] = requestStats;
         }
         
         internal static void StatsToList(
-            List<RequestStats>                          dst,
-            Dictionary<EntityDatabase, RequestStats>    src,
-            string                                      exclude)
+            List<RequestStats>                  dst,
+            Dictionary<string, RequestStats>    src,
+            string                              exclude)
         {
             dst.Clear();
             foreach (var pair in src) {

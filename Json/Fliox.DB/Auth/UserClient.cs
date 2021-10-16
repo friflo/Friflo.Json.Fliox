@@ -8,10 +8,10 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Auth
 {
     public class UserClient {
-        internal readonly   JsonKey                                     userId;
-        internal readonly   Dictionary<EntityDatabase, RequestStats>    stats = new Dictionary<EntityDatabase, RequestStats>();
+        internal readonly   JsonKey                             userId;
+        internal readonly   Dictionary<string, RequestStats>    stats = new Dictionary<string, RequestStats>();
         
-        public   override   string                                      ToString() => userId.AsString();
+        public   override   string                              ToString() => userId.AsString();
 
         internal UserClient (in JsonKey userId) {
             this.userId     = userId;

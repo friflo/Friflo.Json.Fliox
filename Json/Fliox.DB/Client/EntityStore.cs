@@ -296,8 +296,11 @@ namespace Friflo.Json.Fliox.DB.Client
             Task<MsgResponse<SyncResponse>> task = null;
             var pendingSyncs = _intern.pendingSyncs;
             try {
-                task = _intern.database.ExecuteSync(syncRequest, messageContext);
-                
+                var database            = _intern.database; 
+                syncRequest.database    = database.ExtensionName;
+                var execDB              = database.ExtensionBase ?? database;
+                task = execDB.ExecuteSync(syncRequest, messageContext);
+
                 pendingSyncs.TryAdd(task, messageContext);
                 response = await task.ConfigureAwait(false);
                 pendingSyncs.TryRemove(task, out _);
