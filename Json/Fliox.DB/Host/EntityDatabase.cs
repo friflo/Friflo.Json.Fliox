@@ -219,7 +219,7 @@ namespace Friflo.Json.Fliox.DB.Host
         }
         
         private void UpdateRequestStats(string database, SyncRequest syncRequest, MessageContext messageContext) {
-            if (database == null) database = "DEF";
+            if (database == null) database = "default";
             var user = messageContext.authState.User;
             RequestStats.Update(user.stats, database, syncRequest);
             ref var clientId = ref messageContext.clientId;
