@@ -29,16 +29,16 @@ namespace Friflo.Json.Tests.Main
         //     $env:UserDomain 
         private static void FlioxServer(string endpoint, string databaseFolder) {
             Console.WriteLine($"FileDatabase: {databaseFolder}");
-            var fileDatabase            = new FileDatabase(databaseFolder);
+            var database                = new FileDatabase(databaseFolder);
             
-            fileDatabase.AddExtensionDB  (new MonitorDatabase(fileDatabase));       // optional. enables monitoring database access
-            fileDatabase.EventBroker    = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
-            fileDatabase.Authenticator  = CreateUserAuthenticator();                // optional. Otherwise all request tasks are authorized
+            database.AddExtensionDB      (new MonitorDatabase(database));           // optional. enables monitoring database access
+            database.EventBroker        = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
+            database.Authenticator      = CreateUserAuthenticator();                // optional. Otherwise all request tasks are authorized
             
             var typeSchema              = CreateTypeSchema(true);                   // optional. used by DatabaseSchema & SchemaHub
-            fileDatabase.Schema         = new DatabaseSchema(typeSchema);           // optional. Enables type validation for create, upsert & patch operations
+            database.Schema             = new DatabaseSchema(typeSchema);           // optional. Enables type validation for create, upsert & patch operations
             
-            var hostDatabase            = new HttpHostDatabase(fileDatabase, endpoint);
+            var hostDatabase            = new HttpHostDatabase(database, endpoint);
             hostDatabase.requestHandler = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
             hostDatabase.schemaHub      = new SchemaHub("/schema/", typeSchema, Utils.Zip); // optional. Web UI for database schema 
             hostDatabase.Start();
