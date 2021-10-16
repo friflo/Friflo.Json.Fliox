@@ -171,13 +171,14 @@ namespace Friflo.Json.Fliox.DB.Host
             var tasks       = new List<SyncTaskResult>(requestTasks.Count);
             var resultMap   = new Dictionary<string, ContainerEntities>();
             var response    = new SyncResponse { tasks = tasks, resultMap = resultMap, database = database };
-            int index = 0;
-            foreach (var task in requestTasks) {
+            
+            for (int index = 0; index < requestTasks.Count; index++) {
+                var task = requestTasks[index];
                 if (task == null) {
                     tasks.Add(SyncRequestTask.InvalidTask($"element must not be null. tasks[{index}]"));
                     continue;
                 }
-                task.index = index++;
+                task.index = index;
                 try {
                     var result = await db.taskHandler.ExecuteTask(task, db, response, messageContext).ConfigureAwait(false);
                     tasks.Add(result);
