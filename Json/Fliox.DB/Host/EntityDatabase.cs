@@ -189,7 +189,7 @@ namespace Friflo.Json.Fliox.DB.Host
                     tasks.Add(TaskExceptionError(e)); // Note!  Should not happen - see documentation of this method.
                 }
             }
-            hostStats.Update();
+            hostStats.Update(syncRequest);
             UpdateRequestStats(database, syncRequest, messageContext);
 
             // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
@@ -223,12 +223,12 @@ namespace Friflo.Json.Fliox.DB.Host
         private void UpdateRequestStats(string database, SyncRequest syncRequest, MessageContext messageContext) {
             if (database == null) database = "default";
             var user = messageContext.authState.User;
-            RequestCount.Update(user.requestCounts, database, syncRequest);
+            RequestCount.UpdateCounts(user.requestCounts, database, syncRequest);
             ref var clientId = ref messageContext.clientId;
             if (clientId.IsNull())
                 return;
             if (clientController.clients.TryGetValue(clientId, out UserClient client)) {
-                RequestCount.Update(client.requestCounts, database, syncRequest);
+                RequestCount.UpdateCounts(client.requestCounts, database, syncRequest);
             }
         }
 

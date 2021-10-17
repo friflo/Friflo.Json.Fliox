@@ -39,6 +39,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             if (FindReadEntities(nameof(MonitorStore.clients),  tasks)) stateStore.UpdateClients  (extensionBase, extensionName);
             if (FindReadEntities(nameof(MonitorStore.users),    tasks)) stateStore.UpdateUsers    (extensionBase.Authenticator, extensionName);
             if (FindReadEntities(nameof(MonitorStore.histories),tasks)) stateStore.UpdateHistories(extensionBase.hostStats.requestHistories);
+            if (FindReadEntities(nameof(MonitorStore.hosts),     tasks)) stateStore.UpdateHost     (extensionBase.hostStats);
             
             await stateStore.TrySync().ConfigureAwait(false);
         }
@@ -130,6 +131,14 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                 historyInfo.lastUpdate  = history.LastUpdate;
                 histories.Upsert(historyInfo);
             }
+        }
+        
+        internal void UpdateHost(HostStats hostStats) {
+            if (!hosts.TryGet(HostKey, out var hostInfo)) {
+                hostInfo = new HostInfo { id = HostKey };
+            }
+            hostInfo.counts = hostStats.requestCount;
+            hosts.Upsert(hostInfo);
         }
     }
 }

@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using Friflo.Json.Fliox.DB.Protocol;
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -14,18 +15,22 @@ namespace Friflo.Json.Fliox.DB.Host.Stats
 
         public override     string  ToString() => $"db: {db}, requests: {requests}, tasks: {tasks}";
 
-        internal static void Update (
+        internal static void UpdateCounts (
             Dictionary<string, RequestCount>    requestCounts,
             string                              database,
             SyncRequest                         syncRequest)
         {
-            if (!requestCounts.TryGetValue(database, out RequestCount requestStats)) {
-                requestStats = new RequestCount { db = database };
-                requestCounts.TryAdd(database, requestStats);
+            if (!requestCounts.TryGetValue(database, out RequestCount requestCount)) {
+                requestCount = new RequestCount { db = database };
+                requestCounts.TryAdd(database, requestCount);
             }
-            requestStats.requests  ++;
-            requestStats.tasks     += syncRequest.tasks.Count;
-            requestCounts[database] = requestStats;
+            requestCount.Update(syncRequest);
+            requestCounts[database] = requestCount;
+        }
+        
+        internal void Update(SyncRequest syncRequest) {
+            requests  ++;
+            tasks     += syncRequest.tasks.Count;
         }
         
         internal static void CountsToList(

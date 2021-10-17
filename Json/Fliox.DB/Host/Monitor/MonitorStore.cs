@@ -14,6 +14,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
     public partial class  MonitorStore :  EntityStore
     {
+        public  readonly    EntitySet <JsonKey, HostInfo>    hosts;
         public  readonly    EntitySet <JsonKey, ClientInfo>  clients;
         public  readonly    EntitySet <JsonKey, UserInfo>    users;
         public  readonly    EntitySet <int,     HistoryInfo> histories;
@@ -21,7 +22,15 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         public MonitorStore(EntityDatabase database, TypeStore typeStore)   : base(database, typeStore, null, null) { }
         public MonitorStore(EntityDatabase database, EntityStore baseStore) : base(database, baseStore) { }
         
-        public const string ClearStats = nameof(ClearStats); 
+        public const            string  ClearStats  = nameof(ClearStats); 
+        public static readonly  JsonKey HostKey     = new JsonKey("this");
+    }
+    
+    public class HostInfo {
+        [Fri.Required]  public  JsonKey                         id;
+                        public  RequestCount                    counts;
+                        
+        public override         string                          ToString() => JsonDebug.ToJson(this, false).Replace("\"", "'");
     }
     
     public class ClientInfo {
