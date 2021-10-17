@@ -17,8 +17,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         public  readonly    EntitySet <JsonKey, UserInfo>    users;
         public  readonly    EntitySet <int,     HistoryInfo> histories;
 
-        public MonitorStore(EntityDatabase database, TypeStore typeStore) : base(database, typeStore, null, null) { }
-        
+        public MonitorStore(EntityDatabase database, TypeStore typeStore)   : base(database, typeStore, null, null) { }
         public MonitorStore(EntityDatabase database, EntityStore baseStore) : base(database, baseStore) { }
         
         public const string ClearStats = nameof(ClearStats); 
