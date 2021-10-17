@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.DB.Host
     {
         private  readonly   bool    pretty;
 
-        public MemoryDatabase(bool pretty = false, DbOpt opt = null) : base(opt) {
+        public MemoryDatabase(DbOpt opt = null, bool pretty = false) : base(opt) {
             this.pretty = pretty;
         }
         
