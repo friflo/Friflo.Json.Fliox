@@ -25,6 +25,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                         var baseDB = monitorDb.extensionBase;
                         baseDB.Authenticator.ClearUserStats();
                         baseDB.ClientController.ClearClientStats();
+                        baseDB.hostStats.ClearHostStats();
                         SyncTaskResult messageResult = new SendMessageResult();
                         return Task.FromResult(messageResult);
                     }

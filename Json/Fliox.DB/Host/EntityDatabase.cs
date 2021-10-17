@@ -46,12 +46,12 @@ namespace Friflo.Json.Fliox.DB.Host
     {
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         
-        public              string              HostName {
-            get => hostName ?? throw new InvalidOperationException("can get HostName only from default database");
-            set {
-                if (hostName == null) throw new InvalidOperationException("can set HostName only from default database");
-                hostName = NotNull(value, nameof(Authenticator));
-            }
+        public              string              HostName => hostName ?? throw new InvalidOperationException("can get HostName only from default database");
+
+        public EntityDatabase SetHostName (string hostName) {
+            if (this.hostName == null) throw new InvalidOperationException("can set HostName only for default database");
+            this.hostName = NotNull(hostName, nameof(Authenticator));
+            return this;
         }
 
         /// <summary>
@@ -104,13 +104,15 @@ namespace Friflo.Json.Fliox.DB.Host
         internal readonly   HostStats   hostStats = new HostStats();
 
         public override     string                              ToString() => extensionName != null ? $"'{extensionName}'" : "";
-        
-        // ReSharper disable once EmptyConstructor - keep for code navigation
+
+        /// <summary> Construct a default database </summary>
         protected EntityDatabase () {
             hostName = "host";
         }
+        
+        /// <summary> Construct an extension database </summary>
         protected EntityDatabase (EntityDatabase extensionBase, string extensionName) {
-            hostName = null; // extension database must not have a hostName
+            hostName = null; // extension database must not have a hostName to avoid confusion
             this.extensionBase = extensionBase ?? throw new ArgumentException(nameof(extensionBase));
             this.extensionName = extensionName ?? throw new ArgumentException(nameof(extensionName));
         }

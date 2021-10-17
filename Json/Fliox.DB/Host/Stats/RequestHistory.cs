@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -24,6 +25,12 @@ namespace Friflo.Json.Fliox.DB.Host.Stats
             }
             // foreach (var history in histories) { Console.Out.WriteLine(string.Join(", ", history.counters)); }
         }
+
+        public void ClearRequestHistories() {
+            foreach (var history in histories) {
+                history.Clear();
+            }
+        }
     }
     
     internal class RequestHistory {
@@ -39,6 +46,11 @@ namespace Friflo.Json.Fliox.DB.Host.Stats
         
         public void CopyCounters(int[] dst) {
             counters.CopyTo(dst, 0);
+        }
+        
+        internal void Clear() {
+            LastUpdate = 0;
+            Array.Clear(counters, 0, counters.Length);
         }
         
         internal void Update(int elapsed) {

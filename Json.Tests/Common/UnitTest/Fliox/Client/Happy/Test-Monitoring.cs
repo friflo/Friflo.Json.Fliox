@@ -22,12 +22,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     public partial class TestStore
     {
+        private const string HostName = "Test";
+        
         [Test]
         public static async Task TestMonitoringFile() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore").SetHostName(HostName))
             using (var monitorDB        = new MonitorDatabase(fileDatabase)) {
-                fileDatabase.HostName = "TestHost";
                 fileDatabase.AddExtensionDB(monitorDB);
                 await AssertNoAuthMonitoringDB  (fileDatabase, monitorDB);
                 await AssertAuthMonitoringDB    (fileDatabase, monitorDB, fileDatabase);
@@ -37,10 +38,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]
         public static async Task TestMonitoringLoopback() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore").SetHostName(HostName))
             using (var monitor          = new MonitorDatabase(fileDatabase))
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase)) {
-                fileDatabase.HostName = "TestHost";
                 fileDatabase.AddExtensionDB(monitor);
                 var monitorDB = loopbackDatabase.AddExtensionDB(MonitorDatabase.Name);
                 await AssertNoAuthMonitoringDB  (loopbackDatabase, monitorDB);
@@ -51,11 +51,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]
         public static async Task TestMonitoringHttp() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore").SetHostName(HostName))
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/")) 
             using (var monitor          = new MonitorDatabase(fileDatabase))
             using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {
-                fileDatabase.HostName = "TestHost";
                 fileDatabase.AddExtensionDB(monitor);
                 await RunRemoteHost(hostDatabase, async () => {
                     var monitorDB   = remoteDatabase.AddExtensionDB(MonitorDatabase.Name);
@@ -138,6 +137,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static void AssertAuthResult(MonitorResult result) {
             var users   = result.users.Results;
             var clients = result.clients.Results;
+            var host    = result.hosts.Results[new JsonKey("Test")];
+            AreEqual("{'id':'Test','counts':{'requests':2,'tasks':3}}",                                      host.ToString());
             AreEqual("{'id':'anonymous','clients':[],'counts':[]}",                                          users[User.AnonymousId].ToString());
             AreEqual("{'id':'admin','clients':['admin-client'],'counts':[{'db':'monitor','requests':1,'tasks':1},{'db':'default','requests':1,'tasks':2}]}",        users[new JsonKey("admin")].ToString());
                 
@@ -176,6 +177,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 clients     = monitor.clients.QueryAll(),
                 user        = monitor.users.Read().Find(userKey),
                 client      = monitor.clients.Read().Find(clientKey),
+                hosts       = monitor.hosts.QueryAll(),
                 sync        = await monitor.TrySync()
             };
             return result;
@@ -183,10 +185,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         internal class MonitorResult {
             internal    SyncResult                      sync;
-            internal    QueryTask<JsonKey, UserInfo>    users;
-            internal    QueryTask<JsonKey, ClientInfo>  clients;
-            internal    Find<JsonKey, UserInfo>         user;
-            internal    Find<JsonKey, ClientInfo>       client;
+            internal    QueryTask<JsonKey,  UserInfo>   users;
+            internal    QueryTask<JsonKey,  ClientInfo> clients;
+            internal    Find<JsonKey,       UserInfo>   user;
+            internal    Find<JsonKey,       ClientInfo> client;
+            internal    QueryTask<JsonKey,  HostInfo>   hosts;
         }
     }
 }

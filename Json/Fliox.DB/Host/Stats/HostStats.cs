@@ -14,5 +14,10 @@ namespace Friflo.Json.Fliox.DB.Host.Stats
             requestHistories.Update();
             requestCount.Update(syncRequest);
         }
+
+        public void ClearHostStats() {
+            requestHistories.ClearRequestHistories();
+            requestCount = new RequestCount();
+        }
     }
 }
