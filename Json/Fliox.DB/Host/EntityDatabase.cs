@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Friflo.Json.Burst;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Host.Stats;
@@ -19,8 +20,10 @@ namespace Friflo.Json.Fliox.DB.Host
         public readonly string hostName;
         
         public DbOpt(string hostName = null) {
-            this.hostName = hostName;
+            this.hostName = hostName ?? "host";
         }
+        
+        internal static readonly DbOpt Default = new DbOpt();
     }
     /// <summary>
     /// <see cref="EntityDatabase"/> is an abstraction for a specific database adapter / implementation e.g. a
@@ -107,7 +110,7 @@ namespace Friflo.Json.Fliox.DB.Host
 
         /// <summary> Construct a default database </summary>
         protected EntityDatabase (DbOpt opt) {
-            hostName = opt != null ? opt.hostName : "host"; 
+            hostName = (opt ?? DbOpt.Default).hostName; 
         }
         
         /// <summary> Construct an extension database </summary>
