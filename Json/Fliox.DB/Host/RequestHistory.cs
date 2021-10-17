@@ -8,11 +8,12 @@ namespace Friflo.Json.Fliox.DB.Host
 {
     internal class RequestHistories
     {
-        private readonly    List<RequestHistory>    histories = new List<RequestHistory>();
-        private readonly    Stopwatch               watch = new Stopwatch();
+        internal readonly   List<RequestHistory>    histories = new List<RequestHistory>();
+        private  readonly   Stopwatch               watch = new Stopwatch();
         
         internal RequestHistories() {
-            histories.Add(new RequestHistory(1, 10));
+            histories.Add(new RequestHistory(1,  10));
+            histories.Add(new RequestHistory(10, 10));
             watch.Start();
         }
         
@@ -22,17 +23,17 @@ namespace Friflo.Json.Fliox.DB.Host
                 var counters    = history.counters;
                 int size        = counters.Length;
                 var index       = (int)((elapsed / history.resolution) % size);
-                if (history.lastIndex == index) {
+                if (history.lastUpdate == index) {
                     counters[index]++;
                     continue;
                 }
-                var clearIndex = (int)(history.lastIndex + 1) % size;
+                var clearIndex = (history.lastUpdate + 1) % size;
                 while (clearIndex != index) {
                     counters[clearIndex] = 0;
                     clearIndex = (clearIndex + 1) % size;
                 }
                 counters[index] = 1;
-                history.lastIndex = index;
+                history.lastUpdate = index;
             }
             // foreach (var history in histories) { Console.Out.WriteLine(string.Join(", ", history.counters)); }
         }
@@ -41,7 +42,7 @@ namespace Friflo.Json.Fliox.DB.Host
     internal class RequestHistory {
         internal readonly   int     resolution;  // [second]
         internal readonly   int[]   counters;
-        internal            long    lastIndex;
+        internal            int     lastUpdate;
         
         internal RequestHistory (int resolution, int size) {
             this.resolution = resolution;

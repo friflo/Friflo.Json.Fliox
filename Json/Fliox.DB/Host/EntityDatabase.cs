@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.DB.Host
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   ClientController    clientController    = new IncrementClientController();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   CustomContainerName customContainerName = name => name;
         
-        private  readonly   RequestHistories requestHistories = new RequestHistories();
+        internal readonly   RequestHistories requestHistories = new RequestHistories();
 
         public override     string                              ToString() => extensionName != null ? $"'{extensionName}'" : "";
         

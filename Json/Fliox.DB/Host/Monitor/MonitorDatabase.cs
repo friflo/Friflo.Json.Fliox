@@ -40,6 +40,9 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             if (FindReadEntities(nameof(MonitorStore.users), syncRequest.tasks)) {
                 stateStore.UpdateUsers(extensionBase, extensionName);
             }
+            if (FindReadEntities(nameof(MonitorStore.histories), syncRequest.tasks)) {
+                stateStore.UpdateHistories(extensionBase);
+            }
             await stateStore.TrySync().ConfigureAwait(false);
         }
         
@@ -115,6 +118,17 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     userInfo.clients.Add(client);
                 }
                 users.Upsert(userInfo);
+            }
+        }
+        
+        internal void UpdateHistories(EntityDatabase db) {
+            foreach (var history in db.requestHistories.histories) {
+                if (!histories.TryGet(history.resolution, out var historyInfo)) {
+                    historyInfo = new HistoryInfo{ id = history.resolution };
+                }
+                historyInfo.counters    = history.counters;
+                historyInfo.lastUpdate  = history.lastUpdate;
+                histories.Upsert(historyInfo);
             }
         }
     }
