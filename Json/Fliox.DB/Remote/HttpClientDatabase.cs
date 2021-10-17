@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         private  readonly   string          endpoint;
         private  readonly   HttpClient      httpClient;
 
-        public HttpClientDatabase(string endpoint) {
+        public HttpClientDatabase(string endpoint, DbOpt opt = null) : base(opt) {
             this.endpoint = endpoint;
             httpClient = new HttpClient();
         }

@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         private  readonly   CancellationTokenSource                     cancellationToken = new CancellationTokenSource();
 
 
-        public WebSocketClientDatabase(string endpoint) {
+        public WebSocketClientDatabase(string endpoint, DbOpt opt = null) : base(opt) {
             this.endpoint = endpoint;
         }
         

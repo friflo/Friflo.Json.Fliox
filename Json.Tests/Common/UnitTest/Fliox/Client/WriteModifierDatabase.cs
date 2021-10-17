@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         private readonly    Dictionary<string, PatchModifiers>  patchModifiers  = new Dictionary<string, PatchModifiers>();
         private readonly    EntityProcessor                     processor       = new EntityProcessor();
         
-        public WriteModifierDatabase(EntityDatabase local) {
+        public WriteModifierDatabase(EntityDatabase local, DbOpt opt = null) : base(opt) {
             this.local = local;
         }
 

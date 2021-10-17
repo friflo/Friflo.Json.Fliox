@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         private             int                 requestCount;
 
 
-        public HttpHostDatabase(EntityDatabase local, string endpoint) : base(local) {
+        public HttpHostDatabase(EntityDatabase local, string endpoint, DbOpt opt = null) : base(local, opt) {
             this.endpoint       = endpoint;
             listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);

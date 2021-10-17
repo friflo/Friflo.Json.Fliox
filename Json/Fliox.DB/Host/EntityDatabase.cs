@@ -15,6 +15,10 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host
 {
+    public class DbOpt {
+        public DbOpt() {
+        }
+    }
     /// <summary>
     /// <see cref="EntityDatabase"/> is an abstraction for a specific database adapter / implementation e.g. a
     /// <see cref="MemoryDatabase"/> or a <see cref="FileDatabase"/>.
@@ -106,7 +110,7 @@ namespace Friflo.Json.Fliox.DB.Host
         public override     string                              ToString() => extensionName != null ? $"'{extensionName}'" : "";
 
         /// <summary> Construct a default database </summary>
-        protected EntityDatabase () {
+        protected EntityDatabase (DbOpt options) {
             hostName = "host";
         }
         

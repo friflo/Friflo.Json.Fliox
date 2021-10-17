@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         /// Only set to true for testing. It avoids an early out at <see cref="Host.Event.EventSubscriber.SendEvents"/> 
         public              bool            fakeOpenClosedSockets;
 
-        public RemoteHostDatabase(EntityDatabase local) {
+        public RemoteHostDatabase(EntityDatabase local, DbOpt opt = null) : base(opt) {
             this.local = local;
         }
         

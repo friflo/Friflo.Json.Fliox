@@ -19,8 +19,8 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         private  readonly   bool        pretty;
         private  readonly   Database    cosmosDatabase;
         private  readonly   int?        throughput;
-
-        public CosmosDatabase(Database cosmosDatabase, int? throughput = null, bool pretty = false)
+        
+        public CosmosDatabase(Database cosmosDatabase, int? throughput = null, bool pretty = false, DbOpt opt = null) : base(opt)
         {
             this.cosmosDatabase = cosmosDatabase;
             this.throughput     = throughput;
