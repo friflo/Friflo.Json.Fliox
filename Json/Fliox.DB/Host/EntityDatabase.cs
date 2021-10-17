@@ -45,6 +45,8 @@ namespace Friflo.Json.Fliox.DB.Host
     public abstract class EntityDatabase : IDisposable
     {
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
+        
+        public              string              HostName        { get => hostName; set => hostName = NotNull(value, nameof(Authenticator)); }
         /// <summary>
         /// An optional <see cref="Event.EventBroker"/> used to enable Pub-Sub. If enabled the database send
         /// events to a client for database changes and messages the client has subscribed.
@@ -86,6 +88,7 @@ namespace Friflo.Json.Fliox.DB.Host
         
         private static T    NotNull<T> (T value, string name) where T : class => value ?? throw new NullReferenceException(name);
         
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   string              hostName            = "host";
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   TaskHandler         taskHandler         = new TaskHandler();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow());
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   ClientController    clientController    = new IncrementClientController();

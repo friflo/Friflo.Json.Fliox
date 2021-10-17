@@ -134,8 +134,8 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         }
         
         internal void UpdateHost(HostStats hostStats) {
-            if (!hosts.TryGet(HostKey, out var hostInfo)) {
-                hostInfo = new HostInfo { id = HostKey };
+            if (!hosts.TryGet(hostName, out var hostInfo)) {
+                hostInfo = new HostInfo { id = hostName };
             }
             hostInfo.counts = hostStats.requestCount;
             hosts.Upsert(hostInfo);
