@@ -13,8 +13,8 @@ namespace Friflo.Json.Fliox.DB.Host.Stats
         private  readonly   Stopwatch               watch = new Stopwatch();
         
         internal RequestHistories() {
-            histories.Add(new RequestHistory(1,  10));
-            histories.Add(new RequestHistory(10, 10));
+            histories.Add(new RequestHistory(1,  30));
+            histories.Add(new RequestHistory(60, 30));
             watch.Start();
         }
         
