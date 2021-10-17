@@ -66,6 +66,8 @@ namespace Friflo.Json.Fliox.DB.Client
         protected EntityStore(EntityDatabase database, EntityStore baseStore) {
             if (database  == null) throw new ArgumentNullException(nameof(database));
             if (baseStore == null) throw new ArgumentNullException(nameof(baseStore));
+            if (baseStore._intern.database.extensionBase != null)
+                throw new ArgumentException("database of baseStore must not be an extension database", nameof(baseStore));
             
             ITracerContext tracer       = this;
             var subscriptionProcessor   = new SubscriptionProcessor(this);
