@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
     public partial class  MonitorStore :  EntityStore
     {
-        public  readonly    JsonKey                             hostName;
+        private readonly    JsonKey                             hostName;
         public  readonly    EntitySet <JsonKey, HostInfo>       hosts;
         public  readonly    EntitySet <JsonKey, ClientInfo>     clients;
         public  readonly    EntitySet <JsonKey, UserInfo>       users;
