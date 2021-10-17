@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace Friflo.Json.Fliox.DB.Host.Stats
 {
-    internal class RequestHistories
+    public class RequestHistories
     {
         internal readonly   List<RequestHistory>    histories = new List<RequestHistory>();
         private  readonly   Stopwatch               watch = new Stopwatch();

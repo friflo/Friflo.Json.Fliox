@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.DB.Host
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   ClientController    clientController    = new IncrementClientController();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   CustomContainerName customContainerName = name => name;
         
-        internal readonly   RequestHistories requestHistories = new RequestHistories();
+        internal readonly   HostStats   hostStats = new HostStats();
 
         public override     string                              ToString() => extensionName != null ? $"'{extensionName}'" : "";
         
@@ -189,7 +189,7 @@ namespace Friflo.Json.Fliox.DB.Host
                     tasks.Add(TaskExceptionError(e)); // Note!  Should not happen - see documentation of this method.
                 }
             }
-            requestHistories.Update();
+            hostStats.Update();
             UpdateRequestStats(database, syncRequest, messageContext);
 
             // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket

@@ -37,8 +37,8 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         protected override async Task ExecuteSyncPrepare(SyncRequest syncRequest, MessageContext messageContext) {
             var tasks = syncRequest.tasks;
             if (FindReadEntities(nameof(MonitorStore.clients),  tasks)) stateStore.UpdateClients  (extensionBase, extensionName);
-            if (FindReadEntities(nameof(MonitorStore.users),    tasks)) stateStore.UpdateUsers    (extensionBase, extensionName);
-            if (FindReadEntities(nameof(MonitorStore.histories),tasks)) stateStore.UpdateHistories(extensionBase);
+            if (FindReadEntities(nameof(MonitorStore.users),    tasks)) stateStore.UpdateUsers    (extensionBase.Authenticator, extensionName);
+            if (FindReadEntities(nameof(MonitorStore.histories),tasks)) stateStore.UpdateHistories(extensionBase.hostStats.requestHistories);
             
             await stateStore.TrySync().ConfigureAwait(false);
         }
@@ -97,8 +97,8 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             };
         }
         
-        internal void UpdateUsers(EntityDatabase db, string monitorName) {
-            foreach (var pair in db.Authenticator.users) {
+        internal void UpdateUsers(Authenticator authenticator, string monitorName) {
+            foreach (var pair in authenticator.users) {
                 if (!users.TryGet(pair.Key, out var userInfo)) {
                     userInfo = new UserInfo { id = pair.Key };
                 }
@@ -118,8 +118,8 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             }
         }
         
-        internal void UpdateHistories(EntityDatabase db) {
-            foreach (var history in db.requestHistories.histories) {
+        internal void UpdateHistories(RequestHistories requestHistories) {
+            foreach (var history in requestHistories.histories) {
                 if (!histories.TryGet(history.resolution, out var historyInfo)) {
                     historyInfo = new HistoryInfo {
                         id          = history.resolution,
