@@ -34,15 +34,11 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         }
 
         protected override async Task ExecuteSyncPrepare(SyncRequest syncRequest, MessageContext messageContext) {
-            if (FindReadEntities(nameof(MonitorStore.clients), syncRequest.tasks)) {
-                stateStore.UpdateClients(extensionBase, extensionName);
-            }
-            if (FindReadEntities(nameof(MonitorStore.users), syncRequest.tasks)) {
-                stateStore.UpdateUsers(extensionBase, extensionName);
-            }
-            if (FindReadEntities(nameof(MonitorStore.histories), syncRequest.tasks)) {
-                stateStore.UpdateHistories(extensionBase);
-            }
+            var tasks = syncRequest.tasks;
+            if (FindReadEntities(nameof(MonitorStore.clients),  tasks)) stateStore.UpdateClients  (extensionBase, extensionName);
+            if (FindReadEntities(nameof(MonitorStore.users),    tasks)) stateStore.UpdateUsers    (extensionBase, extensionName);
+            if (FindReadEntities(nameof(MonitorStore.histories),tasks)) stateStore.UpdateHistories(extensionBase);
+            
             await stateStore.TrySync().ConfigureAwait(false);
         }
         
