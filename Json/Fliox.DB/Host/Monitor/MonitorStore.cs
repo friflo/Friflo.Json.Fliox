@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             this.hostName = new JsonKey(hostName);
         }
         public MonitorStore(EntityDatabase database, EntityStore baseStore) : base(database, baseStore) {
-            hostName = new JsonKey(baseStore._intern.database.HostName);
+            hostName = new JsonKey(baseStore._intern.database.hostName);
         }
         
         public const            string  ClearStats  = nameof(ClearStats); 

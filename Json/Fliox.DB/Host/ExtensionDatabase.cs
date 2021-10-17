@@ -8,8 +8,8 @@ namespace Friflo.Json.Fliox.DB.Host
 {
     internal class ExtensionDatabase : EntityDatabase
     {
-        internal ExtensionDatabase (EntityDatabase extensionBase, string extensionName)
-            : base (extensionBase, extensionName) { }
+        internal ExtensionDatabase (EntityDatabase extensionBase, string extensionName, DbOpt opt)
+            : base (extensionBase, extensionName, opt) { }
         
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             return extensionBase.CreateContainer(name, database);

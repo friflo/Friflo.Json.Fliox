@@ -22,12 +22,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     public partial class TestStore
     {
-        private const string HostName = "Test";
+        private static readonly DbOpt DbOpt = new DbOpt(hostName: "Test");
         
         [Test]
         public static async Task TestMonitoringFile() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore").SetHostName(HostName))
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore", true, DbOpt))
             using (var monitorDB        = new MonitorDatabase(fileDatabase)) {
                 fileDatabase.AddExtensionDB(monitorDB);
                 await AssertNoAuthMonitoringDB  (fileDatabase, monitorDB);
@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]
         public static async Task TestMonitoringLoopback() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore").SetHostName(HostName))
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore", true, DbOpt))
             using (var monitor          = new MonitorDatabase(fileDatabase))
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase)) {
                 fileDatabase.AddExtensionDB(monitor);
@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]
         public static async Task TestMonitoringHttp() {
             using (var _                = Pools.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore").SetHostName(HostName))
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore", true, DbOpt))
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/")) 
             using (var monitor          = new MonitorDatabase(fileDatabase))
             using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {

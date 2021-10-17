@@ -16,7 +16,10 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Host
 {
     public class DbOpt {
-        public DbOpt() {
+        public readonly string hostName;
+        
+        public DbOpt(string hostName = null) {
+            this.hostName = hostName;
         }
     }
     /// <summary>
@@ -50,13 +53,7 @@ namespace Friflo.Json.Fliox.DB.Host
     {
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         
-        public              string              HostName => hostName ?? throw new InvalidOperationException("can get HostName only from default database");
-
-        public EntityDatabase SetHostName (string hostName) {
-            if (this.hostName == null) throw new InvalidOperationException("can set HostName only for default database");
-            this.hostName = NotNull(hostName, nameof(Authenticator));
-            return this;
-        }
+        public  readonly    string              hostName;
 
         /// <summary>
         /// An optional <see cref="Event.EventBroker"/> used to enable Pub-Sub. If enabled the database send
@@ -99,7 +96,6 @@ namespace Friflo.Json.Fliox.DB.Host
         
         private static T    NotNull<T> (T value, string name) where T : class => value ?? throw new NullReferenceException(name);
         
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   string              hostName;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   TaskHandler         taskHandler         = new TaskHandler();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow());
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   ClientController    clientController    = new IncrementClientController();
@@ -110,12 +106,13 @@ namespace Friflo.Json.Fliox.DB.Host
         public override     string                              ToString() => extensionName != null ? $"'{extensionName}'" : "";
 
         /// <summary> Construct a default database </summary>
-        protected EntityDatabase (DbOpt options) {
-            hostName = "host";
+        protected EntityDatabase (DbOpt opt) {
+            hostName = opt != null ? opt.hostName : "host"; 
         }
         
         /// <summary> Construct an extension database </summary>
-        protected EntityDatabase (EntityDatabase extensionBase, string extensionName) {
+        // ReSharper disable once UnusedParameter.Local
+        protected EntityDatabase (EntityDatabase extensionBase, string extensionName, DbOpt _) {
             hostName = null; // extension database must not have a hostName to avoid confusion
             this.extensionBase = extensionBase ?? throw new ArgumentException(nameof(extensionBase));
             this.extensionName = extensionName ?? throw new ArgumentException(nameof(extensionName));
@@ -260,8 +257,8 @@ namespace Friflo.Json.Fliox.DB.Host
             extensionDbs.Add(extensionDB.extensionName, extensionDB);
         }
 
-        public EntityDatabase AddExtensionDB (string extensionName) {
-            var extensionDB = new ExtensionDatabase (this, extensionName);
+        public EntityDatabase AddExtensionDB (string extensionName, DbOpt opt = null) {
+            var extensionDB = new ExtensionDatabase (this, extensionName, opt);
             extensionDbs.Add(extensionName, extensionDB);
             return extensionDB;
         }
