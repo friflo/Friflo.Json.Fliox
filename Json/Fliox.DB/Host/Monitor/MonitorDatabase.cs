@@ -13,16 +13,15 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
     public class MonitorDatabase : EntityDatabase
     {
-        internal readonly    EntityDatabase      extDb;
+        internal readonly    EntityDatabase      stateDB;
         private  readonly    MonitorStore        store;
         
         public const string Name = "monitor";
         
         public MonitorDatabase (EntityDatabase extensionBase) : base (extensionBase, Name) {
-
-            extDb       = new MemoryDatabase();
+            stateDB     = new MemoryDatabase();
             TaskHandler = new MonitorHandler(this);
-            store       = new MonitorStore(extDb, HostTypeStore.Get());
+            store       = new MonitorStore(stateDB, HostTypeStore.Get());
         }
 
         public override void Dispose() {
@@ -31,7 +30,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            return extDb.CreateContainer(name, database);
+            return stateDB.CreateContainer(name, database);
         }
 
         protected override async Task ExecuteSyncPrepare(SyncRequest syncRequest, MessageContext messageContext) {
