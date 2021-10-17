@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Client;
+using Friflo.Json.Fliox.DB.Host.Stats;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -64,7 +65,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     clientInfo = new ClientInfo { id = clientId };
                 }
                 clientInfo.user     = client.userId;
-                RequestStats.StatsToList(clientInfo.stats, client.stats, monitorName);
+                RequestCount.CountsToList(clientInfo.counts, client.requestCounts, monitorName);
                 clientInfo.ev       = GetEventInfo(db, clientInfo);
 
                 clients.Upsert(clientInfo);
@@ -102,7 +103,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     userInfo = new UserInfo { id = pair.Key };
                 }
                 User user   = pair.Value;
-                RequestStats.StatsToList(userInfo.stats, user.stats, monitorName);
+                RequestCount.CountsToList(userInfo.counts, user.requestCounts, monitorName);
 
                 var userClients = user.clients;
                 if (userInfo.clients == null) {

@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using Friflo.Json.Fliox.DB.Host.Stats;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Auth
@@ -11,9 +12,9 @@ namespace Friflo.Json.Fliox.DB.Auth
         internal readonly   string                              token;
         internal readonly   Authorizer                          authorizer;
         internal readonly   HashSet<JsonKey>                    clients = new HashSet<JsonKey>(JsonKey.Equality);
-        internal readonly   Dictionary<string, RequestStats>    stats = new Dictionary<string, RequestStats>();
+        internal readonly   Dictionary<string, RequestCount>    requestCounts = new Dictionary<string, RequestCount>();
 
-        public   override   string                                      ToString() => userId.AsString();
+        public   override   string                              ToString() => userId.AsString();
         
         public static readonly  JsonKey   AnonymousId = new JsonKey("anonymous");
 

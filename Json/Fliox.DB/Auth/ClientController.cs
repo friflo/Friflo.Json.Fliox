@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         
         internal void ClearClientStats() {
             foreach (var pair in clients) {
-                pair.Value.stats.Clear();
+                pair.Value.requestCounts.Clear();
             }
         }
     }

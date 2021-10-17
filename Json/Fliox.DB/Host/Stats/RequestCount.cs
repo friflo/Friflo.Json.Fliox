@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.DB.Protocol;
 
 // ReSharper disable MemberCanBePrivate.Global
-namespace Friflo.Json.Fliox.DB.Auth
+namespace Friflo.Json.Fliox.DB.Host.Stats
 {
-    public struct RequestStats {
+    public struct RequestCount {
         public              string  db;
         public              int     requests;
         public              int     tasks;
@@ -15,30 +15,30 @@ namespace Friflo.Json.Fliox.DB.Auth
         public override     string  ToString() => $"db: {db}, requests: {requests}, tasks: {tasks}";
 
         internal static void Update (
-            Dictionary<string, RequestStats>    stats,
+            Dictionary<string, RequestCount>    requestCounts,
             string                              database,
             SyncRequest                         syncRequest)
         {
-            if (!stats.TryGetValue(database, out RequestStats requestStats)) {
-                requestStats = new RequestStats { db = database };
-                stats.TryAdd(database, requestStats);
+            if (!requestCounts.TryGetValue(database, out RequestCount requestStats)) {
+                requestStats = new RequestCount { db = database };
+                requestCounts.TryAdd(database, requestStats);
             }
             requestStats.requests  ++;
             requestStats.tasks     += syncRequest.tasks.Count;
-            stats[database] = requestStats;
+            requestCounts[database] = requestStats;
         }
         
-        internal static void StatsToList(
-            List<RequestStats>                  dst,
-            Dictionary<string, RequestStats>    src,
+        internal static void CountsToList(
+            List<RequestCount>                  dst,
+            Dictionary<string, RequestCount>    src,
             string                              exclude)
         {
             dst.Clear();
             foreach (var pair in src) {
-                var stats = pair.Value;
-                /* if (exclude != null && stats.db == exclude)
+                var counts = pair.Value;
+                /* if (exclude != null && counts.db == exclude)
                     continue; */
-                dst.Add(stats);
+                dst.Add(counts);
             }
         }
     }

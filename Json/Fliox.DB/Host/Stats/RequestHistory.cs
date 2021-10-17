@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Friflo.Json.Fliox.DB.Host
+namespace Friflo.Json.Fliox.DB.Host.Stats
 {
     internal class RequestHistories
     {

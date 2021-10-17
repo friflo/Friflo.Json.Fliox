@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                 case TaskType.message:
                     var message = (SendMessage)task;
                     if (message.name == MonitorStore.ClearStats) {
-                        // clear request stats of default database. These stats contain also stats of all extension databases.
+                        // clear request counts of default database. They contain also request counts of all extension databases.
                         var baseDB = monitorDb.extensionBase;
                         baseDB.Authenticator.ClearUserStats();
                         baseDB.ClientController.ClearClientStats();

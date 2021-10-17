@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Host.Event;
+using Friflo.Json.Fliox.DB.Host.Stats;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.Protocol.Models;
 using Friflo.Json.Fliox.DB.Protocol.Tasks;
@@ -222,12 +223,12 @@ namespace Friflo.Json.Fliox.DB.Host
         private void UpdateRequestStats(string database, SyncRequest syncRequest, MessageContext messageContext) {
             if (database == null) database = "default";
             var user = messageContext.authState.User;
-            RequestStats.Update(user.stats, database, syncRequest);
+            RequestCount.Update(user.requestCounts, database, syncRequest);
             ref var clientId = ref messageContext.clientId;
             if (clientId.IsNull())
                 return;
             if (clientController.clients.TryGetValue(clientId, out UserClient client)) {
-                RequestStats.Update(client.stats, database, syncRequest);
+                RequestCount.Update(client.requestCounts, database, syncRequest);
             }
         }
 

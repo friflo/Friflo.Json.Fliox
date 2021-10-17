@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Client;
+using Friflo.Json.Fliox.DB.Host.Stats;
 using Friflo.Json.Fliox.DB.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
@@ -26,7 +27,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
     public class ClientInfo {
         [Fri.Required]  public  JsonKey                         id;
         [Fri.Required]  public  Ref<JsonKey, UserInfo>          user;
-                        public  List<RequestStats>              stats = new List<RequestStats>();
+                        public  List<RequestCount>              counts = new List<RequestCount>();
         [Fri.Property (Name =                                  "event")]  
                         public  EventInfo?                      ev;
                         
@@ -43,7 +44,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
     public class UserInfo {
         [Fri.Required]  public  JsonKey                         id;
         [Fri.Required]  public  List<Ref<JsonKey, ClientInfo>>  clients;
-                        public  List<RequestStats>              stats = new List<RequestStats>();
+                        public  List<RequestCount>              counts = new List<RequestCount>();
                         
         public override         string                          ToString() => JsonDebug.ToJson(this, false).Replace("\"", "'");
     }
