@@ -123,10 +123,14 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         
         internal void UpdateHistories(EntityDatabase db) {
             foreach (var history in db.requestHistories.histories) {
+                var counters = history.counters;
                 if (!histories.TryGet(history.resolution, out var historyInfo)) {
-                    historyInfo = new HistoryInfo{ id = history.resolution };
+                    historyInfo = new HistoryInfo {
+                        id          = history.resolution,
+                        counters    = new int[counters.Length]
+                    };
                 }
-                historyInfo.counters    = history.counters;
+                counters.CopyTo(historyInfo.counters, 0);
                 historyInfo.lastUpdate  = history.lastUpdate;
                 histories.Upsert(historyInfo);
             }
