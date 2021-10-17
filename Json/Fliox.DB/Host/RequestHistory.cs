@@ -18,35 +18,43 @@ namespace Friflo.Json.Fliox.DB.Host
         }
         
         internal void Update() {
-            long elapsed = watch.ElapsedMilliseconds / 1000;
+            int elapsed = (int)(watch.ElapsedMilliseconds / 1000);
             foreach (var history in histories) {
-                var counters    = history.counters;
-                int size        = counters.Length;
-                var index       = (int)((elapsed / history.resolution) % size);
-                if (history.lastUpdate == index) {
-                    counters[index]++;
-                    continue;
-                }
-                var clearIndex = (history.lastUpdate + 1) % size;
-                while (clearIndex != index) {
-                    counters[clearIndex] = 0;
-                    clearIndex = (clearIndex + 1) % size;
-                }
-                counters[index] = 1;
-                history.lastUpdate = index;
+                history.Update(elapsed);
             }
             // foreach (var history in histories) { Console.Out.WriteLine(string.Join(", ", history.counters)); }
         }
     }
     
     internal class RequestHistory {
-        internal readonly   int     resolution;  // [second]
-        internal readonly   int[]   counters;
-        internal            int     lastUpdate;
+        public   readonly   int     resolution;  // [second]
+        private  readonly   int[]   counters;
+        public              int     LastUpdate {get; private set; }
+        public              int     Length => counters.Length;
         
         internal RequestHistory (int resolution, int size) {
             this.resolution = resolution;
             counters         = new int[size];
+        }
+        
+        public void CopyCounters(int[] dst) {
+            counters.CopyTo(dst, 0);
+        }
+        
+        internal void Update(int elapsed) {
+            int size        = counters.Length;
+            var index       = (elapsed / resolution) % size;
+            if (LastUpdate == index) {
+                counters[index]++;
+                return;
+            }
+            var clearIndex = (LastUpdate + 1) % size;
+            while (clearIndex != index) {
+                counters[clearIndex] = 0;
+                clearIndex = (clearIndex + 1) % size;
+            }
+            counters[index] = 1;
+            LastUpdate = index;
         }
     }
 }
