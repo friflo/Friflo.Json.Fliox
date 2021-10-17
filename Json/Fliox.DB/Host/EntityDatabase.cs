@@ -46,7 +46,14 @@ namespace Friflo.Json.Fliox.DB.Host
     {
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         
-        public              string              HostName        { get => hostName; set => hostName = NotNull(value, nameof(Authenticator)); }
+        public              string              HostName {
+            get => hostName ?? throw new InvalidOperationException("can get HostName only from default database");
+            set {
+                if (hostName == null) throw new InvalidOperationException("can set HostName only from default database");
+                hostName = NotNull(value, nameof(Authenticator));
+            }
+        }
+
         /// <summary>
         /// An optional <see cref="Event.EventBroker"/> used to enable Pub-Sub. If enabled the database send
         /// events to a client for database changes and messages the client has subscribed.
@@ -88,7 +95,7 @@ namespace Friflo.Json.Fliox.DB.Host
         
         private static T    NotNull<T> (T value, string name) where T : class => value ?? throw new NullReferenceException(name);
         
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   string              hostName            = "host";
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   string              hostName;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   TaskHandler         taskHandler         = new TaskHandler();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow());
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   ClientController    clientController    = new IncrementClientController();
@@ -99,8 +106,11 @@ namespace Friflo.Json.Fliox.DB.Host
         public override     string                              ToString() => extensionName != null ? $"'{extensionName}'" : "";
         
         // ReSharper disable once EmptyConstructor - keep for code navigation
-        protected EntityDatabase () { }
+        protected EntityDatabase () {
+            hostName = "host";
+        }
         protected EntityDatabase (EntityDatabase extensionBase, string extensionName) {
+            hostName = null; // extension database must not have a hostName
             this.extensionBase = extensionBase ?? throw new ArgumentException(nameof(extensionBase));
             this.extensionName = extensionName ?? throw new ArgumentException(nameof(extensionName));
         }

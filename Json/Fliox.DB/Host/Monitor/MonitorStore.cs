@@ -20,8 +20,8 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         public  readonly    EntitySet <JsonKey, UserInfo>       users;
         public  readonly    EntitySet <int,     HistoryInfo>    histories;
 
-        public MonitorStore(EntityDatabase database, TypeStore typeStore)   : base(database, typeStore, null, null) {
-            hostName = new JsonKey(database.HostName);
+        public MonitorStore(string hostName, EntityDatabase database, TypeStore typeStore)   : base(database, typeStore, null, null) {
+            this.hostName = new JsonKey(hostName);
         }
         public MonitorStore(EntityDatabase database, EntityStore baseStore) : base(database, baseStore) {
             hostName = new JsonKey(baseStore._intern.database.HostName);
