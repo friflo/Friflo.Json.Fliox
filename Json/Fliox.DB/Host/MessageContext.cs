@@ -22,36 +22,38 @@ namespace Friflo.Json.Fliox.DB.Host
     /// </summary>
     public sealed class MessageContext
     {
-        /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
-        public              JsonKey             clientId;
-        public              ClientIdValidation  clientIdValidation;
-        public  readonly    IPools              pools;
-        public  readonly    IEventTarget        eventTarget;
-        public              AuthState           authState;
-        
-        private             PoolUsage           startUsage;
+        // --- public
+        public    readonly  IPools              pools;
 
-        public              Action              canceler = () => {};
+        // --- internal / private by intention
+        /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
+        internal            JsonKey             clientId;
+        internal            ClientIdValidation  clientIdValidation;
+        internal  readonly  IEventTarget        eventTarget;
+        internal            AuthState           authState;
+        private             PoolUsage           startUsage;
+        internal            Action              canceler = () => {};
+        
         public override     string              ToString() => $"userId: {authState.User}, auth: {authState}";
 
-        public MessageContext (IPools pools, IEventTarget eventTarget) {
+        internal MessageContext (IPools pools, IEventTarget eventTarget) {
             this.pools          = pools;
             startUsage          = pools.PoolUsage;
             this.eventTarget    = eventTarget;
         }
         
-        public MessageContext (IPools pools, IEventTarget eventTarget, in JsonKey clientId) {
+        internal MessageContext (IPools pools, IEventTarget eventTarget, in JsonKey clientId) {
             this.pools          = pools;
             startUsage          = pools.PoolUsage;
             this.eventTarget    = eventTarget;
             this.clientId       = clientId;
         }
         
-        public void Cancel() {
+        internal void Cancel() {
             canceler(); // canceler.Invoke();
         }
 
-        public void Release() {
+        internal void Release() {
             startUsage.AssertEqual(pools.PoolUsage);
         }
     }
