@@ -4,24 +4,8 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Host
+namespace Friflo.Json.Fliox.DB.Host.Internal
 {
-    public readonly struct Command<TValue> {
-        public              string          Name    { get; }
-        public              TValue          Value   => reader.Read<TValue>(json);
-        
-        private  readonly   JsonUtf8        json;
-        private  readonly   ObjectReader    reader;
-
-        public   override   string          ToString() => Name;
-
-        internal Command(string name, JsonUtf8 json, ObjectReader reader) {
-            Name        = name;
-            this.json   = json;  
-            this.reader = reader;
-        }
-    }
-    
     public delegate TResult CommandHandler<TValue, out TResult>(Command<TValue> command);
     
     internal abstract class CommandCallback
