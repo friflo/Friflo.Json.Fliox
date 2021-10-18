@@ -27,6 +27,16 @@ namespace Friflo.Json.Tests.Main
         // Get DOMAIN\USER via  PowerShell
         //     $env:UserName
         //     $env:UserDomain 
+        private static void FlioxServerMinimal(string endpoint, string databaseFolder) {
+            // Run a minimal Fliox server without monitoring, Pub-Sub, user authentication / authorization, entity validation
+            Console.WriteLine($"FileDatabase: {databaseFolder}");
+            var database                = new FileDatabase(databaseFolder);
+            var hostDatabase            = new HttpHostDatabase(database, endpoint);
+            hostDatabase.requestHandler = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
+            hostDatabase.Start();
+            hostDatabase.Run();
+        }
+        
         private static void FlioxServer(string endpoint, string databaseFolder) {
             Console.WriteLine($"FileDatabase: {databaseFolder}");
             var database                = new FileDatabase(databaseFolder);
