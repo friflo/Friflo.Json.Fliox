@@ -10,10 +10,11 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Auth
 {
     /// <summary>
-    /// Create a unique client id for a given user by <see cref="NewClientIdFor"/> or
-    /// checks if a given client id can be added to a given <see cref="User"/> by <see cref="AddClientIdFor"/>.
+    /// Create a unique client id for a given <see cref="User"/> by <see cref="NewClientIdFor"/> or
+    /// checks if a given client id can be used (added) for a given <see cref="User"/> by <see cref="UseClientIdFor"/>.
     /// Multiple client ids can be added to a <see cref="User"/>. Once added to a <see cref="User"/> is cannot be
-    /// used / added by another <see cref="User"/>.
+    /// used (added) by another <see cref="User"/>.
+    /// 
     /// <see cref="ClientController"/> is used to:
     /// <list type="bullet">
     ///   <item> create / add unique client ids by <see cref="EntityDatabase.ClientController"/> </item>
@@ -39,7 +40,7 @@ namespace Friflo.Json.Fliox.DB.Auth
             }
         }
         
-        public bool AddClientIdFor(User user, in JsonKey clientId) {
+        public bool UseClientIdFor(User user, in JsonKey clientId) {
             if (clients.TryGetValue(clientId, out UserClient client )) {
                 return client.userId.IsEqual(user.userId);
             }
