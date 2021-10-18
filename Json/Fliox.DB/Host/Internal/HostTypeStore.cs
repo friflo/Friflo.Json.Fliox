@@ -8,7 +8,7 @@ using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.DB.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Host
+namespace Friflo.Json.Fliox.DB.Host.Internal
 {
     /// Singleton are typically a bad practice, but its okay in this case as <see cref="TypeStore"/> behaves like an
     /// immutable object because the mapped types <see cref="SyncRequest"/> and <see cref="SyncResponse"/> are
