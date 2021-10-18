@@ -5,17 +5,17 @@ using Friflo.Json.Fliox.DB.Protocol;
 
 namespace Friflo.Json.Fliox.DB.Host.Stats
 {
-    public class HostStats
+    internal sealed class HostStats
     {
-        public readonly RequestHistories    requestHistories = new RequestHistories();
-        public          RequestCount        requestCount = new RequestCount();
+        internal readonly   RequestHistories    requestHistories = new RequestHistories();
+        internal            RequestCount        requestCount = new RequestCount();
 
-        public void Update(SyncRequest syncRequest) {
+        internal void Update(SyncRequest syncRequest) {
             requestHistories.Update();
             requestCount.Update(syncRequest);
         }
 
-        public void ClearHostStats() {
+        internal void ClearHostStats() {
             requestHistories.ClearRequestHistories();
             requestCount = new RequestCount();
         }

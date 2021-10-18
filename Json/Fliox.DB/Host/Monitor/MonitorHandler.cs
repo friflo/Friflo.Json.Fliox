@@ -9,10 +9,8 @@ using Friflo.Json.Fliox.DB.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
-    public class MonitorHandler : TaskHandler
+    internal sealed class MonitorHandler : TaskHandler
     {
-        internal MonitorHandler() { }
-        
         public override Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             var monitorDb = (MonitorDatabase)database;
             switch (task.TaskType) {
