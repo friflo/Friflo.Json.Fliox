@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.DB.Auth.Rights;
 using Friflo.Json.Fliox.DB.Host;
+using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.DB.Auth
@@ -228,7 +229,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         }
     }
     
-    public delegate bool AuthPredicate (SyncRequestTask task, MessageContext messageContext);
+    public delegate bool AuthPredicate (SyncRequestTask task, IPools pools);
     
     public sealed class AuthorizePredicate : Authorizer {
         private readonly string         name;
@@ -241,7 +242,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         }
             
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
-            return predicate(task, messageContext);
+            return predicate(task, messageContext.pools);
         }
     }
 }
