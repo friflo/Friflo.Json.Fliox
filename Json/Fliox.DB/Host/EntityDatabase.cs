@@ -16,10 +16,17 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Host
 {
     public class DbOpt {
-        public readonly string hostName;
+        /// <see cref="EntityDatabase.hostName"/>
+        public  readonly    string                  hostName;
+        /// <see cref="EntityDatabase.customContainerName"/>
+        public  readonly    CustomContainerName     customContainerName;
         
-        public DbOpt(string hostName = null) {
-            this.hostName = hostName ?? "host";
+        public DbOpt(
+            string              hostName            = null,
+            CustomContainerName customContainerName = null
+        ) {
+            this.hostName               = hostName              ?? "host";
+            this.customContainerName    = customContainerName   ?? (name => name);
         }
         
         internal static readonly DbOpt Default = new DbOpt();
@@ -55,8 +62,6 @@ namespace Friflo.Json.Fliox.DB.Host
     {
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         
-        public  readonly    string              hostName;
-
         /// <summary>
         /// An optional <see cref="Event.EventBroker"/> used to enable Pub-Sub. If enabled the database send
         /// events to a client for database changes and messages the client has subscribed.
@@ -89,19 +94,23 @@ namespace Friflo.Json.Fliox.DB.Host
         /// </summary>
         public              DatabaseSchema      Schema          { get; set; }
         /// <summary>
+        /// A host name that is assigned to a default database.
+        /// Its only purpose is to use it as id in <see cref="Monitor.HostInfo.id"/>.
+        /// </summary>
+        public  readonly    string              hostName;
+        /// <summary>
         /// A mapping function used to assign a custom container name.
         /// If using a custom name its value is assigned to the containers <see cref="EntityContainer.instanceName"/>. 
         /// By having the mapping function in <see cref="EntityDatabase"/> it enables uniform mapping across different
         /// <see cref="EntityDatabase"/> implementations.
         /// </summary>
-        public              CustomContainerName CustomContainerName { get => customContainerName; set => customContainerName = NotNull(value, nameof(CustomContainerName)); }
+        public readonly     CustomContainerName customContainerName;
         
         private static T    NotNull<T> (T value, string name) where T : class => value ?? throw new NullReferenceException(name);
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   TaskHandler         taskHandler         = new TaskHandler();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow());
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   ClientController    clientController    = new IncrementClientController();
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   CustomContainerName customContainerName = name => name;
         
         internal readonly   HostStats   hostStats = new HostStats();
 
@@ -109,12 +118,13 @@ namespace Friflo.Json.Fliox.DB.Host
 
         /// <summary> Construct a default database </summary>
         protected EntityDatabase (DbOpt opt) {
-            hostName = (opt ?? DbOpt.Default).hostName; 
+            hostName            = (opt ?? DbOpt.Default).hostName;
+            customContainerName = (opt ?? DbOpt.Default).customContainerName;
         }
         
         /// <summary> Construct an extension database </summary>
         // ReSharper disable once UnusedParameter.Local
-        protected EntityDatabase (EntityDatabase extensionBase, string extensionName, DbOpt _) {
+        protected EntityDatabase (EntityDatabase extensionBase, string extensionName, DbOpt opt) : this(opt) {
             hostName = null; // extension database must not have a hostName to avoid confusion
             this.extensionBase = extensionBase ?? throw new ArgumentException(nameof(extensionBase));
             this.extensionName = extensionName ?? throw new ArgumentException(nameof(extensionName));
