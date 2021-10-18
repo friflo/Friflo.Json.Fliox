@@ -95,6 +95,9 @@ namespace Friflo.Json.Fliox.DB.Auth
         }
     }
     
+    /// <summary>
+    /// Represent the result of client id validation returned by <see cref="Authenticator.ValidateClientId"/>  
+    /// </summary>
     public enum ClientIdValidation {
         IsNull,
         Invalid,
