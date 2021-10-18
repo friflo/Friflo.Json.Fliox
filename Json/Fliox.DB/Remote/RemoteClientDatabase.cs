@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Event;
+using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.Protocol.Models;
 using Friflo.Json.Fliox.DB.Protocol.Tasks;

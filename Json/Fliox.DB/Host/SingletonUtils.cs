@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.DB.Host.Internal;
 
 
 namespace Friflo.Json.Fliox.DB.Host

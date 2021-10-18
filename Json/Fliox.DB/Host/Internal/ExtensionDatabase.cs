@@ -4,7 +4,7 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Protocol;
 
-namespace Friflo.Json.Fliox.DB.Host
+namespace Friflo.Json.Fliox.DB.Host.Internal
 {
     internal class ExtensionDatabase : EntityDatabase
     {

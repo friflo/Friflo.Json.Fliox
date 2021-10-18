@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.DB.Host;
+using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Protocol.Models

@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Host.Event;
+using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Host.Stats;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.Protocol.Models;
@@ -72,7 +73,7 @@ namespace Friflo.Json.Fliox.DB.Host
         /// </summary>
         public              EventBroker         EventBroker     { get; set; }
         /// <summary>
-        /// The <see cref="Host.TaskHandler"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
+        /// The <see cref="TaskHandler"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
         /// Custom task (request) handler can be added to the <see cref="taskHandler"/> or
         /// the <see cref="taskHandler"/> can be replaced by a custom implementation.
         /// </summary>

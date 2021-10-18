@@ -3,7 +3,7 @@
 
 using Friflo.Json.Fliox.DB.Protocol;
 
-namespace Friflo.Json.Fliox.DB.Host
+namespace Friflo.Json.Fliox.DB.Host.Internal
 {
     public readonly struct MsgResponse<TResponse> where TResponse : ProtocolResponse {
         public  readonly    TResponse       success;

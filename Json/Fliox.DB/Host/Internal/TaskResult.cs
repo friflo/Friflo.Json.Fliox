@@ -4,7 +4,7 @@
 /* not used
 using Friflo.Json.Fliox.DB.Protocol;
 
-namespace Friflo.Json.Fliox.DB.Host
+namespace Friflo.Json.Fliox.DB.Host.Internal
 {
     public struct TaskResult<TResult> where TResult : SyncTaskResult 
     {

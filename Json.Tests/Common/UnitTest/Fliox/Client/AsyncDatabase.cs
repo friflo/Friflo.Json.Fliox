@@ -3,6 +3,7 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Host;
+using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Protocol;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
