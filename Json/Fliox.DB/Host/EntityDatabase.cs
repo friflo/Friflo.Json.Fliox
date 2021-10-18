@@ -71,7 +71,6 @@ namespace Friflo.Json.Fliox.DB.Host
         /// In case of remote database connections WebSockets are used to send Pub-Sub events to clients.   
         /// </summary>
         public              EventBroker         EventBroker     { get; set; }
-        // ReSharper disable once FieldCanBeMadeReadOnly.Global
         /// <summary>
         /// The <see cref="Host.TaskHandler"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
         /// Custom task (request) handler can be added to the <see cref="taskHandler"/> or
@@ -84,7 +83,6 @@ namespace Friflo.Json.Fliox.DB.Host
         /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="taskHandler"/>.
         /// </summary>
         public              Authenticator       Authenticator   { get => authenticator; set => authenticator = NotNull(value, nameof(Authenticator)); }
-        // ReSharper disable once FieldCanBeMadeReadOnly.Global
         /// <summary>
         /// <see cref="ClientController"/> is used to create / add unique client ids to enable sending events to
         /// specific user clients.
@@ -126,7 +124,6 @@ namespace Friflo.Json.Fliox.DB.Host
         }
         
         /// <summary> Construct an extension database </summary>
-        // ReSharper disable once UnusedParameter.Local
         protected EntityDatabase (
             EntityDatabase  extensionBase,
             string          extensionName,
