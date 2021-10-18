@@ -12,10 +12,13 @@ namespace Friflo.Json.Fliox.DB.Host
 {
     // ------------------------------------ MessageContext ------------------------------------
     /// <summary>
-    /// One <see cref="MessageContext"/> is created per <see cref="SyncRequest"/> instance to enable
-    /// multi threaded and concurrent request handling.
+    /// One <see cref="MessageContext"/> is created per <see cref="ProtocolMessage"/> to enable
+    /// multi threaded / concurrent request, response and event handling (processing).
+    /// These message types a represented by <see cref="ProtocolRequest"/>, <see cref="ProtocolResponse"/> and
+    /// <see cref="ProtocolEvent"/>.
     /// <br></br>
-    /// Note: In case of adding transaction support in future transaction data/state will be stored here.
+    /// Note: In case of adding transaction support for <see cref="SyncRequest"/>'s in future transaction data / state
+    /// need to be handled by this class.
     /// </summary>
     public sealed class MessageContext
     {
