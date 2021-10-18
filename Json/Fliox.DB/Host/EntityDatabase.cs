@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.DB.Host
     /// e.g. an <see cref="Client.EntityStore"/>. It handle these requests by its <see cref="ExecuteSync"/> method.
     /// A request is represented by a <see cref="SyncRequest"/> containing all database operations like create, read,
     /// upsert, delete and all messages / commands send by a client in the <see cref="SyncRequest.tasks"/> list.
-    /// The <see cref="EntityDatabase"/> execute these tasks by its <see cref="TaskHandler"/>.
+    /// The <see cref="EntityDatabase"/> execute these tasks by its <see cref="taskHandler"/>.
     /// <br/>
     /// Instances of <see cref="EntityDatabase"/> and all its implementation are designed to be thread safe enabling multiple
     /// clients e.g. <see cref="Client.EntityStore"/> operating on the same <see cref="EntityDatabase"/> instance.
@@ -74,14 +74,14 @@ namespace Friflo.Json.Fliox.DB.Host
         // ReSharper disable once FieldCanBeMadeReadOnly.Global
         /// <summary>
         /// The <see cref="Host.TaskHandler"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
-        /// Custom task (request) handler can be added to the <see cref="TaskHandler"/> or
-        /// the <see cref="TaskHandler"/> can be replaced by a custom implementation.
+        /// Custom task (request) handler can be added to the <see cref="taskHandler"/> or
+        /// the <see cref="taskHandler"/> can be replaced by a custom implementation.
         /// </summary>
-        public              TaskHandler         TaskHandler     { get => taskHandler; set => taskHandler = NotNull(value, nameof(TaskHandler)); }
+        public readonly     TaskHandler         taskHandler;
         /// <summary>
         /// An <see cref="Auth.Authenticator"/> performs authentication and authorization for all
         /// <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/> sent by a client.
-        /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="TaskHandler"/>.
+        /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="taskHandler"/>.
         /// </summary>
         public              Authenticator       Authenticator   { get => authenticator; set => authenticator = NotNull(value, nameof(Authenticator)); }
         // ReSharper disable once FieldCanBeMadeReadOnly.Global
@@ -111,7 +111,6 @@ namespace Friflo.Json.Fliox.DB.Host
         
         private static T    NotNull<T> (T value, string name) where T : class => value ?? throw new NullReferenceException(name);
         
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   TaskHandler         taskHandler         = new TaskHandler();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow());
         [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   ClientController    clientController    = new IncrementClientController();
         
@@ -120,17 +119,23 @@ namespace Friflo.Json.Fliox.DB.Host
         public override     string                              ToString() => extensionName != null ? $"'{extensionName}'" : "";
 
         /// <summary> Construct a default database </summary>
-        protected EntityDatabase (DbOpt opt) {
+        protected EntityDatabase (DbOpt opt, TaskHandler taskHandler = null) {
             hostName            = (opt ?? DbOpt.Default).hostName;
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
+            this.taskHandler    = taskHandler ?? new TaskHandler();
         }
         
         /// <summary> Construct an extension database </summary>
         // ReSharper disable once UnusedParameter.Local
-        protected EntityDatabase (EntityDatabase extensionBase, string extensionName, DbOpt opt) : this(opt) {
+        protected EntityDatabase (
+            EntityDatabase  extensionBase,
+            string          extensionName,
+            DbOpt           opt,
+            TaskHandler     taskHandler = null
+        ) : this(opt, taskHandler) {
             hostName = null; // extension database must not have a hostName to avoid confusion
-            this.extensionBase = extensionBase ?? throw new ArgumentException(nameof(extensionBase));
-            this.extensionName = extensionName ?? throw new ArgumentException(nameof(extensionName));
+            this.extensionBase  = extensionBase ?? throw new ArgumentException(nameof(extensionBase));
+            this.extensionName  = extensionName ?? throw new ArgumentException(nameof(extensionName));
         }
         
         public abstract EntityContainer CreateContainer(string name, EntityDatabase database);

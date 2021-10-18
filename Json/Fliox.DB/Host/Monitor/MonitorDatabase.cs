@@ -19,9 +19,9 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         
         public const string Name = "monitor";
         
-        public MonitorDatabase (EntityDatabase extensionBase, DbOpt opt = null) : base (extensionBase, Name, opt) {
+        public MonitorDatabase (EntityDatabase extensionBase, DbOpt opt = null)
+            : base (extensionBase, Name, opt, new MonitorHandler()) {
             stateDB     = new MemoryDatabase();
-            TaskHandler = new MonitorHandler(this);
             stateStore  = new MonitorStore(extensionBase.hostName, stateDB, HostTypeStore.Get());
         }
 
