@@ -64,6 +64,7 @@ namespace Friflo.Json.Fliox.DB.Host
 #endif
     public abstract class EntityDatabase : IDisposable
     {
+        /// <summary> map of of containers identified by their container name </summary>
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         
         /// <summary>
@@ -72,34 +73,41 @@ namespace Friflo.Json.Fliox.DB.Host
         /// In case of remote database connections WebSockets are used to send Pub-Sub events to clients.   
         /// </summary>
         public              EventBroker         EventBroker     { get; set; }
+        
         /// <summary>
         /// The <see cref="TaskHandler"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
         /// Custom task (request) handler can be added to the <see cref="taskHandler"/> or
         /// the <see cref="taskHandler"/> can be replaced by a custom implementation.
         /// </summary>
         public readonly     TaskHandler         taskHandler;
+        
         /// <summary>
         /// An <see cref="Auth.Authenticator"/> performs authentication and authorization for all
         /// <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/> sent by a client.
         /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="taskHandler"/>.
         /// </summary>
         public              Authenticator       Authenticator   { get => authenticator; set => authenticator = NotNull(value, nameof(Authenticator)); }
+        
         /// <summary>
         /// <see cref="ClientController"/> is used to create / add unique client ids to enable sending events to
         /// specific user clients.
         /// It also enables monitoring execution statistics of <see cref="EntityDatabase.ExecuteSync"/> 
         /// </summary>
         public              ClientController    ClientController{ get => clientController; set => clientController = NotNull(value, nameof(ClientController)); }
+        
         /// <summary>
         /// An optional <see cref="DatabaseSchema"/> used to validate the JSON payloads in all write operations
         /// performed on the <see cref="EntityContainer"/>'s of the database
         /// </summary>
         public              DatabaseSchema      Schema          { get; set; }
+        
         /// <summary>
         /// A host name that is assigned to a default database.
         /// Its only purpose is to use it as id in <see cref="Monitor.HostInfo.id"/>.
         /// </summary>
+        /// 
         public  readonly    string              hostName;
+        
         /// <summary>
         /// A mapping function used to assign a custom container name.
         /// If using a custom name its value is assigned to the containers <see cref="EntityContainer.instanceName"/>. 
@@ -108,15 +116,16 @@ namespace Friflo.Json.Fliox.DB.Host
         /// </summary>
         public readonly     CustomContainerName customContainerName;
         
-        private static T    NotNull<T> (T value, string name) where T : class => value ?? throw new NullReferenceException(name);
+        internal readonly   HostStats           hostStats = new HostStats();
         
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow());
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)] private   ClientController    clientController    = new IncrementClientController();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private             Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow());
         
-        internal readonly   HostStats   hostStats = new HostStats();
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private             ClientController    clientController    = new IncrementClientController();
 
-        public override     string                              ToString() => extensionName != null ? $"'{extensionName}'" : "";
-
+        public override     string              ToString() => extensionName != null ? $"'{extensionName}'" : "";
+        
         /// <summary> Construct a default database </summary>
         protected EntityDatabase (DbOpt opt, TaskHandler taskHandler = null) {
             hostName            = (opt ?? DbOpt.Default).hostName;
@@ -136,24 +145,23 @@ namespace Friflo.Json.Fliox.DB.Host
             this.extensionName  = extensionName ?? throw new ArgumentException(nameof(extensionName));
         }
         
-        public abstract EntityContainer CreateContainer(string name, EntityDatabase database);
-
         public virtual void Dispose() {
             foreach (var container in containers ) {
                 container.Value.Dispose();
             }
         }
         
-        public virtual void AddEventTarget     (in JsonKey clientId, IEventTarget eventTarget) {}
-        public virtual void RemoveEventTarget  (in JsonKey clientId) {}
+        private static T NotNull<T> (T value, string name) where T : class => value ?? throw new NullReferenceException(name);
+        
+        public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
+        public virtual  void            AddEventTarget      (in JsonKey clientId, IEventTarget eventTarget) {}
+        public virtual  void            RemoveEventTarget   (in JsonKey clientId) {}
 
-        internal void AddContainer(EntityContainer container)
-        {
+        internal void AddContainer(EntityContainer container) {
             containers.Add(container.name, container);
         }
         
-        public bool TryGetContainer(string name, out EntityContainer container)
-        {
+        public bool TryGetContainer(string name, out EntityContainer container) {
             return containers.TryGetValue(name, out container);
         }
 
