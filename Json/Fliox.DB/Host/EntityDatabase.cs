@@ -141,8 +141,8 @@ namespace Friflo.Json.Fliox.DB.Host
             TaskHandler     taskHandler = null
         ) : this(opt, taskHandler) {
             hostName = null; // extension database must not have a hostName to avoid confusion
-            this.extensionBase  = extensionBase ?? throw new ArgumentException(nameof(extensionBase));
-            this.extensionName  = extensionName ?? throw new ArgumentException(nameof(extensionName));
+            this.extensionBase  = extensionBase ?? throw new ArgumentNullException(nameof(extensionBase));
+            this.extensionName  = extensionName ?? throw new ArgumentNullException(nameof(extensionName));
         }
         
         public virtual void Dispose() {
