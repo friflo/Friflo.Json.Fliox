@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.Host
     /// Custom classes can also be managed by <see cref="IPools"/> by using <see cref="Pool{T}"/>.
     /// Its typical use case is pooling of a domain specific Store extending <see cref="Client.EntityStore"/>. 
     /// </summary>
-    public interface IPools
+    public interface IPools : IDisposable
     {
         ObjectPool<JsonPatcher>     JsonPatcher     { get; }
         ObjectPool<ScalarSelector>  ScalarSelector  { get; }

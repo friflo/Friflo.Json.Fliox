@@ -14,6 +14,6 @@ namespace Friflo.Json.Fliox.DB.Host
     /// </summary>
     public static class UtilsInternal
     {
-        public   static readonly    Pools   SharedPools = new Pools(Default.Constructor);
+        public   static readonly    IPools   SharedPools = new Pools(Default.Constructor);
     }
 }

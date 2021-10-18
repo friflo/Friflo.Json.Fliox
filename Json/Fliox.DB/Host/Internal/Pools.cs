@@ -28,10 +28,8 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
             if (typeValidatorCount      != other.typeValidatorCount)    throw new InvalidOperationException("detect TypeValidator leak");
         }
     }
-    
 
-    
-    public sealed class Pools : IPools, IDisposable
+    internal sealed class Pools : IPools
     {
         private readonly  Dictionary<Type, IDisposable>    poolMap = new Dictionary<Type, IDisposable>(); // object = SharedPool<T>
         
@@ -61,7 +59,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
             TypeValidator   = new SharedPool<TypeValidator>     (() => new TypeValidator());
         }
         
-        internal Pools(Pools sharedPools) {
+        internal Pools(IPools sharedPools) {
             JsonPatcher     = new LocalPool<JsonPatcher>        (sharedPools.JsonPatcher,       "JsonPatcher");
             ScalarSelector  = new LocalPool<ScalarSelector>     (sharedPools.ScalarSelector,    "ScalarSelector");
             JsonEvaluator   = new LocalPool<JsonEvaluator>      (sharedPools.JsonEvaluator,     "JsonEvaluator");
