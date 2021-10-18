@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.Remote
     public abstract class RemoteClientDatabase : EntityDatabase
     {
         private  readonly   Dictionary<JsonKey, IEventTarget>   clientTargets = new Dictionary<JsonKey, IEventTarget>(JsonKey.Equality);
-        private  readonly   Pools                               pools = new Pools(Pools.SharedPools);
+        private  readonly   Pools                               pools = new Pools(SingletonUtils.SharedPools);
 
         // ReSharper disable once EmptyConstructor - added for source navigation
         protected RemoteClientDatabase(DbOpt opt = null) : base(opt) { }

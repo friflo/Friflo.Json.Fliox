@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public async Task   MemoryCreateAsync() { await MemoryCreate(); }
         
         private static async Task MemoryCreate() {
-            using (var _            = Pools.SharedPools) // for LeakTestsFixture
+            using (var _            = SingletonUtils.SharedPools) // for LeakTestsFixture
             using (var database     = new MemoryDatabase())
             using (var createStore  = new PocStore(database, "createStore"))
             using (var useStore     = new PocStore(database, "useStore"))  {
@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public async Task  FileCreateAsync() { await FileCreate(); }
 
         private static async Task FileCreate() {
-            using (var _            = Pools.SharedPools) // for LeakTestsFixture
+            using (var _            = SingletonUtils.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var createStore  = new PocStore(fileDatabase, "createStore"))
             using (var useStore     = new PocStore(fileDatabase, "useStore")) {
@@ -80,7 +80,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public async Task  FileUseAsync() { await FileUse(); }
         
         private static async Task FileUse() {
-            using (var _            = Pools.SharedPools) // for LeakTestsFixture
+            using (var _            = SingletonUtils.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var useStore     = new PocStore(fileDatabase, "useStore")) {
                 await TestStores(useStore, useStore);
@@ -93,7 +93,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public async Task  HttpCreateAsync() { await HttpCreate(); }
         
         private static async Task HttpCreate() {
-            using (var _                = Pools.SharedPools) // for LeakTestsFixture
+            using (var _                = SingletonUtils.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/"))
             using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {
@@ -117,7 +117,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// It also ensures that a single <see cref="WebSocketClientDatabase"/> instance can be used by multiple clients
         /// simultaneously. In this case three <see cref="PocStore"/> instances.
         private static async Task WebSocketCreate() {
-            using (var _                = Pools.SharedPools) // for LeakTestsFixture
+            using (var _                = SingletonUtils.SharedPools) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(false))
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/"))
@@ -150,7 +150,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// To ensure all change events arrive at <see cref="SubscriptionProcessor"/> <see cref="SyncRequest.eventAck"/>
         /// is used to inform database about arrived events. All not acknowledged events are resent.
         private static async Task WebSocketReconnect() {
-            using (var _                = Pools.SharedPools) // for LeakTestsFixture
+            using (var _                = SingletonUtils.SharedPools) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(true))
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/"))
@@ -199,7 +199,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public void         LoopbackUseSync()     { SingleThreadSynchronizationContext.Run(LoopbackUse); }
         
         private static async Task LoopbackUse() {
-            using (var _                = Pools.SharedPools) // for LeakTestsFixture
+            using (var _                = SingletonUtils.SharedPools) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(false))
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase))
@@ -252,7 +252,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
 
         private static async Task TestCreate(Func<PocStore, Task> test) {
-            using (var _            = Pools.SharedPools) // for LeakTestsFixture
+            using (var _            = SingletonUtils.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var createStore  = new PocStore(fileDatabase, "createStore")) {
                 await TestRelationPoC.CreateStore(createStore);
@@ -261,7 +261,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task TestUse(Func<PocStore, Task> test) {
-            using (var _            = Pools.SharedPools) // for LeakTestsFixture
+            using (var _            = SingletonUtils.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var createStore  = new PocStore(fileDatabase, "createStore")) {
                 await test(createStore);

@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     {
         [Test]
         public void TestQueryRef() {
-            using (var __       = Pools.SharedPools) // for LeakTestsFixture
+            using (var __       = SingletonUtils.SharedPools) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
             using (var store    = new PocStore(database, new TypeStore(), "TestQueryRef")) {
                 var orders = store.orders;
