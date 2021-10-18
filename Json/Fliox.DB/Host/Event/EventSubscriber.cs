@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.Host.Utils;
+using Friflo.Json.Fliox.DB.Threading;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.Protocol.Tasks;
 using Friflo.Json.Fliox.DB.Remote;

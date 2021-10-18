@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Remote;
-using Friflo.Json.Fliox.DB.Host.Utils;
+using Friflo.Json.Fliox.DB.Threading;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.Utils;

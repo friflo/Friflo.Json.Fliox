@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Remote;
-using Friflo.Json.Fliox.DB.Host.Utils;
+using Friflo.Json.Fliox.DB.Threading;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 

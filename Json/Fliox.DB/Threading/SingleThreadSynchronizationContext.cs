@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Friflo.Json.Fliox.DB.Host.Utils
+namespace Friflo.Json.Fliox.DB.Threading
 {
     // [Await, SynchronizationContext, and Console Apps | .NET Parallel Programming] https://devblogs.microsoft.com/pfxteam/await-synchronizationcontext-and-console-apps/
     public sealed class SingleThreadSynchronizationContext : SynchronizationContext
