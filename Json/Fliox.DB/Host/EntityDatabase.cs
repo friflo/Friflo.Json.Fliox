@@ -22,10 +22,7 @@ namespace Friflo.Json.Fliox.DB.Host
         /// <see cref="EntityDatabase.customContainerName"/>
         public  readonly    CustomContainerName     customContainerName;
         
-        public DbOpt(
-            string              hostName            = null,
-            CustomContainerName customContainerName = null
-        ) {
+        public DbOpt(string hostName = null, CustomContainerName customContainerName = null) {
             this.hostName               = hostName              ?? "host";
             this.customContainerName    = customContainerName   ?? (name => name);
         }
