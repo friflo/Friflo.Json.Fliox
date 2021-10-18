@@ -31,6 +31,9 @@ namespace Friflo.Json.Fliox.DB.Host
         
         internal static readonly DbOpt Default = new DbOpt();
     }
+    
+    public delegate string CustomContainerName(string name);
+
     /// <summary>
     /// <see cref="EntityDatabase"/> is an abstraction for a specific database adapter / implementation e.g. a
     /// <see cref="MemoryDatabase"/> or a <see cref="FileDatabase"/>.
@@ -275,6 +278,4 @@ namespace Friflo.Json.Fliox.DB.Host
             return extensionDB;
         }
     }
-    
-    public delegate string CustomContainerName(string name);
 }
