@@ -34,7 +34,6 @@ namespace Friflo.Json.Fliox.DB.Host
                 _singleton = new TypeStore();
                 // Sync models
                 _singleton.GetTypeMapper(typeof(ProtocolMessage));
-                _singleton.GetTypeMapper(typeof(ErrorResponse));
                 
                 // UserStore models
                 var entityTypes = EntityStore.GetEntityTypes<UserStore>();
