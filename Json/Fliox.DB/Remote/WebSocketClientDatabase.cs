@@ -98,7 +98,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         
         private void OnReceive(JsonUtf8 messageJson) {
             try {
-                var contextPools    = new Pools(SingletonUtils.SharedPools);
+                var contextPools    = new Pools(UtilsInternal.SharedPools);
                 ProtocolMessage message = RemoteUtils.ReadProtocolMessage (messageJson, contextPools, out _);
                 switch (message) {
                     case null:

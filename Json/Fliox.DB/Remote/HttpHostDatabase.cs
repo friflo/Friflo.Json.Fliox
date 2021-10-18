@@ -128,7 +128,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                 var requestContent  = await JsonUtf8.ReadToEndAsync(inputStream).ConfigureAwait(false);
 
                 // Each request require its own pool as multiple request running concurrently. Could cache a Pools instance per connection.
-                var pools           = new Pools(SingletonUtils.SharedPools);
+                var pools           = new Pools(UtilsInternal.SharedPools);
                 var messageContext  = new MessageContext(pools, null);
                 var result          = await ExecuteJsonRequest(requestContent, messageContext).ConfigureAwait(false);
                 messageContext.Release();

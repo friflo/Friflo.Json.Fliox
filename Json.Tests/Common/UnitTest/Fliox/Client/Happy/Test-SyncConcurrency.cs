@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// <see cref="RemoteHostDatabase"/> because RTT is added only once instead of n times for n awaited Sync() calls. 
         /// </summary>
         [Test] public static void TestSyncConcurrency () {
-            using (var _                = SingletonUtils.SharedPools) // for LeakTestsFixture
+            using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var memoryDb = new MemoryDatabase())

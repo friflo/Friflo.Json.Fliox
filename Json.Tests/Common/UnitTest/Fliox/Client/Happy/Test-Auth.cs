@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     {
         // ----------------------------- Test authorization rights to a database -----------------------------
         [Test] public static void TestAuthRights () {
-            using (var _                = SingletonUtils.SharedPools) // for LeakTestsFixture
+            using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
@@ -221,7 +221,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         // ------------------------------------- Test access to user database -------------------------------------
         [Test] public static void TestUserStore () {
-            using (var _                = SingletonUtils.SharedPools) // for LeakTestsFixture
+            using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))

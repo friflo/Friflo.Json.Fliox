@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         [Test]
         public static async Task TestMonitoringFile() {
-            using (var _                = SingletonUtils.SharedPools) // for LeakTestsFixture
+            using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore", DbOpt))
             using (var monitorDB        = new MonitorDatabase(fileDatabase)) {
                 fileDatabase.AddExtensionDB(monitorDB);
@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         [Test]
         public static async Task TestMonitoringLoopback() {
-            using (var _                = SingletonUtils.SharedPools) // for LeakTestsFixture
+            using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore", DbOpt))
             using (var monitor          = new MonitorDatabase(fileDatabase))
             using (var loopbackDatabase = new LoopbackDatabase(fileDatabase)) {
@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         [Test]
         public static async Task TestMonitoringHttp() {
-            using (var _                = SingletonUtils.SharedPools) // for LeakTestsFixture
+            using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore", DbOpt))
             using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/")) 
             using (var monitor          = new MonitorDatabase(fileDatabase))

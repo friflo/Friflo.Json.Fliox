@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         
         [Test]
         public void RunLinq() {
-            using (var _            = SingletonUtils.SharedPools) // for LeakTestsFixture
+            using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database     = new MemoryDatabase())
             using (var typeStore    = new TypeStore())
             using (var store        = new PocStore(database,typeStore, "store"))
@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 
         [Test]
         public void DebugLinqQuery() {
-            using (var _ = SingletonUtils.SharedPools) // for LeakTestsFixture
+            using (var _ = UtilsInternal.SharedPools) // for LeakTestsFixture
             {
                 var order1 = GetOrder("order-1");
 
@@ -116,7 +116,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 
         [Test]
         public void TestSelectSameInstance() {
-            using (var _            = SingletonUtils.SharedPools) // for LeakTestsFixture
+            using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database     = new MemoryDatabase())
             using (var typeStore    = new TypeStore())
             using (var store        = new PocStore(database, typeStore, "store")) {

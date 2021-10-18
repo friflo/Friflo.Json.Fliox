@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             messageReader               = mapper.reader; // new ObjectReader(typeStore, new NoThrowHandler());
             pendingSyncs                = new ConcurrentDictionary<Task, MessageContext>();
             idsBuf                      = new List<JsonKey>();
-            pools                       = new Pools(SingletonUtils.SharedPools);
+            pools                       = new Pools(UtilsInternal.SharedPools);
             
             // --- non readonly
             syncStore                   = null;

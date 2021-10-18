@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.DB.Remote
 
         private  readonly   DataChannelWriter<ArraySegment<byte>>   sendWriter;
         private  readonly   Task                                    sendLoop;
-        private  readonly   Pools                                   pools = new Pools(SingletonUtils.SharedPools);
+        private  readonly   Pools                                   pools = new Pools(UtilsInternal.SharedPools);
         
         private WebSocketHostTarget (WebSocket webSocket, bool fakeOpenClosedSocket) {
             this.webSocket              = webSocket;

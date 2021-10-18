@@ -7,7 +7,7 @@ using Friflo.Json.Fliox.DB.Host.Internal;
 
 namespace Friflo.Json.Fliox.DB.Host
 {
-    public static class SingletonUtils
+    public static class UtilsInternal
     {
         public   static readonly    Pools   SharedPools = new Pools(Default.Constructor);
     }
