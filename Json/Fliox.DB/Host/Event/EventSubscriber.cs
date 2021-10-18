@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         Event
     }
     
-    public sealed class EventSubscriber {
+    internal sealed class EventSubscriber {
         internal readonly   JsonKey                                 clientId;
         private             IEventTarget                            eventTarget;
         /// key: <see cref="SubscribeChanges.container"/>
@@ -43,15 +43,14 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         internal readonly   Task                                    triggerLoop;
         private  readonly   DataChannelWriter<TriggerType>          triggerWriter;
 
-        public              int                                     Seq             => eventCounter;
-        public              int                                     EventQueueCount => eventQueue.Count;
+        internal            int                                     Seq             => eventCounter;
+        internal            int                                     EventQueueCount => eventQueue.Count;
         public   override   string                                  ToString()      => clientId.ToString();
         
-        /// used for test assertion
-        public              int                                     SentEventsCount => sentEvents.Count;
-        internal            bool                                    IsRemoteTarget => eventTarget is WebSocketHostTarget;
+        internal            int                                     SentEventsCount => sentEvents.Count;
+        internal            bool                                    IsRemoteTarget  => eventTarget is WebSocketHostTarget;
         
-        public List<SubscribeChanges> GetChangeSubscriptions (List<SubscribeChanges> subs) {
+        internal List<SubscribeChanges> GetChangeSubscriptions (List<SubscribeChanges> subs) {
             if (changeSubscriptions.Count == 0)
                 return null;
             if (subs == null) subs = new List<SubscribeChanges>(changeSubscriptions.Count);
@@ -62,7 +61,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
             return subs;
         }
 
-        public EventSubscriber (in JsonKey clientId, IEventTarget eventTarget, bool background) {
+        internal EventSubscriber (in JsonKey clientId, IEventTarget eventTarget, bool background) {
             this.clientId       = clientId;
             this.eventTarget    = eventTarget;
             this.background     = background;

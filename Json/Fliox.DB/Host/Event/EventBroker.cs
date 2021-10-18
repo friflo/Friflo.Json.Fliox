@@ -35,12 +35,18 @@ namespace Friflo.Json.Fliox.DB.Host.Event
             jsonEvaluator.Dispose();
         }
         
-        public bool TryGetSubscriber(JsonKey key, out EventSubscriber subscriber) {
+        internal bool TryGetSubscriber(JsonKey key, out EventSubscriber subscriber) {
             return subscribers.TryGetValue(key, out subscriber);
         }
         
-        /// used for test assertion (returned subscribers cant be manipulated)
-        public ICollection<EventSubscriber> GetSubscribers() => subscribers.Values;
+        /// used for test assertion
+        public int NotAcknowledgedEvents() {
+            int count = 0;
+            foreach (var subscriber in subscribers) {
+                count += subscriber.Value.SentEventsCount;
+            }
+            return count;
+        }
 
         public async Task FinishQueues() {
             if (!background)

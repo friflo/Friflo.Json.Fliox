@@ -315,9 +315,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     await listenDb.Sync();
 
                     // assert no send events are pending which are not acknowledged
-                    foreach (var subscriber in eventBroker.GetSubscribers()) {
-                        AreEqual(0, subscriber.SentEventsCount);
-                    }
+                    AreEqual(0, eventBroker.NotAcknowledgedEvents());
                 }
             }
         }
