@@ -1,9 +1,8 @@
-﻿#if !UNITY_5_3_OR_NEWER
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Tests.Main
 {
     public static class Utils
@@ -26,5 +25,3 @@ namespace Friflo.Json.Tests.Main
         }
     }
 }
-
-#endif

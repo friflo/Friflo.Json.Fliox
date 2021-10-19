@@ -1,12 +1,11 @@
-﻿#if !UNITY_2020_1_OR_NEWER
-
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Tests.Main
 {
     public class RequestHandler : IRequestHandler
@@ -87,5 +86,3 @@ namespace Friflo.Json.Tests.Main
         }
     }
 }
-
-#endif

@@ -1,10 +1,9 @@
-﻿#if !UNITY_2020_1_OR_NEWER
-
-using System;
+﻿using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Tests.Main
 {
     internal static partial class Program
@@ -73,5 +72,3 @@ namespace Friflo.Json.Tests.Main
         }
     }
 }
-
-#endif

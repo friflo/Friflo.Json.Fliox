@@ -1,6 +1,4 @@
-﻿#if !UNITY_2020_1_OR_NEWER
-
-using System;
+﻿using System;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Host.Monitor;
@@ -12,6 +10,7 @@ using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 
 // ReSharper disable UseObjectOrCollectionInitializer
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Tests.Main
 {
     internal  static partial class  Program
@@ -73,5 +72,3 @@ namespace Friflo.Json.Tests.Main
         }
     }
 }
-
-#endif

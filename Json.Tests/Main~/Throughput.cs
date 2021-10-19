@@ -1,11 +1,10 @@
-﻿#if !UNITY_2020_1_OR_NEWER
-
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy;
 
+// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Tests.Main
 {
     public static class Throughput
@@ -49,5 +48,3 @@ namespace Friflo.Json.Tests.Main
         }
     }
 }
-
-#endif
