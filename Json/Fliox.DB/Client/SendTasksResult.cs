@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.DB.Protocol;
 
 namespace Friflo.Json.Fliox.DB.Client
 {
-    public sealed class SendTasksResult
+    public sealed class ExecuteTasksResult
     {
         public  readonly    List<SyncTask>  tasks;
         public  readonly    List<SyncTask>  failed;
@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.DB.Client
 
         public override string          ToString() => $"tasks: {tasks.Count}, failed: {failed.Count}";
         
-        internal SendTasksResult(List<SyncTask> tasks, List<SyncTask> failed, ErrorResponse errorResponse) {
+        internal ExecuteTasksResult(List<SyncTask> tasks, List<SyncTask> failed, ErrorResponse errorResponse) {
             this.errorResponse  = errorResponse;
             this.tasks      = tasks;
             this.failed     = failed;
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.DB.Client
                 return errorResponse.message;
             }
             var sb = new StringBuilder();
-            sb.Append("SendTasksAsync() failed with task errors. Count: ");
+            sb.Append("ExecuteTasksAsync() failed with task errors. Count: ");
             sb.Append(failed.Count);
             foreach (var task in failed) {
                 sb.Append("\n|- ");

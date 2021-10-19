@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var create  = store.intEntities.Upsert(intEntity);
                 var create2 = store.intEntities.Upsert(intEntity2);
                 
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(create.Success);
                 IsTrue(create2.Success);
@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var read = store.intEntities.Read();
                 var find = read.Find(intId);
                     
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(find.Success);
                 IsTrue(intEntity == find.Result);
@@ -80,7 +80,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var read = store.intEntities.Read();
                 var find = read.Find(intId);
                     
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(find.Success);
                 AreEqual(intId, find.Result.id);
@@ -94,14 +94,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var entity  = new GuidEntity { id = guidId};
                 var create  = store.guidEntities.Upsert(entity);
                 
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(create.Success);
                 
                 var read = store.guidEntities.Read();
                 var find = read.Find(guidId);
                     
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
@@ -114,7 +114,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var read = store.guidEntities.Read();
                 var find = read.Find(guidId);
                     
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(find.Success);
                 AreEqual(guidId, find.Result.id);
@@ -126,14 +126,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var entity  = new GuidEntity { id = guidId2 };
                 var create  = store.guidEntities.Upsert(entity);
                 
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(create.Success);
                 
                 var read = store.guidEntities.Read();
                 var find = read.Find(guidId2);
                     
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
@@ -144,7 +144,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var read = store.guidEntities.Read();
                 var find = read.Find(guidId2);
                     
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(find.Success);
                 AreEqual(guidId2, find.Result.id);
@@ -159,14 +159,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var entity  = new LongEntity { Id = longId};
                 var create  = store.longEntities.Upsert(entity);
                 
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(create.Success);
                 
                 var read = store.longEntities.Read();
                 var find = read.Find(longId);
                     
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
@@ -178,7 +178,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var read = store.longEntities.Read();
                 var find = read.Find(longId);
                     
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(find.Success);
                 AreEqual(longId, find.Result.Id);
@@ -191,14 +191,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var entity  = new ShortEntity { id = shortId };
                 var create  = store.shortEntities.Upsert(entity);
                 
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(create.Success);
                 
                 var read = store.shortEntities.Read();
                 var find = read.Find(shortId);
                     
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
@@ -210,7 +210,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var read = store.shortEntities.Read();
                 var find = read.Find(shortId);
                     
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(find.Success);
                 AreEqual(shortId, find.Result.id);
@@ -223,14 +223,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var entity  = new ByteEntity { id = byteId };
                 var create  = store.byteEntities.Upsert(entity);
                 
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(create.Success);
                 
                 var read = store.byteEntities.Read();
                 var find = read.Find(byteId);
                     
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
@@ -242,7 +242,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var read = store.byteEntities.Read();
                 var find = read.Find(byteId);
                     
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(find.Success);
                 AreEqual(byteId, find.Result.id);
@@ -255,14 +255,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var entity  = new CustomIdEntity { customId = stringId};
                 var create  = store.customIdEntities.Upsert(entity);
                 
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(create.Success);
                 
                 var read = store.customIdEntities.Read();
                 var find = read.Find(stringId);
                     
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
@@ -273,7 +273,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var read = store.customIdEntities.Read();
                 var find = read.Find(stringId);
                     
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(find.Success);
                 AreEqual(stringId, find.Result.customId);
@@ -283,7 +283,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var store    = new EntityIdStore(database, typeStore, "guidStore")) {
                 var create = store.entityRefs.Upsert(entityRef);
                 
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(create.Success);
             }
@@ -312,7 +312,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var intRefs      = read.ReadArrayRefs  (er => er.intEntities);
                 var intNullRefs  = read.ReadArrayRefs  (er => er.intNullEntities);
 
-                await store.SendTasksAsync();                   
+                await store.ExecuteTasksAsync();                   
                
                 IsTrue(find.Success);
                 var result = find.Result;
@@ -372,7 +372,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var longEntities    = store.longEntities.   QueryAll();
                 var shortEntities   = store.shortEntities.  QueryAll();
 
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                
                 IsNotNull(guidEntities  [guidId]);
                 IsNotNull(guidEntities  [guidId2]);
@@ -388,14 +388,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var entity  = new CustomIdEntity2 { customId2 = stringId2};
                 var create  = store.customIdEntities2.Upsert(entity);
                 
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(create.Success);
                 
                 var read = store.customIdEntities2.Read();
                 var find = read.Find(stringId2);
                     
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(find.Success);
                 IsTrue(entity == find.Result);
@@ -405,7 +405,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var read = store.customIdEntities2.Read();
                 var find = read.Find(stringId2);
                     
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue(find.Success);
                 AreEqual(stringId2, find.Result.customId2);

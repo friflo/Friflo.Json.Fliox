@@ -32,14 +32,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         {
             using (var store = new EntityIdStore(database, typeStore, "autoIncrement")) {
                 var delete = store.intEntitiesAuto.DeleteAll();
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 IsTrue(delete.Success);
                 
                 var intEntity = new AutoIntEntity();
                 var create  = store.intEntitiesAuto.Create(intEntity);
                 var reserve = store.intEntitiesAuto.ReserveKeys(10);
                 
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 IsTrue  (reserve.Success);
                 AreEqual(10, reserve.Count);
@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 AreEqual(9, diff);
                 
                 var reserve2 = store.intEntitiesAuto.ReserveKeys(20);
-                await store.SendTasksAsync();
+                await store.ExecuteTasksAsync();
                 
                 var keys2 = reserve2.Keys;
                 AreEqual(20, keys2[0] - keys[0]);

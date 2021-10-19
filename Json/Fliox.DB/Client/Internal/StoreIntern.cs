@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                 subscriptions.Add(name, subscriber);
                 syncStore.SubscribeMessage().Add(task);
             } else {
-                task.state.Completed = true;
+                task.state.Executed = true;
             }
             if (subscriber.isPrefix) {
                 subscriptionsPrefix.Add(subscriber);
@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             }
             var task = new SubscribeMessageTask(name, true);
             if (!subscriptions.TryGetValue(name, out var subscriber)) {
-                task.state.Completed = true;
+                task.state.Executed = true;
                 return task;
             }
             if (handler != null) {
@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                 subscriptions.Remove(name);
                 syncStore.SubscribeMessage().Add(task);
             } else {
-                task.state.Completed = true;
+                task.state.Executed = true;
             }
             return task;
         }

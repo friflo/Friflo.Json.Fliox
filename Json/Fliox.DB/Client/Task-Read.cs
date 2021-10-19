@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.DB.Client
             var id = Ref<TKey,T>.RefKeyMap.KeyToId(key);
             var entityError = entities[id].Error;
             if (entityError == null) {
-                findState.Completed = true;
+                findState.Executed = true;
                 result = values[key];
                 return;
             }
@@ -95,7 +95,7 @@ namespace Friflo.Json.Fliox.DB.Client
                 findState.SetError(error);
                 return;
             }
-            findState.Completed = true;
+            findState.Executed = true;
         }
     } 
     
@@ -127,7 +127,7 @@ namespace Friflo.Json.Fliox.DB.Client
         public Find<TKey, T> Find(TKey key) {
             if (key == null)
                 throw new ArgumentException($"ReadTask.Find() id must not be null. EntitySet: {set.name}");
-            if (State.IsCompleted())
+            if (State.IsExecuted())
                 throw AlreadySyncedError();
             results.Add(key, null);
             var find = new Find<TKey, T>(key);
@@ -139,7 +139,7 @@ namespace Friflo.Json.Fliox.DB.Client
         public FindRange<TKey, T> FindRange(ICollection<TKey> keys) {
             if (keys == null)
                 throw new ArgumentException($"ReadTask.FindRange() ids must not be null. EntitySet: {set.name}");
-            if (State.IsCompleted())
+            if (State.IsExecuted())
                 throw AlreadySyncedError();
             results.EnsureCapacity(results.Count + keys.Count);
             foreach (var id in keys) {
@@ -167,14 +167,14 @@ namespace Friflo.Json.Fliox.DB.Client
         
         // --- Ref
         public ReadRefTask<TRefKey, TRef> ReadRef<TRefKey, TRef>(Expression<Func<T, Ref<TRefKey, TRef>>> selector) where TRef : class {
-            if (State.IsCompleted())
+            if (State.IsExecuted())
                 throw AlreadySyncedError();
             string path = ExpressionSelector.PathFromExpression(selector, out _);
             return ReadRefByPath<TRefKey, TRef>(path);
         }
         
         public ReadRefTask<TRefKey, TRef> ReadRefPath<TRefKey, TRef>(RefPath<T, TRefKey, TRef> selector) where TRef : class {
-            if (State.IsCompleted())
+            if (State.IsExecuted())
                 throw AlreadySyncedError();
             return ReadRefByPath<TRefKey, TRef>(selector.path);
         }
@@ -193,19 +193,19 @@ namespace Friflo.Json.Fliox.DB.Client
         
         // --- Refs
         public ReadRefsTask<TRefKey, TRef> ReadRefsPath<TRefKey, TRef>(RefsPath<T, TRefKey, TRef> selector) where TRef : class {
-            if (State.IsCompleted())
+            if (State.IsExecuted())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TRefKey, TRef>(selector.path, set.intern.store);
         }
 
         public ReadRefsTask<TRefKey, TRef> ReadRefs<TRefKey, TRef>(Expression<Func<T, Ref<TRefKey, TRef>>> selector) where TRef : class {
-            if (State.IsCompleted())
+            if (State.IsExecuted())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRefKey, TRef>(selector, set.intern.store);
         }
         
         public ReadRefsTask<TRefKey, TRef> ReadArrayRefs<TRefKey, TRef>(Expression<Func<T, IEnumerable<Ref<TRefKey, TRef>>>> selector) where TRef : class {
-            if (State.IsCompleted())
+            if (State.IsExecuted())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRefKey, TRef>(selector, set.intern.store);
         }

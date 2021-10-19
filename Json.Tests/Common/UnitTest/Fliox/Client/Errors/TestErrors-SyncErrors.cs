@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             AreEqual("SendMessageTask (name: Echo)", helloTask1.ToString());
 
-            await store.SendTasksAsync(); // ----------------
+            await store.ExecuteTasksAsync(); // ----------------
             
             AreEqual("\"Hello World 1\"",   helloTask1.ResultJson.AsString());
             AreEqual("Hello World 1",       helloTask1.ReadResult<string>());
@@ -52,27 +52,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("Hello World 2",       helloTask2.ReadResult<string>());
             
 
-            // --- SendTasksAsync error
+            // --- ExecuteTasksAsync error
             {
                 var syncError = store.SendMessage(msgSyncError);
                 
-                // test throwing exception in case of SendTasksAsync errors
+                // test throwing exception in case of ExecuteTasksAsync errors
                 try {
-                    await store.SendTasksAsync(); // ----------------
+                    await store.ExecuteTasksAsync(); // ----------------
                     
-                    Fail("SendTasksAsync() intended to fail - code cannot be reached");
-                } catch (SendTasksException sre) {
+                    Fail("ExecuteTasksAsync() intended to fail - code cannot be reached");
+                } catch (ExecuteTasksException sre) {
                     AreEqual("simulated SyncError", sre.Message);
                     AreEqual(1, sre.failed.Count);
                     AreEqual("SyncError ~ simulated SyncError", sre.failed[0].Error.ToString());
                 }
                 AreEqual("SyncError ~ simulated SyncError", syncError.Error.ToString());
             }
-            // --- SendTasksAsync exception
+            // --- ExecuteTasksAsync exception
             {
                 var syncException = store.SendMessage(msgSyncException);
                 
-                var sync = await store.TrySendTasksAsync(); // ----------------
+                var sync = await store.TryExecuteTasksAsync(); // ----------------
                 
                 IsFalse(sync.Success);
                 AreEqual("SimulationException: simulated SyncException", sync.Message);

@@ -38,19 +38,19 @@ namespace Friflo.Json.Fliox.DB.Client
         }
 
         public ReadRefsTask<TRefKey, TRef> ReadRefsPath<TRefKey, TRef>(RefsPath<T, TRefKey, TRef> selector) where TRef : class {
-            if (State.IsCompleted())
+            if (State.IsExecuted())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByPath<TRefKey, TRef>(selector.path, store);
         }
 
         public ReadRefsTask<TRefKey, TRef> ReadRefs<TRefKey, TRef>(Expression<Func<T, Ref<TRefKey, TRef>>> selector) where TRef : class {
-            if (State.IsCompleted())
+            if (State.IsExecuted())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRefKey, TRef>(selector, store);
         }
         
         public ReadRefsTask<TRefKey, TRef> ReadArrayRefs<TRefKey, TRef>(Expression<Func<T, IEnumerable<Ref<TRefKey, TRef>>>> selector) where TRef : class {
-            if (State.IsCompleted())
+            if (State.IsExecuted())
                 throw AlreadySyncedError();
             return refsTask.ReadRefsByExpression<TRefKey, TRef>(selector, store);
         }

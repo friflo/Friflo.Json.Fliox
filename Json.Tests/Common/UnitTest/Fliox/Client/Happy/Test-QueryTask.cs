@@ -52,14 +52,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
             Exception e;
             e = Throws<TaskNotSendException>(() => { var _ = customer.Key; });
-            AreEqual("ReadRefTask.Key requires SendTasksAsync(). readOrders -> .customer", e.Message);
+            AreEqual("ReadRefTask.Key requires ExecuteTasksAsync(). readOrders -> .customer", e.Message);
             e = Throws<TaskNotSendException>(() => { var _ = customer.Result; });
-            AreEqual("ReadRefTask.Result requires SendTasksAsync(). readOrders -> .customer", e.Message);
+            AreEqual("ReadRefTask.Result requires ExecuteTasksAsync(). readOrders -> .customer", e.Message);
 
             e = Throws<TaskNotSendException>(() => { var _ = hasOrderCamera.Results; });
-            AreEqual("QueryTask.Result requires SendTasksAsync(). hasOrderCamera", e.Message);
+            AreEqual("QueryTask.Result requires ExecuteTasksAsync(). hasOrderCamera", e.Message);
             e = Throws<TaskNotSendException>(() => { var _ = hasOrderCamera["arbitrary"]; });
-            AreEqual("QueryTask[] requires SendTasksAsync(). hasOrderCamera", e.Message);
+            AreEqual("QueryTask[] requires ExecuteTasksAsync(). hasOrderCamera", e.Message);
 
             var producerEmployees = producersTask.ReadArrayRefs(p => p.employeeList);
             AreEqual("allArticles2 -> .producer -> .employees[*]", producerEmployees.ToString());
@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 // readOrders.ReadAllRefs();
             }
 
-            await store.SendTasksAsync(); // ----------------
+            await store.ExecuteTasksAsync(); // ----------------
             AreEqual(1,                 ordersWithCustomer1.Results.Count);
             NotNull(ordersWithCustomer1["order-1"]);
             

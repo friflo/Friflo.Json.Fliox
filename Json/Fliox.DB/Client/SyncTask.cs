@@ -19,20 +19,20 @@ namespace Friflo.Json.Fliox.DB.Client
         public   override   string      ToString()  => GetLabel();
 
         public              bool        Success { get {
-            if (State.IsCompleted())
+            if (State.IsExecuted())
                 return !State.Error.HasErrors;
-            throw new TaskNotSendException($"SyncTask.Success requires SendTasksAsync(). {GetLabel()}");
+            throw new TaskNotSendException($"SyncTask.Success requires ExecuteTasksAsync(). {GetLabel()}");
         }}
 
         /// <summary>The error caused the task failing. Return null if task was successful - <see cref="Success"/> == true</summary>
         public              TaskError   Error { get {
-            if (State.IsCompleted())
+            if (State.IsExecuted())
                 return State.Error.TaskError;
-            throw new TaskNotSendException($"SyncTask.Error requires SendTasksAsync(). {GetLabel()}");
+            throw new TaskNotSendException($"SyncTask.Error requires ExecuteTasksAsync(). {GetLabel()}");
         } }
 
         internal bool IsOk(string method, out Exception e) {
-            if (State.IsCompleted()) {
+            if (State.IsExecuted()) {
                 if (!State.Error.HasErrors) {
                     e = null;
                     return true;
@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.DB.Client
                 e = new TaskResultException(State.Error.TaskError);
                 return false;
             }
-            e = new TaskNotSendException($"{method} requires SendTasksAsync(). {GetLabel()}");
+            e = new TaskNotSendException($"{method} requires ExecuteTasksAsync(). {GetLabel()}");
             return false;
         }
         

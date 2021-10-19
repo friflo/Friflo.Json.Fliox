@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             // --- cache empty
             var readOrders  = createStore.orders.Read();
             var orderTask   = readOrders.Find("order-1");
-            await createStore.SendTasksAsync();
+            await createStore.ExecuteTasksAsync();
 
             var order = orderTask.Result;
             using (ObjectMapper mapper = new ObjectMapper(createStore.TypeStore)) {

@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var customerWriteError  = readCustomers.Find(writeError);
             var customerReadError   = readCustomers.Find(readError);
 
-            await store.SendTasksAsync();
+            await store.ExecuteTasksAsync();
 
             // --- setup simulation errors after preconditions are established
             {
@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 customerReadError.Result.name   = "<change read 1>";
                 var logChanges = customers.LogSetChanges();
 
-                var sync = await store.TrySendTasksAsync(); // ----------------
+                var sync = await store.TryExecuteTasksAsync(); // ----------------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(logChanges.Success);
@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 var logChanges = customers.LogSetChanges();
 
                 AreEqual(1, store.Tasks.Count);
-                var sync = await store.TrySendTasksAsync(); // ----------------
+                var sync = await store.TryExecuteTasksAsync(); // ----------------
                 
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 customerReadError.Result.name   = "<change read 3>";
                 var logChanges = customers.LogSetChanges();
 
-                var sync = await store.TrySendTasksAsync(); // ----------------
+                var sync = await store.TryExecuteTasksAsync(); // ----------------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
@@ -80,7 +80,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 customerReadError.Result.name   = "<change read 1>"; // restore original value
                 var logChanges = customers.LogSetChanges();
 
-                var sync = await store.TrySendTasksAsync(); // ----------------
+                var sync = await store.TryExecuteTasksAsync(); // ----------------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
@@ -91,7 +91,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 customerWriteError.Result.name   = "<change write 4>";
                 var logChanges = customers.LogSetChanges();
 
-                var sync = await store.TrySendTasksAsync(); // ----------------
+                var sync = await store.TryExecuteTasksAsync(); // ----------------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);

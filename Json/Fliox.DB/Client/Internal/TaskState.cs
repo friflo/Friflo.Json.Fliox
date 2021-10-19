@@ -34,21 +34,21 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
 
     internal struct TaskState
     {
-        internal bool           Completed       { private get; set; }
-        internal TaskErrorInfo  Error           { get; private set; }
+        internal bool           Executed       { private get; set; }
+        internal TaskErrorInfo  Error          { get; private set; }
 
-        internal bool           IsCompleted()   { return Completed; }
+        internal bool           IsExecuted()   { return Executed; }
 
         internal void SetError(TaskErrorInfo error) {
             Error       = error;
-            Completed   = true;
+            Executed   = true;
         }
         
         internal void SetInvalidResponse(string message) {
             Error  = new TaskErrorInfo(TaskErrorType.InvalidResponse, message);
-            Completed = true;
+            Executed = true;
         }
 
-        public override string ToString() => Completed ? Error.HasErrors ? $"completed with error" : "completed" : "not send";
+        public override string ToString() => Executed ? Error.HasErrors ? $"executed with error" : "executed" : "not executed";
     }
 }

@@ -10,7 +10,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
     /// <summary>
     /// An <see cref="EntityDatabase"/> implementation which execute the continuation of <see cref="ExecuteSync"/>
-    /// never synchronously to test <see cref="EntityStore.SendTasksAsync"/> running not synchronously.
+    /// never synchronously to test <see cref="EntityStore.ExecuteTasksAsync"/> running not synchronously.
     /// </summary>
     public class AsyncDatabase : EntityDatabase
     {
