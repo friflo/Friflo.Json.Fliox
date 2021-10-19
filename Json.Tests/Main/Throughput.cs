@@ -4,7 +4,6 @@ using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy;
 
-// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Tests.Main
 {
     public static class Throughput

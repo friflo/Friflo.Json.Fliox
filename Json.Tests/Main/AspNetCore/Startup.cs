@@ -1,3 +1,5 @@
+#if !UNITY_2020_1_OR_NEWER
+
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.Mapper;
@@ -53,3 +55,5 @@ namespace Friflo.Json.Tests.Main
         }
     }
 }
+
+#endif

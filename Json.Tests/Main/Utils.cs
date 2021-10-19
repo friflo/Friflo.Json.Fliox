@@ -2,11 +2,11 @@
 using System.IO;
 using System.IO.Compression;
 
-// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Tests.Main
 {
     public static class Utils
     {
+#if !UNITY_2020_1_OR_NEWER
         public static byte[] Zip (Dictionary<string, string> files) {
             using (var memoryStream = new MemoryStream()) {
                 using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true)) {
@@ -23,5 +23,8 @@ namespace Friflo.Json.Tests.Main
                 return memoryStream.ToArray();
             }
         }
+#else
+        public static byte[] Zip (Dictionary<string, string> files) => null;
+#endif
     }
 }

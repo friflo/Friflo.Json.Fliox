@@ -10,7 +10,6 @@ using Friflo.Json.Fliox.Schema.Native;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 
 // ReSharper disable UseObjectOrCollectionInitializer
-// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Tests.Main
 {
     internal  static partial class  Program

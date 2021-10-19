@@ -1,3 +1,5 @@
+#if !UNITY_2020_1_OR_NEWER
+
 using System.Net;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -25,3 +27,5 @@ namespace Friflo.Json.Tests.Main
         }
     }
 }
+
+#endif
