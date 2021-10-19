@@ -111,7 +111,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                 return;
             }
             var reqCtx = new RequestContext(ctx.Request.Url.AbsolutePath, ctx.Request.HttpMethod, req.InputStream);
-            bool handled = await ExecuteHttpRequest(reqCtx);
+            bool handled = await ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
             
             if (handled) {
                 var responseBody = reqCtx.Response;

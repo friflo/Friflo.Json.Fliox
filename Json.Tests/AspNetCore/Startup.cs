@@ -1,5 +1,6 @@
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Remote;
+using Friflo.Json.Fliox.Mapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -26,6 +27,7 @@ namespace Friflo.Json.Tests.Main
 			}
             var database        = new MemoryDatabase();
             var hostDatabase    = new HttpHostDatabase (database);
+            hostDatabase.requestHandler = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
 
 			app.UseRouting();
 
@@ -39,13 +41,15 @@ namespace Friflo.Json.Tests.Main
                 endpoints.Map("/", async context => {
                     var req = context.Request;
                     var reqCtx = new RequestContext(req.Path.Value, req.Method, req.Body);
-                    await hostDatabase.ExecuteHttpRequest(reqCtx);
+                    await hostDatabase.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
                     
-                    var responseStream              = reqCtx.Response.AsMemoryStream();
-                    context.Response.Body           = responseStream;
-                    context.Response.ContentLength  = responseStream.Length;
+                    JsonUtf8 response               = reqCtx.Response;
                     context.Response.StatusCode     = (int)reqCtx.Status;
                     context.Response.ContentType    = reqCtx.ResponseContentType;
+                    context.Response.ContentLength  = response.Length;
+                    await context.Response.Body.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
+                    await context.Response.Body.FlushAsync().ConfigureAwait(false);
+                    //context.Response.Body.Close();
                 });
             });
 		}
