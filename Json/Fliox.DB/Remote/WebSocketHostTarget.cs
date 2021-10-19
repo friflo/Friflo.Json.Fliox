@@ -4,7 +4,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -108,10 +107,8 @@ namespace Friflo.Json.Fliox.DB.Remote
             }
         }
         
-        internal static async Task AcceptWebSocket(HttpListenerContext ctx, RemoteHostDatabase remoteHost) {
-            var         wsContext   = await ctx.AcceptWebSocketAsync(null).ConfigureAwait(false);
-            WebSocket   websocket   = wsContext.WebSocket;
-            var         target      = new WebSocketHostTarget(websocket, remoteHost.fakeOpenClosedSockets);
+        internal static async Task AcceptWebSocket(WebSocket websocket, RemoteHostDatabase remoteHost) {
+            var target = new WebSocketHostTarget(websocket, remoteHost.fakeOpenClosedSockets);
             try {
                 using (var memoryStream = new MemoryStream()) {
                     await target.ReceiveLoop(memoryStream, remoteHost).ConfigureAwait(false);
