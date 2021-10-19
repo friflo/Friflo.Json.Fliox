@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.DB", "Jso
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Playground", "Playground\Friflo.Playground.csproj", "{8E134E2F-5042-445A-B306-DFF6F3E83BEA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Friflo.Json.Fliox.DB.AspNetCore", "Json\Fliox.DB.AspNetCore\Friflo.Json.Fliox.DB.AspNetCore.csproj", "{F59C31A7-C251-45FA-A2D2-760953B9E411}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{8E134E2F-5042-445A-B306-DFF6F3E83BEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E134E2F-5042-445A-B306-DFF6F3E83BEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E134E2F-5042-445A-B306-DFF6F3E83BEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F59C31A7-C251-45FA-A2D2-760953B9E411}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F59C31A7-C251-45FA-A2D2-760953B9E411}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F59C31A7-C251-45FA-A2D2-760953B9E411}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F59C31A7-C251-45FA-A2D2-760953B9E411}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
