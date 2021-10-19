@@ -12,6 +12,7 @@ namespace Friflo.Json.Tests.Main
         private enum Module
         {
             FlioxServer,
+            FlioxServerAspNetCore,
             //
             MemoryDbThroughput,
             FileDbThroughput,
@@ -47,6 +48,9 @@ namespace Friflo.Json.Tests.Main
                 switch (module) {
                     case Module.FlioxServer:
                         FlioxServer(endpoint, database);
+                        break;
+                    case Module.FlioxServerAspNetCore:
+                        FlioxServerAspNetCore(endpoint, database);
                         break;
                     case Module.MemoryDbThroughput:
                         await Throughput.MemoryDbThroughput();
