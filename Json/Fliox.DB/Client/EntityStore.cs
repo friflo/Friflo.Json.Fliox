@@ -183,7 +183,7 @@ namespace Friflo.Json.Fliox.DB.Client
         
         /// <summary>
         /// Set a custom <see cref="SubscriptionProcessor"/> to enable reacting on specific database change or message (or command) events.
-        /// E.g. notifying other application modules about created, upserted, deleted or patches entities.
+        /// E.g. notifying other application modules about created, updated, deleted or patches entities.
         /// To subscribe to database change events use <see cref="EntitySet{TKey,T}.SubscribeChanges"/>.
         /// The default <see cref="SubscriptionProcessor"/> apply all changes to the <see cref="EntityStore"/> as they arrive.
         /// To subscribe to message events use <see cref="SubscribeMessage"/>.
