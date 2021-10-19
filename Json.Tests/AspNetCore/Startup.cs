@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Main
                     await hostDatabase.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
                     
                     var resp = context.Response;
-                    resp.StatusCode     = (int)reqCtx.Status;
+                    resp.StatusCode     = reqCtx.StatusCode;
                     resp.ContentType    = reqCtx.ResponseContentType;
                     resp.ContentLength  = reqCtx.Response.Length;
                     await resp.Body.WriteAsync(reqCtx.Response, 0, reqCtx.Response.Length).ConfigureAwait(false);

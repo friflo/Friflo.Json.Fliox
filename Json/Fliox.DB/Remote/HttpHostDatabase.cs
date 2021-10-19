@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                 var result          = await ExecuteJsonRequest(requestContent, messageContext).ConfigureAwait(false);
                 
                 messageContext.Release();
-                reqCtx.Write(result.body, 0, "application/json", (HttpStatusCode)result.status);
+                reqCtx.Write(result.body, 0, "application/json", (int)result.status);
                 return true;
             }
             return await HandleRequest(reqCtx).ConfigureAwait(false);

@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                                 return;
                             var     response        = $"invalid url: {req.Url}, method: {req.HttpMethod}";
                             byte[]  responseBytes   = Encoding.UTF8.GetBytes(response);
-                            SetResponseHeader(resp, "text/plain", HttpStatusCode.BadRequest, responseBytes.Length);
+                            SetResponseHeader(resp, "text/plain", (int)HttpStatusCode.BadRequest, responseBytes.Length);
                             await resp.OutputStream.WriteAsync(responseBytes, 0, responseBytes.Length).ConfigureAwait(false);
                             resp.Close();
                         }
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         private static async Task HandleServerWebSocket (HttpListenerResponse resp) {
             const string error = "Unity HttpListener doesnt support server WebSockets";
             byte[]  resultBytes = Encoding.UTF8.GetBytes(error);
-            SetResponseHeader(resp, "text/plain", HttpStatusCode.NotImplemented, resultBytes.Length);
+            SetResponseHeader(resp, "text/plain", (int)HttpStatusCode.NotImplemented, resultBytes.Length);
             await resp.OutputStream.WriteAsync(resultBytes, 0, resultBytes.Length).ConfigureAwait(false);
             resp.Close();
         }
@@ -115,17 +115,17 @@ namespace Friflo.Json.Fliox.DB.Remote
             
             if (handled) {
                 var responseBody = reqCtx.Response;
-                SetResponseHeader(resp, reqCtx.ResponseContentType, reqCtx.Status, responseBody.Length);
+                SetResponseHeader(resp, reqCtx.ResponseContentType, reqCtx.StatusCode, responseBody.Length);
                 await resp.OutputStream.WriteAsync(responseBody, 0, responseBody.Length).ConfigureAwait(false);
                 resp.Close();
             }
         }
         
-        private static void SetResponseHeader (HttpListenerResponse resp, string contentType, HttpStatusCode statusCode, int len) {
+        private static void SetResponseHeader (HttpListenerResponse resp, string contentType, int statusCode, int len) {
             resp.ContentType        = contentType;
             resp.ContentEncoding    = Encoding.UTF8;
             resp.ContentLength64    = len;
-            resp.StatusCode         = (int)statusCode;
+            resp.StatusCode         = statusCode;
         }
         
         // Http server requires setting permission to run an http server.

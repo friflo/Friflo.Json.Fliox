@@ -51,10 +51,10 @@ namespace Friflo.Json.Fliox.DB.Remote
                 bool success    = GetSchemaFile(path, ref result);
                 var  status     = success ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
                 if (result.isText) {
-                    context.WriteString(result.content, result.contentType, status);
+                    context.WriteString(result.content, result.contentType, (int)status);
                     return Task.FromResult(true);
                 }
-                context.Write(new JsonUtf8(result.bytes), 0, result.contentType, HttpStatusCode.OK);
+                context.Write(new JsonUtf8(result.bytes), 0, result.contentType, (int)HttpStatusCode.OK);
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);
