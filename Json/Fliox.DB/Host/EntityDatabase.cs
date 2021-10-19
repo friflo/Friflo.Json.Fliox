@@ -51,9 +51,23 @@ namespace Friflo.Json.Fliox.DB.Host
     /// <br/>
     /// The <see cref="EntityDatabase"/> can be configured to support.
     /// <list type="bullet">
-    ///     <item>A Pub-Sub implementation to send events for database changes or messages a client has subscribed.</item>
-    ///     <item>Client / user authentication and task authorization. Each task is authorized individually.</item>
-    ///     <item>Type / schema validation of JSON object written to its containers</item>
+    ///   <item>
+    ///     A Pub-Sub implementation to send events of database changes or messages to clients by assigning an
+    ///     <see cref="Event.EventBroker"/> to <see cref="EventBroker"/>.
+    ///     Note: A client need to subscribe events in order to receive them. 
+    ///   </item>
+    ///   <item>
+    ///     User authentication and task authorization. Each task is authorized individually. To enable this assign 
+    ///     a <see cref="UserAuth.UserAuthenticator"/> to <see cref="Authenticator"/>.
+    ///   </item>
+    ///   <item>
+    ///     Type / schema validation of JSON entities written (create, update and patch) to its containers by assigning
+    ///     a <see cref="DatabaseSchema"/> to <see cref="Schema"/>.
+    ///   </item>
+    ///   <item>
+    ///     Monitoring of database access (requests) by adding a <see cref="Monitor.MonitorDatabase"/> with
+    ///     <see cref="AddExtensionDB(Friflo.Json.Fliox.DB.Host.EntityDatabase)"/>.
+    ///   </item>
     /// </list>
     /// </summary>
 #if !UNITY_5_3_OR_NEWER
