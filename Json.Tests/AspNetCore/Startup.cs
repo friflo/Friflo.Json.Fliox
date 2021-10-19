@@ -1,6 +1,5 @@
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Remote;
-using Friflo.Json.Fliox.Mapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -38,8 +37,9 @@ namespace Friflo.Json.Tests.Main
 				});
                 
                 endpoints.Map("fliox/", async context => {
-                    var requestContent  = await JsonUtf8.ReadToEndAsync(context.Request.Body).ConfigureAwait(false);
-                    var response        = await hostDatabase.ExecuteHttpRequest(context.Request.Method, requestContent);
+                    var req = context.Request;
+                    var reqCtx = new RequestContext(req.Path.Value, req.Method, req.Body);
+                    var response = await hostDatabase.ExecuteHttpRequest(reqCtx);
                     var responseStream              = response.body.AsMemoryStream();
                     context.Response.Body           = responseStream;
                     context.Response.ContentLength  = responseStream.Length;

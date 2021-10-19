@@ -25,10 +25,11 @@ namespace Friflo.Json.Fliox.DB.Remote
             protocolSchemaHub       = new SchemaHub("/protocol/", protocolSchema, sepTypes);
         }
         
-        public async Task<JsonResponse> ExecuteHttpRequest(string method, JsonUtf8 jsonRequest) {
+        public async Task<JsonResponse> ExecuteHttpRequest(RequestContext reqCtx) {
+            var requestContent  = await JsonUtf8.ReadToEndAsync(reqCtx.body).ConfigureAwait(false);
             var pools           = new Pools(UtilsInternal.SharedPools);
             var messageContext  = new MessageContext(pools, null);
-            return await ExecuteJsonRequest(jsonRequest, messageContext);
+            return await ExecuteJsonRequest(requestContent, messageContext);
         }
 
         protected async Task<bool> HandleRequest(RequestContext request) {

@@ -121,20 +121,16 @@ namespace Friflo.Json.Fliox.DB.Remote
                 var messageContext  = new MessageContext(pools, null);
                 var result          = await ExecuteJsonRequest(requestContent, messageContext).ConfigureAwait(false);
                 messageContext.Release();
+                
                 var  body = result.body;
-                HttpStatusCode statusCode;
-                switch (result.status){
-                    case JsonResponseStatus.Ok:         statusCode = HttpStatusCode.OK;                     break;
-                    case JsonResponseStatus.Error:      statusCode = HttpStatusCode.BadRequest;             break;
-                    case JsonResponseStatus.Exception:  statusCode = HttpStatusCode.InternalServerError;    break;
-                    default:                            statusCode = HttpStatusCode.InternalServerError;    break;
-                } 
+                HttpStatusCode statusCode = (HttpStatusCode)result.status;
+                
                 SetResponseHeader(resp, "application/json", statusCode, body.Length);
                 await resp.OutputStream.WriteAsync(body, 0, body.Length).ConfigureAwait(false);
                 resp.Close();
                 return;
             }
-            var request = new RequestContext(ctx.Request.Url, ctx.Request.HttpMethod);
+            var request = new RequestContext(ctx.Request.Url.AbsolutePath, ctx.Request.HttpMethod, req.InputStream);
             bool handled = await HandleRequest(request).ConfigureAwait(false);
             if (handled) {
                 SetResponseHeader (ctx.Response, request.ResponseContentType, request.Status, request.Length);

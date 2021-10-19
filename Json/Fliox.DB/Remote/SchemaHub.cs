@@ -45,8 +45,8 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
         
         public Task<bool> HandleRequest(RequestContext context) {
-            if (context.method == "GET" && context.url.AbsolutePath.StartsWith(basePath)) {
-                var path = context.url.AbsolutePath.Substring(basePath.Length);
+            if (context.method == "GET" && context.path.StartsWith(basePath)) {
+                var path = context.path.Substring(basePath.Length);
                 Result result   = new Result();
                 bool success    = GetSchemaFile(path, ref result);
                 var  status     = success ? HttpStatusCode.OK : HttpStatusCode.BadRequest;

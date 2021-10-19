@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -16,8 +15,9 @@ namespace Friflo.Json.Fliox.DB.Remote
     
     public sealed class RequestContext
     {
-        public readonly Uri             url;
+        public readonly string          path;
         public readonly string          method;
+        public readonly Stream          body;
         
         public          string          ResponseContentType { get; private set; }
         public          HttpStatusCode  Status              { get; private set; }
@@ -25,9 +25,10 @@ namespace Friflo.Json.Fliox.DB.Remote
         public          int             Offset              { get; private set; }
         public          int             Length              { get; private set; }
         
-        public RequestContext (Uri url, string  method) {
-            this.url    = url;
+        public RequestContext (string path, string  method, Stream body) {
+            this.path   = path;
             this.method = method;
+            this.body   = body;
         }
         
         public void Write (byte[] value, int offset, int count, string contentType, HttpStatusCode status) {

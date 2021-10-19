@@ -24,14 +24,14 @@ namespace Friflo.Json.Tests.Main
                 }
             }
             catch (Exception ) {
-                var response = $"error - method: {context.method}, url: {context.url.AbsolutePath}";
+                var response = $"error - method: {context.method}, url: {context.path}";
                 context.WriteString(response, "text/plain", HttpStatusCode.OK);
             }
             return true; // return true to signal request was handled -> no subsequent handlers are invoked 
         }
         
         private async Task GetHandler (RequestContext context) {
-            var path = context.url.AbsolutePath;
+            var path = context.path;
             if (path.EndsWith("/"))
                 path += "index.html";
             string ext = Path.GetExtension (path);
@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Main
         }
         
         private void ListDirectory (RequestContext context) {
-            var path = wwwRoot + context.url.AbsolutePath;
+            var path = wwwRoot + context.path;
             if (!Directory.Exists(path)) {
                 var msg = $"directory doesnt exist: {path}";
                 context.WriteString(msg, "text/plain", HttpStatusCode.NotFound);

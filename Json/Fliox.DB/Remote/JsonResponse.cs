@@ -20,10 +20,11 @@ namespace Friflo.Json.Fliox.DB.Remote
     {
         public readonly     JsonUtf8            body;
         public readonly     JsonResponseStatus  status;
+        public              int                 StatusCode => (int)status;
         
         public JsonResponse(JsonUtf8 body, JsonResponseStatus status) {
-            this.body       = body;
-            this.status  = status;
+            this.body   = body;
+            this.status = status;
         }
         
         public static JsonResponse CreateError(MessageContext messageContext, string message, JsonResponseStatus type)
