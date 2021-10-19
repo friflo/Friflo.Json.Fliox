@@ -38,7 +38,7 @@ namespace Friflo.Json.Tests.Main
 					await context.Response.WriteAsync("Hello World!");
 				});
                 
-                endpoints.Map("/", async context => {
+                endpoints.Map("/{*path}", async context => {
                     var req = context.Request;
                     var reqCtx = new RequestContext(req.Path.Value, req.Method, req.Body);
                     await hostDatabase.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
@@ -48,8 +48,6 @@ namespace Friflo.Json.Tests.Main
                     context.Response.ContentType    = reqCtx.ResponseContentType;
                     context.Response.ContentLength  = response.Length;
                     await context.Response.Body.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
-                    await context.Response.Body.FlushAsync().ConfigureAwait(false);
-                    //context.Response.Body.Close();
                 });
             });
 		}
