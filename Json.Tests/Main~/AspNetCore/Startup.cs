@@ -10,33 +10,33 @@ using Microsoft.Extensions.Hosting;
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Tests.Main
 {
-	public class Startup
-	{
-		// This method gets called by the runtime. Use this method to add services to the container.
-		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-		public void ConfigureServices(IServiceCollection services)
-		{
-		}
+    public class Startup
+    {
+        // This method gets called by the runtime. Use this method to add services to the container.
+        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        public void ConfigureServices(IServiceCollection services)
+        {
+        }
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-		{
-			if (env.IsDevelopment())
-			{
-				app.UseDeveloperExceptionPage();
-			}
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
             var database        = new MemoryDatabase();
             var hostDatabase    = new HttpHostDatabase (database);
             hostDatabase.requestHandler = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
 
-			app.UseRouting();
+            app.UseRouting();
 
-			app.UseEndpoints(endpoints =>
-			{
-				endpoints.MapGet("hello/", async context =>
-				{
-					await context.Response.WriteAsync("Hello World!");
-				});
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapGet("hello/", async context =>
+                {
+                    await context.Response.WriteAsync("Hello World!");
+                });
                 
                 endpoints.Map("/{*path}", async context => {
                     var req = context.Request;
@@ -50,6 +50,6 @@ namespace Friflo.Json.Tests.Main
                     await resp.Body.WriteAsync(reqCtx.Response, 0, reqCtx.Response.Length).ConfigureAwait(false);
                 });
             });
-		}
-	}
+        }
+    }
 }
