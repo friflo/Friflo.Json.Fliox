@@ -1,3 +1,5 @@
+using Friflo.Json.Fliox.DB.AspNetCore;
+using Friflo.Json.Fliox.DB.Host;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +24,8 @@ namespace Friflo.Json.Tests.Main
 			{
 				app.UseDeveloperExceptionPage();
 			}
+            var database        = new MemoryDatabase();
+            var hostDatabase    = new AspNetCoreHostHostDatabase (database);
 
 			app.UseRouting();
 
@@ -29,10 +33,16 @@ namespace Friflo.Json.Tests.Main
 			{
 				endpoints.MapGet("/", async context =>
 				{
-					HttpContext ctx = context;
 					await context.Response.WriteAsync("Hello World!");
 				});
-			});
+                
+                endpoints.MapGet("fliox/", async context => {
+                    await hostDatabase.ExecuteGet(context);
+                });
+                endpoints.MapPost("fliox/", async context => {
+                    await hostDatabase.ExecutePost(context);
+                });
+            });
 		}
 	}
 }
