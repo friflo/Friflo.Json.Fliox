@@ -18,14 +18,14 @@ namespace Friflo.Json.Fliox.DB.Client
         }
     }
     
-    public sealed class TaskNotSyncedException : Exception
+    public sealed class TaskNotSendException : Exception
     {
-        internal TaskNotSyncedException(string message) : base (message) { }
+        internal TaskNotSendException(string message) : base (message) { }
     }
     
-    public sealed class TaskAlreadySyncedException : Exception
+    public sealed class TaskAlreadySendException : Exception
     {
-        internal TaskAlreadySyncedException(string message) : base (message) { }
+        internal TaskAlreadySendException(string message) : base (message) { }
     }
     
     public sealed class TaskResultException : Exception

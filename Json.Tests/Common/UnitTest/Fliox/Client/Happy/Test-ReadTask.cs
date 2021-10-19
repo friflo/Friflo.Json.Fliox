@@ -35,11 +35,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             Exception e;
             var orderCustomer = orders.RefPath(o => o.customer);
             AreEqual(OrderCustomer.path, orderCustomer.path);
-            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefPath(orderCustomer); });
+            e = Throws<TaskAlreadySendException>(() => { readOrders.ReadRefPath(orderCustomer); });
             AreEqual("Task already synced. readOrders", e.Message);
             var itemsArticle = orders.RefsPath(o => o.items.Select(a => a.article));
             AreEqual(ItemsArticle.path, itemsArticle.path);
-            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefsPath(itemsArticle); });
+            e = Throws<TaskAlreadySendException>(() => { readOrders.ReadRefsPath(itemsArticle); });
             AreEqual("Task already synced. readOrders", e.Message);
             
             // todo add Read() without ids 
@@ -54,9 +54,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreSame(articleRefsTask, articleRefsTask3);
             AreEqual("readOrders -> .items[*].article", articleRefsTask.Details);
 
-            e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask["article-1"]; });
+            e = Throws<TaskNotSendException>(() => { var _ = articleRefsTask["article-1"]; });
             AreEqual("ReadRefsTask[] requires SendTasksAsync(). readOrders -> .items[*].article", e.Message);
-            e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
+            e = Throws<TaskNotSendException>(() => { var _ = articleRefsTask.Results; });
             AreEqual("ReadRefsTask.Results requires SendTasksAsync(). readOrders -> .items[*].article", e.Message);
 
             var articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);

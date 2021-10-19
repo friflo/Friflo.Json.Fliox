@@ -19,20 +19,20 @@ namespace Friflo.Json.Fliox.DB.Client
         public   override   string      ToString()  => GetLabel();
 
         public              bool        Success { get {
-            if (State.IsSynced())
+            if (State.IsCompleted())
                 return !State.Error.HasErrors;
-            throw new TaskNotSyncedException($"SyncTask.Success requires SendTasksAsync(). {GetLabel()}");
+            throw new TaskNotSendException($"SyncTask.Success requires SendTasksAsync(). {GetLabel()}");
         }}
 
         /// <summary>The error caused the task failing. Return null if task was successful - <see cref="Success"/> == true</summary>
         public              TaskError   Error { get {
-            if (State.IsSynced())
+            if (State.IsCompleted())
                 return State.Error.TaskError;
-            throw new TaskNotSyncedException($"SyncTask.Error requires SendTasksAsync(). {GetLabel()}");
+            throw new TaskNotSendException($"SyncTask.Error requires SendTasksAsync(). {GetLabel()}");
         } }
 
         internal bool IsOk(string method, out Exception e) {
-            if (State.IsSynced()) {
+            if (State.IsCompleted()) {
                 if (!State.Error.HasErrors) {
                     e = null;
                     return true;
@@ -40,12 +40,12 @@ namespace Friflo.Json.Fliox.DB.Client
                 e = new TaskResultException(State.Error.TaskError);
                 return false;
             }
-            e = new TaskNotSyncedException($"{method} requires SendTasksAsync(). {GetLabel()}");
+            e = new TaskNotSendException($"{method} requires SendTasksAsync(). {GetLabel()}");
             return false;
         }
         
         internal Exception AlreadySyncedError() {
-            return new TaskAlreadySyncedException($"Task already synced. {GetLabel()}");
+            return new TaskAlreadySendException($"Task already synced. {GetLabel()}");
         }
 
         internal virtual void AddFailedTask(List<SyncTask> failed) {

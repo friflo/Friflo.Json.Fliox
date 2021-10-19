@@ -74,10 +74,10 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             for (int n = 0; n < count; n++) {
                 keys[n] =  resultKeys.start + n;
             }
-            reserve.count      = count;
-            reserve.keys       = keys;
-            reserve.token      = resultKeys.token;
-            reserve.state.Synced = true;
+            reserve.count           = count;
+            reserve.keys            = keys;
+            reserve.token           = resultKeys.token;
+            reserve.state.Completed = true;
         }
         
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsCreate"/> for all
@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                     writeTask.state.SetError(entityErrorInfo);
                     continue;
                 }
-                writeTask.state.Synced = true;
+                writeTask.state.Completed = true;
             }
         }
 
@@ -218,7 +218,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                 // SetReadTaskError(read, entityErrorInfo); <- must not be called
                 return;
             }
-            read.state.Synced = true;
+            read.state.Completed = true;
             AddReferencesResult(task.references, result.references, read.refsTask.subRefs);
         }
 
@@ -271,7 +271,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                 return;
             }
             AddReferencesResult(task.references, queryResult.references, query.refsTask.subRefs);
-            query.state.Synced = true;
+            query.state.Completed = true;
         }
 
         private void AddReferencesResult(List<References> references, List<ReferencesResult> referencesResult, SubRefs refs) {
@@ -300,7 +300,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                     SetSubRefsError(subRef.SubRefs, subRefError);
                     continue;
                 }
-                subRef.state.Synced = true;
+                subRef.state.Completed = true;
                 var subReferences = reference.references;
                 if (subReferences != null) {
                     var readRefs = subRef.SubRefs;
@@ -355,7 +355,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                     if (entityErrorInfo.HasErrors) {
                         patchTask.state.SetError(entityErrorInfo);
                     } else {
-                        patchTask.state.Synced = true;
+                        patchTask.state.Completed = true;
                     }
                 }
             }
@@ -389,10 +389,10 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                     deleteTask.state.SetError(entityErrorInfo);
                     continue;
                 }
-                deleteTask.state.Synced = true;
+                deleteTask.state.Completed = true;
             }
             if (_deleteTaskAll != null) {
-                _deleteTaskAll.state.Synced = true;
+                _deleteTaskAll.state.Completed = true;
             }
         }
         
@@ -402,7 +402,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                 return;
             }
             set.intern.subscription = task.changes.Count > 0 ? task : null;
-            subscribeChanges.state.Synced = true;
+            subscribeChanges.state.Completed = true;
         }
     }
 }

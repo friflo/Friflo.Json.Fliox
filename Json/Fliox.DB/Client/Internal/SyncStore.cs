@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             if (logTasks == null)
                 return;
             foreach (var logTask in logTasks) {
-                logTask.state.Synced = true;
+                logTask.state.Completed = true;
                 logTask.SetResult();
             }
         }
@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             }
             var messageResult = (SendMessageResult)result;
             messageTask.result = messageResult.result.json;
-            messageTask.state.Synced = true;
+            messageTask.state.Completed = true;
         }
         
         // --- SubscribeMessage
@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                 subscribeTask.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
-            subscribeTask.state.Synced = true;
+            subscribeTask.state.Completed = true;
         }
     }
 }
