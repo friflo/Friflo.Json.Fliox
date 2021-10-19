@@ -51,14 +51,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("readOrders -> .customer", customer.Details);
 
             Exception e;
-            e = Throws<TaskNotSendException>(() => { var _ = customer.Key; });
+            e = Throws<TaskNotExecutedException>(() => { var _ = customer.Key; });
             AreEqual("ReadRefTask.Key requires ExecuteTasksAsync(). readOrders -> .customer", e.Message);
-            e = Throws<TaskNotSendException>(() => { var _ = customer.Result; });
+            e = Throws<TaskNotExecutedException>(() => { var _ = customer.Result; });
             AreEqual("ReadRefTask.Result requires ExecuteTasksAsync(). readOrders -> .customer", e.Message);
 
-            e = Throws<TaskNotSendException>(() => { var _ = hasOrderCamera.Results; });
+            e = Throws<TaskNotExecutedException>(() => { var _ = hasOrderCamera.Results; });
             AreEqual("QueryTask.Result requires ExecuteTasksAsync(). hasOrderCamera", e.Message);
-            e = Throws<TaskNotSendException>(() => { var _ = hasOrderCamera["arbitrary"]; });
+            e = Throws<TaskNotExecutedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
             AreEqual("QueryTask[] requires ExecuteTasksAsync(). hasOrderCamera", e.Message);
 
             var producerEmployees = producersTask.ReadArrayRefs(p => p.employeeList);

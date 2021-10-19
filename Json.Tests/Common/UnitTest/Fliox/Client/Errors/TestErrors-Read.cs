@@ -51,11 +51,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             // schedule ReadRefs on an already synced Read operation
             Exception e;
             var orderCustomer = orders.RefPath(o => o.customer);
-            e = Throws<TaskAlreadySendException>(() => { readOrders.ReadRefPath(orderCustomer); });
-            AreEqual("Task already synced. ReadTask<Order> (#ids: 1)", e.Message);
+            e = Throws<TaskAlreadyExecutedException>(() => { readOrders.ReadRefPath(orderCustomer); });
+            AreEqual("Task already executed. ReadTask<Order> (#ids: 1)", e.Message);
             var itemsArticle = orders.RefsPath(o => o.items.Select(a => a.article));
-            e = Throws<TaskAlreadySendException>(() => { readOrders.ReadRefsPath(itemsArticle); });
-            AreEqual("Task already synced. ReadTask<Order> (#ids: 1)", e.Message);
+            e = Throws<TaskAlreadyExecutedException>(() => { readOrders.ReadRefsPath(itemsArticle); });
+            AreEqual("Task already executed. ReadTask<Order> (#ids: 1)", e.Message);
             
             // todo add Read() without ids 
 
@@ -69,9 +69,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreSame(orderArticles, orderArticles3);
             AreEqual("readOrders -> .items[*].article", orderArticles.Details);
 
-            e = Throws<TaskNotSendException>(() => { var _ = orderArticles["article-1"]; });
+            e = Throws<TaskNotExecutedException>(() => { var _ = orderArticles["article-1"]; });
             AreEqual("ReadRefsTask[] requires ExecuteTasksAsync(). orderArticles", e.Message);
-            e = Throws<TaskNotSendException>(() => { var _ = orderArticles.Results; });
+            e = Throws<TaskNotExecutedException>(() => { var _ = orderArticles.Results; });
             AreEqual("ReadRefsTask.Results requires ExecuteTasksAsync(). orderArticles", e.Message);
 
             var articleProducer = orderArticles.ReadRefs(a => a.producer)                           .TaskName("articleProducer");

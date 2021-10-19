@@ -145,7 +145,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("entities: 9, tasks: 1",                 store);
             AreSimilar("Article:  5, tasks: 1 >> reads: 1",     articles);
             
-            var e = Throws<TaskNotSendException>(() => { var _ = cameraNotSynced.Result; });
+            var e = Throws<TaskNotExecutedException>(() => { var _ = cameraNotSynced.Result; });
             AreSimilar("Find.Result requires ExecuteTasksAsync(). Find<Article> (id: 'article-1')", e.Message);
             
             IsNull(cameraUnknown.Result);

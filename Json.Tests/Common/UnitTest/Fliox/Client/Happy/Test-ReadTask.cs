@@ -35,12 +35,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             Exception e;
             var orderCustomer = orders.RefPath(o => o.customer);
             AreEqual(OrderCustomer.path, orderCustomer.path);
-            e = Throws<TaskAlreadySendException>(() => { readOrders.ReadRefPath(orderCustomer); });
-            AreEqual("Task already synced. readOrders", e.Message);
+            e = Throws<TaskAlreadyExecutedException>(() => { readOrders.ReadRefPath(orderCustomer); });
+            AreEqual("Task already executed. readOrders", e.Message);
             var itemsArticle = orders.RefsPath(o => o.items.Select(a => a.article));
             AreEqual(ItemsArticle.path, itemsArticle.path);
-            e = Throws<TaskAlreadySendException>(() => { readOrders.ReadRefsPath(itemsArticle); });
-            AreEqual("Task already synced. readOrders", e.Message);
+            e = Throws<TaskAlreadyExecutedException>(() => { readOrders.ReadRefsPath(itemsArticle); });
+            AreEqual("Task already executed. readOrders", e.Message);
             
             // todo add Read() without ids 
 
@@ -54,9 +54,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreSame(articleRefsTask, articleRefsTask3);
             AreEqual("readOrders -> .items[*].article", articleRefsTask.Details);
 
-            e = Throws<TaskNotSendException>(() => { var _ = articleRefsTask["article-1"]; });
+            e = Throws<TaskNotExecutedException>(() => { var _ = articleRefsTask["article-1"]; });
             AreEqual("ReadRefsTask[] requires ExecuteTasksAsync(). readOrders -> .items[*].article", e.Message);
-            e = Throws<TaskNotSendException>(() => { var _ = articleRefsTask.Results; });
+            e = Throws<TaskNotExecutedException>(() => { var _ = articleRefsTask.Results; });
             AreEqual("ReadRefsTask.Results requires ExecuteTasksAsync(). readOrders -> .items[*].article", e.Message);
 
             var articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);

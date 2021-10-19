@@ -31,8 +31,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var order = orderTask.Result;
             
             Exception e;
-            e = Throws<TaskAlreadySendException>(() => { var _ = readOrders.Find("order-1"); });
-            AreEqual("Task already synced. ReadTask<Order> (#ids: 1)", e.Message);
+            e = Throws<TaskAlreadyExecutedException>(() => { var _ = readOrders.Find("order-1"); });
+            AreEqual("Task already executed. ReadTask<Order> (#ids: 1)", e.Message);
 
             var readOrders2     = orders.Read()                         .TaskName("readOrders2");
             var order1Task      = readOrders2.Find("order-1")           .TaskName("order1Task");

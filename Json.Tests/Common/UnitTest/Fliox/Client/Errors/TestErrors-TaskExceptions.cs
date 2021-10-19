@@ -50,9 +50,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("DeleteTask<Customer> (#keys: 1)", deleteError.Details);
             
             Exception e;
-            e = Throws<TaskNotSendException>(() => { var _ = createError.Success; });
+            e = Throws<TaskNotExecutedException>(() => { var _ = createError.Success; });
             AreEqual("SyncTask.Success requires ExecuteTasksAsync(). createError", e.Message);
-            e = Throws<TaskNotSendException>(() => { var _ = createError.Error; });
+            e = Throws<TaskNotExecutedException>(() => { var _ = createError.Error; });
             AreEqual("SyncTask.Error requires ExecuteTasksAsync(). createError", e.Message);
 
             AreEqual(5, store.Tasks.Count);
