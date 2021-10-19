@@ -55,9 +55,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("readOrders -> .items[*].article", articleRefsTask.Details);
 
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask["article-1"]; });
-            AreEqual("ReadRefsTask[] requires Sync(). readOrders -> .items[*].article", e.Message);
+            AreEqual("ReadRefsTask[] requires SynchronizeAsync(). readOrders -> .items[*].article", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
-            AreEqual("ReadRefsTask.Results requires Sync(). readOrders -> .items[*].article", e.Message);
+            AreEqual("ReadRefsTask.Results requires SynchronizeAsync(). readOrders -> .items[*].article", e.Message);
 
             var articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
             AreEqual("readOrders -> .items[*].article -> .producer", articleProducerTask.Details);

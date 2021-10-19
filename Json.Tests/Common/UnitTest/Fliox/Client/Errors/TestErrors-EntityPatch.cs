@@ -49,7 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var sync = await store.TrySynchronizeAsync(); // -------- Sync --------
             
             AreEqual("tasks: 3, failed: 3", sync.ToString());
-            AreEqual(@"Sync() failed with task errors. Count: 3
+            AreEqual(@"SynchronizeAsync() failed with task errors. Count: 3
 |- patchNotFound # EntityErrors ~ count: 1
 |   PatchError: customers [unknown-id], patch target not found
 |- patchReadError # EntityErrors ~ count: 1

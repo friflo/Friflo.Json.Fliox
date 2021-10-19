@@ -86,14 +86,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Key; });
-            AreEqual("ReadRefTask.Key requires Sync(). readOrders -> .customer", e.Message);
+            AreEqual("ReadRefTask.Key requires SynchronizeAsync(). readOrders -> .customer", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
-            AreEqual("ReadRefTask.Result requires Sync(). readOrders -> .customer", e.Message);
+            AreEqual("ReadRefTask.Result requires SynchronizeAsync(). readOrders -> .customer", e.Message);
 
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Results; });
-            AreEqual("QueryTask.Result requires Sync(). hasOrderCamera", e.Message);
+            AreEqual("QueryTask.Result requires SynchronizeAsync(). hasOrderCamera", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
-            AreEqual("QueryTask[] requires Sync(). hasOrderCamera", e.Message);
+            AreEqual("QueryTask[] requires SynchronizeAsync(). hasOrderCamera", e.Message);
 
             var producerEmployees = articleProducer.ReadArrayRefs(p => p.employeeList)              .TaskName("producerEmployees");
             AreEqual("articleProducer -> .employees[*]", producerEmployees.Details);
@@ -105,7 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("tasks: 14, failed: 5", sync.ToString());
             AreEqual(14, sync.tasks.Count);
             AreEqual(5,  sync.failed.Count);
-            const string msg = @"Sync() failed with task errors. Count: 5
+            const string msg = @"SynchronizeAsync() failed with task errors. Count: 5
 |- allArticles # EntityErrors ~ count: 2
 |   ReadError: articles [article-1], simulated read entity error
 |   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16

@@ -51,15 +51,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             Exception e;
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Success; });
-            AreEqual("SyncTask.Success requires Sync(). createError", e.Message);
+            AreEqual("SyncTask.Success requires SynchronizeAsync(). createError", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = createError.Error; });
-            AreEqual("SyncTask.Error requires Sync(). createError", e.Message);
+            AreEqual("SyncTask.Error requires SynchronizeAsync(). createError", e.Message);
 
             AreEqual(5, store.Tasks.Count);
             var sync = await store.TrySynchronizeAsync(); // -------- Sync --------
             
             AreEqual("tasks: 5, failed: 5", sync.ToString());
-            AreEqual(@"Sync() failed with task errors. Count: 5
+            AreEqual(@"SynchronizeAsync() failed with task errors. Count: 5
 |- customerRead # UnhandledException ~ SimulationException: simulated read task exception
 |- customerQuery # UnhandledException ~ SimulationException: simulated query exception
 |- createError # UnhandledException ~ SimulationException: simulated create task exception

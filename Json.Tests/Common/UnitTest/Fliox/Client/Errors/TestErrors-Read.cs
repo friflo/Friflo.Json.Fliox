@@ -70,9 +70,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("readOrders -> .items[*].article", orderArticles.Details);
 
             e = Throws<TaskNotSyncedException>(() => { var _ = orderArticles["article-1"]; });
-            AreEqual("ReadRefsTask[] requires Sync(). orderArticles", e.Message);
+            AreEqual("ReadRefsTask[] requires SynchronizeAsync(). orderArticles", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = orderArticles.Results; });
-            AreEqual("ReadRefsTask.Results requires Sync(). orderArticles", e.Message);
+            AreEqual("ReadRefsTask.Results requires SynchronizeAsync(). orderArticles", e.Message);
 
             var articleProducer = orderArticles.ReadRefs(a => a.producer)                           .TaskName("articleProducer");
             AreEqual("orderArticles -> .producer", articleProducer.Details);
@@ -101,10 +101,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 AreEqual(12, store.Tasks.Count);
                 await store.SynchronizeAsync(); // -------- Sync --------
                 
-                Fail("Sync() intended to fail - code cannot be reached");
+                Fail("SynchronizeAsync() intended to fail - code cannot be reached");
             } catch (SyncResultException sre) {
                 AreEqual(8, sre.failed.Count);
-                const string expect = @"Sync() failed with task errors. Count: 8
+                const string expect = @"SynchronizeAsync() failed with task errors. Count: 8
 |- orderArticles # EntityErrors ~ count: 2
 |   ReadError: articles [article-1], simulated read entity error
 |   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16

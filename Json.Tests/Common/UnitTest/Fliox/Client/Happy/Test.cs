@@ -173,7 +173,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         await remoteDatabase.Connect();
                         
                         AreEqual(0, listenDb.Tasks.Count);
-                        await listenDb.SynchronizeAsync();  // an empty Sync() is sufficient initiate re-sending all not-received change events
+                        await listenDb.SynchronizeAsync();  // an empty SynchronizeAsync() is sufficient initiate re-sending all not-received change events
 
                         while (!listenProcessor.receivedAll ) { await Task.Delay(1); }
                         
