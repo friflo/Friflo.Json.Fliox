@@ -43,11 +43,11 @@ namespace Friflo.Json.Tests.Main
                     var reqCtx = new RequestContext(req.Path.Value, req.Method, req.Body);
                     await hostDatabase.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
                     
-                    JsonUtf8 response               = reqCtx.Response;
-                    context.Response.StatusCode     = (int)reqCtx.Status;
-                    context.Response.ContentType    = reqCtx.ResponseContentType;
-                    context.Response.ContentLength  = response.Length;
-                    await context.Response.Body.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
+                    var resp = context.Response;
+                    resp.StatusCode     = (int)reqCtx.Status;
+                    resp.ContentType    = reqCtx.ResponseContentType;
+                    resp.ContentLength  = reqCtx.Response.Length;
+                    await resp.Body.WriteAsync(reqCtx.Response, 0, reqCtx.Response.Length).ConfigureAwait(false);
                 });
             });
 		}
