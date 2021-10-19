@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.DB.Protocol;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
     ///<summary>
-    /// Provide same behavior as <see cref="HttpClientDatabase"/> / <see cref="HttpListenerHostDatabase"/> regarding
+    /// Provide same behavior as <see cref="HttpClientDatabase"/> / <see cref="HttpListenerHost"/> regarding
     /// serialization of <see cref="SyncRequest"/> and deserialization of <see cref="SyncResponse"/>.
     /// 
     /// This features allows testing a remote client/host scenario with the following features:

@@ -52,7 +52,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static async Task TestMonitoringHttp() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore", DbOpt))
-            using (var hostDatabase     = new HttpListenerHostDatabase(fileDatabase, "http://+:8080/")) 
+            using (var hostDatabase     = new HttpListenerHost("http://+:8080/", fileDatabase)) 
             using (var monitor          = new MonitorDatabase(fileDatabase))
             using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {
                 fileDatabase.AddExtensionDB(monitor);

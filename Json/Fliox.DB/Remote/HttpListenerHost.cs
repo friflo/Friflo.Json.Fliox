@@ -16,19 +16,24 @@ namespace Friflo.Json.Fliox.DB.Remote
     // Alternatively a HTTP web server could be implemented by using Kestrel.
     // See: [Deprecate HttpListener · Issue #88 · dotnet/platform-compat] https://github.com/dotnet/platform-compat/issues/88#issuecomment-592395933
     // See: [Configure options for the ASP.NET Core Kestrel web server | Microsoft Docs] https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/options?view=aspnetcore-5.0
-    public sealed class HttpListenerHostDatabase : HttpHostDatabase
+    public sealed class HttpListenerHost : IDisposable
     {
         private  readonly   string              endpoint;
         private  readonly   HttpListener        listener;
         private             bool                runServer;
         
         private             int                 requestCount;
+        public   readonly   HttpHostDatabase    database;
 
-
-        public HttpListenerHostDatabase(EntityDatabase local, string endpoint, DbOpt opt = null) : base(local, opt) {
+        public HttpListenerHost(string endpoint, EntityDatabase local, DbOpt opt = null) {
+            database            = new HttpHostDatabase(local, opt);
             this.endpoint       = endpoint;
             listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);
+        }
+
+        public void Dispose() {
+            database.Dispose();
         }
 
         private async Task HandleIncomingConnections()
@@ -109,11 +114,11 @@ namespace Friflo.Json.Fliox.DB.Remote
             if (req.IsWebSocketRequest) {
                 var wsContext   = await ctx.AcceptWebSocketAsync(null).ConfigureAwait(false);
                 var websocket   = wsContext.WebSocket;
-                await WebSocketHostTarget.AcceptWebSocket (websocket, this).ConfigureAwait(false);
+                await WebSocketHostTarget.AcceptWebSocket (websocket, database).ConfigureAwait(false);
                 return;
             }
             var reqCtx = new RequestContext(ctx.Request.HttpMethod, ctx.Request.Url.AbsolutePath, req.InputStream);
-            bool handled = await ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
+            bool handled = await database.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
             
             if (handled) {
                 var responseBody = reqCtx.Response;
