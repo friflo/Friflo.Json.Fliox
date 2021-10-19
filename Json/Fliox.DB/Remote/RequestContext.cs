@@ -3,8 +3,8 @@
 
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Remote
 {
@@ -21,9 +21,8 @@ namespace Friflo.Json.Fliox.DB.Remote
         
         public          string          ResponseContentType { get; private set; }
         public          HttpStatusCode  Status              { get; private set; }
-        public          byte[]          Response            { get; private set; }
+        public          JsonUtf8        Response            { get; private set; }
         public          int             Offset              { get; private set; }
-        public          int             Length              { get; private set; }
         
         public RequestContext (string path, string  method, Stream body) {
             this.path   = path;
@@ -31,25 +30,18 @@ namespace Friflo.Json.Fliox.DB.Remote
             this.body   = body;
         }
         
-        public void Write (byte[] value, int offset, int count, string contentType, HttpStatusCode status) {
+        public void Write (JsonUtf8 value, int offset, string contentType, HttpStatusCode status) {
             ResponseContentType = contentType;
             Status              = status;
             Response            = value;
             Offset              = offset;
-            Length              = count;
         }
         
         public void WriteString (string value, string contentType, HttpStatusCode status) {
-            var result = new MemoryStream();
-            using (var writer = new StreamWriter(result, Encoding.UTF8) { AutoFlush = true }) {
-                writer.Write(value);
-                writer.Flush();
-                ResponseContentType = contentType;
-                Status              = status;
-                Response            = result.ToArray();
-                Offset              = 0;
-                Length              = (int)result.Length;
-            }
+            ResponseContentType = contentType;
+            Status              = status;
+            Response            = new JsonUtf8(value);
+            Offset              = 0;
         }
     }
 }

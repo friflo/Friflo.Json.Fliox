@@ -31,19 +31,21 @@ namespace Friflo.Json.Tests.Main
 
 			app.UseEndpoints(endpoints =>
 			{
-				endpoints.MapGet("/", async context =>
+				endpoints.MapGet("hello/", async context =>
 				{
 					await context.Response.WriteAsync("Hello World!");
 				});
                 
-                endpoints.Map("fliox/", async context => {
+                endpoints.Map("/", async context => {
                     var req = context.Request;
                     var reqCtx = new RequestContext(req.Path.Value, req.Method, req.Body);
-                    var response = await hostDatabase.ExecuteHttpRequest(reqCtx);
-                    var responseStream              = response.body.AsMemoryStream();
+                    await hostDatabase.ExecuteHttpRequest(reqCtx);
+                    
+                    var responseStream              = reqCtx.Response.AsMemoryStream();
                     context.Response.Body           = responseStream;
                     context.Response.ContentLength  = responseStream.Length;
-                    context.Response.StatusCode     = (int)response.status;
+                    context.Response.StatusCode     = (int)reqCtx.Status;
+                    context.Response.ContentType    = reqCtx.ResponseContentType;
                 });
             });
 		}

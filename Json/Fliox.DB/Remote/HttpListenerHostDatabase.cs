@@ -6,7 +6,6 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Remote
@@ -111,30 +110,14 @@ namespace Friflo.Json.Fliox.DB.Remote
                 await WebSocketHostTarget.AcceptWebSocket (ctx, this).ConfigureAwait(false);
                 return;
             }
-
-            if (req.HttpMethod == "POST" && req.Url.AbsolutePath == "/") {
-                var inputStream     = req.InputStream;
-                var requestContent  = await JsonUtf8.ReadToEndAsync(inputStream).ConfigureAwait(false);
-
-                // Each request require its own pool as multiple request running concurrently. Could cache a Pools instance per connection.
-                var pools           = new Pools(UtilsInternal.SharedPools);
-                var messageContext  = new MessageContext(pools, null);
-                var result          = await ExecuteJsonRequest(requestContent, messageContext).ConfigureAwait(false);
-                messageContext.Release();
-                
-                var  body = result.body;
-                HttpStatusCode statusCode = (HttpStatusCode)result.status;
-                
-                SetResponseHeader(resp, "application/json", statusCode, body.Length);
-                await resp.OutputStream.WriteAsync(body, 0, body.Length).ConfigureAwait(false);
-                resp.Close();
-                return;
-            }
-            var request = new RequestContext(ctx.Request.Url.AbsolutePath, ctx.Request.HttpMethod, req.InputStream);
-            bool handled = await HandleRequest(request).ConfigureAwait(false);
+            var reqCtx = new RequestContext(ctx.Request.Url.AbsolutePath, ctx.Request.HttpMethod, req.InputStream);
+            bool handled = await ExecuteHttpRequest(reqCtx);
+            
             if (handled) {
-                SetResponseHeader (ctx.Response, request.ResponseContentType, request.Status, request.Length);
-                await ctx.Response.OutputStream.WriteAsync(request.Response, request.Offset, request.Length).ConfigureAwait(false);
+                var responseBody = reqCtx.Response;
+                SetResponseHeader(resp, reqCtx.ResponseContentType, reqCtx.Status, responseBody.Length);
+                await resp.OutputStream.WriteAsync(responseBody, 0, responseBody.Length).ConfigureAwait(false);
+                resp.Close();
             }
         }
         
