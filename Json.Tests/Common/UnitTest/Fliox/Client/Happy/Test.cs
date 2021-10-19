@@ -95,7 +95,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task HttpCreate() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/"))
+            using (var hostDatabase     = new HttpListenerHostDatabase(fileDatabase, "http://+:8080/"))
             using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
                     using (var createStore      = new PocStore(remoteDatabase, "createStore", "create-client"))
@@ -120,7 +120,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(false))
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/"))
+            using (var hostDatabase     = new HttpListenerHostDatabase(fileDatabase, "http://+:8080/"))
             using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/"))
             using (var listenDb         = new PocStore(remoteDatabase, "listenDb", "listen-client")) {
                 fileDatabase.EventBroker = eventBroker;
@@ -153,7 +153,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(true))
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hostDatabase     = new HttpHostDatabase(fileDatabase, "http://+:8080/"))
+            using (var hostDatabase     = new HttpListenerHostDatabase(fileDatabase, "http://+:8080/"))
             using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/"))
             using (var listenDb         = new PocStore(remoteDatabase, "listenDb", "listen-client")) {
                 hostDatabase.fakeOpenClosedSockets = true;
@@ -218,7 +218,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        internal static async Task RunRemoteHost(HttpHostDatabase remoteHost, Func<Task> run) {
+        internal static async Task RunRemoteHost(HttpListenerHostDatabase remoteHost, Func<Task> run) {
             remoteHost.Start();
             Task hostTask = null;
             try {

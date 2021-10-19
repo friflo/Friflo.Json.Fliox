@@ -148,7 +148,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static async Task TestConcurrentWebSocket () {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var db               = new MemoryDatabase())
-            using (var hostDatabase     = new HttpHostDatabase(db, "http://+:8080/"))
+            using (var hostDatabase     = new HttpListenerHostDatabase(db, "http://+:8080/"))
             using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/")) {
                 await RunRemoteHost(hostDatabase, async () => {
                     await remoteDatabase.Connect();

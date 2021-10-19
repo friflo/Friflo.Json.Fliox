@@ -22,6 +22,7 @@ namespace Friflo.Json.Fliox.Mapper
         
         public  ArraySegment<byte>  AsArraySegment()        => new ArraySegment<byte>(Array, 0, Array.Length);
         public  ByteArrayContent    AsByteArrayContent()    => new ByteArrayContent(Array); // todo hm. dependency System.Net.Http 
+        public  MemoryStream        AsMemoryStream()        => new MemoryStream(Array);     // todo support reusing MemoryStream
 
         
         private static readonly byte[] Null =  {(byte)'n', (byte)'u', (byte)'l', (byte)'l'};

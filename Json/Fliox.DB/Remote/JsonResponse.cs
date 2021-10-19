@@ -9,11 +9,11 @@ namespace Friflo.Json.Fliox.DB.Remote
 {
     public enum JsonResponseStatus {
         /// maps to HTTP 200 OK
-        Ok,         
+        Ok          = 200,         
         /// maps to HTTP 400 Bad Request
-        Error,
+        Error       = 400,
         /// maps to HTTP 500 Internal Server Error
-        Exception
+        Exception   = 500
     }
     
     public sealed class JsonResponse

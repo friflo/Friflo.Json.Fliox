@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Main
             // Run a minimal Fliox server without monitoring, Pub-Sub, user authentication / authorization, entity validation
             Console.WriteLine($"FileDatabase: {databaseFolder}");
             var database                = new FileDatabase(databaseFolder);
-            var hostDatabase            = new HttpHostDatabase(database, endpoint);
+            var hostDatabase            = new HttpListenerHostDatabase(database, endpoint);
             hostDatabase.requestHandler = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
             hostDatabase.Start();
             hostDatabase.Run();
@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Main
             var typeSchema              = CreateTypeSchema(true);                   // optional. used by DatabaseSchema & SchemaHub
             database.Schema             = new DatabaseSchema(typeSchema);           // optional. Enables type validation for create, upsert & patch operations
             
-            var hostDatabase            = new HttpHostDatabase(database, endpoint);
+            var hostDatabase            = new HttpListenerHostDatabase(database, endpoint);
             hostDatabase.requestHandler = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
             hostDatabase.schemaHub      = new SchemaHub("/schema/", typeSchema, Utils.Zip); // optional. Web UI for database schema 
             hostDatabase.Start();

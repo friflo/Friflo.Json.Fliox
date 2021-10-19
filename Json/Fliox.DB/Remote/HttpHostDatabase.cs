@@ -7,9 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Internal;
-using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
-using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.DB.Remote
 {
@@ -19,12 +17,8 @@ namespace Friflo.Json.Fliox.DB.Remote
     // Alternatively a HTTP web server could be implemented by using Kestrel.
     // See: [Deprecate HttpListener · Issue #88 · dotnet/platform-compat] https://github.com/dotnet/platform-compat/issues/88#issuecomment-592395933
     // See: [Configure options for the ASP.NET Core Kestrel web server | Microsoft Docs] https://docs.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/options?view=aspnetcore-5.0
-    public sealed class HttpHostDatabase : RemoteHostDatabase
+    public sealed class HttpListenerHostDatabase : HttpHostDatabase
     {
-        public              SchemaHub           schemaHub;
-        public              IRequestHandler     requestHandler;
-        
-        private  readonly   SchemaHub           protocolSchemaHub;
         private  readonly   string              endpoint;
         private  readonly   HttpListener        listener;
         private             bool                runServer;
@@ -32,15 +26,10 @@ namespace Friflo.Json.Fliox.DB.Remote
         private             int                 requestCount;
 
 
-        public HttpHostDatabase(EntityDatabase local, string endpoint, DbOpt opt = null) : base(local, opt) {
+        public HttpListenerHostDatabase(EntityDatabase local, string endpoint, DbOpt opt = null) : base(local, opt) {
             this.endpoint       = endpoint;
             listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);
-
-            var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
-            var types               = ProtocolMessage.Types;
-            var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
-            protocolSchemaHub       = new SchemaHub("/protocol/", protocolSchema, sepTypes);
         }
 
         private async Task HandleIncomingConnections()
@@ -153,20 +142,6 @@ namespace Friflo.Json.Fliox.DB.Remote
             }
         }
         
-        private async Task<bool> HandleRequest(RequestContext request) {
-            if (schemaHub != null) {
-                if (await schemaHub.HandleRequest(request).ConfigureAwait(false))
-                    return true;
-            }
-            if (await protocolSchemaHub.HandleRequest(request).ConfigureAwait(false))
-                return true;
-            if (requestHandler != null) { 
-                if (await requestHandler.HandleRequest(request).ConfigureAwait(false))
-                    return true;
-            }
-            return false;
-        }
-
         private static void SetResponseHeader (HttpListenerResponse resp, string contentType, HttpStatusCode statusCode, int len) {
             resp.ContentType        = contentType;
             resp.ContentEncoding    = Encoding.UTF8;
