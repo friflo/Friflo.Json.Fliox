@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Main
 				app.UseDeveloperExceptionPage();
 			}
             var database        = new MemoryDatabase();
-            var hostDatabase    = new AspNetCoreHostHostDatabase (database);
+            var hostDatabase    = new AspNetCoreHostDatabase (database);
 
 			app.UseRouting();
 
@@ -35,7 +35,6 @@ namespace Friflo.Json.Tests.Main
 				{
 					await context.Response.WriteAsync("Hello World!");
 				});
-                
                 endpoints.MapGet("fliox/", async context => {
                     await hostDatabase.ExecuteGet(context);
                 });

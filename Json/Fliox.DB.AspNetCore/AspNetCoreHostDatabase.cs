@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace Friflo.Json.Fliox.DB.AspNetCore
 {
-    public class AspNetCoreHostHostDatabase : RemoteHostDatabase
+    public class AspNetCoreHostDatabase : RemoteHostDatabase
     {
-        public AspNetCoreHostHostDatabase(EntityDatabase local, DbOpt opt = null) : base(local, opt) {
+        public AspNetCoreHostDatabase(EntityDatabase local, DbOpt opt = null) : base(local, opt) {
         }
         
         public async Task ExecuteGet (HttpContext context) {
