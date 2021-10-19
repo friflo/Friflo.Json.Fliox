@@ -37,11 +37,11 @@ namespace Friflo.Json.Fliox.DB.Client
         }
     }
 
-    public sealed class SyncResultException : Exception
+    public sealed class SendTasksException : Exception
     {
         public readonly     List<SyncTask>  failed;
 
-        internal SyncResultException(ErrorResponse errorResponse, List<SyncTask> failed) : base(SyncResult.GetMessage(errorResponse, failed)) {
+        internal SendTasksException(ErrorResponse errorResponse, List<SyncTask> failed) : base(SendTasksResult.GetMessage(errorResponse, failed)) {
             this.failed = failed;
         }
     }

@@ -94,19 +94,19 @@ namespace Friflo.Json.Fliox.DB.Client
         private const bool OriginalContext = true;
         
         // --- SendTasksAsync / TrySendTasksAsync
-        public async Task<SyncResult> SendTasksAsync() {
+        public async Task<SendTasksResult> SendTasksAsync() {
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
             var messageContext  = new MessageContext(_intern.pools, _intern.eventTarget, _intern.clientId);
             var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
             
             var result = HandleSyncResponse(syncRequest, response, syncStore);
             if (!result.Success)
-                throw new SyncResultException(response.error, result.failed);
+                throw new SendTasksException(response.error, result.failed);
             messageContext.Release();
             return result;
         }
         
-        public async Task<SyncResult> TrySendTasksAsync() {
+        public async Task<SendTasksResult> TrySendTasksAsync() {
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
             var messageContext  = new MessageContext(_intern.pools, _intern.eventTarget, _intern.clientId);
             var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
@@ -523,8 +523,8 @@ namespace Friflo.Json.Fliox.DB.Client
             results.Clear();
         }
 
-        private SyncResult HandleSyncResponse(SyncRequest syncRequest, MsgResponse<SyncResponse> response, SyncStore syncStore) {
-            SyncResult      syncResult;
+        private SendTasksResult HandleSyncResponse(SyncRequest syncRequest, MsgResponse<SyncResponse> response, SyncStore syncStore) {
+            SendTasksResult      syncResult;
             ErrorResponse   error       = response.error;
             var             syncSets    = syncStore.SyncSets;
             try {
@@ -631,7 +631,7 @@ namespace Friflo.Json.Fliox.DB.Client
                 foreach (SyncTask task in syncStore.appTasks) {
                     task.AddFailedTask(failed);
                 }
-                syncResult = new SyncResult(syncStore.appTasks, failed, error);
+                syncResult = new SendTasksResult(syncStore.appTasks, failed, error);
             }
             return syncResult;
         }

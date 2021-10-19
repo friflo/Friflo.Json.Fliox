@@ -102,7 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 await store.SendTasksAsync(); // ----------------
                 
                 Fail("SendTasksAsync() intended to fail - code cannot be reached");
-            } catch (SyncResultException sre) {
+            } catch (SendTasksException sre) {
                 AreEqual(8, sre.failed.Count);
                 const string expect = @"SendTasksAsync() failed with task errors. Count: 8
 |- orderArticles # EntityErrors ~ count: 2
