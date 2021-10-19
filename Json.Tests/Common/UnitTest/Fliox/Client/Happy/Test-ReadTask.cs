@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var orders = store.orders;
             var readOrders = orders.Read()                                      .TaskName("readOrders");
             var order1Task = readOrders.Find("order-1")                         .TaskName("order1Task");
-            await store.SynchronizeAsync();
+            await store.SendTasksAsync();
             
             // schedule ReadRefs on an already synced Read operation
             Exception e;
@@ -55,9 +55,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("readOrders -> .items[*].article", articleRefsTask.Details);
 
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask["article-1"]; });
-            AreEqual("ReadRefsTask[] requires SynchronizeAsync(). readOrders -> .items[*].article", e.Message);
+            AreEqual("ReadRefsTask[] requires SendTasksAsync(). readOrders -> .items[*].article", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
-            AreEqual("ReadRefsTask.Results requires SynchronizeAsync(). readOrders -> .items[*].article", e.Message);
+            AreEqual("ReadRefsTask.Results requires SendTasksAsync(). readOrders -> .items[*].article", e.Message);
 
             var articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
             AreEqual("readOrders -> .items[*].article -> .producer", articleProducerTask.Details);
@@ -76,7 +76,7 @@ galaxy
 article1And2
 articleSet", string.Join("\n", store.Tasks));
 
-            await store.SynchronizeAsync(); // ----------------
+            await store.SendTasksAsync(); // ----------------
         
             AreEqual(2,                 articleRefsTask.Results.Count);
             AreEqual("Changed name",    articleRefsTask["article-1"].name);

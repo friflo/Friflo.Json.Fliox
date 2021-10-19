@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var articles    = store.articles;
             var readOrders  = orders.Read();
             var order1Task  = readOrders.Find("order-1");
-            await store.SynchronizeAsync();
+            await store.SendTasksAsync();
             
             // schedule ReadRefs on an already synced Read operation
             Exception e;
@@ -70,9 +70,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("readOrders -> .items[*].article", orderArticles.Details);
 
             e = Throws<TaskNotSyncedException>(() => { var _ = orderArticles["article-1"]; });
-            AreEqual("ReadRefsTask[] requires SynchronizeAsync(). orderArticles", e.Message);
+            AreEqual("ReadRefsTask[] requires SendTasksAsync(). orderArticles", e.Message);
             e = Throws<TaskNotSyncedException>(() => { var _ = orderArticles.Results; });
-            AreEqual("ReadRefsTask.Results requires SynchronizeAsync(). orderArticles", e.Message);
+            AreEqual("ReadRefsTask.Results requires SendTasksAsync(). orderArticles", e.Message);
 
             var articleProducer = orderArticles.ReadRefs(a => a.producer)                           .TaskName("articleProducer");
             AreEqual("orderArticles -> .producer", articleProducer.Details);
@@ -99,12 +99,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             // test throwing exception in case of task or entity errors
             try {
                 AreEqual(12, store.Tasks.Count);
-                await store.SynchronizeAsync(); // ----------------
+                await store.SendTasksAsync(); // ----------------
                 
-                Fail("SynchronizeAsync() intended to fail - code cannot be reached");
+                Fail("SendTasksAsync() intended to fail - code cannot be reached");
             } catch (SyncResultException sre) {
                 AreEqual(8, sre.failed.Count);
-                const string expect = @"SynchronizeAsync() failed with task errors. Count: 8
+                const string expect = @"SendTasksAsync() failed with task errors. Count: 8
 |- orderArticles # EntityErrors ~ count: 2
 |   ReadError: articles [article-1], simulated read entity error
 |   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16

@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.DB.Client
     ///     Further more those tasks used to resolve references provide themself methods to resolve their references.
     ///     These are <see cref="ReadRefTask{TKey,T}"/> and <see cref="ReadRefsTask{TKey,T}"/>
     ///   </para>
-    ///   In all these cases <see cref="Entity"/> is accessible after calling <see cref="EntityStore.SynchronizeAsync"/>
+    ///   In all these cases <see cref="Entity"/> is accessible after calling <see cref="EntityStore.SendTasksAsync"/>
     /// </para>
     /// </summary>
 #if !UNITY_5_3_OR_NEWER
@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.DB.Client
         
         /// <summary>Return the referenced <see cref="Entity"/>. </summary>
         /// <exception cref="UnresolvedRefException">The exception is thrown if the referenced <see cref="Entity"/> is
-        /// not yet resolved. To resolve the referenced entity call <see cref="EntityStore.SynchronizeAsync"/>.</exception>
+        /// not yet resolved. To resolve the referenced entity call <see cref="EntityStore.SendTasksAsync"/>.</exception>
         public T Entity {
             get {
                 if (peer == null) {

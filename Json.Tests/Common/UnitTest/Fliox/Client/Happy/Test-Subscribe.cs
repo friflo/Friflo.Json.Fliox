@@ -139,7 +139,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 processor.testWildcardCalls++;
             });
 
-            await store.SynchronizeAsync(); // ----------------
+            await store.SendTasksAsync(); // ----------------
 
             foreach (var subscription in subscriptions) {
                 IsTrue(subscription.Success);    
@@ -302,17 +302,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 listenDb.SubscribeMessage("Hello", msg => {
                     receivedHello = true;
                 });
-                await listenDb.SynchronizeAsync();
+                await listenDb.SendTasksAsync();
 
                 using (var sendStore  = new EntityStore(database, typeStore, null, "sendStore")) {
                     sendStore.SendMessage("Hello", "some text");
-                    await sendStore.SynchronizeAsync();
+                    await sendStore.SendTasksAsync();
                     
                     while (!receivedHello) {
                         await Task.Delay(1); // release thread to process message event handler
                     }
                     
-                    await listenDb.SynchronizeAsync();
+                    await listenDb.SendTasksAsync();
 
                     // assert no send events are pending which are not acknowledged
                     AreEqual(0, eventBroker.NotAcknowledgedEvents());

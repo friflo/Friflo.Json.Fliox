@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var customerWriteError  = readCustomers.Find(writeError);
             var customerReadError   = readCustomers.Find(readError);
 
-            await store.SynchronizeAsync();
+            await store.SendTasksAsync();
 
             // --- setup simulation errors after preconditions are established
             {

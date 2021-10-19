@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             // --- prepare precondition for log changes
             var readArticles = articles.Read();
             var patchArticle = readArticles.Find("log-create-read-error");
-            await store.SynchronizeAsync();
+            await store.SendTasksAsync();
 
             {
                 var createError = "create-error";
@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             /*  // not required as TestContainer as database doesnt mutate
                 patchArticle.Result.producer = default; // restore precondition
                 store.LogChanges();
-                await store.SynchronizeAsync();
+                await store.SendTasksAsync();
             */
         }
     }

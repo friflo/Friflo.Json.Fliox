@@ -166,7 +166,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             store.SetUserClient(userKey, clientKey);
             
             monitor.SendMessage(MonitorStore.ClearStats);
-            await monitor.SynchronizeAsync();
+            await monitor.SendTasksAsync();
             
             store.articles.Read().Find("xxx");
             store.customers.Read().Find("yyy");

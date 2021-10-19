@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var sync = await store.TrySynchronizeAsync(); // ----------------
             
             AreEqual("tasks: 3, failed: 3", sync.ToString());
-            AreEqual(@"SynchronizeAsync() failed with task errors. Count: 3
+            AreEqual(@"SendTasksAsync() failed with task errors. Count: 3
 |- createError # EntityErrors ~ count: 1
 |   WriteError: customers [create-entity-error], simulated write entity error
 |- upsertError # EntityErrors ~ count: 1

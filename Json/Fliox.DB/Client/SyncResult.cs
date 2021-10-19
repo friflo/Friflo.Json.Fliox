@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.DB.Client
                 return errorResponse.message;
             }
             var sb = new StringBuilder();
-            sb.Append("SynchronizeAsync() failed with task errors. Count: ");
+            sb.Append("SendTasksAsync() failed with task errors. Count: ");
             sb.Append(failed.Count);
             foreach (var task in failed) {
                 sb.Append("\n|- ");

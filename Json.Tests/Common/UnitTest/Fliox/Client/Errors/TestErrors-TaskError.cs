@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             AreEqual("tasks: 5, failed: 5", sync.ToString());
             AreEqual("tasks: 5, failed: 5", sync.ToString());
-            AreEqual(@"SynchronizeAsync() failed with task errors. Count: 5
+            AreEqual(@"SendTasksAsync() failed with task errors. Count: 5
 |- customerRead # DatabaseError ~ simulated read task error
 |- customerQuery # DatabaseError ~ simulated query error
 |- createError # DatabaseError ~ simulated create task error
