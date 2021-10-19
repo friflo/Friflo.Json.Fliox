@@ -15,8 +15,8 @@ namespace Friflo.Json.Fliox.DB.Remote
     
     public sealed class RequestContext
     {
-        public readonly string          path;
         public readonly string          method;
+        public readonly string          path;
         public readonly Stream          body;
         
         public          string          ResponseContentType { get; private set; }
@@ -24,9 +24,9 @@ namespace Friflo.Json.Fliox.DB.Remote
         public          JsonUtf8        Response            { get; private set; }
         public          int             Offset              { get; private set; }
         
-        public RequestContext (string path, string  method, Stream body) {
-            this.path   = path;
+        public RequestContext (string  method,string path, Stream body) {
             this.method = method;
+            this.path   = path;
             this.body   = body;
         }
         

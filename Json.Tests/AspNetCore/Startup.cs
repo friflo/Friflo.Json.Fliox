@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Main
                 
                 endpoints.Map("/{*path}", async context => {
                     var req = context.Request;
-                    var reqCtx = new RequestContext(req.Path.Value, req.Method, req.Body);
+                    var reqCtx = new RequestContext(req.Method, req.Path.Value, req.Body);
                     await hostDatabase.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
                     
                     var resp = context.Response;
