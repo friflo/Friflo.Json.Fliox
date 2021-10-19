@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Main
                 .ConfigureLogging(loggingBuilder => loggingBuilder.AddFilter<ConsoleLoggerProvider>(level => level == LogLevel.None))
                 .ConfigureWebHostDefaults(webBuilder => 
                     webBuilder.UseStartup<Startup>()
-                        .UseKestrel(options => {options.Listen(IPAddress.Loopback, 5080); }) // use http instead of https
+                        .UseKestrel(options => {options.Listen(IPAddress.Loopback, 8010); }) // use http instead of https
                 );
         }
     }
