@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             // --- read entity with an unresolved reference (galaxy.producer) from database
             var readArticles    = articles.Read();
             var galaxyTask      = readArticles.Find("article-galaxy"); // entity exist in database 
-            await store.SynchronizeAsync();  // -------- Sync --------
+            await store.SynchronizeAsync();  // ----------------
 
             var galaxy = galaxyTask.Result;
             // the referenced entity "producer-samsung" is not resolved until now.
@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             AreEqual("Tesla",   model3.producer.Entity.name);   // Entity is directly accessible
 
-            await store.SynchronizeAsync();  // -------- Sync --------
+            await store.SynchronizeAsync();  // ----------------
             
             IsNull  (newArticle1Producer.Result);
             IsNull  (newArticle1.producer.Entity);
@@ -78,8 +78,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             IsNull  (newArticle2.producer.Entity);
             
             AreEqual("Apple",   findProducer.Result.name);
-            AreEqual("Samsung", galaxy.producer.Entity.name);   // after Sync() Entity is accessible
-            AreEqual("Apple",   iphone.producer.Entity.name);   // after Sync() Entity is accessible
+            AreEqual("Samsung", galaxy.producer.Entity.name);   // after SynchronizeAsync() Entity is accessible
+            AreEqual("Apple",   iphone.producer.Entity.name);   // after SynchronizeAsync() Entity is accessible
         }
         
         [Test]

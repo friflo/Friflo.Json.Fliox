@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             AreEqual("SendMessageTask (name: Echo)", helloTask1.ToString());
 
-            await store.SynchronizeAsync(); // -------- Sync --------
+            await store.SynchronizeAsync(); // ----------------
             
             AreEqual("\"Hello World 1\"",   helloTask1.ResultJson.AsString());
             AreEqual("Hello World 1",       helloTask1.ReadResult<string>());
@@ -52,13 +52,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("Hello World 2",       helloTask2.ReadResult<string>());
             
 
-            // --- Sync error
+            // --- SynchronizeAsync error
             {
                 var syncError = store.SendMessage(msgSyncError);
                 
-                // test throwing exception in case of Sync errors
+                // test throwing exception in case of SynchronizeAsync errors
                 try {
-                    await store.SynchronizeAsync(); // -------- Sync --------
+                    await store.SynchronizeAsync(); // ----------------
                     
                     Fail("SynchronizeAsync() intended to fail - code cannot be reached");
                 } catch (SyncResultException sre) {
@@ -68,11 +68,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 }
                 AreEqual("SyncError ~ simulated SyncError", syncError.Error.ToString());
             }
-            // --- Sync exception
+            // --- SynchronizeAsync exception
             {
                 var syncException = store.SendMessage(msgSyncException);
                 
-                var sync = await store.TrySynchronizeAsync(); // -------- Sync --------
+                var sync = await store.TrySynchronizeAsync(); // ----------------
                 
                 IsFalse(sync.Success);
                 AreEqual("SimulationException: simulated SyncException", sync.Message);

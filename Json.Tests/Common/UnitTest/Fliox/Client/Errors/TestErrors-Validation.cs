@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             // --- test validation errors for creates
             var createTask = articles.CreateRange(new [] { articleMissingName, articleMissingId, articleIncorrectType});
             
-            var sync = await store.TrySynchronizeAsync(); // -------- Sync --------
+            var sync = await store.TrySynchronizeAsync(); // ----------------
             
             IsFalse(sync.Success);
             IsFalse(createTask.Success);
@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             // --- test validation errors for upserts
             var upsertTask = articles.UpsertRange(new [] { articleMissingName, articleMissingId, articleIncorrectType});
             
-            sync = await store.TrySynchronizeAsync(); // -------- Sync --------
+            sync = await store.TrySynchronizeAsync(); // ----------------
             
             IsFalse(sync.Success);
             IsFalse(upsertTask.Success);
@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var patchArticle    = articles.Patch(articlePatch);
             patchArticle.Member(a => a.name);
             
-            sync = await store.TrySynchronizeAsync(); // -------- Sync --------
+            sync = await store.TrySynchronizeAsync(); // ----------------
             
             IsFalse(patchArticle.Success);
             AreEqual(@"EntityErrors ~ count: 1
@@ -101,7 +101,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 
             createTask = articles.CreateRange(new [] { invalidJson });
             
-            await store.TrySynchronizeAsync(); // -------- Sync --------
+            await store.TrySynchronizeAsync(); // ----------------
             
             IsFalse(sync.Success);
             IsFalse(createTask.Success);

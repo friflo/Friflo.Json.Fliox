@@ -108,7 +108,7 @@ namespace Friflo.Json.Fliox.DB.Client
     {
         // Keep all utility related fields of EntitySet in SetIntern to enhance debugging overview.
         // Reason:  EntitySet is extended by application which is mainly interested in following fields while debugging:
-        //          peers, Sync, name, container & store 
+        //          peers, name, container & store 
         internal            SetIntern<TKey, T>          intern;
         
         /// key: <see cref="Peer{T}.entity"/>.id        Note: must be private by all means

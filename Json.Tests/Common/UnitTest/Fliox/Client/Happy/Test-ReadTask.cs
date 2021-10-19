@@ -76,7 +76,7 @@ galaxy
 article1And2
 articleSet", string.Join("\n", store.Tasks));
 
-            await store.SynchronizeAsync(); // -------- Sync --------
+            await store.SynchronizeAsync(); // ----------------
         
             AreEqual(2,                 articleRefsTask.Results.Count);
             AreEqual("Changed name",    articleRefsTask["article-1"].name);

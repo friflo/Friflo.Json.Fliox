@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             // test throwing exception in case of task or entity errors
             try {
                 AreEqual(12, store.Tasks.Count);
-                await store.SynchronizeAsync(); // -------- Sync --------
+                await store.SynchronizeAsync(); // ----------------
                 
                 Fail("SynchronizeAsync() intended to fail - code cannot be reached");
             } catch (SyncResultException sre) {

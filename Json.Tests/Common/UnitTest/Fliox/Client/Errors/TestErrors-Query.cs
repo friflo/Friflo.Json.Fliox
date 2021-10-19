@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("articleProducer -> .employees[*]", producerEmployees.Details);
             
             AreEqual(14, store.Tasks.Count);
-            var sync = await store.TrySynchronizeAsync(); // -------- Sync --------
+            var sync = await store.TrySynchronizeAsync(); // ----------------
             
             IsFalse(sync.Success);
             AreEqual("tasks: 14, failed: 5", sync.ToString());

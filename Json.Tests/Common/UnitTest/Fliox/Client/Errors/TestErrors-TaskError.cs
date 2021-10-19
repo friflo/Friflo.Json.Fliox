@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var deleteError     = customers.Delete(new Customer{id = deleteTaskError})  .TaskName("deleteError");
             
             AreEqual(5, store.Tasks.Count);
-            var sync = await store.TrySynchronizeAsync(); // -------- Sync --------
+            var sync = await store.TrySynchronizeAsync(); // ----------------
             
             AreEqual("tasks: 5, failed: 5", sync.ToString());
             AreEqual("tasks: 5, failed: 5", sync.ToString());

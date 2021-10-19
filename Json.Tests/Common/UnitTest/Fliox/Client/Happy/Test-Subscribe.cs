@@ -139,7 +139,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 processor.testWildcardCalls++;
             });
 
-            await store.SynchronizeAsync(); // -------- Sync --------
+            await store.SynchronizeAsync(); // ----------------
 
             foreach (var subscription in subscriptions) {
                 IsTrue(subscription.Success);    
