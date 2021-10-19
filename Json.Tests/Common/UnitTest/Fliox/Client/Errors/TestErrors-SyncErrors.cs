@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             AreEqual("SendMessageTask (name: Echo)", helloTask1.ToString());
 
-            await store.Sync(); // -------- Sync --------
+            await store.SynchronizeAsync(); // -------- Sync --------
             
             AreEqual("\"Hello World 1\"",   helloTask1.ResultJson.AsString());
             AreEqual("Hello World 1",       helloTask1.ReadResult<string>());
@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 
                 // test throwing exception in case of Sync errors
                 try {
-                    await store.Sync(); // -------- Sync --------
+                    await store.SynchronizeAsync(); // -------- Sync --------
                     
                     Fail("Sync() intended to fail - code cannot be reached");
                 } catch (SyncResultException sre) {
@@ -72,7 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             {
                 var syncException = store.SendMessage(msgSyncException);
                 
-                var sync = await store.TrySync(); // -------- Sync --------
+                var sync = await store.TrySynchronizeAsync(); // -------- Sync --------
                 
                 IsFalse(sync.Success);
                 AreEqual("SimulationException: simulated SyncException", sync.Message);

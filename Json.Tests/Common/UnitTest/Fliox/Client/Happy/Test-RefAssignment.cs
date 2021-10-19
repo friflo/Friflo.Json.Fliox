@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             // --- read entity with an unresolved reference (galaxy.producer) from database
             var readArticles    = articles.Read();
             var galaxyTask      = readArticles.Find("article-galaxy"); // entity exist in database 
-            await store.Sync();  // -------- Sync --------
+            await store.SynchronizeAsync();  // -------- Sync --------
 
             var galaxy = galaxyTask.Result;
             // the referenced entity "producer-samsung" is not resolved until now.
@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             AreEqual("Tesla",   model3.producer.Entity.name);   // Entity is directly accessible
 
-            await store.Sync();  // -------- Sync --------
+            await store.SynchronizeAsync();  // -------- Sync --------
             
             IsNull  (newArticle1Producer.Result);
             IsNull  (newArticle1.producer.Entity);

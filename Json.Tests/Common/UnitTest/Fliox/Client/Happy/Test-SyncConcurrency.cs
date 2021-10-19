@@ -14,16 +14,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     public partial class TestStore
     {
         /// <summary>
-        /// Test multiple calls of <see cref="EntityStore.Sync()"/> without await-ing each call individually.
-        /// This enables "pipelining" of scheduling <see cref="EntityStore.Sync()"/> calls.
+        /// Test multiple calls of <see cref="EntityStore.SynchronizeAsync"/> without await-ing each call individually.
+        /// This enables "pipelining" of scheduling <see cref="EntityStore.SynchronizeAsync"/> calls.
         /// <br></br>
         /// Doing this erode the performance benefits handling multiple <see cref="SyncTask"/>'s via a single
-        /// <see cref="EntityStore.Sync"/> but the behavior of <see cref="EntityStore.Sync"/> needs to be same -
+        /// <see cref="EntityStore.SynchronizeAsync"/> but the behavior of <see cref="EntityStore.SynchronizeAsync"/> needs to be same -
         /// if its awaited or not.
         /// <br></br>
         /// Note:
-        /// In a game loop it can happen that multiple calls to <see cref="EntityStore.Sync"/> are pending because
-        /// processing them is slower than creating new <see cref="EntityStore.Sync"/> requests.
+        /// In a game loop it can happen that multiple calls to <see cref="EntityStore.SynchronizeAsync"/> are pending because
+        /// processing them is slower than creating new <see cref="EntityStore.SynchronizeAsync"/> requests.
         /// <br></br>
         /// Motivation for "pipelining": <br></br>
         /// Sync() calls are executed in order but overall execution time is improved in scenarios with high latency to a
@@ -55,13 +55,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             {
                 customers.Upsert(peter);
                 AreEqual(1, store.Tasks.Count);
-                var sync1 = store.Sync();
+                var sync1 = store.SynchronizeAsync();
                 AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting Sync()
                 
                 store.SendMessage("Some message"); // add additional task to second Sync() to identify the result by task.Count
                 customers.Upsert(paul);
                 AreEqual(2, store.Tasks.Count);
-                var sync2 = store.Sync();
+                var sync2 = store.SynchronizeAsync();
                 AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting Sync()
                 
                 // by using AsyncDatabase Sync() response handling is executed at WhenAll() instead synchronously in Sync()
@@ -71,13 +71,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             } {
                 var readCustomers1 = customers.Read();
                 var findPeter = readCustomers1.Find("customer-peter");
-                var sync1 = store.Sync();
+                var sync1 = store.SynchronizeAsync();
                 
                 store.SendMessage("Some message"); // add additional task to second Sync() to identify the result by task.Count
                 var readCustomers2 = customers.Read();
                 IsFalse(readCustomers1 == readCustomers2);
                 var findPaul = readCustomers2.Find("customer-paul");
-                var sync2 = store.Sync();
+                var sync2 = store.SynchronizeAsync();
                 
                 // by using AsyncDatabase Sync() response handling is executed at WhenAll() instead synchronously in Sync()
                 await Task.WhenAll(sync1, sync2);  // ------ sync point

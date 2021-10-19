@@ -20,14 +20,14 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         internal abstract bool AddCreate (Peer<T> peer);
     }
 
-    /// Multiple instances of this class can be created when calling EntitySet.Sync() without awaiting the result.
-    /// Each instance is mapped to a <see cref="SyncRequest"/> / <see cref="SyncResponse"/> instance.
+    /// Multiple instances of this class can be created when calling <see cref="EntityStore.SynchronizeAsync"/> without
+    /// awaiting the result. Each instance is mapped to a <see cref="SyncRequest"/> / <see cref="SyncResponse"/> instance.
     internal sealed partial class SyncSet<TKey, T> : SyncSetBase<T> where T : class
     {
         private     static readonly EntityKeyT<TKey, T>     EntityKeyTMap = EntityKey.GetEntityKeyT<TKey, T>();
 
         // Note!
-        // All fields & getters must be private by all means to ensure that all scheduled tasks of a Sync() request
+        // All fields & getters must be private by all means to ensure that all scheduled tasks of a SynchronizeAsync() request
         // managed by this instance can be mapped to their task results safely.
         
         private     readonly EntitySet<TKey, T>             set;
@@ -259,7 +259,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                 var entityPatch = new EntityPatch {
                     patches = patchList
                 };
-                SetNextPatchSource(peer); // todo next patch source need to be set on Sync() 
+                SetNextPatchSource(peer); // todo next patch source need to be set on Synchronize() 
                 var id = peer.id;
                 Patches()[id] = entityPatch;
                 logTask.AddPatch(this, id);

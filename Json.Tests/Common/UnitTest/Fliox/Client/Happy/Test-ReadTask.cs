@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var orders = store.orders;
             var readOrders = orders.Read()                                      .TaskName("readOrders");
             var order1Task = readOrders.Find("order-1")                         .TaskName("order1Task");
-            await store.Sync();
+            await store.SynchronizeAsync();
             
             // schedule ReadRefs on an already synced Read operation
             Exception e;
@@ -76,7 +76,7 @@ galaxy
 article1And2
 articleSet", string.Join("\n", store.Tasks));
 
-            await store.Sync(); // -------- Sync --------
+            await store.SynchronizeAsync(); // -------- Sync --------
         
             AreEqual(2,                 articleRefsTask.Results.Count);
             AreEqual("Changed name",    articleRefsTask["article-1"].name);

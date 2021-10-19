@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var articles    = store.articles;
             var readOrders  = orders.Read();
             var order1Task  = readOrders.Find("order-1");
-            await store.Sync();
+            await store.SynchronizeAsync();
             
             // schedule ReadRefs on an already synced Read operation
             Exception e;
@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             // test throwing exception in case of task or entity errors
             try {
                 AreEqual(12, store.Tasks.Count);
-                await store.Sync(); // -------- Sync --------
+                await store.SynchronizeAsync(); // -------- Sync --------
                 
                 Fail("Sync() intended to fail - code cannot be reached");
             } catch (SyncResultException sre) {

@@ -32,7 +32,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             articles. Delete("article-2");
             employees.Delete("apple-0001");
             customers.Delete("customer-1");
-            await store.Sync();
+            await store.SynchronizeAsync();
 
             var samsung         = new Producer { id = "producer-samsung", name = "Samsung"};
             var samsungJson     = samsung.ToString();
@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("Employee: 1, tasks: 1 >> create #1",                        employees); // created steveJobs implicit
             AreSimilar("Producer: 2, tasks: 1 >> create #2",                        producers); // created apple implicit
 
-            await store.Sync(); // -------- Sync --------
+            await store.SynchronizeAsync(); // -------- Sync --------
             AreSimilar("entities: 5",                                   store);   // tasks executed and cleared
             
             IsTrue(logStore1.Success);
@@ -105,7 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("Producer:  3, tasks: 1 >> create #1",                       producers);
             AreSimilar("Employee:  1",                                              employees);
             
-            await store.Sync(); // -------- Sync --------
+            await store.SynchronizeAsync(); // -------- Sync --------
             AreSimilar("entities: 12",                                  store); // tasks cleared
             
             IsTrue(createCam1.Success);
@@ -116,7 +116,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("entities: 12, tasks: 1",                        store);
             AreSimilar("Article:   8, tasks: 1 >> delete #2",           articles);
             
-            await store.Sync(); // -------- Sync --------
+            await store.SynchronizeAsync(); // -------- Sync --------
             AreSimilar("entities: 10",                                  store); // tasks cleared
             AreSimilar("Article:   6",                                  articles);
 
@@ -130,7 +130,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
             var deleteCamera = articles.Delete(camForDelete.id);
             
-            await store.Sync(); // -------- Sync --------
+            await store.SynchronizeAsync(); // -------- Sync --------
             
             IsTrue(logEntity.Success);
             IsTrue(logSet.Success);
@@ -183,7 +183,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var logStore6 = store.LogChanges();     AssertLog(logStore6, 0, 0);
             AreSimilar("entities: 13, tasks: 5",                        store);      // no new changes
 
-            await store.Sync(); // -------- Sync --------
+            await store.SynchronizeAsync(); // -------- Sync --------
             
             IsTrue(logSet2.Success);
             IsTrue(logStore5.Success);
@@ -206,7 +206,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreSimilar("Article:   6, tasks: 1 >> patch #2",            articles);
             AreSimilar("entities: 13, tasks: 1",                        store);      // tasks executed and cleared
             
-            await store.Sync(); // -------- Sync --------
+            await store.SynchronizeAsync(); // -------- Sync --------
             AreSimilar("entities: 13",                                  store);      // tasks executed and cleared
             
             IsTrue(patchNotebook.Success);
@@ -220,7 +220,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             customers.Upsert(new Customer{id = "patch-write-entity-error",      name = "used for successful patch-read"});
 
             articles.Upsert (new Article {id = "log-create-read-error",         name = "used for successful read"});
-            await store.Sync();
+            await store.SynchronizeAsync();
             
             var errorRefTask = new Customer{ id = "read-task-error" };
             var order2 = new Order{id = "order-2", customer = errorRefTask, created = new DateTime(2021, 7, 22, 6, 1, 0, DateTimeKind.Utc)};
@@ -234,7 +234,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var sendMessage4 = store.SendMessage(TestRemoveAllHandler,  1337);
             store.SendMessage(EndCreate);  // indicates store changes are finished
             
-            await store.Sync(); // -------- Sync --------
+            await store.SynchronizeAsync(); // -------- Sync --------
             
             IsTrue(sendMessage1.Success);
             IsTrue(sendMessage2.Success);

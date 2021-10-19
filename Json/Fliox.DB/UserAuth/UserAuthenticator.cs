@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         
         public async Task ValidateRoles() {
             var queryRoles = userStore.roles.QueryAll();
-            await userStore.TrySync().ConfigureAwait(false);
+            await userStore.TrySynchronizeAsync().ConfigureAwait(false);
             Dictionary<string, Role> roles = queryRoles.Results;
             foreach (var pair in roles) {
                 var role = pair.Value;
@@ -149,7 +149,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
 
         private async Task<Authorizer> GetAuthorizer(JsonKey userId) {
             var readPermission = userStore.permissions.Read().Find(userId);
-            await userStore.Sync().ConfigureAwait(false);
+            await userStore.SynchronizeAsync().ConfigureAwait(false);
             UserPermission permission = readPermission.Result;
             var roles = permission.roles;
             if (roles == null || roles.Count == 0) {
@@ -178,7 +178,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             if (newRoles.Count == 0)
                 return;
             var readRoles = userStore.roles.Read().FindRange(newRoles);
-            await userStore.Sync().ConfigureAwait(false);
+            await userStore.SynchronizeAsync().ConfigureAwait(false);
             foreach (var newRolePair in readRoles.Results) {
                 string role     = newRolePair.Key;
                 Role newRole    = newRolePair.Value;

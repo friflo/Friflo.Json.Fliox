@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             // --- prepare precondition for log changes
             var readArticles = articles.Read();
             var patchArticle = readArticles.Find("log-create-read-error");
-            await store.Sync();
+            await store.SynchronizeAsync();
 
             {
                 var createError = "create-error";
@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 var logChanges = store.LogChanges();
                 AreEqual("LogTask (patches: 1, creates: 1)", logChanges.ToString());
 
-                var sync = await store.TrySync();
+                var sync = await store.TrySynchronizeAsync();
 
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 AreEqual("LogTask (patches: 1, creates: 1)", logChanges.ToString());
 
                 AreEqual(1, store.Tasks.Count);
-                var sync = await store.TrySync(); // -------- Sync --------
+                var sync = await store.TrySynchronizeAsync(); // -------- Sync --------
 
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);

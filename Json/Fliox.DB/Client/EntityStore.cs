@@ -93,8 +93,8 @@ namespace Friflo.Json.Fliox.DB.Client
         /// </summary>
         private const bool OriginalContext = true;
         
-        // --- Sync / TrySync
-        public async Task<SyncResult> Sync() {
+        // --- SynchronizeAsync / TrySynchronizeAsync
+        public async Task<SyncResult> SynchronizeAsync() {
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
             var messageContext  = new MessageContext(_intern.pools, _intern.eventTarget, _intern.clientId);
             var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.DB.Client
             return result;
         }
         
-        public async Task<SyncResult> TrySync() {
+        public async Task<SyncResult> TrySynchronizeAsync() {
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
             var messageContext  = new MessageContext(_intern.pools, _intern.eventTarget, _intern.clientId);
             var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
@@ -410,7 +410,7 @@ namespace Friflo.Json.Fliox.DB.Client
             }
             syncStore.AddTasks(tasks);
             
-            // --- create new SyncStore and SyncSet's to collect future SyncTask's and executed via the next Sync() 
+            // --- create new SyncStore and SyncSet's to collect future SyncTask's and executed via the next SynchronizeAsync() 
             foreach (var setPair in _intern.setByType) {
                 EntitySet set = setPair.Value;
                 set.ResetSync();

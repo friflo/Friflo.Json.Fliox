@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 // readOrders.ReadAllRefs();
             }
 
-            await store.Sync(); // -------- Sync --------
+            await store.SynchronizeAsync(); // -------- Sync --------
             AreEqual(1,                 ordersWithCustomer1.Results.Count);
             NotNull(ordersWithCustomer1["order-1"]);
             
