@@ -1,5 +1,8 @@
+using System.Net;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 
 // ReSharper disable once CheckNamespace
 namespace Friflo.Json.Tests.Main
@@ -12,11 +15,13 @@ namespace Friflo.Json.Tests.Main
             CreateHostBuilder(args).Build().Run();
         }
 
-        private static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+        private static IHostBuilder CreateHostBuilder(string[] args) {
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureLogging(loggingBuilder => loggingBuilder.AddFilter<ConsoleLoggerProvider>(level => level == LogLevel.None))
+                .ConfigureWebHostDefaults(webBuilder => 
+                    webBuilder.UseStartup<Startup>()
+                        .UseKestrel(options => {options.Listen(IPAddress.Loopback, 5080); }) // use http instead of https
+                );
+        }
     }
 }
