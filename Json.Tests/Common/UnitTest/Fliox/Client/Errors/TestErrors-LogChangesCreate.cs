@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 var logChanges = store.LogChanges();
                 AreEqual("LogTask (patches: 1, creates: 1)", logChanges.ToString());
 
-                var sync = await store.TrySynchronizeAsync();
+                var sync = await store.TrySendTasksAsync();
 
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 AreEqual("LogTask (patches: 1, creates: 1)", logChanges.ToString());
 
                 AreEqual(1, store.Tasks.Count);
-                var sync = await store.TrySynchronizeAsync(); // ----------------
+                var sync = await store.TrySendTasksAsync(); // ----------------
 
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);

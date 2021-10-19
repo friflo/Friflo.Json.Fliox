@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("articleProducer -> .employees[*]", producerEmployees.Details);
             
             AreEqual(14, store.Tasks.Count);
-            var sync = await store.TrySynchronizeAsync(); // ----------------
+            var sync = await store.TrySendTasksAsync(); // ----------------
             
             IsFalse(sync.Success);
             AreEqual("tasks: 14, failed: 5", sync.ToString());
@@ -177,7 +177,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             testArticles.missingResultErrors.Add(missingArticle1); 
             var allArticles2 = articles.QueryAll()          .TaskName("allArticles2");
             
-            var result = await store.TrySynchronizeAsync();
+            var result = await store.TrySendTasksAsync();
             AreEqual(1, result.failed.Count);
             IsFalse(allArticles2.Success);
             AreEqual(@"EntityErrors ~ count: 1

@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             if (FindReadEntities(nameof(MonitorStore.histories),tasks)) stateStore.UpdateHistories(extensionBase.hostStats.requestHistories);
             if (FindReadEntities(nameof(MonitorStore.hosts),     tasks)) stateStore.UpdateHost     (extensionBase.hostStats);
             
-            await stateStore.TrySynchronizeAsync().ConfigureAwait(false);
+            await stateStore.TrySendTasksAsync().ConfigureAwait(false);
         }
         
         private static bool FindReadEntities(string container, List<SyncRequestTask> tasks) {

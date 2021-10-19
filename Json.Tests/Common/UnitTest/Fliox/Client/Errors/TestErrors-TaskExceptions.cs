@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("SyncTask.Error requires SendTasksAsync(). createError", e.Message);
 
             AreEqual(5, store.Tasks.Count);
-            var sync = await store.TrySynchronizeAsync(); // ----------------
+            var sync = await store.TrySendTasksAsync(); // ----------------
             
             AreEqual("tasks: 5, failed: 5", sync.ToString());
             AreEqual(@"SendTasksAsync() failed with task errors. Count: 5

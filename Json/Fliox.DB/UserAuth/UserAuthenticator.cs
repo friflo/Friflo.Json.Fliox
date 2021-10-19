@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         
         public async Task ValidateRoles() {
             var queryRoles = userStore.roles.QueryAll();
-            await userStore.TrySynchronizeAsync().ConfigureAwait(false);
+            await userStore.TrySendTasksAsync().ConfigureAwait(false);
             Dictionary<string, Role> roles = queryRoles.Results;
             foreach (var pair in roles) {
                 var role = pair.Value;

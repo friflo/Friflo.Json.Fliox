@@ -72,7 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             {
                 var syncException = store.SendMessage(msgSyncException);
                 
-                var sync = await store.TrySynchronizeAsync(); // ----------------
+                var sync = await store.TrySendTasksAsync(); // ----------------
                 
                 IsFalse(sync.Success);
                 AreEqual("SimulationException: simulated SyncException", sync.Message);

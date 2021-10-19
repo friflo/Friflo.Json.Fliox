@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// </summary>
         private const bool OriginalContext = true;
         
-        // --- SendTasksAsync / TrySynchronizeAsync
+        // --- SendTasksAsync / TrySendTasksAsync
         public async Task<SyncResult> SendTasksAsync() {
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
             var messageContext  = new MessageContext(_intern.pools, _intern.eventTarget, _intern.clientId);
@@ -106,7 +106,7 @@ namespace Friflo.Json.Fliox.DB.Client
             return result;
         }
         
-        public async Task<SyncResult> TrySynchronizeAsync() {
+        public async Task<SyncResult> TrySendTasksAsync() {
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
             var messageContext  = new MessageContext(_intern.pools, _intern.eventTarget, _intern.clientId);
             var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
