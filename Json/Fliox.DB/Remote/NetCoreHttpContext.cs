@@ -29,8 +29,6 @@ namespace Friflo.Json.Fliox.DB.Remote
             Request                 = HttpContext.GetProperty("Request");
             RequestMethod           = HttpContext.GetType().GetProperty("Method");
             RequestPath             = HttpContext.GetType().GetProperty("Path");
-            
-            
         }
         
         public static async Task HandleRequest(object context, RemoteHostDatabase hostDatabase) {
