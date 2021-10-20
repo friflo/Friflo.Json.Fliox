@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     /// It can also be used as a non thread safe <see cref="IUserAuth"/> implementation.
     /// For a thread safe <see cref="IUserAuth"/> implementation use <see cref="UserAuth"/>.
     /// </summary>
-    public class UserStore : EntityStore, IUserAuth
+    public class UserStore : FlioxClient, IUserAuth
     {
         public  readonly    EntitySet <JsonKey, UserPermission>  permissions;
         public  readonly    EntitySet <JsonKey, UserCredential>  credentials;

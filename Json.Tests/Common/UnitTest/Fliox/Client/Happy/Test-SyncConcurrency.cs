@@ -14,16 +14,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     public partial class TestStore
     {
         /// <summary>
-        /// Test multiple calls of <see cref="EntityStore.ExecuteTasksAsync"/> without await-ing each call individually.
-        /// This enables "pipelining" of scheduling <see cref="EntityStore.ExecuteTasksAsync"/> calls.
+        /// Test multiple calls of <see cref="FlioxClient.ExecuteTasksAsync"/> without await-ing each call individually.
+        /// This enables "pipelining" of scheduling <see cref="FlioxClient.ExecuteTasksAsync"/> calls.
         /// <br></br>
         /// Doing this erode the performance benefits handling multiple <see cref="SyncTask"/>'s via a single
-        /// <see cref="EntityStore.ExecuteTasksAsync"/> but the behavior of <see cref="EntityStore.ExecuteTasksAsync"/> needs to be same -
+        /// <see cref="FlioxClient.ExecuteTasksAsync"/> but the behavior of <see cref="FlioxClient.ExecuteTasksAsync"/> needs to be same -
         /// if its awaited or not.
         /// <br></br>
         /// Note:
-        /// In a game loop it can happen that multiple calls to <see cref="EntityStore.ExecuteTasksAsync"/> are pending because
-        /// processing them is slower than creating new <see cref="EntityStore.ExecuteTasksAsync"/> requests.
+        /// In a game loop it can happen that multiple calls to <see cref="FlioxClient.ExecuteTasksAsync"/> are pending because
+        /// processing them is slower than creating new <see cref="FlioxClient.ExecuteTasksAsync"/> requests.
         /// <br></br>
         /// Motivation for "pipelining": <br></br>
         /// ExecuteTasksAsync() calls are executed in order but overall execution time is improved in scenarios with high latency to a

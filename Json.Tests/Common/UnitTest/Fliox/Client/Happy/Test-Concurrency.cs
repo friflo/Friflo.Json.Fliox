@@ -139,7 +139,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         /// <summary>
         /// Assert that <see cref="WebSocketClientDatabase"/> support being used by multiple clients aka
-        /// <see cref="EntityStore"/>'s and using concurrent requests.
+        /// <see cref="FlioxClient"/>'s and using concurrent requests.
         /// All <see cref="DatabaseHub"/> implementations support this behavior, so <see cref="WebSocketClientDatabase"/>
         /// have to ensure this also. It utilize <see cref="ProtocolRequest.reqId"/> to ensure this.
         /// </summary>
@@ -162,33 +162,33 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task ConcurrentWebSocket(DatabaseHub database, int clientCount, int requestCount)
         {
             // --- prepare
-            var stores = new List<EntityStore>();
+            var clients = new List<FlioxClient>();
             try {
                 var typeStore = new TypeStore();
                 for (int n = 0; n < clientCount; n++) {
-                    stores.Add(new EntityStore(database, typeStore, null, $"reader-{n}"));
+                    clients.Add(new FlioxClient(database, typeStore, null, $"reader-{n}"));
                 }
                 var tasks = new List<Task>();
                 
                 // run loops
-                for (int n = 0; n < stores.Count; n++) {
-                    tasks.Add(MessageLoop  (stores[n], $"message-{n}", requestCount));
+                for (int n = 0; n < clients.Count; n++) {
+                    tasks.Add(MessageLoop  (clients[n], $"message-{n}", requestCount));
                 }
                 await Task.WhenAll(tasks);
             }
             finally {
-                foreach (var store in stores) {
+                foreach (var store in clients) {
                     store.Dispose();
                 }
             }
         }
         
-        private static Task MessageLoop (EntityStore store, string text, int requestCount) {
+        private static Task MessageLoop (FlioxClient client, string text, int requestCount) {
             var result = new JsonUtf8( $"\"{text}\"");
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
-                    var message = store.SendMessage(StdMessage.Echo, text);
-                    await store.ExecuteTasksAsync();
+                    var message = client.SendMessage(StdMessage.Echo, text);
+                    await client.ExecuteTasksAsync();
                     if (!result.IsEqual(message.ResultJson))
                         throw new TestException($"Expect result: {result}, was: {message.ResultJson}");
                 }
@@ -196,7 +196,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
     }
     
-    public class SimpleStore : EntityStore
+    public class SimpleStore : FlioxClient
     {
         public readonly EntitySet <int, SimplyEntity>   entities;
         

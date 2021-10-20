@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
-    public class PocStore : EntityStore
+    public class PocStore : FlioxClient
     {
         public readonly EntitySet <string, Order>       orders;
         public readonly EntitySet <string, Customer>    customers;

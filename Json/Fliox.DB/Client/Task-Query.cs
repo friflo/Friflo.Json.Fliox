@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.DB.Client
         internal readonly   FilterOperation         filter;
         internal readonly   string                  filterLinq; // use as string identifier of a filter 
         internal            Dictionary<TKey, T>     results;
-        private  readonly   EntityStore             store;
+        private  readonly   FlioxClient             store;
 
         public              Dictionary<TKey, T>     Results         => IsOk("QueryTask.Result",  out Exception e) ? results      : throw e;
         public              T                       this[TKey key]  => IsOk("QueryTask[]",       out Exception e) ? results[key] : throw e;
@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.DB.Client
         public              QueryFormat             DebugQuery      => filter.query;
         
 
-        internal QueryTask(FilterOperation filter, EntityStore store) {
+        internal QueryTask(FilterOperation filter, FlioxClient store) {
             refsTask        = new RefsTask(this);
             this.filter     = filter;
             this.filterLinq = filter.Linq;

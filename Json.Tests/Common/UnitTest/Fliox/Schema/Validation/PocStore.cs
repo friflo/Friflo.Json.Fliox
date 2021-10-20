@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
     public class PocStoreValidation : LeakTestsFixture
     {
         private static readonly string  JsonSchemaFolder    = CommonUtils.GetBasePath() + "assets~/Schema/JSON/PocStore";
-        private static readonly Type[]  PocStoreTypes       = EntityStore.GetEntityTypes<PocStore>();
+        private static readonly Type[]  PocStoreTypes       = FlioxClient.GetEntityTypes<PocStore>();
         
         [Test]
         public static void ValidateByJsonSchema() {

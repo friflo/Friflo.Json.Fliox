@@ -17,12 +17,12 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             this.subRefs    = new SubRefs();
         }
 
-        internal ReadRefsTask<TKey, TValue> ReadRefsByExpression<TKey, TValue>(Expression expression, EntityStore store) where TValue : class {
+        internal ReadRefsTask<TKey, TValue> ReadRefsByExpression<TKey, TValue>(Expression expression, FlioxClient store) where TValue : class {
             string path = ExpressionSelector.PathFromExpression(expression, out _);
             return ReadRefsByPath<TKey, TValue>(path, store);
         }
         
-        internal ReadRefsTask<TKey, TValue> ReadRefsByPath<TKey, TValue>(string selector, EntityStore store) where TValue : class {
+        internal ReadRefsTask<TKey, TValue> ReadRefsByPath<TKey, TValue>(string selector, FlioxClient store) where TValue : class {
             if (subRefs.TryGetTask(selector, out ReadRefsTask subRefsTask))
                 return (ReadRefsTask<TKey, TValue>)subRefsTask;
             var set         = store._intern.setByType[typeof(TValue)];

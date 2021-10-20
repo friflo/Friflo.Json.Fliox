@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         internal readonly   ObjectMapper        jsonMapper;
         internal readonly   ObjectPatcher       objectPatcher;
         internal readonly   Tracer              tracer;
-        internal readonly   EntityStore         store;
+        internal readonly   FlioxClient         store;
         internal readonly   List<TKey>          keysBuf;
         internal readonly   bool                autoIncrement;
 
@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         internal            bool                writePretty;
         internal            bool                writeNull;
 
-        internal SetIntern(EntityStore store) {
+        internal SetIntern(FlioxClient store) {
             jsonMapper      = store._intern.jsonMapper;
             typeMapper      = (TypeMapper<T>)store._intern.typeStore.GetTypeMapper(typeof(T));
             objectPatcher   = store._intern.objectPatcher;

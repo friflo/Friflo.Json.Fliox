@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         internal abstract bool AddCreate (Peer<T> peer);
     }
 
-    /// Multiple instances of this class can be created when calling <see cref="EntityStore.ExecuteTasksAsync"/> without
+    /// Multiple instances of this class can be created when calling <see cref="FlioxClient.ExecuteTasksAsync"/> without
     /// awaiting the result. Each instance is mapped to a <see cref="SyncRequest"/> / <see cref="SyncResponse"/> instance.
     internal sealed partial class SyncSet<TKey, T> : SyncSetBase<T> where T : class
     {

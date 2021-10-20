@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Client
     /// </summary>
     public static class DisposeUtils
     {
-        public static async Task DisposeStore(EntityStore store) {
+        public static async Task DisposeStore(FlioxClient store) {
             if (store == null)
                 return;
             await store.CancelPendingSyncs().ConfigureAwait(false);

@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         /// Distribute <see cref="ContainerEntities.entityMap"/> to <see cref="ContainerEntities.entities"/>,
         /// <see cref="ContainerEntities.notFound"/> and <see cref="ContainerEntities.errors"/> to simplify and
         /// minimize response by removing redundancy.
-        /// <see cref="EntityStore.GetContainerResults"/> remap these properties.
+        /// <see cref="FlioxClient.GetContainerResults"/> remap these properties.
         private static void SetContainerResults(SyncResponse response)
         {
             if (response == null)

@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.DB.Client
         private             RefsTask                refsTask;
         private             Dictionary<TKey, T>     results;
         private   readonly  SyncTask                parent;
-        private   readonly  EntityStore             store;
+        private   readonly  FlioxClient             store;
             
         public              Dictionary<TKey, T>     Results         => IsOk("ReadRefsTask.Results", out Exception e) ? results      : throw e;
         public              T                       this[TKey key]  => IsOk("ReadRefsTask[]",       out Exception e) ? results[key] : throw e;
@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.DB.Client
         internal  override  SubRefs                 SubRefs => refsTask.subRefs;
 
 
-        internal ReadRefsTask(SyncTask parent, string selector, string container, string keyName, bool isIntKey, EntityStore store)
+        internal ReadRefsTask(SyncTask parent, string selector, string container, string keyName, bool isIntKey, FlioxClient store)
         {
             refsTask        = new RefsTask(this);
             this.parent     = parent;
@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.DB.Client
         private             TKey            key;
         private             T               entity;
         private   readonly  SyncTask        parent;
-        private   readonly  EntityStore     store;
+        private   readonly  FlioxClient     store;
     
         public              TKey            Key     => IsOk("ReadRefTask.Key",    out Exception e) ? key     : throw e;
         public              T               Result  => IsOk("ReadRefTask.Result", out Exception e) ? entity  : throw e;
@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.DB.Client
         internal override   SubRefs         SubRefs => refsTask.subRefs;
 
 
-        internal ReadRefTask(SyncTask parent, string selector, string container, string keyName, bool isIntKey, EntityStore store)
+        internal ReadRefTask(SyncTask parent, string selector, string container, string keyName, bool isIntKey, FlioxClient store)
         {
             refsTask        = new RefsTask(this);
             this.parent     = parent;

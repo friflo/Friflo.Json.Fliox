@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
 
         internal static readonly QueryPath RefQueryPath = new RefQueryPath();
         
-        internal  abstract  void                Init                    (EntityStore store);
+        internal  abstract  void                Init                    (FlioxClient store);
         internal  abstract  void                LogSetChangesInternal   (LogTask logTask);
         internal  abstract  void                SyncPeerEntities        (Dictionary<JsonKey, EntityValue> entities);
         internal  abstract  void                DeletePeerEntities      (HashSet   <JsonKey> ids);
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.DB.Client
     /// <br/>
     /// The methods of an <see cref="EntitySet{TKey,T}"/> enable to create, read, upsert or delete container entities.
     /// It also allows to subscribe to entities changes made by other database users.<br/>
-    /// <see cref="EntitySet{TKey,T}"/>'s are designed to be used as fields or properties inside an <see cref="EntityStore"/>.
+    /// <see cref="EntitySet{TKey,T}"/>'s are designed to be used as fields or properties inside an <see cref="FlioxClient"/>.
     /// <br/>
     /// The type <see cref="T"/> of a container entity need to be a class containing a field or property used as its key
     /// usually named <b>id</b>.
@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.DB.Client
             ValidateKeyType(typeof(TKey));
         }
         
-        internal override void Init(EntityStore store) {
+        internal override void Init(FlioxClient store) {
             var type = typeof(T);
             store._intern.setByType[type]   = this;
             store._intern.setByName[name]   = this;
@@ -203,7 +203,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
-        /// To react on specific changes use <see cref="EntityStore.SetSubscriptionHandler"/>.
+        /// To react on specific changes use <see cref="FlioxClient.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChangesFilter(IEnumerable<Change> changes, Expression<Func<T, bool>> filter) {
@@ -217,7 +217,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
-        /// To react on specific changes use <see cref="EntityStore.SetSubscriptionHandler"/>.
+        /// To react on specific changes use <see cref="FlioxClient.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChangesByFilter(IEnumerable<Change> changes, EntityFilter<T> filter) {
@@ -230,7 +230,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// <summary>
         /// Subscribe to database changes of the related <see cref="EntityContainer"/> with the given <see cref="changes"/>.
         /// By default these changes are applied to the <see cref="EntitySet{TKey,T}"/>.
-        /// To react on specific changes use <see cref="EntityStore.SetSubscriptionHandler"/>.
+        /// To react on specific changes use <see cref="FlioxClient.SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
         public SubscribeChangesTask<T> SubscribeChanges(IEnumerable<Change> changes) {

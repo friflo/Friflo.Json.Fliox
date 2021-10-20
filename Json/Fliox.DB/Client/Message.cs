@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.DB.Client
         string              Name    { get; }
         /// <summary>
         /// Returns the message value as JSON.
-        /// Returns "null" when message was sent by <see cref="EntityStore.SendMessage"/>
+        /// Returns "null" when message was sent by <see cref="FlioxClient.SendMessage"/>
         /// </summary>
         JsonUtf8           Json    { get; }
         
@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.DB.Client
     
     public static class StdMessage  {
         /// <summary>
-        /// Echoes the value specified in <see cref="EntityStore.SendMessage{T}(string, T)"/> in <see cref="SendMessageTask.ResultJson"/>
+        /// Echoes the value specified in <see cref="FlioxClient.SendMessage{T}(string, T)"/> in <see cref="SendMessageTask.ResultJson"/>
         /// </summary>
         public const string Echo = "Echo";
     }

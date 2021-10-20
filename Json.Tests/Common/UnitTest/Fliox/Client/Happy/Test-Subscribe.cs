@@ -21,10 +21,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     internal enum EventAssertion {
         /// <summary>Assert a <see cref="SubscriptionProcessor"/> will not get change events from the
-        /// <see cref="EntityStore"/> it is attached to.</summary>.
+        /// <see cref="FlioxClient"/> it is attached to.</summary>.
         NoChanges,
         /// <summary>Assert a <see cref="SubscriptionProcessor"/> will get change events from all
-        /// <see cref="EntityStore"/>'s it is not attached to.</summary>.
+        /// <see cref="FlioxClient"/>'s it is not attached to.</summary>.
         Changes
     }
     
@@ -165,7 +165,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
     // assert expected database changes by counting the entity changes for each DatabaseContainer / EntitySet<>
     internal class PocSubscriptionProcessor : SubscriptionProcessor {
-        private readonly    PocStore                store;
+        private readonly    PocStore                client;
         private readonly    ChangeInfo<Order>       orderSum     = new ChangeInfo<Order>();
         private readonly    ChangeInfo<Customer>    customerSum  = new ChangeInfo<Customer>();
         private readonly    ChangeInfo<Article>     articleSum   = new ChangeInfo<Article>();
@@ -180,10 +180,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private readonly    EventAssertion          eventAssertion;
         
-        internal PocSubscriptionProcessor (PocStore store, EventAssertion eventAssertion)
-            : base (store)
+        internal PocSubscriptionProcessor (PocStore client, EventAssertion eventAssertion)
+            : base (client)
         {
-            this.store          = store;
+            this.client         = client;
             this.eventAssertion = eventAssertion;
         }
             
@@ -191,11 +191,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         protected override void ProcessEvent (EventMessage ev) {
             AreEqual("createStore", ev.srcUserId.ToString());
             base.ProcessEvent(ev);
-            var orderChanges    = GetEntityChanges(store.orders,    ev);
-            var customerChanges = GetEntityChanges(store.customers, ev);
-            var articleChanges  = GetEntityChanges(store.articles,  ev);
-            var producerChanges = GetEntityChanges(store.producers, ev);
-            var employeeChanges = GetEntityChanges(store.employees, ev);
+            var orderChanges    = GetEntityChanges(client.orders,    ev);
+            var customerChanges = GetEntityChanges(client.customers, ev);
+            var articleChanges  = GetEntityChanges(client.articles,  ev);
+            var producerChanges = GetEntityChanges(client.producers, ev);
+            var employeeChanges = GetEntityChanges(client.employees, ev);
             var messages        = GetMessages                      (ev);
             
             orderSum.   AddChanges(orderChanges);
@@ -296,7 +296,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var eventBroker  = new EventBroker(false))
             using (var database     = new MemoryDatabase())
             using (var typeStore    = new TypeStore())
-            using (var listenDb     = new EntityStore(database, typeStore, null, "listenDb")) {
+            using (var listenDb     = new FlioxClient(database, typeStore, null, "listenDb")) {
                 database.EventBroker = eventBroker;
                 bool receivedHello = false;
                 listenDb.SubscribeMessage("Hello", msg => {
@@ -304,7 +304,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 });
                 await listenDb.ExecuteTasksAsync();
 
-                using (var sendStore  = new EntityStore(database, typeStore, null, "sendStore")) {
+                using (var sendStore  = new FlioxClient(database, typeStore, null, "sendStore")) {
                     sendStore.SendMessage("Hello", "some text");
                     await sendStore.ExecuteTasksAsync();
                     

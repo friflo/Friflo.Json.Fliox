@@ -12,7 +12,7 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable InconsistentNaming
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
-    public class EntityIdStore : EntityStore {
+    public class EntityIdStore : FlioxClient {
         public  EntitySet <Guid,    GuidEntity>      guidEntities       { get; private set; }
         public  EntitySet <int,     IntEntity>       intEntities        { get; private set; }
         public  EntitySet <int,     AutoIntEntity>   intEntitiesAuto    { get; private set; }

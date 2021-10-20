@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
-    public partial class  MonitorStore :  EntityStore
+    public partial class  MonitorStore :  FlioxClient
     {
         private readonly    JsonKey                             hostName;
         public  readonly    EntitySet <JsonKey, HostInfo>       hosts;
@@ -22,8 +22,8 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         public MonitorStore(string hostName, DatabaseHub database, TypeStore typeStore)   : base(database, typeStore, null, null) {
             this.hostName = new JsonKey(hostName);
         }
-        public MonitorStore(DatabaseHub database, EntityStore baseStore) : base(database, baseStore) {
-            hostName = new JsonKey(baseStore._intern.database.hostName);
+        public MonitorStore(DatabaseHub database, FlioxClient baseClient) : base(database, baseClient) {
+            hostName = new JsonKey(baseClient._intern.database.hostName);
         }
         
         public const            string  ClearStats  = nameof(ClearStats); 

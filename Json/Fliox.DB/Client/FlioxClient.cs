@@ -26,14 +26,14 @@ namespace Friflo.Json.Fliox.DB.Client
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    [Fri.TypeMapper(typeof(EntityStoreMatcher))]
-    public class EntityStore : ITracerContext, IDisposable
+    [Fri.TypeMapper(typeof(FlioxClientMatcher))]
+    public class FlioxClient : ITracerContext, IDisposable
     {
         // Keep all EntityStore fields in StoreIntern to enhance debugging overview.
         // Reason: EntityStore is extended by application and add multiple EntitySet fields.
         //         So internal fields are encapsulated in field intern.
         // ReSharper disable once InconsistentNaming
-        internal            StoreIntern             _intern;
+        internal            ClientIntern            _intern;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              TypeStore               TypeStore       => _intern.typeStore;
         public              StoreInfo               StoreInfo       => new StoreInfo(_intern.syncStore, _intern.setByType); 
@@ -43,14 +43,14 @@ namespace Friflo.Json.Fliox.DB.Client
         public              int                     GetSyncCount()  => _intern.syncCount;
         
         /// <summary>
-        /// Instantiate an <see cref="EntityStore"/> with a given <see cref="database"/> and an optional <see cref="typeStore"/>.
+        /// Instantiate an <see cref="FlioxClient"/> with a given <see cref="database"/> and an optional <see cref="typeStore"/>.
         ///
         /// Optimization note:
-        /// In case an application create many (> 10) <see cref="EntityStore"/> instances it should provide
+        /// In case an application create many (> 10) <see cref="FlioxClient"/> instances it should provide
         /// a <see cref="typeStore"/>. <see cref="TypeStore"/> instances are designed to be reused from multiple threads.
-        /// Their creation is expensive compared to the instantiation of an <see cref="EntityStore"/>. 
+        /// Their creation is expensive compared to the instantiation of an <see cref="FlioxClient"/>. 
         /// </summary>
-        public EntityStore(DatabaseHub database, TypeStore typeStore, string userId, string clientId)
+        public FlioxClient(DatabaseHub database, TypeStore typeStore, string userId, string clientId)
         {
             if (database  == null) throw new ArgumentNullException(nameof(database));
             if (typeStore == null) throw new ArgumentNullException(nameof(typeStore));
@@ -58,21 +58,21 @@ namespace Friflo.Json.Fliox.DB.Client
             ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
             var subscriptionProcessor   = new SubscriptionProcessor(this);
-            _intern = new StoreIntern(null, typeStore, database, tracer, eventTarget, subscriptionProcessor);
+            _intern = new ClientIntern(null, typeStore, database, tracer, eventTarget, subscriptionProcessor);
             _intern.syncStore = new SyncStore();
             SetUserClient(userId, clientId);
             StoreUtils.InitEntitySets(this);
         }
         
-        protected EntityStore(DatabaseHub database, EntityStore baseStore) {
+        protected FlioxClient(DatabaseHub database, FlioxClient baseClient) {
             if (database  == null) throw new ArgumentNullException(nameof(database));
-            if (baseStore == null) throw new ArgumentNullException(nameof(baseStore));
-            if (baseStore._intern.database.extensionBase != null)
-                throw new ArgumentException("database of baseStore must not be an extension database", nameof(baseStore));
+            if (baseClient == null) throw new ArgumentNullException(nameof(baseClient));
+            if (baseClient._intern.database.extensionBase != null)
+                throw new ArgumentException("database of baseStore must not be an extension database", nameof(baseClient));
             
             ITracerContext tracer       = this;
             var subscriptionProcessor   = new SubscriptionProcessor(this);
-            _intern = new StoreIntern(baseStore, baseStore._intern.typeStore, database, tracer, null, subscriptionProcessor);
+            _intern = new ClientIntern(baseClient, baseClient._intern.typeStore, database, tracer, null, subscriptionProcessor);
             _intern.syncStore = new SyncStore();
             StoreUtils.InitEntitySets(this);
         }
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.DB.Client
             _intern.Dispose();
         }
         
-        public static Type[] GetEntityTypes<TEntityStore> () where TEntityStore : EntityStore {
+        public static Type[] GetEntityTypes<TEntityStore> () where TEntityStore : FlioxClient {
             return StoreUtils.GetEntityTypes<TEntityStore>();
         }
 
@@ -117,7 +117,7 @@ namespace Friflo.Json.Fliox.DB.Client
         }
         
         private void AssertBaseStore() {
-            if (_intern.baseStore != null)
+            if (_intern.client != null)
                 throw new InvalidOperationException("only base store can set: userId, clientId & token");
         } 
 
@@ -165,7 +165,7 @@ namespace Friflo.Json.Fliox.DB.Client
         // --- SubscribeAllChanges
         /// <summary>
         /// Subscribe to database changes of all <see cref="EntityContainer"/>'s with the given <see cref="changes"/>.
-        /// By default these changes are applied to the <see cref="EntityStore"/>.
+        /// By default these changes are applied to the <see cref="FlioxClient"/>.
         /// To react on specific changes use <see cref="SetSubscriptionHandler"/>.
         /// To unsubscribe from receiving change events set <see cref="changes"/> to null.
         /// </summary>
@@ -185,7 +185,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// Set a custom <see cref="SubscriptionProcessor"/> to enable reacting on specific database change or message (or command) events.
         /// E.g. notifying other application modules about created, updated, deleted or patches entities.
         /// To subscribe to database change events use <see cref="EntitySet{TKey,T}.SubscribeChanges"/>.
-        /// The default <see cref="SubscriptionProcessor"/> apply all changes to the <see cref="EntityStore"/> as they arrive.
+        /// The default <see cref="SubscriptionProcessor"/> apply all changes to the <see cref="FlioxClient"/> as they arrive.
         /// To subscribe to message events use <see cref="SubscribeMessage"/>.
         /// <br></br>
         /// In contrast to <see cref="SetSubscriptionHandler"/> this method provide additional possibilities by the
@@ -372,10 +372,10 @@ namespace Friflo.Json.Fliox.DB.Client
         }
 
         /// <summary>
-        /// Returning current <see cref="StoreIntern.syncStore"/> as <see cref="syncStore"/> enables request handling
+        /// Returning current <see cref="ClientIntern.syncStore"/> as <see cref="syncStore"/> enables request handling
         /// in a worker thread while calling <see cref="SyncStore"/> methods from "main" thread.
         /// 
-        /// If store has <see cref="StoreIntern.subscriptionProcessor"/> acknowledge received events to clear
+        /// If store has <see cref="ClientIntern.subscriptionProcessor"/> acknowledge received events to clear
         /// <see cref="Host.Event.EventSubscriber.sentEvents"/>. This avoids resending already received events on reconnect. 
         /// </summary>
         private SyncRequest CreateSyncRequest(out SyncStore syncStore) {
@@ -383,18 +383,18 @@ namespace Friflo.Json.Fliox.DB.Client
             syncStore.SetSyncSets(this);
             
             var tasks       = new List<SyncRequestTask>();
-            var baseStore   = _intern.baseStore ?? this;
+            var client      = _intern.client ?? this;
             var syncRequest = new SyncRequest {
                 // database    = _intern.database.ExtensionName, 
                 tasks       = tasks,
-                userId      = baseStore._intern.userId,
-                clientId    = baseStore._intern.clientId, 
-                token       = baseStore._intern.token
+                userId      = client._intern.userId,
+                clientId    = client._intern.clientId, 
+                token       = client._intern.token
             };
 
             // see method docs
-            if (baseStore._intern.subscriptionProcessor != null) {
-                syncRequest.eventAck = baseStore._intern.lastEventSeq;
+            if (client._intern.subscriptionProcessor != null) {
+                syncRequest.eventAck = client._intern.lastEventSeq;
             }
 
             foreach (var setPair in _intern.setByType) {
@@ -639,8 +639,8 @@ namespace Friflo.Json.Fliox.DB.Client
     
     public static class StoreExtension
     {
-        public static EntityStore Store(this ITracerContext store) {
-            return (EntityStore)store;
+        public static FlioxClient Store(this ITracerContext store) {
+            return (FlioxClient)store;
         }
     }
 }

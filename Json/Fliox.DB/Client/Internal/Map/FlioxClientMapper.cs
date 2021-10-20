@@ -9,21 +9,21 @@ using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Fliox.DB.Client.Internal.Map
 {
-    internal sealed class EntityStoreMatcher : ITypeMatcher {
+    internal sealed class FlioxClientMatcher : ITypeMatcher {
         public TypeMapper MatchTypeMapper(Type type, StoreConfig config) {
-            if (!type.IsSubclassOf(typeof(EntityStore)))
+            if (!type.IsSubclassOf(typeof(FlioxClient)))
                 return null;
 
             object[] constructorParams = {config, type };
-            return (TypeMapper)TypeMapperUtils.CreateGenericInstance(typeof(EntityStoreMapper<>), new[] {type}, constructorParams);
+            return (TypeMapper)TypeMapperUtils.CreateGenericInstance(typeof(FlioxClientMapper<>), new[] {type}, constructorParams);
         }
     }
     
-    internal sealed class EntityStoreMapper<T> : TypeMapper<T>
+    internal sealed class FlioxClientMapper<T> : TypeMapper<T>
     {
         public  override    bool    IsComplex => true;
 
-        public EntityStoreMapper (StoreConfig config, Type type) :
+        public FlioxClientMapper (StoreConfig config, Type type) :
             base (config, type, true, false)
         {
             instanceFactory = new InstanceFactory(); // abstract type

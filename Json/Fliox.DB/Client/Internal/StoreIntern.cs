@@ -15,10 +15,10 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.DB.Client.Internal
 {
-    internal struct StoreIntern
+    internal struct ClientIntern
     {
         // readonly
-        internal readonly   EntityStore                                 baseStore;
+        internal readonly   FlioxClient                                 client;
         internal readonly   TypeStore                                   typeStore;
         internal readonly   TypeCache                                   typeCache;
         internal readonly   DatabaseHub                                 database;
@@ -51,8 +51,8 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         public   override   string                                  ToString() => userId.ToString();
 
 
-        internal StoreIntern(
-            EntityStore             baseStore,
+        internal ClientIntern(
+            FlioxClient             client,
             TypeStore               typeStore,
             DatabaseHub             database,
             ITracerContext          tracerContext,
@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             var mapper                  = new ObjectMapper(typeStore, new NoThrowHandler());
             mapper.TracerContext        = tracerContext;
             // readonly
-            this.baseStore              = baseStore;
+            this.client                 = client;
             this.typeStore              = typeStore;
             this.typeCache              = mapper.writer.TypeCache;
             this.database               = database;

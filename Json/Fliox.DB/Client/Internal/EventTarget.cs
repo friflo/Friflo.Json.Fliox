@@ -11,29 +11,29 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
 {
     internal sealed class EventTarget : IEventTarget
     {
-        private readonly EntityStore    store;
+        private readonly FlioxClient    client;
         
-        internal EventTarget (EntityStore store) {
-            this.store = store; 
+        internal EventTarget (FlioxClient client) {
+            this.client = client; 
         } 
             
         // --- IEventTarget
         public bool     IsOpen ()   => true;
 
         public Task<bool> ProcessEvent(ProtocolEvent ev, MessageContext messageContext) {
-            if (!ev.dstClientId.IsEqual(store._intern.clientId))
+            if (!ev.dstClientId.IsEqual(client._intern.clientId))
                 throw new InvalidOperationException("Expect ProtocolEvent.dstId == EntityStore.clientId");
             
             // Skip already received events
-            if (store._intern.lastEventSeq >= ev.seq)
+            if (client._intern.lastEventSeq >= ev.seq)
                 return Task.FromResult(true);
             
-            store._intern.lastEventSeq = ev.seq;
+            client._intern.lastEventSeq = ev.seq;
             var eventMessage = ev as EventMessage;
             if (eventMessage == null)
                 return Task.FromResult(true);
 
-            store._intern.subscriptionProcessor?.EnqueueEvent(eventMessage);
+            client._intern.subscriptionProcessor?.EnqueueEvent(eventMessage);
 
             return Task.FromResult(true);
         }

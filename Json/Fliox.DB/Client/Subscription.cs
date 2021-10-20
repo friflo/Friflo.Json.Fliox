@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Client
 {
     public enum SubscriptionHandling {
         /// <summary>
-        /// Used in <see cref="SubscriptionProcessor(EntityStore, SubscriptionHandling)"/> to enforce manual handling of subscription events. 
+        /// Used in <see cref="SubscriptionProcessor(FlioxClient, SubscriptionHandling)"/> to enforce manual handling of subscription events. 
         /// </summary>
         Manual
     }
@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.DB.Client
     
     public class SubscriptionProcessor
     {
-        private readonly    EntityStore                         store;
+        private readonly    FlioxClient                         client;
         private readonly    Dictionary<Type, EntityChanges>     results   = new Dictionary<Type, EntityChanges>();
         private readonly    List<Message>                       messages  = new List<Message>();
         private readonly    EntityProcessor                     processor;
@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// <summary>
         /// Creates a <see cref="SubscriptionProcessor"/> with the specified <see cref="synchronizationContext"/>
         /// The <see cref="synchronizationContext"/> is required to ensure that <see cref="ProcessEvent"/> is called on the
-        /// same thread as all other API calls of <see cref="EntityStore"/> and <see cref="EntitySet{TKey,T}"/>.
+        /// same thread as all other API calls of <see cref="FlioxClient"/> and <see cref="EntitySet{TKey,T}"/>.
         /// <para>
         ///   In case of UI applications like WinForms, WPF or Unity <see cref="SynchronizationContext.Current"/> can be used.
         ///   If <see cref="synchronizationContext"/> is null it defaults to <see cref="SynchronizationContext.Current"/>.
@@ -54,23 +54,23 @@ namespace Friflo.Json.Fliox.DB.Client
         ///   <see cref="SingleThreadSynchronizationContext"/> can be used.
         /// </para> 
         /// </summary>
-        public SubscriptionProcessor (EntityStore store, SynchronizationContext synchronizationContext = null) {
+        public SubscriptionProcessor (FlioxClient client, SynchronizationContext synchronizationContext = null) {
             synchronizationContext      = synchronizationContext ?? SynchronizationContext.Current; 
-            this.store                  = store;
-            processor                   = store._intern.processor;
+            this.client                 = client;
+            processor                   = client._intern.processor;
             this.synchronizationContext = synchronizationContext;
         }
         
         /// <summary>
         /// Creates a <see cref="SubscriptionProcessor"/> without a <see cref="synchronizationContext"/>
         /// In this case the application must frequently call <see cref="ProcessEvents"/> to apply changes to the
-        /// <see cref="EntityStore"/>.
+        /// <see cref="FlioxClient"/>.
         /// This allows to specify the exact code point in an application (e.g. Unity) where <see cref="EventMessage"/>'s
-        /// are applied to the <see cref="EntityStore"/>.
+        /// are applied to the <see cref="FlioxClient"/>.
         /// </summary>
-        public SubscriptionProcessor (EntityStore store, SubscriptionHandling _) {
-            this.store                  = store;
-            processor                   = store._intern.processor;
+        public SubscriptionProcessor (FlioxClient client, SubscriptionHandling _) {
+            this.client                 = client;
+            processor                   = client._intern.processor;
             this.eventQueue             = new ConcurrentQueue <EventMessage> ();
         }
         
@@ -99,18 +99,18 @@ namespace Friflo.Json.Fliox.DB.Client
         /// <summary>
         /// Process the <see cref="EventMessage.tasks"/> of the given <see cref="EventMessage"/>.
         /// These <see cref="EventMessage.tasks"/> are "messages" resulting from subscriptions registered by
-        /// methods like <see cref="EntitySet{TKey,T}.SubscribeChanges"/>, <see cref="EntityStore.SubscribeAllChanges"/> or
-        /// <see cref="EntityStore.SubscribeMessage"/>.
+        /// methods like <see cref="EntitySet{TKey,T}.SubscribeChanges"/>, <see cref="FlioxClient.SubscribeAllChanges"/> or
+        /// <see cref="FlioxClient.SubscribeMessage"/>.
         /// <br></br>
-        /// Tasks notifying about database changes are applied to the <see cref="EntityStore"/> the <see cref="SubscriptionProcessor"/>
+        /// Tasks notifying about database changes are applied to the <see cref="FlioxClient"/> the <see cref="SubscriptionProcessor"/>
         /// is attached to.
         /// Types of database changes refer to <see cref="Change.create"/>ed, <see cref="Change.upsert"/>ed,
         /// <see cref="Change.delete"/>ed and <see cref="Change.patch"/>ed entities.
         /// <br></br>
-        /// Tasks notifying "messages" are ignored. These message subscriptions are registered by <see cref="EntityStore.SubscribeMessage"/>.
+        /// Tasks notifying "messages" are ignored. These message subscriptions are registered by <see cref="FlioxClient.SubscribeMessage"/>.
         /// </summary>
         protected virtual void ProcessEvent(EventMessage ev) {
-            if (store._intern.disposed)  // store may already be disposed
+            if (client._intern.disposed)  // store may already be disposed
                 return;
             EventSequence++;
             
@@ -120,7 +120,7 @@ namespace Friflo.Json.Fliox.DB.Client
                     
                     case TaskType.create:
                         var create = (CreateEntities)task;
-                        set = store.GetEntitySet(create.container);
+                        set = client.GetEntitySet(create.container);
                         // apply changes only if subscribed
                         if (set.GetSubscription() == null)
                             continue;
@@ -130,7 +130,7 @@ namespace Friflo.Json.Fliox.DB.Client
                     
                     case TaskType.upsert:
                         var upsert = (UpsertEntities)task;
-                        set = store.GetEntitySet(upsert.container);
+                        set = client.GetEntitySet(upsert.container);
                         // apply changes only if subscribed
                         if (set.GetSubscription() == null)
                             continue;
@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.DB.Client
                     
                     case TaskType.delete:
                         var delete = (DeleteEntities)task;
-                        set = store.GetEntitySet(delete.container);
+                        set = client.GetEntitySet(delete.container);
                         // apply changes only if subscribed
                         if (set.GetSubscription() == null)
                             continue;
@@ -149,7 +149,7 @@ namespace Friflo.Json.Fliox.DB.Client
                     
                     case TaskType.patch:
                         var patches = (PatchEntities)task;
-                        set = store.GetEntitySet(patches.container);
+                        set = client.GetEntitySet(patches.container);
                         // apply changes only if subscribed
                         if (set.GetSubscription() == null)
                             continue;
@@ -162,11 +162,11 @@ namespace Friflo.Json.Fliox.DB.Client
                         // callbacks require their own reader as store._intern.jsonMapper.reader cannot be used.
                         // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
                         // and ProcessEvent() can be called concurrently from the "main" thread.
-                        var reader = store._intern.messageReader;
-                        if (store._intern.subscriptions.TryGetValue(name, out MessageSubscriber subscriber)) {
+                        var reader = client._intern.messageReader;
+                        if (client._intern.subscriptions.TryGetValue(name, out MessageSubscriber subscriber)) {
                             subscriber.InvokeCallbacks(reader, name, message.value);    
                         }
-                        foreach (var sub in store._intern.subscriptionsPrefix) {
+                        foreach (var sub in client._intern.subscriptionsPrefix) {
                             if (name.StartsWith(sub.name)) {
                                 sub.InvokeCallbacks(reader, name, message.value);
                             }
@@ -174,7 +174,7 @@ namespace Friflo.Json.Fliox.DB.Client
                         break;
                 }
             }
-            var subHandler = store._intern.subscriptionHandler;
+            var subHandler = client._intern.subscriptionHandler;
             // ReSharper disable once UseNullPropagation
             if (subHandler == null)
                 return;
@@ -219,7 +219,7 @@ namespace Friflo.Json.Fliox.DB.Client
                 if (task.TaskType != TaskType.message)
                     continue;
                 var sendMessage = (SendMessage)task;
-                var reader  = store._intern.messageReader;
+                var reader  = client._intern.messageReader;
                 var message = new Message(sendMessage.name, sendMessage.value.json, reader);
                 messages.Add(message);
             }

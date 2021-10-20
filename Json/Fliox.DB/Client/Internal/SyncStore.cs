@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         internal    List<SubscribeMessageTask>  SubscribeMessage()  => subscribeMessage ?? (subscribeMessage = new List<SubscribeMessageTask>());
         private     int                         subscribeMessageIndex;
         
-        internal void SetSyncSets(EntityStore store) {
+        internal void SetSyncSets(FlioxClient store) {
             var setByName = store._intern.setByName;
             SyncSets = new Dictionary<string, SyncSet>(setByName.Count);
             foreach (var pair in setByName) {

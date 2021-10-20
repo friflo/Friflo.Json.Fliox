@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
                         public  JsonKey user;   // to track back who reserved keys in case of abuse
     }
 
-    public sealed class SequenceStore : EntityStore
+    public sealed class SequenceStore : FlioxClient
     {
         [Fri.Property(Name =                             "_sequence")]  
         public readonly EntitySet <string, Sequence>       sequence;

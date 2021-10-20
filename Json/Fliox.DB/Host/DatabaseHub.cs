@@ -40,13 +40,13 @@ namespace Friflo.Json.Fliox.DB.Host
     /// E.g. one container for storing JSON objects representing 'articles' another one for storing 'orders'.
     /// <br/>
     /// An <see cref="DatabaseHub"/> instance is the single entry point used to handle all requests send by a client -
-    /// e.g. an <see cref="Client.EntityStore"/>. It handle these requests by its <see cref="ExecuteSync"/> method.
+    /// e.g. an <see cref="Client.FlioxClient"/>. It handle these requests by its <see cref="ExecuteSync"/> method.
     /// A request is represented by a <see cref="SyncRequest"/> containing all database operations like create, read,
     /// upsert, delete and all messages / commands send by a client in the <see cref="SyncRequest.tasks"/> list.
     /// The <see cref="DatabaseHub"/> execute these tasks by its <see cref="taskHandler"/>.
     /// <br/>
     /// Instances of <see cref="DatabaseHub"/> and all its implementation are designed to be thread safe enabling multiple
-    /// clients e.g. <see cref="Client.EntityStore"/> operating on the same <see cref="DatabaseHub"/> instance.
+    /// clients e.g. <see cref="Client.FlioxClient"/> operating on the same <see cref="DatabaseHub"/> instance.
     /// To maintain thread safety <see cref="DatabaseHub"/> implementations must not have any mutable state.
     /// <br/>
     /// The <see cref="DatabaseHub"/> can be configured to support.
