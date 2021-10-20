@@ -29,8 +29,8 @@ namespace Friflo.Json.Tests.Main
             {
                 app.UseDeveloperExceptionPage();
             }
-            var database        = new MemoryDatabase();
-            var hostDatabase    = new HttpHostDatabase (database);
+            var database                = new MemoryDatabase();
+            var hostDatabase            = new HttpHostDatabase (database);
             database.EventBroker        = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
             hostDatabase.requestHandler = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
 
@@ -45,6 +45,7 @@ namespace Friflo.Json.Tests.Main
                 });
                 
                 endpoints.Map("/{*path}", async context => {
+                    // await NetCoreHttpContext.HandleRequest(context, hostDatabase);
                     if (context.WebSockets.IsWebSocketRequest) {
                         WebSocket ws = await context.WebSockets.AcceptWebSocketAsync();
                         await WebSocketHost.SendReceiveMessages(ws, hostDatabase);
