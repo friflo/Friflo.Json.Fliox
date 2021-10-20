@@ -6,6 +6,11 @@ using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Microsoft.AspNetCore.Http;
 
+// Assembly "Fliox.DB.AspNetCore" uses the 'floating version dependency':
+//      <PackageReference Include="Microsoft.AspNetCore.Http" Version="*" />
+//
+// More info for 'floating version dependency':
+// [NuGet Package Dependency Resolution | Microsoft Docs] https://docs.microsoft.com/en-us/nuget/concepts/dependency-resolution#floating-versions
 namespace Friflo.Json.Fliox.DB.AspNetCore
 {
     public static class AspNetCoreUtils
