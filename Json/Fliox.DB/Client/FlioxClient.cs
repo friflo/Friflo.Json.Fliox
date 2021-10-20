@@ -29,8 +29,8 @@ namespace Friflo.Json.Fliox.DB.Client
     [Fri.TypeMapper(typeof(FlioxClientMatcher))]
     public class FlioxClient : ITracerContext, IDisposable
     {
-        // Keep all EntityStore fields in StoreIntern to enhance debugging overview.
-        // Reason: EntityStore is extended by application and add multiple EntitySet fields.
+        // Keep all FlioxClient fields in StoreIntern to enhance debugging overview.
+        // Reason: FlioxClient is extended by application and add multiple EntitySet fields.
         //         So internal fields are encapsulated in field intern.
         // ReSharper disable once InconsistentNaming
         internal            ClientIntern            _intern;
@@ -81,8 +81,8 @@ namespace Friflo.Json.Fliox.DB.Client
             _intern.Dispose();
         }
         
-        public static Type[] GetEntityTypes<TEntityStore> () where TEntityStore : FlioxClient {
-            return StoreUtils.GetEntityTypes<TEntityStore>();
+        public static Type[] GetEntityTypes<TFlioxClient> () where TFlioxClient : FlioxClient {
+            return StoreUtils.GetEntityTypes<TFlioxClient>();
         }
 
 

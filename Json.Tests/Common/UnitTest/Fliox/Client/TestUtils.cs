@@ -133,7 +133,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         }
         
         [Test]
-        public void TestMemoryEntityStore() {
+        public void TestMemoryFlioxClient() {
             using (var typeStore = new TypeStore()) {
                 var database    = new NoopDatabase();
                 var _           = new PocStore(database, typeStore, null);

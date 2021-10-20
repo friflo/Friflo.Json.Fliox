@@ -159,7 +159,7 @@ namespace Friflo.Json.Fliox.Mapper
             var baseType = type.BaseType;
             if (baseType != null) {
                 // some types require using the ITypeMatcher from their base class.
-                // E.g. classes extending EntityStore use EntityStoreMatcher
+                // E.g. classes extending FlioxClient use FlioxClientMatcher
                 return GetTypeMapperType (baseType, out isMapper);
             }
             isMapper = false;

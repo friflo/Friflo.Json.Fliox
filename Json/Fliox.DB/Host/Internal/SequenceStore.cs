@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
             : base(database, typeStore, userId, null) { }
         
         // ReSharper disable once RedundantOverriddenMember
-        // enable set breakpoint. Ensures also EntityStore.Dispose is virtual
+        // enable set breakpoint. Ensures also FlioxClient.Dispose is virtual
         public override void Dispose() { 
             base.Dispose();
         }

@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Main
                 var schemas = JsonTypeSchema.ReadSchemas("./Json.Tests/assets~/Schema/JSON/PocStore");
                 return new JsonTypeSchema(schemas, "./UnitTest.Fliox.Client.json#/definitions/PocStore");
             }
-            // using a NativeTypeSchema add an additional dependency by using the EntityStore: PocStore
+            // using a NativeTypeSchema add an additional dependency by using the FlioxClient: PocStore
             return new NativeTypeSchema(typeof(PocStore));
         }
         

@@ -46,8 +46,8 @@ namespace Friflo.Json.Fliox.DB.Client.Internal.Map
             return result;
         }
         
-        internal static Type[] GetEntityTypes<TEntityStore>() where TEntityStore : FlioxClient {
-            var entityInfos = GetEntityInfos (typeof(TEntityStore));
+        internal static Type[] GetEntityTypes<TFlioxClient>() where TFlioxClient : FlioxClient {
+            var entityInfos = GetEntityInfos (typeof(TFlioxClient));
             var types       = new Type[entityInfos.Length];
             for (int n = 0; n < entityInfos.Length; n++) {
                 types[n] = entityInfos[n].entityType;
