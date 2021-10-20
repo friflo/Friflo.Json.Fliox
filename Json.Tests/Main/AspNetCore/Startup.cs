@@ -5,6 +5,7 @@ using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.Mapper;
+// using Friflo.Json.Fliox.Mapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -50,15 +51,16 @@ namespace Friflo.Json.Tests.Main
                         await WebSocketHost.SendReceiveMessages(ws, hostDatabase);
                         return;
                     }
-                    var req = context.Request;
-                    var reqCtx = new RequestContext(req.Method, req.Path.Value, req.Body);
+                    var httpRequest = context.Request;
+                    var reqCtx = new RequestContext(httpRequest.Method, httpRequest.Path.Value, httpRequest.Body);
                     await hostDatabase.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
                     
-                    var resp = context.Response;
-                    resp.StatusCode     = reqCtx.StatusCode;
-                    resp.ContentType    = reqCtx.ResponseContentType;
-                    resp.ContentLength  = reqCtx.Response.Length;
-                    await resp.Body.WriteAsync(reqCtx.Response, 0, reqCtx.Response.Length).ConfigureAwait(false);
+                    var httpResponse            = context.Response;
+                    JsonUtf8 response           = reqCtx.Response;
+                    httpResponse.StatusCode     = reqCtx.StatusCode;
+                    httpResponse.ContentType    = reqCtx.ResponseContentType;
+                    httpResponse.ContentLength  = response.Length;
+                    await httpResponse.Body.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
                 });
             });
         }
