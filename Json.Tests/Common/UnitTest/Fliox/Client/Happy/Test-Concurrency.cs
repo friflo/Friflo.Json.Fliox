@@ -147,10 +147,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]
         public static async Task TestConcurrentWebSocket () {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var db               = new MemoryDatabase())
-            using (var hostDatabase     = new HttpListenerHost("http://+:8080/", db))
+            using (var database         = new MemoryDatabase())
+            using (var hostDatabase     = new HttpHostDatabase(database))
+            using (var server           = new HttpListenerHost("http://+:8080/", hostDatabase))
             using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/")) {
-                await RunRemoteHost(hostDatabase, async () => {
+                await RunServer(server, async () => {
                     await remoteDatabase.Connect();
                     await ConcurrentWebSocket(remoteDatabase, 4, 10); // 10 requests are sufficient to force concurrency error
                     await remoteDatabase.Close();

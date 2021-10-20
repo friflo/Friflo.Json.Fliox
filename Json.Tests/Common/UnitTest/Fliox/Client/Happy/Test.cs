@@ -94,10 +94,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task HttpCreate() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hostDatabase     = new HttpListenerHost("http://+:8080/", fileDatabase))
+            using (var database         = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var hostDatabase     = new HttpHostDatabase(database))
+            using (var server           = new HttpListenerHost("http://+:8080/", hostDatabase))
             using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {
-                await RunRemoteHost(hostDatabase, async () => {
+                await RunServer(server, async () => {
                     using (var createStore      = new PocStore(remoteDatabase, "createStore", "create-client"))
                     using (var useStore         = new PocStore(remoteDatabase, "useStore", "use-client")) {
                         await TestRelationPoC.CreateStore(createStore);
@@ -119,12 +120,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task WebSocketCreate() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(false))
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hostDatabase     = new HttpListenerHost("http://+:8080/", fileDatabase))
+            using (var database         = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var hostDatabase     = new HttpHostDatabase(database))
+            using (var server           = new HttpListenerHost("http://+:8080/", hostDatabase))
             using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/"))
             using (var listenDb         = new PocStore(remoteDatabase, "listenDb", "listen-client")) {
-                fileDatabase.EventBroker = eventBroker;
-                await RunRemoteHost(hostDatabase, async () => {
+                database.EventBroker = eventBroker;
+                await RunServer(server, async () => {
                     await remoteDatabase.Connect();
                     var listenProcessor     = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
                     using (var createStore  = new PocStore(remoteDatabase, "createStore", "create-client"))
@@ -152,16 +154,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task WebSocketReconnect() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(true))
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hostDatabase     = new HttpListenerHost("http://+:8080/", fileDatabase))
+            using (var database         = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var hostDatabase     = new HttpHostDatabase(database))
+            using (var server           = new HttpListenerHost("http://+:8080/", hostDatabase))
             using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/"))
             using (var listenDb         = new PocStore(remoteDatabase, "listenDb", "listen-client")) {
-                hostDatabase.database.fakeOpenClosedSockets = true;
-                fileDatabase.EventBroker = eventBroker;
-                await RunRemoteHost(hostDatabase, async () => {
+                hostDatabase.fakeOpenClosedSockets = true;
+                database.EventBroker = eventBroker;
+                await RunServer(server, async () => {
                     await remoteDatabase.Connect();
                     var listenProcessor    = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
-                    using (var createStore  = new PocStore(fileDatabase, "createStore", "create-client")) {
+                    using (var createStore  = new PocStore(database, "createStore", "create-client")) {
                         await remoteDatabase.Close();
                         // all change events sent by createStore doesnt arrive at listenDb
                         await TestRelationPoC.CreateStore(createStore);
@@ -218,20 +221,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        internal static async Task RunRemoteHost(HttpListenerHost remoteHost, Func<Task> run) {
-            remoteHost.Start();
+        internal static async Task RunServer(HttpListenerHost server, Func<Task> run) {
+            server.Start();
             Task hostTask = null;
             try {
                 hostTask = Task.Run(() => {
                     // await hostDatabase.HandleIncomingConnections();
-                    remoteHost.Run();
+                    server.Run();
                     // await Task.Delay(100); // test awaiting hostTask
                     Logger.Info("1. RemoteHost finished");
                 });
                 
                 await run();
             } finally {
-                await remoteHost.Stop();
+                await server.Stop();
                 if (hostTask != null)
                     await hostTask;
                 Logger.Info("2. awaited hostTask");

@@ -19,10 +19,11 @@ namespace Friflo.Json.Tests.Main
         }
         
         public static async Task WebsocketDbThroughput() {
-            var db = new MemoryDatabase();
-            using (var hostDatabase     = new HttpListenerHost("http://+:8080/", db))
+            using (var database         = new MemoryDatabase())
+            using (var hostDatabase     = new HttpHostDatabase(database))
+            using (var server           = new HttpListenerHost("http://+:8080/", hostDatabase))
             using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/")) {
-                await TestStore.RunRemoteHost(hostDatabase, async () => {
+                await TestStore.RunServer(server, async () => {
                     await remoteDatabase.Connect();
                     await TestStore.ConcurrentAccess(remoteDatabase, 4, 0, 1_000_000, false);
                 });
@@ -30,10 +31,11 @@ namespace Friflo.Json.Tests.Main
         }
         
         public static async Task HttpDbThroughput() {
-            var db = new MemoryDatabase();
-            using (var hostDatabase     = new HttpListenerHost("http://+:8080/", db))
+            using (var database         = new MemoryDatabase())
+            using (var hostDatabase     = new HttpHostDatabase(database))
+            using (var server           = new HttpListenerHost("http://+:8080/", hostDatabase))
             using (var remoteDatabase   = new HttpClientDatabase("ws://localhost:8080/")) {
-                await TestStore.RunRemoteHost(hostDatabase, async () => {
+                await TestStore.RunServer(server, async () => {
                     await TestStore.ConcurrentAccess(remoteDatabase, 4, 0, 1_000_000, false);
                 });
             }

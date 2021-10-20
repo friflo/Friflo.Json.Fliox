@@ -30,8 +30,9 @@ namespace Friflo.Json.Tests.Main
             // Run a minimal Fliox server without monitoring, Pub-Sub, user authentication / authorization, entity validation
             Console.WriteLine($"FileDatabase: {databaseFolder}");
             var database                = new FileDatabase(databaseFolder);
-            var host                    = new HttpListenerHost(endpoint, database);
-            host.database.requestHandler= new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
+            var hostDatabase            = new HttpHostDatabase(database);
+            var host                    = new HttpListenerHost(endpoint, hostDatabase);
+            hostDatabase.requestHandler = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
             host.Start();
             host.Run();
         }
@@ -46,10 +47,10 @@ namespace Friflo.Json.Tests.Main
             
             var typeSchema              = CreateTypeSchema(true);                   // optional. used by DatabaseSchema & SchemaHandler
             database.Schema             = new DatabaseSchema(typeSchema);           // optional. Enables type validation for create, upsert & patch operations
-            
-            var host                    = new HttpListenerHost(endpoint, database);
-            host.database.requestHandler= new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
-            host.database.schemaHandler = new SchemaHandler("/schema/", typeSchema, Utils.Zip); // optional. Web UI for database schema
+            var hostDatabase            = new HttpHostDatabase(database);
+            hostDatabase.requestHandler = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
+            hostDatabase.schemaHandler  = new SchemaHandler("/schema/", typeSchema, Utils.Zip); // optional. Web UI for database schema
+            var host                    = new HttpListenerHost(endpoint, hostDatabase);
             host.Start();
             host.Run();
         }

@@ -23,17 +23,16 @@ namespace Friflo.Json.Fliox.DB.Remote
         private             bool                runServer;
         
         private             int                 requestCount;
-        public   readonly   HttpHostDatabase    database;
+        private  readonly   HttpHostDatabase    hostDatabase;
 
-        public HttpListenerHost(string endpoint, DatabaseHub local, DbOpt opt = null) {
-            database            = new HttpHostDatabase(local, opt);
+        public HttpListenerHost(string endpoint, HttpHostDatabase hostDatabase) {
+            this.hostDatabase            = hostDatabase;
             this.endpoint       = endpoint;
             listener            = new HttpListener();
             listener.Prefixes.Add(endpoint);
         }
 
         public void Dispose() {
-            database.Dispose();
         }
 
         private async Task HandleIncomingConnections()
@@ -114,11 +113,11 @@ namespace Friflo.Json.Fliox.DB.Remote
             if (req.IsWebSocketRequest) {
                 var wsContext   = await ctx.AcceptWebSocketAsync(null).ConfigureAwait(false);
                 var websocket   = wsContext.WebSocket;
-                await WebSocketHost.SendReceiveMessages (websocket, database).ConfigureAwait(false);
+                await WebSocketHost.SendReceiveMessages (websocket, hostDatabase).ConfigureAwait(false);
                 return;
             }
             var reqCtx = new RequestContext(ctx.Request.HttpMethod, ctx.Request.Url.AbsolutePath, req.InputStream);
-            bool handled = await database.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
+            bool handled = await hostDatabase.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
             
             if (handled) {
                 var responseBody = reqCtx.Response;
