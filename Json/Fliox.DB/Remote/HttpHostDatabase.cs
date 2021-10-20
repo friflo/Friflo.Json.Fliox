@@ -12,17 +12,17 @@ namespace Friflo.Json.Fliox.DB.Remote
 {
     public class HttpHostDatabase : RemoteHostDatabase
     {
-        public              SchemaHub           schemaHub;
+        public              SchemaHandler       schemaHandler;
         public              IRequestHandler     requestHandler;
         
-        private  readonly   SchemaHub           protocolSchemaHub;
+        private  readonly   SchemaHandler       protocolSchemaHandler;
 
         
         public HttpHostDatabase(EntityDatabase local, DbOpt opt = null) : base(local, opt) {
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
-            protocolSchemaHub       = new SchemaHub("/protocol/", protocolSchema, sepTypes);
+            protocolSchemaHandler   = new SchemaHandler("/protocol/", protocolSchema, sepTypes);
         }
         
         public async Task<bool> ExecuteHttpRequest(RequestContext reqCtx) {
@@ -42,11 +42,11 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
 
         private async Task<bool> HandleRequest(RequestContext request) {
-            if (schemaHub != null) {
-                if (await schemaHub.HandleRequest(request).ConfigureAwait(false))
+            if (schemaHandler != null) {
+                if (await schemaHandler.HandleRequest(request).ConfigureAwait(false))
                     return true;
             }
-            if (await protocolSchemaHub.HandleRequest(request).ConfigureAwait(false))
+            if (await protocolSchemaHandler.HandleRequest(request).ConfigureAwait(false))
                 return true;
             if (requestHandler == null)
                 return false;

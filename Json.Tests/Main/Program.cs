@@ -44,12 +44,12 @@ namespace Friflo.Json.Tests.Main
             database.EventBroker        = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
             database.Authenticator      = CreateUserAuthenticator();                // optional. Otherwise all request tasks are authorized
             
-            var typeSchema              = CreateTypeSchema(true);                   // optional. used by DatabaseSchema & SchemaHub
+            var typeSchema              = CreateTypeSchema(true);                   // optional. used by DatabaseSchema & SchemaHandler
             database.Schema             = new DatabaseSchema(typeSchema);           // optional. Enables type validation for create, upsert & patch operations
             
             var host                    = new HttpListenerHost(endpoint, database);
             host.database.requestHandler= new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
-            host.database.schemaHub     = new SchemaHub("/schema/", typeSchema, Utils.Zip); // optional. Web UI for database schema
+            host.database.schemaHandler = new SchemaHandler("/schema/", typeSchema, Utils.Zip); // optional. Web UI for database schema
             host.Start();
             host.Run();
         }
