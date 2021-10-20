@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             }
         }
         
-        public static async Task SendRecvMessages(WebSocket websocket, RemoteHostDatabase remoteHost) {
+        public static async Task SendReceiveMessages(WebSocket websocket, RemoteHostDatabase remoteHost) {
             var target = new WebSocketHost(websocket, remoteHost.fakeOpenClosedSockets);
             try {
                 using (var memoryStream = new MemoryStream()) {

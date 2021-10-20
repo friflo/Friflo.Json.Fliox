@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             if (req.IsWebSocketRequest) {
                 var wsContext   = await ctx.AcceptWebSocketAsync(null).ConfigureAwait(false);
                 var websocket   = wsContext.WebSocket;
-                await WebSocketHost.SendRecvMessages (websocket, database).ConfigureAwait(false);
+                await WebSocketHost.SendReceiveMessages (websocket, database).ConfigureAwait(false);
                 return;
             }
             var reqCtx = new RequestContext(ctx.Request.HttpMethod, ctx.Request.Url.AbsolutePath, req.InputStream);
