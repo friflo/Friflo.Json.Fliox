@@ -6,7 +6,6 @@ using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Microsoft.AspNetCore.Http;
 
-// ReSharper disable once CheckNamespace
 namespace Friflo.Json.Fliox.DB.AspNetCore
 {
     public static class AspNetCoreUtils
