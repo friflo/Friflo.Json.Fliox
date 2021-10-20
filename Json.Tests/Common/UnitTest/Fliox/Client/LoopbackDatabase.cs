@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     {
         private readonly    RemoteHostDatabase  loopbackHost;
 
-        public LoopbackDatabase(EntityDatabase local, DbOpt opt = null) : base(opt) {
+        public LoopbackDatabase(DatabaseHub local, DbOpt opt = null) : base(opt) {
             loopbackHost = new RemoteHostDatabase(local, opt);
         }
 

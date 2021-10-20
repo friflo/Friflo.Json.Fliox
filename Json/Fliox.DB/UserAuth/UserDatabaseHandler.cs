@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Utils;
 namespace Friflo.Json.Fliox.DB.UserAuth
 {
     /// <summary>
-    /// Used to authenticate users stored in the given user <see cref="EntityDatabase"/>.
+    /// Used to authenticate users stored in the given user <see cref="DatabaseHub"/>.
     /// If user authentication succeed it returns also the roles attached to a user. 
     /// The schema of the user database is defined in <see cref="UserStore"/>.
     /// </summary>
@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     {
         private readonly SharedPool<UserStore>   storePool;
         
-        public UserDatabaseHandler(EntityDatabase authDatabase) {
+        public UserDatabaseHandler(DatabaseHub authDatabase) {
             storePool = new SharedPool<UserStore> (() => new UserStore(authDatabase, UserStore.Server, null));
             authDatabase.Authenticator = new UserDatabaseAuthenticator();
             authDatabase.taskHandler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(AuthenticateUser); 

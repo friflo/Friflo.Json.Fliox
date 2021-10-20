@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         // Test cases where authentication fails.
         // In these cases error messages contain details about authentication problems. 
-        private static async Task AssertNotAuthenticated(EntityDatabase database) {
+        private static async Task AssertNotAuthenticated(DatabaseHub database) {
             var newArticle = new Article{ id="new-article" };
             using (var nullUser         = new PocStore(database, null)) {
                 // test: userId == null
@@ -94,7 +94,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
 
         /// test authorization of read and write operations on a container
-        private static async Task AssertAuthAccessOperations(EntityDatabase database) {
+        private static async Task AssertAuthAccessOperations(DatabaseHub database) {
             var newArticle = new Article{ id="new-article" };
             using (var mutateUser       = new PocStore(database, "user-database")) {
                 // test: allow read & mutate 
@@ -149,7 +149,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         /// test authorization of subscribing to container changes. E.g. create, upsert, delete & patch.
-        private static async Task AssertAuthAccessSubscriptions(EntityDatabase database) {
+        private static async Task AssertAuthAccessSubscriptions(DatabaseHub database) {
             using (var mutateUser       = new PocStore(database, "user-deny")) {
                 mutateUser.SetToken("user-deny-token");
                 await mutateUser.TryExecuteTasksAsync(); // authenticate to simplify debugging below
@@ -178,7 +178,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         /// test authorization of sending messages and subscriptions to messages. Commands are messages too.
-        private static async Task AssertAuthMessage(EntityDatabase database) {
+        private static async Task AssertAuthMessage(DatabaseHub database) {
             using (var denyUser      = new PocStore(database, "user-deny"))
             {
                 // test: deny message

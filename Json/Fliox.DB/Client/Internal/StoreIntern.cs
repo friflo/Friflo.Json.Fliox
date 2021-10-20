@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         internal readonly   EntityStore                                 baseStore;
         internal readonly   TypeStore                                   typeStore;
         internal readonly   TypeCache                                   typeCache;
-        internal readonly   EntityDatabase                              database;
+        internal readonly   DatabaseHub                                 database;
         internal readonly   EventTarget                                 eventTarget;
         // readonly - owned
         internal readonly   ObjectMapper                                jsonMapper;
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         internal StoreIntern(
             EntityStore             baseStore,
             TypeStore               typeStore,
-            EntityDatabase          database,
+            DatabaseHub             database,
             ITracerContext          tracerContext,
             EventTarget             eventTarget,
             SubscriptionProcessor   subscriptionProcessor)

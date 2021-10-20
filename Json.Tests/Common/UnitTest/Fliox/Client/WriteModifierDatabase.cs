@@ -15,14 +15,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     public delegate JsonValue   WriteModifier (JsonValue value);
     public delegate EntityPatch PatchModifier (EntityPatch patch);
     
-    public class WriteModifierDatabase : EntityDatabase
+    public class WriteModifierDatabase : DatabaseHub
     {
-        private readonly    EntityDatabase  local;
+        private readonly    DatabaseHub                         local;
         private readonly    Dictionary<string, WriteModifiers>  writeModifiers  = new Dictionary<string, WriteModifiers>();
         private readonly    Dictionary<string, PatchModifiers>  patchModifiers  = new Dictionary<string, PatchModifiers>();
         private readonly    EntityProcessor                     processor       = new EntityProcessor();
         
-        public WriteModifierDatabase(EntityDatabase local, DbOpt opt = null) : base(opt) {
+        public WriteModifierDatabase(DatabaseHub local, DbOpt opt = null) : base(opt) {
             this.local = local;
         }
 
@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             }
         }
 
-        public override EntityContainer CreateContainer(string name, EntityDatabase database) {
+        public override EntityContainer CreateContainer(string name, DatabaseHub database) {
             return local.CreateContainer(name, database);
         }
         

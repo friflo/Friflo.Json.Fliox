@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         private             int                 requestCount;
         public   readonly   HttpHostDatabase    database;
 
-        public HttpListenerHost(string endpoint, EntityDatabase local, DbOpt opt = null) {
+        public HttpListenerHost(string endpoint, DatabaseHub local, DbOpt opt = null) {
             database            = new HttpHostDatabase(local, opt);
             this.endpoint       = endpoint;
             listener            = new HttpListener();

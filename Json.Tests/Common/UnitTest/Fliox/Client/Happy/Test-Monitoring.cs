@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        private static async Task AssertAuthMonitoringDB(EntityDatabase storeDB, EntityDatabase monitorDB, EntityDatabase database) {
+        private static async Task AssertAuthMonitoringDB(DatabaseHub storeDB, DatabaseHub monitorDB, DatabaseHub database) {
             using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
             using (var userStore        = new UserStore (userDatabase, UserStore.AuthenticationUser, null))
             using (var _                = new UserDatabaseHandler   (userDatabase)) {
@@ -74,7 +74,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
 
-        private  static async Task AssertNoAuthMonitoringDB(EntityDatabase database, EntityDatabase monitorDb) {
+        private  static async Task AssertNoAuthMonitoringDB(DatabaseHub database, DatabaseHub monitorDb) {
             const string userId     = "poc-user";
             const string clientId   = "poc-client"; 
             using (var store    = new PocStore(database, null))
@@ -90,7 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
 
-        private  static async Task AssertAuthSuccessMonitoringDB(EntityDatabase database, EntityDatabase monitorDb) {
+        private  static async Task AssertAuthSuccessMonitoringDB(DatabaseHub database, DatabaseHub monitorDb) {
             const string userId     = "admin";
             const string clientId   = "admin-client"; 
             using (var store    = new PocStore(database, null))
@@ -105,7 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        private  static async Task AssertAuthFailedMonitoringDB(EntityDatabase database, EntityDatabase monitorDb) {
+        private  static async Task AssertAuthFailedMonitoringDB(DatabaseHub database, DatabaseHub monitorDb) {
             const string userId     = "admin";
             const string clientId   = "admin-xxx"; 
             using (var store    = new PocStore(database, null))

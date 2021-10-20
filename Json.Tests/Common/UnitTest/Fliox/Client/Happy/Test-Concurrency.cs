@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        public static async Task ConcurrentAccess(EntityDatabase database, int readerCount, int writerCount, int requestCount, bool singleEntity) {
+        public static async Task ConcurrentAccess(DatabaseHub database, int readerCount, int writerCount, int requestCount, bool singleEntity) {
             // --- prepare
             var typeStore   = new TypeStore();
             var store       = new SimpleStore(database, typeStore, "prepare");
@@ -140,7 +140,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// <summary>
         /// Assert that <see cref="WebSocketClientDatabase"/> support being used by multiple clients aka
         /// <see cref="EntityStore"/>'s and using concurrent requests.
-        /// All <see cref="EntityDatabase"/> implementations support this behavior, so <see cref="WebSocketClientDatabase"/>
+        /// All <see cref="DatabaseHub"/> implementations support this behavior, so <see cref="WebSocketClientDatabase"/>
         /// have to ensure this also. It utilize <see cref="ProtocolRequest.reqId"/> to ensure this.
         /// </summary>
 #if !UNITY_5_3_OR_NEWER 
@@ -159,7 +159,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
 #endif
         
-        private static async Task ConcurrentWebSocket(EntityDatabase database, int clientCount, int requestCount)
+        private static async Task ConcurrentWebSocket(DatabaseHub database, int clientCount, int requestCount)
         {
             // --- prepare
             var stores = new List<EntityStore>();
@@ -200,7 +200,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     {
         public readonly EntitySet <int, SimplyEntity>   entities;
         
-        public SimpleStore(EntityDatabase database, TypeStore typeStore, string clientId) : base (database, typeStore, null, clientId) {}
+        public SimpleStore(DatabaseHub database, TypeStore typeStore, string clientId) : base (database, typeStore, null, clientId) {}
     }
     
     // ------------------------------ models ------------------------------

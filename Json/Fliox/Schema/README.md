@@ -44,6 +44,6 @@ From these input schemas the following output schemas can be generate:
 - Examples for code generation and JSON type validation at:  
   [Schema generators & JSON Validation tests](../../../Json.Tests/Common/UnitTest/Fliox/Schema)
 
-- Schema validation in an `EntityDatabase` is demonstrated at:  
+- Schema validation for a `DatabaseHub` is demonstrated at:  
   [FlioxServer](../../../Json.Tests/Main/Program.cs)
 

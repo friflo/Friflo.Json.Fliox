@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
 
-        public static async Task AssertEntityKeyTests(EntityDatabase database, TypeStore typeStore) {
+        public static async Task AssertEntityKeyTests(DatabaseHub database, TypeStore typeStore) {
             var entityRef = new EntityRefs { id = "entity-ref-1" };
             
             // --- int as entity id ---

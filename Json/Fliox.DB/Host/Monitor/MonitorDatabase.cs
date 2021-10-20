@@ -13,14 +13,14 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
-    public class MonitorDatabase : EntityDatabase
+    public class MonitorDatabase : DatabaseHub
     {
-        internal readonly    EntityDatabase      stateDB;
-        private  readonly    MonitorStore        stateStore;
+        internal readonly    DatabaseHub    stateDB;
+        private  readonly    MonitorStore   stateStore;
         
         public const string Name = "monitor";
         
-        public MonitorDatabase (EntityDatabase extensionBase, DbOpt opt = null)
+        public MonitorDatabase (DatabaseHub extensionBase, DbOpt opt = null)
             : base (extensionBase, Name, opt, new MonitorHandler()) {
             stateDB     = new MemoryDatabase();
             stateStore  = new MonitorStore(extensionBase.hostName, stateDB, HostTypeStore.Get());
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             base.Dispose();
         }
 
-        public override EntityContainer CreateContainer(string name, EntityDatabase database) {
+        public override EntityContainer CreateContainer(string name, DatabaseHub database) {
             return stateDB.CreateContainer(name, database);
         }
 
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
     
     public partial class MonitorStore
     {
-        internal void UpdateClients(EntityDatabase db, string monitorName) {
+        internal void UpdateClients(DatabaseHub db, string monitorName) {
             foreach (var pair in db.ClientController.Clients) {
                 UserClient client   = pair.Value;
                 var clientId        = pair.Key;
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             }
         }
         
-        private static EventInfo? GetEventInfo (EntityDatabase db, ClientInfo clientInfo) {
+        private static EventInfo? GetEventInfo (DatabaseHub db, ClientInfo clientInfo) {
             if (db.EventBroker == null)
                 return null;
             if (!db.EventBroker.TryGetSubscriber(clientInfo.id, out var subscriber)) {

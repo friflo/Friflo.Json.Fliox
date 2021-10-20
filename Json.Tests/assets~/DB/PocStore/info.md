@@ -9,9 +9,9 @@ Each `EntitySet<>` field in `PocStore` describe the model used for the entities 
 This means that all payloads in a container folder are of a specific type.  
 These are `Article`, `Customer`, `Employee`, `Order` and `Producer`.
 
-## EntityStore / EntityDatabase
+## EntityStore / DatabaseHub
 The schema and its models are only utilized by clients when using an `EntityStore` and `EntitySet<>`.  
-The database itself is schema-less. This means all `EntityDatabase` implementations (e.g. a memory, file or remote database)
+The database itself is schema-less. This means all `DatabaseHub` implementations (e.g. a memory, file or remote database)
 perform their commands without a schema definition.
 
 By ensuring this principle development of a domain specific application can be realized by pure client development.  

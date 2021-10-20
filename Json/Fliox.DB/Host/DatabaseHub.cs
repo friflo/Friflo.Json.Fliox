@@ -17,9 +17,9 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Host
 {
     public class DbOpt {
-        /// <see cref="EntityDatabase.hostName"/>
+        /// <see cref="DatabaseHub.hostName"/>
         public  readonly    string                  hostName;
-        /// <see cref="EntityDatabase.customContainerName"/>
+        /// <see cref="DatabaseHub.customContainerName"/>
         public  readonly    CustomContainerName     customContainerName;
         
         public DbOpt(string hostName = null, CustomContainerName customContainerName = null) {
@@ -33,23 +33,23 @@ namespace Friflo.Json.Fliox.DB.Host
     public delegate string CustomContainerName(string name);
 
     /// <summary>
-    /// <see cref="EntityDatabase"/> is an abstraction for a specific database adapter / implementation e.g. a
+    /// <see cref="DatabaseHub"/> is an abstraction for a specific database adapter / implementation e.g. a
     /// <see cref="MemoryDatabase"/> or a <see cref="FileDatabase"/>.
-    /// An <see cref="EntityDatabase"/> contains multiple <see cref="EntityContainer"/>'s each representing
+    /// An <see cref="DatabaseHub"/> contains multiple <see cref="EntityContainer"/>'s each representing
     /// a table / collection of a database. Each container is intended to store the records / entities of a specific type.
     /// E.g. one container for storing JSON objects representing 'articles' another one for storing 'orders'.
     /// <br/>
-    /// An <see cref="EntityDatabase"/> instance is the single entry point used to handle all requests send by a client -
+    /// An <see cref="DatabaseHub"/> instance is the single entry point used to handle all requests send by a client -
     /// e.g. an <see cref="Client.EntityStore"/>. It handle these requests by its <see cref="ExecuteSync"/> method.
     /// A request is represented by a <see cref="SyncRequest"/> containing all database operations like create, read,
     /// upsert, delete and all messages / commands send by a client in the <see cref="SyncRequest.tasks"/> list.
-    /// The <see cref="EntityDatabase"/> execute these tasks by its <see cref="taskHandler"/>.
+    /// The <see cref="DatabaseHub"/> execute these tasks by its <see cref="taskHandler"/>.
     /// <br/>
-    /// Instances of <see cref="EntityDatabase"/> and all its implementation are designed to be thread safe enabling multiple
-    /// clients e.g. <see cref="Client.EntityStore"/> operating on the same <see cref="EntityDatabase"/> instance.
-    /// To maintain thread safety <see cref="EntityDatabase"/> implementations must not have any mutable state.
+    /// Instances of <see cref="DatabaseHub"/> and all its implementation are designed to be thread safe enabling multiple
+    /// clients e.g. <see cref="Client.EntityStore"/> operating on the same <see cref="DatabaseHub"/> instance.
+    /// To maintain thread safety <see cref="DatabaseHub"/> implementations must not have any mutable state.
     /// <br/>
-    /// The <see cref="EntityDatabase"/> can be configured to support.
+    /// The <see cref="DatabaseHub"/> can be configured to support.
     /// <list type="bullet">
     ///   <item>
     ///     A Pub-Sub implementation to send events of database changes or messages to clients by assigning an
@@ -66,14 +66,14 @@ namespace Friflo.Json.Fliox.DB.Host
     ///   </item>
     ///   <item>
     ///     Monitoring of database access (requests) by adding a <see cref="Monitor.MonitorDatabase"/> with
-    ///     <see cref="AddExtensionDB(Friflo.Json.Fliox.DB.Host.EntityDatabase)"/>.
+    ///     <see cref="AddExtensionDB(DatabaseHub)"/>.
     ///   </item>
     /// </list>
     /// </summary>
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public abstract class EntityDatabase : IDisposable
+    public abstract class DatabaseHub : IDisposable
     {
         /// <summary> map of of containers identified by their container name </summary>
         private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
@@ -102,7 +102,7 @@ namespace Friflo.Json.Fliox.DB.Host
         /// <summary>
         /// <see cref="ClientController"/> is used to create / add unique client ids to enable sending events to
         /// specific user clients.
-        /// It also enables monitoring execution statistics of <see cref="EntityDatabase.ExecuteSync"/> 
+        /// It also enables monitoring execution statistics of <see cref="DatabaseHub.ExecuteSync"/> 
         /// </summary>
         public              ClientController    ClientController{ get => clientController; set => clientController = NotNull(value, nameof(ClientController)); }
         
@@ -122,8 +122,8 @@ namespace Friflo.Json.Fliox.DB.Host
         /// <summary>
         /// A mapping function used to assign a custom container name.
         /// If using a custom name its value is assigned to the containers <see cref="EntityContainer.instanceName"/>. 
-        /// By having the mapping function in <see cref="EntityDatabase"/> it enables uniform mapping across different
-        /// <see cref="EntityDatabase"/> implementations.
+        /// By having the mapping function in <see cref="DatabaseHub"/> it enables uniform mapping across different
+        /// <see cref="DatabaseHub"/> implementations.
         /// </summary>
         public readonly     CustomContainerName customContainerName;
         
@@ -138,15 +138,15 @@ namespace Friflo.Json.Fliox.DB.Host
         public override     string              ToString() => extensionName != null ? $"'{extensionName}'" : "";
         
         /// <summary> Construct a default database </summary>
-        protected EntityDatabase (DbOpt opt, TaskHandler taskHandler = null) {
+        protected DatabaseHub (DbOpt opt, TaskHandler taskHandler = null) {
             hostName            = (opt ?? DbOpt.Default).hostName;
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
             this.taskHandler    = taskHandler ?? new TaskHandler();
         }
         
         /// <summary> Construct an extension database </summary>
-        protected EntityDatabase (
-            EntityDatabase  extensionBase,
+        protected DatabaseHub (
+            DatabaseHub  extensionBase,
             string          extensionName,
             DbOpt           opt,
             TaskHandler     taskHandler = null
@@ -164,7 +164,7 @@ namespace Friflo.Json.Fliox.DB.Host
         
         private static T NotNull<T> (T value, string name) where T : class => value ?? throw new NullReferenceException(name);
         
-        public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
+        public abstract EntityContainer CreateContainer     (string name, DatabaseHub database);
         public virtual  void            AddEventTarget      (in JsonKey clientId, IEventTarget eventTarget) {}
         public virtual  void            RemoveEventTarget   (in JsonKey clientId) {}
 
@@ -211,7 +211,7 @@ namespace Friflo.Json.Fliox.DB.Host
             messageContext.clientIdValidation = authenticator.ValidateClientId(clientController, messageContext);
 
             var database = syncRequest.database;
-            EntityDatabase db = this;
+            DatabaseHub db = this;
             if (database != null) {
                 if (!extensionDbs.TryGetValue(database, out db))
                     return new MsgResponse<SyncResponse>($"database not found: '{syncRequest.database}'");
@@ -287,14 +287,14 @@ namespace Friflo.Json.Fliox.DB.Host
 
         // --------------------------------- extension databases ---------------------------------
         internal readonly   string                              extensionName;
-        internal readonly   EntityDatabase                      extensionBase;
-        private  readonly   Dictionary<string, EntityDatabase>  extensionDbs = new Dictionary<string, EntityDatabase>();
+        internal readonly   DatabaseHub                      extensionBase;
+        private  readonly   Dictionary<string, DatabaseHub>  extensionDbs = new Dictionary<string, DatabaseHub>();
         
-        public void AddExtensionDB(EntityDatabase extensionDB) {
+        public void AddExtensionDB(DatabaseHub extensionDB) {
             extensionDbs.Add(extensionDB.extensionName, extensionDB);
         }
 
-        public EntityDatabase AddExtensionDB (string extensionName, DbOpt opt = null) {
+        public DatabaseHub AddExtensionDB (string extensionName, DbOpt opt = null) {
             var extensionDB = new ExtensionDatabase (this, extensionName, opt);
             extensionDbs.Add(extensionName, extensionDB);
             return extensionDB;

@@ -15,7 +15,7 @@ using Microsoft.Azure.Cosmos;
 
 namespace Friflo.Json.Fliox.DB.Cosmos
 {
-    public class CosmosDatabase : EntityDatabase
+    public class CosmosDatabase : DatabaseHub
     {
         private  readonly   bool        pretty;
         private  readonly   Database    cosmosDatabase;
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
             this.pretty         = pretty;
         }
         
-        public override EntityContainer CreateContainer(string name, EntityDatabase database) {
+        public override EntityContainer CreateContainer(string name, DatabaseHub database) {
             var options = new ContainerOptions(cosmosDatabase, throughput);
             return new CosmosContainer(name, database, options, pretty);
         }
@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
         private             Container           cosmosContainer;
         public   override   bool                Pretty      { get; }
         
-        internal CosmosContainer(string name, EntityDatabase database, ContainerOptions options, bool pretty)
+        internal CosmosContainer(string name, DatabaseHub database, ContainerOptions options, bool pretty)
             : base(name, database)
         {
             this.options    = options;

@@ -16,7 +16,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.UserAuth
 {
     /// <summary>
-    /// Provide access to an <see cref="EntityDatabase"/> storing user credentials ands roles.
+    /// Provide access to an <see cref="DatabaseHub"/> storing user credentials ands roles.
     /// It can also be used as a non thread safe <see cref="IUserAuth"/> implementation.
     /// For a thread safe <see cref="IUserAuth"/> implementation use <see cref="UserAuth"/>.
     /// </summary>
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         /// <summary>"userId" used for a <see cref="UserStore"/> to request a user authentication with its token</summary>
         public const string AuthenticationUser  = "AuthenticationUser";
         
-        public UserStore(EntityDatabase database, string userId, string clientId) : base(database, HostTypeStore.Get(), userId, clientId) { }
+        public UserStore(DatabaseHub database, string userId, string clientId) : base(database, HostTypeStore.Get(), userId, clientId) { }
         
         public async Task<AuthenticateUserResult> AuthenticateUser(AuthenticateUser command) {
             var commandTask = SendMessage<AuthenticateUser, AuthenticateUserResult>(command);

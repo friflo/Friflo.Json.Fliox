@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
         [Fri.Required]  public  string          container;
         [Fri.Required]  public  int             count;
         
-        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+        internal override async Task<SyncTaskResult> Execute(DatabaseHub database, SyncResponse response, MessageContext messageContext) {
             // var store           = new SequenceStore(database, SyncTypeStore.Get(), null);
             var pools = messageContext.pools;
             using (var pooledStore = pools.Pool(() => new SequenceStore(database, HostTypeStore.Get(), "ReserveKeys")).Get()) {

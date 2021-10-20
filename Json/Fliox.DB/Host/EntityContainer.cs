@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.DB.Host
     ///   All ...Result types returned by the interface methods of <see cref="EntityContainer"/> like
     ///   <see cref="CreateEntities"/>, <see cref="ReadEntitiesSet"/>, ... implement <see cref="ICommandResult"/>.
     ///   In case a database command fails completely  <see cref="ICommandResult.Error"/> needs to be set.
-    ///   See <see cref="EntityDatabase.ExecuteSync"/> for proper error handling.
+    ///   See <see cref="DatabaseHub.ExecuteSync"/> for proper error handling.
     /// </para>
     /// </summary>
 #if !UNITY_5_3_OR_NEWER
@@ -57,12 +57,12 @@ namespace Friflo.Json.Fliox.DB.Host
         public    readonly  string          name;
         /// <summary>
         /// The name used for a container / table instance in a specific database. By default it is equal to <see cref="name"/>.
-        /// It can be customized (altered) by the <see cref="EntityDatabase.customContainerName"/> function.
+        /// It can be customized (altered) by the <see cref="DatabaseHub.customContainerName"/> function.
         /// This field need to be used for <see cref="EntityContainer"/> implementations when accessing a specific
         /// databases (e.g. Mongo, Dynamo, Cosmos, Postgres, ...).
         /// </summary>
         protected readonly  string          instanceName;
-        private   readonly  EntityDatabase  database;
+        private   readonly  DatabaseHub  database;
 
         public    virtual   bool            Pretty      => false;
         public    override  string          ToString()  => $"{GetType().Name} - {instanceName}";
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.DB.Host
         public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities  command, MessageContext messageContext);
 
 
-        protected EntityContainer(string name, EntityDatabase database) {
+        protected EntityContainer(string name, DatabaseHub database) {
             this.name           = name;
             this.instanceName   = database.customContainerName(name);
             this.database       = database;

@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Models
         /// <summary>Is != <see cref="TaskErrorResultType.None"/> if the error is caused indirectly by a <see cref="SyncRequestTask"/> error.</summary>
         [Fri.Ignore]        public  TaskErrorResultType taskErrorType;
         /// <summary>Show the stacktrace if <see cref="taskErrorType"/> == <see cref="TaskErrorResultType.UnhandledException"/>
-        /// and the accessed <see cref="EntityDatabase"/> expose this data.</summary>
+        /// and the accessed <see cref="DatabaseHub"/> expose this data.</summary>
         [Fri.Ignore]        public  string              stacktrace;
 
         public override     string              ToString() => AsText(true);

@@ -15,7 +15,7 @@ using Friflo.Json.Fliox.Mapper;
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.DB.Remote
 {
-    public abstract class RemoteClientDatabase : EntityDatabase
+    public abstract class RemoteClientDatabase : DatabaseHub
     {
         private  readonly   Dictionary<JsonKey, IEventTarget>   clientTargets = new Dictionary<JsonKey, IEventTarget>(JsonKey.Equality);
         private  readonly   Pools                               pools = new Pools(UtilsInternal.SharedPools);
@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         // ReSharper disable once EmptyConstructor - added for source navigation
         protected RemoteClientDatabase(DbOpt opt = null) : base(opt) { }
 
-        public override EntityContainer CreateContainer(string name, EntityDatabase database) {
+        public override EntityContainer CreateContainer(string name, DatabaseHub database) {
             RemoteClientContainer container = new RemoteClientContainer(name, this);
             return container;
         }
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.DB.Remote
     
     public sealed class RemoteClientContainer : EntityContainer
     {
-        public RemoteClientContainer(string name, EntityDatabase database)
+        public RemoteClientContainer(string name, DatabaseHub database)
             : base(name, database) {
         }
 

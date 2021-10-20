@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             }
         }
 
-        // ------ Test all topics on different EntityDatabase implementations
+        // ------ Test all topics on different DatabaseHub implementations
         private static async Task TestStoresErrors(PocStore useStore, TestDatabase testDatabase) {
             await AssertQueryTask       (useStore, testDatabase);
             await AssertReadTask        (useStore, testDatabase);

@@ -12,7 +12,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host
 {
-    public sealed class MemoryDatabase : EntityDatabase
+    public sealed class MemoryDatabase : DatabaseHub
     {
         private  readonly   bool    pretty;
 
@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.DB.Host
             this.pretty = pretty;
         }
         
-        public override EntityContainer CreateContainer(string name, EntityDatabase database) {
+        public override EntityContainer CreateContainer(string name, DatabaseHub database) {
             return new MemoryContainer(name, database, pretty);
         }
     }
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.DB.Host
         
         public    override  string                          ToString()  => $"{base.ToString()}, Count: {keyValues.Count}";
 
-        public MemoryContainer(string name, EntityDatabase database, bool pretty)
+        public MemoryContainer(string name, DatabaseHub database, bool pretty)
             : base(name, database)
         {
             Pretty = pretty;

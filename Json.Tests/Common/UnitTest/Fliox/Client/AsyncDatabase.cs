@@ -9,18 +9,18 @@ using Friflo.Json.Fliox.DB.Protocol;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
     /// <summary>
-    /// An <see cref="EntityDatabase"/> implementation which execute the continuation of <see cref="ExecuteSync"/>
+    /// An <see cref="DatabaseHub"/> implementation which execute the continuation of <see cref="ExecuteSync"/>
     /// never synchronously to test <see cref="EntityStore.ExecuteTasksAsync"/> running not synchronously.
     /// </summary>
-    public class AsyncDatabase : EntityDatabase
+    public class AsyncDatabase : DatabaseHub
     {
-        private readonly    EntityDatabase  local;
+        private readonly    DatabaseHub  local;
 
-        public AsyncDatabase(EntityDatabase local, DbOpt opt = null) : base(opt) {
+        public AsyncDatabase(DatabaseHub local, DbOpt opt = null) : base(opt) {
             this.local = local;
         }
         
-        public override EntityContainer CreateContainer(string name, EntityDatabase database) {
+        public override EntityContainer CreateContainer(string name, DatabaseHub database) {
             return local.GetOrCreateContainer(name);
         }
         

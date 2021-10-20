@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        private static async Task AssertAutoIncrement(EntityDatabase database, TypeStore typeStore)
+        private static async Task AssertAutoIncrement(DatabaseHub database, TypeStore typeStore)
         {
             using (var store = new EntityIdStore(database, typeStore, "autoIncrement")) {
                 var delete = store.intEntitiesAuto.DeleteAll();

@@ -13,13 +13,13 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
-    public class TestDatabase : EntityDatabase
+    public class TestDatabase : DatabaseHub
     {
-        private readonly    EntityDatabase  local;
+        private readonly    DatabaseHub                                         local;
         private readonly    Dictionary<string, TestContainer>                   testContainers  = new Dictionary<string, TestContainer>();
         public  readonly    Dictionary<string, Func<MsgResponse<SyncResponse>>> syncErrors      = new Dictionary<string, Func<MsgResponse<SyncResponse>>>();
         
-        public TestDatabase(EntityDatabase local, DbOpt opt = null) : base(opt) {
+        public TestDatabase(DatabaseHub local, DbOpt opt = null) : base(opt) {
             this.local = local;
         }
         
@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             }
         }
 
-        public override EntityContainer CreateContainer(string name, EntityDatabase database) {
+        public override EntityContainer CreateContainer(string name, DatabaseHub database) {
             if (TryGetContainer(name, out EntityContainer container)) {
                 return container;
             }
@@ -102,7 +102,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         public  override    bool            Pretty       => local.Pretty;
 
-        public TestContainer(string name, EntityDatabase database, EntityContainer localContainer)
+        public TestContainer(string name, DatabaseHub database, EntityContainer localContainer)
             : base(name, database) {
             local = localContainer;
         }

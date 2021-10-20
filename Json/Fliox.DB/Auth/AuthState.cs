@@ -8,7 +8,7 @@ namespace Friflo.Json.Fliox.DB.Auth
 {
     /// <summary>
     /// Contains the authentication and authorization result of <see cref="Authenticator.Authenticate"/>.
-    /// The authentication is performed for every <see cref="EntityDatabase.ExecuteSync"/> call. 
+    /// The authentication is performed for every <see cref="DatabaseHub.ExecuteSync"/> call. 
     /// </summary>
     public struct AuthState {
         public              string      Error           { get; private set;}  
