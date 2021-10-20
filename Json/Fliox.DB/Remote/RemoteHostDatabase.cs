@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Protocol;
@@ -64,7 +63,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         /// Distribute <see cref="ContainerEntities.entityMap"/> to <see cref="ContainerEntities.entities"/>,
         /// <see cref="ContainerEntities.notFound"/> and <see cref="ContainerEntities.errors"/> to simplify and
         /// minimize response by removing redundancy.
-        /// <see cref="FlioxClient.GetContainerResults"/> remap these properties.
+        /// <see cref="Client.FlioxClient.GetContainerResults"/> remap these properties.
         private static void SetContainerResults(SyncResponse response)
         {
             if (response == null)
