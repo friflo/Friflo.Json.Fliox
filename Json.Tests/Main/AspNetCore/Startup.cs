@@ -45,7 +45,6 @@ namespace Friflo.Json.Tests.Main
                 });
                 
                 endpoints.Map("/{*path}", async context => {
-                    // await NetCoreHttpContext.HandleRequest(context, hostDatabase);
                     if (context.WebSockets.IsWebSocketRequest) {
                         WebSocket ws = await context.WebSockets.AcceptWebSocketAsync();
                         await WebSocketHost.SendReceiveMessages(ws, hostDatabase);
