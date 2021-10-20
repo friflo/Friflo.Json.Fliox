@@ -1,6 +1,8 @@
 #if !UNITY_2020_1_OR_NEWER
 
+using System.Net.WebSockets;
 using Friflo.Json.Fliox.DB.Host;
+using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Microsoft.AspNetCore.Builder;
@@ -29,9 +31,11 @@ namespace Friflo.Json.Tests.Main
             }
             var database        = new MemoryDatabase();
             var hostDatabase    = new HttpHostDatabase (database);
+            database.EventBroker        = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
             hostDatabase.requestHandler = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
 
             app.UseRouting();
+            app.UseWebSockets();
 
             app.UseEndpoints(endpoints =>
             {
@@ -41,6 +45,11 @@ namespace Friflo.Json.Tests.Main
                 });
                 
                 endpoints.Map("/{*path}", async context => {
+                    if (context.WebSockets.IsWebSocketRequest) {
+                        WebSocket ws = await context.WebSockets.AcceptWebSocketAsync();
+                        await WebSocketHostTarget.Create(ws, hostDatabase);
+                        return;
+                    }
                     var req = context.Request;
                     var reqCtx = new RequestContext(req.Method, req.Path.Value, req.Body);
                     await hostDatabase.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
