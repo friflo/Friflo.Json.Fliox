@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
         public   override   string                                  ToString()      => clientId.ToString();
         
         internal            int                                     SentEventsCount => sentEvents.Count;
-        internal            bool                                    IsRemoteTarget  => eventTarget is WebSocketHostTarget;
+        internal            bool                                    IsRemoteTarget  => eventTarget is WebSocketHost;
         
         internal List<SubscribeChanges> GetChangeSubscriptions (List<SubscribeChanges> subs) {
             if (changeSubscriptions.Count == 0)

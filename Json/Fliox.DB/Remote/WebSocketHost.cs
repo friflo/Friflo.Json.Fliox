@@ -17,7 +17,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Remote
 {
     // [Things I Wish Someone Told Me About ASP.NET Core WebSockets | codetinkerer.com] https://www.codetinkerer.com/2018/06/05/aspnet-core-websockets.html
-    public sealed class WebSocketHostTarget : IEventTarget
+    public sealed class WebSocketHost : IEventTarget
     {
         private  readonly   WebSocket                               webSocket;
         /// Only set to true for testing. It avoids an early out at <see cref="EventSubscriber.SendEvents"/> 
@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         private  readonly   Task                                    sendLoop;
         private  readonly   Pools                                   pools = new Pools(UtilsInternal.SharedPools);
         
-        private WebSocketHostTarget (WebSocket webSocket, bool fakeOpenClosedSocket) {
+        private WebSocketHost (WebSocket webSocket, bool fakeOpenClosedSocket) {
             this.webSocket              = webSocket;
             this.fakeOpenClosedSocket   = fakeOpenClosedSocket;
             
@@ -107,8 +107,8 @@ namespace Friflo.Json.Fliox.DB.Remote
             }
         }
         
-        public static async Task Create(WebSocket websocket, RemoteHostDatabase remoteHost) {
-            var target = new WebSocketHostTarget(websocket, remoteHost.fakeOpenClosedSockets);
+        public static async Task SendRecvMessages(WebSocket websocket, RemoteHostDatabase remoteHost) {
+            var target = new WebSocketHost(websocket, remoteHost.fakeOpenClosedSockets);
             try {
                 using (var memoryStream = new MemoryStream()) {
                     await target.ReceiveLoop(memoryStream, remoteHost).ConfigureAwait(false);
