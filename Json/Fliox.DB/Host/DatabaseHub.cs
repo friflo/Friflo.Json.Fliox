@@ -286,9 +286,9 @@ namespace Friflo.Json.Fliox.DB.Host
         }
 
         // --------------------------------- extension databases ---------------------------------
-        internal readonly   string                              extensionName;
-        internal readonly   DatabaseHub                      extensionBase;
-        private  readonly   Dictionary<string, DatabaseHub>  extensionDbs = new Dictionary<string, DatabaseHub>();
+        internal readonly   string                          extensionName;
+        internal readonly   DatabaseHub                     extensionBase;
+        private  readonly   Dictionary<string, DatabaseHub> extensionDbs = new Dictionary<string, DatabaseHub>();
         
         public void AddExtensionDB(DatabaseHub extensionDB) {
             extensionDbs.Add(extensionDB.extensionName, extensionDB);

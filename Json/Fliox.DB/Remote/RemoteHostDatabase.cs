@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.DB.Remote
 {
     public class RemoteHostDatabase : DatabaseHub
     {
-        private  readonly   DatabaseHub                      local;
+        private  readonly   DatabaseHub     local;
         
         /// Only set to true for testing. It avoids an early out at <see cref="Host.Event.EventSubscriber.SendEvents"/> 
         public              bool            fakeOpenClosedSockets;
