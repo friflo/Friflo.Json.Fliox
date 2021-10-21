@@ -32,6 +32,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
         internal            AuthState           authState;
         private             PoolUsage           startUsage;
         internal            Action              canceler = () => {};
+        public              DatabaseHub         hub;
         
         public override     string              ToString() => $"userId: {authState.User}, auth: {authState}";
 

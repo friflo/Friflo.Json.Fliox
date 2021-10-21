@@ -148,7 +148,7 @@ namespace Friflo.Json.Fliox.DB.Client
             var type = typeof(T);
             store._intern.setByType[type]   = this;
             store._intern.setByName[name]   = this;
-            container   = store._intern.database.GetOrCreateContainer(name);
+            container   = store._intern.database?.GetOrCreateContainer(name);
             intern      = new SetIntern<TKey, T>(store);
         }
         

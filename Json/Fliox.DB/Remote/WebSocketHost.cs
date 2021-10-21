@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             return loopTask;
         }
         
-        private async Task ReceiveLoop(MemoryStream memoryStream, RemoteHostDatabase remoteHost) {
+        private async Task ReceiveLoop(MemoryStream memoryStream, RemoteHostHub remoteHost) {
             var         buffer      = new ArraySegment<byte>(new byte[8192]);
             while (true) {
                 var state = webSocket.State;
@@ -107,7 +107,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             }
         }
         
-        public static async Task SendReceiveMessages(WebSocket websocket, RemoteHostDatabase remoteHost) {
+        public static async Task SendReceiveMessages(WebSocket websocket, RemoteHostHub remoteHost) {
             var target = new WebSocketHost(websocket, remoteHost.fakeOpenClosedSockets);
             try {
                 using (var memoryStream = new MemoryStream()) {

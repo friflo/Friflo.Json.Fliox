@@ -12,16 +12,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     /// An <see cref="DatabaseHub"/> implementation which execute the continuation of <see cref="ExecuteSync"/>
     /// never synchronously to test <see cref="FlioxClient.ExecuteTasksAsync"/> running not synchronously.
     /// </summary>
-    public class AsyncDatabase : DatabaseHub
+    public class AsyncDatabaseHub : DatabaseHub
     {
         private readonly    DatabaseHub  local;
 
-        public AsyncDatabase(DatabaseHub local, DbOpt opt = null) : base(opt) {
-            this.local = local;
-        }
-        
-        public override EntityContainer CreateContainer(string name, DatabaseHub database) {
-            return local.GetOrCreateContainer(name);
+        public AsyncDatabaseHub(EntityDatabase database, string hostName = null) : base(database, hostName) {
+            local = new DatabaseHub(database);
         }
         
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {

@@ -10,19 +10,22 @@ namespace Friflo.Json.Tests.Main
     {
         public static async Task MemoryDbThroughput() {
             var db = new MemoryDatabase();
-            await TestStore.ConcurrentAccess(db, 4, 0, 1_000_000, false);
+            var hub          	= new DatabaseHub(db);
+            await TestStore.ConcurrentAccess(hub, 4, 0, 1_000_000, false);
         }
         
         public static async Task FileDbThroughput() {
             var db = new FileDatabase("./Json.Tests/assets~/DB/testConcurrencyDb");
-            await TestStore.ConcurrentAccess(db, 4, 0, 1_000_000, false);
+            var hub          	= new DatabaseHub(db);
+            await TestStore.ConcurrentAccess(hub, 4, 0, 1_000_000, false);
         }
         
         public static async Task WebsocketDbThroughput() {
             using (var database         = new MemoryDatabase())
-            using (var hostDatabase     = new HttpHostDatabase(database))
+            using (var hub          	= new DatabaseHub(database))
+            using (var hostDatabase     = new HttpHostHub(hub))
             using (var server           = new HttpListenerHost("http://+:8080/", hostDatabase))
-            using (var remoteDatabase   = new WebSocketClientDatabase("ws://localhost:8080/")) {
+            using (var remoteDatabase   = new WebSocketClientHub("ws://localhost:8080/")) {
                 await TestStore.RunServer(server, async () => {
                     await remoteDatabase.Connect();
                     await TestStore.ConcurrentAccess(remoteDatabase, 4, 0, 1_000_000, false);
@@ -32,9 +35,10 @@ namespace Friflo.Json.Tests.Main
         
         public static async Task HttpDbThroughput() {
             using (var database         = new MemoryDatabase())
-            using (var hostDatabase     = new HttpHostDatabase(database))
+            using (var hub          	= new DatabaseHub(database))
+            using (var hostDatabase     = new HttpHostHub(hub))
             using (var server           = new HttpListenerHost("http://+:8080/", hostDatabase))
-            using (var remoteDatabase   = new HttpClientDatabase("ws://localhost:8080/")) {
+            using (var remoteDatabase   = new HttpClientHub("ws://localhost:8080/")) {
                 await TestStore.RunServer(server, async () => {
                     await TestStore.ConcurrentAccess(remoteDatabase, 4, 0, 1_000_000, false);
                 });
@@ -43,7 +47,8 @@ namespace Friflo.Json.Tests.Main
         
         public static async Task LoopbackDbThroughput() {
             var db = new MemoryDatabase();
-            using (var loopbackDatabase     = new LoopbackDatabase(db)) {
+            using (var hub          	    = new DatabaseHub(db))
+            using (var loopbackDatabase     = new LoopbackHub(hub)) {
                 await TestStore.ConcurrentAccess(loopbackDatabase, 4, 0, 1_000_000, false);
             }
         }

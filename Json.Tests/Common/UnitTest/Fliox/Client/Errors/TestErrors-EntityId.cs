@@ -25,30 +25,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         public static void EntityIdTypeMismatch() {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
-            using (var database     = new MemoryDatabase()) {
-                AssertEntityIdTests (database, typeStore);
+            using (var database     = new MemoryDatabase())
+            using (var hub          = new DatabaseHub(database))
+            {
+                AssertEntityIdTests (hub, typeStore);
             }
         }
             
-        private static void AssertEntityIdTests(DatabaseHub database, TypeStore typeStore) {
+        private static void AssertEntityIdTests(DatabaseHub hub, TypeStore typeStore) {
             Exception e;
             e = Throws<InvalidTypeException>(() => {
-                _ = new TypeMismatchStore(database, typeStore, "store");
+                _ = new TypeMismatchStore(hub, typeStore, "store");
             });
             AreEqual("key Type mismatch. String (IntEntity.id) != Int64 (EntitySet<Int64,IntEntity>)", e.Message);
             
             e = Throws<InvalidTypeException>(() => {
-                _ = new TypeMismatchStore2(database, typeStore, "store");
+                _ = new TypeMismatchStore2(hub, typeStore, "store");
             });
             AreEqual("key Type mismatch. String (IntEntity2.id) != Int64 (EntitySet<Int64,IntEntity2>)", e.Message);
             
             e = Throws<InvalidOperationException>(() => {
-                _ = new UnsupportedKeyTypeStore(database, typeStore, "store");
+                _ = new UnsupportedKeyTypeStore(hub, typeStore, "store");
             });
             AreEqual("unsupported TKey Type: EntitySet<Char,CharEntity> id", e.Message);
             
             e = Throws<InvalidTypeException>(() => {
-                _ = new InvalidMemberStore(database, typeStore, "store");
+                _ = new InvalidMemberStore(hub, typeStore, "store");
             });
             AreEqual("Invalid member: StringEntity.entityRef - Ref<Int32, StringEntity> != EntitySet<String, StringEntity>", e.Message);
         }
@@ -62,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class TypeMismatchStore : FlioxClient {
         public  readonly    EntitySet <long, IntEntity> intEntities;
 
-        public TypeMismatchStore(DatabaseHub database, TypeStore typeStore, string clientId) : base(database, typeStore, null, clientId) {}
+        public TypeMismatchStore(DatabaseHub hub, TypeStore typeStore, string clientId) : base(hub, typeStore, null, clientId) {}
     }
     
     // --------
@@ -74,7 +76,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         // ReSharper disable once UnassignedReadonlyField
         public  readonly    EntitySet <long, IntEntity2> intEntities; // test without assignment
 
-        public TypeMismatchStore2(DatabaseHub database, TypeStore typeStore, string clientId) : base(database, typeStore, null, clientId) {}
+        public TypeMismatchStore2(DatabaseHub hub, TypeStore typeStore, string clientId) : base(hub, typeStore, null, clientId) {}
     }
 
     // --------
@@ -85,7 +87,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class UnsupportedKeyTypeStore : FlioxClient {
         public  readonly    EntitySet <char, CharEntity>    charEntities;
 
-        public UnsupportedKeyTypeStore(DatabaseHub database, TypeStore typeStore, string clientId) : base(database, typeStore, null, clientId) {}
+        public UnsupportedKeyTypeStore(DatabaseHub hub, TypeStore typeStore, string clientId) : base(hub, typeStore, null, clientId) {}
     }
     
     // --------
@@ -97,6 +99,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class InvalidMemberStore : FlioxClient {
         public  readonly    EntitySet <string,    StringEntity> stringEntities;
 
-        public InvalidMemberStore(DatabaseHub database, TypeStore typeStore, string clientId) : base(database, typeStore, null, clientId) {}
+        public InvalidMemberStore(DatabaseHub hub, TypeStore typeStore, string clientId) : base(hub, typeStore, null, clientId) {}
     }
 }

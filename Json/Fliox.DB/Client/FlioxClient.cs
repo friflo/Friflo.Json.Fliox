@@ -39,8 +39,10 @@ namespace Friflo.Json.Fliox.DB.Client
         public              StoreInfo               StoreInfo       => new StoreInfo(_intern.syncStore, _intern.setByType); 
         public   override   string                  ToString()      => StoreInfo.ToString();
         public              IReadOnlyList<SyncTask> Tasks           => _intern.syncStore.appTasks;
+        public              DatabaseHub             Hub             => _intern.hub;
         
         public              int                     GetSyncCount()  => _intern.syncCount;
+        
         
         /// <summary>
         /// Instantiate an <see cref="FlioxClient"/> with a given <see cref="database"/> and an optional <see cref="typeStore"/>.
@@ -50,29 +52,27 @@ namespace Friflo.Json.Fliox.DB.Client
         /// a <see cref="typeStore"/>. <see cref="TypeStore"/> instances are designed to be reused from multiple threads.
         /// Their creation is expensive compared to the instantiation of an <see cref="FlioxClient"/>. 
         /// </summary>
-        public FlioxClient(DatabaseHub database, TypeStore typeStore, string userId, string clientId)
-        {
-            if (database  == null) throw new ArgumentNullException(nameof(database));
+        public FlioxClient(DatabaseHub hub, TypeStore typeStore, string userId, string clientId) {
             if (typeStore == null) throw new ArgumentNullException(nameof(typeStore));
             
             ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
             var subscriptionProcessor   = new SubscriptionProcessor(this);
-            _intern = new ClientIntern(null, typeStore, database, tracer, eventTarget, subscriptionProcessor);
+            _intern = new ClientIntern(null, typeStore, hub, hub.db, tracer, eventTarget, subscriptionProcessor);
             _intern.syncStore = new SyncStore();
             SetUserClient(userId, clientId);
             StoreUtils.InitEntitySets(this);
         }
         
-        protected FlioxClient(DatabaseHub database, FlioxClient baseClient) {
+        protected FlioxClient(EntityDatabase database, FlioxClient baseClient) {
             if (database  == null) throw new ArgumentNullException(nameof(database));
             if (baseClient == null) throw new ArgumentNullException(nameof(baseClient));
-            if (baseClient._intern.database.extensionBase != null)
-                throw new ArgumentException("database of baseStore must not be an extension database", nameof(baseClient));
-            
+            // if (baseClient._intern.database.extensionBase != null)
+            //     throw new ArgumentException("database of baseStore must not be an extension database", nameof(baseClient));
+            var hub = baseClient._intern.hub;
             ITracerContext tracer       = this;
             var subscriptionProcessor   = new SubscriptionProcessor(this);
-            _intern = new ClientIntern(baseClient, baseClient._intern.typeStore, database, tracer, null, subscriptionProcessor);
+            _intern = new ClientIntern(baseClient, baseClient._intern.typeStore, hub, database, tracer, null, subscriptionProcessor);
             _intern.syncStore = new SyncStore();
             StoreUtils.InitEntitySets(this);
         }
@@ -132,11 +132,11 @@ namespace Friflo.Json.Fliox.DB.Client
             if (newClientId.IsEqual(_intern.clientId))
                 return;
             if (!_intern.clientId.IsNull()) {
-                _intern.database.RemoveEventTarget(_intern.clientId);
+                _intern.hub.RemoveEventTarget(_intern.clientId);
             }
             _intern.clientId    = newClientId;
             if (!_intern.clientId.IsNull()) {
-                _intern.database.AddEventTarget(newClientId, _intern.eventTarget);
+                _intern.hub.AddEventTarget(newClientId, _intern.eventTarget);
             }
         }
 
@@ -319,9 +319,9 @@ namespace Friflo.Json.Fliox.DB.Client
             var pendingSyncs = _intern.pendingSyncs;
             try {
                 var database            = _intern.database; 
-                syncRequest.database    = database.extensionName;
-                var execDB              = database.extensionBase ?? database;
-                task = execDB.ExecuteSync(syncRequest, messageContext);
+                syncRequest.database    = database?.extensionName;
+                var hub                 = _intern.hub;
+                task = hub.ExecuteSync(syncRequest, messageContext);
 
                 pendingSyncs.TryAdd(task, messageContext);
                 response = await task.ConfigureAwait(false);
@@ -464,7 +464,7 @@ namespace Friflo.Json.Fliox.DB.Client
         
         /// Map <see cref="ContainerEntities.entities"/>, <see cref="ContainerEntities.notFound"/> and
         /// <see cref="ContainerEntities.errors"/> to <see cref="ContainerEntities.entityMap"/>.
-        /// These properties are set by <see cref="RemoteHostDatabase.SetContainerResults"/>.
+        /// These properties are set by <see cref="RemoteHostHub.SetContainerResults"/>.
         private void GetContainerResults(SyncResponse response) {
             var results     = response.results;
             if (results == null)
@@ -534,8 +534,8 @@ namespace Friflo.Json.Fliox.DB.Client
                     var result = response.success;
                     response.success.AssertResponse(syncRequest);
                     syncError = null;
-                    var db = _intern.database; 
-                    if (db is RemoteClientDatabase || db is ExtensionDatabase)
+                    var hub = _intern.hub; 
+                    if (hub is RemoteClientHub)
                         GetContainerResults(result);
                     containerResults = result.resultMap;
                     foreach (var containerResult in containerResults) {

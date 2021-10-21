@@ -15,7 +15,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Remote
 {
-    public sealed class WebSocketClientDatabase : RemoteClientDatabase
+    public sealed class WebSocketClientHub : RemoteClientHub
     {
         private             int                                         reqId;
 
@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         private  readonly   CancellationTokenSource                     cancellationToken = new CancellationTokenSource();
 
 
-        public WebSocketClientDatabase(string endpoint, DbOpt opt = null) : base(opt) {
+        public WebSocketClientHub(string endpoint, string hostName = null) : base(null, hostName) {
             this.endpoint = endpoint;
         }
         

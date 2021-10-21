@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.DB.Host
         /// databases (e.g. Mongo, Dynamo, Cosmos, Postgres, ...).
         /// </summary>
         protected readonly  string          instanceName;
-        private   readonly  DatabaseHub  database;
+        private   readonly  EntityDatabase  database;
 
         public    virtual   bool            Pretty      => false;
         public    override  string          ToString()  => $"{GetType().Name} - {instanceName}";
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.DB.Host
         public abstract Task<DeleteEntitiesResult>  DeleteEntities  (DeleteEntities  command, MessageContext messageContext);
 
 
-        protected EntityContainer(string name, DatabaseHub database) {
+        protected EntityContainer(string name, EntityDatabase database) {
             this.name           = name;
             this.instanceName   = database.customContainerName(name);
             this.database       = database;

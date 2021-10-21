@@ -29,8 +29,9 @@ namespace Friflo.Json.Tests.Main
                 app.UseDeveloperExceptionPage();
             }
             var database                = new MemoryDatabase();
-            var hostDatabase            = new HttpHostDatabase (database);
-            database.EventBroker        = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
+            var hub                     = new DatabaseHub(database);
+            var hostDatabase            = new HttpHostHub (hub);
+            hub.EventBroker             = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
             hostDatabase.requestHandler = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
 
             app.UseRouting();

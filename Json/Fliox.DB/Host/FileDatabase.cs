@@ -15,7 +15,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host
 {
-    public sealed class FileDatabase : DatabaseHub
+    public sealed class FileDatabase : EntityDatabase
     {
         private  readonly   string  databaseFolder;
         private  readonly   bool    pretty;
@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.DB.Host
             Directory.CreateDirectory(databaseFolder);
         }
 
-        public override EntityContainer CreateContainer(string name, DatabaseHub database) {
+        public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             return new FileContainer(name, this, databaseFolder, pretty);
         }
     }
@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.DB.Host
         public   override   bool                    Pretty      { get; }
 
 
-        public FileContainer(string name, DatabaseHub database, string databaseFolder, bool pretty)
+        public FileContainer(string name, EntityDatabase database, string databaseFolder, bool pretty)
             : base (name, database)
         {
             this.Pretty = pretty;

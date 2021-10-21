@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         private async Task FileUse() {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var testDatabase = new TestDatabase(fileDatabase))
+            using (var testDatabase = new TestDatabaseHub(fileDatabase))
             using (var useStore     = new PocStore(testDatabase, "useStore")) {
                 await TestStoresErrors(useStore, testDatabase);
             }
@@ -41,8 +41,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         private async Task LoopbackUse() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var testDatabase     = new TestDatabase(fileDatabase))
-            using (var loopbackDatabase = new LoopbackDatabase(testDatabase))
+            using (var testDatabase     = new TestDatabaseHub(fileDatabase))
+            using (var loopbackDatabase = new LoopbackHub(testDatabase))
             using (var useStore         = new PocStore(loopbackDatabase, "useStore", "use-client")) {
                 await TestStoresErrors(useStore, testDatabase);
             }
@@ -54,35 +54,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         private async Task HttpUse() {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var database     = new TestDatabase(fileDatabase))
-            using (var hostDatabase = new HttpHostDatabase(database))
+            using (var testDatabase = new TestDatabaseHub(fileDatabase))
+            using (var hostDatabase = new HttpHostHub(testDatabase))
             using (var server       = new HttpListenerHost("http://+:8080/", hostDatabase)) {
                 await Happy.TestStore.RunServer(server, async () => {
-                    using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/"))
+                    using (var remoteDatabase   = new HttpClientHub("http://localhost:8080/"))
                     using (var useStore         = new PocStore(remoteDatabase, "useStore", "use-client")) {
-                        await TestStoresErrors(useStore, database);
+                        await TestStoresErrors(useStore, testDatabase);
                     }
                 });
             }
         }
 
         // ------ Test all topics on different DatabaseHub implementations
-        private static async Task TestStoresErrors(PocStore useStore, TestDatabase testDatabase) {
-            await AssertQueryTask       (useStore, testDatabase);
-            await AssertReadTask        (useStore, testDatabase);
-            await AssertTaskExceptions  (useStore, testDatabase);
-            await AssertTaskError       (useStore, testDatabase);
-            await AssertEntityWrite     (useStore, testDatabase);
-            await AssertEntityPatch     (useStore, testDatabase);
-            await AssertLogChangesPatch (useStore, testDatabase);
-            await AssertLogChangesCreate(useStore, testDatabase);
-            await AssertSyncErrors      (useStore, testDatabase);
+        private static async Task TestStoresErrors(PocStore useStore, TestDatabaseHub testHub) {
+            await AssertQueryTask       (useStore, testHub);
+            await AssertReadTask        (useStore, testHub);
+            await AssertTaskExceptions  (useStore, testHub);
+            await AssertTaskError       (useStore, testHub);
+            await AssertEntityWrite     (useStore, testHub);
+            await AssertEntityPatch     (useStore, testHub);
+            await AssertLogChangesPatch (useStore, testHub);
+            await AssertLogChangesCreate(useStore, testHub);
+            await AssertSyncErrors      (useStore, testHub);
         }
         
-        private static async Task Test(Func<PocStore, TestDatabase, Task> test) {
+        private static async Task Test(Func<PocStore, TestDatabaseHub, Task> test) {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var testDatabase = new TestDatabase(fileDatabase))
+            using (var testDatabase = new TestDatabaseHub(fileDatabase))
             using (var useStore     = new PocStore(testDatabase, "useStore")) {
                 await test(useStore, testDatabase);
             }

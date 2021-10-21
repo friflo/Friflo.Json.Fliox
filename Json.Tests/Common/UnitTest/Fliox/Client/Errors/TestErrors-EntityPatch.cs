@@ -19,9 +19,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         // ------ Test each topic individual - using a FileDatabase
         [Test] public async Task TestEntityPatch    () { await Test(async (store, database) => await AssertEntityPatch      (store, database)); }
 
-        private static async Task AssertEntityPatch(PocStore store, TestDatabase testDatabase) {
-            testDatabase.ClearErrors();
-            TestContainer testCustomers = testDatabase.GetTestContainer(nameof(PocStore.customers));
+        private static async Task AssertEntityPatch(PocStore store, TestDatabaseHub testHub) {
+            testHub.ClearErrors();
+            TestContainer testCustomers = testHub.GetTestContainer(nameof(PocStore.customers));
             const string patchReadEntityError   = "patch-read-entity-error";
             const string patchWriteEntityError  = "patch-write-entity-error";
             const string patchTaskException     = "patch-task-exception";

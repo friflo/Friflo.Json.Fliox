@@ -13,17 +13,18 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
-    public class MonitorDatabase : DatabaseHub
+    public class MonitorDatabase : EntityDatabase
     {
-        internal readonly    DatabaseHub    stateDB;
+        internal readonly    EntityDatabase stateDB;
         private  readonly    MonitorStore   stateStore;
         
         public const string Name = "monitor";
         
         public MonitorDatabase (DatabaseHub extensionBase, DbOpt opt = null)
-            : base (extensionBase, Name, opt, new MonitorHandler()) {
+            : base (extensionBase, Name, new DbOpt(taskHandler: new MonitorHandler())) {
             stateDB     = new MemoryDatabase();
-            stateStore  = new MonitorStore(extensionBase.hostName, stateDB, HostTypeStore.Get());
+            var hub     = new DatabaseHub(stateDB);
+            stateStore  = new MonitorStore(extensionBase.hostName, hub, HostTypeStore.Get());
         }
 
         public override void Dispose() {
@@ -31,16 +32,16 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             base.Dispose();
         }
 
-        public override EntityContainer CreateContainer(string name, DatabaseHub database) {
+        public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             return stateDB.CreateContainer(name, database);
         }
 
-        protected override async Task ExecuteSyncPrepare(SyncRequest syncRequest, MessageContext messageContext) {
+        public override async Task ExecuteSyncPrepare(SyncRequest syncRequest, MessageContext messageContext) {
             var tasks = syncRequest.tasks;
             if (FindReadEntities(nameof(MonitorStore.clients),  tasks)) stateStore.UpdateClients  (extensionBase, extensionName);
             if (FindReadEntities(nameof(MonitorStore.users),    tasks)) stateStore.UpdateUsers    (extensionBase.Authenticator, extensionName);
             if (FindReadEntities(nameof(MonitorStore.histories),tasks)) stateStore.UpdateHistories(extensionBase.hostStats.requestHistories);
-            if (FindReadEntities(nameof(MonitorStore.hosts),     tasks)) stateStore.UpdateHost     (extensionBase.hostStats);
+            if (FindReadEntities(nameof(MonitorStore.hosts),    tasks)) stateStore.UpdateHost     (extensionBase.hostStats);
             
             await stateStore.TryExecuteTasksAsync().ConfigureAwait(false);
         }

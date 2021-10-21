@@ -1,22 +1,52 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.DB.Protocol.Models;
+using Friflo.Json.Fliox.DB.Protocol.Tasks;
+
 
 namespace Friflo.Json.Fliox.DB.Host.Internal
 {
-    internal class ExtensionDatabase : DatabaseHub
+    internal class ExtensionDatabase : EntityDatabase
     {
+        readonly EntityDatabase local;
         internal ExtensionDatabase (DatabaseHub extensionBase, string extensionName, DbOpt opt)
-            : base (extensionBase, extensionName, opt) { }
-        
-        public override EntityContainer CreateContainer(string name, DatabaseHub database) {
-            return extensionBase.CreateContainer(name, database);
+            : base (extensionBase, extensionName, opt)
+        {
+            // extensionBase.extensionDbs.Add(extensionName, this);
+            // local = extensionBase.extensionDbs[extensionName];
         }
         
-        public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            return await extensionBase.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
+        public override EntityContainer CreateContainer(string name, EntityDatabase database) {
+            return new ExtensionContainer(name, database);
+        }
+    }
+    
+    internal class ExtensionContainer : EntityContainer
+    {
+        public ExtensionContainer(string name, EntityDatabase database) : base(name, database) {
+        }
+
+        public override Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
+            throw new NotImplementedException();
+        }
+
+        public override Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, MessageContext messageContext) {
+            throw new NotImplementedException();
+        }
+
+        public override Task<ReadEntitiesSetResult> ReadEntitiesSet(ReadEntitiesSet command, MessageContext messageContext) {
+            throw new NotImplementedException();
+        }
+
+        public override Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
+            throw new NotImplementedException();
+        }
+
+        public override Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
+            throw new NotImplementedException();
         }
     }
 }

@@ -14,25 +14,19 @@ using Friflo.Json.Fliox.Mapper;
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.DB.Remote
 {
-    public class RemoteHostDatabase : DatabaseHub
+    public class RemoteHostHub : DatabaseHub
     {
-        private  readonly   DatabaseHub     local;
+        private  readonly   DatabaseHub     localHub;
         
         /// Only set to true for testing. It avoids an early out at <see cref="Host.Event.EventSubscriber.SendEvents"/> 
         public              bool            fakeOpenClosedSockets;
 
-        public RemoteHostDatabase(DatabaseHub local, DbOpt opt = null) : base(opt) {
-            this.local = local;
-        }
-        
-        public override EntityContainer CreateContainer(string name, DatabaseHub database) {
-            EntityContainer localContainer = local.CreateContainer(name, local);
-            RemoteHostContainer container = new RemoteHostContainer(name, this, localContainer);
-            return container;
+        protected RemoteHostHub(DatabaseHub hub, string hostName) : base(hub.db, hostName) {
+            this.localHub = hub;
         }
         
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            var response    = await local.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
+            var response    = await localHub.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
             SetContainerResults(response.success);
             response.Result.reqId       = syncRequest.reqId;
             return response;
@@ -59,7 +53,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             }
         }
         
-        /// Required only by <see cref="RemoteHostDatabase"/>
+        /// Required only by <see cref="RemoteHostHub"/>
         /// Distribute <see cref="ContainerEntities.entityMap"/> to <see cref="ContainerEntities.entities"/>,
         /// <see cref="ContainerEntities.notFound"/> and <see cref="ContainerEntities.errors"/> to simplify and
         /// minimize response by removing redundancy.
@@ -118,7 +112,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         public  override    bool            Pretty       => local.Pretty;
 
         public RemoteHostContainer(string name, DatabaseHub database, EntityContainer localContainer)
-            : base(name, database) {
+            : base(name, database.db) {
             local = localContainer;
         }
 

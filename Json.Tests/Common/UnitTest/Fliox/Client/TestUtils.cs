@@ -22,7 +22,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public void TestQueryRef() {
             using (var __       = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
-            using (var store    = new PocStore(database, new TypeStore(), "TestQueryRef")) {
+            using (var hub      = new DatabaseHub(database))
+            using (var store    = new PocStore(hub, new TypeStore(), "TestQueryRef")) {
                 var orders = store.orders;
                 var customerId = orders.Query(o => o.customer.Key == "customer-1");
                 AreEqual("QueryTask<Order> (filter: .customer == 'customer-1')", customerId.ToString());
@@ -117,7 +118,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 #if !UNITY_2020_1_OR_NEWER
         [Test]
         public void TestDictionaryValueIterator() {
-            var store = new PocStore(new MemoryDatabase(), new TypeStore(), "TestDictionaryValueIterator");
+            var hub     = new DatabaseHub(new MemoryDatabase());
+            var store   = new PocStore(hub, new TypeStore(), "TestDictionaryValueIterator");
             var readArticles = store.articles.Read();
                         readArticles.Find("missing-id");
             var task =  readArticles.ReadRef(a => a.producer);
@@ -135,7 +137,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Test]
         public void TestMemoryFlioxClient() {
             using (var typeStore = new TypeStore()) {
-                var database    = new NoopDatabase();
+                var database    = new NoopDatabaseHub();
                 var _           = new PocStore(database, typeStore, null);
                 var __          = new PocStore(database, typeStore, null);
                 
@@ -145,7 +147,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 
                 Console.WriteLine($"PocStore memory: {diff}");
-                var expected = Is.InRange(8536, 8888);
+                var expected = Is.InRange(8536, 8896);
                 That(diff, expected);
             }
         }
@@ -153,7 +155,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Test]
         public async Task TestMemorySync() {
             using (var typeStore = new TypeStore()) {
-                var database    = new NoopDatabase();
+                var database    = new NoopDatabaseHub();
                 var store       = new PocStore(database, typeStore, null);
                 await store.ExecuteTasksAsync(); // force one time allocations
                 // GC.Collect();
@@ -161,7 +163,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 await store.ExecuteTasksAsync(); // ~ 1 µs
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var expected = IsDebug() ? 1600 : 1496; // Test Debug & Release
+                var expected = IsDebug() ? 1608 : 1496; // Test Debug & Release
                 AreEqual(expected, diff);   // Test Release also
             }
         }
@@ -170,7 +172,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public async Task TestMemorySyncRead() {
             using (var typeStore = new TypeStore()) {
                 var database    = new MemoryDatabase();
-                var store       = new EntityIdStore(database, typeStore, null);
+                var hub         = new DatabaseHub(database);
+                var store       = new EntityIdStore(hub, typeStore, null);
                 var read = store.intEntities.Read();
                 var ids = new int [100];
                 for (int n = 0; n < 100; n++)
@@ -198,14 +201,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 #endif
         }
 
-        private class NoopDatabase : DatabaseHub
+        private class NoopDatabaseHub : DatabaseHub
         {
-            internal NoopDatabase (DbOpt opt = null) : base(opt) { }
+            internal NoopDatabaseHub (string hostName = null) : base(null, hostName) { }
                 
-            public override EntityContainer CreateContainer(string name, DatabaseHub database) {
-                return null;
-            }
-            
             public override Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
                 var result = new SyncResponse {
                     tasks       = new List<SyncTaskResult>(),

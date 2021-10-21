@@ -20,13 +20,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         // ------ Test each topic individual - using a FileDatabase
         [Test] public async Task TestReadTask       () { await Test(async (store, database) => await AssertReadTask         (store, database)); }
 
-        private static async Task AssertReadTask(PocStore store, TestDatabase testDatabase) {
-            testDatabase.ClearErrors();
+        private static async Task AssertReadTask(PocStore store, TestDatabaseHub testHub) {
+            testHub.ClearErrors();
             const string articleError = @"EntityErrors ~ count: 2
 | ReadError: articles [article-1], simulated read entity error
 | ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
             
-            TestContainer testArticles = testDatabase.GetTestContainer(nameof(PocStore.articles));
+            TestContainer testArticles = testHub.GetTestContainer(nameof(PocStore.articles));
             const string article1ReadError      = "article-1";
             const string article2JsonError      = "article-2";
             const string articleInvalidJson     = "article-invalidJson";

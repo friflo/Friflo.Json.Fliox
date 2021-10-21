@@ -13,19 +13,41 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
-    public class TestDatabase : DatabaseHub
+    public class TestDatabase : EntityDatabase
     {
-        private readonly    DatabaseHub                                         local;
-        private readonly    Dictionary<string, TestContainer>                   testContainers  = new Dictionary<string, TestContainer>();
-        public  readonly    Dictionary<string, Func<MsgResponse<SyncResponse>>> syncErrors      = new Dictionary<string, Func<MsgResponse<SyncResponse>>>();
+        private readonly    EntityDatabase                                      local;
+        internal readonly    Dictionary<string, TestContainer>                   testContainers  = new Dictionary<string, TestContainer>();
+
         
-        public TestDatabase(DatabaseHub local, DbOpt opt = null) : base(opt) {
+        public TestDatabase(EntityDatabase local, DbOpt opt = null) : base(opt) {
             this.local = local;
+        }
+
+        public override EntityContainer CreateContainer(string name, EntityDatabase database) {
+            if (TryGetContainer(name, out EntityContainer container)) {
+                return container;
+            }
+            EntityContainer localContainer = local.GetOrCreateContainer(name);
+            var testContainer = new TestContainer(name, database, localContainer);
+            testContainers.Add(name, testContainer);
+            return testContainer;
+        }
+    }
+    
+    
+    public class TestDatabaseHub : DatabaseHub
+    {
+        
+        public  readonly    Dictionary<string, Func<MsgResponse<SyncResponse>>> syncErrors      = new Dictionary<string, Func<MsgResponse<SyncResponse>>>();
+        private readonly    TestDatabase testDatabase;
+        
+        public TestDatabaseHub(EntityDatabase local, string hostName = null) : base(new TestDatabase (local), hostName) {
+            testDatabase = (TestDatabase)db;
         }
         
         public void ClearErrors() {
             syncErrors.Clear();
-            foreach (var pair in testContainers) {
+            foreach (var pair in testDatabase.testContainers) {
                 var container = pair.Value;
                 container.readEntityErrors.Clear();
                 container.missingResultErrors.Clear();
@@ -36,16 +58,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             }
         }
 
-        public override EntityContainer CreateContainer(string name, DatabaseHub database) {
-            if (TryGetContainer(name, out EntityContainer container)) {
-                return container;
-            }
-            EntityContainer localContainer = local.GetOrCreateContainer(name);
-            var testContainer = new TestContainer(name, this, localContainer);
-            testContainers.Add(name, testContainer);
-            return testContainer;
-        }
-        
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             foreach (var task in syncRequest.tasks) {
                 if (task is SendMessage message) {
@@ -56,7 +68,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 }
             }
             var response = await base.ExecuteSync(syncRequest, messageContext);
-            foreach (var pair in testContainers) {
+            foreach (var pair in testDatabase.testContainers) {
                 TestContainer testContainer = pair.Value;
                 if (!response.success.resultMap.TryGetValue(testContainer.name, out var result))
                     continue;
@@ -72,7 +84,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         }
 
         public TestContainer GetTestContainer(string container) {
-            return (TestContainer) GetOrCreateContainer(container);
+            return (TestContainer) testDatabase.GetOrCreateContainer(container);
         }
     }
     
@@ -102,7 +114,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         public  override    bool            Pretty       => local.Pretty;
 
-        public TestContainer(string name, DatabaseHub database, EntityContainer localContainer)
+        public TestContainer(string name, EntityDatabase database, EntityContainer localContainer)
             : base(name, database) {
             local = localContainer;
         }

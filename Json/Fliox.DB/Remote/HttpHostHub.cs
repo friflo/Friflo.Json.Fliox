@@ -10,7 +10,7 @@ using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.DB.Remote
 {
-    public class HttpHostDatabase : RemoteHostDatabase
+    public class HttpHostHub : RemoteHostHub
     {
         public              SchemaHandler       schemaHandler;
         public              IRequestHandler     requestHandler;
@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         private  readonly   SchemaHandler       protocolSchemaHandler;
 
         
-        public HttpHostDatabase(DatabaseHub local, DbOpt opt = null) : base(local, opt) {
+        public HttpHostHub(DatabaseHub hub, string hostName = null) : base(hub, hostName) {
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);

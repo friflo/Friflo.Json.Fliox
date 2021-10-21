@@ -20,13 +20,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         // ------ Test each topic individual - using a FileDatabase
         [Test] public async Task TestSyncErrors     () { await Test(async (store, database) => await AssertSyncErrors       (store, database)); }
         
-        private static async Task AssertSyncErrors(PocStore store, TestDatabase testDatabase) {
-            testDatabase.ClearErrors();
+        private static async Task AssertSyncErrors(PocStore store, TestDatabaseHub testHub) {
+            testHub.ClearErrors();
             // use SendMessage() to simulate error/exception
             const string msgSyncError      = "msg-sync-error";
             const string msgSyncException  = "msg-sync-exception";
-            testDatabase.syncErrors.Add(msgSyncError,       () => new MsgResponse<SyncResponse>("simulated SyncError"));
-            testDatabase.syncErrors.Add(msgSyncException,   () => throw new SimulationException ("simulated SyncException"));
+            testHub.syncErrors.Add(msgSyncError,       () => new MsgResponse<SyncResponse>("simulated SyncError"));
+            testHub.syncErrors.Add(msgSyncException,   () => throw new SimulationException ("simulated SyncException"));
             
             var helloTask1 = store.SendMessage(StdMessage.Echo, "Hello World 1");
             var helloTask2 = store.SendMessage(StdMessage.Echo, "Hello World 2");

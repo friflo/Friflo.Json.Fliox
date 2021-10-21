@@ -37,10 +37,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var eventBroker  = new EventBroker(false))
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var listenDb     = new PocStore(fileDatabase, "listenDb", "listen-client")) {
-                fileDatabase.EventBroker = eventBroker;
+            using (var hub          = new DatabaseHub(fileDatabase))
+            using (var listenDb     = new PocStore(hub, "listenDb", "listen-client")) {
+                hub.EventBroker = eventBroker;
                 var listenProcessor   = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
-                using (var createStore  = new PocStore(fileDatabase, "createStore", "create-client")) {
+                using (var createStore  = new PocStore(hub, "createStore", "create-client")) {
                     var createProcessor = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
                     
@@ -295,16 +296,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var eventBroker  = new EventBroker(false))
             using (var database     = new MemoryDatabase())
+            using (var hub          = new DatabaseHub(database))
             using (var typeStore    = new TypeStore())
-            using (var listenDb     = new FlioxClient(database, typeStore, null, "listenDb")) {
-                database.EventBroker = eventBroker;
+            using (var listenDb     = new FlioxClient(hub, typeStore, null, "listenDb")) {
+                listenDb.Hub.EventBroker = eventBroker;
                 bool receivedHello = false;
                 listenDb.SubscribeMessage("Hello", msg => {
                     receivedHello = true;
                 });
                 await listenDb.ExecuteTasksAsync();
 
-                using (var sendStore  = new FlioxClient(database, typeStore, null, "sendStore")) {
+                using (var sendStore  = new FlioxClient(hub, typeStore, null, "sendStore")) {
                     sendStore.SendMessage("Hello", "some text");
                     await sendStore.ExecuteTasksAsync();
                     

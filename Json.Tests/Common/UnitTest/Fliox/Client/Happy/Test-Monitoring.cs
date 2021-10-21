@@ -22,63 +22,67 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     public partial class TestStore
     {
-        private static readonly DbOpt DbOpt = new DbOpt(hostName: "Test");
+        private static readonly string HostName  = "Test";
         
         [Test]
         public static async Task TestMonitoringFile() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore", DbOpt))
-            using (var monitorDB        = new MonitorDatabase(fileDatabase)) {
-                fileDatabase.AddExtensionDB(monitorDB);
-                await AssertNoAuthMonitoringDB  (fileDatabase, monitorDB);
-                await AssertAuthMonitoringDB    (fileDatabase, monitorDB, fileDatabase);
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var hub          	= new DatabaseHub(fileDatabase, HostName))
+            using (var monitorDB        = new MonitorDatabase(hub)) {
+                hub.AddExtensionDB(monitorDB);
+                await AssertNoAuthMonitoringDB  (hub, monitorDB);
+                await AssertAuthMonitoringDB    (hub, monitorDB, hub);
             }
         }
         
         [Test]
         public static async Task TestMonitoringLoopback() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore", DbOpt))
-            using (var monitor          = new MonitorDatabase(fileDatabase))
-            using (var loopbackDatabase = new LoopbackDatabase(fileDatabase)) {
-                fileDatabase.AddExtensionDB(monitor);
-                var monitorDB = loopbackDatabase.AddExtensionDB(MonitorDatabase.Name);
-                await AssertNoAuthMonitoringDB  (loopbackDatabase, monitorDB);
-                await AssertAuthMonitoringDB    (loopbackDatabase, monitorDB, fileDatabase);
+            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var hub          	= new DatabaseHub(fileDatabase, HostName))
+            using (var monitor          = new MonitorDatabase(hub))
+            using (var loopbackHub      = new LoopbackHub(hub)) {
+                hub.AddExtensionDB(monitor);
+                var monitorDB = loopbackHub.AddExtensionDB(MonitorDatabase.Name);
+                await AssertNoAuthMonitoringDB  (loopbackHub, monitorDB);
+                await AssertAuthMonitoringDB    (loopbackHub, monitorDB, hub);
             }
         }
         
         [Test]
         public static async Task TestMonitoringHttp() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var database         = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore", DbOpt))
-            using (var hostDatabase     = new HttpHostDatabase(database))
+            using (var database         = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var hub          	= new DatabaseHub(database, HostName))
+            using (var hostDatabase     = new HttpHostHub(hub))
             using (var server           = new HttpListenerHost("http://+:8080/", hostDatabase)) 
-            using (var monitor          = new MonitorDatabase(database))
-            using (var remoteDatabase   = new HttpClientDatabase("http://localhost:8080/")) {
-                database.AddExtensionDB(monitor);
+            using (var monitor          = new MonitorDatabase(hub))
+            using (var clientHub        = new HttpClientHub("http://localhost:8080/")) {
+                hub.AddExtensionDB(monitor);
                 await RunServer(server, async () => {
-                    var monitorDB   = remoteDatabase.AddExtensionDB(MonitorDatabase.Name);
-                    await AssertNoAuthMonitoringDB  (remoteDatabase, monitorDB);
-                    await AssertAuthMonitoringDB    (remoteDatabase, monitorDB, database);
+                    var monitorDB   = clientHub.AddExtensionDB(MonitorDatabase.Name);
+                    await AssertNoAuthMonitoringDB  (clientHub, monitorDB);
+                    await AssertAuthMonitoringDB    (clientHub, monitorDB, hub);
                 });
             }
         }
         
-        private static async Task AssertAuthMonitoringDB(DatabaseHub storeDB, DatabaseHub monitorDB, DatabaseHub database) {
+        private static async Task AssertAuthMonitoringDB(DatabaseHub storeDB, EntityDatabase monitorDB, DatabaseHub database) {
             using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
-            using (var userStore        = new UserStore (userDatabase, UserStore.AuthenticationUser, null))
-            using (var _                = new UserDatabaseHandler   (userDatabase)) {
+            using (var userHub         	= new DatabaseHub(userDatabase))
+            using (var userStore        = new UserStore (userHub, UserStore.AuthenticationUser, null))
+            using (var _                = new UserDatabaseHandler   (userStore.Hub)) {
                 database.Authenticator  = new UserAuthenticator(userStore, userStore);
                 await AssertAuthSuccessMonitoringDB (storeDB, monitorDB);
                 await AssertAuthFailedMonitoringDB  (storeDB, monitorDB);
             }
         }
 
-        private  static async Task AssertNoAuthMonitoringDB(DatabaseHub database, DatabaseHub monitorDb) {
+        private  static async Task AssertNoAuthMonitoringDB(DatabaseHub hub, EntityDatabase monitorDb) {
             const string userId     = "poc-user";
             const string clientId   = "poc-client"; 
-            using (var store    = new PocStore(database, null))
+            using (var store    = new PocStore(hub, null))
             using (var monitor  = new MonitorStore(monitorDb, store)) {
                 var result = await Monitor(store, monitor, userId, clientId);
                 AssertNoAuthResult(result);
@@ -91,10 +95,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
 
-        private  static async Task AssertAuthSuccessMonitoringDB(DatabaseHub database, DatabaseHub monitorDb) {
+        private  static async Task AssertAuthSuccessMonitoringDB(DatabaseHub hub, EntityDatabase monitorDb) {
             const string userId     = "admin";
             const string clientId   = "admin-client"; 
-            using (var store    = new PocStore(database, null))
+            using (var store    = new PocStore(hub, null))
             using (var monitor  = new MonitorStore(monitorDb, store)) {
                 store.SetToken("admin-token");
                 var result = await Monitor(store, monitor, userId, clientId);
@@ -106,10 +110,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        private  static async Task AssertAuthFailedMonitoringDB(DatabaseHub database, DatabaseHub monitorDb) {
+        private  static async Task AssertAuthFailedMonitoringDB(DatabaseHub hub, EntityDatabase monitorDb) {
             const string userId     = "admin";
             const string clientId   = "admin-xxx"; 
-            using (var store    = new PocStore(database, null))
+            using (var store    = new PocStore(hub, null))
             using (var monitor  = new MonitorStore(monitorDb, store)) {
                 store.SetToken("invalid");
                 var result = await Monitor(store, monitor, userId, clientId);

@@ -19,9 +19,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         // ------ Test each topic individual - using a FileDatabase
         [Test] public async Task TestTaskExceptions () { await Test(async (store, database) => await AssertTaskExceptions   (store, database)); }
 
-        private static async Task AssertTaskExceptions(PocStore store, TestDatabase testDatabase) {
-            testDatabase.ClearErrors();
-            TestContainer testCustomers = testDatabase.GetTestContainer(nameof(PocStore.customers));
+        private static async Task AssertTaskExceptions(PocStore store, TestDatabaseHub testHub) {
+            testHub.ClearErrors();
+            TestContainer testCustomers = testHub.GetTestContainer(nameof(PocStore.customers));
             const string readTaskException      = "read-task-exception"; // throws an exception also for a Query
             const string createTaskException    = "create-task-exception";
             const string upsertTaskException    = "upsert-task-exception";

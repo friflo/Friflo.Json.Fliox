@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System.Threading;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Internal;
@@ -22,17 +23,18 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
         internal override       TaskType    TaskType    => TaskType.subscribeMessage;
         public   override       string      TaskName    => $"name: '{name}'";
 
-        internal override Task<SyncTaskResult> Execute(DatabaseHub database, SyncResponse response, MessageContext messageContext) {
-            var eventBroker = database.EventBroker;
+        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+            var hub = messageContext.hub;
+            var eventBroker = hub.EventBroker;
             if (eventBroker == null)
-                return Task.FromResult<SyncTaskResult>(InvalidTask("database has no eventBroker"));
+                return Task.FromResult<SyncTaskResult>(InvalidTask("Hub has no eventBroker"));
             if (name == null)
                 return Task.FromResult<SyncTaskResult>(MissingField(nameof(name)));
             var eventTarget = messageContext.eventTarget;
             if (eventTarget == null)
                 return Task.FromResult<SyncTaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
-            if (!database.Authenticator.EnsureValidClientId(database.ClientController, messageContext, out string error))
+            if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, messageContext, out string error))
                 return Task.FromResult<SyncTaskResult>(InvalidTask(error));
             
             eventBroker.SubscribeMessage(this, messageContext.clientId, eventTarget);

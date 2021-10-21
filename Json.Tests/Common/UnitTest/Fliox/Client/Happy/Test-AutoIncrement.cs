@@ -23,8 +23,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task AssertAutoIncrement() {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
-            using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/EntityIdStore")) {
-                await AssertAutoIncrement (database, typeStore);
+            using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/EntityIdStore"))
+            using (var hub          = new DatabaseHub(database)) {
+                await AssertAutoIncrement (hub, typeStore);
             }
         }
         

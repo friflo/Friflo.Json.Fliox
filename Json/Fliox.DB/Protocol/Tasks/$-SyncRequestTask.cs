@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
         [Fri.Ignore] public     int                 index;
         [Fri.Ignore] internal   JsonUtf8?           json;
         
-        internal abstract   Task<SyncTaskResult>    Execute(DatabaseHub database, SyncResponse response, MessageContext messageContext);
+        internal abstract Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext);
         internal abstract   TaskType                TaskType { get; }
         public   abstract   string                  TaskName { get; }
 

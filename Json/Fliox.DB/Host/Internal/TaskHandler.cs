@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
             return false;
         }
         
-        public virtual async Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, DatabaseHub database, SyncResponse response, MessageContext messageContext) {
+        public virtual async Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (!AuthorizeTask(task, messageContext, out var error)) {
                 return error;
             }

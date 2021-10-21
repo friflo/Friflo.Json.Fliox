@@ -22,8 +22,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         [Test] public async Task TestQueryTask      () { await Test(async (store, database) => await AssertQueryTask        (store, database)); }
        
         
-        private static async Task AssertQueryTask(PocStore store, TestDatabase testDatabase) {
-            testDatabase.ClearErrors();
+        private static async Task AssertQueryTask(PocStore store, TestDatabaseHub testHub) {
+            testHub.ClearErrors();
             const string articleError = @"EntityErrors ~ count: 2
 | ReadError: articles [article-1], simulated read entity error
 | ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16";
@@ -32,8 +32,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             const string article2JsonError      = "article-2";
             const string readTaskError          = "read-task-error";
             
-            var testArticles  = testDatabase.GetTestContainer(nameof(PocStore.articles));
-            var testCustomers = testDatabase.GetTestContainer(nameof(PocStore.customers));
+            var testArticles  = testHub.GetTestContainer(nameof(PocStore.articles));
+            var testCustomers = testHub.GetTestContainer(nameof(PocStore.customers));
             
             testArticles.readEntityErrors.Add(article2JsonError, (value) => value.SetJson(@"{""invalidJson"" XXX}"));
             testArticles.readEntityErrors.Add(article1ReadError, (value) => value.SetError(testArticles.ReadError(article1ReadError)));
@@ -172,7 +172,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             // --- Test invalid response
  
-            testDatabase.ClearErrors();
+            testHub.ClearErrors();
             const string missingArticle1      = "article-1";
             testArticles.missingResultErrors.Add(missingArticle1); 
             var allArticles2 = articles.QueryAll()          .TaskName("allArticles2");

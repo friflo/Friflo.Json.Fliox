@@ -15,15 +15,15 @@ namespace Friflo.Json.Fliox.DB.AspNetCore
 {
     public static class AspNetCoreUtils
     {
-        public static async Task HandleFlioxHostRequest(this HttpContext context, HttpHostDatabase hostDatabase) {
+        public static async Task HandleFlioxHostRequest(this HttpContext context, HttpHostHub hostHub) {
             if (context.WebSockets.IsWebSocketRequest) {
                 WebSocket ws = await context.WebSockets.AcceptWebSocketAsync();
-                await WebSocketHost.SendReceiveMessages(ws, hostDatabase);
+                await WebSocketHost.SendReceiveMessages(ws, hostHub);
                 return;
             }
             var httpRequest = context.Request;
             var reqCtx = new RequestContext(httpRequest.Method, httpRequest.Path.Value, httpRequest.Body);
-            await hostDatabase.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
+            await hostHub.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
                     
             var httpResponse            = context.Response;
             JsonUtf8 response           = reqCtx.Response;

@@ -27,14 +27,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// <br></br>
         /// Motivation for "pipelining": <br></br>
         /// ExecuteTasksAsync() calls are executed in order but overall execution time is improved in scenarios with high latency to a
-        /// <see cref="RemoteHostDatabase"/> because RTT is added only once instead of n times for n awaited ExecuteTasksAsync() calls. 
+        /// <see cref="RemoteHostHub"/> because RTT is added only once instead of n times for n awaited ExecuteTasksAsync() calls. 
         /// </summary>
         [Test] public static void TestSyncConcurrency () {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var memoryDb = new MemoryDatabase())
-                    using (var database = new AsyncDatabase(memoryDb))
+                    using (var database = new AsyncDatabaseHub(memoryDb))
                     using (var store  = new PocStore(database, "store")) {
                         await SyncConcurrencyInit(store);
                     }

@@ -12,12 +12,12 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Remote
 {
-    public class HttpClientDatabase : RemoteClientDatabase
+    public class HttpClientHub : RemoteClientHub
     {
         private  readonly   string          endpoint;
         private  readonly   HttpClient      httpClient;
 
-        public HttpClientDatabase(string endpoint, DbOpt opt = null) : base(opt) {
+        public HttpClientHub(string endpoint, string hostName = null) : base(null, hostName) {
             this.endpoint = endpoint;
             httpClient = new HttpClient();
         }

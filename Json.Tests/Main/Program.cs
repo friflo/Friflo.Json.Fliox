@@ -30,7 +30,8 @@ namespace Friflo.Json.Tests.Main
             // Run a minimal Fliox server without monitoring, Pub-Sub, user authentication / authorization, entity validation
             Console.WriteLine($"FileDatabase: {databaseFolder}");
             var database                = new FileDatabase(databaseFolder);
-            var hostDatabase            = new HttpHostDatabase(database);
+            var hub          	        = new DatabaseHub(database);
+            var hostDatabase            = new HttpHostHub(hub);
             var host                    = new HttpListenerHost(endpoint, hostDatabase);
             hostDatabase.requestHandler = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
             host.Start();
@@ -40,14 +41,15 @@ namespace Friflo.Json.Tests.Main
         private static void FlioxServer(string endpoint, string databaseFolder) {
             Console.WriteLine($"FileDatabase: {databaseFolder}");
             var database                = new FileDatabase(databaseFolder);
+            var hub                     = new DatabaseHub(database);
             
-            database.AddExtensionDB      (new MonitorDatabase(database));           // optional. enables monitoring database access
-            database.EventBroker        = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
-            database.Authenticator      = CreateUserAuthenticator();                // optional. Otherwise all request tasks are authorized
+            hub.AddExtensionDB          ( new MonitorDatabase(hub));           // optional. enables monitoring database access
+            hub.EventBroker             = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
+            hub.Authenticator           = CreateUserAuthenticator();                // optional. Otherwise all request tasks are authorized
             
             var typeSchema              = CreateTypeSchema(true);                   // optional. used by DatabaseSchema & SchemaHandler
             database.Schema             = new DatabaseSchema(typeSchema);           // optional. Enables type validation for create, upsert & patch operations
-            var hostDatabase            = new HttpHostDatabase(database);
+            var hostDatabase            = new HttpHostHub(hub);
             hostDatabase.requestHandler = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
             hostDatabase.schemaHandler  = new SchemaHandler("/schema/", typeSchema, Utils.Zip); // optional. Web UI for database schema
             var host                    = new HttpListenerHost(endpoint, hostDatabase);
@@ -66,8 +68,9 @@ namespace Friflo.Json.Tests.Main
         
         private static UserAuthenticator CreateUserAuthenticator () {
             var userDatabase    = new FileDatabase("./Json.Tests/assets~/DB/UserStore");
-            var userStore       = new UserStore (userDatabase, UserStore.AuthenticationUser, null);
-            var _               = new UserDatabaseHandler   (userDatabase);
+            var userHub        	= new DatabaseHub(userDatabase);
+            var userStore       = new UserStore (userHub, UserStore.AuthenticationUser, null);
+            var _               = new UserDatabaseHandler   (userStore.Hub);
             return new UserAuthenticator(userStore, userStore);
         }
     }

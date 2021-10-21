@@ -4,6 +4,7 @@
 using System;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Protocol.Tasks;
+using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -34,7 +35,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     ///     or datagram based protocols.
     ///     This also means all <see cref="Fliox"/> messages doesnt (and must not) require a session.
     ///     This principle also enables using a single <see cref="DatabaseHub"/> by multiple clients like
-    ///     <see cref="Client.FlioxClient"/> even for remote clients like <see cref="Remote.RemoteClientDatabase"/>.
+    ///     <see cref="Client.FlioxClient"/> even for remote clients like <see cref="RemoteClientHub"/>.
     /// </para>
     /// </summary>
     [Fri.Discriminator("msg")] 
@@ -53,14 +54,14 @@ namespace Friflo.Json.Fliox.DB.Protocol
     [Fri.Discriminator("msg")] 
     [Fri.Polymorph(typeof(SyncRequest),         Discriminant = "sync")]
     public abstract class ProtocolRequest   : ProtocolMessage {
-        /// <summary>Used only for <see cref="Remote.RemoteClientDatabase"/> to enable:
+        /// <summary>Used only for <see cref="RemoteClientHub"/> to enable:
         /// <para>
         ///   1. Out of order response handling for their corresponding requests.
         /// </para>
         /// <para>
         ///   2. Multiplexing of requests and their responses for multiple clients e.g. <see cref="Client.FlioxClient"/>
         ///      using the same connection.
-        ///      This is not a common scenario but it enables using a single <see cref="Remote.WebSocketClientDatabase"/>
+        ///      This is not a common scenario but it enables using a single <see cref="WebSocketClientHub"/>
         ///      used by multiple clients.
         /// </para>
         /// The host itself only echos the <see cref="reqId"/> to <see cref="ProtocolResponse.reqId"/> and doesn't do

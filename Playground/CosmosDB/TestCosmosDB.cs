@@ -45,8 +45,9 @@ namespace Friflo.Playground.CosmosDB
             var cosmosDatabase      = await client.CreateDatabaseIfNotExistsAsync(nameof(PocStore));
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database     = new CosmosDatabase(cosmosDatabase, null, 400))
-            using (var createStore  = new PocStore(database, "createStore"))
-            using (var useStore     = new PocStore(database, "useStore")) {
+            using (var hub          = new DatabaseHub(database))
+            using (var createStore  = new PocStore(hub, "createStore"))
+            using (var useStore     = new PocStore(hub, "useStore")) {
                 await TestRelationPoC.CreateStore(createStore);
                 await TestStore.TestStores(createStore, useStore);
             }
@@ -58,8 +59,9 @@ namespace Friflo.Playground.CosmosDB
             var cosmosDatabase      = await client.CreateDatabaseIfNotExistsAsync(nameof(EntityIdStore));
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
-            using (var database     = new CosmosDatabase(cosmosDatabase, null, 400)) {
-                await TestEntityKey.AssertEntityKeyTests (database, typeStore);
+            using (var database     = new CosmosDatabase(cosmosDatabase, null, 400))
+            using (var hub          = new DatabaseHub(database)) {
+                await TestEntityKey.AssertEntityKeyTests (hub, typeStore);
             }
         }
     }

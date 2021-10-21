@@ -21,10 +21,11 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
         internal override       TaskType        TaskType  => TaskType.subscribeChanges;
         public   override       string          TaskName  => $"container: '{container}'";
 
-        internal override Task<SyncTaskResult> Execute(DatabaseHub database, SyncResponse response, MessageContext messageContext) {
-            var eventBroker = database.EventBroker;
+        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+            var hub = messageContext.hub;
+            var eventBroker = messageContext.hub.EventBroker;
             if (eventBroker == null)
-                return Task.FromResult<SyncTaskResult>(InvalidTask("database has no eventBroker"));
+                return Task.FromResult<SyncTaskResult>(InvalidTask("Hub has no eventBroker"));
             if (container == null)
                 return Task.FromResult<SyncTaskResult>(MissingContainer());
             if (changes == null)
@@ -34,7 +35,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
             if (eventTarget == null)
                 return Task.FromResult<SyncTaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
-            if (!database.Authenticator.EnsureValidClientId(database.ClientController, messageContext, out string error))
+            if (!hub.Authenticator.EnsureValidClientId(hub.ClientController, messageContext, out string error))
                 return Task.FromResult<SyncTaskResult>(InvalidTask(error));
             
             eventBroker.SubscribeChanges(this, messageContext.clientId, eventTarget);

@@ -18,9 +18,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         // ------ Test each topic individual - using a FileDatabase
         [Test] public async Task TestLogChangesCreate(){ await Test(async (store, database) => await AssertLogChangesCreate (store, database)); }
 
-        private static async Task AssertLogChangesCreate(PocStore store, TestDatabase testDatabase) {
-            testDatabase.ClearErrors();
-            TestContainer testProducers = testDatabase.GetTestContainer(nameof(PocStore.producers));
+        private static async Task AssertLogChangesCreate(PocStore store, TestDatabaseHub testHub) {
+            testHub.ClearErrors();
+            TestContainer testProducers = testHub.GetTestContainer(nameof(PocStore.producers));
             var articles = store.articles;
 
             // --- prepare precondition for log changes

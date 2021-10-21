@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
     internal sealed class MonitorHandler : TaskHandler
     {
-        public override Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, DatabaseHub database, SyncResponse response, MessageContext messageContext) {
+        public override Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             var monitorDb = (MonitorDatabase)database;
             switch (task.TaskType) {
                 case TaskType.message:

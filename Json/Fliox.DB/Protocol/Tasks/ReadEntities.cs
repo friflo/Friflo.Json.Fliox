@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
         internal override       TaskType                TaskType => TaskType.read;
         public   override       string                  TaskName =>  $"container: '{container}'";
 
-        internal override async Task<SyncTaskResult> Execute(DatabaseHub database, SyncResponse response, MessageContext messageContext) {
+        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
             if (reads == null)

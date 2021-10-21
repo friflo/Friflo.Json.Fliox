@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.Protocol.Models;
+using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.Native;
@@ -18,7 +19,7 @@ namespace Friflo.Json.Fliox.DB.Host
     /// If a <see cref="DatabaseSchema"/> is assigned to a <see cref="DatabaseHub.Schema"/> the JSON payloads of all
     /// entities used in write operations (create, upsert and patch) are validated against their expected container types.
     /// <br/>
-    /// It is intended to be used for <see cref="Remote.RemoteHostDatabase"/> instances to ensure that the entities
+    /// It is intended to be used for <see cref="RemoteHostHub"/> instances to ensure that the entities
     /// (records) in an <see cref="EntityContainer"/> always meet the expected type. So only successful validated JSON
     /// payloads are written to an <see cref="EntityContainer"/>.
     /// 

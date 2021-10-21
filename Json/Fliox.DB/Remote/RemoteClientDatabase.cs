@@ -15,20 +15,15 @@ using Friflo.Json.Fliox.Mapper;
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.DB.Remote
 {
-    public abstract class RemoteClientDatabase : DatabaseHub
+    public abstract class RemoteClientHub : DatabaseHub
     {
         private  readonly   Dictionary<JsonKey, IEventTarget>   clientTargets = new Dictionary<JsonKey, IEventTarget>(JsonKey.Equality);
         private  readonly   Pools                               pools = new Pools(UtilsInternal.SharedPools);
 
         // ReSharper disable once EmptyConstructor - added for source navigation
-        protected RemoteClientDatabase(DbOpt opt = null) : base(opt) { }
+        protected RemoteClientHub(EntityDatabase database, string hostName = null) : base(database, hostName) { }
 
-        public override EntityContainer CreateContainer(string name, DatabaseHub database) {
-            RemoteClientContainer container = new RemoteClientContainer(name, this);
-            return container;
-        }
-        
-        /// <summary>A class extending  <see cref="RemoteClientDatabase"/> must implement this method.</summary>
+        /// <summary>A class extending  <see cref="RemoteClientHub"/> must implement this method.</summary>
         public abstract override Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext);
         
         public override void AddEventTarget(in JsonKey clientId, IEventTarget eventTarget) {
@@ -36,6 +31,8 @@ namespace Friflo.Json.Fliox.DB.Remote
         }
         
         public override void RemoveEventTarget(in JsonKey clientId) {
+            if (clientId.IsNull())
+                return;
             clientTargets.Remove(clientId);
         }
         
@@ -49,7 +46,7 @@ namespace Friflo.Json.Fliox.DB.Remote
     
     public sealed class RemoteClientContainer : EntityContainer
     {
-        public RemoteClientContainer(string name, DatabaseHub database)
+        public RemoteClientContainer(string name, EntityDatabase database)
             : base(name, database) {
         }
 

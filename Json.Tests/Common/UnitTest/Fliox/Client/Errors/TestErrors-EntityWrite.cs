@@ -18,9 +18,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         // ------ Test each topic individual - using a FileDatabase
         [Test] public async Task TestEntityWrite    () { await Test(async (store, database) => await AssertEntityWrite      (store, database)); }
 
-        private static async Task AssertEntityWrite(PocStore store, TestDatabase testDatabase) {
-            testDatabase.ClearErrors();
-            TestContainer testCustomers = testDatabase.GetTestContainer(nameof(PocStore.customers));
+        private static async Task AssertEntityWrite(PocStore store, TestDatabaseHub testHub) {
+            testHub.ClearErrors();
+            TestContainer testCustomers = testHub.GetTestContainer(nameof(PocStore.customers));
             
             const string deleteEntityError      = "delete-entity-error";
             const string createEntityError      = "create-entity-error";

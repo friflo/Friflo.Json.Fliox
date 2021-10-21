@@ -27,7 +27,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         private static async Task FileValidation() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var modifierDatabase = new WriteModifierDatabase(fileDatabase))
+            using (var hub          	= new DatabaseHub(fileDatabase))
+            using (var modifierDatabase = new WriteModifierHub(hub))
             using (var createStore      = new PocStore(modifierDatabase, "createStore"))
             using (var nativeSchema     = new NativeTypeSchema(typeof(PocStore)))
             using (fileDatabase.Schema  = new DatabaseSchema(nativeSchema)) {
@@ -35,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             }
         }
         
-        private static async Task AssertValidation(PocStore store, WriteModifierDatabase modifyDb) {
+        private static async Task AssertValidation(PocStore store, WriteModifierHub modifyDb) {
             modifyDb.ClearErrors();
             var articles = store.articles;
             

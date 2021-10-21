@@ -21,7 +21,8 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         internal readonly   FlioxClient                                 client;
         internal readonly   TypeStore                                   typeStore;
         internal readonly   TypeCache                                   typeCache;
-        internal readonly   DatabaseHub                                 database;
+        internal readonly   DatabaseHub                                 hub;
+        internal readonly   EntityDatabase                              database;
         internal readonly   EventTarget                                 eventTarget;
         // readonly - owned
         internal readonly   ObjectMapper                                jsonMapper;
@@ -54,7 +55,8 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         internal ClientIntern(
             FlioxClient             client,
             TypeStore               typeStore,
-            DatabaseHub             database,
+            DatabaseHub             hub,
+            EntityDatabase          database,
             ITracerContext          tracerContext,
             EventTarget             eventTarget,
             SubscriptionProcessor   subscriptionProcessor)
@@ -66,6 +68,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             this.client                 = client;
             this.typeStore              = typeStore;
             this.typeCache              = mapper.writer.TypeCache;
+            this.hub                    = hub;
             this.database               = database;
             this.eventTarget            = eventTarget;
             // readonly - owned
@@ -103,7 +106,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             // messageReader.Dispose();
             subscriptionsPrefix.Clear();
             subscriptions.Clear();
-            database.RemoveEventTarget(clientId);
+            hub.RemoveEventTarget(clientId);
             setByName.Clear();
             setByType.Clear();
             processor.Dispose();
