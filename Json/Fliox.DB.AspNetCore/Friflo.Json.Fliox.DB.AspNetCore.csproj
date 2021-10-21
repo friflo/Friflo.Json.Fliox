@@ -15,6 +15,10 @@
     <ItemGroup>
       <ProjectReference Include="..\Fliox.DB\Friflo.Json.Fliox.DB.csproj" />
     </ItemGroup>
+	
+    <ItemGroup>
+      <None Remove="**/*.meta" />
+    </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Http" Version="*" />
