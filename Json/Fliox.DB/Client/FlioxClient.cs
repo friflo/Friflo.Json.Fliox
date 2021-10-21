@@ -39,13 +39,12 @@ namespace Friflo.Json.Fliox.DB.Client
         public              StoreInfo               StoreInfo       => new StoreInfo(_intern.syncStore, _intern.setByType); 
         public   override   string                  ToString()      => StoreInfo.ToString();
         public              IReadOnlyList<SyncTask> Tasks           => _intern.syncStore.appTasks;
-        public              DatabaseHub             Hub             => _intern.hub;
         
         public              int                     GetSyncCount()  => _intern.syncCount;
         
         
         /// <summary>
-        /// Instantiate an <see cref="FlioxClient"/> with a given <see cref="database"/> and an optional <see cref="typeStore"/>.
+        /// Instantiate an <see cref="FlioxClient"/> with a given <see cref="hub"/> and an optional <see cref="typeStore"/>.
         ///
         /// Optimization note:
         /// In case an application create many (> 10) <see cref="FlioxClient"/> instances it should provide

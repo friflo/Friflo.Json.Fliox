@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
                     using (var userHub        	= new DatabaseHub(userDatabase))
                     using (var userStore        = new UserStore(userHub, UserStore.AuthenticationUser, null))
-                    using (                       new UserDatabaseHandler   (userStore.Hub)) // authorize access to UserStore db and handle AuthenticateUser command
+                    using (                       new UserDatabaseHandler   (userHub)) // authorize access to UserStore db and handle AuthenticateUser command
                     using (var database         = new MemoryDatabase())
                     using (var hub          	= new DatabaseHub(database))
                     using (var eventBroker      = new EventBroker(false)) // require for SubscribeMessage() and SubscribeChanges()

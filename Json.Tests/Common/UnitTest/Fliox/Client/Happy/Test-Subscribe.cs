@@ -299,7 +299,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hub          = new DatabaseHub(database))
             using (var typeStore    = new TypeStore())
             using (var listenDb     = new FlioxClient(hub, typeStore, null, "listenDb")) {
-                listenDb.Hub.EventBroker = eventBroker;
+                hub.EventBroker = eventBroker;
                 bool receivedHello = false;
                 listenDb.SubscribeMessage("Hello", msg => {
                     receivedHello = true;

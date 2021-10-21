@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Main
             var userDatabase    = new FileDatabase("./Json.Tests/assets~/DB/UserStore");
             var userHub        	= new DatabaseHub(userDatabase);
             var userStore       = new UserStore (userHub, UserStore.AuthenticationUser, null);
-            var _               = new UserDatabaseHandler   (userStore.Hub);
+            var _               = new UserDatabaseHandler   (userHub);
             return new UserAuthenticator(userStore, userStore);
         }
     }

@@ -72,7 +72,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
             using (var userHub         	= new DatabaseHub(userDatabase))
             using (var userStore        = new UserStore (userHub, UserStore.AuthenticationUser, null))
-            using (var _                = new UserDatabaseHandler   (userStore.Hub)) {
+            using (var _                = new UserDatabaseHandler   (userHub)) {
                 database.Authenticator  = new UserAuthenticator(userStore, userStore);
                 await AssertAuthSuccessMonitoringDB (storeDB, monitorDB);
                 await AssertAuthFailedMonitoringDB  (storeDB, monitorDB);
