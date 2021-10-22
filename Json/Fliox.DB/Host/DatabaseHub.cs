@@ -140,7 +140,7 @@ namespace Friflo.Json.Fliox.DB.Host
                 await db.ExecuteSyncPrepare(syncRequest, messageContext).ConfigureAwait(false);
             }
             if (syncDatabase != db.name)
-                throw new InvalidOperationException($"Unexpected ExtensionName. expect: {syncDatabase}, was: {db.name}");
+                throw new InvalidOperationException($"Unexpected extension database name. expect: {syncDatabase}, was: {db.name}");
                     
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null) {
