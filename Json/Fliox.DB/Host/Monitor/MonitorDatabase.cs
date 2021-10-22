@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         }
         
         private ClearStatsResult ClearStats(Command<ClearStats> command) {
-            // clear request counts of default database. They contain also request counts of all extension databases.
+            // clear request counts of the hub. Extension databases share the same hub.
             hub.Authenticator.ClearUserStats();
             hub.ClientController.ClearClientStats();
             hub.hostStats.ClearHostStats();
