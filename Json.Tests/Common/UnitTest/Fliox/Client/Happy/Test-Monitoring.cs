@@ -189,7 +189,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         internal class MonitorResult {
-            internal    ExecuteTasksResult                      sync;
+            internal    ExecuteTasksResult              sync;
             internal    QueryTask<JsonKey,  UserInfo>   users;
             internal    QueryTask<JsonKey,  ClientInfo> clients;
             internal    Find<JsonKey,       UserInfo>   user;
