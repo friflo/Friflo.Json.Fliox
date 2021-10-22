@@ -8,7 +8,6 @@ using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.Protocol.Models;
-using Friflo.Json.Fliox.DB.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
@@ -102,38 +101,6 @@ namespace Friflo.Json.Fliox.DB.Remote
                 }
             }
             resultMap.Clear();
-        }
-    }
-
-    public sealed class RemoteHostContainer : EntityContainer
-    {
-        private readonly    EntityContainer local;
-        
-        public  override    bool            Pretty       => local.Pretty;
-
-        public RemoteHostContainer(string name, FlioxHub hub, EntityContainer localContainer)
-            : base(name, hub.database) {
-            local = localContainer;
-        }
-
-        public override async Task<CreateEntitiesResult> CreateEntities(CreateEntities command, MessageContext messageContext) {
-            return await local.CreateEntities(command, messageContext).ConfigureAwait(false);
-        }
-
-        public override async Task<UpsertEntitiesResult> UpsertEntities(UpsertEntities command, MessageContext messageContext) {
-            return await local.UpsertEntities(command, messageContext).ConfigureAwait(false);
-        }
-
-        public override async Task<ReadEntitiesSetResult> ReadEntitiesSet(ReadEntitiesSet command, MessageContext messageContext) {
-            return await local.ReadEntitiesSet(command, messageContext).ConfigureAwait(false);
-        }
-        
-        public override async Task<QueryEntitiesResult> QueryEntities(QueryEntities command, MessageContext messageContext) {
-            return await local.QueryEntities(command, messageContext).ConfigureAwait(false);
-        }
-        
-        public override async Task<DeleteEntitiesResult> DeleteEntities(DeleteEntities command, MessageContext messageContext) {
-            return await local.DeleteEntities(command, messageContext).ConfigureAwait(false);
         }
     }
 }
