@@ -24,13 +24,13 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
         public   override       string      TaskName    => $"name: '{name}'";
 
         internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
-            var hub         = messageContext.hub;
+            var hub         = messageContext.Hub;
             var eventBroker = hub.EventBroker;
             if (eventBroker == null)
                 return Task.FromResult<SyncTaskResult>(InvalidTask("Hub has no eventBroker"));
             if (name == null)
                 return Task.FromResult<SyncTaskResult>(MissingField(nameof(name)));
-            var eventTarget = messageContext.eventTarget;
+            var eventTarget = messageContext.EventTarget;
             if (eventTarget == null)
                 return Task.FromResult<SyncTaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
