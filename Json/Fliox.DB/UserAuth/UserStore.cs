@@ -16,7 +16,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.UserAuth
 {
     /// <summary>
-    /// Provide access to an <see cref="FlioxHub"/> storing user credentials ands roles.
+    /// Provide access to a <see cref="FlioxHub"/> storing user credentials ands roles.
     /// It can also be used as a non thread safe <see cref="IUserAuth"/> implementation.
     /// For a thread safe <see cref="IUserAuth"/> implementation use <see cref="UserAuth"/>.
     /// </summary>

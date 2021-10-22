@@ -52,8 +52,8 @@ namespace Friflo.Json.Fliox.DB.Host
         /// <summary>
         /// A mapping function used to assign a custom container name.
         /// If using a custom name its value is assigned to the containers <see cref="EntityContainer.instanceName"/>. 
-        /// By having the mapping function in <see cref="FlioxHub"/> it enables uniform mapping across different
-        /// <see cref="FlioxHub"/> implementations.
+        /// By having the mapping function in <see cref="EntityContainer"/> it enables uniform mapping across different
+        /// <see cref="EntityContainer"/> implementations.
         /// </summary>
         public readonly     CustomContainerName customContainerName;
         

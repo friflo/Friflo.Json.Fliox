@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.DB.Protocol;
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
     /// <summary>
-    /// An <see cref="FlioxHub"/> implementation which execute the continuation of <see cref="ExecuteSync"/>
+    /// A <see cref="FlioxHub"/> implementation which execute the continuation of <see cref="ExecuteSync"/>
     /// never synchronously to test <see cref="FlioxClient.ExecuteTasksAsync"/> running not synchronously.
     /// </summary>
     public class AsyncDatabaseHub : FlioxHub

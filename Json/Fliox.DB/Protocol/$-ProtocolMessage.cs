@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// </summary>
         [Fri.Property(Name =               "req")]
                         public  int?        reqId       { get; set; }
-        /// As a user can access an <see cref="FlioxHub"/> by multiple clients the <see cref="clientId"/>
+        /// As a user can access a <see cref="FlioxHub"/> by multiple clients the <see cref="clientId"/>
         /// enables identifying each client individually.
         /// The <see cref="clientId"/> is used for <see cref="SubscribeMessage"/> and <see cref="SubscribeChanges"/>
         /// to enable sending <see cref="EventMessage"/>'s to the desired subscriber.

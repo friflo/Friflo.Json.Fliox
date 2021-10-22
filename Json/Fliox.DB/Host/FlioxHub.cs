@@ -17,10 +17,11 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Host
 {
     /// <summary>
-    /// An <see cref="FlioxHub"/> instance is the single entry point used to handle all requests send by a client -
+    /// A <see cref="FlioxHub"/> instance is the single entry point used to handle <b>all</b> requests send by a client -
     /// e.g. a <see cref="Client.FlioxClient"/>. It handle these requests by its <see cref="ExecuteSync"/> method.
     /// A request is represented by a <see cref="SyncRequest"/> and its <see cref="SyncRequest.tasks"/> are executed
-    /// on the given <see cref="SyncRequest.database"/>. If database == null the default <see cref="database"/> is used.
+    /// on the given <see cref="SyncRequest.database"/>.
+    /// If database == null the default <see cref="database"/> of <see cref="FlioxHub"/> is used.
     /// <br/>
     /// The <see cref="SyncRequest.tasks"/> contains all database operations like create, read, upsert, delete
     /// and all messages / commands send by a client. 

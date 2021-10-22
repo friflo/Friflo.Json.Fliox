@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Utils;
 namespace Friflo.Json.Fliox.DB.UserAuth
 {
     /// <summary>
-    /// Used to authenticate users stored in the given user <see cref="FlioxHub"/>.
+    /// Used to authenticate users stored in the given <see cref="FlioxHub"/>.
     /// If user authentication succeed it returns also the roles attached to a user. 
     /// The schema of the user database is defined in <see cref="UserStore"/>.
     /// </summary>
