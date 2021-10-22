@@ -44,12 +44,12 @@ namespace Friflo.Json.Fliox.DB.Client
         
         
         /// <summary>
-        /// Instantiate an <see cref="FlioxClient"/> with a given <see cref="hub"/> and an optional <see cref="typeStore"/>.
+        /// Instantiate a <see cref="FlioxClient"/> with a given <see cref="hub"/> and an optional <see cref="typeStore"/>.
         ///
         /// Optimization note:
         /// In case an application create many (> 10) <see cref="FlioxClient"/> instances it should provide
         /// a <see cref="typeStore"/>. <see cref="TypeStore"/> instances are designed to be reused from multiple threads.
-        /// Their creation is expensive compared to the instantiation of an <see cref="FlioxClient"/>. 
+        /// Their creation is expensive compared to the instantiation of a <see cref="FlioxClient"/>. 
         /// </summary>
         public FlioxClient(DatabaseHub hub, TypeStore typeStore, string userId, string clientId) {
             if (typeStore == null) throw new ArgumentNullException(nameof(typeStore));

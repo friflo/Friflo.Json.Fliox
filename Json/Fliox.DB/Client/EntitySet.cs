@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.DB.Client
     /// <br/>
     /// The methods of an <see cref="EntitySet{TKey,T}"/> enable to create, read, upsert or delete container entities.
     /// It also allows to subscribe to entities changes made by other database users.<br/>
-    /// <see cref="EntitySet{TKey,T}"/>'s are designed to be used as fields or properties inside an <see cref="FlioxClient"/>.
+    /// <see cref="EntitySet{TKey,T}"/>'s are designed to be used as fields or properties inside a <see cref="FlioxClient"/>.
     /// <br/>
     /// The type <see cref="T"/> of a container entity need to be a class containing a field or property used as its key
     /// usually named <b>id</b>.

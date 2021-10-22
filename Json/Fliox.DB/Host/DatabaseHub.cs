@@ -18,13 +18,12 @@ namespace Friflo.Json.Fliox.DB.Host
 {
     /// <summary>
     /// An <see cref="DatabaseHub"/> instance is the single entry point used to handle all requests send by a client -
-    /// e.g. an <see cref="Client.FlioxClient"/>. It handle these requests by its <see cref="ExecuteSync"/> method.
+    /// e.g. a <see cref="Client.FlioxClient"/>. It handle these requests by its <see cref="ExecuteSync"/> method.
     /// A request is represented by a <see cref="SyncRequest"/> and its <see cref="SyncRequest.tasks"/> are executed
     /// on the given <see cref="SyncRequest.database"/>. If database == null the default <see cref="database"/> is used.
     /// <br/>
     /// The <see cref="SyncRequest.tasks"/> contains all database operations like create, read, upsert, delete
-    /// and all messages / commands send by a client.
-    /// 
+    /// and all messages / commands send by a client. 
     /// The <see cref="DatabaseHub"/> execute these tasks by the <see cref="EntityDatabase.taskHandler"/> of the
     /// specified <see cref="database"/>.
     /// <br/>
