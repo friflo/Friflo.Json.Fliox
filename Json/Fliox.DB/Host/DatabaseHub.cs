@@ -155,7 +155,7 @@ namespace Friflo.Json.Fliox.DB.Host
             var tasks       = new List<SyncTaskResult>(requestTasks.Count);
             var resultMap   = new Dictionary<string, ContainerEntities>();
             var response    = new SyncResponse { tasks = tasks, resultMap = resultMap, database = syncDatabase };
-            var taskHandler = db.TaskHandler;
+            var taskHandler = db.taskHandler;
             
             for (int index = 0; index < requestTasks.Count; index++) {
                 var task = requestTasks[index];

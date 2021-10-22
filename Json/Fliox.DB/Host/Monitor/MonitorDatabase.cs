@@ -15,13 +15,16 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
     public class MonitorDatabase : EntityDatabase
     {
-        internal readonly    EntityDatabase stateDB;
-        private  readonly    MonitorStore   stateStore;
+        internal readonly   EntityDatabase  stateDB;
+        private  readonly   MonitorStore    stateStore;
         
         public const string Name = "monitor";
         
-        public MonitorDatabase (DatabaseHub extensionBase, DbOpt opt = null) : base (extensionBase, Name, opt) {
-            taskHandler     = new MonitorHandler(this);
+        public MonitorDatabase (DatabaseHub extensionBase, DbOpt opt = null)
+            : base (extensionBase, Name, opt, new MonitorHandler())
+        {
+            taskHandler.AddCommandHandler<ClearStats, ClearStatsResult>(ClearStats);
+
             stateDB         = new MemoryDatabase();
             var monitorHub  = new DatabaseHub(stateDB);
             stateStore  = new MonitorStore(extensionBase.hostName, monitorHub, HostTypeStore.Get());
@@ -30,6 +33,14 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         public override void Dispose() {
             stateStore.Dispose();
             base.Dispose();
+        }
+        
+        private ClearStatsResult ClearStats(Command<ClearStats> command) {
+            // clear request counts of default database. They contain also request counts of all extension databases.
+            hub.Authenticator.ClearUserStats();
+            hub.ClientController.ClearClientStats();
+            hub.hostStats.ClearHostStats();
+            return new ClearStatsResult();
         }
 
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {

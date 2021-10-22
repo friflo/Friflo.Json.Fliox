@@ -11,23 +11,8 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
     internal sealed class MonitorHandler : TaskHandler
     {
-        private  readonly   MonitorDatabase     monitorDB;
-        
-        internal MonitorHandler(MonitorDatabase monitorDB) {
-            this.monitorDB = monitorDB;
-            AddCommandHandler<ClearStats, ClearStatsResult>(ClearStats);
-        }
-        
-        private ClearStatsResult ClearStats(Command<ClearStats> command) {
-            // clear request counts of default database. They contain also request counts of all extension databases.
-            var baseDB = monitorDB.hub;
-            baseDB.Authenticator.ClearUserStats();
-            baseDB.ClientController.ClearClientStats();
-            baseDB.hostStats.ClearHostStats();
-            return new ClearStatsResult();
-        }
-        
         public override Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+            var monitorDB = (MonitorDatabase)database;
             switch (task.TaskType) {
                 case TaskType.message:
                 case TaskType.read:
