@@ -32,6 +32,11 @@ namespace Friflo.Json.Fliox.DB.Host
     /// <br/>
     /// Optionally a <see cref="DatabaseSchema"/> can be assigned to the database via the property <see cref="Schema"/>.
     /// This enables Type / schema validation of JSON entities written (create, update and patch) to its containers.
+    /// <br/>
+    /// Instances of <see cref="EntityDatabase"/> and all its implementation are designed to be thread safe enabling multiple
+    /// clients e.g. <see cref="Client.FlioxClient"/> operating on the same <see cref="EntityDatabase"/> instance
+    /// - used by a <see cref="DatabaseHub"/>.
+    /// To maintain thread safety <see cref="EntityDatabase"/> implementations must not have any mutable state.
     /// </summary>
     public abstract class EntityDatabase : IDisposable
     {
