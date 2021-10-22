@@ -8,9 +8,10 @@ using Friflo.Json.Fliox.DB.Host.Internal;
 namespace Friflo.Json.Fliox.DB.Host
 {
     /// <summary>
-    /// This static class is placed her instead of <see cref="Friflo.Json.Fliox.DB.Host.Internal"/> to enable
+    /// This static class is placed here instead of <see cref="Friflo.Json.Fliox.DB.Host.Internal"/> to enable
     /// using it in Fliox.DB unit tests without the need using the namespace above.
-    /// This namespace is mainly required only if implementing a <see cref="FlioxHub"/>.
+    /// The namespace <see cref="Friflo.Json.Fliox.DB.Host.Internal"/> is mainly required for <see cref="FlioxHub"/>
+    /// implementations.
     /// </summary>
     public static class UtilsInternal
     {
