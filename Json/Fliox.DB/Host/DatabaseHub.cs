@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.DB.Host
         
         /// <summary> Construct a default database </summary>
         public DatabaseHub (EntityDatabase database, string hostName = null) {
-            this.database              = database;
+            this.database   = database;
             this.hostName   = hostName ?? "host";
         }
        

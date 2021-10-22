@@ -22,8 +22,8 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
         public   override       string          TaskName  => $"container: '{container}'";
 
         internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
-            var hub = messageContext.hub;
-            var eventBroker = messageContext.hub.EventBroker;
+            var hub         = messageContext.hub;
+            var eventBroker = hub.EventBroker;
             if (eventBroker == null)
                 return Task.FromResult<SyncTaskResult>(InvalidTask("Hub has no eventBroker"));
             if (container == null)
