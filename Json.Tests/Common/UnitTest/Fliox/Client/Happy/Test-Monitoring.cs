@@ -170,7 +170,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var clientKey  = new JsonKey(clientId);
             store.SetUserClient(userKey, clientKey);
             
-            monitor.SendMessage(nameof(ClearStats));
+            monitor.ClearStats();
             await monitor.TryExecuteTasksAsync();
             
             store.articles.Read().Find("xxx");

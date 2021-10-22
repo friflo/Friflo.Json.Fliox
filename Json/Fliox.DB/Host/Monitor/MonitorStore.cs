@@ -26,6 +26,10 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         public MonitorStore(EntityDatabase database, FlioxClient baseClient) : base(database, baseClient) {
             hostName = new JsonKey(baseClient._intern.hub.hostName);
         }
+        
+        public SendMessageTask<ClearStatsResult> ClearStats() {
+            return SendMessage<ClearStats, ClearStatsResult>(null);
+        }
     }
     
     public class HostInfo {
