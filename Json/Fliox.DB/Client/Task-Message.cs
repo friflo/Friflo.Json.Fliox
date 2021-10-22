@@ -6,7 +6,7 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Client
 {
-    public class SendMessageTask : SyncTask
+    public class MessageTask : SyncTask
     {
         internal readonly   string          name;
         internal readonly   JsonValue       value;
@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// For type safe access of the result use <see cref="ReadResult{T}"/></summary>
         public              JsonUtf8        ResultJson  => IsOk("SendMessageTask.Result", out Exception e) ? result : throw e;
         
-        internal SendMessageTask(string name, JsonUtf8 value, ObjectReader reader) {
+        internal MessageTask(string name, JsonUtf8 value, ObjectReader reader) {
             this.name   = name;
             this.value  = new JsonValue { json = value };
             this.reader = reader;
@@ -69,11 +69,11 @@ namespace Friflo.Json.Fliox.DB.Client
     }
     
     
-    public sealed class SendMessageTask<TResult> : SendMessageTask
+    public sealed class MessageTask<TResult> : MessageTask
     {
         public              TResult          Result => ReadResult<TResult>();
         
-        internal SendMessageTask(string name, JsonUtf8 value, ObjectReader reader) : base (name, value, reader) {
+        internal MessageTask(string name, JsonUtf8 value, ObjectReader reader) : base (name, value, reader) {
         }
     }
 }

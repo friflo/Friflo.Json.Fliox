@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             hostName = new JsonKey(baseClient._intern.hub.hostName);
         }
         
-        public SendMessageTask<ClearStatsResult> ClearStats() {
+        public MessageTask<ClearStatsResult> ClearStats() {
             return SendMessage<ClearStats, ClearStatsResult>(null);
         }
     }

@@ -15,8 +15,8 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         private     List<LogTask>               logTasks;
         private     List<LogTask>               LogTasks()          => logTasks ?? (logTasks = new List<LogTask>());
         
-        internal    List<SendMessageTask>       messageTasks;
-        internal    List<SendMessageTask>       MessageTasks()      => messageTasks ?? (messageTasks = new List<SendMessageTask>());
+        internal    List<MessageTask>           messageTasks;
+        internal    List<MessageTask>           MessageTasks()      => messageTasks ?? (messageTasks = new List<MessageTask>());
         private     int                         messageTasksIndex;
         
         private     List<SubscribeMessageTask>  subscribeMessage;
@@ -75,7 +75,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             if (messageTasks == null || messageTasksIndex >= messageTasks.Count)
                 return;
             var index = messageTasksIndex++;
-            SendMessageTask messageTask = messageTasks[index];
+            MessageTask messageTask = messageTasks[index];
             if (result is TaskErrorResult taskError) {
                 messageTask.state.SetError(new TaskErrorInfo(taskError));
                 return;

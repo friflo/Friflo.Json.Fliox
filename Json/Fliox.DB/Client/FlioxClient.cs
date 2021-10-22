@@ -221,35 +221,35 @@ namespace Friflo.Json.Fliox.DB.Client
         }
 
         // --- SendMessage
-        public SendMessageTask SendMessage(string name) {
-            var task = new SendMessageTask(name, new JsonUtf8(), _intern.jsonMapper.reader);
+        public MessageTask SendMessage(string name) {
+            var task = new MessageTask(name, new JsonUtf8(), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
         }
         
-        public SendMessageTask SendMessage<TValue>(string name, TValue value) {
+        public MessageTask SendMessage<TValue>(string name, TValue value) {
             var json    = _intern.jsonMapper.WriteAsArray(value);
-            var task    = new SendMessageTask(name, new JsonUtf8(json), _intern.jsonMapper.reader);
+            var task    = new MessageTask(name, new JsonUtf8(json), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
         }
         
-        public SendMessageTask SendMessage<TValue>(TValue value) {
+        public MessageTask SendMessage<TValue>(TValue value) {
             var name = typeof(TValue).Name;
             return SendMessage(name, value);
         }
         
-        public SendMessageTask<TResult> SendMessage<TValue, TResult>(string name, TValue value) {
+        public MessageTask<TResult> SendMessage<TValue, TResult>(string name, TValue value) {
             var json    = _intern.jsonMapper.WriteAsArray(value);
-            var task    = new SendMessageTask<TResult>(name, new JsonUtf8(json), _intern.jsonMapper.reader);
+            var task    = new MessageTask<TResult>(name, new JsonUtf8(json), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
         }
         
-        public SendMessageTask<TResult> SendMessage<TValue, TResult>(TValue value) {
+        public MessageTask<TResult> SendMessage<TValue, TResult>(TValue value) {
             var name = typeof(TValue).Name;
             return SendMessage<TValue, TResult>(name, value);
         }
