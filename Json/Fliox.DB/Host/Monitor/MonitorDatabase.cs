@@ -22,9 +22,10 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         
         public MonitorDatabase (DatabaseHub extensionBase, DbOpt opt = null)
             : base (extensionBase, Name, new DbOpt(taskHandler: new MonitorHandler())) {
-            stateDB     = new MemoryDatabase();
-            var hub     = new DatabaseHub(stateDB);
-            stateStore  = new MonitorStore(extensionBase.hostName, hub, HostTypeStore.Get());
+            stateDB         = new MemoryDatabase();
+            var monitorHub  = new DatabaseHub(stateDB);
+            ((MonitorHandler)taskHandler).monitorDB = this;
+            stateStore  = new MonitorStore(extensionBase.hostName, monitorHub, HostTypeStore.Get());
         }
 
         public override void Dispose() {

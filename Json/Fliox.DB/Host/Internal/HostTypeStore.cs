@@ -42,6 +42,8 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
                 _singleton.GetTypeMapper(typeof(AuthenticateUserResult));
                 _singleton.GetTypeMapper(typeof(RemoteSubscriptionEvent));
                 _singleton.GetTypeMapper(typeof(MonitorStore));
+                _singleton.GetTypeMapper(typeof(ClearStats));
+                _singleton.GetTypeMapper(typeof(ClearStatsResult));
             }
             return _singleton;
         }

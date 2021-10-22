@@ -7,6 +7,7 @@ using Friflo.Json.Fliox.DB.Host.Stats;
 using Friflo.Json.Fliox.DB.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Fliox.DB.Host.Monitor
@@ -25,8 +26,6 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         public MonitorStore(EntityDatabase database, FlioxClient baseClient) : base(database, baseClient) {
             hostName = new JsonKey(baseClient._intern.hub.hostName);
         }
-        
-        public const            string  ClearStats  = nameof(ClearStats); 
     }
     
     public class HostInfo {
@@ -68,4 +67,9 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                         
         public override         string                          ToString() => JsonDebug.ToJson(this, false).Replace("\"", "'");
     }
+    
+    
+    // --- commands
+    public class ClearStats { }
+    public class ClearStatsResult { }
 }
