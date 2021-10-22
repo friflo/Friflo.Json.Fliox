@@ -69,8 +69,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
         private static async Task FileCreate() {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hub          = new DatabaseHub(fileDatabase))
+            using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var hub          = new DatabaseHub(database))
             using (var createStore  = new PocStore(hub, "createStore"))
             using (var useStore     = new PocStore(hub, "useStore")) {
                 await TestRelationPoC.CreateStore(createStore);
@@ -83,8 +83,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task FileUse() {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hub          = new DatabaseHub(fileDatabase))
+            using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var hub          = new DatabaseHub(database))
             using (var useStore     = new PocStore(hub, "useStore")) {
                 await TestStores(useStore, useStore);
             }
@@ -207,8 +207,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task LoopbackUse() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(false))
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hub          	= new DatabaseHub(fileDatabase))
+            using (var database         = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var hub          	= new DatabaseHub(database))
             using (var loopbackDatabase = new LoopbackHub(hub))
             using (var listenDb         = new PocStore(loopbackDatabase, "listenDb", "listen-client")) {
                 loopbackDatabase.host.EventBroker    = eventBroker;
@@ -260,8 +260,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
         private static async Task TestCreate(Func<PocStore, Task> test) {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hub          = new DatabaseHub(fileDatabase))
+            using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var hub          = new DatabaseHub(database))
             using (var createStore  = new PocStore(hub, "createStore")) {
                 await TestRelationPoC.CreateStore(createStore);
                 await test(createStore);
@@ -270,8 +270,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task TestUse(Func<PocStore, Task> test) {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hub          = new DatabaseHub(fileDatabase))
+            using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var hub          = new DatabaseHub(database))
             using (var createStore  = new PocStore(hub, "createStore")) {
                 await test(createStore);
             }

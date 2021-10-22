@@ -30,8 +30,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
-                    using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/testConcurrencyDb"))
-                    using (var hub          = new DatabaseHub(fileDatabase))
+                    using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/testConcurrencyDb"))
+                    using (var hub          = new DatabaseHub(database))
                     {
                         await ConcurrentAccess(hub, 2, 2, 10, true);
                     }

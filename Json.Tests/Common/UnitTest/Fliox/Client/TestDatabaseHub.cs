@@ -41,7 +41,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public  readonly    Dictionary<string, Func<MsgResponse<SyncResponse>>> syncErrors      = new Dictionary<string, Func<MsgResponse<SyncResponse>>>();
         private readonly    TestDatabase testDatabase;
         
-        public TestDatabaseHub(EntityDatabase local, string hostName = null) : base(new TestDatabase (local), hostName) {
+        public TestDatabaseHub(EntityDatabase database, string hostName = null)
+            : base(new TestDatabase (database), hostName)
+        {
             testDatabase = (TestDatabase)db;
         }
         

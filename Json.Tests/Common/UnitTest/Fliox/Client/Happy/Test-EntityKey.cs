@@ -41,8 +41,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task AssertEntityKeyLoopback() {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/EntityIdStore"))
-            using (var hub          = new DatabaseHub(fileDatabase))
+            using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/EntityIdStore"))
+            using (var hub          = new DatabaseHub(database))
             using (var loopbackHub  = new LoopbackHub(hub))
             {
                 await AssertEntityKeyTests (loopbackHub, typeStore);

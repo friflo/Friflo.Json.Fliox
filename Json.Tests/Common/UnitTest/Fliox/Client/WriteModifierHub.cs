@@ -17,13 +17,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     
     public class WriteModifierHub : DatabaseHub
     {
-        private readonly    DatabaseHub                         local;
+        private readonly    DatabaseHub                         hub;
         private readonly    Dictionary<string, WriteModifiers>  writeModifiers  = new Dictionary<string, WriteModifiers>();
         private readonly    Dictionary<string, PatchModifiers>  patchModifiers  = new Dictionary<string, PatchModifiers>();
         private readonly    EntityProcessor                     processor       = new EntityProcessor();
         
-        public WriteModifierHub(DatabaseHub local) : base(local.db) {
-            this.local = local;
+        public WriteModifierHub(DatabaseHub hub) : base(hub.db) {
+            this.hub = hub;
         }
 
         public override void Dispose() {
@@ -57,7 +57,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                         break;
                 }
             }
-            return await local.ExecuteSync(syncRequest, messageContext);
+            return await hub.ExecuteSync(syncRequest, messageContext);
         }
 
         public WriteModifiers GetWriteModifiers(string container) {

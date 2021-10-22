@@ -9,14 +9,14 @@ namespace Friflo.Json.Tests.Main
     public static class Throughput
     {
         public static async Task MemoryDbThroughput() {
-            var db = new MemoryDatabase();
-            var hub          	= new DatabaseHub(db);
+            var database    = new MemoryDatabase();
+            var hub         = new DatabaseHub(database);
             await TestStore.ConcurrentAccess(hub, 4, 0, 1_000_000, false);
         }
         
         public static async Task FileDbThroughput() {
-            var db = new FileDatabase("./Json.Tests/assets~/DB/testConcurrencyDb");
-            var hub          	= new DatabaseHub(db);
+            var database    = new FileDatabase("./Json.Tests/assets~/DB/testConcurrencyDb");
+            var hub         = new DatabaseHub(database);
             await TestStore.ConcurrentAccess(hub, 4, 0, 1_000_000, false);
         }
         
@@ -46,9 +46,9 @@ namespace Friflo.Json.Tests.Main
         }
         
         public static async Task LoopbackDbThroughput() {
-            var db = new MemoryDatabase();
-            using (var hub          	    = new DatabaseHub(db))
-            using (var loopbackDatabase     = new LoopbackHub(hub)) {
+            var database                = new MemoryDatabase();
+            using (var hub          	= new DatabaseHub(database))
+            using (var loopbackDatabase = new LoopbackHub(hub)) {
                 await TestStore.ConcurrentAccess(loopbackDatabase, 4, 0, 1_000_000, false);
             }
         }

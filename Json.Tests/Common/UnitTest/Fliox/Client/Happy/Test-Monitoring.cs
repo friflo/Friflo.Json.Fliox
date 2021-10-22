@@ -27,8 +27,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]
         public static async Task TestMonitoringFile() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hub          	= new DatabaseHub(fileDatabase, HostName))
+            using (var database         = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var hub          	= new DatabaseHub(database, HostName))
             using (var monitorDB        = new MonitorDatabase(hub)) {
                 hub.AddExtensionDB(monitorDB);
                 await AssertNoAuthMonitoringDB  (hub, monitorDB);
@@ -39,8 +39,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]
         public static async Task TestMonitoringLoopback() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hub          	= new DatabaseHub(fileDatabase, HostName))
+            using (var database         = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var hub          	= new DatabaseHub(database, HostName))
             using (var monitor          = new MonitorDatabase(hub))
             using (var loopbackHub      = new LoopbackHub(hub)) {
                 hub.AddExtensionDB(monitor);
