@@ -17,21 +17,21 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Host
 {
     /// <summary>
-    /// An <see cref="DatabaseHub"/> instance is the single entry point used to handle all requests send by a client -
+    /// An <see cref="FlioxHub"/> instance is the single entry point used to handle all requests send by a client -
     /// e.g. a <see cref="Client.FlioxClient"/>. It handle these requests by its <see cref="ExecuteSync"/> method.
     /// A request is represented by a <see cref="SyncRequest"/> and its <see cref="SyncRequest.tasks"/> are executed
     /// on the given <see cref="SyncRequest.database"/>. If database == null the default <see cref="database"/> is used.
     /// <br/>
     /// The <see cref="SyncRequest.tasks"/> contains all database operations like create, read, upsert, delete
     /// and all messages / commands send by a client. 
-    /// The <see cref="DatabaseHub"/> execute these tasks by the <see cref="EntityDatabase.taskHandler"/> of the
+    /// The <see cref="FlioxHub"/> execute these tasks by the <see cref="EntityDatabase.taskHandler"/> of the
     /// specified <see cref="database"/>.
     /// <br/>
-    /// Instances of <see cref="DatabaseHub"/> and all its implementation are designed to be thread safe enabling multiple
-    /// clients e.g. <see cref="Client.FlioxClient"/> operating on the same <see cref="DatabaseHub"/> instance.
-    /// To maintain thread safety <see cref="DatabaseHub"/> implementations must not have any mutable state.
+    /// Instances of <see cref="FlioxHub"/> and all its implementation are designed to be thread safe enabling multiple
+    /// clients e.g. <see cref="Client.FlioxClient"/> operating on the same <see cref="FlioxHub"/> instance.
+    /// To maintain thread safety <see cref="FlioxHub"/> implementations must not have any mutable state.
     /// <br/>
-    /// The <see cref="DatabaseHub"/> can be configured to support.
+    /// The <see cref="FlioxHub"/> can be configured to support.
     /// <list type="bullet">
     ///   <item>
     ///     A Pub-Sub implementation to send events of database changes or messages to clients by assigning an
@@ -51,7 +51,7 @@ namespace Friflo.Json.Fliox.DB.Host
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public class DatabaseHub : IDisposable
+    public class FlioxHub : IDisposable
     {
         public  readonly    EntityDatabase      database;      
         /// <summary>
@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.DB.Host
         /// <summary>
         /// <see cref="ClientController"/> is used to create / add unique client ids to enable sending events to
         /// specific user clients.
-        /// It also enables monitoring execution statistics of <see cref="DatabaseHub.ExecuteSync"/> 
+        /// It also enables monitoring execution statistics of <see cref="FlioxHub.ExecuteSync"/> 
         /// </summary>
         public              ClientController    ClientController{ get => clientController; set => clientController = NotNull(value, nameof(ClientController)); }
         
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.DB.Host
 
         
         /// <summary> Construct a default database </summary>
-        public DatabaseHub (EntityDatabase database, string hostName = null) {
+        public FlioxHub (EntityDatabase database, string hostName = null) {
             this.database   = database;
             this.hostName   = hostName ?? "host";
         }

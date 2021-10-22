@@ -35,7 +35,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
     
     
-    public class TestDatabaseHub : DatabaseHub
+    public class TestDatabaseHub : FlioxHub
     {
         
         public  readonly    Dictionary<string, Func<MsgResponse<SyncResponse>>> syncErrors      = new Dictionary<string, Func<MsgResponse<SyncResponse>>>();

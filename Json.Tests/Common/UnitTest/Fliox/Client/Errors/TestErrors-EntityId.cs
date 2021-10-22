@@ -26,13 +26,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
             using (var database     = new MemoryDatabase())
-            using (var hub          = new DatabaseHub(database))
+            using (var hub          = new FlioxHub(database))
             {
                 AssertEntityIdTests (hub, typeStore);
             }
         }
             
-        private static void AssertEntityIdTests(DatabaseHub hub, TypeStore typeStore) {
+        private static void AssertEntityIdTests(FlioxHub hub, TypeStore typeStore) {
             Exception e;
             e = Throws<InvalidTypeException>(() => {
                 _ = new TypeMismatchStore(hub, typeStore, "store");
@@ -64,7 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class TypeMismatchStore : FlioxClient {
         public  readonly    EntitySet <long, IntEntity> intEntities;
 
-        public TypeMismatchStore(DatabaseHub hub, TypeStore typeStore, string clientId) : base(hub, typeStore, null, clientId) {}
+        public TypeMismatchStore(FlioxHub hub, TypeStore typeStore, string clientId) : base(hub, typeStore, null, clientId) {}
     }
     
     // --------
@@ -76,7 +76,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         // ReSharper disable once UnassignedReadonlyField
         public  readonly    EntitySet <long, IntEntity2> intEntities; // test without assignment
 
-        public TypeMismatchStore2(DatabaseHub hub, TypeStore typeStore, string clientId) : base(hub, typeStore, null, clientId) {}
+        public TypeMismatchStore2(FlioxHub hub, TypeStore typeStore, string clientId) : base(hub, typeStore, null, clientId) {}
     }
 
     // --------
@@ -87,7 +87,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class UnsupportedKeyTypeStore : FlioxClient {
         public  readonly    EntitySet <char, CharEntity>    charEntities;
 
-        public UnsupportedKeyTypeStore(DatabaseHub hub, TypeStore typeStore, string clientId) : base(hub, typeStore, null, clientId) {}
+        public UnsupportedKeyTypeStore(FlioxHub hub, TypeStore typeStore, string clientId) : base(hub, typeStore, null, clientId) {}
     }
     
     // --------
@@ -99,6 +99,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class InvalidMemberStore : FlioxClient {
         public  readonly    EntitySet <string,    StringEntity> stringEntities;
 
-        public InvalidMemberStore(DatabaseHub hub, TypeStore typeStore, string clientId) : base(hub, typeStore, null, clientId) {}
+        public InvalidMemberStore(FlioxHub hub, TypeStore typeStore, string clientId) : base(hub, typeStore, null, clientId) {}
     }
 }

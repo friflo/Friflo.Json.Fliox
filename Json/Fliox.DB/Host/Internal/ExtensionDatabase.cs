@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
 {
     internal class ExtensionDatabase : EntityDatabase
     {
-        internal ExtensionDatabase (DatabaseHub hub, string extensionName, DbOpt opt)
+        internal ExtensionDatabase (FlioxHub hub, string extensionName, DbOpt opt)
             : base (hub, extensionName, opt)
         {
             // extensionBase.extensionDbs.Add(extensionName, this);

@@ -17,9 +17,9 @@ namespace Friflo.Json.Fliox.DB.Auth
     /// 
     /// <see cref="ClientController"/> is used to:
     /// <list type="bullet">
-    ///   <item> create / add unique client ids by <see cref="DatabaseHub.ClientController"/> </item>
+    ///   <item> create / add unique client ids by <see cref="FlioxHub.ClientController"/> </item>
     ///   <item> enables sending Push messages (events) for protocols supporting this like WebSocket's </item>
-    ///   <item> enables monitoring request / execution statistics of <see cref="DatabaseHub.ExecuteSync"/> </item>
+    ///   <item> enables monitoring request / execution statistics of <see cref="FlioxHub.ExecuteSync"/> </item>
     /// </list>
     /// </summary>
     public abstract class ClientController {

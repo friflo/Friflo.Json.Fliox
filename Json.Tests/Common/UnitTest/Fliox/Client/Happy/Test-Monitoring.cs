@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static async Task TestMonitoringFile() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database         = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hub          	= new DatabaseHub(database, HostName))
+            using (var hub          	= new FlioxHub(database, HostName))
             using (var monitorDB        = new MonitorDatabase(hub)) {
                 hub.AddExtensionDB(monitorDB);
                 await AssertNoAuthMonitoringDB  (hub, monitorDB);
@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static async Task TestMonitoringLoopback() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database         = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hub          	= new DatabaseHub(database, HostName))
+            using (var hub          	= new FlioxHub(database, HostName))
             using (var monitor          = new MonitorDatabase(hub))
             using (var loopbackHub      = new LoopbackHub(hub)) {
                 hub.AddExtensionDB(monitor);
@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static async Task TestMonitoringHttp() {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hub          = new DatabaseHub(database, HostName))
+            using (var hub          = new FlioxHub(database, HostName))
             using (var hostHub      = new HttpHostHub(hub))
             using (var server       = new HttpListenerHost("http://+:8080/", hostHub)) 
             using (var monitor      = new MonitorDatabase(hub))
@@ -68,9 +68,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        private static async Task AssertAuthMonitoringDB(DatabaseHub hub, EntityDatabase monitorDB, DatabaseHub database) {
+        private static async Task AssertAuthMonitoringDB(FlioxHub hub, EntityDatabase monitorDB, FlioxHub database) {
             using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
-            using (var userHub         	= new DatabaseHub(userDatabase))
+            using (var userHub         	= new FlioxHub(userDatabase))
             using (var userStore        = new UserStore (userHub, UserStore.AuthenticationUser, null))
             using (var _                = new UserDatabaseHandler   (userHub)) {
                 database.Authenticator  = new UserAuthenticator(userStore, userStore);
@@ -79,7 +79,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
 
-        private  static async Task AssertNoAuthMonitoringDB(DatabaseHub hub, EntityDatabase monitorDb) {
+        private  static async Task AssertNoAuthMonitoringDB(FlioxHub hub, EntityDatabase monitorDb) {
             const string userId     = "poc-user";
             const string clientId   = "poc-client"; 
             using (var store    = new PocStore(hub, null))
@@ -95,7 +95,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
 
-        private  static async Task AssertAuthSuccessMonitoringDB(DatabaseHub hub, EntityDatabase monitorDb) {
+        private  static async Task AssertAuthSuccessMonitoringDB(FlioxHub hub, EntityDatabase monitorDb) {
             const string userId     = "admin";
             const string clientId   = "admin-client"; 
             using (var store    = new PocStore(hub, null))
@@ -110,7 +110,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        private  static async Task AssertAuthFailedMonitoringDB(DatabaseHub hub, EntityDatabase monitorDb) {
+        private  static async Task AssertAuthFailedMonitoringDB(FlioxHub hub, EntityDatabase monitorDb) {
             const string userId     = "admin";
             const string clientId   = "admin-xxx"; 
             using (var store    = new PocStore(hub, null))

@@ -20,13 +20,13 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         
         public const string Name = "monitor";
         
-        public MonitorDatabase (DatabaseHub hub, DbOpt opt = null)
+        public MonitorDatabase (FlioxHub hub, DbOpt opt = null)
             : base (hub, Name, opt, new MonitorHandler())
         {
             taskHandler.AddCommandHandler<ClearStats, ClearStatsResult>(ClearStats);
 
             stateDB         = new MemoryDatabase();
-            var monitorHub  = new DatabaseHub(stateDB);
+            var monitorHub  = new FlioxHub(stateDB);
             stateStore  = new MonitorStore(hub.hostName, monitorHub, HostTypeStore.Get());
         }
 
@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
     
     public partial class MonitorStore
     {
-        internal void UpdateClients(DatabaseHub hub, string monitorName) {
+        internal void UpdateClients(FlioxHub hub, string monitorName) {
             foreach (var pair in hub.ClientController.Clients) {
                 UserClient client   = pair.Value;
                 var clientId        = pair.Key;
@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             }
         }
         
-        private static EventInfo? GetEventInfo (DatabaseHub hub, ClientInfo clientInfo) {
+        private static EventInfo? GetEventInfo (FlioxHub hub, ClientInfo clientInfo) {
             if (hub.EventBroker == null)
                 return null;
             if (!hub.EventBroker.TryGetSubscriber(clientInfo.id, out var subscriber)) {

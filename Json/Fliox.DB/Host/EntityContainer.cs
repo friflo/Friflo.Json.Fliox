@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.DB.Host
     ///   All ...Result types returned by the interface methods of <see cref="EntityContainer"/> like
     ///   <see cref="CreateEntities"/>, <see cref="ReadEntitiesSet"/>, ... implement <see cref="ICommandResult"/>.
     ///   In case a database command fails completely  <see cref="ICommandResult.Error"/> needs to be set.
-    ///   See <see cref="DatabaseHub.ExecuteSync"/> for proper error handling.
+    ///   See <see cref="FlioxHub.ExecuteSync"/> for proper error handling.
     /// </para>
     /// </summary>
 #if !UNITY_5_3_OR_NEWER

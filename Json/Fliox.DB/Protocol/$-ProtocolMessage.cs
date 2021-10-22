@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
     ///     This enables embedding all messages in various communication protocols like HTTP, WebSockets, TCP, WebRTC
     ///     or datagram based protocols.
     ///     This also means all <see cref="Fliox"/> messages doesnt (and must not) require a session.
-    ///     This principle also enables using a single <see cref="DatabaseHub"/> by multiple clients like
+    ///     This principle also enables using a single <see cref="FlioxHub"/> by multiple clients like
     ///     <see cref="Client.FlioxClient"/> even for remote clients like <see cref="RemoteClientHub"/>.
     /// </para>
     /// </summary>
@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         /// </summary>
         [Fri.Property(Name =               "req")]
                         public  int?        reqId       { get; set; }
-        /// As a user can access an <see cref="DatabaseHub"/> by multiple clients the <see cref="clientId"/>
+        /// As a user can access an <see cref="FlioxHub"/> by multiple clients the <see cref="clientId"/>
         /// enables identifying each client individually.
         /// The <see cref="clientId"/> is used for <see cref="SubscribeMessage"/> and <see cref="SubscribeChanges"/>
         /// to enable sending <see cref="EventMessage"/>'s to the desired subscriber.

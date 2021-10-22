@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
             using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/EntityIdStore"))
-            using (var hub          = new DatabaseHub(database))
+            using (var hub          = new FlioxHub(database))
             {
                 await AssertEntityKeyTests (hub, typeStore);
             }
@@ -42,14 +42,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var typeStore    = new TypeStore())
             using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/EntityIdStore"))
-            using (var hub          = new DatabaseHub(database))
+            using (var hub          = new FlioxHub(database))
             using (var loopbackHub  = new LoopbackHub(hub))
             {
                 await AssertEntityKeyTests (loopbackHub, typeStore);
             }
         }
 
-        public static async Task AssertEntityKeyTests(DatabaseHub database, TypeStore typeStore) {
+        public static async Task AssertEntityKeyTests(FlioxHub database, TypeStore typeStore) {
             var entityRef = new EntityRefs { id = "entity-ref-1" };
             
             // --- int as entity id ---

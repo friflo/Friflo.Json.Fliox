@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.DB.Host
     /// <br/>
     /// Instances of <see cref="EntityDatabase"/> and all its implementation are designed to be thread safe enabling multiple
     /// clients e.g. <see cref="Client.FlioxClient"/> operating on the same <see cref="EntityDatabase"/> instance
-    /// - used by a <see cref="DatabaseHub"/>.
+    /// - used by a <see cref="FlioxHub"/>.
     /// To maintain thread safety <see cref="EntityDatabase"/> implementations must not have any mutable state.
     /// </summary>
     public abstract class EntityDatabase : IDisposable
@@ -52,8 +52,8 @@ namespace Friflo.Json.Fliox.DB.Host
         /// <summary>
         /// A mapping function used to assign a custom container name.
         /// If using a custom name its value is assigned to the containers <see cref="EntityContainer.instanceName"/>. 
-        /// By having the mapping function in <see cref="DatabaseHub"/> it enables uniform mapping across different
-        /// <see cref="DatabaseHub"/> implementations.
+        /// By having the mapping function in <see cref="FlioxHub"/> it enables uniform mapping across different
+        /// <see cref="FlioxHub"/> implementations.
         /// </summary>
         public readonly     CustomContainerName customContainerName;
         
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.DB.Host
         public   readonly   TaskHandler         taskHandler;
 
         internal readonly   string              name;
-        internal readonly   DatabaseHub         hub;
+        internal readonly   FlioxHub            hub;
 
         public override     string              ToString() => name != null ? $"'{name}'" : "";
 
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.DB.Host
         }
         
         protected EntityDatabase (
-            DatabaseHub hub,
+            FlioxHub    hub,
             string      name,
             DbOpt       opt,
             TaskHandler taskHandler = null

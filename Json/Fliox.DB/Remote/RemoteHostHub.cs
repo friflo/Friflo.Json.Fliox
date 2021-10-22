@@ -14,14 +14,14 @@ using Friflo.Json.Fliox.Mapper;
 // Note! - Must not have any dependency to System.Net or System.Net.Http (or other HTTP stuff)
 namespace Friflo.Json.Fliox.DB.Remote
 {
-    public class RemoteHostHub : DatabaseHub
+    public class RemoteHostHub : FlioxHub
     {
-        private  readonly   DatabaseHub     localHub;
+        private  readonly   FlioxHub     localHub;
         
         /// Only set to true for testing. It avoids an early out at <see cref="Host.Event.EventSubscriber.SendEvents"/> 
         public              bool            fakeOpenClosedSockets;
 
-        protected RemoteHostHub(DatabaseHub hub, string hostName) : base(hub.database, hostName) {
+        protected RemoteHostHub(FlioxHub hub, string hostName) : base(hub.database, hostName) {
             this.localHub = hub;
         }
         
@@ -111,7 +111,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         
         public  override    bool            Pretty       => local.Pretty;
 
-        public RemoteHostContainer(string name, DatabaseHub hub, EntityContainer localContainer)
+        public RemoteHostContainer(string name, FlioxHub hub, EntityContainer localContainer)
             : base(name, hub.database) {
             local = localContainer;
         }

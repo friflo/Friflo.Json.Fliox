@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         public void RunLinq() {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database     = new MemoryDatabase())
-            using (var hub          = new DatabaseHub(database))
+            using (var hub          = new FlioxHub(database))
             using (var typeStore    = new TypeStore())
             using (var store        = new PocStore(hub,typeStore, "store"))
             using (var m            = new ObjectMapper(store.TypeStore)) {
@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         
         private static Order GetOrder(string id) {
             using (var database     = new MemoryDatabase())
-            using (var hub          = new DatabaseHub(database))
+            using (var hub          = new FlioxHub(database))
             using (var typeStore    = new TypeStore())
             using (var store        = new PocStore(hub, typeStore, "store")) {
                 TestRelationPoC.CreateStore(store).Wait();
@@ -120,7 +120,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         public void TestSelectSameInstance() {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database     = new MemoryDatabase())
-            using (var hub          = new DatabaseHub(database))
+            using (var hub          = new FlioxHub(database))
             using (var typeStore    = new TypeStore())
             using (var store        = new PocStore(hub, typeStore, "store")) {
                 TestRelationPoC.CreateStore(store).Wait();

@@ -24,11 +24,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
-                    using (var userHub        	= new DatabaseHub(userDatabase))
+                    using (var userHub        	= new FlioxHub(userDatabase))
                     using (var userStore        = new UserStore(userHub, UserStore.AuthenticationUser, null))
                     using (                       new UserDatabaseHandler   (userHub)) // authorize access to UserStore db and handle AuthenticateUser command
                     using (var database         = new MemoryDatabase())
-                    using (var hub          	= new DatabaseHub(database))
+                    using (var hub          	= new FlioxHub(database))
                     using (var eventBroker      = new EventBroker(false)) // require for SubscribeMessage() and SubscribeChanges()
                     {
                         var authenticator = new UserAuthenticator(userStore, userStore);
@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         // Test cases where authentication fails.
         // In these cases error messages contain details about authentication problems. 
-        private static async Task AssertNotAuthenticated(DatabaseHub hub) {
+        private static async Task AssertNotAuthenticated(FlioxHub hub) {
             var newArticle = new Article{ id="new-article" };
             using (var nullUser         = new PocStore(hub, null)) {
                 // test: userId == null
@@ -96,7 +96,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
 
         /// test authorization of read and write operations on a container
-        private static async Task AssertAuthAccessOperations(DatabaseHub hub) {
+        private static async Task AssertAuthAccessOperations(FlioxHub hub) {
             var newArticle = new Article{ id="new-article" };
             using (var mutateUser       = new PocStore(hub, "user-database")) {
                 // test: allow read & mutate 
@@ -151,7 +151,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         /// test authorization of subscribing to container changes. E.g. create, upsert, delete & patch.
-        private static async Task AssertAuthAccessSubscriptions(DatabaseHub hub) {
+        private static async Task AssertAuthAccessSubscriptions(FlioxHub hub) {
             using (var mutateUser       = new PocStore(hub, "user-deny")) {
                 mutateUser.SetToken("user-deny-token");
                 await mutateUser.TryExecuteTasksAsync(); // authenticate to simplify debugging below
@@ -180,7 +180,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         /// test authorization of sending messages and subscriptions to messages. Commands are messages too.
-        private static async Task AssertAuthMessage(DatabaseHub hub) {
+        private static async Task AssertAuthMessage(FlioxHub hub) {
             using (var denyUser      = new PocStore(hub, "user-deny"))
             {
                 // test: deny message
@@ -227,7 +227,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
-                    using (var userHub        	= new DatabaseHub(userDatabase))
+                    using (var userHub        	= new FlioxHub(userDatabase))
                     using (var serverStore      = new UserStore             (userHub, UserStore.Server, null))
                     using (var userStore        = new UserStore             (userHub, UserStore.AuthenticationUser, null))
                     using (                       new UserDatabaseHandler   (userHub)) {

@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.DB.Auth
 {
     /// <summary>
     /// Performs authentication and authorization by checking <see cref="SyncRequest.userId"/> and <see cref="SyncRequest.token"/>
-    /// in every <see cref="DatabaseHub.ExecuteSync"/> call.
+    /// in every <see cref="FlioxHub.ExecuteSync"/> call.
     /// </summary>
     public abstract class Authenticator
     {

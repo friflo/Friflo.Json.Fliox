@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public void TestQueryRef() {
             using (var __       = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
-            using (var hub      = new DatabaseHub(database))
+            using (var hub      = new FlioxHub(database))
             using (var store    = new PocStore(hub, new TypeStore(), "TestQueryRef")) {
                 var orders = store.orders;
                 var customerId = orders.Query(o => o.customer.Key == "customer-1");
@@ -118,7 +118,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 #if !UNITY_2020_1_OR_NEWER
         [Test]
         public void TestDictionaryValueIterator() {
-            var hub     = new DatabaseHub(new MemoryDatabase());
+            var hub     = new FlioxHub(new MemoryDatabase());
             var store   = new PocStore(hub, new TypeStore(), "TestDictionaryValueIterator");
             var readArticles = store.articles.Read();
                         readArticles.Find("missing-id");
@@ -172,7 +172,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public async Task TestMemorySyncRead() {
             using (var typeStore = new TypeStore()) {
                 var database    = new MemoryDatabase();
-                var hub         = new DatabaseHub(database);
+                var hub         = new FlioxHub(database);
                 var store       = new EntityIdStore(hub, typeStore, null);
                 var read = store.intEntities.Read();
                 var ids = new int [100];
@@ -201,7 +201,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 #endif
         }
 
-        private class NoopDatabaseHub : DatabaseHub
+        private class NoopDatabaseHub : FlioxHub
         {
             internal NoopDatabaseHub (string hostName = null) : base(null, hostName) { }
                 

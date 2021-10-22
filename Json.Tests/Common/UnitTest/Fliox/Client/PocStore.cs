@@ -20,9 +20,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public readonly EntitySet <string, Employee>    employees;
         public readonly EntitySet <string, TestType>    types;
         
-        public PocStore(DatabaseHub hub, TypeStore typeStore, string userId) : base (hub, typeStore, userId, null) {}
+        public PocStore(FlioxHub hub, TypeStore typeStore, string userId) : base (hub, typeStore, userId, null) {}
         /// <summary>constructor used for tests to reuse global <see cref="TestGlobals.typeStore"/> to enhance performance.</summary> 
-        public PocStore(DatabaseHub hub, string userId, string clientId = null): base (hub, TestGlobals.typeStore, userId, clientId) {}
+        public PocStore(FlioxHub hub, string userId, string clientId = null): base (hub, TestGlobals.typeStore, userId, clientId) {}
     }
     // ------------------------------ models ------------------------------
     public abstract class PocEntity

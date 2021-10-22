@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
     {
         // --- public
         public    readonly  IPools              pools;
-        public              DatabaseHub         Hub         => hub;
+        public              FlioxHub            Hub         => hub;
         public              IEventTarget        EventTarget => eventTarget;
         public              JsonKey             clientId;
         public              ClientIdValidation  clientIdValidation;
@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
         internal            AuthState           authState;
         private             PoolUsage           startUsage;
         internal            Action              canceler = () => {};
-        internal            DatabaseHub         hub;
+        internal            FlioxHub            hub;
         
         public override     string              ToString() => $"userId: {authState.user}, auth: {authState}";
 

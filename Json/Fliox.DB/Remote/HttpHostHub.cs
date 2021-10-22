@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         private  readonly   SchemaHandler       protocolSchemaHandler;
 
         
-        public HttpHostHub(DatabaseHub hub, string hostName = null) : base(hub, hostName) {
+        public HttpHostHub(FlioxHub hub, string hostName = null) : base(hub, hostName) {
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);

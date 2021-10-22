@@ -15,14 +15,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     public delegate JsonValue   WriteModifier (JsonValue value);
     public delegate EntityPatch PatchModifier (EntityPatch patch);
     
-    public class WriteModifierHub : DatabaseHub
+    public class WriteModifierHub : FlioxHub
     {
-        private readonly    DatabaseHub                         hub;
+        private readonly    FlioxHub                            hub;
         private readonly    Dictionary<string, WriteModifiers>  writeModifiers  = new Dictionary<string, WriteModifiers>();
         private readonly    Dictionary<string, PatchModifiers>  patchModifiers  = new Dictionary<string, PatchModifiers>();
         private readonly    EntityProcessor                     processor       = new EntityProcessor();
         
-        public WriteModifierHub(DatabaseHub hub) : base(hub.database) {
+        public WriteModifierHub(FlioxHub hub) : base(hub.database) {
             this.hub = hub;
         }
 

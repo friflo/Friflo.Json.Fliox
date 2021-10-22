@@ -20,9 +20,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     /// </summary>
     public class LoopbackHub : RemoteClientHub
     {
-        public readonly    DatabaseHub  host;
+        public readonly    FlioxHub  host;
 
-        public LoopbackHub(DatabaseHub hub, string hostName = null) : base(hub.database, hostName) {
+        public LoopbackHub(FlioxHub hub, string hostName = null) : base(hub.database, hostName) {
             host = hub;
         }
 

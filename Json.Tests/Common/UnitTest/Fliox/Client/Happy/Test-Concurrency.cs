@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/testConcurrencyDb"))
-                    using (var hub          = new DatabaseHub(database))
+                    using (var hub          = new FlioxHub(database))
                     {
                         await ConcurrentAccess(hub, 2, 2, 10, true);
                     }
@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        public static async Task ConcurrentAccess(DatabaseHub hub, int readerCount, int writerCount, int requestCount, bool singleEntity) {
+        public static async Task ConcurrentAccess(FlioxHub hub, int readerCount, int writerCount, int requestCount, bool singleEntity) {
             // --- prepare
             var typeStore   = new TypeStore();
             var store       = new SimpleStore(hub, typeStore, "prepare");
@@ -142,7 +142,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// <summary>
         /// Assert that <see cref="WebSocketClientHub"/> support being used by multiple clients aka
         /// <see cref="FlioxClient"/>'s and using concurrent requests.
-        /// All <see cref="DatabaseHub"/> implementations support this behavior, so <see cref="WebSocketClientHub"/>
+        /// All <see cref="FlioxHub"/> implementations support this behavior, so <see cref="WebSocketClientHub"/>
         /// have to ensure this also. It utilize <see cref="ProtocolRequest.reqId"/> to ensure this.
         /// </summary>
 #if !UNITY_5_3_OR_NEWER 
@@ -150,7 +150,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static async Task TestConcurrentWebSocket () {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database         = new MemoryDatabase())
-            using (var hub          	= new DatabaseHub(database))
+            using (var hub          	= new FlioxHub(database))
             using (var hostHub          = new HttpHostHub(hub))
             using (var server           = new HttpListenerHost("http://+:8080/", hostHub))
             using (var remoteHub        = new WebSocketClientHub("ws://localhost:8080/")) {
@@ -163,7 +163,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
 #endif
         
-        private static async Task ConcurrentWebSocket(DatabaseHub hub, int clientCount, int requestCount)
+        private static async Task ConcurrentWebSocket(FlioxHub hub, int clientCount, int requestCount)
         {
             // --- prepare
             var clients = new List<FlioxClient>();
@@ -204,7 +204,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     {
         public readonly EntitySet <int, SimplyEntity>   entities;
         
-        public SimpleStore(DatabaseHub hub, TypeStore typeStore, string clientId) : base (hub, typeStore, null, clientId) {}
+        public SimpleStore(FlioxHub hub, TypeStore typeStore, string clientId) : base (hub, typeStore, null, clientId) {}
     }
     
     // ------------------------------ models ------------------------------

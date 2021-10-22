@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
     /// <summary>
     /// Is used to ensure that <see cref="ReadEntitiesSetResult"/> returned by <see cref="EntityContainer.ReadEntitiesSet"/>
     /// contains valid <see cref="ReadEntitiesSetResult.entities"/>.
-    /// Validation is required for <see cref="DatabaseHub"/> implementations which cannot ensure that the value of
+    /// Validation is required for <see cref="FlioxHub"/> implementations which cannot ensure that the value of
     /// its key/values are JSON. See <see cref="ReadEntitiesSetResult.ValidateEntities"/>.
     /// </summary>
     public sealed class EntityProcessor : IDisposable

@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
         None,
         /// <summary>
         /// Inform about an unhandled exception in a <see cref="EntityContainer"/> implementation which need to be fixed.
-        /// More information at <see cref="DatabaseHub.ExecuteSync"/>.
+        /// More information at <see cref="FlioxHub.ExecuteSync"/>.
         /// </summary>
         UnhandledException,
         
