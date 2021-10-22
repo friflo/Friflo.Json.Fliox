@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.DB.Auth
                     users.TryAdd(userId, user);
                 }
             }
-            messageContext.authState.SetFailed(user, "not authenticated", unknown);
+            messageContext.SetAuthenticationFailed(user, "not authenticated", unknown);
             return Task.CompletedTask;
         }
     }

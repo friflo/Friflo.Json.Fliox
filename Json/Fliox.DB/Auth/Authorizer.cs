@@ -13,9 +13,9 @@ namespace Friflo.Json.Fliox.DB.Auth
     /// <summary>
     /// Authorize a given task.
     /// <br></br>
-    /// This <see cref="Authorizer"/> it stored at <see cref="AuthState.Authorizer"/>.
-    /// The <see cref="AuthState.Authorizer"/> is set via <see cref="Authenticator.Authenticate"/> for
-    /// <see cref="AuthState.Authenticated"/> and for not <see cref="AuthState.Authenticated"/> users.  
+    /// This <see cref="Authorizer"/> it stored at <see cref="AuthState.authorizer"/>.
+    /// The <see cref="AuthState.authorizer"/> is set via <see cref="Authenticator.Authenticate"/> for
+    /// <see cref="AuthState.authenticated"/> and for not <see cref="AuthState.authenticated"/> users.  
     /// </summary>
     public abstract class Authorizer
     {

@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.DB.Auth
             if (clientId.IsNull()) {
                 return ClientIdValidation.IsNull;
             }
-            var user = messageContext.authState.User;
+            var user = messageContext.User;
             if (clientController.UseClientIdFor(user, clientId))
                 return ClientIdValidation.Valid;
             return ClientIdValidation.Invalid;
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.DB.Auth
                     return true;
                 case ClientIdValidation.IsNull:
                     error = null;
-                    var user                            = messageContext.authState.User;
+                    var user                            = messageContext.User;
                     messageContext.clientId             = clientController.NewClientIdFor(user);
                     messageContext.clientIdValidation   = ClientIdValidation.Valid;
                     return true;

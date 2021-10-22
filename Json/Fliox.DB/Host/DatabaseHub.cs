@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.DB.Host
         /// </summary>
         public virtual async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.hub = this;
-            if (messageContext.authState.AuthExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
+            if (messageContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             messageContext.clientId = syncRequest.clientId;
             
             await authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
@@ -199,7 +199,7 @@ namespace Friflo.Json.Fliox.DB.Host
 
         private void UpdateRequestStats(string database, SyncRequest syncRequest, MessageContext messageContext) {
             if (database == null) database = "default";
-            var user = messageContext.authState.User;
+            var user = messageContext.User;
             RequestCount.UpdateCounts(user.requestCounts, database, syncRequest);
             ref var clientId = ref messageContext.clientId;
             if (clientId.IsNull())

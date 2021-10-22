@@ -27,6 +27,8 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
         public              IEventTarget        EventTarget => eventTarget;
         public              JsonKey             clientId;
         public              ClientIdValidation  clientIdValidation;
+        public              User                User            => authState.user;
+        public              bool                Authenticated   => authState.authenticated;
 
         // --- internal / private by intention
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
@@ -36,7 +38,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
         internal            Action              canceler = () => {};
         internal            DatabaseHub         hub;
         
-        public override     string              ToString() => $"userId: {authState.User}, auth: {authState}";
+        public override     string              ToString() => $"userId: {authState.user}, auth: {authState}";
 
         internal MessageContext (IPools pools, IEventTarget eventTarget) {
             this.pools          = pools;
@@ -49,6 +51,23 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
             startUsage          = pools.PoolUsage;
             this.eventTarget    = eventTarget;
             this.clientId       = clientId;
+        }
+        
+        public void SetAuthenticationFailed(User user, string error, Authorizer authorizer) {
+            if (authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
+            authState.user            = user ?? throw new ArgumentNullException(nameof(user));
+            authState.authExecuted    = true;
+            authState.authenticated   = false;
+            authState.authorizer      = authorizer ?? throw new ArgumentNullException(nameof(authorizer));
+            authState.error           = error;
+        }
+        
+        public void SetAuthenticationSuccess (User user, Authorizer authorizer) {
+            if (authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
+            authState.user            = user ?? throw new ArgumentNullException(nameof(user));
+            authState.authExecuted    = true;
+            authState.authenticated   = true;
+            authState.authorizer      = authorizer ?? throw new ArgumentNullException(nameof(authorizer));
         }
         
         internal void Cancel() {

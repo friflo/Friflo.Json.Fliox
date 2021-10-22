@@ -36,13 +36,13 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
         }
 
         private static bool AuthorizeTask(SyncRequestTask task, MessageContext messageContext, out SyncTaskResult error) {
-            var authorizer = messageContext.authState.Authorizer;
+            var authorizer = messageContext.authState.authorizer;
             if (authorizer.Authorize(task, messageContext)) {
                 error = null;
                 return true;
             }
             var message = "not authorized";
-            var authError = messageContext.authState.Error; 
+            var authError = messageContext.authState.error; 
             if (authError != null) {
                 message = $"{message}. {authError}";
             }

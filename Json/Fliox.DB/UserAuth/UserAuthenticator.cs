@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     /// <summary>
     /// Performs user authentication by validating the "userId" and the "token" assigned to an <see cref="Client.FlioxClient"/>
     /// <br></br>
-    /// If authentication succeed it set the <see cref="AuthState.Authorizer"/> derived from the roles assigned to the user.
+    /// If authentication succeed it set the <see cref="AuthState.authorizer"/> derived from the roles assigned to the user.
     /// If authentication fails the given default <see cref="Authorizer"/> is used for the user.
     /// </summary>
     public class UserAuthenticator : Authenticator
@@ -72,20 +72,20 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         {
             var userId = syncRequest.userId;
             if (userId.IsNull()) {
-                messageContext.authState.SetFailed(anonymousUser, "user authentication requires 'user' id", unknown);
+                messageContext.SetAuthenticationFailed(anonymousUser, "user authentication requires 'user' id", unknown);
                 return;
             }
             var token = syncRequest.token;
             if (token == null) {
-                messageContext.authState.SetFailed(anonymousUser, "user authentication requires 'token'", unknown);
+                messageContext.SetAuthenticationFailed(anonymousUser, "user authentication requires 'token'", unknown);
                 return;
             }
             if (users.TryGetValue(userId, out User user)) {
                 if (user.token != token) {
-                    messageContext.authState.SetFailed(user, InvalidUserToken, unknown);
+                    messageContext.SetAuthenticationFailed(user, InvalidUserToken, unknown);
                     return;
                 }
-                messageContext.authState.SetSuccess(user, user.authorizer);
+                messageContext.SetAuthenticationSuccess(user, user.authorizer);
                 return;
             }
             var command = new AuthenticateUser { userId = userId, token = token };
@@ -99,10 +99,10 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             }
             
             if (user == null || token != user.token) {
-                messageContext.authState.SetFailed(anonymousUser, InvalidUserToken, unknown);
+                messageContext.SetAuthenticationFailed(anonymousUser, InvalidUserToken, unknown);
                 return;
             }
-            messageContext.authState.SetSuccess(user, user.authorizer);
+            messageContext.SetAuthenticationSuccess(user, user.authorizer);
         }
         
         public override ClientIdValidation ValidateClientId(ClientController clientController, MessageContext messageContext) {
@@ -110,10 +110,10 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             if (clientId.IsNull()) {
                 return ClientIdValidation.IsNull;
             }
-            if (!messageContext.authState.Authenticated) {
+            if (!messageContext.Authenticated) {
                 return ClientIdValidation.Invalid;
             }
-            var user        = messageContext.authState.User;
+            var user        = messageContext.User;
             var userClients = user.clients; 
             if (userClients.Contains(clientId)) {
                 return ClientIdValidation.Valid;
@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                     error = $"invalid client id. 'clt': {messageContext.clientId}";
                     return false;
                 case ClientIdValidation.IsNull:
-                    var user                            = messageContext.authState.User; 
+                    var user                            = messageContext.User; 
                     messageContext.clientId             = clientController.NewClientIdFor(user);
                     messageContext.clientIdValidation   = ClientIdValidation.Valid;
                     error = null;
