@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.DB.Host
 #endif
     public class DatabaseHub : IDisposable
     {
-        public  readonly    EntityDatabase      db;      
+        public  readonly    EntityDatabase      database;      
         /// <summary>
         /// An optional <see cref="Event.EventBroker"/> used to enable Pub-Sub. If enabled the database send
         /// events to a client for database changes and messages the client has subscribed.
@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.DB.Host
         
         /// <summary> Construct a default database </summary>
         public DatabaseHub (EntityDatabase database, string hostName = null) {
-            db              = database;
+            this.database              = database;
             this.hostName   = hostName ?? "host";
         }
        
@@ -138,15 +138,15 @@ namespace Friflo.Json.Fliox.DB.Host
             await authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
             messageContext.clientIdValidation = authenticator.ValidateClientId(clientController, messageContext);
 
-            var database = syncRequest.database;
-            EntityDatabase selectedDB = this.db;
-            if (database != null) {
-                if (!extensionDbs.TryGetValue(database, out selectedDB))
+            var syncDatabase = syncRequest.database;
+            EntityDatabase db = database;
+            if (syncDatabase != null) {
+                if (!extensionDbs.TryGetValue(syncDatabase, out db))
                     return new MsgResponse<SyncResponse>($"database not found: '{syncRequest.database}'");
-                await selectedDB.ExecuteSyncPrepare(syncRequest, messageContext).ConfigureAwait(false);
+                await db.ExecuteSyncPrepare(syncRequest, messageContext).ConfigureAwait(false);
             }
-            if (database != selectedDB.extensionName)
-                throw new InvalidOperationException($"Unexpected ExtensionName. expect: {database}, was: {selectedDB.extensionName}");
+            if (syncDatabase != db.name)
+                throw new InvalidOperationException($"Unexpected ExtensionName. expect: {syncDatabase}, was: {db.name}");
                     
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null) {
@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.DB.Host
             }
             var tasks       = new List<SyncTaskResult>(requestTasks.Count);
             var resultMap   = new Dictionary<string, ContainerEntities>();
-            var response    = new SyncResponse { tasks = tasks, resultMap = resultMap, database = database };
+            var response    = new SyncResponse { tasks = tasks, resultMap = resultMap, database = syncDatabase };
             
             for (int index = 0; index < requestTasks.Count; index++) {
                 var task = requestTasks[index];
@@ -164,14 +164,14 @@ namespace Friflo.Json.Fliox.DB.Host
                 }
                 task.index = index;
                 try {
-                    var result = await selectedDB.taskHandler.ExecuteTask(task, selectedDB, response, messageContext).ConfigureAwait(false);
+                    var result = await db.taskHandler.ExecuteTask(task, db, response, messageContext).ConfigureAwait(false);
                     tasks.Add(result);
                 } catch (Exception e) {
                     tasks.Add(TaskExceptionError(e)); // Note!  Should not happen - see documentation of this method.
                 }
             }
             hostStats.Update(syncRequest);
-            UpdateRequestStats(database, syncRequest, messageContext);
+            UpdateRequestStats(syncDatabase, syncRequest, messageContext);
 
             // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
             // As a client is required to use response.clientId it is set to null if given clientId was invalid.
@@ -213,7 +213,7 @@ namespace Friflo.Json.Fliox.DB.Host
         private readonly   Dictionary<string, EntityDatabase> extensionDbs = new Dictionary<string, EntityDatabase>();
         
         public void AddExtensionDB(EntityDatabase extensionDB) {
-            extensionDbs.Add(extensionDB.extensionName, extensionDB);
+            extensionDbs.Add(extensionDB.name, extensionDB);
         }
 
         public EntityDatabase AddExtensionDB (string extensionName, DbOpt opt = null) {

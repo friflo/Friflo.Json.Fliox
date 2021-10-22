@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.DB.Client
             ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
             var subscriptionProcessor   = new SubscriptionProcessor(this);
-            _intern = new ClientIntern(null, typeStore, hub, hub.db, tracer, eventTarget, subscriptionProcessor);
+            _intern = new ClientIntern(null, typeStore, hub, hub.database, tracer, eventTarget, subscriptionProcessor);
             _intern.syncStore = new SyncStore();
             SetUserClient(userId, clientId);
             StoreUtils.InitEntitySets(this);
@@ -318,7 +318,7 @@ namespace Friflo.Json.Fliox.DB.Client
             var pendingSyncs = _intern.pendingSyncs;
             try {
                 var database            = _intern.database; 
-                syncRequest.database    = database?.extensionName;
+                syncRequest.database    = database?.name;
                 var hub                 = _intern.hub;
                 task = hub.ExecuteSync(syncRequest, messageContext);
 

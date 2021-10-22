@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         /// Only set to true for testing. It avoids an early out at <see cref="Host.Event.EventSubscriber.SendEvents"/> 
         public              bool            fakeOpenClosedSockets;
 
-        protected RemoteHostHub(DatabaseHub hub, string hostName) : base(hub.db, hostName) {
+        protected RemoteHostHub(DatabaseHub hub, string hostName) : base(hub.database, hostName) {
             this.localHub = hub;
         }
         
@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         public  override    bool            Pretty       => local.Pretty;
 
         public RemoteHostContainer(string name, DatabaseHub database, EntityContainer localContainer)
-            : base(name, database.db) {
+            : base(name, database.database) {
             local = localContainer;
         }
 

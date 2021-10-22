@@ -22,8 +22,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     {
         public readonly    DatabaseHub  host;
 
-        public LoopbackHub(DatabaseHub database, string hostName = null) : base(database.db, hostName) {
-            host = database;
+        public LoopbackHub(DatabaseHub hub, string hostName = null) : base(hub.database, hostName) {
+            host = hub;
         }
 
         public override void Dispose() {

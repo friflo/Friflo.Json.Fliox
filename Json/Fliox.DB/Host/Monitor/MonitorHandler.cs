@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                     var message = (SendMessage)task;
                     if (message.name == MonitorStore.ClearStats) {
                         // clear request counts of default database. They contain also request counts of all extension databases.
-                        var baseDB = monitorDb.extensionBase;
+                        var baseDB = monitorDb.hub;
                         baseDB.Authenticator.ClearUserStats();
                         baseDB.ClientController.ClearClientStats();
                         baseDB.hostStats.ClearHostStats();

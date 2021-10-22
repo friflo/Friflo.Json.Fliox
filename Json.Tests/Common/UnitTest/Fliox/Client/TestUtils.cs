@@ -137,13 +137,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Test]
         public void TestMemoryFlioxClient() {
             using (var typeStore = new TypeStore()) {
-                var database    = new NoopDatabaseHub();
-                var _           = new PocStore(database, typeStore, null);
-                var __          = new PocStore(database, typeStore, null);
+                var hub         = new NoopDatabaseHub();
+                var _           = new PocStore(hub, typeStore, null);
+                var __          = new PocStore(hub, typeStore, null);
                 
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 // ReSharper disable once UnusedVariable
-                var store = new PocStore(database, typeStore, null); // ~ 6 µs
+                var store = new PocStore(hub, typeStore, null); // ~ 6 µs
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 
                 Console.WriteLine($"PocStore memory: {diff}");
@@ -155,8 +155,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Test]
         public async Task TestMemorySync() {
             using (var typeStore = new TypeStore()) {
-                var database    = new NoopDatabaseHub();
-                var store       = new PocStore(database, typeStore, null);
+                var hub         = new NoopDatabaseHub();
+                var store       = new PocStore(hub, typeStore, null);
                 await store.ExecuteTasksAsync(); // force one time allocations
                 // GC.Collect();
                 

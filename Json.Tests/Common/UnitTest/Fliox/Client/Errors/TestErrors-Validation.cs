@@ -28,19 +28,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database         = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
             using (var hub          	= new DatabaseHub(database))
-            using (var modifierDatabase = new WriteModifierHub(hub))
-            using (var createStore      = new PocStore(modifierDatabase, "createStore"))
+            using (var modifierHub      = new WriteModifierHub(hub))
+            using (var createStore      = new PocStore(modifierHub, "createStore"))
             using (var nativeSchema     = new NativeTypeSchema(typeof(PocStore)))
             using (database.Schema  = new DatabaseSchema(nativeSchema)) {
-                await AssertValidation(createStore, modifierDatabase);
+                await AssertValidation(createStore, modifierHub);
             }
         }
         
-        private static async Task AssertValidation(PocStore store, WriteModifierHub modifyDb) {
-            modifyDb.ClearErrors();
+        private static async Task AssertValidation(PocStore store, WriteModifierHub modifierHub) {
+            modifierHub.ClearErrors();
             var articles = store.articles;
             
-            var articleModifier = modifyDb.GetWriteModifiers(nameof(PocStore.articles));
+            var articleModifier = modifierHub.GetWriteModifiers(nameof(PocStore.articles));
             articleModifier.writes.Add("article-missing-id",     val => new JsonValue("{\"id\": \"article-missing-id\" }"));
             articleModifier.writes.Add("article-incorrect-type", val => new JsonValue(val.json.AsString().Replace("\"xxx\"", "123")));
 
@@ -76,7 +76,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             
             // test validation errors for patches
-            var patchModifier = modifyDb.GetPatchModifiers(nameof(PocStore.articles));
+            var patchModifier = modifierHub.GetPatchModifiers(nameof(PocStore.articles));
             patchModifier.patches.Add("article-2", patch => {
                 var replace = (PatchReplace)patch.patches[0];
                 replace.value.json = new JsonUtf8("123");

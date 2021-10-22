@@ -28,11 +28,11 @@ namespace Friflo.Json.Tests.Main
             {
                 app.UseDeveloperExceptionPage();
             }
-            var database                = new MemoryDatabase();
-            var hub                     = new DatabaseHub(database);
-            var hostDatabase            = new HttpHostHub (hub);
-            hub.EventBroker             = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
-            hostDatabase.requestHandler = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
+            var database            = new MemoryDatabase();
+            var hub                 = new DatabaseHub(database);
+            var hostHub             = new HttpHostHub (hub);
+            hub.EventBroker         = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
+            hostHub.requestHandler  = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
 
             app.UseRouting();
             app.UseWebSockets();
@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Main
                 });
                 
                 endpoints.Map("/{*path}", async context => {
-                    await context.HandleFlioxHostRequest(hostDatabase);
+                    await context.HandleFlioxHostRequest(hostHub);
                 });
             });
         }

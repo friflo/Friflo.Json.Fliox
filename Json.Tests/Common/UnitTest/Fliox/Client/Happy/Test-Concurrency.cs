@@ -151,13 +151,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database         = new MemoryDatabase())
             using (var hub          	= new DatabaseHub(database))
-            using (var hostDatabase     = new HttpHostHub(hub))
-            using (var server           = new HttpListenerHost("http://+:8080/", hostDatabase))
-            using (var remoteDatabase   = new WebSocketClientHub("ws://localhost:8080/")) {
+            using (var hostHub          = new HttpHostHub(hub))
+            using (var server           = new HttpListenerHost("http://+:8080/", hostHub))
+            using (var remoteHub        = new WebSocketClientHub("ws://localhost:8080/")) {
                 await RunServer(server, async () => {
-                    await remoteDatabase.Connect();
-                    await ConcurrentWebSocket(remoteDatabase, 4, 10); // 10 requests are sufficient to force concurrency error
-                    await remoteDatabase.Close();
+                    await remoteHub.Connect();
+                    await ConcurrentWebSocket(remoteHub, 4, 10); // 10 requests are sufficient to force concurrency error
+                    await remoteHub.Close();
                 });
             }
         }

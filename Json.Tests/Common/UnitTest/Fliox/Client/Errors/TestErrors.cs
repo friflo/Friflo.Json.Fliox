@@ -29,9 +29,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         private async Task FileUse() {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var testDatabase = new TestDatabaseHub(fileDatabase))
-            using (var useStore     = new PocStore(testDatabase, "useStore")) {
-                await TestStoresErrors(useStore, testDatabase);
+            using (var testHub      = new TestDatabaseHub(fileDatabase))
+            using (var useStore     = new PocStore(testHub, "useStore")) {
+                await TestStoresErrors(useStore, testHub);
             }
         }
         
@@ -41,10 +41,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         private async Task LoopbackUse() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var testDatabase     = new TestDatabaseHub(fileDatabase))
-            using (var loopbackDatabase = new LoopbackHub(testDatabase))
-            using (var useStore         = new PocStore(loopbackDatabase, "useStore", "use-client")) {
-                await TestStoresErrors(useStore, testDatabase);
+            using (var testHub          = new TestDatabaseHub(fileDatabase))
+            using (var loopbackHub      = new LoopbackHub(testHub))
+            using (var useStore         = new PocStore(loopbackHub, "useStore", "use-client")) {
+                await TestStoresErrors(useStore, testHub);
             }
         }
         
@@ -54,13 +54,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         private async Task HttpUse() {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var testDatabase = new TestDatabaseHub(fileDatabase))
-            using (var hostDatabase = new HttpHostHub(testDatabase))
-            using (var server       = new HttpListenerHost("http://+:8080/", hostDatabase)) {
+            using (var testHub      = new TestDatabaseHub(fileDatabase))
+            using (var hostHub      = new HttpHostHub(testHub))
+            using (var server       = new HttpListenerHost("http://+:8080/", hostHub)) {
                 await Happy.TestStore.RunServer(server, async () => {
                     using (var remoteDatabase   = new HttpClientHub("http://localhost:8080/"))
                     using (var useStore         = new PocStore(remoteDatabase, "useStore", "use-client")) {
-                        await TestStoresErrors(useStore, testDatabase);
+                        await TestStoresErrors(useStore, testHub);
                     }
                 });
             }
@@ -82,9 +82,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         private static async Task Test(Func<PocStore, TestDatabaseHub, Task> test) {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var testDatabase = new TestDatabaseHub(fileDatabase))
-            using (var useStore     = new PocStore(testDatabase, "useStore")) {
-                await test(useStore, testDatabase);
+            using (var testHub      = new TestDatabaseHub(fileDatabase))
+            using (var useStore     = new PocStore(testHub, "useStore")) {
+                await test(useStore, testHub);
             }
         }
     }

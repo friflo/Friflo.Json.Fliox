@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public TestDatabaseHub(EntityDatabase database, string hostName = null)
             : base(new TestDatabase (database), hostName)
         {
-            testDatabase = (TestDatabase)db;
+            testDatabase = (TestDatabase)base.database;
         }
         
         public void ClearErrors() {

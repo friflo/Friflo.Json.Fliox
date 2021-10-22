@@ -23,12 +23,12 @@ namespace Friflo.Json.Tests.Main
         public static async Task WebsocketDbThroughput() {
             using (var database         = new MemoryDatabase())
             using (var hub          	= new DatabaseHub(database))
-            using (var hostDatabase     = new HttpHostHub(hub))
-            using (var server           = new HttpListenerHost("http://+:8080/", hostDatabase))
-            using (var remoteDatabase   = new WebSocketClientHub("ws://localhost:8080/")) {
+            using (var hostHub          = new HttpHostHub(hub))
+            using (var server           = new HttpListenerHost("http://+:8080/", hostHub))
+            using (var remoteHub        = new WebSocketClientHub("ws://localhost:8080/")) {
                 await TestStore.RunServer(server, async () => {
-                    await remoteDatabase.Connect();
-                    await TestStore.ConcurrentAccess(remoteDatabase, 4, 0, 1_000_000, false);
+                    await remoteHub.Connect();
+                    await TestStore.ConcurrentAccess(remoteHub, 4, 0, 1_000_000, false);
                 });
             }
         }
@@ -36,8 +36,8 @@ namespace Friflo.Json.Tests.Main
         public static async Task HttpDbThroughput() {
             using (var database         = new MemoryDatabase())
             using (var hub          	= new DatabaseHub(database))
-            using (var hostDatabase     = new HttpHostHub(hub))
-            using (var server           = new HttpListenerHost("http://+:8080/", hostDatabase))
+            using (var hostHub          = new HttpHostHub(hub))
+            using (var server           = new HttpListenerHost("http://+:8080/", hostHub))
             using (var remoteDatabase   = new HttpClientHub("ws://localhost:8080/")) {
                 await TestStore.RunServer(server, async () => {
                     await TestStore.ConcurrentAccess(remoteDatabase, 4, 0, 1_000_000, false);
@@ -48,8 +48,8 @@ namespace Friflo.Json.Tests.Main
         public static async Task LoopbackDbThroughput() {
             var database                = new MemoryDatabase();
             using (var hub          	= new DatabaseHub(database))
-            using (var loopbackDatabase = new LoopbackHub(hub)) {
-                await TestStore.ConcurrentAccess(loopbackDatabase, 4, 0, 1_000_000, false);
+            using (var loopbackHub      = new LoopbackHub(hub)) {
+                await TestStore.ConcurrentAccess(loopbackHub, 4, 0, 1_000_000, false);
             }
         }
     }

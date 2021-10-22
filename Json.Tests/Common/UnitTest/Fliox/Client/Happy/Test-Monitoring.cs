@@ -52,13 +52,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         [Test]
         public static async Task TestMonitoringHttp() {
-            using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var database         = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
-            using (var hub          	= new DatabaseHub(database, HostName))
-            using (var hostDatabase     = new HttpHostHub(hub))
-            using (var server           = new HttpListenerHost("http://+:8080/", hostDatabase)) 
-            using (var monitor          = new MonitorDatabase(hub))
-            using (var clientHub        = new HttpClientHub("http://localhost:8080/")) {
+            using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
+            using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var hub          = new DatabaseHub(database, HostName))
+            using (var hostHub      = new HttpHostHub(hub))
+            using (var server       = new HttpListenerHost("http://+:8080/", hostHub)) 
+            using (var monitor      = new MonitorDatabase(hub))
+            using (var clientHub    = new HttpClientHub("http://localhost:8080/")) {
                 hub.AddExtensionDB(monitor);
                 await RunServer(server, async () => {
                     var monitorDB   = clientHub.AddExtensionDB(MonitorDatabase.Name);

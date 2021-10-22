@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.DB.Host
 {
     public class DbOpt {
         /// <see cref="EntityDatabase.customContainerName"/>
-        public  readonly    CustomContainerName     customContainerName;
+        public  readonly    CustomContainerName customContainerName;
         
         public readonly     TaskHandler         taskHandler;
         
@@ -52,10 +52,10 @@ namespace Friflo.Json.Fliox.DB.Host
         public readonly     TaskHandler         taskHandler;
         
         
-        internal readonly   string              extensionName;
-        internal readonly   DatabaseHub         extensionBase;
+        internal readonly   string              name;
+        internal readonly   DatabaseHub         hub;
 
-        public override     string              ToString() => extensionName != null ? $"'{extensionName}'" : "";
+        public override     string              ToString() => name != null ? $"'{name}'" : "";
 
         protected EntityDatabase (DbOpt opt){
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
@@ -63,12 +63,12 @@ namespace Friflo.Json.Fliox.DB.Host
         }
         
         protected EntityDatabase (
-            DatabaseHub     extensionBase,
-            string          extensionName,
-            DbOpt           opt) : this(opt)
+            DatabaseHub hub,
+            string      name,
+            DbOpt       opt) : this(opt)
         {
-            this.extensionBase  = extensionBase ?? throw new ArgumentNullException(nameof(extensionBase));
-            this.extensionName  = extensionName ?? throw new ArgumentNullException(nameof(extensionName));
+            this.hub    = hub  ?? throw new ArgumentNullException(nameof(hub));
+            this.name   = name ?? throw new ArgumentNullException(nameof(name));
         }
 
         public virtual void Dispose() {
