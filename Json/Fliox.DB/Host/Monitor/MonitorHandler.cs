@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
 {
     internal sealed class MonitorHandler : TaskHandler
     {
-        internal readonly MonitorDatabase monitorDB;
+        private  readonly   MonitorDatabase     monitorDB;
         
         internal MonitorHandler(MonitorDatabase monitorDB) {
             this.monitorDB = monitorDB;
