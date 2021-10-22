@@ -26,10 +26,10 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
         public              DatabaseHub         Hub         => hub;
         public              IEventTarget        EventTarget => eventTarget;
         public              JsonKey             clientId;
+        public              ClientIdValidation  clientIdValidation;
 
         // --- internal / private by intention
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>
-        internal            ClientIdValidation  clientIdValidation;
         internal  readonly  IEventTarget        eventTarget;
         internal            AuthState           authState;
         private             PoolUsage           startUsage;
