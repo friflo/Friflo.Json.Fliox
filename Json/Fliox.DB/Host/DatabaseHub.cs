@@ -17,17 +17,16 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Host
 {
     /// <summary>
-    /// <see cref="DatabaseHub"/> is an abstraction for a specific database adapter / implementation e.g. a
-    /// <see cref="MemoryDatabase"/> or a <see cref="FileDatabase"/>.
-    /// An <see cref="DatabaseHub"/> contains multiple <see cref="EntityContainer"/>'s each representing
-    /// a table / collection of a database. Each container is intended to store the records / entities of a specific type.
-    /// E.g. one container for storing JSON objects representing 'articles' another one for storing 'orders'.
-    /// <br/>
     /// An <see cref="DatabaseHub"/> instance is the single entry point used to handle all requests send by a client -
     /// e.g. an <see cref="Client.FlioxClient"/>. It handle these requests by its <see cref="ExecuteSync"/> method.
-    /// A request is represented by a <see cref="SyncRequest"/> containing all database operations like create, read,
-    /// upsert, delete and all messages / commands send by a client in the <see cref="SyncRequest.tasks"/> list.
-    /// The <see cref="DatabaseHub"/> execute these tasks by its <see cref="EntityDatabase.TaskHandler"/>.
+    /// A request is represented by a <see cref="SyncRequest"/> and its <see cref="SyncRequest.tasks"/> are executed
+    /// on the given <see cref="SyncRequest.database"/>. If database == null the default <see cref="database"/> is used.
+    /// <br/>
+    /// The <see cref="SyncRequest.tasks"/> contains all database operations like create, read, upsert, delete
+    /// and all messages / commands send by a client.
+    /// 
+    /// The <see cref="DatabaseHub"/> execute these tasks by the <see cref="EntityDatabase.taskHandler"/> of the
+    /// specified <see cref="database"/>.
     /// <br/>
     /// Instances of <see cref="DatabaseHub"/> and all its implementation are designed to be thread safe enabling multiple
     /// clients e.g. <see cref="Client.FlioxClient"/> operating on the same <see cref="DatabaseHub"/> instance.
@@ -43,10 +42,6 @@ namespace Friflo.Json.Fliox.DB.Host
     ///   <item>
     ///     User authentication and task authorization. Each task is authorized individually. To enable this assign 
     ///     a <see cref="UserAuth.UserAuthenticator"/> to <see cref="Authenticator"/>.
-    ///   </item>
-    ///   <item>
-    ///     Type / schema validation of JSON entities written (create, update and patch) to its containers by assigning
-    ///     a <see cref="DatabaseSchema"/> to <see cref="Schema"/>.
     ///   </item>
     ///   <item>
     ///     Monitoring of database access (requests) by adding a <see cref="Monitor.MonitorDatabase"/> with
@@ -70,7 +65,7 @@ namespace Friflo.Json.Fliox.DB.Host
         /// <summary>
         /// An <see cref="Auth.Authenticator"/> performs authentication and authorization for all
         /// <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/> sent by a client.
-        /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="EntityDatabase.TaskHandler"/>.
+        /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="EntityDatabase.taskHandler"/>.
         /// </summary>
         public              Authenticator       Authenticator   { get => authenticator; set => authenticator = NotNull(value, nameof(Authenticator)); }
         

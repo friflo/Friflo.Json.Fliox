@@ -23,6 +23,16 @@ namespace Friflo.Json.Fliox.DB.Host
     
     public delegate string CustomContainerName(string name);
     
+    /// <summary>
+    /// <see cref="EntityDatabase"/> is an abstraction for a specific database adapter / implementation e.g. a
+    /// <see cref="MemoryDatabase"/> or a <see cref="FileDatabase"/>.
+    /// An <see cref="EntityDatabase"/> contains multiple <see cref="EntityContainer"/>'s each representing
+    /// a table / collection of a database. Each container is intended to store the records / entities of a specific type.
+    /// E.g. one container for storing JSON objects representing 'articles' another one for storing 'orders'.
+    /// <br/>
+    /// Optionally a <see cref="DatabaseSchema"/> can be assigned to the database via the property <see cref="Schema"/>.
+    /// This enables Type / schema validation of JSON entities written (create, update and patch) to its containers.
+    /// </summary>
     public abstract class EntityDatabase : IDisposable
     {
         /// <summary> map of of containers identified by their container name </summary>
