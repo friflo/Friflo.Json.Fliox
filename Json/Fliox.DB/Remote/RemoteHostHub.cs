@@ -111,8 +111,8 @@ namespace Friflo.Json.Fliox.DB.Remote
         
         public  override    bool            Pretty       => local.Pretty;
 
-        public RemoteHostContainer(string name, DatabaseHub database, EntityContainer localContainer)
-            : base(name, database.database) {
+        public RemoteHostContainer(string name, DatabaseHub hub, EntityContainer localContainer)
+            : base(name, hub.database) {
             local = localContainer;
         }
 

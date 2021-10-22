@@ -17,10 +17,10 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     {
         private readonly SharedPool<UserStore>   storePool;
         
-        public UserDatabaseHandler(DatabaseHub authDatabase) {
-            storePool = new SharedPool<UserStore> (() => new UserStore(authDatabase, UserStore.Server, null));
-            authDatabase.Authenticator = new UserDatabaseAuthenticator();
-            authDatabase.database.taskHandler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(AuthenticateUser); 
+        public UserDatabaseHandler(DatabaseHub authHub) {
+            storePool = new SharedPool<UserStore> (() => new UserStore(authHub, UserStore.Server, null));
+            authHub.Authenticator = new UserDatabaseAuthenticator();
+            authHub.database.taskHandler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(AuthenticateUser); 
         }
         
         public void Dispose() {

@@ -20,14 +20,14 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         
         public const string Name = "monitor";
         
-        public MonitorDatabase (DatabaseHub extensionBase, DbOpt opt = null)
-            : base (extensionBase, Name, opt, new MonitorHandler())
+        public MonitorDatabase (DatabaseHub hub, DbOpt opt = null)
+            : base (hub, Name, opt, new MonitorHandler())
         {
             taskHandler.AddCommandHandler<ClearStats, ClearStatsResult>(ClearStats);
 
             stateDB         = new MemoryDatabase();
             var monitorHub  = new DatabaseHub(stateDB);
-            stateStore  = new MonitorStore(extensionBase.hostName, monitorHub, HostTypeStore.Get());
+            stateStore  = new MonitorStore(hub.hostName, monitorHub, HostTypeStore.Get());
         }
 
         public override void Dispose() {
@@ -70,8 +70,8 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
     
     public partial class MonitorStore
     {
-        internal void UpdateClients(DatabaseHub db, string monitorName) {
-            foreach (var pair in db.ClientController.Clients) {
+        internal void UpdateClients(DatabaseHub hub, string monitorName) {
+            foreach (var pair in hub.ClientController.Clients) {
                 UserClient client   = pair.Value;
                 var clientId        = pair.Key;
                 clients.TryGet(clientId, out var clientInfo);
@@ -80,16 +80,16 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
                 }
                 clientInfo.user     = client.userId;
                 RequestCount.CountsToList(clientInfo.counts, client.requestCounts, monitorName);
-                clientInfo.ev       = GetEventInfo(db, clientInfo);
+                clientInfo.ev       = GetEventInfo(hub, clientInfo);
 
                 clients.Upsert(clientInfo);
             }
         }
         
-        private static EventInfo? GetEventInfo (DatabaseHub db, ClientInfo clientInfo) {
-            if (db.EventBroker == null)
+        private static EventInfo? GetEventInfo (DatabaseHub hub, ClientInfo clientInfo) {
+            if (hub.EventBroker == null)
                 return null;
-            if (!db.EventBroker.TryGetSubscriber(clientInfo.id, out var subscriber)) {
+            if (!hub.EventBroker.TryGetSubscriber(clientInfo.id, out var subscriber)) {
                 return null;
             }
             var msgSubs     = clientInfo.ev?.messageSubs;

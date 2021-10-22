@@ -25,15 +25,15 @@ namespace Friflo.Json.Fliox.DB.Client
             store.Dispose();
         }
         
-        public static void DisposeDatabase(DatabaseHub database) {
-            if (database == null)
+        public static void DisposeDatabase(DatabaseHub hub) {
+            if (hub == null)
                 return;
-            if (database.EventBroker != null) {
-                var eb = database.EventBroker;
-                database.EventBroker = null;
+            if (hub.EventBroker != null) {
+                var eb = hub.EventBroker;
+                hub.EventBroker = null;
                 eb.Dispose();
             }
-            database.Dispose();
+            hub.Dispose();
         }
         
         public static void DisposeCaches() {
