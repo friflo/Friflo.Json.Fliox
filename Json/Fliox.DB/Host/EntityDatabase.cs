@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Protocol;
@@ -13,11 +14,8 @@ namespace Friflo.Json.Fliox.DB.Host
         /// <see cref="EntityDatabase.customContainerName"/>
         public  readonly    CustomContainerName customContainerName;
         
-        public readonly     TaskHandler         taskHandler;
-        
-        public DbOpt(CustomContainerName customContainerName = null, TaskHandler taskHandler = null) {
+        public DbOpt(CustomContainerName customContainerName = null) {
             this.customContainerName    = customContainerName   ?? (name => name);
-            this.taskHandler            = taskHandler;
         }
         
         internal static readonly DbOpt Default = new DbOpt();
@@ -46,10 +44,12 @@ namespace Friflo.Json.Fliox.DB.Host
         
         /// <summary>
         /// The <see cref="TaskHandler"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
-        /// Custom task (request) handler can be added to the <see cref="taskHandler"/> or
-        /// the <see cref="taskHandler"/> can be replaced by a custom implementation.
+        /// An <see cref="EntityDatabase"/> implementation is able to assign as custom handler via <see cref="taskHandler"/>.
         /// </summary>
-        public readonly     TaskHandler         taskHandler;
+        public              TaskHandler         TaskHandler => taskHandler;
+        
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected           TaskHandler         taskHandler = new TaskHandler();
         
         
         internal readonly   string              name;
@@ -59,7 +59,6 @@ namespace Friflo.Json.Fliox.DB.Host
 
         protected EntityDatabase (DbOpt opt){
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
-            this.taskHandler    = opt?.taskHandler ?? new TaskHandler();
         }
         
         protected EntityDatabase (

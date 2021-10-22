@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.DB.Host
     /// e.g. an <see cref="Client.FlioxClient"/>. It handle these requests by its <see cref="ExecuteSync"/> method.
     /// A request is represented by a <see cref="SyncRequest"/> containing all database operations like create, read,
     /// upsert, delete and all messages / commands send by a client in the <see cref="SyncRequest.tasks"/> list.
-    /// The <see cref="DatabaseHub"/> execute these tasks by its <see cref="EntityDatabase.taskHandler"/>.
+    /// The <see cref="DatabaseHub"/> execute these tasks by its <see cref="EntityDatabase.TaskHandler"/>.
     /// <br/>
     /// Instances of <see cref="DatabaseHub"/> and all its implementation are designed to be thread safe enabling multiple
     /// clients e.g. <see cref="Client.FlioxClient"/> operating on the same <see cref="DatabaseHub"/> instance.
@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.DB.Host
         /// <summary>
         /// An <see cref="Auth.Authenticator"/> performs authentication and authorization for all
         /// <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/> sent by a client.
-        /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="EntityDatabase.taskHandler"/>.
+        /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="EntityDatabase.TaskHandler"/>.
         /// </summary>
         public              Authenticator       Authenticator   { get => authenticator; set => authenticator = NotNull(value, nameof(Authenticator)); }
         
@@ -155,6 +155,7 @@ namespace Friflo.Json.Fliox.DB.Host
             var tasks       = new List<SyncTaskResult>(requestTasks.Count);
             var resultMap   = new Dictionary<string, ContainerEntities>();
             var response    = new SyncResponse { tasks = tasks, resultMap = resultMap, database = syncDatabase };
+            var taskHandler = db.TaskHandler;
             
             for (int index = 0; index < requestTasks.Count; index++) {
                 var task = requestTasks[index];
@@ -164,7 +165,7 @@ namespace Friflo.Json.Fliox.DB.Host
                 }
                 task.index = index;
                 try {
-                    var result = await db.taskHandler.ExecuteTask(task, db, response, messageContext).ConfigureAwait(false);
+                    var result = await taskHandler.ExecuteTask(task, db, response, messageContext).ConfigureAwait(false);
                     tasks.Add(result);
                 } catch (Exception e) {
                     tasks.Add(TaskExceptionError(e)); // Note!  Should not happen - see documentation of this method.

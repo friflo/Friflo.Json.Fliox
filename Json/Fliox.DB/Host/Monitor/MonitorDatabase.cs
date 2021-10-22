@@ -20,11 +20,10 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         
         public const string Name = "monitor";
         
-        public MonitorDatabase (DatabaseHub extensionBase, DbOpt opt = null)
-            : base (extensionBase, Name, new DbOpt(taskHandler: new MonitorHandler())) {
+        public MonitorDatabase (DatabaseHub extensionBase, DbOpt opt = null) : base (extensionBase, Name, opt) {
+            taskHandler     = new MonitorHandler(this);
             stateDB         = new MemoryDatabase();
             var monitorHub  = new DatabaseHub(stateDB);
-            ((MonitorHandler)taskHandler).monitorDB = this;
             stateStore  = new MonitorStore(extensionBase.hostName, monitorHub, HostTypeStore.Get());
         }
 
