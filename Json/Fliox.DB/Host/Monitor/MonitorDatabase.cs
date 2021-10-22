@@ -49,15 +49,15 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
 
         public override async Task ExecuteSyncPrepare(SyncRequest syncRequest, MessageContext messageContext) {
             var tasks = syncRequest.tasks;
-            if (FindReadEntities(nameof(MonitorStore.clients),  tasks)) stateStore.UpdateClients  (hub, name);
-            if (FindReadEntities(nameof(MonitorStore.users),    tasks)) stateStore.UpdateUsers    (hub.Authenticator, name);
-            if (FindReadEntities(nameof(MonitorStore.histories),tasks)) stateStore.UpdateHistories(hub.hostStats.requestHistories);
-            if (FindReadEntities(nameof(MonitorStore.hosts),    tasks)) stateStore.UpdateHost     (hub.hostStats);
+            if (FindTask(nameof(MonitorStore.clients),  tasks)) stateStore.UpdateClients  (hub, name);
+            if (FindTask(nameof(MonitorStore.users),    tasks)) stateStore.UpdateUsers    (hub.Authenticator, name);
+            if (FindTask(nameof(MonitorStore.histories),tasks)) stateStore.UpdateHistories(hub.hostStats.requestHistories);
+            if (FindTask(nameof(MonitorStore.hosts),    tasks)) stateStore.UpdateHost     (hub.hostStats);
             
             await stateStore.TryExecuteTasksAsync().ConfigureAwait(false);
         }
         
-        private static bool FindReadEntities(string container, List<SyncRequestTask> tasks) {
+        private static bool FindTask(string container, List<SyncRequestTask> tasks) {
             foreach (var task in tasks) {
                 if (task is ReadEntities read && read.container == container)
                     return true;
