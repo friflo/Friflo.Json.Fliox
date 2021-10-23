@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
                 return Task.FromResult<SyncTaskResult>(InvalidTask("Hub has no eventBroker"));
             if (name == null)
                 return Task.FromResult<SyncTaskResult>(MissingField(nameof(name)));
-            var eventTarget = messageContext.EventTarget;
+            var eventTarget = messageContext.eventTarget;
             if (eventTarget == null)
                 return Task.FromResult<SyncTaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             

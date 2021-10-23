@@ -25,7 +25,6 @@ namespace Friflo.Json.Fliox.DB.Host
         // --- public
         public    readonly  IPools              pools;
         public              FlioxHub            Hub         => hub;
-        public              IEventTarget        EventTarget => eventTarget;
         public              JsonKey             clientId;
         public              ClientIdValidation  clientIdValidation;
         public              User                User            => authState.user;

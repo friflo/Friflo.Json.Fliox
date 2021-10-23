@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
             if (changes == null)
                 return Task.FromResult<SyncTaskResult>(MissingField(nameof(changes)));
             
-            var eventTarget = messageContext.EventTarget;
+            var eventTarget = messageContext.eventTarget;
             if (eventTarget == null)
                 return Task.FromResult<SyncTaskResult>(InvalidTask("caller/request doesnt provide a eventTarget"));
             
