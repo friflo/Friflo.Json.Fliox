@@ -22,11 +22,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
         internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (name == null)
                 return Task.FromResult<SyncTaskResult>(MissingField(nameof(name)));
-            var messageResult = new SendMessageResult();
-            if (name == StdMessage.Echo) {
-                messageResult.result = value;
-            }
-            SyncTaskResult result = messageResult;
+            SyncTaskResult result = new SendMessageResult();
             return Task.FromResult(result);
         }
     }

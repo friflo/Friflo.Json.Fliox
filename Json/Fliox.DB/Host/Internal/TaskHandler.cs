@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -12,6 +13,14 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
     public class TaskHandler
     {
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
+        
+        public TaskHandler () {
+            AddCommandHandler(StdMessage.Echo, new CommandHandler<JsonValue, JsonValue>(Echo));
+        }
+        
+        private static JsonValue Echo (Command<JsonValue> command) {
+            return command.JsonValue;
+        }
         
         public void AddCommandHandler<TValue, TResult>(string name, CommandHandler<TValue, TResult> handler) {
             var command = new CommandCallback<TValue, TResult>(name, handler);

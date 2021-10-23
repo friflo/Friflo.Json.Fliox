@@ -5,10 +5,11 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host
 {
-    public readonly struct Command<TValue> {
+    public readonly struct Command<TValue>{
         public              string          Name    { get; }
-        public              IPools          Pools   => messageContext.pools;
-        public              FlioxHub        Hub     => messageContext.hub;
+        public              IPools          Pools       => messageContext.pools;
+        public              FlioxHub        Hub         => messageContext.hub;
+        public              JsonValue       JsonValue   => new JsonValue(json);
         
         private  readonly   JsonUtf8        json;
         private  readonly   MessageContext  messageContext;
