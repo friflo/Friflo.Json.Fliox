@@ -18,14 +18,14 @@ namespace Friflo.Json.Fliox.DB.Client
         }
     }
     
-    public sealed class TaskNotExecutedException : Exception
+    public sealed class TaskNotSyncedException : Exception
     {
-        internal TaskNotExecutedException(string message) : base (message) { }
+        internal TaskNotSyncedException(string message) : base (message) { }
     }
     
-    public sealed class TaskAlreadyExecutedException : Exception
+    public sealed class TaskAlreadySyncedException : Exception
     {
-        internal TaskAlreadyExecutedException(string message) : base (message) { }
+        internal TaskAlreadySyncedException(string message) : base (message) { }
     }
     
     public sealed class TaskResultException : Exception
@@ -41,7 +41,9 @@ namespace Friflo.Json.Fliox.DB.Client
     {
         public readonly     List<SyncTask>  failed;
 
-        internal ExecuteTasksException(ErrorResponse errorResponse, List<SyncTask> failed) : base(ExecuteTasksResult.GetMessage(errorResponse, failed)) {
+        internal ExecuteTasksException(ErrorResponse errorResponse, List<SyncTask> failed)
+            : base(SyncResult.GetMessage(errorResponse, failed))
+        {
             this.failed = failed;
         }
     }

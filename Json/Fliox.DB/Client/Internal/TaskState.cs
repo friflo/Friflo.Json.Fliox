@@ -49,6 +49,6 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             Executed = true;
         }
 
-        public override string ToString() => Executed ? Error.HasErrors ? $"executed with error" : "executed" : "not executed";
+        public override string ToString() => Executed ? Error.HasErrors ? $"synced with error" : "synced" : "not synced";
     }
 }

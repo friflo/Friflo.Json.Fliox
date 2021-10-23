@@ -10,7 +10,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
     /// <summary>
     /// A <see cref="FlioxHub"/> implementation which execute the continuation of <see cref="ExecuteSync"/>
-    /// never synchronously to test <see cref="FlioxClient.ExecuteTasksAsync"/> running not synchronously.
+    /// never synchronously to test <see cref="FlioxClient.SyncTasks"/> running not synchronously.
     /// </summary>
     public class AsyncDatabaseHub : FlioxHub
     {

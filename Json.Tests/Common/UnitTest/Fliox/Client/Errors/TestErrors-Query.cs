@@ -85,27 +85,27 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("readOrders2 -> .customer",        order2Customer  .Details);
 
             Exception e;
-            e = Throws<TaskNotExecutedException>(() => { var _ = customer.Key; });
-            AreEqual("ReadRefTask.Key requires ExecuteTasksAsync(). readOrders -> .customer", e.Message);
-            e = Throws<TaskNotExecutedException>(() => { var _ = customer.Result; });
-            AreEqual("ReadRefTask.Result requires ExecuteTasksAsync(). readOrders -> .customer", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = customer.Key; });
+            AreEqual("ReadRefTask.Key requires SyncTasks(). readOrders -> .customer", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
+            AreEqual("ReadRefTask.Result requires SyncTasks(). readOrders -> .customer", e.Message);
 
-            e = Throws<TaskNotExecutedException>(() => { var _ = hasOrderCamera.Results; });
-            AreEqual("QueryTask.Result requires ExecuteTasksAsync(). hasOrderCamera", e.Message);
-            e = Throws<TaskNotExecutedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
-            AreEqual("QueryTask[] requires ExecuteTasksAsync(). hasOrderCamera", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Results; });
+            AreEqual("QueryTask.Result requires SyncTasks(). hasOrderCamera", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
+            AreEqual("QueryTask[] requires SyncTasks(). hasOrderCamera", e.Message);
 
             var producerEmployees = articleProducer.ReadArrayRefs(p => p.employeeList)              .TaskName("producerEmployees");
             AreEqual("articleProducer -> .employees[*]", producerEmployees.Details);
             
             AreEqual(14, store.Tasks.Count);
-            var sync = await store.TryExecuteTasksAsync(); // ----------------
+            var sync = await store.TrySyncTasks(); // ----------------
             
             IsFalse(sync.Success);
             AreEqual("tasks: 14, failed: 5", sync.ToString());
             AreEqual(14, sync.tasks.Count);
             AreEqual(5,  sync.failed.Count);
-            const string msg = @"ExecuteTasksAsync() failed with task errors. Count: 5
+            const string msg = @"SyncTasks() failed with task errors. Count: 5
 |- allArticles # EntityErrors ~ count: 2
 |   ReadError: articles [article-1], simulated read entity error
 |   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16
@@ -177,7 +177,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             testArticles.missingResultErrors.Add(missingArticle1); 
             var allArticles2 = articles.QueryAll()          .TaskName("allArticles2");
             
-            var result = await store.TryExecuteTasksAsync();
+            var result = await store.TrySyncTasks();
             AreEqual(1, result.failed.Count);
             IsFalse(allArticles2.Success);
             AreEqual(@"EntityErrors ~ count: 1

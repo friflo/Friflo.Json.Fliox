@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             if (FindTask(nameof(MonitorStore.histories),tasks)) stateStore.UpdateHistories(hub.hostStats.requestHistories);
             if (FindTask(nameof(MonitorStore.hosts),    tasks)) stateStore.UpdateHost     (hub.hostStats);
             
-            await stateStore.TryExecuteTasksAsync().ConfigureAwait(false);
+            await stateStore.TrySyncTasks().ConfigureAwait(false);
         }
         
         private static bool FindTask(string container, List<SyncRequestTask> tasks) {

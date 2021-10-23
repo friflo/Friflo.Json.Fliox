@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 }
                 store.entities.UpsertRange(entities);
             }
-            await store.ExecuteTasksAsync();
+            await store.SyncTasks();
 
             var readerStores = new List<SimpleStore>();
             var writerStores = new List<SimpleStore>();
@@ -112,7 +112,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 for (int n= 0; n < requestCount; n++) {
                     var readEntities = store.entities.Read();
                     readEntities.Find(id);
-                    await store.ExecuteTasksAsync();
+                    await store.SyncTasks();
                     if (1 !=  readEntities.Results.Count)
                         throw new TestException($"Expect entities Count: 1. was: {readEntities.Results.Count}");
                     if (!readEntities.Results.ContainsKey(id))
@@ -125,7 +125,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
                     store.entities.Upsert(entity);
-                    await store.ExecuteTasksAsync();
+                    await store.SyncTasks();
                 }
             });
         }
@@ -192,7 +192,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
                     var message = client.SendMessage(StdMessage.Echo, text);
-                    await client.ExecuteTasksAsync();
+                    await client.SyncTasks();
                     if (!result.IsEqual(message.ResultJson))
                         throw new TestException($"Expect result: {result}, was: {message.ResultJson}");
                 }

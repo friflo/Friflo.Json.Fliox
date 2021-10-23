@@ -14,20 +14,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     public partial class TestStore
     {
         /// <summary>
-        /// Test multiple calls of <see cref="FlioxClient.ExecuteTasksAsync"/> without await-ing each call individually.
-        /// This enables "pipelining" of scheduling <see cref="FlioxClient.ExecuteTasksAsync"/> calls.
+        /// Test multiple calls of <see cref="FlioxClient.SyncTasks"/> without await-ing each call individually.
+        /// This enables "pipelining" of scheduling <see cref="FlioxClient.SyncTasks"/> calls.
         /// <br></br>
         /// Doing this erode the performance benefits handling multiple <see cref="SyncTask"/>'s via a single
-        /// <see cref="FlioxClient.ExecuteTasksAsync"/> but the behavior of <see cref="FlioxClient.ExecuteTasksAsync"/> needs to be same -
+        /// <see cref="FlioxClient.SyncTasks"/> but the behavior of <see cref="FlioxClient.SyncTasks"/> needs to be same -
         /// if its awaited or not.
         /// <br></br>
         /// Note:
-        /// In a game loop it can happen that multiple calls to <see cref="FlioxClient.ExecuteTasksAsync"/> are pending because
-        /// processing them is slower than creating new <see cref="FlioxClient.ExecuteTasksAsync"/> requests.
+        /// In a game loop it can happen that multiple calls to <see cref="FlioxClient.SyncTasks"/> are pending because
+        /// processing them is slower than creating new <see cref="FlioxClient.SyncTasks"/> requests.
         /// <br></br>
         /// Motivation for "pipelining": <br></br>
-        /// ExecuteTasksAsync() calls are executed in order but overall execution time is improved in scenarios with high latency to a
-        /// <see cref="RemoteHostHub"/> because RTT is added only once instead of n times for n awaited ExecuteTasksAsync() calls. 
+        /// SyncTasks() calls are executed in order but overall execution time is improved in scenarios with high latency to a
+        /// <see cref="RemoteHostHub"/> because RTT is added only once instead of n times for n awaited SyncTasks() calls. 
         /// </summary>
         [Test] public static void TestSyncConcurrency () {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
@@ -55,31 +55,31 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             {
                 customers.Upsert(peter);
                 AreEqual(1, store.Tasks.Count);
-                var sync1 = store.ExecuteTasksAsync();
-                AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting ExecuteTasksAsync()
+                var sync1 = store.SyncTasks();
+                AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting SyncTasks()
                 
-                store.SendMessage("Some message"); // add additional task to second ExecuteTasksAsync() to identify the result by task.Count
+                store.SendMessage("Some message"); // add additional task to second SyncTasks() to identify the result by task.Count
                 customers.Upsert(paul);
                 AreEqual(2, store.Tasks.Count);
-                var sync2 = store.ExecuteTasksAsync();
-                AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting ExecuteTasksAsync()
+                var sync2 = store.SyncTasks();
+                AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting SyncTasks()
                 
-                // by using AsyncDatabase ExecuteTasksAsync() response handling is executed at WhenAll() instead synchronously in ExecuteTasksAsync()
+                // by using AsyncDatabase SyncTasks() response handling is executed at WhenAll() instead synchronously in SyncTasks()
                 await Task.WhenAll(sync1, sync2);  // ------ sync point
                 AreEqual(1, sync1.Result.tasks.Count);
                 AreEqual(2, sync2.Result.tasks.Count);
             } {
                 var readCustomers1 = customers.Read();
                 var findPeter = readCustomers1.Find("customer-peter");
-                var sync1 = store.ExecuteTasksAsync();
+                var sync1 = store.SyncTasks();
                 
-                store.SendMessage("Some message"); // add additional task to second ExecuteTasksAsync() to identify the result by task.Count
+                store.SendMessage("Some message"); // add additional task to second SyncTasks() to identify the result by task.Count
                 var readCustomers2 = customers.Read();
                 IsFalse(readCustomers1 == readCustomers2);
                 var findPaul = readCustomers2.Find("customer-paul");
-                var sync2 = store.ExecuteTasksAsync();
+                var sync2 = store.SyncTasks();
                 
-                // by using AsyncDatabase ExecuteTasksAsync() response handling is executed at WhenAll() instead synchronously in ExecuteTasksAsync()
+                // by using AsyncDatabase SyncTasks() response handling is executed at WhenAll() instead synchronously in SyncTasks()
                 await Task.WhenAll(sync1, sync2);  // ------ sync point
                 AreEqual(1, sync1.Result.tasks.Count);
                 AreEqual(2, sync2.Result.tasks.Count);

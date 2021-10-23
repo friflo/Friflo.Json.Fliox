@@ -50,16 +50,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("DeleteTask<Customer> (#keys: 1)", deleteError.Details);
             
             Exception e;
-            e = Throws<TaskNotExecutedException>(() => { var _ = createError.Success; });
-            AreEqual("SyncTask.Success requires ExecuteTasksAsync(). createError", e.Message);
-            e = Throws<TaskNotExecutedException>(() => { var _ = createError.Error; });
-            AreEqual("SyncTask.Error requires ExecuteTasksAsync(). createError", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = createError.Success; });
+            AreEqual("SyncTask.Success requires SyncTasks(). createError", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = createError.Error; });
+            AreEqual("SyncTask.Error requires SyncTasks(). createError", e.Message);
 
             AreEqual(5, store.Tasks.Count);
-            var sync = await store.TryExecuteTasksAsync(); // ----------------
+            var sync = await store.TrySyncTasks(); // ----------------
             
             AreEqual("tasks: 5, failed: 5", sync.ToString());
-            AreEqual(@"ExecuteTasksAsync() failed with task errors. Count: 5
+            AreEqual(@"SyncTasks() failed with task errors. Count: 5
 |- customerRead # UnhandledException ~ SimulationException: simulated read task exception
 |- customerQuery # UnhandledException ~ SimulationException: simulated query exception
 |- createError # UnhandledException ~ SimulationException: simulated create task exception

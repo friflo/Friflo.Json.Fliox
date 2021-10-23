@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order1 = readOrders.Find("order-1");
-                store.ExecuteTasksAsync().Wait();
+                store.SyncTasks().Wait();
                 var orderResult = order1.Result;
                 var orders = new List<Order> { orderResult };
 
@@ -83,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order = readOrders.Find(id);
-                store.ExecuteTasksAsync().Wait();
+                store.SyncTasks().Wait();
                 return order.Result;
             }
         }
@@ -126,7 +126,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order1 = readOrders.Find("order-1");
-                store.ExecuteTasksAsync().Wait();
+                store.SyncTasks().Wait();
                 var orders = new List<Order> {order1.Result};
 
                 var orderQuery =

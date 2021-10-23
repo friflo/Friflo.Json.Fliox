@@ -26,12 +26,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var readOrders = store.orders.Read();
             var orderTask  = readOrders.Find("order-1");
             
-            await store.ExecuteTasksAsync(); // ----------------
+            await store.SyncTasks(); // ----------------
             
             var order = orderTask.Result;
             
             Exception e;
-            e = Throws<TaskAlreadyExecutedException>(() => { var _ = readOrders.Find("order-1"); });
+            e = Throws<TaskAlreadySyncedException>(() => { var _ = readOrders.Find("order-1"); });
             AreEqual("Task already executed. ReadTask<Order> (#ids: 1)", e.Message);
 
             var readOrders2     = orders.Read()                         .TaskName("readOrders2");
@@ -47,7 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var customer1Task   = readCustomers.Find("customer-1")      .TaskName("customer1Task");
             var unknownTask     = readCustomers.Find("customer-missing").TaskName("unknownTask");
 
-            await store.ExecuteTasksAsync(); // ----------------
+            await store.SyncTasks(); // ----------------
             
             // AreEqual(1, store.customers.Count);
             // AreEqual(2, store.articles.Count);

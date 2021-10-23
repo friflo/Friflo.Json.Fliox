@@ -29,17 +29,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var orders = store.orders;
             var readOrders = orders.Read()                                      .TaskName("readOrders");
             var order1Task = readOrders.Find("order-1")                         .TaskName("order1Task");
-            await store.ExecuteTasksAsync();
+            await store.SyncTasks();
             
             // schedule ReadRefs on an already synced Read operation
             Exception e;
             var orderCustomer = orders.RefPath(o => o.customer);
             AreEqual(OrderCustomer.path, orderCustomer.path);
-            e = Throws<TaskAlreadyExecutedException>(() => { readOrders.ReadRefPath(orderCustomer); });
+            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefPath(orderCustomer); });
             AreEqual("Task already executed. readOrders", e.Message);
             var itemsArticle = orders.RefsPath(o => o.items.Select(a => a.article));
             AreEqual(ItemsArticle.path, itemsArticle.path);
-            e = Throws<TaskAlreadyExecutedException>(() => { readOrders.ReadRefsPath(itemsArticle); });
+            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefsPath(itemsArticle); });
             AreEqual("Task already executed. readOrders", e.Message);
             
             // todo add Read() without ids 
@@ -54,10 +54,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreSame(articleRefsTask, articleRefsTask3);
             AreEqual("readOrders -> .items[*].article", articleRefsTask.Details);
 
-            e = Throws<TaskNotExecutedException>(() => { var _ = articleRefsTask["article-1"]; });
-            AreEqual("ReadRefsTask[] requires ExecuteTasksAsync(). readOrders -> .items[*].article", e.Message);
-            e = Throws<TaskNotExecutedException>(() => { var _ = articleRefsTask.Results; });
-            AreEqual("ReadRefsTask.Results requires ExecuteTasksAsync(). readOrders -> .items[*].article", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask["article-1"]; });
+            AreEqual("ReadRefsTask[] requires SyncTasks(). readOrders -> .items[*].article", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = articleRefsTask.Results; });
+            AreEqual("ReadRefsTask.Results requires SyncTasks(). readOrders -> .items[*].article", e.Message);
 
             var articleProducerTask = articleRefsTask.ReadRefs(a => a.producer);
             AreEqual("readOrders -> .items[*].article -> .producer", articleProducerTask.Details);
@@ -76,7 +76,7 @@ galaxy
 article1And2
 articleSet", string.Join("\n", store.Tasks));
 
-            await store.ExecuteTasksAsync(); // ----------------
+            await store.SyncTasks(); // ----------------
         
             AreEqual(2,                 articleRefsTask.Results.Count);
             AreEqual("Changed name",    articleRefsTask["article-1"].name);

@@ -182,13 +182,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                         await remoteHub.Connect();
                         
                         AreEqual(0, listenDb.Tasks.Count);
-                        await listenDb.ExecuteTasksAsync();  // an empty ExecuteTasksAsync() is sufficient initiate re-sending all not-received change events
+                        await listenDb.SyncTasks();  // an empty SyncTasks() is sufficient initiate re-sending all not-received change events
 
                         while (!listenProcessor.receivedAll ) { await Task.Delay(1); }
                         
                         listenProcessor.AssertCreateStoreChanges();
 
-                        await listenDb.ExecuteTasksAsync();  // all changes are received => state of store remains unchanged
+                        await listenDb.SyncTasks();  // all changes are received => state of store remains unchanged
                         
                         // subscriber contains NO send events which are not acknowledged
                         AreEqual(0, eventBroker.NotAcknowledgedEvents());

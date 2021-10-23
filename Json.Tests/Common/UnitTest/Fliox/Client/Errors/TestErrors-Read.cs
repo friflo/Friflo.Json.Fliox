@@ -46,15 +46,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var articles    = store.articles;
             var readOrders  = orders.Read();
             var order1Task  = readOrders.Find("order-1");
-            await store.ExecuteTasksAsync();
+            await store.SyncTasks();
             
             // schedule ReadRefs on an already synced Read operation
             Exception e;
             var orderCustomer = orders.RefPath(o => o.customer);
-            e = Throws<TaskAlreadyExecutedException>(() => { readOrders.ReadRefPath(orderCustomer); });
+            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefPath(orderCustomer); });
             AreEqual("Task already executed. ReadTask<Order> (#ids: 1)", e.Message);
             var itemsArticle = orders.RefsPath(o => o.items.Select(a => a.article));
-            e = Throws<TaskAlreadyExecutedException>(() => { readOrders.ReadRefsPath(itemsArticle); });
+            e = Throws<TaskAlreadySyncedException>(() => { readOrders.ReadRefsPath(itemsArticle); });
             AreEqual("Task already executed. ReadTask<Order> (#ids: 1)", e.Message);
             
             // todo add Read() without ids 
@@ -69,10 +69,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreSame(orderArticles, orderArticles3);
             AreEqual("readOrders -> .items[*].article", orderArticles.Details);
 
-            e = Throws<TaskNotExecutedException>(() => { var _ = orderArticles["article-1"]; });
-            AreEqual("ReadRefsTask[] requires ExecuteTasksAsync(). orderArticles", e.Message);
-            e = Throws<TaskNotExecutedException>(() => { var _ = orderArticles.Results; });
-            AreEqual("ReadRefsTask.Results requires ExecuteTasksAsync(). orderArticles", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = orderArticles["article-1"]; });
+            AreEqual("ReadRefsTask[] requires SyncTasks(). orderArticles", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = orderArticles.Results; });
+            AreEqual("ReadRefsTask.Results requires SyncTasks(). orderArticles", e.Message);
 
             var articleProducer = orderArticles.ReadRefs(a => a.producer)                           .TaskName("articleProducer");
             AreEqual("orderArticles -> .producer", articleProducer.Details);
@@ -99,12 +99,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             // test throwing exception in case of task or entity errors
             try {
                 AreEqual(12, store.Tasks.Count);
-                await store.ExecuteTasksAsync(); // ----------------
+                await store.SyncTasks(); // ----------------
                 
-                Fail("ExecuteTasksAsync() intended to fail - code cannot be reached");
+                Fail("SyncTasks() intended to fail - code cannot be reached");
             } catch (ExecuteTasksException sre) {
                 AreEqual(8, sre.failed.Count);
-                const string expect = @"ExecuteTasksAsync() failed with task errors. Count: 8
+                const string expect = @"SyncTasks() failed with task errors. Count: 8
 |- orderArticles # EntityErrors ~ count: 2
 |   ReadError: articles [article-1], simulated read entity error
 |   ParseError: articles [article-2], JsonParser/JSON error: Expected ':' after key. Found: X path: 'invalidJson' at position: 16

@@ -51,15 +51,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("readOrders -> .customer", customer.Details);
 
             Exception e;
-            e = Throws<TaskNotExecutedException>(() => { var _ = customer.Key; });
-            AreEqual("ReadRefTask.Key requires ExecuteTasksAsync(). readOrders -> .customer", e.Message);
-            e = Throws<TaskNotExecutedException>(() => { var _ = customer.Result; });
-            AreEqual("ReadRefTask.Result requires ExecuteTasksAsync(). readOrders -> .customer", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = customer.Key; });
+            AreEqual("ReadRefTask.Key requires SyncTasks(). readOrders -> .customer", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = customer.Result; });
+            AreEqual("ReadRefTask.Result requires SyncTasks(). readOrders -> .customer", e.Message);
 
-            e = Throws<TaskNotExecutedException>(() => { var _ = hasOrderCamera.Results; });
-            AreEqual("QueryTask.Result requires ExecuteTasksAsync(). hasOrderCamera", e.Message);
-            e = Throws<TaskNotExecutedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
-            AreEqual("QueryTask[] requires ExecuteTasksAsync(). hasOrderCamera", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera.Results; });
+            AreEqual("QueryTask.Result requires SyncTasks(). hasOrderCamera", e.Message);
+            e = Throws<TaskNotSyncedException>(() => { var _ = hasOrderCamera["arbitrary"]; });
+            AreEqual("QueryTask[] requires SyncTasks(). hasOrderCamera", e.Message);
 
             var producerEmployees = producersTask.ReadArrayRefs(p => p.employeeList);
             AreEqual("allArticles2 -> .producer -> .employees[*]", producerEmployees.ToString());
@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 // readOrders.ReadAllRefs();
             }
 
-            await store.ExecuteTasksAsync(); // ----------------
+            await store.SyncTasks(); // ----------------
             AreEqual(1,                 ordersWithCustomer1.Results.Count);
             NotNull(ordersWithCustomer1["order-1"]);
             

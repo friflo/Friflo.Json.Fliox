@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
                 var store = pooledStore.instance;
                 var read            = store.sequence.Read();
                 var sequenceTask    = read.Find(container);
-                var sync            = await store.TryExecuteTasksAsync().ConfigureAwait(false);
+                var sync            = await store.TrySyncTasks().ConfigureAwait(false);
                 if (!sync.Success) {
                     return  new ReserveKeysResult { Error = new CommandError(sync.Message) };
                 }
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
                 };
                 store.sequenceKeys.Upsert(sequenceKeys);
                 store.sequence.Upsert(sequence);
-                sync = await store.TryExecuteTasksAsync().ConfigureAwait(false);
+                sync = await store.TrySyncTasks().ConfigureAwait(false);
                 if (!sync.Success) {
                     return  new ReserveKeysResult { Error = new CommandError(sync.Message) };
                 }

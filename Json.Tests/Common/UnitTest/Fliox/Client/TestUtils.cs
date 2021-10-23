@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 var e = Throws<NotSupportedException>(() => { var _ = orders.Query(o => o.customer.Entity == null); });
                 AreEqual("Query using Ref<>.Entity intentionally not supported. Only Ref<>.id is valid: o.customer.Entity, expression: o => (o.customer.Entity == null)", e.Message);
 
-                store.ExecuteTasksAsync().Wait();
+                store.SyncTasks().Wait();
             }
         }
 
@@ -157,11 +157,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             using (var typeStore = new TypeStore()) {
                 var hub         = new NoopDatabaseHub();
                 var store       = new PocStore(hub, typeStore, null);
-                await store.ExecuteTasksAsync(); // force one time allocations
+                await store.SyncTasks(); // force one time allocations
                 // GC.Collect();
                 
                 var start = GC.GetAllocatedBytesForCurrentThread();
-                await store.ExecuteTasksAsync(); // ~ 1 µs
+                await store.SyncTasks(); // ~ 1 µs
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 var expected = IsDebug() ? 1608 : 1504; // Test Debug & Release
                 AreEqual(expected, diff);   // Test Release also
@@ -179,13 +179,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 for (int n = 0; n < 100; n++)
                     ids[n] = n;
                 read.FindRange(ids);
-                await store.ExecuteTasksAsync(); // force one time allocations
+                await store.SyncTasks(); // force one time allocations
                 
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 for (int n = 0; n < 1; n++) {
                     read = store.intEntities.Read();
                     read.FindRange(ids);
-                    await store.ExecuteTasksAsync();
+                    await store.SyncTasks();
                 }
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 var expected = IsDebug() ? Is.InRange(47248, 47448) : Is.InRange(44296, 44480); // Test Debug & Release

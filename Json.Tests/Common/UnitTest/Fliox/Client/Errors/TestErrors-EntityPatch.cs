@@ -46,10 +46,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var patchWriteError     = customers.Patch (new Customer{id = patchWriteEntityError}).TaskName("patchWriteError");
             
             AreEqual(3, store.Tasks.Count);
-            var sync = await store.TryExecuteTasksAsync(); // ----------------
+            var sync = await store.TrySyncTasks(); // ----------------
             
             AreEqual("tasks: 3, failed: 3", sync.ToString());
-            AreEqual(@"ExecuteTasksAsync() failed with task errors. Count: 3
+            AreEqual(@"SyncTasks() failed with task errors. Count: 3
 |- patchNotFound # EntityErrors ~ count: 1
 |   PatchError: customers [unknown-id], patch target not found
 |- patchReadError # EntityErrors ~ count: 1
@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             {
                 var patchTaskReadError = customers.Patch(new Customer {id = readTaskError});
 
-                sync = await store.TryExecuteTasksAsync(); // ----------------
+                sync = await store.TrySyncTasks(); // ----------------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskReadError.Success);
@@ -89,7 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             {
                 var patchTaskReadException = customers.Patch(new Customer {id = readTaskException});
 
-                sync = await store.TryExecuteTasksAsync(); // ----------------
+                sync = await store.TrySyncTasks(); // ----------------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskReadException.Success);
@@ -100,7 +100,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             {
                 var patchTaskWriteError = customers.Patch(new Customer {id = patchTaskError});
 
-                sync = await store.TryExecuteTasksAsync(); // ----------------
+                sync = await store.TrySyncTasks(); // ----------------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskWriteError.Success);
@@ -111,7 +111,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             {
                 var patchTaskWriteException = customers.Patch(new Customer {id = patchTaskException});
 
-                sync = await store.TryExecuteTasksAsync(); // ----------------
+                sync = await store.TrySyncTasks(); // ----------------
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskWriteException.Success);
