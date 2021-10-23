@@ -209,9 +209,9 @@ namespace Friflo.Json.Fliox.DB.Host.Event
             for (int n = 0; n < tasks.Count; n++) {
                 var task = tasks[n];
                 if (task.json == null) {
-                    task.json = new JsonUtf8(writer.WriteAsArray(task));
+                    task.json = new JsonValue(writer.WriteAsArray(task));
                 }
-                tasksJson[n] = new JsonValue(task.json.Value);
+                tasksJson[n] = task.json.Value;
             }
             tasks.Clear();
             eventMessage.tasks = null;
@@ -278,7 +278,7 @@ namespace Friflo.Json.Fliox.DB.Host.Event
 
             for (int n = 0; n < entities.Count; n++) {
                 var value   = entities[n];
-                if (jsonEvaluator.Filter(value.json, jsonFilter)) {
+                if (jsonEvaluator.Filter(value, jsonFilter)) {
                     result.Add(value);
                 }
             }

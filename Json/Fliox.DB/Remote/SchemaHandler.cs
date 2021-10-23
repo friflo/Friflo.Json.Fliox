@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                     context.WriteString(result.content, result.contentType, (int)status);
                     return Task.FromResult(true);
                 }
-                context.Write(new JsonUtf8(result.bytes), 0, result.contentType, (int)HttpStatusCode.OK);
+                context.Write(new JsonValue(result.bytes), 0, result.contentType, (int)HttpStatusCode.OK);
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);

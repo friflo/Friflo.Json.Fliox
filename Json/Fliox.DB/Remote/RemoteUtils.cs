@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Remote
     
     public static class RemoteUtils
     {
-        public static JsonUtf8 CreateProtocolMessage (ProtocolMessage message, IPools pools)
+        public static JsonValue CreateProtocolMessage (ProtocolMessage message, IPools pools)
         {
             using (var pooledMapper = pools.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
@@ -32,13 +32,13 @@ namespace Friflo.Json.Fliox.DB.Remote
                         clt     = ev.dstClientId,
                         tasks   = ev.tasksJson
                     };
-                    return new JsonUtf8(mapper.WriteAsArray(remoteEv));
+                    return new JsonValue(mapper.WriteAsArray(remoteEv));
                 }
-                return new JsonUtf8(mapper.WriteAsArray(message));
+                return new JsonValue(mapper.WriteAsArray(message));
             }
         }
         
-        public static ProtocolMessage ReadProtocolMessage (JsonUtf8 jsonMessage, IPools pools, out string error)
+        public static ProtocolMessage ReadProtocolMessage (JsonValue jsonMessage, IPools pools, out string error)
         {
             using (var pooledMapper = pools.ObjectMapper.Get()) {
                 ObjectReader reader = pooledMapper.instance.reader;

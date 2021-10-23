@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                 var peer = set.GetOrCreatePeerByKey(key, id);
                 peer.created = false;
                 peer.updated = false;
-                peer.SetPatchSource(reader.Read<T>(entity.json));
+                peer.SetPatchSource(reader.Read<T>(entity));
             }
             foreach (var writeTask in writeTasks) {
                 var entityErrorInfo = new TaskErrorInfo();

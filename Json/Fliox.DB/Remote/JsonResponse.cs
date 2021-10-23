@@ -18,10 +18,10 @@ namespace Friflo.Json.Fliox.DB.Remote
     
     public sealed class JsonResponse
     {
-        public readonly     JsonUtf8            body;
+        public readonly     JsonValue           body;
         public readonly     JsonResponseStatus  status;
         
-        public JsonResponse(JsonUtf8 body, JsonResponseStatus status) {
+        public JsonResponse(JsonValue body, JsonResponseStatus status) {
             this.body   = body;
             this.status = status;
         }
@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                 writer.Pretty           = true;
                 writer.WriteNullMembers = false;
                 var bodyArray           = writer.WriteAsArray<ProtocolMessage>(errorResponse);
-                var body                = new JsonUtf8(bodyArray);
+                var body                = new JsonValue(bodyArray);
                 return new JsonResponse(body, type);
             }
         }

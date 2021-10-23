@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         
         public async Task<bool> ExecuteHttpRequest(RequestContext reqCtx) {
             if (reqCtx.method == "POST" && reqCtx.path == "/") {
-                var requestContent  = await JsonUtf8.ReadToEndAsync(reqCtx.body).ConfigureAwait(false);
+                var requestContent  = await JsonValue.ReadToEndAsync(reqCtx.body).ConfigureAwait(false);
 
                 // Each request require its own pool as multiple request running concurrently. Could cache a Pools instance per connection.
                 var pools           = new Pools(UtilsInternal.SharedPools);

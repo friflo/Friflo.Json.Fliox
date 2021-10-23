@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.DB.Host
                     var key     = command.entityKeys[n];
                     var path = FilePath(key.AsString());
                     try {
-                        await WriteText(path, payload.json, FileMode.CreateNew).ConfigureAwait(false);
+                        await WriteText(path, payload, FileMode.CreateNew).ConfigureAwait(false);
                     } catch (Exception e) {
                         var error = CreateEntityError(EntityErrorType.WriteError, key, e);
                         AddEntityError(ref createErrors, key, error);
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.DB.Host
                     var key     = command.entityKeys[n];
                     var path = FilePath(key.AsString());
                     try {
-                        await WriteText(path, payload.json, FileMode.Create).ConfigureAwait(false);
+                        await WriteText(path, payload, FileMode.Create).ConfigureAwait(false);
                     } catch (Exception e) {
                         var error = CreateEntityError(EntityErrorType.WriteError, key, e);
                         AddEntityError(ref upsertErrors, key, error);
@@ -215,13 +215,13 @@ namespace Friflo.Json.Fliox.DB.Host
         /// may access the file concurrently resulting in:
         /// IOException: The process cannot access the file 'path' because it is being used by another process
         /// </summary>
-        private static async Task WriteText(string filePath, JsonUtf8 json, FileMode fileMode) {
+        private static async Task WriteText(string filePath, JsonValue json, FileMode fileMode) {
             using (var destStream = new FileStream(filePath, fileMode, FileAccess.Write, FileShare.Read, bufferSize: 4096, useAsync: false)) {
                 await destStream.WriteAsync(json, 0, json.Length).ConfigureAwait(false);
             }
         }
         
-        private static async Task<JsonUtf8> ReadText(string filePath) {
+        private static async Task<JsonValue> ReadText(string filePath) {
             using (var sourceStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: false)) {
                 return await EntityUtils.ReadToEnd(sourceStream).ConfigureAwait(false);
             }

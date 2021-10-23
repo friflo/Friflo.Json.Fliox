@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
             if (task is SendMessage cmd) {
                 if (commands.TryGetValue(cmd.name, out CommandCallback callback)) {
                     var jsonResult  = await callback.InvokeCallback(cmd.name, cmd.value, messageContext).ConfigureAwait(false);
-                    return new SendMessageResult { result = new JsonValue { json = jsonResult } };
+                    return new SendMessageResult { result = jsonResult };
                 }
             }
             var result = await task.Execute(database, response, messageContext).ConfigureAwait(false);

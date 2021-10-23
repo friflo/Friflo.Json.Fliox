@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
                     for (int n = 0; n < entities.Count; n++) {
                         var entity = entities[n];
                         // if (entity.json == null)  continue; // TAG_ENTITY_NULL
-                        entities[n] = new JsonValue(patcher.Copy(entity.json, true));
+                        entities[n] = patcher.Copy(entity, true);
                     }
                 }
             }

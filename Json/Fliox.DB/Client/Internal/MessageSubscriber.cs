@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         }
         
         internal override void InvokeCallback(ObjectReader reader, string messageName, JsonValue messageValue) {
-            var msg = new Message(messageName, messageValue.json, reader);
+            var msg = new Message(messageName, messageValue, reader);
             handler(msg);
         }
     }
@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         }
         
         internal override void InvokeCallback(ObjectReader reader, string messageName, JsonValue messageValue) {
-            var msg = new Message<TValue>(messageName, messageValue.json, reader);
+            var msg = new Message<TValue>(messageName, messageValue, reader);
             handler(msg);
         }
     }

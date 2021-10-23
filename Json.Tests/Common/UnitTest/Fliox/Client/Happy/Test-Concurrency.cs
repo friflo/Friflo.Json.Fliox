@@ -188,7 +188,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static Task MessageLoop (FlioxClient client, string text, int requestCount) {
-            var result = new JsonUtf8( $"\"{text}\"");
+            var result = new JsonValue( $"\"{text}\"");
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
                     var message = client.SendMessage(StdMessage.Echo, text);

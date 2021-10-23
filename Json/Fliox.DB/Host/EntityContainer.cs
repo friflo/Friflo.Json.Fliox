@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.DB.Host
                     }
                     var json = patcher.ApplyPatches(target, patch.patches, Pretty);
                     entity.Value.SetJson(json);
-                    targets.Add(new JsonValue(json));
+                    targets.Add(json);
                     targetKeys.Add(key);
                 }
             }

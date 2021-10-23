@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             sb.Clear();
         }
         
-        private void Init(JsonUtf8 json) {
+        private void Init(JsonValue json) {
             validationError = new ValidationError();
             jsonBytes.Clear();
             jsonBytes.AppendArray(json);
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return RootError(type, "Expected EOF after reading JSON", out error);
         }
         
-        public bool ValidateObject (JsonUtf8 json, ValidationType type, out string error) {
+        public bool ValidateObject (JsonValue json, ValidationType type, out string error) {
             Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ObjectStart) {
@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return RootError(type, "ValidateObject() expect object. was:", out error);
         }
         
-        public bool ValidateObjectMap (JsonUtf8 json, ValidationType type, out string error) {
+        public bool ValidateObjectMap (JsonValue json, ValidationType type, out string error) {
             Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ObjectStart) {
@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return RootError(type, "ValidateObjectMap() expect object. was:", out error);
         }
         
-        public bool ValidateArray (JsonUtf8 json, ValidationType type, out string error) {
+        public bool ValidateArray (JsonValue json, ValidationType type, out string error) {
             Init(json);
             var ev = parser.NextEvent();
             if (ev == JsonEvent.ArrayStart) {

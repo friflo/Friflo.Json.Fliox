@@ -10,36 +10,36 @@ namespace Friflo.Json.Fliox.DB.Protocol.Models
         [Fri.Property]  private     JsonValue   value;
         [Fri.Property]  private     EntityError error;
         
-        [Fri.Ignore]    public      JsonUtf8    Json    => error == null ? value.json : throw new EntityException(error);
+        [Fri.Ignore]    public      JsonValue   Json    => error == null ? value : throw new EntityException(error);
         [Fri.Ignore]    public      EntityError Error   => error;
 
-        public override             string      ToString() => error == null ? value.json.AsString() : error.type + ": " + error.message;
+        public override             string      ToString() => error == null ? value.AsString() : error.type + ": " + error.message;
 
-        public void SetJson(JsonUtf8 json) {
-            value.json = json;
+        public void SetJson(JsonValue json) {
+            value = json;
         }
         
-        /// <summary> Prefer using <see cref="SetJson(JsonUtf8)"/></summary>
+        /// <summary> Prefer using <see cref="SetJson(JsonValue)"/></summary>
         public void SetJson(string json) {
-            value.json = new JsonUtf8(json);
+            value = new JsonValue(json);
         }
         
         public void SetError(EntityError error) {
             this.error = error;
             // assign "null". Invalid JSON cannot be serialized. As it is invalid, it cant be processed further anyway.
-            value.json = new JsonUtf8();
+            value = new JsonValue();
         }
 
         public EntityValue() { } // required for TypeMapper
 
         
-        public EntityValue(JsonUtf8 json) {
-            value.json = json;
+        public EntityValue(JsonValue json) {
+            value = json;
         }
         
-        /// <summary> Prefer using <see cref="EntityValue(JsonUtf8)"/> </summary>
+        /// <summary> Prefer using <see cref="EntityValue(JsonValue)"/> </summary>
         public EntityValue(string json) {
-            value.json = new JsonUtf8(json);
+            value = new JsonValue(json);
         }
         
         public EntityValue(EntityError error) {

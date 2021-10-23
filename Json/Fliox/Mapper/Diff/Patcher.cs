@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         public  readonly    TypeCache       typeCache;
         private readonly    ObjectReader    jsonReader;
         private             PatchType       patchType;
-        private             JsonUtf8        json;
+        private             JsonValue       json;
         private             int             pathPos;
         private readonly    List<JsonKey>   pathNodes = new List<JsonKey>();
         private             string          path;
@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             switch (patchType) {
                 case PatchType.Replace:
                     var replace = (PatchReplace) patch;
-                    json = replace.value.json;
+                    json = replace.value;
                     path = PathTools.PathToPathTokens(replace.path, pathNodes);
                     if (pathNodes.Count == 0) {
                         jsonReader.ReadTo(json, root);
@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                     break;
                 case PatchType.Add:
                     var add = (PatchAdd) patch;
-                    json = add.value.json;
+                    json = add.value;
                     path = PathTools.PathToPathTokens(add.path, pathNodes);
                     break;
                 case PatchType.Remove:

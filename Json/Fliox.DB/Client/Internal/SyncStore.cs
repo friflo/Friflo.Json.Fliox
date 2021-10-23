@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                 return;
             }
             var messageResult = (SendMessageResult)result;
-            messageTask.result = messageResult.result.json;
+            messageTask.result = messageResult.result;
             messageTask.state.Executed = true;
         }
         

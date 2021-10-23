@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         
         public          string          ResponseContentType { get; private set; }
         public          int             StatusCode          { get; private set; }
-        public          JsonUtf8        Response            { get; private set; }
+        public          JsonValue       Response            { get; private set; }
         public          int             Offset              { get; private set; }
         
         public RequestContext (string  method,string path, Stream body) {
@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             this.body   = body;
         }
         
-        public void Write (JsonUtf8 value, int offset, string contentType, int statusCode) {
+        public void Write (JsonValue value, int offset, string contentType, int statusCode) {
             ResponseContentType = contentType;
             StatusCode          = statusCode;
             Response            = value;
@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         public void WriteString (string value, string contentType, int statusCode) {
             ResponseContentType = contentType;
             StatusCode          = statusCode;
-            Response            = new JsonUtf8(value);
+            Response            = new JsonValue(value);
             Offset              = 0;
         }
     }

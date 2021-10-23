@@ -23,12 +23,12 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         
         public override bool IsNullObject(object value) {
             var jsonValue = (JsonValue)value;
-            return jsonValue.json.IsNull();
+            return jsonValue.IsNull();
         }
 
         public override void Write(ref Writer writer, JsonValue value) {
-            if (!value.json.IsNull())
-                writer.bytes.AppendArray(value.json);
+            if (!value.IsNull())
+                writer.bytes.AppendArray(value);
             else
                 writer.AppendNull();
         }

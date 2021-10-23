@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.DB.Host
     
     public sealed class MemoryContainer : EntityContainer
     {
-        private  readonly   Dictionary<JsonKey, JsonUtf8>  keyValues = new Dictionary<JsonKey, JsonUtf8>(JsonKey.Equality);
+        private  readonly   Dictionary<JsonKey, JsonValue>  keyValues = new Dictionary<JsonKey, JsonValue>(JsonKey.Equality);
         
         public   override   bool                            Pretty      { get; }
         
@@ -44,9 +44,9 @@ namespace Friflo.Json.Fliox.DB.Host
             for (int n = 0; n < entities.Count; n++) {
                 var key     = command.entityKeys[n];
                 var payload = entities[n];
-                if (keyValues.TryGetValue(key, out JsonUtf8 _))
+                if (keyValues.TryGetValue(key, out JsonValue _))
                     throw new InvalidOperationException($"Entity with key '{key}' already in DatabaseContainer: {name}");
-                keyValues[key] = payload.json;
+                keyValues[key] = payload;
             }
             var result = new CreateEntitiesResult();
             return Task.FromResult(result);
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.DB.Host
             for (int n = 0; n < entities.Count; n++) {
                 var key     = command.entityKeys[n];
                 var payload = entities[n];
-                keyValues[key] = payload.json;
+                keyValues[key] = payload;
             }
             var result = new UpsertEntitiesResult();
             return Task.FromResult(result);

@@ -440,9 +440,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
                         var selectResults   = memberAccessor.GetValues(entity, memberAccess);
                         int n = 0;
                         foreach (var path in patchTask.members) {
-                            var value = new JsonValue {
-                                json = selectResults[n++].Json
-                            };
+                            var value = selectResults[n++].Json;
                             entityPatches.Add(new PatchReplace {
                                 path = path,
                                 value = value
@@ -522,7 +520,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         private void SetNextPatchSource(Peer<T> peer) {
             var mapper      = set.intern.jsonMapper;
             var jsonArray   = mapper.writer.WriteAsArray(peer.Entity);
-            var json        = new JsonUtf8(jsonArray);
+            var json        = new JsonValue(jsonArray);
             peer.SetNextPatchSource(mapper.Read<T>(json));
         }
 

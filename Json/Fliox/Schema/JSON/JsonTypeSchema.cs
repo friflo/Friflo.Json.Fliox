@@ -133,7 +133,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             bool    required        = typeDef.type.required?.Contains(fieldName) ?? false;
 
             FieldType   items       = GetItemsFieldType(field.items, out bool isNullableElement);
-            JsonUtf8    jsonType    = field.type.json;
+            JsonValue   jsonType    = field.type;
             FieldType   addProps    = field.additionalProperties;
 
             if (field.reference != null) {
@@ -180,7 +180,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             typeDef.fields.Add(fieldDef);
         }
         
-        private static TypeDef FindTypeFromJson (JsonUtf8 jsonArray, FieldType items, in JsonTypeContext context, ref bool isArray) {
+        private static TypeDef FindTypeFromJson (JsonValue jsonArray, FieldType items, in JsonTypeContext context, ref bool isArray) {
             var json = jsonArray.AsString();
             if     (json.StartsWith("\"")) {
                 var jsonValue = json.Substring(1, json.Length - 2);
@@ -242,7 +242,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 }
                 return context.schemas[reference];
             }
-            var jsonType =  itemType.type.json;
+            var jsonType =  itemType.type;
             if (!jsonType.IsNull()) {
                 bool isArray = true;
                 var itemTypeItems = GetItemsFieldType(itemType.items, out _);
@@ -251,7 +251,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             throw new InvalidOperationException($"no type given for field: {itemType.name}");
         }
         
-        private static readonly JsonUtf8 Null = new JsonUtf8("\"null\"");
+        private static readonly JsonValue Null = new JsonValue("\"null\"");
         
         /// Supporting nullable (value type) array elements seems uh - however it is supported. Reasons against:
         /// <list type="bullet">
@@ -265,7 +265,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 isNullableElement = false;
                 return null;
             }
-            if (!itemType.type.json.IsNull()) {
+            if (!itemType.type.IsNull()) {
                 isNullableElement = false;
                 return itemType;
             }
@@ -278,7 +278,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 isNullableElement = false;
                 FieldType elementType = null;
                 foreach (var fieldType in oneOf) {
-                    if (fieldType.type.json.IsEqual(Null)) {
+                    if (fieldType.type.IsEqual(Null)) {
                         isNullableElement = true;
                     }
                     if (fieldType.reference != null) {

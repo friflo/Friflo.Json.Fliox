@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.DB.AspNetCore
             await hostHub.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
                     
             var httpResponse            = context.Response;
-            JsonUtf8 response           = reqCtx.Response;
+            JsonValue response          = reqCtx.Response;
             httpResponse.StatusCode     = reqCtx.StatusCode;
             httpResponse.ContentType    = reqCtx.ResponseContentType;
             httpResponse.ContentLength  = response.Length;

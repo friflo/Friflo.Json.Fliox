@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                             Console.WriteLine($"Expect WebSocket message type text. type: {messageType} {endpoint}");
                             continue;
                         }
-                        var requestContent  = new JsonUtf8(memoryStream.ToArray());
+                        var requestContent  = new JsonValue(memoryStream.ToArray());
                         OnReceive (requestContent);
                     } catch (Exception) {
                         foreach (var pair in requests) {
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             }
         }
         
-        private void OnReceive(JsonUtf8 messageJson) {
+        private void OnReceive(JsonValue messageJson) {
             try {
                 var contextPools    = new Pools(UtilsInternal.SharedPools);
                 ProtocolMessage message = RemoteUtils.ReadProtocolMessage (messageJson, contextPools, out _);

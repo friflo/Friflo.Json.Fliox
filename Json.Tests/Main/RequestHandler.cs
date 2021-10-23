@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Main
             var filePath = wwwRoot + path;
             var content = await ReadFile(filePath).ConfigureAwait(false);
             var contentType = ContentTypeFromPath(path);
-            context.Write(new JsonUtf8(content), 0, contentType, (int)HttpStatusCode.OK);
+            context.Write(new JsonValue(content), 0, contentType, (int)HttpStatusCode.OK);
         }
         
         private void ListDirectory (RequestContext context) {

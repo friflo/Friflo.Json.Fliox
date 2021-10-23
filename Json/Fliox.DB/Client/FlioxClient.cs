@@ -222,7 +222,7 @@ namespace Friflo.Json.Fliox.DB.Client
 
         // --- SendMessage
         public MessageTask SendMessage(string name) {
-            var task = new MessageTask(name, new JsonUtf8(), _intern.jsonMapper.reader);
+            var task = new MessageTask(name, new JsonValue(), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
@@ -230,7 +230,7 @@ namespace Friflo.Json.Fliox.DB.Client
         
         public MessageTask SendMessage<TValue>(string name, TValue value) {
             var json    = _intern.jsonMapper.WriteAsArray(value);
-            var task    = new MessageTask(name, new JsonUtf8(json), _intern.jsonMapper.reader);
+            var task    = new MessageTask(name, new JsonValue(json), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
@@ -243,7 +243,7 @@ namespace Friflo.Json.Fliox.DB.Client
         
         public MessageTask<TResult> SendMessage<TValue, TResult>(string name, TValue value) {
             var json    = _intern.jsonMapper.WriteAsArray(value);
-            var task    = new MessageTask<TResult>(name, new JsonUtf8(json), _intern.jsonMapper.reader);
+            var task    = new MessageTask<TResult>(name, new JsonValue(json), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
@@ -492,10 +492,10 @@ namespace Friflo.Json.Fliox.DB.Client
                 
                 // --- entities
                 foreach (var entity in entities) {
-                    if (!processor.GetEntityKey(entity.json, keyName, out JsonKey key, out string errorMsg)) {
+                    if (!processor.GetEntityKey(entity, keyName, out JsonKey key, out string errorMsg)) {
                         throw new InvalidOperationException($"GetEntityResults not found: {errorMsg}");
                     }
-                    entityMap.Add(key, new EntityValue(entity.json));
+                    entityMap.Add(key, new EntityValue(entity));
                 }
                 entities.Clear();
                 container.entities = null;

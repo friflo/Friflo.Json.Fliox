@@ -255,7 +255,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     var articlePatch0 = (PatchReplace)  articlePatch.patches[0];
                     AreEqual("Changed name",            articlePatch.entity.name);
                     AreEqual("/name",                   articlePatch0.path);
-                    AreEqual("\"Changed name\"",        articlePatch0.value.json.AsString());
+                    AreEqual("\"Changed name\"",        articlePatch0.value.AsString());
                     break;
             }
         }

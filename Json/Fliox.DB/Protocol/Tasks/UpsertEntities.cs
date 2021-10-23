@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
                         // if (entity.json == null)  continue; // TAG_ENTITY_NULL
                         // if (json == null)
                         //     return InvalidTask("value of entities key/value elements not be null");
-                        entities[n] = new JsonValue(patcher.Copy(entity.json, true));
+                        entities[n] = patcher.Copy(entity, true);
                     }
                 }
             }

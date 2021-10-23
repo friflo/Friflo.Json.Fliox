@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 for (int n = 0; n < entities.Count; n++) {
                     var key     = command.entityKeys[n];
                     var payload = entities[n];
-                    CosmosUtils.WriteJson(memory, payload.json);
+                    CosmosUtils.WriteJson(memory, payload);
                     var partitionKey = new PartitionKey(key.AsString());
                     // consider using [Introducing Bulk support in the .NET SDK | Azure Cosmos DB Blog] https://devblogs.microsoft.com/cosmosdb/introducing-bulk-support-in-the-net-sdk/
                     // todo handle error;
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.DB.Cosmos
                 for (int n = 0; n < entities.Count; n++) {
                     var key     = command.entityKeys[n];
                     var payload = entities[n];
-                    var json = processor.ReplaceKey(payload.json, command.keyName, false, "id", out _, out string error);
+                    var json = processor.ReplaceKey(payload, command.keyName, false, "id", out _, out string error);
                     CosmosUtils.WriteJson(memory, json);
                     var partitionKey = new PartitionKey(key.AsString());
                     // consider using [Introducing Bulk support in the .NET SDK | Azure Cosmos DB Blog] https://devblogs.microsoft.com/cosmosdb/introducing-bulk-support-in-the-net-sdk/

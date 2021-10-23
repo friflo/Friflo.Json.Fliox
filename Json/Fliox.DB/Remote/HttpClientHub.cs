@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             try {
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(endpoint, content).ConfigureAwait(false);
                 var bodyArray   = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                var jsonBody    = new JsonUtf8(bodyArray);
+                var jsonBody    = new JsonValue(bodyArray);
                 var response    = RemoteUtils.ReadProtocolMessage (jsonBody, messageContext.pools, out string error);
                 switch (response) {
                     case null:

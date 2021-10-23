@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// Returns the message value as JSON.
         /// Returns "null" when message was sent by <see cref="FlioxClient.SendMessage"/>
         /// </summary>
-        JsonUtf8            Json    { get; }
+        JsonValue           Json    { get; }
         
         /// <summary>
         /// Read the <see cref="Json"/> value as the given type <see cref="T"/>.
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.DB.Client
     /// </summary>
     public readonly struct Message<TValue> : IMessage {
         public              string          Name    { get; }
-        public              JsonUtf8        Json    { get; }
+        public              JsonValue       Json    { get; }
         
         private readonly    ObjectReader    reader;
        
@@ -52,7 +52,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// <see cref="Json"/> is set to <see cref="SendMessage.value"/> json.
         /// If json is null <see cref="Json"/> is set to "null".
         /// </summary>
-        internal Message(string name, JsonUtf8 json, ObjectReader reader) {
+        internal Message(string name, JsonValue json, ObjectReader reader) {
             Name        = name;
             Json        = json;  
             this.reader = reader;
@@ -72,13 +72,13 @@ namespace Friflo.Json.Fliox.DB.Client
     /// </summary>
     public readonly struct Message  : IMessage {
         public              string          Name    { get; }
-        public              JsonUtf8        Json    { get; }
+        public              JsonValue       Json    { get; }
         
         private readonly    ObjectReader    reader;
         
         public override     string          ToString()  => Name;
         
-        internal Message(string name, JsonUtf8 json, ObjectReader reader) {
+        internal Message(string name, JsonValue json, ObjectReader reader) {
             Name        = name;
             Json        = json;
             this.reader = reader;
@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.DB.Client
         }
         
         // --- internals
-        internal static T Read<T>(JsonUtf8 json, ObjectReader reader) {
+        internal static T Read<T>(JsonValue json, ObjectReader reader) {
             var result = reader.Read<T>(json);
             if (reader.Success)
                 return result;
@@ -101,7 +101,7 @@ namespace Friflo.Json.Fliox.DB.Client
             throw new JsonReaderException (error.msg.AsString(), error.Pos);
         }
         
-        internal static bool TryRead<T>(JsonUtf8 json, ObjectReader reader, out T result, out JsonReaderException error) {
+        internal static bool TryRead<T>(JsonValue json, ObjectReader reader, out T result, out JsonReaderException error) {
             result = reader.Read<T>(json);
             if (reader.Success) {
                 error = null;

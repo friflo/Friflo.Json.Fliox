@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Transform
             serializer.Dispose();
         }
         
-        public JsonUtf8 ApplyPatches(JsonUtf8 target, IList<JsonPatch> patches, bool pretty = false) {
+        public JsonValue ApplyPatches(JsonValue target, IList<JsonPatch> patches, bool pretty = false) {
             if (target.IsNull())
                 throw new ArgumentException("ApplyPatches() target mus not be null");
                     
@@ -54,10 +54,10 @@ namespace Friflo.Json.Fliox.Transform
             if (nodeStack.Count != 0)
                 throw new InvalidOperationException("Expect nodeStack.Count == 0");
             rootNode.ClearChildren();
-            return new JsonUtf8(serializer.json.AsArray());
+            return new JsonValue(serializer.json.AsArray());
         }
 
-        public JsonUtf8 Copy(JsonUtf8 json, bool pretty) {
+        public JsonValue Copy(JsonValue json, bool pretty) {
             serializer.SetPretty(pretty);
             this.targetJson.Clear();
             this.targetJson.AppendArray(json);
@@ -65,7 +65,7 @@ namespace Friflo.Json.Fliox.Transform
             targetParser.NextEvent();
             serializer.InitSerializer();
             serializer.WriteTree(ref targetParser);
-            return new JsonUtf8(serializer.json.AsArray());
+            return new JsonValue(serializer.json.AsArray());
         }
 
         private bool TraceObject(ref JsonParser p) {

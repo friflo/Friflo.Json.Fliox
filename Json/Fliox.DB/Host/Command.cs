@@ -9,9 +9,9 @@ namespace Friflo.Json.Fliox.DB.Host
         public              string          Name    { get; }
         public              IPools          Pools       => messageContext.pools;
         public              FlioxHub        Hub         => messageContext.hub;
-        public              JsonValue       JsonValue   => new JsonValue(json);
+        public              JsonValue       JsonValue   => json;
         
-        private  readonly   JsonUtf8        json;
+        private  readonly   JsonValue       json;
         private  readonly   MessageContext  messageContext;
 
         public   override   string          ToString() => Name;
@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.DB.Host
             }
         }}
 
-        internal Command(string name, JsonUtf8 json, MessageContext messageContext) {
+        internal Command(string name, JsonValue json, MessageContext messageContext) {
             Name                = name;
             this.json           = json;  
             this.messageContext = messageContext;

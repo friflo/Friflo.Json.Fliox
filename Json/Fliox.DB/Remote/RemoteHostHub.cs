@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             return response;
         }
 
-        public async Task<JsonResponse> ExecuteJsonRequest(JsonUtf8 jsonRequest, MessageContext messageContext) {
+        public async Task<JsonResponse> ExecuteJsonRequest(JsonValue jsonRequest, MessageContext messageContext) {
             try {
                 var request = RemoteUtils.ReadProtocolMessage(jsonRequest, messageContext.pools, out string error);
                 switch (request) {
@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                         return JsonResponse.CreateError(messageContext, error, JsonResponseStatus.Error);
                     case SyncRequest syncRequest:
                         var         response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
-                        JsonUtf8    jsonResponse    = RemoteUtils.CreateProtocolMessage(response.Result, messageContext.pools);
+                        JsonValue    jsonResponse    = RemoteUtils.CreateProtocolMessage(response.Result, messageContext.pools);
                         return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
                     default:
                         var msg = $"Unknown request. Name: {request.GetType().Name}";
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                         notFound.Add(entityPair.Key);
                         continue;
                     }
-                    entities.Add(new JsonValue(json));
+                    entities.Add(json);
                 }
                 entityMap.Clear();
                 if (notFound != null) {

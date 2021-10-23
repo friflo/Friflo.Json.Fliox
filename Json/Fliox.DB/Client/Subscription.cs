@@ -184,7 +184,7 @@ namespace Friflo.Json.Fliox.DB.Client
         private List<JsonKey> GetKeysFromEntities(string keyName, List<JsonValue> entities) {
             var keys = new List<JsonKey>(entities.Count);
             foreach (var entity in entities) {
-                if (!processor.GetEntityKey(entity.json, keyName, out JsonKey key, out string error))
+                if (!processor.GetEntityKey(entity, keyName, out JsonKey key, out string error))
                     throw new InvalidOperationException($"CreateEntityKeys() error: {error}");
                 keys.Add(key);
             }
@@ -198,7 +198,7 @@ namespace Friflo.Json.Fliox.DB.Client
             for (int n = 0; n < entities.Count; n++) {
                 var entity  = entities[n];
                 var key     = keys[n];
-                var value = new EntityValue(entity.json);
+                var value = new EntityValue(entity);
                 syncEntities.Add(key, value);
             }
             set.SyncPeerEntities(syncEntities);
@@ -220,7 +220,7 @@ namespace Friflo.Json.Fliox.DB.Client
                     continue;
                 var sendMessage = (SendMessage)task;
                 var reader  = client._intern.messageReader;
-                var message = new Message(sendMessage.name, sendMessage.value.json, reader);
+                var message = new Message(sendMessage.name, sendMessage.value, reader);
                 messages.Add(message);
             }
             return messages;

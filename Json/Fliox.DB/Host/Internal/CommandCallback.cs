@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
     
     internal abstract class CommandCallback
     {
-        internal abstract Task<JsonUtf8> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext);
+        internal abstract Task<JsonValue> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext);
     }
     
     internal sealed class CommandCallback<TValue, TResult> : CommandCallback
@@ -25,12 +25,12 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
             this.handler    = handler;
         }
         
-        internal override Task<JsonUtf8> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext) {
-            var     cmd     = new Command<TValue>(messageName, messageValue.json, messageContext);
+        internal override Task<JsonValue> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext) {
+            var     cmd     = new Command<TValue>(messageName, messageValue, messageContext);
             TResult result  = handler(cmd);
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 var jsonResult  = pooledMapper.instance.WriteAsArray(result);
-                return Task.FromResult(new JsonUtf8(jsonResult));
+                return Task.FromResult(new JsonValue(jsonResult));
             }
         }
     }
@@ -47,12 +47,12 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
             this.handler    = handler;
         }
         
-        internal override async Task<JsonUtf8> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext) {
-            var     cmd     = new Command<TValue>(messageName, messageValue.json, messageContext);
+        internal override async Task<JsonValue> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext) {
+            var     cmd     = new Command<TValue>(messageName, messageValue, messageContext);
             TResult result  = await handler(cmd).ConfigureAwait(false);
             using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
                 var jsonResult  = pooledMapper.instance.WriteAsArray(result);
-                return new JsonUtf8(jsonResult);
+                return new JsonValue(jsonResult);
             }
         }
     }

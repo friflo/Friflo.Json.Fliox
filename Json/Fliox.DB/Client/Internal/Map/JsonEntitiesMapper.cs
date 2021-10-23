@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal.Map
             int n = 0;
             foreach (var entity in value.entities) {
                 JsonKey     key     = entity.Key;
-                JsonUtf8    json    = entity.Value.Json;
+                JsonValue    json    = entity.Value.Json;
                 writer.WriteKey(keyMapper, key, n++);
                 if (!json.IsNull())
                     writer.bytes.AppendArray(json);
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal.Map
                         JsonValue jsonValue = jsonValueMapper.Read(ref reader, new JsonValue(), out success);
                         if (!success)
                             return default;
-                        slot.entities[key] = new EntityValue(jsonValue.json);
+                        slot.entities[key] = new EntityValue(jsonValue);
                         break;
                     case JsonEvent.ObjectEnd:
                         success = true;

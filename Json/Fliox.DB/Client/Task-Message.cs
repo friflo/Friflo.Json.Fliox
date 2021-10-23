@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.DB.Client
         internal readonly   JsonValue       value;
         private  readonly   ObjectReader    reader;
         
-        internal            JsonUtf8        result;
+        internal            JsonValue       result;
         
         internal            TaskState       state;
         internal override   TaskState       State       => state;
@@ -22,11 +22,11 @@ namespace Friflo.Json.Fliox.DB.Client
         /// <summary>Return the result of a message used as a command as JSON.
         /// JSON is "null" if the message doesnt return a result.
         /// For type safe access of the result use <see cref="ReadResult{T}"/></summary>
-        public              JsonUtf8        ResultJson  => IsOk("MessageTask.ResultJson", out Exception e) ? result : throw e;
+        public              JsonValue       ResultJson  => IsOk("MessageTask.ResultJson", out Exception e) ? result : throw e;
         
-        internal MessageTask(string name, JsonUtf8 value, ObjectReader reader) {
+        internal MessageTask(string name, JsonValue value, ObjectReader reader) {
             this.name   = name;
-            this.value  = new JsonValue { json = value };
+            this.value  = value;
             this.reader = reader;
         }
 
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.DB.Client
     {
         public              TResult          Result => ReadResult<TResult>();
         
-        internal MessageTask(string name, JsonUtf8 value, ObjectReader reader) : base (name, value, reader) {
+        internal MessageTask(string name, JsonValue value, ObjectReader reader) : base (name, value, reader) {
         }
     }
 }

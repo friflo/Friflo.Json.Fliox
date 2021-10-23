@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
             using (var pooledProcessor = messageContext.pools.EntityProcessor.Get()) {
                 var processor = pooledProcessor.instance;
                 foreach (var entity in entities) {
-                    var  json = processor.ReplaceKey(entity.json, keyName, asIntKey, newKeyName, out JsonKey keyValue, out _);
+                    var  json = processor.ReplaceKey(entity, keyName, asIntKey, newKeyName, out JsonKey keyValue, out _);
                     if (json.IsNull()) {
                         continue;
                     }
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
             }
         }
         
-        public static Task<JsonUtf8> ReadToEnd(Stream input) {
+        public static Task<JsonValue> ReadToEnd(Stream input) {
             byte[] buffer = new byte[16 * 1024];                // todo performance -> cache
             using (MemoryStream ms = new MemoryStream()) {      // todo performance -> cache
                 int read;
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
                     ms.Write(buffer, 0, read);
                 }
                 var array = ms.ToArray(); 
-                return Task.FromResult(new JsonUtf8(array));
+                return Task.FromResult(new JsonValue(array));
             }
         }
         
@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
                 var processor = poolProcessor.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var entity  = entities[n];
-                    if (processor.GetEntityKey(entity.json, keyName, out JsonKey key, out string entityError)) {
+                    if (processor.GetEntityKey(entity, keyName, out JsonKey key, out string entityError)) {
                         keys.Add(key);
                         continue;
                     }
