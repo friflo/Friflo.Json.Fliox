@@ -33,7 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var helloTask3 = store.SendMessage(StdMessage.Echo);
             // var helloTask3 = store.SendMessage<string, string>("HelloMessage", "Hello back 3");
             
-            AreEqual("SendMessageTask (name: Echo)", helloTask1.ToString());
+            AreEqual("MessageTask (name: Echo)", helloTask1.ToString());
 
             await store.SyncTasks(); // ----------------
             

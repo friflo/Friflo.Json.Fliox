@@ -17,12 +17,12 @@ namespace Friflo.Json.Fliox.DB.Client
         internal            TaskState       state;
         internal override   TaskState       State       => state;
         
-        public   override   string          Details     => $"SendMessageTask (name: {name})";
+        public   override   string          Details     => $"MessageTask (name: {name})";
 
         /// <summary>Return the result of a message used as a command as JSON.
         /// JSON is "null" if the message doesnt return a result.
         /// For type safe access of the result use <see cref="ReadResult{T}"/></summary>
-        public              JsonUtf8        ResultJson  => IsOk("SendMessageTask.Result", out Exception e) ? result : throw e;
+        public              JsonUtf8        ResultJson  => IsOk("MessageTask.ResultJson", out Exception e) ? result : throw e;
         
         internal MessageTask(string name, JsonUtf8 value, ObjectReader reader) {
             this.name   = name;
@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// Throws <see cref="JsonReaderException"/> if read fails.
         /// </summary>
         public T ReadResult<T>() {
-            var ok = IsOk("SendMessageTask.Result", out Exception e);
+            var ok = IsOk("MessageTask.ReadResult", out Exception e);
             if (ok) {
                 var resultValue = reader.Read<T>(result);
                 if (reader.Success)
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// Return false if read fails and set <see cref="error"/>.
         /// </summary>
         public bool TryReadResult<T>(out T resultValue, out JsonReaderException error) {
-            var ok = IsOk("SendMessageTask.Result", out Exception e);
+            var ok = IsOk("MessageTask.TryReadResult", out Exception e);
             if (ok) {
                 resultValue = reader.Read<T>(result);
                 if (reader.Success) {
