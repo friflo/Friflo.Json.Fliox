@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
     
     internal abstract class CommandCallback
     {
-        internal abstract Task<JsonUtf8> InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue);
+        internal abstract Task<JsonUtf8> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext);
     }
     
     internal sealed class CommandCallback<TValue, TResult> : CommandCallback
@@ -25,11 +25,13 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
             this.handler    = handler;
         }
         
-        internal override Task<JsonUtf8> InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue) {
-            var     cmd     = new Command<TValue>(messageName, messageValue.json, mapper.reader);
+        internal override Task<JsonUtf8> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext) {
+            var     cmd     = new Command<TValue>(messageName, messageValue.json, messageContext);
             TResult result  = handler(cmd);
-            var jsonResult  = mapper.WriteAsArray(result);
-            return Task.FromResult(new JsonUtf8(jsonResult));
+            using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
+                var jsonResult  = pooledMapper.instance.WriteAsArray(result);
+                return Task.FromResult(new JsonUtf8(jsonResult));
+            }
         }
     }
     
@@ -45,11 +47,13 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
             this.handler    = handler;
         }
         
-        internal override async Task<JsonUtf8> InvokeCallback(ObjectMapper mapper, string messageName, JsonValue messageValue) {
-            var     cmd     = new Command<TValue>(messageName, messageValue.json, mapper.reader);
+        internal override async Task<JsonUtf8> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext) {
+            var     cmd     = new Command<TValue>(messageName, messageValue.json, messageContext);
             TResult result  = await handler(cmd).ConfigureAwait(false);
-            var jsonResult  = mapper.WriteAsArray(result);
-            return new JsonUtf8(jsonResult);
+            using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
+                var jsonResult  = pooledMapper.instance.WriteAsArray(result);
+                return new JsonUtf8(jsonResult);
+            }
         }
     }
 }

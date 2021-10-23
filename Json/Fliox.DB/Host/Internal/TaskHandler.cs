@@ -56,10 +56,8 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
             }
             if (task is SendMessage cmd) {
                 if (commands.TryGetValue(cmd.name, out CommandCallback callback)) {
-                    using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
-                        var jsonResult  = await callback.InvokeCallback(pooledMapper.instance, cmd.name, cmd.value).ConfigureAwait(false);
-                        return new SendMessageResult { result = new JsonValue { json = jsonResult } };
-                    }
+                    var jsonResult  = await callback.InvokeCallback(cmd.name, cmd.value, messageContext).ConfigureAwait(false);
+                    return new SendMessageResult { result = new JsonValue { json = jsonResult } };
                 }
             }
             var result = await task.Execute(database, response, messageContext).ConfigureAwait(false);
