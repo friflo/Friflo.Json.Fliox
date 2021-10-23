@@ -46,6 +46,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
                         var patch = (PatchEntities)task;
                         info.changes.patches += patch.patches.Count;
                         break;
+                    case TaskType.message:
                     case TaskType.command:
                         info.messages++;
                         break;

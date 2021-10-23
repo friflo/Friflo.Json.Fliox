@@ -44,7 +44,8 @@
                 "query":            { "ref":  "QueryEntities" },
                 "patch":            { "ref":  "PatchEntities" },
                 "delete":           { "ref":  "DeleteEntities" },
-                "message":          { "ref":  "SendCommand" },
+                "message":          { "ref":  "SendMessage" },
+                "command":          { "ref":  "SendCommand" },
                 "subscribeChanges": { "ref":  "SubscribeChanges" },
                 "subscribeMessage": { "ref":  "SubscribeMessage" },
                 "reserveKeys":      { "ref":  "ReserveKeys" }
@@ -512,6 +513,13 @@
                 "info":      { "nullable": true }
             }
         },
+        "SendMessage": {
+            "properties": {
+                "name":  { "type": "string" },
+                "value": { "nullable": true },
+                "info":  { "nullable": true }
+            }
+        },
         "SendCommand": {
             "properties": {
                 "name":  { "type": "string" },
@@ -583,7 +591,8 @@
                 "query":            { "ref":  "QueryEntitiesResult" },
                 "patch":            { "ref":  "PatchEntitiesResult" },
                 "delete":           { "ref":  "DeleteEntitiesResult" },
-                "message":          { "ref":  "SendCommandResult" },
+                "message":          { "ref":  "SendMessageResult" },
+                "command":          { "ref":  "SendCommandResult" },
                 "subscribeChanges": { "ref":  "SubscribeChangesResult" },
                 "subscribeMessage": { "ref":  "SubscribeMessageResult" },
                 "reserveKeys":      { "ref":  "ReserveKeysResult" },
@@ -641,6 +650,11 @@
             }
         },
         "DeleteEntitiesResult": {
+            "properties": {
+                "Error": { "ref":  "CommandError", "nullable": true }
+            }
+        },
+        "SendMessageResult": {
             "properties": {
                 "Error": { "ref":  "CommandError", "nullable": true }
             }

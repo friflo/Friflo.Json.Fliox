@@ -15,8 +15,8 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         private     List<LogTask>               logTasks;
         private     List<LogTask>               LogTasks()          => logTasks ?? (logTasks = new List<LogTask>());
         
-        internal    List<CommandTask>           messageTasks;
-        internal    List<CommandTask>           MessageTasks()      => messageTasks ?? (messageTasks = new List<CommandTask>());
+        internal    List<MessageTask>           messageTasks;
+        internal    List<MessageTask>           MessageTasks()      => messageTasks ?? (messageTasks = new List<MessageTask>());
         private     int                         messageTasksIndex;
         
         private     List<SubscribeMessageTask>  subscribeMessage;
@@ -62,26 +62,30 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             if (messageTasks == null)
                 return;
             foreach (var messageTask in messageTasks) {
-                var req = new SendCommand {
-                    name  = messageTask.name,
-                    value = messageTask.value
-                };
-                tasks.Add(req);
+                SendMessage msg;
+                if (messageTask is CommandTask) {
+                    msg = new SendCommand { name  = messageTask.name, value = messageTask.value };
+                } else {
+                    msg = new SendMessage { name  = messageTask.name, value = messageTask.value };
+                }
+                tasks.Add(msg);
             }
         }
         
-        internal void MessageResult (SendCommand task, SyncTaskResult result) {
+        internal void MessageResult (SendMessage task, SyncTaskResult result) {
             // consider invalid response
             if (messageTasks == null || messageTasksIndex >= messageTasks.Count)
                 return;
             var index = messageTasksIndex++;
-            CommandTask messageTask = messageTasks[index];
+            var messageTask = messageTasks[index];
             if (result is TaskErrorResult taskError) {
                 messageTask.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
-            var messageResult = (SendCommandResult)result;
-            messageTask.result = messageResult.result;
+            if (messageTask is CommandTask cmd) {
+                var messageResult = (SendCommandResult)result;
+                cmd.result = messageResult.result;
+            }
             messageTask.state.Executed = true;
         }
         

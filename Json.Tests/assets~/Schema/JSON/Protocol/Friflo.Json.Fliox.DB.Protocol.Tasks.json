@@ -11,13 +11,14 @@
                 { "$ref": "#/definitions/QueryEntities" },
                 { "$ref": "#/definitions/PatchEntities" },
                 { "$ref": "#/definitions/DeleteEntities" },
+                { "$ref": "#/definitions/SendMessage" },
                 { "$ref": "#/definitions/SendCommand" },
                 { "$ref": "#/definitions/SubscribeChanges" },
                 { "$ref": "#/definitions/SubscribeMessage" },
                 { "$ref": "#/definitions/ReserveKeys" }
             ],
             "properties": {
-                "task": { "enum": ["create", "upsert", "read", "query", "patch", "delete", "message", "subscribeChanges", "subscribeMessage", "reserveKeys"] },
+                "task": { "enum": ["create", "upsert", "read", "query", "patch", "delete", "message", "command", "subscribeChanges", "subscribeMessage", "reserveKeys"] },
                 "info": {  }
             },
             "required": [
@@ -140,11 +141,26 @@
             ],
             "additionalProperties": false
         },
-        "SendCommand": {
+        "SendMessage": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
             "properties": {
                 "task":  { "enum": ["message"] },
+                "name":  { "type": "string" },
+                "value": {  },
+                "info":  {  }
+            },
+            "required": [
+                "task",
+                "name"
+            ],
+            "additionalProperties": false
+        },
+        "SendCommand": {
+            "type": "object",
+            "extends": { "$ref": "#/definitions/SendMessage" },
+            "properties": {
+                "task":  { "enum": ["command"] },
                 "name":  { "type": "string" },
                 "value": {  },
                 "info":  {  }
@@ -220,6 +236,7 @@
                 { "$ref": "#/definitions/QueryEntitiesResult" },
                 { "$ref": "#/definitions/PatchEntitiesResult" },
                 { "$ref": "#/definitions/DeleteEntitiesResult" },
+                { "$ref": "#/definitions/SendMessageResult" },
                 { "$ref": "#/definitions/SendCommandResult" },
                 { "$ref": "#/definitions/SubscribeChangesResult" },
                 { "$ref": "#/definitions/SubscribeMessageResult" },
@@ -227,7 +244,7 @@
                 { "$ref": "#/definitions/TaskErrorResult" }
             ],
             "properties": {
-                "task": { "enum": ["create", "upsert", "read", "query", "patch", "delete", "message", "subscribeChanges", "subscribeMessage", "reserveKeys", "error"] }
+                "task": { "enum": ["create", "upsert", "read", "query", "patch", "delete", "message", "command", "subscribeChanges", "subscribeMessage", "reserveKeys", "error"] }
             },
             "required": [
                 "task"
@@ -311,11 +328,23 @@
             ],
             "additionalProperties": false
         },
+        "SendMessageResult": {
+            "type": "object",
+            "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "properties": {
+                "task":  { "enum": ["message"] },
+                "Error": { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.DB.Protocol.Models.json#/definitions/CommandError" }] }
+            },
+            "required": [
+                "task"
+            ],
+            "additionalProperties": false
+        },
         "SendCommandResult": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "properties": {
-                "task":   { "enum": ["message"] },
+                "task":   { "enum": ["command"] },
                 "Error":  { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.DB.Protocol.Models.json#/definitions/CommandError" }] },
                 "result": {  }
             },

@@ -6,16 +6,29 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Client
 {
-    public class CommandTask : SyncTask
+     public class MessageTask : SyncTask
     {
         internal readonly   string          name;
         internal readonly   JsonValue       value;
+        
+        internal            TaskState       state;
+        internal override   TaskState       State       => state;
+        
+        public   override   string          Details     => $"MessageTask (name: {name})";
+
+        
+        internal MessageTask(string name, JsonValue value) {
+            this.name   = name;
+            this.value  = value;
+        }
+    }
+
+    public class CommandTask : MessageTask
+    {
         private  readonly   ObjectReader    reader;
         
         internal            JsonValue       result;
         
-        internal            TaskState       state;
-        internal override   TaskState       State       => state;
         
         public   override   string          Details     => $"CommandTask (name: {name})";
 
@@ -24,9 +37,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// For type safe access of the result use <see cref="ReadResult{T}"/></summary>
         public              JsonValue       ResultJson  => IsOk("CommandTask.ResultJson", out Exception e) ? result : throw e;
         
-        internal CommandTask(string name, JsonValue value, ObjectReader reader) {
-            this.name   = name;
-            this.value  = value;
+        internal CommandTask(string name, JsonValue value, ObjectReader reader) : base (name, value) {
             this.reader = reader;
         }
 
@@ -67,8 +78,8 @@ namespace Friflo.Json.Fliox.DB.Client
             throw e;
         }
     }
-    
-    
+
+
     public sealed class CommandTask<TResult> : CommandTask
     {
         public              TResult          Result => ReadResult<TResult>();

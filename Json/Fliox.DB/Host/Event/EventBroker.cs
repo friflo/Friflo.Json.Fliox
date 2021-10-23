@@ -175,8 +175,9 @@ namespace Friflo.Json.Fliox.DB.Host.Event
                                 continue;
                             AddTask(ref tasks, taskResult);
                         }
-                        if (task.TaskType == TaskType.command) {
-                            var message = (SendCommand) task;
+                        var taskType = task.TaskType; 
+                        if (taskType == TaskType.message || taskType == TaskType.command) {
+                            var message = (SendMessage) task;
                             if (!subscriber.FilterMessage(message.name))
                                 continue;
                             AddTask(ref tasks, task);

@@ -608,9 +608,13 @@ namespace Friflo.Json.Fliox.DB.Client
                             syncSet = syncSets[delete.container];
                             syncSet.DeleteEntitiesResult(delete, result);
                             break;
-                        case TaskType.command:
-                            var message =           (SendCommand) task;
+                        case TaskType.message:
+                            var message =           (SendMessage) task;
                             syncStore.MessageResult(message, result);
+                            break;
+                        case TaskType.command:
+                            var command =           (SendCommand) task;
+                            syncStore.MessageResult(command, result);
                             break;
                         case TaskType.subscribeChanges:
                             var subscribeChanges =  (SubscribeChanges) task;

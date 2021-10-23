@@ -19,6 +19,7 @@ export type SyncRequestTask_Union =
     | QueryEntities
     | PatchEntities
     | DeleteEntities
+    | SendMessage
     | SendCommand
     | SubscribeChanges
     | SubscribeMessage
@@ -34,6 +35,7 @@ export abstract class SyncRequestTask {
         | "patch"
         | "delete"
         | "message"
+        | "command"
         | "subscribeChanges"
         | "subscribeMessage"
         | "reserveKeys"
@@ -91,10 +93,14 @@ export class DeleteEntities extends SyncRequestTask {
     all?       : boolean | null;
 }
 
-export class SendCommand extends SyncRequestTask {
+export class SendMessage extends SyncRequestTask {
     task   : "message";
     name   : string;
     value? : any | null;
+}
+
+export class SendCommand extends SendMessage {
+    task   : "command";
 }
 
 export class SubscribeChanges extends SyncRequestTask {
@@ -130,6 +136,7 @@ export type SyncTaskResult_Union =
     | QueryEntitiesResult
     | PatchEntitiesResult
     | DeleteEntitiesResult
+    | SendMessageResult
     | SendCommandResult
     | SubscribeChangesResult
     | SubscribeMessageResult
@@ -146,6 +153,7 @@ export abstract class SyncTaskResult {
         | "patch"
         | "delete"
         | "message"
+        | "command"
         | "subscribeChanges"
         | "subscribeMessage"
         | "reserveKeys"
@@ -186,8 +194,13 @@ export class DeleteEntitiesResult extends SyncTaskResult {
     Error? : CommandError | null;
 }
 
+export class SendMessageResult extends SyncTaskResult {
+    task   : "message";
+    Error? : CommandError | null;
+}
+
 export class SendCommandResult extends SyncTaskResult {
-    task    : "message";
+    task    : "command";
     Error?  : CommandError | null;
     result? : any | null;
 }

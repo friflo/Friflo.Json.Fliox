@@ -11,6 +11,7 @@ enum class TaskType {
     upsert,
     patch,
     delete,
+    message,
     command,
     subscribeChanges,
     subscribeMessage,

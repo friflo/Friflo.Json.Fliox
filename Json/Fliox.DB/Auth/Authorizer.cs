@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.DB.Auth
         }
         
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
-            if (!(task is SendCommand message))
+            if (!(task is SendMessage message))
                 return false;
             if (prefix) {
                 return message.name.StartsWith(messageName);
