@@ -11,7 +11,7 @@
                 { "$ref": "#/definitions/QueryEntities" },
                 { "$ref": "#/definitions/PatchEntities" },
                 { "$ref": "#/definitions/DeleteEntities" },
-                { "$ref": "#/definitions/SendMessage" },
+                { "$ref": "#/definitions/SendCommand" },
                 { "$ref": "#/definitions/SubscribeChanges" },
                 { "$ref": "#/definitions/SubscribeMessage" },
                 { "$ref": "#/definitions/ReserveKeys" }
@@ -140,7 +140,7 @@
             ],
             "additionalProperties": false
         },
-        "SendMessage": {
+        "SendCommand": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncRequestTask" },
             "properties": {
@@ -220,7 +220,7 @@
                 { "$ref": "#/definitions/QueryEntitiesResult" },
                 { "$ref": "#/definitions/PatchEntitiesResult" },
                 { "$ref": "#/definitions/DeleteEntitiesResult" },
-                { "$ref": "#/definitions/SendMessageResult" },
+                { "$ref": "#/definitions/SendCommandResult" },
                 { "$ref": "#/definitions/SubscribeChangesResult" },
                 { "$ref": "#/definitions/SubscribeMessageResult" },
                 { "$ref": "#/definitions/ReserveKeysResult" },
@@ -311,7 +311,7 @@
             ],
             "additionalProperties": false
         },
-        "SendMessageResult": {
+        "SendCommandResult": {
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "properties": {

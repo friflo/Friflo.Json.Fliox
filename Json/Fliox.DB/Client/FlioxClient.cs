@@ -220,38 +220,38 @@ namespace Friflo.Json.Fliox.DB.Client
             _intern.subscriptionHandler = handler;
         }
 
-        // --- SendMessage
-        public MessageTask SendMessage(string name) {
-            var task = new MessageTask(name, new JsonValue(), _intern.jsonMapper.reader);
+        // --- SendCommand
+        public CommandTask SendCommand(string name) {
+            var task = new CommandTask(name, new JsonValue(), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
         }
         
-        public MessageTask SendMessage<TValue>(string name, TValue value) {
+        public CommandTask SendCommand<TValue>(string name, TValue value) {
             var json    = _intern.jsonMapper.WriteAsArray(value);
-            var task    = new MessageTask(name, new JsonValue(json), _intern.jsonMapper.reader);
+            var task    = new CommandTask(name, new JsonValue(json), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
         }
         
-        public MessageTask SendMessage<TValue>(TValue value) {
+        public CommandTask SendCommand<TValue>(TValue value) {
             var name = typeof(TValue).Name;
-            return SendMessage(name, value);
+            return SendCommand(name, value);
         }
         
-        public MessageTask<TResult> SendMessage<TValue, TResult>(string name, TValue value) {
+        public CommandTask<TResult> SendCommand<TValue, TResult>(string name, TValue value) {
             var json    = _intern.jsonMapper.WriteAsArray(value);
-            var task    = new MessageTask<TResult>(name, new JsonValue(json), _intern.jsonMapper.reader);
+            var task    = new CommandTask<TResult>(name, new JsonValue(json), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
         }
         
-        public MessageTask<TResult> SendMessage<TValue, TResult>(TValue value) {
+        public CommandTask<TResult> SendCommand<TValue, TResult>(TValue value) {
             var name = typeof(TValue).Name;
-            return SendMessage<TValue, TResult>(name, value);
+            return SendCommand<TValue, TResult>(name, value);
         }
         
         
@@ -608,8 +608,8 @@ namespace Friflo.Json.Fliox.DB.Client
                             syncSet = syncSets[delete.container];
                             syncSet.DeleteEntitiesResult(delete, result);
                             break;
-                        case TaskType.message:
-                            var message =           (SendMessage) task;
+                        case TaskType.command:
+                            var message =           (SendCommand) task;
                             syncStore.MessageResult(message, result);
                             break;
                         case TaskType.subscribeChanges:

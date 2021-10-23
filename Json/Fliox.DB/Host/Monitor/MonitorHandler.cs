@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         public override Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             var monitorDB = (MonitorDatabase)database;
             switch (task.TaskType) {
-                case TaskType.message:
+                case TaskType.command:
                 case TaskType.read:
                 case TaskType.query:
                     return base.ExecuteTask(task, monitorDB.stateDB, response, messageContext);

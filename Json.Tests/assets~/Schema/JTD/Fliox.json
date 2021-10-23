@@ -44,7 +44,7 @@
                 "query":            { "ref":  "QueryEntities" },
                 "patch":            { "ref":  "PatchEntities" },
                 "delete":           { "ref":  "DeleteEntities" },
-                "message":          { "ref":  "SendMessage" },
+                "message":          { "ref":  "SendCommand" },
                 "subscribeChanges": { "ref":  "SubscribeChanges" },
                 "subscribeMessage": { "ref":  "SubscribeMessage" },
                 "reserveKeys":      { "ref":  "ReserveKeys" }
@@ -512,7 +512,7 @@
                 "info":      { "nullable": true }
             }
         },
-        "SendMessage": {
+        "SendCommand": {
             "properties": {
                 "name":  { "type": "string" },
                 "value": { "nullable": true },
@@ -583,7 +583,7 @@
                 "query":            { "ref":  "QueryEntitiesResult" },
                 "patch":            { "ref":  "PatchEntitiesResult" },
                 "delete":           { "ref":  "DeleteEntitiesResult" },
-                "message":          { "ref":  "SendMessageResult" },
+                "message":          { "ref":  "SendCommandResult" },
                 "subscribeChanges": { "ref":  "SubscribeChangesResult" },
                 "subscribeMessage": { "ref":  "SubscribeMessageResult" },
                 "reserveKeys":      { "ref":  "ReserveKeysResult" },
@@ -645,7 +645,7 @@
                 "Error": { "ref":  "CommandError", "nullable": true }
             }
         },
-        "SendMessageResult": {
+        "SendCommandResult": {
             "properties": {
                 "Error":  { "ref":  "CommandError", "nullable": true },
                 "result": { "nullable": true }

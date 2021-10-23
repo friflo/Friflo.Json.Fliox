@@ -7,7 +7,7 @@ export type TaskType =
     | "upsert"
     | "patch"
     | "delete"
-    | "message"
+    | "command"
     | "subscribeChanges"
     | "subscribeMessage"
     | "reserveKeys"

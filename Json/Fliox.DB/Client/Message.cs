@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.DB.Client
         string              Name    { get; }
         /// <summary>
         /// Returns the message value as JSON.
-        /// Returns "null" when message was sent by <see cref="FlioxClient.SendMessage"/>
+        /// Returns "null" when message was sent by <see cref="FlioxClient.SendCommand"/>
         /// </summary>
         JsonValue           Json    { get; }
         
@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.DB.Client
         public override     string          ToString()  => Name;
         
         /// <summary>
-        /// <see cref="Json"/> is set to <see cref="SendMessage.value"/> json.
+        /// <see cref="Json"/> is set to <see cref="SendCommand.value"/> json.
         /// If json is null <see cref="Json"/> is set to "null".
         /// </summary>
         internal Message(string name, JsonValue json, ObjectReader reader) {
@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.DB.Client
     
     public static class StdMessage  {
         /// <summary>
-        /// Echoes the value specified in <see cref="FlioxClient.SendMessage{T}(string, T)"/> in <see cref="MessageTask.ResultJson"/>
+        /// Echoes the value specified in <see cref="FlioxClient.SendCommand{T}(string, T)"/> in <see cref="CommandTask.ResultJson"/>
         /// </summary>
         public const string Echo = "Echo";
     }

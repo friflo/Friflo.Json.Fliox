@@ -13,7 +13,7 @@ public enum TaskType {
     upsert,
     patch,
     delete,
-    message,
+    command,
     subscribeChanges,
     subscribeMessage,
     reserveKeys,

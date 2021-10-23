@@ -156,8 +156,8 @@ namespace Friflo.Json.Fliox.DB.Client
                         set.PatchPeerEntities(patches.patches);
                         break;
                     
-                    case TaskType.message:
-                        var message = (SendMessage)task;
+                    case TaskType.command:
+                        var message = (SendCommand)task;
                         var name = message.name;
                         // callbacks require their own reader as store._intern.jsonMapper.reader cannot be used.
                         // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
@@ -216,9 +216,9 @@ namespace Friflo.Json.Fliox.DB.Client
         public List<Message> GetMessages(EventMessage eventMessage) {
             messages.Clear();
             foreach (var task in eventMessage.tasks) {
-                if (task.TaskType != TaskType.message)
+                if (task.TaskType != TaskType.command)
                     continue;
-                var sendMessage = (SendMessage)task;
+                var sendMessage = (SendCommand)task;
                 var reader  = client._intern.messageReader;
                 var message = new Message(sendMessage.name, sendMessage.value, reader);
                 messages.Add(message);

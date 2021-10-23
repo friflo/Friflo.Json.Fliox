@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
         ///   <item><see cref="UpsertEntities"/></item>
         ///   <item><see cref="DeleteEntities"/></item>
         ///   <item><see cref="PatchEntities"/></item>
-        ///   <item><see cref="SendMessage"/></item>
+        ///   <item><see cref="SendCommand"/></item>
         /// </list>
         /// </summary>
                         public      SyncRequestTask[]   tasks;
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.DB.Protocol
                         var patch = (PatchEntities)task;
                         info.changes.patches += patch.patches.Count;
                         break;
-                    case TaskType.message:
+                    case TaskType.command:
                         info.messages++;
                         break;
                 }

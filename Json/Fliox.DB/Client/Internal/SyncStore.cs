@@ -15,8 +15,8 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         private     List<LogTask>               logTasks;
         private     List<LogTask>               LogTasks()          => logTasks ?? (logTasks = new List<LogTask>());
         
-        internal    List<MessageTask>           messageTasks;
-        internal    List<MessageTask>           MessageTasks()      => messageTasks ?? (messageTasks = new List<MessageTask>());
+        internal    List<CommandTask>           messageTasks;
+        internal    List<CommandTask>           MessageTasks()      => messageTasks ?? (messageTasks = new List<CommandTask>());
         private     int                         messageTasksIndex;
         
         private     List<SubscribeMessageTask>  subscribeMessage;
@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             if (messageTasks == null)
                 return;
             foreach (var messageTask in messageTasks) {
-                var req = new SendMessage {
+                var req = new SendCommand {
                     name  = messageTask.name,
                     value = messageTask.value
                 };
@@ -70,17 +70,17 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             }
         }
         
-        internal void MessageResult (SendMessage task, SyncTaskResult result) {
+        internal void MessageResult (SendCommand task, SyncTaskResult result) {
             // consider invalid response
             if (messageTasks == null || messageTasksIndex >= messageTasks.Count)
                 return;
             var index = messageTasksIndex++;
-            MessageTask messageTask = messageTasks[index];
+            CommandTask messageTask = messageTasks[index];
             if (result is TaskErrorResult taskError) {
                 messageTask.state.SetError(new TaskErrorInfo(taskError));
                 return;
             }
-            var messageResult = (SendMessageResult)result;
+            var messageResult = (SendCommandResult)result;
             messageTask.result = messageResult.result;
             messageTask.state.Executed = true;
         }

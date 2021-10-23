@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
         public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             foreach (var task in syncRequest.tasks) {
-                if (task is SendMessage message) {
+                if (task is SendCommand message) {
                     if (!syncErrors.TryGetValue(message.name, out var fcn))
                         continue;
                     var resp = fcn();

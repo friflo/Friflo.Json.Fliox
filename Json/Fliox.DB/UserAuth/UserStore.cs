@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         public UserStore(FlioxHub hub, string userId, string clientId = null) : base(hub, HostTypeStore.Get(), userId, clientId) { }
         
         public async Task<AuthenticateUserResult> AuthenticateUser(AuthenticateUser command) {
-            var commandTask = SendMessage<AuthenticateUser, AuthenticateUserResult>(command);
+            var commandTask = SendCommand<AuthenticateUser, AuthenticateUserResult>(command);
             await SyncTasks().ConfigureAwait(false);
             return commandTask.Result;
         }

@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
     [Fri.Polymorph(typeof(QueryEntities),           Discriminant = "query")]
     [Fri.Polymorph(typeof(PatchEntities),           Discriminant = "patch")]
     [Fri.Polymorph(typeof(DeleteEntities),          Discriminant = "delete")]
-    [Fri.Polymorph(typeof(SendMessage),             Discriminant = "message")]
+    [Fri.Polymorph(typeof(SendCommand),             Discriminant = "message")]
     [Fri.Polymorph(typeof(SubscribeChanges),        Discriminant = "subscribeChanges")]
     [Fri.Polymorph(typeof(SubscribeMessage),        Discriminant = "subscribeMessage")]
     [Fri.Polymorph(typeof(ReserveKeys),             Discriminant = "reserveKeys")]
