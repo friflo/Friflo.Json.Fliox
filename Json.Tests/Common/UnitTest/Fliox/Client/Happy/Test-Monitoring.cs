@@ -71,8 +71,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task AssertAuthMonitoringDB(FlioxHub hub, EntityDatabase monitorDB, FlioxHub database) {
             using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
             using (var userHub         	= new FlioxHub(userDatabase))
-            using (var userStore        = new UserStore (userHub, UserStore.AuthenticationUser, null))
-            using (var _                = new UserDatabaseHandler   (userHub)) {
+            using (var userStore        = new UserStore (userHub, UserStore.AuthenticationUser)) {
+                userHub.Authenticator   = new UserDatabaseAuthenticator(userDatabase);
                 database.Authenticator  = new UserAuthenticator(userStore, userStore);
                 await AssertAuthSuccessMonitoringDB (hub, monitorDB);
                 await AssertAuthFailedMonitoringDB  (hub, monitorDB);

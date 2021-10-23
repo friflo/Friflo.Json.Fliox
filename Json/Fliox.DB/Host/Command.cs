@@ -8,6 +8,8 @@ namespace Friflo.Json.Fliox.DB.Host
 {
     public readonly struct Command<TValue> {
         public              string          Name    { get; }
+        public              IPools          Pools   => messageContext.pools;
+        public              FlioxHub        Hub     => messageContext.hub;
         
         private  readonly   JsonUtf8        json;
         private  readonly   MessageContext  messageContext;

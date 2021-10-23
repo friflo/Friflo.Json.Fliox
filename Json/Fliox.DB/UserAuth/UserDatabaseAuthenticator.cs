@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Auth.Rights;
+using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
@@ -14,11 +15,15 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.UserAuth
 {
     /// <summary>
-    /// Control the access to a <see cref="UserDatabaseHandler"/> by "userId" (<see cref="UserStore.AuthenticationUser"/> |
-    /// <see cref="UserStore.Server"/>) of a user.
+    /// Authenticate users stored in the user database passed to <see cref="UserDatabaseAuthenticator(EntityDatabase)"/>.
+    /// If user authentication succeed it returns also the roles attached to a user to enable authorization for each task.
+    /// The schema of the user database is defined in <see cref="UserStore"/>.
+    /// <br/>
+    /// The access to the user database itself requires also authentication by one of the predefined users:
+    /// <see cref="UserStore.AuthenticationUser"/> or <see cref="UserStore.Server"/>.
     /// <br></br>
     /// A <see cref="UserStore.AuthenticationUser"/> user is only able to <see cref="Authenticate"/> itself.
-    /// A <see cref="UserStore.Server"/> user is able to read credentials and roles stored in a <see cref="UserDatabaseHandler"/>.
+    /// A <see cref="UserStore.Server"/> user is able to read credentials and roles stored in a user database.
     /// </summary>
     public class UserDatabaseAuthenticator : Authenticator
     {
@@ -37,9 +42,25 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             new AuthorizeContainer(nameof(UserStore.credentials),  new []{OperationType.read})
         });
         
-        public UserDatabaseAuthenticator()
-            : base (null)
-        { }
+        public UserDatabaseAuthenticator(EntityDatabase userDatabase) : base (null) {
+            userDatabase.taskHandler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(AuthenticateUser);
+        }
+        
+        private async Task<AuthenticateUserResult> AuthenticateUser (Command<AuthenticateUser> command) {
+            using (var pooledStore = command.Pools.Pool(() => new UserStore(command.Hub, UserStore.Server)).Get()) {
+                var store           = pooledStore.instance;
+                var validateToken   = command.Value;
+                var userId          = validateToken.userId;
+                var readCredentials = store.credentials.Read();
+                var findCred        = readCredentials.Find(userId);
+                
+                await store.SyncTasks().ConfigureAwait(false);
+
+                UserCredential  cred    = findCred.Result;
+                bool            isValid = cred != null && cred.token == validateToken.token;
+                return new AuthenticateUserResult { isValid = isValid };
+            }
+        }
         
         public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
             ref var userId = ref syncRequest.userId;
