@@ -4,10 +4,11 @@
 using System;
 using Friflo.Json.Fliox.DB.Auth;
 using Friflo.Json.Fliox.DB.Host.Event;
+using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Host.Internal
+namespace Friflo.Json.Fliox.DB.Host
 {
     // ------------------------------------ MessageContext ------------------------------------
     /// <summary>

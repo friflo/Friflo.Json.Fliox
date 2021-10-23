@@ -4,7 +4,6 @@
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.DB.Host.Internal;
 
-
 namespace Friflo.Json.Fliox.DB.Host
 {
     /// <summary>
