@@ -13,8 +13,8 @@ namespace Friflo.Json.Fliox.DB.Auth
         internal            string      error;  
         internal            bool        authenticated;
         internal            Authorizer  authorizer;
-        /// <summary><see cref="user"/> is never null after calling <see cref="MessageContext.SetAuthenticationFailed"/>
-        /// or <see cref="MessageContext.SetAuthenticationSuccess"/></summary>
+        /// <summary><see cref="user"/> is never null after calling <see cref="MessageContext.AuthenticationFailed"/>
+        /// or <see cref="MessageContext.AuthenticationSucceed"/></summary>
         internal            User        user;
         internal            bool        authExecuted;
         

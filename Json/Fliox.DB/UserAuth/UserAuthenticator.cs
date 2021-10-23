@@ -72,20 +72,20 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         {
             var userId = syncRequest.userId;
             if (userId.IsNull()) {
-                messageContext.SetAuthenticationFailed(anonymousUser, "user authentication requires 'user' id", unknown);
+                messageContext.AuthenticationFailed(anonymousUser, "user authentication requires 'user' id", unknown);
                 return;
             }
             var token = syncRequest.token;
             if (token == null) {
-                messageContext.SetAuthenticationFailed(anonymousUser, "user authentication requires 'token'", unknown);
+                messageContext.AuthenticationFailed(anonymousUser, "user authentication requires 'token'", unknown);
                 return;
             }
             if (users.TryGetValue(userId, out User user)) {
                 if (user.token != token) {
-                    messageContext.SetAuthenticationFailed(user, InvalidUserToken, unknown);
+                    messageContext.AuthenticationFailed(user, InvalidUserToken, unknown);
                     return;
                 }
-                messageContext.SetAuthenticationSuccess(user, user.authorizer);
+                messageContext.AuthenticationSucceed(user, user.authorizer);
                 return;
             }
             var command = new AuthenticateUser { userId = userId, token = token };
@@ -99,10 +99,10 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             }
             
             if (user == null || token != user.token) {
-                messageContext.SetAuthenticationFailed(anonymousUser, InvalidUserToken, unknown);
+                messageContext.AuthenticationFailed(anonymousUser, InvalidUserToken, unknown);
                 return;
             }
-            messageContext.SetAuthenticationSuccess(user, user.authorizer);
+            messageContext.AuthenticationSucceed(user, user.authorizer);
         }
         
         public override ClientIdValidation ValidateClientId(ClientController clientController, MessageContext messageContext) {

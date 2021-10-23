@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.DB.Host
             this.clientId       = clientId;
         }
         
-        public void SetAuthenticationFailed(User user, string error, Authorizer authorizer) {
+        public void AuthenticationFailed(User user, string error, Authorizer authorizer) {
             if (authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             authState.user            = user ?? throw new ArgumentNullException(nameof(user));
             authState.authExecuted    = true;
@@ -63,7 +63,7 @@ namespace Friflo.Json.Fliox.DB.Host
             authState.error           = error;
         }
         
-        public void SetAuthenticationSuccess (User user, Authorizer authorizer) {
+        public void AuthenticationSucceed (User user, Authorizer authorizer) {
             if (authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             authState.user            = user ?? throw new ArgumentNullException(nameof(user));
             authState.authExecuted    = true;

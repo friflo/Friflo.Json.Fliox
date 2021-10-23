@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Client
         /// Returns the message value as JSON.
         /// Returns "null" when message was sent by <see cref="FlioxClient.SendMessage"/>
         /// </summary>
-        JsonUtf8           Json    { get; }
+        JsonUtf8            Json    { get; }
         
         /// <summary>
         /// Read the <see cref="Json"/> value as the given type <see cref="T"/>.

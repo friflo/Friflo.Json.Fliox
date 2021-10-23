@@ -74,11 +74,11 @@ namespace Friflo.Json.Fliox.DB.UserAuth
             }
 
             if (userRights.TryGetValue(userId, out Authorizer rights)) {
-                messageContext.SetAuthenticationSuccess(user, rights);
+                messageContext.AuthenticationSucceed(user, rights);
                 return Task.CompletedTask;
             }
             // authState.SetFailed() is not called to avoid giving a hint for a valid userId (user)
-            messageContext.SetAuthenticationSuccess(user, UnknownRights);
+            messageContext.AuthenticationSucceed(user, UnknownRights);
             return Task.CompletedTask;
         }
     }
