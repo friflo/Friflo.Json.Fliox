@@ -3,7 +3,7 @@
     "database": "monitor",
     "tasks": [
       {
-        "task":     "message",
+        "task":     "command",
         "name":     "ClearStats"
       }
     ],
