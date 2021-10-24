@@ -143,7 +143,7 @@
         },
         "SendMessage": {
             "type": "object",
-            "extends": { "$ref": "#/definitions/SyncRequestTask" },
+            "extends": { "$ref": "#/definitions/SyncMessageTask" },
             "properties": {
                 "task":  { "enum": ["message"] },
                 "name":  { "type": "string" },
@@ -156,9 +156,23 @@
             ],
             "additionalProperties": false
         },
+        "SyncMessageTask": {
+            "type": "object",
+            "extends": { "$ref": "#/definitions/SyncRequestTask" },
+            "isAbstract": true,
+            "properties": {
+                "name":  { "type": "string" },
+                "value": {  },
+                "info":  {  }
+            },
+            "required": [
+                "name"
+            ],
+            "additionalProperties": false
+        },
         "SendCommand": {
             "type": "object",
-            "extends": { "$ref": "#/definitions/SendMessage" },
+            "extends": { "$ref": "#/definitions/SyncMessageTask" },
             "properties": {
                 "task":  { "enum": ["command"] },
                 "name":  { "type": "string" },
@@ -330,7 +344,7 @@
         },
         "SendMessageResult": {
             "type": "object",
-            "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "extends": { "$ref": "#/definitions/SyncMessageResult" },
             "properties": {
                 "task":  { "enum": ["message"] },
                 "Error": { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.DB.Protocol.Models.json#/definitions/CommandError" }] }
@@ -340,9 +354,18 @@
             ],
             "additionalProperties": false
         },
+        "SyncMessageResult": {
+            "type": "object",
+            "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "isAbstract": true,
+            "properties": {
+                "Error": { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.DB.Protocol.Models.json#/definitions/CommandError" }] }
+            },
+            "additionalProperties": false
+        },
         "SendCommandResult": {
             "type": "object",
-            "extends": { "$ref": "#/definitions/SendMessageResult" },
+            "extends": { "$ref": "#/definitions/SyncMessageResult" },
             "properties": {
                 "task":   { "enum": ["command"] },
                 "Error":  { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.DB.Protocol.Models.json#/definitions/CommandError" }] },

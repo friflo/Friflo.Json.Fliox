@@ -8,10 +8,9 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
-    public sealed class SendCommand : SendMessage
+    public sealed class SendCommand : SyncMessageTask
     {
-        internal override       TaskType        TaskType => TaskType.command;
-        public   override       string          TaskName => $"name: '{name}'";
+        internal override   TaskType        TaskType => TaskType.command;
 
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (name == null) {
@@ -27,7 +26,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
     }
     
     // ----------------------------------- task result -----------------------------------
-    public sealed class SendCommandResult : SendMessageResult
+    public sealed class SendCommandResult : SyncMessageResult
     {
         public              JsonValue       result;
 

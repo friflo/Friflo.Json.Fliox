@@ -9,13 +9,17 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.DB.Protocol.Tasks
 {
     // ----------------------------------- task -----------------------------------
-    public class SendMessage : SyncRequestTask
+    public abstract class SyncMessageTask : SyncRequestTask
     {
         [Fri.Required]  public  string          name;
                         public  JsonValue       value;
-            
-        internal override       TaskType        TaskType => TaskType.message;
+                        
         public   override       string          TaskName => $"name: '{name}'";
+    }
+    
+    public sealed class SendMessage : SyncMessageTask
+    {
+        internal override       TaskType        TaskType => TaskType.message;
 
         internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (name == null)
@@ -24,13 +28,15 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
             return Task.FromResult(result);
         }
     }
-    
-    
+
     // ----------------------------------- task result -----------------------------------
-    public class SendMessageResult : SyncTaskResult, ICommandResult
+    public abstract class SyncMessageResult : SyncTaskResult, ICommandResult
     {
         public CommandError                 Error { get; set; }
-
+    }
+    
+    public sealed class SendMessageResult : SyncMessageResult
+    {
         internal override   TaskType        TaskType => TaskType.message;
     }
 }

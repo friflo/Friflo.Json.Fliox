@@ -93,13 +93,16 @@ export class DeleteEntities extends SyncRequestTask {
     all?       : boolean | null;
 }
 
-export class SendMessage extends SyncRequestTask {
-    task   : "message";
+export abstract class SyncMessageTask extends SyncRequestTask {
     name   : string;
     value? : any | null;
 }
 
-export class SendCommand extends SendMessage {
+export class SendMessage extends SyncMessageTask {
+    task   : "message";
+}
+
+export class SendCommand extends SyncMessageTask {
     task   : "command";
 }
 
@@ -194,12 +197,15 @@ export class DeleteEntitiesResult extends SyncTaskResult {
     Error? : CommandError | null;
 }
 
-export class SendMessageResult extends SyncTaskResult {
-    task   : "message";
+export abstract class SyncMessageResult extends SyncTaskResult {
     Error? : CommandError | null;
 }
 
-export class SendCommandResult extends SendMessageResult {
+export class SendMessageResult extends SyncMessageResult {
+    task   : "message";
+}
+
+export class SendCommandResult extends SyncMessageResult {
     task    : "command";
     result? : any | null;
 }

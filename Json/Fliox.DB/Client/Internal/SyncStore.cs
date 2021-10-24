@@ -62,7 +62,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             if (messageTasks == null)
                 return;
             foreach (var messageTask in messageTasks) {
-                SendMessage msg;
+                SyncMessageTask msg;
                 if (messageTask is CommandTask) {
                     msg = new SendCommand { name  = messageTask.name, value = messageTask.value };
                 } else {
@@ -72,7 +72,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
             }
         }
         
-        internal void MessageResult (SendMessage task, SyncTaskResult result) {
+        internal void MessageResult (SyncMessageTask task, SyncTaskResult result) {
             // consider invalid response
             if (messageTasks == null || messageTasksIndex >= messageTasks.Count)
                 return;
