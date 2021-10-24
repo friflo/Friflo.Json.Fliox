@@ -31,7 +31,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var helloTask1 = store.SendCommand(StdMessage.Echo, "Hello World 1");
             var helloTask2 = store.SendCommand(StdMessage.Echo, "Hello World 2");
             var helloTask3 = store.SendCommand(StdMessage.Echo);
-            // var helloTask3 = store.SendCommand<string, string>("HelloMessage", "Hello back 3");
             
             AreEqual("CommandTask (name: Echo)", helloTask1.ToString());
 
@@ -50,6 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("JsonReader/error: Cannot assign string to int. Expect: System.Int32, got: 'Hello World 1' path: '(root)' at position: 15", e.Message);
 
             AreEqual("Hello World 2",       helloTask2.ReadResult<string>());
+            AreEqual(null,                  helloTask3.ReadResult<string>());
             
 
             // --- SyncTasks error
