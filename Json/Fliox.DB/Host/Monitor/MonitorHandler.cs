@@ -15,6 +15,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
             var monitorDB = (MonitorDatabase)database;
             switch (task.TaskType) {
                 case TaskType.command:
+                    return base.ExecuteTask(task, database, response, messageContext);
                 case TaskType.read:
                 case TaskType.query:
                     return base.ExecuteTask(task, monitorDB.stateDB, response, messageContext);

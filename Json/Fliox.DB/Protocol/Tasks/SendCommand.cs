@@ -32,16 +32,21 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
         internal override       TaskType        TaskType => TaskType.command;
         public   override       string          TaskName => $"name: '{name}'";
 
-        internal override Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
-            if (name == null)
-                return Task.FromResult<SyncTaskResult>(MissingField(nameof(name)));
-            SyncTaskResult result = new SendCommandResult();
-            return Task.FromResult(result);
+        internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
+            if (name == null) {
+                return MissingField(nameof(name));
+            }
+            if (database.taskHandler.TryGetCommand(name, out var callback)) {
+                var jsonResult  = await callback.InvokeCallback(name, value, messageContext).ConfigureAwait(false);
+                return new SendCommandResult { result = jsonResult };
+            }
+            var msg = $"command handler not found: '{name}'";
+            return new TaskErrorResult { type = TaskErrorResultType.NotImplemented, message = msg };
         }
     }
     
     // ----------------------------------- task result -----------------------------------
-    public sealed class SendMessageResult : SyncTaskResult, ICommandResult
+    public class SendMessageResult : SyncTaskResult, ICommandResult
     {
         public CommandError                 Error { get; set; }
 
@@ -49,15 +54,9 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
     }
 
 
-    public sealed class SendCommandResult : SyncTaskResult, ICommandResult
+    public sealed class SendCommandResult : SendMessageResult
     {
-        /// <summary>
-        /// By default it echos <see cref="SendCommand.value"/>.
-        /// If using a custom <see cref="TaskHandler"/> it can be used to return the request specific result.
-        /// </summary>
         public              JsonValue       result;
-        
-        public CommandError                 Error { get; set; }
 
         internal override   TaskType        TaskType => TaskType.command;
     }

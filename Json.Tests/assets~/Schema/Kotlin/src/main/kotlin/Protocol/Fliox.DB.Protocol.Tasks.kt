@@ -181,7 +181,7 @@ data class SendMessageResult (
 data class SendCommandResult (
               val Error  : CommandError? = null,
               val result : JsonElement? = null,
-) : SyncTaskResult()
+)
 
 @Serializable
 @SerialName("subscribeChanges")

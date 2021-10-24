@@ -22,6 +22,10 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
             return command.JsonValue;
         }
         
+        internal bool TryGetCommand(string name, out CommandCallback command) {
+            return commands.TryGetValue(name, out command); 
+        }
+        
         public void AddCommandHandler<TValue, TResult>(string name, CommandHandler<TValue, TResult> handler) {
             var command = new CommandCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
@@ -62,14 +66,6 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
         public virtual async Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (!AuthorizeTask(task, messageContext, out var error)) {
                 return error;
-            }
-            if (task is SendCommand cmd) {
-                if (commands.TryGetValue(cmd.name, out CommandCallback callback)) {
-                    var jsonResult  = await callback.InvokeCallback(cmd.name, cmd.value, messageContext).ConfigureAwait(false);
-                    return new SendCommandResult { result = jsonResult };
-                }
-                var msg = $"command handler not found: '{cmd.name}'";
-                return new TaskErrorResult {type = TaskErrorResultType.NotImplemented, message = msg };
             }
             var result = await task.Execute(database, response, messageContext).ConfigureAwait(false);
             return result;

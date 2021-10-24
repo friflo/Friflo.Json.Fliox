@@ -342,7 +342,7 @@
         },
         "SendCommandResult": {
             "type": "object",
-            "extends": { "$ref": "#/definitions/SyncTaskResult" },
+            "extends": { "$ref": "#/definitions/SendMessageResult" },
             "properties": {
                 "task":   { "enum": ["command"] },
                 "Error":  { "oneOf": [{"type": "null"}, { "$ref": "./Friflo.Json.Fliox.DB.Protocol.Models.json#/definitions/CommandError" }] },

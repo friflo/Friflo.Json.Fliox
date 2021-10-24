@@ -199,9 +199,8 @@ export class SendMessageResult extends SyncTaskResult {
     Error? : CommandError | null;
 }
 
-export class SendCommandResult extends SyncTaskResult {
+export class SendCommandResult extends SendMessageResult {
     task    : "command";
-    Error?  : CommandError | null;
     result? : any | null;
 }
 
