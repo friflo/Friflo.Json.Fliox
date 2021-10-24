@@ -2,7 +2,7 @@
   "msg": "sync",
   "tasks": [
     {
-      "task":  "message",
+      "task":  "command",
       "name":  "Echo",
       "value": "echo value"
     }
