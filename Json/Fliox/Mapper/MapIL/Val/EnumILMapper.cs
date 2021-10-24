@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Val
         private   readonly  Dictionary<long,        EnumString>     integralToString = new Dictionary<long,         EnumString>();
 
         
-        public override string DataTypeName() { return "enum"; }
+        public override string DataTypeName() { return $"enum {typeof(T).Name}"; }
         
         public EnumILMapper(StoreConfig config, Type type) :
             base(config, typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null, true)
@@ -71,7 +71,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Val
             }
             long integralValue = TypeUtils.GetIntegralFromEnumValue(slot, underlyingEnumType);
             if (!integralToString.TryGetValue(integralValue, out EnumString enumName))
-                throw new InvalidOperationException($"invalid integral enum value: {integralValue} for enum type: {typeof(T)}" );
+                throw new InvalidOperationException($"invalid integral enum {typeof(T).Name}: {integralValue} for enum type: {typeof(T).Name}" );
             writer.bytes.AppendChar('\"');
             writer.bytes.AppendBytes(ref enumName.name.value);
             writer.bytes.AppendChar('\"');
@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Val
             if (parser.Event == JsonEvent.ValueString) {
                 reader.keyRef.value = parser.value;
                 if (!stringToIntegral.TryGetValue(reader.keyRef, out EnumIntegral enumValue))
-                    return reader.ErrorIncompatible<T>("enum value. Value unknown", this, out success);
+                    return reader.ErrorIncompatible<T>("enum ", typeof(T).Name, this, out success);
                 success = true;
                 return (T)enumValue.value;
             }
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Mapper.MapIL.Val
                     success = true;
                     return (T)enumValue.value;
                 }
-                return reader.ErrorIncompatible<T>("enum value. Value unknown", this, out success);
+                return reader.ErrorIncompatible<T>("enum ", typeof(T).Name, this, out success);
             }
             return reader.HandleEvent(this, out success);
         }

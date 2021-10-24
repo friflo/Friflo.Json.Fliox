@@ -43,10 +43,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             AreEqual("Hello World 1",       helloTask1Result);
             
             var e = Throws<JsonReaderException>(() => helloTask1.ReadResult<int>());
-            AreEqual("JsonReader/error: Cannot assign string to int. Expect: System.Int32, got: 'Hello World 1' path: '(root)' at position: 15", e.Message);
+            AreEqual("JsonReader/error: Cannot assign string to int. got: 'Hello World 1' path: '(root)' at position: 15", e.Message);
             
             helloTask1.TryReadResult<int>(out _, out e);
-            AreEqual("JsonReader/error: Cannot assign string to int. Expect: System.Int32, got: 'Hello World 1' path: '(root)' at position: 15", e.Message);
+            AreEqual("JsonReader/error: Cannot assign string to int. got: 'Hello World 1' path: '(root)' at position: 15", e.Message);
 
             AreEqual("Hello World 2",       helloTask2.ReadResult<string>());
             AreEqual(null,                  helloTask3.ReadResult<string>());

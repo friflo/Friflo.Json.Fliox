@@ -43,12 +43,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 AreEqual(EnumClass.Value1, enc.Read<EnumClass>(value3));
                 
                 enc.Read<EnumClass>(hello);
-                StringAssert.Contains(" Cannot assign string to enum value. Value unknown. Expect: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.EnumClass, got: 'hello'", enc.Error.msg.AsString());
+                StringAssert.Contains(" Cannot assign string to enum EnumClass. got: 'hello'", enc.Error.msg.AsString());
 
                 AreEqual(EnumClass.Value1, enc.Read<EnumClass>(num11));
                 
                 enc.Read<EnumClass>(num999);
-                StringAssert.Contains("Cannot assign number to enum value. Value unknown. Expect: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.EnumClass, got: 999", enc.Error.msg.AsString());
+                StringAssert.Contains("Cannot assign number to enum EnumClass. got: 999", enc.Error.msg.AsString());
 
                 var result = write.Write(EnumClass.Value1);
                 AreEqual("\"Value1\"", result);

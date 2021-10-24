@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
 #pragma warning disable 162
             // ReSharper disable HeuristicUnreachableCode
             if (false) { // similar error message by string interpolation for illustration
-                var _ = $"Cannot assign {parser.Event} to {msg}. Expect: {expectType.type}, got: {parser.value}";
+                var _ = $"Cannot assign {parser.Event} to {msg}. got: {parser.value}";
             }
 #pragma warning restore 162
 
@@ -43,9 +43,9 @@ namespace Friflo.Json.Fliox.Mapper.Map
             strBuf.AppendString(" to ");
             strBuf.AppendString(msg);
             strBuf.AppendString(msgParam);
-            strBuf.AppendString(". Expect: ");
-            strBuf.AppendString(expectType.type.ToString());
-            strBuf.AppendString(", got: ");
+            // strBuf.AppendString(". Expect: ");
+            // strBuf.AppendString(expectType.DataTypeName());
+            strBuf.AppendString(". got: ");
             switch (parser.Event) {
                 case JsonEvent.ValueBool:   strBuf.AppendString(parser.boolValue ? "true" : "false");       break;
                 case JsonEvent.ValueString:

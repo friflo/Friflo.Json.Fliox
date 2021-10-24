@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         //
         private     readonly Dictionary<long, object>        integralToEnum = new Dictionary<long, object>();
         
-        public override string DataTypeName() { return "enum"; }
+        public override string DataTypeName() { return $"enum {typeof(T).Name}"; }
         
         public EnumMapper(StoreConfig config, Type type) :
             base (config, typeof(T), Nullable.GetUnderlyingType(typeof(T)) != null, false)
@@ -132,7 +132,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     success = true;
                     return (T)enumValue;
                 }
-                return reader.ErrorIncompatible<T>("enum value. Value unknown", this, out success);
+                return reader.ErrorIncompatible<T>("enum ", typeof(T).Name, this, out success);
             }
             if (parser.Event == JsonEvent.ValueNumber) {
                 long integralValue = parser.ValueAsLong(out success);
@@ -142,7 +142,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
                     success = true;
                     return (T)enumValue;
                 }
-                return reader.ErrorIncompatible<T>("enum value. Value unknown", this, out success);
+                return reader.ErrorIncompatible<T>("enum ", typeof(T).Name, this, out success);
             }
             return reader.HandleEvent(this, out success);
         }

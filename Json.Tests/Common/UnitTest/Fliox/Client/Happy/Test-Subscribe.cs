@@ -107,10 +107,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 // test reading Json to incompatible types
                 IsFalse(msg.TryReadJson<string>(out _, out var error));
-                AreEqual("JsonReader/error: Cannot assign number to string. Expect: System.String, got: 42 path: '(root)' at position: 2", error.Message);
+                AreEqual("JsonReader/error: Cannot assign number to string. got: 42 path: '(root)' at position: 2", error.Message);
                 
                 var e = Throws<JsonReaderException> (() => msg.ReadJson<string>());
-                AreEqual("JsonReader/error: Cannot assign number to string. Expect: System.String, got: 42 path: '(root)' at position: 2", e.Message);
+                AreEqual("JsonReader/error: Cannot assign number to string. got: 42 path: '(root)' at position: 2", e.Message);
             });
             var subscribeMessage3   = store.SubscribeMessage(TestRelationPoC.TestMessageInt, (msg) => {
                 processor.testMessageIntCalls++;
@@ -124,10 +124,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 
                 // test reading Json to incompatible types
                 IsFalse(msg.TryReadJson<string>(out _, out var error));
-                AreEqual("JsonReader/error: Cannot assign number to string. Expect: System.String, got: 42 path: '(root)' at position: 2", error.Message);
+                AreEqual("JsonReader/error: Cannot assign number to string. got: 42 path: '(root)' at position: 2", error.Message);
                 
                 var e = Throws<JsonReaderException> (() => msg.ReadJson<string>());
-                AreEqual("JsonReader/error: Cannot assign number to string. Expect: System.String, got: 42 path: '(root)' at position: 2", e.Message);
+                AreEqual("JsonReader/error: Cannot assign number to string. got: 42 path: '(root)' at position: 2", e.Message);
             });
             
             var subscribeMessage4   = store.SubscribeMessage  (TestRelationPoC.TestRemoveHandler, RemovedHandler);
