@@ -137,15 +137,15 @@ namespace Friflo.Json.Fliox.DB.Host
             await authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
             messageContext.clientIdValidation = authenticator.ValidateClientId(clientController, messageContext);
 
-            var syncDatabase = syncRequest.database;
+            var dbName = syncRequest.database;
             EntityDatabase db = database;
-            if (syncDatabase != null) {
-                if (!extensionDbs.TryGetValue(syncDatabase, out db))
+            if (dbName != null) {
+                if (!extensionDbs.TryGetValue(dbName, out db))
                     return new MsgResponse<SyncResponse>($"database not found: '{syncRequest.database}'");
                 await db.ExecuteSyncPrepare(syncRequest, messageContext).ConfigureAwait(false);
             }
-            if (syncDatabase != db.name)
-                throw new InvalidOperationException($"Unexpected extension database name. expect: {syncDatabase}, was: {db.name}");
+            if (dbName != db.name)
+                throw new InvalidOperationException($"Unexpected extension database name. expect: {dbName}, was: {db.name}");
                     
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null) {
@@ -153,7 +153,7 @@ namespace Friflo.Json.Fliox.DB.Host
             }
             var tasks       = new List<SyncTaskResult>(requestTasks.Count);
             var resultMap   = new Dictionary<string, ContainerEntities>();
-            var response    = new SyncResponse { tasks = tasks, resultMap = resultMap, database = syncDatabase };
+            var response    = new SyncResponse { tasks = tasks, resultMap = resultMap, database = dbName };
             var taskHandler = db.taskHandler;
             
             for (int index = 0; index < requestTasks.Count; index++) {
@@ -171,7 +171,7 @@ namespace Friflo.Json.Fliox.DB.Host
                 }
             }
             hostStats.Update(syncRequest);
-            UpdateRequestStats(syncDatabase, syncRequest, messageContext);
+            UpdateRequestStats(dbName, syncRequest, messageContext);
 
             // - Note: Only relevant for Push messages when using a bidirectional protocol like WebSocket
             // As a client is required to use response.clientId it is set to null if given clientId was invalid.
