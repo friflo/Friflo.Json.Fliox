@@ -68,8 +68,8 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
                     var jsonResult  = await callback.InvokeCallback(cmd.name, cmd.value, messageContext).ConfigureAwait(false);
                     return new SendCommandResult { result = jsonResult };
                 }
-                SyncTaskResult cmdError = SyncRequestTask.InvalidTask("not implemented");
-                return cmdError;
+                var msg = $"command handler not found: '{cmd.name}'";
+                return new TaskErrorResult {type = TaskErrorResultType.NotImplemented, message = msg };
             }
             var result = await task.Execute(database, response, messageContext).ConfigureAwait(false);
             return result;

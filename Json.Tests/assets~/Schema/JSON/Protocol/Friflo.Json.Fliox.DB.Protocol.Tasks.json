@@ -424,6 +424,7 @@
                 "UnhandledException",
                 "DatabaseError",
                 "InvalidTask",
+                "NotImplemented",
                 "PermissionDenied",
                 "SyncError"
             ]

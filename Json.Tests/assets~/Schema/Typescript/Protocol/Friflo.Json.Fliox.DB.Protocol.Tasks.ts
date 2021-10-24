@@ -237,6 +237,7 @@ export type TaskErrorResultType =
     | "UnhandledException"
     | "DatabaseError"
     | "InvalidTask"
+    | "NotImplemented"
     | "PermissionDenied"
     | "SyncError"
 ;

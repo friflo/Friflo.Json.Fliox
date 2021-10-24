@@ -221,6 +221,7 @@ enum class TaskErrorResultType {
     UnhandledException,
     DatabaseError,
     InvalidTask,
+    NotImplemented,
     PermissionDenied,
     SyncError,
 }

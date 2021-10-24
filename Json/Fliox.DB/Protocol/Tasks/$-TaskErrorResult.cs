@@ -34,6 +34,8 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
         
         InvalidTask,
         
+        NotImplemented,
+        
         PermissionDenied,
         
         SyncError

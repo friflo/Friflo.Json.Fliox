@@ -32,6 +32,8 @@ namespace Friflo.Json.Fliox.DB.Client
         /// </summary>
         DatabaseError,
         
+        NotImplemented,
+        
         InvalidTask,
         
         PermissionDenied,
@@ -93,6 +95,7 @@ namespace Friflo.Json.Fliox.DB.Client
                 case TaskErrorResultType.UnhandledException:    return TaskErrorType.UnhandledException;
                 case TaskErrorResultType.DatabaseError:         return TaskErrorType.DatabaseError;
                 case TaskErrorResultType.InvalidTask:           return TaskErrorType.InvalidTask;
+                case TaskErrorResultType.NotImplemented:        return TaskErrorType.NotImplemented;
                 case TaskErrorResultType.PermissionDenied:      return TaskErrorType.PermissionDenied;
                 case TaskErrorResultType.SyncError:             return TaskErrorType.SyncError;
             }
