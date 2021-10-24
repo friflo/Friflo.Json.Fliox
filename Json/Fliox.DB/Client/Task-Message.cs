@@ -26,10 +26,8 @@ namespace Friflo.Json.Fliox.DB.Client
     public class CommandTask : MessageTask
     {
         private  readonly   ObjectReader    reader;
-        
         internal            JsonValue       result;
-        
-        
+
         public   override   string          Details     => $"CommandTask (name: {name})";
 
         /// <summary>Return the result of a command used as a command as JSON.
@@ -79,13 +77,11 @@ namespace Friflo.Json.Fliox.DB.Client
         }
     }
 
-
     public sealed class CommandTask<TResult> : CommandTask
     {
-        public              TResult          Result => ReadResult<TResult>();
+        public              TResult         Result => ReadResult<TResult>();
         
-        internal CommandTask(string name, JsonValue value, ObjectReader reader) : base (name, value, reader) {
-        }
+        internal CommandTask(string name, JsonValue value, ObjectReader reader) : base (name, value, reader) { }
     }
 }
 
