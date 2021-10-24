@@ -227,12 +227,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             orders.Upsert(order2);
             
             var testMessage = new TestMessage{ text = "test message" };
-            var sendMessage1 = store.SendCommand(testMessage);
+            var sendMessage1 = store.SendMessage(testMessage);
             int testMessageInt = 42;
-            var sendMessage2 = store.SendCommand(TestMessageInt,        testMessageInt);
-            var sendMessage3 = store.SendCommand(TestRemoveHandler,     1337);
-            var sendMessage4 = store.SendCommand(TestRemoveAllHandler,  1337);
-            store.SendCommand(EndCreate);  // indicates store changes are finished
+            var sendMessage2 = store.SendMessage(TestMessageInt,        testMessageInt);
+            var sendMessage3 = store.SendMessage(TestRemoveHandler,     1337);
+            var sendMessage4 = store.SendMessage(TestRemoveAllHandler,  1337);
+            store.SendMessage(EndCreate);  // indicates store changes are finished
             
             await store.SyncTasks(); // ----------------
             

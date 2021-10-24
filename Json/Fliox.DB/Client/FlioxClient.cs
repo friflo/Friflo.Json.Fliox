@@ -219,7 +219,28 @@ namespace Friflo.Json.Fliox.DB.Client
             AssertSubscriptionProcessor();
             _intern.subscriptionHandler = handler;
         }
-
+        
+        // --- SendMessage
+        public MessageTask SendMessage(string name) {
+            var task = new MessageTask(name, new JsonValue());
+            _intern.syncStore.MessageTasks().Add(task);
+            AddTask(task);
+            return task;
+        }
+        
+        public MessageTask SendMessage<TValue>(string name, TValue value) {
+            var json    = _intern.jsonMapper.WriteAsArray(value);
+            var task    = new MessageTask(name, new JsonValue(json));
+            _intern.syncStore.MessageTasks().Add(task);
+            AddTask(task);
+            return task;
+        }
+        
+        public MessageTask SendMessage<TValue>(TValue value) {
+            var name = typeof(TValue).Name;
+            return SendMessage(name, value);
+        }
+        
         // --- SendCommand
         public CommandTask SendCommand(string name) {
             var task = new CommandTask(name, new JsonValue(), _intern.jsonMapper.reader);

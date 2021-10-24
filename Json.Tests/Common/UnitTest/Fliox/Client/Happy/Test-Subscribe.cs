@@ -307,7 +307,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await listenDb.SyncTasks();
 
                 using (var sendStore  = new FlioxClient(hub, typeStore, null, "sendStore")) {
-                    sendStore.SendCommand("Hello", "some text");
+                    sendStore.SendMessage("Hello", "some text");
                     await sendStore.SyncTasks();
                     
                     while (!receivedHello) {

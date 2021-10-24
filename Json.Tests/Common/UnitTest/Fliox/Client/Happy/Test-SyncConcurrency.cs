@@ -58,7 +58,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var sync1 = store.SyncTasks();
                 AreEqual(0, store.Tasks.Count); // assert Tasks are cleared without awaiting SyncTasks()
                 
-                store.SendCommand("Some message"); // add additional task to second SyncTasks() to identify the result by task.Count
+                store.SendMessage("Some message"); // add additional task to second SyncTasks() to identify the result by task.Count
                 customers.Upsert(paul);
                 AreEqual(2, store.Tasks.Count);
                 var sync2 = store.SyncTasks();
@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 var findPeter = readCustomers1.Find("customer-peter");
                 var sync1 = store.SyncTasks();
                 
-                store.SendCommand("Some message"); // add additional task to second SyncTasks() to identify the result by task.Count
+                store.SendMessage("Some message"); // add additional task to second SyncTasks() to identify the result by task.Count
                 var readCustomers2 = customers.Read();
                 IsFalse(readCustomers1 == readCustomers2);
                 var findPaul = readCustomers2.Find("customer-paul");
