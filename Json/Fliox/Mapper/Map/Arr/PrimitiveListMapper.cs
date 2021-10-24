@@ -82,7 +82,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
     
     internal sealed class PrimitiveListMapper<T> : CollectionMapper<List<T>, T>
     {
-        public override string  DataTypeName() { return "List"; }
+        public override string  DataTypeName() { return $"List<{typeof(T).Name}>"; }
         public override int     Count(object array) => ((List<T>) array).Count;
         
         public PrimitiveListMapper(StoreConfig config, Type type, ConstructorInfo constructor) :

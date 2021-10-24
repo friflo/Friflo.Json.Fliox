@@ -275,7 +275,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     AreEqual(null,                Read<bool[]>      (@null));           AreEqual(JsonEvent.EOF, enc.JsonEvent);
                     
                     enc.Read<TestStruct[]>(arrNull);
-                    StringAssert.Contains("Cannot assign null to class. Expect: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestStruct, got: null", enc.Error.msg.AsString());
+                    StringAssert.Contains("Cannot assign null to class TestStruct. Expect: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestStruct, got: null", enc.Error.msg.AsString());
                     enc.Read<int[]>(arrNull);
                     StringAssert.Contains("Cannot assign null to int. Expect: System.Int32, got: null path: '[0]'", enc.Error.msg.AsString());
                     enc.Read<int[]>(arrStr);
@@ -398,20 +398,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     StringAssert.Contains("Cannot assign bool to string. Expect: System.String, got: true path: '[0]'", enc.Error.msg.AsString());
                     
                     enc.Read<List<string>>(mapStr);
-                    StringAssert.Contains("Cannot assign object to List. Expect:", enc.Error.msg.AsString());
+                    StringAssert.Contains("Cannot assign object to List<String>. Expect:", enc.Error.msg.AsString());
 
                     // --------------------------------- Dictionary<K,V> ---------------------------------
                     enc.Read<Dictionary<string, long>>(arrNull);
-                    StringAssert.Contains("Cannot assign array to Dictionary. Expect: System.Collections.Generic.Dictionary`2[System.String,System.Int64], got: [...]", enc.Error.msg.AsString());
+                    StringAssert.Contains("Cannot assign array to IDictionary<String,Int64>. Expect: System.Collections.Generic.Dictionary`2[System.String,System.Int64], got: [...]", enc.Error.msg.AsString());
                         
                     enc.Read<Dictionary<string, long>>(arrStr);
-                    StringAssert.Contains("Cannot assign array to Dictionary. Expect: System.Collections.Generic.Dictionary`2[System.String,System.Int64], got: [...]", enc.Error.msg.AsString());
+                    StringAssert.Contains("Cannot assign array to IDictionary<String,Int64>. Expect: System.Collections.Generic.Dictionary`2[System.String,System.Int64], got: [...]", enc.Error.msg.AsString());
                         
                     enc.Read<Dictionary<string, string>>(arrNum);
-                    StringAssert.Contains("Cannot assign array to Dictionary. Expect: System.Collections.Generic.Dictionary`2[System.String,System.String], got: [...]", enc.Error.msg.AsString());
+                    StringAssert.Contains("Cannot assign array to IDictionary<String,String>. Expect: System.Collections.Generic.Dictionary`2[System.String,System.String], got: [...]", enc.Error.msg.AsString());
                         
                     enc.Read<Dictionary<string, string>>(arrBln);
-                    StringAssert.Contains("Cannot assign array to Dictionary. Expect:", enc.Error.msg.AsString());
+                    StringAssert.Contains("Cannot assign array to IDictionary<String,String>. Expect:", enc.Error.msg.AsString());
                     {
                         var e = Assert.Throws<NotSupportedException>(() => enc.Read<Dictionary<UnknownKey, string>>(mapStr));
                         AreEqual("Type not supported. Found no TypeMapper in TypeStore Type: System.Collections.Generic.Dictionary`2[Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.UnknownKey,System.String]", e.Message);              
@@ -504,7 +504,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                     // ---- BigInteger ---
                     AreEqual(new TestStruct{ key = 42 },        Read<TestStruct>    (mapNum));
                     AreEqual(default(TestStruct),               enc.Read<TestStruct>(@null));
-                    StringAssert.Contains("Cannot assign null to class. Expect: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestStruct, got: null path: '(root)'", enc.Error.msg.AsString());
+                    StringAssert.Contains("Cannot assign null to class TestStruct. Expect: Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper.TestStruct, got: null path: '(root)'", enc.Error.msg.AsString());
                     {
                         BigInteger expect = BigInteger.Parse(bigInt);
                         AreEqual(expect, Read<BigInteger>(bigIntStr));

@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
     {
         private readonly    KeyMapper<TKey> keyMapper;
         
-        public  override    string          DataTypeName() { return "Dictionary"; }
+        public  override    string          DataTypeName() { return $"IDictionary<{typeof(TKey).Name},{typeof(TElm).Name}>"; }
         public  override    bool            IsArray         => false;
         public  override    bool            IsDictionary    => true;
         

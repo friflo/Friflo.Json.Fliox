@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
     
     internal sealed class QueueMapper<TCol, TElm> : CollectionMapper<TCol, TElm> where TCol : Queue<TElm>
     {
-        public override string  DataTypeName() { return "Queue"; }
+        public override string  DataTypeName() { return $"Queue<{typeof(TElm).Name}>"; }
         public override int     Count(object array) => ((TCol) array).Count;
         
         public QueueMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :

@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal.Map
         private             TypeMapper<TKey>    keyMapper;
         private             TypeMapper<T>       entityMapper;
         
-        public  override    string              DataTypeName()          { return "Ref<>"; }
+        public  override    string              DataTypeName()          { return $"Ref<{typeof(TKey).Name},{typeof(T).Name}>"; }
         public  override    TypeMapper          GetUnderlyingMapper()   => keyMapper;
 
         // ReSharper disable once UnusedParameter.Local

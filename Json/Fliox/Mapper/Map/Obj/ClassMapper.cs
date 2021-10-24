@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj
         private readonly    ConstructorInfo constructor;
         private readonly    Func<T>         createInstance;
 
-        public  override    string          DataTypeName() { return "class"; }
+        public  override    string          DataTypeName() { return $"class {typeof(T).Name}"; }
         public  override    bool            IsComplex       => true;
 
         protected ClassMapper (StoreConfig config, Type type, ConstructorInfo constructor, InstanceFactory instanceFactory, bool isValueType) :

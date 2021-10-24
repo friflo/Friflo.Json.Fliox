@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Arr
     {
         private readonly    bool    diffElements;
         
-        public override     string  DataTypeName() { return "ICollection"; }
+        public override     string  DataTypeName() { return $"ICollection<{typeof(TElm).Name}>"; }
         public override     int     Count(object array) => ((TCol) array).Count;
 
         public GenericICollectionMapper(StoreConfig config, Type type, Type elementType, ConstructorInfo constructor) :
