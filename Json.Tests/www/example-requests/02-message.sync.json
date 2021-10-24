@@ -8,8 +8,10 @@
     }
   ],
   "info": [
-    "Send message unknown by host.",
-    "The host simply confirm its arival"
+    "Send a message to host.",
+    "The host simply confirm its arival.",
+    "Need no message handler at host.",
+    "Enables other clients subscribing messages."
   ],
   "user":   "{{user}}",
   "token":  "{{token}}"

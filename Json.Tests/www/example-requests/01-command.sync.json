@@ -8,8 +8,9 @@
     }
   ],
   "info": [
-      "send message to host.",
-      "'Echo' is known at host as a command message.",
+      "Send a command to host.",
+      "When handled by host it returns a result.",
+      "'Echo' is a standard host command.",
       "It simply echos the given value."
   ],
   "user":   "{{user}}",
