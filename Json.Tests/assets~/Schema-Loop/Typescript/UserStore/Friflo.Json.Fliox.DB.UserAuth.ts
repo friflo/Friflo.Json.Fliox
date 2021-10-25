@@ -8,6 +8,15 @@ export abstract class UserStore {
     roles        : { [key: string]: Role };
 }
 
+export class AuthenticateUser {
+    userId? : string | null;
+    token?  : string | null;
+}
+
+export class AuthenticateUserResult {
+    isValid  : boolean;
+}
+
 export class Role {
     id           : string;
     rights       : Right_Union[];

@@ -73,6 +73,13 @@
                 "amount"
             ],
             "additionalProperties": false
+        },
+        "TestMessage": {
+            "type": "object",
+            "properties": {
+                "text": { "type": ["string", "null"] }
+            },
+            "additionalProperties": false
         }
     }
 }

@@ -49,6 +49,10 @@ export class DerivedClass extends OrderItem {
     derivedVal  : int32;
 }
 
+export class TestMessage {
+    text? : string | null;
+}
+
 export class Order extends PocEntity {
     customer? : string | null;
     created   : DateTime;

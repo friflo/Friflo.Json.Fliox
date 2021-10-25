@@ -16,6 +16,24 @@
                 "roles"
             ],
             "additionalProperties": false
+        },
+        "AuthenticateUser": {
+            "type": "object",
+            "properties": {
+                "userId": { "type": ["string", "null"] },
+                "token":  { "type": ["string", "null"] }
+            },
+            "additionalProperties": false
+        },
+        "AuthenticateUserResult": {
+            "type": "object",
+            "properties": {
+                "isValid": { "type": "boolean" }
+            },
+            "required": [
+                "isValid"
+            ],
+            "additionalProperties": false
         }
     }
 }

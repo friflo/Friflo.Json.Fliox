@@ -25,6 +25,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public PocStore(FlioxHub hub, TypeStore typeStore, string userId) : base (hub, typeStore, userId, null) {}
         /// <summary>constructor used for tests to reuse global <see cref="TestGlobals.typeStore"/> to enhance performance.</summary> 
         public PocStore(FlioxHub hub, string userId, string clientId = null): base (hub, TestGlobals.typeStore, userId, clientId) {}
+        
+        public CommandTask<bool> TestMessage (TestMessage argument) => SendCommand<TestMessage, bool>(argument);
     }
 
     // ------------------------------ models ------------------------------
@@ -123,7 +125,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
 
     // ------------------------------ messages ------------------------------
-    class TestMessage {
+    public class TestMessage {
         public          string  text;
 
         public override string  ToString() => text;

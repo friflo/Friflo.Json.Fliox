@@ -25,3 +25,12 @@ export class Role {
     description? : string | null;
 }
 
+export class AuthenticateUser {
+    userId? : string | null;
+    token?  : string | null;
+}
+
+export class AuthenticateUserResult {
+    isValid  : boolean;
+}
+

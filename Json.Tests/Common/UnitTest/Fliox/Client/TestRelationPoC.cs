@@ -227,7 +227,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             orders.Upsert(order2);
             
             var testMessage = new TestMessage{ text = "test message" };
-            var sendMessage1 = store.SendCommand(testMessage);
+            var sendMessage1 = store.TestMessage(testMessage);
             int testMessageInt = 42;
             var sendMessage2 = store.SendMessage(TestMessageInt,        testMessageInt);
             var sendMessage3 = store.SendMessage(TestRemoveHandler,     1337);
@@ -236,6 +236,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             
             await store.SyncTasks(); // ----------------
             
+            AreEqual(true, sendMessage1.Result);
             IsTrue(sendMessage1.Success);
             IsTrue(sendMessage2.Success);
             IsTrue(sendMessage3.Success);

@@ -89,3 +89,7 @@ export class DerivedClass extends OrderItem {
     derivedVal  : int32;
 }
 
+export class TestMessage {
+    text? : string | null;
+}
+
