@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     }
     
     public interface IUserAuth {
-        Task<AuthenticateUserResult> AuthenticateUser(AuthenticateUser value);
+        Task<AuthenticateUserResult> Authenticate(AuthenticateUser value);
     }
     
     /// <summary>
@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
                 return;
             }
             var command = new AuthenticateUser { userId = userId, token = token };
-            var result  = await userAuth.AuthenticateUser(command).ConfigureAwait(false);
+            var result  = await userAuth.Authenticate(command).ConfigureAwait(false);
             
             if (result.isValid) {
                 var authCred    = new AuthCred(token);
