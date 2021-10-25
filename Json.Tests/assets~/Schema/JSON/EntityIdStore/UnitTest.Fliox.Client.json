@@ -6,15 +6,15 @@
             "type": "object",
             "isAbstract": true,
             "properties": {
-                "guidEntities":      { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.GuidEntity.json#/definitions/GuidEntity" } },
-                "intEntities":       { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.IntEntity.json#/definitions/IntEntity" } },
-                "intEntitiesAuto":   { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.AutoIntEntity.json#/definitions/AutoIntEntity" } },
-                "longEntities":      { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.LongEntity.json#/definitions/LongEntity" } },
-                "shortEntities":     { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.ShortEntity.json#/definitions/ShortEntity" } },
-                "byteEntities":      { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.ByteEntity.json#/definitions/ByteEntity" } },
-                "customIdEntities":  { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.CustomIdEntity.json#/definitions/CustomIdEntity" } },
-                "entityRefs":        { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.EntityRefs.json#/definitions/EntityRefs" } },
-                "customIdEntities2": { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.CustomIdEntity2.json#/definitions/CustomIdEntity2" } }
+                "guidEntities":      { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.GuidEntity.json#/definitions/GuidEntity" }, "type": "object" },
+                "intEntities":       { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.IntEntity.json#/definitions/IntEntity" }, "type": "object" },
+                "intEntitiesAuto":   { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.AutoIntEntity.json#/definitions/AutoIntEntity" }, "type": "object" },
+                "longEntities":      { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.LongEntity.json#/definitions/LongEntity" }, "type": "object" },
+                "shortEntities":     { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.ShortEntity.json#/definitions/ShortEntity" }, "type": "object" },
+                "byteEntities":      { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.ByteEntity.json#/definitions/ByteEntity" }, "type": "object" },
+                "customIdEntities":  { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.CustomIdEntity.json#/definitions/CustomIdEntity" }, "type": "object" },
+                "entityRefs":        { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.EntityRefs.json#/definitions/EntityRefs" }, "type": "object" },
+                "customIdEntities2": { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.CustomIdEntity2.json#/definitions/CustomIdEntity2" }, "type": "object" }
             },
             "required": [
                 "guidEntities",

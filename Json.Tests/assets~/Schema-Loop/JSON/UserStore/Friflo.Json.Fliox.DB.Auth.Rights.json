@@ -82,7 +82,7 @@
             "extends": { "$ref": "#/definitions/Right" },
             "properties": {
                 "type":        { "enum": ["database"] },
-                "containers":  { "type": "object", "additionalProperties": { "$ref": "#/definitions/ContainerAccess" } },
+                "containers":  { "additionalProperties": { "$ref": "#/definitions/ContainerAccess" }, "type": "object" },
                 "description": { "type": ["string", "null"] }
             },
             "required": [

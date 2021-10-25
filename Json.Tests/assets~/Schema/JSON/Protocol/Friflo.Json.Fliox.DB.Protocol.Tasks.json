@@ -105,7 +105,7 @@
                 "task":      { "enum": ["patch"] },
                 "container": { "type": "string" },
                 "keyName":   { "type": ["string", "null"] },
-                "patches":   { "type": "object", "additionalProperties": { "$ref": "#/definitions/EntityPatch" } },
+                "patches":   { "additionalProperties": { "$ref": "#/definitions/EntityPatch" }, "type": "object" },
                 "info":      {  }
             },
             "required": [

@@ -6,7 +6,7 @@
             "type": "object",
             "properties": {
                 "$ref":        { "type": ["string", "null"] },
-                "definitions": { "type": "object", "additionalProperties": { "$ref": "#/definitions/JsonType" } }
+                "definitions": { "additionalProperties": { "$ref": "#/definitions/JsonType" }, "type": "object" }
             },
             "required": [
                 "definitions"
@@ -21,7 +21,7 @@
                 "oneOf":                { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" } },
                 "isAbstract":           { "type": ["boolean", "null"] },
                 "type":                 { "type": ["string", "null"] },
-                "properties":           { "type": "object", "additionalProperties": { "$ref": "#/definitions/FieldType" } },
+                "properties":           { "additionalProperties": { "$ref": "#/definitions/FieldType" }, "type": "object" },
                 "isStruct":             { "type": ["boolean", "null"] },
                 "required":             { "type": ["array", "null"], "items": { "type": "string" } },
                 "additionalProperties": { "type": "boolean" },

@@ -6,13 +6,13 @@
             "type": "object",
             "isAbstract": true,
             "properties": {
-                "orders":      { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Order.json#/definitions/Order" } },
-                "customers":   { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Customer.json#/definitions/Customer" } },
-                "articles":    { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Article.json#/definitions/Article" } },
-                "producers":   { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Producer.json#/definitions/Producer" } },
-                "employees":   { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Employee.json#/definitions/Employee" } },
-                "types":       { "type": "object", "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.TestType.json#/definitions/TestType" } },
-                "TestCommand": { "type": "array", "prefixItems": [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }] }
+                "orders":      { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Order.json#/definitions/Order" }, "type": "object" },
+                "customers":   { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Customer.json#/definitions/Customer" }, "type": "object" },
+                "articles":    { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Article.json#/definitions/Article" }, "type": "object" },
+                "producers":   { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Producer.json#/definitions/Producer" }, "type": "object" },
+                "employees":   { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Employee.json#/definitions/Employee" }, "type": "object" },
+                "types":       { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.TestType.json#/definitions/TestType" }, "type": "object" },
+                "TestCommand": { "prefixItems": [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }], "type": "array" }
             },
             "required": [
                 "orders",

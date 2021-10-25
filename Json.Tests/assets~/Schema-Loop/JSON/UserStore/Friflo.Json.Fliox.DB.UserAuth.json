@@ -6,10 +6,10 @@
             "type": "object",
             "isAbstract": true,
             "properties": {
-                "permissions":      { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.UserPermission.json#/definitions/UserPermission" } },
-                "credentials":      { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.UserCredential.json#/definitions/UserCredential" } },
-                "roles":            { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.Role.json#/definitions/Role" } },
-                "AuthenticateUser": { "type": "array", "prefixItems": [{ "$ref": "#/definitions/AuthenticateUser" }, { "$ref": "#/definitions/AuthenticateUserResult" }] }
+                "permissions":      { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.UserPermission.json#/definitions/UserPermission" }, "type": "object" },
+                "credentials":      { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.UserCredential.json#/definitions/UserCredential" }, "type": "object" },
+                "roles":            { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.Role.json#/definitions/Role" }, "type": "object" },
+                "AuthenticateUser": { "prefixItems": [{ "$ref": "#/definitions/AuthenticateUser" }, { "$ref": "#/definitions/AuthenticateUserResult" }], "type": "array" }
             },
             "required": [
                 "permissions",

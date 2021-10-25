@@ -175,12 +175,12 @@ namespace Friflo.Json.Fliox.Schema
             }
             if (field.isDictionary) {
                 var valueTypeName = GetElementType(field, context);
-                return $"\"type\": \"object\", \"additionalProperties\": {valueTypeName}";
+                return $"\"additionalProperties\": {valueTypeName}, \"type\": \"object\"";
             }
             if (field.isCommand) {
                 var valueTypeName = GetTypeName(field.type,       context, true);
                 var resultType    = GetTypeName(field.resultType, context, true);
-                return $"\"type\": \"array\", \"prefixItems\": [{{ {valueTypeName} }}, {{ {resultType} }}]";
+                return $"\"prefixItems\": [{{ {valueTypeName} }}, {{ {resultType} }}], \"type\": \"array\"";
             }
             return GetTypeName(field.type, context, required);
         }

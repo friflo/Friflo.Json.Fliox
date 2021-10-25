@@ -32,10 +32,10 @@
                 "database":     { "type": ["string", "null"] },
                 "tasks":        { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.Tasks.json#/definitions/SyncTaskResult" } },
                 "results":      { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" } },
-                "createErrors": { "type": "object", "additionalProperties": { "$ref": "#/definitions/EntityErrors" } },
-                "upsertErrors": { "type": "object", "additionalProperties": { "$ref": "#/definitions/EntityErrors" } },
-                "patchErrors":  { "type": "object", "additionalProperties": { "$ref": "#/definitions/EntityErrors" } },
-                "deleteErrors": { "type": "object", "additionalProperties": { "$ref": "#/definitions/EntityErrors" } },
+                "createErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object" },
+                "upsertErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object" },
+                "patchErrors":  { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object" },
+                "deleteErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object" },
                 "info":         {  }
             },
             "required": [
@@ -49,7 +49,7 @@
                 "container": { "type": "string" },
                 "entities":  { "type": "array", "items": {  } },
                 "notFound":  { "type": ["array", "null"], "items": { "type": "string" } },
-                "errors":    { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.Models.json#/definitions/EntityError" } }
+                "errors":    { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.Models.json#/definitions/EntityError" }, "type": "object" }
             },
             "required": [
                 "container",
@@ -61,7 +61,7 @@
             "type": "object",
             "properties": {
                 "container": { "type": ["string", "null"] },
-                "errors":    { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.Models.json#/definitions/EntityError" } }
+                "errors":    { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.Protocol.Models.json#/definitions/EntityError" }, "type": "object" }
             },
             "required": [
                 "errors"
