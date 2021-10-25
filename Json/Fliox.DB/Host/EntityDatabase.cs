@@ -4,7 +4,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Protocol;
 
 namespace Friflo.Json.Fliox.DB.Host
@@ -67,7 +66,7 @@ namespace Friflo.Json.Fliox.DB.Host
 
         public override     string              ToString() => name != null ? $"'{name}'" : "";
 
-        protected EntityDatabase (DbOpt opt, TaskHandler taskHandler = null){
+        protected EntityDatabase(TaskHandler taskHandler, DbOpt opt){
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
             this.taskHandler = taskHandler ?? new TaskHandler();
         }
@@ -75,9 +74,9 @@ namespace Friflo.Json.Fliox.DB.Host
         protected EntityDatabase (
             FlioxHub    hub,
             string      name,
-            DbOpt       opt,
-            TaskHandler taskHandler = null
-            ) : this(opt, taskHandler)
+            TaskHandler taskHandler,
+            DbOpt       opt = null
+            ) : this(taskHandler, opt)
         {
             this.hub    = hub  ?? throw new ArgumentNullException(nameof(hub));
             this.name   = name ?? throw new ArgumentNullException(nameof(name));

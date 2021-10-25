@@ -8,6 +8,19 @@ using System.Text;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
 
+/*
+    May add commands of a FlioxClient / EntityDatabase to JSON Schema in future by adding (generating):
+       
+    "PocStore.commands": {
+        "type": "object",
+        "properties": {
+            "Echo":      { "type": "array", "items":
+                [{ "$ref": "./UnitTest.Fliox.Client.TestType.json#/definitions/TestType" }, { "$ref": "./UnitTest.Fliox.Client.TestType.json#/definitions/TestType" }]
+            }
+        }
+    }
+ */
+
 // ReSharper disable JoinNullCheckWithUsage
 namespace Friflo.Json.Fliox.Schema.JSON
 {

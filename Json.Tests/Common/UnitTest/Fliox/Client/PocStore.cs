@@ -8,6 +8,8 @@ using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable InconsistentNaming
+// ReSharper disable NotAccessedField.Global
 // ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
@@ -24,6 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         /// <summary>constructor used for tests to reuse global <see cref="TestGlobals.typeStore"/> to enhance performance.</summary> 
         public PocStore(FlioxHub hub, string userId, string clientId = null): base (hub, TestGlobals.typeStore, userId, clientId) {}
     }
+
     // ------------------------------ models ------------------------------
     public abstract class PocEntity
     {
@@ -111,6 +114,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     
     public class DerivedClass : OrderItem {
         public int derivedVal;
+    }
+    
+    public class PocStoreHandler : TaskHandler {
+        public PocStoreHandler() {
+            AddCommandHandler<TestMessage, bool>((args) => true);
+        }
     }
 
     // ------------------------------ messages ------------------------------

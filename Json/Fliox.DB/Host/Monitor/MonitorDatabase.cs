@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         public const string Name = "monitor";
         
         public MonitorDatabase (FlioxHub hub, DbOpt opt = null)
-            : base (hub, Name, opt, new MonitorHandler())
+            : base (hub, Name, new MonitorHandler(), opt)
         {
             taskHandler.AddCommandHandler<ClearStats, ClearStatsResult>(ClearStats);
 

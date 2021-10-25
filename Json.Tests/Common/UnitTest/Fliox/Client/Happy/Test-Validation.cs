@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
         private static async Task ValidationByTypes() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var database         = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var database         = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore", new PocStoreHandler()))
             using (var hub          	= new FlioxHub(database))
             using (var createStore      = new PocStore(hub, "createStore"))
             using (var nativeSchema     = new NativeTypeSchema(typeof(PocStore)))
@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var jsonSchemaFolder    = CommonUtils.GetBasePath() + "assets~/Schema/JSON/PocStore";
             var schemas             = JsonTypeSchema.ReadSchemas(jsonSchemaFolder);
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore", new PocStoreHandler()))
             using (var hub          = new FlioxHub(database))
             using (var createStore  = new PocStore(hub, "createStore"))
             using (var jsonSchema   = new JsonTypeSchema(schemas, "./UnitTest.Fliox.Client.json#/definitions/PocStore"))

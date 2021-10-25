@@ -216,8 +216,8 @@ namespace Friflo.Json.Fliox.DB.Host
             extensionDbs.Add(extensionDB.name, extensionDB);
         }
 
-        public EntityDatabase AddExtensionDB (string extensionName, DbOpt opt = null) {
-            var extensionDB = new ExtensionDatabase (this, extensionName, opt);
+        public EntityDatabase AddExtensionDB (string extensionName, TaskHandler taskHandler, DbOpt opt = null) {
+            var extensionDB = new ExtensionDatabase (this, extensionName, taskHandler, opt);
             return extensionDB;
         }
 
