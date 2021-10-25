@@ -11,14 +11,14 @@ using Friflo.Json.Fliox.Schema.Definition;
 /*
     May add commands of a FlioxClient / EntityDatabase to JSON Schema in future by adding (generating):
        
-    "PocStore.commands": {
-        "type": "object",
-        "properties": {
-            "Echo":      { "type": "array", "items":
-                [{ "$ref": "./UnitTest.Fliox.Client.TestType.json#/definitions/TestType" }, { "$ref": "./UnitTest.Fliox.Client.TestType.json#/definitions/TestType" }]
+        "PocStore.commands": {
+            "type": "object",
+            "properties": {
+                "Echo":      { "type": "array", "items":
+                    [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }]
+                }
             }
-        }
-    }
+        },
  */
 
 // ReSharper disable JoinNullCheckWithUsage
