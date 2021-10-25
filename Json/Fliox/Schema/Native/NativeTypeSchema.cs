@@ -114,11 +114,11 @@ namespace Friflo.Json.Fliox.Schema.Native
                     }
                 }
                 var commands = CommandUtils.GetCommandTypes(typeDef.native);
-                commands = new CommandInfo[0];
+                // commands = new CommandInfo[0]; // disable commands
                 foreach (var command in commands) {
                     var argumentType = nativeTypes[command.valueType];
                     var resultType   = nativeTypes[command.resultType];
-                    var fieldDef = new FieldDef (command.name, false, false, false, argumentType, resultType, false, false, false, true, typeDef);
+                    var fieldDef = new FieldDef (command.name, true, false, false, argumentType, resultType, false, false, false, true, typeDef);
                     typeDef.fields.Add(fieldDef);
                 }
                 if (typeDef.Discriminant != null) {

@@ -149,6 +149,11 @@ namespace Friflo.Json.Fliox.Schema
                 var valueTypeName = GetElementType(field, context);
                 return $"{{ [key: string]: {valueTypeName} }}";
             }
+            if (field.isCommand) {
+                var valueTypeName = GetTypeName(field.type,       context);
+                var resultType    = GetTypeName(field.resultType, context);
+                return $"(command: {valueTypeName}) => {resultType}";
+            }
             return GetTypeName(field.type, context);
         }
         

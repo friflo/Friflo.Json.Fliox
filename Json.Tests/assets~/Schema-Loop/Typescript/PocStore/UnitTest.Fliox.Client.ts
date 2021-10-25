@@ -27,12 +27,13 @@ export class Employee extends PocEntity {
 }
 
 export abstract class PocStore {
-    orders     : { [key: string]: Order };
-    customers  : { [key: string]: Customer };
-    articles   : { [key: string]: Article };
-    producers  : { [key: string]: Producer };
-    employees  : { [key: string]: Employee };
-    types      : { [key: string]: TestType };
+    orders       : { [key: string]: Order };
+    customers    : { [key: string]: Customer };
+    articles     : { [key: string]: Article };
+    producers    : { [key: string]: Producer };
+    employees    : { [key: string]: Employee };
+    types        : { [key: string]: TestType };
+    TestCommand  : (command: TestCommand) => boolean;
 }
 
 export class OrderItem {

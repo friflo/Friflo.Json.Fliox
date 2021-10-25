@@ -144,6 +144,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             bool    isArray         = false;
             bool    isDictionary    = false;
             bool    isCommand       = false;
+            TypeDef resultType      = null;
             bool    required        = typeDef.type.required?.Contains(fieldName) ?? false;
 
             FieldType   items       = GetItemsFieldType(field.items, out bool isNullableElement);
@@ -178,22 +179,24 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 }
             }
             else if (!jsonType.IsNull()) {
-                fieldType = FindTypeFromJson (jsonType, items, context, ref isArray);
+                if (field.prefixItems != null) {
+                    isCommand   = true;
+                    fieldType   = FindFieldType(field.prefixItems[0], context);
+                    resultType  = FindFieldType(field.prefixItems[1], context);
+                } else {
+                    fieldType = FindTypeFromJson (jsonType, items, context, ref isArray);
+                }
             }
             else if (field.discriminant != null) {
                 typeDef.discriminant = field.discriminant[0]; // a discriminant has no FieldDef
                 return;
-            }
-            else if (field.prefixItems != null) {
-                fieldType = context.standardTypes.JsonValue;
-                isCommand = true;
             } else {
                 fieldType = context.standardTypes.JsonValue;
                 // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
             }
             var isKey           = field.isKey.HasValue && field.isKey.Value;
             var isAutoIncrement = field.isAutoIncrement.HasValue && field.isAutoIncrement.Value;
-            var fieldDef = new FieldDef (fieldName, required, isKey, isAutoIncrement, fieldType, null, isArray, isDictionary, isNullableElement, isCommand, typeDef);
+            var fieldDef = new FieldDef (fieldName, required, isKey, isAutoIncrement, fieldType, resultType, isArray, isDictionary, isNullableElement, isCommand, typeDef);
             typeDef.fields.Add(fieldDef);
         }
         

@@ -6,14 +6,16 @@
             "type": "object",
             "isAbstract": true,
             "properties": {
-                "permissions": { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.UserPermission.json#/definitions/UserPermission" } },
-                "credentials": { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.UserCredential.json#/definitions/UserCredential" } },
-                "roles":       { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.Role.json#/definitions/Role" } }
+                "permissions":      { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.UserPermission.json#/definitions/UserPermission" } },
+                "credentials":      { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.UserCredential.json#/definitions/UserCredential" } },
+                "roles":            { "type": "object", "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.Role.json#/definitions/Role" } },
+                "AuthenticateUser": { "type": "array", "prefixItems": [{ "$ref": "#/definitions/AuthenticateUser" }, { "$ref": "#/definitions/AuthenticateUserResult" }] }
             },
             "required": [
                 "permissions",
                 "credentials",
-                "roles"
+                "roles",
+                "AuthenticateUser"
             ],
             "additionalProperties": false
         },

@@ -3,9 +3,10 @@ import { Right }       from "./Friflo.Json.Fliox.DB.Auth.Rights"
 import { Right_Union } from "./Friflo.Json.Fliox.DB.Auth.Rights"
 
 export abstract class UserStore {
-    permissions  : { [key: string]: UserPermission };
-    credentials  : { [key: string]: UserCredential };
-    roles        : { [key: string]: Role };
+    permissions       : { [key: string]: UserPermission };
+    credentials       : { [key: string]: UserCredential };
+    roles             : { [key: string]: Role };
+    AuthenticateUser  : (command: AuthenticateUser) => AuthenticateUserResult;
 }
 
 export class AuthenticateUser {
