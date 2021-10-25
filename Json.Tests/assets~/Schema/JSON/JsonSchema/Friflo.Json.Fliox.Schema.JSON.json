@@ -57,7 +57,8 @@
                 "$ref":                 { "type": ["string", "null"] },
                 "additionalProperties": { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] },
                 "isKey":                { "type": ["boolean", "null"] },
-                "isAutoIncrement":      { "type": ["boolean", "null"] }
+                "isAutoIncrement":      { "type": ["boolean", "null"] },
+                "prefixItems":          { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" } }
             },
             "additionalProperties": false
         }

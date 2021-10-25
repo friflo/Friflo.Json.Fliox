@@ -5,13 +5,15 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Friflo.Json.Fliox.DB.Client.Internal.Map
+namespace Friflo.Json.Fliox.Mapper.Map.Utils
 {
-    internal static class ClientCommandUtils
+    public static class CommandUtils
     {
         private static readonly Dictionary<Type, CommandInfo[]> CommandInfoCache = new Dictionary<Type, CommandInfo[]>();
-        
-        internal static CommandInfo[] GetCommandTypes(Type type) {
+
+        private const string CommandType = "Friflo.Json.Fliox.DB.Client.CommandTask`1";
+
+        public static CommandInfo[] GetCommandTypes(Type type) {
             if (CommandInfoCache.TryGetValue(type, out  CommandInfo[] result)) {
                 return result;
             }
@@ -34,7 +36,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal.Map
             var returnType = methodInfo.ReturnType;
             if (!returnType.IsGenericType)
                 return false;
-            if (!(returnType.GetGenericTypeDefinition() == typeof(CommandTask<>)))
+            if (returnType.GetGenericTypeDefinition().FullName != CommandType)
                 return false;
             var parameters = methodInfo.GetParameters();
             Type valueType = null;
@@ -48,10 +50,10 @@ namespace Friflo.Json.Fliox.DB.Client.Internal.Map
         }
     }
     
-    internal readonly struct CommandInfo {
-        internal readonly   string         name;
-        internal readonly   Type           valueType;
-        internal readonly   Type           resultType;
+    public readonly struct CommandInfo {
+        public  readonly    string  name;
+        public  readonly    Type    valueType;
+        public  readonly    Type    resultType;
         
         internal CommandInfo (
             string         name,

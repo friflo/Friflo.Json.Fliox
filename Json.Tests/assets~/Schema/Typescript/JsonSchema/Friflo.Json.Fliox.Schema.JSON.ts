@@ -37,5 +37,6 @@ export class FieldType {
     additionalProperties? : FieldType | null;
     isKey?                : boolean | null;
     isAutoIncrement?      : boolean | null;
+    prefixItems?          : FieldType[] | null;
 }
 

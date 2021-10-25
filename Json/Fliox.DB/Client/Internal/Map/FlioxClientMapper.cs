@@ -6,6 +6,7 @@ using System.Reflection;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Fliox.Mapper.Map.Utils;
 
 namespace Friflo.Json.Fliox.DB.Client.Internal.Map
 {
@@ -35,7 +36,7 @@ namespace Friflo.Json.Fliox.DB.Client.Internal.Map
                 // ReSharper disable once PossibleNullReferenceException
                 fieldInfo.SetValue(this, fields);
             }
-            var commands = ClientCommandUtils.GetCommandTypes(type);
+            var commands = CommandUtils.GetCommandTypes(type);
             foreach (var command in commands) {
                 if (command.valueType != null)
                     typeStore.GetTypeMapper(command.valueType);

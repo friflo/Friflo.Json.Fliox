@@ -14,7 +14,7 @@ using Friflo.Json.Fliox.Schema.Definition;
         "PocStore.commands": {
             "type": "object",
             "properties": {
-                "Echo":      { "type": "array", "items":
+                "Echo":      { "type": "array", "prefixItems":
                     [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }]
                 }
             }
@@ -143,6 +143,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             TypeDef fieldType; // not initialized by intention
             bool    isArray         = false;
             bool    isDictionary    = false;
+            bool    isCommand       = false;
             bool    required        = typeDef.type.required?.Contains(fieldName) ?? false;
 
             FieldType   items       = GetItemsFieldType(field.items, out bool isNullableElement);
@@ -183,13 +184,16 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 typeDef.discriminant = field.discriminant[0]; // a discriminant has no FieldDef
                 return;
             }
-            else {
+            else if (field.prefixItems != null) {
+                fieldType = context.standardTypes.JsonValue;
+                isCommand = true;
+            } else {
                 fieldType = context.standardTypes.JsonValue;
                 // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
             }
             var isKey           = field.isKey.HasValue && field.isKey.Value;
             var isAutoIncrement = field.isAutoIncrement.HasValue && field.isAutoIncrement.Value;
-            var fieldDef = new FieldDef (fieldName, required, isKey, isAutoIncrement, fieldType, isArray, isDictionary, isNullableElement, typeDef);
+            var fieldDef = new FieldDef (fieldName, required, isKey, isAutoIncrement, fieldType, isArray, isDictionary, isNullableElement, isCommand, typeDef);
             typeDef.fields.Add(fieldDef);
         }
         
