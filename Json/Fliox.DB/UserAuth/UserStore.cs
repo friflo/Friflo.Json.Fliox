@@ -70,8 +70,8 @@ namespace Friflo.Json.Fliox.DB.UserAuth
     
     // -------------------------------------- commands -------------------------------------
     public class AuthenticateUser {
-        public          JsonKey userId;
-        public          string  token;
+        [Fri.Required]  public  JsonKey userId;
+        [Fri.Required]  public  string  token;
 
         public override string  ToString() => userId.ToString();
     }

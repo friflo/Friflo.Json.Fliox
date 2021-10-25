@@ -22,9 +22,13 @@
         "AuthenticateUser": {
             "type": "object",
             "properties": {
-                "userId": { "type": ["string", "null"] },
-                "token":  { "type": ["string", "null"] }
+                "userId": { "type": "string" },
+                "token":  { "type": "string" }
             },
+            "required": [
+                "userId",
+                "token"
+            ],
             "additionalProperties": false
         },
         "AuthenticateUserResult": {

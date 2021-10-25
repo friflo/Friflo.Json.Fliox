@@ -10,8 +10,8 @@ export abstract class UserStore {
 }
 
 export class AuthenticateUser {
-    userId? : string | null;
-    token?  : string | null;
+    userId  : string;
+    token   : string;
 }
 
 export class AuthenticateUserResult {
