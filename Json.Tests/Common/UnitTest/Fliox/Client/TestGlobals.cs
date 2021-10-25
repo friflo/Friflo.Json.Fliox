@@ -28,8 +28,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             typeStore.GetTypeMapper(typeof(SimpleStore));
             //
             typeStore.GetTypeMapper(typeof(MonitorStore));
-            typeStore.GetTypeMapper(typeof(ClearStats));    // todo add implicit when adding MonitorStore  
-            typeStore.GetTypeMapper(typeof(ClearStatsResult));
         }
         
         public static void Dispose() {

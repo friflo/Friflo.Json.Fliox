@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Fliox.DB.Client.Internal.Map
 {
-    internal static class StoreUtils
+    internal static class ClientEntityUtils
     {
         private static readonly Dictionary<Type, EntityInfo[]> EntityInfoCache = new Dictionary<Type, EntityInfo[]>();
         

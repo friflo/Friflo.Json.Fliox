@@ -139,7 +139,7 @@ namespace Friflo.Json.Fliox.DB.Client
             return info;
         }}
         
-        /// constructor is called via <see cref="StoreUtils.InitEntitySets"/> 
+        /// constructor is called via <see cref="ClientEntityUtils.InitEntitySets"/> 
         internal EntitySet(string name) : base (name) {
             ValidateKeyType(typeof(TKey));
         }

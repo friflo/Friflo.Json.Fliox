@@ -35,6 +35,13 @@ namespace Friflo.Json.Fliox.DB.Client.Internal.Map
                 // ReSharper disable once PossibleNullReferenceException
                 fieldInfo.SetValue(this, fields);
             }
+            var commands = ClientCommandUtils.GetCommandTypes(type);
+            foreach (var command in commands) {
+                if (command.valueType != null)
+                    typeStore.GetTypeMapper(command.valueType);
+                if (command.resultType != null)
+                    typeStore.GetTypeMapper(command.resultType);
+            }
         }
         
         public override void Write(ref Writer writer, T slot) {

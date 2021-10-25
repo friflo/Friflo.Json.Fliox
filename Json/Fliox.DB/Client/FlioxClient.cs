@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.DB.Client
             _intern = new ClientIntern(null, typeStore, hub, hub.database, tracer, eventTarget, subscriptionProcessor);
             _intern.syncStore = new SyncStore();
             SetUserClient(userId, clientId);
-            StoreUtils.InitEntitySets(this);
+            ClientEntityUtils.InitEntitySets(this);
         }
         
         protected FlioxClient(EntityDatabase database, FlioxClient baseClient) {
@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.DB.Client
             var subscriptionProcessor   = new SubscriptionProcessor(this);
             _intern = new ClientIntern(baseClient, baseClient._intern.typeStore, hub, database, tracer, null, subscriptionProcessor);
             _intern.syncStore = new SyncStore();
-            StoreUtils.InitEntitySets(this);
+            ClientEntityUtils.InitEntitySets(this);
         }
         
         public virtual void Dispose() {
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.DB.Client
         }
         
         public static Type[] GetEntityTypes<TFlioxClient> () where TFlioxClient : FlioxClient {
-            return StoreUtils.GetEntityTypes<TFlioxClient>();
+            return ClientEntityUtils.GetEntityTypes<TFlioxClient>();
         }
 
 
