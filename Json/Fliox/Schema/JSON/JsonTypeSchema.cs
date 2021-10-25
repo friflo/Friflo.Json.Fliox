@@ -193,7 +193,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
             }
             var isKey           = field.isKey.HasValue && field.isKey.Value;
             var isAutoIncrement = field.isAutoIncrement.HasValue && field.isAutoIncrement.Value;
-            var fieldDef = new FieldDef (fieldName, required, isKey, isAutoIncrement, fieldType, isArray, isDictionary, isNullableElement, isCommand, typeDef);
+            var fieldDef = new FieldDef (fieldName, required, isKey, isAutoIncrement, fieldType, null, isArray, isDictionary, isNullableElement, isCommand, typeDef);
             typeDef.fields.Add(fieldDef);
         }
         

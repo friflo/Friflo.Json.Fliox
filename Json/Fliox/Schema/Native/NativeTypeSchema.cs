@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Fliox.Mapper.Map.Utils;
 using Friflo.Json.Fliox.Schema.Definition;
 
 namespace Friflo.Json.Fliox.Schema.Native
@@ -108,9 +109,17 @@ namespace Friflo.Json.Fliox.Schema.Native
                         var required = propField.required || !isNullable;
                         var isKey    = propField.isKey;
                         bool isAutoIncrement = FieldQuery.IsAutoIncrement(propField.Member.CustomAttributes);
-                        var fieldDef = new FieldDef (propField.jsonName, required, isKey, isAutoIncrement, type, isArray, isDictionary, isNullableElement, false, typeDef);
+                        var fieldDef = new FieldDef (propField.jsonName, required, isKey, isAutoIncrement, type, null, isArray, isDictionary, isNullableElement, false, typeDef);
                         typeDef.fields.Add(fieldDef);
                     }
+                }
+                var commands = CommandUtils.GetCommandTypes(typeDef.native);
+                commands = new CommandInfo[0];
+                foreach (var command in commands) {
+                    var argumentType = nativeTypes[command.valueType];
+                    var resultType   = nativeTypes[command.resultType];
+                    var fieldDef = new FieldDef (command.name, false, false, false, argumentType, resultType, false, false, false, true, typeDef);
+                    typeDef.fields.Add(fieldDef);
                 }
                 if (typeDef.Discriminant != null) {
                     var baseType = typeDef.baseType;
