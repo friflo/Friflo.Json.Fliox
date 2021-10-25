@@ -145,8 +145,7 @@ namespace Friflo.Json.Fliox.Mapper
             throw new NotImplementedException("not implemented by intention to avoid boxing. Use JsonKey.Equality comparer");
         }
 
-        /// <summary>Calling this method causes string instantiation.
-        /// To avoid thus use its <i>AppendTo</i> methods if possible.</summary> 
+        /// <summary>Calling this method causes string instantiation. To avoid this use its <i>AppendTo</i> methods if possible.</summary> 
         public string AsString() {
             switch (type) {
                 case JsonKeyType.Long:      return str ?? lng. ToString();
