@@ -10,6 +10,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
     
     internal abstract class CommandCallback
     {
+        // return type could be a ValueTask but Unity doesnt support this. 2021-10-25
         internal abstract Task<JsonValue> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext);
     }
     
