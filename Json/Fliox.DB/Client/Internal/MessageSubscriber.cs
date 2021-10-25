@@ -71,16 +71,16 @@ namespace Friflo.Json.Fliox.DB.Client.Internal
         }
     }
     
-    internal sealed class GenericMessageCallback<TValue> : MessageCallback
+    internal sealed class GenericMessageCallback<TMessage> : MessageCallback
     {
-        private  readonly   MessageHandler<TValue>   handler;
+        private  readonly   MessageHandler<TMessage>   handler;
         
-        internal GenericMessageCallback (string name, MessageHandler<TValue> handler) : base(name, handler) {
+        internal GenericMessageCallback (string name, MessageHandler<TMessage> handler) : base(name, handler) {
             this.handler = handler;
         }
         
         internal override void InvokeCallback(ObjectReader reader, string messageName, JsonValue messageValue) {
-            var msg = new Message<TValue>(messageName, messageValue, reader);
+            var msg = new Message<TMessage>(messageName, messageValue, reader);
             handler(msg);
         }
     }

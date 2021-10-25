@@ -228,17 +228,17 @@ namespace Friflo.Json.Fliox.DB.Client
             return task;
         }
         
-        public MessageTask SendMessage<TValue>(string name, TValue value) {
-            var json    = _intern.jsonMapper.WriteAsArray(value);
+        public MessageTask SendMessage<TMessage>(string name, TMessage message) {
+            var json    = _intern.jsonMapper.WriteAsArray(message);
             var task    = new MessageTask(name, new JsonValue(json));
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
         }
         
-        public MessageTask SendMessage<TValue>(TValue value) {
-            var name = typeof(TValue).Name;
-            return SendMessage(name, value);
+        public MessageTask SendMessage<TMessage>(TMessage message) {
+            var name = typeof(TMessage).Name;
+            return SendMessage(name, message);
         }
         
         // --- SendCommand
@@ -249,44 +249,44 @@ namespace Friflo.Json.Fliox.DB.Client
             return task;
         }
         
-        public CommandTask SendCommand<TValue>(string name, TValue value) {
-            var json    = _intern.jsonMapper.WriteAsArray(value);
+        public CommandTask SendCommand<TCommand>(string name, TCommand message) {
+            var json    = _intern.jsonMapper.WriteAsArray(message);
             var task    = new CommandTask(name, new JsonValue(json), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
         }
         
-        public CommandTask SendCommand<TValue>(TValue value) {
-            var name = typeof(TValue).Name;
-            return SendCommand(name, value);
+        public CommandTask SendCommand<TCommand>(TCommand message) {
+            var name = typeof(TCommand).Name;
+            return SendCommand(name, message);
         }
         
-        public CommandTask<TResult> SendCommand<TValue, TResult>(string name, TValue value) {
-            var json    = _intern.jsonMapper.WriteAsArray(value);
+        public CommandTask<TResult> SendCommand<TCommand, TResult>(string name, TCommand command) {
+            var json    = _intern.jsonMapper.WriteAsArray(command);
             var task    = new CommandTask<TResult>(name, new JsonValue(json), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
         }
         
-        public CommandTask<TResult> SendCommand<TValue, TResult>(TValue value) {
-            var name = typeof(TValue).Name;
-            return SendCommand<TValue, TResult>(name, value);
+        public CommandTask<TResult> SendCommand<TCommand, TResult>(TCommand command) {
+            var name = typeof(TCommand).Name;
+            return SendCommand<TCommand, TResult>(name, command);
         }
         
         
         // --- SubscribeMessage
-        public SubscribeMessageTask SubscribeMessage<TValue>    (string name, MessageHandler<TValue> handler) {
+        public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageHandler<TMessage> handler) {
             AssertSubscriptionProcessor();
-            var callbackHandler = new GenericMessageCallback<TValue>(name, handler);
+            var callbackHandler = new GenericMessageCallback<TMessage>(name, handler);
             var task            = _intern.AddCallbackHandler(name, callbackHandler);
             AddTask(task);
             return task;
         }
         
-        public SubscribeMessageTask SubscribeMessage<TValue>    (MessageHandler<TValue> handler) {
-            var name = typeof(TValue).Name;
+        public SubscribeMessageTask SubscribeMessage<TMessage>  (MessageHandler<TMessage> handler) {
+            var name = typeof(TMessage).Name;
             return SubscribeMessage(name, handler);
         }
         
@@ -299,7 +299,7 @@ namespace Friflo.Json.Fliox.DB.Client
         }
         
         // --- UnsubscribeMessage
-        public SubscribeMessageTask UnsubscribeMessage<TValue>  (string name, MessageHandler<TValue> handler) {
+        public SubscribeMessageTask UnsubscribeMessage<TMessage>(string name, MessageHandler<TMessage> handler) {
             var task = _intern.RemoveCallbackHandler(name, handler);
             AddTask(task);
             return task;

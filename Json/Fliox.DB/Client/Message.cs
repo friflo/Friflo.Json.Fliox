@@ -35,16 +35,16 @@ namespace Friflo.Json.Fliox.DB.Client
     /// <summary>
     /// Expose the <see cref="Name"/>, the <see cref="Json"/> value and the type safe <see cref="Value"/> of a received message.
     /// </summary>
-    public readonly struct Message<TValue> : IMessage {
+    public readonly struct Message<TMessage> : IMessage {
         public              string          Name    { get; }
         public              JsonValue       Json    { get; }
         
         private readonly    ObjectReader    reader;
        
         /// <summary>
-        /// Return the <see cref="Json"/> value as the specified type <see cref="TValue"/>.
+        /// Return the <see cref="Json"/> value as the specified type <see cref="TMessage"/>.
         /// </summary>
-        public              TValue          Value => Message.Read<TValue>(Json, reader);
+        public              TMessage        Value => Message.Read<TMessage>(Json, reader);
 
         public override     string          ToString()  => Name;
         
@@ -120,6 +120,6 @@ namespace Friflo.Json.Fliox.DB.Client
         public const string Echo = "Echo";
     }
 
-    public delegate void MessageHandler<TValue>(Message<TValue> msg);
-    public delegate void MessageHandler        (Message         msg);
+    public delegate void MessageHandler<TMessage>   (Message<TMessage>  message);
+    public delegate void MessageHandler             (Message            message);
 }

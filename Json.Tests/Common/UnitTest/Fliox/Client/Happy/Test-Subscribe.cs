@@ -90,11 +90,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 processor.receivedAll = true;
                 AreEqual("null",            msg.Json.AsString());
             });
-            var subscribeMessage1   = store.SubscribeMessage<TestMessage>((msg) => {
+            var subscribeMessage1   = store.SubscribeMessage<TestCommand>((msg) => {
                 processor.testMessageCalls++;
-                TestMessage value = msg.Value;
+                TestCommand value = msg.Value;
                 AreEqual("test message",        value.text);
-                AreEqual(nameof(TestMessage),   msg.Name);
+                AreEqual(nameof(TestCommand),   msg.Name);
             });
             var subscribeMessage2   = store.SubscribeMessage<int>(TestRelationPoC.TestMessageInt, (msg) => {
                 processor.testMessageIntCalls++;
@@ -218,8 +218,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     case nameof(TestRelationPoC.TestRemoveHandler):
                     case nameof(TestRelationPoC.TestRemoveAllHandler):
                         break;
-                    case nameof(TestMessage):
-                        var testVal = message.ReadJson<TestMessage>();
+                    case nameof(TestCommand):
+                        var testVal = message.ReadJson<TestCommand>();
                         AreEqual("test message", testVal.text);
                         break;
                     default:
