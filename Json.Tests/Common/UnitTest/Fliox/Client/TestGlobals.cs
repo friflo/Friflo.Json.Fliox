@@ -5,10 +5,13 @@ using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Host.Monitor;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy;
+using Friflo.Json.Tests.Common.Utils;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
     public static class TestGlobals {
+        public static readonly string PocStoreFolder = CommonUtils.GetBasePath() + "assets~/DB/PocStore";
+            
         public static TypeStore typeStore;
         
         public static void Init() {

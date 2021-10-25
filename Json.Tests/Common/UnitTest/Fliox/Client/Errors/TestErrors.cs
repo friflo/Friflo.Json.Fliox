@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         
         private async Task FileUse() {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var fileDatabase = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var testHub      = new TestDatabaseHub(fileDatabase))
             using (var useStore     = new PocStore(testHub, "useStore")) {
                 await TestStoresErrors(useStore, testHub);
@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         
         private async Task LoopbackUse() {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var fileDatabase     = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var testHub          = new TestDatabaseHub(fileDatabase))
             using (var loopbackHub      = new LoopbackHub(testHub))
             using (var useStore         = new PocStore(loopbackHub, "useStore", "use-client")) {
@@ -53,7 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         
         private async Task HttpUse() {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var fileDatabase = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var testHub      = new TestDatabaseHub(fileDatabase))
             using (var hostHub      = new HttpHostHub(testHub))
             using (var server       = new HttpListenerHost("http://+:8080/", hostHub)) {
@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         
         private static async Task Test(Func<PocStore, TestDatabaseHub, Task> test) {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var fileDatabase = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/PocStore"))
+            using (var fileDatabase = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var testHub      = new TestDatabaseHub(fileDatabase))
             using (var useStore     = new PocStore(testHub, "useStore")) {
                 await test(useStore, testHub);
