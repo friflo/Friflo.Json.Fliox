@@ -2,22 +2,22 @@
 // See LICENSE file in the project root for full license information.
 
 /* not used
-using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Fliox.DB.Protocol.Tasks;
 
 namespace Friflo.Json.Fliox.DB.Host.Internal
 {
     public struct TaskResult<TResult> where TResult : SyncTaskResult 
     {
         public readonly TResult         success;
-        public readonly CommandError    error;
+        public readonly TaskErrorResult error;
         
         public TaskResult(TResult result) {
             success = result;
             error   = null;
         }
         
-        public TaskResult(string error) {
-            this.error  = new CommandError (error);
+        public TaskResult(TaskErrorResult error) {
+            this.error  = error;
             success     = null;
         }
         
@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.DB.Host.Internal
         } }
 
         public override string ToString() => success != null ? success.ToString() : error.ToString();
-        
     }
 }
+
 */
