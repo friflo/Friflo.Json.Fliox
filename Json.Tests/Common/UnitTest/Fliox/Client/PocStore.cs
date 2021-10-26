@@ -121,8 +121,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     
     public class PocStoreHandler : TaskHandler {
         public PocStoreHandler() {
-            AddCommandHandler<TestCommand, bool>((args) => true);
+            AddCommandHandler<TestCommand, bool>(TestCommand); // todo add handler via scanning TaskHandler
         }
+        
+        private static bool TestCommand(Command<TestCommand> command) {
+            return true;
+        }
+
     }
 
     // ------------------------------ commands ------------------------------
