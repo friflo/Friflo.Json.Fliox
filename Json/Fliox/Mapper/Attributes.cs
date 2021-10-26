@@ -35,6 +35,11 @@ namespace Friflo.Json.Fliox.Mapper
             public string       Name        { get; set; }
         }
         
+        [AttributeUsage(AttributeTargets.Method)]
+        public sealed class CommandAttribute : Attribute {
+            public string       Name        { get; set; }
+        }
+        
         [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
         public sealed class IgnoreAttribute : Attribute {
         }

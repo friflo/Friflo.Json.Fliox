@@ -26,7 +26,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         /// <summary>constructor used for tests to reuse global <see cref="TestGlobals.typeStore"/> to enhance performance.</summary> 
         public PocStore(FlioxHub hub, string userId, string clientId = null): base (hub, TestGlobals.typeStore, userId, clientId) {}
         
-        public CommandTask<bool> TestCommand (TestCommand command) => SendCommand<TestCommand, bool>(command);
+        [Fri.Command(Name = "TestCommand")]
+        public CommandTask<bool> Test (TestCommand command) => SendCommand<TestCommand, bool>(command);
     }
 
     // ------------------------------ models ------------------------------

@@ -227,7 +227,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             orders.Upsert(order2);
             
             var testMessage = new TestCommand{ text = "test message" };
-            var sendMessage1 = store.TestCommand(testMessage);
+            var sendMessage1 = store.Test(testMessage);
             int testMessageInt = 42;
             var sendMessage2 = store.SendMessage(TestMessageInt,        testMessageInt);
             var sendMessage3 = store.SendMessage(TestRemoveHandler,     1337);

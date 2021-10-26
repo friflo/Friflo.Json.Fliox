@@ -196,5 +196,23 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                 }
             }
         }
+        
+        public static string CommandName(IEnumerable<CustomAttributeData> attributes) {
+            foreach (var attr in attributes) {
+                if (attr.AttributeType != typeof(Fri.CommandAttribute))
+                    continue;
+                if (attr.NamedArguments == null)
+                    continue;
+                foreach (var args in attr.NamedArguments) {
+                    switch (args.MemberName) {
+                        case nameof(Fri.PropertyAttribute.Name):
+                            if (args.TypedValue.Value != null)
+                                return args.TypedValue.Value as string;
+                            break;
+                    }
+                }
+            }
+            return null;
+        }
     }
 }

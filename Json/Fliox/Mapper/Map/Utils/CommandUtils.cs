@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Utils
 {
@@ -45,12 +46,14 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             if (resultType.IsGenericParameter)
                 return false;
             var parameters = methodInfo.GetParameters();
-            Type valueType = null;
             if (parameters.Length != 1)
                 return false;
+            var name = AttributeUtils.CommandName(methodInfo.CustomAttributes);
+            if (name == null)
+                name = methodInfo.Name;
             var param = parameters[0];
-            valueType = param.ParameterType;
-            commandInfo = new CommandInfo(methodInfo.Name, valueType, resultType);
+            var valueType = param.ParameterType;
+            commandInfo = new CommandInfo(name, valueType, resultType);
             return true;
         }
     }
