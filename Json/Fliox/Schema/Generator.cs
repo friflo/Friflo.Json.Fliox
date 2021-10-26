@@ -159,7 +159,7 @@ namespace Friflo.Json.Fliox.Schema
         
         // ---------------------------------- output generation  ----------------------------------
         public void AddEmitType(EmitType emit) {
-            emitTypes.TryAdd(emit.type, emit);
+            emitTypes.Add(emit.type, emit);
         }
         
         public void GroupTypesByPath(bool sortDependencies) {
