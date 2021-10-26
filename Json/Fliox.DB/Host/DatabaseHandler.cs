@@ -13,11 +13,11 @@ namespace Friflo.Json.Fliox.DB.Host
 {
     public delegate TResult CommandHandler<TValue, out TResult>(Command<TValue> command);
 
-    public class TaskHandler
+    public class DatabaseHandler
     {
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
         
-        public TaskHandler () {
+        public DatabaseHandler () {
             AddCommandHandler(StdCommand.Echo, new CommandHandler<JsonValue, JsonValue>(Echo));
         }
         

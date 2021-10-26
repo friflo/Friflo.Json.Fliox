@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.DB.Protocol.Tasks
             if (name == null) {
                 return MissingField(nameof(name));
             }
-            if (database.taskHandler.TryGetCommand(name, out var callback)) {
+            if (database.handler.TryGetCommand(name, out var callback)) {
                 var jsonResult  = await callback.InvokeCallback(name, value, messageContext).ConfigureAwait(false);
                 return new SendCommandResult { result = jsonResult };
             }

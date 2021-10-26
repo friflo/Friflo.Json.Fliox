@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.DB.Host.Monitor
         public MonitorDatabase (FlioxHub hub, DbOpt opt = null)
             : base (hub, Name, new MonitorHandler(), opt)
         {
-            taskHandler.AddCommandHandler<ClearStats, ClearStatsResult>(ClearStats); // todo add handler via scanning TaskHandler
+            handler.AddCommandHandler<ClearStats, ClearStatsResult>(ClearStats); // todo add handler via scanning TaskHandler
 
             stateDB         = new MemoryDatabase();
             var monitorHub  = new FlioxHub(stateDB);

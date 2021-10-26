@@ -42,7 +42,7 @@ namespace Friflo.Json.Fliox.DB.UserAuth
         });
         
         public UserDatabaseAuthenticator(EntityDatabase userDatabase) : base (null) {
-            userDatabase.taskHandler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(AuthenticateUser);
+            userDatabase.handler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(AuthenticateUser);
         }
         
         private async Task<AuthenticateUserResult> AuthenticateUser (Command<AuthenticateUser> command) {

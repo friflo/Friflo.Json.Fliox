@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.DB.Host
     /// <br/>
     /// The <see cref="SyncRequest.tasks"/> contains all database operations like create, read, upsert, delete
     /// and all messages / commands send by a client. 
-    /// The <see cref="FlioxHub"/> execute these tasks by the <see cref="EntityDatabase.taskHandler"/> of the
+    /// The <see cref="FlioxHub"/> execute these tasks by the <see cref="EntityDatabase.handler"/> of the
     /// specified <see cref="database"/>.
     /// <br/>
     /// Instances of <see cref="FlioxHub"/> and all its implementation are designed to be thread safe enabling multiple
@@ -69,7 +69,7 @@ namespace Friflo.Json.Fliox.DB.Host
         /// <summary>
         /// An <see cref="Auth.Authenticator"/> performs authentication and authorization for all
         /// <see cref="SyncRequest.tasks"/> in a <see cref="SyncRequest"/> sent by a client.
-        /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="EntityDatabase.taskHandler"/>.
+        /// All successful authorized <see cref="SyncRequest.tasks"/> are executed by the <see cref="EntityDatabase.handler"/>.
         /// </summary>
         public              Authenticator       Authenticator   { get => authenticator; set => authenticator = NotNull(value, nameof(Authenticator)); }
         
@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.DB.Host
             var tasks       = new List<SyncTaskResult>(requestTasks.Count);
             var resultMap   = new Dictionary<string, ContainerEntities>();
             var response    = new SyncResponse { tasks = tasks, resultMap = resultMap, database = dbName };
-            var taskHandler = db.taskHandler;
+            var taskHandler = db.handler;
             
             for (int index = 0; index < requestTasks.Count; index++) {
                 var task = requestTasks[index];
@@ -216,8 +216,8 @@ namespace Friflo.Json.Fliox.DB.Host
             extensionDbs.Add(extensionDB.name, extensionDB);
         }
 
-        public EntityDatabase AddExtensionDB (string extensionName, TaskHandler taskHandler, DbOpt opt = null) {
-            var extensionDB = new ExtensionDatabase (this, extensionName, taskHandler, opt);
+        public EntityDatabase AddExtensionDB (string extensionName, DatabaseHandler handler, DbOpt opt = null) {
+            var extensionDB = new ExtensionDatabase (this, extensionName, handler, opt);
             return extensionDB;
         }
 
