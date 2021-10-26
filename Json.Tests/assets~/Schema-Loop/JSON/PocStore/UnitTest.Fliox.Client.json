@@ -6,14 +6,12 @@
             "type": "object",
             "isAbstract": true,
             "properties": {
-                "orders":      { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Order.json#/definitions/Order" }, "type": "object" },
-                "customers":   { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Customer.json#/definitions/Customer" }, "type": "object" },
-                "articles":    { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Article.json#/definitions/Article" }, "type": "object" },
-                "producers":   { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Producer.json#/definitions/Producer" }, "type": "object" },
-                "employees":   { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Employee.json#/definitions/Employee" }, "type": "object" },
-                "types":       { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.TestType.json#/definitions/TestType" }, "type": "object" },
-                "TestCommand": { "prefixItems": [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }], "type": "array" },
-                "Echo":        { "prefixItems": [{  }, {  }], "type": "array" }
+                "orders":    { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Order.json#/definitions/Order" }, "type": "object" },
+                "customers": { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Customer.json#/definitions/Customer" }, "type": "object" },
+                "articles":  { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Article.json#/definitions/Article" }, "type": "object" },
+                "producers": { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Producer.json#/definitions/Producer" }, "type": "object" },
+                "employees": { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Employee.json#/definitions/Employee" }, "type": "object" },
+                "types":     { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.TestType.json#/definitions/TestType" }, "type": "object" }
             },
             "required": [
                 "orders",
@@ -21,9 +19,7 @@
                 "articles",
                 "producers",
                 "employees",
-                "types",
-                "TestCommand",
-                "Echo"
+                "types"
             ],
             "additionalProperties": false
         },
@@ -83,6 +79,18 @@
             "properties": {
                 "text": { "type": ["string", "null"] }
             },
+            "additionalProperties": false
+        },
+        "PocStoreCommands": {
+            "type": "object",
+            "properties": {
+                "TestCommand": { "prefixItems": [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }], "type": "array" },
+                "Echo":        { "prefixItems": [{  }, {  }], "type": "array" }
+            },
+            "required": [
+                "TestCommand",
+                "Echo"
+            ],
             "additionalProperties": false
         }
     }

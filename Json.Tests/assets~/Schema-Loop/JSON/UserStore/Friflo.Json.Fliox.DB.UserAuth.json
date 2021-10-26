@@ -6,18 +6,14 @@
             "type": "object",
             "isAbstract": true,
             "properties": {
-                "permissions":      { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.UserPermission.json#/definitions/UserPermission" }, "type": "object" },
-                "credentials":      { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.UserCredential.json#/definitions/UserCredential" }, "type": "object" },
-                "roles":            { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.Role.json#/definitions/Role" }, "type": "object" },
-                "AuthenticateUser": { "prefixItems": [{ "$ref": "#/definitions/AuthenticateUser" }, { "$ref": "#/definitions/AuthenticateUserResult" }], "type": "array" },
-                "Echo":             { "prefixItems": [{  }, {  }], "type": "array" }
+                "permissions": { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.UserPermission.json#/definitions/UserPermission" }, "type": "object" },
+                "credentials": { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.UserCredential.json#/definitions/UserCredential" }, "type": "object" },
+                "roles":       { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.DB.UserAuth.Role.json#/definitions/Role" }, "type": "object" }
             },
             "required": [
                 "permissions",
                 "credentials",
-                "roles",
-                "AuthenticateUser",
-                "Echo"
+                "roles"
             ],
             "additionalProperties": false
         },
@@ -40,6 +36,18 @@
             },
             "required": [
                 "isValid"
+            ],
+            "additionalProperties": false
+        },
+        "UserStoreCommands": {
+            "type": "object",
+            "properties": {
+                "AuthenticateUser": { "prefixItems": [{ "$ref": "#/definitions/AuthenticateUser" }, { "$ref": "#/definitions/AuthenticateUserResult" }], "type": "array" },
+                "Echo":             { "prefixItems": [{  }, {  }], "type": "array" }
+            },
+            "required": [
+                "AuthenticateUser",
+                "Echo"
             ],
             "additionalProperties": false
         }

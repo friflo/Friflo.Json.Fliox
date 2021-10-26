@@ -27,14 +27,12 @@ export class Employee extends PocEntity {
 }
 
 export abstract class PocStore {
-    orders       : { [key: string]: Order };
-    customers    : { [key: string]: Customer };
-    articles     : { [key: string]: Article };
-    producers    : { [key: string]: Producer };
-    employees    : { [key: string]: Employee };
-    types        : { [key: string]: TestType };
-    TestCommand  : (command: TestCommand) => boolean;
-    Echo         : (command: any) => any;
+    orders     : { [key: string]: Order };
+    customers  : { [key: string]: Customer };
+    articles   : { [key: string]: Article };
+    producers  : { [key: string]: Producer };
+    employees  : { [key: string]: Employee };
+    types      : { [key: string]: TestType };
 }
 
 export class OrderItem {
@@ -53,6 +51,11 @@ export class DerivedClass extends OrderItem {
 
 export class TestCommand {
     text? : string | null;
+}
+
+export class PocStoreCommands {
+    TestCommand  : (command: TestCommand) => boolean;
+    Echo         : (command: any) => any;
 }
 
 export class Order extends PocEntity {

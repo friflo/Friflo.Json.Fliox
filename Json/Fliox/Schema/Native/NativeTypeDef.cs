@@ -32,7 +32,13 @@ public sealed class NativeTypeDef : TypeDef
         public   override   bool                IsAbstract      => isAbstract;
         public   override   ICollection<string> EnumValues      { get; }
         
-        public   override   string              ToString()      => mapper.type.ToString();
+        public   override   string              ToString()      => $"{Namespace} {Name}";
+        
+        public NativeTypeDef (string name, string @namespace) :
+            base(name, @namespace)
+        {
+            IsClass = true;
+        }
 
         public NativeTypeDef (TypeMapper mapper, string name, string @namespace) :
             base(name, @namespace) 

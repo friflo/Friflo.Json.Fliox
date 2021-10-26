@@ -14,8 +14,7 @@
                 "byteEntities":      { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.ByteEntity.json#/definitions/ByteEntity" }, "type": "object" },
                 "customIdEntities":  { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.CustomIdEntity.json#/definitions/CustomIdEntity" }, "type": "object" },
                 "entityRefs":        { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.EntityRefs.json#/definitions/EntityRefs" }, "type": "object" },
-                "customIdEntities2": { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.CustomIdEntity2.json#/definitions/CustomIdEntity2" }, "type": "object" },
-                "Echo":              { "prefixItems": [{  }, {  }], "type": "array" }
+                "customIdEntities2": { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.CustomIdEntity2.json#/definitions/CustomIdEntity2" }, "type": "object" }
             },
             "required": [
                 "guidEntities",
@@ -26,7 +25,16 @@
                 "byteEntities",
                 "customIdEntities",
                 "entityRefs",
-                "customIdEntities2",
+                "customIdEntities2"
+            ],
+            "additionalProperties": false
+        },
+        "EntityIdStoreCommands": {
+            "type": "object",
+            "properties": {
+                "Echo": { "prefixItems": [{  }, {  }], "type": "array" }
+            },
+            "required": [
                 "Echo"
             ],
             "additionalProperties": false
