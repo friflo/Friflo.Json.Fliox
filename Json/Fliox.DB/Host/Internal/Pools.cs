@@ -12,24 +12,6 @@ using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.DB.Host.Internal
 {
-    public struct PoolUsage {
-        internal int    patcherCount;
-        internal int    selectorCount;
-        internal int    evaluatorCount;
-        internal int    objectMapperCount;
-        internal int    entityProcessorCount;
-        internal int    typeValidatorCount;
-        
-        public void AssertEqual(in PoolUsage other) {
-            if (patcherCount            != other.patcherCount)          throw new InvalidOperationException("detect JsonPatcher leak");
-            if (selectorCount           != other.selectorCount)         throw new InvalidOperationException("detect ScalarSelector leak");
-            if (evaluatorCount          != other.evaluatorCount)        throw new InvalidOperationException("detect JsonEvaluator leak");
-            if (objectMapperCount       != other.objectMapperCount)     throw new InvalidOperationException("detect ObjectMapper leak");
-            if (entityProcessorCount    != other.entityProcessorCount)  throw new InvalidOperationException("detect EntityProcessor leak");
-            if (typeValidatorCount      != other.typeValidatorCount)    throw new InvalidOperationException("detect TypeValidator leak");
-        }
-    }
-
     internal sealed class Pools : IPools
     {
         private readonly  Dictionary<Type, IDisposable>    poolMap = new Dictionary<Type, IDisposable>(); // object = SharedPool<T>
