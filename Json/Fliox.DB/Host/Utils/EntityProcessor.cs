@@ -6,7 +6,7 @@ using Friflo.Json.Burst;
 using Friflo.Json.Fliox.DB.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.DB.Host.Internal
+namespace Friflo.Json.Fliox.DB.Host.Utils
 {
     internal enum ProcessingType {
         Validate,

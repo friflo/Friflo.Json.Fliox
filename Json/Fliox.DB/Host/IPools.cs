@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Fliox.DB.Host.Internal;
+using Friflo.Json.Fliox.DB.Host.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Validation;
 using Friflo.Json.Fliox.Transform;

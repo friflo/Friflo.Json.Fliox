@@ -6,8 +6,6 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host.Internal
 {
-    public delegate TResult CommandHandler<TValue, out TResult>(Command<TValue> command);
-    
     internal abstract class CommandCallback
     {
         // return type could be a ValueTask but Unity doesnt support this. 2021-10-25

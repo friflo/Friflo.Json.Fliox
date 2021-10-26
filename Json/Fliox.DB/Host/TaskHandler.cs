@@ -11,6 +11,8 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Host
 {
+    public delegate TResult CommandHandler<TValue, out TResult>(Command<TValue> command);
+
     public class TaskHandler
     {
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
