@@ -7,6 +7,7 @@ export abstract class UserStore {
     credentials       : { [key: string]: UserCredential };
     roles             : { [key: string]: Role };
     AuthenticateUser  : (command: AuthenticateUser) => AuthenticateUserResult;
+    Echo              : (command: any) => any;
 }
 
 export class AuthenticateUser {

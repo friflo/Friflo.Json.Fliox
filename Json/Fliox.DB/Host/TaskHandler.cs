@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.DB.Host
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
         
         public TaskHandler () {
-            AddCommandHandler(StdMessage.Echo, new CommandHandler<JsonValue, JsonValue>(Echo));
+            AddCommandHandler(StdCommand.Echo, new CommandHandler<JsonValue, JsonValue>(Echo));
         }
         
         private static JsonValue Echo (Command<JsonValue> command) {

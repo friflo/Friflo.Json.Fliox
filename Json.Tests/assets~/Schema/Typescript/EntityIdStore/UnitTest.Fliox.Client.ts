@@ -15,6 +15,7 @@ export abstract class EntityIdStore {
     customIdEntities   : { [key: string]: CustomIdEntity };
     entityRefs         : { [key: string]: EntityRefs };
     customIdEntities2  : { [key: string]: CustomIdEntity2 };
+    Echo               : (command: any) => any;
 }
 
 export class GuidEntity {

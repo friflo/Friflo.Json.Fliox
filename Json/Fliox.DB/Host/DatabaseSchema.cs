@@ -76,6 +76,8 @@ namespace Friflo.Json.Fliox.DB.Host
             validationSets.Add(validationSet);
             var validationRoot = validationSet.GetValidationType(rootType);
             foreach (var field in validationRoot.fields) {
+                if (field.isCommand)
+                    continue;
                 containerTypes.Add(field.fieldName, field.Type);
             }
         }

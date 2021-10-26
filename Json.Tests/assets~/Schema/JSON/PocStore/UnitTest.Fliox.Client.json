@@ -12,7 +12,8 @@
                 "producers":   { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Producer.json#/definitions/Producer" }, "type": "object" },
                 "employees":   { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.Employee.json#/definitions/Employee" }, "type": "object" },
                 "types":       { "additionalProperties": { "$ref": "./UnitTest.Fliox.Client.TestType.json#/definitions/TestType" }, "type": "object" },
-                "TestCommand": { "prefixItems": [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }], "type": "array" }
+                "TestCommand": { "prefixItems": [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }], "type": "array" },
+                "Echo":        { "prefixItems": [{  }, {  }], "type": "array" }
             },
             "required": [
                 "orders",
@@ -21,7 +22,8 @@
                 "producers",
                 "employees",
                 "types",
-                "TestCommand"
+                "TestCommand",
+                "Echo"
             ],
             "additionalProperties": false
         },

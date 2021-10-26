@@ -34,6 +34,7 @@ export abstract class PocStore {
     employees    : { [key: string]: Employee };
     types        : { [key: string]: TestType };
     TestCommand  : (command: TestCommand) => boolean;
+    Echo         : (command: any) => any;
 }
 
 export class OrderItem {

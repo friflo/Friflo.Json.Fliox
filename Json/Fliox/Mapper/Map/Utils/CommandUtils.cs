@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
                 return result;
             }
             var commands = new List<CommandInfo>();
-            var flags   = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+            var flags   = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             MethodInfo[] methods = type.GetMethods(flags);
             for (int n = 0; n < methods.Length; n++) {
                 var  method         = methods[n];
@@ -38,13 +38,18 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
                 return false;
             if (returnType.GetGenericTypeDefinition().FullName != CommandType)
                 return false;
+            var returnTypeArgs = returnType.GenericTypeArguments;
+            if (returnTypeArgs.Length != 1)
+                return false;
+            var resultType = returnTypeArgs[0];
+            if (resultType.IsGenericParameter)
+                return false;
             var parameters = methodInfo.GetParameters();
             Type valueType = null;
-            if (parameters.Length > 0) {
-                var param = parameters[0];
-                valueType = param.ParameterType;
-            }
-            var resultType = returnType.GenericTypeArguments[0];
+            if (parameters.Length != 1)
+                return false;
+            var param = parameters[0];
+            valueType = param.ParameterType;
             commandInfo = new CommandInfo(methodInfo.Name, valueType, resultType);
             return true;
         }
@@ -54,7 +59,9 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
         public  readonly    string  name;
         public  readonly    Type    valueType;
         public  readonly    Type    resultType;
-        
+
+        public  override    string  ToString() => name;
+
         internal CommandInfo (
             string         name,
             Type           valueType,

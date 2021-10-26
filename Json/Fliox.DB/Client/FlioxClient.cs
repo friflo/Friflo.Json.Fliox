@@ -274,7 +274,11 @@ namespace Friflo.Json.Fliox.DB.Client
             return SendCommand<TCommand, TResult>(name, command);
         }
         
-        
+        // Declared only to generate command in Schema 
+        internal CommandTask<JsonValue>   Echo(JsonValue command) {
+            return SendCommand<JsonValue,JsonValue>(StdCommand.Echo, command);
+        }
+
         // --- SubscribeMessage
         public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageHandler<TMessage> handler) {
             AssertSubscriptionProcessor();
