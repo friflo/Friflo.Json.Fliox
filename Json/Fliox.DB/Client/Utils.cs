@@ -3,7 +3,7 @@
 
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Host.Internal;
+using Friflo.Json.Fliox.DB.Host.Utils;
 
 namespace Friflo.Json.Fliox.DB.Client
 {
