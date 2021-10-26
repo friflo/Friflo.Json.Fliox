@@ -9,22 +9,17 @@ import kotlinx.serialization.json.*
 
 @Serializable
 data class Order (
-    override  val id       : String,
+              val id       : String,
               val customer : String? = null,
               val created  : Instant,
               val items    : List<OrderItem>? = null,
-) : PocEntity()
-
-@Serializable
-abstract class PocEntity {
-    abstract  val id : String
-}
+)
 
 @Serializable
 data class Customer (
-    override  val id   : String,
+              val id   : String,
               val name : String,
-) : PocEntity()
+)
 
 @Serializable
 data class OrderItem (
@@ -35,24 +30,24 @@ data class OrderItem (
 
 @Serializable
 data class Article (
-    override  val id       : String,
+              val id       : String,
               val name     : String,
               val producer : String? = null,
-) : PocEntity()
+)
 
 @Serializable
 data class Producer (
-    override  val id        : String,
+              val id        : String,
               val name      : String,
               val employees : List<String>? = null,
-) : PocEntity()
+)
 
 @Serializable
 data class Employee (
-    override  val id        : String,
+              val id        : String,
               val firstName : String,
               val lastName  : String? = null,
-) : PocEntity()
+)
 
 @Serializable
 data class TestType (
@@ -86,6 +81,11 @@ data class TestType (
               val derivedClass     : DerivedClass,
               val derivedClassNull : DerivedClass? = null,
 ) : PocEntity()
+
+@Serializable
+abstract class PocEntity {
+    abstract  val id : String
+}
 
 @Serializable
 data class PocStruct (

@@ -9,11 +9,6 @@
                 "items":    { "elements": { "ref":  "OrderItem" }, "nullable": true }
             }
         },
-        "PocEntity": {
-            "properties": {
-                "id": { "type": "string" }
-            }
-        },
         "Customer": {
             "properties": {
                 "id":   { "type": "string" },
@@ -77,6 +72,11 @@
                 "jsonValue":        { "nullable": true },
                 "derivedClass":     { "ref":  "DerivedClass" },
                 "derivedClassNull": { "ref":  "DerivedClass", "nullable": true }
+            }
+        },
+        "PocEntity": {
+            "properties": {
+                "id": { "type": "string" }
             }
         },
         "BigInteger": "string",

@@ -5,7 +5,6 @@
     "definitions": {
         "Employee": {
             "type": "object",
-            "extends": { "$ref": "./UnitTest.Fliox.Client.json#/definitions/PocEntity" },
             "properties": {
                 "id":        { "type": "string" },
                 "firstName": { "type": "string" },

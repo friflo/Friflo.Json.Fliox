@@ -8,20 +8,19 @@ import { int64 }      from "./Standard"
 import { float }      from "./Standard"
 import { double }     from "./Standard"
 
-export abstract class PocEntity {
-    id  : string;
-}
-
-export class Article extends PocEntity {
+export class Article {
+    id        : string;
     name      : string;
     producer? : string | null;
 }
 
-export class Customer extends PocEntity {
+export class Customer {
+    id    : string;
     name  : string;
 }
 
-export class Employee extends PocEntity {
+export class Employee {
+    id         : string;
     firstName  : string;
     lastName?  : string | null;
 }
@@ -46,6 +45,10 @@ export class OrderItem {
     name?    : string | null;
 }
 
+export abstract class PocEntity {
+    id  : string;
+}
+
 export class PocStruct {
     value  : int32;
 }
@@ -58,13 +61,15 @@ export class TestCommand {
     text? : string | null;
 }
 
-export class Order extends PocEntity {
+export class Order {
+    id        : string;
     customer? : string | null;
     created   : DateTime;
     items?    : OrderItem[] | null;
 }
 
-export class Producer extends PocEntity {
+export class Producer {
+    id         : string;
     name       : string;
     employees? : string[] | null;
 }

@@ -5,7 +5,6 @@
     "definitions": {
         "Producer": {
             "type": "object",
-            "extends": { "$ref": "./UnitTest.Fliox.Client.json#/definitions/PocEntity" },
             "properties": {
                 "id":        { "type": "string" },
                 "name":      { "type": "string" },

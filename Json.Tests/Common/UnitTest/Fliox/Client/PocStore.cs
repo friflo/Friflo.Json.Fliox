@@ -31,44 +31,62 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     }
 
     // ------------------------------ models ------------------------------
-    public abstract class PocEntity
-    {
-        [Fri.Required]  public  string  id { get; set; } // defining as property ensures "id" is first JSON member
-
-        public override     string  ToString() => JsonDebug.ToJson(this, false);
-    }
-    
-    public class Order : PocEntity {
-        public  Ref<string, Customer>   customer;
-        public  DateTime                created;
-        public  List<OrderItem>         items = new List<OrderItem>();
+    public class Order {
+        [Fri.Required]  public  string                  id { get; set; }
+                        public  Ref<string, Customer>   customer;
+                        public  DateTime                created;
+                        public  List<OrderItem>         items = new List<OrderItem>();
+                        
+        public override         string                  ToString() => JsonDebug.ToJson(this, false);
     }
 
     public class OrderItem {
         [Fri.Required]  public  Ref<string, Article>    article;
                         public  int                     amount;
                         public  string                  name;
+                        
+        public override         string                  ToString() => JsonDebug.ToJson(this, false);
     }
 
-    public class Article : PocEntity
+    public class Article
     {
+        [Fri.Required]  public  string                  id { get; set; }
         [Fri.Required]  public  string                  name;
                         public  Ref<string, Producer>   producer;
+                        
+        public override         string                  ToString() => JsonDebug.ToJson(this, false);
     }
 
-    public class Customer : PocEntity {
+    public class Customer {
+        [Fri.Required]  public  string                  id { get; set; }
         [Fri.Required]  public  string                  name;
+        
+        public override         string                  ToString() => JsonDebug.ToJson(this, false);
     }
     
-    public class Producer : PocEntity {
+    public class Producer {
+        [Fri.Required]  public  string                      id { get; set; }
         [Fri.Required]  public  string                      name;
         [Fri.Property (Name =                              "employees")]
                         public  List<Ref<string, Employee>> employeeList;
+                        
+        public override         string                  ToString() => JsonDebug.ToJson(this, false);
     }
     
-    public class Employee : PocEntity {
-        [Fri.Required]  public  string  firstName;
-                        public  string  lastName;
+    public class Employee {
+        [Fri.Required]  public  string                  id { get; set; }
+        [Fri.Required]  public  string                  firstName;
+                        public  string                  lastName;
+                        
+        public override         string                  ToString() => JsonDebug.ToJson(this, false);
+    }
+    
+    // test case: using abstract class containing the id 
+    public abstract class PocEntity
+    {
+        [Fri.Required]  public  string  id { get; set; } // defining as property ensures "id" is first JSON member
+
+        public override         string  ToString() => JsonDebug.ToJson(this, false);
     }
     
     public class TestType : PocEntity {

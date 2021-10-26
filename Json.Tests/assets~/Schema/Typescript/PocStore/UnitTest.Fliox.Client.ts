@@ -22,17 +22,15 @@ export abstract class PocStoreCommands {
     Echo         : (command: any) => any;
 }
 
-export abstract class PocEntity {
-    id  : string;
-}
-
-export class Order extends PocEntity {
+export class Order {
+    id        : string;
     customer? : string | null;
     created   : DateTime;
     items?    : OrderItem[] | null;
 }
 
-export class Customer extends PocEntity {
+export class Customer {
+    id    : string;
     name  : string;
 }
 
@@ -42,19 +40,26 @@ export class OrderItem {
     name?    : string | null;
 }
 
-export class Article extends PocEntity {
+export class Article {
+    id        : string;
     name      : string;
     producer? : string | null;
 }
 
-export class Producer extends PocEntity {
+export class Producer {
+    id         : string;
     name       : string;
     employees? : string[] | null;
 }
 
-export class Employee extends PocEntity {
+export class Employee {
+    id         : string;
     firstName  : string;
     lastName?  : string | null;
+}
+
+export abstract class PocEntity {
+    id  : string;
 }
 
 export class TestType extends PocEntity {
