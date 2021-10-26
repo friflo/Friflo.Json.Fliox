@@ -37,7 +37,8 @@ public sealed class NativeTypeDef : TypeDef
         public NativeTypeDef (string name, string @namespace) :
             base(name, @namespace)
         {
-            IsClass = true;
+            IsClass     = true;
+            isAbstract  = true;
         }
 
         public NativeTypeDef (TypeMapper mapper, string name, string @namespace) :

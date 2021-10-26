@@ -8,6 +8,11 @@ export abstract class UserStore {
     roles        : { [key: string]: Role };
 }
 
+export abstract class UserStoreCommands {
+    AuthenticateUser  : (command: AuthenticateUser) => AuthenticateUserResult;
+    Echo              : (command: any) => any;
+}
+
 export class UserPermission {
     id     : string;
     roles? : string[] | null;
@@ -32,10 +37,5 @@ export class AuthenticateUser {
 
 export class AuthenticateUserResult {
     isValid  : boolean;
-}
-
-export class UserStoreCommands {
-    AuthenticateUser  : (command: AuthenticateUser) => AuthenticateUserResult;
-    Echo              : (command: any) => any;
 }
 

@@ -118,7 +118,8 @@ namespace Friflo.Json.Fliox.Schema.Native
                     var commandTypeDef = new NativeTypeDef (typeDef.Name + "Commands", typeDef.Namespace) {
                         fields = new List<FieldDef>(commands.Length)
                     };
-                    types.Add(commandTypeDef);
+                    var index = types.IndexOf(typeDef);
+                    types.Insert(index + 1, commandTypeDef);
                     foreach (var command in commands) {
                         var argumentType = nativeTypes[command.valueType];
                         var resultType   = nativeTypes[command.resultType];

@@ -35,6 +35,11 @@ export abstract class PocStore {
     types      : { [key: string]: TestType };
 }
 
+export abstract class PocStoreCommands {
+    TestCommand  : (command: TestCommand) => boolean;
+    Echo         : (command: any) => any;
+}
+
 export class OrderItem {
     article  : string;
     amount   : int32;
@@ -51,11 +56,6 @@ export class DerivedClass extends OrderItem {
 
 export class TestCommand {
     text? : string | null;
-}
-
-export class PocStoreCommands {
-    TestCommand  : (command: TestCommand) => boolean;
-    Echo         : (command: any) => any;
 }
 
 export class Order extends PocEntity {

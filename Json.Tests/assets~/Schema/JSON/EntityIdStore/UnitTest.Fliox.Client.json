@@ -31,6 +31,7 @@
         },
         "EntityIdStoreCommands": {
             "type": "object",
+            "isAbstract": true,
             "properties": {
                 "Echo": { "prefixItems": [{  }, {  }], "type": "array" }
             },

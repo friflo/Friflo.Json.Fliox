@@ -17,6 +17,19 @@
             ],
             "additionalProperties": false
         },
+        "UserStoreCommands": {
+            "type": "object",
+            "isAbstract": true,
+            "properties": {
+                "AuthenticateUser": { "prefixItems": [{ "$ref": "#/definitions/AuthenticateUser" }, { "$ref": "#/definitions/AuthenticateUserResult" }], "type": "array" },
+                "Echo":             { "prefixItems": [{  }, {  }], "type": "array" }
+            },
+            "required": [
+                "AuthenticateUser",
+                "Echo"
+            ],
+            "additionalProperties": false
+        },
         "AuthenticateUser": {
             "type": "object",
             "properties": {
@@ -36,18 +49,6 @@
             },
             "required": [
                 "isValid"
-            ],
-            "additionalProperties": false
-        },
-        "UserStoreCommands": {
-            "type": "object",
-            "properties": {
-                "AuthenticateUser": { "prefixItems": [{ "$ref": "#/definitions/AuthenticateUser" }, { "$ref": "#/definitions/AuthenticateUserResult" }], "type": "array" },
-                "Echo":             { "prefixItems": [{  }, {  }], "type": "array" }
-            },
-            "required": [
-                "AuthenticateUser",
-                "Echo"
             ],
             "additionalProperties": false
         }
