@@ -191,7 +191,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var result = new JsonValue( $"\"{text}\"");
             return Task.Run(async () => {
                 for (int n= 0; n < requestCount; n++) {
-                    var message = client.SendCommand(StdCommand.Echo, text);
+                    var message = client.Echo(text);
                     await client.SyncTasks();
                     if (!result.IsEqual(message.ResultJson))
                         throw new TestException($"Expect result: {result}, was: {message.ResultJson}");

@@ -28,9 +28,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             testHub.syncErrors.Add(msgSyncException,   () => throw new SimulationException ("simulated SyncException"));
             
             //var helloTask1 = store.Echo(new JsonValue("\"Hello World 1\""));
-            var helloTask1 = store.SendCommand(StdCommand.Echo, "Hello World 1");
-            var helloTask2 = store.SendCommand(StdCommand.Echo, "Hello World 2");
-            var helloTask3 = store.SendCommand(StdCommand.Echo);
+            var helloTask1 = store.Echo("Hello World 1");
+            var helloTask2 = store.Echo("Hello World 2");
+            var helloTask3 = store.Echo((string)null);
             
             AreEqual("CommandTask (name: Echo)", helloTask1.ToString());
 

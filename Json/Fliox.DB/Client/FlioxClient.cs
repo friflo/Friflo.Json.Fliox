@@ -274,10 +274,12 @@ namespace Friflo.Json.Fliox.DB.Client
             return SendCommand<TCommand, TResult>(name, command);
         }
         
-        // Declared only to generate command in Schema 
-        internal CommandTask<JsonValue>   Echo(JsonValue command) {
-            return SendCommand<JsonValue,JsonValue>(StdCommand.Echo, command);
+        public CommandTask<TCommand>   Echo<TCommand>(TCommand command) {
+            return SendCommand<TCommand,TCommand>(StdCommand.Echo, command);
         }
+        
+        // Declared only to generate command in Schema 
+        internal CommandTask<JsonValue> Echo(JsonValue _) => throw new InvalidOperationException("unexpected call of Echo command");
 
         // --- SubscribeMessage
         public SubscribeMessageTask SubscribeMessage<TMessage>  (string name, MessageHandler<TMessage> handler) {
