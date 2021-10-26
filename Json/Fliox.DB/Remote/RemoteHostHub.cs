@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
@@ -24,7 +23,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             this.localHub = hub;
         }
         
-        public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             var response    = await localHub.ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
             SetContainerResults(response.success);
             response.Result.reqId       = syncRequest.reqId;

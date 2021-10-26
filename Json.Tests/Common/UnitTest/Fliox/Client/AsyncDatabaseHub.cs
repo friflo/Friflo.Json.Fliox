@@ -3,7 +3,6 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Protocol;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
@@ -20,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             local = new FlioxHub(database);
         }
         
-        public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             const bool originalContext = true;
             // force release the thread back to the caller so continuation will not be executed synchronously.
             await Task.Delay(1).ConfigureAwait(originalContext);

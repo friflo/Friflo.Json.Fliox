@@ -3,7 +3,6 @@
 
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.DB.Protocol;
 
@@ -31,7 +30,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             host.Dispose();
         }
         
-        public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             var response = await host.ExecuteSync(syncRequest, messageContext);
             return response;
         }

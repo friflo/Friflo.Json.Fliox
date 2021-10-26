@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.DB.Remote
         protected RemoteClientHub(EntityDatabase database, string hostName = null) : base(database, hostName) { }
 
         /// <summary>A class extending  <see cref="RemoteClientHub"/> must implement this method.</summary>
-        public abstract override Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext);
+        public abstract override Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext);
         
         public override void AddEventTarget(in JsonKey clientId, IEventTarget eventTarget) {
             clientTargets.Add(clientId, eventTarget);

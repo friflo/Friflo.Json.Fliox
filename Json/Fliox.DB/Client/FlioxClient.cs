@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Client.Internal;
 using Friflo.Json.Fliox.DB.Client.Internal.Map;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.Protocol.Models;
 using Friflo.Json.Fliox.DB.Protocol.Tasks;
@@ -332,10 +331,10 @@ namespace Friflo.Json.Fliox.DB.Client
             return _intern.pendingSyncs.Count;
         }
         
-        private async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        private async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             _intern.syncCount++;
-            MsgResponse<SyncResponse>       response;
-            Task<MsgResponse<SyncResponse>> task = null;
+            ExecuteSyncResult       response;
+            Task<ExecuteSyncResult> task = null;
             var pendingSyncs = _intern.pendingSyncs;
             try {
                 var database            = _intern.database; 
@@ -350,7 +349,7 @@ namespace Friflo.Json.Fliox.DB.Client
             catch (Exception e) {
                 pendingSyncs.TryRemove(task, out _);
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                response = new MsgResponse<SyncResponse>(errorMsg);
+                response = new ExecuteSyncResult(errorMsg);
             }
             return response;
         }
@@ -543,7 +542,7 @@ namespace Friflo.Json.Fliox.DB.Client
             results.Clear();
         }
 
-        private SyncResult HandleSyncResponse(SyncRequest syncRequest, MsgResponse<SyncResponse> response, SyncStore syncStore) {
+        private SyncResult HandleSyncResponse(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore) {
             SyncResult      syncResult;
             ErrorResponse   error       = response.error;
             var             syncSets    = syncStore.SyncSets;

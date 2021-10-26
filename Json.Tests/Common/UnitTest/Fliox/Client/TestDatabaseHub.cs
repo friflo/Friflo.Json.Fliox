@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.Protocol.Models;
 using Friflo.Json.Fliox.DB.Protocol.Tasks;
@@ -38,9 +37,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     public class TestDatabaseHub : FlioxHub
     {
         
-        public  readonly    Dictionary<string, Func<MsgResponse<SyncResponse>>> syncErrors      = new Dictionary<string, Func<MsgResponse<SyncResponse>>>();
+        public  readonly    Dictionary<string, Func<ExecuteSyncResult>> syncErrors      = new Dictionary<string, Func<ExecuteSyncResult>>();
         private readonly    TestDatabase testDatabase;
-        
+
         public TestDatabaseHub(EntityDatabase database, string hostName = null)
             : base(new TestDatabase (database), hostName)
         {
@@ -60,7 +59,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             }
         }
 
-        public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             foreach (var task in syncRequest.tasks) {
                 if (task is SendCommand message) {
                     if (!syncErrors.TryGetValue(message.name, out var fcn))
@@ -84,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             }
             return response;
         }
-
+        
         public TestContainer GetTestContainer(string container) {
             return (TestContainer) testDatabase.GetOrCreateContainer(container);
         }

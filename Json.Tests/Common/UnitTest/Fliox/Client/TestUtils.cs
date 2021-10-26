@@ -205,12 +205,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         {
             internal NoopDatabaseHub (string hostName = null) : base(null, hostName) { }
                 
-            public override Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+            public override Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
                 var result = new SyncResponse {
                     tasks       = new List<SyncTaskResult>(),
                     resultMap   = new Dictionary<string, ContainerEntities>()
                 };
-                var response = new MsgResponse<SyncResponse>(result);
+                var response = new ExecuteSyncResult(result);
                 return Task.FromResult(response);
             }
         }

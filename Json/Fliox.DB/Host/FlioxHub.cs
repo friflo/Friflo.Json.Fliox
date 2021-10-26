@@ -129,7 +129,7 @@ namespace Friflo.Json.Fliox.DB.Host
         ///   <para> 2. An issue in the namespace <see cref="Friflo.Json.Fliox.DB.Protocol"/> which must to be fixed.</para> 
         /// </para>
         /// </summary>
-        public virtual async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public virtual async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.hub = this;
             if (messageContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             messageContext.clientId = syncRequest.clientId;
@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.DB.Host
             EntityDatabase db = database;
             if (dbName != null) {
                 if (!extensionDbs.TryGetValue(dbName, out db))
-                    return new MsgResponse<SyncResponse>($"database not found: '{syncRequest.database}'");
+                    return new ExecuteSyncResult($"database not found: '{syncRequest.database}'");
                 await db.ExecuteSyncPrepare(syncRequest, messageContext).ConfigureAwait(false);
             }
             if (dbName != db.name)
@@ -149,7 +149,7 @@ namespace Friflo.Json.Fliox.DB.Host
                     
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null) {
-                return new MsgResponse<SyncResponse> ("missing field: tasks (array)");
+                return new ExecuteSyncResult ("missing field: tasks (array)");
             }
             var tasks       = new List<SyncTaskResult>(requestTasks.Count);
             var resultMap   = new Dictionary<string, ContainerEntities>();
@@ -187,7 +187,7 @@ namespace Friflo.Json.Fliox.DB.Host
                     await broker.SendQueuedEvents().ConfigureAwait(false); // use only for testing
                 }
             }
-            return new MsgResponse<SyncResponse>(response);
+            return new ExecuteSyncResult(response);
         }
         
         private static TaskErrorResult TaskExceptionError (Exception e) {
@@ -222,5 +222,28 @@ namespace Friflo.Json.Fliox.DB.Host
         }
 
         public virtual void Dispose() { }  // todo - remove
+    }
+    
+    public readonly struct ExecuteSyncResult {
+        public  readonly    SyncResponse    success;
+        public  readonly    ErrorResponse   error;
+
+        public ExecuteSyncResult (SyncResponse successResponse) {
+            success = successResponse;
+            error   = null;
+        }
+        
+        public ExecuteSyncResult (string errorMessage) {
+            success = null;
+            error   = new ErrorResponse { message = errorMessage };
+        }
+        
+        public  ProtocolResponse Result { get {
+            if (success != null)
+                return success;
+            return error;
+        } }
+
+        public override string ToString() => success != null ? success.ToString() : error.ToString();
     }
 }

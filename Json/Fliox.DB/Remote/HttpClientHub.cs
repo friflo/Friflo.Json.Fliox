@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Host.Internal;
 using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.Mapper;
 
@@ -28,7 +27,7 @@ namespace Friflo.Json.Fliox.DB.Remote
             httpClient.Dispose();
         }
         
-        public override async Task<MsgResponse<SyncResponse>> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
+        public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             var jsonRequest = RemoteUtils.CreateProtocolMessage(syncRequest, messageContext.pools);
             var content = jsonRequest.AsByteArrayContent();
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -41,18 +40,18 @@ namespace Friflo.Json.Fliox.DB.Remote
                 var response    = RemoteUtils.ReadProtocolMessage (jsonBody, messageContext.pools, out string error);
                 switch (response) {
                     case null:
-                        return  new MsgResponse<SyncResponse>(error);
+                        return  new ExecuteSyncResult(error);
                     case SyncResponse syncResponse:
                         if (httpResponse.StatusCode == HttpStatusCode.OK) {
-                            return new MsgResponse<SyncResponse>(syncResponse);
+                            return new ExecuteSyncResult(syncResponse);
                         }
                         var msg = $"Request failed. StatusCode: {httpResponse.StatusCode}, error: {jsonBody.AsString()}";
-                        return new MsgResponse<SyncResponse>(msg);
+                        return new ExecuteSyncResult(msg);
                     case ErrorResponse errorResponse:
-                        return new MsgResponse<SyncResponse>(errorResponse.message);
+                        return new ExecuteSyncResult(errorResponse.message);
                     default:
                         var msg2 = $"Unknown response. StatusCode: {httpResponse.StatusCode}, Type: {response.GetType().Name}";
-                        return new MsgResponse<SyncResponse>(msg2);
+                        return new ExecuteSyncResult(msg2);
                 }
             }
             catch (HttpRequestException e) {
@@ -60,7 +59,7 @@ namespace Friflo.Json.Fliox.DB.Remote
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
                 var msg = $"Request failed: Exception: {error}";
-                return new MsgResponse<SyncResponse>(msg);
+                return new ExecuteSyncResult(msg);
             }
         }
     }
