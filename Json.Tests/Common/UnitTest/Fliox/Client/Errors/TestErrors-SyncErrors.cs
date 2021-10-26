@@ -35,8 +35,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 
             await store.SyncTasks(); // ----------------
             
-            AreEqual("\"Hello World 1\"",   helloTask1.ResultJson.AsString());
+            AreEqual("Hello World 1",       helloTask1.Result);
             AreEqual("Hello World 1",       helloTask1.ReadResult<string>());
+            AreEqual("\"Hello World 1\"",   helloTask1.ResultJson.AsString());
             
             IsTrue(helloTask1.TryReadResult<string>(out var helloTask1Result, out _));
             AreEqual("Hello World 1",       helloTask1Result);
@@ -47,8 +48,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             helloTask1.TryReadResult<int>(out _, out e);
             AreEqual("JsonReader/error: Cannot assign string to int. got: 'Hello World 1' path: '(root)' at position: 15", e.Message);
 
-            AreEqual("Hello World 2",       helloTask2.ReadResult<string>());
-            AreEqual(null,                  helloTask3.ReadResult<string>());
+            AreEqual("Hello World 2",       helloTask2.Result);
+            AreEqual(null,                  helloTask3.Result);
             
 
             // --- SyncTasks error
