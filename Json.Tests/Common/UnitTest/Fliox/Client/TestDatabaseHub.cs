@@ -18,7 +18,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         internal readonly    Dictionary<string, TestContainer>                   testContainers  = new Dictionary<string, TestContainer>();
 
         
-        public TestDatabase(EntityDatabase local, DbOpt opt = null, DatabaseHandler handler = null) : base(handler, opt) {
+        public TestDatabase(EntityDatabase local, DbOpt opt = null, TaskHandler handler = null) : base(handler, opt) {
             this.local = local;
         }
 

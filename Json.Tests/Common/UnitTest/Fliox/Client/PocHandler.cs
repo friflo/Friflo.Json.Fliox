@@ -5,7 +5,7 @@ using Friflo.Json.Fliox.DB.Host;
 
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 {
-    public class PocHandler : DatabaseHandler {
+    public class PocHandler : TaskHandler {
         public PocHandler() {
             AddCommandHandler<TestCommand, bool>(TestCommand); // todo add handler via scanning DatabaseHandler
         }

@@ -59,22 +59,22 @@ namespace Friflo.Json.Fliox.DB.Host
         /// The <see cref="handler"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
         /// An <see cref="EntityDatabase"/> implementation is able to assign as custom handler by constructor
         /// </summary>
-        public   readonly   DatabaseHandler     handler;
+        public   readonly   TaskHandler         handler;
 
         internal readonly   string              name;
         internal readonly   FlioxHub            hub;
 
         public override     string              ToString() => name != null ? $"'{name}'" : "";
 
-        protected EntityDatabase(DatabaseHandler handler, DbOpt opt){
+        protected EntityDatabase(TaskHandler handler, DbOpt opt){
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
-            this.handler        = handler ?? new DatabaseHandler();
+            this.handler        = handler ?? new TaskHandler();
         }
         
         protected EntityDatabase (
             FlioxHub        hub,
             string          name,
-            DatabaseHandler handler,
+            TaskHandler handler,
             DbOpt           opt = null
             ) : this(handler, opt)
         {
