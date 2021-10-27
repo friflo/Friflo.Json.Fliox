@@ -18,10 +18,8 @@ export abstract class PocStore {
 }
 
 export interface PocStoreService {
-    TestCommand      (command: TestCommand) : boolean;
-    MsgSyncError     (command: Empty) : Empty;
-    MsgSyncException (command: Empty) : Empty;
-    Echo             (command: any) : any;
+    TestCommand (command: TestCommand) : boolean;
+    Echo        (command: any) : any;
 }
 
 export class Order {
@@ -103,8 +101,5 @@ export class DerivedClass extends OrderItem {
 
 export class TestCommand {
     text? : string | null;
-}
-
-export class Empty {
 }
 
