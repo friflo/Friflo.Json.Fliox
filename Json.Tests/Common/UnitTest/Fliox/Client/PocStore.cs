@@ -8,6 +8,7 @@ using Friflo.Json.Fliox.DB.Client;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable InconsistentNaming
 // ReSharper disable NotAccessedField.Global
 // ReSharper disable UnassignedReadonlyField
@@ -26,8 +27,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         /// <summary>constructor used for tests to reuse global <see cref="TestGlobals.typeStore"/> to enhance performance.</summary> 
         public PocStore(FlioxHub hub, string userId, string clientId = null): base (hub, TestGlobals.typeStore, userId, clientId) {}
         
-        [Fri.Command(Name = "TestCommand")]
-        public CommandTask<bool> Test (TestCommand command) => SendCommand<TestCommand, bool>(command);
+        [Fri.Command(Name =        "TestCommand")]
+        public CommandTask<bool>    Test (TestCommand command) => SendCommand<TestCommand, bool>(command);
+        
+        public CommandTask<Empty>   MsgSyncError      (Empty command = null) => SendCommand<Empty, Empty>("MsgSyncError",     command);
+        public CommandTask<Empty>   MsgSyncException  (Empty command = null) => SendCommand<Empty, Empty>("MsgSyncException", command);
     }
 
     // ------------------------------ models ------------------------------
@@ -137,10 +141,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public int derivedVal;
     }
     
-    // ------------------------------ commands ------------------------------
+    // ------------------------------ command values / results ------------------------------
     public class TestCommand {
         public          string  text;
 
         public override string  ToString() => text;
     }
+    
+    public class Empty { }
 }

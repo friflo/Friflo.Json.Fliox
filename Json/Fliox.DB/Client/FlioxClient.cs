@@ -241,27 +241,7 @@ namespace Friflo.Json.Fliox.DB.Client
         }
         
         // --- SendCommand
-        public CommandTask SendCommand(string name) {
-            var task = new CommandTask(name, new JsonValue(), _intern.jsonMapper.reader);
-            _intern.syncStore.MessageTasks().Add(task);
-            AddTask(task);
-            return task;
-        }
-        
-        public CommandTask SendCommand<TCommand>(string name, TCommand message) {
-            var json    = _intern.jsonMapper.WriteAsArray(message);
-            var task    = new CommandTask(name, new JsonValue(json), _intern.jsonMapper.reader);
-            _intern.syncStore.MessageTasks().Add(task);
-            AddTask(task);
-            return task;
-        }
-        
-        public CommandTask SendCommand<TCommand>(TCommand message) {
-            var name = typeof(TCommand).Name;
-            return SendCommand(name, message);
-        }
-        
-        public CommandTask<TResult> SendCommand<TCommand, TResult>(string name, TCommand command) {
+        protected CommandTask<TResult> SendCommand<TCommand, TResult>(string name, TCommand command) {
             var json    = _intern.jsonMapper.WriteAsArray(command);
             var task    = new CommandTask<TResult>(name, new JsonValue(json), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
@@ -269,7 +249,7 @@ namespace Friflo.Json.Fliox.DB.Client
             return task;
         }
         
-        public CommandTask<TResult> SendCommand<TCommand, TResult>(TCommand command) {
+        protected CommandTask<TResult> SendCommand<TCommand, TResult>(TCommand command) {
             var name = typeof(TCommand).Name;
             return SendCommand<TCommand, TResult>(name, command);
         }

@@ -26,8 +26,10 @@
         "PocStoreService": {
             "type": "object",
             "commands": {
-                "TestCommand": { "command": [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }] },
-                "Echo":        { "command": [{  }, {  }] }
+                "TestCommand":      { "command": [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }] },
+                "MsgSyncError":     { "command": [{ "$ref": "#/definitions/Empty" }, { "$ref": "#/definitions/Empty" }] },
+                "MsgSyncException": { "command": [{ "$ref": "#/definitions/Empty" }, { "$ref": "#/definitions/Empty" }] },
+                "Echo":             { "command": [{  }, {  }] }
             }
         },
         "OrderItem": {
@@ -85,6 +87,13 @@
             "type": "object",
             "properties": {
                 "text": { "type": ["string", "null"] }
+            },
+            "additionalProperties": false
+        },
+        "Empty": {
+            "type": "object",
+            "properties": {
+
             },
             "additionalProperties": false
         }
