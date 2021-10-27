@@ -73,6 +73,9 @@ namespace Friflo.Json.Fliox.Schema
             if (type.IsClass) {
                 return EmitClassType(type, sb);
             }
+            if (type.IsService) {
+                return EmitServiceType(type, sb);
+            }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
                 sb.AppendLine($"        \"{type.Name}\": {{");
@@ -168,6 +171,27 @@ namespace Friflo.Json.Fliox.Schema
             return new EmitType(type, sb);
         }
         
+        private EmitType EmitServiceType(TypeDef type, StringBuilder sb) {
+            var     context     = new TypeContext (generator, null, type);
+            var     messages    = type.Messages;
+            bool    firstField  = true;
+            int maxFieldName    = messages.MaxLength(field => field.name.Length);
+            sb.AppendLine($"        \"{type.Name}\": {{");
+            sb.AppendLine($"            \"type\": \"object\",");
+            sb.AppendLine($"            \"commands\": {{");
+            foreach (var message in messages) {
+                var commandValue    = GetTypeName(message.value,       context, true);
+                var commandResult   = GetTypeName(message.result, context, true);
+                var indent = Indent(maxFieldName, message.name);
+                Delimiter(sb, Next, ref firstField);
+                var command = $"\"command\": [{{ {commandValue} }}, {{ {commandResult} }}]";
+                sb.Append($"                \"{message.name}\":{indent} {{ {command} }}");
+            }
+            sb.AppendLine("\n            }");
+            sb.Append     ("        }");
+            return new EmitType(type, sb);
+        }
+        
         private static string GetFieldType(FieldDef field, TypeContext context, bool required) {
             if (field.isArray) {
                 var elementTypeName = GetElementType(field, context);
@@ -176,11 +200,6 @@ namespace Friflo.Json.Fliox.Schema
             if (field.isDictionary) {
                 var valueTypeName = GetElementType(field, context);
                 return $"\"additionalProperties\": {valueTypeName}, \"type\": \"object\"";
-            }
-            if (field.isCommand) {
-                var valueTypeName = GetTypeName(field.type,       context, true);
-                var resultType    = GetTypeName(field.resultType, context, true);
-                return $"\"command\": [{{ {valueTypeName} }}, {{ {resultType} }}]";
             }
             return GetTypeName(field.type, context, required);
         }

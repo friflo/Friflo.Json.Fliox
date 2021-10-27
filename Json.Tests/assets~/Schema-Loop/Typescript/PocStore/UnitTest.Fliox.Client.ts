@@ -34,11 +34,6 @@ export abstract class PocStore {
     types      : { [key: string]: TestType };
 }
 
-export abstract class PocStoreService {
-    TestCommand  : (command: TestCommand) => boolean;
-    Echo         : (command: any) => any;
-}
-
 export class OrderItem {
     article  : string;
     amount   : int32;

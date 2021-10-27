@@ -226,7 +226,6 @@ namespace Friflo.Json.Fliox.Schema.Validation
         public   readonly   bool            required;
         public   readonly   bool            isArray;
         public   readonly   bool            isDictionary;
-        public   readonly   bool            isCommand;
         public   readonly   bool            isNullableElement;  
         public   readonly   int             requiredPos;
         public              ValidationType  Type => type;
@@ -247,7 +246,6 @@ namespace Friflo.Json.Fliox.Schema.Validation
             required            = fieldDef.required;
             isArray             = fieldDef.isArray;
             isDictionary        = fieldDef.isDictionary;
-            isCommand           = fieldDef.isCommand;
             isNullableElement   = fieldDef.isNullableElement;
             this.requiredPos    = requiredPos;
         }

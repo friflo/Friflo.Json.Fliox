@@ -19,12 +19,10 @@
         },
         "UserStoreService": {
             "type": "object",
-            "isAbstract": true,
-            "properties": {
+            "commands": {
                 "AuthenticateUser": { "command": [{ "$ref": "#/definitions/AuthenticateUser" }, { "$ref": "#/definitions/AuthenticateUserResult" }] },
                 "Echo":             { "command": [{  }, {  }] }
-            },
-            "additionalProperties": false
+            }
         },
         "AuthenticateUser": {
             "type": "object",

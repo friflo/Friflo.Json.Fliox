@@ -22,6 +22,7 @@
                 "isAbstract":           { "type": ["boolean", "null"] },
                 "type":                 { "type": ["string", "null"] },
                 "properties":           { "additionalProperties": { "$ref": "#/definitions/FieldType" }, "type": "object" },
+                "commands":             { "additionalProperties": { "$ref": "#/definitions/MessageType" }, "type": "object" },
                 "isStruct":             { "type": ["boolean", "null"] },
                 "required":             { "type": ["array", "null"], "items": { "type": "string" } },
                 "additionalProperties": { "type": "boolean" },
@@ -57,8 +58,14 @@
                 "$ref":                 { "type": ["string", "null"] },
                 "additionalProperties": { "oneOf": [{"type": "null"}, { "$ref": "#/definitions/FieldType" }] },
                 "isKey":                { "type": ["boolean", "null"] },
-                "isAutoIncrement":      { "type": ["boolean", "null"] },
-                "command":              { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" } }
+                "isAutoIncrement":      { "type": ["boolean", "null"] }
+            },
+            "additionalProperties": false
+        },
+        "MessageType": {
+            "type": "object",
+            "properties": {
+                "command": { "type": ["array", "null"], "items": { "$ref": "#/definitions/FieldType" } }
             },
             "additionalProperties": false
         }

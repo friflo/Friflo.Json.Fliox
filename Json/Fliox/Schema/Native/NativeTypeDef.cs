@@ -16,6 +16,7 @@ public sealed class NativeTypeDef : TypeDef
         internal readonly   TypeMapper          mapper;
         internal            NativeTypeDef       baseType;
         internal            List<FieldDef>      fields;
+        internal            List<MessageDef>    messages;
         internal            UnionType           unionType;
         internal            string              discriminator;
         internal            bool                isAbstract;
@@ -26,6 +27,8 @@ public sealed class NativeTypeDef : TypeDef
         public   override   bool                IsClass         { get; }
         public   override   bool                IsStruct        { get; }
         public   override   List<FieldDef>      Fields          => fields;
+        public   override   bool                IsService       { get; }
+        public   override   List<MessageDef>    Messages        => messages;
         public   override   string              Discriminant    { get; }
         public   override   string              Discriminator   => discriminator;
         public   override   UnionType           UnionType       => unionType;
@@ -37,7 +40,7 @@ public sealed class NativeTypeDef : TypeDef
         public NativeTypeDef (string name, string @namespace) :
             base(name, @namespace)
         {
-            IsClass     = true;
+            IsService   = true;
             isAbstract  = true;
         }
 

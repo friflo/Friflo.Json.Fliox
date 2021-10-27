@@ -25,12 +25,10 @@
         },
         "PocStoreService": {
             "type": "object",
-            "isAbstract": true,
-            "properties": {
+            "commands": {
                 "TestCommand": { "command": [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }] },
                 "Echo":        { "command": [{  }, {  }] }
-            },
-            "additionalProperties": false
+            }
         },
         "OrderItem": {
             "type": "object",

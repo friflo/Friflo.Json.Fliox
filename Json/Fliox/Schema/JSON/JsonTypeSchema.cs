@@ -78,6 +78,15 @@ namespace Friflo.Json.Fliox.Schema.JSON
                                     SetField(typeDef, fieldName, field, context);
                                 }
                             }
+                            var commands      = type.commands;
+                            if (commands != null) {
+                                typeDef.messages = new List<MessageDef>(commands.Count);
+                                foreach (var msgPair in commands) {
+                                    string      messageName = msgPair.Key;
+                                    MessageType message     = msgPair.Value;
+                                    SetMessage(typeDef, messageName, message, context);
+                                }
+                            }
                         }
                         if (oneOf != null) {
                             var unionTypes = new List<UnionItem>(oneOf.Count);
@@ -130,8 +139,6 @@ namespace Friflo.Json.Fliox.Schema.JSON
             TypeDef fieldType; // not initialized by intention
             bool    isArray         = false;
             bool    isDictionary    = false;
-            bool    isCommand       = false;
-            TypeDef resultType      = null;
             bool    required        = typeDef.type.required?.Contains(fieldName) ?? false;
 
             FieldType   items       = GetItemsFieldType(field.items, out bool isNullableElement);
@@ -172,18 +179,22 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 typeDef.discriminant = field.discriminant[0]; // a discriminant has no FieldDef
                 return;
             }
-            else if (field.command != null) {
-                isCommand   = true;
-                fieldType   = FindFieldType(field, field.command[0], context);
-                resultType  = FindFieldType(field, field.command[1], context);
-            } else {
+            else {
                 fieldType = context.standardTypes.JsonValue;
                 // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");
             }
             var isKey           = field.isKey.HasValue && field.isKey.Value;
             var isAutoIncrement = field.isAutoIncrement.HasValue && field.isAutoIncrement.Value;
-            var fieldDef = new FieldDef (fieldName, required, isKey, isAutoIncrement, fieldType, resultType, isArray, isDictionary, isNullableElement, isCommand, typeDef);
+            var fieldDef = new FieldDef (fieldName, required, isKey, isAutoIncrement, fieldType, isArray, isDictionary, isNullableElement, typeDef);
             typeDef.fields.Add(fieldDef);
+        }
+        
+        private static void SetMessage (JsonTypeDef typeDef, string messageName, MessageType field, in JsonTypeContext context) {
+            field.name      = messageName;
+            var valueType   = FindFieldType(null, field.command[0], context);
+            var resultType  = FindFieldType(null, field.command[1], context);
+            var messageDef  = new MessageDef(messageName, valueType, resultType);
+            typeDef.messages.Add(messageDef);
         }
         
         private static TypeDef FindTypeFromJson (FieldType field, JsonValue jsonArray, FieldType items, in JsonTypeContext context, ref bool isArray) {

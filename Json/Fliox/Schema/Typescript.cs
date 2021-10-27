@@ -128,12 +128,21 @@ namespace Friflo.Json.Fliox.Schema
             foreach (var field in fields) {
                 if (field.IsDerivedField)
                     continue;
-                bool required = field.required || field.isCommand;
+                bool required = field.required;
                 var fieldType = GetFieldType(field, context);
                 var indent  = Indent(maxFieldName, field.name);
                 var optStr  = required ? " ": "?";
                 var nullStr = required ? "" : " | null";
                 sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}{nullStr};");
+            }
+            if (type.Messages != null) {
+                foreach (var message in type.Messages) {
+                    var commandValue    = GetTypeName(message.value,       context);
+                    var commandResult   = GetTypeName(message.result, context);
+                    var indent = Indent(maxFieldName, message.name);
+                    var command = $"(command: {commandValue}) => {commandResult}";
+                    sb.AppendLine($"    {message.name}{indent} : {command};");
+                }
             }
             sb.AppendLine("}");
             sb.AppendLine();
@@ -148,11 +157,6 @@ namespace Friflo.Json.Fliox.Schema
             if (field.isDictionary) {
                 var valueTypeName = GetElementType(field, context);
                 return $"{{ [key: string]: {valueTypeName} }}";
-            }
-            if (field.isCommand) {
-                var valueTypeName = GetTypeName(field.type,       context);
-                var resultType    = GetTypeName(field.resultType, context);
-                return $"(command: {valueTypeName}) => {resultType}";
             }
             return GetTypeName(field.type, context);
         }

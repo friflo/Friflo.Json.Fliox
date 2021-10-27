@@ -109,22 +109,22 @@ namespace Friflo.Json.Fliox.Schema.Native
                         var required = propField.required || !isNullable;
                         var isKey    = propField.isKey;
                         bool isAutoIncrement = FieldQuery.IsAutoIncrement(propField.Member.CustomAttributes);
-                        var fieldDef = new FieldDef (propField.jsonName, required, isKey, isAutoIncrement, type, null, isArray, isDictionary, isNullableElement, false, typeDef);
+                        var fieldDef = new FieldDef (propField.jsonName, required, isKey, isAutoIncrement, type, isArray, isDictionary, isNullableElement, typeDef);
                         typeDef.fields.Add(fieldDef);
                     }
                 }
                 var commands = CommandUtils.GetCommandTypes(typeDef.native);
                 if (commands.Length > 0) {
                     var commandTypeDef = new NativeTypeDef (typeDef.Name + "Service", typeDef.Namespace) {
-                        fields = new List<FieldDef>(commands.Length)
+                        messages = new List<MessageDef>(commands.Length)
                     };
                     var index = types.IndexOf(typeDef);
                     types.Insert(index + 1, commandTypeDef);
                     foreach (var command in commands) {
-                        var argumentType = nativeTypes[command.valueType];
-                        var resultType   = nativeTypes[command.resultType];
-                        var fieldDef = new FieldDef (command.name, false, false, false, argumentType, resultType, false, false, false, true, typeDef);
-                        commandTypeDef.fields.Add(fieldDef);
+                        var valueType   = nativeTypes[command.valueType];
+                        var resultType  = nativeTypes[command.resultType];
+                        var messageDef  = new MessageDef(command.name, valueType, resultType);
+                        commandTypeDef.messages.Add(messageDef);
                     }
                 }
                 if (typeDef.Discriminant != null) {

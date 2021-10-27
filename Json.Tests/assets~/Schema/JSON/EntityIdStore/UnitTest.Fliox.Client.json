@@ -31,11 +31,9 @@
         },
         "EntityIdStoreService": {
             "type": "object",
-            "isAbstract": true,
-            "properties": {
+            "commands": {
                 "Echo": { "command": [{  }, {  }] }
-            },
-            "additionalProperties": false
+            }
         }
     }
 }

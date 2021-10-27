@@ -13,6 +13,7 @@ export class JsonType {
     isAbstract?           : boolean | null;
     type?                 : string | null;
     properties?           : { [key: string]: FieldType } | null;
+    commands?             : { [key: string]: MessageType } | null;
     isStruct?             : boolean | null;
     required?             : string[] | null;
     additionalProperties  : boolean;
@@ -37,6 +38,9 @@ export class FieldType {
     additionalProperties? : FieldType | null;
     isKey?                : boolean | null;
     isAutoIncrement?      : boolean | null;
-    command?              : FieldType[] | null;
+}
+
+export class MessageType {
+    command? : FieldType[] | null;
 }
 
