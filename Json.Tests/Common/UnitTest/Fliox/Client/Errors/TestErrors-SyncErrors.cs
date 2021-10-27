@@ -22,8 +22,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         private static async Task AssertSyncErrors(PocStore store, TestDatabaseHub testHub) {
             testHub.ClearErrors();
             // use SendCommand() to simulate error/exception
-            testHub.syncErrors.Add(nameof(PocStore.MsgSyncError),       () => new ExecuteSyncResult("simulated SyncError"));
-            testHub.syncErrors.Add(nameof(PocStore.MsgSyncException),   () => throw new SimulationException ("simulated SyncException"));
+            var msgSyncError        = "MsgSyncError";
+            var msgSyncException    = "MsgSyncException";
+            testHub.syncErrors.Add(msgSyncError,       () => new ExecuteSyncResult("simulated SyncError"));
+            testHub.syncErrors.Add(msgSyncException,   () => throw new SimulationException ("simulated SyncException"));
             
             var helloTask1 = store.Echo("Hello World 1");
             var helloTask2 = store.Echo("Hello World 2");
@@ -52,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 
             // --- SyncTasks error
             {
-                var syncError = store.MsgSyncError();
+                var syncError = store.SendCommand<bool?,bool?>(msgSyncError);
                 
                 // test throwing exception in case of SyncTasks errors
                 try {
@@ -68,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             }
             // --- SyncTasks exception
             {
-                var syncException = store.MsgSyncException();
+                var syncException = store.SendCommand<bool?,bool?>(msgSyncException);
                 
                 var sync = await store.TrySyncTasks(); // ----------------
                 

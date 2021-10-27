@@ -29,8 +29,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         [Fri.Command(Name =        "TestCommand")]
         public CommandTask<bool>    Test (TestCommand value)                 => SendCommand<TestCommand, bool>("TestCommand", value);
-        public CommandTask<Empty>   MsgSyncError      (Empty value = null)   => SendCommand<Empty, Empty>(nameof(MsgSyncError), value);
-        public CommandTask<Empty>   MsgSyncException  (Empty value = null)   => SendCommand<Empty, Empty>(nameof(MsgSyncException), value);
     }
 
     // ------------------------------ models ------------------------------
@@ -146,6 +144,4 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
         public override string  ToString() => text;
     }
-    
-    public class Empty { }
 }
