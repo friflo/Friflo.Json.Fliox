@@ -13,6 +13,25 @@ namespace Friflo.Json.Fliox.DB.Host
 {
     public delegate TResult CommandHandler<TValue, out TResult>(Command<TValue> command);
 
+    /// <summary>
+    /// A <see cref="TaskHandler"/> is attached to every <see cref="EntityDatabase"/> to handle all
+    /// <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
+    /// <br/>
+    /// Each task is either a database operation like or a custom command.
+    /// <list type="bullet">
+    ///   <item>
+    ///     Database operations are a build-in functionality of every <see cref="EntityDatabase"/>.
+    ///     These operations are:
+    ///     <see cref="CreateEntities"/>, <see cref="UpsertEntities"/>, <see cref="DeleteEntities"/>,
+    ///     <see cref="PatchEntities"/>, <see cref="ReadEntities"/> or <see cref="QueryEntities"/>.
+    ///   </item>
+    ///   <item>
+    ///     Commands are tasks added by an application to perform custom operations. Each command is a tuple of its name
+    ///     and its command value. See <see cref="SendCommand"/>.
+    ///     When executed by its handler method returns the command result. See <see cref="SendCommandResult"/>. 
+    ///   </item>
+    /// </list>  
+    /// </summary>
     public class TaskHandler
     {
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
