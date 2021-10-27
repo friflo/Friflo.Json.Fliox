@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 
             // --- SyncTasks error
             {
-                var syncError = store.SendCommand<bool?,bool?>(msgSyncError);
+                var syncError = store.SendCommand<bool?>(msgSyncError);
                 
                 // test throwing exception in case of SyncTasks errors
                 try {
@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             }
             // --- SyncTasks exception
             {
-                var syncException = store.SendCommand<bool?,bool?>(msgSyncException);
+                var syncException = store.SendCommand<bool?, bool?>(msgSyncException, null); // use SendCommand with two generic
                 
                 var sync = await store.TrySyncTasks(); // ----------------
                 

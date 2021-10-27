@@ -236,7 +236,14 @@ namespace Friflo.Json.Fliox.DB.Client
         }
         
         // --- SendCommand
-        public CommandTask<TResult> SendCommand<TCommand, TResult>(string name, TCommand command = default) {
+        public CommandTask<TResult> SendCommand<TResult>(string name) {
+            var task    = new CommandTask<TResult>(name, new JsonValue(), _intern.jsonMapper.reader);
+            _intern.syncStore.MessageTasks().Add(task);
+            AddTask(task);
+            return task;
+        }
+        
+        public CommandTask<TResult> SendCommand<TCommand, TResult>(string name, TCommand command) {
             var json    = _intern.jsonMapper.WriteAsArray(command);
             var task    = new CommandTask<TResult>(name, new JsonValue(json), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
