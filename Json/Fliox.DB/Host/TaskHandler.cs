@@ -17,18 +17,18 @@ namespace Friflo.Json.Fliox.DB.Host
     /// A <see cref="TaskHandler"/> is attached to every <see cref="EntityDatabase"/> to handle all
     /// <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
     /// <br/>
-    /// Each task is either a database operation like or a custom command.
+    /// Each task is either a database operation or a custom command.
     /// <list type="bullet">
     ///   <item>
-    ///     Database operations are a build-in functionality of every <see cref="EntityDatabase"/>.
+    ///     <b>Database operations</b> are a build-in functionality of every <see cref="EntityDatabase"/>.
     ///     These operations are:
     ///     <see cref="CreateEntities"/>, <see cref="UpsertEntities"/>, <see cref="DeleteEntities"/>,
     ///     <see cref="PatchEntities"/>, <see cref="ReadEntities"/> or <see cref="QueryEntities"/>.
     ///   </item>
     ///   <item>
-    ///     Commands are tasks added by an application to perform custom operations. Each command is a tuple of its name
-    ///     and its command value. See <see cref="SendCommand"/>.
-    ///     When executed by its handler method returns the command result. See <see cref="SendCommandResult"/>. 
+    ///     <b>Custom commands</b> are added by an application to perform custom operations.
+    ///     Each command is a tuple of its name and its command value. See <see cref="SendCommand"/>.
+    ///     When executed by its handler method it returns a command result. See <see cref="SendCommandResult"/>. 
     ///   </item>
     /// </list>  
     /// </summary>
