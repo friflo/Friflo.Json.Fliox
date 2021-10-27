@@ -236,6 +236,11 @@ namespace Friflo.Json.Fliox.DB.Client
         }
         
         // --- SendCommand
+        /// <summary>
+        /// Send a command with the given <see cref="name"/> (without a command value) to the attached <see cref="FlioxHub"/>.
+        /// The method can be used for rapid prototyping. For production grade add a command method to the <see cref="FlioxClient"/> subclass.
+        /// Doing this adds the command and its API to the <see cref="DatabaseSchema"/>. 
+        /// </summary>
         public CommandTask<TResult> SendCommand<TResult>(string name) {
             var task    = new CommandTask<TResult>(name, new JsonValue(), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
@@ -243,6 +248,11 @@ namespace Friflo.Json.Fliox.DB.Client
             return task;
         }
         
+        /// <summary>
+        /// Send a command with the given <see cref="name"/> and <see cref="command"/> value to the attached <see cref="FlioxHub"/>.
+        /// The method can be used for rapid prototyping. For production grade add a command method to the <see cref="FlioxClient"/> subclass.
+        /// Doing this adds the command and its API to the <see cref="DatabaseSchema"/>. 
+        /// </summary>
         public CommandTask<TResult> SendCommand<TCommand, TResult>(string name, TCommand command) {
             var json    = _intern.jsonMapper.WriteAsArray(command);
             var task    = new CommandTask<TResult>(name, new JsonValue(json), _intern.jsonMapper.reader);
