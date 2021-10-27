@@ -146,6 +146,7 @@ namespace Friflo.Json.Fliox.Schema
         private EmitType EmitServiceType(TypeDef type, StringBuilder sb) {
             var imports         = new HashSet<TypeDef>();
             var context         = new TypeContext (generator, imports, type);
+            var dependencies    = new List<TypeDef>();
             var messages        = type.Messages;
             sb.AppendLine($"export interface {type.Name} {{");
             int maxFieldName    = messages.MaxLength(field => field.name.Length);
@@ -158,7 +159,7 @@ namespace Friflo.Json.Fliox.Schema
             }
             sb.AppendLine("}");
             sb.AppendLine();
-            return new EmitType(type, sb);
+            return new EmitType(type, sb, imports, dependencies);
         }
         
         private static string GetFieldType(FieldDef field, TypeContext context) {
