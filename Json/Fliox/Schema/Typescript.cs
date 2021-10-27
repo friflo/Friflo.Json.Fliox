@@ -147,14 +147,14 @@ namespace Friflo.Json.Fliox.Schema
             var imports         = new HashSet<TypeDef>();
             var context         = new TypeContext (generator, imports, type);
             var messages        = type.Messages;
-            sb.AppendLine($"export class {type.Name} {{");
+            sb.AppendLine($"export interface {type.Name} {{");
             int maxFieldName    = messages.MaxLength(field => field.name.Length);
             foreach (var message in type.Messages) {
                 var commandValue    = GetTypeName(message.value,       context);
                 var commandResult   = GetTypeName(message.result, context);
                 var indent = Indent(maxFieldName, message.name);
-                var command = $"(command: {commandValue}) => {commandResult}";
-                sb.AppendLine($"    {message.name}{indent} : {command};");
+                var command = $"(command: {commandValue}) : {commandResult}";
+                sb.AppendLine($"    {message.name}{indent} {command};");
             }
             sb.AppendLine("}");
             sb.AppendLine();
