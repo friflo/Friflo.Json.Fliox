@@ -17,6 +17,11 @@ export abstract class PocStore {
     types      : { [key: string]: TestType };
 }
 
+export class PocStoreService {
+    TestCommand : (command: TestCommand) => boolean;
+    Echo        : (command: any) => any;
+}
+
 export class Order {
     id        : string;
     customer? : string | null;

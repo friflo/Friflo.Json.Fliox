@@ -72,6 +72,9 @@ namespace Friflo.Json.Fliox.Schema
             if (type.IsClass) {
                 return EmitClassType(type, sb);
             }
+            if (type.IsService) {
+                return EmitServiceType(type, sb);
+            }
             if (type.IsEnum) {
                 var enumValues = type.EnumValues;
                 sb.AppendLine($"export type {type.Name} =");
@@ -135,18 +138,27 @@ namespace Friflo.Json.Fliox.Schema
                 var nullStr = required ? "" : " | null";
                 sb.AppendLine($"    {field.name}{optStr}{indent} : {fieldType}{nullStr};");
             }
-            if (type.Messages != null) {
-                foreach (var message in type.Messages) {
-                    var commandValue    = GetTypeName(message.value,       context);
-                    var commandResult   = GetTypeName(message.result, context);
-                    var indent = Indent(maxFieldName, message.name);
-                    var command = $"(command: {commandValue}) => {commandResult}";
-                    sb.AppendLine($"    {message.name}{indent} : {command};");
-                }
-            }
             sb.AppendLine("}");
             sb.AppendLine();
             return new EmitType(type, sb, imports, dependencies);
+        }
+        
+        private EmitType EmitServiceType(TypeDef type, StringBuilder sb) {
+            var imports         = new HashSet<TypeDef>();
+            var context         = new TypeContext (generator, imports, type);
+            var messages        = type.Messages;
+            sb.AppendLine($"export class {type.Name} {{");
+            int maxFieldName    = messages.MaxLength(field => field.name.Length);
+            foreach (var message in type.Messages) {
+                var commandValue    = GetTypeName(message.value,       context);
+                var commandResult   = GetTypeName(message.result, context);
+                var indent = Indent(maxFieldName, message.name);
+                var command = $"(command: {commandValue}) => {commandResult}";
+                sb.AppendLine($"    {message.name}{indent} : {command};");
+            }
+            sb.AppendLine("}");
+            sb.AppendLine();
+            return new EmitType(type, sb);
         }
         
         private static string GetFieldType(FieldDef field, TypeContext context) {

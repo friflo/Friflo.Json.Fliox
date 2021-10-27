@@ -8,6 +8,11 @@ export abstract class UserStore {
     roles        : { [key: string]: Role };
 }
 
+export class UserStoreService {
+    AuthenticateUser : (command: AuthenticateUser) => AuthenticateUserResult;
+    Echo             : (command: any) => any;
+}
+
 export class AuthenticateUser {
     userId  : string;
     token   : string;
