@@ -50,7 +50,7 @@ namespace Friflo.Json.Tests.Main
             database.Schema         = new DatabaseSchema(typeSchema);           // optional. Enables type validation for create, upsert & patch operations
             var hostHub             = new HttpHostHub(hub);
             hostHub.requestHandler  = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
-            hostHub.schemaHandler   = new SchemaHandler("/schema/", typeSchema, Utils.Zip); // optional. Web UI for database schema
+            hostHub.schemaHandler   = new SchemaHandler("/schema/", typeSchema, Utils.Zip); // optional. Web UI to serve DB schema as files (JSON Schema, Typescript, C#, Kotlin)
             var host                = new HttpListenerHost(endpoint, hostHub);
             host.Start();
             host.Run();
