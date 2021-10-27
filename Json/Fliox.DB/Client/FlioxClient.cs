@@ -277,11 +277,6 @@ namespace Friflo.Json.Fliox.DB.Client
             return task;
         }
         
-        public SubscribeMessageTask SubscribeMessage<TMessage>  (MessageHandler<TMessage> handler) {
-            var name = typeof(TMessage).Name;
-            return SubscribeMessage(name, handler);
-        }
-        
         public SubscribeMessageTask SubscribeMessage            (string name, MessageHandler handler) {
             AssertSubscriptionProcessor();
             var callbackHandler = new NonGenericMessageCallback(name, handler);

@@ -2,11 +2,19 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using Friflo.Json.Fliox.DB.Client.Internal;
+using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.DB.Client
 {
-     public class MessageTask : SyncTask
+    /// <summary>
+    /// A <see cref="MessageTask"/> contains the message (or command) <see cref="name"/> and <see cref="value"/> sent to
+    /// an <see cref="EntityDatabase"/>. It is used to send to the message (or command) as en event to all clients which
+    /// successful subscribed the message by its <see cref="name"/>.
+    /// If the message was sent successful <see cref="SyncTask.Success"/> is true.
+    /// Note: a message returns no result. To get a result send a command by <see cref="FlioxClient.SendCommand{TCommand,TResult}"/> 
+    /// </summary>
+    public class MessageTask : SyncTask
     {
         internal readonly   string          name;
         internal readonly   JsonValue       value;
@@ -23,6 +31,11 @@ namespace Friflo.Json.Fliox.DB.Client
         }
     }
 
+    /// <summary>
+    /// Additional to a <see cref="MessageTask"/> a <see cref="CommandTask"/> also provide a command <see cref="ResultJson"/>
+    /// after the task is synced successful.
+    /// For type safe access to the result use <see cref="CommandTask{TResult}"/>
+    /// </summary>
     public class CommandTask : MessageTask
     {
         private  readonly   ObjectReader    reader;
@@ -77,6 +90,10 @@ namespace Friflo.Json.Fliox.DB.Client
         }
     }
 
+    /// <summary>
+    /// Additional to a <see cref="MessageTask"/> a <see cref="CommandTask{TResult}"/> also provide a type safe access
+    /// to the command <see cref="Result"/> after the task is synced successful.
+    /// </summary>
     public sealed class CommandTask<TResult> : CommandTask
     {
         public              TResult         Result => ReadResult<TResult>();

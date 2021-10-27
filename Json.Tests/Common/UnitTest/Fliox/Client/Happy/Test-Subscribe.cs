@@ -90,7 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 processor.receivedAll = true;
                 AreEqual("null",            msg.Json.AsString());
             });
-            var subscribeMessage1   = store.SubscribeMessage<TestCommand>((msg) => {
+            var subscribeMessage1   = store.SubscribeMessage<TestCommand>(nameof(TestCommand), (msg) => {
                 processor.testMessageCalls++;
                 TestCommand value = msg.Value;
                 AreEqual("test message",        value.text);
