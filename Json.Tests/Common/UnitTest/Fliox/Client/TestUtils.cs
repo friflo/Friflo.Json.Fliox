@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.DB.Client.Internal;
 using Friflo.Json.Fliox.DB.Host;
 using Friflo.Json.Fliox.DB.Host.Utils;
-using Friflo.Json.Fliox.DB.Protocol;
 using Friflo.Json.Fliox.DB.Protocol.Models;
-using Friflo.Json.Fliox.DB.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
 
@@ -201,19 +200,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 #endif
         }
 
-        private class NoopDatabaseHub : FlioxHub
-        {
-            internal NoopDatabaseHub (string hostName = null) : base(null, hostName) { }
-                
-            public override Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-                var result = new SyncResponse {
-                    tasks       = new List<SyncTaskResult>(),
-                    resultMap   = new Dictionary<string, ContainerEntities>()
-                };
-                var response = new ExecuteSyncResult(result);
-                return Task.FromResult(response);
-            }
-        }
 #endif
     }
 }

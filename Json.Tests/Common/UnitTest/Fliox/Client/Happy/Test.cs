@@ -10,6 +10,7 @@ using Friflo.Json.Fliox.DB.Host.Event;
 using Friflo.Json.Fliox.DB.Remote;
 using Friflo.Json.Fliox.DB.Threading;
 using Friflo.Json.Fliox.DB.Protocol;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
 using Friflo.Json.Tests.Common.Utils;
 using Friflo.Json.Tests.Unity.Utils;
 using UnityEngine.TestTools;

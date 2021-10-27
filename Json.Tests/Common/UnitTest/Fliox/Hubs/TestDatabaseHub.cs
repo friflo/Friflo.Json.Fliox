@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using Friflo.Json.Fliox.DB.Protocol.Models;
 using Friflo.Json.Fliox.DB.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
+namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
 {
     public class TestDatabase : EntityDatabase
     {
