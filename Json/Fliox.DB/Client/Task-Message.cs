@@ -12,7 +12,8 @@ namespace Friflo.Json.Fliox.DB.Client
     /// an <see cref="EntityDatabase"/>. It is used to send to the message (or command) as en event to all clients which
     /// successful subscribed the message by its <see cref="name"/>.
     /// If the message was sent successful <see cref="SyncTask.Success"/> is true.
-    /// Note: a message returns no result. To get a result send a command by <see cref="FlioxClient.SendCommand{TCommand,TResult}"/> 
+    /// <br/>
+    /// <b>Note</b>: A message returns no result. To get a result send a command by <see cref="FlioxClient.SendCommand{TCommand,TResult}"/> 
     /// </summary>
     public class MessageTask : SyncTask
     {
@@ -34,7 +35,8 @@ namespace Friflo.Json.Fliox.DB.Client
     /// <summary>
     /// Additional to a <see cref="MessageTask"/> a <see cref="CommandTask"/> also provide a command <see cref="ResultJson"/>
     /// after the task is synced successful.
-    /// For type safe access to the result use <see cref="CommandTask{TResult}"/>
+    /// <br/>
+    /// <b>Note</b>: For type safe access to the result use <see cref="CommandTask{TResult}"/>
     /// </summary>
     public class CommandTask : MessageTask
     {
