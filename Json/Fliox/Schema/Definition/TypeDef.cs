@@ -63,7 +63,14 @@ namespace Friflo.Json.Fliox.Schema.Definition
         }
     }
     
-    // could by a readonly struct - but may be used by reference in future 
+    // could by a readonly struct - but may be used by reference in future
+    /// <summary>
+    /// The type definition of field (also named property) in a <see cref="TypeDef"/>. E.g. a scalar type like boolean,
+    /// int, float, double, DateTime, Guid, BigInteger or string or a complex type like an array, a map (= Dictionary) or a class.
+    /// Fields also have a modifier to specify if a field is required or optional.
+    /// As <see cref="FieldDef"/>'s are also used within in a <see cref="TypeSchema"/> to define a database schema
+    /// a field can be selected to be the primary key of a table / container in a database by <see cref="isKey"/>.
+    /// </summary>
     public sealed class FieldDef {
         public  readonly    string          name;
         public  readonly    bool            required;
@@ -107,6 +114,12 @@ namespace Friflo.Json.Fliox.Schema.Definition
         }
     }
     
+    /// <summary>
+    /// <see cref="MessageDef"/> is used to specify the interface of a command (= RPC) within a service.
+    /// The structure of a command consists of its <see cref="name"/> its command <see cref="value"/> type and its
+    /// command <see cref="result"/> type. The command <see cref="value"/> type specify the parameters and
+    /// when a command is executed it returns an object of the given <see cref="result"/> type.
+    /// </summary>
     public sealed class MessageDef {
         public  readonly    string          name;
         public  readonly    TypeDef         value;
