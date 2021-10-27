@@ -241,7 +241,7 @@ namespace Friflo.Json.Fliox.DB.Client
         }
         
         // --- SendCommand
-        protected CommandTask<TResult> SendCommand<TCommand, TResult>(string name, TCommand command) {
+        public CommandTask<TResult> SendCommand<TCommand, TResult>(string name, TCommand command) {
             var json    = _intern.jsonMapper.WriteAsArray(command);
             var task    = new CommandTask<TResult>(name, new JsonValue(json), _intern.jsonMapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
