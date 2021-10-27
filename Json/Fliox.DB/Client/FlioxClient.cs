@@ -249,11 +249,6 @@ namespace Friflo.Json.Fliox.DB.Client
             return task;
         }
         
-        protected CommandTask<TResult> SendCommand<TCommand, TResult>(TCommand command) {
-            var name = typeof(TCommand).Name;
-            return SendCommand<TCommand, TResult>(name, command);
-        }
-        
         public CommandTask<TCommand>   Echo<TCommand>(TCommand command) {
             return SendCommand<TCommand,TCommand>(StdCommand.Echo, command);
         }
