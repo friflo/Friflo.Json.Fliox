@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Remote;
+using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
 

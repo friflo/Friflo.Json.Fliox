@@ -1,9 +1,9 @@
 ﻿using System;
-using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Host.Event;
-using Friflo.Json.Fliox.DB.Host.Monitor;
-using Friflo.Json.Fliox.DB.Remote;
-using Friflo.Json.Fliox.DB.UserAuth;
+using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Event;
+using Friflo.Json.Fliox.Hub.Host.Monitor;
+using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Hub.UserAuth;
 using Friflo.Json.Fliox.Schema.Definition;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;

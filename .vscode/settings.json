@@ -32,9 +32,9 @@
     "dotnet-test-explorer.testProjectPath": "Json.Tests",
     "editor.detectIndentation": false,
     "json.schemas": [
-        { "fileMatch": ["/Json.Tests/assets~/DB/UserStore/roles/*.json"],                   "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Fliox.DB.UserAuth.Role.json" },
-        { "fileMatch": ["/Json.Tests/assets~/DB/UserStore/credentials/*.json"],             "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Fliox.DB.UserAuth.UserCredential.json" },
-        { "fileMatch": ["/Json.Tests/assets~/DB/UserStore/permissions/*.json"],             "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Fliox.DB.UserAuth.UserPermission.json" },
+        { "fileMatch": ["/Json.Tests/assets~/DB/UserStore/roles/*.json"],                   "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Fliox.Hub.UserAuth.Role.json" },
+        { "fileMatch": ["/Json.Tests/assets~/DB/UserStore/credentials/*.json"],             "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Fliox.Hub.UserAuth.UserCredential.json" },
+        { "fileMatch": ["/Json.Tests/assets~/DB/UserStore/permissions/*.json"],             "url": "./Json.Tests/assets~/Schema/JSON/UserStore/Friflo.Json.Fliox.Hub.UserAuth.UserPermission.json" },
 
         { "fileMatch": ["/Json.Tests/assets~/DB/PocStore/articles/*.json"],                 "url": "./Json.Tests/assets~/Schema/JSON/PocStore/UnitTest.Fliox.Client.Article.json" },
         { "fileMatch": ["/Json.Tests/assets~/DB/PocStore/customers/*.json"],                "url": "./Json.Tests/assets~/Schema/JSON/PocStore/UnitTest.Fliox.Client.Customer.json" },
@@ -52,8 +52,8 @@
         { "fileMatch": ["/Json.Tests/assets~/DB/EntityIdStore/customIdEntities2/*.json"],   "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Fliox.Client.CustomIdEntity2.json" },
         { "fileMatch": ["/Json.Tests/assets~/DB/EntityIdStore/entityRefs/*.json"],          "url": "./Json.Tests/assets~/Schema/JSON/EntityIdStore/UnitTest.Fliox.Client.EntityRefs.json" },
 
-        { "fileMatch": ["/**/*.sync.json"],        "url": "./Json.Tests/assets~/Schema/JSON/Protocol/Friflo.Json.Fliox.DB.Protocol.ProtocolRequest.json"  },
-        { "fileMatch": ["/**/*.sync.resp.json"],   "url": "./Json.Tests/assets~/Schema/JSON/Protocol/Friflo.Json.Fliox.DB.Protocol.ProtocolResponse.json" }        
+        { "fileMatch": ["/**/*.sync.json"],        "url": "./Json.Tests/assets~/Schema/JSON/Protocol/Friflo.Json.Fliox.Hub.Protocol.ProtocolRequest.json"  },
+        { "fileMatch": ["/**/*.sync.resp.json"],   "url": "./Json.Tests/assets~/Schema/JSON/Protocol/Friflo.Json.Fliox.Hub.Protocol.ProtocolResponse.json" }        
         
     ],
     "editor.lineNumbers": "off",

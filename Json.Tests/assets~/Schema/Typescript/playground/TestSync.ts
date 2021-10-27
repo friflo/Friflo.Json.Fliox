@@ -1,4 +1,4 @@
-import { ProtocolMessage_Union } from "../Protocol/Friflo.Json.Fliox.DB.Protocol"
+import { ProtocolMessage_Union } from "../Protocol/Friflo.Json.Fliox.Hub.Protocol"
 
 // check assignment with using a type compiles successful
 var exampleSync: ProtocolMessage_Union =

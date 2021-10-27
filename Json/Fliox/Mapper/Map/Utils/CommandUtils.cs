@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
     {
         private static readonly Dictionary<Type, CommandInfo[]> CommandInfoCache = new Dictionary<Type, CommandInfo[]>();
 
-        private const string CommandType = "Friflo.Json.Fliox.DB.Client.CommandTask`1";
+        private const string CommandType = "Friflo.Json.Fliox.Hub.Client.CommandTask`1";
 
         public static CommandInfo[] GetCommandTypes(Type type) {
             if (CommandInfoCache.TryGetValue(type, out  CommandInfo[] result)) {

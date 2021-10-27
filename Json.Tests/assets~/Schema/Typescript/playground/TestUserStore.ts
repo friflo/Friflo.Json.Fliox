@@ -1,5 +1,5 @@
-import { Right_Union } from "../UserStore/Friflo.Json.Fliox.DB.Auth.Rights"
-import { Role } from "../UserStore/Friflo.Json.Fliox.DB.UserAuth"
+import { Right_Union } from "../UserStore/Friflo.Json.Fliox.Hub.Auth.Rights"
+import { Role } from "../UserStore/Friflo.Json.Fliox.Hub.UserAuth"
 
 // check assignment with using a type compiles successful
 var exampleRole: Role = {

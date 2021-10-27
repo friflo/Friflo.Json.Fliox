@@ -2,7 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.Remote;
+using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Tests.Main

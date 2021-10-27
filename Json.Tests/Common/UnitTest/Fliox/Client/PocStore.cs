@@ -4,8 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Friflo.Json.Fliox.DB.Client;
-using Friflo.Json.Fliox.DB.Host;
+using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global

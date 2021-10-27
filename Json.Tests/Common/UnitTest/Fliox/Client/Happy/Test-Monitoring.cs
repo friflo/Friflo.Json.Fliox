@@ -2,12 +2,12 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.Auth;
-using Friflo.Json.Fliox.DB.Client;
-using Friflo.Json.Fliox.DB.Host;
-using Friflo.Json.Fliox.DB.Host.Monitor;
-using Friflo.Json.Fliox.DB.Remote;
-using Friflo.Json.Fliox.DB.UserAuth;
+using Friflo.Json.Fliox.Hub.Auth;
+using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Monitor;
+using Friflo.Json.Fliox.Hub.Remote;
+using Friflo.Json.Fliox.Hub.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
 using Friflo.Json.Tests.Common.Utils;

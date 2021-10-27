@@ -2,8 +2,8 @@
 #if !UNITY_5_3_OR_NEWER
 
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.DB.Cosmos;
-using Friflo.Json.Fliox.DB.Host;
+using Friflo.Json.Fliox.Hub.Cosmos;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy;

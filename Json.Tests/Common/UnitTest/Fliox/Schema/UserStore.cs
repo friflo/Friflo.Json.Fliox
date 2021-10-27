@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using Friflo.Json.Fliox.DB.Client;
-using Friflo.Json.Fliox.DB.UserAuth;
+using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.UserAuth;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc;
@@ -82,7 +82,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
         public static void JSON_JSON () {
             var schemas     = JsonTypeSchema.ReadSchemas(JsonSchemaFolder);
             var schema      = new JsonTypeSchema(schemas);
-            var jsonTypes   = SchemaTest.TypesAsJsonTypes (UserStoreTypes, "Friflo.Json.Fliox.DB.UserAuth.");
+            var jsonTypes   = SchemaTest.TypesAsJsonTypes (UserStoreTypes, "Friflo.Json.Fliox.Hub.UserAuth.");
             var typeDefs    = schema.TypesAsTypeDefs(jsonTypes);
             var options     = new JsonTypeOptions(schema) { separateTypes = typeDefs };
             var generator   = JsonSchemaGenerator.Generate(options);

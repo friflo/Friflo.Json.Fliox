@@ -2,8 +2,8 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
-using Friflo.Json.Fliox.DB.Client;
-using Friflo.Json.Fliox.DB.UserAuth;
+using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.JSON;
 using Friflo.Json.Fliox.Schema.Native;
@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             using (var validationSet    = new ValidationSet(jsonSchema))
             using (var validator        = new TypeValidator()) {
                 var test = new TestTypes {
-                    roleType    = jsonSchema.TypeAsValidationType<Role>(validationSet, "Friflo.Json.Fliox.DB.UserAuth")
+                    roleType    = jsonSchema.TypeAsValidationType<Role>(validationSet, "Friflo.Json.Fliox.Hub.UserAuth")
                 };
                 ValidateSuccess         (validator, test);
                 ValidateFailure         (validator, test);
