@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.DB.Client
             
             var result = HandleSyncResponse(syncRequest, response, syncStore);
             if (!result.Success)
-                throw new ExecuteTasksException(response.error, result.failed);
+                throw new SyncTasksException(response.error, result.failed);
             messageContext.Release();
             return result;
         }

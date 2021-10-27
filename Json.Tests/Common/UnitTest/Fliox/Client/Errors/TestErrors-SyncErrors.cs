@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                     await store.SyncTasks(); // ----------------
                     
                     Fail("SyncTasks() intended to fail - code cannot be reached");
-                } catch (ExecuteTasksException sre) {
+                } catch (SyncTasksException sre) {
                     AreEqual("simulated SyncError", sre.Message);
                     AreEqual(1, sre.failed.Count);
                     AreEqual("SyncError ~ simulated SyncError", sre.failed[0].Error.ToString());
