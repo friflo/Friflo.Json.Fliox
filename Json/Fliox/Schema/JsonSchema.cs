@@ -180,7 +180,7 @@ namespace Friflo.Json.Fliox.Schema
             if (field.isCommand) {
                 var valueTypeName = GetTypeName(field.type,       context, true);
                 var resultType    = GetTypeName(field.resultType, context, true);
-                return $"\"prefixItems\": [{{ {valueTypeName} }}, {{ {resultType} }}], \"type\": \"array\"";
+                return $"\"command\": [{{ {valueTypeName} }}, {{ {resultType} }}]";
             }
             return GetTypeName(field.type, context, required);
         }

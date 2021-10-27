@@ -8,7 +8,7 @@ export abstract class UserStore {
     roles        : { [key: string]: Role };
 }
 
-export abstract class UserStoreCommands {
+export abstract class UserStoreService {
     AuthenticateUser  : (command: AuthenticateUser) => AuthenticateUserResult;
     Echo              : (command: any) => any;
 }

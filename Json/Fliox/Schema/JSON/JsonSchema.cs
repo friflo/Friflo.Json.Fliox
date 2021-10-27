@@ -115,7 +115,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
         public  bool?           isKey;
         public  bool?           isAutoIncrement;
         
-        public  List<FieldType> prefixItems; // tuple for commands [<argument type>, <result type>]
+        public  List<FieldType> command; // tuple for command [<argument type>, <result type>]
         
         public override string  ToString() => name;
     }

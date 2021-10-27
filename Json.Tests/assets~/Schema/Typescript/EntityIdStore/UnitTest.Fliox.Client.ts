@@ -17,7 +17,7 @@ export abstract class EntityIdStore {
     customIdEntities2  : { [key: string]: CustomIdEntity2 };
 }
 
-export abstract class EntityIdStoreCommands {
+export abstract class EntityIdStoreService {
     Echo  : (command: any) => any;
 }
 

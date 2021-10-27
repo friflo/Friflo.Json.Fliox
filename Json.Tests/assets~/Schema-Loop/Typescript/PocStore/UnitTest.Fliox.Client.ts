@@ -34,7 +34,7 @@ export abstract class PocStore {
     types      : { [key: string]: TestType };
 }
 
-export abstract class PocStoreCommands {
+export abstract class PocStoreService {
     TestCommand  : (command: TestCommand) => boolean;
     Echo         : (command: any) => any;
 }

@@ -23,17 +23,13 @@
             ],
             "additionalProperties": false
         },
-        "PocStoreCommands": {
+        "PocStoreService": {
             "type": "object",
             "isAbstract": true,
             "properties": {
-                "TestCommand": { "prefixItems": [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }], "type": "array" },
-                "Echo":        { "prefixItems": [{  }, {  }], "type": "array" }
+                "TestCommand": { "command": [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }] },
+                "Echo":        { "command": [{  }, {  }] }
             },
-            "required": [
-                "TestCommand",
-                "Echo"
-            ],
             "additionalProperties": false
         },
         "OrderItem": {

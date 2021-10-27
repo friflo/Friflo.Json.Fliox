@@ -8,19 +8,6 @@ using System.Text;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Definition;
 
-/*
-    May add commands of a FlioxClient / EntityDatabase to JSON Schema in future by adding (generating):
-       
-        "PocStore.commands": {
-            "type": "object",
-            "properties": {
-                "Echo":      { "type": "array", "prefixItems":
-                    [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }]
-                }
-            }
-        },
- */
-
 // ReSharper disable JoinNullCheckWithUsage
 namespace Friflo.Json.Fliox.Schema.JSON
 {
@@ -179,17 +166,16 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 }
             }
             else if (!jsonType.IsNull()) {
-                if (field.prefixItems != null) {
-                    isCommand   = true;
-                    fieldType   = FindFieldType(field, field.prefixItems[0], context);
-                    resultType  = FindFieldType(field, field.prefixItems[1], context);
-                } else {
-                    fieldType = FindTypeFromJson (field, jsonType, items, context, ref isArray);
-                }
+                fieldType = FindTypeFromJson (field, jsonType, items, context, ref isArray);
             }
             else if (field.discriminant != null) {
                 typeDef.discriminant = field.discriminant[0]; // a discriminant has no FieldDef
                 return;
+            }
+            else if (field.command != null) {
+                isCommand   = true;
+                fieldType   = FindFieldType(field, field.command[0], context);
+                resultType  = FindFieldType(field, field.command[1], context);
             } else {
                 fieldType = context.standardTypes.JsonValue;
                 // throw new InvalidOperationException($"cannot determine field type. type: {type}, field: {field}");

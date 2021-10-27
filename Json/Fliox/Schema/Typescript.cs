@@ -128,7 +128,7 @@ namespace Friflo.Json.Fliox.Schema
             foreach (var field in fields) {
                 if (field.IsDerivedField)
                     continue;
-                bool required = field.required;
+                bool required = field.required || field.isCommand;
                 var fieldType = GetFieldType(field, context);
                 var indent  = Indent(maxFieldName, field.name);
                 var optStr  = required ? " ": "?";

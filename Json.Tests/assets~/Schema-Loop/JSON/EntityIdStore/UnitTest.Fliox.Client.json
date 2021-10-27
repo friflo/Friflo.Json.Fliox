@@ -29,15 +29,12 @@
             ],
             "additionalProperties": false
         },
-        "EntityIdStoreCommands": {
+        "EntityIdStoreService": {
             "type": "object",
             "isAbstract": true,
             "properties": {
-                "Echo": { "prefixItems": [{  }, {  }], "type": "array" }
+                "Echo": { "command": [{  }, {  }] }
             },
-            "required": [
-                "Echo"
-            ],
             "additionalProperties": false
         }
     }

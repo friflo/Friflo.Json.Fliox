@@ -17,17 +17,13 @@
             ],
             "additionalProperties": false
         },
-        "UserStoreCommands": {
+        "UserStoreService": {
             "type": "object",
             "isAbstract": true,
             "properties": {
-                "AuthenticateUser": { "prefixItems": [{ "$ref": "#/definitions/AuthenticateUser" }, { "$ref": "#/definitions/AuthenticateUserResult" }], "type": "array" },
-                "Echo":             { "prefixItems": [{  }, {  }], "type": "array" }
+                "AuthenticateUser": { "command": [{ "$ref": "#/definitions/AuthenticateUser" }, { "$ref": "#/definitions/AuthenticateUserResult" }] },
+                "Echo":             { "command": [{  }, {  }] }
             },
-            "required": [
-                "AuthenticateUser",
-                "Echo"
-            ],
             "additionalProperties": false
         },
         "AuthenticateUser": {
