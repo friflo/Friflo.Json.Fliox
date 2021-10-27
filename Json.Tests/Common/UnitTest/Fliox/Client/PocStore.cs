@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public PocStore(FlioxHub hub, string userId, string clientId = null): base (hub, TestGlobals.typeStore, userId, clientId) {}
         
         [Fri.Command(Name =        "TestCommand")]
-        public CommandTask<bool>    Test (TestCommand value)                 => SendCommand<TestCommand, bool>("TestCommand", value);
+        public CommandTask<bool>    Test (TestCommand command)                 => SendCommand<TestCommand, bool>("TestCommand", command);
     }
 
     // ------------------------------ models ------------------------------
