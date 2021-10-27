@@ -46,6 +46,7 @@ namespace Friflo.Json.Fliox.Schema
     ///       <item><see cref="TypescriptGenerator.EmitStandardType"/></item>
     ///       <item><see cref="TypescriptGenerator.EmitType"/></item>
     ///       <item><see cref="TypescriptGenerator.EmitClassType"/></item>
+    ///       <item><see cref="TypescriptGenerator.EmitServiceType"/></item>
     ///       <item><see cref="TypescriptGenerator.GetFieldType"/></item>
     ///       <item><see cref="TypescriptGenerator.GetElementType"/></item>
     ///       <item><see cref="TypescriptGenerator.GetTypeName"/></item>
