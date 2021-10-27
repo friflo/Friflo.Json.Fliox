@@ -15,10 +15,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
 {
     public class TestDatabase : EntityDatabase
     {
-        private readonly    EntityDatabase                                      local;
-        internal readonly    Dictionary<string, TestContainer>                   testContainers  = new Dictionary<string, TestContainer>();
+        private  readonly   EntityDatabase                      local;
+        internal readonly   Dictionary<string, TestContainer>   testContainers  = new Dictionary<string, TestContainer>();
 
-        
         public TestDatabase(EntityDatabase local, DbOpt opt = null, TaskHandler handler = null) : base(handler, opt) {
             this.local = local;
         }
@@ -38,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     public class TestDatabaseHub : FlioxHub
     {
         
-        public  readonly    Dictionary<string, Func<ExecuteSyncResult>> syncErrors      = new Dictionary<string, Func<ExecuteSyncResult>>();
+        public  readonly    Dictionary<string, Func<ExecuteSyncResult>> syncErrors  = new Dictionary<string, Func<ExecuteSyncResult>>();
         private readonly    TestDatabase testDatabase;
 
         public TestDatabaseHub(EntityDatabase database, string hostName = null)
