@@ -235,11 +235,6 @@ namespace Friflo.Json.Fliox.DB.Client
             return task;
         }
         
-        public MessageTask SendMessage<TMessage>(TMessage message) {
-            var name = typeof(TMessage).Name;
-            return SendMessage(name, message);
-        }
-        
         // --- SendCommand
         public CommandTask<TResult> SendCommand<TCommand, TResult>(string name, TCommand command) {
             var json    = _intern.jsonMapper.WriteAsArray(command);
