@@ -53,19 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             commands.Add(name, command);
         }
         
-        public void AddCommandHandler<TValue, TResult>(CommandHandler<TValue, TResult> handler) {
-            var name = typeof(TValue).Name;
-            var command = new CommandCallback<TValue, TResult>(name, handler);
-            commands.Add(name, command);
-        }
-        
         public void AddCommandHandlerAsync<TValue, TResult>(string name, CommandHandler<TValue, Task<TResult>> handler) {
-            var command = new CommandAsyncCallback<TValue, TResult>(name, handler);
-            commands.Add(name, command);
-        }
-        
-        public void AddCommandHandlerAsync<TValue, TResult>(CommandHandler<TValue, Task<TResult>> handler) {
-            var name = typeof(TValue).Name;
             var command = new CommandAsyncCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }

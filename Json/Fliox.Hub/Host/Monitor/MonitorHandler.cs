@@ -10,6 +10,22 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
 {
     internal sealed class MonitorHandler : TaskHandler
     {
+        private readonly   FlioxHub            hub;
+        
+        internal MonitorHandler (FlioxHub hub) {
+            this.hub = hub;
+
+            AddCommandHandler<ClearStats, ClearStatsResult>(nameof(ClearStats), ClearStats); // todo add handler via scanning DatabaseHandler
+        }
+        
+        private ClearStatsResult ClearStats(Command<ClearStats> command) {
+            // clear request counts of the hub. Extension databases share the same hub.
+            hub.Authenticator.ClearUserStats();
+            hub.ClientController.ClearClientStats();
+            hub.hostStats.ClearHostStats();
+            return new ClearStatsResult();
+        }
+        
         public override Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             var monitorDB = (MonitorDatabase)database;
             switch (task.TaskType) {

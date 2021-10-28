@@ -21,10 +21,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
         public const string Name = "monitor";
         
         public MonitorDatabase (FlioxHub hub, DbOpt opt = null)
-            : base (hub, Name, new MonitorHandler(), opt)
+            : base (hub, Name, new MonitorHandler(hub), opt)
         {
-            handler.AddCommandHandler<ClearStats, ClearStatsResult>(ClearStats); // todo add handler via scanning DatabaseHandler
-
             stateDB         = new MemoryDatabase();
             var monitorHub  = new FlioxHub(stateDB);
             stateStore  = new MonitorStore(hub.hostName, monitorHub, HostTypeStore.Get());
@@ -35,14 +33,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
             base.Dispose();
         }
         
-        private ClearStatsResult ClearStats(Command<ClearStats> command) {
-            // clear request counts of the hub. Extension databases share the same hub.
-            hub.Authenticator.ClearUserStats();
-            hub.ClientController.ClearClientStats();
-            hub.hostStats.ClearHostStats();
-            return new ClearStatsResult();
-        }
-
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             return stateDB.CreateContainer(name, database);
         }
