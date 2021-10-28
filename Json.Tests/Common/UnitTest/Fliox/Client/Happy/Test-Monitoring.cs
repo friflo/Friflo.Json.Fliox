@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Auth;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Host.Monitor;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Hub.UserAuth;
@@ -46,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var monitor          = new MonitorDatabase(hub))
             using (var loopbackHub      = new LoopbackHub(hub)) {
                 hub.AddExtensionDB(monitor);
-                var monitorDB = new ExtensionDatabase(loopbackHub, MonitorDatabase.Name);
+                var monitorDB = new RemoteExtensionDatabase(loopbackHub, MonitorDatabase.Name);
                 await AssertNoAuthMonitoringDB  (loopbackHub, monitorDB);
                 await AssertAuthMonitoringDB    (loopbackHub, monitorDB, hub);
             }
@@ -63,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var clientHub    = new HttpClientHub("http://localhost:8080/")) {
                 hub.AddExtensionDB(monitor);
                 await RunServer(server, async () => {
-                    var monitorDB   = new ExtensionDatabase(clientHub, MonitorDatabase.Name);
+                    var monitorDB   = new RemoteExtensionDatabase(clientHub, MonitorDatabase.Name);
                     await AssertNoAuthMonitoringDB  (clientHub, monitorDB);
                     await AssertAuthMonitoringDB    (clientHub, monitorDB, hub);
                 });

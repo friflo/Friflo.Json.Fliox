@@ -2,11 +2,13 @@
 // See LICENSE file in the project root for full license information.
 
 
-namespace Friflo.Json.Fliox.Hub.Host
+using Friflo.Json.Fliox.Hub.Host;
+
+namespace Friflo.Json.Fliox.Hub.Remote
 {
-    public class ExtensionDatabase : EntityDatabase
+    public class RemoteExtensionDatabase : EntityDatabase
     {
-        public ExtensionDatabase (FlioxHub hub, string extensionName, TaskHandler handler = null, DbOpt opt = null)
+        public RemoteExtensionDatabase (RemoteClientHub hub, string extensionName, TaskHandler handler = null, DbOpt opt = null)
             : base (hub, extensionName, handler, opt)
         { }
         
