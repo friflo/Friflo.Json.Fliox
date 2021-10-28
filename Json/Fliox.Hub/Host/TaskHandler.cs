@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
         
         public TaskHandler () {
-            AddCommandHandler(StdCommand.Echo, new CommandHandler<JsonValue, JsonValue>(Echo));
+            AddCommandHandler(StdCommand.Echo, new CommandHandler<JsonValue, JsonValue>(Echo)); // todo add handler via scanning TaskHandler
         }
         
         private static JsonValue Echo (Command<JsonValue> command) {
