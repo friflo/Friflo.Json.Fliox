@@ -1,28 +1,20 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System;
-using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Protocol.Models;
-using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
-
-namespace Friflo.Json.Fliox.Hub.Host.Internal
+namespace Friflo.Json.Fliox.Hub.Host
 {
-    internal class ExtensionDatabase : EntityDatabase
+    public class ExtensionDatabase : EntityDatabase
     {
-        internal ExtensionDatabase (FlioxHub hub, string extensionName, TaskHandler handler, DbOpt opt)
+        public ExtensionDatabase (FlioxHub hub, string extensionName, TaskHandler handler = null, DbOpt opt = null)
             : base (hub, extensionName, handler, opt)
-        {
-            // extensionBase.extensionDbs.Add(extensionName, this);
-            // local = extensionBase.extensionDbs[extensionName];
-        }
+        { }
         
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
-            return new ExtensionContainer(name, database);
+            return null; // new ExtensionContainer(name, database);
         }
     }
-    
+    /*
     internal class ExtensionContainer : EntityContainer
     {
         public ExtensionContainer(string name, EntityDatabase database) : base(name, database) {
@@ -48,4 +40,5 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             throw new NotImplementedException();
         }
     }
+    */
 }

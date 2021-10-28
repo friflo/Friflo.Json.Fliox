@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Auth;
 using Friflo.Json.Fliox.Hub.Host.Event;
-using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Host.Stats;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -214,11 +213,6 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public void AddExtensionDB(EntityDatabase extensionDB) {
             extensionDbs.Add(extensionDB.name, extensionDB);
-        }
-
-        public EntityDatabase AddExtensionDB (string extensionName, TaskHandler handler, DbOpt opt = null) {
-            var extensionDB = new ExtensionDatabase (this, extensionName, handler, opt);
-            return extensionDB;
         }
 
         public virtual void Dispose() { }  // todo - remove
