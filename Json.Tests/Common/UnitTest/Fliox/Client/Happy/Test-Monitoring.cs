@@ -74,7 +74,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var userHub         	= new FlioxHub(userDatabase))
             using (var userStore        = new UserStore (userHub, UserStore.AuthenticationUser)) {
                 userHub.Authenticator   = new UserDatabaseAuthenticator();
-                database.Authenticator  = new UserAuthenticator(userStore, userStore);
+                database.Authenticator  = new UserAuthenticator(userStore);
                 await AssertAuthSuccessMonitoringDB (hub, monitorDB);
                 await AssertAuthFailedMonitoringDB  (hub, monitorDB);
             }

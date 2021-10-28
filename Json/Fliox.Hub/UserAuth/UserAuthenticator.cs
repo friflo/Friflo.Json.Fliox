@@ -39,17 +39,17 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         private   readonly  ConcurrentDictionary<string,  Authorizer>   authorizerByRole = new ConcurrentDictionary <string, Authorizer>();
 
 
-        public UserAuthenticator (UserStore userStore, IUserAuth userAuth, Authorizer unknown = null)
+        public UserAuthenticator (UserStore userStore, IUserAuth userAuth = null, Authorizer unknown = null)
             : base (unknown)
         {
             if (!(userStore._intern.database.handler is UserDBHandler))
                 throw new InvalidOperationException("userStore requires a database handler of Type: " + nameof(UserDBHandler));
             this.userStore      = userStore;
-            this.userAuth       = userAuth;
+            this.userAuth       = userAuth ?? userStore;
             this.unknown        = unknown ?? new AuthorizeDeny();
         }
         
-        public UserAuthenticator (EntityDatabase userDatabase, Authorizer unknown = null)
+        public UserAuthenticator (EntityDatabase userDatabase, IUserAuth userAuth = null, Authorizer unknown = null)
             : base (unknown)
         {
             if (!(userDatabase.handler is UserDBHandler))
@@ -57,7 +57,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
             var userHub        	    = new FlioxHub(userDatabase);
             userHub.Authenticator   = new UserDatabaseAuthenticator();  // authorize access to userDatabase
             userStore               = new UserStore (userHub, UserStore.AuthenticationUser);
-            userAuth                = userStore;
+            this.userAuth           = userAuth ?? userStore;
             this.unknown            = unknown ?? new AuthorizeDeny();
         }
         

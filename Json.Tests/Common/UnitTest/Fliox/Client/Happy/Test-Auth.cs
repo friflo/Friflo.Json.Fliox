@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     using (var eventBroker      = new EventBroker(false)) // require for SubscribeMessage() and SubscribeChanges()
                     {
                         userHub.Authenticator   = new UserDatabaseAuthenticator();  // authorize access to UserStore db and handle AuthenticateUser command
-                        var authenticator = new UserAuthenticator(userStore, userStore);
+                        var authenticator = new UserAuthenticator(userStore);
                         authenticator.RegisterPredicate(TestPredicate);
                         hub.Authenticator  = authenticator;
                         hub.EventBroker    = eventBroker;
