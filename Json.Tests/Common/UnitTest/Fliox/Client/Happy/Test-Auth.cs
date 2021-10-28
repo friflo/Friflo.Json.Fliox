@@ -224,15 +224,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore", new UserDBHandler()))
-                    using (var userHub        	= new FlioxHub  (userDatabase))
-                    using (var serverStore      = new UserStore (userHub, UserStore.Server))
-                    using (var userStore        = new UserStore (userHub, UserStore.AuthenticationUser)) {
-                        userHub.Authenticator   = new UserDatabaseAuthenticator();
+                    using (var userAuthenticator= new UserAuthenticator (userDatabase))
+                    using (var serverStore      = new UserStore (userAuthenticator.userHub, UserStore.Server)) {
                         // assert access to user database with different users: "Server" & "AuthenticationUser"
                         await AssertUserStore       (serverStore);
-                        await AssertUserStore       (userStore);
+                        await AssertUserStore       (userAuthenticator.userStore);
                         await AssertServerStore     (serverStore);
-                        await AssertAuthUserStore   (userStore);
+                        await AssertAuthUserStore   (userAuthenticator.userStore);
                     }
                 });
             }

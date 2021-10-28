@@ -33,22 +33,25 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
     /// </summary>
     public class UserAuthenticator : Authenticator, IDisposable
     {
-        private   readonly  FlioxHub                                    userHub;
-        private   readonly  UserStore                                   userStore;
-        private   readonly  IUserAuth                                   userAuth;
-        private   readonly  Authorizer                                  unknown;
+        // --- public
+        public    readonly  FlioxHub                                    userHub;
+        public    readonly  UserStore                                   userStore;
+        public    readonly  IUserAuth                                   userAuth;
+        
+        // --- private / internal
+        private   readonly  Authorizer                                  anonymousAuthorizer;
         private   readonly  ConcurrentDictionary<string,  Authorizer>   authorizerByRole = new ConcurrentDictionary <string, Authorizer>();
 
-        public UserAuthenticator (EntityDatabase userDatabase, IUserAuth userAuth = null, Authorizer unknown = null)
-            : base (unknown)
+        public UserAuthenticator (EntityDatabase userDatabase, Authorizer anonymousAuthorizer = null)
+            : base (anonymousAuthorizer)
         {
             if (!(userDatabase.handler is UserDBHandler))
                 throw new InvalidOperationException("userDatabase requires a handler of Type: " + nameof(UserDBHandler));
             userHub        	        = new FlioxHub(userDatabase);
             userHub.Authenticator   = new UserDatabaseAuthenticator();  // authorize access to userDatabase
             userStore               = new UserStore (userHub, UserStore.AuthenticationUser);
-            this.userAuth           = userAuth ?? userStore;
-            this.unknown            = unknown ?? new AuthorizeDeny();
+            userAuth                = userStore;
+            this.anonymousAuthorizer= anonymousAuthorizer ?? new AuthorizeDeny();
         }
         
         public void Dispose() {
@@ -80,17 +83,17 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         {
             var userId = syncRequest.userId;
             if (userId.IsNull()) {
-                messageContext.AuthenticationFailed(anonymousUser, "user authentication requires 'user' id", unknown);
+                messageContext.AuthenticationFailed(anonymousUser, "user authentication requires 'user' id", anonymousAuthorizer);
                 return;
             }
             var token = syncRequest.token;
             if (token == null) {
-                messageContext.AuthenticationFailed(anonymousUser, "user authentication requires 'token'", unknown);
+                messageContext.AuthenticationFailed(anonymousUser, "user authentication requires 'token'", anonymousAuthorizer);
                 return;
             }
             if (users.TryGetValue(userId, out User user)) {
                 if (user.token != token) {
-                    messageContext.AuthenticationFailed(user, InvalidUserToken, unknown);
+                    messageContext.AuthenticationFailed(user, InvalidUserToken, anonymousAuthorizer);
                     return;
                 }
                 messageContext.AuthenticationSucceed(user, user.authorizer);
@@ -107,7 +110,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
             }
             
             if (user == null || token != user.token) {
-                messageContext.AuthenticationFailed(anonymousUser, InvalidUserToken, unknown);
+                messageContext.AuthenticationFailed(anonymousUser, InvalidUserToken, anonymousAuthorizer);
                 return;
             }
             messageContext.AuthenticationSucceed(user, user.authorizer);
@@ -161,7 +164,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
             UserPermission permission = readPermission.Result;
             var roles = permission.roles;
             if (roles == null || roles.Count == 0) {
-                return unknown;
+                return anonymousAuthorizer;
             }
             await AddNewRoles(roles).ConfigureAwait(false);
             var authorizers = new List<Authorizer>(roles.Count);
