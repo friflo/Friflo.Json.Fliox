@@ -14,7 +14,7 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.UserAuth
 {
     /// <summary>
-    /// Authenticate users stored in the user database passed to <see cref="UserDatabaseAuthenticator(EntityDatabase)"/>.
+    /// Authenticate users stored in the user database.
     /// If user authentication succeed it returns also the roles attached to a user to enable authorization for each task.
     /// The schema of the user database is defined in <see cref="UserStore"/>.
     /// <br/>
@@ -41,26 +41,8 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
             new AuthorizeContainer(nameof(UserStore.credentials),  new []{OperationType.read})
         });
         
-        public UserDatabaseAuthenticator(EntityDatabase userDatabase) : base (null) {
-            userDatabase.handler.AddCommandHandlerAsync<AuthenticateUser, AuthenticateUserResult>(nameof(AuthenticateUser), AuthenticateUser);
-        }
-        
-        private async Task<AuthenticateUserResult> AuthenticateUser (Command<AuthenticateUser> command) {
-            using (var pooledStore = command.Pools.Pool(() => new UserStore(command.Hub, UserStore.Server)).Get()) {
-                var store           = pooledStore.instance;
-                var validateToken   = command.Value;
-                var userId          = validateToken.userId;
-                var readCredentials = store.credentials.Read();
-                var findCred        = readCredentials.Find(userId);
-                
-                await store.SyncTasks().ConfigureAwait(false);
+        public UserDatabaseAuthenticator() : base (null) { }
 
-                UserCredential  cred    = findCred.Result;
-                bool            isValid = cred != null && cred.token == validateToken.token;
-                return new AuthenticateUserResult { isValid = isValid };
-            }
-        }
-        
         public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
             ref var userId = ref syncRequest.userId;
             User user;

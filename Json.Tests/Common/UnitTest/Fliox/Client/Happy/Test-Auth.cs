@@ -23,14 +23,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
-                    using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
+                    using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore", new UserDBHandler()))
                     using (var userHub        	= new FlioxHub(userDatabase))
                     using (var userStore        = new UserStore(userHub, UserStore.AuthenticationUser))
                     using (var database         = new MemoryDatabase())
                     using (var hub          	= new FlioxHub(database))
                     using (var eventBroker      = new EventBroker(false)) // require for SubscribeMessage() and SubscribeChanges()
                     {
-                        userHub.Authenticator   = new UserDatabaseAuthenticator(userDatabase);  // authorize access to UserStore db and handle AuthenticateUser command
+                        userHub.Authenticator   = new UserDatabaseAuthenticator();  // authorize access to UserStore db and handle AuthenticateUser command
                         var authenticator = new UserAuthenticator(userStore, userStore);
                         authenticator.RegisterPredicate(TestPredicate);
                         hub.Authenticator  = authenticator;
@@ -226,11 +226,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
-                    using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore"))
+                    using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore", new UserDBHandler()))
                     using (var userHub        	= new FlioxHub(userDatabase))
                     using (var serverStore      = new UserStore             (userHub, UserStore.Server))
                     using (var userStore        = new UserStore             (userHub, UserStore.AuthenticationUser)) {
-                        userHub.Authenticator   = new UserDatabaseAuthenticator(userDatabase);
+                        userHub.Authenticator   = new UserDatabaseAuthenticator();
                         // assert access to user database with different users: "Server" & "AuthenticationUser"
                         await AssertUserStore       (serverStore);
                         await AssertUserStore       (userStore);

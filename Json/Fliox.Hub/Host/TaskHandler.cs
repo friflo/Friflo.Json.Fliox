@@ -48,12 +48,12 @@ namespace Friflo.Json.Fliox.Hub.Host
             return commands.TryGetValue(name, out command); 
         }
         
-        public void AddCommandHandler<TValue, TResult>(string name, CommandHandler<TValue, TResult> handler) {
+        protected void AddCommandHandler<TValue, TResult>(string name, CommandHandler<TValue, TResult> handler) {
             var command = new CommandCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }
         
-        public void AddCommandHandlerAsync<TValue, TResult>(string name, CommandHandler<TValue, Task<TResult>> handler) {
+        protected void AddCommandHandlerAsync<TValue, TResult>(string name, CommandHandler<TValue, Task<TResult>> handler) {
             var command = new CommandAsyncCallback<TValue, TResult>(name, handler);
             commands.Add(name, command);
         }

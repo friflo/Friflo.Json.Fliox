@@ -66,10 +66,10 @@ namespace Friflo.Json.Tests.Main
         }
         
         private static UserAuthenticator CreateUserAuthenticator () {
-            var userDatabase        = new FileDatabase("./Json.Tests/assets~/DB/UserStore");
+            var userDatabase        = new FileDatabase("./Json.Tests/assets~/DB/UserStore", new UserDBHandler());
             var userHub        	    = new FlioxHub(userDatabase);
             var userStore           = new UserStore (userHub, UserStore.AuthenticationUser);
-            userHub.Authenticator   = new UserDatabaseAuthenticator(userDatabase);  // authorize access to userDatabase
+            userHub.Authenticator   = new UserDatabaseAuthenticator();  // authorize access to userDatabase
             return new UserAuthenticator(userStore, userStore);
         }
     }
