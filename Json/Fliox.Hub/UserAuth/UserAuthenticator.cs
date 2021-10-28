@@ -31,34 +31,29 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
     /// If authentication succeed it set the <see cref="AuthState.authorizer"/> derived from the roles assigned to the user.
     /// If authentication fails the given default <see cref="Authorizer"/> is used for the user.
     /// </summary>
-    public class UserAuthenticator : Authenticator
+    public class UserAuthenticator : Authenticator, IDisposable
     {
+        private   readonly  FlioxHub                                    userHub;
         private   readonly  UserStore                                   userStore;
         private   readonly  IUserAuth                                   userAuth;
         private   readonly  Authorizer                                  unknown;
         private   readonly  ConcurrentDictionary<string,  Authorizer>   authorizerByRole = new ConcurrentDictionary <string, Authorizer>();
 
-
-        public UserAuthenticator (UserStore userStore, IUserAuth userAuth = null, Authorizer unknown = null)
-            : base (unknown)
-        {
-            if (!(userStore._intern.database.handler is UserDBHandler))
-                throw new InvalidOperationException("userStore requires a database handler of Type: " + nameof(UserDBHandler));
-            this.userStore      = userStore;
-            this.userAuth       = userAuth ?? userStore;
-            this.unknown        = unknown ?? new AuthorizeDeny();
-        }
-        
         public UserAuthenticator (EntityDatabase userDatabase, IUserAuth userAuth = null, Authorizer unknown = null)
             : base (unknown)
         {
             if (!(userDatabase.handler is UserDBHandler))
                 throw new InvalidOperationException("userDatabase requires a handler of Type: " + nameof(UserDBHandler));
-            var userHub        	    = new FlioxHub(userDatabase);
+            userHub        	        = new FlioxHub(userDatabase);
             userHub.Authenticator   = new UserDatabaseAuthenticator();  // authorize access to userDatabase
             userStore               = new UserStore (userHub, UserStore.AuthenticationUser);
             this.userAuth           = userAuth ?? userStore;
             this.unknown            = unknown ?? new AuthorizeDeny();
+        }
+        
+        public void Dispose() {
+            userStore.Dispose();
+            userHub.Dispose();
         }
         
         public async Task ValidateRoles() {
