@@ -61,13 +61,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             foreach (var entityInfo in entityInfos) {
                 var setMapper   = (IEntitySetMapper)store._intern.typeStore.GetTypeMapper(entityInfo.entitySetType);
                 args[0] = entityInfo.container;
-                var entitySet   = setMapper.CreateEntitySet(args);
+                EntitySet entitySet   = setMapper.CreateEntitySet(args);
                 entitySet.Init(store);
-                if (entityInfo.field != null) {
-                    entityInfo.field.   SetValue(store, entitySet);
-                } else {
-                    entityInfo.property.SetValue(store, entitySet);
-                }
+                entityInfo.SetEntitySetMember(store, entitySet);
             }
         }
         
@@ -88,8 +84,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         internal readonly   string         container;
         internal readonly   Type           entitySetType;
         internal readonly   Type           entityType;
-        internal readonly   FieldInfo      field;
-        internal readonly   PropertyInfo   property;
+        private  readonly   FieldInfo      field;
+        private  readonly   PropertyInfo   property;
         
         internal EntityInfo (
             string         container,
@@ -107,6 +103,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             this.entityType     = entityType;
             this.field          = field;
             this.property       = property;
+        }
+
+        internal void SetEntitySetMember(FlioxClient store, EntitySet entitySet) {
+            if (field != null) {
+                field.   SetValue(store, entitySet);
+            } else {
+                property.SetValue(store, entitySet);
+            }
         }
     }
 }

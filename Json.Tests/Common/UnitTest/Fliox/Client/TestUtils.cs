@@ -140,6 +140,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 var _           = new PocStore(hub, typeStore, null);
                 var __          = new PocStore(hub, typeStore, null);
                 
+                for (int n = 0; n < 1; n++) {
+                    new PocStore(hub, typeStore, null); // ~ 5 µs (Release)
+                }
+                
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 // ReSharper disable once UnusedVariable
                 var store = new PocStore(hub, typeStore, null); // ~ 6 µs

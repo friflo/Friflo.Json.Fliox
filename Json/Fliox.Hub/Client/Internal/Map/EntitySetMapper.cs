@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Linq.Expressions;
 using System.Reflection;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
@@ -32,9 +33,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
     internal sealed class EntitySetMapper<T, TEntity> : TypeMapper<T>, IEntitySetMapper where T       : class
                                                                                         where TEntity : class
     {
-        private             TypeMapper      elementType;
-        private readonly    ConstructorInfo setConstructor;
-        private readonly    Type            keyType;
+        private             TypeMapper              elementType;
+        private readonly    ConstructorInfo         setConstructor;
+        private readonly    Type                    keyType;
+        private readonly    Func<string,EntitySet>  setConstructorDelegate;
         
         public  override    bool            IsDictionary        => true;
         public  override    TypeMapper      GetElementMapper()  => elementType;
@@ -46,6 +48,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             var flags       = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
             setConstructor  = type.GetConstructor(flags, null, EntitySetMatcher.TypeArgs, null);
             this.keyType    = keyType;
+#if !UNITY_5_3_OR_NEWER
+            var param               = Expression.Parameter(typeof(string));
+            var newExpression       = Expression.New(setConstructor, param);
+            var lambda              = Expression.Lambda(newExpression, param);
+            setConstructorDelegate  = (Func<string, EntitySet>)lambda.Compile(); // not supported by Unity
+#endif
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
@@ -63,6 +71,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         
         public EntitySet CreateEntitySet(object[] args) {
             EntitySetBase<TEntity>.ValidateKeyType(keyType);
+            if (setConstructorDelegate != null) {
+                return setConstructorDelegate((string)args[0]);
+            }
             var instance    = setConstructor.Invoke (args);
             return (EntitySet)instance;
         }
