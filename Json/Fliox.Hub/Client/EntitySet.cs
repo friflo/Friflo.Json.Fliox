@@ -145,9 +145,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override void Init(FlioxClient store) {
-            var type = typeof(T);
-            store._intern.setByType[type]   = this;
-            store._intern.setByName[name]   = this;
+            store._intern.AddEntitySet(this);
             container   = store._intern.database?.GetOrCreateContainer(name);
             intern      = new SetIntern<TKey, T>(store);
         }
