@@ -30,8 +30,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private  readonly   SubscriptionProcessor                       defaultProcessor;
         private             ObjectPatcher                               objectPatcher;  // create on demand
         private             EntityProcessor                             processor;      // create on demand
-        internal readonly   Dictionary<Type,   EntitySet>               setByType;
-        internal readonly   Dictionary<string, EntitySet>               setByName;
+        internal            Dictionary<Type,   EntitySet>               setByType;      // create on demand
+        internal            Dictionary<string, EntitySet>               setByName;      // create on demand
         internal readonly   Dictionary<string, MessageSubscriber>       subscriptions;
         internal readonly   List<MessageSubscriber>                     subscriptionsPrefix;
         internal readonly   ObjectReader                                messageReader;
@@ -56,7 +56,22 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal EntityProcessor    GetEntityProcessor()   => processor     ?? (processor       = new EntityProcessor());
         internal ObjectPatcher      GetObjectPatcher()     => objectPatcher ?? (objectPatcher   = new ObjectPatcher(jsonMapper));
         
+        internal EntitySet GetSetByType(Type type) {
+            return setByType[type];
+        }
         
+        internal bool TryGetSetByType(Type type, out EntitySet set) {
+            return setByType.TryGetValue(type, out set);
+        }
+        
+        internal EntitySet GetSetByName (string name) {
+            return setByName[name];
+        }
+        
+        internal bool TryGetSetByName (string name, out EntitySet set) {
+            return setByName.TryGetValue(name, out set);
+        }
+
         internal ClientIntern(
             FlioxClient             thisClient,
             FlioxClient             baseClient,

@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal ReadRefsTask<TKey, TValue> ReadRefsByPath<TKey, TValue>(string selector, FlioxClient store) where TValue : class {
             if (subRefs.TryGetTask(selector, out ReadRefsTask subRefsTask))
                 return (ReadRefsTask<TKey, TValue>)subRefsTask;
-            var set         = store._intern.setByType[typeof(TValue)];
+            var set         = store._intern.GetSetByType(typeof(TValue));
             var keyName     = set.GetKeyName();
             var isIntKey    = set.IsIntKey();
             var newQueryRefs = new ReadRefsTask<TKey, TValue>(task, selector, set.name, keyName, isIntKey, store);

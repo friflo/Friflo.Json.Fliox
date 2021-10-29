@@ -356,7 +356,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal EntitySet GetEntitySet(string name) {
-            if (_intern.setByName.TryGetValue(name, out var entitySet))
+            if (_intern.TryGetSetByName(name, out var entitySet))
                 return entitySet;
             throw new InvalidOperationException($"unknown EntitySet. name: {name}");
         }
@@ -364,14 +364,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         // TAG_NULL_REF
         internal EntitySetBase<T> GetEntitySetBase<T>() where T : class {
             Type entityType = typeof(T);
-            if (_intern.setByType.TryGetValue(entityType, out EntitySet set))
+            if (_intern.TryGetSetByType(entityType, out EntitySet set))
                 return (EntitySetBase<T>)set;
             throw new InvalidOperationException($"unknown EntitySet<{entityType.Name}>");
         }
 
         internal EntitySet<TKey, T> GetEntitySet<TKey, T>() where T : class {
             Type entityType = typeof(T);
-            if (_intern.setByType.TryGetValue(entityType, out EntitySet set))
+            if (_intern.TryGetSetByType(entityType, out EntitySet set))
                 return (EntitySet<TKey, T>)set;
             throw new InvalidOperationException($"unknown EntitySet<{entityType.Name}>");
         }
@@ -482,7 +482,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var processor = _intern.GetEntityProcessor();
             foreach (var container in results) {
                 string name         = container.container;
-                if (!_intern.setByName.TryGetValue(name, out EntitySet set)) {
+                if (!_intern.TryGetSetByName(name, out EntitySet set)) {
                     continue;
                 }
                 var keyName         = set.GetKeyName();
@@ -545,7 +545,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     containerResults = result.resultMap;
                     foreach (var containerResult in containerResults) {
                         ContainerEntities containerEntities = containerResult.Value;
-                        var set = _intern.setByName[containerResult.Key];
+                        var set = _intern.GetSetByName(containerResult.Key);
                         set.SyncPeerEntities(containerEntities.entityMap);
                     }
                     SetErrors(result, syncStore);
