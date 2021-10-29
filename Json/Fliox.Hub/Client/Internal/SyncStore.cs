@@ -24,16 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private     int                         subscribeMessageIndex;
         
         internal void SetSyncSets(FlioxClient store) {
-            var setByName = store._intern.setByName;
-            SyncSets = new Dictionary<string, SyncSet>(setByName.Count);
-            foreach (var pair in setByName) {
-                string      container   = pair.Key;
-                EntitySet   set         = pair.Value;
-                SyncSet     syncSet     = set.SyncSet;
-                if (syncSet != null) {
-                    SyncSets.Add(container, set.SyncSet);
-                }
-            }
+            SyncSets = store._intern.CreateSyncSets();
         }
 
         internal LogTask CreateLog() {

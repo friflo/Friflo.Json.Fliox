@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private             ObjectPatcher                               objectPatcher;  // create on demand
         private             EntityProcessor                             processor;      // create on demand
         internal readonly   Dictionary<Type,   EntitySet>               setByType;      // entries should be added on demand
-        internal readonly   Dictionary<string, EntitySet>               setByName;      // entries should be added on demand
+        private  readonly   Dictionary<string, EntitySet>               setByName;      // entries should be added on demand
         internal readonly   Dictionary<string, MessageSubscriber>       subscriptions;
         internal readonly   List<MessageSubscriber>                     subscriptionsPrefix;
         internal readonly   ObjectReader                                messageReader;
@@ -141,6 +141,19 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var type = typeof(T);
             setByType[type]             = entitySet;
             setByName[entitySet.name]   = entitySet;
+        }
+        
+        internal Dictionary<string, SyncSet> CreateSyncSets() {
+            var syncSets = new Dictionary<string, SyncSet>(setByName.Count);
+            foreach (var pair in setByName) {
+                string      container   = pair.Key;
+                EntitySet   set         = pair.Value;
+                SyncSet     syncSet     = set.SyncSet;
+                if (syncSet != null) {
+                    syncSets.Add(container, set.SyncSet);
+                }
+            }
+            return syncSets;
         }
         
         internal SubscribeMessageTask AddCallbackHandler(string name, MessageCallback handler) {
