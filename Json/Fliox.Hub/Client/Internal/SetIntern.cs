@@ -12,9 +12,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     {
         internal readonly   TypeMapper<T>       typeMapper;
         internal readonly   ObjectMapper        jsonMapper;
-        internal readonly   Tracer              tracer;
+        private             Tracer              tracer;         // create on demand
         internal readonly   FlioxClient         store;
-        internal readonly   List<TKey>          keysBuf;
+        private             List<TKey>          keysBuf;        // create on demand
         internal readonly   bool                autoIncrement;
 
         
@@ -22,14 +22,17 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            SubscribeChanges    subscription;
         internal            bool                writePretty;
         internal            bool                writeNull;
+        
+        internal List<TKey> GetKeysBuf()    => keysBuf  ?? (keysBuf = new List<TKey>());
+        internal Tracer     GetTracer()     => tracer   ?? (tracer = new Tracer(store._intern.typeCache, store));
 
         internal SetIntern(FlioxClient store) {
             jsonMapper      = store._intern.jsonMapper;
             typeMapper      = (TypeMapper<T>)store._intern.typeStore.GetTypeMapper(typeof(T));
-            tracer          = new Tracer(store._intern.typeCache, store);
+            tracer          = null;
             this.store      = store;
             subscription    = null;
-            keysBuf         = new List<TKey>();
+            keysBuf         = null;
             autoIncrement   = EntitySet<TKey,T>.EntityKeyTMap.autoIncrement;
             writePretty     = false;
             writeNull       = false;

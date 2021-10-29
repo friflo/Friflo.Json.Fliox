@@ -209,8 +209,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var peer = set.GetOrCreatePeerByKey(key, id);
                 read.results[key] = peer.Entity;
             }
+            var keysBuf = set.intern.GetKeysBuf();
             foreach (var findTask in read.findTasks) {
-                findTask.SetFindResult(read.results, entities, set.intern.keysBuf);
+                findTask.SetFindResult(read.results, entities, keysBuf);
             }
             // A ReadTask is set to error if at least one of its JSON results has an error.
             if (entityErrorInfo.HasErrors) {
@@ -374,9 +375,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             foreach (var id in task.ids) {
                 set.DeletePeer(id);
             }
+            var keysBuf = set.intern.GetKeysBuf();
             foreach (var deleteTask in DeleteTasks()) {
                 var entityErrorInfo = new TaskErrorInfo();
-                var keysBuf = set.intern.keysBuf;
                 keysBuf.Clear();
                 deleteTask.GetKeys(keysBuf);
                 foreach (var key in keysBuf) {

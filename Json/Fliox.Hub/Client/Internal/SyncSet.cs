@@ -244,9 +244,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         /// which is not already assigned) 
         private void GetEntityChanges(Peer<T> peer, LogTask logTask) {
             ref var intern = ref set.intern;
+            var tracer = intern.GetTracer();
             if (peer.created || peer.updated) {
                 intern.store._intern.tracerLogTask = logTask;
-                intern.tracer.Trace(peer.Entity);
+                tracer.Trace(peer.Entity);
                 return;
             }
             var patchSource = peer.PatchSource;
@@ -266,7 +267,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 logTask.AddPatch(this, id);
                 
                 intern.store._intern.tracerLogTask = logTask;
-                intern.tracer.Trace(entity);
+                tracer.Trace(entity);
             }
         }
 
