@@ -34,15 +34,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public void         SubscribeSync() { SingleThreadSynchronizationContext.Run(AssertSubscribe); }
         
         private static async Task AssertSubscribe() {
-            using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var eventBroker  = new EventBroker(false))
-            using (var database     = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
-            using (var hub          = new FlioxHub(database))
-            using (var listenDb     = new PocStore(hub, "listenDb", "listen-client")) {
-                hub.EventBroker = eventBroker;
-                var listenProcessor   = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
-                using (var createStore  = new PocStore(hub, "createStore", "create-client")) {
-                    var createProcessor = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
+            using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
+            using (var eventBroker      = new EventBroker(false))
+            using (var database         = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
+            using (var hub              = new FlioxHub(database, null, eventBroker))
+            using (var listenDb         = new PocStore(hub, "listenDb", "listen-client"))
+            using (var listenProcessor  = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes)) {
+                using (var createStore      = new PocStore(hub, "createStore", "create-client"))
+                using (var createProcessor  = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges)) {
+                    
                     await TestRelationPoC.CreateStore(createStore);
                     
                     while (!listenProcessor.receivedAll ) { await Task.Delay(1); }

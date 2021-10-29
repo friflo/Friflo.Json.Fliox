@@ -98,9 +98,10 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         
         /// <summary> Construct a default database </summary>
-        public FlioxHub (EntityDatabase database, string hostName = null) {
+        public FlioxHub (EntityDatabase database, string hostName = null, EventBroker eventBroker = null) {
             this.database   = database;
             this.hostName   = hostName ?? "host";
+            this.EventBroker= eventBroker;
         }
        
 

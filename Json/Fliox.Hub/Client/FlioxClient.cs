@@ -55,8 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             
             ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
-            var subscriptionProcessor   = new SubscriptionProcessor(this);
-            _intern = new ClientIntern(null, typeStore, hub, hub.database, tracer, eventTarget, subscriptionProcessor);
+            _intern = new ClientIntern(this, null, typeStore, hub, hub.database, tracer, eventTarget);
             _intern.syncStore = new SyncStore();
             SetUserClient(userId, clientId);
             ClientEntityUtils.InitEntitySets(this);
@@ -69,8 +68,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             //     throw new ArgumentException("database of baseStore must not be an extension database", nameof(baseClient));
             var hub = baseClient._intern.hub;
             ITracerContext tracer       = this;
-            var subscriptionProcessor   = new SubscriptionProcessor(this);
-            _intern = new ClientIntern(baseClient, baseClient._intern.typeStore, hub, database, tracer, null, subscriptionProcessor);
+            _intern = new ClientIntern(this, baseClient, baseClient._intern.typeStore, hub, database, tracer, null);
             _intern.syncStore = new SyncStore();
             ClientEntityUtils.InitEntitySets(this);
         }
@@ -115,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private void AssertBaseStore() {
-            if (_intern.client != null)
+            if (_intern.baseClient != null)
                 throw new InvalidOperationException("only base store can set: userId, clientId & token");
         } 
 
@@ -390,7 +388,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             syncStore.SetSyncSets(this);
             
             var tasks       = new List<SyncRequestTask>();
-            var client      = _intern.client ?? this;
+            var client      = _intern.baseClient ?? this;
             var syncRequest = new SyncRequest {
                 // database    = _intern.database.ExtensionName, 
                 tasks       = tasks,
@@ -481,7 +479,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var result in results) {
                 resultMap.Add(result.container, result);
             }
-            var processor = _intern.processor;
+            var processor = _intern.GetEntityProcessor();
             foreach (var container in results) {
                 string name         = container.container;
                 if (!_intern.setByName.TryGetValue(name, out EntitySet set)) {

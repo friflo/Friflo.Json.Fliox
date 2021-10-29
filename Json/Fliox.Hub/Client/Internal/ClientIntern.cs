@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     internal struct ClientIntern
     {
         // readonly
-        internal readonly   FlioxClient                                 client;
+        internal readonly   FlioxClient                                 baseClient;
         internal readonly   TypeStore                                   typeStore;
         internal readonly   TypeCache                                   typeCache;
         internal readonly   FlioxHub                                    hub;
@@ -28,7 +28,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // readonly - owned
         internal readonly   ObjectMapper                                jsonMapper;
         internal readonly   ObjectPatcher                               objectPatcher;
-        internal readonly   EntityProcessor                             processor;
+        private  readonly   SubscriptionProcessor                       defaultProcessor;
+        private             EntityProcessor                             processor;
         internal readonly   Dictionary<Type,   EntitySet>               setByType;
         internal readonly   Dictionary<string, EntitySet>               setByName;
         internal readonly   Dictionary<string, MessageSubscriber>       subscriptions;
@@ -52,21 +53,22 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         public   override   string                                  ToString() => userId.ToString();
 
-
+        internal EntityProcessor GetEntityProcessor() => processor ?? (processor = new EntityProcessor());
+        
         internal ClientIntern(
-            FlioxClient             client,
+            FlioxClient             thisClient,
+            FlioxClient             baseClient,
             TypeStore               typeStore,
             FlioxHub                hub,
             EntityDatabase          database,
             ITracerContext          tracerContext,
-            EventTarget             eventTarget,
-            SubscriptionProcessor   subscriptionProcessor)
+            EventTarget             eventTarget)
         {
             // throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 
             var mapper                  = new ObjectMapper(typeStore, new NoThrowHandler());
             mapper.TracerContext        = tracerContext;
             // readonly
-            this.client                 = client;
+            this.baseClient             = baseClient;
             this.typeStore              = typeStore;
             this.typeCache              = mapper.writer.TypeCache;
             this.hub                    = hub;
@@ -75,7 +77,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             // readonly - owned
             jsonMapper                  = mapper;
             objectPatcher               = new ObjectPatcher(jsonMapper);
-            processor                   = new EntityProcessor();
+            defaultProcessor            = new SubscriptionProcessor(thisClient);
+            processor                   = null;
             setByType                   = new Dictionary<Type, EntitySet>();
             setByName                   = new Dictionary<string, EntitySet>();
             subscriptions               = new Dictionary<string, MessageSubscriber>();
@@ -88,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             // --- non readonly
             syncStore                   = null;
             tracerLogTask               = null;
-            this.subscriptionProcessor  = subscriptionProcessor;
+            subscriptionProcessor       = defaultProcessor;
             subscriptionHandler         = null;
             disposed                    = false;
             lastEventSeq                = 0;
@@ -110,7 +113,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             hub.RemoveEventTarget(clientId);
             setByName.Clear();
             setByType.Clear();
-            processor.Dispose();
+            processor?.Dispose();
+            defaultProcessor.Dispose();
             objectPatcher.Dispose();
             // readonly
             jsonMapper.Dispose();

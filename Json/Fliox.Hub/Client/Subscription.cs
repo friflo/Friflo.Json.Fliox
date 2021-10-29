@@ -25,12 +25,12 @@ namespace Friflo.Json.Fliox.Hub.Client
     
     public delegate void SubscriptionHandler (SubscriptionProcessor processor, EventMessage ev);
     
-    public class SubscriptionProcessor
+    public class SubscriptionProcessor : IDisposable
     {
         private readonly    FlioxClient                         client;
         private readonly    Dictionary<Type, EntityChanges>     results   = new Dictionary<Type, EntityChanges>();
         private readonly    List<Message>                       messages  = new List<Message>();
-        private readonly    EntityProcessor                     processor;
+        private             EntityProcessor                     processor;
         
         /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
         private readonly    SynchronizationContext              synchronizationContext;
@@ -57,7 +57,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         public SubscriptionProcessor (FlioxClient client, SynchronizationContext synchronizationContext = null) {
             synchronizationContext      = synchronizationContext ?? SynchronizationContext.Current; 
             this.client                 = client;
-            processor                   = client._intern.processor;
             this.synchronizationContext = synchronizationContext;
         }
         
@@ -70,10 +69,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         public SubscriptionProcessor (FlioxClient client, SubscriptionHandling _) {
             this.client                 = client;
-            processor                   = client._intern.processor;
             this.eventQueue             = new ConcurrentQueue <EventMessage> ();
         }
-        
+
+        public void Dispose() {
+            processor?.Dispose();
+        }
+
         public virtual void EnqueueEvent(EventMessage ev) {
             if (eventQueue != null) {
                 eventQueue.Enqueue(ev);
@@ -183,6 +185,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private List<JsonKey> GetKeysFromEntities(string keyName, List<JsonValue> entities) {
+            if (processor == null) {
+                processor = new EntityProcessor();
+            }
             var keys = new List<JsonKey>(entities.Count);
             foreach (var entity in entities) {
                 if (!processor.GetEntityKey(entity, keyName, out JsonKey key, out string error))
