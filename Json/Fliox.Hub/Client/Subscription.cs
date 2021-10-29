@@ -30,7 +30,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         private readonly    FlioxClient                         client;
         private readonly    Dictionary<Type, EntityChanges>     results   = new Dictionary<Type, EntityChanges>();
         private readonly    List<Message>                       messages  = new List<Message>();
-        private             EntityProcessor                     processor;
         
         /// Either <see cref="synchronizationContext"/> or <see cref="eventQueue"/> is set. Never both.
         private readonly    SynchronizationContext              synchronizationContext;
@@ -73,7 +72,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         public void Dispose() {
-            processor?.Dispose();
         }
 
         public virtual void EnqueueEvent(EventMessage ev) {
@@ -185,9 +183,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private List<JsonKey> GetKeysFromEntities(string keyName, List<JsonValue> entities) {
-            if (processor == null) {
-                processor = new EntityProcessor();
-            }
+            var processor = client._intern.GetEntityProcessor();
             var keys = new List<JsonKey>(entities.Count);
             foreach (var entity in entities) {
                 if (!processor.GetEntityKey(entity, keyName, out JsonKey key, out string error))

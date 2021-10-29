@@ -134,10 +134,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 hub.EventBroker = eventBroker;
                 await RunServer(server, async () => {
                     await remoteHub.Connect();
-                    using (var listenProcessor  = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes))
-                    using (var createStore      = new PocStore(remoteHub, "createStore", "create-client"))
-                    using (var useStore         = new PocStore(remoteHub, "useStore", "use-client"))
-                    using (var createSubscriber = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges)) {
+                    var listenProcessor     = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
+                    using (var createStore  = new PocStore(remoteHub, "createStore", "create-client"))
+                    using (var useStore     = new PocStore(remoteHub, "useStore", "use-client")) {
+                        var createSubscriber = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
                         await TestRelationPoC.CreateStore(createStore);
                         
                         while (!listenProcessor.receivedAll ) { await Task.Delay(1); }
@@ -170,8 +170,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 hub.EventBroker = eventBroker;
                 await RunServer(server, async () => {
                     await remoteHub.Connect();
-                    using (var listenProcessor  = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes))
-                    using (var createStore      = new PocStore(hub, "createStore", "create-client")) {
+                    var listenProcessor    = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
+                    using (var createStore  = new PocStore(hub, "createStore", "create-client")) {
                         await remoteHub.Close();
                         // all change events sent by createStore doesnt arrive at listenDb
                         await TestRelationPoC.CreateStore(createStore);
@@ -213,10 +213,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var loopbackHub      = new LoopbackHub(hub))
             using (var listenDb         = new PocStore(loopbackHub, "listenDb", "listen-client")) {
                 loopbackHub.host.EventBroker    = eventBroker;
-                using (var listenProcessor  = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes))
+                var listenProcessor         = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
                 using (var createStore      = new PocStore(loopbackHub, "createStore", "create-client"))
-                using (var useStore         = new PocStore(loopbackHub, "useStore", "use-client")) 
-                using (var createSubscriber = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges)) {
+                using (var useStore         = new PocStore(loopbackHub, "useStore", "use-client")) {
+                    var createSubscriber        = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
                     
                     while (!listenProcessor.receivedAll ) { await Task.Delay(1); }
