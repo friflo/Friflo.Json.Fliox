@@ -12,7 +12,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     {
         internal readonly   TypeMapper<T>       typeMapper;
         internal readonly   ObjectMapper        jsonMapper;
-        internal readonly   ObjectPatcher       objectPatcher;
         internal readonly   Tracer              tracer;
         internal readonly   FlioxClient         store;
         internal readonly   List<TKey>          keysBuf;
@@ -27,7 +26,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal SetIntern(FlioxClient store) {
             jsonMapper      = store._intern.jsonMapper;
             typeMapper      = (TypeMapper<T>)store._intern.typeStore.GetTypeMapper(typeof(T));
-            objectPatcher   = store._intern.objectPatcher;
             tracer          = new Tracer(store._intern.typeCache, store);
             this.store      = store;
             subscription    = null;

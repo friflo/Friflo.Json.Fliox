@@ -27,9 +27,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   EventTarget                                 eventTarget;
         // readonly - owned
         internal readonly   ObjectMapper                                jsonMapper;
-        internal readonly   ObjectPatcher                               objectPatcher;
         private  readonly   SubscriptionProcessor                       defaultProcessor;
-        private             EntityProcessor                             processor;
+        private             ObjectPatcher                               objectPatcher;  // create on demand
+        private             EntityProcessor                             processor;      // create on demand
         internal readonly   Dictionary<Type,   EntitySet>               setByType;
         internal readonly   Dictionary<string, EntitySet>               setByName;
         internal readonly   Dictionary<string, MessageSubscriber>       subscriptions;
@@ -53,7 +53,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         public   override   string                                  ToString() => userId.ToString();
 
-        internal EntityProcessor GetEntityProcessor() => processor ?? (processor = new EntityProcessor());
+        internal EntityProcessor    GetEntityProcessor()   => processor     ?? (processor       = new EntityProcessor());
+        internal ObjectPatcher      GetObjectPatcher()     => objectPatcher ?? (objectPatcher   = new ObjectPatcher(jsonMapper));
+        
         
         internal ClientIntern(
             FlioxClient             thisClient,
@@ -76,9 +78,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.eventTarget            = eventTarget;
             // readonly - owned
             jsonMapper                  = mapper;
-            objectPatcher               = new ObjectPatcher(jsonMapper);
-            defaultProcessor            = new SubscriptionProcessor(thisClient);
+            objectPatcher               = null;
             processor                   = null;
+            defaultProcessor            = new SubscriptionProcessor(thisClient);
             setByType                   = new Dictionary<Type, EntitySet>();
             setByName                   = new Dictionary<string, EntitySet>();
             subscriptions               = new Dictionary<string, MessageSubscriber>();
@@ -113,9 +115,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             hub.RemoveEventTarget(clientId);
             setByName.Clear();
             setByType.Clear();
-            processor?.Dispose();
             defaultProcessor.Dispose();
-            objectPatcher.Dispose();
+            processor?.Dispose();
+            objectPatcher?.Dispose();
             // readonly
             jsonMapper.Dispose();
         }
