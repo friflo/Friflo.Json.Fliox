@@ -35,42 +35,41 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
     {
         // --- public
         public    readonly  FlioxHub                                    userHub;
-        public    readonly  UserStore                                   userStore;
         public    readonly  IUserAuth                                   userAuth;
         
         // --- private / internal
         private   readonly  Authorizer                                  anonymousAuthorizer;
         private   readonly  ConcurrentDictionary<string,  Authorizer>   authorizerByRole = new ConcurrentDictionary <string, Authorizer>();
 
-        public UserAuthenticator (EntityDatabase userDatabase, Authorizer anonymousAuthorizer = null)
+        public UserAuthenticator (EntityDatabase userDatabase, IUserAuth userAuth = null, Authorizer anonymousAuthorizer = null)
             : base (anonymousAuthorizer)
         {
             if (!(userDatabase.handler is UserDBHandler))
                 throw new InvalidOperationException("userDatabase requires a handler of Type: " + nameof(UserDBHandler));
             userHub        	        = new FlioxHub(userDatabase);
             userHub.Authenticator   = new UserDatabaseAuthenticator();  // authorize access to userDatabase
-            userStore               = new UserStore (userHub, UserStore.AuthenticationUser);
-            userAuth                = userStore;
+            this.userAuth           = userAuth;
             this.anonymousAuthorizer= anonymousAuthorizer ?? new AuthorizeDeny();
         }
         
         public void Dispose() {
-            userStore.Dispose();
             userHub.Dispose();
         }
         
         public async Task ValidateRoles() {
-            var queryRoles = userStore.roles.QueryAll();
-            await userStore.TrySyncTasks().ConfigureAwait(false);
-            Dictionary<string, Role> roles = queryRoles.Results;
-            foreach (var pair in roles) {
-                var role = pair.Value;
-                foreach (var right in role.rights) {
-                    if (!(right is RightPredicate rightPredicates))
-                        break;
-                    foreach (var predicateName in rightPredicates.names) {
-                        if (!registeredPredicates.ContainsKey(predicateName)) {
-                            throw new InvalidOperationException($"unknown authorization predicate: {predicateName}");
+            using(var userStore = new UserStore (userHub, UserStore.AuthenticationUser)) {
+                var queryRoles = userStore.roles.QueryAll();
+                await userStore.TrySyncTasks().ConfigureAwait(false);
+                Dictionary<string, Role> roles = queryRoles.Results;
+                foreach (var pair in roles) {
+                    var role = pair.Value;
+                    foreach (var right in role.rights) {
+                        if (!(right is RightPredicate rightPredicates))
+                            break;
+                        foreach (var predicateName in rightPredicates.names) {
+                            if (!registeredPredicates.ContainsKey(predicateName)) {
+                                throw new InvalidOperationException($"unknown authorization predicate: {predicateName}");
+                            }
                         }
                     }
                 }
@@ -100,20 +99,28 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
                 return;
             }
             var command = new AuthenticateUser { userId = userId, token = token };
-            var result  = await userAuth.Authenticate(command).ConfigureAwait(false);
             
-            if (result.isValid) {
-                var authCred    = new AuthCred(token);
-                var authorizer  = await GetAuthorizer(userId).ConfigureAwait(false);
-                user        = new User (userId, authCred.token, authorizer);
-                users.TryAdd(userId, user);
+            // Note 1: UserStore could be created in smaller scope
+            // Note 2: UserStore could be cached. This requires a FlioxClient.ClearEntities()
+            // UserStore is not thread safe, create new one per Authenticate request.
+            using (var userStore = new UserStore (userHub, null)) {
+                userStore.SetUser(new JsonKey(UserStore.AuthenticationUser));
+                var auth    = userAuth ?? userStore;
+                var result  = await auth.Authenticate(command).ConfigureAwait(false);
+                
+                if (result.isValid) {
+                    var authCred    = new AuthCred(token);
+                    var authorizer  = await GetAuthorizer(userStore, userId).ConfigureAwait(false);
+                    user        = new User (userId, authCred.token, authorizer);
+                    users.TryAdd(userId, user);
+                }
+                
+                if (user == null || token != user.token) {
+                    messageContext.AuthenticationFailed(anonymousUser, InvalidUserToken, anonymousAuthorizer);
+                    return;
+                }
+                messageContext.AuthenticationSucceed(user, user.authorizer);
             }
-            
-            if (user == null || token != user.token) {
-                messageContext.AuthenticationFailed(anonymousUser, InvalidUserToken, anonymousAuthorizer);
-                return;
-            }
-            messageContext.AuthenticationSucceed(user, user.authorizer);
         }
         
         public override ClientIdValidation ValidateClientId(ClientController clientController, MessageContext messageContext) {
@@ -158,7 +165,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
             throw new InvalidOperationException ("unexpected clientIdValidation state");
         }
 
-        private async Task<Authorizer> GetAuthorizer(JsonKey userId) {
+        private async Task<Authorizer> GetAuthorizer(UserStore userStore, JsonKey userId) {
             var readPermission = userStore.permissions.Read().Find(userId);
             await userStore.SyncTasks().ConfigureAwait(false);
             UserPermission permission = readPermission.Result;
@@ -166,7 +173,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
             if (roles == null || roles.Count == 0) {
                 return anonymousAuthorizer;
             }
-            await AddNewRoles(roles).ConfigureAwait(false);
+            await AddNewRoles(userStore, roles).ConfigureAwait(false);
             var authorizers = new List<Authorizer>(roles.Count);
             foreach (var role in roles) {
                 // existence is checked already in AddNewRoles()
@@ -179,7 +186,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
             return any;
         }
         
-        private async Task AddNewRoles(List<string> roles) {
+        private async Task AddNewRoles(UserStore userStore, List<string> roles) {
             var newRoles = new List<string>();
             foreach (var role in roles) {
                 if (!authorizerByRole.TryGetValue(role, out _)) {
