@@ -24,7 +24,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
             using (var database     = new MemoryDatabase(new PocHandler()))
             using (var hub          = new FlioxHub(database))
             using (var typeStore    = new TypeStore())
-            using (var store        = new PocStore(hub,typeStore, "store"))
+            using (var store        = new PocStore(hub,typeStore) { UserId = "store"})
             using (var m            = new ObjectMapper(store.TypeStore)) {
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
@@ -79,7 +79,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
             using (var database     = new MemoryDatabase(new PocHandler()))
             using (var hub          = new FlioxHub(database))
             using (var typeStore    = new TypeStore())
-            using (var store        = new PocStore(hub, typeStore, "store")) {
+            using (var store        = new PocStore(hub, typeStore) { UserId = "store"}) {
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order = readOrders.Find(id);
@@ -122,7 +122,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
             using (var database     = new MemoryDatabase(new PocHandler()))
             using (var hub          = new FlioxHub(database))
             using (var typeStore    = new TypeStore())
-            using (var store        = new PocStore(hub, typeStore, "store")) {
+            using (var store        = new PocStore(hub, typeStore) { UserId = "store" }) {
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order1 = readOrders.Find("order-1");

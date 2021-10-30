@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             using (var __       = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
             using (var hub      = new FlioxHub(database))
-            using (var store    = new PocStore(hub, new TypeStore(), "TestQueryRef")) {
+            using (var store    = new PocStore(hub, new TypeStore()) { UserId = "TestQueryRef"}) {
                 var orders = store.orders;
                 var customerId = orders.Query(o => o.customer.Key == "customer-1");
                 AreEqual("QueryTask<Order> (filter: .customer == 'customer-1')", customerId.ToString());
@@ -119,7 +119,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Test]
         public void TestDictionaryValueIterator() {
             var hub     = new FlioxHub(new MemoryDatabase());
-            var store   = new PocStore(hub, new TypeStore(), "TestDictionaryValueIterator");
+            var store   = new PocStore(hub, new TypeStore()) { UserId = "TestDictionaryValueIterator"};
             var readArticles = store.articles.Read();
                         readArticles.Find("missing-id");
             var task =  readArticles.ReadRef(a => a.producer);
@@ -138,21 +138,21 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public void TestMemoryFlioxClient() {
             using (var typeStore = new TypeStore()) {
                 var hub         = new NoopDatabaseHub();
-                var _           = new PocStore(hub, typeStore, null);
-                var __          = new PocStore(hub, typeStore, null);
+                var _           = new PocStore(hub, typeStore);
+                var __          = new PocStore(hub, typeStore);
                 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
                 int count = 1; 
                 for (int n = 0; n < count; n++) {
-                    new PocStore(hub, typeStore, null); // ~ 4.0 µs (Release)
+                    new PocStore(hub, typeStore); // ~ 4.0 µs (Release)
                 }
                 stopwatch.Stop();
                 Console.WriteLine($"client instantiation count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
                 
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 // ReSharper disable once UnusedVariable
-                var store = new PocStore(hub, typeStore, null);
+                var store = new PocStore(hub, typeStore);
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 
                 Console.WriteLine($"PocStore memory: {diff}");
@@ -165,7 +165,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public async Task TestMemorySync() {
             using (var typeStore = new TypeStore()) {
                 var hub         = new NoopDatabaseHub();
-                var store       = new PocStore(hub, typeStore, null);
+                var store       = new PocStore(hub, typeStore);
                 await store.SyncTasks(); // force one time allocations
                 // GC.Collect();
                 

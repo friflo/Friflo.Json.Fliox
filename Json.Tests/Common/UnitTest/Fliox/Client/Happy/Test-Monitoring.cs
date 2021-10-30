@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private  static async Task AssertNoAuthMonitoringDB(FlioxHub hub, EntityDatabase monitorDb) {
             const string userId     = "poc-user";
             const string clientId   = "poc-client"; 
-            using (var store    = new PocStore(hub, null))
+            using (var store    = new PocStore(hub))
             using (var monitor  = new MonitorStore(monitorDb, store)) {
                 var result = await Monitor(store, monitor, userId, clientId);
                 AssertNoAuthResult(result);
@@ -97,7 +97,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private  static async Task AssertAuthSuccessMonitoringDB(FlioxHub hub, EntityDatabase monitorDb) {
             const string userId     = "admin";
             const string clientId   = "admin-client"; 
-            using (var store    = new PocStore(hub, null))
+            using (var store    = new PocStore(hub))
             using (var monitor  = new MonitorStore(monitorDb, store)) {
                 store.SetToken("admin-token");
                 var result = await Monitor(store, monitor, userId, clientId);
@@ -112,7 +112,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private  static async Task AssertAuthFailedMonitoringDB(FlioxHub hub, EntityDatabase monitorDb) {
             const string userId     = "admin";
             const string clientId   = "admin-xxx"; 
-            using (var store    = new PocStore(hub, null))
+            using (var store    = new PocStore(hub))
             using (var monitor  = new MonitorStore(monitorDb, store)) {
                 store.SetToken("invalid");
                 var result = await Monitor(store, monitor, userId, clientId);

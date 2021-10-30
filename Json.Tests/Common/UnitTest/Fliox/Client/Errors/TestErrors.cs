@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var testHub      = new TestDatabaseHub(fileDatabase))
-            using (var useStore     = new PocStore(testHub, "useStore")) {
+            using (var useStore     = new PocStore(testHub) { UserId = "useStore"}) {
                 await TestStoresErrors(useStore, testHub);
             }
         }
@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             using (var fileDatabase     = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var testHub          = new TestDatabaseHub(fileDatabase))
             using (var loopbackHub      = new LoopbackHub(testHub))
-            using (var useStore         = new PocStore(loopbackHub, "useStore", "use-client")) {
+            using (var useStore         = new PocStore(loopbackHub) { UserId = "useStore", ClientId = "use-client"}) {
                 await TestStoresErrors(useStore, testHub);
             }
         }
@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             using (var server       = new HttpListenerHost("http://+:8080/", hostHub)) {
                 await Happy.TestStore.RunServer(server, async () => {
                     using (var remoteDatabase   = new HttpClientHub("http://localhost:8080/"))
-                    using (var useStore         = new PocStore(remoteDatabase, "useStore", "use-client")) {
+                    using (var useStore         = new PocStore(remoteDatabase) { UserId = "useStore", ClientId = "use-client"}) {
                         await TestStoresErrors(useStore, testHub);
                     }
                 });
@@ -84,7 +84,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var testHub      = new TestDatabaseHub(fileDatabase))
-            using (var useStore     = new PocStore(testHub, "useStore")) {
+            using (var useStore     = new PocStore(testHub) { UserId = "useStore"}) {
                 await test(useStore, testHub);
             }
         }

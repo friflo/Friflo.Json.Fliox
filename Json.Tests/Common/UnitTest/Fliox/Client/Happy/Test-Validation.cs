@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
             using (var hub          	= new FlioxHub(database))
-            using (var createStore      = new PocStore(hub, "createStore"))
+            using (var createStore      = new PocStore(hub) { UserId = "createStore"})
             using (var nativeSchema     = new NativeTypeSchema(typeof(PocStore)))
             using (database.Schema  = new DatabaseSchema(nativeSchema)) {
                 // All write operation performed in following call produce JSON payload which meet the types defined
@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database     = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
             using (var hub          = new FlioxHub(database))
-            using (var createStore  = new PocStore(hub, "createStore"))
+            using (var createStore  = new PocStore(hub) { UserId = "createStore"})
             using (var jsonSchema   = new JsonTypeSchema(schemas, "./UnitTest.Fliox.Client.json#/definitions/PocStore"))
             using (database.Schema  = new DatabaseSchema(jsonSchema)) {
                 // All write operation performed in following call produce JSON payload which meet the types defined

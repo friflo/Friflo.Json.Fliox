@@ -46,8 +46,8 @@ namespace Friflo.Playground.CosmosDB
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
             using (var database     = new CosmosDatabase(cosmosDatabase, new PocHandler(), null, 400))
             using (var hub          = new FlioxHub(database))
-            using (var createStore  = new PocStore(hub, "createStore"))
-            using (var useStore     = new PocStore(hub, "useStore")) {
+            using (var createStore  = new PocStore(hub) { UserId = "createStore"})
+            using (var useStore     = new PocStore(hub) { UserId = "useStore"}) {
                 await TestRelationPoC.CreateStore(createStore);
                 await TestStore.TestStores(createStore, useStore);
             }

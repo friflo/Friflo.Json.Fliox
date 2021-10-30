@@ -38,10 +38,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var eventBroker  = new EventBroker(false))
             using (var database     = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
             using (var hub          = new FlioxHub(database))
-            using (var listenDb     = new PocStore(hub, "listenDb", "listen-client")) {
+            using (var listenDb     = new PocStore(hub) { UserId = "listenDb", ClientId = "listen-client" }) {
                 hub.EventBroker = eventBroker;
                 var listenProcessor   = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
-                using (var createStore  = new PocStore(hub, "createStore", "create-client")) {
+                using (var createStore  = new PocStore(hub) { UserId = "createStore", ClientId = "create-client"}) {
                     var createProcessor = await CreateSubscriptionProcessor(createStore, EventAssertion.NoChanges);
                     await TestRelationPoC.CreateStore(createStore);
                     

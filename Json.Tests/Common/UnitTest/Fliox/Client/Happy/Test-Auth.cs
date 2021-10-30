@@ -62,7 +62,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         // In these cases error messages contain details about authentication problems. 
         private static async Task AssertNotAuthenticated(FlioxHub hub) {
             var newArticle = new Article{ id="new-article" };
-            using (var nullUser         = new PocStore(hub, null)) {
+            using (var nullUser         = new PocStore(hub)) {
                 // test: userId == null
                 var tasks = new ReadWriteTasks(nullUser, newArticle);
                 var sync = await nullUser.TrySyncTasks();
@@ -70,7 +70,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 AreEqual("PermissionDenied ~ not authorized. user authentication requires 'user' id", tasks.findArticle.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized. user authentication requires 'user' id", tasks.upsertArticles.Error.Message);
             }
-            using (var unknownUser      = new PocStore(hub, "unknown")) {
+            using (var unknownUser      = new PocStore(hub) { UserId = "unknown" }) {
                 // test: token ==  null
                 unknownUser.SetToken(null);
                 
@@ -95,7 +95,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// test authorization of read and write operations on a container
         private static async Task AssertAuthAccessOperations(FlioxHub hub) {
             var newArticle = new Article{ id="new-article" };
-            using (var mutateUser       = new PocStore(hub, "user-database")) {
+            using (var mutateUser       = new PocStore(hub) { UserId ="user-database"}) {
                 // test: allow read & mutate 
                 mutateUser.SetToken("user-database-token");
                 await mutateUser.TrySyncTasks(); // authenticate to simplify debugging below
@@ -126,7 +126,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'", tasks.findArticle.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'", tasks.upsertArticles.Error.Message);
             }
-            using (var readUser         = new PocStore(hub, "user-task")) {
+            using (var readUser         = new PocStore(hub) { UserId = "user-task"}) {
                 // test: allow read
                 readUser.SetToken("user-task-token");
                 await readUser.TrySyncTasks(); // authenticate to simplify debugging below
@@ -136,7 +136,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 AreEqual(1, sync.failed.Count);
                 AreEqual("PermissionDenied ~ not authorized", tasks.upsertArticles.Error.Message);
             }
-            using (var readPredicate         = new PocStore(hub, "user-predicate")) {
+            using (var readPredicate         = new PocStore(hub) { UserId = "user-predicate"}) {
                 // test: allow by predicate function
                 readPredicate.SetToken("user-predicate-token");
                 await readPredicate.TrySyncTasks(); // authenticate to simplify debugging below
@@ -149,7 +149,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         /// test authorization of subscribing to container changes. E.g. create, upsert, delete & patch.
         private static async Task AssertAuthAccessSubscriptions(FlioxHub hub) {
-            using (var mutateUser       = new PocStore(hub, "user-deny")) {
+            using (var mutateUser       = new PocStore(hub) { UserId = "user-deny"}) {
                 mutateUser.SetToken("user-deny-token");
                 await mutateUser.TrySyncTasks(); // authenticate to simplify debugging below
 
@@ -161,7 +161,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await mutateUser.TrySyncTasks();
                 AreEqual("PermissionDenied ~ not authorized", articleDeletes.Error.Message);
             }
-            using (var mutateUser       = new PocStore(hub, "user-database")) {
+            using (var mutateUser       = new PocStore(hub) { UserId = "user-database"}) {
                 mutateUser.SetToken("user-database-token");
                 await mutateUser.TrySyncTasks(); // authenticate to simplify debugging below
 
@@ -178,7 +178,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         /// test authorization of sending messages and subscriptions to messages. Commands are messages too.
         private static async Task AssertAuthMessage(FlioxHub hub) {
-            using (var denyUser      = new PocStore(hub, "user-deny"))
+            using (var denyUser      = new PocStore(hub) { UserId = "user-deny"})
             {
                 // test: deny message
                 denyUser.SetToken("user-deny-token");
@@ -190,7 +190,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 AreEqual("PermissionDenied ~ not authorized", message.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized", subscribe.Error.Message);
             }
-            using (var messageUser   = new PocStore(hub, "user-message")){
+            using (var messageUser   = new PocStore(hub) { UserId = "user-message"}){
                 // test: allow message
                 messageUser.SetToken("user-message-token");
                 await messageUser.TrySyncTasks(); // authenticate to simplify debugging below

@@ -23,13 +23,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public readonly EntitySet <string, Employee>    employees;
         public readonly EntitySet <string, TestType>    types;
         
-        public PocStore(FlioxHub hub, TypeStore typeStore, string userId) : base (hub, typeStore) {
-            UserId = userId;
-        }
+        public PocStore(FlioxHub hub, TypeStore typeStore) : base (hub, typeStore) { }
         /// <summary>constructor used for tests to reuse global <see cref="TestGlobals.typeStore"/> to enhance performance.</summary> 
-        public PocStore(FlioxHub hub, string userId, string clientId = null): base (hub, TestGlobals.typeStore) {
-            UserId = userId; ClientId = clientId;
-        }
+        public PocStore(FlioxHub hub): base (hub, TestGlobals.typeStore) { }
         
         [Fri.Command(Name =        "TestCommand")]
         public CommandTask<bool>    Test (TestCommand command)                 => SendCommand<TestCommand, bool>("TestCommand", command);
