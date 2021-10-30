@@ -50,14 +50,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// a <see cref="typeStore"/>. <see cref="TypeStore"/> instances are designed to be reused from multiple threads.
         /// Their creation is expensive compared to the instantiation of a <see cref="FlioxClient"/>. 
         /// </summary>
-        public FlioxClient(FlioxHub hub, TypeStore typeStore, string userId = null, string clientId = null) {
+        public FlioxClient(FlioxHub hub, TypeStore typeStore) {
             if (typeStore == null) throw new ArgumentNullException(nameof(typeStore));
             
             ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
             _intern = new ClientIntern(this, null, typeStore, hub, hub.database, tracer, eventTarget);
             _intern.syncStore = new SyncStore();
-            SetUserClient(userId, clientId);
             _intern.InitEntitySets(this);
         }
         
@@ -116,30 +115,33 @@ namespace Friflo.Json.Fliox.Hub.Client
                 throw new InvalidOperationException("only base store can set: userId, clientId & token");
         } 
 
-        public void SetUserClient (string userId, string clientId) {
-            SetUserClient(new JsonKey(userId), new JsonKey(clientId));
-        }
-
-        public void SetUserClient (in JsonKey userId, in JsonKey clientId) {
-            AssertBaseStore();
-            _intern.userId      = userId;
-            var newClientId     = clientId;
-            if (newClientId.IsEqual(_intern.clientId))
-                return;
-            if (!_intern.clientId.IsNull()) {
-                _intern.hub.RemoveEventTarget(_intern.clientId);
-            }
-            _intern.clientId    = newClientId;
-            if (!_intern.clientId.IsNull()) {
-                _intern.hub.AddEventTarget(newClientId, _intern.eventTarget);
+        [Fri.Ignore]
+        public string User {
+            get => _intern.userId.AsString();
+            set {
+                AssertBaseStore();
+                _intern.userId = new JsonKey(value);
             }
         }
 
-        internal void SetUser (JsonKey user) {
-            AssertBaseStore();
-            _intern.userId  = user;
+        [Fri.Ignore]
+        public string Client {
+            get => _intern.clientId.AsString();
+            set {
+                AssertBaseStore();
+                var newClientId     = new JsonKey(value);
+                if (newClientId.IsEqual(_intern.clientId))
+                    return;
+                if (!_intern.clientId.IsNull()) {
+                    _intern.hub.RemoveEventTarget(_intern.clientId);
+                }
+                _intern.clientId    = newClientId;
+                if (!_intern.clientId.IsNull()) {
+                    _intern.hub.AddEventTarget(newClientId, _intern.eventTarget);
+                }
+            }
         }
-        
+
         public void SetToken (string token) {
             AssertBaseStore();
             _intern.token   = token;

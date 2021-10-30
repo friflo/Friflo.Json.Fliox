@@ -182,7 +182,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             using (var typeStore = new TypeStore()) {
                 var database    = new MemoryDatabase();
                 var hub         = new FlioxHub(database);
-                var store       = new EntityIdStore(hub, typeStore, null);
+                var store       = new EntityIdStore(hub, typeStore);
                 var read = store.intEntities.Read();
                 var ids = new int [100];
                 for (int n = 0; n < 100; n++)

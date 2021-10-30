@@ -165,9 +165,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private  static async Task<MonitorResult> Monitor(PocStore store, MonitorStore monitor, string userId, string clientId) {
-            var userKey    = new JsonKey(userId);
-            var clientKey  = new JsonKey(clientId);
-            store.SetUserClient(userKey, clientKey);
+            store.User      = userId;
+            store.Client    = clientId;
             
             monitor.ClearStats();
             await monitor.TrySyncTasks();
@@ -179,8 +178,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var result = new MonitorResult {
                 users       = monitor.users.QueryAll(),
                 clients     = monitor.clients.QueryAll(),
-                user        = monitor.users.Read().Find(userKey),
-                client      = monitor.clients.Read().Find(clientKey),
+                user        = monitor.users.Read().Find(new JsonKey(userId)),
+                client      = monitor.clients.Read().Find(new JsonKey(clientId)),
                 hosts       = monitor.hosts.QueryAll(),
                 sync        = await monitor.TrySyncTasks()
             };

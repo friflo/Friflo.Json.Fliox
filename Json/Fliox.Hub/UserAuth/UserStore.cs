@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         /// <summary>"userId" used for a <see cref="UserStore"/> to request a user authentication with its token</summary>
         public const string AuthenticationUser  = "AuthenticationUser";
         
-        public UserStore(FlioxHub hub, string userId, string clientId = null) : base(hub, HostTypeStore.Get(), userId, clientId) { }
+        public UserStore(FlioxHub hub) : base(hub, HostTypeStore.Get()) { }
         
         public CommandTask<AuthenticateUserResult> AuthenticateUser(AuthenticateUser command) {
             return SendCommand<AuthenticateUser, AuthenticateUserResult>(nameof(AuthenticateUser), command);

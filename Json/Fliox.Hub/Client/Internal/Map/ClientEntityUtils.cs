@@ -74,7 +74,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         internal readonly   Type           entityType;
         private  readonly   FieldInfo      field;
         private  readonly   PropertyInfo   property;
-        
+
+        public override string ToString() => container;
+
         internal EntityInfo (
             string         container,
             Type           entitySetType,

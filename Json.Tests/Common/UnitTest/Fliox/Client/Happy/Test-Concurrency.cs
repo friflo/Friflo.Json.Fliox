@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static async Task ConcurrentAccess(FlioxHub hub, int readerCount, int writerCount, int requestCount, bool singleEntity) {
             // --- prepare
             var typeStore   = new TypeStore();
-            var store       = new SimpleStore(hub, typeStore, "prepare");
+            var store       = new SimpleStore(hub, typeStore) { Client = "prepare"};
             var entities    = new List<SimplyEntity>();
             int max         = Math.Max(readerCount, writerCount);
             if (singleEntity) {
@@ -64,10 +64,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var writerStores = new List<SimpleStore>();
             try {
                 for (int n = 0; n < readerCount; n++) {
-                    readerStores.Add(new SimpleStore(hub, typeStore, $"reader-{n}"));
+                    readerStores.Add(new SimpleStore(hub, typeStore) { Client = $"reader-{n}"});
                 }
                 for (int n = 0; n < writerCount; n++) {
-                    writerStores.Add(new SimpleStore(hub, typeStore, $"writer-{n}"));
+                    writerStores.Add(new SimpleStore(hub, typeStore) { Client = $"writer-{n}" });
                 }
 
                 // --- run readers and writers
@@ -170,7 +170,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             try {
                 var typeStore = new TypeStore();
                 for (int n = 0; n < clientCount; n++) {
-                    clients.Add(new FlioxClient(hub, typeStore, null, $"reader-{n}"));
+                    clients.Add(new FlioxClient(hub, typeStore) { Client = $"reader-{n}"});
                 }
                 var tasks = new List<Task>();
                 
@@ -204,7 +204,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     {
         public readonly EntitySet <int, SimplyEntity>   entities;
         
-        public SimpleStore(FlioxHub hub, TypeStore typeStore, string clientId) : base (hub, typeStore, null, clientId) {}
+        public SimpleStore(FlioxHub hub, TypeStore typeStore) : base (hub, typeStore) { }
     }
     
     // ------------------------------ models ------------------------------
