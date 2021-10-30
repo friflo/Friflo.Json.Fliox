@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             _intern = new ClientIntern(this, null, typeStore, hub, hub.database, tracer, eventTarget);
             _intern.syncStore = new SyncStore();
             SetUserClient(userId, clientId);
-            ClientEntityUtils.InitEntitySets(this);
+            InitEntitySets();
         }
         
         protected FlioxClient(EntityDatabase database, FlioxClient baseClient) {
@@ -70,7 +70,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             ITracerContext tracer       = this;
             _intern = new ClientIntern(this, baseClient, baseClient._intern.typeStore, hub, database, tracer, null);
             _intern.syncStore = new SyncStore();
-            ClientEntityUtils.InitEntitySets(this);
+            InitEntitySets();
         }
         
         public virtual void Dispose() {
@@ -81,6 +81,16 @@ namespace Friflo.Json.Fliox.Hub.Client
             return ClientEntityUtils.GetEntityTypes<TFlioxClient>();
         }
 
+        internal void InitEntitySets() {
+            var entityInfos = _intern.entityInfos;
+            var typeStore   = _intern.typeStore;
+            foreach (var entityInfo in entityInfos) {
+                var setMapper   = (IEntitySetMapper)typeStore.GetTypeMapper(entityInfo.entitySetType);
+                EntitySet entitySet   = setMapper.CreateEntitySet(entityInfo.container);
+                entitySet.Init(this);
+                entityInfo.SetEntitySetMember(this, entitySet);
+            }
+        }
 
         // --------------------------------------- public interface ---------------------------------------
         /// <summary>

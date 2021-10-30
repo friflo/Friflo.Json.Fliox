@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
     {
         private static readonly Dictionary<Type, EntityInfo[]> EntityInfoCache = new Dictionary<Type, EntityInfo[]>();
         
-        private static EntityInfo[] GetEntityInfos(Type type) {
+        internal static EntityInfo[] GetEntityInfos(Type type) {
             if (EntityInfoCache.TryGetValue(type, out  EntityInfo[] result)) {
                 return result;
             }
@@ -55,16 +55,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             return  types;
         }
 
-        internal static void InitEntitySets(FlioxClient store) {
-            var entityInfos = GetEntityInfos (store.GetType());
-            foreach (var entityInfo in entityInfos) {
-                var setMapper   = (IEntitySetMapper)store._intern.typeStore.GetTypeMapper(entityInfo.entitySetType);
-                EntitySet entitySet   = setMapper.CreateEntitySet(entityInfo.container);
-                entitySet.Init(store);
-                entityInfo.SetEntitySetMember(store, entitySet);
-            }
-        }
-        
         internal static bool IsEntitySet (Type type) {
             return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(EntitySet<,>);
         }

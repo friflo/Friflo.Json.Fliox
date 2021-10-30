@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Host.Utils;
@@ -20,6 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     {
         // readonly
         internal readonly   FlioxClient                                 baseClient;
+        internal readonly   EntityInfo[]                                entityInfos;
         internal readonly   TypeStore                                   typeStore;
         internal readonly   TypeCache                                   typeCache;
         internal readonly   FlioxHub                                    hub;
@@ -81,11 +83,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             ITracerContext          tracerContext,
             EventTarget             eventTarget)
         {
+
             // throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 
             var mapper                  = new ObjectMapper(typeStore, new NoThrowHandler());
             mapper.TracerContext        = tracerContext;
             // readonly
             this.baseClient             = baseClient;
+            entityInfos                 = ClientEntityUtils.GetEntityInfos (thisClient.GetType());
             this.typeStore              = typeStore;
             this.typeCache              = mapper.writer.TypeCache;
             this.hub                    = hub;
@@ -96,8 +100,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             objectPatcher               = null;
             processor                   = null;
             defaultProcessor            = new SubscriptionProcessor(thisClient);
-            setByType                   = new Dictionary<Type, EntitySet>();
-            setByName                   = new Dictionary<string, EntitySet>();
+            setByType                   = new Dictionary<Type,   EntitySet>(entityInfos.Length);
+            setByName                   = new Dictionary<string, EntitySet>(entityInfos.Length);
             subscriptions               = new Dictionary<string, MessageSubscriber>();
             subscriptionsPrefix         = new List<MessageSubscriber>();
             messageReader               = mapper.reader; // new ObjectReader(typeStore, new NoThrowHandler());
