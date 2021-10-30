@@ -523,7 +523,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 if (!json.IsNull()) {
                     var entity = peer.NullableEntity;
                     if (entity == null) {
-                        entity = (T)intern.typeMapper.CreateInstance();
+                        entity = (T)intern.GetMapper().CreateInstance();
                         SetEntityId(entity, id);
                         peer.SetEntity(entity);
                     }
