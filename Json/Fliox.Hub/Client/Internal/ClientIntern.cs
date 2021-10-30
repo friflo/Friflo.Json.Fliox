@@ -141,6 +141,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             jsonMapper.Dispose();
         }
         
+        internal void InitEntitySets(FlioxClient client) {
+            foreach (var entityInfo in entityInfos) {
+                var setMapper   = (IEntitySetMapper)typeStore.GetTypeMapper(entityInfo.entitySetType);
+                EntitySet entitySet   = setMapper.CreateEntitySet(entityInfo.container);
+                entitySet.Init(client);
+                entityInfo.SetEntitySetMember(client, entitySet);
+            }
+        }
+        
         internal void AddEntitySet<T>(EntitySetBase<T> entitySet) where T : class {
             var type = typeof(T);
             setByType[type]             = entitySet;
