@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             var pools = messageContext.pools;
             using (var pooledStore = pools.Pool(() => new SequenceStore(hub, HostTypeStore.Get())).Get()) {
                 var store = pooledStore.instance;
-                store.User = "ReserveKeys";
+                store.UserId = "ReserveKeys";
                 var read            = store.sequence.Read();
                 var sequenceTask    = read.Find(container);
                 var sync            = await store.TrySyncTasks().ConfigureAwait(false);

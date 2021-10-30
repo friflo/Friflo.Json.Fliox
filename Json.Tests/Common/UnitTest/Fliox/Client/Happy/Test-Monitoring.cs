@@ -165,8 +165,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private  static async Task<MonitorResult> Monitor(PocStore store, MonitorStore monitor, string userId, string clientId) {
-            store.User      = userId;
-            store.Client    = clientId;
+            store.UserId      = userId;
+            store.ClientId    = clientId;
             
             monitor.ClearStats();
             await monitor.TrySyncTasks();

@@ -35,22 +35,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         private static void AssertEntityIdTests(FlioxHub hub, TypeStore typeStore) {
             Exception e;
             e = Throws<InvalidTypeException>(() => {
-                _ = new TypeMismatchStore(hub, typeStore) { Client = "store"};
+                _ = new TypeMismatchStore(hub, typeStore) { ClientId = "store"};
             });
             AreEqual("key Type mismatch. String (IntEntity.id) != Int64 (EntitySet<Int64,IntEntity>)", e.Message);
             
             e = Throws<InvalidTypeException>(() => {
-                _ = new TypeMismatchStore2(hub, typeStore) { Client =  "store"};
+                _ = new TypeMismatchStore2(hub, typeStore) { ClientId =  "store"};
             });
             AreEqual("key Type mismatch. String (IntEntity2.id) != Int64 (EntitySet<Int64,IntEntity2>)", e.Message);
             
             e = Throws<InvalidOperationException>(() => {
-                _ = new UnsupportedKeyTypeStore(hub, typeStore) { Client = "store"};
+                _ = new UnsupportedKeyTypeStore(hub, typeStore) { ClientId = "store"};
             });
             AreEqual("unsupported TKey Type: EntitySet<Char,CharEntity> id", e.Message);
             
             e = Throws<InvalidTypeException>(() => {
-                _ = new InvalidMemberStore(hub, typeStore) { Client = "store"};
+                _ = new InvalidMemberStore(hub, typeStore) { ClientId = "store"};
             });
             AreEqual("Invalid member: StringEntity.entityRef - Ref<Int32, StringEntity> != EntitySet<String, StringEntity>", e.Message);
         }

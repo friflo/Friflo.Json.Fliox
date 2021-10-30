@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         
         public async Task ValidateRoles() {
             using(var userStore = new UserStore (userHub)) {
-                userStore.User = UserStore.AuthenticationUser;
+                userStore.UserId = UserStore.AuthenticationUser;
                 var queryRoles = userStore.roles.QueryAll();
                 await userStore.TrySyncTasks().ConfigureAwait(false);
                 Dictionary<string, Role> roles = queryRoles.Results;
@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
             // Note 2: UserStore could be cached. This requires a FlioxClient.ClearEntities()
             // UserStore is not thread safe, create new one per Authenticate request.
             using (var userStore = new UserStore (userHub)) {
-                userStore.User = UserStore.AuthenticationUser;
+                userStore.UserId = UserStore.AuthenticationUser;
                 var auth    = userAuth ?? userStore;
                 var result  = await auth.Authenticate(command).ConfigureAwait(false);
                 

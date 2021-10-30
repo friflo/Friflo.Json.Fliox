@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         } 
 
         [Fri.Ignore]
-        public string User {
+        public string UserId {
             get => _intern.userId.AsString();
             set {
                 AssertBaseStore();
@@ -125,7 +125,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         [Fri.Ignore]
-        public string Client {
+        public string ClientId {
             get => _intern.clientId.AsString();
             set {
                 AssertBaseStore();
