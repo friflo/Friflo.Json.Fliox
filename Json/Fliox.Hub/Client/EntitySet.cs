@@ -145,7 +145,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override void Init(FlioxClient store) {
-            store._intern.AddEntitySet(this);
             container   = store._intern.database?.GetOrCreateContainer(name);
             intern      = new SetIntern<TKey, T>(store);
         }

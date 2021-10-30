@@ -146,14 +146,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var setMapper   = (IEntitySetMapper)typeStore.GetTypeMapper(entityInfo.entitySetType);
                 EntitySet entitySet   = setMapper.CreateEntitySet(entityInfo.container);
                 entitySet.Init(client);
+                setByType[entityInfo.entityType]    = entitySet;
+                setByName[entitySet.name]           = entitySet;
                 entityInfo.SetEntitySetMember(client, entitySet);
             }
-        }
-        
-        internal void AddEntitySet<T>(EntitySetBase<T> entitySet) where T : class {
-            var type = typeof(T);
-            setByType[type]             = entitySet;
-            setByName[entitySet.name]   = entitySet;
         }
         
         internal Dictionary<string, SyncSet> CreateSyncSets() {
