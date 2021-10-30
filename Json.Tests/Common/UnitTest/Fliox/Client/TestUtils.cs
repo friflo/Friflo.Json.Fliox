@@ -145,14 +145,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 stopwatch.Start();
                 int count = 1; 
                 for (int n = 0; n < count; n++) {
-                    new PocStore(hub, typeStore, null); // ~ 4.5 µs (Release)
+                    new PocStore(hub, typeStore, null); // ~ 4.0 µs (Release)
                 }
                 stopwatch.Stop();
                 Console.WriteLine($"client instantiation count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
                 
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 // ReSharper disable once UnusedVariable
-                var store = new PocStore(hub, typeStore, null); // ~ 4.0 µs (Release)
+                var store = new PocStore(hub, typeStore, null);
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 
                 Console.WriteLine($"PocStore memory: {diff}");
