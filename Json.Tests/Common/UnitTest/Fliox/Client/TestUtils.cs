@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
@@ -140,13 +141,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 var _           = new PocStore(hub, typeStore, null);
                 var __          = new PocStore(hub, typeStore, null);
                 
-                for (int n = 0; n < 1; n++) {
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+                int count = 1; 
+                for (int n = 0; n < count; n++) {
                     new PocStore(hub, typeStore, null); // ~ 4.5 µs (Release)
                 }
+                stopwatch.Stop();
+                Console.WriteLine($"client instantiation count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
                 
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 // ReSharper disable once UnusedVariable
-                var store = new PocStore(hub, typeStore, null); // ~ 4.5 µs (Release)
+                var store = new PocStore(hub, typeStore, null); // ~ 4.0 µs (Release)
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 
                 Console.WriteLine($"PocStore memory: {diff}");
