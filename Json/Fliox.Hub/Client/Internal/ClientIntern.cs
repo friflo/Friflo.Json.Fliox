@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     {
         // readonly
         internal readonly   FlioxClient                                 baseClient;
-        internal readonly   EntityInfo[]                                entityInfos;
+        private  readonly   EntityInfo[]                                entityInfos;
         internal readonly   TypeStore                                   typeStore;
         internal readonly   TypeCache                                   typeCache;
         internal readonly   FlioxHub                                    hub;
