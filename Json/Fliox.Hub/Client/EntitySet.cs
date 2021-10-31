@@ -112,7 +112,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            SetIntern<TKey, T>          intern;
         
         /// key: <see cref="Peer{T}.entity"/>.id        Note: must be private by all means
-        private  readonly   Dictionary<TKey, Peer<T>>   peers = SyncSet.CreateDictionary<TKey,Peer<T>>();
+        private             Dictionary<TKey, Peer<T>>   peerMap;
+        /// create peers map on demand.                 Note: must be private by all means
+        private             Dictionary<TKey, Peer<T>>   Peers() => peerMap ?? (peerMap = SyncSet.CreateDictionary<TKey,Peer<T>>());
         
         internal static readonly EntityKeyT<TKey, T>    EntityKeyTMap = EntityKey.GetEntityKeyT<TKey, T>();
 
@@ -134,7 +136,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              bool                        WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
 
         internal override   SetInfo                     SetInfo { get {
-            var info = new SetInfo (typeof(T).Name) { peers = peers.Count };
+            var info = new SetInfo (typeof(T).Name) { peers = peerMap?.Count ?? 0 };
             syncSet?.SetTaskInfo(ref info);
             return info;
         }}
@@ -151,6 +153,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --------------------------------------- public interface ---------------------------------------
         public bool TryGet (TKey key, out T entity) {
+            var peers = Peers();
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 entity = peer.NullableEntity;
                 return true;
@@ -160,6 +163,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         public bool Contains (TKey key) {
+            var peers = Peers();
             return peers.ContainsKey(key);
         }
         
@@ -366,6 +370,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- Log changes -> create patches
         public LogTask LogSetChanges() {
             var task = intern.store._intern.syncStore.CreateLog();
+            var peers = Peers();
             GetSyncSet().LogSetChanges(peers, task);
             intern.store.AddTask(task);
             return task;
@@ -411,11 +416,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         internal override void LogSetChangesInternal(LogTask logTask) {
+            var peers = Peers();
             GetSyncSet().LogSetChanges(peers, logTask);
         }
         
         internal override Peer<T> CreatePeer (T entity) {
-            var key = GetEntityKey(entity);
+            var key   = GetEntityKey(entity);
+            var peers = Peers();
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 peer.SetEntity(entity);
                 return peer;
@@ -428,6 +435,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal void DeletePeer (in JsonKey id) {
             var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+            var peers = Peers();
             peers.Remove(key);
         }
         
@@ -456,6 +464,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal Peer<T> GetPeerByKey(TKey key) {
+            var peers = Peers();
             return peers[key];
         }
         
@@ -465,6 +474,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal Peer<T> GetOrCreatePeerByKey(TKey key, JsonKey id) {
+            var peers = Peers();
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
             }
@@ -481,6 +491,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// use <see cref="GetOrCreatePeerByKey"/> is possible
         internal override Peer<T> GetPeerById(in JsonKey id) {
             var key = Ref<TKey,T>.RefKeyMap.IdToKey(id);
+            var peers = Peers();
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
             }
@@ -490,6 +501,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override Peer<T> GetPeerByEntity(T entity) {
+            var peers = Peers();
             var key = GetEntityKey(entity);
             if (peers.TryGetValue(key, out Peer<T> peer)) {
                 return peer;
