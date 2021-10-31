@@ -126,7 +126,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             if (keys.Count != entities.Count)
                 throw new InvalidOperationException("Expect equal counts");
-            var reader = set.intern.jsonMapper.reader;
+            var reader = set.JsonMapper().reader;
             for (int n = 0; n < entities.Count; n++) {
                 var entity = entities[n];
                 // if (entity.json == null)  continue; // TAG_ENTITY_NULL

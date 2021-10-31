@@ -227,7 +227,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         public MessageTask SendMessage<TMessage>(string name, TMessage message) {
-            var json    = _intern.jsonMapper.WriteAsArray(message);
+            var writer  = _intern.JsonMapper().writer;
+            var json    = writer.WriteAsArray(message);
             var task    = new MessageTask(name, new JsonValue(json));
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
@@ -241,7 +242,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// the <see cref="FlioxClient"/> subclass. Doing this adds the command and its API to the <see cref="DatabaseSchema"/>. 
         /// </summary>
         public CommandTask<TResult> SendCommand<TResult>(string name) {
-            var task    = new CommandTask<TResult>(name, new JsonValue(), _intern.jsonMapper.reader);
+            var reader  = _intern.JsonMapper().reader;
+            var task    = new CommandTask<TResult>(name, new JsonValue(), reader);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
@@ -253,8 +255,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// the <see cref="FlioxClient"/> subclass. Doing this adds the command and its API to the <see cref="DatabaseSchema"/>. 
         /// </summary>
         public CommandTask<TResult> SendCommand<TCommand, TResult>(string name, TCommand command) {
-            var json    = _intern.jsonMapper.WriteAsArray(command);
-            var task    = new CommandTask<TResult>(name, new JsonValue(json), _intern.jsonMapper.reader);
+            var mapper  = _intern.JsonMapper();
+            var json    = mapper.WriteAsArray(command);
+            var task    = new CommandTask<TResult>(name, new JsonValue(json), mapper.reader);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
@@ -480,7 +483,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var result in results) {
                 resultMap.Add(result.container, result);
             }
-            var processor = _intern.GetEntityProcessor();
+            var processor = _intern.EntityProcessor();
             foreach (var container in results) {
                 string name         = container.container;
                 if (!_intern.TryGetSetByName(name, out EntitySet set)) {

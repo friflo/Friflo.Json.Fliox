@@ -13,7 +13,6 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
-using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
@@ -23,12 +22,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   FlioxClient                                 baseClient;
         private  readonly   EntityInfo[]                                entityInfos;
         internal readonly   TypeStore                                   typeStore;
-        internal readonly   TypeCache                                   typeCache;
         internal readonly   FlioxHub                                    hub;
         internal readonly   EntityDatabase                              database;
         internal readonly   EventTarget                                 eventTarget;
+        private  readonly   ITracerContext                              tracerContext;
         // readonly - owned
-        internal readonly   ObjectMapper                                jsonMapper;
+        private             ObjectMapper                                jsonMapper;
         private  readonly   SubscriptionProcessor                       defaultProcessor;
         private             ObjectPatcher                               objectPatcher;  // create on demand
         private             EntityProcessor                             processor;      // create on demand
@@ -36,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private  readonly   Dictionary<string, EntitySet>               setByName;      // entries should be added on demand
         internal readonly   Dictionary<string, MessageSubscriber>       subscriptions;
         internal readonly   List<MessageSubscriber>                     subscriptionsPrefix;
-        internal readonly   ObjectReader                                messageReader;
+        private             ObjectReader                                messageReader;
         internal readonly   ConcurrentDictionary<Task, MessageContext>  pendingSyncs;
         internal readonly   List<JsonKey>                               idsBuf;
         internal readonly   Pools                                       pools;
@@ -55,8 +54,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         public   override   string                                  ToString() => userId.ToString();
 
-        internal EntityProcessor    GetEntityProcessor()   => processor     ?? (processor       = new EntityProcessor());
-        internal ObjectPatcher      GetObjectPatcher()     => objectPatcher ?? (objectPatcher   = new ObjectPatcher(jsonMapper));
+        internal EntityProcessor    EntityProcessor()   => processor     ?? (processor      = new EntityProcessor());
+        internal ObjectPatcher      ObjectPatcher()     => objectPatcher ?? (objectPatcher  = new ObjectPatcher(JsonMapper()));
+        internal ObjectReader       MessageReader()     => messageReader ?? (messageReader  = JsonMapper().reader);
+        
+        // throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 
+        internal ObjectMapper       JsonMapper()        => jsonMapper    ?? (jsonMapper
+            = new ObjectMapper(typeStore, new NoThrowHandler()){TracerContext = tracerContext });
         
         internal EntitySet GetSetByType(Type type) {
             return setByType[type];
@@ -83,20 +87,16 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             ITracerContext          tracerContext,
             EventTarget             eventTarget)
         {
-
-            // throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 
-            var mapper                  = new ObjectMapper(typeStore, new NoThrowHandler());
-            mapper.TracerContext        = tracerContext;
             // readonly
             this.baseClient             = baseClient;
             entityInfos                 = ClientEntityUtils.GetEntityInfos (thisClient.GetType());
             this.typeStore              = typeStore;
-            this.typeCache              = mapper.writer.TypeCache;
             this.hub                    = hub;
             this.database               = database;
             this.eventTarget            = eventTarget;
+            this.tracerContext          = tracerContext;
             // readonly - owned
-            jsonMapper                  = mapper;
+            jsonMapper                  = null;
             objectPatcher               = null;
             processor                   = null;
             defaultProcessor            = new SubscriptionProcessor(thisClient);
@@ -104,7 +104,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             setByName                   = new Dictionary<string, EntitySet>(entityInfos.Length);
             subscriptions               = new Dictionary<string, MessageSubscriber>();
             subscriptionsPrefix         = new List<MessageSubscriber>();
-            messageReader               = mapper.reader; // new ObjectReader(typeStore, new NoThrowHandler());
+            messageReader               = null; // new ObjectReader(typeStore, new NoThrowHandler());
             pendingSyncs                = new ConcurrentDictionary<Task, MessageContext>();
             idsBuf                      = new List<JsonKey>();
             pools                       = new Pools(UtilsInternal.SharedPools);
@@ -138,7 +138,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             processor?.Dispose();
             objectPatcher?.Dispose();
             // readonly
-            jsonMapper.Dispose();
+            jsonMapper?.Dispose();
         }
         
         internal void InitEntitySets(FlioxClient client) {

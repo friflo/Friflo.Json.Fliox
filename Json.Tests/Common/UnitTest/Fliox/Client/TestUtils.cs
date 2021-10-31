@@ -145,7 +145,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 stopwatch.Start();
                 int count = 1; 
                 for (int n = 0; n < count; n++) {
-                    new PocStore(hub, typeStore); // ~ 2.8 µs (Release)
+                    new PocStore(hub, typeStore); // ~ 1.9 µs (Release)
                 }
                 stopwatch.Stop();
                 Console.WriteLine($"client instantiation count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
@@ -156,7 +156,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 
                 Console.WriteLine($"PocStore memory: {diff}");
-                var expected = Is.InRange(6112, 6328);
+                var expected = Is.InRange(3112, 3112);
                 That(diff, expected);
             }
         }

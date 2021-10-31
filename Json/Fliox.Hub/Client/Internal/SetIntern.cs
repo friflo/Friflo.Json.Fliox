@@ -3,19 +3,18 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
     internal struct SetIntern<TKey, T> where T : class
     {
-        private             TypeMapper<T>       typeMapper;     // set/create on demand
-        internal readonly   ObjectMapper        jsonMapper;
-        private             Tracer              tracer;         // create on demand
         internal readonly   FlioxClient         store;
-        private             List<TKey>          keysBuf;        // create on demand
         internal readonly   bool                autoIncrement;
+        private             TypeMapper<T>       typeMapper;     // set/create on demand
+        private             Tracer              tracer;         // create on demand
+        private             List<TKey>          keysBuf;        // create on demand
 
         
         // --- non readonly
@@ -24,11 +23,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            bool                writeNull;
         
         internal List<TKey>     GetKeysBuf()    => keysBuf      ?? (keysBuf = new List<TKey>());
-        internal Tracer         GetTracer()     => tracer       ?? (tracer = new Tracer(store._intern.typeCache, store));
+        internal Tracer         GetTracer()     => tracer       ?? (tracer = new Tracer(new TypeCache(store._intern.typeStore), store));
         internal TypeMapper<T>  GetMapper()     => typeMapper   ?? (typeMapper = (TypeMapper<T>)store._intern.typeStore.GetTypeMapper(typeof(T)));
 
         internal SetIntern(FlioxClient store) {
-            jsonMapper      = store._intern.jsonMapper;
             typeMapper      = null;
             tracer          = null;
             this.store      = store;

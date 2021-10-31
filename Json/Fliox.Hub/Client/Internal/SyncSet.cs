@@ -253,7 +253,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var patchSource = peer.PatchSource;
             if (patchSource != null) {
                 var entity = peer.Entity;
-                var objectPatcher   = intern.store._intern.GetObjectPatcher(); 
+                var objectPatcher   = intern.store._intern.ObjectPatcher(); 
                 var diff = objectPatcher.differ.GetDiff(patchSource, entity);
                 if (diff == null)
                     return;
@@ -303,7 +303,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             var entries = new List<JsonValue>   (count);
             var keys    = new List<JsonKey>     (count);
-            var writer  = set.intern.jsonMapper.writer;
+            var writer  = set.JsonMapper().writer;
             writer.Pretty           = set.intern.writePretty;
             writer.WriteNullMembers = set.intern.writeNull;
             if (_creates  != null) {
@@ -341,7 +341,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private void UpsertEntities(List<SyncRequestTask> tasks) {
             if (_upserts == null || _upserts.Count == 0)
                 return;
-            var writer  = set.intern.jsonMapper.writer;
+            var writer              = set.JsonMapper().writer;
             writer.Pretty           = set.intern.writePretty;
             writer.WriteNullMembers = set.intern.writeNull;
             var entries = new List<JsonValue>   (_upserts.Count);
@@ -423,10 +423,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             
             if (patchTasks != null && patchTasks.Count > 0) {
                 patches = Patches();    
+                var writer = set.JsonMapper().writer;
                 foreach (var patchTask in patchTasks) {
                     // todo performance: cache MemberAccess instances with members as key
                     var memberAccess    = new MemberAccess(patchTask.members);
-                    var memberAccessor  = new MemberAccessor(set.intern.store._intern.jsonMapper.writer);
+                    var memberAccessor  = new MemberAccessor(writer);
                     
                     foreach (var peer in patchTask.peers) {
                         var entity  = peer.Entity;
@@ -520,7 +521,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         private void SetNextPatchSource(Peer<T> peer) {
-            var mapper      = set.intern.jsonMapper;
+            var mapper      = set.JsonMapper();
             var jsonArray   = mapper.writer.WriteAsArray(peer.Entity);
             var json        = new JsonValue(jsonArray);
             peer.SetNextPatchSource(mapper.Read<T>(json));

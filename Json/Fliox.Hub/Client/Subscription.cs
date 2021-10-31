@@ -6,7 +6,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using Friflo.Json.Fliox.Hub.Client.Internal;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -163,7 +162,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                         // callbacks require their own reader as store._intern.jsonMapper.reader cannot be used.
                         // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
                         // and ProcessEvent() can be called concurrently from the "main" thread.
-                        var reader = client._intern.messageReader;
+                        var reader = client._intern.MessageReader();
                         if (client._intern.subscriptions.TryGetValue(name, out MessageSubscriber subscriber)) {
                             subscriber.InvokeCallbacks(reader, name, message.value);    
                         }
@@ -183,7 +182,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private List<JsonKey> GetKeysFromEntities(string keyName, List<JsonValue> entities) {
-            var processor = client._intern.GetEntityProcessor();
+            var processor = client._intern.EntityProcessor();
             var keys = new List<JsonKey>(entities.Count);
             foreach (var entity in entities) {
                 if (!processor.GetEntityKey(entity, keyName, out JsonKey key, out string error))
@@ -220,7 +219,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             foreach (var task in eventMessage.tasks) {
                 if (!(task is SyncMessageTask messageTask)) 
                     continue;
-                var reader  = client._intern.messageReader;
+                var reader  = client._intern.MessageReader();
                 var message = new Message(messageTask.name, messageTask.value, reader);
                 messages.Add(message);
             }

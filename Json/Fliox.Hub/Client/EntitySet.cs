@@ -129,6 +129,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal override   SyncSet                     SyncSet         => syncSet;
         public   override   string                      ToString()      => SetInfo.ToString();
+        internal            ObjectMapper                JsonMapper()    => intern.store._intern.JsonMapper();
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              bool                        WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
@@ -514,7 +515,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         // --- EntitySet
         internal override void SyncPeerEntities(Dictionary<JsonKey, EntityValue> entities) {
-            var reader = intern.jsonMapper.reader;
+            var reader = JsonMapper().reader;
                 
             foreach (var entityPair in entities) {
                 var id = entityPair.Key;
@@ -560,7 +561,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal  override void PatchPeerEntities (Dictionary<JsonKey, EntityPatch> patches) {
-            var objectPatcher = intern.store._intern.GetObjectPatcher();
+            var objectPatcher = intern.store._intern.ObjectPatcher();
             foreach (var pair in patches) {
                 var         id          = pair.Key;
                 EntityPatch entityPatch = pair.Value;
