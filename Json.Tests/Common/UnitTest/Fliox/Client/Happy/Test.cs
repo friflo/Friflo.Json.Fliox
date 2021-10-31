@@ -62,6 +62,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var useStore     = new PocStore(hub) { UserId = "useStore"})  {
                 await TestRelationPoC.CreateStore(createStore);
                 await TestStores(createStore, useStore);
+                createStore.Reset();
+                useStore.Reset();
+                await TestRelationPoC.CreateStore(createStore);
+                await TestStores(createStore, useStore);
             }
         }
         
@@ -76,6 +80,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var useStore     = new PocStore(hub) { UserId = "useStore"}) {
                 await TestRelationPoC.CreateStore(createStore);
                 await TestStores(createStore, useStore);
+                createStore.Reset();
+                useStore.Reset();
+                await TestRelationPoC.CreateStore(createStore);
+                await TestStores(createStore, useStore);
             }
         }
         
@@ -87,6 +95,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var database     = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var hub          = new FlioxHub(database))
             using (var useStore     = new PocStore(hub) { UserId = "useStore"}) {
+                await TestStores(useStore, useStore);
+                useStore.Reset();
                 await TestStores(useStore, useStore);
             }
         }
@@ -106,6 +116,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await RunServer(server, async () => {
                     using (var createStore      = new PocStore(remoteDatabase) { UserId = "createStore", ClientId = "create-client"})
                     using (var useStore         = new PocStore(remoteDatabase) { UserId = "useStore",    ClientId = "use-client"}) {
+                        await TestRelationPoC.CreateStore(createStore);
+                        await TestStores(createStore, useStore);
+                        createStore.Reset();
+                        useStore.Reset();
                         await TestRelationPoC.CreateStore(createStore);
                         await TestStores(createStore, useStore);
                     }

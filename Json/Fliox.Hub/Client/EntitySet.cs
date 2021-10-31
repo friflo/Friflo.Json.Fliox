@@ -30,6 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal static readonly QueryPath RefQueryPath = new RefQueryPath();
         
         internal  abstract  void                Init                    (FlioxClient store);
+        internal  abstract  void                Reset                   ();
         internal  abstract  void                LogSetChangesInternal   (LogTask logTask);
         internal  abstract  void                SyncPeerEntities        (Dictionary<JsonKey, EntityValue> entities);
         internal  abstract  void                DeletePeerEntities      (HashSet   <JsonKey> ids);
@@ -152,6 +153,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal override void Init(FlioxClient store) {
             container   = store._intern.database?.GetOrCreateContainer(name);
             intern      = new SetIntern<TKey, T>(store);
+        }
+        
+        internal override void Reset() {
+            peerMap?.Clear();
         }
         
         // --------------------------------------- public interface ---------------------------------------

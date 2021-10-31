@@ -87,6 +87,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         private const bool OriginalContext = true;
         
+        public void Reset() {
+            foreach (var setPair in _intern.setByType) {
+                EntitySet set = setPair.Value;
+                set.Reset();
+            }
+            _intern.syncStore = new SyncStore();
+        }
+        
         // --- SyncTasks() / TrySyncTasks()
         public async Task<SyncResult> SyncTasks() {
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
