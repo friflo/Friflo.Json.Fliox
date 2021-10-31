@@ -145,6 +145,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             hub.RemoveEventTarget(clientId);
             userId      = new JsonKey();
             clientId    = new JsonKey();
+            token       = null;
             subscriptionsPrefix.Clear();    // todo should assert if having open subscriptions 
             subscriptions.Clear();          // todo should assert if having open subscriptions
             syncStore   = new SyncStore();

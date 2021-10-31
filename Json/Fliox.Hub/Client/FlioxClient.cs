@@ -14,6 +14,7 @@ using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Fliox.Utils;
 
 #if !UNITY_5_3_OR_NEWER
 [assembly: CLSCompliant(true)]
@@ -26,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     [CLSCompliant(true)]
 #endif
     [Fri.TypeMapper(typeof(FlioxClientMatcher))]
-    public class FlioxClient : ITracerContext, IDisposable
+    public class FlioxClient : ITracerContext, IDisposable, IResetable
     {
         // Keep all FlioxClient fields in StoreIntern to enhance debugging overview.
         // Reason: FlioxClient is extended by application and add multiple EntitySet fields.

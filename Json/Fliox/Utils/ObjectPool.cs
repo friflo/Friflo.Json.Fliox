@@ -64,6 +64,9 @@ namespace Friflo.Json.Fliox.Utils
         }
         
         internal override void Return(T instance) {
+            if (instance is IResetable resetable) {
+                resetable.Reset();
+            }
             stack.Push(instance);
         }
     }
