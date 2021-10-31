@@ -76,7 +76,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             var type            = typeof(T);
             var entityKeyName   = entityId.GetKeyName();
-            var error = $"key Type mismatch. {entityKeyType.Name} ({type.Name}.{entityKeyName}) != {keyType.Name} (EntitySet<{keyType.Name},{type.Name}>)";
+            var name            = type.Name;
+            var keyName         = keyType.Name;
+            var error = $"key Type mismatch. {entityKeyType.Name} ({name}.{entityKeyName}) != {keyName} (EntitySet<{keyName},{name}>)";
             throw new InvalidTypeException(error);
         }
     }
