@@ -45,6 +45,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         protected EntitySet(string name) {
             this.name = name;
         }
+        
+        internal const bool DefaultWritePretty   = false;
+        internal const bool DefaultWriteNull     = false;
     }
     
     public abstract class EntitySetBase<T> : EntitySet where T : class
@@ -157,6 +160,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal override void Reset() {
             peerMap?.Clear();
+            intern.writePretty  = DefaultWritePretty;
+            intern.writeNull    = DefaultWriteNull;
         }
         
         // --------------------------------------- public interface ---------------------------------------

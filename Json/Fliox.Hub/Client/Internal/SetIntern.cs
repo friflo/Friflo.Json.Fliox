@@ -33,8 +33,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             subscription    = null;
             keysBuf         = null;
             autoIncrement   = EntitySet<TKey,T>.EntityKeyTMap.autoIncrement;
-            writePretty     = false;
-            writeNull       = false;
+            writePretty     = EntitySet.DefaultWritePretty;
+            writeNull       = EntitySet.DefaultWriteNull;
         }
     }
 }
