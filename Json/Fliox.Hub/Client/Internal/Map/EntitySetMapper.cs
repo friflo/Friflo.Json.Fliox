@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             var genericArgs = type.GetGenericArguments();
             var keyType     = genericArgs[0];
             var entityType  = genericArgs[1];
-            
+
             object[] constructorParams = {config, type};
             return (TypeMapper)TypeMapperUtils.CreateGenericInstance(typeof(EntitySetMapper<,,>), new[] {type, keyType, entityType}, constructorParams);
         }
@@ -40,6 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
+            EntitySetBase<TEntity>.ValidateKeyType(typeof(TKey));
             var entityType  = typeof(TEntity);
             elementType     = typeStore.GetTypeMapper(entityType);
         }
@@ -53,8 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         }
         
         public EntitySet CreateEntitySet(string name) {
-            var keyType = typeof(TKey);
-            EntitySetBase<TEntity>.ValidateKeyType(keyType);
+            // EntitySetBase<TEntity>.ValidateKeyType(typeof(TKey));
             return new EntitySet<TKey,TEntity>(name);
         }
     }
