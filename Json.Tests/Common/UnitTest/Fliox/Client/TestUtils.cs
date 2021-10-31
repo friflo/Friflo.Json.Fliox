@@ -9,6 +9,7 @@ using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Utils;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
 using NUnit.Framework;
 using static NUnit.Framework.Assert;
@@ -135,6 +136,22 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         }
         
         [Test]
+        public void TestPooledFlioxClient() {
+            var typeStore = new TypeStore();
+            var hub = new FlioxHub(new MemoryDatabase());
+            var pool = new SharedPool<PocStore>(() => new PocStore(hub, typeStore));
+            using (pool.Get()) {}
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            int count = 1;
+            for (int n = 0; n < count; n++) {
+                using (pool.Get()) { } // ~ 40 ns (Release)
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"get pool client count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
+        }
+        
+        [Test]
         public void TestMemoryFlioxClient() {
             using (var typeStore = new TypeStore()) {
                 var hub         = new NoopDatabaseHub();
@@ -143,7 +160,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
-                int count = 1;
+                int count = 1000000;
                 for (int n = 0; n < count; n++) {
                     new PocStore(hub, typeStore); // ~ 1.9 µs (Release)
                 }
