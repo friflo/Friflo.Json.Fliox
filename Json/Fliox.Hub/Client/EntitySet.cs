@@ -65,9 +65,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         protected EntitySetBase(string name) : base(name) { }
         
         internal static void ValidateKeyType(Type keyType) {
-            var entityId            = EntityKey.GetEntityKey<T>();
-            var entityKeyType       = entityId.GetKeyType();
-            var entityKeyName       = entityId.GetKeyName();
+            var entityId        = EntityKey.GetEntityKey<T>();
+            var entityKeyType   = entityId.GetKeyType();
             // TAG_NULL_REF
             var underlyingKeyType   = Nullable.GetUnderlyingType(keyType);
             if (underlyingKeyType != null) {
@@ -75,7 +74,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             if (keyType == entityKeyType)
                 return;
-            var type = typeof(T);
+            var type            = typeof(T);
+            var entityKeyName   = entityId.GetKeyName();
             var error = $"key Type mismatch. {entityKeyType.Name} ({type.Name}.{entityKeyName}) != {keyType.Name} (EntitySet<{keyType.Name},{type.Name}>)";
             throw new InvalidTypeException(error);
         }
@@ -139,9 +139,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return info;
         }}
         
-        /// constructor is called via <see cref="ClientEntityUtils.InitEntitySets"/> 
+        /// constructor is called via <see cref="EntitySetMapper{T,TKey,TEntity}.CreateEntitySet"/> 
         internal EntitySet(string name) : base (name) {
-            ValidateKeyType(typeof(TKey));
+            // ValidateKeyType(typeof(TKey)); // only required if constructor is public
         }
         
         internal override void Init(FlioxClient store) {
