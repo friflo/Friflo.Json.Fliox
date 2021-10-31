@@ -174,7 +174,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             int count = 1; // 10000000;
             for (int n = 0; n < count; n++) {
                 using (var pooled = pool.Get()) {
-                    pooled.instance.Reset();   // ~ 0.098 µs (Release)
+                    pooled.instance.Reset();   // ~ 0.11 µs (Release)
                 }
             }
             stopwatch.Stop();
