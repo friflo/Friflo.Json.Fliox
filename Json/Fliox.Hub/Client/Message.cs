@@ -16,7 +16,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         string              Name    { get; }
         /// <summary>
         /// Returns the message value as JSON.
-        /// Returns "null" when message was sent by <see cref="FlioxClient.SendCommand"/>
         /// </summary>
         JsonValue           Json    { get; }
         

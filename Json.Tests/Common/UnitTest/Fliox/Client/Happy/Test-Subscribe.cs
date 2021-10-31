@@ -88,6 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             
             var subscribeMessage    = store.SubscribeMessage(TestRelationPoC.EndCreate, (msg) => {
                 processor.receivedAll = true;
+                IsTrue(                     msg.Json.IsNull());
                 AreEqual("null",            msg.Json.AsString());
             });
             var subscribeMessage1   = store.SubscribeMessage<TestCommand>(nameof(TestCommand), (msg) => {
@@ -209,6 +210,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             foreach (var message in messages) {
                 switch (message.Name) {
                     case nameof(TestRelationPoC.EndCreate):
+                        IsTrue  (        message.Json.IsNull());
                         AreEqual("null", message.Json.AsString());
                         break;
                     case nameof(TestRelationPoC.TestMessageInt):
