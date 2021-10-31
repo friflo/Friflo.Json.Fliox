@@ -92,7 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 EntitySet set = setPair.Value;
                 set.Reset();
             }
-            _intern.syncStore = new SyncStore();
+            _intern.Reset();
         }
         
         // --- SyncTasks() / TrySyncTasks()

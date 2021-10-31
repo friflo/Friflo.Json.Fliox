@@ -141,6 +141,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             jsonMapper?.Dispose();
         }
         
+        internal void Reset () {
+            syncStore   = new SyncStore();
+            userId      = new JsonKey();
+            clientId    = new JsonKey();
+        }
+        
         internal void InitEntitySets(FlioxClient client) {
             foreach (var entityInfo in entityInfos) {
                 var name        = entityInfo.container;
