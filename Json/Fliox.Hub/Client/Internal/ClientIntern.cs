@@ -142,9 +142,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         internal void Reset () {
-            syncStore   = new SyncStore();
+            hub.RemoveEventTarget(clientId);
             userId      = new JsonKey();
             clientId    = new JsonKey();
+            subscriptionsPrefix.Clear();    // todo should assert if having open subscriptions 
+            subscriptions.Clear();          // todo should assert if having open subscriptions
+            syncStore   = new SyncStore();
         }
         
         internal void InitEntitySets(FlioxClient client) {
