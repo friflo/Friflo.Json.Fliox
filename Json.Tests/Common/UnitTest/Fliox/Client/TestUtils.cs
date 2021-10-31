@@ -154,10 +154,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 // ReSharper disable once UnusedVariable
                 var store = new PocStore(hub, typeStore);
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                
-                Console.WriteLine($"PocStore memory: {diff}");
-                var expected = Is.InRange(2896, 3112);
-                That(diff, expected);
+                var platform    = Environment.OSVersion.Platform;
+                var isWindows   = platform == PlatformID.Win32NT; 
+                var expected    = isWindows ? 3112 : 2896;
+                Console.WriteLine($"PocStore allocation. platform: {platform}, memory: {diff}");
+                AreEqual(expected, diff);
             }
         }
 
