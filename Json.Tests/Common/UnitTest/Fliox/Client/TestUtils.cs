@@ -136,23 +136,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         }
         
         [Test]
-        public void TestPooledFlioxClient() {
-            var typeStore = new TypeStore();
-            var hub = new FlioxHub(new MemoryDatabase());
-            var pool = new SharedPool<PocStore>(() => new PocStore(hub, typeStore));
-            using (pool.Get()) {}
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            int count = 1;
-            for (int n = 0; n < count; n++) {
-                using (pool.Get()) { } // ~ 40 ns (Release)
-            }
-            stopwatch.Stop();
-            Console.WriteLine($"get pool client count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
-        }
-        
-        [Test]
-        public void TestMemoryFlioxClient() {
+        public void BenchmarkCreateClient() {
             using (var typeStore = new TypeStore()) {
                 var hub         = new NoopDatabaseHub();
                 var _           = new PocStore(hub, typeStore);
@@ -160,7 +144,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
-                int count = 1000000;
+                int count = 1; // 1000000;
                 for (int n = 0; n < count; n++) {
                     new PocStore(hub, typeStore); // ~ 1.9 µs (Release)
                 }
@@ -177,6 +161,32 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 Console.WriteLine($"PocStore allocation. platform: {platform}, memory: {diff}");
                 AreEqual(expected, diff);
             }
+        }
+        
+        [Test]
+        public void BenchmarkPooledClient() {
+            var typeStore   = new TypeStore();
+            var hub         = new NoopDatabaseHub();
+            var pool        = new SharedPool<PocStore>(() => new PocStore(hub, typeStore));
+            using (pool.Get()) {}
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            int count = 1; // 10000000;
+            for (int n = 0; n < count; n++) {
+                using (var pooled = pool.Get()) {
+                    pooled.instance.Reset();   // ~ 0.098 µs (Release)
+                }
+            }
+            stopwatch.Stop();
+            Console.WriteLine($"get pool client count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
+            
+            var store = new PocStore(hub, typeStore);
+            var start = GC.GetAllocatedBytesForCurrentThread();
+            store.Reset();
+            var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+            var platform    = Environment.OSVersion.Platform;
+            Console.WriteLine($"PocStore Reset. platform: {platform}, memory: {diff}");
+            AreEqual(96, diff);
         }
 
         [Test]
