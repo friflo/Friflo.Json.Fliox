@@ -143,11 +143,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal void InitEntitySets(FlioxClient client) {
             foreach (var entityInfo in entityInfos) {
+                var name        = entityInfo.container;
                 var setMapper   = (IEntitySetMapper)typeStore.GetTypeMapper(entityInfo.entitySetType);
-                EntitySet entitySet   = setMapper.CreateEntitySet(entityInfo.container);
+                var entitySet   = setMapper.CreateEntitySet(name);
                 entitySet.Init(client);
                 setByType[entityInfo.entityType]    = entitySet;
-                setByName[entitySet.name]           = entitySet;
+                setByName[name]                     = entitySet;
                 entityInfo.SetEntitySetMember(client, entitySet);
             }
         }
