@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public partial struct Reader : IErrorHandler, IDisposable {
+    public partial struct Reader : IDisposable {
         public              JsonParser          parser;
         public              Bytes               strBuf;
         public              Bytes32             searchKey;
@@ -33,7 +33,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
         /// without creating a string on the heap.</summary>
         public readonly     BytesString         keyRef;
         public readonly     TypeCache           typeCache;
-        private             IErrorHandler       errorHandler;
         public              ITracerContext      tracerContext;
         public              JsonSerializerStub  jsonSerializerStub;
 #if !UNITY_5_3_OR_NEWER
@@ -48,7 +47,6 @@ namespace Friflo.Json.Fliox.Mapper.Map
 
         public Reader(TypeStore typeStore) {
             parser = new JsonParser();
-            errorHandler    = null;
             tracerContext   = null;
 
             typeCache       = new TypeCache(typeStore);
@@ -63,17 +61,10 @@ namespace Friflo.Json.Fliox.Mapper.Map
             classLevel      = 0;
 #endif
 #if !JSON_BURST
-            parser.error.errorHandler = this;
+            parser.error.errorHandler = DefaultErrorHandler;
 #endif
         }
         
-        public void HandleError(int pos, ref Bytes message) {
-            if (errorHandler != null)
-                errorHandler.HandleError(pos, ref message);
-            else
-                throw new JsonReaderException(message.AsString(), pos);
-        }
-
         public void Dispose() {
             jsonSerializerStub?.Dispose();
             strBuf      .Dispose();
@@ -96,6 +87,15 @@ namespace Friflo.Json.Fliox.Mapper.Map
                 default:
                     return ErrorIncompatible<TVal>(mapper.DataTypeName(), mapper, out success);
             }
+        }
+        
+        public static readonly DefaultErrorHandler DefaultErrorHandler = new DefaultErrorHandler();
+    }
+    
+    public class DefaultErrorHandler : IErrorHandler
+    {
+        public void HandleError(int pos, ref Bytes message) {
+            throw new JsonReaderException(message.AsString(), pos);
         }
     }
 }

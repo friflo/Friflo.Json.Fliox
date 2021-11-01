@@ -61,7 +61,7 @@ namespace Friflo.Json.Fliox.Mapper
         public              SkipInfo            SkipInfo        => intern.parser.skipInfo;
         public              long                ProcessedBytes  => intern.parser.ProcessedBytes;
         /// <summary>Caches type meta data per thread and provide stats to the cache utilization</summary>
-        public              TypeCache           TypeCache       => intern.typeCache; 
+        public              TypeCache           TypeCache       => intern.typeCache;
 
         public              int                 MaxDepth {
             get => maxDepth;
@@ -121,8 +121,9 @@ namespace Friflo.Json.Fliox.Mapper
         /// JSON_BURST compilation caused by absence of interfaces. </summary>
         [Conditional("JSON_BURST")]
         private void JsonBurstError() {
-            if (intern.parser.error.ErrSet)
-                intern.HandleError(intern.parser.error.Pos, ref intern.parser.error.msg);
+            if (intern.parser.error.ErrSet) {
+                intern.ErrorHandler?.HandleError(intern.parser.error.Pos, ref intern.parser.error.msg);
+            }
         }
         
         // --------------- Bytes ---------------

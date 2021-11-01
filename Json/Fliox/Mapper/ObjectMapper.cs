@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Map;
+using Friflo.Json.Fliox.Utils;
 
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Mapper
@@ -11,7 +12,7 @@ namespace Friflo.Json.Fliox.Mapper
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public sealed class ObjectMapper : IJsonReader, IJsonWriter, IDisposable
+    public sealed class ObjectMapper : IJsonReader, IJsonWriter, IDisposable, IResetable
     {
         public readonly TypeStore       typeStore;
         public readonly ObjectReader    reader;
@@ -56,12 +57,20 @@ namespace Friflo.Json.Fliox.Mapper
             this.typeStore  = typeStore;
             reader          = new ObjectReader(typeStore);
             writer          = new ObjectWriter(typeStore);
-            MaxDepth        = JsonParser.DefaultMaxDepth;
+            Reset();
         }
 
         public void Dispose() {
             writer.Dispose();
             reader.Dispose();
+        }
+        
+        public void Reset() {
+            ErrorHandler        = Reader.DefaultErrorHandler;
+            TracerContext       = null;
+            MaxDepth            = JsonParser.DefaultMaxDepth;
+            WriteNullMembers    = true;
+            Pretty              = false;
         }
         
         // --------------- Bytes ---------------
