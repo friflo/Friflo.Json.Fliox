@@ -47,11 +47,16 @@ namespace Friflo.Json.Fliox.Mapper
                 reader.TracerContext = value;
             }
         }
+        
+        public              IErrorHandler       ErrorHandler {
+            get => reader.ErrorHandler;
+            set => reader.ErrorHandler = value;
+        }
 
-        public ObjectMapper(TypeStore typeStore = null, IErrorHandler errorHandler = null) {
+        public ObjectMapper(TypeStore typeStore = null) {
             typeStore       = typeStore ?? (autoStore = new TypeStore());
             this.typeStore  = typeStore;
-            reader          = new ObjectReader(typeStore, errorHandler);
+            reader          = new ObjectReader(typeStore);
             writer          = new ObjectWriter(typeStore);
             MaxDepth        = JsonParser.DefaultMaxDepth;
         }

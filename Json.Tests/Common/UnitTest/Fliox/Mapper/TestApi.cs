@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         [Test]
         public void ReaderError() {
             using (var typeStore    = new TypeStore())
-            using (var read         = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var read         = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var invalid      = new Bytes("invalid"))
             {
                 read.Read<string>(invalid);

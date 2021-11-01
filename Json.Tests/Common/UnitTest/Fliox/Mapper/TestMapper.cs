@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var num999 = "999";
 
             using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
-            using (var enc   = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var enc   = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var write = new ObjectWriter(typeStore))
             {
                 AreEqual(EnumClass.Value1, enc.Read<EnumClass>(value1));
@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             const string bigIntStr = "1234567890123456789012345678901234567890";
             var bigIntNum = BigInteger.Parse(bigIntStr);
             using (var typeStore    = new TypeStore(new StoreConfig(typeAccess)))
-            using (var enc          = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var enc          = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var bigInt       = new Bytes($"\"{bigIntStr}\"")) {
                 AreEqual(bigIntNum, enc.Read<BigInteger>(bigInt));
             }
@@ -96,7 +96,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
         private void TestMaxDepth(TypeAccess typeAccess) {
             using (var typeStore    = new TypeStore(new StoreConfig(typeAccess)))
-            using (var enc          = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var enc          = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer       = new ObjectWriter(typeStore))
             using (var recDepth1    = new Bytes("{\"recField\":null}"))
             using (var recDepth2    = new Bytes("{\"recField\":{\"recField\":null}}"))
@@ -157,7 +157,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         private void TestDerivedClass(TypeAccess typeAccess) {
             using (var typeStore    = new TypeStore(new StoreConfig(typeAccess)))
             using (var derivedJson  = new Bytes("{\"Int32\":20,\"derivedField\":21,\"baseField\":10}"))
-            using (var reader       = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var reader       = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer       = new ObjectWriter(typeStore))
             {
                 var result = reader.Read<Derived>(derivedJson);

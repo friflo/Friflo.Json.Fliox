@@ -112,7 +112,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var testClass =     testClassJson; 
             
             using (var typeStore    = new TypeStore(new StoreConfig(TypeAccess.IL)))
-            using (var enc          = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var enc          = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var write        = new ObjectWriter(typeStore))
             {
                 int iterations = 1000;

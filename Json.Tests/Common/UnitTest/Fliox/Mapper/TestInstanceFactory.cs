@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         private void TestInterface(TypeAccess typeAccess) {
             var json = "{\"int32\":123}";
             using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
-            using (var reader = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var reader = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer = new ObjectWriter(typeStore))
             {
                 // typeStore.AddInstanceFactory(new TestFactory());
@@ -101,7 +101,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         private void TestPolymorphic(TypeAccess typeAccess) {
             var json = "{\"animalType\":\"lion\",\"int32\":123}";
             using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
-            using (var reader = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var reader = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer = new ObjectWriter(typeStore))
             {
                 // typeStore.AddInstanceFactory(new TestFactory());
@@ -147,7 +147,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         private void TestAbstract(TypeAccess typeAccess) {
             var json = "{\"personType\":\"Employee\",\"int32\":123}";
             using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
-            using (var reader = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var reader = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer = new ObjectWriter(typeStore))
             {
                 // typeStore.AddInstanceFactory(new TestFactory());
@@ -188,7 +188,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             string expect = string.Concat(json.Where(c => !char.IsWhiteSpace(c)));
             
             using (var typeStore = new TypeStore(new StoreConfig(typeAccess)))
-            using (var reader = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var reader = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer = new ObjectWriter(typeStore))
             {
                 // typeStore.AddInstanceFactory(new TestFactory());

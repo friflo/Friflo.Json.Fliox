@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         // throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 
         internal ObjectMapper       JsonMapper()        => jsonMapper    ?? (jsonMapper
-            = new ObjectMapper(typeStore, new NoThrowHandler()){TracerContext = tracerContext });
+            = new ObjectMapper(typeStore){ ErrorHandler= new NoThrowHandler(), TracerContext= tracerContext });
         
         internal EntitySet GetSetByType(Type type) {
             return setByType[type];

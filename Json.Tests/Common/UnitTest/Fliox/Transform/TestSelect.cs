@@ -171,7 +171,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
             };
             var select = new ScalarSelect(selectors);
             
-            using (var jsonMapper = new ObjectMapper())
+            using (var jsonMapper   = new ObjectMapper())
             using (var jsonSelector = new ScalarSelector())
             {
                 jsonMapper.Pretty = true;

@@ -15,7 +15,7 @@ namespace Friflo.Json.Tests.Common.Examples.Mapper
         [Test]
         public void Run() {
             using (var typeStore    = new TypeStore())
-            using (var read         = new ObjectReader(typeStore, new CustomErrorHandler()))
+            using (var read         = new ObjectReader(typeStore) { ErrorHandler = new CustomErrorHandler()})
             {
                 var e = Throws<Exception>(() => read.ReadObject("invalid", typeof(string)));
                 AreEqual("JsonParser/JSON error: unexpected character while reading value. Found: i path: '(root)' at position: 1", e.Message);

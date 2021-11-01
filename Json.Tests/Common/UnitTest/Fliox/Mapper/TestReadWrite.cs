@@ -131,10 +131,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var invalid =    "invalid";
                 
             using (var typeStore    = new TypeStore())
-            using (var enc          = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var enc          = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var write        = new ObjectWriter(typeStore))
             //
-            using (var read2        = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var read2        = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var write2       = new ObjectWriter(typeStore))
             {
                 reader = enc;

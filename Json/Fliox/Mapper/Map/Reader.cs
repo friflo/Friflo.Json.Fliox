@@ -33,17 +33,22 @@ namespace Friflo.Json.Fliox.Mapper.Map
         /// without creating a string on the heap.</summary>
         public readonly     BytesString         keyRef;
         public readonly     TypeCache           typeCache;
-        private readonly    IErrorHandler       errorHandler;
+        private             IErrorHandler       errorHandler;
         public              ITracerContext      tracerContext;
         public              JsonSerializerStub  jsonSerializerStub;
 #if !UNITY_5_3_OR_NEWER
         private             int                 classLevel;
         private  readonly   List<ClassMirror>   mirrorStack;
 #endif
+        
+        public              IErrorHandler       ErrorHandler {
+            get => parser.error.errorHandler;
+            set => parser.error.errorHandler = value;
+        }
 
-        public Reader(TypeStore typeStore, IErrorHandler errorHandler) {
+        public Reader(TypeStore typeStore) {
             parser = new JsonParser();
-            this.errorHandler = errorHandler;
+            errorHandler    = null;
             tracerContext   = null;
 
             typeCache       = new TypeCache(typeStore);

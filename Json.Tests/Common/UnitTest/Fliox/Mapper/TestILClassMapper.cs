@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             string payloadTrimmed = string.Concat(boxedStr.Where(c => !char.IsWhiteSpace(c)));
             
             using (var typeStore   = new TypeStore(new StoreConfig(TypeAccess.IL)))
-            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer      = new ObjectWriter(typeStore))
             using (var json        = new Bytes(payloadTrimmed))
             {
@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
         private void        ReadStruct(TypeAccess typeAccess) {
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             {
                 var result = reader.Read<StructIL>(structJson);
                 if (reader.Error.ErrSet)
@@ -205,7 +205,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
         private void        ReadClassIL(TypeAccess typeAccess) {
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             {
                 var result = reader.Read<SampleIL>(payloadStr);
                 if (reader.Error.ErrSet)
@@ -244,7 +244,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var json        = new Bytes(payloadStr))
             {
                 var obj = new SampleIL();
@@ -267,7 +267,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
         private void        ReadWriteStruct (TypeAccess typeAccess) {
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer      = new ObjectWriter(typeStore))
             using (var dst         = new TestBytes())
             {
@@ -287,7 +287,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer      = new ObjectWriter(typeStore))
             using (var dst         = new TestBytes())
             {
@@ -314,7 +314,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer      = new ObjectWriter(typeStore))
             using (var dst         = new TestBytes())
             {
@@ -341,7 +341,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer      = new ObjectWriter(typeStore))
             using (var dst         = new TestBytes())
             {
@@ -368,7 +368,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
             var memLog      = new MemoryLogger(100, 100, MemoryLog.Enabled);
 
             using (var typeStore   = new TypeStore(new StoreConfig(typeAccess)))
-            using (var reader      = new ObjectReader(typeStore, ObjectReader.NoThrow))
+            using (var reader      = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} )
             using (var writer      = new ObjectWriter(typeStore))
             using (var dst         = new TestBytes())
             {

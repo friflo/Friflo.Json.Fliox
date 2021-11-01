@@ -72,9 +72,14 @@ namespace Friflo.Json.Fliox.Mapper
             get => intern.tracerContext;
             set => intern.tracerContext = value;
         }
+        
+        public              IErrorHandler       ErrorHandler {
+            get => intern.ErrorHandler;
+            set => intern.ErrorHandler = value;
+        }
 
-        public ObjectReader(TypeStore typeStore, IErrorHandler errorHandler = null) {
-            intern = new Reader (typeStore, errorHandler);
+        public ObjectReader(TypeStore typeStore) {
+            intern      = new Reader (typeStore);
             maxDepth    = JsonParser.DefaultMaxDepth;
         }
         

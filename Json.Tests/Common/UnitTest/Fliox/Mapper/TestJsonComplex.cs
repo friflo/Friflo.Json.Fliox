@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         
         private T EncodeJson<T>(Bytes json, TypeStore typeStore) {
             T ret = default;
-            using (var enc = new ObjectReader(typeStore, ObjectReader.NoThrow)) {
+            using (var enc = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} ) {
                 // StopWatch stopwatch = new StopWatch();
                 for (int n = 0; n < num2; n++) {
                     ret = enc.Read<T>(json);
@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
         }
         
         private bool EncodeJsonTo<T>(Bytes json, T obj, TypeStore typeStore) {
-            using (var enc = new ObjectReader(typeStore, ObjectReader.NoThrow)) {
+            using (var enc = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} ) {
                 // StopWatch stopwatch = new StopWatch();
                 for (int n = 0; n < num2; n++) {
                     enc.ReadTo(json, obj);
@@ -228,7 +228,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Mapper
                 using (var writer = new ObjectWriter(typeStore)) {
                     writer.Write(obj, ref dst.bytes);
 
-                    using (var enc = new ObjectReader(typeStore, ObjectReader.NoThrow)) {
+                    using (var enc = new ObjectReader(typeStore) { ErrorHandler =  ObjectReader.NoThrow} ) {
                         JsonComplex res = enc.Read<JsonComplex>(dst.bytes);
                         if (res == null)
                             Fail(enc.Error.msg.ToString());
