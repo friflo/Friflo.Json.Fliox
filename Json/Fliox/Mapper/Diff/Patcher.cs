@@ -55,6 +55,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
                     throw new NotImplementedException($"Patch type not supported. Type: {patch.GetType()}");
             }
             mapper.PatchObject(this, root);
+            this.jsonReader = null;
         }
 
         public bool IsMember(in JsonKey key) {

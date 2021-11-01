@@ -37,6 +37,7 @@ namespace Friflo.Json.Fliox.Mapper
             var patches = new List<JsonPatch>();
             if (diff != null)
                 TraceDiff(diff, patches);
+            this.mapper = null;
             return patches;
         }
         

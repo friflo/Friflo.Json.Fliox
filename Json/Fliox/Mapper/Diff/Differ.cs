@@ -32,6 +32,7 @@ namespace Friflo.Json.Fliox.Mapper.Diff
             path.Add(item);
             var diff = mapper.Diff(this, left, right);
             Pop();
+            this.jsonWriter = null;
             if (parentStack.Count != 0)
                 throw new InvalidOperationException($"Expect objectStack.Count == 0. Was: {parentStack.Count}");
             if (path.Count != 0)
