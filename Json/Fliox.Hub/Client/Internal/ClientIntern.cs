@@ -52,7 +52,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal            JsonKey                                 clientId;
         internal            string                                  token;
 
-        public   override   string                                  ToString() => userId.ToString();
 
         internal EntityProcessor    EntityProcessor()   => processor     ?? (processor      = new EntityProcessor());
         internal ObjectPatcher      ObjectPatcher()     => objectPatcher ?? (objectPatcher  = new ObjectPatcher(JsonMapper()));
