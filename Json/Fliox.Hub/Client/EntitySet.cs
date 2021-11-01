@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              bool                        WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
 
         internal override   SetInfo                     SetInfo { get {
-            var info = new SetInfo (typeof(T).Name) { peers = _peers?.Count ?? 0 };
+            var info = new SetInfo (name) { peers = _peers?.Count ?? 0 };
             syncSet?.SetTaskInfo(ref info);
             return info;
         }}

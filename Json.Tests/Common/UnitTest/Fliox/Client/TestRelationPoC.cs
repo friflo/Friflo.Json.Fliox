@@ -41,25 +41,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var galaxy          = new Article  { id = "article-galaxy",   name = "Galaxy S10", producer = samsung};
             var createGalaxy    = articles.Upsert(galaxy);
             AreSimilar("entities: 1, tasks: 1",                         store);
-            AreSimilar("Article:  1, tasks: 1 >> upsert #1",            articles);
+            AreSimilar("articles: 1, tasks: 1 >> upsert #1",            articles);
 
             var logStore1 = store.LogChanges();  AssertLog(logStore1, 0, 1);
             
-            AreSimilar("entities: 2, tasks: 2",                         store);
-            AreSimilar("Producer: 1, tasks: 1 >> create #1",            producers); // created samsung implicit
+            AreSimilar("entities:  2, tasks: 2",                         store);
+            AreSimilar("producers: 1, tasks: 1 >> create #1",            producers); // created samsung implicit
 
             var steveJobs       = new Employee { id = "apple-0001", firstName = "Steve", lastName = "Jobs"};
             var appleEmployees  = new List<Ref<string, Employee>>{ steveJobs };
             var apple           = new Producer { id = "producer-apple", name = "Apple", employeeList = appleEmployees}; // steveJobs created implicit
             var ipad            = new Article  { id = "article-ipad",   name = "iPad Pro", producer = apple};
             var createIPad      = articles.Upsert(ipad);
-            AreSimilar("Article:  2, tasks: 1 >> upsert #2",                        articles);
+            AreSimilar("articles: 2, tasks: 1 >> upsert #2",                        articles);
             
             var logStore2 = store.LogChanges();  AssertLog(logStore2, 0, 2);
-            AreSimilar("entities: 5, tasks: 3",                                     store);
-            AreSimilar("Article:  2, tasks: 1 >> upsert #2",                        articles);
-            AreSimilar("Employee: 1, tasks: 1 >> create #1",                        employees); // created steveJobs implicit
-            AreSimilar("Producer: 2, tasks: 1 >> create #2",                        producers); // created apple implicit
+            AreSimilar("entities:  5, tasks: 3",                                     store);
+            AreSimilar("articles:  2, tasks: 1 >> upsert #2",                        articles);
+            AreSimilar("employees: 1, tasks: 1 >> create #1",                        employees); // created steveJobs implicit
+            AreSimilar("producers: 2, tasks: 1 >> create #2",                        producers); // created apple implicit
 
             await store.SyncTasks(); // ----------------
             AreSimilar("entities: 5",                                   store);   // tasks executed and cleared
@@ -101,9 +101,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreEqual(11, store.StoreInfo.peers);
             AreEqual(4,  store.StoreInfo.tasks); 
             AreSimilar("entities: 11, tasks: 4",                                    store);
-            AreSimilar("Article:   7, tasks: 3 >> create #1, upsert #4, reads: 1",  articles);
-            AreSimilar("Producer:  3, tasks: 1 >> create #1",                       producers);
-            AreSimilar("Employee:  1",                                              employees);
+            AreSimilar("articles:  7, tasks: 3 >> create #1, upsert #4, reads: 1",  articles);
+            AreSimilar("producers: 3, tasks: 1 >> create #1",                       producers);
+            AreSimilar("employees: 1",                                              employees);
             
             await store.SyncTasks(); // ----------------
             AreSimilar("entities: 12",                                  store); // tasks cleared
@@ -114,11 +114,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
             articles.DeleteRange(newBulkArticles);
             AreSimilar("entities: 12, tasks: 1",                        store);
-            AreSimilar("Article:   8, tasks: 1 >> delete #2",           articles);
+            AreSimilar("articles:  8, tasks: 1 >> delete #2",           articles);
             
             await store.SyncTasks(); // ----------------
             AreSimilar("entities: 10",                                  store); // tasks cleared
-            AreSimilar("Article:   6",                                  articles);
+            AreSimilar("articles:  6",                                  articles);
 
             cameraCreate.name = "Changed name";
             var logEntity = articles.LogEntityChanges(cameraCreate);    AssertLog(logEntity, 1, 0);
@@ -139,11 +139,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             IsTrue(deleteCamera.Success);
             AreSimilar("entities: 9",                           store);       // tasks executed and cleared
 
-            AreSimilar("Article:  5",                           articles);
+            AreSimilar("articles: 5",                           articles);
             var readArticles2   = articles.Read();
             var cameraNotSynced = readArticles2.Find("article-1");
             AreSimilar("entities: 9, tasks: 1",                 store);
-            AreSimilar("Article:  5, tasks: 1 >> reads: 1",     articles);
+            AreSimilar("articles: 5, tasks: 1 >> reads: 1",     articles);
             
             var e = Throws<TaskNotSyncedException>(() => { var _ = cameraNotSynced.Result; });
             AreSimilar("Find.Result requires SyncTasks(). Find<Article> (id: 'article-1')", e.Message);
@@ -165,18 +165,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             
             AreSimilar("entities:  9, tasks: 1",                        store);
             
-            AreSimilar("Order:     0",                                  orders);
+            AreSimilar("orders:    0",                                  orders);
             orders.Upsert(order);
             types.Upsert(type1);
             AreSimilar("entities: 11, tasks: 3",                        store);
-            AreSimilar("Order:     1, tasks: 1 >> upsert #1",           orders);     // created order
+            AreSimilar("orders:    1, tasks: 1 >> upsert #1",           orders);     // created order
             
-            AreSimilar("Article:   5, tasks: 1 >> reads: 1", articles);
-            AreSimilar("Customer:  0",                                  customers);
+            AreSimilar("articles:  5, tasks: 1 >> reads: 1", articles);
+            AreSimilar("customers: 0",                                  customers);
             var logSet2 = orders.LogSetChanges();   AssertLog(logSet2, 0, 2);
             AreSimilar("entities: 13, tasks: 5",                        store);
-            AreSimilar("Article:   6, tasks: 2 >> create #1, reads: 1", articles);   // created smartphone (implicit)
-            AreSimilar("Customer:  1, tasks: 1 >> create #1",           customers);  // created customer (implicit)
+            AreSimilar("articles:  6, tasks: 2 >> create #1, reads: 1", articles);   // created smartphone (implicit)
+            AreSimilar("customers: 1, tasks: 1 >> create #1",           customers);  // created customer (implicit)
             
             AreSimilar("entities: 13, tasks: 5",                        store);
             var logStore5 = store.LogChanges();     AssertLog(logStore5, 0, 0);
@@ -203,7 +203,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreEqual("PatchTask<Article> #ids: 1, members: [.name]",    patchNotebook.ToString());
             AreEqual("PatchTask<Article> #ids: 1, members: [.producer]",patchArticles.ToString());
             
-            AreSimilar("Article:   6, tasks: 1 >> patch #2",            articles);
+            AreSimilar("articles:  6, tasks: 1 >> patch #2",            articles);
             AreSimilar("entities: 13, tasks: 1",                        store);      // tasks executed and cleared
             
             await store.SyncTasks(); // ----------------
