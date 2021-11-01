@@ -150,10 +150,15 @@ namespace Friflo.Json.Fliox.Hub.Client
                 }
             }
         }
-
-        public void SetToken (string token) {
-            AssertBaseStore();
-            _intern.token   = token;
+        
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        [Fri.Ignore]
+        public string Token {
+            get => _intern.token;
+            set {
+                AssertBaseStore();
+                _intern.token   = value;
+            }
         }
 
         // --- LogChanges

@@ -99,7 +99,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             const string clientId   = "admin-client"; 
             using (var store    = new PocStore(hub))
             using (var monitor  = new MonitorStore(monitorDb, store)) {
-                store.SetToken("admin-token");
+                store.Token = "admin-token";
                 var result = await Monitor(store, monitor, userId, clientId);
                 AssertAuthResult(result);
                 
@@ -114,7 +114,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             const string clientId   = "admin-xxx"; 
             using (var store    = new PocStore(hub))
             using (var monitor  = new MonitorStore(monitorDb, store)) {
-                store.SetToken("invalid");
+                store.Token = "invalid";
                 var result = await Monitor(store, monitor, userId, clientId);
                 AssertAuthFailedResult(result);
                 
