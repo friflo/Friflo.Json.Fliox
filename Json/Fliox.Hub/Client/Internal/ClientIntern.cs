@@ -149,7 +149,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             syncCount       = 0;
             subscriptionsPrefix.Clear();    // todo should assert if having open subscriptions 
             subscriptions.Clear();          // todo should assert if having open subscriptions
-            disposed        = false;
             syncStore       = new SyncStore();
         }
         
