@@ -5,7 +5,6 @@ using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Internal;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 
@@ -20,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             var hub = messageContext.Hub;
             // var store           = new SequenceStore(database, SyncTypeStore.Get(), null);
             var pools = messageContext.pools;
-            using (var pooledStore = pools.Type(() => new SequenceStore(hub, HostTypeStore.Get())).Get()) {
+            using (var pooledStore = pools.Type(() => new SequenceStore(hub)).Get()) {
                 var store = pooledStore.instance;
                 store.UserId = "ReserveKeys";
                 var read            = store.sequence.Read();

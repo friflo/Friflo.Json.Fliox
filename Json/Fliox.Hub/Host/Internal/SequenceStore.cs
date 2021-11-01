@@ -3,6 +3,7 @@
 
 using System;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable UnassignedReadonlyField
@@ -31,8 +32,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         [Fri.Property(Name =                             "_sequenceKeys")]  
         public readonly EntitySet <Guid,   SequenceKeys>   sequenceKeys;
         
-        public  SequenceStore(FlioxHub hub, TypeStore typeStore)
-            : base(hub, typeStore) { }
+        public  SequenceStore(FlioxHub hub)
+            : base(hub, HostTypeStore.Get()) { }
         
         // ReSharper disable once RedundantOverriddenMember
         // enable set breakpoint. Ensures also FlioxClient.Dispose is virtual
