@@ -10,13 +10,13 @@ namespace Friflo.Json.Fliox.Hub.Auth
 {
     public sealed class AuthenticateNone : Authenticator
     {
-        private readonly Authorizer unknown;
+        private readonly Authorizer anonymousAuthorizer;
         
 
-        public AuthenticateNone(Authorizer unknown)
-            : base (unknown)
+        public AuthenticateNone(Authorizer anonymousAuthorizer)
+            : base (anonymousAuthorizer)
         {
-            this.unknown = unknown ?? throw new NullReferenceException(nameof(unknown));
+            this.anonymousAuthorizer = anonymousAuthorizer ?? throw new NullReferenceException(nameof(anonymousAuthorizer));
         }
         
         public override Task Authenticate(SyncRequest syncRequest, MessageContext messageContext) {
@@ -26,11 +26,11 @@ namespace Friflo.Json.Fliox.Hub.Auth
                 user = anonymousUser;
             } else {
                 if (!users.TryGetValue(userId, out user)) {
-                    user = new User(userId, null, unknown);
+                    user = new User(userId, null, anonymousAuthorizer);
                     users.TryAdd(userId, user);
                 }
             }
-            messageContext.AuthenticationFailed(user, "not authenticated", unknown);
+            messageContext.AuthenticationFailed(user, "not authenticated", anonymousAuthorizer);
             return Task.CompletedTask;
         }
     }
