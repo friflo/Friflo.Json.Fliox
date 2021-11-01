@@ -163,6 +163,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             _peers?.Clear();
             intern.writePretty  = DefaultWritePretty;
             intern.writeNull    = DefaultWriteNull;
+            syncSet             = null;
         }
         
         // --------------------------------------- public interface ---------------------------------------
