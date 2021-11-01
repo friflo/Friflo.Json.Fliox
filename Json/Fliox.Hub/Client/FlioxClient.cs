@@ -34,8 +34,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         //         So internal fields are encapsulated in field intern.
         // ReSharper disable once InconsistentNaming
         internal            ClientIntern            _intern;
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public              TypeStore               TypeStore       => _intern.typeStore;
         public              StoreInfo               StoreInfo       => new StoreInfo(_intern.syncStore, _intern.setByType); 
         public   override   string                  ToString()      => StoreInfo.ToString();
         public              IReadOnlyList<SyncTask> Tasks           => _intern.syncStore.appTasks;

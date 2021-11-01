@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
             using (var hub          = new FlioxHub(database))
             using (var typeStore    = new TypeStore())
             using (var store        = new PocStore(hub,typeStore) { UserId = "store"})
-            using (var m            = new ObjectMapper(store.TypeStore)) {
+            using (var m            = new ObjectMapper(typeStore)) {
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order1 = readOrders.Find("order-1");
