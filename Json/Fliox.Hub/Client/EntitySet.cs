@@ -88,6 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     }
 }
 
+// ReSharper disable InconsistentNaming
 namespace Friflo.Json.Fliox.Hub.Client
 {
 
@@ -118,9 +119,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         internal            SetIntern<TKey, T>          intern;
         
         /// key: <see cref="Peer{T}.entity"/>.id        Note: must be private by all means
-        private             Dictionary<TKey, Peer<T>>   peerMap;
+        private             Dictionary<TKey, Peer<T>>   _peers;
         /// create peers map on demand.                 Note: must be private by all means
-        private             Dictionary<TKey, Peer<T>>   Peers() => peerMap ?? (peerMap = SyncSet.CreateDictionary<TKey,Peer<T>>());
+        private             Dictionary<TKey, Peer<T>>   Peers() => _peers ?? (_peers = SyncSet.CreateDictionary<TKey,Peer<T>>());
         
         internal static readonly EntityKeyT<TKey, T>    EntityKeyTMap = EntityKey.GetEntityKeyT<TKey, T>();
 
@@ -143,7 +144,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public              bool                        WriteNull   { get => intern.writeNull;     set => intern.writeNull   = value; }
 
         internal override   SetInfo                     SetInfo { get {
-            var info = new SetInfo (typeof(T).Name) { peers = peerMap?.Count ?? 0 };
+            var info = new SetInfo (typeof(T).Name) { peers = _peers?.Count ?? 0 };
             syncSet?.SetTaskInfo(ref info);
             return info;
         }}
@@ -159,7 +160,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override void Reset() {
-            peerMap?.Clear();
+            _peers?.Clear();
             intern.writePretty  = DefaultWritePretty;
             intern.writeNull    = DefaultWriteNull;
         }
