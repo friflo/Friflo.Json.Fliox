@@ -82,12 +82,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
 
         // --------------------------------------- public interface ---------------------------------------
-        /// <summary>
-        /// Process continuation of <see cref="ExecuteSync"/> on caller context.
-        /// This ensures modifications to entities are applied on the same context used by the caller. 
-        /// </summary>
-        private const bool OriginalContext = true;
-        
         public void Reset() {
             foreach (var setPair in _intern.setByType) {
                 EntitySet set = setPair.Value;
@@ -100,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public async Task<SyncResult> SyncTasks() {
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
             var messageContext  = new MessageContext(_intern.pools, _intern.eventTarget, _intern.clientId);
-            var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
+            var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(ClientUtils.OriginalContext);
             
             var result = HandleSyncResponse(syncRequest, response, syncStore);
             if (!result.Success)
@@ -112,7 +106,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public async Task<SyncResult> TrySyncTasks() {
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
             var messageContext  = new MessageContext(_intern.pools, _intern.eventTarget, _intern.clientId);
-            var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(OriginalContext);
+            var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(ClientUtils.OriginalContext);
             
             var result = HandleSyncResponse(syncRequest, response, syncStore);
             messageContext.Release();
@@ -662,6 +656,15 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             return syncResult;
         }
+    }
+    
+    /// Add const / static members here instead of <see cref="FlioxClient"/> to avoid showing members in debugger.
+    internal static class ClientUtils {
+        /// <summary>
+        /// Process continuation of <see cref="FlioxClient.ExecuteSync"/> on caller context.
+        /// This ensures modifications to entities are applied on the same context used by the caller. 
+        /// </summary>
+        internal const bool OriginalContext = true;       
     }
     
     public static class StoreExtension
