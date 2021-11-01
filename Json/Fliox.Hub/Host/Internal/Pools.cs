@@ -24,13 +24,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         public  ObjectPool<EntityProcessor> EntityProcessor { get; }
         public  ObjectPool<TypeValidator>   TypeValidator   { get; }
         
-        public  ObjectPool<T>               Pool<T>         (Func<T> factory) where T : IDisposable {
+        public  ObjectPool<T>               Type<T>         (Func<T> factory) where T : IDisposable {
             if (poolMap.TryGetValue(typeof(T), out var pooled)) {
                 return (ObjectPool<T>)pooled;
             }
             ObjectPool<T> pool;
             if (sharedPools != null) {
-                pool = new LocalPool<T>(sharedPools.Pool(factory));
+                pool = new LocalPool<T>(sharedPools.Type(factory));
             } else {
                 pool = new SharedPool<T>(factory);
             }

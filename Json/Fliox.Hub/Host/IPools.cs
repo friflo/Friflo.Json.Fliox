@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// <see cref="IPools"/> is a set of pooled instances of various <see cref="Type"/>'s.
     /// To enable pooling instances of a specific class it needs to implement <see cref="IDisposable"/>.
     /// Pools for classes used commonly within <see cref="Host"/> are directly available. E.g. <see cref="ObjectMapper"/>.
-    /// Custom classes can also be managed by <see cref="IPools"/> by using <see cref="Pool{T}"/>.
+    /// Custom types can also be managed by <see cref="IPools"/> by using <see cref="Type{T}"/>.
     /// Its typical use case is pooling a domain specific <see cref="Client.FlioxClient"/> implementation. 
     /// </summary>
     public interface IPools : IDisposable
@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// }
         /// </code>
         /// </summary>
-        ObjectPool<T>               Pool<T>         (Func<T> factory) where T : IDisposable;
+        ObjectPool<T>               Type<T>         (Func<T> factory) where T : IDisposable;
         
         PoolUsage                   PoolUsage       { get; }
     }
