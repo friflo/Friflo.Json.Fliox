@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await TestRelationPoC.CreateStore(createStore);
                 await TestStores(createStore, useStore);
                 
-                // add some arbitrary sync tasks and change states changes to test Reset()
+                // Make client state changes and add some arbitrary sync tasks to test Reset()
                 createStore.UserId      = "some UserId";
                 createStore.ClientId    = "some ClientId";
                 createStore.Token       = "some Token";
