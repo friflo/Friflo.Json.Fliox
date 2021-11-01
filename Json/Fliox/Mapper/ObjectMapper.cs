@@ -16,9 +16,6 @@ namespace Friflo.Json.Fliox.Mapper
         public readonly TypeStore       typeStore;
         public readonly ObjectReader    reader;
         public readonly ObjectWriter    writer;
-        
-        private readonly TypeStore      autoStore;
-
         private         int             maxDepth;
         
         public          int             MaxDepth {
@@ -52,9 +49,10 @@ namespace Friflo.Json.Fliox.Mapper
             get => reader.ErrorHandler;
             set => reader.ErrorHandler = value;
         }
-
-        public ObjectMapper(TypeStore typeStore = null) {
-            typeStore       = typeStore ?? (autoStore = new TypeStore());
+        public ObjectMapper() : this (TypeStore.Global) { }
+            
+        public ObjectMapper(TypeStore typeStore) {
+            typeStore       = typeStore ?? throw new ArgumentNullException(nameof(typeStore));
             this.typeStore  = typeStore;
             reader          = new ObjectReader(typeStore);
             writer          = new ObjectWriter(typeStore);
@@ -64,7 +62,6 @@ namespace Friflo.Json.Fliox.Mapper
         public void Dispose() {
             writer.Dispose();
             reader.Dispose();
-            autoStore?.Dispose();
         }
         
         // --------------- Bytes ---------------

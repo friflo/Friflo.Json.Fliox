@@ -28,6 +28,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             s.Dispose();
         }
         
+        public static void DisposeMapper() {
+            var s = _singleton;
+            if (s == null)
+                return;
+            s.mapperPool.Dispose();
+        }
+        
         internal static TypeStore Get() {
             if (_singleton == null) {
                 _singleton = new TypeStore();

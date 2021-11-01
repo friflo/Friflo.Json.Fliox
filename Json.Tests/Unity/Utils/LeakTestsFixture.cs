@@ -3,7 +3,9 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using static NUnit.Framework.Assert;
@@ -54,6 +56,8 @@ namespace Friflo.Json.Tests.Unity.Utils
 
         [TearDown]
         public void TearDown() {
+            HostTypeStore.DisposeMapper();
+            TestGlobals.typeStore?.mapperPool.Dispose();
             JsonDebug.Dispose();
             DebugUtils.StopLeakDetection();
             

@@ -149,6 +149,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]
         public static async Task TestConcurrentWebSocket () {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
+            using (var typeStore        = new TypeStore())
             using (var database         = new MemoryDatabase())
             using (var hub          	= new FlioxHub(database))
             using (var hostHub          = new HttpHostHub(hub))
@@ -156,19 +157,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var remoteHub        = new WebSocketClientHub("ws://localhost:8080/")) {
                 await RunServer(server, async () => {
                     await remoteHub.Connect();
-                    await ConcurrentWebSocket(remoteHub, 4, 10); // 10 requests are sufficient to force concurrency error
+                    await ConcurrentWebSocket(remoteHub, 4, 10,typeStore); // 10 requests are sufficient to force concurrency error
                     await remoteHub.Close();
                 });
             }
         }
 #endif
         
-        private static async Task ConcurrentWebSocket(FlioxHub hub, int clientCount, int requestCount)
+        private static async Task ConcurrentWebSocket(FlioxHub hub, int clientCount, int requestCount, TypeStore typeStore)
         {
             // --- prepare
             var clients = new List<FlioxClient>();
             try {
-                var typeStore = new TypeStore();
                 for (int n = 0; n < clientCount; n++) {
                     clients.Add(new FlioxClient(hub, typeStore) { ClientId = $"reader-{n}"});
                 }
