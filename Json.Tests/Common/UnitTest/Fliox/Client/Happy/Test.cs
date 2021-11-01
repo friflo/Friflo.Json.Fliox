@@ -62,8 +62,17 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var useStore     = new PocStore(hub) { UserId = "useStore"})  {
                 await TestRelationPoC.CreateStore(createStore);
                 await TestStores(createStore, useStore);
+                
+                // add some arbitrary sync tasks and change states changes to test Reset()
+                createStore.UserId      = "some UserId";
+                createStore.ClientId    = "some ClientId";
+                createStore.Token       = "some Token";
+                createStore.articles.QueryAll();
+                useStore.articles.QueryAll();
                 createStore.Reset();
+                AssertReset(createStore);
                 useStore.Reset();
+                
                 await TestRelationPoC.CreateStore(createStore);
                 await TestStores(createStore, useStore);
             }
@@ -272,6 +281,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             await AssertRead            (createStore);
         }
         
+        private static void AssertReset(FlioxClient client) {
+            IsNull(client.UserId);
+            IsNull(client.ClientId);
+            IsNull(client.Token);
+            AreEqual(0, client.Tasks.Count);
+            AreEqual(0, client.StoreInfo.peers);
+            AreEqual(0, client.GetSyncCount());
+        }
 
         private static async Task TestCreate(Func<PocStore, Task> test) {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
