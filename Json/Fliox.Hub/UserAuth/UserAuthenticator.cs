@@ -104,7 +104,9 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
             // Note 1: UserStore could be created in smaller scope
             // Note 2: UserStore could be cached. This requires a FlioxClient.ClearEntities()
             // UserStore is not thread safe, create new one per Authenticate request.
-            using (var userStore = new UserStore (userHub)) {
+            var pools = messageContext.pools;
+            using (var pooled = pools.Pool(() => new UserStore (userHub)).Get()) {
+                var userStore = pooled.instance;
                 userStore.UserId = UserStore.AuthenticationUser;
                 var auth    = userAuth ?? userStore;
                 var result  = await auth.Authenticate(command).ConfigureAwait(false);

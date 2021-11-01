@@ -74,15 +74,13 @@ namespace Friflo.Json.Fliox.Utils
     public sealed class LocalPool<T> : ObjectPool<T> where T : IDisposable
     {
         private readonly    ObjectPool<T>   pool;
-        private readonly    string          field;
         private             int             count;
         
         public  override    int             Usage       => count;
         public  override    string          ToString()  => pool.ToString();
 
-        public LocalPool(ObjectPool<T> pool, string field) {
+        public LocalPool(ObjectPool<T> pool) {
             this.pool   = pool;
-            this.field  = field;
         }
 
         public override void Dispose() { }

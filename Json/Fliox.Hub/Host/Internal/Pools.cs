@@ -14,7 +14,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
 {
     internal sealed class Pools : IPools
     {
-        private readonly  Dictionary<Type, IDisposable>    poolMap = new Dictionary<Type, IDisposable>(); // object = SharedPool<T>
+        private readonly    IPools                          sharedPools;
+        private readonly    Dictionary<Type, IDisposable>   poolMap = new Dictionary<Type, IDisposable>(); // object = SharedPool<T>
         
         public  ObjectPool<JsonPatcher>     JsonPatcher     { get; }
         public  ObjectPool<ScalarSelector>  ScalarSelector  { get; }
@@ -27,9 +28,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             if (poolMap.TryGetValue(typeof(T), out var pooled)) {
                 return (ObjectPool<T>)pooled;
             }
-            var sharedPooled = new SharedPool<T>(factory);
-            poolMap[typeof(T)] = sharedPooled;
-            return sharedPooled;
+            ObjectPool<T> pool;
+            if (sharedPools != null) {
+                pool = new LocalPool<T>(sharedPools.Pool(factory));
+            } else {
+                pool = new SharedPool<T>(factory);
+            }
+            poolMap[typeof(T)] = pool;
+            return pool;
         }
         
         // ReSharper disable once UnusedParameter.Local - keep for code navigation
@@ -43,12 +49,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         }
         
         internal Pools(IPools sharedPools) {
-            JsonPatcher     = new LocalPool<JsonPatcher>        (sharedPools.JsonPatcher,       "JsonPatcher");
-            ScalarSelector  = new LocalPool<ScalarSelector>     (sharedPools.ScalarSelector,    "ScalarSelector");
-            JsonEvaluator   = new LocalPool<JsonEvaluator>      (sharedPools.JsonEvaluator,     "JsonEvaluator");
-            ObjectMapper    = new LocalPool<ObjectMapper>       (sharedPools.ObjectMapper,      "ObjectMapper");
-            EntityProcessor = new LocalPool<EntityProcessor>    (sharedPools.EntityProcessor,   "EntityProcessor");
-            TypeValidator   = new LocalPool<TypeValidator>      (sharedPools.TypeValidator,     "TypeValidator");
+            this.sharedPools = sharedPools;
+            JsonPatcher     = new LocalPool<JsonPatcher>        (sharedPools.JsonPatcher);
+            ScalarSelector  = new LocalPool<ScalarSelector>     (sharedPools.ScalarSelector);
+            JsonEvaluator   = new LocalPool<JsonEvaluator>      (sharedPools.JsonEvaluator);
+            ObjectMapper    = new LocalPool<ObjectMapper>       (sharedPools.ObjectMapper);
+            EntityProcessor = new LocalPool<EntityProcessor>    (sharedPools.EntityProcessor);
+            TypeValidator   = new LocalPool<TypeValidator>      (sharedPools.TypeValidator);
         }
 
         public void Dispose() {
@@ -62,6 +69,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
                 var sharedPool = pool.Value;
                 sharedPool.Dispose();
             }
+            poolMap.Clear();
         }
 
         public PoolUsage PoolUsage { get {
