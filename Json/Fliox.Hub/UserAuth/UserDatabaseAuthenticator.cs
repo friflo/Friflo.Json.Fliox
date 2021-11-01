@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
                 messageContext.AuthenticationSucceed(user, rights);
                 return Task.CompletedTask;
             }
-            // authState.SetFailed() is not called to avoid giving a hint for a valid userId (user)
+            // AuthenticationFailed() is not called to avoid giving a hint for a valid userId (user)
             messageContext.AuthenticationSucceed(user, UnknownRights);
             return Task.CompletedTask;
         }
