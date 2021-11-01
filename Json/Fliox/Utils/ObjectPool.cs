@@ -23,13 +23,24 @@ namespace Friflo.Json.Fliox.Utils
     
     public abstract class ObjectPool<T> : IDisposable where T : IDisposable
     {
-        internal abstract T     GetInstance();
-        internal abstract void  Return(T instance);
-        public   abstract void  Dispose();
-        public   abstract int   Usage { get; }
+        internal    readonly    Action<T>   init;
         
-        public Pooled<T>        Get() {
-            return new Pooled<T>(this, GetInstance());
+        internal    abstract    T           GetInstance();
+        internal    abstract    void        Return(T instance);
+        public      abstract    void        Dispose();
+        public      abstract    int         Usage { get; }
+        
+        public                  Pooled<T>   Get() {
+            var instance = GetInstance();
+            // ReSharper disable once UseNullPropagation
+            if (init != null) {
+                init(instance);
+            }
+            return new Pooled<T>(this, instance);
+        }
+        
+        protected ObjectPool(Action<T> init) {
+            this.init = init;
         }
     }
     
@@ -43,8 +54,8 @@ namespace Friflo.Json.Fliox.Utils
         public  override    int                 Usage       => 0;
         public  override    string              ToString()  => $"Count: {stack.Count}";
 
-        public SharedPool(Func<T> factory) {
-            this.factory = factory;
+        public SharedPool(Func<T> factory, Action<T> init = null) : base(init){
+            this.factory    = factory;
         }
 
         public override void Dispose() {
@@ -79,7 +90,7 @@ namespace Friflo.Json.Fliox.Utils
         public  override    int             Usage       => count;
         public  override    string          ToString()  => pool.ToString();
 
-        public LocalPool(ObjectPool<T> pool) {
+        public LocalPool(ObjectPool<T> pool) : base (pool.init) {
             this.pool   = pool;
         }
 

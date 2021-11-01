@@ -42,8 +42,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
         /// <summary> Returned <see cref="ObjectMapper"/> doesnt throw Read() exceptions. To handle errors its
         /// <see cref="ObjectMapper.reader"/> -> <see cref="ObjectReader.Error"/> need to be checked. </summary>
         internal static ObjectMapper CreateObjectMapper() {
-            var mapper = new ObjectMapper(Get()) { ErrorHandler =  new NoThrowHandler() };
-            return mapper;
+            return new ObjectMapper(Get());
         }
     }
 }

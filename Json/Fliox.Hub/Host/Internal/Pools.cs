@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             JsonPatcher     = new SharedPool<JsonPatcher>       (() => new JsonPatcher());
             ScalarSelector  = new SharedPool<ScalarSelector>    (() => new ScalarSelector());
             JsonEvaluator   = new SharedPool<JsonEvaluator>     (() => new JsonEvaluator());
-            ObjectMapper    = new SharedPool<ObjectMapper>      (HostTypeStore.CreateObjectMapper);
+            ObjectMapper    = new SharedPool<ObjectMapper>      (HostTypeStore.CreateObjectMapper,  m => m.ErrorHandler = ObjectReader.NoThrow);
             EntityProcessor = new SharedPool<EntityProcessor>   (() => new EntityProcessor());
             TypeValidator   = new SharedPool<TypeValidator>     (() => new TypeValidator());
         }
