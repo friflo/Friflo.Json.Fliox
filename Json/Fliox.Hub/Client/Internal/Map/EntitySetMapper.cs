@@ -25,8 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         EntitySet   CreateEntitySet (string name);
     }
     
-    internal sealed class EntitySetMapper<T, TKey, TEntity> : TypeMapper<T>, IEntitySetMapper where T       : class
-                                                                                              where TEntity : class
+    internal sealed class EntitySetMapper<T, TKey, TEntity> : TypeMapper<T>, IEntitySetMapper where TEntity : class
     {
         private             TypeMapper      elementType;
         
