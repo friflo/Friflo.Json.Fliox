@@ -144,7 +144,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
-                int count = 1; // 1000000;
+                int count = 1; // 1_000_000;
                 for (int n = 0; n < count; n++) {
                     new PocStore(hub, typeStore); // ~ 1.9 µs (Release)
                 }
@@ -171,10 +171,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             using (pool.Get()) {}
             var stopwatch = new Stopwatch();
             stopwatch.Start();
-            int count = 1; // 10000000;
+            int count = 1; // 10_000_000;
             for (int n = 0; n < count; n++) {
                 using (var pooled = pool.Get()) {
-                    pooled.instance.Reset();   // ~ 0.11 µs (Release)
+                    pooled.instance.Reset();   // ~ 0.19 µs (Release)
                 }
             }
             stopwatch.Stop();
