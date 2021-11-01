@@ -96,6 +96,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         }
 
         internal void SetEntitySetMember(FlioxClient store, EntitySet entitySet) {
+            // Assigning EntitySet's to their fields/properties has no measurable impact when instantiating a client.
+            // No necessity to create compiled delegates for setters.
             if (field != null) {
                 field.   SetValue(store, entitySet);
             } else {
