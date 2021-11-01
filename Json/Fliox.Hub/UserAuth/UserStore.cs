@@ -73,10 +73,12 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         [Fri.Required]  public  JsonKey userId;
         [Fri.Required]  public  string  token;
 
-        public override string  ToString() => userId.ToString();
+        public override string  ToString() => $"userId: {userId}";
     }
     
     public class AuthenticateUserResult {
         public          bool            isValid;
+
+        public override string ToString() => $"isValid: {isValid}";
     }
 }
