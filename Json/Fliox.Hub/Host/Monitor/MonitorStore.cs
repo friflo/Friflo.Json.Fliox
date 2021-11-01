@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Stats;
+using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
@@ -14,17 +15,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
 {
     public partial class  MonitorStore :  FlioxClient
     {
-        private readonly    JsonKey                             hostName;
+        [Fri.Ignore]
+        internal            string                              hostName;
+        
         public  readonly    EntitySet <JsonKey, HostInfo>       hosts;
         public  readonly    EntitySet <JsonKey, ClientInfo>     clients;
         public  readonly    EntitySet <JsonKey, UserInfo>       users;
         public  readonly    EntitySet <int,     HistoryInfo>    histories;
 
-        public MonitorStore(string hostName, FlioxHub hub, TypeStore typeStore) : base(hub, typeStore) {
-            this.hostName = new JsonKey(hostName);
-        }
+        public MonitorStore(FlioxHub hub)                                    : base(hub, HostTypeStore.Get()) { }
         public MonitorStore(EntityDatabase database, FlioxClient baseClient) : base(database, baseClient) {
-            hostName = new JsonKey(baseClient._intern.hub.hostName);
+            hostName = baseClient._intern.hub.hostName;
         }
         
         public CommandTask<ClearStatsResult> ClearStats(ClearStats value = null) => SendCommand<ClearStats, ClearStatsResult>(nameof(ClearStats), value);

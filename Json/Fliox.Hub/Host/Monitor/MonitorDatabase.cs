@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Auth;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Stats;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -16,21 +15,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
     public class MonitorDatabase : EntityDatabase
     {
         internal readonly   EntityDatabase  stateDB;
-        private  readonly   MonitorStore    stateStore;
+        private  readonly   FlioxHub        monitorHub;
         
         public const string Name = "monitor";
         
         public MonitorDatabase (FlioxHub hub, DbOpt opt = null)
             : base (hub, Name, new MonitorHandler(hub), opt)
         {
-            stateDB         = new MemoryDatabase();
-            var monitorHub  = new FlioxHub(stateDB);
-            stateStore  = new MonitorStore(hub.hostName, monitorHub, HostTypeStore.Get());
-        }
-
-        public override void Dispose() {
-            stateStore.Dispose();
-            base.Dispose();
+            stateDB     = new MemoryDatabase();
+            monitorHub  = new FlioxHub(stateDB);
         }
         
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
@@ -38,13 +31,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
         }
 
         public override async Task ExecuteSyncPrepare(SyncRequest syncRequest, MessageContext messageContext) {
-            var tasks = syncRequest.tasks;
-            if (FindTask(nameof(MonitorStore.clients),  tasks)) stateStore.UpdateClients  (hub, name);
-            if (FindTask(nameof(MonitorStore.users),    tasks)) stateStore.UpdateUsers    (hub.Authenticator, name);
-            if (FindTask(nameof(MonitorStore.histories),tasks)) stateStore.UpdateHistories(hub.hostStats.requestHistories);
-            if (FindTask(nameof(MonitorStore.hosts),    tasks)) stateStore.UpdateHost     (hub.hostStats);
-            
-            await stateStore.TrySyncTasks().ConfigureAwait(false);
+            var pools = messageContext.pools;
+            using (var pooled  = pools.Type(() => new MonitorStore(monitorHub)).Get()) {
+                var monitor = pooled.instance;
+                monitor.hostName = hub.hostName;
+                var tasks = syncRequest.tasks;
+                if (FindTask(nameof(MonitorStore.clients),  tasks)) monitor.UpdateClients  (hub, name);
+                if (FindTask(nameof(MonitorStore.users),    tasks)) monitor.UpdateUsers    (hub.Authenticator, name);
+                if (FindTask(nameof(MonitorStore.histories),tasks)) monitor.UpdateHistories(hub.hostStats.requestHistories);
+                if (FindTask(nameof(MonitorStore.hosts),    tasks)) monitor.UpdateHost     (hub.hostStats);
+                
+                await monitor.TrySyncTasks().ConfigureAwait(false);
+            }
         }
         
         private static bool FindTask(string container, List<SyncRequestTask> tasks) {
@@ -137,8 +135,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
         }
         
         internal void UpdateHost(HostStats hostStats) {
-            if (!hosts.TryGet(hostName, out var hostInfo)) {
-                hostInfo = new HostInfo { id = hostName };
+            var hostNameKey = new JsonKey(hostName);
+            if (!hosts.TryGet(hostNameKey, out var hostInfo)) {
+                hostInfo = new HostInfo { id = hostNameKey };
             }
             hostInfo.counts = hostStats.requestCount;
             hosts.Upsert(hostInfo);
