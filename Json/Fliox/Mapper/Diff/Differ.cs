@@ -11,26 +11,20 @@ namespace Friflo.Json.Fliox.Mapper.Diff
 {
     public sealed class Differ : IDisposable
     {
-        public  readonly    TypeCache       typeCache;
-        private readonly    ObjectWriter    jsonWriter;
+        private             TypeCache       typeCache;
+        private             ObjectWriter    jsonWriter;
         private readonly    List<TypeNode>  path        = new List<TypeNode>();
         private readonly    List<Parent>    parentStack = new List<Parent>();
-
-        internal Differ(TypeStore typeStore) {
-            this.jsonWriter = new ObjectWriter(typeStore);
-            this.typeCache = jsonWriter.TypeCache;
-        }
         
-        internal Differ(ObjectWriter jsonWriter) {
+        public              TypeCache       TypeCache => typeCache;
+
+        internal Differ() { }
+
+        public void Dispose() { }
+
+        public DiffNode GetDiff<T>(T left, T right, ObjectWriter jsonWriter) {
             this.jsonWriter = jsonWriter;
-            this.typeCache = jsonWriter.TypeCache;
-        }
-
-        public void Dispose() {
-            jsonWriter.Dispose();
-        }
-
-        public DiffNode GetDiff<T>(T left, T right) {
+            typeCache = jsonWriter.TypeCache;
             parentStack.Clear();
             path.Clear();
             var mapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));

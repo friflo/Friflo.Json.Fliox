@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
 
         internal EntityProcessor    EntityProcessor()   => processor     ?? (processor      = new EntityProcessor());
-        internal ObjectPatcher      ObjectPatcher()     => objectPatcher ?? (objectPatcher  = new ObjectPatcher(JsonMapper()));
+        internal ObjectPatcher      ObjectPatcher()     => objectPatcher ?? (objectPatcher  = new ObjectPatcher());
         internal ObjectReader       MessageReader()     => messageReader ?? (messageReader  = JsonMapper().reader);
         
         // throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 

@@ -13,16 +13,16 @@ namespace Friflo.Json.Fliox.Mapper
     {
         private readonly Differ differ;
         
-        public ObjectDiffer(TypeStore typeStore) {
-            differ = new Differ(typeStore);
+        public ObjectDiffer() {
+            differ = new Differ();
         }
         
         public void Dispose() {
             differ.Dispose();
         }
 
-        public DiffNode GetDiff<T>(T left, T right) {
-            return differ.GetDiff(left, right);
+        public DiffNode GetDiff<T>(T left, T right, ObjectWriter writer) {
+            return differ.GetDiff(left, right, writer);
         }
     }
 }

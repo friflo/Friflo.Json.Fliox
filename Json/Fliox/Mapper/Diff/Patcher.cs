@@ -12,8 +12,8 @@ namespace Friflo.Json.Fliox.Mapper.Diff
 {
     public sealed class Patcher : IDisposable
     {
-        public  readonly    TypeCache       typeCache;
-        private readonly    ObjectReader    jsonReader;
+        private             TypeCache       typeCache;
+        private             ObjectReader    jsonReader;
         private             PatchType       patchType;
         private             JsonValue       json;
         private             int             pathPos;
@@ -21,14 +21,15 @@ namespace Friflo.Json.Fliox.Mapper.Diff
         private             string          path;
         internal readonly   object[]        setMethodParams = new object[1];
         
-        public Patcher(ObjectReader jsonReader) {
-            this.jsonReader = jsonReader;
-            this.typeCache = jsonReader.TypeCache;
-        }
+        public              TypeCache       TypeCache => typeCache;
+        
+        public Patcher() { }
 
         public void Dispose() { }
 
-        public void Patch<T>(TypeMapper<T> mapper, T root, JsonPatch patch) {
+        public void Patch<T>(TypeMapper<T> mapper, T root, JsonPatch patch, ObjectReader jsonReader) {
+            this.jsonReader = jsonReader;
+            typeCache = jsonReader.TypeCache;
             pathPos = 0;
             patchType = patch.PatchType;
             switch (patchType) {

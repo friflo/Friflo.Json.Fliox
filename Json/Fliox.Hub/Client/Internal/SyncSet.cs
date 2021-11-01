@@ -253,11 +253,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var patchSource = peer.PatchSource;
             if (patchSource != null) {
                 var entity = peer.Entity;
+                var mapper = set.JsonMapper();
                 var objectPatcher   = intern.store._intern.ObjectPatcher(); 
-                var diff = objectPatcher.differ.GetDiff(patchSource, entity);
+                var diff = objectPatcher.differ.GetDiff(patchSource, entity, mapper.writer);
                 if (diff == null)
                     return;
-                var patchList = objectPatcher.CreatePatches(diff);
+                var patchList = objectPatcher.CreatePatches(diff, mapper);
                 var entityPatch = new EntityPatch {
                     patches = patchList
                 };

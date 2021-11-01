@@ -576,12 +576,13 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal  override void PatchPeerEntities (Dictionary<JsonKey, EntityPatch> patches) {
             var objectPatcher = intern.store._intern.ObjectPatcher();
+            var mapper = intern.store._intern.JsonMapper();
             foreach (var pair in patches) {
                 var         id          = pair.Key;
                 EntityPatch entityPatch = pair.Value;
                 var         peer        = GetPeerById(id);
                 var         entity      = peer.Entity;
-                objectPatcher.ApplyPatches(entity, entityPatch.patches);
+                objectPatcher.ApplyPatches(entity, entityPatch.patches, mapper.reader);
             }
         }
 

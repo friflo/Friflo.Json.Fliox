@@ -7,7 +7,6 @@ using System.Text;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Mapper.Diff;
 using Friflo.Json.Fliox.Mapper.Map;
-using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper
 {
@@ -16,55 +15,50 @@ namespace Friflo.Json.Fliox.Mapper
 #endif
     public sealed class ObjectPatcher : IDisposable
     {
-        public  readonly    ObjectMapper    mapper;
+        private             ObjectMapper    mapper;
         public  readonly    Differ          differ;
         
         private readonly    StringBuilder   sb = new StringBuilder();
-        private readonly    TypeCache       typeCache;
         private readonly    Patcher         patcher;
 
-        public ObjectPatcher(TypeStore typeStore) 
-            : this (new ObjectMapper(typeStore))
-        { }
-        
-        public ObjectPatcher(ObjectMapper mapper) {
-            this.mapper = mapper;
-            typeCache   = mapper.reader.TypeCache;
-            patcher     = new Patcher(mapper.reader);
-            differ      = new Differ(mapper.writer);
+      
+        public ObjectPatcher() {
+            patcher     = new Patcher();
+            differ      = new Differ();
         }
 
         public void Dispose() {
             differ.Dispose();
             patcher.Dispose();
-            mapper.Dispose();
         }
 
-        public List<JsonPatch> CreatePatches(DiffNode diff) {
+        public List<JsonPatch> CreatePatches(DiffNode diff, ObjectMapper mapper) {
+            this.mapper = mapper;
             var patches = new List<JsonPatch>();
             if (diff != null)
                 TraceDiff(diff, patches);
             return patches;
         }
         
-        public List<JsonPatch> GetPatches<T>(T left, T right) {
-            var diff = differ.GetDiff(left, right);
-            var patches = CreatePatches(diff);
+        public List<JsonPatch> GetPatches<T>(T left, T right, ObjectMapper mapper) {
+            var diff = differ.GetDiff(left, right, mapper.writer);
+            var patches = CreatePatches(diff, mapper);
             return patches;
         }
 
-        public void ApplyPatches<T>(T root, IList<JsonPatch> patches) {
+        public void ApplyPatches<T>(T root, IList<JsonPatch> patches, ObjectReader reader) {
+            var typeCache = reader.TypeCache;
             var rootMapper = (TypeMapper<T>) typeCache.GetTypeMapper(typeof(T));
             var count = patches.Count;
             for (int n = 0; n < count; n++) {
                 var patch = patches[n];
-                patcher.Patch(rootMapper, root, patch);
+                patcher.Patch(rootMapper, root, patch, reader);
             }
         }
         
-        public void ApplyDiff<T>(T root, DiffNode diff) {
-            List<JsonPatch> patches = CreatePatches(diff);
-            ApplyPatches(root, patches);
+        public void ApplyDiff<T>(T root, DiffNode diff, ObjectMapper mapper) {
+            List<JsonPatch> patches = CreatePatches(diff, mapper);
+            ApplyPatches(root, patches, mapper.reader);
         }
 
         private void TraceDiff(DiffNode diff, List<JsonPatch> patches) {

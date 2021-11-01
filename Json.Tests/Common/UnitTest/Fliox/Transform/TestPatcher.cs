@@ -31,10 +31,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public void TestClass() {
             using (var jsonPatcher      = new JsonPatcher())
             using (var typeStore        = new TypeStore()) 
-            using (var objectPatcher    = new ObjectPatcher(typeStore))
-            using (var differ           = new ObjectDiffer(typeStore))
+            using (var mapper           = new ObjectMapper(typeStore))
+            using (var objectPatcher    = new ObjectPatcher())
+            using (var differ           = new ObjectDiffer())
             {
-                objectPatcher.mapper.Pretty = true;
+                var writer = mapper.writer;
+                mapper.Pretty = true;
                 {
                     var left  = new DiffBase {child = new DiffChild {
                         childVal = 1,
@@ -47,7 +49,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                         dateTime = DateTime.Parse("2021-03-18T16:40:00.000Z")
                     }};
 
-                    var diff = differ.GetDiff(left, right);
+                    var diff = differ.GetDiff(left, right, writer);
                     AreEqual(1, diff.children.Count);
 
                     var childrenDiff = diff.children[0].AsString(20);
@@ -58,44 +60,44 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 "; 
                     AreEqual(expect, childrenDiff);
                     
-                    var rightJson = objectPatcher.mapper.Write(right);
-                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    var rightJson = mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchObject(objectPatcher, left, right);
+                    PatchObject(objectPatcher, left, right, mapper);
                     AssertUtils.Equivalent(left, right);
                 }
 
-                IsNull(differ.GetDiff(1, 1));
+                IsNull(differ.GetDiff(1, 1, writer));
                 {
-                    var diff = differ.GetDiff(1, 2);
+                    var diff = differ.GetDiff(1, 2, writer);
                     IsNotNull(diff);
                     AreEqual("1 != 2", diff.ToString());
-                    var e = Throws<JsonReaderException>(() => { objectPatcher.ApplyDiff(1, diff); });
+                    var e = Throws<JsonReaderException>(() => { objectPatcher.ApplyDiff(1, diff, mapper); });
                     StringAssert.Contains("ReadTo() can only used on an JSON object or array. Found: ValueNumber path: '(root)'", e.Message);
                 }
-                IsNull(differ.GetDiff("A", "A"));
+                IsNull(differ.GetDiff("A", "A", writer));
                 {
-                    var diff = differ.GetDiff("A", "B");
+                    var diff = differ.GetDiff("A", "B", writer);
                     IsNotNull(diff);
                     AreEqual("'A' != 'B'", diff.ToString());
-                    var e = Throws<JsonReaderException>(() => { objectPatcher.ApplyDiff("A", diff); });
+                    var e = Throws<JsonReaderException>(() => { objectPatcher.ApplyDiff("A", diff, mapper); });
                     StringAssert.Contains("ReadTo() can only used on an JSON object or array. Found: ValueString path: '(root)'", e.Message);
                 }
                 {
                     var left = new SampleIL();
                     left.Init();
-                    IsNull(differ.GetDiff(left, left));
+                    IsNull(differ.GetDiff(left, left, writer));
 
                     var right = new SampleIL();
-                    IsNull(differ.GetDiff(right, right));
+                    IsNull(differ.GetDiff(right, right, writer));
                     
-                    var rightJson = objectPatcher.mapper.Write(right);
-                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    var rightJson = mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
 
 
-                    var diff = differ.GetDiff(left, right);
+                    var diff = differ.GetDiff(left, right, writer);
                     IsNotNull(diff);
                     AreEqual(29, diff.children.Count);
                     var childrenDiff = diff.AsString(20);
@@ -131,7 +133,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 /int8               13 != 99
 ";
                     AreEqual(expect, childrenDiff);
-                    PatchObject(objectPatcher, left, right);
+                    PatchObject(objectPatcher, left, right, mapper);
                     AssertUtils.Equivalent(left, right);
                 }
             }
@@ -140,10 +142,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         [Test]
         public void TestContainerDiffCount() {
             using (var typeStore    = new TypeStore())
-            using (var differ       = new ObjectDiffer(typeStore)) {
+            using (var writer       = new ObjectWriter(typeStore))
+            using (var differ       = new ObjectDiffer()) {
                 var left  = new List<int> { 1,  2,  3 };
                 var right = new List<int> { 1,  2 };
-                var diff = differ.GetDiff(left, right);
+                var diff = differ.GetDiff(left, right, writer);
                 IsNotNull(diff);
                 AreEqual("[3] != [2]", diff.ToString());
             }
@@ -153,18 +156,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public void TestPatchContainer() {
             using (var jsonPatcher      = new JsonPatcher())
             using (var typeStore        = new TypeStore())
-            using (var objectPatcher    = new ObjectPatcher(typeStore)) {
-                objectPatcher.mapper.Pretty = true;
+            using (var mapper           = new ObjectMapper(typeStore))
+            using (var objectPatcher    = new ObjectPatcher()) {
+                mapper.Pretty = true;
                 // --- []
                 {
                     var left  = new[] {1,  2,  3};
                     var right = new[] {1, 12, 13};
                     
-                    var rightJson = objectPatcher.mapper.Write(right);
-                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    var rightJson = mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchElements(objectPatcher, left, right);
+                    PatchElements(objectPatcher, left, right, mapper);
                     AssertUtils.Equivalent(left, right);
                 }
                 // --- List<>
@@ -172,11 +176,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var left  = new List<int> {1,  2,  3};
                     var right = new List<int> {1, 12, 13};
                     
-                    var rightJson = objectPatcher.mapper.Write(right);
-                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    var rightJson = mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchElements(objectPatcher, left, right);
+                    PatchElements(objectPatcher, left, right, mapper);
                     AssertUtils.Equivalent(left, right);
                 }
                 // --- IList<>
@@ -184,11 +188,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var left  = new List<int> {1,  2,  3};
                     var right = new List<int> {1, 12, 13};
                     
-                    var rightJson = objectPatcher.mapper.Write(right);
-                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    var rightJson = mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchElements<IList<int>>(objectPatcher, left, right);
+                    PatchElements<IList<int>>(objectPatcher, left, right, mapper);
                     AssertUtils.Equivalent(left, right);
                 } {
                     // var left  = new Collection<int>(new[] {1,  2,  3});
@@ -199,33 +203,33 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var left  = new LinkedList<int>(new[] {1,  2,  3});
                     var right = new LinkedList<int>(new[] {1, 12, 13});
                     
-                    var rightJson = objectPatcher.mapper.Write(right);
-                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    var rightJson = mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
 
-                    PatchElements(objectPatcher, left, right);
+                    PatchElements(objectPatcher, left, right, mapper);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new HashSet<int>(new[] {1,  2,  3});
                     var right = new HashSet<int>(new[] {1, 12, 13});
                     // the whole JSON array is added as a single Patch  
                     
-                    var rightJson = objectPatcher.mapper.Write(right);
-                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    var rightJson = mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchCollection(objectPatcher, left, right);
+                    PatchCollection(objectPatcher, left, right, mapper);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new SortedSet<int>(new[] {1,  2,  3});
                     var right = new SortedSet<int>(new[] {1, 12, 13});
                     // the whole JSON array is added as a single Patch  
                     
-                    var rightJson = objectPatcher.mapper.Write(right);
-                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    var rightJson = mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchCollection(objectPatcher, left, right);
+                    PatchCollection(objectPatcher, left, right, mapper);
                     AssertUtils.Equivalent(left, right);
                 }
                 // --- Stack<>
@@ -233,11 +237,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var left  = new Stack<int>(new[] { 3,  2, 1});
                     var right = new Stack<int>(new[] {13, 12, 1});
                     
-                    var rightJson = objectPatcher.mapper.Write(right);
-                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    var rightJson = mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
 
-                    PatchElements(objectPatcher, left, right);
+                    PatchElements(objectPatcher, left, right, mapper);
                     AssertUtils.Equivalent(left, right);
                 }
                 // --- Queue<>
@@ -245,11 +249,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
                     var left  = new Queue<int>(new[] {1,  2,  3});
                     var right = new Queue<int>(new[] {1, 12, 13});
                     
-                    var rightJson = objectPatcher.mapper.Write(right);
-                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    var rightJson = mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
 
-                    PatchElements(objectPatcher, left, right);
+                    PatchElements(objectPatcher, left, right, mapper);
                     AssertUtils.Equivalent(left, right);
                 }
             }
@@ -259,54 +263,55 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
         public void TestPatchDictionary() {
             using (var jsonPatcher      = new JsonPatcher())
             using (var typeStore        = new TypeStore())
-            using (var objectPatcher    = new ObjectPatcher(typeStore)) {
-                objectPatcher.mapper.Pretty = true;
+            using (var mapper           = new ObjectMapper(typeStore))
+            using (var objectPatcher    = new ObjectPatcher()) {
+                mapper.Pretty = true;
                 {
                     var left  = new Dictionary<string, int> {{"A", 1}, {"C",  3}};
                     var right = new Dictionary<string, int> {{"A", 2}, {"B", 12}};
                     
-                    var rightJson = objectPatcher.mapper.Write(right);
-                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    var rightJson = mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchKeyValues(objectPatcher, left, right);
+                    PatchKeyValues(objectPatcher, left, right, mapper);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new Dictionary<string, int> {{"A", 1}, {"C",  3}};
                     var right = new Dictionary<string, int> {{"A", 2}, {"B", 12}};
                     
-                    var rightJson = objectPatcher.mapper.Write(right);
-                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    var rightJson = mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchKeyValues<IDictionary<string, int>>(objectPatcher, left, right);
+                    PatchKeyValues<IDictionary<string, int>>(objectPatcher, left, right, mapper);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new SortedDictionary<string, int> {{"A", 1}, {"C",  3}};
                     var right = new SortedDictionary<string, int> {{"A", 2}, {"B", 12}};
                     
-                    var rightJson = objectPatcher.mapper.Write(right);
-                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    var rightJson = mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchKeyValues(objectPatcher, left, right);
+                    PatchKeyValues(objectPatcher, left, right, mapper);
                     AssertUtils.Equivalent(left, right);
                 } {
                     var left  = new SortedList<string, int> {{"A", 1}, {"C",  3}};
                     var right = new SortedList<string, int> {{"A", 2}, {"B", 12}};
                     
-                    var rightJson = objectPatcher.mapper.Write(right);
-                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right);
+                    var rightJson = mapper.Write(right);
+                    var leftPatched = PatchJson(jsonPatcher, objectPatcher, left, right, mapper);
                     AreEqual(rightJson, leftPatched);
                     
-                    PatchKeyValues(objectPatcher, left, right);
+                    PatchKeyValues(objectPatcher, left, right, mapper);
                     AssertUtils.Equivalent(left, right);
                 }
             }
         }
 
-        private static void PatchElements<T>(ObjectPatcher objectPatcher, T left, T right) {
-            var diff = objectPatcher.differ.GetDiff(left, right);
+        private static void PatchElements<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
+            var diff = objectPatcher.differ.GetDiff(left, right, mapper.writer);
             IsNotNull(diff);
             AreEqual(2, diff.children.Count);
             var childrenDiff = diff.AsString(10);
@@ -315,19 +320,19 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 /2        3 != 13
 ";
             AreEqual(expect, childrenDiff);
-            PatchObject(objectPatcher, left, right);
+            PatchObject(objectPatcher, left, right, mapper);
         }
         
-        private static void PatchCollection<T>(ObjectPatcher objectPatcher, T left, T right) {
-            var diff = objectPatcher.differ.GetDiff(left, right);
+        private static void PatchCollection<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
+            var diff = objectPatcher.differ.GetDiff(left, right, mapper.writer);
             IsNotNull(diff);
             IsNull(diff.children);
             AreEqual("[3] != [3]", diff.ToString());
-            PatchObject(objectPatcher, left, right);
+            PatchObject(objectPatcher, left, right, mapper);
         }
         
-        private static void PatchKeyValues<T>(ObjectPatcher objectPatcher, T left, T right) {
-            var diff = objectPatcher.differ.GetDiff(left, right);
+        private static void PatchKeyValues<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper) {
+            var diff = objectPatcher.differ.GetDiff(left, right, mapper.writer);
             IsNotNull(diff);
             AreEqual(3, diff.children.Count);
             var childrenDiff = diff.AsString(10);
@@ -337,28 +342,28 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Transform
 /B        (missing) != 12
 ";
             AreEqual(expect, childrenDiff);
-            var patches = objectPatcher.CreatePatches(diff);
-            objectPatcher.ApplyPatches(left, patches);
+            var patches = objectPatcher.CreatePatches(diff, mapper);
+            objectPatcher.ApplyPatches(left, patches, mapper.reader);
         }
         
-        private static void PatchObject<T>(ObjectPatcher objectPatcher, T left, T right)
+        private static void PatchObject<T>(ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper)
         {
-            List<JsonPatch> patches = objectPatcher.GetPatches(left, right);
+            List<JsonPatch> patches = objectPatcher.GetPatches(left, right, mapper);
 
-            var jsonPatches = objectPatcher.mapper.Write(patches);
-            var destPatches = objectPatcher.mapper.Read<List<JsonPatch>>(jsonPatches);
+            var jsonPatches = mapper.Write(patches);
+            var destPatches = mapper.Read<List<JsonPatch>>(jsonPatches);
             AssertUtils.Equivalent(patches, destPatches);
                     
-            objectPatcher.ApplyPatches(left, destPatches);
+            objectPatcher.ApplyPatches(left, destPatches, mapper.reader);
         }
         
-        private static string PatchJson<T>(JsonPatcher jsonPatcher, ObjectPatcher objectPatcher, T left, T right)
+        private static string PatchJson<T>(JsonPatcher jsonPatcher, ObjectPatcher objectPatcher, T left, T right, ObjectMapper mapper)
         {
-            List<JsonPatch> patches = objectPatcher.GetPatches(left, right);
-            var leftJson = objectPatcher.mapper.WriteAsArray(left);
+            List<JsonPatch> patches = objectPatcher.GetPatches(left, right, mapper);
+            var leftJson = mapper.WriteAsArray(left);
             
-            var jsonPatches = objectPatcher.mapper.Write(patches);
-            var destPatches = objectPatcher.mapper.Read<List<JsonPatch>>(jsonPatches);
+            var jsonPatches = mapper.Write(patches);
+            var destPatches = mapper.Read<List<JsonPatch>>(jsonPatches);
             AssertUtils.Equivalent(patches, destPatches);
             
             var leftPatched = jsonPatcher.ApplyPatches(new JsonValue(leftJson), patches, true);
