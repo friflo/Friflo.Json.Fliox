@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             subscriptionsPrefix         = new List<MessageSubscriber>();
             pendingSyncs                = new ConcurrentDictionary<Task, MessageContext>();
             idsBuf                      = new List<JsonKey>();
-            this.pools                  = new Pools(pools);
+            this.pools                  = pools;
 
             // --- non readonly
             syncStore                   = null;
@@ -113,7 +113,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal void Dispose() {
             // readonly - owned
-            pools.Dispose();
             idsBuf.Clear();
             pendingSyncs.Clear();
             disposed = true;
