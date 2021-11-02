@@ -136,6 +136,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             AreEqual(startBytes, endBytes);
         }
         
+        /// <summary>
+        /// Memory consumption of a FlioxClient / sub class: ~ 1540 + 200 * (EntitySet count) [bytes]
+        /// </summary>
         [Test]
         public void BenchmarkCreateClient() {
             using (var pools    = Pools.Create()) {
