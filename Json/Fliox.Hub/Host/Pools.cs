@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return usage;
         } }
         
-        public static IPools Create() {
+        public static Pools Create() {
             var typeStore = new TypeStore();
             return new TypeStorePool(typeStore);
         }

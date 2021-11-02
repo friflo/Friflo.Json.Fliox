@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
         
-        private static async Task AssertAutoIncrement(FlioxHub hub, IPools pools)
+        private static async Task AssertAutoIncrement(FlioxHub hub, Pools pools)
         {
             using (var store = new EntityIdStore(hub, pools) { ClientId = "autoIncrement"}) {
                 var delete = store.intEntitiesAuto.DeleteAll();

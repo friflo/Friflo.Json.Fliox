@@ -33,6 +33,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             typeStore.GetTypeMapper(typeof(SimpleStore));
             //
             typeStore.GetTypeMapper(typeof(MonitorStore));
+            
+            HostTypeStore.AddHostTypes(typeStore);
         }
         
         public static void Dispose() {

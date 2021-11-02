@@ -42,19 +42,19 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         
         /// <summary>
-        /// Instantiate a <see cref="FlioxClient"/> with a given <see cref="hub"/> and an optional <see cref="typeStore"/>.
+        /// Instantiate a <see cref="FlioxClient"/> with a given <see cref="hub"/> and an optional <see cref="pools"/>.
         ///
         /// Optimization note:
         /// In case an application create many (> 10) <see cref="FlioxClient"/> instances it should provide
-        /// a <see cref="typeStore"/>. <see cref="TypeStore"/> instances are designed to be reused from multiple threads.
+        /// a <see cref="pools"/>. <see cref="TypeStore"/> instances are designed to be reused from multiple threads.
         /// Their creation is expensive compared to the instantiation of a <see cref="FlioxClient"/>. 
         /// </summary>
-        public FlioxClient(FlioxHub hub, IPools pools) {
+        public FlioxClient(FlioxHub hub, Pools pools) {
             if (pools == null) throw new ArgumentNullException(nameof(pools));
             
             ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
-            _intern = new ClientIntern(this, null, pools.TypeStore, hub, hub.database, tracer, eventTarget);
+            _intern = new ClientIntern(this, null, pools, hub, hub.database, tracer, eventTarget);
             _intern.syncStore = new SyncStore();
             _intern.InitEntitySets(this);
         }
@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             //     throw new ArgumentException("database of baseStore must not be an extension database", nameof(baseClient));
             var hub = baseClient._intern.hub;
             ITracerContext tracer       = this;
-            _intern = new ClientIntern(this, baseClient, baseClient._intern.pools.TypeStore, hub, database, tracer, null);
+            _intern = new ClientIntern(this, baseClient, baseClient._intern.pools, hub, database, tracer, null);
             _intern.syncStore = new SyncStore();
             _intern.InitEntitySets(this);
         }

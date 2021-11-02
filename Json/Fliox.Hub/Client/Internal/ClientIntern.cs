@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal ClientIntern(
             FlioxClient             thisClient,
             FlioxClient             baseClient,
-            TypeStore               typeStore,
+            Pools                   pools,
             FlioxHub                hub,
             EntityDatabase          database,
             ITracerContext          tracerContext,
@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             // readonly
             this.baseClient             = baseClient;
             entityInfos                 = ClientEntityUtils.GetEntityInfos (thisClient.GetType());
-            this.typeStore              = typeStore;
+            typeStore                   = pools.TypeStore;
             this.hub                    = hub;
             this.database               = database;
             this.eventTarget            = eventTarget;
@@ -105,8 +105,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             messageReader               = null; // new ObjectReader(typeStore, new NoThrowHandler());
             pendingSyncs                = new ConcurrentDictionary<Task, MessageContext>();
             idsBuf                      = new List<JsonKey>();
-            pools                       = new Pools(UtilsInternal.SharedPools);
-            
+            this.pools                  = new Pools(pools);
+
             // --- non readonly
             syncStore                   = null;
             tracerLogTask               = null;

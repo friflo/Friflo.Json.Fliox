@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             }
         }
             
-        private static void AssertEntityIdTests(FlioxHub hub, IPools pools) {
+        private static void AssertEntityIdTests(FlioxHub hub, Pools pools) {
             Exception e;
             e = Throws<InvalidTypeException>(() => {
                 _ = new TypeMismatchStore(hub, pools) { ClientId = "store"};
@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class TypeMismatchStore : FlioxClient {
         public  readonly    EntitySet <long, IntEntity> intEntities;
 
-        public TypeMismatchStore(FlioxHub hub, IPools pools) : base(hub, pools) { }
+        public TypeMismatchStore(FlioxHub hub, Pools pools) : base(hub, pools) { }
     }
     
     // --------
@@ -75,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         // ReSharper disable once UnassignedReadonlyField
         public  readonly    EntitySet <long, IntEntity2> intEntities; // test without assignment
 
-        public TypeMismatchStore2(FlioxHub hub, IPools pools) : base(hub, pools) { }
+        public TypeMismatchStore2(FlioxHub hub, Pools pools) : base(hub, pools) { }
     }
 
     // --------
@@ -86,7 +86,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class UnsupportedKeyTypeStore : FlioxClient {
         public  readonly    EntitySet <char, CharEntity>    charEntities;
 
-        public UnsupportedKeyTypeStore(FlioxHub hub, IPools pools) : base(hub, pools) { }
+        public UnsupportedKeyTypeStore(FlioxHub hub, Pools pools) : base(hub, pools) { }
     }
     
     // --------
@@ -98,6 +98,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class InvalidMemberStore : FlioxClient {
         public  readonly    EntitySet <string,    StringEntity> stringEntities;
 
-        public InvalidMemberStore(FlioxHub hub, IPools pools) : base(hub, pools) { }
+        public InvalidMemberStore(FlioxHub hub, Pools pools) : base(hub, pools) { }
     }
 }

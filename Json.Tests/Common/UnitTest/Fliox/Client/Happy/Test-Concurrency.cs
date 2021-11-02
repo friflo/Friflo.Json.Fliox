@@ -164,7 +164,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
 #endif
         
-        private static async Task ConcurrentWebSocket(FlioxHub hub, int clientCount, int requestCount, IPools pools)
+        private static async Task ConcurrentWebSocket(FlioxHub hub, int clientCount, int requestCount, Pools pools)
         {
             // --- prepare
             var clients = new List<FlioxClient>();
@@ -204,7 +204,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     {
         public readonly EntitySet <int, SimplyEntity>   entities;
         
-        public SimpleStore(FlioxHub hub, IPools pools) : base (hub, pools) { }
+        public SimpleStore(FlioxHub hub, Pools pools) : base (hub, pools) { }
     }
     
     // ------------------------------ models ------------------------------

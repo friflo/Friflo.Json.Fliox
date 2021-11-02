@@ -28,13 +28,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             s.Dispose();
         }
         
+        public static void AddHostTypes(TypeStore typeStore) {
+            typeStore.GetTypeMapper(typeof(ProtocolMessage));
+            typeStore.GetTypeMapper(typeof(UserStore));
+            typeStore.GetTypeMapper(typeof(RemoteSubscriptionEvent));
+            typeStore.GetTypeMapper(typeof(MonitorStore));
+        }
+        
         internal static TypeStore Get() {
             if (_singleton == null) {
                 _singleton = new TypeStore();
-                _singleton.GetTypeMapper(typeof(ProtocolMessage));
-                _singleton.GetTypeMapper(typeof(UserStore));
-                _singleton.GetTypeMapper(typeof(RemoteSubscriptionEvent));
-                _singleton.GetTypeMapper(typeof(MonitorStore));
+                AddHostTypes(_singleton);
             }
             return _singleton;
         }
