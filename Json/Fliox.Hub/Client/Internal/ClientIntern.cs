@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             idsBuf                      = new List<JsonKey>();
 
             // --- non readonly
-            syncStore                   = new SyncStore();;
+            syncStore                   = new SyncStore();
             tracerLogTask               = null;
             subscriptionProcessor       = defaultProcessor;
             subscriptionHandler         = null;
