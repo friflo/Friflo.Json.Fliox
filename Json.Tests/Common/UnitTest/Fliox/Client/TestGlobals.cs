@@ -13,16 +13,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     public static class TestGlobals {
         public static readonly string PocStoreFolder = CommonUtils.GetBasePath() + "assets~/DB/PocStore";
             
-        private static TypeStore typeStore;
+        private static TypeStore _typeStore;
         
-        public static Pools Pools;
+        public static Pools Pools { get; private set; }
         
         public static void Init() {
             HostTypeStore.Init();
             // LeakTestsFixture requires to register all types used by TypeStore before leak tracking starts
-            typeStore = new TypeStore();
-            Pools = UtilsInternal.CreatePools(() => typeStore);
-            RegisterTypeMatcher(typeStore);
+            _typeStore = new TypeStore();
+            Pools = UtilsInternal.CreatePools(() => _typeStore);
+            RegisterTypeMatcher(_typeStore);
             RegisterTypeMatcher(JsonDebug.DebugTypeStore);
         }
         
@@ -40,8 +40,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public static void Dispose() {
             Pools.Dispose();
             Pools = null;
-            typeStore.Dispose();
-            typeStore = null;
+            _typeStore.Dispose();
+            _typeStore = null;
             HostTypeStore.Dispose();
         }
     }
