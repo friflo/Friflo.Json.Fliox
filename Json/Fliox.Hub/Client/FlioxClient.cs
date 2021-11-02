@@ -55,8 +55,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
             _intern = new ClientIntern(this, null, pools, hub, hub.database, tracer, eventTarget);
-            _intern.syncStore = new SyncStore();
-            _intern.InitEntitySets(this);
         }
         
         protected FlioxClient(EntityDatabase database, FlioxClient baseClient) {
@@ -67,8 +65,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             var hub = baseClient._intern.hub;
             ITracerContext tracer       = this;
             _intern = new ClientIntern(this, baseClient, baseClient._intern.pools, hub, database, tracer, null);
-            _intern.syncStore = new SyncStore();
-            _intern.InitEntitySets(this);
         }
         
         public virtual void Dispose() {

@@ -19,7 +19,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
     {
         // readonly
         internal readonly   FlioxClient                                 baseClient;
-        private  readonly   EntityInfo[]                                entityInfos;
         internal readonly   TypeStore                                   typeStore;
         internal readonly   Pools                                       pools;
         internal readonly   FlioxHub                                    hub;
@@ -79,9 +78,9 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             ITracerContext          tracerContext,
             EventTarget             eventTarget)
         {
+            var entityInfos             = ClientEntityUtils.GetEntityInfos (thisClient.GetType());
             // readonly
             this.baseClient             = baseClient;
-            entityInfos                 = ClientEntityUtils.GetEntityInfos (thisClient.GetType());
             typeStore                   = pools.TypeStore;
             this.pools                  = pools;
             this.hub                    = hub;
@@ -101,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             idsBuf                      = new List<JsonKey>();
 
             // --- non readonly
-            syncStore                   = null;
+            syncStore                   = new SyncStore();;
             tracerLogTask               = null;
             subscriptionProcessor       = defaultProcessor;
             subscriptionHandler         = null;
@@ -111,6 +110,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             userId                      = new JsonKey();
             clientId                    = new JsonKey();
             token                       = null;
+            InitEntitySets (thisClient, entityInfos);
         }
         
         internal void Dispose() {
@@ -141,7 +141,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             syncStore       = new SyncStore();
         }
         
-        internal void InitEntitySets(FlioxClient client) {
+        private void InitEntitySets(FlioxClient client, EntityInfo[] entityInfos) {
             foreach (var entityInfo in entityInfos) {
                 var name        = entityInfo.container;
                 var setMapper   = (IEntitySetMapper)typeStore.GetTypeMapper(entityInfo.entitySetType);
@@ -211,6 +211,5 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             return task;
         }
-
     }
 }
