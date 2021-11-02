@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             await createStore.SyncTasks();
 
             var order = orderTask.Result;
-            using (ObjectMapper mapper = new ObjectMapper(TestGlobals.typeStore)) {
+            using (ObjectMapper mapper = new ObjectMapper(TestGlobals.Pools.TypeStore)) {
                 mapper.Pretty = true;
             
                 AssertWriteRead(mapper, order);

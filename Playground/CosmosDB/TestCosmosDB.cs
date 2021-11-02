@@ -4,7 +4,6 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Cosmos;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy;
 using Friflo.Json.Tests.Common.Utils;
@@ -58,10 +57,10 @@ namespace Friflo.Playground.CosmosDB
             var client              = CreateCosmosClient();
             var cosmosDatabase      = await client.CreateDatabaseIfNotExistsAsync(nameof(EntityIdStore));
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var typeStore    = new TypeStore())
+            using (var pools        = Pools.Create())
             using (var database     = new CosmosDatabase(cosmosDatabase, new PocHandler(), null, 400))
             using (var hub          = new FlioxHub(database)) {
-                await TestEntityKey.AssertEntityKeyTests (hub, typeStore);
+                await TestEntityKey.AssertEntityKeyTests (hub, pools);
             }
         }
     }

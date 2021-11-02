@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Stats;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 
@@ -23,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
         public  readonly    EntitySet <JsonKey, UserInfo>       users;
         public  readonly    EntitySet <int,     HistoryInfo>    histories;
 
-        public MonitorStore(FlioxHub hub)                                    : base(hub, HostTypeStore.Get()) { }
+        public MonitorStore(FlioxHub hub)                                    : base(hub, UtilsInternal.SharedPools) { }
         public MonitorStore(EntityDatabase database, FlioxClient baseClient) : base(database, baseClient) {
             hostName = baseClient._intern.hub.hostName;
         }

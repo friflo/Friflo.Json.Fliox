@@ -19,6 +19,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </summary>
     public interface IPools : IDisposable
     {
+        TypeStore                   TypeStore       { get; }
+        
         ObjectPool<JsonPatcher>     JsonPatcher     { get; }
         ObjectPool<ScalarSelector>  ScalarSelector  { get; }
         ObjectPool<JsonEvaluator>   JsonEvaluator   { get; }

@@ -41,8 +41,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         public static async Task ConcurrentAccess(FlioxHub hub, int readerCount, int writerCount, int requestCount, bool singleEntity) {
             // --- prepare
-            var typeStore   = new TypeStore();
-            var store       = new SimpleStore(hub, typeStore) { ClientId = "prepare"};
+            var pools       = Pools.Create();
+            var store       = new SimpleStore(hub, pools) { ClientId = "prepare"};
             var entities    = new List<SimplyEntity>();
             int max         = Math.Max(readerCount, writerCount);
             if (singleEntity) {
@@ -64,10 +64,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var writerStores = new List<SimpleStore>();
             try {
                 for (int n = 0; n < readerCount; n++) {
-                    readerStores.Add(new SimpleStore(hub, typeStore) { ClientId = $"reader-{n}"});
+                    readerStores.Add(new SimpleStore(hub, pools) { ClientId = $"reader-{n}"});
                 }
                 for (int n = 0; n < writerCount; n++) {
-                    writerStores.Add(new SimpleStore(hub, typeStore) { ClientId = $"writer-{n}" });
+                    writerStores.Add(new SimpleStore(hub, pools) { ClientId = $"writer-{n}" });
                 }
 
                 // --- run readers and writers
@@ -101,7 +101,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 foreach (var writerStore in writerStores) {
                     writerStore.Dispose();
                 }
-                typeStore.Dispose();
+                pools.Dispose();
             }
             
         }
@@ -149,7 +149,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]
         public static async Task TestConcurrentWebSocket () {
             using (var _                = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var typeStore        = new TypeStore())
+            using (var pools            = Pools.Create())
             using (var database         = new MemoryDatabase())
             using (var hub          	= new FlioxHub(database))
             using (var hostHub          = new HttpHostHub(hub))
@@ -157,20 +157,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var remoteHub        = new WebSocketClientHub("ws://localhost:8080/")) {
                 await RunServer(server, async () => {
                     await remoteHub.Connect();
-                    await ConcurrentWebSocket(remoteHub, 4, 10,typeStore); // 10 requests are sufficient to force concurrency error
+                    await ConcurrentWebSocket(remoteHub, 4, 10,pools); // 10 requests are sufficient to force concurrency error
                     await remoteHub.Close();
                 });
             }
         }
 #endif
         
-        private static async Task ConcurrentWebSocket(FlioxHub hub, int clientCount, int requestCount, TypeStore typeStore)
+        private static async Task ConcurrentWebSocket(FlioxHub hub, int clientCount, int requestCount, IPools pools)
         {
             // --- prepare
             var clients = new List<FlioxClient>();
             try {
                 for (int n = 0; n < clientCount; n++) {
-                    clients.Add(new FlioxClient(hub, typeStore) { ClientId = $"reader-{n}"});
+                    clients.Add(new FlioxClient(hub, pools) { ClientId = $"reader-{n}"});
                 }
                 var tasks = new List<Task>();
                 
@@ -204,7 +204,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     {
         public readonly EntitySet <int, SimplyEntity>   entities;
         
-        public SimpleStore(FlioxHub hub, TypeStore typeStore) : base (hub, typeStore) { }
+        public SimpleStore(FlioxHub hub, IPools pools) : base (hub, pools) { }
     }
     
     // ------------------------------ models ------------------------------

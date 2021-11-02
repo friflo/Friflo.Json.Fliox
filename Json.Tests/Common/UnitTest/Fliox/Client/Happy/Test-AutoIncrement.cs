@@ -4,7 +4,6 @@
 
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using static NUnit.Framework.Assert;
 
@@ -23,16 +22,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task AssertAutoIncrement() {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var typeStore    = new TypeStore())
+            using (var pools        = Pools.Create())
             using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/EntityIdStore"))
             using (var hub          = new FlioxHub(database)) {
-                await AssertAutoIncrement (hub, typeStore);
+                await AssertAutoIncrement (hub, pools);
             }
         }
         
-        private static async Task AssertAutoIncrement(FlioxHub hub, TypeStore typeStore)
+        private static async Task AssertAutoIncrement(FlioxHub hub, IPools pools)
         {
-            using (var store = new EntityIdStore(hub, typeStore) { ClientId = "autoIncrement"}) {
+            using (var store = new EntityIdStore(hub, pools) { ClientId = "autoIncrement"}) {
                 var delete = store.intEntitiesAuto.DeleteAll();
                 await store.SyncTasks();
                 IsTrue(delete.Success);

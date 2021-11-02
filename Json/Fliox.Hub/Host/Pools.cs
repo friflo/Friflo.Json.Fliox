@@ -3,20 +3,21 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Validation;
 using Friflo.Json.Fliox.Transform;
 using Friflo.Json.Fliox.Utils;
 
-namespace Friflo.Json.Fliox.Hub.Host.Internal
+namespace Friflo.Json.Fliox.Hub.Host
 {
-    internal sealed class Pools : IPools
+    public class Pools : IPools
     {
         private readonly    IPools                          sharedPools;
+        private readonly    Func<TypeStore>                 factory;
         private readonly    Dictionary<Type, IDisposable>   poolMap = new Dictionary<Type, IDisposable>(); // object = SharedPool<T>
         
+        public  TypeStore                   TypeStore       => factory();
         public  ObjectPool<JsonPatcher>     JsonPatcher     { get; }
         public  ObjectPool<ScalarSelector>  ScalarSelector  { get; }
         public  ObjectPool<JsonEvaluator>   JsonEvaluator   { get; }
@@ -39,16 +40,18 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         }
         
         // ReSharper disable once UnusedParameter.Local - keep for code navigation
-        internal Pools(Default _) {
+        internal Pools(Func<TypeStore> factory) {
+            this.factory    = factory;
             JsonPatcher     = new SharedPool<JsonPatcher>       (() => new JsonPatcher());
             ScalarSelector  = new SharedPool<ScalarSelector>    (() => new ScalarSelector());
             JsonEvaluator   = new SharedPool<JsonEvaluator>     (() => new JsonEvaluator());
-            ObjectMapper    = new SharedPool<ObjectMapper>      (HostTypeStore.CreateObjectMapper,  m => m.ErrorHandler = ObjectReader.NoThrow);
+            ObjectMapper    = new SharedPool<ObjectMapper>      (() => new ObjectMapper(factory()),  m => m.ErrorHandler = ObjectReader.NoThrow);
             EntityProcessor = new SharedPool<EntityProcessor>   (() => new EntityProcessor());
             TypeValidator   = new SharedPool<TypeValidator>     (() => new TypeValidator());
         }
         
-        internal Pools(IPools sharedPools) {
+        internal Pools(Pools sharedPools) {
+            factory         = sharedPools.factory;
             this.sharedPools = sharedPools;
             JsonPatcher     = new LocalPool<JsonPatcher>        (sharedPools.JsonPatcher);
             ScalarSelector  = new LocalPool<ScalarSelector>     (sharedPools.ScalarSelector);
@@ -57,8 +60,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             EntityProcessor = new LocalPool<EntityProcessor>    (sharedPools.EntityProcessor);
             TypeValidator   = new LocalPool<TypeValidator>      (sharedPools.TypeValidator);
         }
-
-        public void Dispose() {
+        
+        public virtual void Dispose() {
             JsonPatcher.    Dispose();
             ScalarSelector. Dispose();
             JsonEvaluator.  Dispose();
@@ -83,5 +86,24 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
             };
             return usage;
         } }
+        
+        public static IPools Create() {
+            var typeStore = new TypeStore();
+            return new TypeStorePool(typeStore);
+        }
+    }
+    
+    internal class TypeStorePool : Pools
+    {
+        private readonly TypeStore typeStore;
+        
+        internal TypeStorePool(TypeStore typeStore) : base(() => typeStore) {
+            this.typeStore = typeStore;
+        }
+        
+        public override void Dispose () {
+            base.Dispose();
+            typeStore.Dispose();
+        }
     }
 }

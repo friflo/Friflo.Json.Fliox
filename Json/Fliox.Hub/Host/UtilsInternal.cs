@@ -1,8 +1,9 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using Friflo.Json.Burst;
-using Friflo.Json.Fliox.Hub.Host.Internal;
+using System;
+using Friflo.Json.Fliox.Hub.Host.Utils;
+using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
@@ -13,6 +14,10 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </summary>
     public static class UtilsInternal
     {
-        public   static readonly    IPools   SharedPools = new Pools(Default.Constructor);
+        public   static readonly    Pools   SharedPools = new Pools(HostTypeStore.Get);
+        
+        public   static Pools CreatePools (Func<TypeStore> factory) {
+            return new Pools(factory);    
+        }
     }
 }

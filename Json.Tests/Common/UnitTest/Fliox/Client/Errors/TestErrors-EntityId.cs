@@ -4,7 +4,6 @@
 using System;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
 using static NUnit.Framework.Assert;
 
@@ -24,33 +23,33 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         [Test]
         public static void EntityIdTypeMismatch() {
             using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
-            using (var typeStore    = new TypeStore())
+            using (var pools        = Pools.Create())
             using (var database     = new MemoryDatabase())
             using (var hub          = new FlioxHub(database))
             {
-                AssertEntityIdTests (hub, typeStore);
+                AssertEntityIdTests (hub, pools);
             }
         }
             
-        private static void AssertEntityIdTests(FlioxHub hub, TypeStore typeStore) {
+        private static void AssertEntityIdTests(FlioxHub hub, IPools pools) {
             Exception e;
             e = Throws<InvalidTypeException>(() => {
-                _ = new TypeMismatchStore(hub, typeStore) { ClientId = "store"};
+                _ = new TypeMismatchStore(hub, pools) { ClientId = "store"};
             });
             AreEqual("key Type mismatch. String (IntEntity.id) != Int64 (EntitySet<Int64,IntEntity>)", e.Message);
             
             e = Throws<InvalidTypeException>(() => {
-                _ = new TypeMismatchStore2(hub, typeStore) { ClientId =  "store"};
+                _ = new TypeMismatchStore2(hub, pools) { ClientId =  "store"};
             });
             AreEqual("key Type mismatch. String (IntEntity2.id) != Int64 (EntitySet<Int64,IntEntity2>)", e.Message);
             
             e = Throws<InvalidOperationException>(() => {
-                _ = new UnsupportedKeyTypeStore(hub, typeStore) { ClientId = "store"};
+                _ = new UnsupportedKeyTypeStore(hub, pools) { ClientId = "store"};
             });
             AreEqual("unsupported TKey Type: EntitySet<Char,CharEntity> id", e.Message);
             
             e = Throws<InvalidTypeException>(() => {
-                _ = new InvalidMemberStore(hub, typeStore) { ClientId = "store"};
+                _ = new InvalidMemberStore(hub, pools) { ClientId = "store"};
             });
             AreEqual("Invalid member: StringEntity.entityRef - Ref<Int32, StringEntity> != EntitySet<String, StringEntity>", e.Message);
         }
@@ -64,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class TypeMismatchStore : FlioxClient {
         public  readonly    EntitySet <long, IntEntity> intEntities;
 
-        public TypeMismatchStore(FlioxHub hub, TypeStore typeStore) : base(hub, typeStore) { }
+        public TypeMismatchStore(FlioxHub hub, IPools pools) : base(hub, pools) { }
     }
     
     // --------
@@ -76,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         // ReSharper disable once UnassignedReadonlyField
         public  readonly    EntitySet <long, IntEntity2> intEntities; // test without assignment
 
-        public TypeMismatchStore2(FlioxHub hub, TypeStore typeStore) : base(hub, typeStore) { }
+        public TypeMismatchStore2(FlioxHub hub, IPools pools) : base(hub, pools) { }
     }
 
     // --------
@@ -87,7 +86,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class UnsupportedKeyTypeStore : FlioxClient {
         public  readonly    EntitySet <char, CharEntity>    charEntities;
 
-        public UnsupportedKeyTypeStore(FlioxHub hub, TypeStore typeStore) : base(hub, typeStore) { }
+        public UnsupportedKeyTypeStore(FlioxHub hub, IPools pools) : base(hub, pools) { }
     }
     
     // --------
@@ -99,6 +98,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class InvalidMemberStore : FlioxClient {
         public  readonly    EntitySet <string,    StringEntity> stringEntities;
 
-        public InvalidMemberStore(FlioxHub hub, TypeStore typeStore) : base(hub, typeStore) { }
+        public InvalidMemberStore(FlioxHub hub, IPools pools) : base(hub, pools) { }
     }
 }

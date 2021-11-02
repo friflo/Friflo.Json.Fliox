@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Auth.Rights;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable UnassignedReadonlyField
@@ -31,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         /// <summary>"userId" used for a <see cref="UserStore"/> to request a user authentication with its token</summary>
         public const string AuthenticationUser  = "AuthenticationUser";
         
-        public UserStore(FlioxHub hub) : base(hub, HostTypeStore.Get()) { }
+        public UserStore(FlioxHub hub) : base(hub, UtilsInternal.SharedPools) { }
         
         public CommandTask<AuthenticateUserResult> AuthenticateUser(AuthenticateUser command) {
             return SendCommand<AuthenticateUser, AuthenticateUserResult>(nameof(AuthenticateUser), command);
