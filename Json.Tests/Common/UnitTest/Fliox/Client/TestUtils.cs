@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Utils;
@@ -163,18 +164,25 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             }
         }
         
+        /// The Get() takes a pooled instance and calls <see cref="FlioxClient.Reset"/> before returning.
+        /// => Same behavior as new <see cref="FlioxClient"/>.
         [Test]
         public void BenchmarkPooledClient() {
             var pools       = Pools.Create();
             var hub         = new NoopDatabaseHub();
             var pool        = new SharedPool<PocStore>(() => new PocStore(hub, pools));
-            using (pool.Get()) {}
+            FlioxClient client;
+            using (var pooled = pool.Get()) {
+                client = pooled.instance;
+            }
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             int count = 1; // 10_000_000;
             for (int n = 0; n < count; n++) {
-                using (var pooled = pool.Get()) {
-                    pooled.instance.Reset();   // ~ 0.19 µs (Release)
+                using (var pooled = pool.Get()) // ~ 0.12 µs (Release)
+                {
+                    if (client != pooled.instance)
+                        throw new InvalidOperationException ("Expect same reference");
                 }
             }
             stopwatch.Stop();
