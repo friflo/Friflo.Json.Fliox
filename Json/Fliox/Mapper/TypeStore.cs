@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Mapper.Map;
 using Friflo.Json.Fliox.Mapper.Utils;
-using Friflo.Json.Fliox.Utils;
 
 #if !UNITY_5_3_OR_NEWER
     [assembly: CLSCompliant(true)]
@@ -53,7 +52,6 @@ namespace Friflo.Json.Fliox.Mapper
         private     readonly    List<TypeMapper>                newTypes =      new List<TypeMapper>();
         public      readonly    ITypeResolver                   typeResolver;
         public      readonly    StoreConfig                     config;
-        public      readonly    SharedPool<ObjectMapper>        mapperPool;
 
         public                  int                             typeCreationCount;
         public                  int                             storeLookupCount;
@@ -61,7 +59,6 @@ namespace Friflo.Json.Fliox.Mapper
         public TypeStore() {
             typeResolver    = new DefaultTypeResolver();
             config          = new StoreConfig();
-            mapperPool      = new SharedPool<ObjectMapper>(() => new ObjectMapper(this));
         }
         
         public static readonly TypeStore Global = new TypeStore();
@@ -69,11 +66,9 @@ namespace Friflo.Json.Fliox.Mapper
         public TypeStore(StoreConfig config = null, ITypeResolver resolver = null) {
             this.config     = config    ?? new StoreConfig();
             typeResolver    = resolver  ?? new DefaultTypeResolver();
-            mapperPool      = new SharedPool<ObjectMapper>(() => new ObjectMapper(this));
         }
             
         public void Dispose() {
-            mapperPool.Dispose();
             lock (this) {
                 foreach (var mapper in typeMap.Values)
                     mapper.Dispose();

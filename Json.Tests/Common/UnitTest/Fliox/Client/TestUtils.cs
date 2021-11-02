@@ -157,7 +157,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 var platform    = Environment.OSVersion.Platform;
                 var isWindows   = platform == PlatformID.Win32NT; 
-                var expected    = isWindows ? 3128 : 2912;
+                var expected    = isWindows ? 3120 : 2904;
                 Console.WriteLine($"PocStore allocation. platform: {platform}, memory: {diff}");
                 AreEqual(expected, diff);
             }

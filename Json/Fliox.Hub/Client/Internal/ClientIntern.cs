@@ -13,7 +13,6 @@ using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Mapper.Map;
-using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {
@@ -28,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   EventTarget                                 eventTarget;
         private  readonly   ITracerContext                              tracerContext;
         // readonly - owned
-        private             Pooled<ObjectMapper>                        jsonMapper;
+        private             ObjectMapper                                jsonMapper;
         private  readonly   SubscriptionProcessor                       defaultProcessor;
         private             ObjectPatcher                               objectPatcher;  // create on demand
         private             EntityProcessor                             processor;      // create on demand
@@ -59,16 +58,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal ObjectReader       MessageReader()     => messageReader ?? (messageReader  = JsonMapper().reader);
         
         // throw no exceptions on errors. Errors are handled by checking <see cref="ObjectReader.Success"/> 
-        internal ObjectMapper       JsonMapper() {
-            var instance = jsonMapper.instance;
-            if (instance != null)
-                return instance;
-            jsonMapper = typeStore.mapperPool.Get();
-            instance = jsonMapper.instance;
-            instance.TracerContext  = tracerContext;
-            instance.ErrorHandler   = ObjectReader.NoThrow;
-            return instance;
-        }
+        internal ObjectMapper       JsonMapper()        => jsonMapper    ?? (jsonMapper
+            = new ObjectMapper(typeStore){ ErrorHandler= new NoThrowHandler(), TracerContext= tracerContext });
         
         internal EntitySet GetSetByType(Type type) {
             return setByType[type];
@@ -95,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             ITracerContext          tracerContext,
             EventTarget             eventTarget)
         {
-            jsonMapper                  = new Pooled<ObjectMapper>();
+            jsonMapper                  = null;
             // readonly
             this.baseClient             = baseClient;
             entityInfos                 = ClientEntityUtils.GetEntityInfos (thisClient.GetType());
@@ -146,9 +137,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             processor?.Dispose();
             objectPatcher?.Dispose();
             // readonly
-            if (jsonMapper.instance != null) {
-                jsonMapper.Dispose();
-            }
+            jsonMapper?.Dispose();
         }
         
         internal void Reset () {

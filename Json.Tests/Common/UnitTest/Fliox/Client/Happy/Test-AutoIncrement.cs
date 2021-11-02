@@ -18,8 +18,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     public class TestAutoIncrement
     {
-        [NUnit.Framework.OneTimeSetUp]    public static void  Init()       { TestGlobals.Init(); }
-        [NUnit.Framework.OneTimeTearDown] public static void  Dispose()    { TestGlobals.Dispose(); }
         
         [Test] public async Task AutoIncrement () { await AssertAutoIncrement(); }
         
