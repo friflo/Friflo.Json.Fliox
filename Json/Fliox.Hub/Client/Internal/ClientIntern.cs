@@ -21,21 +21,22 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal readonly   FlioxClient                                 baseClient;
         private  readonly   EntityInfo[]                                entityInfos;
         internal readonly   TypeStore                                   typeStore;
+        internal readonly   Pools                                       pools;
         internal readonly   FlioxHub                                    hub;
         internal readonly   EntityDatabase                              database;
         internal readonly   EventTarget                                 eventTarget;
         internal readonly   ITracerContext                              tracerContext;
+        
         // readonly - owned
         private  readonly   SubscriptionProcessor                       defaultProcessor;
         private             ObjectPatcher                               objectPatcher;  // create on demand
         private             EntityProcessor                             processor;      // create on demand
-        internal readonly   Dictionary<Type,   EntitySet>               setByType;      // entries should be added on demand
-        private  readonly   Dictionary<string, EntitySet>               setByName;      // entries should be added on demand
+        internal readonly   Dictionary<Type,   EntitySet>               setByType;
+        private  readonly   Dictionary<string, EntitySet>               setByName;
         internal readonly   Dictionary<string, MessageSubscriber>       subscriptions;
         internal readonly   List<MessageSubscriber>                     subscriptionsPrefix;
         internal readonly   ConcurrentDictionary<Task, MessageContext>  pendingSyncs;
         internal readonly   List<JsonKey>                               idsBuf;
-        internal readonly   Pools                                       pools;
 
         // --- non readonly
         internal            SyncStore                               syncStore;
@@ -82,10 +83,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             this.baseClient             = baseClient;
             entityInfos                 = ClientEntityUtils.GetEntityInfos (thisClient.GetType());
             typeStore                   = pools.TypeStore;
+            this.pools                  = pools;
             this.hub                    = hub;
             this.database               = database;
             this.eventTarget            = eventTarget;
             this.tracerContext          = tracerContext;
+            
             // readonly - owned
             objectPatcher               = null;
             processor                   = null;
@@ -96,7 +99,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             subscriptionsPrefix         = new List<MessageSubscriber>();
             pendingSyncs                = new ConcurrentDictionary<Task, MessageContext>();
             idsBuf                      = new List<JsonKey>();
-            this.pools                  = pools;
 
             // --- non readonly
             syncStore                   = null;
