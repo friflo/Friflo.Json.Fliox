@@ -95,6 +95,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             this.property       = property;
         }
 
+        // todo - performance could achieve 300 ms for 6 EntitySet's if using compile expressions. (check Unity)
         internal void SetEntitySetMember(FlioxClient store, EntitySet entitySet) {
             // Assigning EntitySet's to their fields/properties has no measurable impact when instantiating a client.
             // No necessity to create compiled delegates for setters.
