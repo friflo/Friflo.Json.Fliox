@@ -147,7 +147,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 stopwatch.Start();
                 int count = 1; // 1_000_000;
                 for (int n = 0; n < count; n++) {
-                    new PocStore(hub, pools); // ~ 1.8 µs (Release)
+                    new PocStore(hub, pools); // ~ 1.6 µs (Release)
                 }
                 stopwatch.Stop();
                 Console.WriteLine($"client instantiation count: {count}, ms: {stopwatch.ElapsedMilliseconds}");

@@ -53,6 +53,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal EntityProcessor    EntityProcessor()   => processor     ?? (processor      = new EntityProcessor());
         internal ObjectPatcher      ObjectPatcher()     => objectPatcher ?? (objectPatcher  = new ObjectPatcher());
         
+        static readonly Dictionary<Type, IEntitySetMapper[]> MapperCache = new Dictionary<Type, IEntitySetMapper[]>();
+
         internal EntitySet GetSetByType(Type type) {
             return setByType[type];
         }
@@ -142,9 +144,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         private void InitEntitySets(FlioxClient client, EntityInfo[] entityInfos) {
-            foreach (var entityInfo in entityInfos) {
+            var mappers = GetEntitySetMappers (client.GetType(), entityInfos);
+            for (int n = 0; n < entityInfos.Length; n++) {
+                var entityInfo  = entityInfos[n];
                 var name        = entityInfo.container;
-                var setMapper   = (IEntitySetMapper)typeStore.GetTypeMapper(entityInfo.entitySetType);
+                var setMapper   = mappers[n];
                 var entitySet   = setMapper.CreateEntitySet(name);
                 entitySet.Init(client);
                 setByType[entityInfo.entityType]    = entitySet;
@@ -153,6 +157,18 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
         
+        private IEntitySetMapper[] GetEntitySetMappers (Type clientType, EntityInfo[] entityInfos) {
+            if (MapperCache.TryGetValue(clientType, out var result))
+                return result;
+            var mappers = new IEntitySetMapper[entityInfos.Length];
+            for (int n = 0; n < entityInfos.Length; n++) {
+                var entitySetType = entityInfos[n].entitySetType;
+                mappers[n] = (IEntitySetMapper)typeStore.GetTypeMapper(entitySetType);
+            }
+            MapperCache.Add(clientType, mappers);
+            return mappers;
+        }
+
         internal Dictionary<string, SyncSet> CreateSyncSets() {
             var syncSets = new Dictionary<string, SyncSet>(setByName.Count);
             foreach (var pair in setByName) {
