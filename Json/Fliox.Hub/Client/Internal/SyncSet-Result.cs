@@ -19,11 +19,11 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal    IDictionary<JsonKey, EntityError>    errorsPatch  = NoErrors;
         internal    IDictionary<JsonKey, EntityError>    errorsDelete = NoErrors;
 
-        internal  abstract  void    AddTasks                (List<SyncRequestTask> tasks);
+        internal  abstract  void    AddTasks                (List<SyncRequestTask> tasks, ObjectMapper mapper);
         
         internal  abstract  void    ReserveKeysResult       (ReserveKeys        task, SyncTaskResult result);
-        internal  abstract  void    CreateEntitiesResult    (CreateEntities     task, SyncTaskResult result);
-        internal  abstract  void    UpsertEntitiesResult    (UpsertEntities     task, SyncTaskResult result);
+        internal  abstract void     CreateEntitiesResult    (CreateEntities     task, SyncTaskResult result, ObjectMapper mapper);
+        internal  abstract void     UpsertEntitiesResult    (UpsertEntities     task, SyncTaskResult result, ObjectMapper mapper);
         internal  abstract  void    ReadEntitiesResult      (ReadEntities       task, SyncTaskResult result, ContainerEntities readEntities);
         internal  abstract  void    QueryEntitiesResult     (QueryEntities      task, SyncTaskResult result, ContainerEntities queryEntities);
         internal  abstract  void    PatchEntitiesResult     (PatchEntities      task, SyncTaskResult result);
@@ -82,8 +82,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         /// In case of a <see cref="TaskErrorResult"/> add entity errors to <see cref="SyncSet.errorsCreate"/> for all
         /// <see cref="Creates"/> to enable setting <see cref="LogTask"/> to error state via <see cref="LogTask.SetResult"/>. 
-        internal override void CreateEntitiesResult(CreateEntities task, SyncTaskResult result) {
-            CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, CreateTasks(), errorsCreate);
+        internal override void CreateEntitiesResult(CreateEntities task, SyncTaskResult result, ObjectMapper mapper) {
+            CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, CreateTasks(), errorsCreate, mapper);
             var creates = Creates();
             if (result is TaskErrorResult taskError) {
                 if (errorsCreate == NoErrors) {
@@ -103,8 +103,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             CreateTasks().Clear();
         }
 
-        internal override void UpsertEntitiesResult(UpsertEntities task, SyncTaskResult result) {
-            CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, UpsertTasks(), errorsUpsert);
+        internal override void UpsertEntitiesResult(UpsertEntities task, SyncTaskResult result, ObjectMapper mapper) {
+            CreateUpsertEntitiesResult(task.entityKeys, task.entities, result, UpsertTasks(), errorsUpsert, mapper);
             
             // enable GC to collect references in containers which are not needed anymore
             Upserts().Clear();
@@ -114,9 +114,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         private void CreateUpsertEntitiesResult(
             List<JsonKey>                       keys,
             List<JsonValue>                     entities,
-            SyncTaskResult                          result,
+            SyncTaskResult                      result,
             List<WriteTask>                     writeTasks,
-            IDictionary<JsonKey, EntityError>   writeErrors)
+            IDictionary<JsonKey, EntityError>   writeErrors,
+            ObjectMapper                        mapper)
         {
             if (result is TaskErrorResult taskError) {
                 foreach (var writeTask in writeTasks) {
@@ -126,7 +127,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             if (keys.Count != entities.Count)
                 throw new InvalidOperationException("Expect equal counts");
-            var reader = set.JsonMapper().reader;
+            var reader = mapper.reader;
             for (int n = 0; n < entities.Count; n++) {
                 var entity = entities[n];
                 // if (entity.json == null)  continue; // TAG_ENTITY_NULL

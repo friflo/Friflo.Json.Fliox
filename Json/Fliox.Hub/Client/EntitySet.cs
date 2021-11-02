@@ -31,10 +31,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         
         internal  abstract  void                Init                    (FlioxClient store);
         internal  abstract  void                Reset                   ();
-        internal  abstract  void                LogSetChangesInternal   (LogTask logTask);
-        internal  abstract  void                SyncPeerEntities        (Dictionary<JsonKey, EntityValue> entities);
+        internal  abstract  void                LogSetChangesInternal   (LogTask logTask, ObjectMapper mapper);
+        internal  abstract  void                SyncPeerEntities        (Dictionary<JsonKey, EntityValue> entities, ObjectMapper mapper);
         internal  abstract  void                DeletePeerEntities      (HashSet   <JsonKey> ids);
-        internal  abstract  void                PatchPeerEntities       (Dictionary<JsonKey, EntityPatch> patches);
+        internal  abstract  void                PatchPeerEntities       (Dictionary<JsonKey, EntityPatch> patches, ObjectMapper mapper);
         
         internal  abstract  void                ResetSync               ();
         internal  abstract  SyncTask            SubscribeChangesInternal(IEnumerable<Change> changes);
@@ -136,7 +136,6 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         internal override   SyncSet                     SyncSet         => syncSet;
         public   override   string                      ToString()      => SetInfo.ToString();
-        internal            ObjectMapper                JsonMapper()    => intern.store._intern.JsonMapper();
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public              bool                        WritePretty { get => intern.writePretty;   set => intern.writePretty = value; }
@@ -386,7 +385,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         public LogTask LogSetChanges() {
             var task = intern.store._intern.syncStore.CreateLog();
             var peers = Peers();
-            GetSyncSet().LogSetChanges(peers, task);
+            using (var pooled = intern.store._intern.pools.ObjectMapper.Get()) {
+                GetSyncSet().LogSetChanges(peers, task, pooled.instance);
+            }
             intern.store.AddTask(task);
             return task;
         }
@@ -430,9 +431,9 @@ namespace Friflo.Json.Fliox.Hub.Client
             return EntityKeyTMap.GetKey(entity);
         }
 
-        internal override void LogSetChangesInternal(LogTask logTask) {
+        internal override void LogSetChangesInternal(LogTask logTask, ObjectMapper mapper) {
             var peers = Peers();
-            GetSyncSet().LogSetChanges(peers, logTask);
+            GetSyncSet().LogSetChanges(peers, logTask, mapper);
         }
         
         internal override Peer<T> CreatePeer (T entity) {
@@ -528,9 +529,9 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         // --- EntitySet
-        internal override void SyncPeerEntities(Dictionary<JsonKey, EntityValue> entities) {
-            var reader = JsonMapper().reader;
-                
+        internal override void SyncPeerEntities(Dictionary<JsonKey, EntityValue> entities, ObjectMapper mapper) {
+            var reader = mapper.reader;
+
             foreach (var entityPair in entities) {
                 var id = entityPair.Key;
                 var value = entityPair.Value;
@@ -574,15 +575,15 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
         
-        internal  override void PatchPeerEntities (Dictionary<JsonKey, EntityPatch> patches) {
+        internal  override void PatchPeerEntities (Dictionary<JsonKey, EntityPatch> patches, ObjectMapper mapper) {
             var objectPatcher = intern.store._intern.ObjectPatcher();
-            var mapper = intern.store._intern.JsonMapper();
+            var reader = mapper.reader;
             foreach (var pair in patches) {
                 var         id          = pair.Key;
                 EntityPatch entityPatch = pair.Value;
                 var         peer        = GetPeerById(id);
                 var         entity      = peer.Entity;
-                objectPatcher.ApplyPatches(entity, entityPatch.patches, mapper.reader);
+                objectPatcher.ApplyPatches(entity, entityPatch.patches, reader);
             }
         }
 

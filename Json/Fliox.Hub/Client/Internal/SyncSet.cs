@@ -226,23 +226,26 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
         
         // --- Log changes -> create patches
-        internal void LogSetChanges(Dictionary<TKey, Peer<T>> peers, LogTask logTask) {
+        internal void LogSetChanges(Dictionary<TKey, Peer<T>> peers, LogTask logTask, ObjectMapper mapper) {
             foreach (var peerPair in peers) {
                 Peer<T> peer = peerPair.Value;
-                GetEntityChanges(peer, logTask);
+                GetEntityChanges(peer, logTask, mapper);
             }
         }
 
         internal void LogEntityChanges(T entity, LogTask logTask) {
             var peer = set.GetPeerByEntity(entity);
-            GetEntityChanges(peer, logTask);
+            using (var pooled = set.intern.store._intern.pools.ObjectMapper.Get()) {
+                var mapper = pooled.instance;
+                GetEntityChanges(peer, logTask, mapper);
+            }
         }
 
         /// In case the given entity is already <see cref="Peer{T}.created"/> or <see cref="Peer{T}.updated"/> trace
         /// the entity to find changes in referenced entities in <see cref="Ref{TKey,T}"/> fields of the given entity.
         /// In these cases <see cref="Map.RefMapper{TKey,T}.Trace"/> add untracked entities (== have no <see cref="Peer{T}"/>)
         /// which is not already assigned) 
-        private void GetEntityChanges(Peer<T> peer, LogTask logTask) {
+        private void GetEntityChanges(Peer<T> peer, LogTask logTask, ObjectMapper mapper) {
             ref var intern = ref set.intern;
             var tracer = intern.GetTracer();
             if (peer.created || peer.updated) {
@@ -253,7 +256,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             var patchSource = peer.PatchSource;
             if (patchSource != null) {
                 var entity = peer.Entity;
-                var mapper = set.JsonMapper();
                 var objectPatcher   = intern.store._intern.ObjectPatcher(); 
                 var diff = objectPatcher.differ.GetDiff(patchSource, entity, mapper.writer);
                 if (diff == null)
@@ -262,7 +264,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 var entityPatch = new EntityPatch {
                     patches = patchList
                 };
-                SetNextPatchSource(peer); // todo next patch source need to be set on Synchronize() 
+                SetNextPatchSource(peer, mapper); // todo next patch source need to be set on Synchronize() 
                 var id = peer.id;
                 Patches()[id] = entityPatch;
                 logTask.AddPatch(this, id);
@@ -273,13 +275,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         // ----------------------------------- add tasks methods -----------------------------------
-        internal override void AddTasks(List<SyncRequestTask> tasks) {
+        internal override void AddTasks(List<SyncRequestTask> tasks, ObjectMapper mapper) {
             ReserveKeys         (tasks);
-            CreateEntities      (tasks);
-            UpsertEntities      (tasks);
+            CreateEntities      (tasks, mapper);
+            UpsertEntities      (tasks, mapper);
             ReadEntities        (tasks);
             QueryEntities       (tasks);
-            PatchEntities       (tasks);
+            PatchEntities       (tasks, mapper);
             DeleteEntities      (tasks);
             DeleteAll           (tasks);
             SubscribeChanges    (tasks);
@@ -296,7 +298,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             tasks.Add(req);
         }
         
-        private void CreateEntities(List<SyncRequestTask> tasks) {
+        private void CreateEntities(List<SyncRequestTask> tasks, ObjectMapper mapper) {
             var createCount = _creates?.Count   ?? 0; 
             var autoCount   = _autos?.Count     ?? 0;
             var count       = createCount + autoCount;
@@ -304,7 +306,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                 return;
             var entries = new List<JsonValue>   (count);
             var keys    = new List<JsonKey>     (count);
-            var writer  = set.JsonMapper().writer;
+            var writer  = mapper.writer;
             writer.Pretty           = set.intern.writePretty;
             writer.WriteNullMembers = set.intern.writeNull;
             if (_creates  != null) {
@@ -339,10 +341,10 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             tasks.Add(req);
         }
         
-        private void UpsertEntities(List<SyncRequestTask> tasks) {
+        private void UpsertEntities(List<SyncRequestTask> tasks, ObjectMapper mapper) {
             if (_upserts == null || _upserts.Count == 0)
                 return;
-            var writer              = set.JsonMapper().writer;
+            var writer              = mapper.writer;
             writer.Pretty           = set.intern.writePretty;
             writer.WriteNullMembers = set.intern.writeNull;
             var entries = new List<JsonValue>   (_upserts.Count);
@@ -417,14 +419,14 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
 
-        private void PatchEntities(List<SyncRequestTask> tasks)
+        private void PatchEntities(List<SyncRequestTask> tasks, ObjectMapper mapper)
         {
             var patches     = _patches;
             var patchTasks  = _patchTasks;
             
             if (patchTasks != null && patchTasks.Count > 0) {
                 patches = Patches();    
-                var writer = set.JsonMapper().writer;
+                var writer = mapper.writer;
                 foreach (var patchTask in patchTasks) {
                     // todo performance: cache MemberAccess instances with members as key
                     var memberAccess    = new MemberAccess(patchTask.members);
@@ -438,7 +440,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                                 patches = new List<JsonPatch>()
                             };
                             patches.Add(id, patch);
-                            SetNextPatchSource(peer);
+                            SetNextPatchSource(peer, mapper);
                         }
                         var entityPatches   = patch.patches;
                         var selectResults   = memberAccessor.GetValues(entity, memberAccess);
@@ -521,8 +523,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
         }
         
-        private void SetNextPatchSource(Peer<T> peer) {
-            var mapper      = set.JsonMapper();
+        private void SetNextPatchSource(Peer<T> peer, ObjectMapper mapper) {
             var jsonArray   = mapper.writer.WriteAsArray(peer.Entity);
             var json        = new JsonValue(jsonArray);
             peer.SetNextPatchSource(mapper.Read<T>(json));

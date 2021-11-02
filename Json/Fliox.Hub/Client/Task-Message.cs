@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </summary>
     public class CommandTask : MessageTask
     {
-        private  readonly   ObjectReader    reader;
+        private  readonly   IPools          pools;
         internal            JsonValue       result;
 
         public   override   string          Details     => $"CommandTask (name: {name})";
@@ -54,8 +54,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// For type safe access of the result use <see cref="ReadResult{T}"/></summary>
         public              JsonValue       ResultJson  => IsOk("CommandTask.ResultJson", out Exception e) ? result : throw e;
         
-        internal CommandTask(string name, JsonValue value, ObjectReader reader) : base (name, value) {
-            this.reader = reader;
+        internal CommandTask(string name, JsonValue value, IPools pools) : base (name, value) {
+            this.pools = pools;
         }
 
         /// <summary>
@@ -66,11 +66,14 @@ namespace Friflo.Json.Fliox.Hub.Client
         public T ReadResult<T>() {
             var ok = IsOk("CommandTask.ReadResult", out Exception e);
             if (ok) {
-                var resultValue = reader.Read<T>(result);
-                if (reader.Success)
-                    return resultValue;
-                var error = reader.Error;
-                throw new JsonReaderException (error.msg.AsString(), error.Pos);
+                using (var pooled = pools.ObjectMapper.Get()) {
+                    var reader  = pooled.instance.reader;
+                    var resultValue = reader.Read<T>(result);
+                    if (reader.Success)
+                        return resultValue;
+                    var error = reader.Error;
+                    throw new JsonReaderException (error.msg.AsString(), error.Pos);
+                }
             }
             throw e;
         }
@@ -83,14 +86,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         public bool TryReadResult<T>(out T resultValue, out JsonReaderException error) {
             var ok = IsOk("CommandTask.TryReadResult", out Exception e);
             if (ok) {
-                resultValue = reader.Read<T>(result);
-                if (reader.Success) {
-                    error = null;
-                    return true;
+                using (var pooled = pools.ObjectMapper.Get()) {
+                    var reader  = pooled.instance.reader;
+                    resultValue = reader.Read<T>(result);
+                    if (reader.Success) {
+                        error = null;
+                        return true;
+                    }
+                    var readError = reader.Error;
+                    error = new JsonReaderException (readError.msg.AsString(), readError.Pos);
+                    return false;
                 }
-                var readError = reader.Error;
-                error = new JsonReaderException (readError.msg.AsString(), readError.Pos);
-                return false;
             }
             throw e;
         }
@@ -106,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         public              TResult         Result => ReadResult<TResult>();
         
-        internal CommandTask(string name, JsonValue value, ObjectReader reader) : base (name, value, reader) { }
+        internal CommandTask(string name, JsonValue value, IPools pools) : base (name, value, pools) { }
     }
 }
 
