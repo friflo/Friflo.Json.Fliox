@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             HostTypeStore.Init();
             // LeakTestsFixture requires to register all types used by TypeStore before leak tracking starts
             _typeStore = new TypeStore();
-            Pools = UtilsInternal.CreatePools(() => _typeStore);
+            Pools = new Pools(() => _typeStore);
             RegisterTypeMatcher(_typeStore);
             RegisterTypeMatcher(JsonDebug.DebugTypeStore);
         }

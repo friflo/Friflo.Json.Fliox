@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     {
         [Test]
         public static void EntityIdTypeMismatch() {
-            using (var _            = UtilsInternal.SharedPools) // for LeakTestsFixture
+            using (var _            = HostGlobal.Pool) // for LeakTestsFixture
             using (var pools        = Pools.Create())
             using (var database     = new MemoryDatabase())
             using (var hub          = new FlioxHub(database))

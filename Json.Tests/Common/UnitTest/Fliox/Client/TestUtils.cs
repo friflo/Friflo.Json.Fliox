@@ -21,7 +21,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     {
         [Test]
         public void TestQueryRef() {
-            using (var __       = UtilsInternal.SharedPools) // for LeakTestsFixture
+            using (var __       = HostGlobal.Pool) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
             using (var hub      = new FlioxHub(database))
             using (var store    = new PocStore(hub, Pools.Create()) { UserId = "TestQueryRef"}) {

@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         public readonly EntitySet <Guid,   SequenceKeys>   sequenceKeys;
         
         public  SequenceStore(FlioxHub hub)
-            : base(hub, UtilsInternal.SharedPools) { }
+            : base(hub, HostGlobal.Pool) { }
         
         // ReSharper disable once RedundantOverriddenMember
         // enable set breakpoint. Ensures also FlioxClient.Dispose is virtual

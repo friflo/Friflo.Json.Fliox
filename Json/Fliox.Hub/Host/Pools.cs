@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         // ReSharper disable once UnusedParameter.Local - keep for code navigation
-        internal Pools(Func<TypeStore> factory) {
+        public Pools(Func<TypeStore> factory) {
             this.factory    = factory;
             JsonPatcher     = new SharedPool<JsonPatcher>       (() => new JsonPatcher());
             ScalarSelector  = new SharedPool<ScalarSelector>    (() => new ScalarSelector());
@@ -105,5 +105,10 @@ namespace Friflo.Json.Fliox.Hub.Host
             base.Dispose();
             typeStore.Dispose();
         }
+    }
+    
+    public static class HostGlobal
+    {
+        public   static readonly    Pools   Pool = new Pools(HostTypeStore.Get);
     }
 }
