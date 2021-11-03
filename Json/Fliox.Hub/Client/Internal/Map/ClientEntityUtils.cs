@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         internal readonly   Type                            entityType;
         private  readonly   FieldInfo                       field;
         private  readonly   PropertyInfo                    property;
-        private  readonly   Action<FlioxClient,EntitySet>   setProperty;
+        private  readonly   Action<FlioxClient,EntitySet>   setMember;
 
         public override string ToString() => container;
 
@@ -86,15 +86,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             PropertyInfo   property)
         {
             MemberInfo member   = field;
-            setProperty = null;
+            setMember = null;
             if (field != null) {
-                setProperty = DelegateUtils.CreateFieldSetter<FlioxClient,EntitySet>(field);
+                setMember = DelegateUtils.CreateFieldSetter<FlioxClient,EntitySet>(field);
             } else {
                 member = property;
             }
             if (property != null) {
                 var exp = DelegateUtils.CreateSetLambda<FlioxClient,EntitySet>(property);
-                setProperty = exp.Compile();
+                setMember = exp.Compile();
             }
             AttributeUtils.Property(member.CustomAttributes, out string name);
             this.container      = name ?? container;
@@ -105,7 +105,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         }
         
         internal void SetEntitySetMember(FlioxClient store, EntitySet entitySet) {
-            setProperty(store, entitySet);
+            setMember(store, entitySet);
 #if false
             if (field != null) {
                 field.SetValue(store, entitySet);
