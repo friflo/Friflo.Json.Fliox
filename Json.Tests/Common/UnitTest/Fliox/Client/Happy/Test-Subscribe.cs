@@ -299,7 +299,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var eventBroker  = new EventBroker(false))
             using (var database     = new MemoryDatabase())
             using (var hub          = new FlioxHub(database))
-            using (var pool         = new Shared())
+            using (var pool         = new SharedAppEnv())
             using (var listenDb     = new FlioxClient(hub, pool) { ClientId = "listenDb" }) {
                 hub.EventBroker = eventBroker;
                 bool receivedHello = false;

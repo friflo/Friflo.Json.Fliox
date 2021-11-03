@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         public static async Task ConcurrentAccess(FlioxHub hub, int readerCount, int writerCount, int requestCount, bool singleEntity) {
             // --- prepare
-            var pool        = new Shared();
+            var pool        = new SharedAppEnv();
             var store       = new SimpleStore(hub, pool) { ClientId = "prepare"};
             var entities    = new List<SimplyEntity>();
             int max         = Math.Max(readerCount, writerCount);
@@ -149,7 +149,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]
         public static async Task TestConcurrentWebSocket () {
             using (var _                = SharedHostEnv.Instance) // for LeakTestsFixture
-            using (var pool             = new Shared())
+            using (var pool             = new SharedAppEnv())
             using (var database         = new MemoryDatabase())
             using (var hub          	= new FlioxHub(database))
             using (var hostHub          = new HttpHostHub(hub))

@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         [Test]
         public static void EntityIdTypeMismatch() {
             using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
-            using (var pool         = new Shared())
+            using (var pool         = new SharedAppEnv())
             using (var database     = new MemoryDatabase())
             using (var hub          = new FlioxHub(database))
             {
@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             }
         }
             
-        private static void AssertEntityIdTests(FlioxHub hub, Shared pool) {
+        private static void AssertEntityIdTests(FlioxHub hub, SharedAppEnv pool) {
             Exception e;
             e = Throws<InvalidTypeException>(() => {
                 _ = new TypeMismatchStore(hub, pool) { ClientId = "store"};

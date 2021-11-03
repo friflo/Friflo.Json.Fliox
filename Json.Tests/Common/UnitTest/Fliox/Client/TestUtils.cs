@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             using (var __       = SharedHostEnv.Instance) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
             using (var hub      = new FlioxHub(database))
-            using (var store    = new PocStore(hub, new Shared()) { UserId = "TestQueryRef"}) {
+            using (var store    = new PocStore(hub, new SharedAppEnv()) { UserId = "TestQueryRef"}) {
                 var orders = store.orders;
                 var customerId = orders.Query(o => o.customer.Key == "customer-1");
                 AreEqual("QueryTask<Order> (filter: .customer == 'customer-1')", customerId.ToString());
@@ -121,7 +121,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Test]
         public void TestDictionaryValueIterator() {
             var hub     = new FlioxHub(new MemoryDatabase());
-            var store   = new PocStore(hub, new Shared()) { UserId = "TestDictionaryValueIterator"};
+            var store   = new PocStore(hub, new SharedAppEnv()) { UserId = "TestDictionaryValueIterator"};
             var readArticles = store.articles.Read();
                         readArticles.Find("missing-id");
             var task =  readArticles.ReadRef(a => a.producer);
@@ -143,7 +143,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         /// </summary>
         [Test]
         public void BenchmarkCreateClient() {
-            using (var pool     = new Shared()) {
+            using (var pool     = new SharedAppEnv()) {
                 var hub         = new NoopDatabaseHub();
                 var _           = new PocStore(hub, pool);
                 var __          = new PocStore(hub, pool);
@@ -174,7 +174,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         /// => Same behavior as new <see cref="FlioxClient"/>.
         [Test]
         public void BenchmarkPooledClient() {
-            var pool            = new Shared();
+            var pool            = new SharedAppEnv();
             var hub             = new NoopDatabaseHub();
             var pocStorePool    = new SharedPool<PocStore>(() => new PocStore(hub, pool));
             FlioxClient client;
@@ -205,7 +205,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
         [Test]
         public async Task TestMemorySync() {
-            using (var pool     = new Shared()) {
+            using (var pool     = new SharedAppEnv()) {
                 var hub         = new NoopDatabaseHub();
                 var store       = new PocStore(hub, pool);
                 await store.SyncTasks(); // force one time allocations
@@ -221,7 +221,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         [Test]
         public async Task TestMemorySyncRead() {
-            using (var pool     = new Shared()) {
+            using (var pool     = new SharedAppEnv()) {
                 var database    = new MemoryDatabase();
                 var hub         = new FlioxHub(database);
                 var store       = new EntityIdStore(hub, pool);

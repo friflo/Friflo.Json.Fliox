@@ -86,48 +86,5 @@ namespace Friflo.Json.Fliox.Hub.Host
         } }
     }
     
-    public abstract class SharedEnv : IDisposable
-    {
-        public abstract TypeStore   TypeStore   { get; }
-        public abstract Pool        Pool        { get; }
-        
-        public abstract void        Dispose();
-    }
-    
-    public sealed class Shared : SharedEnv
-    {
-        private readonly    TypeStore   typeStore;
-        private readonly    Pool        pool;
-        
-        public  override    TypeStore   TypeStore   => typeStore;
-        public  override    Pool        Pool        => pool;
-        
-        public Shared() {
-            typeStore   = new TypeStore();
-            pool        = new Pool(this);
-        }
 
-        public override void Dispose () {
-            pool.Dispose();
-            typeStore.Dispose();
-        }
-    }
-    
-    public sealed class SharedHostEnv : SharedEnv
-    {
-        private readonly    Pool        pool;
-        
-        public  override    TypeStore   TypeStore   => HostTypeStore.Get();
-        public  override    Pool        Pool        => pool;
-        
-        public static readonly SharedHostEnv Instance = new SharedHostEnv();
-        
-        private SharedHostEnv() {
-            pool = new Pool(this);
-        }
-        
-        public override void Dispose () {
-            pool.Dispose();
-        }
-    }
 }
