@@ -14,7 +14,6 @@ namespace Friflo.Json.Fliox.Mapper
 #endif
     public sealed class ObjectMapper : IJsonReader, IJsonWriter, IDisposable, IResetable
     {
-        public readonly TypeStore       typeStore;
         public readonly ObjectReader    reader;
         public readonly ObjectWriter    writer;
         private         int             maxDepth;
@@ -54,7 +53,6 @@ namespace Friflo.Json.Fliox.Mapper
             
         public ObjectMapper(TypeStore typeStore) {
             typeStore       = typeStore ?? throw new ArgumentNullException(nameof(typeStore));
-            this.typeStore  = typeStore;
             reader          = new ObjectReader(typeStore);
             writer          = new ObjectWriter(typeStore);
             Reset();
