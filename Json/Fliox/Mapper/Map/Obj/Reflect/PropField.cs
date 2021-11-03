@@ -54,11 +54,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                 // var typeArray    = new [] {  property.DeclaringType, property.PropertyType  };
                 // var delegateType = Expression.GetDelegateType(typeArray);
                 // getDelegate      =  Delegate.CreateDelegate(delegateType, getMethod);
-                var getLambdaExp    = GetGetLambda(property);
-                var setLambdaExp    = GetSetLambda(property);
+                var getLambdaExp    = GetGetLambda<object,object>(property);
+                var setLambdaExp    = GetSetLambda<object,object>(property);
                 getLambda           = getLambdaExp.Compile();
                 setLambda           = setLambdaExp.Compile();
-                GetSetLambda(property);
                 isKey = FieldQuery.IsKey(property.CustomAttributes);
             } else {
                 isKey = FieldQuery.IsKey(field.CustomAttributes);
@@ -74,26 +73,26 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             return property;
         } }
 
-        public static Expression<Func<object, object>> GetGetLambda (PropertyInfo propInfo) {
+        public static Expression<Func<TInstance, TProperty>> GetGetLambda<TInstance, TProperty> (PropertyInfo propInfo) {
             var declaringType   = propInfo.DeclaringType;
-            var instanceExp     = Expression.Parameter(typeof(object), "instance");
+            var instanceExp     = Expression.Parameter(typeof(TInstance), "instance");
             var srcInstanceExp  = Expression.Convert(instanceExp, declaringType);
             var propertyExp     = Expression.Property(srcInstanceExp, propInfo);
-            var resultExp       = Expression.Convert(propertyExp, typeof(object));
-            var lambda          = Expression.Lambda<Func<object, object>>(resultExp, instanceExp);
+            var resultExp       = Expression.Convert(propertyExp, typeof(TProperty));
+            var lambda          = Expression.Lambda<Func<TInstance, TProperty>>(resultExp, instanceExp);
             return lambda;
         }
         
-        public static Expression<Action<object, object>> GetSetLambda (PropertyInfo propInfo) {
+        public static Expression<Action<TInstance, TProperty>> GetSetLambda<TInstance, TProperty> (PropertyInfo propInfo) {
             var declaringType   = propInfo.DeclaringType;
             var propertyType    = propInfo.PropertyType;
-            var instanceExp     = Expression.Parameter(typeof(object), "instance");
+            var instanceExp     = Expression.Parameter(typeof(TInstance), "instance");
             var srcInstanceExp  = Expression.Convert(instanceExp, declaringType);
-            var valueExp        = Expression.Parameter(typeof(object), "value");
+            var valueExp        = Expression.Parameter(typeof(TProperty), "value");
             var convValueExp    = Expression.Convert(valueExp, propertyType);
             var propertyExp     = Expression.Property(srcInstanceExp, propInfo);
             var assignExpr      = Expression.Assign (propertyExp, convValueExp);
-            var lambda          = Expression.Lambda<Action<object, object>>(assignExpr, instanceExp, valueExp);
+            var lambda          = Expression.Lambda<Action<TInstance, TProperty>>(assignExpr, instanceExp, valueExp);
             return lambda;
         }
 

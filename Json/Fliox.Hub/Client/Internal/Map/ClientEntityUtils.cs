@@ -69,11 +69,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
     }
     
     internal readonly struct EntityInfo {
-        internal readonly   string         container;
-        internal readonly   Type           entitySetType;
-        internal readonly   Type           entityType;
-        private  readonly   FieldInfo      field;
-        private  readonly   PropertyInfo   property;
+        internal readonly   string                          container;
+        internal readonly   Type                            entitySetType;
+        internal readonly   Type                            entityType;
+        private  readonly   FieldInfo                       field;
+        private  readonly   PropertyInfo                    property;
+        private  readonly   Action<FlioxClient,EntitySet>   setProperty;
 
         public override string ToString() => container;
 
@@ -87,6 +88,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             MemberInfo member   = field;
             if (field == null)
                 member = property;
+            if (property != null) {
+                var exp = PropField.GetSetLambda<FlioxClient,EntitySet>(property);
+                setProperty = exp.Compile();
+            } else {
+                setProperty = null;
+            }
             AttributeUtils.Property(member.CustomAttributes, out string name);
             this.container      = name ?? container;
             this.entitySetType  = entitySetType;
@@ -95,14 +102,12 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             this.property       = property;
         }
 
-        // todo - performance could achieve 300 ms for 6 EntitySet's if using compile expressions. (check Unity)
         internal void SetEntitySetMember(FlioxClient store, EntitySet entitySet) {
-            // Assigning EntitySet's to their fields/properties has no measurable impact when instantiating a client.
-            // No necessity to create compiled delegates for setters.
             if (field != null) {
+                // EntitySet's declared as fields are intended to be readonly => not possible to set readonly fields by expression
                 field.   SetValue(store, entitySet);
             } else {
-                property.SetValue(store, entitySet);
+                setProperty(store, entitySet);
             }
         }
     }
