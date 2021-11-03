@@ -7,6 +7,11 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
+    /// <summary>
+    /// Interface used to define shared resources used by <see cref="Client.FlioxClient"/> and <see cref="FlioxHub"/>.
+    /// Access to these shared resources is thread safe.
+    /// It is not an interface by intention to avoid coupling resource ownership with entire different topics.
+    /// </summary>
     public abstract class SharedEnv : IDisposable
     {
         public  abstract    TypeStore   TypeStore   { get; }
