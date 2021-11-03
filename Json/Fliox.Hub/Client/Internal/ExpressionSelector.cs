@@ -6,7 +6,7 @@ using System.Collections;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
+using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Client.Internal
 {

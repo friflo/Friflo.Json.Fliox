@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
+namespace Friflo.Json.Fliox.Mapper.Utils
 {
     public static class DelegateUtils
     {

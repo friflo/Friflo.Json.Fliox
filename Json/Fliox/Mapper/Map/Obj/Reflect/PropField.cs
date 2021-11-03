@@ -3,6 +3,7 @@
 using System;
 using System.Reflection;
 using Friflo.Json.Burst;
+using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
 {
