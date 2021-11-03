@@ -53,18 +53,25 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             throw new NotImplementedException();
         }
     }
-    
+
+    /// <summary>
+    /// Ignore all fields / properties in a <see cref="FlioxClient"/> which are not of Type <see cref="EntitySet{TKey,T}"/>
+    /// </summary>
     internal class ClientFieldFilter : FieldFilter
     {
         internal static readonly ClientFieldFilter Instance = new ClientFieldFilter();
 
         public override bool AddField(MemberInfo memberInfo) {
             if (memberInfo is PropertyInfo property) {
+                if (!ClientEntityUtils.IsEntitySet(property.PropertyType))
+                    return false;
                 // has public or non-public setter
                 bool hasSetter = property.GetSetMethod(true) != null;
                 return hasSetter || FieldQuery.Property(property.CustomAttributes);
             }
             if (memberInfo is FieldInfo field) {
+                if (!ClientEntityUtils.IsEntitySet(field.FieldType))
+                    return false;
                 return field.IsPublic || FieldQuery.Property(field.CustomAttributes);
             }
             return false;

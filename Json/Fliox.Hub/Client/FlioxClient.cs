@@ -112,7 +112,6 @@ namespace Friflo.Json.Fliox.Hub.Client
                 throw new InvalidOperationException("only base store can set: userId, clientId & token");
         } 
 
-        [Fri.Ignore]
         public string UserId {
             get => _intern.userId.AsString();
             set {
@@ -121,7 +120,6 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
-        [Fri.Ignore]
         public string ClientId {
             get => _intern.clientId.AsString();
             set {
@@ -140,7 +138,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        [Fri.Ignore]
         public string Token {
             get => _intern.token;
             set {

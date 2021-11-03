@@ -14,7 +14,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
 {
     public partial class  MonitorStore :  FlioxClient
     {
-        [Fri.Ignore]
         internal            string                              hostName;
         
         public  readonly    EntitySet <JsonKey, HostInfo>       hosts;
