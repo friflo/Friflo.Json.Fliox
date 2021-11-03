@@ -18,9 +18,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
     
     public static class RemoteUtils
     {
-        public static JsonValue CreateProtocolMessage (ProtocolMessage message, IPools pools)
+        public static JsonValue CreateProtocolMessage (ProtocolMessage message, IPool pool)
         {
-            using (var pooledMapper = pools.ObjectMapper.Get()) {
+            using (var pooledMapper = pool.ObjectMapper.Get()) {
                 ObjectMapper mapper = pooledMapper.instance;
                 mapper.Pretty = true;
                 mapper.WriteNullMembers = false;
@@ -38,9 +38,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        public static ProtocolMessage ReadProtocolMessage (JsonValue jsonMessage, IPools pools, out string error)
+        public static ProtocolMessage ReadProtocolMessage (JsonValue jsonMessage, IPool pool, out string error)
         {
-            using (var pooledMapper = pools.ObjectMapper.Get()) {
+            using (var pooledMapper = pool.ObjectMapper.Get()) {
                 ObjectReader reader = pooledMapper.instance.reader;
                 var message         = reader.Read<ProtocolMessage>(jsonMessage);
                 if (reader.Error.ErrSet) {

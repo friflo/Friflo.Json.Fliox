@@ -44,7 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// </summary>
     public class CommandTask : MessageTask
     {
-        private  readonly   IPools          pools;
+        private  readonly   IPool           pool;
         internal            JsonValue       result;
 
         public   override   string          Details     => $"CommandTask (name: {name})";
@@ -54,8 +54,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// For type safe access of the result use <see cref="ReadResult{T}"/></summary>
         public              JsonValue       ResultJson  => IsOk("CommandTask.ResultJson", out Exception e) ? result : throw e;
         
-        internal CommandTask(string name, JsonValue value, IPools pools) : base (name, value) {
-            this.pools = pools;
+        internal CommandTask(string name, JsonValue value, IPool pool) : base (name, value) {
+            this.pool = pool;
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public T ReadResult<T>() {
             var ok = IsOk("CommandTask.ReadResult", out Exception e);
             if (ok) {
-                using (var pooled = pools.ObjectMapper.Get()) {
+                using (var pooled = pool.ObjectMapper.Get()) {
                     var reader  = pooled.instance.reader;
                     var resultValue = reader.Read<T>(result);
                     if (reader.Success)
@@ -86,7 +86,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public bool TryReadResult<T>(out T resultValue, out JsonReaderException error) {
             var ok = IsOk("CommandTask.TryReadResult", out Exception e);
             if (ok) {
-                using (var pooled = pools.ObjectMapper.Get()) {
+                using (var pooled = pool.ObjectMapper.Get()) {
                     var reader  = pooled.instance.reader;
                     resultValue = reader.Read<T>(result);
                     if (reader.Success) {
@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         public              TResult         Result => ReadResult<TResult>();
         
-        internal CommandTask(string name, JsonValue value, IPools pools) : base (name, value, pools) { }
+        internal CommandTask(string name, JsonValue value, IPool pool) : base (name, value, pool) { }
     }
 }
 

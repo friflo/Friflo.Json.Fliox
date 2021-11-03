@@ -299,8 +299,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var eventBroker  = new EventBroker(false))
             using (var database     = new MemoryDatabase())
             using (var hub          = new FlioxHub(database))
-            using (var pools        = Pools.Create())
-            using (var listenDb     = new FlioxClient(hub, pools) { ClientId = "listenDb" }) {
+            using (var pool         = Pool.Create())
+            using (var listenDb     = new FlioxClient(hub, pool) { ClientId = "listenDb" }) {
                 hub.EventBroker = eventBroker;
                 bool receivedHello = false;
                 listenDb.SubscribeMessage("Hello", msg => {
@@ -308,7 +308,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 });
                 await listenDb.SyncTasks();
 
-                using (var sendStore  = new FlioxClient(hub, pools) { ClientId = "sendStore" }) {
+                using (var sendStore  = new FlioxClient(hub, pool) { ClientId = "sendStore" }) {
                     sendStore.SendMessage("Hello", "some text");
                     await sendStore.SyncTasks();
                     

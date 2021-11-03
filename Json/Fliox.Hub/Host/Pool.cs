@@ -11,9 +11,9 @@ using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
-    public class Pools : IPools
+    public class Pool : IPool
     {
-        private readonly    IPools                          sharedPools;
+        private readonly    IPool                           sharedPool;
         private readonly    Func<TypeStore>                 factory;
         private readonly    Dictionary<Type, IDisposable>   poolMap = new Dictionary<Type, IDisposable>(); // object = SharedPool<T>
         
@@ -30,8 +30,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                 return (ObjectPool<T>)pooled;
             }
             ObjectPool<T> pool;
-            if (sharedPools != null) {
-                pool = new LocalPool<T>(sharedPools.Type(factory));
+            if (sharedPool != null) {
+                pool = new LocalPool<T>(sharedPool.Type(factory));
             } else {
                 pool = new SharedPool<T>(factory);
             }
@@ -40,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         // ReSharper disable once UnusedParameter.Local - keep for code navigation
-        public Pools(Func<TypeStore> factory) {
+        public Pool(Func<TypeStore> factory) {
             this.factory    = factory;
             JsonPatcher     = new SharedPool<JsonPatcher>       (() => new JsonPatcher());
             ScalarSelector  = new SharedPool<ScalarSelector>    (() => new ScalarSelector());
@@ -50,15 +50,15 @@ namespace Friflo.Json.Fliox.Hub.Host
             TypeValidator   = new SharedPool<TypeValidator>     (() => new TypeValidator());
         }
         
-        internal Pools(Pools sharedPools) {
-            factory         = sharedPools.factory;
-            this.sharedPools = sharedPools;
-            JsonPatcher     = new LocalPool<JsonPatcher>        (sharedPools.JsonPatcher);
-            ScalarSelector  = new LocalPool<ScalarSelector>     (sharedPools.ScalarSelector);
-            JsonEvaluator   = new LocalPool<JsonEvaluator>      (sharedPools.JsonEvaluator);
-            ObjectMapper    = new LocalPool<ObjectMapper>       (sharedPools.ObjectMapper);
-            EntityProcessor = new LocalPool<EntityProcessor>    (sharedPools.EntityProcessor);
-            TypeValidator   = new LocalPool<TypeValidator>      (sharedPools.TypeValidator);
+        internal Pool(Pool sharedPool) {
+            factory         = sharedPool.factory;
+            this.sharedPool = sharedPool;
+            JsonPatcher     = new LocalPool<JsonPatcher>        (sharedPool.JsonPatcher);
+            ScalarSelector  = new LocalPool<ScalarSelector>     (sharedPool.ScalarSelector);
+            JsonEvaluator   = new LocalPool<JsonEvaluator>      (sharedPool.JsonEvaluator);
+            ObjectMapper    = new LocalPool<ObjectMapper>       (sharedPool.ObjectMapper);
+            EntityProcessor = new LocalPool<EntityProcessor>    (sharedPool.EntityProcessor);
+            TypeValidator   = new LocalPool<TypeValidator>      (sharedPool.TypeValidator);
         }
         
         public virtual void Dispose() {
@@ -68,9 +68,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             ObjectMapper.   Dispose();
             EntityProcessor.Dispose();
             TypeValidator.  Dispose();
-            foreach (var pool in poolMap) {
-                var sharedPool = pool.Value;
-                sharedPool.Dispose();
+            foreach (var pair in poolMap) {
+                var pool = pair.Value;
+                pool.Dispose();
             }
             poolMap.Clear();
         }
@@ -87,13 +87,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             return usage;
         } }
         
-        public static Pools Create() {
+        public static Pool Create() {
             var typeStore = new TypeStore();
             return new TypeStorePool(typeStore);
         }
     }
     
-    internal class TypeStorePool : Pools
+    internal class TypeStorePool : Pool
     {
         private readonly TypeStore typeStore;
         
@@ -109,6 +109,6 @@ namespace Friflo.Json.Fliox.Hub.Host
     
     public static class HostGlobal
     {
-        public   static readonly    Pools   Pool = new Pools(HostTypeStore.Get);
+        public   static readonly    Pool   Pool = new Pool(HostTypeStore.Get);
     }
 }

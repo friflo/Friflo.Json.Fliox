@@ -13,7 +13,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         }
         
         private async Task<AuthenticateUserResult> AuthenticateUser (Command<AuthenticateUser> command) {
-            using(var pooled = command.Pools.Type(() => new UserStore(command.Hub)).Get()) {
+            using(var pooled = command.Pool.Type(() => new UserStore(command.Hub)).Get()) {
                 var store           = pooled.instance;
                 store.UserId        = UserStore.Server;
                 var validateToken   = command.Value;

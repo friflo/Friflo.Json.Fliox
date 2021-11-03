@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            var jsonRequest = RemoteUtils.CreateProtocolMessage(syncRequest, messageContext.pools);
+            var jsonRequest = RemoteUtils.CreateProtocolMessage(syncRequest, messageContext.pool);
             var content = jsonRequest.AsByteArrayContent();
             content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
             // body.Headers.ContentEncoding = new string[]{"charset=utf-8"};
@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 HttpResponseMessage httpResponse = await httpClient.PostAsync(endpoint, content).ConfigureAwait(false);
                 var bodyArray   = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
                 var jsonBody    = new JsonValue(bodyArray);
-                var response    = RemoteUtils.ReadProtocolMessage (jsonBody, messageContext.pools, out string error);
+                var response    = RemoteUtils.ReadProtocolMessage (jsonBody, messageContext.pool, out string error);
                 switch (response) {
                     case null:
                         return  new ExecuteSyncResult(error);

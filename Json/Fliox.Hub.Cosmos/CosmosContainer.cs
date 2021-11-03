@@ -89,7 +89,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             var entities = command.entities;
             AssertEntityCounts(command.entityKeys, entities);
             using (var memory           = new ReusedMemoryStream())
-            using (var pooledProcessor  = messageContext.pools.EntityProcessor.Get()) {
+            using (var pooledProcessor  = messageContext.pool.EntityProcessor.Get()) {
                 var processor = pooledProcessor.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var key     = command.entityKeys[n];
@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             var id              = key.AsString();
             var partitionKey    = new PartitionKey(id);
             // todo handle error;
-            using (var pooledProcessor  = messageContext.pools.EntityProcessor.Get())
+            using (var pooledProcessor  = messageContext.pool.EntityProcessor.Get())
             using (var response         = await cosmosContainer.ReadItemStreamAsync(id, partitionKey).ConfigureAwait(false)) {
                 var processor   = pooledProcessor.instance;
                 var content     = response.Content;
@@ -145,7 +145,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             }
             // todo handle error;
             using (var response     = await cosmosContainer.ReadManyItemsStreamAsync(list).ConfigureAwait(false))
-            using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
+            using (var pooledMapper = messageContext.pool.ObjectMapper.Get()) {
                 var reader      = pooledMapper.instance.reader;
                 var documents   = await CosmosUtils.ReadDocuments(reader, response.Content).ConfigureAwait(false);
                 EntityUtils.AddEntitiesToMap(documents, "id", command.isIntKey, command.keyName, entities, messageContext);
@@ -166,7 +166,7 @@ namespace Friflo.Json.Fliox.Hub.Cosmos
             var documents   = new List<JsonValue>();
             var sql         = filterByClient ? null : command.filter.query.Cosmos;
             using (FeedIterator iterator    = cosmosContainer.GetItemQueryStreamIterator(sql))
-            using (var pooledMapper         = messageContext.pools.ObjectMapper.Get()) {
+            using (var pooledMapper         = messageContext.pool.ObjectMapper.Get()) {
                 while (iterator.HasMoreResults) {
                     using(ResponseMessage response = await iterator.ReadNextAsync().ConfigureAwait(false)) {
                         var reader  = pooledMapper.instance.reader;

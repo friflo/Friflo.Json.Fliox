@@ -15,13 +15,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             
         private static TypeStore _typeStore;
         
-        public static Pools Pools { get; private set; }
+        public static Pool Pool { get; private set; }
         
         public static void Init() {
             HostTypeStore.Init();
             // LeakTestsFixture requires to register all types used by TypeStore before leak tracking starts
             _typeStore = new TypeStore();
-            Pools = new Pools(() => _typeStore);
+            Pool = new Pool(() => _typeStore);
             RegisterTypeMatcher(_typeStore);
             RegisterTypeMatcher(JsonDebug.DebugTypeStore);
         }
@@ -38,8 +38,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         }
         
         public static void Dispose() {
-            Pools.Dispose();
-            Pools = null;
+            Pool.Dispose();
+            Pool = null;
             _typeStore.Dispose();
             _typeStore = null;
             HostTypeStore.Dispose();

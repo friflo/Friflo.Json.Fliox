@@ -48,7 +48,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// If called its parameters are intended to filter the aspired condition and return true if task execution is granted.
         /// To reject task execution it returns false.
         /// </summary>
-        private static bool TestPredicate (SyncRequestTask task, IPools pools) {
+        private static bool TestPredicate (SyncRequestTask task, IPool pool) {
             switch (task) {
                 case ReadEntities   read:
                     return read.container   == nameof(PocStore.articles);

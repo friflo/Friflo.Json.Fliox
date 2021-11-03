@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
     public abstract class RemoteClientHub : FlioxHub
     {
         private  readonly   Dictionary<JsonKey, IEventTarget>   clientTargets = new Dictionary<JsonKey, IEventTarget>(JsonKey.Equality);
-        private  readonly   Pools                               pools = new Pools(HostGlobal.Pool);
+        private  readonly   Pool                                pool = new Pool(HostGlobal.Pool);
 
         // ReSharper disable once EmptyConstructor - added for source navigation
         protected RemoteClientHub(EntityDatabase database, string hostName = null) : base(database, hostName) { }
@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         protected void ProcessEvent(ProtocolEvent ev) {
             var eventTarget     = clientTargets[ev.dstClientId];
-            var messageContext  = new MessageContext(pools, eventTarget);
+            var messageContext  = new MessageContext(pool, eventTarget);
             eventTarget.ProcessEvent(ev, messageContext);
             messageContext.Release();
         }

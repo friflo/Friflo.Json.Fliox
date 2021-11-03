@@ -23,9 +23,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
             using (var _            = HostGlobal.Pool) // for LeakTestsFixture
             using (var database     = new MemoryDatabase(new PocHandler()))
             using (var hub          = new FlioxHub(database))
-            using (var pools        = Pools.Create())
-            using (var store        = new PocStore(hub,pools) { UserId = "store"})
-            using (var m            = new ObjectMapper(pools.TypeStore)) {
+            using (var pool         = Pool.Create())
+            using (var store        = new PocStore(hub,pool) { UserId = "store"})
+            using (var m            = new ObjectMapper(pool.TypeStore)) {
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order1 = readOrders.Find("order-1");
@@ -78,8 +78,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         private static Order GetOrder(string id) {
             using (var database     = new MemoryDatabase(new PocHandler()))
             using (var hub          = new FlioxHub(database))
-            using (var pools        = Pools.Create())
-            using (var store        = new PocStore(hub, pools) { UserId = "store"}) {
+            using (var pool         = Pool.Create())
+            using (var store        = new PocStore(hub, pool) { UserId = "store"}) {
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order = readOrders.Find(id);
@@ -121,8 +121,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
             using (var _            = HostGlobal.Pool) // for LeakTestsFixture
             using (var database     = new MemoryDatabase(new PocHandler()))
             using (var hub          = new FlioxHub(database))
-            using (var pools        = Pools.Create())
-            using (var store        = new PocStore(hub, pools) { UserId = "store" }) {
+            using (var pool         = Pool.Create())
+            using (var store        = new PocStore(hub, pool) { UserId = "store" }) {
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order1 = readOrders.Find("order-1");

@@ -235,7 +235,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
 
         internal void LogEntityChanges(T entity, LogTask logTask) {
             var peer = set.GetPeerByEntity(entity);
-            using (var pooled = set.intern.store._intern.pools.ObjectMapper.Get()) {
+            using (var pooled = set.intern.store._intern.pool.ObjectMapper.Get()) {
                 var mapper = pooled.instance;
                 GetEntityChanges(peer, logTask, mapper);
             }

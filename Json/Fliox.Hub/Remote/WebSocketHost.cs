@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         private  readonly   DataChannelWriter<ArraySegment<byte>>   sendWriter;
         private  readonly   Task                                    sendLoop;
-        private  readonly   Pools                                   pools = new Pools(HostGlobal.Pool);
+        private  readonly   Pool                                    pool = new Pool(HostGlobal.Pool);
         
         private WebSocketHost (WebSocket webSocket, bool fakeOpenClosedSocket) {
             this.webSocket              = webSocket;
@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         public Task<bool> ProcessEvent(ProtocolEvent ev, MessageContext messageContext) {
             try {
-                var jsonEvent       = RemoteUtils.CreateProtocolMessage(ev, messageContext.pools);
+                var jsonEvent       = RemoteUtils.CreateProtocolMessage(ev, messageContext.pool);
                 var arraySegment    = jsonEvent.AsArraySegment();
                 sendWriter.TryWrite(arraySegment);
                 return Task.FromResult(true);
@@ -90,7 +90,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     
                     if (wsResult.MessageType == WebSocketMessageType.Text) {
                         var requestContent  = new JsonValue(memoryStream.ToArray());
-                        var messageContext  = new MessageContext(pools, this);
+                        var messageContext  = new MessageContext(pool, this);
                         var result          = await remoteHost.ExecuteJsonRequest(requestContent, messageContext).ConfigureAwait(false);
                         messageContext.Release();
                         var arraySegment    = result.body.AsArraySegment();

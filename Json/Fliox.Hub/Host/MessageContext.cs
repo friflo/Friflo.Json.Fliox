@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     public sealed class MessageContext
     {
         // --- public
-        public    readonly  IPools              pools;
+        public    readonly  IPool               pool;
         public              FlioxHub            Hub         => hub;
         public              JsonKey             clientId;
         public              ClientIdValidation  clientIdValidation;
@@ -39,15 +39,15 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         public override     string              ToString() => $"userId: {authState.user}, auth: {authState}";
 
-        internal MessageContext (IPools pools, IEventTarget eventTarget) {
-            this.pools          = pools;
-            startUsage          = pools.PoolUsage;
+        internal MessageContext (IPool pool, IEventTarget eventTarget) {
+            this.pool           = pool;
+            startUsage          = pool.PoolUsage;
             this.eventTarget    = eventTarget;
         }
         
-        internal MessageContext (IPools pools, IEventTarget eventTarget, in JsonKey clientId) {
-            this.pools          = pools;
-            startUsage          = pools.PoolUsage;
+        internal MessageContext (IPool pool, IEventTarget eventTarget, in JsonKey clientId) {
+            this.pool           = pool;
+            startUsage          = pool.PoolUsage;
             this.eventTarget    = eventTarget;
             this.clientId       = clientId;
         }
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         internal void Release() {
-            startUsage.AssertEqual(pools.PoolUsage);
+            startUsage.AssertEqual(pool.PoolUsage);
         }
     }
 }

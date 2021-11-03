@@ -32,13 +32,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         public async Task<JsonResponse> ExecuteJsonRequest(JsonValue jsonRequest, MessageContext messageContext) {
             try {
-                var request = RemoteUtils.ReadProtocolMessage(jsonRequest, messageContext.pools, out string error);
+                var request = RemoteUtils.ReadProtocolMessage(jsonRequest, messageContext.pool, out string error);
                 switch (request) {
                     case null:
                         return JsonResponse.CreateError(messageContext, error, JsonResponseStatus.Error);
                     case SyncRequest syncRequest:
                         var         response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(false);
-                        JsonValue    jsonResponse    = RemoteUtils.CreateProtocolMessage(response.Result, messageContext.pools);
+                        JsonValue   jsonResponse    = RemoteUtils.CreateProtocolMessage(response.Result, messageContext.pool);
                         return new JsonResponse(jsonResponse, JsonResponseStatus.Ok);
                     default:
                         var msg = $"Unknown request. Name: {request.GetType().Name}";

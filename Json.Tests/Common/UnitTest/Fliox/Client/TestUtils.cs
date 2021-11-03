@@ -25,7 +25,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             using (var __       = HostGlobal.Pool) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
             using (var hub      = new FlioxHub(database))
-            using (var store    = new PocStore(hub, Pools.Create()) { UserId = "TestQueryRef"}) {
+            using (var store    = new PocStore(hub, Pool.Create()) { UserId = "TestQueryRef"}) {
                 var orders = store.orders;
                 var customerId = orders.Query(o => o.customer.Key == "customer-1");
                 AreEqual("QueryTask<Order> (filter: .customer == 'customer-1')", customerId.ToString());
@@ -121,7 +121,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Test]
         public void TestDictionaryValueIterator() {
             var hub     = new FlioxHub(new MemoryDatabase());
-            var store   = new PocStore(hub, Pools.Create()) { UserId = "TestDictionaryValueIterator"};
+            var store   = new PocStore(hub, Pool.Create()) { UserId = "TestDictionaryValueIterator"};
             var readArticles = store.articles.Read();
                         readArticles.Find("missing-id");
             var task =  readArticles.ReadRef(a => a.producer);
@@ -143,23 +143,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         /// </summary>
         [Test]
         public void BenchmarkCreateClient() {
-            using (var pools    = Pools.Create()) {
+            using (var pool     = Pool.Create()) {
                 var hub         = new NoopDatabaseHub();
-                var _           = new PocStore(hub, pools);
-                var __          = new PocStore(hub, pools);
+                var _           = new PocStore(hub, pool);
+                var __          = new PocStore(hub, pool);
                 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
                 int count = 1; // 1_000_000;
                 for (int n = 0; n < count; n++) {
-                    new PocStore(hub, pools); // ~ 1.6 µs (Release)
+                    new PocStore(hub, pool); // ~ 1.6 µs (Release)
                 }
                 stopwatch.Stop();
                 Console.WriteLine($"client instantiation count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
                 
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 // ReSharper disable once UnusedVariable
-                var store = new PocStore(hub, pools);
+                var store = new PocStore(hub, pool);
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 var platform    = Environment.OSVersion.Platform;
                 var isWindows   = platform == PlatformID.Win32NT; 
@@ -173,18 +173,18 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         /// => Same behavior as new <see cref="FlioxClient"/>.
         [Test]
         public void BenchmarkPooledClient() {
-            var pools       = Pools.Create();
-            var hub         = new NoopDatabaseHub();
-            var pool        = new SharedPool<PocStore>(() => new PocStore(hub, pools));
+            var pool            = Pool.Create();
+            var hub             = new NoopDatabaseHub();
+            var pocStorePool    = new SharedPool<PocStore>(() => new PocStore(hub, pool));
             FlioxClient client;
-            using (var pooled = pool.Get()) {
+            using (var pooled = pocStorePool.Get()) {
                 client = pooled.instance;
             }
             var stopwatch = new Stopwatch();
             stopwatch.Start();
             int count = 1; // 10_000_000;
             for (int n = 0; n < count; n++) {
-                using (var pooled = pool.Get()) // ~ 0.12 µs (Release)
+                using (var pooled = pocStorePool.Get()) // ~ 0.12 µs (Release)
                 {
                     if (client != pooled.instance)
                         throw new InvalidOperationException ("Expect same reference");
@@ -193,7 +193,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             stopwatch.Stop();
             Console.WriteLine($"get pool client count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
             
-            var store = new PocStore(hub, pools);
+            var store = new PocStore(hub, pool);
             var start = GC.GetAllocatedBytesForCurrentThread();
             store.Reset();
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
@@ -204,9 +204,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
         [Test]
         public async Task TestMemorySync() {
-            using (var pools    = Pools.Create()) {
+            using (var pool     = Pool.Create()) {
                 var hub         = new NoopDatabaseHub();
-                var store       = new PocStore(hub, pools);
+                var store       = new PocStore(hub, pool);
                 await store.SyncTasks(); // force one time allocations
                 // GC.Collect();
                 
@@ -220,10 +220,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         [Test]
         public async Task TestMemorySyncRead() {
-            using (var pools    = Pools.Create()) {
+            using (var pool     = Pool.Create()) {
                 var database    = new MemoryDatabase();
                 var hub         = new FlioxHub(database);
-                var store       = new EntityIdStore(hub, pools);
+                var store       = new EntityIdStore(hub, pool);
                 var read = store.intEntities.Read();
                 var ids = new int [100];
                 for (int n = 0; n < 100; n++)

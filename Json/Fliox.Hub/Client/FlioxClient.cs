@@ -42,19 +42,19 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         
         /// <summary>
-        /// Instantiate a <see cref="FlioxClient"/> with a given <see cref="hub"/> and an optional <see cref="pools"/>.
+        /// Instantiate a <see cref="FlioxClient"/> with a given <see cref="hub"/> and an optional <see cref="pool"/>.
         ///
         /// Optimization note:
         /// In case an application create many (> 10) <see cref="FlioxClient"/> instances it should provide
-        /// a <see cref="pools"/>. <see cref="TypeStore"/> instances are designed to be reused from multiple threads.
+        /// a <see cref="pool"/>. <see cref="TypeStore"/> instances are designed to be reused from multiple threads.
         /// Their creation is expensive compared to the instantiation of a <see cref="FlioxClient"/>. 
         /// </summary>
-        public FlioxClient(FlioxHub hub, Pools pools) {
-            if (pools == null) throw new ArgumentNullException(nameof(pools));
+        public FlioxClient(FlioxHub hub, Pool pool) {
+            if (pool == null) throw new ArgumentNullException(nameof(pool));
             
             ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
-            _intern = new ClientIntern(this, null, pools, hub, hub.database, tracer, eventTarget);
+            _intern = new ClientIntern(this, null, pool, hub, hub.database, tracer, eventTarget);
         }
         
         protected FlioxClient(EntityDatabase database, FlioxClient baseClient) {
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             //     throw new ArgumentException("database of baseStore must not be an extension database", nameof(baseClient));
             var hub = baseClient._intern.hub;
             ITracerContext tracer       = this;
-            _intern = new ClientIntern(this, baseClient, baseClient._intern.pools, hub, database, tracer, null);
+            _intern = new ClientIntern(this, baseClient, baseClient._intern.pool, hub, database, tracer, null);
         }
         
         public virtual void Dispose() {
@@ -87,7 +87,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- SyncTasks() / TrySyncTasks()
         public async Task<SyncResult> SyncTasks() {
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
-            var messageContext  = new MessageContext(_intern.pools, _intern.eventTarget, _intern.clientId);
+            var messageContext  = new MessageContext(_intern.pool, _intern.eventTarget, _intern.clientId);
             var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(ClientUtils.OriginalContext);
             
             var result = HandleSyncResponse(syncRequest, response, syncStore);
@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public async Task<SyncResult> TrySyncTasks() {
             var syncRequest     = CreateSyncRequest(out SyncStore syncStore);
-            var messageContext  = new MessageContext(_intern.pools, _intern.eventTarget, _intern.clientId);
+            var messageContext  = new MessageContext(_intern.pool, _intern.eventTarget, _intern.clientId);
             var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(ClientUtils.OriginalContext);
 
             var result = HandleSyncResponse(syncRequest, response, syncStore);
@@ -152,7 +152,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- LogChanges
         public LogTask LogChanges() {
             var task = _intern.syncStore.CreateLog();
-            using (var pooled = _intern.pools.ObjectMapper.Get()) {
+            using (var pooled = _intern.pool.ObjectMapper.Get()) {
                 foreach (var setPair in _intern.setByType) {
                     EntitySet set = setPair.Value;
                     set.LogSetChangesInternal(task, pooled.instance);
@@ -231,7 +231,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         public MessageTask SendMessage<TMessage>(string name, TMessage message) {
-            using (var pooled = _intern.pools.ObjectMapper.Get()) {
+            using (var pooled = _intern.pool.ObjectMapper.Get()) {
                 var writer  = pooled.instance.writer;
                 var json    = writer.WriteAsArray(message);
                 var task    = new MessageTask(name, new JsonValue(json));
@@ -248,7 +248,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// the <see cref="FlioxClient"/> subclass. Doing this adds the command and its API to the <see cref="DatabaseSchema"/>. 
         /// </summary>
         public CommandTask<TResult> SendCommand<TResult>(string name) {
-            var task    = new CommandTask<TResult>(name, new JsonValue(), _intern.pools);
+            var task    = new CommandTask<TResult>(name, new JsonValue(), _intern.pool);
             _intern.syncStore.MessageTasks().Add(task);
             AddTask(task);
             return task;
@@ -260,10 +260,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// the <see cref="FlioxClient"/> subclass. Doing this adds the command and its API to the <see cref="DatabaseSchema"/>. 
         /// </summary>
         public CommandTask<TResult> SendCommand<TCommand, TResult>(string name, TCommand command) {
-            using (var pooled = _intern.pools.ObjectMapper.Get()) {
+            using (var pooled = _intern.pool.ObjectMapper.Get()) {
                 var mapper  = pooled.instance;
                 var json    = mapper.WriteAsArray(command);
-                var task    = new CommandTask<TResult>(name, new JsonValue(json), _intern.pools);
+                var task    = new CommandTask<TResult>(name, new JsonValue(json), _intern.pool);
                 _intern.syncStore.MessageTasks().Add(task);
                 AddTask(task);
                 return task;
@@ -388,7 +388,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private SyncRequest CreateSyncRequest(out SyncStore syncStore) {
-            using (var pooled = _intern.pools.ObjectMapper.Get()) {
+            using (var pooled = _intern.pool.ObjectMapper.Get()) {
                 return CreateSyncRequestMapper(out syncStore, pooled.instance);
             }          
         }
@@ -547,7 +547,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private SyncResult HandleSyncResponse(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore) {
-            using (var pooled = _intern.pools.ObjectMapper.Get()) {
+            using (var pooled = _intern.pool.ObjectMapper.Get()) {
                 return HandleSyncResponseMapper(syncRequest, response, syncStore, pooled.instance);
             }
         }

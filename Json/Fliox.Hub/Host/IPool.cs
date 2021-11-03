@@ -11,13 +11,13 @@ using Friflo.Json.Fliox.Utils;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
-    /// <see cref="IPools"/> is a set of pooled instances of various <see cref="Type"/>'s.
+    /// <see cref="IPool"/> is a set of pooled instances of various <see cref="Type"/>'s.
     /// To enable pooling instances of a specific class it needs to implement <see cref="IDisposable"/>.
-    /// Pools for classes used commonly within <see cref="Host"/> are directly available. E.g. <see cref="ObjectMapper"/>.
-    /// Custom types can also be managed by <see cref="IPools"/> by using <see cref="Type{T}"/>.
+    /// Pool for classes used commonly within <see cref="Host"/> are directly available. E.g. <see cref="ObjectMapper"/>.
+    /// Custom types can also be managed by <see cref="IPool"/> by using <see cref="Type{T}"/>.
     /// Its typical use case is pooling a domain specific <see cref="Client.FlioxClient"/> implementation. 
     /// </summary>
-    public interface IPools : IDisposable
+    public interface IPool : IDisposable
     {
         TypeStore                   TypeStore       { get; }
         
@@ -36,7 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// will be reused when calling <see cref="ObjectPool{T}.Get"/> anytime later.
         /// To ensure pooled instances are not leaking use the using directive. E.g.
         /// <code>
-        /// using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
+        /// using (var pooledMapper = messageContext.pool.ObjectMapper.Get()) {
         ///     ...
         /// }
         /// </code>

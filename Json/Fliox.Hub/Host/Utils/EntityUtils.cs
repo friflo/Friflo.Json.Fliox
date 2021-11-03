@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             MessageContext                      messageContext)
         {
             var asIntKey = isIntKey == true;
-            using (var pooledProcessor = messageContext.pools.EntityProcessor.Get()) {
+            using (var pooledProcessor = messageContext.pool.EntityProcessor.Get()) {
                 var processor = pooledProcessor.instance;
                 foreach (var entity in entities) {
                     var  json = processor.ReplaceKey(entity, keyName, asIntKey, newKeyName, out JsonKey keyValue, out _);
@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
             out string          error
         ) {
             var keys = new List<JsonKey>(entities.Count);
-            using (var poolProcessor = messageContext.pools.EntityProcessor.Get()) {
+            using (var poolProcessor = messageContext.pool.EntityProcessor.Get()) {
                 var processor = poolProcessor.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var entity  = entities[n];

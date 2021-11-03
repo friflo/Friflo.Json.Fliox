@@ -228,7 +228,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
     }
     
-    public delegate bool AuthPredicate (SyncRequestTask task, IPools pools);
+    public delegate bool AuthPredicate (SyncRequestTask task, IPool pool);
     
     public sealed class AuthorizePredicate : Authorizer {
         private readonly string         name;
@@ -241,7 +241,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
             
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
-            return predicate(task, messageContext.pools);
+            return predicate(task, messageContext.pool);
         }
     }
 }

@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Models
         /// obsolete - like Postgres/JSONB, Azure Cosmos DB or MongoDB.
         /// </summary>
         public void ValidateEntities(string container, string keyName, MessageContext messageContext) {
-            using (var pooledProcessor = messageContext.pools.EntityProcessor.Get()) {
+            using (var pooledProcessor = messageContext.pool.EntityProcessor.Get()) {
                 EntityProcessor processor = pooledProcessor.instance;
                 foreach (var entityEntry in entities) {
                     var entity = entityEntry.Value;

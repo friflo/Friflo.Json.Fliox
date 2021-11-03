@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Unity.Utils
 
         [TearDown]
         public void TearDown() {
-            TestGlobals.Pools?.Dispose();
+            TestGlobals.Pool?.Dispose();
             JsonDebug.Dispose();
             DebugUtils.StopLeakDetection();
             

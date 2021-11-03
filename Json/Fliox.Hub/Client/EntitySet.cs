@@ -385,7 +385,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public LogTask LogSetChanges() {
             var task = intern.store._intern.syncStore.CreateLog();
             var peers = Peers();
-            using (var pooled = intern.store._intern.pools.ObjectMapper.Get()) {
+            using (var pooled = intern.store._intern.pool.ObjectMapper.Get()) {
                 GetSyncSet().LogSetChanges(peers, task, pooled.instance);
             }
             intern.store.AddTask(task);

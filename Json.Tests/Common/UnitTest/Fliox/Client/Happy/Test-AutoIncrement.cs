@@ -22,16 +22,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task AssertAutoIncrement() {
             using (var _            = HostGlobal.Pool) // for LeakTestsFixture
-            using (var pools        = Pools.Create())
+            using (var pool         = Pool.Create())
             using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/EntityIdStore"))
             using (var hub          = new FlioxHub(database)) {
-                await AssertAutoIncrement (hub, pools);
+                await AssertAutoIncrement (hub, pool);
             }
         }
         
-        private static async Task AssertAutoIncrement(FlioxHub hub, Pools pools)
+        private static async Task AssertAutoIncrement(FlioxHub hub, Pool pool)
         {
-            using (var store = new EntityIdStore(hub, pools) { ClientId = "autoIncrement"}) {
+            using (var store = new EntityIdStore(hub, pool) { ClientId = "autoIncrement"}) {
                 var delete = store.intEntitiesAuto.DeleteAll();
                 await store.SyncTasks();
                 IsTrue(delete.Success);

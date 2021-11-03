@@ -31,8 +31,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
         }
 
         public override async Task ExecuteSyncPrepare(SyncRequest syncRequest, MessageContext messageContext) {
-            var pools = messageContext.pools;
-            using (var pooled  = pools.Type(() => new MonitorStore(monitorHub)).Get()) {
+            var pool = messageContext.pool;
+            using (var pooled  = pool.Type(() => new MonitorStore(monitorHub)).Get()) {
                 var monitor = pooled.instance;
                 monitor.hostName = hub.hostName;
                 var tasks = syncRequest.tasks;

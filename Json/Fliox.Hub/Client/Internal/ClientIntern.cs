@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // --- readonly
         internal readonly   FlioxClient                                 baseClient;
         internal readonly   TypeStore                                   typeStore;
-        internal readonly   Pools                                       pools;
+        internal readonly   Pool                                        pool;
         internal readonly   FlioxHub                                    hub;
         internal readonly   EntityDatabase                              database;
         internal readonly   EventTarget                                 eventTarget;
@@ -74,7 +74,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal ClientIntern(
             FlioxClient             thisClient,
             FlioxClient             baseClient,
-            Pools                   pools,
+            Pool                    pool,
             FlioxHub                hub,
             EntityDatabase          database,
             ITracerContext          tracerContext,
@@ -84,8 +84,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             
             // --- readonly
             this.baseClient             = baseClient;
-            typeStore                   = pools.TypeStore;
-            this.pools                  = pools;
+            typeStore                   = pool.TypeStore;
+            this.pool                   = pool;
             this.hub                    = hub;
             this.database               = database;
             this.eventTarget            = eventTarget;

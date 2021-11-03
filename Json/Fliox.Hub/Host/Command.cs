@@ -7,7 +7,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     public readonly struct Command<TValue>{
         public              string          Name    { get; }
-        public              IPools          Pools       => messageContext.pools;
+        public              IPool           Pool       => messageContext.pool;
         public              FlioxHub        Hub         => messageContext.hub;
         public              JsonValue       JsonValue   => json;
         
@@ -17,7 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public   override   string          ToString() => Name;
         
         public              TValue          Value { get {
-            using (var pooledMapper = messageContext.pools.ObjectMapper.Get()) {
+            using (var pooledMapper = messageContext.pool.ObjectMapper.Get()) {
                 return pooledMapper.instance.Read<TValue>(json);
             }
         }}
