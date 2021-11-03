@@ -28,10 +28,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
         
         private  readonly   Bytes                           removedKey;
 
-        public PropertyFields (Type type, TypeStore typeStore, bool privateSetter)
+        public PropertyFields (Type type, TypeStore typeStore, FieldFilter memberFilter = null)
         {
+            memberFilter    = memberFilter ?? FieldQuery.DefaultMemberFilter;
             typeName        = type. ToString();
-            var query       = new FieldQuery(typeStore, type, privateSetter);
+            var query       = new FieldQuery(typeStore, type, memberFilter);
             primCount       = query.primCount;
             objCount        = query.objCount;
             var fieldList   = query.fieldList;

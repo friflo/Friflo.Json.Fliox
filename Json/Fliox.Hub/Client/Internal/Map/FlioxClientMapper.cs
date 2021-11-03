@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
     internal sealed class FlioxClientMapper<T> : TypeMapper<T>
     {
         public  override    bool    IsComplex => true;
-
+        
         public FlioxClientMapper (StoreConfig config, Type type) :
             base (config, type, true, false)
         {
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
         }
         
         public override void InitTypeMapper(TypeStore typeStore) {
-            using (var fields = new PropertyFields(type, typeStore, true)) {
+            using (var fields = new PropertyFields(type, typeStore, ClientFieldFilter.Instance)) {
                 FieldInfo fieldInfo = typeof(TypeMapper).GetField(nameof(propFields), BindingFlags.Public | BindingFlags.Instance);
                 // ReSharper disable once PossibleNullReferenceException
                 fieldInfo.SetValue(this, fields);
@@ -51,6 +51,23 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
 
         public override T Read(ref Reader reader, T slot, out bool success) {
             throw new NotImplementedException();
+        }
+    }
+    
+    internal class ClientFieldFilter : FieldFilter
+    {
+        internal static readonly ClientFieldFilter Instance = new ClientFieldFilter();
+
+        public override bool AddField(MemberInfo memberInfo) {
+            if (memberInfo is PropertyInfo property) {
+                // has public or non-public setter
+                bool hasSetter = property.GetSetMethod(true) != null;
+                return hasSetter || FieldQuery.Property(property.CustomAttributes);
+            }
+            if (memberInfo is FieldInfo field) {
+                return field.IsPublic || FieldQuery.Property(field.CustomAttributes);
+            }
+            return false;
         }
     }
 }
