@@ -14,10 +14,10 @@ namespace Friflo.Json.Fliox.Hub.Host
     public class Pool : IPool
     {
         private readonly    IPool                           sharedPool;
-        private readonly    Func<TypeStore>                 factory;
+        private readonly    Func<TypeStore>                 get;
         private readonly    Dictionary<Type, IDisposable>   poolMap = new Dictionary<Type, IDisposable>(); // object = SharedPool<T>
         
-        public  TypeStore                   TypeStore       => factory();
+        public  TypeStore                   TypeStore       => get();
         public  ObjectPool<JsonPatcher>     JsonPatcher     { get; }
         public  ObjectPool<ScalarSelector>  ScalarSelector  { get; }
         public  ObjectPool<JsonEvaluator>   JsonEvaluator   { get; }
@@ -38,20 +38,21 @@ namespace Friflo.Json.Fliox.Hub.Host
             poolMap[typeof(T)] = pool;
             return pool;
         }
+
+        public Pool(TypeStore typeStore) : this (() => typeStore) { }
         
-        // ReSharper disable once UnusedParameter.Local - keep for code navigation
-        public Pool(Func<TypeStore> factory) {
-            this.factory    = factory;
+        public Pool(Func<TypeStore> get) {
+            this.get        = get;
             JsonPatcher     = new SharedPool<JsonPatcher>       (() => new JsonPatcher());
             ScalarSelector  = new SharedPool<ScalarSelector>    (() => new ScalarSelector());
             JsonEvaluator   = new SharedPool<JsonEvaluator>     (() => new JsonEvaluator());
-            ObjectMapper    = new SharedPool<ObjectMapper>      (() => new ObjectMapper(factory()),  m => m.ErrorHandler = ObjectReader.NoThrow);
+            ObjectMapper    = new SharedPool<ObjectMapper>      (() => new ObjectMapper(get()),  m => m.ErrorHandler = ObjectReader.NoThrow);
             EntityProcessor = new SharedPool<EntityProcessor>   (() => new EntityProcessor());
             TypeValidator   = new SharedPool<TypeValidator>     (() => new TypeValidator());
         }
         
         internal Pool(Pool sharedPool) {
-            factory         = sharedPool.factory;
+            get             = sharedPool.get;
             this.sharedPool = sharedPool;
             JsonPatcher     = new LocalPool<JsonPatcher>        (sharedPool.JsonPatcher);
             ScalarSelector  = new LocalPool<ScalarSelector>     (sharedPool.ScalarSelector);
@@ -97,7 +98,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         private readonly TypeStore typeStore;
         
-        internal TypeStorePool(TypeStore typeStore) : base(() => typeStore) {
+        internal TypeStorePool(TypeStore typeStore) : base(typeStore) {
             this.typeStore = typeStore;
         }
         
