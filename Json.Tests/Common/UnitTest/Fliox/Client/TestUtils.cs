@@ -169,7 +169,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             }
         }
         
-        /// The Get() takes a pooled instance and calls <see cref="FlioxClient.Reset"/> before returning.
+        /// <see cref="ObjectPool{T}.Get"/> returns a <see cref="Pooled{T}"/> <see cref="FlioxClient"/> or create a new one.
+        /// When leaving the using scope { } it calls <see cref="FlioxClient.Reset"/>.
         /// => Same behavior as new <see cref="FlioxClient"/>.
         [Test]
         public void BenchmarkPooledClient() {
