@@ -4,7 +4,7 @@
     {
       "task":  "command",
       "name":  "Echo",
-      "value": "echo value"
+      "value": "Hello World"
     }
   ],
   "info": [
