@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// IOException: The process cannot access the file 'path' because it is being used by another process. 
         /// </summary>
         [Test] public static void TestConcurrentFileAccessSync () {
-            using (var _                = HostGlobal.Pool) // for LeakTestsFixture
+            using (var _                = SharedHostEnv.Instance) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/testConcurrencyDb"))
@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         public static async Task ConcurrentAccess(FlioxHub hub, int readerCount, int writerCount, int requestCount, bool singleEntity) {
             // --- prepare
-            var pool        = Pool.Create();
+            var pool        = new Shared();
             var store       = new SimpleStore(hub, pool) { ClientId = "prepare"};
             var entities    = new List<SimplyEntity>();
             int max         = Math.Max(readerCount, writerCount);
@@ -148,8 +148,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 #if !UNITY_5_3_OR_NEWER 
         [Test]
         public static async Task TestConcurrentWebSocket () {
-            using (var _                = HostGlobal.Pool) // for LeakTestsFixture
-            using (var pool             = Pool.Create())
+            using (var _                = SharedHostEnv.Instance) // for LeakTestsFixture
+            using (var pool             = new Shared())
             using (var database         = new MemoryDatabase())
             using (var hub          	= new FlioxHub(database))
             using (var hostHub          = new HttpHostHub(hub))
@@ -164,13 +164,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
 #endif
         
-        private static async Task ConcurrentWebSocket(FlioxHub hub, int clientCount, int requestCount, Pool pool)
+        private static async Task ConcurrentWebSocket(FlioxHub hub, int clientCount, int requestCount, SharedEnv env)
         {
             // --- prepare
             var clients = new List<FlioxClient>();
             try {
                 for (int n = 0; n < clientCount; n++) {
-                    clients.Add(new FlioxClient(hub, pool) { ClientId = $"reader-{n}"});
+                    clients.Add(new FlioxClient(hub, env) { ClientId = $"reader-{n}"});
                 }
                 var tasks = new List<Task>();
                 
@@ -204,7 +204,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
     {
         public readonly EntitySet <int, SimplyEntity>   entities;
         
-        public SimpleStore(FlioxHub hub, Pool pool) : base (hub, pool) { }
+        public SimpleStore(FlioxHub hub, SharedEnv env) : base (hub, env) { }
     }
     
     // ------------------------------ models ------------------------------

@@ -49,12 +49,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// a <see cref="pool"/>. <see cref="TypeStore"/> instances are designed to be reused from multiple threads.
         /// Their creation is expensive compared to the instantiation of a <see cref="FlioxClient"/>. 
         /// </summary>
-        public FlioxClient(FlioxHub hub, Pool pool) {
-            if (pool == null) throw new ArgumentNullException(nameof(pool));
+        public FlioxClient(FlioxHub hub, SharedEnv env) {
+            if (env == null) throw new ArgumentNullException(nameof(env));
             
             ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
-            _intern = new ClientIntern(this, null, pool, hub, hub.database, tracer, eventTarget);
+            _intern = new ClientIntern(this, null, env, hub, hub.database, tracer, eventTarget);
         }
         
         protected FlioxClient(EntityDatabase database, FlioxClient baseClient) {
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             //     throw new ArgumentException("database of baseStore must not be an extension database", nameof(baseClient));
             var hub = baseClient._intern.hub;
             ITracerContext tracer       = this;
-            _intern = new ClientIntern(this, baseClient, baseClient._intern.pool, hub, database, tracer, null);
+            _intern = new ClientIntern(this, baseClient, baseClient._intern.sharedEnv, hub, database, tracer, null);
         }
         
         public virtual void Dispose() {

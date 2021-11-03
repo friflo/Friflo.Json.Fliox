@@ -29,7 +29,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var requestContent  = await JsonValue.ReadToEndAsync(reqCtx.body).ConfigureAwait(false);
 
                 // Each request require its own pool as multiple request running concurrently. Could cache a Pool instance per connection.
-                var pool            = new Pool(HostGlobal.Pool);
+                var pool            = new Pool(SharedHostEnv.Instance.Pool);
                 var messageContext  = new MessageContext(pool, null);
                 var result          = await ExecuteJsonRequest(requestContent, messageContext).ConfigureAwait(false);
                 

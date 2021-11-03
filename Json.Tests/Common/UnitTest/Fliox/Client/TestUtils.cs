@@ -22,10 +22,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     {
         [Test]
         public void TestQueryRef() {
-            using (var __       = HostGlobal.Pool) // for LeakTestsFixture
+            using (var __       = SharedHostEnv.Instance) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
             using (var hub      = new FlioxHub(database))
-            using (var store    = new PocStore(hub, Pool.Create()) { UserId = "TestQueryRef"}) {
+            using (var store    = new PocStore(hub, new Shared()) { UserId = "TestQueryRef"}) {
                 var orders = store.orders;
                 var customerId = orders.Query(o => o.customer.Key == "customer-1");
                 AreEqual("QueryTask<Order> (filter: .customer == 'customer-1')", customerId.ToString());
@@ -121,7 +121,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Test]
         public void TestDictionaryValueIterator() {
             var hub     = new FlioxHub(new MemoryDatabase());
-            var store   = new PocStore(hub, Pool.Create()) { UserId = "TestDictionaryValueIterator"};
+            var store   = new PocStore(hub, new Shared()) { UserId = "TestDictionaryValueIterator"};
             var readArticles = store.articles.Read();
                         readArticles.Find("missing-id");
             var task =  readArticles.ReadRef(a => a.producer);
@@ -143,7 +143,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         /// </summary>
         [Test]
         public void BenchmarkCreateClient() {
-            using (var pool     = Pool.Create()) {
+            using (var pool     = new Shared()) {
                 var hub         = new NoopDatabaseHub();
                 var _           = new PocStore(hub, pool);
                 var __          = new PocStore(hub, pool);
@@ -163,7 +163,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 var platform    = Environment.OSVersion.Platform;
                 var isWindows   = platform == PlatformID.Win32NT; 
-                var expected    = isWindows ? 2704 : 2488;
+                var expected    = isWindows ? 2712 : 2496;
                 Console.WriteLine($"PocStore allocation. platform: {platform}, memory: {diff}");
                 AreEqual(expected, diff);
             }
@@ -174,7 +174,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         /// => Same behavior as new <see cref="FlioxClient"/>.
         [Test]
         public void BenchmarkPooledClient() {
-            var pool            = Pool.Create();
+            var pool            = new Shared();
             var hub             = new NoopDatabaseHub();
             var pocStorePool    = new SharedPool<PocStore>(() => new PocStore(hub, pool));
             FlioxClient client;
@@ -205,7 +205,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
         [Test]
         public async Task TestMemorySync() {
-            using (var pool     = Pool.Create()) {
+            using (var pool     = new Shared()) {
                 var hub         = new NoopDatabaseHub();
                 var store       = new PocStore(hub, pool);
                 await store.SyncTasks(); // force one time allocations
@@ -221,7 +221,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         [Test]
         public async Task TestMemorySyncRead() {
-            using (var pool     = Pool.Create()) {
+            using (var pool     = new Shared()) {
                 var database    = new MemoryDatabase();
                 var hub         = new FlioxHub(database);
                 var store       = new EntityIdStore(hub, pool);

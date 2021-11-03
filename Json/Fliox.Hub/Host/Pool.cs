@@ -11,13 +11,12 @@ using Friflo.Json.Fliox.Utils;
 
 namespace Friflo.Json.Fliox.Hub.Host
 {
-    public class Pool : IPool
+    public sealed class Pool : IPool
     {
-        private readonly    IPool                           sharedPool;
-        private readonly    Func<TypeStore>                 get;
-        private readonly    Dictionary<Type, IDisposable>   poolMap = new Dictionary<Type, IDisposable>(); // object = SharedPool<T>
-        
-        public  TypeStore                   TypeStore       => get();
+        private   readonly  SharedEnv                       sharedEnv;
+        private   readonly  IPool                           sharedPool;
+        private   readonly  Dictionary<Type, IDisposable>   poolMap = new Dictionary<Type, IDisposable>(); // object = SharedPool<T>
+
         public  ObjectPool<JsonPatcher>     JsonPatcher     { get; }
         public  ObjectPool<ScalarSelector>  ScalarSelector  { get; }
         public  ObjectPool<JsonEvaluator>   JsonEvaluator   { get; }
@@ -39,20 +38,18 @@ namespace Friflo.Json.Fliox.Hub.Host
             return pool;
         }
 
-        public Pool(TypeStore typeStore) : this (() => typeStore) { }
-        
-        public Pool(Func<TypeStore> get) {
-            this.get        = get;
+        internal Pool(SharedEnv sharedEnv) {
+            this.sharedEnv  = sharedEnv;
             JsonPatcher     = new SharedPool<JsonPatcher>       (() => new JsonPatcher());
             ScalarSelector  = new SharedPool<ScalarSelector>    (() => new ScalarSelector());
             JsonEvaluator   = new SharedPool<JsonEvaluator>     (() => new JsonEvaluator());
-            ObjectMapper    = new SharedPool<ObjectMapper>      (() => new ObjectMapper(get()),  m => m.ErrorHandler = ObjectReader.NoThrow);
+            ObjectMapper    = new SharedPool<ObjectMapper>      (() => new ObjectMapper(sharedEnv.TypeStore),  m => m.ErrorHandler = ObjectReader.NoThrow);
             EntityProcessor = new SharedPool<EntityProcessor>   (() => new EntityProcessor());
             TypeValidator   = new SharedPool<TypeValidator>     (() => new TypeValidator());
         }
         
         internal Pool(Pool sharedPool) {
-            get             = sharedPool.get;
+            sharedEnv       = sharedPool.sharedEnv;
             this.sharedPool = sharedPool;
             JsonPatcher     = new LocalPool<JsonPatcher>        (sharedPool.JsonPatcher);
             ScalarSelector  = new LocalPool<ScalarSelector>     (sharedPool.ScalarSelector);
@@ -62,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             TypeValidator   = new LocalPool<TypeValidator>      (sharedPool.TypeValidator);
         }
         
-        public virtual void Dispose() {
+        public void Dispose() {
             JsonPatcher.    Dispose();
             ScalarSelector. Dispose();
             JsonEvaluator.  Dispose();
@@ -87,29 +84,50 @@ namespace Friflo.Json.Fliox.Hub.Host
             };
             return usage;
         } }
-        
-        public static Pool Create() {
-            var typeStore = new TypeStore();
-            return new TypeStorePool(typeStore);
-        }
     }
     
-    internal class TypeStorePool : Pool
+    public abstract class SharedEnv : IDisposable
     {
-        private readonly TypeStore typeStore;
+        public abstract TypeStore   TypeStore   { get; }
+        public abstract Pool        Pool        { get; }
         
-        internal TypeStorePool(TypeStore typeStore) : base(typeStore) {
-            this.typeStore = typeStore;
+        public abstract void        Dispose();
+    }
+    
+    public sealed class Shared : SharedEnv
+    {
+        private readonly    TypeStore   typeStore;
+        private readonly    Pool        pool;
+        
+        public  override    TypeStore   TypeStore   => typeStore;
+        public  override    Pool        Pool        => pool;
+        
+        public Shared() {
+            typeStore   = new TypeStore();
+            pool        = new Pool(this);
         }
-        
+
         public override void Dispose () {
-            base.Dispose();
+            pool.Dispose();
             typeStore.Dispose();
         }
     }
     
-    public static class HostGlobal
+    public sealed class SharedHostEnv : SharedEnv
     {
-        public   static readonly    Pool   Pool = new Pool(HostTypeStore.Get);
+        private readonly    Pool        pool;
+        
+        public  override    TypeStore   TypeStore   => HostTypeStore.Get();
+        public  override    Pool        Pool        => pool;
+        
+        public static readonly SharedHostEnv Instance = new SharedHostEnv();
+        
+        private SharedHostEnv() {
+            pool = new Pool(this);
+        }
+        
+        public override void Dispose () {
+            pool.Dispose();
+        }
     }
 }

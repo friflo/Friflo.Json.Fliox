@@ -22,8 +22,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     {
         [Test]
         public static void EntityIdTypeMismatch() {
-            using (var _            = HostGlobal.Pool) // for LeakTestsFixture
-            using (var pool         = Pool.Create())
+            using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
+            using (var pool         = new Shared())
             using (var database     = new MemoryDatabase())
             using (var hub          = new FlioxHub(database))
             {
@@ -31,7 +31,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             }
         }
             
-        private static void AssertEntityIdTests(FlioxHub hub, Pool pool) {
+        private static void AssertEntityIdTests(FlioxHub hub, Shared pool) {
             Exception e;
             e = Throws<InvalidTypeException>(() => {
                 _ = new TypeMismatchStore(hub, pool) { ClientId = "store"};
@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class TypeMismatchStore : FlioxClient {
         public  readonly    EntitySet <long, IntEntity> intEntities;
 
-        public TypeMismatchStore(FlioxHub hub, Pool pool) : base(hub, pool) { }
+        public TypeMismatchStore(FlioxHub hub, SharedEnv env) : base(hub, env) { }
     }
     
     // --------
@@ -75,7 +75,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         // ReSharper disable once UnassignedReadonlyField
         public  readonly    EntitySet <long, IntEntity2> intEntities; // test without assignment
 
-        public TypeMismatchStore2(FlioxHub hub, Pool pool) : base(hub, pool) { }
+        public TypeMismatchStore2(FlioxHub hub, SharedEnv env) : base(hub, env) { }
     }
 
     // --------
@@ -86,7 +86,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class UnsupportedKeyTypeStore : FlioxClient {
         public  readonly    EntitySet <char, CharEntity>    charEntities;
 
-        public UnsupportedKeyTypeStore(FlioxHub hub, Pool pool) : base(hub, pool) { }
+        public UnsupportedKeyTypeStore(FlioxHub hub, SharedEnv env) : base(hub, env) { }
     }
     
     // --------
@@ -98,6 +98,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     public class InvalidMemberStore : FlioxClient {
         public  readonly    EntitySet <string,    StringEntity> stringEntities;
 
-        public InvalidMemberStore(FlioxHub hub, Pool pool) : base(hub, pool) { }
+        public InvalidMemberStore(FlioxHub hub, SharedEnv env) : base(hub, env) { }
     }
 }

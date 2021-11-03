@@ -20,10 +20,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         
         [Test]
         public void RunLinq() {
-            using (var _            = HostGlobal.Pool) // for LeakTestsFixture
+            using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
             using (var database     = new MemoryDatabase(new PocHandler()))
             using (var hub          = new FlioxHub(database))
-            using (var pool         = Pool.Create())
+            using (var pool         = new Shared())
             using (var store        = new PocStore(hub,pool) { UserId = "store"})
             using (var m            = new ObjectMapper(pool.TypeStore)) {
                 TestRelationPoC.CreateStore(store).Wait();
@@ -78,7 +78,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         private static Order GetOrder(string id) {
             using (var database     = new MemoryDatabase(new PocHandler()))
             using (var hub          = new FlioxHub(database))
-            using (var pool         = Pool.Create())
+            using (var pool         = new Shared())
             using (var store        = new PocStore(hub, pool) { UserId = "store"}) {
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
@@ -90,7 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 
         [Test]
         public void DebugLinqQuery() {
-            using (var _ = HostGlobal.Pool) // for LeakTestsFixture
+            using (var _ = SharedHostEnv.Instance) // for LeakTestsFixture
             {
                 var order1 = GetOrder("order-1");
 
@@ -118,10 +118,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 
         [Test]
         public void TestSelectSameInstance() {
-            using (var _            = HostGlobal.Pool) // for LeakTestsFixture
+            using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
             using (var database     = new MemoryDatabase(new PocHandler()))
             using (var hub          = new FlioxHub(database))
-            using (var pool         = Pool.Create())
+            using (var pool         = new Shared())
             using (var store        = new PocStore(hub, pool) { UserId = "store" }) {
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 

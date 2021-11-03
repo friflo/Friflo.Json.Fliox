@@ -42,7 +42,7 @@ namespace Friflo.Playground.CosmosDB
         public static async Task CosmosCreatePocStore() {
             var client              = CreateCosmosClient();
             var cosmosDatabase      = await client.CreateDatabaseIfNotExistsAsync(nameof(PocStore));
-            using (var _            = HostGlobal.Pool) // for LeakTestsFixture
+            using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
             using (var database     = new CosmosDatabase(cosmosDatabase, new PocHandler(), null, 400))
             using (var hub          = new FlioxHub(database))
             using (var createStore  = new PocStore(hub) { UserId = "createStore"})
@@ -56,8 +56,8 @@ namespace Friflo.Playground.CosmosDB
         public static async Task CosmosTestEntityKey() {
             var client              = CreateCosmosClient();
             var cosmosDatabase      = await client.CreateDatabaseIfNotExistsAsync(nameof(EntityIdStore));
-            using (var _            = HostGlobal.Pool) // for LeakTestsFixture
-            using (var pool         = Pool.Create())
+            using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
+            using (var pool         = new Shared())
             using (var database     = new CosmosDatabase(cosmosDatabase, new PocHandler(), null, 400))
             using (var hub          = new FlioxHub(database)) {
                 await TestEntityKey.AssertEntityKeyTests (hub, pool);
