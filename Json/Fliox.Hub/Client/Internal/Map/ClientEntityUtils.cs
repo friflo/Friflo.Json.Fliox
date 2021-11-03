@@ -88,6 +88,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             MemberInfo member   = field;
             setMember = null;
             if (field != null) {
+                // EntitySet's declared as fields are intended to be readonly.
+                // => not possible to set readonly fields by expression -> create IL code instead
                 setMember = DelegateUtils.CreateFieldSetter<FlioxClient,EntitySet>(field);
             } else {
                 member = property;

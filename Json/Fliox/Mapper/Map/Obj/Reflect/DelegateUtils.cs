@@ -33,8 +33,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
             return lambda;
         }
         
-        /// EntitySet's declared as fields are intended to be readonly.
-        /// => not possible to set readonly fields by expression -> create IL code instead
         public static Action<TInstance, TField> CreateFieldSetter<TInstance,TField>(FieldInfo field)
         {
             string methodName = "set_" + field.Name;
