@@ -1,7 +1,6 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 using System;
-using System.Linq.Expressions;
 using System.Reflection;
 using Friflo.Json.Burst;
 
@@ -54,8 +53,8 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                 // var typeArray    = new [] {  property.DeclaringType, property.PropertyType  };
                 // var delegateType = Expression.GetDelegateType(typeArray);
                 // getDelegate      =  Delegate.CreateDelegate(delegateType, getMethod);
-                var getLambdaExp    = GetGetLambda<object,object>(property);
-                var setLambdaExp    = GetSetLambda<object,object>(property);
+                var getLambdaExp    = DelegateUtils.CreateGetLambda<object,object>(property);
+                var setLambdaExp    = DelegateUtils.CreateSetLambda<object,object>(property);
                 getLambda           = getLambdaExp.Compile();
                 setLambda           = setLambdaExp.Compile();
                 isKey = FieldQuery.IsKey(property.CustomAttributes);
@@ -72,29 +71,6 @@ namespace Friflo.Json.Fliox.Mapper.Map.Obj.Reflect
                 return field;
             return property;
         } }
-
-        public static Expression<Func<TInstance, TProperty>> GetGetLambda<TInstance, TProperty> (PropertyInfo propInfo) {
-            var declaringType   = propInfo.DeclaringType;
-            var instanceExp     = Expression.Parameter(typeof(TInstance), "instance");
-            var srcInstanceExp  = Expression.Convert(instanceExp, declaringType);
-            var propertyExp     = Expression.Property(srcInstanceExp, propInfo);
-            var resultExp       = Expression.Convert(propertyExp, typeof(TProperty));
-            var lambda          = Expression.Lambda<Func<TInstance, TProperty>>(resultExp, instanceExp);
-            return lambda;
-        }
-        
-        public static Expression<Action<TInstance, TProperty>> GetSetLambda<TInstance, TProperty> (PropertyInfo propInfo) {
-            var declaringType   = propInfo.DeclaringType;
-            var propertyType    = propInfo.PropertyType;
-            var instanceExp     = Expression.Parameter(typeof(TInstance), "instance");
-            var srcInstanceExp  = Expression.Convert(instanceExp, declaringType);
-            var valueExp        = Expression.Parameter(typeof(TProperty), "value");
-            var convValueExp    = Expression.Convert(valueExp, propertyType);
-            var propertyExp     = Expression.Property(srcInstanceExp, propInfo);
-            var assignExpr      = Expression.Assign (propertyExp, convValueExp);
-            var lambda          = Expression.Lambda<Action<TInstance, TProperty>>(assignExpr, instanceExp, valueExp);
-            return lambda;
-        }
 
         public void Dispose() {
             subSeqMember.Dispose();
