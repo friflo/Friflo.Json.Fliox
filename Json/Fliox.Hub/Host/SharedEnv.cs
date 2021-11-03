@@ -22,38 +22,33 @@ namespace Friflo.Json.Fliox.Hub.Host
     
     public sealed class SharedAppEnv : SharedEnv
     {
-        private readonly    TypeStore   typeStore;
-        private readonly    Pool        pool;
-        
-        public  override    TypeStore   TypeStore   => typeStore;
-        public  override    Pool        Pool        => pool;
-        
+        public  override    TypeStore   TypeStore   { get; }
+        public  override    Pool        Pool        { get; }
+
         public SharedAppEnv() {
-            typeStore   = new TypeStore();
-            pool        = new Pool(this);
+            TypeStore   = new TypeStore();
+            Pool        = new Pool(this);
         }
 
         public override void Dispose () {
-            pool.Dispose();
-            typeStore.Dispose();
+            Pool.Dispose();
+            TypeStore.Dispose();
         }
     }
     
     public sealed class SharedHostEnv : SharedEnv
     {
-        private readonly    Pool        pool;
-        
         public  override    TypeStore   TypeStore   => HostTypeStore.Get();
-        public  override    Pool        Pool        => pool;
-        
+        public  override    Pool        Pool        { get; }
+
         public static readonly SharedHostEnv Instance = new SharedHostEnv();
         
         private SharedHostEnv() {
-            pool = new Pool(this);
+            Pool = new Pool(this);
         }
         
         public override void Dispose () {
-            pool.Dispose();
+            Pool.Dispose();
         }
     }
 }
