@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Fliox.Mapper.Map.Obj.Reflect;
 
@@ -86,13 +87,15 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             PropertyInfo   property)
         {
             MemberInfo member   = field;
-            if (field == null)
+            setProperty = null;
+            if (field != null) {
+                setProperty = CreateFieldSetter<FlioxClient,EntitySet>(field);
+            } else {
                 member = property;
+            }
             if (property != null) {
                 var exp = PropField.GetSetLambda<FlioxClient,EntitySet>(property);
                 setProperty = exp.Compile();
-            } else {
-                setProperty = null;
             }
             AttributeUtils.Property(member.CustomAttributes, out string name);
             this.container      = name ?? container;
@@ -101,14 +104,32 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
             this.field          = field;
             this.property       = property;
         }
-
+        
         internal void SetEntitySetMember(FlioxClient store, EntitySet entitySet) {
+            setProperty(store, entitySet);
+#if false
             if (field != null) {
-                // EntitySet's declared as fields are intended to be readonly => not possible to set readonly fields by expression
-                field.   SetValue(store, entitySet);
+                field.SetValue(store, entitySet);
             } else {
-                setProperty(store, entitySet);
+                property.SetValue(store, entitySet);
             }
+#endif
+        }
+        
+        /// EntitySet's declared as fields are intended to be readonly.
+        /// => not possible to set readonly fields by expression -> create IL code instead
+        private static Action<TInstance, TField> CreateFieldSetter<TInstance,TField>(FieldInfo field)
+        {
+            string methodName = "set_" + field.Name;
+            DynamicMethod setterMethod = new DynamicMethod(methodName, null, new Type[]{typeof(TInstance),typeof(TField)},true);
+            ILGenerator gen = setterMethod.GetILGenerator();
+
+            gen.Emit(OpCodes.Ldarg_0);
+            gen.Emit(OpCodes.Ldarg_1);
+            gen.Emit(OpCodes.Stfld, field);
+
+            gen.Emit(OpCodes.Ret);
+            return (Action<TInstance, TField>)setterMethod.CreateDelegate(typeof(Action<TInstance, TField>));
         }
     }
 }
