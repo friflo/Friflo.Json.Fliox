@@ -46,19 +46,16 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         public FlioxClient(FlioxHub hub) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
-            ITracerContext tracer       = this;
-            var eventTarget             = new EventTarget(this);
-            _intern = new ClientIntern(this, null, hub.sharedEnv, hub, hub.database, tracer, eventTarget);
+            var eventTarget = new EventTarget(this);
+            _intern = new ClientIntern(this, null, hub.sharedEnv, hub, hub.database, this, eventTarget);
         }
         
-        protected FlioxClient(EntityDatabase database, FlioxClient baseClient) {
-            if (database   == null) throw new ArgumentNullException(nameof(database));
-            if (baseClient == null) throw new ArgumentNullException(nameof(baseClient));
+        protected FlioxClient(EntityDatabase database, FlioxClient client) {
+            if (database == null) throw new ArgumentNullException(nameof(database));
+            if (client   == null) throw new ArgumentNullException(nameof(client));
             // if (baseClient._intern.database.extensionBase != null)
             //     throw new ArgumentException("database of baseStore must not be an extension database", nameof(baseClient));
-            var hub = baseClient._intern.hub;
-            ITracerContext tracer       = this;
-            _intern = new ClientIntern(this, baseClient, baseClient._intern.sharedEnv, hub, database, tracer, null);
+            _intern = new ClientIntern(this, client, client._intern.sharedEnv, client._intern.hub, database, this, null);
         }
         
         public virtual void Dispose() {

@@ -73,7 +73,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         }
 
         internal ClientIntern(
-            FlioxClient             thisClient,
+            FlioxClient             client,
             FlioxClient             baseClient,
             SharedEnv               sharedEnv,
             FlioxHub                hub,
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             ITracerContext          tracerContext,
             EventTarget             eventTarget)
         {
-            var entityInfos             = ClientEntityUtils.GetEntityInfos (thisClient.GetType());
+            var entityInfos             = ClientEntityUtils.GetEntityInfos (client.GetType());
             
             // --- readonly
             this.baseClient             = baseClient;
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             // --- readonly / private - owned
             objectPatcher               = null;
             processor                   = null;
-            defaultProcessor            = new SubscriptionProcessor(thisClient);
+            defaultProcessor            = new SubscriptionProcessor(client);
             setByType                   = new Dictionary<Type,   EntitySet>(entityInfos.Length);
             setByName                   = new Dictionary<string, EntitySet>(entityInfos.Length);
             subscriptions               = new Dictionary<string, MessageSubscriber>();
@@ -116,7 +116,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             clientId                    = new JsonKey();
             token                       = null;
             
-            InitEntitySets (thisClient, entityInfos);
+            InitEntitySets (client, entityInfos);
         }
         
         internal void Dispose() {

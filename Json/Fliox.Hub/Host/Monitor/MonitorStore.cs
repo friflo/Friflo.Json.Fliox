@@ -21,9 +21,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
         public  readonly    EntitySet <JsonKey, UserInfo>       users;
         public  readonly    EntitySet <int,     HistoryInfo>    histories;
 
-        public MonitorStore(FlioxHub hub)                                    : base(hub) { }
-        public MonitorStore(EntityDatabase database, FlioxClient baseClient) : base(database, baseClient) {
-            hostName = baseClient._intern.hub.hostName;
+        public MonitorStore(FlioxHub hub)                                : base(hub) { }
+        public MonitorStore(EntityDatabase database, FlioxClient client) : base(database, client) {
+            hostName = client._intern.hub.hostName;
         }
         
         public CommandTask<ClearStatsResult> ClearStats(ClearStats value = null) => SendCommand<ClearStats, ClearStatsResult>(nameof(ClearStats), value);
