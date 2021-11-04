@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Main
             var database            = new FileDatabase(databaseFolder);
             var hub                 = new FlioxHub(database);
             hub.AddExtensionDB      ( new MonitorDatabase(hub));                // optional. enables monitoring database access
-            hub.EventBroker         = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
+            hub.EventBroker         = new EventBroker(true);                    // optional. eventBroker enables Instant Messaging & Pub-Sub
             hub.Authenticator       = CreateUserAuthenticator();                // optional. Otherwise all request tasks are authorized
             
             var typeSchema          = CreateTypeSchema(true);                   // optional. used by DatabaseSchema & SchemaHandler
