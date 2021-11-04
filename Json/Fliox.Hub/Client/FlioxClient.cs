@@ -42,22 +42,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         
         /// <summary>
-        /// Instantiate a <see cref="FlioxClient"/> with a given <see cref="hub"/> and an optional <see cref="pool"/>.
-        ///
-        /// Optimization note:
-        /// In case an application create many (> 10) <see cref="FlioxClient"/> instances it should provide
-        /// a <see cref="pool"/>. <see cref="TypeStore"/> instances are designed to be reused from multiple threads.
-        /// Their creation is expensive compared to the instantiation of a <see cref="FlioxClient"/>. 
+        /// Instantiate a <see cref="FlioxClient"/> with a given <see cref="hub"/>.
         /// </summary>
         public FlioxClient(FlioxHub hub) {
-            
+            if (hub  == null)  throw new ArgumentNullException(nameof(hub));
             ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
             _intern = new ClientIntern(this, null, hub.sharedEnv, hub, hub.database, tracer, eventTarget);
         }
         
         protected FlioxClient(EntityDatabase database, FlioxClient baseClient) {
-            if (database  == null) throw new ArgumentNullException(nameof(database));
+            if (database   == null) throw new ArgumentNullException(nameof(database));
             if (baseClient == null) throw new ArgumentNullException(nameof(baseClient));
             // if (baseClient._intern.database.extensionBase != null)
             //     throw new ArgumentException("database of baseStore must not be an extension database", nameof(baseClient));
