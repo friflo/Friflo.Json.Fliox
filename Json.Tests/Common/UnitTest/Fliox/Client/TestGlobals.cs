@@ -19,7 +19,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public static void Init() {
             HostTypeStore.Init();
             // LeakTestsFixture requires to register all types used by TypeStore before leak tracking starts
-            Shared        = new SharedAppEnv();
+            Shared        = new SharedEnv();
             RegisterTypeMatcher(Shared.TypeStore);
             RegisterTypeMatcher(JsonDebug.DebugTypeStore);
         }

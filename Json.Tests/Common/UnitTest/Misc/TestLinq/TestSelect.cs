@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
             using (var _            = DefaultSharedEnv.Instance) // for LeakTestsFixture
             using (var database     = new MemoryDatabase(new PocHandler()))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
-            using (var env          = new SharedAppEnv())
+            using (var env          = new SharedEnv())
             using (var store        = new PocStore(hub) { UserId = "store"})
             using (var m            = new ObjectMapper(env.TypeStore)) {
                 TestRelationPoC.CreateStore(store).Wait();

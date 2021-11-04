@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         public static async Task ConcurrentAccess(FlioxHub hub, int readerCount, int writerCount, int requestCount, bool singleEntity) {
             // --- prepare
-            var env         = new SharedAppEnv();
+            var env         = new SharedEnv();
             var store       = new SimpleStore(hub) { ClientId = "prepare"};
             var entities    = new List<SimplyEntity>();
             int max         = Math.Max(readerCount, writerCount);

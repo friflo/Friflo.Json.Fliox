@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task AssertEntityKey() {
             using (var _            = DefaultSharedEnv.Instance) // for LeakTestsFixture
-            using (var env          = new SharedAppEnv())
+            using (var env          = new SharedEnv())
             using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/EntityIdStore"))
             using (var hub          = new FlioxHub(database, env))
             {
@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task AssertEntityKeyLoopback() {
             using (var _            = DefaultSharedEnv.Instance) // for LeakTestsFixture
-            using (var env          = new SharedAppEnv())
+            using (var env          = new SharedEnv())
             using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/EntityIdStore"))
             using (var hub          = new FlioxHub(database, env))
             using (var loopbackHub  = new LoopbackHub(hub))

@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task AssertAutoIncrement() {
             using (var _            = DefaultSharedEnv.Instance) // for LeakTestsFixture
-            using (var env          = new SharedAppEnv())
+            using (var env          = new SharedEnv())
             using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/EntityIdStore"))
             using (var hub          = new FlioxHub(database, env)) {
                 await AssertAutoIncrement (hub);
