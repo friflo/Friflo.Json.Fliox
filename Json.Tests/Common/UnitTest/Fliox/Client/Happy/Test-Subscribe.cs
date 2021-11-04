@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public void         SubscribeSync() { SingleThreadSynchronizationContext.Run(AssertSubscribe); }
         
         private static async Task AssertSubscribe() {
-            using (var _            = DefaultSharedEnv.Instance) // for LeakTestsFixture
+            using (var _            = SharedEnv.Default) // for LeakTestsFixture
             using (var eventBroker  = new EventBroker(false))
             using (var database     = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
@@ -295,7 +295,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public void         AcknowledgeMessages() { SingleThreadSynchronizationContext.Run(AssertAcknowledgeMessages); }
             
         private static async Task AssertAcknowledgeMessages() {
-            using (var _            = DefaultSharedEnv.Instance) // for LeakTestsFixture
+            using (var _            = SharedEnv.Default) // for LeakTestsFixture
             using (var eventBroker  = new EventBroker(false))
             using (var database     = new MemoryDatabase())
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))

@@ -14,7 +14,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// heap allocations when required.
     /// <br/>
     /// <see cref="SharedEnv"/> references are passed as a parameter to every <see cref="FlioxHub"/> constructor.
-    /// If null it defaults to <see cref="DefaultSharedEnv.Instance"/>.
+    /// If null it defaults to the <see cref="Default"/> <see cref="SharedEnv"/> instance.
     /// If an application needs to control the lifecycle of all shared resources it needs to create its own
     /// <see cref="SharedEnv()"/> instance and pass it to the constructor to all <see cref="FlioxHub"/> instances it creates.
     /// <br/>
@@ -24,6 +24,9 @@ namespace Friflo.Json.Fliox.Hub.Host
     {
         public  virtual     TypeStore   TypeStore   { get; }
         public  virtual     Pool        Pool        { get; }
+        
+        public static readonly SharedEnv Default = new DefaultSharedEnv();
+
 
         public SharedEnv() {
             TypeStore   = new TypeStore();
@@ -41,9 +44,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public  override    TypeStore   TypeStore   => HostTypeStore.Get();
         public  override    Pool        Pool        { get; }
 
-        public static readonly DefaultSharedEnv Instance = new DefaultSharedEnv();
-        
-        private DefaultSharedEnv() {
+        internal DefaultSharedEnv() {
             Pool = new Pool(this);
         }
         

@@ -55,7 +55,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public async Task   MemoryCreateAsync() { await MemoryCreate(); }
         
         private static async Task MemoryCreate() {
-            using (var _            = DefaultSharedEnv.Instance) // for LeakTestsFixture
+            using (var _            = SharedEnv.Default) // for LeakTestsFixture
             using (var database     = new MemoryDatabase(new PocHandler()))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var createStore  = new PocStore(hub) { UserId = "createStore"})
@@ -83,7 +83,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public async Task  FileCreateAsync() { await FileCreate(); }
 
         private static async Task FileCreate() {
-            using (var _            = DefaultSharedEnv.Instance) // for LeakTestsFixture
+            using (var _            = SharedEnv.Default) // for LeakTestsFixture
             using (var database     = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var createStore  = new PocStore(hub) { UserId = "createStore"})
@@ -103,7 +103,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public async Task  FileUseAsync() { await FileUse(); }
         
         private static async Task FileUse() {
-            using (var _            = DefaultSharedEnv.Instance) // for LeakTestsFixture
+            using (var _            = SharedEnv.Default) // for LeakTestsFixture
             using (var database     = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var useStore     = new PocStore(hub) { UserId = "useStore"}) {
@@ -121,7 +121,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public async Task  HttpCreateAsync() { await HttpCreate(); }
         
         private static async Task HttpCreate() {
-            using (var _                = DefaultSharedEnv.Instance) // for LeakTestsFixture
+            using (var _                = SharedEnv.Default) // for LeakTestsFixture
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var hostHub          = new HttpHostHub(hub))
@@ -153,7 +153,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// It also ensures that a single <see cref="WebSocketClientHub"/> instance can be used by multiple clients
         /// simultaneously. In this case three <see cref="PocStore"/> instances.
         private static async Task WebSocketCreate() {
-            using (var _                = DefaultSharedEnv.Instance) // for LeakTestsFixture
+            using (var _                = SharedEnv.Default) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(false))
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
@@ -188,7 +188,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// To ensure all change events arrive at <see cref="SubscriptionProcessor"/> <see cref="SyncRequest.eventAck"/>
         /// is used to inform database about arrived events. All not acknowledged events are resent.
         private static async Task WebSocketReconnect() {
-            using (var _                = DefaultSharedEnv.Instance) // for LeakTestsFixture
+            using (var _                = SharedEnv.Default) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(true))
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
@@ -236,7 +236,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public void         LoopbackUseSync()     { SingleThreadSynchronizationContext.Run(LoopbackUse); }
         
         private static async Task LoopbackUse() {
-            using (var _                = DefaultSharedEnv.Instance) // for LeakTestsFixture
+            using (var _                = SharedEnv.Default) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(false))
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
@@ -298,7 +298,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
 
         private static async Task TestCreate(Func<PocStore, Task> test) {
-            using (var _            = DefaultSharedEnv.Instance) // for LeakTestsFixture
+            using (var _            = SharedEnv.Default) // for LeakTestsFixture
             using (var database     = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var createStore  = new PocStore(hub) { UserId = "createStore"}) {
@@ -308,7 +308,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task TestUse(Func<PocStore, Task> test) {
-            using (var _            = DefaultSharedEnv.Instance) // for LeakTestsFixture
+            using (var _            = SharedEnv.Default) // for LeakTestsFixture
             using (var database     = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var createStore  = new PocStore(hub) { UserId = "createStore"}) {
