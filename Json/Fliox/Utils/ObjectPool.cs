@@ -15,11 +15,12 @@ namespace Friflo.Json.Fliox.Utils
         /// E.g.:
         /// <code>
         ///     using (var pooled = messageContext.pool.ObjectMapper.Get()) {
+        ///         ObjectMapper mapper  = pooled.instance;
         ///         ...
         ///     }
         /// </code>
-        /// <b>Note</b>: Caching the <see cref="instance"/> reference and accessing it after leaving using scope leads to
-        /// a race condition and must not be done.
+        /// <b>Note</b>: Caching the <see cref="instance"/> reference and accessing it after leaving the using scope
+        /// leads to a race condition and must not be done.
         /// </summary>
         public  readonly T              instance;
         private readonly ObjectPool<T>  pool;
