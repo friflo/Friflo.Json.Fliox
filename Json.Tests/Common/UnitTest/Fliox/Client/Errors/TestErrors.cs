@@ -28,7 +28,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         [Test]      public async Task  FileUseAsync() { await FileUse(); }
         
         private async Task FileUse() {
-            using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
+            using (var _            = SharedHost.Instance) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var testHub      = new TestDatabaseHub(fileDatabase))
             using (var useStore     = new PocStore(testHub) { UserId = "useStore"}) {
@@ -40,7 +40,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         [Test]      public async Task  LoopbackUseAsync() { await LoopbackUse(); }
         
         private async Task LoopbackUse() {
-            using (var _                = SharedHostEnv.Instance) // for LeakTestsFixture
+            using (var _                = SharedHost.Instance) // for LeakTestsFixture
             using (var fileDatabase     = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var testHub          = new TestDatabaseHub(fileDatabase))
             using (var loopbackHub      = new LoopbackHub(testHub))
@@ -53,7 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         [Test]      public async Task  HttpUseAsync() { await HttpUse(); }
         
         private async Task HttpUse() {
-            using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
+            using (var _            = SharedHost.Instance) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var testHub      = new TestDatabaseHub(fileDatabase))
             using (var hostHub      = new HttpHostHub(testHub))
@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         }
         
         private static async Task Test(Func<PocStore, TestDatabaseHub, Task> test) {
-            using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
+            using (var _            = SharedHost.Instance) // for LeakTestsFixture
             using (var fileDatabase = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var testHub      = new TestDatabaseHub(fileDatabase))
             using (var useStore     = new PocStore(testHub) { UserId = "useStore"}) {

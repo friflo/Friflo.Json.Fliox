@@ -20,12 +20,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         
         [Test]
         public void RunLinq() {
-            using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
+            using (var _            = SharedHost.Instance) // for LeakTestsFixture
             using (var database     = new MemoryDatabase(new PocHandler()))
             using (var hub          = new FlioxHub(database))
-            using (var pool         = new SharedAppEnv())
-            using (var store        = new PocStore(hub,pool) { UserId = "store"})
-            using (var m            = new ObjectMapper(pool.TypeStore)) {
+            using (var env          = new SharedAppEnv())
+            using (var store        = new PocStore(hub,env) { UserId = "store"})
+            using (var m            = new ObjectMapper(env.TypeStore)) {
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order1 = readOrders.Find("order-1");
@@ -78,8 +78,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         private static Order GetOrder(string id) {
             using (var database     = new MemoryDatabase(new PocHandler()))
             using (var hub          = new FlioxHub(database))
-            using (var pool         = new SharedAppEnv())
-            using (var store        = new PocStore(hub, pool) { UserId = "store"}) {
+            using (var env          = new SharedAppEnv())
+            using (var store        = new PocStore(hub, env) { UserId = "store"}) {
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order = readOrders.Find(id);
@@ -90,7 +90,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 
         [Test]
         public void DebugLinqQuery() {
-            using (var _ = SharedHostEnv.Instance) // for LeakTestsFixture
+            using (var _ = SharedHost.Instance) // for LeakTestsFixture
             {
                 var order1 = GetOrder("order-1");
 
@@ -118,11 +118,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 
         [Test]
         public void TestSelectSameInstance() {
-            using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
+            using (var _            = SharedHost.Instance) // for LeakTestsFixture
             using (var database     = new MemoryDatabase(new PocHandler()))
             using (var hub          = new FlioxHub(database))
-            using (var pool         = new SharedAppEnv())
-            using (var store        = new PocStore(hub, pool) { UserId = "store" }) {
+            using (var env          = new SharedAppEnv())
+            using (var store        = new PocStore(hub, env) { UserId = "store" }) {
                 TestRelationPoC.CreateStore(store).Wait();
                 var readOrders = store.orders.Read(); 
                 var order1 = readOrders.Find("order-1");

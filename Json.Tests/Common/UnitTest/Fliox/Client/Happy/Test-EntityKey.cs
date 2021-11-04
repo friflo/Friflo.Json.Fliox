@@ -26,12 +26,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public async Task  EntityKeyAsync() { await AssertEntityKey(); }
         
         private static async Task AssertEntityKey() {
-            using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
-            using (var pool         = new SharedAppEnv())
+            using (var _            = SharedHost.Instance) // for LeakTestsFixture
+            using (var env          = new SharedAppEnv())
             using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/EntityIdStore"))
             using (var hub          = new FlioxHub(database))
             {
-                await AssertEntityKeyTests (hub, pool);
+                await AssertEntityKeyTests (hub, env);
             }
         }
         
@@ -39,13 +39,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public async Task  EntityKeyAsyncLoopback() { await AssertEntityKeyLoopback(); }
         
         private static async Task AssertEntityKeyLoopback() {
-            using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
-            using (var pool         = new SharedAppEnv())
+            using (var _            = SharedHost.Instance) // for LeakTestsFixture
+            using (var env          = new SharedAppEnv())
             using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/EntityIdStore"))
             using (var hub          = new FlioxHub(database))
             using (var loopbackHub  = new LoopbackHub(hub))
             {
-                await AssertEntityKeyTests (loopbackHub, pool);
+                await AssertEntityKeyTests (loopbackHub, env);
             }
         }
 

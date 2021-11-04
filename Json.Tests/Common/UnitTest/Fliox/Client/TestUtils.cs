@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     {
         [Test]
         public void TestQueryRef() {
-            using (var __       = SharedHostEnv.Instance) // for LeakTestsFixture
+            using (var __       = SharedHost.Instance) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
             using (var hub      = new FlioxHub(database))
             using (var store    = new PocStore(hub, new SharedAppEnv()) { UserId = "TestQueryRef"}) {
@@ -143,23 +143,23 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         /// </summary>
         [Test]
         public void BenchmarkCreateClient() {
-            using (var pool     = new SharedAppEnv()) {
+            using (var env      = new SharedAppEnv()) {
                 var hub         = new NoopDatabaseHub();
-                var _           = new PocStore(hub, pool);
-                var __          = new PocStore(hub, pool);
+                var _           = new PocStore(hub, env);
+                var __          = new PocStore(hub, env);
                 
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
                 int count = 1; // 1_000_000;
                 for (int n = 0; n < count; n++) {
-                    new PocStore(hub, pool); // ~ 1.2 µs (Release)
+                    new PocStore(hub, env); // ~ 1.2 µs (Release)
                 }
                 stopwatch.Stop();
                 Console.WriteLine($"client instantiation count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
                 
                 var start = GC.GetAllocatedBytesForCurrentThread();
                 // ReSharper disable once UnusedVariable
-                var store = new PocStore(hub, pool);
+                var store = new PocStore(hub, env);
                 var diff = GC.GetAllocatedBytesForCurrentThread() - start;
                 var platform    = Environment.OSVersion.Platform;
                 var isWindows   = platform == PlatformID.Win32NT; 
@@ -174,9 +174,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         /// => Same behavior as new <see cref="FlioxClient"/>.
         [Test]
         public void BenchmarkPooledClient() {
-            var pool            = new SharedAppEnv();
+            var env             = new SharedAppEnv();
             var hub             = new NoopDatabaseHub();
-            var pocStorePool    = new SharedPool<PocStore>(() => new PocStore(hub, pool));
+            var pocStorePool    = new SharedPool<PocStore>(() => new PocStore(hub, env));
             FlioxClient client;
             using (var pooled = pocStorePool.Get()) {
                 client = pooled.instance;
@@ -194,7 +194,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             stopwatch.Stop();
             Console.WriteLine($"get pool client count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
             
-            var store = new PocStore(hub, pool);
+            var store = new PocStore(hub, env);
             var start = GC.GetAllocatedBytesForCurrentThread();
             store.Reset();
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
@@ -205,9 +205,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
         [Test]
         public async Task TestMemorySync() {
-            using (var pool     = new SharedAppEnv()) {
+            using (var env      = new SharedAppEnv()) {
                 var hub         = new NoopDatabaseHub();
-                var store       = new PocStore(hub, pool);
+                var store       = new PocStore(hub, env);
                 await store.SyncTasks(); // force one time allocations
                 // GC.Collect();
                 
@@ -221,10 +221,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         
         [Test]
         public async Task TestMemorySyncRead() {
-            using (var pool     = new SharedAppEnv()) {
+            using (var env      = new SharedAppEnv()) {
                 var database    = new MemoryDatabase();
                 var hub         = new FlioxHub(database);
-                var store       = new EntityIdStore(hub, pool);
+                var store       = new EntityIdStore(hub, env);
                 var read = store.intEntities.Read();
                 var ids = new int [100];
                 for (int n = 0; n < 100; n++)

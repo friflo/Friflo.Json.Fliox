@@ -21,7 +21,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
         public  readonly    EntitySet <JsonKey, UserInfo>       users;
         public  readonly    EntitySet <int,     HistoryInfo>    histories;
 
-        public MonitorStore(FlioxHub hub)                                    : base(hub, SharedHostEnv.Instance) { }
+        public MonitorStore(FlioxHub hub)                                    : base(hub, SharedHost.Instance) { }
         public MonitorStore(EntityDatabase database, FlioxClient baseClient) : base(database, baseClient) {
             hostName = baseClient._intern.hub.hostName;
         }

@@ -22,34 +22,34 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
     {
         [Test]
         public static void EntityIdTypeMismatch() {
-            using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
-            using (var pool         = new SharedAppEnv())
+            using (var _            = SharedHost.Instance) // for LeakTestsFixture
+            using (var env          = new SharedAppEnv())
             using (var database     = new MemoryDatabase())
             using (var hub          = new FlioxHub(database))
             {
-                AssertEntityIdTests (hub, pool);
+                AssertEntityIdTests (hub, env);
             }
         }
             
-        private static void AssertEntityIdTests(FlioxHub hub, SharedAppEnv pool) {
+        private static void AssertEntityIdTests(FlioxHub hub, SharedEnv env) {
             Exception e;
             e = Throws<InvalidTypeException>(() => {
-                _ = new TypeMismatchStore(hub, pool) { ClientId = "store"};
+                _ = new TypeMismatchStore(hub, env) { ClientId = "store"};
             });
             AreEqual("key Type mismatch. String (IntEntity.id) != Int64 (EntitySet<Int64,IntEntity>)", e.Message);
             
             e = Throws<InvalidTypeException>(() => {
-                _ = new TypeMismatchStore2(hub, pool) { ClientId =  "store"};
+                _ = new TypeMismatchStore2(hub, env) { ClientId =  "store"};
             });
             AreEqual("key Type mismatch. String (IntEntity2.id) != Int64 (EntitySet<Int64,IntEntity2>)", e.Message);
             
             e = Throws<InvalidOperationException>(() => {
-                _ = new UnsupportedKeyTypeStore(hub, pool) { ClientId = "store"};
+                _ = new UnsupportedKeyTypeStore(hub, env) { ClientId = "store"};
             });
             AreEqual("unsupported TKey Type: EntitySet<Char,CharEntity> id", e.Message);
             
             e = Throws<InvalidTypeException>(() => {
-                _ = new InvalidMemberStore(hub, pool) { ClientId = "store"};
+                _ = new InvalidMemberStore(hub, env) { ClientId = "store"};
             });
             AreEqual("Invalid member: StringEntity.entityRef - Ref<Int32, StringEntity> != EntitySet<String, StringEntity>", e.Message);
         }

@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         [Test]
         public static async Task TestMonitoringFile() {
-            using (var _                = SharedHostEnv.Instance) // for LeakTestsFixture
+            using (var _                = SharedHost.Instance) // for LeakTestsFixture
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var hub          	= new FlioxHub(database, HostName))
             using (var monitorDB        = new MonitorDatabase(hub)) {
@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         [Test]
         public static async Task TestMonitoringLoopback() {
-            using (var _                = SharedHostEnv.Instance) // for LeakTestsFixture
+            using (var _                = SharedHost.Instance) // for LeakTestsFixture
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var hub          	= new FlioxHub(database, HostName))
             using (var monitor          = new MonitorDatabase(hub))
@@ -53,7 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         [Test]
         public static async Task TestMonitoringHttp() {
-            using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
+            using (var _            = SharedHost.Instance) // for LeakTestsFixture
             using (var database     = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var hub          = new FlioxHub(database, HostName))
             using (var hostHub      = new HttpHostHub(hub))

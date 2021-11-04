@@ -34,7 +34,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public void         SubscribeSync() { SingleThreadSynchronizationContext.Run(AssertSubscribe); }
         
         private static async Task AssertSubscribe() {
-            using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
+            using (var _            = SharedHost.Instance) // for LeakTestsFixture
             using (var eventBroker  = new EventBroker(false))
             using (var database     = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
             using (var hub          = new FlioxHub(database))
@@ -295,12 +295,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         [Test]      public void         AcknowledgeMessages() { SingleThreadSynchronizationContext.Run(AssertAcknowledgeMessages); }
             
         private static async Task AssertAcknowledgeMessages() {
-            using (var _            = SharedHostEnv.Instance) // for LeakTestsFixture
+            using (var _            = SharedHost.Instance) // for LeakTestsFixture
             using (var eventBroker  = new EventBroker(false))
             using (var database     = new MemoryDatabase())
             using (var hub          = new FlioxHub(database))
-            using (var pool         = new SharedAppEnv())
-            using (var listenDb     = new FlioxClient(hub, pool) { ClientId = "listenDb" }) {
+            using (var env          = new SharedAppEnv())
+            using (var listenDb     = new FlioxClient(hub, env) { ClientId = "listenDb" }) {
                 hub.EventBroker = eventBroker;
                 bool receivedHello = false;
                 listenDb.SubscribeMessage("Hello", msg => {
@@ -308,7 +308,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 });
                 await listenDb.SyncTasks();
 
-                using (var sendStore  = new FlioxClient(hub, pool) { ClientId = "sendStore" }) {
+                using (var sendStore  = new FlioxClient(hub, env) { ClientId = "sendStore" }) {
                     sendStore.SendMessage("Hello", "some text");
                     await sendStore.SyncTasks();
                     
