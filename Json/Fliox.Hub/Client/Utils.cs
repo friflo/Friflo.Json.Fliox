@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         public static void DisposeCaches() {
-            SharedHost.Instance.Pool.Dispose();
+            DefaultSharedEnv.Instance.Pool.Dispose();
             HostTypeStore.Dispose();
         }
     }

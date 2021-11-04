@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal readonly   bool                                            background;
 
         public EventBroker (bool background, SharedEnv env = null) {
-            sharedEnv       = env ?? SharedHost.Instance;
+            sharedEnv       = env ?? DefaultSharedEnv.Instance;
             jsonEvaluator   = new JsonEvaluator();
             subscribers     = new ConcurrentDictionary<JsonKey, EventSubscriber>(JsonKey.Equality);
             this.background = background;

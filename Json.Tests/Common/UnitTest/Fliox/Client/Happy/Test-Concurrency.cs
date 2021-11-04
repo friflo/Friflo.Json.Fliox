@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// IOException: The process cannot access the file 'path' because it is being used by another process. 
         /// </summary>
         [Test] public static void TestConcurrentFileAccessSync () {
-            using (var _                = SharedHost.Instance) // for LeakTestsFixture
+            using (var _                = DefaultSharedEnv.Instance) // for LeakTestsFixture
             {
                 SingleThreadSynchronizationContext.Run(async () => {
                     using (var database     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/testConcurrencyDb"))
@@ -148,7 +148,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 #if !UNITY_5_3_OR_NEWER 
         [Test]
         public static async Task TestConcurrentWebSocket () {
-            using (var _                = SharedHost.Instance) // for LeakTestsFixture
+            using (var _                = DefaultSharedEnv.Instance) // for LeakTestsFixture
             using (var database         = new MemoryDatabase())
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var hostHub          = new HttpHostHub(hub))

@@ -20,7 +20,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
         
         [Test]
         public void RunLinq() {
-            using (var _            = SharedHost.Instance) // for LeakTestsFixture
+            using (var _            = DefaultSharedEnv.Instance) // for LeakTestsFixture
             using (var database     = new MemoryDatabase(new PocHandler()))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var env          = new SharedAppEnv())
@@ -89,7 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 
         [Test]
         public void DebugLinqQuery() {
-            using (var _ = SharedHost.Instance) // for LeakTestsFixture
+            using (var _ = DefaultSharedEnv.Instance) // for LeakTestsFixture
             {
                 var order1 = GetOrder("order-1");
 
@@ -117,7 +117,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Misc.TestLinq
 
         [Test]
         public void TestSelectSameInstance() {
-            using (var _            = SharedHost.Instance) // for LeakTestsFixture
+            using (var _            = DefaultSharedEnv.Instance) // for LeakTestsFixture
             using (var database     = new MemoryDatabase(new PocHandler()))
             using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var store        = new PocStore(hub) { UserId = "store" }) {

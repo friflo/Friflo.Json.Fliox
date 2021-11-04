@@ -26,7 +26,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
         [Test]      public async Task  FileValidationAsync() { await FileValidation(); }
 
         private static async Task FileValidation() {
-            using (var _                = SharedHost.Instance) // for LeakTestsFixture
+            using (var _                = DefaultSharedEnv.Instance) // for LeakTestsFixture
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var modifierHub      = new WriteModifierHub(hub))

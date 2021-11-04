@@ -36,14 +36,14 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
     }
     
-    public sealed class SharedHost : SharedEnv
+    public sealed class DefaultSharedEnv : SharedEnv
     {
         public  override    TypeStore   TypeStore   => HostTypeStore.Get();
         public  override    Pool        Pool        { get; }
 
-        public static readonly SharedHost Instance = new SharedHost();
+        public static readonly DefaultSharedEnv Instance = new DefaultSharedEnv();
         
-        private SharedHost() {
+        private DefaultSharedEnv() {
             Pool = new Pool(this);
         }
         

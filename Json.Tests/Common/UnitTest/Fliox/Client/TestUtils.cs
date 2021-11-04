@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     {
         [Test]
         public void TestQueryRef() {
-            using (var __       = SharedHost.Instance) // for LeakTestsFixture
+            using (var __       = DefaultSharedEnv.Instance) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
             using (var env      = new SharedAppEnv())
             using (var hub      = new FlioxHub(database, env))
