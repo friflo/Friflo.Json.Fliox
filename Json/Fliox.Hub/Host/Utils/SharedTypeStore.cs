@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
     /// Singleton are typically a bad practice, but its okay in this case as <see cref="TypeStore"/> behaves like an
     /// immutable object because the mapped types <see cref="SyncRequest"/> and <see cref="SyncResponse"/> are
     /// a fixed set of types. 
-    public static class HostTypeStore
+    public static class SharedTypeStore
     {
         private static TypeStore _singleton;
 

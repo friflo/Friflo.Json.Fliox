@@ -17,7 +17,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public static SharedEnv Shared { get; private set; }
         
         public static void Init() {
-            HostTypeStore.Init();
+            SharedTypeStore.Init();
             // LeakTestsFixture requires to register all types used by TypeStore before leak tracking starts
             Shared        = new SharedEnv();
             RegisterTypeMatcher(Shared.TypeStore);
@@ -32,13 +32,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             //
             typeStore.GetTypeMapper(typeof(MonitorStore));
             
-            HostTypeStore.AddHostTypes(typeStore);
+            SharedTypeStore.AddHostTypes(typeStore);
         }
         
         public static void Dispose() {
             Shared.Dispose();
             Shared = null;
-            HostTypeStore.Dispose();
+            SharedTypeStore.Dispose();
         }
     }
 }

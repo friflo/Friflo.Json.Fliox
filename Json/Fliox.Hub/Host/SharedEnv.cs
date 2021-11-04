@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     
     internal sealed class DefaultSharedEnv : SharedEnv
     {
-        public  override    TypeStore   TypeStore   => HostTypeStore.Get();
+        public  override    TypeStore   TypeStore   => SharedTypeStore.Get();
 
         internal DefaultSharedEnv() : base (null) { }
         
