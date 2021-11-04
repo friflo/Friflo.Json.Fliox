@@ -13,6 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// In particular a <see cref="TypeStore"/> and a <see cref="Pool"/>.
     /// The resources contained by a <see cref="SharedEnv"/> are designed for being reused to avoid expensive
     /// heap allocations when required.
+    /// The intention is to use only a single <see cref="SharedEnv"/> instance within the whole application.
     /// <br/>
     /// <see cref="SharedEnv"/> references are passed as a parameter to every <see cref="FlioxHub"/> constructor.
     /// If null it defaults to the <see cref="Default"/> <see cref="SharedEnv"/> instance.

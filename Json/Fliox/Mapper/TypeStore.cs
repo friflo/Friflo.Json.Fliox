@@ -41,6 +41,8 @@ namespace Friflo.Json.Fliox.Mapper
     /// <summary>
     /// Thread safe store containing the required <see cref="Type"/> information for marshalling and unmarshalling.
     /// Can be shared across threads by <see cref="Reader"/> and <see cref="ObjectWriter"/> instances.
+    /// <br/>
+    /// The intention is to use only a single <see cref="TypeStore"/> instance within the whole application.
     /// </summary>
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
