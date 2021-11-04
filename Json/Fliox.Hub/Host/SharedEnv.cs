@@ -13,10 +13,10 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// The resources contained by a <see cref="SharedEnv"/> are designed for being reused to avoid expensive
     /// heap allocations when required.
     /// <br/>
-    /// <see cref="SharedEnv"/> reference is passed as a parameter to every <see cref="FlioxHub"/> instance.
+    /// <see cref="SharedEnv"/> references are passed as a parameter to every <see cref="FlioxHub"/> constructor.
     /// If null it defaults to <see cref="DefaultSharedEnv.Instance"/>.
     /// If an application needs to control the lifecycle of all shared resources it needs to create its own
-    /// <see cref="SharedEnv()"/> instance and pass it to the constructor for all <see cref="FlioxHub"/> instances it creates.
+    /// <see cref="SharedEnv()"/> instance and pass it to the constructor to all <see cref="FlioxHub"/> instances it creates.
     /// <br/>
     /// Access to shared resources is thread safe.
     /// </summary>
