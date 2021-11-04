@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         
         /// <summary> Construct a default database </summary>
-        public FlioxHub (EntityDatabase database, SharedEnv env, string hostName = null) {
+        public FlioxHub (EntityDatabase database, SharedEnv env = null, string hostName = null) {
             sharedEnv       = env  ?? SharedHost.Instance;
             this.database   = database;
             this.hostName   = hostName ?? "host";

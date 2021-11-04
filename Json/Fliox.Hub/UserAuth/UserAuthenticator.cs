@@ -41,7 +41,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         private   readonly  Authorizer                                  anonymousAuthorizer;
         private   readonly  ConcurrentDictionary<string,  Authorizer>   authorizerByRole = new ConcurrentDictionary <string, Authorizer>();
 
-        public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env, IUserAuth userAuth = null, Authorizer anonymousAuthorizer = null)
+        public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null, Authorizer anonymousAuthorizer = null)
             : base (anonymousAuthorizer)
         {
             if (!(userDatabase.handler is UserDBHandler))

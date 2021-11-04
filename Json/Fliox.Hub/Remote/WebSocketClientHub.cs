@@ -24,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private  readonly   CancellationTokenSource                     cancellationToken = new CancellationTokenSource();
 
 
-        public WebSocketClientHub(string endpoint, SharedEnv env, string hostName = null) : base(null, env, hostName) {
+        public WebSocketClientHub(string endpoint, SharedEnv env = null, string hostName = null) : base(null, env, hostName) {
             this.endpoint = endpoint;
         }
         
