@@ -19,12 +19,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
     
     public sealed class EventBroker : IDisposable
     {
+        private  readonly   SharedEnv                                       sharedEnv;
         private  readonly   JsonEvaluator                                   jsonEvaluator;
         /// key: <see cref="EventSubscriber.clientId"/>
         private  readonly   ConcurrentDictionary<JsonKey, EventSubscriber>  subscribers;
         internal readonly   bool                                            background;
 
-        public EventBroker (bool background) {
+        public EventBroker (bool background, SharedEnv env = null) {
+            sharedEnv       = env ?? SharedHost.Instance;
             jsonEvaluator   = new JsonEvaluator();
             subscribers     = new ConcurrentDictionary<JsonKey, EventSubscriber>(JsonKey.Equality);
             this.background = background;
@@ -100,7 +102,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             subscribers.TryGetValue(clientId, out EventSubscriber subscriber);
             if (subscriber != null)
                 return subscriber;
-            subscriber = new EventSubscriber(clientId, eventTarget, background);
+            subscriber = new EventSubscriber(sharedEnv, clientId, eventTarget, background);
             subscribers.TryAdd(clientId, subscriber);
             return subscriber;
         }

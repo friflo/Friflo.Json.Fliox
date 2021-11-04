@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         
         public HttpHostHub(FlioxHub hub, SharedEnv env = null, string hostName = null)
-            : base(hub, env ?? SharedHost.Instance, hostName)
+            : base(hub, env, hostName)
         {
             var protocolSchema      = new NativeTypeSchema(typeof(ProtocolMessage));
             var types               = ProtocolMessage.Types;
@@ -31,7 +31,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var requestContent  = await JsonValue.ReadToEndAsync(reqCtx.body).ConfigureAwait(false);
 
                 // Each request require its own pool as multiple request running concurrently. Could cache a Pool instance per connection.
-                var pool            = new Pool(SharedHost.Instance.Pool);
+                var pool            = new Pool(sharedEnv.Pool);
                 var messageContext  = new MessageContext(pool, null);
                 var result          = await ExecuteJsonRequest(requestContent, messageContext).ConfigureAwait(false);
                 

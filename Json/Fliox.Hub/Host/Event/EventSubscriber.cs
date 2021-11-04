@@ -27,7 +27,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal readonly   Dictionary<string, SubscribeChanges>    changeSubscriptions         = new Dictionary<string, SubscribeChanges>();
         internal readonly   HashSet<string>                         messageSubscriptions        = new HashSet<string>();
         internal readonly   HashSet<string>                         messagePrefixSubscriptions  = new HashSet<string>();
-        private  readonly   Pool                                    pool                        = new Pool(SharedHost.Instance.Pool);
+        private  readonly   Pool                                    pool;
         
         internal            int                                     SubscriptionCount => changeSubscriptions.Count + messageSubscriptions.Count + messagePrefixSubscriptions.Count; 
         
@@ -60,7 +60,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
             return subs;
         }
 
-        internal EventSubscriber (in JsonKey clientId, IEventTarget eventTarget, bool background) {
+        internal EventSubscriber (SharedEnv env, in JsonKey clientId, IEventTarget eventTarget, bool background) {
+            pool                = new Pool(env.Pool);
             this.clientId       = clientId;
             this.eventTarget    = eventTarget;
             this.background     = background;

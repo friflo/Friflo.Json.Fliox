@@ -24,9 +24,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         private  readonly   DataChannelWriter<ArraySegment<byte>>   sendWriter;
         private  readonly   Task                                    sendLoop;
-        private  readonly   Pool                                    pool = new Pool(SharedHost.Instance.Pool);
+        private  readonly   Pool                                    pool;
         
-        private WebSocketHost (WebSocket webSocket, bool fakeOpenClosedSocket) {
+        private WebSocketHost (SharedEnv env, WebSocket webSocket, bool fakeOpenClosedSocket) {
+            pool                        = new Pool(env.Pool);
             this.webSocket              = webSocket;
             this.fakeOpenClosedSocket   = fakeOpenClosedSocket;
             
@@ -107,7 +108,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         public static async Task SendReceiveMessages(WebSocket websocket, RemoteHostHub remoteHost) {
-            var target = new WebSocketHost(websocket, remoteHost.fakeOpenClosedSockets);
+            var target = new WebSocketHost(remoteHost.sharedEnv, websocket, remoteHost.fakeOpenClosedSockets);
             try {
                 using (var memoryStream = new MemoryStream()) {
                     await target.ReceiveLoop(memoryStream, remoteHost).ConfigureAwait(false);

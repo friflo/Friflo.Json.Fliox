@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public              bool            fakeOpenClosedSockets;
 
         protected RemoteHostHub(FlioxHub hub, SharedEnv env, string hostName) : base(hub.database, env, hostName) {
-            this.localHub = hub;
+            localHub = hub;
         }
         
         public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
