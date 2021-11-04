@@ -7,8 +7,8 @@
 ## **`Friflo.Json.Fliox.Schema`**
 
 This namespace contains classes and methods to transform / generate Type Schemas.  
-For example to generate a **JSON Schema** from given **C#** model classes.  
-The schema transformation can be used for database models and JSON based protocols.
+For example to generate a **JSON Schema** from given **C#** model classes or vice vera.  
+The schema transformation can be used for database schemas and JSON based protocols.
 
 Another objective of this namespace is to enables type validation for JSON payloads.
 
