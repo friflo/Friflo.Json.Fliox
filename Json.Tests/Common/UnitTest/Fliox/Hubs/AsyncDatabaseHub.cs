@@ -16,8 +16,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
     {
         private readonly    FlioxHub  local;
 
-        public AsyncDatabaseHub(EntityDatabase database, string hostName = null) : base(database, hostName) {
-            local = new FlioxHub(database);
+        public AsyncDatabaseHub(EntityDatabase database, SharedEnv env, string hostName = null) : base(database, env, hostName) {
+            local = new FlioxHub(database, env);
         }
         
         public override async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {

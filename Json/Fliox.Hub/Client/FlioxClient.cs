@@ -49,12 +49,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// a <see cref="pool"/>. <see cref="TypeStore"/> instances are designed to be reused from multiple threads.
         /// Their creation is expensive compared to the instantiation of a <see cref="FlioxClient"/>. 
         /// </summary>
-        public FlioxClient(FlioxHub hub, SharedEnv env) {
-            if (env == null) throw new ArgumentNullException(nameof(env));
+        public FlioxClient(FlioxHub hub) {
             
             ITracerContext tracer       = this;
             var eventTarget             = new EventTarget(this);
-            _intern = new ClientIntern(this, null, env, hub, hub.database, tracer, eventTarget);
+            _intern = new ClientIntern(this, null, hub.sharedEnv, hub, hub.database, tracer, eventTarget);
         }
         
         protected FlioxClient(EntityDatabase database, FlioxClient baseClient) {

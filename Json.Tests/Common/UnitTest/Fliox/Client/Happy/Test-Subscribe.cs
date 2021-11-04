@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _            = SharedHost.Instance) // for LeakTestsFixture
             using (var eventBroker  = new EventBroker(false))
             using (var database     = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
-            using (var hub          = new FlioxHub(database))
+            using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var listenDb     = new PocStore(hub) { UserId = "listenDb", ClientId = "listen-client" }) {
                 hub.EventBroker = eventBroker;
                 var listenProcessor   = await CreateSubscriptionProcessor(listenDb, EventAssertion.Changes);
@@ -298,9 +298,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _            = SharedHost.Instance) // for LeakTestsFixture
             using (var eventBroker  = new EventBroker(false))
             using (var database     = new MemoryDatabase())
-            using (var hub          = new FlioxHub(database))
-            using (var env          = new SharedAppEnv())
-            using (var listenDb     = new FlioxClient(hub, env) { ClientId = "listenDb" }) {
+            using (var hub          = new FlioxHub(database, TestGlobals.Shared))
+            using (var listenDb     = new FlioxClient(hub) { ClientId = "listenDb" }) {
                 hub.EventBroker = eventBroker;
                 bool receivedHello = false;
                 listenDb.SubscribeMessage("Hello", msg => {
@@ -308,7 +307,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 });
                 await listenDb.SyncTasks();
 
-                using (var sendStore  = new FlioxClient(hub, env) { ClientId = "sendStore" }) {
+                using (var sendStore  = new FlioxClient(hub) { ClientId = "sendStore" }) {
                     sendStore.SendMessage("Hello", "some text");
                     await sendStore.SyncTasks();
                     

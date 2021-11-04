@@ -24,8 +24,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public void TestQueryRef() {
             using (var __       = SharedHost.Instance) // for LeakTestsFixture
             using (var database = new MemoryDatabase())
-            using (var hub      = new FlioxHub(database))
-            using (var store    = new PocStore(hub, new SharedAppEnv()) { UserId = "TestQueryRef"}) {
+            using (var env      = new SharedAppEnv())
+            using (var hub      = new FlioxHub(database, env))
+            using (var store    = new PocStore(hub) { UserId = "TestQueryRef"}) {
                 var orders = store.orders;
                 var customerId = orders.Query(o => o.customer.Key == "customer-1");
                 AreEqual("QueryTask<Order> (filter: .customer == 'customer-1')", customerId.ToString());
@@ -120,8 +121,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 #if !UNITY_2020_1_OR_NEWER
         [Test]
         public void TestDictionaryValueIterator() {
-            var hub     = new FlioxHub(new MemoryDatabase());
-            var store   = new PocStore(hub, new SharedAppEnv()) { UserId = "TestDictionaryValueIterator"};
+            var env     = new SharedAppEnv();
+            var hub     = new FlioxHub(new MemoryDatabase(), env);
+            var store   = new PocStore(hub) { UserId = "TestDictionaryValueIterator"};
             var readArticles = store.articles.Read();
                         readArticles.Find("missing-id");
             var task =  readArticles.ReadRef(a => a.producer);
@@ -143,30 +145,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         /// </summary>
         [Test]
         public void BenchmarkCreateClient() {
-            using (var env      = new SharedAppEnv()) {
-                var hub         = new NoopDatabaseHub();
-                var _           = new PocStore(hub, env);
-                var __          = new PocStore(hub, env);
-                
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
-                int count = 1; // 1_000_000;
-                for (int n = 0; n < count; n++) {
-                    new PocStore(hub, env); // ~ 1.2 µs (Release)
-                }
-                stopwatch.Stop();
-                Console.WriteLine($"client instantiation count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
-                
-                var start = GC.GetAllocatedBytesForCurrentThread();
-                // ReSharper disable once UnusedVariable
-                var store = new PocStore(hub, env);
-                var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var platform    = Environment.OSVersion.Platform;
-                var isWindows   = platform == PlatformID.Win32NT; 
-                var expected    = isWindows ? 2712 : 2496;
-                Console.WriteLine($"PocStore allocation. platform: {platform}, memory: {diff}");
-                AreEqual(expected, diff);
+            var env         = new SharedAppEnv();
+            var hub         = new NoopDatabaseHub(env);
+            var _           = new PocStore(hub);
+            var __          = new PocStore(hub);
+            
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            int count = 1; // 1_000_000;
+            for (int n = 0; n < count; n++) {
+                new PocStore(hub); // ~ 1.2 µs (Release)
             }
+            stopwatch.Stop();
+            Console.WriteLine($"client instantiation count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
+            
+            var start = GC.GetAllocatedBytesForCurrentThread();
+            // ReSharper disable once UnusedVariable
+            var store = new PocStore(hub);
+            var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+            var platform    = Environment.OSVersion.Platform;
+            var isWindows   = platform == PlatformID.Win32NT; 
+            var expected    = isWindows ? 2712 : 2496;
+            Console.WriteLine($"PocStore allocation. platform: {platform}, memory: {diff}");
+            AreEqual(expected, diff);
         }
         
         /// <see cref="ObjectPool{T}.Get"/> returns a <see cref="Pooled{T}"/> <see cref="FlioxClient"/> or create a new one.
@@ -175,8 +176,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Test]
         public void BenchmarkPooledClient() {
             var env             = new SharedAppEnv();
-            var hub             = new NoopDatabaseHub();
-            var pocStorePool    = new SharedPool<PocStore>(() => new PocStore(hub, env));
+            var hub             = new NoopDatabaseHub(env);
+            var pocStorePool    = new SharedPool<PocStore>(() => new PocStore(hub));
             FlioxClient client;
             using (var pooled = pocStorePool.Get()) {
                 client = pooled.instance;
@@ -194,7 +195,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             stopwatch.Stop();
             Console.WriteLine($"get pool client count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
             
-            var store = new PocStore(hub, env);
+            var store = new PocStore(hub);
             var start = GC.GetAllocatedBytesForCurrentThread();
             store.Reset();
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
@@ -205,43 +206,42 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
 
         [Test]
         public async Task TestMemorySync() {
-            using (var env      = new SharedAppEnv()) {
-                var hub         = new NoopDatabaseHub();
-                var store       = new PocStore(hub, env);
-                await store.SyncTasks(); // force one time allocations
-                // GC.Collect();
-                
-                var start = GC.GetAllocatedBytesForCurrentThread();
-                await store.SyncTasks(); // ~ 1 µs
-                var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var expected = IsDebug() ? 1672 : 1568; // Test Debug & Release
-                AreEqual(expected, diff);   // Test Release also
-            }
+            var env         = new SharedAppEnv();
+            var hub         = new NoopDatabaseHub(env);
+            var store       = new PocStore(hub);
+            await store.SyncTasks(); // force one time allocations
+            // GC.Collect();
+            
+            var start = GC.GetAllocatedBytesForCurrentThread();
+            await store.SyncTasks(); // ~ 1 µs
+            var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+            var expected = IsDebug() ? 1672 : 1568; // Test Debug & Release
+            AreEqual(expected, diff);   // Test Release also
+            
         }
         
         [Test]
         public async Task TestMemorySyncRead() {
-            using (var env      = new SharedAppEnv()) {
-                var database    = new MemoryDatabase();
-                var hub         = new FlioxHub(database);
-                var store       = new EntityIdStore(hub, env);
-                var read = store.intEntities.Read();
-                var ids = new int [100];
-                for (int n = 0; n < 100; n++)
-                    ids[n] = n;
+            var env         = new SharedAppEnv();
+            var database    = new MemoryDatabase();
+            var hub         = new FlioxHub(database, env);
+            var store       = new EntityIdStore(hub);
+            var read = store.intEntities.Read();
+            var ids = new int [100];
+            for (int n = 0; n < 100; n++)
+                ids[n] = n;
+            read.FindRange(ids);
+            await store.SyncTasks(); // force one time allocations
+            
+            var start = GC.GetAllocatedBytesForCurrentThread();
+            for (int n = 0; n < 1; n++) {
+                read = store.intEntities.Read();
                 read.FindRange(ids);
-                await store.SyncTasks(); // force one time allocations
-                
-                var start = GC.GetAllocatedBytesForCurrentThread();
-                for (int n = 0; n < 1; n++) {
-                    read = store.intEntities.Read();
-                    read.FindRange(ids);
-                    await store.SyncTasks();
-                }
-                var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-                var expected = IsDebug() ? Is.InRange(47200, 47448) : Is.InRange(44280, 44480); // Test Debug & Release
-                That(diff, expected);
+                await store.SyncTasks();
             }
+            var diff = GC.GetAllocatedBytesForCurrentThread() - start;
+            var expected = IsDebug() ? Is.InRange(47200, 47448) : Is.InRange(44280, 44480); // Test Debug & Release
+            That(diff, expected);
         }
         
         private static bool IsDebug() {

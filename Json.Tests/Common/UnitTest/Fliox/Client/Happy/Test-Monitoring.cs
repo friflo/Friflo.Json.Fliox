@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static async Task TestMonitoringFile() {
             using (var _                = SharedHost.Instance) // for LeakTestsFixture
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder))
-            using (var hub          	= new FlioxHub(database, HostName))
+            using (var hub          	= new FlioxHub(database, TestGlobals.Shared, HostName))
             using (var monitorDB        = new MonitorDatabase(hub)) {
                 hub.AddExtensionDB(monitorDB);
                 await AssertNoAuthMonitoringDB  (hub, monitorDB);
@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static async Task TestMonitoringLoopback() {
             using (var _                = SharedHost.Instance) // for LeakTestsFixture
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder))
-            using (var hub          	= new FlioxHub(database, HostName))
+            using (var hub          	= new FlioxHub(database, TestGlobals.Shared, HostName))
             using (var monitor          = new MonitorDatabase(hub))
             using (var loopbackHub      = new LoopbackHub(hub)) {
                 hub.AddExtensionDB(monitor);
@@ -55,11 +55,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         public static async Task TestMonitoringHttp() {
             using (var _            = SharedHost.Instance) // for LeakTestsFixture
             using (var database     = new FileDatabase(TestGlobals.PocStoreFolder))
-            using (var hub          = new FlioxHub(database, HostName))
+            using (var hub          = new FlioxHub(database, TestGlobals.Shared, HostName))
             using (var hostHub      = new HttpHostHub(hub))
             using (var server       = new HttpListenerHost("http://+:8080/", hostHub)) 
             using (var monitor      = new MonitorDatabase(hub))
-            using (var clientHub    = new HttpClientHub("http://localhost:8080/")) {
+            using (var clientHub    = new HttpClientHub("http://localhost:8080/", TestGlobals.Shared)) {
                 hub.AddExtensionDB(monitor);
                 await RunServer(server, async () => {
                     var monitorDB   = new RemoteExtensionDatabase(clientHub, MonitorDatabase.Name);
@@ -71,7 +71,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         private static async Task AssertAuthMonitoringDB(FlioxHub hub, EntityDatabase monitorDB, FlioxHub database) {
             using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore", new UserDBHandler()))
-            using (var authenticator    = new UserAuthenticator(userDatabase)) {
+            using (var authenticator    = new UserAuthenticator(userDatabase, TestGlobals.Shared)) {
                 database.Authenticator  = authenticator;
                 await AssertAuthSuccessMonitoringDB (hub, monitorDB);
                 await AssertAuthFailedMonitoringDB  (hub, monitorDB);

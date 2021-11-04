@@ -11,7 +11,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
 {
     public class NoopDatabaseHub : FlioxHub
     {
-        internal NoopDatabaseHub (string hostName = null) : base(null, hostName) { }
+        internal NoopDatabaseHub (SharedEnv env, string hostName = null) : base(null, env, hostName) { }
                 
         public override Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             var result = new SyncResponse {

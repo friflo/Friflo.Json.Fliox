@@ -19,7 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         /// Only set to true for testing. It avoids an early out at <see cref="Host.Event.EventSubscriber.SendEvents"/> 
         public              bool            fakeOpenClosedSockets;
 
-        protected RemoteHostHub(FlioxHub hub, string hostName) : base(hub.database, hostName) {
+        protected RemoteHostHub(FlioxHub hub, SharedEnv env, string hostName) : base(hub.database, env, hostName) {
             this.localHub = hub;
         }
         

@@ -23,7 +23,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
             : base (hub, Name, new MonitorHandler(hub), opt)
         {
             stateDB     = new MemoryDatabase();
-            monitorHub  = new FlioxHub(stateDB);
+            monitorHub  = new FlioxHub(stateDB, hub.sharedEnv);
         }
         
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {

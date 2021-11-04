@@ -41,12 +41,12 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         private   readonly  Authorizer                                  anonymousAuthorizer;
         private   readonly  ConcurrentDictionary<string,  Authorizer>   authorizerByRole = new ConcurrentDictionary <string, Authorizer>();
 
-        public UserAuthenticator (EntityDatabase userDatabase, IUserAuth userAuth = null, Authorizer anonymousAuthorizer = null)
+        public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env, IUserAuth userAuth = null, Authorizer anonymousAuthorizer = null)
             : base (anonymousAuthorizer)
         {
             if (!(userDatabase.handler is UserDBHandler))
                 throw new InvalidOperationException("userDatabase requires a handler of Type: " + nameof(UserDBHandler));
-            userHub        	        = new FlioxHub(userDatabase);
+            userHub        	        = new FlioxHub(userDatabase, env);
             userHub.Authenticator   = new UserDatabaseAuthenticator();  // authorize access to userDatabase
             this.userAuth           = userAuth;
             this.anonymousAuthorizer= anonymousAuthorizer ?? new AuthorizeDeny();

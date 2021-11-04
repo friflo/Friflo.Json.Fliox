@@ -57,7 +57,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task MemoryCreate() {
             using (var _            = SharedHost.Instance) // for LeakTestsFixture
             using (var database     = new MemoryDatabase(new PocHandler()))
-            using (var hub          = new FlioxHub(database))
+            using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var createStore  = new PocStore(hub) { UserId = "createStore"})
             using (var useStore     = new PocStore(hub) { UserId = "useStore"})  {
                 await TestRelationPoC.CreateStore(createStore);
@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task FileCreate() {
             using (var _            = SharedHost.Instance) // for LeakTestsFixture
             using (var database     = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
-            using (var hub          = new FlioxHub(database))
+            using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var createStore  = new PocStore(hub) { UserId = "createStore"})
             using (var useStore     = new PocStore(hub) { UserId = "useStore"}) {
                 await TestRelationPoC.CreateStore(createStore);
@@ -105,7 +105,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task FileUse() {
             using (var _            = SharedHost.Instance) // for LeakTestsFixture
             using (var database     = new FileDatabase(TestGlobals.PocStoreFolder))
-            using (var hub          = new FlioxHub(database))
+            using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var useStore     = new PocStore(hub) { UserId = "useStore"}) {
                 await TestStores(useStore, useStore);
                 
@@ -123,10 +123,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task HttpCreate() {
             using (var _                = SharedHost.Instance) // for LeakTestsFixture
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
-            using (var hub          	= new FlioxHub(database))
+            using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var hostHub          = new HttpHostHub(hub))
             using (var server           = new HttpListenerHost("http://+:8080/", hostHub))
-            using (var remoteDatabase   = new HttpClientHub("http://localhost:8080/")) {
+            using (var remoteDatabase   = new HttpClientHub("http://localhost:8080/", TestGlobals.Shared)) {
                 await RunServer(server, async () => {
                     using (var createStore      = new PocStore(remoteDatabase) { UserId = "createStore", ClientId = "create-client"})
                     using (var useStore         = new PocStore(remoteDatabase) { UserId = "useStore",    ClientId = "use-client"}) {
@@ -156,10 +156,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = SharedHost.Instance) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(false))
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
-            using (var hub          	= new FlioxHub(database))
-            using (var hostHub          = new HttpHostHub(hub))
+            using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
+            using (var hostHub          = new HttpHostHub(hub, TestGlobals.Shared))
             using (var server           = new HttpListenerHost("http://+:8080/", hostHub))
-            using (var remoteHub        = new WebSocketClientHub("ws://localhost:8080/"))
+            using (var remoteHub        = new WebSocketClientHub("ws://localhost:8080/", TestGlobals.Shared))
             using (var listenDb         = new PocStore(remoteHub) { UserId = "listenDb", ClientId = "listen-client"}) {
                 hub.EventBroker = eventBroker;
                 await RunServer(server, async () => {
@@ -191,10 +191,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = SharedHost.Instance) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(true))
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
-            using (var hub          	= new FlioxHub(database))
+            using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var hostHub          = new HttpHostHub(hub))
             using (var server           = new HttpListenerHost("http://+:8080/", hostHub))
-            using (var remoteHub        = new WebSocketClientHub("ws://localhost:8080/"))
+            using (var remoteHub        = new WebSocketClientHub("ws://localhost:8080/", TestGlobals.Shared))
             using (var listenDb         = new PocStore(remoteHub) { UserId = "listenDb", ClientId = "listen-client"}) {
                 hostHub.fakeOpenClosedSockets = true;
                 hub.EventBroker = eventBroker;
@@ -239,7 +239,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = SharedHost.Instance) // for LeakTestsFixture
             using (var eventBroker      = new EventBroker(false))
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
-            using (var hub          	= new FlioxHub(database))
+            using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
             using (var loopbackHub      = new LoopbackHub(hub))
             using (var listenDb         = new PocStore(loopbackHub) { UserId = "listenDb", ClientId = "listen-client"}) {
                 loopbackHub.host.EventBroker    = eventBroker;
@@ -300,7 +300,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task TestCreate(Func<PocStore, Task> test) {
             using (var _            = SharedHost.Instance) // for LeakTestsFixture
             using (var database     = new FileDatabase(TestGlobals.PocStoreFolder, new PocHandler()))
-            using (var hub          = new FlioxHub(database))
+            using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var createStore  = new PocStore(hub) { UserId = "createStore"}) {
                 await TestRelationPoC.CreateStore(createStore);
                 await test(createStore);
@@ -310,7 +310,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private static async Task TestUse(Func<PocStore, Task> test) {
             using (var _            = SharedHost.Instance) // for LeakTestsFixture
             using (var database     = new FileDatabase(TestGlobals.PocStoreFolder))
-            using (var hub          = new FlioxHub(database))
+            using (var hub          = new FlioxHub(database, TestGlobals.Shared))
             using (var createStore  = new PocStore(hub) { UserId = "createStore"}) {
                 await test(createStore);
             }

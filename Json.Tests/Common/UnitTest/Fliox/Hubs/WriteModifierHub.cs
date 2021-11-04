@@ -22,7 +22,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         private readonly    Dictionary<string, PatchModifiers>  patchModifiers  = new Dictionary<string, PatchModifiers>();
         private readonly    EntityProcessor                     processor       = new EntityProcessor();
         
-        public WriteModifierHub(FlioxHub hub) : base(hub.database) {
+        public WriteModifierHub(FlioxHub hub) : base(hub.database, hub.sharedEnv) {
             this.hub = hub;
         }
 
