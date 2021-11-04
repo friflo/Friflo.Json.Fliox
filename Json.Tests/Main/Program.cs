@@ -30,7 +30,7 @@ namespace Friflo.Json.Tests.Main
             // Run a minimal Fliox server without monitoring, Pub-Sub, user authentication / authorization, entity validation
             Console.WriteLine($"FileDatabase: {databaseFolder}");
             var database            = new FileDatabase(databaseFolder);
-            var hub          	    = new FlioxHub(database, TestGlobals.Shared);
+            var hub          	    = new FlioxHub(database);
             var hostHub             = new HttpHostHub(hub);
             var host                = new HttpListenerHost(endpoint, hostHub);
             hostHub.requestHandler  = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
@@ -41,7 +41,7 @@ namespace Friflo.Json.Tests.Main
         private static void FlioxServer(string endpoint, string databaseFolder) {
             Console.WriteLine($"FileDatabase: {databaseFolder}");
             var database            = new FileDatabase(databaseFolder);
-            var hub                 = new FlioxHub(database, TestGlobals.Shared);
+            var hub                 = new FlioxHub(database);
             hub.AddExtensionDB      ( new MonitorDatabase(hub));                // optional. enables monitoring database access
             hub.EventBroker         = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
             hub.Authenticator       = CreateUserAuthenticator();                // optional. Otherwise all request tasks are authorized
