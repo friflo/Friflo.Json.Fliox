@@ -5,6 +5,7 @@ using System;
 using Friflo.Json.Fliox.Hub.Host.Utils;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable ConvertToAutoProperty
 namespace Friflo.Json.Fliox.Hub.Host
 {
     /// <summary>
@@ -22,15 +23,22 @@ namespace Friflo.Json.Fliox.Hub.Host
     /// </summary>
     public class SharedEnv : IDisposable
     {
-        public  virtual     TypeStore   TypeStore   { get; }
-        public  virtual     Pool        Pool        { get; }
+        private readonly    TypeStore   typeStore;
+        
+        public  virtual     TypeStore   TypeStore   => typeStore;
+        public              Pool        Pool        { get; }
         
         public static readonly SharedEnv Default = new DefaultSharedEnv();
 
 
         public SharedEnv() {
-            TypeStore   = new TypeStore();
-            Pool        = new Pool(this);
+            typeStore       = new TypeStore();
+            Pool            = new Pool(this);
+        }
+        
+        public SharedEnv(TypeStore typeStore) {
+            this.typeStore  = typeStore;
+            Pool            = new Pool(this);
         }
 
         public virtual void Dispose () {
@@ -42,11 +50,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     public sealed class DefaultSharedEnv : SharedEnv
     {
         public  override    TypeStore   TypeStore   => HostTypeStore.Get();
-        public  override    Pool        Pool        { get; }
 
-        internal DefaultSharedEnv() {
-            Pool = new Pool(this);
-        }
+        internal DefaultSharedEnv() : base (null) { }
         
         public override void Dispose () {
             Pool.Dispose();
