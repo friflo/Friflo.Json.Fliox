@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     public delegate string CustomContainerName(string name);
     
     /// <summary>
-    /// <see cref="EntityDatabase"/> is the abstraction for specific database adapters / implementations e.g. a
+    /// <see cref="EntityDatabase"/> is the abstraction for specific database adapter / implementation e.g. a
     /// <see cref="MemoryDatabase"/> or <see cref="FileDatabase"/>.
     /// An <see cref="EntityDatabase"/> contains multiple <see cref="EntityContainer"/>'s each representing
     /// a table / collection of a database. Each container is intended to store the records / entities of a specific type.
