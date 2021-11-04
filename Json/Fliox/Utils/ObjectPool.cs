@@ -8,6 +8,19 @@ namespace Friflo.Json.Fliox.Utils
 {
     public readonly struct Pooled<T> : IDisposable where T : IDisposable
     {
+        /// <summary>
+        /// Provide a cached <see cref="instance"/> of Type <see cref="T"/>.
+        /// Access to the <see cref="instance"/> is thread safe in the surrounding using scope.
+        /// Safe access to <see cref="instance"/> is intended by calling <see cref="ObjectPool{T}.Get"/> in a using scope.
+        /// E.g.:
+        /// <code>
+        ///     using (var pooled = messageContext.pool.ObjectMapper.Get()) {
+        ///         ...
+        ///     }
+        /// </code>
+        /// <b>Note</b>: Caching the <see cref="instance"/> reference and accessing it after leaving using scope leads to
+        /// a race condition and must not be done.
+        /// </summary>
         public  readonly T              instance;
         private readonly ObjectPool<T>  pool;
         
