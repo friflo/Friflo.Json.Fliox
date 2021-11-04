@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
     }
     
-    public sealed class DefaultSharedEnv : SharedEnv
+    internal sealed class DefaultSharedEnv : SharedEnv
     {
         public  override    TypeStore   TypeStore   => HostTypeStore.Get();
 
