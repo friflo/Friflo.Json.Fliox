@@ -539,69 +539,71 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         private SyncResult HandleSyncResponse(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore) {
             using (var pooled = ObjectMapper.Get()) {
-                return HandleSyncResponseMapper(syncRequest, response, syncStore, pooled.instance);
+                SyncResult syncResult;
+                try {
+                    HandleSyncResponseMapper(syncRequest, response, syncStore, pooled.instance);
+                }
+                finally {
+                    var failed = new List<SyncTask>();
+                    foreach (SyncTask task in syncStore.appTasks) {
+                        task.AddFailedTask(failed);
+                    }
+                    syncResult = new SyncResult(syncStore.appTasks, failed, response.error);
+                }
+                return syncResult;
             }
         }
 
-        private SyncResult HandleSyncResponseMapper(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore, ObjectMapper mapper) {
-            SyncResult      syncResult;
+        private void HandleSyncResponseMapper(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore, ObjectMapper mapper) {
+            mapper.TracerContext = _intern.tracerContext;
+            
             ErrorResponse   error       = response.error;
-            try {
-                mapper.TracerContext = _intern.tracerContext;
-                TaskErrorResult                         syncError;
-                Dictionary<string, ContainerEntities>   containerResults;
-                if (error == null) {
-                    var result = response.success;
-                    response.success.AssertResponse(syncRequest);
-                    syncError = null;
-                    var hub = _intern.hub; 
-                    if (hub is RemoteClientHub)
-                        GetContainerResults(result);
-                    containerResults = result.resultMap;
-                    foreach (var containerResult in containerResults) {
-                        ContainerEntities containerEntities = containerResult.Value;
-                        var set = _intern.GetSetByName(containerResult.Key);
-                        set.SyncPeerEntities(containerEntities.entityMap, mapper);
-                    }
-                    SetErrors(result, syncStore);
-                } else {
-                    syncError = new TaskErrorResult {
-                        message = error.message,
-                        type    = TaskErrorResultType.SyncError
-                    };
-                    containerResults = new Dictionary<string, ContainerEntities>();
+            TaskErrorResult syncError;
+            Dictionary<string, ContainerEntities>   containerResults;
+            
+            if (error == null) {
+                var result = response.success;
+                response.success.AssertResponse(syncRequest);
+                syncError = null;
+                var hub = _intern.hub; 
+                if (hub is RemoteClientHub)
+                    GetContainerResults(result);
+                containerResults = result.resultMap;
+                foreach (var containerResult in containerResults) {
+                    ContainerEntities containerEntities = containerResult.Value;
+                    var set = _intern.GetSetByName(containerResult.Key);
+                    set.SyncPeerEntities(containerEntities.entityMap, mapper);
                 }
+                SetErrors(result, syncStore);
+            } else {
+                syncError = new TaskErrorResult {
+                    message = error.message,
+                    type    = TaskErrorResultType.SyncError
+                };
+                containerResults = new Dictionary<string, ContainerEntities>();
+            }
 
-                var tasks = syncRequest.tasks;
-                for (int n = 0; n < tasks.Count; n++) {
-                    var task = tasks[n];
-                    TaskType    taskType = task.TaskType;
-                    SyncTaskResult  result;
-                    if (syncError == null) {
-                        var results = response.success.tasks;
-                        result = results[n];
-                        var actual = result.TaskType;
-                        if (actual != TaskType.error) {
-                            if (taskType != actual) {
-                                var msg = $"Expect task type of response matches request. index:{n} expect: {taskType} actual: {actual}";
-                                throw new InvalidOperationException(msg);
-                            }
+            var tasks = syncRequest.tasks;
+            for (int n = 0; n < tasks.Count; n++) {
+                var task = tasks[n];
+                TaskType    taskType = task.TaskType;
+                SyncTaskResult  result;
+                if (syncError == null) {
+                    var results = response.success.tasks;
+                    result = results[n];
+                    var actual = result.TaskType;
+                    if (actual != TaskType.error) {
+                        if (taskType != actual) {
+                            var msg = $"Expect task type of response matches request. index:{n} expect: {taskType} actual: {actual}";
+                            throw new InvalidOperationException(msg);
                         }
-                    } else {
-                        result = syncError;
                     }
-                    ProcessTaskResult(task, result, syncStore, containerResults, mapper);
+                } else {
+                    result = syncError;
                 }
-                syncStore.LogResults();
+                ProcessTaskResult(task, result, syncStore, containerResults, mapper);
             }
-            finally {
-                var failed = new List<SyncTask>();
-                foreach (SyncTask task in syncStore.appTasks) {
-                    task.AddFailedTask(failed);
-                }
-                syncResult = new SyncResult(syncStore.appTasks, failed, error);
-            }
-            return syncResult;
+            syncStore.LogResults();
         }
         
         private static void ProcessTaskResult (
