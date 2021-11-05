@@ -112,7 +112,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (client._intern.disposed)  // store may already be disposed
                 return;
             EventSequence++;
-            using (var pooled = client._intern.pool.ObjectMapper.Get()) {
+            using (var pooled = client.ObjectMapper.Get()) {
                 var mapper = pooled.instance;
                 foreach (var task in ev.tasks) {
                     EntitySet set;
@@ -218,7 +218,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public List<Message> GetMessages(EventMessage eventMessage) {
             messages.Clear();
-            using (var pooled = client._intern.pool.ObjectMapper.Get()) {
+            using (var pooled = client.ObjectMapper.Get()) {
                 var mapper = pooled.instance;
                 foreach (var task in eventMessage.tasks) {
                     if (!(task is SyncMessageTask messageTask)) 

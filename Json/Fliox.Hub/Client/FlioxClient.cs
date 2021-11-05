@@ -33,14 +33,17 @@ namespace Friflo.Json.Fliox.Hub.Client
         // Reason: FlioxClient is extended by application and add multiple EntitySet fields.
         //         So internal fields are encapsulated in field intern.
         // ReSharper disable once InconsistentNaming
-        internal            ClientIntern            _intern;
-        public              StoreInfo               StoreInfo       => new StoreInfo(_intern.syncStore, _intern.setByType); 
-        public   override   string                  ToString()      => StoreInfo.ToString();
-        public              IReadOnlyList<SyncTask> Tasks           => _intern.syncStore.appTasks;
+        internal            ClientIntern                _intern;
+        public              StoreInfo                   StoreInfo       => new StoreInfo(_intern.syncStore, _intern.setByType); 
+        public   override   string                      ToString()      => StoreInfo.ToString();
+        public              IReadOnlyList<SyncTask>     Tasks           => _intern.syncStore.appTasks;
         
-        public              int                     GetSyncCount()  => _intern.syncCount;
+        public              int                         GetSyncCount()  => _intern.syncCount;
         
-        
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        internal            ObjectPool<ObjectMapper>    ObjectMapper    => _intern.pool.ObjectMapper;
+
+
         /// <summary>
         /// Instantiate a <see cref="FlioxClient"/> with a given <see cref="hub"/>.
         /// </summary>
@@ -140,7 +143,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         // --- LogChanges
         public LogTask LogChanges() {
             var task = _intern.syncStore.CreateLog();
-            using (var pooled = _intern.pool.ObjectMapper.Get()) {
+            using (var pooled = ObjectMapper.Get()) {
                 foreach (var setPair in _intern.setByType) {
                     EntitySet set = setPair.Value;
                     set.LogSetChangesInternal(task, pooled.instance);
@@ -219,7 +222,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         public MessageTask SendMessage<TMessage>(string name, TMessage message) {
-            using (var pooled = _intern.pool.ObjectMapper.Get()) {
+            using (var pooled = ObjectMapper.Get()) {
                 var writer  = pooled.instance.writer;
                 var json    = writer.WriteAsArray(message);
                 var task    = new MessageTask(name, new JsonValue(json));
@@ -248,7 +251,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// the <see cref="FlioxClient"/> subclass. Doing this adds the command and its API to the <see cref="DatabaseSchema"/>. 
         /// </summary>
         public CommandTask<TResult> SendCommand<TCommand, TResult>(string name, TCommand command) {
-            using (var pooled = _intern.pool.ObjectMapper.Get()) {
+            using (var pooled = ObjectMapper.Get()) {
                 var mapper  = pooled.instance;
                 var json    = mapper.WriteAsArray(command);
                 var task    = new CommandTask<TResult>(name, new JsonValue(json), _intern.pool);
@@ -376,7 +379,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private SyncRequest CreateSyncRequest(out SyncStore syncStore) {
-            using (var pooled = _intern.pool.ObjectMapper.Get()) {
+            using (var pooled = ObjectMapper.Get()) {
                 return CreateSyncRequestMapper(out syncStore, pooled.instance);
             }          
         }
@@ -535,7 +538,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         private SyncResult HandleSyncResponse(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore) {
-            using (var pooled = _intern.pool.ObjectMapper.Get()) {
+            using (var pooled = ObjectMapper.Get()) {
                 return HandleSyncResponseMapper(syncRequest, response, syncStore, pooled.instance);
             }
         }
