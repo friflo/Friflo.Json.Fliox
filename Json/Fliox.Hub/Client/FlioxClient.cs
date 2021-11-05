@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var messageContext  = new MessageContext(_intern.pool, _intern.eventTarget, _intern.clientId);
             var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(ClientUtils.OriginalContext);
             
-            var result = HandleSyncResponse(syncRequest, response, syncStore);
+            var result = TryHandleSyncResponse(syncRequest, response, syncStore);
             if (!result.Success)
                 throw new SyncTasksException(response.error, result.failed);
             messageContext.Release();
@@ -96,7 +96,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             var messageContext  = new MessageContext(_intern.pool, _intern.eventTarget, _intern.clientId);
             var response        = await ExecuteSync(syncRequest, messageContext).ConfigureAwait(ClientUtils.OriginalContext);
 
-            var result = HandleSyncResponse(syncRequest, response, syncStore);
+            var result = TryHandleSyncResponse(syncRequest, response, syncStore);
             messageContext.Release();
             return result;
         }
@@ -537,11 +537,11 @@ namespace Friflo.Json.Fliox.Hub.Client
             results.Clear();
         }
         
-        private SyncResult HandleSyncResponse(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore) {
+        private SyncResult TryHandleSyncResponse(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore) {
             using (var pooled = ObjectMapper.Get()) {
                 SyncResult syncResult;
                 try {
-                    HandleSyncResponseMapper(syncRequest, response, syncStore, pooled.instance);
+                    HandleSyncResponse(syncRequest, response, syncStore, pooled.instance);
                 }
                 finally {
                     var failed = new List<SyncTask>();
@@ -554,7 +554,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
         }
 
-        private void HandleSyncResponseMapper(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore, ObjectMapper mapper) {
+        private void HandleSyncResponse(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore, ObjectMapper mapper) {
             mapper.TracerContext = _intern.tracerContext;
             
             ErrorResponse   error       = response.error;

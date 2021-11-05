@@ -21,8 +21,8 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal SyncResult(List<SyncTask> tasks, List<SyncTask> failed, ErrorResponse errorResponse) {
             this.errorResponse  = errorResponse;
-            this.tasks      = tasks;
-            this.failed     = failed;
+            this.tasks          = tasks;
+            this.failed         = failed;
         }
         
         internal static string GetMessage(ErrorResponse errorResponse, List<SyncTask> failed) {
