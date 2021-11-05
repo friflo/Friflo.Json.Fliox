@@ -546,7 +546,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         private SyncResult HandleSyncResponseMapper(SyncRequest syncRequest, ExecuteSyncResult response, SyncStore syncStore, ObjectMapper mapper) {
             SyncResult      syncResult;
             ErrorResponse   error       = response.error;
-            var             syncSets    = syncStore.SyncSets;
             try {
                 mapper.TracerContext = _intern.tracerContext;
                 TaskErrorResult                         syncError;
@@ -591,63 +590,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                     } else {
                         result = syncError;
                     }
-
-                    switch (taskType) {
-                        case TaskType.reserveKeys:
-                            var reserveKeys =     (ReserveKeys) task;
-                            var syncSet = syncSets[reserveKeys.container];
-                            syncSet.ReserveKeysResult(reserveKeys, result);
-                            break;
-                        case TaskType.create:
-                            var create =            (CreateEntities) task;
-                            syncSet = syncSets[create.container];
-                            syncSet.CreateEntitiesResult(create, result, mapper);
-                            break;
-                        case TaskType.upsert:
-                            var upsert =            (UpsertEntities) task;
-                            syncSet = syncSets[upsert.container];
-                            syncSet.UpsertEntitiesResult(upsert, result, mapper);
-                            break;
-                        case TaskType.read:
-                            var readList =          (ReadEntities) task;
-                            syncSet = syncSets[readList.container];
-                            containerResults.TryGetValue(readList.container, out ContainerEntities entities);
-                            syncSet.ReadEntitiesResult(readList, result, entities);
-                            break;
-                        case TaskType.query:
-                            var query =             (QueryEntities) task;
-                            syncSet = syncSets[query.container];
-                            containerResults.TryGetValue(query.container, out ContainerEntities queryEntities);
-                            syncSet.QueryEntitiesResult(query, result, queryEntities);
-                            break;
-                        case TaskType.patch:
-                            var patch =             (PatchEntities) task;
-                            syncSet = syncSets[patch.container];
-                            syncSet.PatchEntitiesResult(patch, result);
-                            break;
-                        case TaskType.delete:
-                            var delete =            (DeleteEntities) task;
-                            syncSet = syncSets[delete.container];
-                            syncSet.DeleteEntitiesResult(delete, result);
-                            break;
-                        case TaskType.message:
-                            var message =           (SendMessage) task;
-                            syncStore.MessageResult(message, result);
-                            break;
-                        case TaskType.command:
-                            var command =           (SendCommand) task;
-                            syncStore.MessageResult(command, result);
-                            break;
-                        case TaskType.subscribeChanges:
-                            var subscribeChanges =  (SubscribeChanges) task;
-                            syncSet = syncSets[subscribeChanges.container];
-                            syncSet.SubscribeChangesResult(subscribeChanges, result);
-                            break;
-                        case TaskType.subscribeMessage:
-                            var subscribeMessage =  (SubscribeMessage) task;
-                            syncStore.SubscribeMessageResult(subscribeMessage, result);
-                            break;
-                    }
+                    ProcessTaskResult(task, result, syncStore, containerResults, mapper);
                 }
                 syncStore.LogResults();
             }
@@ -660,8 +603,74 @@ namespace Friflo.Json.Fliox.Hub.Client
             }
             return syncResult;
         }
+        
+        private static void ProcessTaskResult (
+            SyncRequestTask                         task,
+            SyncTaskResult                          result,
+            SyncStore                               syncStore,
+            Dictionary<string, ContainerEntities>   containerResults,
+            ObjectMapper                            mapper)
+        {
+            var syncSets    = syncStore.SyncSets;
+            switch (task.TaskType) {
+                case TaskType.reserveKeys:
+                    var reserveKeys =       (ReserveKeys)       task;
+                    var syncSet = syncSets[reserveKeys.container];
+                    syncSet.ReserveKeysResult(reserveKeys, result);
+                    break;
+                case TaskType.create:
+                    var create =            (CreateEntities)    task;
+                    syncSet = syncSets[create.container];
+                    syncSet.CreateEntitiesResult(create, result, mapper);
+                    break;
+                case TaskType.upsert:
+                    var upsert =            (UpsertEntities)    task;
+                    syncSet = syncSets[upsert.container];
+                    syncSet.UpsertEntitiesResult(upsert, result, mapper);
+                    break;
+                case TaskType.read:
+                    var readList =          (ReadEntities)      task;
+                    syncSet = syncSets[readList.container];
+                    containerResults.TryGetValue(readList.container, out ContainerEntities entities);
+                    syncSet.ReadEntitiesResult(readList, result, entities);
+                    break;
+                case TaskType.query:
+                    var query =             (QueryEntities)     task;
+                    syncSet = syncSets[query.container];
+                    containerResults.TryGetValue(query.container, out ContainerEntities queryEntities);
+                    syncSet.QueryEntitiesResult(query, result, queryEntities);
+                    break;
+                case TaskType.patch:
+                    var patch =             (PatchEntities)     task;
+                    syncSet = syncSets[patch.container];
+                    syncSet.PatchEntitiesResult(patch, result);
+                    break;
+                case TaskType.delete:
+                    var delete =            (DeleteEntities)    task;
+                    syncSet = syncSets[delete.container];
+                    syncSet.DeleteEntitiesResult(delete, result);
+                    break;
+                case TaskType.message:
+                    var message =           (SendMessage)       task;
+                    syncStore.MessageResult(message, result);
+                    break;
+                case TaskType.command:
+                    var command =           (SendCommand)       task;
+                    syncStore.MessageResult(command, result);
+                    break;
+                case TaskType.subscribeChanges:
+                    var subscribeChanges =  (SubscribeChanges)  task;
+                    syncSet = syncSets[subscribeChanges.container];
+                    syncSet.SubscribeChangesResult(subscribeChanges, result);
+                    break;
+                case TaskType.subscribeMessage:
+                    var subscribeMessage =  (SubscribeMessage)  task;
+                    syncStore.SubscribeMessageResult(subscribeMessage, result);
+                    break;
+            }
+        }
     }
-    
+
     /// Add const / static members here instead of <see cref="FlioxClient"/> to avoid showing members in debugger.
     internal static class ClientUtils {
         /// <summary>
