@@ -7,13 +7,14 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Auth
 {
-    public class UserClient {
+    public readonly struct UserClient {
         internal readonly   JsonKey                             userId;
-        internal readonly   Dictionary<string, RequestCount>    requestCounts = new Dictionary<string, RequestCount>();
+        internal readonly   Dictionary<string, RequestCount>    requestCounts;
         
         public   override   string                              ToString() => userId.AsString();
 
         internal UserClient (in JsonKey userId) {
+            requestCounts   = new Dictionary<string, RequestCount>();
             this.userId     = userId;
         }
     }
