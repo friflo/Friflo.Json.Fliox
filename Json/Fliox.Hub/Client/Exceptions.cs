@@ -32,7 +32,7 @@ namespace Friflo.Json.Fliox.Hub.Client
     {
         public readonly     TaskError       error;
         
-        internal TaskResultException(TaskError error) : base(error.GetMessage(false)) {
+        internal TaskResultException(TaskError error) : base(error.GetMessage(true)) {
             this.error      = error;
         }
     }

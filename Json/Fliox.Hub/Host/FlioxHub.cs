@@ -196,6 +196,18 @@ namespace Friflo.Json.Fliox.Hub.Host
             var exceptionName   = e.GetType().Name;
             var msg             = $"{exceptionName}: {e.Message}";
             var stack           = e.StackTrace;
+#if UNITY_5_3_OR_NEWER
+            if (stack != null) {
+                // Unity add StackTrace sections starting with:
+                // --- End of stack trace from previous location where exception was thrown ---
+                // Remove these sections as they bloat the stacktrace assuming the relevant part of the stacktrace
+                // is at the beginning.
+                var endOfStackTraceFromPreviousLocation = stack.IndexOf("\n--- End of stack", StringComparison.Ordinal);
+                if (endOfStackTraceFromPreviousLocation != -1) {
+                    stack = stack.Substring(0, endOfStackTraceFromPreviousLocation);
+                }
+            }
+#endif
             return new TaskErrorResult{ type = TaskErrorResultType.UnhandledException, message = msg, stacktrace  = stack };
         }
 

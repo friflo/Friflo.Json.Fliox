@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Text;
 using Friflo.Json.Burst;
 using Friflo.Json.Fliox.Mapper.Utils;
 using NUnit.Framework;
@@ -38,6 +39,32 @@ namespace Friflo.Json.Tests.Common.Utils
             normalizedExpect    = normalizedExpect.Replace(" ", string.Empty);
             actualExpect        = actualExpect.Replace(" ", string.Empty);
             if (normalizedExpect.Equals(actualExpect))
+                return;
+            Assert.Fail($"Expected: {expect}\nBut was:  {actual}");
+        }
+        
+        public static void AreEqualTrimAt(string expect, string actual) {
+            if (expect == null || actual == null)
+                throw new InvalidOperationException("AreEqualTrimAt() - both parameter must not be null");
+            var lines = actual.Split('\n');
+            var sb = new StringBuilder();
+            bool firstLine = true;
+            foreach (var line in lines) {
+                // ignore method formatted by CLR
+                if (line.StartsWith("   at "))
+                    continue;
+                // ignore method formatted by Unity
+                if (line.StartsWith("  at "))
+                    continue;
+                if (firstLine) {
+                    firstLine = false;
+                } else {
+                    sb.Append('\n');
+                }
+                sb.Append(line);
+            }
+            actual = sb.ToString();
+            if (expect.Equals(actual))
                 return;
             Assert.Fail($"Expected: {expect}\nBut was:  {actual}");
         }

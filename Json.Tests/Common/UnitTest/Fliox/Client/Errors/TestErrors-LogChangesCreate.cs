@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
+using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
@@ -56,7 +57,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
-                AreEqual(@"EntityErrors ~ count: 1
+                AreEqualTrimAt(@"EntityErrors ~ count: 1
 | WriteError: producers [create-exception], UnhandledException - SimulationException: simulated create task exception", logChanges.Error.Message);
             }
 

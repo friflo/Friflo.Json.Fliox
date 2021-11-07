@@ -5,6 +5,7 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
+using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
@@ -94,7 +95,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskReadException.Success);
-                AreEqual("UnhandledException ~ SimulationException: simulated read task exception", patchTaskReadException.Error.Message);
+                AreEqualTrimAt("UnhandledException ~ SimulationException: simulated read task exception", patchTaskReadException.Error.Message);
             }
             
             // --- test write task error
@@ -116,7 +117,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskWriteException.Success);
-                AreEqual("UnhandledException ~ SimulationException: simulated patch task exception", patchTaskWriteException.Error.Message);
+                AreEqualTrimAt("UnhandledException ~ SimulationException: simulated patch task exception", patchTaskWriteException.Error.Message);
             }
         }
     }

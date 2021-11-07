@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                 sb.Append(task.GetLabel()); // todo should use appender instead of Label
                 sb.Append(" # ");
                 var taskError = task.Error;
-                taskError.AppendAsText("|   ", sb, 3, false);
+                taskError.AppendAsText("|   ", sb, 3, true);
             }
             return sb.ToString();
         }

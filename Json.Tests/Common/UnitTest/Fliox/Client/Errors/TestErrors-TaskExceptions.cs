@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
+using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
@@ -60,7 +61,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             var sync = await store.TrySyncTasks(); // ----------------
             
             AreEqual("tasks: 5, failed: 5", sync.ToString());
-            AreEqual(@"SyncTasks() failed with task errors. Count: 5
+            AreEqualTrimAt(@"SyncTasks() failed with task errors. Count: 5
 |- customerRead # UnhandledException ~ SimulationException: simulated read task exception
 |- customerQuery # UnhandledException ~ SimulationException: simulated query exception
 |- createError # UnhandledException ~ SimulationException: simulated create task exception
@@ -69,20 +70,20 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             
             TaskResultException te;
             te = Throws<TaskResultException>(() => { var _ = customerRead.Result; });
-            AreEqual("UnhandledException ~ SimulationException: simulated read task exception", te.Message); // No stacktrace by intention
+            AreEqualTrimAt("UnhandledException ~ SimulationException: simulated read task exception", te.Message);
             AreEqual("SimulationException: simulated read task exception", te.error.taskMessage);
 
             te = Throws<TaskResultException>(() => { var _ = customerQuery.Results; });
-            AreEqual("UnhandledException ~ SimulationException: simulated query exception", te.error.Message);
+            AreEqualTrimAt("UnhandledException ~ SimulationException: simulated query exception", te.error.Message);
 
             IsFalse(createError.Success);
-            AreEqual("UnhandledException ~ SimulationException: simulated create task exception", createError.Error.Message);
+            AreEqualTrimAt("UnhandledException ~ SimulationException: simulated create task exception", createError.Error.Message);
             
             IsFalse(upsertError.Success);
-            AreEqual("UnhandledException ~ SimulationException: simulated upsert task exception", upsertError.Error.Message);
+            AreEqualTrimAt("UnhandledException ~ SimulationException: simulated upsert task exception", upsertError.Error.Message);
             
             IsFalse(deleteError.Success);
-            AreEqual("UnhandledException ~ SimulationException: simulated delete task exception", deleteError.Error.Message);
+            AreEqualTrimAt("UnhandledException ~ SimulationException: simulated delete task exception", deleteError.Error.Message);
         }
     }
 }
