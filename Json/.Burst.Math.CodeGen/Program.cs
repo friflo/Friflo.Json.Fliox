@@ -94,7 +94,7 @@ namespace Friflo.Json.Burst.Math
 
             // --- Reader
             var reader = $@"
-        public static bool UseMember{pascal}{size}(this ref JObj i, ref JsonParser p, in Str32 key, ref {type}{size} value) {{
+        public static bool UseMember{pascal}{size}(this ref JObj i, ref Utf8JsonParser p, in Str32 key, ref {type}{size} value) {{
             if (i.UseMemberArr(ref p, in key, out JArr arr)) {{
                 Read{pascal}{size}(ref arr, ref p, ref value);
                 return true;
@@ -102,7 +102,7 @@ namespace Friflo.Json.Burst.Math
             return false;
         }}
 
-        private static void Read{pascal}{size}(ref JArr i, ref JsonParser p, ref {type}{size} value) {{
+        private static void Read{pascal}{size}(ref JArr i, ref Utf8JsonParser p, ref {type}{size} value) {{
             int index = 0;
             while (i.NextArrayElement(ref p)) {{
                 if (i.UseElement{readSuffix}(ref p)) {{
@@ -149,7 +149,7 @@ namespace Friflo.Json.Burst.Math
             
             // --- Reader
             var reader = $@"
-        private static void Read{pascal}{dim}(ref JArr i, ref JsonParser p, ref {type}{dim} value) {{
+        private static void Read{pascal}{dim}(ref JArr i, ref Utf8JsonParser p, ref {type}{dim} value) {{
             int index = 0;
             while (i.NextArrayElement(ref p)) {{
                 if (i.UseElementArr(ref p, out JArr arr)) {{
@@ -160,7 +160,7 @@ namespace Friflo.Json.Burst.Math
             }}
         }}
 
-        public static bool UseMember{pascal}{dim}(this ref JObj obj, ref JsonParser p, in Str32 key, ref {type}{dim} value) {{
+        public static bool UseMember{pascal}{dim}(this ref JObj obj, ref Utf8JsonParser p, in Str32 key, ref {type}{dim} value) {{
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {{
                 Read{pascal}{dim}(ref arr, ref p, ref value);
                 return true;

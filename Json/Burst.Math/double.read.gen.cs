@@ -16,7 +16,7 @@ namespace Friflo.Json.Burst.Math
     public static partial class JsonMath
     {
         // --------------------------------------- vectors ----------------------------------------------
-        public static bool UseMemberDouble2(this ref JObj i, ref JsonParser p, in Str32 key, ref double2 value) {
+        public static bool UseMemberDouble2(this ref JObj i, ref Utf8JsonParser p, in Str32 key, ref double2 value) {
             if (i.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadDouble2(ref arr, ref p, ref value);
                 return true;
@@ -24,7 +24,7 @@ namespace Friflo.Json.Burst.Math
             return false;
         }
 
-        private static void ReadDouble2(ref JArr i, ref JsonParser p, ref double2 value) {
+        private static void ReadDouble2(ref JArr i, ref Utf8JsonParser p, ref double2 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
                 if (i.UseElementNum(ref p)) {
@@ -35,7 +35,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
 
-        public static bool UseMemberDouble3(this ref JObj i, ref JsonParser p, in Str32 key, ref double3 value) {
+        public static bool UseMemberDouble3(this ref JObj i, ref Utf8JsonParser p, in Str32 key, ref double3 value) {
             if (i.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadDouble3(ref arr, ref p, ref value);
                 return true;
@@ -43,7 +43,7 @@ namespace Friflo.Json.Burst.Math
             return false;
         }
 
-        private static void ReadDouble3(ref JArr i, ref JsonParser p, ref double3 value) {
+        private static void ReadDouble3(ref JArr i, ref Utf8JsonParser p, ref double3 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
                 if (i.UseElementNum(ref p)) {
@@ -54,7 +54,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
 
-        public static bool UseMemberDouble4(this ref JObj i, ref JsonParser p, in Str32 key, ref double4 value) {
+        public static bool UseMemberDouble4(this ref JObj i, ref Utf8JsonParser p, in Str32 key, ref double4 value) {
             if (i.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadDouble4(ref arr, ref p, ref value);
                 return true;
@@ -62,7 +62,7 @@ namespace Friflo.Json.Burst.Math
             return false;
         }
 
-        private static void ReadDouble4(ref JArr i, ref JsonParser p, ref double4 value) {
+        private static void ReadDouble4(ref JArr i, ref Utf8JsonParser p, ref double4 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
                 if (i.UseElementNum(ref p)) {
@@ -74,7 +74,7 @@ namespace Friflo.Json.Burst.Math
         }
 
         // ------------------------------ matrices (rows x columns) -------------------------------------
-        private static void ReadDouble2x2(ref JArr i, ref JsonParser p, ref double2x2 value) {
+        private static void ReadDouble2x2(ref JArr i, ref Utf8JsonParser p, ref double2x2 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
                 if (i.UseElementArr(ref p, out JArr arr)) {
@@ -85,7 +85,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
 
-        public static bool UseMemberDouble2x2(this ref JObj obj, ref JsonParser p, in Str32 key, ref double2x2 value) {
+        public static bool UseMemberDouble2x2(this ref JObj obj, ref Utf8JsonParser p, in Str32 key, ref double2x2 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadDouble2x2(ref arr, ref p, ref value);
                 return true;
@@ -93,7 +93,7 @@ namespace Friflo.Json.Burst.Math
             return false;
         }
 
-        private static void ReadDouble2x3(ref JArr i, ref JsonParser p, ref double2x3 value) {
+        private static void ReadDouble2x3(ref JArr i, ref Utf8JsonParser p, ref double2x3 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
                 if (i.UseElementArr(ref p, out JArr arr)) {
@@ -104,7 +104,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
 
-        public static bool UseMemberDouble2x3(this ref JObj obj, ref JsonParser p, in Str32 key, ref double2x3 value) {
+        public static bool UseMemberDouble2x3(this ref JObj obj, ref Utf8JsonParser p, in Str32 key, ref double2x3 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadDouble2x3(ref arr, ref p, ref value);
                 return true;
@@ -112,7 +112,7 @@ namespace Friflo.Json.Burst.Math
             return false;
         }
 
-        private static void ReadDouble2x4(ref JArr i, ref JsonParser p, ref double2x4 value) {
+        private static void ReadDouble2x4(ref JArr i, ref Utf8JsonParser p, ref double2x4 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
                 if (i.UseElementArr(ref p, out JArr arr)) {
@@ -123,7 +123,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
 
-        public static bool UseMemberDouble2x4(this ref JObj obj, ref JsonParser p, in Str32 key, ref double2x4 value) {
+        public static bool UseMemberDouble2x4(this ref JObj obj, ref Utf8JsonParser p, in Str32 key, ref double2x4 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadDouble2x4(ref arr, ref p, ref value);
                 return true;
@@ -131,7 +131,7 @@ namespace Friflo.Json.Burst.Math
             return false;
         }
 
-        private static void ReadDouble3x2(ref JArr i, ref JsonParser p, ref double3x2 value) {
+        private static void ReadDouble3x2(ref JArr i, ref Utf8JsonParser p, ref double3x2 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
                 if (i.UseElementArr(ref p, out JArr arr)) {
@@ -142,7 +142,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
 
-        public static bool UseMemberDouble3x2(this ref JObj obj, ref JsonParser p, in Str32 key, ref double3x2 value) {
+        public static bool UseMemberDouble3x2(this ref JObj obj, ref Utf8JsonParser p, in Str32 key, ref double3x2 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadDouble3x2(ref arr, ref p, ref value);
                 return true;
@@ -150,7 +150,7 @@ namespace Friflo.Json.Burst.Math
             return false;
         }
 
-        private static void ReadDouble3x3(ref JArr i, ref JsonParser p, ref double3x3 value) {
+        private static void ReadDouble3x3(ref JArr i, ref Utf8JsonParser p, ref double3x3 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
                 if (i.UseElementArr(ref p, out JArr arr)) {
@@ -161,7 +161,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
 
-        public static bool UseMemberDouble3x3(this ref JObj obj, ref JsonParser p, in Str32 key, ref double3x3 value) {
+        public static bool UseMemberDouble3x3(this ref JObj obj, ref Utf8JsonParser p, in Str32 key, ref double3x3 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadDouble3x3(ref arr, ref p, ref value);
                 return true;
@@ -169,7 +169,7 @@ namespace Friflo.Json.Burst.Math
             return false;
         }
 
-        private static void ReadDouble3x4(ref JArr i, ref JsonParser p, ref double3x4 value) {
+        private static void ReadDouble3x4(ref JArr i, ref Utf8JsonParser p, ref double3x4 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
                 if (i.UseElementArr(ref p, out JArr arr)) {
@@ -180,7 +180,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
 
-        public static bool UseMemberDouble3x4(this ref JObj obj, ref JsonParser p, in Str32 key, ref double3x4 value) {
+        public static bool UseMemberDouble3x4(this ref JObj obj, ref Utf8JsonParser p, in Str32 key, ref double3x4 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadDouble3x4(ref arr, ref p, ref value);
                 return true;
@@ -188,7 +188,7 @@ namespace Friflo.Json.Burst.Math
             return false;
         }
 
-        private static void ReadDouble4x2(ref JArr i, ref JsonParser p, ref double4x2 value) {
+        private static void ReadDouble4x2(ref JArr i, ref Utf8JsonParser p, ref double4x2 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
                 if (i.UseElementArr(ref p, out JArr arr)) {
@@ -199,7 +199,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
 
-        public static bool UseMemberDouble4x2(this ref JObj obj, ref JsonParser p, in Str32 key, ref double4x2 value) {
+        public static bool UseMemberDouble4x2(this ref JObj obj, ref Utf8JsonParser p, in Str32 key, ref double4x2 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadDouble4x2(ref arr, ref p, ref value);
                 return true;
@@ -207,7 +207,7 @@ namespace Friflo.Json.Burst.Math
             return false;
         }
 
-        private static void ReadDouble4x3(ref JArr i, ref JsonParser p, ref double4x3 value) {
+        private static void ReadDouble4x3(ref JArr i, ref Utf8JsonParser p, ref double4x3 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
                 if (i.UseElementArr(ref p, out JArr arr)) {
@@ -218,7 +218,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
 
-        public static bool UseMemberDouble4x3(this ref JObj obj, ref JsonParser p, in Str32 key, ref double4x3 value) {
+        public static bool UseMemberDouble4x3(this ref JObj obj, ref Utf8JsonParser p, in Str32 key, ref double4x3 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadDouble4x3(ref arr, ref p, ref value);
                 return true;
@@ -226,7 +226,7 @@ namespace Friflo.Json.Burst.Math
             return false;
         }
 
-        private static void ReadDouble4x4(ref JArr i, ref JsonParser p, ref double4x4 value) {
+        private static void ReadDouble4x4(ref JArr i, ref Utf8JsonParser p, ref double4x4 value) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
                 if (i.UseElementArr(ref p, out JArr arr)) {
@@ -237,7 +237,7 @@ namespace Friflo.Json.Burst.Math
             }
         }
 
-        public static bool UseMemberDouble4x4(this ref JObj obj, ref JsonParser p, in Str32 key, ref double4x4 value) {
+        public static bool UseMemberDouble4x4(this ref JObj obj, ref Utf8JsonParser p, in Str32 key, ref double4x4 value) {
             if (obj.UseMemberArr(ref p, in key, out JArr arr)) {
                 ReadDouble4x4(ref arr, ref p, ref value);
                 return true;

@@ -23,7 +23,7 @@ namespace Friflo.Json.Burst.Math.Tests
         public void ReadMath() {
             var types   = new MathTypes();
             var keys    = new MathKeys(Default.Constructor);
-            using (var parser   = new Local<JsonParser>())
+            using (var parser   = new Local<Utf8JsonParser>())
             using (var json     = new Bytes(jsonString))
             {
                 ref var p = ref parser.value;
@@ -46,7 +46,7 @@ namespace Friflo.Json.Burst.Math.Tests
             }
         }
         
-        private static void ReadMathTypes(ref JObj i, ref JsonParser p, in MathKeys k, ref MathTypes types) {
+        private static void ReadMathTypes(ref JObj i, ref Utf8JsonParser p, in MathKeys k, ref MathTypes types) {
             while (i.NextObjectMember(ref p)) {
                 if      (i.UseMemberFloat2  (ref p, in k.float2,    ref types.float2))     { }
                 else if (i.UseMemberFloat3  (ref p, in k.float3,    ref types.float3))     { }
