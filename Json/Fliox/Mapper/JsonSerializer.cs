@@ -7,8 +7,9 @@ using Friflo.Json.Fliox.Utils;
 namespace Friflo.Json.Fliox.Mapper
 {
     public class SerializerOptions {
-        public bool Pretty              { get; set; }
-        public bool WriteNullMembers    { get; set; }
+        public  bool    Pretty              { get; set; }
+        public  bool    WriteNullMembers    { get; set; }
+        public  int     MaxDepth            { get; set; }
     }
     
     public static class JsonSerializer
@@ -25,8 +26,7 @@ namespace Friflo.Json.Fliox.Mapper
         public static string Serialize<T>(T value, SerializerOptions options = null) {
             using (var pooled = WriterPool.Get()) {
                 var writer = pooled.instance;
-                writer.WriteNullMembers = options?.WriteNullMembers ?? false;
-                writer.Pretty           = options?.Pretty           ?? false;
+                AssignOptions (writer, options);
                 return writer.Write(value);
             }
         }
@@ -34,8 +34,7 @@ namespace Friflo.Json.Fliox.Mapper
         public static void Serialize<T>(T value, Stream stream, SerializerOptions options = null) {
             using (var pooled = WriterPool.Get()) {
                 var writer = pooled.instance;
-                writer.WriteNullMembers = options?.WriteNullMembers ?? false;
-                writer.Pretty           = options?.Pretty           ?? false;
+                AssignOptions (writer, options);
                 writer.Write(value, stream);
             }
         }
@@ -43,8 +42,7 @@ namespace Friflo.Json.Fliox.Mapper
         public static byte[] SerializeAsArray<T>(T value, SerializerOptions options = null) {
             using (var pooled = WriterPool.Get()) {
                 var writer = pooled.instance;
-                writer.WriteNullMembers = options?.WriteNullMembers ?? false;
-                writer.Pretty           = options?.Pretty           ?? false;
+                AssignOptions (writer, options);
                 return writer.WriteAsArray(value);
             }
         }
@@ -53,6 +51,7 @@ namespace Friflo.Json.Fliox.Mapper
         public static T Deserialize<T>(string json, SerializerOptions options = null) {
             using (var pooled = ReaderPool.Get()) {
                 var reader = pooled.instance;
+                AssignOptions(reader, options);
                 return reader.Read<T>(json);
             }
         }
@@ -60,6 +59,7 @@ namespace Friflo.Json.Fliox.Mapper
         public static T Deserialize<T>(Stream stream, SerializerOptions options = null) {
             using (var pooled = ReaderPool.Get()) {
                 var reader = pooled.instance;
+                AssignOptions(reader, options);
                 return reader.Read<T>(stream);
             }
         }
@@ -67,8 +67,19 @@ namespace Friflo.Json.Fliox.Mapper
         public static T Deserialize<T>(JsonValue json, SerializerOptions options = null) {
             using (var pooled = ReaderPool.Get()) {
                 var reader = pooled.instance;
+                AssignOptions(reader, options);
                 return reader.Read<T>(json);
             }
+        }
+        
+        // --- private
+        private static void AssignOptions(ObjectWriter writer, SerializerOptions options) {
+            writer.WriteNullMembers = options?.WriteNullMembers ?? false;
+            writer.Pretty           = options?.Pretty           ?? false;
+            writer.MaxDepth         = options?.MaxDepth         ?? 100;
+        }
+        private static void AssignOptions(ObjectReader reader, SerializerOptions options) {
+            reader.MaxDepth         = options?.MaxDepth         ?? 100;
         }
     }
 }
