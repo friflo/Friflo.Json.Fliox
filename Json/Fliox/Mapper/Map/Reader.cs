@@ -9,12 +9,12 @@ using Friflo.Json.Fliox.Mapper.Utils;
 
 namespace Friflo.Json.Fliox.Mapper.Map
 {
-    public sealed class JsonSerializerStub : IDisposable
+    public sealed class Utf8JsonWriterStub : IDisposable
     {
-        public Utf8JsonWriter jsonSerializer;
+        public Utf8JsonWriter jsonWriter;
         
         public void Dispose() {
-            jsonSerializer.Dispose();
+            jsonWriter.Dispose();
         }
     }
 
@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         public readonly     BytesString         keyRef;
         public readonly     TypeCache           typeCache;
         public              ITracerContext      tracerContext;
-        public              JsonSerializerStub  jsonSerializerStub;
+        public              Utf8JsonWriterStub  jsonWriterStub;
 #if !UNITY_5_3_OR_NEWER
         private             int                 classLevel;
         private  readonly   List<ClassMirror>   mirrorStack;
@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             charBuf         = new char[128];
             setMethodParams = new object[1];
             keyRef          = new BytesString();
-            jsonSerializerStub = null;
+            jsonWriterStub = null;
 #if !UNITY_5_3_OR_NEWER
             mirrorStack     = new List<ClassMirror>(16);
             classLevel      = 0;
@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         public void Dispose() {
-            jsonSerializerStub?.Dispose();
+            jsonWriterStub?.Dispose();
             strBuf      .Dispose();
             typeCache   .Dispose();
             parser      .Dispose();

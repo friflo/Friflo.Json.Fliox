@@ -34,11 +34,11 @@ namespace Friflo.Json.Fliox.Mapper.Map.Val
         }
 
         public override JsonValue Read(ref Reader reader, JsonValue slot, out bool success) {
-            var stub = reader.jsonSerializerStub;
+            var stub = reader.jsonWriterStub;
             if (stub == null)
-                reader.jsonSerializerStub = stub = new JsonSerializerStub();
+                reader.jsonWriterStub = stub = new Utf8JsonWriterStub();
             
-            ref var serializer = ref stub.jsonSerializer;
+            ref var serializer = ref stub.jsonWriter;
             serializer.InitSerializer();
             serializer.WriteTree(ref reader.parser);
             var json = serializer.json.AsArray();
