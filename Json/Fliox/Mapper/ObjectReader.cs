@@ -80,7 +80,7 @@ namespace Friflo.Json.Fliox.Mapper
 
         public ObjectReader(TypeStore typeStore) {
             intern      = new Reader (typeStore);
-            maxDepth    = JsonParser.DefaultMaxDepth;
+            maxDepth    = Utf8JsonParser.DefaultMaxDepth;
         }
         
         private void InitJsonReaderString(string json) {

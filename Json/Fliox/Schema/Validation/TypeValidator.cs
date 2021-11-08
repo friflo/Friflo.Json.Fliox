@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
 {
     public sealed class TypeValidator : IDisposable
     {
-        internal            JsonParser      parser; // on top enabling instance offset 0
+        internal            Utf8JsonParser  parser; // on top enabling instance offset 0
         private             Bytes           jsonBytes = new Bytes(128);
         private             ValidationError validationError;
         private  readonly   List<bool[]>    foundFieldsCache = new List<bool[]>();

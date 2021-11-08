@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return false;
         }
         
-        private static string GetValue(ref JsonParser parser, out bool isString) {
+        private static string GetValue(ref Utf8JsonParser parser, out bool isString) {
             isString = false;
             switch (parser.Event) {
                 case JsonEvent.ValueString:     isString = true;

@@ -13,7 +13,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
     public struct TestParserImpl
     {
         public static void BasicJsonParser() {
-            using (var parser = new Local<JsonParser>())
+            using (var parser = new Local<Utf8JsonParser>())
             {
                 ref var p = ref parser.value;
             
@@ -120,7 +120,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
 
         public static void TestNextEvent(Bytes bytes) {
-            using (var parser = new Local<JsonParser>())
+            using (var parser = new Local<Utf8JsonParser>())
             {
                 ref var p = ref parser.value;
                 p.InitParser (bytes);                                  CheckPath(ref p, "(root)");
@@ -185,7 +185,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             }
         }
         
-        public static void CheckPath (ref JsonParser parser, String path) {
+        public static void CheckPath (ref Utf8JsonParser parser, String path) {
             AreEqual(path,      parser.GetPath());
         }
     }
@@ -199,7 +199,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         
         [Test]
         public void TestParserPath() {
-            using (var parser = new Local<JsonParser>())
+            using (var parser = new Local<Utf8JsonParser>())
             {
                 ref var p = ref parser.value;
                 using (var bytes = new Bytes("{ err")) {
@@ -232,7 +232,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         
         [Test]
         public void TestSkipping() {
-            using (var parser = new Local<JsonParser>())
+            using (var parser = new Local<Utf8JsonParser>())
             {
                 ref var p = ref parser.value;
                 using (var bytes = new Bytes("{}")) {
@@ -344,7 +344,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         private void ParseJson(Bytes json) {
             var memLog = new MemoryLogger(100, 1000, MemoryLog.Enabled);
             // 170 ms - 20000, Release | Any CPU, target framework: net5.0, complex.json: 1134 bytes => 133 MB/sec
-            using (JsonParser p = new JsonParser()) {
+            using (Utf8JsonParser p = new Utf8JsonParser()) {
                 // StopWatch stopwatch = new StopWatch();
                 for (int n = 0; n < 20000; n++) {
                     memLog.Snapshot();
@@ -361,7 +361,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
         [Test]
         public void TestAutoSkip() {
-            using (var parser = new Local<JsonParser>()) {
+            using (var parser = new Local<Utf8JsonParser>()) {
                 ref var p = ref parser.value;
                 using (var json = new Bytes("{}")) {
                     p.InitParser(json);
@@ -513,7 +513,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
         [Test]
         public void TestMaxDepth() {
-            using (JsonParser p = new JsonParser())
+            using (Utf8JsonParser p = new Utf8JsonParser())
             using (var jsonDepth1 = new Bytes("[]"))
             using (var jsonDepth2 = new Bytes("[[]]"))
             {

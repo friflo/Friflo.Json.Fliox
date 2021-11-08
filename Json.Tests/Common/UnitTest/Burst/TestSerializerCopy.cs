@@ -27,8 +27,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         void RunManualBuilder(Bytes bytes, int iterations, MemoryLog memoryLog) {
             var memLog = new MemoryLogger(100, 1000, memoryLog);
             
-            using (var parser = new Local<JsonParser>())
-            using (var s = new Local<JsonSerializer>())
+            using (var parser = new Local<Utf8JsonParser>())
+            using (var s = new Local<Utf8JsonWriter>())
             {
                 ref var p = ref parser.value;
                 ref var ser = ref s.value;
@@ -65,8 +65,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         
         [Test]
         public void TestCopyTree() {
-            using (var parser = new Local<JsonParser>())
-            using (var s = new Local<JsonSerializer>())
+            using (var parser = new Local<Utf8JsonParser>())
+            using (var s = new Local<Utf8JsonWriter>())
             {
                 ref var p = ref parser.value;
                 ref var ser = ref s.value;

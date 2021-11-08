@@ -16,7 +16,7 @@ namespace Friflo.Json.Burst
         ByteReader,
     }
     
-    public partial struct JsonParser
+    public partial struct Utf8JsonParser
     {
         public string DebugString { get {
                 int start = pos - 20;

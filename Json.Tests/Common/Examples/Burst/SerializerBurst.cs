@@ -61,7 +61,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
         [Test]
         public void WriteJson() {
             Keys    k = new Keys(Default.Constructor);
-            using (var serial = new Local<JsonSerializer>())
+            using (var serial = new Local<Utf8JsonWriter>())
             using (var buddy = new Local<Buddy>(CreateBuddy()))
             {
                 ref var s = ref serial.value;
@@ -73,7 +73,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             }
         }
 
-        private static void WriteBuddy(ref JsonSerializer s, in Keys k, in Buddy buddy) {
+        private static void WriteBuddy(ref Utf8JsonWriter s, in Keys k, in Buddy buddy) {
             s.ObjectStart();
             s.MemberStr (in k.firstName,   in buddy.firstName);
             s.MemberLng (in k.age,         buddy.age);
@@ -84,7 +84,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             s.ObjectEnd();
         }
         
-        private static void WriteHobby(ref JsonSerializer s, in Keys k, in Hobby buddy) {
+        private static void WriteHobby(ref Utf8JsonWriter s, in Keys k, in Hobby buddy) {
             s.ObjectStart();
             s.MemberStr(in k.name, in buddy.name);
             s.ObjectEnd();

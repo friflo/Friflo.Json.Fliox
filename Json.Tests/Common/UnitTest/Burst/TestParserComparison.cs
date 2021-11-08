@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         }
         
         
-        public void ReadManual (ref JsonParser p) {
+        public void ReadManual (ref Utf8JsonParser p) {
             int index = 0;
             while (TestParserComparison.NextArrayElement(ref p)) {
                 if      (p.Event == JsonEvent.ValueNumber)  { this[index++] = p.ValueAsInt(out _); }
@@ -53,7 +53,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             }
         }
         
-        public void ReadAuto (ref JsonParser p, ref JArr i) {
+        public void ReadAuto (ref Utf8JsonParser p, ref JArr i) {
             int index = 0;
             while (i.NextArrayElement(ref p)) {
                 if (i.UseElementNum(ref p))                      { this[index++] = p.ValueAsInt(out _); }
@@ -62,9 +62,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
     }
     
     /// <summary>
-    /// Compare the usage of the <see cref="JsonParser"/> in two similar ways<br/>
+    /// Compare the usage of the <see cref="Utf8JsonParser"/> in two similar ways<br/>
     /// 1. using <see cref="NextObjectMember"/> and <see cref="NextArrayElement"/>
-    /// 2. using <see cref="JsonParser.NextObjectMember"/> and <see cref="JsonParser.NextArrayElement"/> 
+    /// 2. using <see cref="Utf8JsonParser.NextObjectMember"/> and <see cref="Utf8JsonParser.NextArrayElement"/> 
     /// </summary>
     public class TestParserComparison : LeakTestsFixture
     {
@@ -103,7 +103,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
         private void RunParser(Bytes bytes, SkipMode skipMode, int iterations, MemoryLog memoryLog) {
             var memLog = new MemoryLogger(100, 100, memoryLog);
-            using (var parser = new Local<JsonParser>())
+            using (var parser = new Local<Utf8JsonParser>())
             {
                 ref var p = ref parser.value;
                 if (skipMode == SkipMode.Manual) {
@@ -208,7 +208,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 str.Dispose();
             }
 
-            public void RootManualSkip(ref JsonParser p) {
+            public void RootManualSkip(ref Utf8JsonParser p) {
                 ref var key = ref p.key;
                 while (NextObjectMember(ref p)) {
                     if      (key.IsEqual32(in nm.map)      && p.Event == JsonEvent.ObjectStart)   { p.SkipTree(); }
@@ -228,7 +228,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 }
             }
             
-            public void RootAutoSkip(ref JsonParser p, ref JObj i) {
+            public void RootAutoSkip(ref Utf8JsonParser p, ref JObj i) {
                 while (i.NextObjectMember(ref p)) {
                     if      (i.UseMemberObj(ref p, in nm.map,     out JObj _))      { p.SkipTree(); }
                     else if (i.UseMemberObj(ref p, in nm.map2,    out JObj _))      { p.SkipTree(); }
@@ -246,46 +246,46 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 }
             }
             
-            void ReadListStrManual(ref JsonParser p) {
+            void ReadListStrManual(ref Utf8JsonParser p) {
                 while (NextArrayElement(ref p)) {
                     if      (p.Event == JsonEvent.ValueString) { strElement.Set( ref p.value); }
                     else                                       { p.SkipEvent(); }
                 }
             }
             
-            void ReadListStrAuto(ref JsonParser p, ref JArr i) {
+            void ReadListStrAuto(ref Utf8JsonParser p, ref JArr i) {
                 while (i.NextArrayElement(ref p)) {
                     if      (i.UseElementStr(ref p))                { strElement.Set( ref p.value); }
                 }
             }
             
-            void ReadArrManual(ref JsonParser p) {
+            void ReadArrManual(ref Utf8JsonParser p) {
                 while (NextArrayElement(ref p)) {
                     if      (p.Event == JsonEvent.ValueNull)   { foundNullElement = true; }
                     else                                       { p.SkipEvent(); }
                 }
             }
             
-            void ReadArrAuto(ref JsonParser p, ref JArr i) {
+            void ReadArrAuto(ref Utf8JsonParser p, ref JArr i) {
                 while (i.NextArrayElement(ref p)) {
                     if      (i.UseElementNul(ref p))                { foundNullElement = true; }
                 }
             }
 
-            void ReadBoolArrManual(ref JsonParser p) {
+            void ReadBoolArrManual(ref Utf8JsonParser p) {
                 while (NextArrayElement(ref p)) {
                     if      (p.Event == JsonEvent.ValueBool)   { trueElement = p.boolValue; }
                     else                                       { p.SkipEvent(); }
                 }
             }
             
-            void ReadBoolArrAuto(ref JsonParser p, ref JArr i) {
+            void ReadBoolArrAuto(ref Utf8JsonParser p, ref JArr i) {
                 while (i.NextArrayElement(ref p)) {
                     if      (i.UseElementBln(ref p))                { trueElement = p.boolValue; }
                 }
             }
             
-            public void AssertParseResult(ref JsonParser p) {
+            public void AssertParseResult(ref Utf8JsonParser p) {
                 if (p.error.ErrSet)
                     Fail(p.error.msg.AsString());
                 AreEqual(JsonEvent.EOF, p.NextEvent());   // Important to ensure absence of application errors
@@ -316,7 +316,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             }
         }
         
-        public static bool NextObjectMember (ref JsonParser p) {
+        public static bool NextObjectMember (ref Utf8JsonParser p) {
             JsonEvent ev = p.NextEvent();
             switch (ev) {
                 case JsonEvent.ValueString:
@@ -334,7 +334,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             return false;
         }
         
-        public static bool NextArrayElement (ref JsonParser p) {
+        public static bool NextArrayElement (ref Utf8JsonParser p) {
             JsonEvent ev = p.NextEvent();
             switch (ev) {
                 case JsonEvent.ValueString:

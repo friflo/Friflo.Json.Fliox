@@ -5,7 +5,7 @@
 
 namespace Friflo.Json.Burst
 {
-    public partial struct JsonSerializer
+    public partial struct Utf8JsonWriter
     {
     
         

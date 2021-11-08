@@ -19,8 +19,8 @@ namespace Friflo.Json.Burst
     /// Contains the count of JSON nodes (object members and array elements) skipped while parsing a JSON document.
     ///
     /// These count numbers are categorized by: arrays, booleans, floats, integers, nulls, objects and strings.
-    /// The count numbers are incremented while skipping via one of the <see cref="JsonParser"/> Skip...() methods like
-    /// <see cref="JsonParser.SkipTree()"/> and <see cref="JsonParser.SkipEvent"/>. 
+    /// The count numbers are incremented while skipping via one of the <see cref="Utf8JsonParser"/> Skip...() methods like
+    /// <see cref="Utf8JsonParser.SkipTree()"/> and <see cref="Utf8JsonParser.SkipEvent"/>. 
     /// </summary>
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
@@ -75,14 +75,14 @@ namespace Friflo.Json.Burst
     /// In case of an invalid JSON document <see cref="NextEvent()"/> returns <see cref="JsonEvent.Error"/>.
     /// At this point any subsequent call to <see cref="NextEvent()"/> will return the same error.
     ///
-    /// To maximize performance the <see cref="JsonParser"/> instance should be reused. This avoids unnecessary allocations on the heap.
+    /// To maximize performance the <see cref="Utf8JsonParser"/> instance should be reused. This avoids unnecessary allocations on the heap.
     /// </summary>
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public partial struct JsonParser : IDisposable
+    public partial struct Utf8JsonParser : IDisposable
     {
-        static JsonParser() { BurstLog.InitialBurstLog(); }
+        static Utf8JsonParser() { BurstLog.InitialBurstLog(); }
         
         public const int DefaultMaxDepth = 100;
         

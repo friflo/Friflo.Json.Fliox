@@ -14,13 +14,13 @@ namespace Friflo.Json.Fliox.Transform
 #endif
     public sealed class JsonPatcher : IDisposable
     {
-        private             JsonSerializer  serializer;
+        private             Utf8JsonWriter  serializer;
         
         private             Bytes           targetJson = new Bytes(128);
-        private             JsonParser      targetParser;
+        private             Utf8JsonParser  targetParser;
         
         private             Bytes           patchJson = new Bytes(128);
-        private             JsonParser      patchParser;
+        private             Utf8JsonParser  patchParser;
         
         private             Bytes           keyBytes = new Bytes(32);
         private readonly    List<PatchNode> nodeStack = new List<PatchNode>();
@@ -68,8 +68,8 @@ namespace Friflo.Json.Fliox.Transform
             return new JsonValue(serializer.json.AsArray());
         }
 
-        private bool TraceObject(ref JsonParser p) {
-            while (JsonSerializer.NextObjectMember(ref p)) {
+        private bool TraceObject(ref Utf8JsonParser p) {
+            while (Utf8JsonWriter.NextObjectMember(ref p)) {
                 var key  = new JsonKey(ref p.key, ref p.valueParser);
                 var node = nodeStack[nodeStack.Count - 1];
                 if (node.children.TryGetValue(key, out PatchNode patch)) {
@@ -159,9 +159,9 @@ namespace Friflo.Json.Fliox.Transform
             return true;
         }
         
-        private bool TraceArray(ref JsonParser p) {
+        private bool TraceArray(ref Utf8JsonParser p) {
             int index = -1;
-            while (JsonSerializer.NextArrayElement(ref p)) {
+            while (Utf8JsonWriter.NextArrayElement(ref p)) {
                 index++;
                 var node = nodeStack[nodeStack.Count - 1];
                 var key = new JsonKey(index);
@@ -226,7 +226,7 @@ namespace Friflo.Json.Fliox.Transform
             return true;
         }
         
-        private bool TraceTree(ref JsonParser p) {
+        private bool TraceTree(ref Utf8JsonParser p) {
             switch (rootNode.patchType) {
                 case PatchType.Replace:
                     patchJson.Clear();

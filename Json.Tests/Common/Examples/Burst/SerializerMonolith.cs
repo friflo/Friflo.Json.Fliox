@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
         [Test]
         public void WriteJson() {
             Buddy buddy = CreateBuddy();
-            using (var serial = new Local<JsonSerializer>())
+            using (var serial = new Local<Utf8JsonWriter>())
             {
                 ref var s = ref serial.value;
                 s.InitSerializer();

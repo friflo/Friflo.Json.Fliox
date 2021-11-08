@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
             charBuf         = new char[128];
             typeCache       = new TypeCache(typeStore);
             level           = 0;
-            maxDepth        = JsonParser.DefaultMaxDepth;
+            maxDepth        = Utf8JsonParser.DefaultMaxDepth;
             outputType      = OutputType.ByteList;
             pretty          = false;
             writeNullMembers= true;
@@ -81,7 +81,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         // --- WriteUtils
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void WriteString(string str) {
-            JsonSerializer.AppendEscString(ref bytes, in str);
+            Utf8JsonWriter.AppendEscString(ref bytes, in str);
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -129,12 +129,12 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
         
         public void IndentBegin() {
-            JsonSerializer.IndentJsonNode(ref bytes, this.level);
+            Utf8JsonWriter.IndentJsonNode(ref bytes, this.level);
         }
         
         public void IndentEnd() {
             int decLevel = this.level - 1;
-            JsonSerializer.IndentJsonNode(ref bytes, decLevel);
+            Utf8JsonWriter.IndentJsonNode(ref bytes, decLevel);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

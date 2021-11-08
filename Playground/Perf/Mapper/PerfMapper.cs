@@ -72,7 +72,7 @@ namespace Friflo.Playground.Perf.Mapper
             CreateBookShelfJson(ref bookShelfJson);
             for (int n = 0; n < 10; n++) {
                 int start = TimeUtil.GetMs();
-                using (var p = new JsonParser()) {
+                using (var p = new Utf8JsonParser()) {
                     p.InitParser(bookShelfJson);
                     // parser.InitParser(new MemoryStream(json.buffer.array, json.start, json.Len));
                     while (p.NextEvent() != JsonEvent.EOF) {
@@ -92,7 +92,7 @@ namespace Friflo.Playground.Perf.Mapper
             for (int n = 0; n < 10; n++) {
                 int start = TimeUtil.GetMs();
                 int bookCount = 0;
-                using (var parser = new Local<JsonParser>()) {
+                using (var parser = new Local<Utf8JsonParser>()) {
                     ref var p = ref parser.value;
                     p.InitParser(bookShelfJson);
                     p.ExpectRootObject(out JObj i);

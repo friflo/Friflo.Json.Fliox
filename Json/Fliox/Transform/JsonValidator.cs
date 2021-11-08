@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.Transform
     public sealed class JsonValidator : IDisposable
     {
         private             Bytes           jsonBytes = new Bytes(128);
-        private             JsonParser      parser;
+        private             Utf8JsonParser  parser;
         
         public bool IsValidJson(JsonValue json, out string error) {
             jsonBytes.Clear();

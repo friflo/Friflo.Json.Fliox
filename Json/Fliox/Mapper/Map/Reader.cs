@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
 {
     public sealed class JsonSerializerStub : IDisposable
     {
-        public JsonSerializer jsonSerializer;
+        public Utf8JsonWriter jsonSerializer;
         
         public void Dispose() {
             jsonSerializer.Dispose();
@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
     [CLSCompliant(true)]
 #endif
     public partial struct Reader : IDisposable {
-        public              JsonParser          parser;
+        public              Utf8JsonParser      parser;
         public              Bytes               strBuf;
         public              Bytes32             searchKey;
         /// <summary>Can be used for custom mappers to create a temporary "string"
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Mapper.Map
         }
 
         public Reader(TypeStore typeStore) {
-            parser = new JsonParser();
+            parser = new Utf8JsonParser();
             tracerContext   = null;
 
             typeCache       = new TypeCache(typeStore);

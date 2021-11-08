@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System; 
 using System.Diagnostics; 
-using static Friflo.Json.Burst.JsonParser;
+using static Friflo.Json.Burst.Utf8JsonParser;
 
 #if JSON_BURST
     using Str32 = Unity.Collections.FixedString32;
@@ -26,7 +26,7 @@ namespace Friflo.Json.Burst
             usedMember      = false;
         }
         
-        public bool NextObjectMember (ref JsonParser p) { // , Skip skip
+        public bool NextObjectMember (ref Utf8JsonParser p) { // , Skip skip
             if (p.lastEvent == JsonEvent.Error)
                 return false;
             
@@ -74,7 +74,7 @@ namespace Friflo.Json.Burst
         
         // ----------- object member checks -----------
         [Conditional("DEBUG")]
-        private void UseMember(ref JsonParser p) {
+        private void UseMember(ref Utf8JsonParser p) {
             if (!hasIterated)
                 throw new InvalidOperationException("Must call UseMember...() only after NextObjectMember()");
                 
@@ -88,7 +88,7 @@ namespace Friflo.Json.Burst
                 throw new InvalidOperationException("Must call UseMember...() method only within an object");
         }
         
-        public bool UseMemberObj(ref JsonParser p, in Str32 name, out JObj obj) {
+        public bool UseMemberObj(ref Utf8JsonParser p, in Str32 name, out JObj obj) {
             UseMember(ref p);
             if (p.lastEvent != JsonEvent.ObjectStart || !p.key.IsEqual32(in name)) {
                 obj = new JObj(-1);
@@ -99,7 +99,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseMemberArr(ref JsonParser p, in Str32 name, out JArr arr) {
+        public bool UseMemberArr(ref Utf8JsonParser p, in Str32 name, out JArr arr) {
             UseMember(ref p);
             if (p.lastEvent != JsonEvent.ArrayStart || !p.key.IsEqual32(in name)) {
                 arr = new JArr(-1);
@@ -110,7 +110,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseMemberNum(ref JsonParser p, in Str32 name) {
+        public bool UseMemberNum(ref Utf8JsonParser p, in Str32 name) {
             UseMember(ref p);
             if (p.lastEvent != JsonEvent.ValueNumber || !p.key.IsEqual32(in name))
                 return false;
@@ -118,7 +118,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseMemberStr(ref JsonParser p, in Str32 name) {
+        public bool UseMemberStr(ref Utf8JsonParser p, in Str32 name) {
             UseMember(ref p);
             if (p.lastEvent != JsonEvent.ValueString || !p.key.IsEqual32(in name))
                 return false;
@@ -126,7 +126,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseMemberBln(ref JsonParser p, in Str32 name) {
+        public bool UseMemberBln(ref Utf8JsonParser p, in Str32 name) {
             UseMember(ref p);
             if (p.lastEvent != JsonEvent.ValueBool || !p.key.IsEqual32(in name))
                 return false;
@@ -134,7 +134,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseMemberNul(ref JsonParser p, in Str32 name) {
+        public bool UseMemberNul(ref Utf8JsonParser p, in Str32 name) {
             UseMember(ref p);
             if (p.lastEvent != JsonEvent.ValueNull || !p.key.IsEqual32(in name)) 
                 return false;

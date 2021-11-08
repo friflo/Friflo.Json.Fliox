@@ -39,7 +39,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
         [Test]
         public void ReadJson() {
             Buddy buddy = new Buddy();
-            using (var parser = new Local<JsonParser>())
+            using (var parser = new Local<Utf8JsonParser>())
             using (var json = new Bytes(jsonString))
             {
                 ref var p = ref parser.value;

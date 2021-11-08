@@ -38,9 +38,9 @@ namespace Friflo.Json.Burst
 #if !UNITY_5_3_OR_NEWER
     [CLSCompliant(true)]
 #endif
-    public partial struct JsonSerializer : IDisposable
+    public partial struct Utf8JsonWriter : IDisposable
     {
-        static JsonSerializer() { BurstLog.InitialBurstLog(); }
+        static Utf8JsonWriter() { BurstLog.InitialBurstLog(); }
         
         /// <summary>Contains the generated JSON document as <see cref="Bytes"/>.</summary>
         public      Bytes                   json;
@@ -88,7 +88,7 @@ namespace Friflo.Json.Burst
             json.Clear();
             format.InitTokenFormat();
             int initDepth = 16;
-            maxDepth = JsonParser.DefaultMaxDepth;
+            maxDepth = Utf8JsonParser.DefaultMaxDepth;
             if (!nodeFlags.IsCreated())
                 nodeFlags = new ValueList<NodeFlags>  (initDepth, AllocType.Persistent); nodeFlags.Resize(initDepth);
 #if DEBUG
@@ -490,7 +490,7 @@ namespace Friflo.Json.Burst
         }
         
         // ----------------- utilities
-        public bool WriteObject(ref JsonParser p) {
+        public bool WriteObject(ref Utf8JsonParser p) {
             while (NextObjectMember(ref p)) {
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
@@ -532,7 +532,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool WriteArray(ref JsonParser p) {
+        public bool WriteArray(ref Utf8JsonParser p) {
             while (NextArrayElement(ref p)) {
                 switch (p.Event) {
                     case JsonEvent.ArrayStart:
@@ -573,7 +573,7 @@ namespace Friflo.Json.Burst
             return true;
         }
 
-        public bool WriteTree(ref JsonParser p) {
+        public bool WriteTree(ref Utf8JsonParser p) {
             switch (p.Event) {
                 case JsonEvent.ObjectStart:
                     ObjectStart();
@@ -597,7 +597,7 @@ namespace Friflo.Json.Burst
             return false;
         }
         
-        public bool WriteMember(ref Bytes key, ref JsonParser p) {
+        public bool WriteMember(ref Bytes key, ref Utf8JsonParser p) {
             switch (p.Event) {
                 case JsonEvent.ArrayStart:
                     MemberArrayStart(key);
@@ -623,7 +623,7 @@ namespace Friflo.Json.Burst
             return false;
         }
         
-        public static bool NextObjectMember (ref JsonParser p) {
+        public static bool NextObjectMember (ref Utf8JsonParser p) {
             JsonEvent ev = p.NextEvent();
             switch (ev) {
                 case JsonEvent.ValueString:
@@ -641,7 +641,7 @@ namespace Friflo.Json.Burst
             return false;
         }
         
-        public static bool NextArrayElement (ref JsonParser p) {
+        public static bool NextArrayElement (ref Utf8JsonParser p) {
             JsonEvent ev = p.NextEvent();
             switch (ev) {
                 case JsonEvent.ValueString:

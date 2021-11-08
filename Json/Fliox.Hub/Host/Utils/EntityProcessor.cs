@@ -22,17 +22,17 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
     /// </summary>
     public sealed class EntityProcessor : IDisposable
     {
-        private             Bytes               jsonBytes   = new Bytes(128);
-        private             JsonParser          parser;
-        private             Bytes               idKey       = new Bytes(16);
-        private             bool                foundKey;
+        private             Bytes                   jsonBytes   = new Bytes(128);
+        private             Utf8JsonParser          parser;
+        private             Bytes                   idKey       = new Bytes(16);
+        private             bool                    foundKey;
         //                  --- ReplaceKey
-        private             JsonParser.State    keyState;
-        private             int                 keyStart;
-        private             int                 keyEnd;
-        private             bool                foundIntKey;
-        private             bool                asIntKey;
-        private             Bytes               sb          = new Bytes(0);
+        private             Utf8JsonParser.State    keyState;
+        private             int                     keyStart;
+        private             int                     keyEnd;
+        private             bool                    foundIntKey;
+        private             bool                    asIntKey;
+        private             Bytes                   sb          = new Bytes(0);
         
         public bool GetEntityKey(JsonValue json, string keyName, out JsonKey keyValue, out string error) {
             keyName  = keyName ?? "id";
@@ -54,7 +54,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Utils
                 return json;
             sb.Clear();
             sb.AppendArray(json, 0, keyStart);
-            if (keyState == JsonParser.State.ExpectMember) {
+            if (keyState == Utf8JsonParser.State.ExpectMember) {
                 sb.AppendChar(',');
             }
             sb.AppendChar('\"');

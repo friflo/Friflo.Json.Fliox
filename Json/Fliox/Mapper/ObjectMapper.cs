@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Mapper
         public void Reset() {
             ErrorHandler        = Reader.DefaultErrorHandler;
             TracerContext       = null;
-            MaxDepth            = JsonParser.DefaultMaxDepth;
+            MaxDepth            = Utf8JsonParser.DefaultMaxDepth;
             WriteNullMembers    = true;
             Pretty              = false;
         }

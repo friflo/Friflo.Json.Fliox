@@ -45,7 +45,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             Buddy buddy = new Buddy();
             
             using (var json = new Bytes(jsonString))
-            using (var parser = new Local<JsonParser>())
+            using (var parser = new Local<Utf8JsonParser>())
             {
                 ref var p = ref parser.value;
                 p.InitParser(json);
@@ -63,7 +63,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             }
         }
         
-        private static void ReadBuddy(ref JsonParser p, ref JObj i, ref Buddy buddy) {
+        private static void ReadBuddy(ref Utf8JsonParser p, ref JObj i, ref Buddy buddy) {
             while (i.NextObjectMember(ref p)) {
                 if      (i.UseMemberStr (ref p, "firstName"))               { buddy.firstName = p.value.AsString(); }
                 else if (i.UseMemberNum (ref p, "age"))                     { buddy.age = p.ValueAsInt(out _); }
@@ -71,7 +71,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             }
         }
         
-        private static void ReadHobbyList(ref JsonParser p, ref JArr arr, ref List<Hobby> hobbyList) {
+        private static void ReadHobbyList(ref Utf8JsonParser p, ref JArr arr, ref List<Hobby> hobbyList) {
             while (arr.NextArrayElement(ref p)) {
                 if (arr.UseElementObj(ref p, out JObj obj)) {
                     var hobby = new Hobby();
@@ -81,7 +81,7 @@ namespace Friflo.Json.Tests.Common.Examples.Burst
             }
         }
         
-        private static void ReadHobby(ref JsonParser p, ref JObj i, ref Hobby hobby) {
+        private static void ReadHobby(ref Utf8JsonParser p, ref JObj i, ref Hobby hobby) {
             while (i.NextObjectMember(ref p)) {
                 if (i.UseMemberStr (ref p, "name"))  { hobby.name = p.value.AsString(); }
             }

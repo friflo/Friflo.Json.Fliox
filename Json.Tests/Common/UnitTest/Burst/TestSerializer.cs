@@ -14,7 +14,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
     {
         [Test]
         public void TestBasics() {
-            JsonSerializer serializer = new JsonSerializer();
+            Utf8JsonWriter serializer = new Utf8JsonWriter();
             try {
                 RunSerializer(ref serializer);
             }
@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             }
         }
 
-        private void RunSerializer(ref JsonSerializer s) {
+        private void RunSerializer(ref Utf8JsonWriter s) {
             {
                 s.InitSerializer();
                 s.ObjectStart();
@@ -150,7 +150,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 AreEqual("null", s.json.AsString());
             }
 #if DEBUG
-            JsonSerializer ser = s; // capture
+            Utf8JsonWriter ser = s; // capture
             
             // --- test DEBUG safety guard exceptions ---
             {
@@ -220,7 +220,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         
         [Test]
         public void TestMaxDepth() {
-            using (JsonSerializer ser = new JsonSerializer())
+            using (Utf8JsonWriter ser = new Utf8JsonWriter())
             {
                 // --- JsonSerializer
                 ser.InitSerializer();
@@ -241,8 +241,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         
         [Test]
         public void Pretty () {
-            using (var parser = new Local<JsonParser>())
-            using (var ser = new JsonSerializer())
+            using (var parser = new Local<Utf8JsonParser>())
+            using (var ser = new Utf8JsonWriter())
             using (Bytes bytes = CommonUtils.FromFile("assets~/Burst/codec/complex.json")) {
                 ser.SetPretty(true);
                 parser.value.InitParser(bytes);

@@ -89,7 +89,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
                 Str32 src = "a©€😎🌍";
                 dst.Clear();
-                JsonSerializer.AppendEscString(ref dst, in src);
+                Utf8JsonWriter.AppendEscString(ref dst, in src);
                 AreEqual("\"" + src + "\"", dst.AsString());
             } finally {
                 dst.Dispose();
@@ -154,7 +154,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
             for (int codePoint = from; codePoint < to; codePoint++) {
                 dst.Clear();
                 string str = char.ConvertFromUtf32 (codePoint);
-                JsonSerializer.AppendEscString(ref dst, in str);
+                Utf8JsonWriter.AppendEscString(ref dst, in str);
                 AreEqual($"\"{str}\"", dst.AsString());
             }
         }
@@ -162,7 +162,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         private void AssertAppendEscStringChar(ref Bytes dst, char escChar, string expect) {
             dst.Clear();
             string str = char.ConvertFromUtf32 (escChar);
-            JsonSerializer.AppendEscString(ref dst, in str);
+            Utf8JsonWriter.AppendEscString(ref dst, in str);
             AreEqual($"\"\\{expect}\"", dst.AsString());
         }
 
@@ -185,7 +185,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
 
         [Test]
         public void TestSerializeUnicode() {
-            using (var s = new JsonSerializer()) {
+            using (var s = new Utf8JsonWriter()) {
                 s.InitSerializer();
                 s.ObjectStart();
                 s.MemberStr ("test", "a©€😎🌍");

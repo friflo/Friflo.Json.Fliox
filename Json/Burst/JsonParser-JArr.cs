@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 using System; 
 using System.Diagnostics; 
-using static Friflo.Json.Burst.JsonParser;
+using static Friflo.Json.Burst.Utf8JsonParser;
 
 namespace Friflo.Json.Burst
 {
@@ -23,7 +23,7 @@ namespace Friflo.Json.Burst
             usedMember = false;
         }
 
-        public bool NextArrayElement (ref JsonParser p) { // , Skip skip)
+        public bool NextArrayElement (ref Utf8JsonParser p) { // , Skip skip)
             if (p.lastEvent == JsonEvent.Error)
                 return false;
             
@@ -73,7 +73,7 @@ namespace Friflo.Json.Burst
         
         // ----------- array element checks -----------
         [Conditional("DEBUG")]
-        private void UseElement(ref JsonParser p) {
+        private void UseElement(ref Utf8JsonParser p) {
             if (!hasIterated)
                 throw new InvalidOperationException("Must call UseElement...() only after NextArrayElement()");
 
@@ -87,7 +87,7 @@ namespace Friflo.Json.Burst
                 throw new InvalidOperationException("Must call UseElement...() method on within an array");
         }
         
-        public bool UseElementObj(ref JsonParser p, out JObj obj) {
+        public bool UseElementObj(ref Utf8JsonParser p, out JObj obj) {
             UseElement(ref p);
             if (p.lastEvent != JsonEvent.ObjectStart) {
                 obj = new JObj(-1);
@@ -98,7 +98,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseElementArr(ref JsonParser p, out JArr arr) {
+        public bool UseElementArr(ref Utf8JsonParser p, out JArr arr) {
             UseElement(ref p);
             if (p.lastEvent != JsonEvent.ArrayStart) {
                 arr = new JArr(-1);
@@ -109,7 +109,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseElementNum(ref JsonParser p) {
+        public bool UseElementNum(ref Utf8JsonParser p) {
             UseElement(ref p);
             if (p.lastEvent != JsonEvent.ValueNumber)
                 return false;
@@ -117,7 +117,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseElementStr(ref JsonParser p) {
+        public bool UseElementStr(ref Utf8JsonParser p) {
             UseElement(ref p);
             if (p.lastEvent != JsonEvent.ValueString)
                 return false;
@@ -125,7 +125,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseElementBln(ref JsonParser p) {
+        public bool UseElementBln(ref Utf8JsonParser p) {
             UseElement(ref p);
             if (p.lastEvent != JsonEvent.ValueBool)
                 return false;
@@ -133,7 +133,7 @@ namespace Friflo.Json.Burst
             return true;
         }
         
-        public bool UseElementNul(ref JsonParser p) {
+        public bool UseElementNul(ref Utf8JsonParser p) {
             UseElement(ref p);
             if (p.lastEvent != JsonEvent.ValueNull)
                 return false;

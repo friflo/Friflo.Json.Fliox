@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Transform
     public sealed class ScalarSelector : IDisposable
     {
         private             Bytes                               targetJson = new Bytes(128);
-        private             JsonParser                          targetParser;
+        private             Utf8JsonParser                          targetParser;
         
         private readonly    List<PathNode<ScalarSelectResult>>  nodeStack = new List<PathNode<ScalarSelectResult>>();
         private readonly    ScalarSelect                        reusedSelect = new ScalarSelect();
@@ -87,8 +87,8 @@ namespace Friflo.Json.Fliox.Transform
             }
         }
         
-        private bool TraceObject(ref JsonParser p) {
-            while (JsonSerializer.NextObjectMember(ref p)) {
+        private bool TraceObject(ref Utf8JsonParser p) {
+            while (Utf8JsonWriter.NextObjectMember(ref p)) {
                 var node = nodeStack[nodeStack.Count - 1];
                 if (!node.FindByBytes(ref p.key, out PathNode<ScalarSelectResult> path)) {
                     targetParser.SkipEvent();
@@ -131,9 +131,9 @@ namespace Friflo.Json.Fliox.Transform
             return true;
         }
         
-        private bool TraceArray(ref JsonParser p) {
+        private bool TraceArray(ref Utf8JsonParser p) {
             int index = -1;
-            while (JsonSerializer.NextArrayElement(ref p)) {
+            while (Utf8JsonWriter.NextArrayElement(ref p)) {
                 index++;
                 var node = nodeStack[nodeStack.Count - 1];
                 PathNode<ScalarSelectResult> path;
@@ -183,7 +183,7 @@ namespace Friflo.Json.Fliox.Transform
             return true;
         }
         
-        private bool TraceTree(ref JsonParser p) {
+        private bool TraceTree(ref Utf8JsonParser p) {
             switch (p.Event) {
                 case JsonEvent.ObjectStart:
                     return TraceObject(ref p);

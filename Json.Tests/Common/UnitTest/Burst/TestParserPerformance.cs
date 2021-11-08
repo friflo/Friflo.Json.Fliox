@@ -65,7 +65,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 int iterations = impliedThroughput / bytes.Len;
                 iterations = System.Math.Max(1, iterations);
                 long start = TimeUtil.GetMicro();
-                using (JsonParser parser = new JsonParser()) {
+                using (Utf8JsonParser parser = new Utf8JsonParser()) {
                     int count = 0;
                     for (int n = 0; n < iterations; n++) {
                         count = 0;
