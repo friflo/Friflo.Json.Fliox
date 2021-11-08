@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using Friflo.Json.Fliox.Hub.Host;
@@ -24,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
     /// </summary>
     public abstract class ClientController {
         /// key: clientId
-        internal readonly   Dictionary<JsonKey, UserClient>            clients = new Dictionary<JsonKey, UserClient>(JsonKey.Equality);
+        internal readonly   ConcurrentDictionary<JsonKey, UserClient>  clients = new ConcurrentDictionary<JsonKey, UserClient>(JsonKey.Equality);
         public              IReadOnlyDictionary<JsonKey, UserClient>   Clients => clients;
         
         protected abstract  JsonKey     NewId();
