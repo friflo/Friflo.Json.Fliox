@@ -122,19 +122,19 @@ namespace Friflo.Json.Burst.Math
             s.Element{writeSuffix}(value.{Coordinate[i]});");
 
             var writer = $@"
-        public static void Member{pascal}{size}(this ref JsonSerializer s, in Str32 key, in {type}{size} value) {{
+        public static void Member{pascal}{size}(this ref Utf8JsonWriter s, in Str32 key, in {type}{size} value) {{
             s.MemberArrayStart(key, false);
             Write{pascal}{size}(ref s, in value);
             s.ArrayEnd();
         }}
 
-        public static void Array{pascal}{size}(this ref JsonSerializer s, in {type}{size} value) {{
+        public static void Array{pascal}{size}(this ref Utf8JsonWriter s, in {type}{size} value) {{
             s.ArrayStart(false);
             Write{pascal}{size}(ref s, in value);
             s.ArrayEnd();
         }}
 
-        private static void Write{pascal}{size}(ref JsonSerializer s, in {type}{size} value) {{{components}
+        private static void Write{pascal}{size}(ref Utf8JsonWriter s, in {type}{size} value) {{{components}
         }}
 ";
             write.Append(writer);
@@ -177,7 +177,7 @@ namespace Friflo.Json.Burst.Math
             Array{pascal}{size1}(ref s, in value.{Component[i]});");
             
             var writer = $@"
-        public static void Member{pascal}{dim}(this ref JsonSerializer s, in Str32 key, in {type}{dim} value) {{
+        public static void Member{pascal}{dim}(this ref Utf8JsonWriter s, in Str32 key, in {type}{dim} value) {{
             s.MemberArrayStart(key, true);{components}
             s.ArrayEnd();
         }}

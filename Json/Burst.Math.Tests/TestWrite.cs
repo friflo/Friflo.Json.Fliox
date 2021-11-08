@@ -10,7 +10,7 @@ namespace Friflo.Json.Burst.Math.Tests
             var types   = new MathTypes();
             var keys    = new MathKeys(Default.Constructor);
 
-            using (var serializer = new Local<JsonSerializer>())
+            using (var serializer = new Local<Utf8JsonWriter>())
             {
                 ref var s = ref serializer.value;
 
@@ -35,7 +35,7 @@ namespace Friflo.Json.Burst.Math.Tests
             }
         }
         
-        private static void WriteMathTypes(ref JsonSerializer s, in MathKeys k, in MathTypes types) {
+        private static void WriteMathTypes(ref Utf8JsonWriter s, in MathKeys k, in MathTypes types) {
             s.ObjectStart();
             
             s.MemberFloat2  (k.float2,    types.float2);

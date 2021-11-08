@@ -222,7 +222,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
         public void TestMaxDepth() {
             using (Utf8JsonWriter ser = new Utf8JsonWriter())
             {
-                // --- JsonSerializer
+                // --- Utf8JsonWriter
                 ser.InitSerializer();
                 ser.SetMaxDepth(1);
                 
@@ -235,7 +235,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Burst
                 // case exception
                 ser.ArrayStart(true);
                 var e = Throws<InvalidOperationException>(() => ser.ArrayStart(true)); // add second array
-                AreEqual("JsonSerializer exceed maxDepth: 1", e.Message);
+                AreEqual("JsonWriter exceed maxDepth: 1", e.Message);
             }
         }
         

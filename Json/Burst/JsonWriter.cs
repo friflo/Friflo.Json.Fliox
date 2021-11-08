@@ -299,7 +299,7 @@ namespace Friflo.Json.Burst
                 AddSeparator();
             json.AppendChar('{');
             if (level >= maxDepth)
-                throw new InvalidOperationException("JsonSerializer exceed maxDepth: " + maxDepth);
+                throw new InvalidOperationException("JsonWriter exceed maxDepth: " + maxDepth);
             if (++level >= nodeFlags.Count)
                 ResizeDepthBuffers(level + 1);
             nodeFlags.array[level] = NodeFlags.First | NodeFlags.WrapItems;
@@ -414,7 +414,7 @@ namespace Friflo.Json.Burst
                 AddSeparator();
             json.AppendChar('[');
             if (level >= maxDepth)
-                throw new InvalidOperationException("JsonSerializer exceed maxDepth: " + maxDepth);
+                throw new InvalidOperationException("JsonWriter exceed maxDepth: " + maxDepth);
             if (++level >= nodeFlags.Count)
                 ResizeDepthBuffers(level + 1);
             nodeFlags.array[level] = wrapItems ? NodeFlags.WrapItems | NodeFlags.First : NodeFlags.First;
