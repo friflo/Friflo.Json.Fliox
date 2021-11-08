@@ -27,8 +27,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         internal override Task<JsonValue> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext) {
             var     cmd     = new Command<TValue>(messageName, messageValue, messageContext);
             TResult result  = handler(cmd);
-            using (var pooledMapper = messageContext.pool.ObjectMapper.Get()) {
-                var jsonResult  = pooledMapper.instance.WriteAsArray(result);
+            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
+                var jsonResult  = pooled.instance.WriteAsArray(result);
                 return Task.FromResult(new JsonValue(jsonResult));
             }
         }
@@ -49,8 +49,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Internal
         internal override async Task<JsonValue> InvokeCallback(string messageName, JsonValue messageValue, MessageContext messageContext) {
             var     cmd     = new Command<TValue>(messageName, messageValue, messageContext);
             TResult result  = await handler(cmd).ConfigureAwait(false);
-            using (var pooledMapper = messageContext.pool.ObjectMapper.Get()) {
-                var jsonResult  = pooledMapper.instance.WriteAsArray(result);
+            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
+                var jsonResult  = pooled.instance.WriteAsArray(result);
                 return new JsonValue(jsonResult);
             }
         }

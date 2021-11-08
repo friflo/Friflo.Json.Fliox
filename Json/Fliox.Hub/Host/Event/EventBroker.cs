@@ -154,8 +154,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
 
         internal void EnqueueSyncTasks (SyncRequest syncRequest, MessageContext messageContext) {
             ProcessSubscriber (syncRequest, messageContext);
-            using (var pooledMapper = messageContext.pool.ObjectMapper.Get()) {
-                ObjectWriter writer = pooledMapper.instance.writer;
+            using (var pooled = messageContext.pool.ObjectMapper.Get()) {
+                ObjectWriter writer = pooled.instance.writer;
                 writer.Pretty           = false;    // write sub's as one liner
                 writer.WriteNullMembers = false;
                 foreach (var pair in subscribers) {

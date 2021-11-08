@@ -93,8 +93,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (!containerTypes.TryGetValue(container, out ValidationType type)) {
                 return $"No Schema definition for container Type: {container}";
             }
-            using (var pooledValidator = messageContext.pool.TypeValidator.Get()) {
-                TypeValidator validator = pooledValidator.instance;
+            using (var pooled = messageContext.pool.TypeValidator.Get()) {
+                TypeValidator validator = pooled.instance;
                 for (int n = 0; n < entities.Count; n++) {
                     var entity = entities[n];
                     // if (entity.json == null)  continue; // TAG_ENTITY_NULL

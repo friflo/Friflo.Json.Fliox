@@ -111,8 +111,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             var targetKeys  = new  List<JsonKey>    (entities.Count);
             var container   = patchEntities.container;
             Dictionary<JsonKey, EntityError> patchErrors = null;
-            using (var pooledPatcher = messageContext.pool.JsonPatcher.Get()) {
-                JsonPatcher patcher = pooledPatcher.instance;
+            using (var pooled = messageContext.pool.JsonPatcher.Get()) {
+                JsonPatcher patcher = pooled.instance;
                 foreach (var entity in entities) {
                     var key = entity.Key;
                     if (!ids.Contains(key))
@@ -174,8 +174,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         protected QueryEntitiesResult FilterEntities(QueryEntities command, Dictionary <JsonKey, EntityValue> entities, MessageContext messageContext) {
             var jsonFilter      = new JsonFilter(command.filter); // filter can be reused
             var result          = new Dictionary<JsonKey, EntityValue>(JsonKey.Equality);
-            using (var pooledEvaluator = messageContext.pool.JsonEvaluator.Get()) {
-                JsonEvaluator evaluator = pooledEvaluator.instance;
+            using (var pooled = messageContext.pool.JsonEvaluator.Get()) {
+                JsonEvaluator evaluator = pooled.instance;
                 foreach (var entityPair in entities) {
                     var key     = entityPair.Key;
                     var value   = entityPair.Value;
@@ -212,8 +212,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                 referenceResults.Add(referenceResult);
             }
             var select      = new ScalarSelect(selectors);  // can be reused
-            using (var pooledSelector    = messageContext.pool.ScalarSelector.Get()) {
-                ScalarSelector selector = pooledSelector.instance;
+            using (var pooled = messageContext.pool.ScalarSelector.Get()) {
+                ScalarSelector selector = pooled.instance;
                 // Get the selected refs for all entities.
                 // Select() is expensive as it requires a full JSON parse. By using an selector array only one
                 // parsing cycle is required. Otherwise for each selector Select() needs to be called individually.
