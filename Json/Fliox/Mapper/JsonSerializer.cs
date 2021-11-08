@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.IO;
 using Friflo.Json.Fliox.Utils;
 
@@ -12,6 +13,9 @@ namespace Friflo.Json.Fliox.Mapper
         public  int     MaxDepth            { get; set; }
     }
     
+#if !UNITY_5_3_OR_NEWER
+    [CLSCompliant(true)]
+#endif
     public static class JsonSerializer
     {
         public   static readonly    TypeStore                   DebugTypeStore  = new TypeStore();
