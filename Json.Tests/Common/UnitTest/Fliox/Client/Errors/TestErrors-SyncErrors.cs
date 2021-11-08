@@ -5,6 +5,7 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
+using static Friflo.Json.Tests.Common.Utils.AssertUtils;
 using static NUnit.Framework.Assert;
 
 #if UNITY_5_3_OR_NEWER
@@ -76,11 +77,26 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 var sync = await store.TrySyncTasks(); // ----------------
                 
                 IsFalse(sync.Success);
-                AreEqual("SimulationException: simulated SyncException", sync.Message);
+                AreEqualTrimAt("Internal SimulationException: simulated SyncException", sync.Message);
                 AreEqual(1, sync.failed.Count);
-                AreEqual("SyncError ~ SimulationException: simulated SyncException", sync.failed[0].Error.ToString());
+                AreEqualTrimAt("SyncError ~ Internal SimulationException: simulated SyncException", sync.failed[0].Error.Message);
                 
-                AreEqual("SyncError ~ SimulationException: simulated SyncException", syncException.Error.ToString());
+                AreEqualTrimAt("SyncError ~ Internal SimulationException: simulated SyncException", syncException.Error.Message);
+            }
+            // --- SyncTasks exception
+            {
+                var syncException = store.SendCommand<bool?, bool?>(msgSyncException, null);
+                try {
+                    await store.SyncTasks(); // ----------------
+                    
+                    Fail("SyncTasks() intended to fail - code cannot be reached");
+                } catch (SyncTasksException sre) {
+                    AreEqualTrimAt("Internal SimulationException: simulated SyncException", sre.Message);
+                    AreEqual(1, sre.failed.Count);
+                    AreEqualTrimAt("SyncError ~ Internal SimulationException: simulated SyncException", sre.failed[0].Error.Message);
+                
+                    AreEqualTrimAt("SyncError ~ Internal SimulationException: simulated SyncException", syncException.Error.Message);
+                }
             }
         }
     }

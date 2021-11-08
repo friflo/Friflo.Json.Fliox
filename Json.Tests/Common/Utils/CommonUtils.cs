@@ -46,16 +46,19 @@ namespace Friflo.Json.Tests.Common.Utils
         public static void AreEqualTrimAt(string expect, string actual) {
             if (expect == null || actual == null)
                 throw new InvalidOperationException("AreEqualTrimAt() - both parameter must not be null");
-            var lines = actual.Split('\n');
-            var sb = new StringBuilder();
-            bool firstLine = true;
+            var     lines = actual.Split('\n');
+            var     sb = new StringBuilder();
+            bool    firstLine = true;
+            bool    foundMethodLine = false;
             foreach (var line in lines) {
-                // ignore method formatted by CLR
-                if (line.StartsWith("   at "))
+                bool isMethodLine =
+                    line.StartsWith("   at ") ||    // method formatted by CLR
+                    line.StartsWith("  at ");       // method formatted by Unity       
+                // ignore methods
+                if (isMethodLine) {
+                    foundMethodLine = true;
                     continue;
-                // ignore method formatted by Unity
-                if (line.StartsWith("  at "))
-                    continue;
+                }
                 if (firstLine) {
                     firstLine = false;
                 } else {
@@ -64,6 +67,9 @@ namespace Friflo.Json.Tests.Common.Utils
                 sb.Append(line);
             }
             actual = sb.ToString();
+            if (!foundMethodLine) {
+                Assert.Fail($"Expect methods in error ('   at ...')");    
+            }
             if (expect.Equals(actual))
                 return;
             Assert.Fail($"Expected: {expect}\nBut was:  {actual}");
