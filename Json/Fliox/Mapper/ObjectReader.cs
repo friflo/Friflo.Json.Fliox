@@ -220,7 +220,7 @@ namespace Friflo.Json.Fliox.Mapper
             return result;
         }
         
-        // --------------- Utf8Array ---------------
+        // --------------- JsonValue ---------------
         // --- Read()
         public T Read<T>(JsonValue utf8Array) {
             InitJsonReaderArray(utf8Array);
