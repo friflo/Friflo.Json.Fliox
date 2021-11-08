@@ -95,7 +95,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskReadException.Success);
-                AreEqualTrimAt("UnhandledException ~ SimulationException: simulated read task exception", patchTaskReadException.Error.Message);
+                AreEqualTrimStack("UnhandledException ~ SimulationException: simulated read task exception", patchTaskReadException.Error.Message);
             }
             
             // --- test write task error
@@ -117,7 +117,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
 
                 IsFalse(patchTaskWriteException.Success);
-                AreEqualTrimAt("UnhandledException ~ SimulationException: simulated patch task exception", patchTaskWriteException.Error.Message);
+                AreEqualTrimStack("UnhandledException ~ SimulationException: simulated patch task exception", patchTaskWriteException.Error.Message);
             }
         }
     }

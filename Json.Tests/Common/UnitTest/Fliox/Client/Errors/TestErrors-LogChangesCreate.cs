@@ -57,7 +57,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
 
                 AreEqual("tasks: 1, failed: 1", sync.ToString());
                 AreEqual(TaskErrorType.EntityErrors, logChanges.Error.type);
-                AreEqualTrimAt(@"EntityErrors ~ count: 1
+                AreEqualTrimStack(@"EntityErrors ~ count: 1
 | WriteError: producers [create-exception], UnhandledException - SimulationException: simulated create task exception", logChanges.Error.Message);
             }
 

@@ -77,11 +77,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                 var sync = await store.TrySyncTasks(); // ----------------
                 
                 IsFalse(sync.Success);
-                AreEqualTrimAt("Internal SimulationException: simulated SyncException", sync.Message);
+                AreEqualTrimStack("Internal SimulationException: simulated SyncException", sync.Message);
                 AreEqual(1, sync.failed.Count);
-                AreEqualTrimAt("SyncError ~ Internal SimulationException: simulated SyncException", sync.failed[0].Error.Message);
+                AreEqualTrimStack("SyncError ~ Internal SimulationException: simulated SyncException", sync.failed[0].Error.Message);
                 
-                AreEqualTrimAt("SyncError ~ Internal SimulationException: simulated SyncException", syncException.Error.Message);
+                AreEqualTrimStack("SyncError ~ Internal SimulationException: simulated SyncException", syncException.Error.Message);
             }
             // --- SyncTasks exception
             {
@@ -91,11 +91,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
                     
                     Fail("SyncTasks() intended to fail - code cannot be reached");
                 } catch (SyncTasksException sre) {
-                    AreEqualTrimAt("Internal SimulationException: simulated SyncException", sre.Message);
+                    AreEqualTrimStack("Internal SimulationException: simulated SyncException", sre.Message);
                     AreEqual(1, sre.failed.Count);
-                    AreEqualTrimAt("SyncError ~ Internal SimulationException: simulated SyncException", sre.failed[0].Error.Message);
+                    AreEqualTrimStack("SyncError ~ Internal SimulationException: simulated SyncException", sre.failed[0].Error.Message);
                 
-                    AreEqualTrimAt("SyncError ~ Internal SimulationException: simulated SyncException", syncException.Error.Message);
+                    AreEqualTrimStack("SyncError ~ Internal SimulationException: simulated SyncException", syncException.Error.Message);
                 }
             }
         }

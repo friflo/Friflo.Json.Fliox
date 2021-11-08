@@ -43,7 +43,7 @@ namespace Friflo.Json.Tests.Common.Utils
             Assert.Fail($"Expected: {expect}\nBut was:  {actual}");
         }
         
-        public static void AreEqualTrimAt(string expect, string actual) {
+        public static void AreEqualTrimStack(string expect, string actual) {
             if (expect == null || actual == null)
                 throw new InvalidOperationException("AreEqualTrimAt() - both parameter must not be null");
             var     lines = actual.Split('\n');
