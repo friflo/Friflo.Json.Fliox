@@ -54,7 +54,8 @@ namespace Friflo.Json.Tests.Main
             for (int n = 0; n < fileNames.Length; n++) {
                 fileNames[n] = fileNames[n].Substring(wwwRoot.Length).Replace('\\', '/');
             }
-            var jsonList = JsonDebug.ToJson(fileNames, true);
+            var options = new SerializerOptions{ Pretty = true };
+            var jsonList = JsonSerializer.Serialize(fileNames, options);
             context.WriteString(jsonList, "application/json", (int)HttpStatusCode.OK);
         }
         

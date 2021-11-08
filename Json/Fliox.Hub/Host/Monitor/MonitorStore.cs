@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
         [Fri.Required]  public  JsonKey                         id;
                         public  RequestCount                    counts;
                         
-        public override         string                          ToString() => JsonDebug.ToJson(this, false).Replace("\"", "'");
+        public override         string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     public class ClientInfo {
@@ -43,7 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
         [Fri.Property (Name =                                  "event")]  
                         public  EventInfo?                      ev;
                         
-        public override         string                          ToString() => JsonDebug.ToJson(this, false).Replace("\"", "'");
+        public override         string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     public struct EventInfo {
@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
         [Fri.Required]  public  List<Ref<JsonKey, ClientInfo>>  clients;
                         public  List<RequestCount>              counts = new List<RequestCount>();
                         
-        public override         string                          ToString() => JsonDebug.ToJson(this, false).Replace("\"", "'");
+        public override         string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     public class HistoryInfo {
@@ -66,7 +66,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
         [Fri.Required]  public  int[]                           counters;
                         public  int                             lastUpdate;
                         
-        public override         string                          ToString() => JsonDebug.ToJson(this, false).Replace("\"", "'");
+        public override         string                          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     

@@ -36,7 +36,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                         public  DateTime                created;
                         public  List<OrderItem>         items = new List<OrderItem>();
                         
-        public override         string                  ToString() => JsonDebug.ToJson(this, false);
+        public override         string                  ToString() => JsonSerializer.Serialize(this);
     }
 
     public class OrderItem {
@@ -44,7 +44,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
                         public  int                     amount;
                         public  string                  name;
                         
-        public override         string                  ToString() => JsonDebug.ToJson(this, false);
+        public override         string                  ToString() => JsonSerializer.Serialize(this);
     }
 
     public class Article
@@ -53,14 +53,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Fri.Required]  public  string                  name;
                         public  Ref<string, Producer>   producer;
                         
-        public override         string                  ToString() => JsonDebug.ToJson(this, false);
+        public override         string                  ToString() => JsonSerializer.Serialize(this);
     }
 
     public class Customer {
         [Fri.Required]  public  string                  id { get; set; }
         [Fri.Required]  public  string                  name;
         
-        public override         string                  ToString() => JsonDebug.ToJson(this, false);
+        public override         string                  ToString() => JsonSerializer.Serialize(this);
     }
     
     public class Producer {
@@ -69,7 +69,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Fri.Property (Name =                              "employees")]
                         public  List<Ref<string, Employee>> employeeList;
                         
-        public override         string                  ToString() => JsonDebug.ToJson(this, false);
+        public override         string                  ToString() => JsonSerializer.Serialize(this);
     }
     
     public class Employee {
@@ -77,7 +77,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         [Fri.Required]  public  string                  firstName;
                         public  string                  lastName;
                         
-        public override         string                  ToString() => JsonDebug.ToJson(this, false);
+        public override         string                  ToString() => JsonSerializer.Serialize(this);
     }
     
     // test case: using abstract class containing the id 
@@ -85,7 +85,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
     {
         [Fri.Required]  public  string  id { get; set; } // defining as property ensures "id" is first JSON member
 
-        public override         string  ToString() => JsonDebug.ToJson(this, false);
+        public override         string  ToString() => JsonSerializer.Serialize(this);
     }
     
     public class TestType : PocEntity {

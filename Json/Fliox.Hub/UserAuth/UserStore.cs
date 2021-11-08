@@ -48,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         [Fri.Required]  public  JsonKey         id;
                         public  List<string>    roles;
 
-        public override         string ToString() => JsonDebug.ToJson(this, false);
+        public override         string ToString() => JsonSerializer.Serialize(this);
     }
     
     public class UserCredential {
@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
                         public  string          passHash;
                         public  string          token;
                         
-        public override         string ToString() => JsonDebug.ToJson(this, false);
+        public override         string ToString() => JsonSerializer.Serialize(this);
     }
     
     public class Role {
@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         [Fri.Required]  public  List<Right>     rights;
                         public  string          description;
                         
-        public override         string ToString() => JsonDebug.ToJson(this, false);
+        public override         string ToString() => JsonSerializer.Serialize(this);
     }
     
     // -------------------------------------- commands -------------------------------------
