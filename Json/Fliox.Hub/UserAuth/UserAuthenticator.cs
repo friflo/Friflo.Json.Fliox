@@ -136,7 +136,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
             }
             var user        = messageContext.User;
             var userClients = user.clients; 
-            if (userClients.Contains(clientId)) {
+            if (userClients.ContainsKey(clientId)) {
                 return ClientIdValidation.Valid;
             }
             // Is clientId already used by another user?
@@ -144,7 +144,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
                 return ClientIdValidation.Invalid;
             }
             if (clientController.UseClientIdFor(user, clientId)) {
-                userClients.Add(clientId);
+                userClients.TryAdd(clientId, new Empty());
                 return ClientIdValidation.Valid;
             }
             return ClientIdValidation.Invalid;

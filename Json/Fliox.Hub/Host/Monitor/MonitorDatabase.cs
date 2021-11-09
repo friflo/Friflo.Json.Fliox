@@ -113,8 +113,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
                 } else {
                     userInfo.clients.Clear();
                 }
-                foreach (var client in userClients) {
-                    userInfo.clients.Add(client);
+                foreach (var clientPair in userClients) {
+                    userInfo.clients.Add(clientPair.Key);
                 }
                 users.Upsert(userInfo);
             }

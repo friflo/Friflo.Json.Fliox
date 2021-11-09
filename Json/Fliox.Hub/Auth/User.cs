@@ -10,25 +10,27 @@ namespace Friflo.Json.Fliox.Hub.Auth
 {
     public class User {
         // --- public
-        public   readonly   JsonKey             userId;
-        public   readonly   string              token;
-        public   readonly   Authorizer          authorizer;
-        public   readonly   HashSet<JsonKey>    clients = new HashSet<JsonKey>(JsonKey.Equality);
+        public   readonly   JsonKey     userId;
+        public   readonly   string      token;
+        public   readonly   Authorizer  authorizer;
         
-        public   override   string              ToString() => userId.AsString();
+        public   override   string      ToString() => userId.AsString();
         
         // --- internal
-        // key: database
-        internal readonly   ConcurrentDictionary<string, RequestCount>  requestCounts;
+        internal readonly   ConcurrentDictionary<JsonKey, Empty>        clients;        // key: clientId
+        internal readonly   ConcurrentDictionary<string, RequestCount>  requestCounts;  // key: database
         
         public static readonly  JsonKey   AnonymousId = new JsonKey("anonymous");
 
 
         internal User (in JsonKey userId, string token, Authorizer authorizer) {
+            clients         = new ConcurrentDictionary<JsonKey, Empty>(JsonKey.Equality);
             requestCounts   = new ConcurrentDictionary<string, RequestCount>();
             this.userId     = userId;
             this.token      = token;
             this.authorizer = authorizer;
         }
     }
+    
+    internal struct Empty { }
 }

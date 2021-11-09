@@ -35,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
                 var clientId = NewId();
                 var client = new UserClient(user.userId);
                 if (clients.TryAdd(clientId, client)) {
-                    user.clients.Add(clientId);
+                    user.clients.TryAdd(clientId, new Empty());
                     return clientId;
                 }
             }
@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
             }
             client = new UserClient(user.userId);
             if (clients.TryAdd(clientId, client)) {
-                user.clients.Add(clientId);
+                user.clients.TryAdd(clientId, new Empty());
                 return true;
             }
             return false; 
