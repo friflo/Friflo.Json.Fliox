@@ -128,10 +128,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var users   = result.users.Results;
             var clients = result.clients.Results;
             AreEqual("{'id':'anonymous','clients':[],'counts':[]}",   users[User.AnonymousId].ToString());
-            AreEqual("{'id':'poc-user','clients':['poc-client'],'counts':[{'db':'monitor','requests':1,'tasks':1},{'db':'default','requests':1,'tasks':2}]}",       users[new JsonKey("poc-user")].ToString());
+            
+            var pocUserInfo = users[new JsonKey("poc-user")].ToString();
+            AreEqual("{'id':'poc-user','clients':['poc-client'],'counts':[{'db':'default','requests':1,'tasks':2},{'db':'monitor','requests':1,'tasks':1}]}", pocUserInfo);
             AreEqual(2, users.Count);
                 
-            AreEqual("{'id':'poc-client','user':'poc-user','counts':[{'db':'monitor','requests':1,'tasks':1},{'db':'default','requests':1,'tasks':2}]}",            clients[new JsonKey("poc-client")].ToString());
+            var pocClientInfo = clients[new JsonKey("poc-client")].ToString();
+            AreEqual("{'id':'poc-client','user':'poc-user','counts':[{'db':'default','requests':1,'tasks':2},{'db':'monitor','requests':1,'tasks':1}]}", pocClientInfo);
             AreEqual(1, clients.Count);
             
             NotNull(result.user.Result);
@@ -144,9 +147,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var host    = result.hosts.Results[new JsonKey("Test")];
             AreEqual("{'id':'Test','counts':{'requests':2,'tasks':3}}",                                      host.ToString());
             AreEqual("{'id':'anonymous','clients':[],'counts':[]}",                                          users[User.AnonymousId].ToString());
-            AreEqual("{'id':'admin','clients':['admin-client'],'counts':[{'db':'monitor','requests':1,'tasks':1},{'db':'default','requests':1,'tasks':2}]}",        users[new JsonKey("admin")].ToString());
+            
+            var adminInfo = users[new JsonKey("admin")].ToString();
+            AreEqual("{'id':'admin','clients':['admin-client'],'counts':[{'db':'default','requests':1,'tasks':2},{'db':'monitor','requests':1,'tasks':1}]}", adminInfo);
                 
-            AreEqual("{'id':'admin-client','user':'admin','counts':[{'db':'monitor','requests':1,'tasks':1},{'db':'default','requests':1,'tasks':2}]}",             clients[new JsonKey("admin-client")].ToString());
+            var adminClientInfo = clients[new JsonKey("admin-client")].ToString();
+            AreEqual("{'id':'admin-client','user':'admin','counts':[{'db':'default','requests':1,'tasks':2},{'db':'monitor','requests':1,'tasks':1}]}", adminClientInfo);
+            
             NotNull(result.user.Result);
             NotNull(result.client.Result);
         }

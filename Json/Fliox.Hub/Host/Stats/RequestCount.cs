@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Protocol;
 
@@ -44,6 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Stats
                     continue; */
                 dst.Add(counts);
             }
+            dst.Sort((c1, c2) => string.Compare(c1.db, c2.db, StringComparison.Ordinal));
         }
     }
 }
