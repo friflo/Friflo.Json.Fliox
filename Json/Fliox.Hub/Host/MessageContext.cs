@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Auth;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Protocol;
@@ -53,20 +54,27 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public void AuthenticationFailed(User user, string error, Authorizer authorizer) {
-            if (authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
-            authState.user            = user ?? throw new ArgumentNullException(nameof(user));
+            AssertAuthenticationParams(user, authorizer);
+            authState.user            = user;
             authState.authExecuted    = true;
             authState.authenticated   = false;
-            authState.authorizer      = authorizer ?? throw new ArgumentNullException(nameof(authorizer));
+            authState.authorizer      = authorizer;
             authState.error           = error;
         }
         
         public void AuthenticationSucceed (User user, Authorizer authorizer) {
-            if (authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
-            authState.user            = user ?? throw new ArgumentNullException(nameof(user));
+            AssertAuthenticationParams(user, authorizer);
+            authState.user            = user;
             authState.authExecuted    = true;
             authState.authenticated   = true;
-            authState.authorizer      = authorizer ?? throw new ArgumentNullException(nameof(authorizer));
+            authState.authorizer      = authorizer;
+        }
+        
+        [Conditional("DEBUG")]
+        private void AssertAuthenticationParams(User user, Authorizer authorizer) {
+            if (authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
+            if (user == null)           throw new ArgumentNullException(nameof(user));
+            if (authorizer == null)     throw new ArgumentNullException(nameof(authorizer));
         }
         
         internal void Cancel() {
