@@ -58,7 +58,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (client   == null) throw new ArgumentNullException(nameof(client));
             // if (baseClient._intern.database.extensionBase != null)
             //     throw new ArgumentException("database of baseStore must not be an extension database", nameof(baseClient));
-            _intern = new ClientIntern(this, client, client._intern.sharedEnv, client._intern.hub, database, this, null);
+            var hub = client._intern.hub;
+            _intern = new ClientIntern(this, client, hub.sharedEnv, hub, database, this, null);
         }
         
         public virtual void Dispose() {

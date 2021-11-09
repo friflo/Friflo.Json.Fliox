@@ -20,7 +20,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         // --- readonly
         internal readonly   FlioxClient                                 baseClient;
         internal readonly   TypeStore                                   typeStore;
-        internal readonly   SharedEnv                                   sharedEnv;
         internal readonly   Pool                                        pool;
         internal readonly   FlioxHub                                    hub;
         internal readonly   EntityDatabase                              database;
@@ -85,7 +84,6 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             
             // --- readonly
             this.baseClient             = baseClient;
-            this.sharedEnv              = sharedEnv;
             typeStore                   = sharedEnv.TypeStore;
             this.pool                   = sharedEnv.Pool;
             this.hub                    = hub;
