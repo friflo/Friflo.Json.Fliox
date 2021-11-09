@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Stats
         public override     string  ToString() => $"db: {db}, requests: {requests}, tasks: {tasks}";
 
         internal static void UpdateCounts (
-            Dictionary<string, RequestCount>    requestCounts,
+            IDictionary<string, RequestCount>   requestCounts, // key: database
             string                              database,
             SyncRequest                         syncRequest)
         {
@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Stats
         
         internal static void CountsToList(
             List<RequestCount>                  dst,
-            Dictionary<string, RequestCount>    src,
+            IDictionary<string, RequestCount>   src,
             string                              exclude)
         {
             dst.Clear();
