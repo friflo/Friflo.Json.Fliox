@@ -56,8 +56,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         protected FlioxClient(EntityDatabase database, FlioxClient client) {
             if (database == null) throw new ArgumentNullException(nameof(database));
             if (client   == null) throw new ArgumentNullException(nameof(client));
-            // if (baseClient._intern.database.extensionBase != null)
-            //     throw new ArgumentException("database of baseStore must not be an extension database", nameof(baseClient));
             _intern = new ClientIntern(this, client, client._intern.hub, database, this, null);
         }
         
