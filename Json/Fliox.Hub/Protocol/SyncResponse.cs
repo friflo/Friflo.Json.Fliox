@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -49,6 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
             return result;
         }
         
+        [Conditional("DEBUG")]
         public void AssertResponse(SyncRequest request) {
             var expect = request.tasks.Count;
             var actual = tasks.Count;
