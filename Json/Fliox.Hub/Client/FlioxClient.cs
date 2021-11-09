@@ -378,7 +378,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         private SyncRequest CreateSyncRequest(out SyncStore syncStore) {
             using (var pooled = ObjectMapper.Get()) {
-                return CreateSyncRequestMapper(out syncStore, pooled.instance);
+                return CreateSyncRequest(out syncStore, pooled.instance);
             }          
         }
 
@@ -389,7 +389,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// If store has <see cref="ClientIntern.subscriptionProcessor"/> acknowledge received events to clear
         /// <see cref="Host.Event.EventSubscriber.sentEvents"/>. This avoids resending already received events on reconnect. 
         /// </summary>
-        private SyncRequest CreateSyncRequestMapper(out SyncStore syncStore, ObjectMapper mapper) {
+        private SyncRequest CreateSyncRequest(out SyncStore syncStore, ObjectMapper mapper) {
             mapper.TracerContext = _intern.tracerContext;
             syncStore = _intern.syncStore;
             syncStore.SetSyncSets(this);
