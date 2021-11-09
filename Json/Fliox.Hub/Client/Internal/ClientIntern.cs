@@ -74,13 +74,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
         internal ClientIntern(
             FlioxClient             client,
             FlioxClient             baseClient,
-            SharedEnv               sharedEnv,
             FlioxHub                hub,
             EntityDatabase          database,
             ITracerContext          tracerContext,
             EventTarget             eventTarget)
         {
             var entityInfos             = ClientEntityUtils.GetEntityInfos (client.GetType());
+            var sharedEnv               = hub.sharedEnv;
             
             // --- readonly
             this.baseClient             = baseClient;

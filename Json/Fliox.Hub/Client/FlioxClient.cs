@@ -50,7 +50,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         public FlioxClient(FlioxHub hub) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
             var eventTarget = new EventTarget(this);
-            _intern = new ClientIntern(this, null, hub.sharedEnv, hub, hub.database, this, eventTarget);
+            _intern = new ClientIntern(this, null, hub, hub.database, this, eventTarget);
         }
         
         protected FlioxClient(EntityDatabase database, FlioxClient client) {
@@ -58,8 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             if (client   == null) throw new ArgumentNullException(nameof(client));
             // if (baseClient._intern.database.extensionBase != null)
             //     throw new ArgumentException("database of baseStore must not be an extension database", nameof(baseClient));
-            var hub = client._intern.hub;
-            _intern = new ClientIntern(this, client, hub.sharedEnv, hub, database, this, null);
+            _intern = new ClientIntern(this, client, client._intern.hub, database, this, null);
         }
         
         public virtual void Dispose() {
