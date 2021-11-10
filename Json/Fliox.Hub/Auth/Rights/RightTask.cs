@@ -17,6 +17,17 @@ namespace Friflo.Json.Fliox.Hub.Auth.Rights
         
         public  override        RightType       RightType => RightType.task;
         
+        private static readonly Authorizer Read             = new AuthorizeTaskType(TaskType.read);
+        private static readonly Authorizer Query            = new AuthorizeTaskType(TaskType.query);
+        private static readonly Authorizer Create           = new AuthorizeTaskType(TaskType.create);
+        private static readonly Authorizer Upsert           = new AuthorizeTaskType(TaskType.upsert);
+        private static readonly Authorizer Patch            = new AuthorizeTaskType(TaskType.patch);
+        private static readonly Authorizer Delete           = new AuthorizeTaskType(TaskType.delete);
+        //
+        private static readonly Authorizer Message          = new AuthorizeTaskType(TaskType.message);
+        private static readonly Authorizer SubscribeChanges = new AuthorizeTaskType(TaskType.subscribeChanges);
+        private static readonly Authorizer SubscribeMessage = new AuthorizeTaskType(TaskType.subscribeMessage);
+        
         public override Authorizer ToAuthorizer() {
             if (types.Count == 1) {
                 return GetAuthorizer(types[0]);
@@ -25,22 +36,22 @@ namespace Friflo.Json.Fliox.Hub.Auth.Rights
             foreach (var task in types) {
                 list.Add(GetAuthorizer(task));
             }
-            return new AuthorizeAny(list, database);
+            return new AuthorizeAny(list);
         }
         
-        private Authorizer GetAuthorizer(TaskType taskType) {
+        private static Authorizer GetAuthorizer(TaskType taskType) {
             switch (taskType) {
-                case TaskType.read:                return new AuthorizeTaskType (TaskType.read,             database);
-                case TaskType.query:               return new AuthorizeTaskType (TaskType.query,            database);
-                case TaskType.create:              return new AuthorizeTaskType (TaskType.create,           database);
-                case TaskType.upsert:              return new AuthorizeTaskType (TaskType.upsert,           database);
-                case TaskType.patch:               return new AuthorizeTaskType (TaskType.patch,            database);
-                case TaskType.delete:              return new AuthorizeTaskType (TaskType.delete,           database);
+                case TaskType.read:                return Read;
+                case TaskType.query:               return Query;
+                case TaskType.create:              return Create;
+                case TaskType.upsert:              return Upsert;
+                case TaskType.patch:               return Patch;
+                case TaskType.delete:              return Delete;
                 //
-                case TaskType.message:             return new AuthorizeTaskType (TaskType.message,          database);
-                case TaskType.command:             return new AuthorizeTaskType (TaskType.message,          database);
-                case TaskType.subscribeChanges:    return new AuthorizeTaskType (TaskType.subscribeChanges, database);
-                case TaskType.subscribeMessage:    return new AuthorizeTaskType (TaskType.subscribeMessage, database);
+                case TaskType.message:             return Message;
+                case TaskType.command:             return Message;
+                case TaskType.subscribeChanges:    return SubscribeChanges;
+                case TaskType.subscribeMessage:    return SubscribeMessage;
             }
             throw new InvalidOperationException($"unknown authorization taskType: {taskType}");
         }

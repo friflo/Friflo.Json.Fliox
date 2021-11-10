@@ -16,7 +16,6 @@ namespace UserStore2.Hub.Auth.Rights {
 [Fri.Polymorph(typeof(RightPredicate),        Discriminant = "predicate")]
 public abstract class Right {
     string  description;
-    string  database;
 }
 
 public class RightAllow : Right {

@@ -9,7 +9,6 @@ import UserStore.Hub.Protocol.Tasks.*
 // @JsonClassDiscriminator("type") https://github.com/Kotlin/kotlinx.serialization/issues/546
 abstract class Right  {
     abstract  val description : String?
-    abstract  val database    : String?
 }
 
 @Serializable
@@ -17,7 +16,6 @@ abstract class Right  {
 data class RightAllow (
               val grant       : Boolean,
     override  val description : String? = null,
-    override  val database    : String? = null,
 ) : Right()
 
 @Serializable
@@ -25,7 +23,6 @@ data class RightAllow (
 data class RightTask (
               val types       : List<TaskType>,
     override  val description : String? = null,
-    override  val database    : String? = null,
 ) : Right()
 
 @Serializable
@@ -33,7 +30,6 @@ data class RightTask (
 data class RightMessage (
               val names       : List<String>,
     override  val description : String? = null,
-    override  val database    : String? = null,
 ) : Right()
 
 @Serializable
@@ -41,7 +37,6 @@ data class RightMessage (
 data class RightSubscribeMessage (
               val names       : List<String>,
     override  val description : String? = null,
-    override  val database    : String? = null,
 ) : Right()
 
 @Serializable
@@ -49,7 +44,6 @@ data class RightSubscribeMessage (
 data class RightDatabase (
               val containers  : HashMap<String, ContainerAccess>,
     override  val description : String? = null,
-    override  val database    : String? = null,
 ) : Right()
 
 @Serializable
@@ -75,6 +69,5 @@ enum class OperationType {
 data class RightPredicate (
               val names       : List<String>,
     override  val description : String? = null,
-    override  val database    : String? = null,
 ) : Right()
 

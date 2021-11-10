@@ -17,13 +17,13 @@ namespace Friflo.Json.Fliox.Hub.Auth.Rights
         
         public override Authorizer ToAuthorizer() {
             if (names.Count == 1) {
-                return new AuthorizeSubscribeMessage(names[0], database);
+                return new AuthorizeSubscribeMessage(names[0]);
             }
             var list = new List<Authorizer>(names.Count);
             foreach (var message in names) {
-                list.Add(new AuthorizeSubscribeMessage(message, database));
+                list.Add(new AuthorizeSubscribeMessage(message));
             }
-            return new AuthorizeAny(list, database);
+            return new AuthorizeAny(list);
         }
     }
 }

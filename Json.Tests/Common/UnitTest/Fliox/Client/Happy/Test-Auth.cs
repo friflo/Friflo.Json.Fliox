@@ -29,7 +29,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                     using (var hub          	= new FlioxHub(database, TestGlobals.Shared))
                     using (var eventBroker      = new EventBroker(false)) // require for SubscribeMessage() and SubscribeChanges()
                     {
-                        authenticator.RegisterPredicate(TestPredicate, null);
+                        authenticator.RegisterPredicate(TestPredicate);
                         hub.Authenticator  = authenticator;
                         hub.EventBroker    = eventBroker;
                         await authenticator.ValidateRoles();

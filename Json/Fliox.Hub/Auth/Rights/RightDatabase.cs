@@ -23,14 +23,14 @@ namespace Friflo.Json.Fliox.Hub.Auth.Rights
                 var container   = pair.Value;
                 var access      = container.operations;
                 if (access != null && access.Count > 0) {
-                    list.Add(new AuthorizeContainer(name, access, database));
+                    list.Add(new AuthorizeContainer(name, access));
                 }
                 var subscribeChanges   = container.subscribeChanges;
                 if (subscribeChanges != null && subscribeChanges.Count > 0) {
-                    list.Add(new AuthorizeSubscribeChanges(name, subscribeChanges, database));
+                    list.Add(new AuthorizeSubscribeChanges(name, subscribeChanges));
                 }
             }
-            return new AuthorizeAny(list, database);
+            return new AuthorizeAny(list);
         }
     }
     

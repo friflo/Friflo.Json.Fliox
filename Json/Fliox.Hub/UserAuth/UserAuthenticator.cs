@@ -38,7 +38,6 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         public    readonly  IUserAuth                                   userAuth;
         
         // --- private / internal
-        private   readonly  string                                      databaseName;
         private   readonly  Authorizer                                  anonymousAuthorizer;
         private   readonly  ConcurrentDictionary<string,  Authorizer>   authorizerByRole = new ConcurrentDictionary <string, Authorizer>();
 
@@ -47,11 +46,10 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         {
             if (!(userDatabase.handler is UserDBHandler))
                 throw new InvalidOperationException("userDatabase requires a handler of Type: " + nameof(UserDBHandler));
-            databaseName            = userDatabase.name;
             userHub        	        = new FlioxHub(userDatabase, env);
             userHub.Authenticator   = new UserDatabaseAuthenticator();  // authorize access to userDatabase
             this.userAuth           = userAuth;
-            this.anonymousAuthorizer= anonymousAuthorizer ?? new AuthorizeDeny(databaseName);
+            this.anonymousAuthorizer= anonymousAuthorizer ?? new AuthorizeDeny();
         }
         
         public void Dispose() {
@@ -187,7 +185,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
             }
             if (authorizers.Count == 1)
                 return authorizers[0];
-            var any = new AuthorizeAny(authorizers, databaseName);
+            var any = new AuthorizeAny(authorizers);
             return any;
         }
         
@@ -220,7 +218,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
                 if (authorizers.Count == 1) {
                     authorizerByRole.TryAdd(role, authorizers[0]);
                 } else {
-                    var any = new AuthorizeAny(authorizers, databaseName);
+                    var any = new AuthorizeAny(authorizers);
                     authorizerByRole.TryAdd(role, any);
                 }
             }
@@ -237,7 +235,7 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
             if (authorizers.Count == 1) {
                 return authorizers[0];
             }
-            return new AuthorizeAny(authorizers, databaseName);
+            return new AuthorizeAny(authorizers);
         }
     }
 }

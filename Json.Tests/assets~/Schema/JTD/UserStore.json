@@ -32,22 +32,19 @@
                 "predicate":        { "ref":  "RightPredicate" }
             },
             "properties": {
-                "description": { "type": "string", "nullable": true },
-                "database":    { "type": "string", "nullable": true }
+                "description": { "type": "string", "nullable": true }
             }
         },
         "RightAllow": {
             "properties": {
                 "grant":       { "type": "boolean" },
-                "description": { "type": "string", "nullable": true },
-                "database":    { "type": "string", "nullable": true }
+                "description": { "type": "string", "nullable": true }
             }
         },
         "RightTask": {
             "properties": {
                 "types":       { "elements": { "ref":  "TaskType" } },
-                "description": { "type": "string", "nullable": true },
-                "database":    { "type": "string", "nullable": true }
+                "description": { "type": "string", "nullable": true }
             }
         },
         "TaskType": {
@@ -69,22 +66,19 @@
         "RightMessage": {
             "properties": {
                 "names":       { "elements": { "type": "string" } },
-                "description": { "type": "string", "nullable": true },
-                "database":    { "type": "string", "nullable": true }
+                "description": { "type": "string", "nullable": true }
             }
         },
         "RightSubscribeMessage": {
             "properties": {
                 "names":       { "elements": { "type": "string" } },
-                "description": { "type": "string", "nullable": true },
-                "database":    { "type": "string", "nullable": true }
+                "description": { "type": "string", "nullable": true }
             }
         },
         "RightDatabase": {
             "properties": {
                 "containers":  { "values": { "ref":  "ContainerAccess" } },
-                "description": { "type": "string", "nullable": true },
-                "database":    { "type": "string", "nullable": true }
+                "description": { "type": "string", "nullable": true }
             }
         },
         "ContainerAccess": {
@@ -117,8 +111,7 @@
         "RightPredicate": {
             "properties": {
                 "names":       { "elements": { "type": "string" } },
-                "description": { "type": "string", "nullable": true },
-                "database":    { "type": "string", "nullable": true }
+                "description": { "type": "string", "nullable": true }
             }
         }
     }

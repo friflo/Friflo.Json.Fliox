@@ -70,8 +70,8 @@ namespace Friflo.Json.Fliox.Hub.Auth
         /// If called its parameters are intended to filter the aspired condition and return true if task execution is granted.
         /// To reject task execution it returns false.
         /// </summary>
-        public void RegisterPredicate(string name, AuthPredicate predicate, string database) {
-            var authorizer = new AuthorizePredicate (name, predicate, database);
+        public void RegisterPredicate(string name, AuthPredicate predicate) {
+            var authorizer = new AuthorizePredicate (name, predicate);
             registeredPredicates.Add(name, authorizer);
         }
         
@@ -82,9 +82,9 @@ namespace Friflo.Json.Fliox.Hub.Auth
         /// If called its parameters are intended to filter the aspired condition and return true if task execution is granted.
         /// To reject task execution it returns false.
         /// </summary>
-        public void RegisterPredicate(AuthPredicate predicate, string database) {
+        public void RegisterPredicate(AuthPredicate predicate) {
             var name = predicate.Method.Name;
-            var authorizer = new AuthorizePredicate (name, predicate, database);
+            var authorizer = new AuthorizePredicate (name, predicate);
             registeredPredicates.Add(name, authorizer);
         }
         

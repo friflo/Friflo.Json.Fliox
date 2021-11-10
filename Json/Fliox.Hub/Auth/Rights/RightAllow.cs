@@ -12,11 +12,11 @@ namespace Friflo.Json.Fliox.Hub.Auth.Rights
 
         public  override    string      ToString() => grant.ToString();
 
+        private  static readonly Authorizer Allow = new AuthorizeAllow();
+        internal static readonly Authorizer Deny  = new AuthorizeDeny();
         
         public override Authorizer ToAuthorizer() {
-            if (grant)
-                return new AuthorizeAllow(database);
-            return new AuthorizeDeny(database);
+            return grant ? Allow : Deny;
         }
     }
 }
