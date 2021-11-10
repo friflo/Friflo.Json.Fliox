@@ -125,10 +125,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         internal static readonly EntityKeyT<TKey, T>    EntityKeyTMap = EntityKey.GetEntityKeyT<TKey, T>();
 
-        
-        // ReSharper disable once NotAccessedField.Local
-        private             EntityContainer             container; // not used - only for debugging ergonomics
-        
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private             SyncSet<TKey, T>            syncSet;
         internal            SyncSet<TKey, T>            GetSyncSet()    => syncSet ?? (syncSet = new SyncSet<TKey, T>(this));
@@ -154,7 +150,6 @@ namespace Friflo.Json.Fliox.Hub.Client
         }
         
         internal override void Init(FlioxClient store) {
-            container   = store._intern.database?.GetOrCreateContainer(name);
             intern      = new SetIntern<TKey, T>(store);
         }
         
