@@ -7,16 +7,18 @@ namespace Friflo.Json.Fliox.Hub.Auth.Rights
 {
     public sealed class RightAllow : Right
     {
+        public              string      database;
         public              bool        grant;
         public  override    RightType   RightType => RightType.allow;
 
         public  override    string      ToString() => grant.ToString();
 
-        private  static readonly Authorizer Allow = new AuthorizeAllow();
         internal static readonly Authorizer Deny  = new AuthorizeDeny();
         
         public override Authorizer ToAuthorizer() {
-            return grant ? Allow : Deny;
+            if (grant)
+                return new AuthorizeAllow(database);
+            return Deny;
         }
     }
 }

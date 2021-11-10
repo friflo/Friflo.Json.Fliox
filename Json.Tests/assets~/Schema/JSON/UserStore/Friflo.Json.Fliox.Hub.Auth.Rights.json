@@ -26,6 +26,7 @@
             "extends": { "$ref": "#/definitions/Right" },
             "properties": {
                 "type":        { "enum": ["allow"] },
+                "database":    { "type": ["string", "null"] },
                 "grant":       { "type": "boolean" },
                 "description": { "type": ["string", "null"] }
             },
@@ -40,6 +41,7 @@
             "extends": { "$ref": "#/definitions/Right" },
             "properties": {
                 "type":        { "enum": ["task"] },
+                "database":    { "type": ["string", "null"] },
                 "types":       { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/TaskType" } },
                 "description": { "type": ["string", "null"] }
             },
@@ -54,6 +56,7 @@
             "extends": { "$ref": "#/definitions/Right" },
             "properties": {
                 "type":        { "enum": ["message"] },
+                "database":    { "type": ["string", "null"] },
                 "names":       { "type": "array", "items": { "type": "string" } },
                 "description": { "type": ["string", "null"] }
             },
@@ -68,6 +71,7 @@
             "extends": { "$ref": "#/definitions/Right" },
             "properties": {
                 "type":        { "enum": ["subscribeMessage"] },
+                "database":    { "type": ["string", "null"] },
                 "names":       { "type": "array", "items": { "type": "string" } },
                 "description": { "type": ["string", "null"] }
             },
@@ -82,6 +86,7 @@
             "extends": { "$ref": "#/definitions/Right" },
             "properties": {
                 "type":        { "enum": ["database"] },
+                "database":    { "type": ["string", "null"] },
                 "containers":  { "additionalProperties": { "$ref": "#/definitions/ContainerAccess" }, "type": "object" },
                 "description": { "type": ["string", "null"] }
             },

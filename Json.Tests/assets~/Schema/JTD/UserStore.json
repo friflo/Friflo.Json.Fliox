@@ -37,12 +37,14 @@
         },
         "RightAllow": {
             "properties": {
+                "database":    { "type": "string", "nullable": true },
                 "grant":       { "type": "boolean" },
                 "description": { "type": "string", "nullable": true }
             }
         },
         "RightTask": {
             "properties": {
+                "database":    { "type": "string", "nullable": true },
                 "types":       { "elements": { "ref":  "TaskType" } },
                 "description": { "type": "string", "nullable": true }
             }
@@ -65,18 +67,21 @@
         },
         "RightMessage": {
             "properties": {
+                "database":    { "type": "string", "nullable": true },
                 "names":       { "elements": { "type": "string" } },
                 "description": { "type": "string", "nullable": true }
             }
         },
         "RightSubscribeMessage": {
             "properties": {
+                "database":    { "type": "string", "nullable": true },
                 "names":       { "elements": { "type": "string" } },
                 "description": { "type": "string", "nullable": true }
             }
         },
         "RightDatabase": {
             "properties": {
+                "database":    { "type": "string", "nullable": true },
                 "containers":  { "values": { "ref":  "ContainerAccess" } },
                 "description": { "type": "string", "nullable": true }
             }

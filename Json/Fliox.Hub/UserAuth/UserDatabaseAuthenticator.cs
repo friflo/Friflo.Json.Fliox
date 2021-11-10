@@ -30,15 +30,17 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
             { new JsonKey(UserStore.AuthenticationUser),    AuthUserRights },
             { new JsonKey(UserStore.Server),                ServerRights   },
         };
+        
+        private static readonly string DbName = null; // todo replace authorizer by instance members
             
         public static readonly    Authorizer   UnknownRights    = new AuthorizeDeny();
         public static readonly    Authorizer   AuthUserRights   = new AuthorizeAny(new Authorizer[] {
-            new AuthorizeMessage(nameof(AuthenticateUser)),
-            new AuthorizeContainer(nameof(UserStore.permissions),  new []{OperationType.read}),
-            new AuthorizeContainer(nameof(UserStore.roles),        new []{OperationType.read, OperationType.query}),
+            new AuthorizeMessage(nameof(AuthenticateUser), DbName),
+            new AuthorizeContainer(nameof(UserStore.permissions),  new []{OperationType.read}, DbName),
+            new AuthorizeContainer(nameof(UserStore.roles),        new []{OperationType.read, OperationType.query}, DbName),
         });
         public static readonly    Authorizer   ServerRights     = new AuthorizeAny(new Authorizer[] {
-            new AuthorizeContainer(nameof(UserStore.credentials),  new []{OperationType.read})
+            new AuthorizeContainer(nameof(UserStore.credentials),  new []{OperationType.read}, DbName)
         });
         
         public UserDatabaseAuthenticator() : base (null) { }

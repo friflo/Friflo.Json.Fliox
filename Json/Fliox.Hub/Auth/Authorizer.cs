@@ -22,6 +22,11 @@ namespace Friflo.Json.Fliox.Hub.Auth
     }
     
     public sealed class AuthorizeAllow : Authorizer {
+        private  readonly   string      database;
+        
+        public AuthorizeAllow (string database) {
+            this.database = database;
+        }
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
             return true;
         }
@@ -67,10 +72,13 @@ namespace Friflo.Json.Fliox.Hub.Auth
     
     public sealed class AuthorizeTaskType : Authorizer {
         private  readonly   TaskType    type;
+        private  readonly   string      database;
+        
         public   override   string      ToString() => type.ToString();
 
-        public AuthorizeTaskType(TaskType type) {
-            this.type = type;    
+        public AuthorizeTaskType(TaskType type, string database) {
+            this.database   = database;
+            this.type       = type;    
         }
         
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
@@ -79,11 +87,13 @@ namespace Friflo.Json.Fliox.Hub.Auth
     }
     
     public sealed class AuthorizeMessage : Authorizer {
+        private  readonly   string      database;
         private  readonly   string      messageName;
         private  readonly   bool        prefix;
         public   override   string      ToString() => prefix ? $"{messageName}*" : messageName;
 
-        public AuthorizeMessage (string message) {
+        public AuthorizeMessage (string message, string database) {
+            this.database = database;
             if (message.EndsWith("*")) {
                 prefix = true;
                 messageName = message.Substring(0, message.Length - 1);
@@ -103,11 +113,13 @@ namespace Friflo.Json.Fliox.Hub.Auth
     }
     
     public sealed class AuthorizeSubscribeMessage : Authorizer {
+        private  readonly   string      database;
         private  readonly   string      messageName;
         private  readonly   bool        prefix;
         public   override   string      ToString() => prefix ? $"{messageName}*" : messageName;
 
-        public AuthorizeSubscribeMessage (string message) {
+        public AuthorizeSubscribeMessage (string message, string database) {
+            this.database = database;
             if (message.EndsWith("*")) {
                 prefix = true;
                 messageName = message.Substring(0, message.Length - 1);
@@ -127,6 +139,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
     }
     
     public sealed class AuthorizeContainer : Authorizer {
+        private  readonly   string  database;
         private  readonly   string  container;
         
         private  readonly   bool    create;
@@ -140,8 +153,9 @@ namespace Friflo.Json.Fliox.Hub.Auth
 
         public   override   string  ToString() => container;
         
-        public AuthorizeContainer (string container, ICollection<OperationType> types) {
-            this.container = container;
+        public AuthorizeContainer (string container, ICollection<OperationType> types, string database) {
+            this.database   = database;
+            this.container  = container;
             SetRoles(types, ref create, ref upsert, ref delete, ref deleteAll, ref patch, ref read, ref query);
         }
         

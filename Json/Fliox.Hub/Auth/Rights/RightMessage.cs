@@ -11,16 +11,17 @@ namespace Friflo.Json.Fliox.Hub.Auth.Rights
 {
     public sealed class RightMessage : Right
     {
+                        public  string          database;
         [Fri.Required]  public  List<string>    names;
         public  override        RightType       RightType => RightType.message;
         
         public override Authorizer ToAuthorizer() {
             if (names.Count == 1) {
-                return new AuthorizeMessage(names[0]);
+                return new AuthorizeMessage(names[0], database);
             }
             var list = new List<Authorizer>(names.Count);
             foreach (var message in names) {
-                list.Add(new AuthorizeMessage(message));
+                list.Add(new AuthorizeMessage(message, database));
             }
             return new AuthorizeAny(list);
         }

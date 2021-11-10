@@ -13,6 +13,7 @@ namespace Friflo.Json.Fliox.Hub.Auth.Rights
 {
     public sealed class RightDatabase : Right
     {
+                        public  string                              database;
         [Fri.Required]  public  Dictionary<string, ContainerAccess> containers;
         public  override        RightType                           RightType => RightType.database;
         
@@ -23,7 +24,7 @@ namespace Friflo.Json.Fliox.Hub.Auth.Rights
                 var container   = pair.Value;
                 var access      = container.operations;
                 if (access != null && access.Count > 0) {
-                    list.Add(new AuthorizeContainer(name, access));
+                    list.Add(new AuthorizeContainer(name, access, database));
                 }
                 var subscribeChanges   = container.subscribeChanges;
                 if (subscribeChanges != null && subscribeChanges.Count > 0) {

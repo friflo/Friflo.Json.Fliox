@@ -25,26 +25,31 @@ export abstract class Right {
 
 export class RightAllow extends Right {
     type         : "allow";
+    database?    : string | null;
     grant        : boolean;
 }
 
 export class RightTask extends Right {
     type         : "task";
+    database?    : string | null;
     types        : TaskType[];
 }
 
 export class RightMessage extends Right {
     type         : "message";
+    database?    : string | null;
     names        : string[];
 }
 
 export class RightSubscribeMessage extends Right {
     type         : "subscribeMessage";
+    database?    : string | null;
     names        : string[];
 }
 
 export class RightDatabase extends Right {
     type         : "database";
+    database?    : string | null;
     containers   : { [key: string]: ContainerAccess };
 }
 

@@ -19,25 +19,30 @@ public abstract class Right {
 }
 
 public class RightAllow : Right {
-    bool  grant;
+    string  database;
+    bool    grant;
 }
 
 public class RightTask : Right {
+    string          database;
     [Fri.Required]
     List<TaskType>  types;
 }
 
 public class RightMessage : Right {
+    string        database;
     [Fri.Required]
     List<string>  names;
 }
 
 public class RightSubscribeMessage : Right {
+    string        database;
     [Fri.Required]
     List<string>  names;
 }
 
 public class RightDatabase : Right {
+    string                               database;
     [Fri.Required]
     Dictionary<string, ContainerAccess>  containers;
 }
