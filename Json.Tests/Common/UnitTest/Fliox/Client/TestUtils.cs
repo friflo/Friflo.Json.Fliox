@@ -217,6 +217,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
             var expected = IsDebug() ? 1672 : 1568; // Test Debug & Release
             AreEqual(expected, diff);   // Test Release also
+            var str1 = "Test";
+            var hc = str1.GetHashCode();
+            var str2 = "TEST";
+            for (long n= 0; n < 1; n++) {
+                bool b = str1 == str2;
+            }
             
         }
         

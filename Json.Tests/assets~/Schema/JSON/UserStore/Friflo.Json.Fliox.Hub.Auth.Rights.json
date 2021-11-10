@@ -14,7 +14,8 @@
             ],
             "properties": {
                 "type":        { "enum": ["allow", "task", "message", "subscribeMessage", "database", "predicate"] },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"] },
+                "database":    { "type": ["string", "null"] }
             },
             "required": [
                 "type"
@@ -27,7 +28,8 @@
             "properties": {
                 "type":        { "enum": ["allow"] },
                 "grant":       { "type": "boolean" },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"] },
+                "database":    { "type": ["string", "null"] }
             },
             "required": [
                 "type",
@@ -41,7 +43,8 @@
             "properties": {
                 "type":        { "enum": ["task"] },
                 "types":       { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/TaskType" } },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"] },
+                "database":    { "type": ["string", "null"] }
             },
             "required": [
                 "type",
@@ -55,7 +58,8 @@
             "properties": {
                 "type":        { "enum": ["message"] },
                 "names":       { "type": "array", "items": { "type": "string" } },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"] },
+                "database":    { "type": ["string", "null"] }
             },
             "required": [
                 "type",
@@ -69,7 +73,8 @@
             "properties": {
                 "type":        { "enum": ["subscribeMessage"] },
                 "names":       { "type": "array", "items": { "type": "string" } },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"] },
+                "database":    { "type": ["string", "null"] }
             },
             "required": [
                 "type",
@@ -83,7 +88,8 @@
             "properties": {
                 "type":        { "enum": ["database"] },
                 "containers":  { "additionalProperties": { "$ref": "#/definitions/ContainerAccess" }, "type": "object" },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"] },
+                "database":    { "type": ["string", "null"] }
             },
             "required": [
                 "type",
@@ -118,7 +124,8 @@
             "properties": {
                 "type":        { "enum": ["predicate"] },
                 "names":       { "type": "array", "items": { "type": "string" } },
-                "description": { "type": ["string", "null"] }
+                "description": { "type": ["string", "null"] },
+                "database":    { "type": ["string", "null"] }
             },
             "required": [
                 "type",

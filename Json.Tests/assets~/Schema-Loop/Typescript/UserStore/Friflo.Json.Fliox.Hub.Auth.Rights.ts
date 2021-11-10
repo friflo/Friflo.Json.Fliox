@@ -21,6 +21,7 @@ export abstract class Right {
         | "predicate"
     ;
     description? : string | null;
+    database?    : string | null;
 }
 
 export class RightAllow extends Right {
