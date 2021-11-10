@@ -135,7 +135,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </para>
         /// </summary>
         public virtual async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
-            messageContext.hub = this;
+            messageContext.hub      = this;
+            messageContext.Database = syncRequest.database;
             if (messageContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             messageContext.clientId = syncRequest.clientId;
             

@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
             this.database = database;
         }
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
-            return true;
+            return true; // messageContext.Database == database; // todo
         }
     }    
     
@@ -82,6 +82,8 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
         
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
+            if (messageContext.Database != database)
+                return false;
             return task.TaskType == type;
         }
     }
@@ -103,6 +105,8 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
         
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
+            if (messageContext.Database != database)
+                return false;
             if (!(task is SyncMessageTask messageTask))
                 return false;
             if (prefix) {
@@ -129,6 +133,8 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
         
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
+            if (messageContext.Database != database)
+                return false;
             if (!(task is SubscribeMessage subscribe))
                 return false;
             if (prefix) {
@@ -187,6 +193,8 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
         
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
+            if (messageContext.Database != database)
+                return false;
             switch (task.TaskType) {
                 case TaskType.create:       return create       && ((CreateEntities)  task).container == container;
                 case TaskType.upsert:       return upsert       && ((UpsertEntities)  task).container == container;
