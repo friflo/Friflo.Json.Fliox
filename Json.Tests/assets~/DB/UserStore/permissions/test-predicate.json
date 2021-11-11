@@ -1,4 +1,4 @@
 {
-    "id": "user-predicate",
+    "id": "test-predicate",
     "roles": ["db-predicate"]
 }

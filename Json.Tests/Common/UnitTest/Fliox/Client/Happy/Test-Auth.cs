@@ -95,9 +95,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// test authorization of read and write operations on a container
         private static async Task AssertAuthAccessOperations(FlioxHub hub) {
             var newArticle = new Article{ id="new-article" };
-            using (var mutateUser       = new PocStore(hub) { UserId ="user-operation"}) {
+            using (var mutateUser       = new PocStore(hub) { UserId ="test-operation"}) {
                 // test: allow read & mutate 
-                mutateUser.Token = "user-operation-token";
+                mutateUser.Token = "test-operation-token";
                 await mutateUser.TrySyncTasks(); // authenticate to simplify debugging below
                 
                 var tasks = new ReadWriteTasks(mutateUser, newArticle);
@@ -126,9 +126,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'", tasks.findArticle.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized. user authentication requires 'token'", tasks.upsertArticles.Error.Message);
             }
-            using (var readUser         = new PocStore(hub) { UserId = "user-task"}) {
+            using (var readUser         = new PocStore(hub) { UserId = "test-task"}) {
                 // test: allow read
-                readUser.Token = "user-task-token";
+                readUser.Token = "test-task-token";
                 await readUser.TrySyncTasks(); // authenticate to simplify debugging below
                 
                 var tasks = new ReadWriteTasks(readUser, newArticle);
@@ -136,9 +136,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 AreEqual(1, sync.failed.Count);
                 AreEqual("PermissionDenied ~ not authorized", tasks.upsertArticles.Error.Message);
             }
-            using (var readPredicate         = new PocStore(hub) { UserId = "user-predicate"}) {
+            using (var readPredicate         = new PocStore(hub) { UserId = "test-predicate"}) {
                 // test: allow by predicate function
-                readPredicate.Token = "user-predicate-token";
+                readPredicate.Token = "test-predicate-token";
                 await readPredicate.TrySyncTasks(); // authenticate to simplify debugging below
                 
                 _ = new ReadWriteTasks(readPredicate, newArticle);
@@ -149,8 +149,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         /// test authorization of subscribing to container changes. E.g. create, upsert, delete & patch.
         private static async Task AssertAuthAccessSubscriptions(FlioxHub hub) {
-            using (var mutateUser       = new PocStore(hub) { UserId = "user-deny"}) {
-                mutateUser.Token = "user-deny-token";
+            using (var mutateUser       = new PocStore(hub) { UserId = "test-deny"}) {
+                mutateUser.Token = "test-deny-token";
                 await mutateUser.TrySyncTasks(); // authenticate to simplify debugging below
 
                 var articleChanges = mutateUser.articles.SubscribeChanges(new [] {Change.upsert});
@@ -161,8 +161,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await mutateUser.TrySyncTasks();
                 AreEqual("PermissionDenied ~ not authorized", articleDeletes.Error.Message);
             }
-            using (var mutateUser       = new PocStore(hub) { UserId = "user-operation"}) {
-                mutateUser.Token = "user-operation-token";
+            using (var mutateUser       = new PocStore(hub) { UserId = "test-operation"}) {
+                mutateUser.Token = "test-operation-token";
                 await mutateUser.TrySyncTasks(); // authenticate to simplify debugging below
 
                 var articleChanges = mutateUser.articles.SubscribeChanges(new [] {Change.upsert});
@@ -178,10 +178,10 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         
         /// test authorization of sending messages and subscriptions to messages. Commands are messages too.
         private static async Task AssertAuthMessage(FlioxHub hub) {
-            using (var denyUser      = new PocStore(hub) { UserId = "user-deny"})
+            using (var denyUser      = new PocStore(hub) { UserId = "test-deny"})
             {
                 // test: deny message
-                denyUser.Token = "user-deny-token";
+                denyUser.Token = "test-deny-token";
                 await denyUser.TrySyncTasks(); // authenticate to simplify debugging below
                 
                 var message     = denyUser.SendMessage("test-message");
@@ -190,9 +190,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 AreEqual("PermissionDenied ~ not authorized", message.Error.Message);
                 AreEqual("PermissionDenied ~ not authorized", subscribe.Error.Message);
             }
-            using (var messageUser   = new PocStore(hub) { UserId = "user-message"}){
+            using (var messageUser   = new PocStore(hub) { UserId = "test-message"}){
                 // test: allow message
-                messageUser.Token = "user-message-token";
+                messageUser.Token = "test-message-token";
                 await messageUser.TrySyncTasks(); // authenticate to simplify debugging below
                 
                 var message     = messageUser.SendMessage("test-message");
@@ -250,15 +250,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task AssertServerStore(UserStore store) {
-            var credTask        = store.credentials.Read().Find(new JsonKey("user-operation"));
+            var credTask        = store.credentials.Read().Find(new JsonKey("test-operation"));
             await store.TrySyncTasks();
             
             var cred = credTask.Result;
-            AreEqual("user-operation-token", cred.token);
+            AreEqual("test-operation-token", cred.token);
         }
         
         private static async Task AssertAuthUserStore(UserStore store) {
-            var credTask        = store.credentials.Read().Find(new JsonKey("user-operation"));
+            var credTask        = store.credentials.Read().Find(new JsonKey("test-operation"));
             await store.TrySyncTasks();
             
             AreEqual("PermissionDenied ~ not authorized", credTask.Error.Message);
