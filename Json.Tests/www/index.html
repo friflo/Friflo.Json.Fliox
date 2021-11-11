@@ -23,8 +23,48 @@
             }
             // console.log(`KeyboardEvent: code='${event.code}', ctrl:${event.ctrlKey}, alt:${event.altKey}`);
         }, true);
+
+        window.selectUser = function (element) {
+            let value = element.innerText;
+            console.log("xxx", value);
+            document.getElementById("user").value = value;
+            document.getElementById("token").value = value;
+        };
+
     </script>
     <style>
+        .dropbtn {
+            background-color: lightgrey;
+            color: white;
+            padding:    0px;
+            border:     1px solid #aaa;
+            width:      16px;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 100px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            cursor: default;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 2px 6px;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-content a:hover           { background-color: #ddd;}
+        .dropdown:hover .dropdown-content   { display: block;}
+        .dropdown:hover .dropbtn            { background-color: grey;}
+
+        
+
         html            { max-width: 100%; overflow-x: hidden; } /* disable horizontal scrollbar */
         a               { text-decoration:  none; }
         tr              { vertical-align:   top; }
@@ -106,7 +146,15 @@
     <div id="socketStatus" class="inline">disconnected</div> &nbsp;&nbsp;&nbsp;&nbsp;
     <label for="form-user"><code>{{user}}</code></label>   <input type="text" id="user"  name="form-user"  style="width: 100px;" value="admin">
     <label for="form-token"><code>{{token}}</code></label> <input type="text" id="token" name="form-token" style="width: 100px;" value="admin">
-  </span>
+    <div class="dropdown">
+        <button class="dropbtn">▼</button>
+        <div class="dropdown-content">
+          <a onclick="selectUser(this)">admin</a>
+          <a onclick="selectUser(this)">poc-admin</a>
+          <a onclick="selectUser(this)">monitor-admin</a>
+        </div>
+      </div>
+    </span>
   <br><br>
 
   <table width="100%">
