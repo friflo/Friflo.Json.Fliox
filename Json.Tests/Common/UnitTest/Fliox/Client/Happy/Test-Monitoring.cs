@@ -174,7 +174,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 
             store.articles.Read().Find("xxx");
             store.customers.Read().Find("yyy");
-            await store.TrySyncTasks();
+            await store.SyncTasks();
             
             monitor.UserId      = userId;
             monitor.Token       = token;
