@@ -189,7 +189,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             internal    readonly JsonValue   jsonArray;
             internal    readonly JsonValue   jsonObject;
             internal    readonly JsonValue   roleDatabase    = new JsonValue(AsJson(
-@"{'id': 'role-database','description': 'test',
+@"{'id': 'role-operation','description': 'test',
     'rights': [ { 'type': 'operation', 'containers': {'Article': { 'operations': ['read', 'upsert'], 'subscribeChanges': ['upsert'] }}} ]
 }"));
             

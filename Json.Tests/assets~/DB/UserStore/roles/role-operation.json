@@ -1,5 +1,5 @@
 {
-    "id": "role-database",
+    "id": "role-operation",
     "description": "Allow access of specified operations to a database container and change subscriptions to these containers",
     "rights": [
         {

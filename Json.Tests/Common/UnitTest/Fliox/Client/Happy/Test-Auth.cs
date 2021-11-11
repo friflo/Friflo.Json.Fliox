@@ -95,9 +95,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         /// test authorization of read and write operations on a container
         private static async Task AssertAuthAccessOperations(FlioxHub hub) {
             var newArticle = new Article{ id="new-article" };
-            using (var mutateUser       = new PocStore(hub) { UserId ="user-database"}) {
+            using (var mutateUser       = new PocStore(hub) { UserId ="user-operation"}) {
                 // test: allow read & mutate 
-                mutateUser.Token = "user-database-token";
+                mutateUser.Token = "user-operation-token";
                 await mutateUser.TrySyncTasks(); // authenticate to simplify debugging below
                 
                 var tasks = new ReadWriteTasks(mutateUser, newArticle);
@@ -161,8 +161,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 await mutateUser.TrySyncTasks();
                 AreEqual("PermissionDenied ~ not authorized", articleDeletes.Error.Message);
             }
-            using (var mutateUser       = new PocStore(hub) { UserId = "user-database"}) {
-                mutateUser.Token = "user-database-token";
+            using (var mutateUser       = new PocStore(hub) { UserId = "user-operation"}) {
+                mutateUser.Token = "user-operation-token";
                 await mutateUser.TrySyncTasks(); // authenticate to simplify debugging below
 
                 var articleChanges = mutateUser.articles.SubscribeChanges(new [] {Change.upsert});
@@ -250,15 +250,15 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
         
         private static async Task AssertServerStore(UserStore store) {
-            var credTask        = store.credentials.Read().Find(new JsonKey("user-database"));
+            var credTask        = store.credentials.Read().Find(new JsonKey("user-operation"));
             await store.TrySyncTasks();
             
             var cred = credTask.Result;
-            AreEqual("user-database-token", cred.token);
+            AreEqual("user-operation-token", cred.token);
         }
         
         private static async Task AssertAuthUserStore(UserStore store) {
-            var credTask        = store.credentials.Read().Find(new JsonKey("user-database"));
+            var credTask        = store.credentials.Read().Find(new JsonKey("user-operation"));
             await store.TrySyncTasks();
             
             AreEqual("PermissionDenied ~ not authorized", credTask.Error.Message);
