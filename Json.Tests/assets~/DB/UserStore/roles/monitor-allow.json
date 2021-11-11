@@ -1,5 +1,5 @@
 {
-    "id": "db-monitor-allow",
+    "id": "monitor-allow",
     "description": "Danger! Using this allow unrestricted access to 'monitor' database",
     "rights": [
         { "type": "allow", "database": "monitor" }

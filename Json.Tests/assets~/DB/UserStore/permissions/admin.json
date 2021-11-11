@@ -1,4 +1,4 @@
 {
     "id": "admin",
-    "roles": ["db-allow", "db-monitor-allow"]
+    "roles": ["db-allow", "monitor-allow"]
 }
