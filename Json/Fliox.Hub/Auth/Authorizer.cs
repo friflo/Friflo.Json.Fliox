@@ -24,13 +24,28 @@ namespace Friflo.Json.Fliox.Hub.Auth
     public abstract class AuthorizerDatabase : Authorizer
     {
         private  readonly   string      database;
+        private  readonly   bool        isPrefix;
         
         protected AuthorizerDatabase (string database) {
-            this.database = database;
+            if (database == null) {
+                return;
+            }
+            isPrefix = database.EndsWith("*");
+            if (isPrefix) {
+                this.database = database.Substring(0, database.Length - 1);
+            } else {
+                this.database = database;
+            }
         }
         
         protected bool AuthorizeDatabase(MessageContext messageContext) {
-            return messageContext.Database == database;
+            var db = messageContext.Database;
+            if (isPrefix) {
+                if (db != null) 
+                    return db.StartsWith(database);
+                return database.Length == 0;
+            }
+            return db == database;
         }
     }
 

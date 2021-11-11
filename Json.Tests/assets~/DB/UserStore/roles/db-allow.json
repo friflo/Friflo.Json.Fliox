@@ -2,6 +2,6 @@
     "id": "db-allow",
     "description": "Allow unrestricted access to a database",
     "rights": [
-        { "type": "allow" }
+        { "type": "allow", "database": "*" }
     ]
 }
