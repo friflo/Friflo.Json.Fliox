@@ -91,8 +91,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
 
         private  static async Task AssertAuthSuccessMonitoringDB(FlioxHub hub) {
-            const string userId     = "monitor";
-            const string token      = "monitor-token";
+            const string userId     = "monitor-admin";
+            const string token      = "monitor-admin";
             using (var store    = new PocStore(hub))
             using (var monitor  = new MonitorStore(hub, "monitor")) {
                 var result = await Monitor(store, monitor, userId, token);
@@ -135,13 +135,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("{'id':'Test','counts':{'requests':2,'tasks':3}}",                                      host.ToString());
             AreEqual("{'id':'anonymous','clients':[],'counts':[]}",                                          users[User.AnonymousId].ToString());
             
-            var adminInfo = users[new JsonKey("monitor")].ToString();
-            AreEqual("{'id':'monitor','clients':[],'counts':[{'db':'monitor','requests':1,'tasks':1}]}", adminInfo);
+            var adminInfo = users[new JsonKey("monitor-admin")].ToString();
+            AreEqual("{'id':'monitor-admin','clients':[],'counts':[{'db':'monitor','requests':1,'tasks':1}]}", adminInfo);
                 
             var pocClientInfo = clients[new JsonKey("poc-client")].ToString();
             AreEqual("{'id':'poc-client','user':'poc-admin','counts':[{'db':'default','requests':1,'tasks':2}]}", pocClientInfo);
             var monitorClientInfo = clients[new JsonKey("monitor-client")].ToString();
-            AreEqual("{'id':'monitor-client','user':'monitor','counts':[{'db':'monitor','requests':1,'tasks':1}]}", monitorClientInfo);
+            AreEqual("{'id':'monitor-client','user':'monitor-admin','counts':[{'db':'monitor','requests':1,'tasks':1}]}", monitorClientInfo);
             
             NotNull(result.user.Result);
             NotNull(result.client.Result);
@@ -163,14 +163,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         private  static async Task<MonitorResult> Monitor(PocStore store, MonitorStore monitor, string userId, string token) {
             monitor.ClientId    = "monitor-client";
             // clear stats requires successful authentication as admin
-            monitor.UserId      = "monitor";
-            monitor.Token       = "monitor-token";
+            monitor.UserId      = "monitor-admin";
+            monitor.Token       = "monitor-admin";
             monitor.ClearStats();
             await monitor.TrySyncTasks();
             
             store.UserId        = "poc-admin";
             store.ClientId      = "poc-client";
-            store.Token         = "poc-admin-token";
+            store.Token         = "poc-admin";
 
             store.articles.Read().Find("xxx");
             store.customers.Read().Find("yyy");
