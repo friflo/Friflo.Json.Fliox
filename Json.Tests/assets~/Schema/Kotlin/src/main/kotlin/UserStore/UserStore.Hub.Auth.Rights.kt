@@ -43,8 +43,8 @@ data class RightSubscribeMessage (
 ) : Right()
 
 @Serializable
-@SerialName("database")
-data class RightDatabase (
+@SerialName("access")
+data class RightAccess (
               val database    : String? = null,
               val containers  : HashMap<String, ContainerAccess>,
     override  val description : String? = null,

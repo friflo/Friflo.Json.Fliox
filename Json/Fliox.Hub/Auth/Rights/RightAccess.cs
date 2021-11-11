@@ -11,11 +11,11 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable MemberCanBePrivate.Global
 namespace Friflo.Json.Fliox.Hub.Auth.Rights
 {
-    public sealed class RightDatabase : Right
+    public sealed class RightAccess : Right
     {
                         public  string                              database;
         [Fri.Required]  public  Dictionary<string, ContainerAccess> containers;
-        public  override        RightType                           RightType => RightType.database;
+        public  override        RightType                           RightType => RightType.access;
         
         public override Authorizer ToAuthorizer() {
             var list = new List<Authorizer>(containers.Count);
