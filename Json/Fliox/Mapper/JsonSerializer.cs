@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.Mapper
     public class SerializerOptions {
         public  bool    Pretty              { get; set; }
         public  bool    WriteNullMembers    { get; set; }
-        public  int     MaxDepth            { get; set; }
+        public  int     MaxDepth            { get; set; } = 100;
     }
     
 #if !UNITY_5_3_OR_NEWER
