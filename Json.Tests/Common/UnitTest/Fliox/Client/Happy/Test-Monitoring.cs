@@ -32,8 +32,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared, HostName))
             using (var monitorDB        = new MonitorDatabase(hub)) {
                 hub.AddExtensionDB(monitorDB);
-                await AssertNoAuthMonitoringDB  (hub, monitorDB);
-                await AssertAuthMonitoringDB    (hub, monitorDB, hub);
+                await AssertNoAuthMonitoringDB  (hub);
+                await AssertAuthMonitoringDB    (hub, hub);
             }
         }
         
@@ -45,9 +45,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var monitor          = new MonitorDatabase(hub))
             using (var loopbackHub      = new LoopbackHub(hub)) {
                 hub.AddExtensionDB(monitor);
-                var monitorDB = new RemoteExtensionDatabase(loopbackHub, MonitorDatabase.Name);
-                await AssertNoAuthMonitoringDB  (loopbackHub, monitorDB);
-                await AssertAuthMonitoringDB    (loopbackHub, monitorDB, hub);
+                await AssertNoAuthMonitoringDB  (loopbackHub);
+                await AssertAuthMonitoringDB    (loopbackHub, hub);
             }
         }
         
@@ -62,64 +61,64 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var clientHub    = new HttpClientHub("http://localhost:8080/", TestGlobals.Shared)) {
                 hub.AddExtensionDB(monitor);
                 await RunServer(server, async () => {
-                    var monitorDB   = new RemoteExtensionDatabase(clientHub, MonitorDatabase.Name);
-                    await AssertNoAuthMonitoringDB  (clientHub, monitorDB);
-                    await AssertAuthMonitoringDB    (clientHub, monitorDB, hub);
+                    await AssertNoAuthMonitoringDB  (clientHub);
+                    await AssertAuthMonitoringDB    (clientHub, hub);
                 });
             }
         }
         
-        private static async Task AssertAuthMonitoringDB(FlioxHub hub, EntityDatabase monitorDB, FlioxHub database) {
+        private static async Task AssertAuthMonitoringDB(FlioxHub hub, FlioxHub database) {
             using (var userDatabase     = new FileDatabase(CommonUtils.GetBasePath() + "assets~/DB/UserStore", new UserDBHandler()))
             using (var authenticator    = new UserAuthenticator(userDatabase, TestGlobals.Shared)) {
                 database.Authenticator  = authenticator;
-                await AssertAuthSuccessMonitoringDB (hub, monitorDB);
-                await AssertAuthFailedMonitoringDB  (hub, monitorDB);
+                await AssertAuthSuccessMonitoringDB (hub);
+                await AssertAuthFailedMonitoringDB  (hub);
             }
         }
 
-        private  static async Task AssertNoAuthMonitoringDB(FlioxHub hub, EntityDatabase monitorDb) {
+        private  static async Task AssertNoAuthMonitoringDB(FlioxHub hub) {
             const string userId     = "poc-user";
             const string clientId   = "poc-client"; 
+            const string token      = "invalid"; 
             using (var store    = new PocStore(hub))
-            using (var monitor  = new MonitorStore(monitorDb, store)) {
-                var result = await Monitor(store, monitor, userId, clientId);
+            using (var monitor  = new MonitorStore(hub, "monitor")) {
+                var result = await Monitor(store, monitor, userId, clientId, token);
                 AssertNoAuthResult(result);
                 
                 // as clearing monitor stats subsequent call has same result
-                result = await Monitor(store, monitor, userId, clientId);
+                result = await Monitor(store, monitor, userId, clientId, token);
                 AssertNoAuthResult(result);
                 
                 await AssertMonitoringErrors(monitor);
             }
         }
 
-        private  static async Task AssertAuthSuccessMonitoringDB(FlioxHub hub, EntityDatabase monitorDb) {
+        private  static async Task AssertAuthSuccessMonitoringDB(FlioxHub hub) {
             const string userId     = "admin";
-            const string clientId   = "admin-client"; 
+            const string clientId   = "admin-client";
+            const string token      = "admin-token";
             using (var store    = new PocStore(hub))
-            using (var monitor  = new MonitorStore(monitorDb, store)) {
-                store.Token = "admin-token";
-                var result = await Monitor(store, monitor, userId, clientId);
+            using (var monitor  = new MonitorStore(hub, "monitor")) {
+                var result = await Monitor(store, monitor, userId, clientId, token);
                 AssertAuthResult(result);
                 
                 // as clearing monitor stats subsequent call has same result
-                result = await Monitor(store, monitor, userId, clientId);
+                result = await Monitor(store, monitor, userId, clientId, token);
                 AssertAuthResult(result);
             }
         }
         
-        private  static async Task AssertAuthFailedMonitoringDB(FlioxHub hub, EntityDatabase monitorDb) {
+        private  static async Task AssertAuthFailedMonitoringDB(FlioxHub hub) {
             const string userId     = "admin";
             const string clientId   = "admin-xxx"; 
+            const string token      = "invalid";
             using (var store    = new PocStore(hub))
-            using (var monitor  = new MonitorStore(monitorDb, store)) {
-                store.Token = "invalid";
-                var result = await Monitor(store, monitor, userId, clientId);
+            using (var monitor  = new MonitorStore(hub, "monitor")) {
+                var result = await Monitor(store, monitor, userId, clientId, token);
                 AssertAuthFailedResult(result);
                 
                 // as clearing monitor stats subsequent call has same result
-                result = await Monitor(store, monitor, userId, clientId);
+                result = await Monitor(store, monitor, userId, clientId, token);
                 AssertAuthFailedResult(result);
             }
         }
@@ -130,12 +129,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("{'id':'anonymous','clients':[],'counts':[]}",   users[User.AnonymousId].ToString());
             
             var pocUserInfo = users[new JsonKey("poc-user")].ToString();
-            AreEqual("{'id':'poc-user','clients':['poc-client'],'counts':[{'db':'default','requests':1,'tasks':2},{'db':'monitor','requests':1,'tasks':1}]}", pocUserInfo);
-            AreEqual(2, users.Count);
+            AreEqual("{'id':'poc-user','clients':['poc-client'],'counts':[{'db':'default','requests':1,'tasks':2}]}", pocUserInfo);
+            var adminInfo = users[new JsonKey("admin")].ToString();
+            AreEqual("{'id':'admin','clients':['monitor-client'],'counts':[{'db':'monitor','requests':1,'tasks':1}]}", adminInfo);
+            AreEqual(3, users.Count);
                 
             var pocClientInfo = clients[new JsonKey("poc-client")].ToString();
-            AreEqual("{'id':'poc-client','user':'poc-user','counts':[{'db':'default','requests':1,'tasks':2},{'db':'monitor','requests':1,'tasks':1}]}", pocClientInfo);
-            AreEqual(1, clients.Count);
+            AreEqual("{'id':'poc-client','user':'poc-user','counts':[{'db':'default','requests':1,'tasks':2}]}", pocClientInfo);
+            var monitorClientInfo = clients[new JsonKey("monitor-client")].ToString();
+            AreEqual("{'id':'monitor-client','user':'admin','counts':[{'db':'monitor','requests':1,'tasks':1}]}", monitorClientInfo);
+            AreEqual(2, clients.Count);
             
             NotNull(result.user.Result);
             NotNull(result.client.Result);
@@ -152,7 +155,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("{'id':'admin','clients':['admin-client'],'counts':[{'db':'default','requests':1,'tasks':2},{'db':'monitor','requests':1,'tasks':1}]}", adminInfo);
                 
             var adminClientInfo = clients[new JsonKey("admin-client")].ToString();
-            AreEqual("{'id':'admin-client','user':'admin','counts':[{'db':'default','requests':1,'tasks':2},{'db':'monitor','requests':1,'tasks':1}]}", adminClientInfo);
+            AreEqual("{'id':'admin-client','user':'admin','counts':[{'db':'default','requests':1,'tasks':2}]}", adminClientInfo);
+            var monitorClientInfo = clients[new JsonKey("monitor-client")].ToString();
+            AreEqual("{'id':'monitor-client','user':'admin','counts':[{'db':'monitor','requests':1,'tasks':1}]}", monitorClientInfo);
             
             NotNull(result.user.Result);
             NotNull(result.client.Result);
@@ -171,16 +176,24 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("InvalidTask ~ MonitorDatabase does not support task: 'delete'",   deleteUser.Error.Message);
         }
         
-        private  static async Task<MonitorResult> Monitor(PocStore store, MonitorStore monitor, string userId, string clientId) {
-            store.UserId      = userId;
-            store.ClientId    = clientId;
-            
+        private  static async Task<MonitorResult> Monitor(PocStore store, MonitorStore monitor, string userId, string clientId, string token) {
+            monitor.ClientId    = "monitor-client";
+            // clear stats requires successful authentication as admin
+            monitor.UserId      = "admin";
+            monitor.Token       = "admin-token";
             monitor.ClearStats();
             await monitor.TrySyncTasks();
             
+            store.UserId        = userId;
+            store.ClientId      = clientId;
+            store.Token         = token;
+
             store.articles.Read().Find("xxx");
             store.customers.Read().Find("yyy");
             await store.TrySyncTasks();
+            
+            monitor.UserId      = userId;
+            monitor.Token       = token;
             
             var result = new MonitorResult {
                 users       = monitor.users.QueryAll(),

@@ -47,16 +47,10 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>
         /// Instantiate a <see cref="FlioxClient"/> with a given <see cref="hub"/>.
         /// </summary>
-        public FlioxClient(FlioxHub hub) {
+        public FlioxClient(FlioxHub hub, string database = null) {
             if (hub  == null)  throw new ArgumentNullException(nameof(hub));
             var eventTarget = new EventTarget(this);
-            _intern = new ClientIntern(this, null, hub, hub.database, this, eventTarget);
-        }
-        
-        protected FlioxClient(EntityDatabase database, FlioxClient client) {
-            if (database == null) throw new ArgumentNullException(nameof(database));
-            if (client   == null) throw new ArgumentNullException(nameof(client));
-            _intern = new ClientIntern(this, client, client._intern.hub, database, this, null);
+            _intern = new ClientIntern(this, hub, database, this, eventTarget);
         }
         
         public virtual void Dispose() {
@@ -98,24 +92,15 @@ namespace Friflo.Json.Fliox.Hub.Client
             messageContext.Release();
             return result;
         }
-        
-        private void AssertBaseStore() {
-            if (_intern.baseClient != null)
-                throw new InvalidOperationException("only base store can set: userId, clientId & token");
-        } 
 
         public string UserId {
             get => _intern.userId.AsString();
-            set {
-                AssertBaseStore();
-                _intern.userId = new JsonKey(value);
-            }
+            set => _intern.userId = new JsonKey(value);
         }
 
         public string ClientId {
             get => _intern.clientId.AsString();
             set {
-                AssertBaseStore();
                 var newClientId     = new JsonKey(value);
                 if (newClientId.IsEqual(_intern.clientId))
                     return;
@@ -132,10 +117,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public string Token {
             get => _intern.token;
-            set {
-                AssertBaseStore();
-                _intern.token   = value;
-            }
+            set => _intern.token   = value;
         }
 
         // --- LogChanges
@@ -323,8 +305,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             Task<ExecuteSyncResult> task = null;
             var pendingSyncs = _intern.pendingSyncs;
             try {
-                var database            = _intern.database; 
-                syncRequest.database    = database?.name;
+                syncRequest.database    = _intern.database;
                 var hub                 = _intern.hub;
                 task = hub.ExecuteSync(syncRequest, messageContext);
 
@@ -395,18 +376,17 @@ namespace Friflo.Json.Fliox.Hub.Client
             syncStore.SetSyncSets(this);
             
             var tasks       = new List<SyncRequestTask>();
-            var client      = _intern.baseClient ?? this;
             var syncRequest = new SyncRequest {
                 // database    = _intern.database.ExtensionName, 
                 tasks       = tasks,
-                userId      = client._intern.userId,
-                clientId    = client._intern.clientId, 
-                token       = client._intern.token
+                userId      = _intern.userId,
+                clientId    = _intern.clientId, 
+                token       = _intern.token
             };
 
             // see method docs
-            if (client._intern.subscriptionProcessor != null) {
-                syncRequest.eventAck = client._intern.lastEventSeq;
+            if (_intern.subscriptionProcessor != null) {
+                syncRequest.eventAck = _intern.lastEventSeq;
             }
 
             foreach (var setPair in _intern.setByType) {
