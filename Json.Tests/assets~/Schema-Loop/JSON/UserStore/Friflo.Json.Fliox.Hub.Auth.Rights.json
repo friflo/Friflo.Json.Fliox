@@ -27,12 +27,10 @@
             "properties": {
                 "type":        { "enum": ["allow"] },
                 "database":    { "type": ["string", "null"] },
-                "grant":       { "type": "boolean" },
                 "description": { "type": ["string", "null"] }
             },
             "required": [
-                "type",
-                "grant"
+                "type"
             ],
             "additionalProperties": false
         },

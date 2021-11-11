@@ -2,6 +2,6 @@
     "id": "role-allow",
     "description": "Danger! Using this allow unrestricted access to a database",
     "rights": [
-        { "type": "allow", "grant": true }
+        { "type": "allow" }
     ]
 }

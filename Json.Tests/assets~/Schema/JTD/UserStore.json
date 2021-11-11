@@ -38,7 +38,6 @@
         "RightAllow": {
             "properties": {
                 "database":    { "type": "string", "nullable": true },
-                "grant":       { "type": "boolean" },
                 "description": { "type": "string", "nullable": true }
             }
         },

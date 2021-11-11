@@ -15,7 +15,6 @@ abstract class Right  {
 @SerialName("allow")
 data class RightAllow (
               val database    : String? = null,
-              val grant       : Boolean,
     override  val description : String? = null,
 ) : Right()
 

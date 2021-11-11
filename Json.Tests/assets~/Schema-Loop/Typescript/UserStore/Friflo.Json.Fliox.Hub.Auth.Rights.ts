@@ -26,7 +26,6 @@ export abstract class Right {
 export class RightAllow extends Right {
     type         : "allow";
     database?    : string | null;
-    grant        : boolean;
 }
 
 export class RightTask extends Right {

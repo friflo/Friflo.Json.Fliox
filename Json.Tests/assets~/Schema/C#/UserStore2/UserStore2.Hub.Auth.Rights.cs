@@ -20,7 +20,6 @@ public abstract class Right {
 
 public class RightAllow : Right {
     string  database;
-    bool    grant;
 }
 
 public class RightTask : Right {
