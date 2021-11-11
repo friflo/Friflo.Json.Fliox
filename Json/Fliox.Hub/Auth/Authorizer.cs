@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
             this.database = database;
         }
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
-            return true; // messageContext.Database == database; // todo
+            return messageContext.Database == database;
         }
     }    
     

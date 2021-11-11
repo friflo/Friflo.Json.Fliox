@@ -124,24 +124,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
 
         private static void AssertNoAuthResult(MonitorResult result) {
-            var users   = result.users.Results;
-            var clients = result.clients.Results;
-            AreEqual("{'id':'anonymous','clients':[],'counts':[]}",   users[User.AnonymousId].ToString());
-            
-            var pocUserInfo = users[new JsonKey("poc-user")].ToString();
-            AreEqual("{'id':'poc-user','clients':['poc-client'],'counts':[{'db':'default','requests':1,'tasks':2}]}", pocUserInfo);
-            var adminInfo = users[new JsonKey("admin")].ToString();
-            AreEqual("{'id':'admin','clients':['monitor-client'],'counts':[{'db':'monitor','requests':1,'tasks':1}]}", adminInfo);
-            AreEqual(3, users.Count);
-                
-            var pocClientInfo = clients[new JsonKey("poc-client")].ToString();
-            AreEqual("{'id':'poc-client','user':'poc-user','counts':[{'db':'default','requests':1,'tasks':2}]}", pocClientInfo);
-            var monitorClientInfo = clients[new JsonKey("monitor-client")].ToString();
-            AreEqual("{'id':'monitor-client','user':'admin','counts':[{'db':'monitor','requests':1,'tasks':1}]}", monitorClientInfo);
-            AreEqual(2, clients.Count);
-            
-            NotNull(result.user.Result);
-            NotNull(result.client.Result);
+            IsFalse(result.users.Success);
+            IsFalse(result.clients.Success);
+            IsFalse(result.hosts.Success);
+            IsFalse(result.user.Success);
+            IsFalse(result.client.Success);
         }
 
         private static void AssertAuthResult(MonitorResult result) {
