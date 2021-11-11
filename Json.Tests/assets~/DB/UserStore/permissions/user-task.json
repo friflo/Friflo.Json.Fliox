@@ -1,4 +1,4 @@
 {
     "id": "user-task",
-    "roles": ["role-task"]
+    "roles": ["db-task"]
 }

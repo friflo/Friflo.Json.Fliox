@@ -189,12 +189,12 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             internal    readonly JsonValue   jsonArray;
             internal    readonly JsonValue   jsonObject;
             internal    readonly JsonValue   roleDatabase    = new JsonValue(AsJson(
-@"{'id': 'role-operation','description': 'test',
+@"{'id': 'db-operation','description': 'test',
     'rights': [ { 'type': 'operation', 'containers': {'Article': { 'operations': ['read', 'upsert'], 'subscribeChanges': ['upsert'] }}} ]
 }"));
             
             internal TestTypes() {
-                roleDeny        = new JsonValue(AsJson(@"{'id': 'role-deny', 'rights': [  ] }"));
+                roleDeny        = new JsonValue(AsJson(@"{'id': 'db-deny', 'rights': [  ] }"));
                 roleDenyArray   = new JsonValue("[" + roleDeny + "]");
                 roleDenyMap     = new JsonValue("{\"key\": " + roleDeny + "}");
                 jsonArray       = new JsonValue("[]");
