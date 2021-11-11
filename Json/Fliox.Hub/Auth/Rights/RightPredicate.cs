@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Auth.Rights
         task,
         message,
         subscribeMessage,
-        access,
+        operation,
         predicate
     }
 }

@@ -9,11 +9,11 @@
                 { "$ref": "#/definitions/RightTask" },
                 { "$ref": "#/definitions/RightMessage" },
                 { "$ref": "#/definitions/RightSubscribeMessage" },
-                { "$ref": "#/definitions/RightAccess" },
+                { "$ref": "#/definitions/RightOperation" },
                 { "$ref": "#/definitions/RightPredicate" }
             ],
             "properties": {
-                "type":        { "enum": ["allow", "task", "message", "subscribeMessage", "access", "predicate"] },
+                "type":        { "enum": ["allow", "task", "message", "subscribeMessage", "operation", "predicate"] },
                 "description": { "type": ["string", "null"] }
             },
             "required": [
@@ -79,11 +79,11 @@
             ],
             "additionalProperties": false
         },
-        "RightAccess": {
+        "RightOperation": {
             "type": "object",
             "extends": { "$ref": "#/definitions/Right" },
             "properties": {
-                "type":        { "enum": ["access"] },
+                "type":        { "enum": ["operation"] },
                 "database":    { "type": ["string", "null"] },
                 "containers":  { "additionalProperties": { "$ref": "#/definitions/ContainerAccess" }, "type": "object" },
                 "description": { "type": ["string", "null"] }

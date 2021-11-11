@@ -86,7 +86,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             
             var json = AsJson(@"{'rights': [{ 'type': 'xxx' }] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Invalid discriminant. was: 'xxx', expect: [allow, task, message, subscribeMessage, access, predicate] at Right > rights[0].type, pos: 27", error);
+            AreEqual("Invalid discriminant. was: 'xxx', expect: [allow, task, message, subscribeMessage, operation, predicate] at Right > rights[0].type, pos: 27", error);
             
             json = AsJson(@"{'rights': [{ }] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
@@ -154,29 +154,29 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             
             
             // ----------------------------- test dictionary elements (values) -----------------------------
-            json = AsJson(@"{'rights': [ { 'type': 'access', 'containers': true } ] }");
+            json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': true } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: true, expect: ContainerAccess at RightAccess > rights[0].containers, pos: 51", error);
+            AreEqual("Incorrect type. was: true, expect: ContainerAccess at RightOperation > rights[0].containers, pos: 54", error);
             
-            json = AsJson(@"{'rights': [ { 'type': 'access', 'containers': { 'key': true } } ] }");
+            json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': { 'key': true } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: true, expect: ContainerAccess at RightAccess > rights[0].containers.key, pos: 60", error);
+            AreEqual("Incorrect type. was: true, expect: ContainerAccess at RightOperation > rights[0].containers.key, pos: 63", error);
             
-            json = AsJson(@"{'rights': [ { 'type': 'access', 'containers': 123 } ] }");
+            json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': 123 } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: 123, expect: ContainerAccess at RightAccess > rights[0].containers, pos: 50", error);
+            AreEqual("Incorrect type. was: 123, expect: ContainerAccess at RightOperation > rights[0].containers, pos: 53", error);
             
-            json = AsJson(@"{'rights': [ { 'type': 'access', 'containers': { 'key': 456 } } ] }");
+            json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': { 'key': 456 } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: 456, expect: ContainerAccess at RightAccess > rights[0].containers.key, pos: 59", error);
+            AreEqual("Incorrect type. was: 456, expect: ContainerAccess at RightOperation > rights[0].containers.key, pos: 62", error);
             
-            json = AsJson(@"{'rights': [ { 'type': 'access', 'containers': [] } ] }");
+            json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': [] } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Incorrect type. was: array, expect: ContainerAccess at RightAccess > rights[0].containers[], pos: 48", error);
+            AreEqual("Incorrect type. was: array, expect: ContainerAccess at RightOperation > rights[0].containers[], pos: 51", error);
             
-            json = AsJson(@"{'rights': [ { 'type': 'access', 'containers': { 'key': [] } } ] }");
+            json = AsJson(@"{'rights': [ { 'type': 'operation', 'containers': { 'key': [] } } ] }");
             IsFalse(validator.ValidateObject(json,                  test.roleType, out error));
-            AreEqual("Found array as array item. expect: ContainerAccess at RightAccess > rights[0].containers.key[], pos: 57", error); // todo
+            AreEqual("Found array as array item. expect: ContainerAccess at RightOperation > rights[0].containers.key[], pos: 60", error); // todo
 
         }
         
@@ -190,7 +190,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
             internal    readonly JsonValue   jsonObject;
             internal    readonly JsonValue   roleDatabase    = new JsonValue(AsJson(
 @"{'id': 'role-database','description': 'test',
-    'rights': [ { 'type': 'access', 'containers': {'Article': { 'operations': ['read', 'upsert'], 'subscribeChanges': ['upsert'] }}} ]
+    'rights': [ { 'type': 'operation', 'containers': {'Article': { 'operations': ['read', 'upsert'], 'subscribeChanges': ['upsert'] }}} ]
 }"));
             
             internal TestTypes() {

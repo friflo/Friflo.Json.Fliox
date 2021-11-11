@@ -7,7 +7,7 @@ export type Right_Union =
     | RightTask
     | RightMessage
     | RightSubscribeMessage
-    | RightAccess
+    | RightOperation
     | RightPredicate
 ;
 
@@ -17,7 +17,7 @@ export abstract class Right {
         | "task"
         | "message"
         | "subscribeMessage"
-        | "access"
+        | "operation"
         | "predicate"
     ;
     description? : string | null;
@@ -46,8 +46,8 @@ export class RightSubscribeMessage extends Right {
     names        : string[];
 }
 
-export class RightAccess extends Right {
-    type         : "access";
+export class RightOperation extends Right {
+    type         : "operation";
     database?    : string | null;
     containers   : { [key: string]: ContainerAccess };
 }

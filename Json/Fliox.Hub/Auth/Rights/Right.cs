@@ -10,7 +10,7 @@ namespace Friflo.Json.Fliox.Hub.Auth.Rights
     [Fri.Polymorph(typeof(RightTask),               Discriminant = "task")]
     [Fri.Polymorph(typeof(RightMessage),            Discriminant = "message")]
     [Fri.Polymorph(typeof(RightSubscribeMessage),   Discriminant = "subscribeMessage")]
-    [Fri.Polymorph(typeof(RightAccess),             Discriminant = "access")]
+    [Fri.Polymorph(typeof(RightOperation),          Discriminant = "operation")]
     [Fri.Polymorph(typeof(RightPredicate),          Discriminant = "predicate")]
     public abstract class Right {
         public              string      description;

@@ -12,7 +12,7 @@ namespace UserStore2.Hub.Auth.Rights {
 [Fri.Polymorph(typeof(RightTask),             Discriminant = "task")]
 [Fri.Polymorph(typeof(RightMessage),          Discriminant = "message")]
 [Fri.Polymorph(typeof(RightSubscribeMessage), Discriminant = "subscribeMessage")]
-[Fri.Polymorph(typeof(RightAccess),           Discriminant = "access")]
+[Fri.Polymorph(typeof(RightOperation),        Discriminant = "operation")]
 [Fri.Polymorph(typeof(RightPredicate),        Discriminant = "predicate")]
 public abstract class Right {
     string  description;
@@ -40,7 +40,7 @@ public class RightSubscribeMessage : Right {
     List<string>  names;
 }
 
-public class RightAccess : Right {
+public class RightOperation : Right {
     string                               database;
     [Fri.Required]
     Dictionary<string, ContainerAccess>  containers;

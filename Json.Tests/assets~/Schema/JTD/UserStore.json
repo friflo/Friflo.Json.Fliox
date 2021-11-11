@@ -28,7 +28,7 @@
                 "task":             { "ref":  "RightTask" },
                 "message":          { "ref":  "RightMessage" },
                 "subscribeMessage": { "ref":  "RightSubscribeMessage" },
-                "access":           { "ref":  "RightAccess" },
+                "operation":        { "ref":  "RightOperation" },
                 "predicate":        { "ref":  "RightPredicate" }
             },
             "properties": {
@@ -78,7 +78,7 @@
                 "description": { "type": "string", "nullable": true }
             }
         },
-        "RightAccess": {
+        "RightOperation": {
             "properties": {
                 "database":    { "type": "string", "nullable": true },
                 "containers":  { "values": { "ref":  "ContainerAccess" } },

@@ -3,7 +3,7 @@
     "description": "Allow access of specified operations to a database container and change subscriptions to these containers",
     "rights": [
         {
-            "type": "access",
+            "type": "operation",
             "containers": {
                 "articles": { "operations": ["read", "upsert"], "subscribeChanges": ["upsert"] }
             }
