@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             commands.Add(name, command);
         }
 
-        private static bool AuthorizeTask(SyncRequestTask task, MessageContext messageContext, out SyncTaskResult error) {
+        protected static bool AuthorizeTask(SyncRequestTask task, MessageContext messageContext, out SyncTaskResult error) {
             var authorizer = messageContext.authState.authorizer;
             if (authorizer.Authorize(task, messageContext)) {
                 error = null;

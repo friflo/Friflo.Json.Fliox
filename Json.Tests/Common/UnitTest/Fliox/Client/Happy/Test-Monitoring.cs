@@ -88,8 +88,6 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 // as clearing monitor stats subsequent call has same result
                 result = await Monitor(store, monitor, userId, clientId, token);
                 AssertNoAuthResult(result);
-                
-                await AssertMonitoringErrors(monitor);
             }
         }
 
@@ -105,6 +103,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
                 // as clearing monitor stats subsequent call has same result
                 result = await Monitor(store, monitor, userId, clientId, token);
                 AssertAuthResult(result);
+                
+                await AssertMonitorErrors(monitor);
             }
         }
         
@@ -155,7 +155,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             IsFalse(result.clients.Success);
         }
 
-        private  static async Task AssertMonitoringErrors(MonitorStore monitor) {
+        private  static async Task AssertMonitorErrors(MonitorStore monitor) {
             var deleteUser      = monitor.users.Delete(new JsonKey("123"));
             var createUser      = monitor.users.Create(new UserInfo{id = new JsonKey("abc")});
             await monitor.TrySyncTasks();
