@@ -23,10 +23,14 @@ namespace Friflo.Json.Fliox.Hub.Auth
     
     public abstract class AuthorizerDatabase : Authorizer
     {
-        protected  readonly   string      database;
+        private  readonly   string      database;
         
         protected AuthorizerDatabase (string database) {
             this.database = database;
+        }
+        
+        protected bool AuthorizeDatabase(MessageContext messageContext) {
+            return messageContext.Database == database;
         }
     }
 
@@ -36,7 +40,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
         public AuthorizeAllow (string database) : base (database) { }
         
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
-            return messageContext.Database == database;
+            return AuthorizeDatabase(messageContext);
         }
     }    
     
@@ -88,7 +92,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
         
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
-            if (messageContext.Database != database)
+            if (!AuthorizeDatabase(messageContext))
                 return false;
             return task.TaskType == type;
         }
@@ -109,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
         
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
-            if (messageContext.Database != database)
+            if (!AuthorizeDatabase(messageContext))
                 return false;
             if (!(task is SyncMessageTask messageTask))
                 return false;
@@ -135,7 +139,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
         
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
-            if (messageContext.Database != database)
+            if (!AuthorizeDatabase(messageContext))
                 return false;
             if (!(task is SubscribeMessage subscribe))
                 return false;
@@ -195,7 +199,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
         
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
-            if (messageContext.Database != database)
+            if (!AuthorizeDatabase(messageContext))
                 return false;
             switch (task.TaskType) {
                 case TaskType.create:       return create       && ((CreateEntities)  task).container == container;
