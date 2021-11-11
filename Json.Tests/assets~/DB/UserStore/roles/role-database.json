@@ -2,8 +2,11 @@
     "id": "role-database",
     "description": "Allow the specified operations on a database container and change subscriptions to these containers",
     "rights": [
-        { "type": "database", "containers": {
-            "articles": { "operations": ["read", "upsert"], "subscribeChanges": ["upsert"] }
-        }}
+        {
+            "type": "database",
+            "containers": {
+                "articles": { "operations": ["read", "upsert"], "subscribeChanges": ["upsert"] }
+            }
+        }
     ]
 }
