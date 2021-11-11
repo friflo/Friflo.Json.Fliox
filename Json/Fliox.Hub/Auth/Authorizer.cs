@@ -21,12 +21,20 @@ namespace Friflo.Json.Fliox.Hub.Auth
         public abstract bool Authorize(SyncRequestTask task, MessageContext messageContext);
     }
     
-    public sealed class AuthorizeAllow : Authorizer {
-        private  readonly   string      database;
+    public abstract class AuthorizerDatabase : Authorizer
+    {
+        protected  readonly   string      database;
         
-        public AuthorizeAllow (string database) {
+        protected AuthorizerDatabase (string database) {
             this.database = database;
         }
+    }
+
+    
+    public sealed class AuthorizeAllow : AuthorizerDatabase {
+        
+        public AuthorizeAllow (string database) : base (database) { }
+        
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
             return messageContext.Database == database;
         }
@@ -70,14 +78,12 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
     }
     
-    public sealed class AuthorizeTaskType : Authorizer {
+    public sealed class AuthorizeTaskType : AuthorizerDatabase {
         private  readonly   TaskType    type;
-        private  readonly   string      database;
         
         public   override   string      ToString() => type.ToString();
 
-        public AuthorizeTaskType(TaskType type, string database) {
-            this.database   = database;
+        public AuthorizeTaskType(TaskType type, string database) : base (database) {
             this.type       = type;    
         }
         
@@ -88,14 +94,12 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
     }
     
-    public sealed class AuthorizeMessage : Authorizer {
-        private  readonly   string      database;
+    public sealed class AuthorizeMessage : AuthorizerDatabase {
         private  readonly   string      messageName;
         private  readonly   bool        prefix;
         public   override   string      ToString() => prefix ? $"{messageName}*" : messageName;
 
-        public AuthorizeMessage (string message, string database) {
-            this.database = database;
+        public AuthorizeMessage (string message, string database) : base (database) {
             if (message.EndsWith("*")) {
                 prefix = true;
                 messageName = message.Substring(0, message.Length - 1);
@@ -116,14 +120,12 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
     }
     
-    public sealed class AuthorizeSubscribeMessage : Authorizer {
-        private  readonly   string      database;
+    public sealed class AuthorizeSubscribeMessage : AuthorizerDatabase {
         private  readonly   string      messageName;
         private  readonly   bool        prefix;
         public   override   string      ToString() => prefix ? $"{messageName}*" : messageName;
 
-        public AuthorizeSubscribeMessage (string message, string database) {
-            this.database = database;
+        public AuthorizeSubscribeMessage (string message, string database) : base (database) {
             if (message.EndsWith("*")) {
                 prefix = true;
                 messageName = message.Substring(0, message.Length - 1);
@@ -144,8 +146,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
     }
     
-    public sealed class AuthorizeContainer : Authorizer {
-        private  readonly   string  database;
+    public sealed class AuthorizeContainer : AuthorizerDatabase {
         private  readonly   string  container;
         
         private  readonly   bool    create;
@@ -159,8 +160,9 @@ namespace Friflo.Json.Fliox.Hub.Auth
 
         public   override   string  ToString() => container;
         
-        public AuthorizeContainer (string container, ICollection<OperationType> types, string database) {
-            this.database   = database;
+        public AuthorizeContainer (string container, ICollection<OperationType> types, string database)
+            : base (database)
+        {
             this.container  = container;
             SetRoles(types, ref create, ref upsert, ref delete, ref deleteAll, ref patch, ref read, ref query);
         }
