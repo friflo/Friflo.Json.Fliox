@@ -1,5 +1,5 @@
 {
     "id": "db-deny",
-    "description": "Empty rights deny every access. It is equal to { 'type': 'allow', 'grant': false }",
+    "description": "Empty 'rights' - deny all access to a specific database",
     "rights": [ ]
 }
