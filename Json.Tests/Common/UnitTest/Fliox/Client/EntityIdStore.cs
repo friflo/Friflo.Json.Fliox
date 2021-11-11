@@ -23,7 +23,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
         public  EntitySet <string,  EntityRefs>      entityRefs         { get; private set; }
         public  EntitySet <string,  CustomIdEntity2> customIdEntities2  { get; private set; }
 
-        public EntityIdStore(FlioxHub hub) : base(hub) {}
+        public EntityIdStore(FlioxHub hub) : base(hub) { }
     }
 
     public class GuidEntity {
