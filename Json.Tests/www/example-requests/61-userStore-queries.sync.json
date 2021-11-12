@@ -1,6 +1,6 @@
 {
   "msg": "sync",
-  "database": "userStore",
+  "database": "user_db",
   "tasks": [
     { "task": "query", "container": "permissions", "filter":{ "op": "true" }},
     { "task": "query", "container": "roles",       "filter":{ "op": "true" }}

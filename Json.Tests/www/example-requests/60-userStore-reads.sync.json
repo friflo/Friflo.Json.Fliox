@@ -1,6 +1,6 @@
 {
   "msg": "sync",
-  "database": "userStore",
+  "database": "user_db",
   "tasks": [
     {
         "task": "read",

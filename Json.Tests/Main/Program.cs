@@ -49,7 +49,7 @@ namespace Friflo.Json.Tests.Main
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));            // optional - enables monitoring database access
             hub.EventBroker         = new EventBroker(true);                    // optional - eventBroker enables Instant Messaging & Pub-Sub
             hub.Authenticator       = CreateUserAuthenticator(out var userDB);  // optional - otherwise all request tasks are authorized
-            hub.AddExtensionDB("userStore", userDB);                            // optional - expose userStore as extension database
+            hub.AddExtensionDB("user_db", userDB);                            // optional - expose userStore as extension database
             
             var typeSchema          = CreateTypeSchema(true);                   // optional - used by DatabaseSchema & SchemaHandler
             database.Schema         = new DatabaseSchema(typeSchema);           // optional - enables type validation for create, upsert & patch operations
