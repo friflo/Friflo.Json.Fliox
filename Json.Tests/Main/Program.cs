@@ -42,15 +42,16 @@ namespace Friflo.Json.Tests.Main
             Console.WriteLine($"FileDatabase: {databaseFolder}");
             var database            = new FileDatabase(databaseFolder);
             var hub                 = new FlioxHub(database);
-            hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));            // optional. enables monitoring database access
-            hub.EventBroker         = new EventBroker(true);                    // optional. eventBroker enables Instant Messaging & Pub-Sub
-            hub.Authenticator       = CreateUserAuthenticator();                // optional. Otherwise all request tasks are authorized
+            hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));            // optional - enables monitoring database access
+            hub.EventBroker         = new EventBroker(true);                    // optional - eventBroker enables Instant Messaging & Pub-Sub
+            hub.Authenticator       = CreateUserAuthenticator(out var userDB);  // optional - otherwise all request tasks are authorized
+            hub.AddExtensionDB("userStore", userDB);                            // optional - expose userStore as extension database
             
-            var typeSchema          = CreateTypeSchema(true);                   // optional. used by DatabaseSchema & SchemaHandler
-            database.Schema         = new DatabaseSchema(typeSchema);           // optional. Enables type validation for create, upsert & patch operations
+            var typeSchema          = CreateTypeSchema(true);                   // optional - used by DatabaseSchema & SchemaHandler
+            database.Schema         = new DatabaseSchema(typeSchema);           // optional - enables type validation for create, upsert & patch operations
             var hostHub             = new HttpHostHub(hub);
-            hostHub.requestHandler  = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
-            hostHub.schemaHandler   = new SchemaHandler("/schema/", typeSchema, Utils.Zip); // optional. Web UI to serve DB schema as files (JSON Schema, Typescript, C#, Kotlin)
+            hostHub.requestHandler  = new RequestHandler("./Json.Tests/www");   // optional - used to serve static web content
+            hostHub.schemaHandler   = new SchemaHandler("/schema/", typeSchema, Utils.Zip); // optional - Web UI to serve DB schema as files (JSON Schema, Typescript, C#, Kotlin)
             var host                = new HttpListenerHost(endpoint, hostHub);
             host.Start();
             host.Run();
@@ -65,9 +66,9 @@ namespace Friflo.Json.Tests.Main
             return new NativeTypeSchema(typeof(PocStore));
         }
         
-        private static UserAuthenticator CreateUserAuthenticator () {
-            var userDatabase = new FileDatabase("./Json.Tests/assets~/DB/UserStore", new UserDBHandler());
-            return new UserAuthenticator(userDatabase);
+        private static UserAuthenticator CreateUserAuthenticator (out EntityDatabase userDB) {
+            userDB = new FileDatabase("./Json.Tests/assets~/DB/UserStore", new UserDBHandler());
+            return new UserAuthenticator(userDB);
         }
     }
 }

@@ -1,0 +1,13 @@
+{
+  "msg": "sync",
+  "database": "userStore",
+  "tasks": [
+    { "task": "query", "container": "permissions", "filter":{ "op": "true" }},
+    { "task": "query", "container": "roles",       "filter":{ "op": "true" }}
+  ],
+  "info": [
+    "query all permissions & roles from userStore"
+  ],
+  "user":   "{{user}}",
+  "token":  "{{token}}"
+}

@@ -36,7 +36,6 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         // --- public
         public    readonly  FlioxHub                                    userHub;
         public    readonly  IUserAuth                                   userAuth;
-        public    readonly  EntityDatabase                              userDatabase;
         
         // --- private / internal
         private   readonly  Authorizer                                  anonymousAuthorizer;
@@ -47,7 +46,6 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         {
             if (!(userDatabase.handler is UserDBHandler))
                 throw new InvalidOperationException("userDatabase requires a handler of Type: " + nameof(UserDBHandler));
-            this.userDatabase       = userDatabase;
             userHub        	        = new FlioxHub(userDatabase, env);
             userHub.Authenticator   = new UserDatabaseAuthenticator();  // authorize access to userDatabase
             this.userAuth           = userAuth;

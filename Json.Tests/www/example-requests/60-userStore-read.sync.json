@@ -1,0 +1,21 @@
+{
+  "msg": "sync",
+  "database": "userStore",
+  "tasks": [
+    {
+        "task": "read",
+        "container":  "permissions",
+        "reads": [{"ids": ["poc-admin"]}]
+    },
+    {
+        "task": "read",
+        "container":  "roles",
+        "reads": [{"ids": ["db-allow"]}]
+    }
+  ],
+  "info": [
+    "query all permissions & roles from userStore"
+  ],
+  "user":   "{{user}}",
+  "token":  "{{token}}"
+}

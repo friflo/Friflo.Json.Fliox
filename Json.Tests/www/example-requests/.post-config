@@ -10,6 +10,6 @@
   },
   "variables": {
     "{{user}}":     "admin",
-    "{{token}}":    "admin-token"
+    "{{token}}":    "admin"
   }
 }
