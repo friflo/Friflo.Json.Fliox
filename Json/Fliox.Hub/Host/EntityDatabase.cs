@@ -61,7 +61,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public   readonly   TaskHandler         handler;
 
-
+        /// <summary>
+        /// constructor parameters are mandatory to force implementations having them in their constructors also or
+        /// pass null by implementations.
+        /// </summary>
         protected EntityDatabase(TaskHandler handler, DbOpt opt){
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
             this.handler        = handler ?? new TaskHandler();
