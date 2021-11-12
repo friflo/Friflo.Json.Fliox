@@ -301,22 +301,20 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         private async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             _intern.syncCount++;
-            ExecuteSyncResult       response;
             Task<ExecuteSyncResult> task = null;
-            var pendingSyncs = _intern.pendingSyncs;
             try {
                 task = _intern.hub.ExecuteSync(syncRequest, messageContext);
 
-                pendingSyncs.TryAdd(task, messageContext);
-                response = await task.ConfigureAwait(false);
-                pendingSyncs.TryRemove(task, out _);
+                _intern.pendingSyncs.TryAdd(task, messageContext);
+                var response = await task.ConfigureAwait(false);
+                _intern.pendingSyncs.TryRemove(task, out _);
+                return response;
             }
             catch (Exception e) {
-                pendingSyncs.TryRemove(task, out _);
+                _intern.pendingSyncs.TryRemove(task, out _);
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                response = new ExecuteSyncResult(errorMsg);
+                return new ExecuteSyncResult(errorMsg);
             }
-            return response;
         }
         
         // ReSharper disable once UnusedMember.Local
