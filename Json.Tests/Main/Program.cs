@@ -38,6 +38,10 @@ namespace Friflo.Json.Tests.Main
             host.Run();
         }
         
+        /// <summary>
+        /// Note: Both extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
+        /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
+        /// </summary> 
         private static void FlioxServer(string endpoint, string databaseFolder) {
             Console.WriteLine($"FileDatabase: {databaseFolder}");
             var database            = new FileDatabase(databaseFolder);
