@@ -1,0 +1,4 @@
+{
+    "id": "poc-reader",
+    "roles": ["db-readonly"]
+}
