@@ -33,6 +33,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared, HostName))
             using (var monitorDB        = new MonitorDatabase(hub)) {
                 hub.AddExtensionDB(monitorDB);
+                // assert same behavior with default Authenticator or UserAuthenticator
                 await AssertNoAuthMonitoringDB  (hub);
                 await AssertAuthMonitoringDB    (hub, hub);
             }
@@ -46,6 +47,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var monitor          = new MonitorDatabase(hub))
             using (var loopbackHub      = new LoopbackHub(hub)) {
                 hub.AddExtensionDB(monitor);
+                // assert same behavior with default Authenticator or UserAuthenticator 
                 await AssertNoAuthMonitoringDB  (loopbackHub);
                 await AssertAuthMonitoringDB    (loopbackHub, hub);
             }
@@ -62,6 +64,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var clientHub    = new HttpClientHub("http://localhost:8080/", TestGlobals.Shared)) {
                 hub.AddExtensionDB(monitor);
                 await RunServer(server, async () => {
+                    // assert same behavior with default Authenticator or UserAuthenticator
                     await AssertNoAuthMonitoringDB  (clientHub);
                     await AssertAuthMonitoringDB    (clientHub, hub);
                 });
@@ -83,11 +86,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var store    = new PocStore(hub))
             using (var monitor  = new MonitorStore(hub, MonitorDatabase.Name)) {
                 var result = await Monitor(store, monitor, userId, token);
-                AssertNoAuthResult(result);
+                AssertResult(result);
                 
                 // as clearing monitor stats subsequent call has same result
                 result = await Monitor(store, monitor, userId, token);
-                AssertNoAuthResult(result);
+                AssertResult(result);
             }
         }
 
@@ -97,11 +100,11 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var store    = new PocStore(hub))
             using (var monitor  = new MonitorStore(hub, MonitorDatabase.Name)) {
                 var result = await Monitor(store, monitor, userId, token);
-                AssertAuthResult(result);
+                AssertResult(result);
                 
                 // as clearing monitor stats subsequent call has same result
                 result = await Monitor(store, monitor, userId, token);
-                AssertAuthResult(result);
+                AssertResult(result);
                 
                 await AssertMonitorErrors(monitor);
             }
@@ -121,7 +124,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             }
         }
 
-        private static void AssertNoAuthResult(MonitorResult result) {
+        private static void AssertResult(MonitorResult result) {
             var users   = result.users.Results;
             var clients = result.clients.Results;
             var host    = result.hosts.Results[new JsonKey("Test")];
@@ -132,35 +135,13 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var adminInfo = users[new JsonKey("monitor-admin")].ToString();
             AreEqual("{'id':'monitor-admin','clients':['monitor-client'],'counts':[{'db':'monitor','requests':1,'tasks':1}]}", adminInfo);
             AreEqual(3, users.Count);
-                
+
             var pocClientInfo = clients[new JsonKey("poc-client")].ToString();
             AreEqual("{'id':'poc-client','user':'poc-admin','counts':[{'db':'default','requests':1,'tasks':2}]}", pocClientInfo);
             
             var monitorClientInfo = clients[new JsonKey("monitor-client")].ToString();
             AreEqual("{'id':'monitor-client','user':'monitor-admin','counts':[{'db':'monitor','requests':1,'tasks':1}]}", monitorClientInfo);
             AreEqual(2, clients.Count);
-            
-            NotNull(result.user.Result);
-            NotNull(result.client.Result);
-        }
-
-        private static void AssertAuthResult(MonitorResult result) {
-            var users   = result.users.Results;
-            var clients = result.clients.Results;
-            var host    = result.hosts.Results[new JsonKey("Test")];
-            AreEqual("{'id':'Test','counts':{'requests':2,'tasks':3}}", host.ToString());
-            
-            AreEqual("{'id':'anonymous','clients':[],'counts':[]}",     users[User.AnonymousId].ToString());
-            
-            var adminInfo = users[new JsonKey("monitor-admin")].ToString();
-            AreEqual("{'id':'monitor-admin','clients':[],'counts':[{'db':'monitor','requests':1,'tasks':1}]}", adminInfo);
-            AreEqual(3, users.Count);
-
-            var pocClientInfo = clients[new JsonKey("poc-client")].ToString();
-            AreEqual("{'id':'poc-client','user':'poc-admin','counts':[{'db':'default','requests':1,'tasks':2}]}", pocClientInfo);
-            
-            var monitorClientInfo = clients[new JsonKey("monitor-client")].ToString();
-            AreEqual("{'id':'monitor-client','user':'monitor-admin','counts':[{'db':'monitor','requests':1,'tasks':1}]}", monitorClientInfo);
             
             NotNull(result.user.Result);
             NotNull(result.client.Result);
