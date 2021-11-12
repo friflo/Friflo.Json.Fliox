@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Auth.Rights
                 }
                 var subscribeChanges   = container.subscribeChanges;
                 if (subscribeChanges != null && subscribeChanges.Count > 0) {
-                    list.Add(new AuthorizeSubscribeChanges(name, subscribeChanges));
+                    list.Add(new AuthorizeSubscribeChanges(name, subscribeChanges, database));
                 }
             }
             return new AuthorizeAny(list);

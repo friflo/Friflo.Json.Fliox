@@ -23,18 +23,22 @@ namespace Friflo.Json.Fliox.Hub.Auth
     
     public abstract class AuthorizerDatabase : Authorizer
     {
-        private  readonly   string      database;
-        private  readonly   bool        isPrefix;
+        private    readonly     string  database;
+        private    readonly     bool    isPrefix;
+        protected  readonly     string  dbLabel;
         
         protected AuthorizerDatabase () {
-            isPrefix = true;
-            database = "";
+            isPrefix    = true;
+            database    = "";
+            dbLabel     = "*";
         }
         protected AuthorizerDatabase (string database) {
             if (database == null) {
+                dbLabel = "default";
                 return;
             }
-            isPrefix = database.EndsWith("*");
+            dbLabel     = database;
+            isPrefix    = database.EndsWith("*");
             if (isPrefix) {
                 this.database = database.Substring(0, database.Length - 1);
             } else {
@@ -55,8 +59,9 @@ namespace Friflo.Json.Fliox.Hub.Auth
 
     
     public sealed class AuthorizeAllow : AuthorizerDatabase {
-        
-        public AuthorizeAllow () : base () { }
+        public override string ToString() => $"database: {dbLabel}";
+
+        public AuthorizeAllow () { }
         public AuthorizeAllow (string database) : base (database) { }
         
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {
@@ -105,7 +110,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
     public sealed class AuthorizeTaskType : AuthorizerDatabase {
         private  readonly   TaskType    type;
         
-        public   override   string      ToString() => type.ToString();
+        public   override   string      ToString() => $"database: {dbLabel}, type: {type.ToString()}";
 
         public AuthorizeTaskType(TaskType type, string database) : base (database) {
             this.type       = type;    
@@ -121,9 +126,11 @@ namespace Friflo.Json.Fliox.Hub.Auth
     public sealed class AuthorizeMessage : AuthorizerDatabase {
         private  readonly   string      messageName;
         private  readonly   bool        prefix;
-        public   override   string      ToString() => prefix ? $"{messageName}*" : messageName;
+        private  readonly   string      messageLabel;
+        public   override   string      ToString() => $"database: {dbLabel}, message: {messageLabel}";
 
         public AuthorizeMessage (string message, string database) : base (database) {
+            messageLabel = message;
             if (message.EndsWith("*")) {
                 prefix = true;
                 messageName = message.Substring(0, message.Length - 1);
@@ -147,9 +154,11 @@ namespace Friflo.Json.Fliox.Hub.Auth
     public sealed class AuthorizeSubscribeMessage : AuthorizerDatabase {
         private  readonly   string      messageName;
         private  readonly   bool        prefix;
-        public   override   string      ToString() => prefix ? $"{messageName}*" : messageName;
+        private  readonly   string      messageLabel;
+        public   override   string      ToString() => $"database: {dbLabel}, message: {messageLabel}";
 
         public AuthorizeSubscribeMessage (string message, string database) : base (database) {
+            messageLabel = message;
             if (message.EndsWith("*")) {
                 prefix = true;
                 messageName = message.Substring(0, message.Length - 1);
@@ -182,7 +191,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
         private  readonly   bool    read;
         private  readonly   bool    query;
 
-        public   override   string  ToString() => container;
+        public   override   string  ToString() => $"database: {dbLabel}, container: {container}";
         
         public AuthorizeContainer (string container, ICollection<OperationType> types, string database)
             : base (database)
@@ -236,7 +245,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
     }
     
-    public sealed class AuthorizeSubscribeChanges : Authorizer {
+    public sealed class AuthorizeSubscribeChanges : AuthorizerDatabase {
         private  readonly   string  container;
         
         private  readonly   bool    create;
@@ -244,9 +253,11 @@ namespace Friflo.Json.Fliox.Hub.Auth
         private  readonly   bool    delete;
         private  readonly   bool    patch;
         
-        public   override   string  ToString() => container;
+        public   override   string  ToString() => $"database: {dbLabel}, container: {container}";
         
-        public AuthorizeSubscribeChanges (string container, ICollection<Change> changes) {
+        public AuthorizeSubscribeChanges (string container, ICollection<Change> changes, string database)
+            : base (database)
+        {
             this.container = container;
             foreach (var change in changes) {
                 switch (change) {
