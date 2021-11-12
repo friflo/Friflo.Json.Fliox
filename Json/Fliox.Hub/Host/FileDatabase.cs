@@ -20,7 +20,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         private  readonly   string  databaseFolder;
         private  readonly   bool    pretty;
         
-        public FileDatabase(string databaseFolder, TaskHandler handler = null, DbOpt opt = null, bool pretty = true) : base(handler, opt)
+        public FileDatabase(string databaseFolder, TaskHandler handler = null, DbOpt opt = null, bool pretty = true)
+            : base(handler, opt)
         {
             this.pretty = pretty;
             this.databaseFolder = databaseFolder + "/";

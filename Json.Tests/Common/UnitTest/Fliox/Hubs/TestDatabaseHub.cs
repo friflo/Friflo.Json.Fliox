@@ -18,7 +18,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs
         private  readonly   EntityDatabase                      local;
         internal readonly   Dictionary<string, TestContainer>   testContainers  = new Dictionary<string, TestContainer>();
 
-        public TestDatabase(EntityDatabase local, DbOpt opt = null, TaskHandler handler = null) : base(handler, opt) {
+        public TestDatabase(EntityDatabase local, DbOpt opt = null, TaskHandler handler = null)
+            : base(handler, opt)
+        {
             this.local = local;
         }
 
