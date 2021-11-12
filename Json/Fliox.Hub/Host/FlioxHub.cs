@@ -93,7 +93,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal readonly   HostStats           hostStats = new HostStats();
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private             Authenticator       authenticator;
+        private             Authenticator       authenticator       = new AuthenticateNone(new AuthorizeAllow());
         
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private             ClientController    clientController    = new IncrementClientController();
@@ -104,7 +104,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             sharedEnv       = env  ?? SharedEnv.Default;
             this.database   = database;
             this.hostName   = hostName ?? "host";
-            authenticator   = new AuthenticateNone(new AuthorizeAllow());
         }
        
 
