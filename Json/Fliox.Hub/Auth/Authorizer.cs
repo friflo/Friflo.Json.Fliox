@@ -26,6 +26,10 @@ namespace Friflo.Json.Fliox.Hub.Auth
         private  readonly   string      database;
         private  readonly   bool        isPrefix;
         
+        protected AuthorizerDatabase () {
+            isPrefix = true;
+            database = "";
+        }
         protected AuthorizerDatabase (string database) {
             if (database == null) {
                 return;
@@ -52,6 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
     
     public sealed class AuthorizeAllow : AuthorizerDatabase {
         
+        public AuthorizeAllow () : base () { }
         public AuthorizeAllow (string database) : base (database) { }
         
         public override bool Authorize(SyncRequestTask task, MessageContext messageContext) {

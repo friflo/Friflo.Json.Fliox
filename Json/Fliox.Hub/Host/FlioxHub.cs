@@ -104,9 +104,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             sharedEnv       = env  ?? SharedEnv.Default;
             this.database   = database;
             this.hostName   = hostName ?? "host";
-            if (database != null) {
-                authenticator = new AuthenticateNone(new AuthorizeAllow(database.name));
-            }
+            authenticator   = new AuthenticateNone(new AuthorizeAllow());
         }
        
 

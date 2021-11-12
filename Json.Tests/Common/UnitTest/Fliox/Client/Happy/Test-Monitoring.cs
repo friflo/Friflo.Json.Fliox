@@ -78,8 +78,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
 
         private  static async Task AssertNoAuthMonitoringDB(FlioxHub hub) {
-            const string userId     = "poc-user";
-            const string token      = "invalid"; 
+            const string userId     = "monitor-admin";
+            const string token      = "monitor-admin"; 
             using (var store    = new PocStore(hub))
             using (var monitor  = new MonitorStore(hub, MonitorDatabase.Name)) {
                 var result = await Monitor(store, monitor, userId, token);
@@ -122,25 +122,43 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
 
         private static void AssertNoAuthResult(MonitorResult result) {
-            IsFalse(result.users.Success);
-            IsFalse(result.clients.Success);
-            IsFalse(result.hosts.Success);
-            IsFalse(result.user.Success);
-            IsFalse(result.client.Success);
+            var users   = result.users.Results;
+            var clients = result.clients.Results;
+            var host    = result.hosts.Results[new JsonKey("Test")];
+            AreEqual("{'id':'Test','counts':{'requests':2,'tasks':3}}", host.ToString());
+            
+            AreEqual("{'id':'anonymous','clients':[],'counts':[]}",     users[User.AnonymousId].ToString());
+            
+            var adminInfo = users[new JsonKey("monitor-admin")].ToString();
+            AreEqual("{'id':'monitor-admin','clients':['monitor-client'],'counts':[{'db':'monitor','requests':1,'tasks':1}]}", adminInfo);
+            AreEqual(3, users.Count);
+                
+            var pocClientInfo = clients[new JsonKey("poc-client")].ToString();
+            AreEqual("{'id':'poc-client','user':'poc-admin','counts':[{'db':'default','requests':1,'tasks':2}]}", pocClientInfo);
+            
+            var monitorClientInfo = clients[new JsonKey("monitor-client")].ToString();
+            AreEqual("{'id':'monitor-client','user':'monitor-admin','counts':[{'db':'monitor','requests':1,'tasks':1}]}", monitorClientInfo);
+            AreEqual(2, clients.Count);
+            
+            NotNull(result.user.Result);
+            NotNull(result.client.Result);
         }
 
         private static void AssertAuthResult(MonitorResult result) {
             var users   = result.users.Results;
             var clients = result.clients.Results;
             var host    = result.hosts.Results[new JsonKey("Test")];
-            AreEqual("{'id':'Test','counts':{'requests':2,'tasks':3}}",                                      host.ToString());
-            AreEqual("{'id':'anonymous','clients':[],'counts':[]}",                                          users[User.AnonymousId].ToString());
+            AreEqual("{'id':'Test','counts':{'requests':2,'tasks':3}}", host.ToString());
+            
+            AreEqual("{'id':'anonymous','clients':[],'counts':[]}",     users[User.AnonymousId].ToString());
             
             var adminInfo = users[new JsonKey("monitor-admin")].ToString();
             AreEqual("{'id':'monitor-admin','clients':[],'counts':[{'db':'monitor','requests':1,'tasks':1}]}", adminInfo);
-                
+            AreEqual(3, users.Count);
+
             var pocClientInfo = clients[new JsonKey("poc-client")].ToString();
             AreEqual("{'id':'poc-client','user':'poc-admin','counts':[{'db':'default','requests':1,'tasks':2}]}", pocClientInfo);
+            
             var monitorClientInfo = clients[new JsonKey("monitor-client")].ToString();
             AreEqual("{'id':'monitor-client','user':'monitor-admin','counts':[{'db':'monitor','requests':1,'tasks':1}]}", monitorClientInfo);
             
