@@ -19,6 +19,7 @@ using static NUnit.Framework.Assert;
     using NUnit.Framework;
 #endif
 
+// ReSharper disable UseObjectOrCollectionInitializer
 namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
 {
     public partial class TestStore
@@ -179,14 +180,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             monitor.UserId      = userId;
             monitor.Token       = token;
             
-            var result = new MonitorResult {
-                users       = monitor.users.QueryAll(),
-                clients     = monitor.clients.QueryAll(),
-                user        = monitor.users.Read().Find(new JsonKey("poc-admin")),
-                client      = monitor.clients.Read().Find(new JsonKey("poc-client")),
-                hosts       = monitor.hosts.QueryAll(),
-                sync        = await monitor.TrySyncTasks()
-            };
+            var result = new MonitorResult();
+            result.users       = monitor.users.QueryAll();
+            result.clients     = monitor.clients.QueryAll();
+            result.user        = monitor.users.Read().Find(new JsonKey("poc-admin"));
+            result.client      = monitor.clients.Read().Find(new JsonKey("poc-client"));
+            result.hosts       = monitor.hosts.QueryAll();
+            result.sync        = await monitor.TrySyncTasks();
+            
             return result;
         }
         

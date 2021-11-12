@@ -305,9 +305,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             Task<ExecuteSyncResult> task = null;
             var pendingSyncs = _intern.pendingSyncs;
             try {
-                syncRequest.database    = _intern.database;
-                var hub                 = _intern.hub;
-                task = hub.ExecuteSync(syncRequest, messageContext);
+                task = _intern.hub.ExecuteSync(syncRequest, messageContext);
 
                 pendingSyncs.TryAdd(task, messageContext);
                 response = await task.ConfigureAwait(false);
@@ -377,7 +375,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             
             var tasks       = new List<SyncRequestTask>();
             var syncRequest = new SyncRequest {
-                // database    = _intern.database.ExtensionName, 
+                database    = _intern.database,
                 tasks       = tasks,
                 userId      = _intern.userId,
                 clientId    = _intern.clientId, 
