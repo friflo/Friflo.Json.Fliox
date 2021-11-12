@@ -39,7 +39,7 @@ data class SyncResponse (
     override  val clt          : String? = null,
               val database     : String? = null,
               val tasks        : List<SyncTaskResult>? = null,
-              val entities     : List<ContainerEntities>? = null,
+              val containers   : List<ContainerEntities>? = null,
               val createErrors : HashMap<String, EntityErrors>? = null,
               val upsertErrors : HashMap<String, EntityErrors>? = null,
               val patchErrors  : HashMap<String, EntityErrors>? = null,

@@ -62,12 +62,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return;
             var resultMap = response.resultMap;
             response.resultMap = null;
-            var responseEntities = response.entities = new List<ContainerEntities>(resultMap.Count);
+            var containers = response.containers = new List<ContainerEntities>(resultMap.Count);
             foreach (var resultPair in resultMap) {
                 ContainerEntities value = resultPair.Value;
-                responseEntities.Add(value);
+                containers.Add(value);
             }
-            foreach (var container in responseEntities) {
+            foreach (var container in containers) {
                 var entityMap       = container.entityMap;
                 var entities        = new List<JsonValue> (entityMap.Count);
                 container.entities  = entities;

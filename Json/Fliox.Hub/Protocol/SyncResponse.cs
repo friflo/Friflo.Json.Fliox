@@ -16,7 +16,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     {
                         public  string                                  database; // not used - only for debugging
                         public  List<SyncTaskResult>                    tasks;
-                        public  List<ContainerEntities>                 entities;
+                        public  List<ContainerEntities>                 containers;
         // key of all Dictionary's is the container name
         [Fri.Ignore]    public  Dictionary<string, ContainerEntities>   resultMap;
                         public  Dictionary<string, EntityErrors>        createErrors; // lazy instantiation

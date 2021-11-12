@@ -570,7 +570,7 @@
                 "clt":          { "type": "string", "nullable": true },
                 "database":     { "type": "string", "nullable": true },
                 "tasks":        { "elements": { "ref":  "SyncTaskResult" }, "nullable": true },
-                "entities":     { "elements": { "ref":  "ContainerEntities" }, "nullable": true },
+                "containers":   { "elements": { "ref":  "ContainerEntities" }, "nullable": true },
                 "createErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
                 "upsertErrors": { "values": { "ref":  "EntityErrors" }, "nullable": true },
                 "patchErrors":  { "values": { "ref":  "EntityErrors" }, "nullable": true },

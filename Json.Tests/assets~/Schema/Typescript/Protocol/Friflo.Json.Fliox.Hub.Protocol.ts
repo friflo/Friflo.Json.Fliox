@@ -62,7 +62,7 @@ export class SyncResponse extends ProtocolResponse {
     msg           : "resp";
     database?     : string | null;
     tasks?        : SyncTaskResult_Union[] | null;
-    entities?     : ContainerEntities[] | null;
+    containers?   : ContainerEntities[] | null;
     createErrors? : { [key: string]: EntityErrors } | null;
     upsertErrors? : { [key: string]: EntityErrors } | null;
     patchErrors?  : { [key: string]: EntityErrors } | null;

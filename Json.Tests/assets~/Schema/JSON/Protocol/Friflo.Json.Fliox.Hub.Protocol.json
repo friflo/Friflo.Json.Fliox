@@ -31,7 +31,7 @@
                 "clt":          { "type": ["string", "null"] },
                 "database":     { "type": ["string", "null"] },
                 "tasks":        { "type": ["array", "null"], "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Tasks.json#/definitions/SyncTaskResult" } },
-                "entities":     { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" } },
+                "containers":   { "type": ["array", "null"], "items": { "$ref": "#/definitions/ContainerEntities" } },
                 "createErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object" },
                 "upsertErrors": { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object" },
                 "patchErrors":  { "additionalProperties": { "$ref": "#/definitions/EntityErrors" }, "type": "object" },
