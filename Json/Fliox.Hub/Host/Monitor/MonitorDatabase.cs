@@ -12,16 +12,20 @@ using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Host.Monitor
 {
-    public class MonitorDatabase : EntityDatabase
+    public class MonitorDB : EntityDatabase
     {
         internal readonly   EntityDatabase  stateDB;
         private  readonly   FlioxHub        monitorHub;
-        
+        private  readonly   string          name;
+
+        public   override   string          ToString() => name;
+
         public const string Name = "monitor";
         
-        public MonitorDatabase (FlioxHub hub, DbOpt opt = null)
-            : base (hub, Name, new MonitorHandler(hub), opt)
+        public MonitorDB (FlioxHub hub, string name = null, DbOpt opt = null)
+            : base (hub, new MonitorHandler(hub), opt)
         {
+            this.name   = name ?? Name;
             stateDB     = new MemoryDatabase();
             monitorHub  = new FlioxHub(stateDB, hub.sharedEnv);
         }

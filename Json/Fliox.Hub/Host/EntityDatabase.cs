@@ -61,10 +61,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public   readonly   TaskHandler         handler;
 
-        internal readonly   string              name;
         internal readonly   FlioxHub            hub;
 
-        public override     string              ToString() => name != null ? $"'{name}'" : "";
 
         protected EntityDatabase(TaskHandler handler, DbOpt opt){
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
@@ -73,13 +71,11 @@ namespace Friflo.Json.Fliox.Hub.Host
         
         protected EntityDatabase (
             FlioxHub        hub,
-            string          name,
-            TaskHandler handler,
+            TaskHandler     handler,
             DbOpt           opt = null
             ) : this(handler, opt)
         {
             this.hub    = hub  ?? throw new ArgumentNullException(nameof(hub));
-            this.name   = name ?? throw new ArgumentNullException(nameof(name));
         }
 
         public virtual void Dispose() {

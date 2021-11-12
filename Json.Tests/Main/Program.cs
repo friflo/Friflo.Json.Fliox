@@ -42,7 +42,7 @@ namespace Friflo.Json.Tests.Main
             Console.WriteLine($"FileDatabase: {databaseFolder}");
             var database            = new FileDatabase(databaseFolder);
             var hub                 = new FlioxHub(database);
-            hub.AddExtensionDB      ( new MonitorDatabase(hub));                // optional. enables monitoring database access
+            hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));            // optional. enables monitoring database access
             hub.EventBroker         = new EventBroker(true);                    // optional. eventBroker enables Instant Messaging & Pub-Sub
             hub.Authenticator       = CreateUserAuthenticator();                // optional. Otherwise all request tasks are authorized
             

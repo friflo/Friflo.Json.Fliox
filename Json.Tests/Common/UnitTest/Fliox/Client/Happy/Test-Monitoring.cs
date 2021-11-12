@@ -31,8 +31,8 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared, HostName))
-            using (var monitorDB        = new MonitorDatabase(hub)) {
-                hub.AddExtensionDB(monitorDB);
+            using (var monitorDB        = new MonitorDB(hub)) {
+                hub.AddExtensionDB(MonitorDB.Name, monitorDB);
                 // assert same behavior with default Authenticator or UserAuthenticator
                 await AssertNoAuthMonitoringDB  (hub);
                 await AssertAuthMonitoringDB    (hub, hub);
@@ -44,9 +44,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var _                = SharedEnv.Default) // for LeakTestsFixture
             using (var database         = new FileDatabase(TestGlobals.PocStoreFolder))
             using (var hub          	= new FlioxHub(database, TestGlobals.Shared, HostName))
-            using (var monitor          = new MonitorDatabase(hub))
+            using (var monitor          = new MonitorDB(hub))
             using (var loopbackHub      = new LoopbackHub(hub)) {
-                hub.AddExtensionDB(monitor);
+                hub.AddExtensionDB(MonitorDB.Name, monitor);
                 // assert same behavior with default Authenticator or UserAuthenticator 
                 await AssertNoAuthMonitoringDB  (loopbackHub);
                 await AssertAuthMonitoringDB    (loopbackHub, hub);
@@ -60,9 +60,9 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             using (var hub          = new FlioxHub(database, TestGlobals.Shared, HostName))
             using (var hostHub      = new HttpHostHub(hub))
             using (var server       = new HttpListenerHost("http://+:8080/", hostHub)) 
-            using (var monitor      = new MonitorDatabase(hub))
+            using (var monitor      = new MonitorDB(hub))
             using (var clientHub    = new HttpClientHub("http://localhost:8080/", TestGlobals.Shared)) {
-                hub.AddExtensionDB(monitor);
+                hub.AddExtensionDB(MonitorDB.Name, monitor);
                 await RunServer(server, async () => {
                     // assert same behavior with default Authenticator or UserAuthenticator
                     await AssertNoAuthMonitoringDB  (clientHub);
@@ -84,7 +84,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             const string userId     = "monitor-admin";
             const string token      = "monitor-admin"; 
             using (var store    = new PocStore(hub))
-            using (var monitor  = new MonitorStore(hub, MonitorDatabase.Name)) {
+            using (var monitor  = new MonitorStore(hub, MonitorDB.Name)) {
                 var result = await Monitor(store, monitor, userId, token);
                 AssertResult(result);
                 
@@ -98,7 +98,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             const string userId     = "monitor-admin";
             const string token      = "monitor-admin";
             using (var store    = new PocStore(hub))
-            using (var monitor  = new MonitorStore(hub, MonitorDatabase.Name)) {
+            using (var monitor  = new MonitorStore(hub, MonitorDB.Name)) {
                 var result = await Monitor(store, monitor, userId, token);
                 AssertResult(result);
                 
@@ -114,7 +114,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             const string userId     = "anonymous-user";
             const string token      = "invalid";
             using (var store    = new PocStore(hub))
-            using (var monitor  = new MonitorStore(hub, MonitorDatabase.Name)) {
+            using (var monitor  = new MonitorStore(hub, MonitorDB.Name)) {
                 var result = await Monitor(store, monitor, userId, token);
                 AssertAuthFailedResult(result);
                 

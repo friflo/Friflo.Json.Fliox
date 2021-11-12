@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Auth;
 using Friflo.Json.Fliox.Hub.Host.Event;
+using Friflo.Json.Fliox.Hub.Host.Monitor;
 using Friflo.Json.Fliox.Hub.Host.Stats;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -47,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///     a <see cref="UserAuth.UserAuthenticator"/> to <see cref="Authenticator"/>.
     ///   </item>
     ///   <item>
-    ///     Monitoring of database access (requests) by adding a <see cref="Monitor.MonitorDatabase"/> with
+    ///     Monitoring of database access (requests) by adding a <see cref="MonitorDB"/> with
     ///     <see cref="AddExtensionDB(EntityDatabase)"/>.
     ///   </item>
     /// </list>
@@ -147,8 +148,6 @@ namespace Friflo.Json.Fliox.Hub.Host
                     return new ExecuteSyncResult($"database not found: '{syncRequest.database}'");
                 await db.ExecuteSyncPrepare(syncRequest, messageContext).ConfigureAwait(false);
             }
-            if (dbName != db.name)
-                throw new InvalidOperationException($"Unexpected extension database name. expect: {dbName}, was: {db.name}");
                     
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null) {
@@ -227,8 +226,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         // --------------------------------- extension databases ---------------------------------
         private readonly   Dictionary<string, EntityDatabase> extensionDbs = new Dictionary<string, EntityDatabase>();
         
-        public void AddExtensionDB(EntityDatabase extensionDB) {
-            extensionDbs.Add(extensionDB.name, extensionDB);
+        public void AddExtensionDB(string name, EntityDatabase extensionDB) {
+            extensionDbs.Add(name, extensionDB);
         }
 
         public virtual void Dispose() { }  // todo - remove

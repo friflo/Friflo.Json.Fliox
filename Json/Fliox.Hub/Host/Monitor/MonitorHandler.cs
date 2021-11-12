@@ -30,7 +30,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
             if (!AuthorizeTask(task, messageContext, out var error)) {
                 return Task.FromResult(error);
             }
-            var monitorDB = (MonitorDatabase)database;
+            var monitorDB = (MonitorDB)database;
             switch (task.TaskType) {
                 case TaskType.command:
                     return base.ExecuteTask(task, database, response, messageContext);
