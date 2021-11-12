@@ -13,10 +13,10 @@ namespace Friflo.Json.Fliox.Hub.Auth
     /// <summary>
     /// Create a unique client id for a given <see cref="User"/> by <see cref="NewClientIdFor"/> or
     /// checks if a given client id can be used (added) for a given <see cref="User"/> by <see cref="UseClientIdFor"/>.
-    /// Multiple client ids can be added to a <see cref="User"/>. Once added to a <see cref="User"/> is cannot be
-    /// used (added) by another <see cref="User"/>.
-    /// 
-    /// <see cref="ClientController"/> is used to:
+    /// Multiple client ids can be added to a <see cref="User"/>. Once added to a <see cref="User"/> the client id
+    /// cannot be used (added) by another <see cref="User"/>.
+    /// <br/>
+    /// A <see cref="ClientController"/> is used to:
     /// <list type="bullet">
     ///   <item> create / add unique client ids by <see cref="FlioxHub.ClientController"/> </item>
     ///   <item> enables sending Push messages (events) for protocols supporting this like WebSocket's </item>
