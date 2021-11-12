@@ -1,6 +1,7 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Auth;
@@ -16,6 +17,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
     {
         internal readonly   EntityDatabase  stateDB;
         private  readonly   FlioxHub        monitorHub;
+        private  readonly   FlioxHub        hub;
         private  readonly   string          name;
 
         public   override   string          ToString() => name;
@@ -23,8 +25,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
         public const string Name = "monitor";
         
         public MonitorDB (FlioxHub hub, string name = null, DbOpt opt = null)
-            : base (hub, new MonitorHandler(hub), opt)
+            : base (new MonitorHandler(hub), opt)
         {
+            this.hub    = hub  ?? throw new ArgumentNullException(nameof(hub));
             this.name   = name ?? Name;
             stateDB     = new MemoryDatabase();
             monitorHub  = new FlioxHub(stateDB, hub.sharedEnv);

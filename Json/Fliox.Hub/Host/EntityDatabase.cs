@@ -61,23 +61,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public   readonly   TaskHandler         handler;
 
-        internal readonly   FlioxHub            hub;
-
 
         protected EntityDatabase(TaskHandler handler, DbOpt opt){
             customContainerName = (opt ?? DbOpt.Default).customContainerName;
             this.handler        = handler ?? new TaskHandler();
         }
         
-        protected EntityDatabase (
-            FlioxHub        hub,
-            TaskHandler     handler,
-            DbOpt           opt = null
-            ) : this(handler, opt)
-        {
-            this.hub    = hub  ?? throw new ArgumentNullException(nameof(hub));
-        }
-
         public virtual void Dispose() {
             foreach (var container in containers ) {
                 container.Value.Dispose();
@@ -105,6 +94,5 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
-
     }
 }
