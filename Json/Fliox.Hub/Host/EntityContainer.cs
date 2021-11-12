@@ -241,7 +241,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return referenceResults;
         }
 
-        public async Task<ReadReferencesResult> ReadReferences(
+        internal async Task<ReadReferencesResult> ReadReferences(
                 List<References>                    references,
                 Dictionary<JsonKey, EntityValue>    entities,
                 string                              container,
@@ -307,7 +307,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
     /// <see cref="ReadReferencesResult"/> is never serialized within a <see cref="SyncResponse"/> only its
     /// fields <see cref="references"/>.
-    public class ReadReferencesResult
+    internal class ReadReferencesResult
     {
         internal List<ReferencesResult> references;
     } 
