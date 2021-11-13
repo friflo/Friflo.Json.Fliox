@@ -125,26 +125,35 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
         }
 
         private static void AssertResult(MonitorResult result) {
+            // --- hosts
             var hosts   = result.hosts.Results;
-            var users   = result.users.Results;
-            var clients = result.clients.Results;
+            AreEqual(1, hosts.Count);
             
             var host    = hosts[new JsonKey("Test")];
             AreEqual("{'id':'Test','counts':{'requests':2,'tasks':3}}", host.ToString());
-            AreEqual(1, hosts.Count);
             
-            AreEqual("{'id':'anonymous','clients':[],'counts':[]}",     users[User.AnonymousId].ToString());
+            // --- users
+            var users   = result.users.Results;
+            AreEqual(3, users.Count);
+            
+            var anonymousInfo = users[User.AnonymousId].ToString();
+            AreEqual("{'id':'anonymous','clients':[],'counts':[]}",     anonymousInfo);
             
             var adminInfo = users[new JsonKey("monitor-admin")].ToString();
             AreEqual("{'id':'monitor-admin','clients':['monitor-client'],'counts':[{'db':'monitor','requests':1,'tasks':1}]}", adminInfo);
-            AreEqual(3, users.Count);
-
+            
+            var pocAdmin = users[new JsonKey("poc-admin")].ToString();
+            AreEqual("{'id':'poc-admin','clients':['poc-client'],'counts':[{'db':'default','requests':1,'tasks':2}]}", pocAdmin);
+            
+            // --- clients
+            var clients = result.clients.Results;
+            AreEqual(2, clients.Count);
+            
             var pocClientInfo = clients[new JsonKey("poc-client")].ToString();
             AreEqual("{'id':'poc-client','user':'poc-admin','counts':[{'db':'default','requests':1,'tasks':2}]}", pocClientInfo);
             
             var monitorClientInfo = clients[new JsonKey("monitor-client")].ToString();
             AreEqual("{'id':'monitor-client','user':'monitor-admin','counts':[{'db':'monitor','requests':1,'tasks':1}]}", monitorClientInfo);
-            AreEqual(2, clients.Count);
             
             NotNull(result.user.Result);
             NotNull(result.client.Result);
