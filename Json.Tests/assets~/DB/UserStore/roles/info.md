@@ -16,9 +16,9 @@ The following `Right` types are available:
 | `predicate`        | Allow execution of arbitrary tasks by the given list of predicate function `names`.      |
 
 
-## `database`
+## `operation`
 
-The `database` `Right` contains are map of `containers` referencing a specific container by key.
+The `operation` `Right` contains are map of `containers` referencing a specific container by key.
 The value of each entry authorize container specific tasks by `operations` and `subscribeChanges`.
 
 - `operations`  
