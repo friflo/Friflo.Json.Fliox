@@ -7,11 +7,10 @@ var exampleRole: Role = {
     rights: [
         {
             type:           "allow",
-            grant:          true,
             description:    "allow description"
         },
         {
-            type:           "database",
+            type:           "operation",
             containers:     { "Article": { operations:["read", "query", "upsert"], subscribeChanges: ["upsert"] }}
         },
         {
@@ -37,7 +36,6 @@ var exampleRole: Role = {
 function usePolymorphType (right: Right_Union) {
     switch (right.type) {
         case "allow":
-            var grant: boolean = right.grant;
             break;
         case "message":
             var names: string[] = right.names;
