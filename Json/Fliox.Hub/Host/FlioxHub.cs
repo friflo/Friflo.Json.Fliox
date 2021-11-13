@@ -58,7 +58,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 #endif
     public class FlioxHub : IDisposable
     {
-        public  readonly    EntityDatabase      database;      
+        public   readonly   EntityDatabase      database;      
         /// <summary>
         /// An optional <see cref="Event.EventBroker"/> used to enable Pub-Sub. If enabled the database send
         /// events to a client for database changes and messages the client has subscribed.
@@ -80,16 +80,15 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public              ClientController    ClientController{ get => clientController; set => clientController = NotNull(value, nameof(ClientController)); }
         
-        
+        private  static     T NotNull<T> (T value, string name) where T : class => value ?? throw new NullReferenceException(name);
+
         /// <summary>
         /// A host name that is assigned to a default database.
         /// Its only purpose is to use it as id in <see cref="Monitor.HostInfo.id"/>.
         /// </summary>
         /// 
-        public  readonly    string              hostName;
-        
-        public  readonly    SharedEnv           sharedEnv;
-        
+        public   readonly   string              hostName;
+        public   readonly   SharedEnv           sharedEnv;
         
         internal readonly   HostStats           hostStats = new HostStats();
         
@@ -107,11 +106,8 @@ namespace Friflo.Json.Fliox.Hub.Host
             this.hostName   = hostName ?? "host";
         }
        
-
-        private static T NotNull<T> (T value, string name) where T : class => value ?? throw new NullReferenceException(name);
-        
-        public virtual  void            AddEventTarget      (in JsonKey clientId, IEventTarget eventTarget) {}
-        public virtual  void            RemoveEventTarget   (in JsonKey clientId) {}
+        public   virtual    void    AddEventTarget      (in JsonKey clientId, IEventTarget eventTarget) {}
+        public   virtual    void    RemoveEventTarget   (in JsonKey clientId) {}
 
         /// <summary>
         /// Execute all <see cref="SyncRequest.tasks"/> of a <see cref="SyncRequest"/>.
@@ -235,8 +231,8 @@ namespace Friflo.Json.Fliox.Hub.Host
     
     // --------------------------------- ExecuteSyncResult ---------------------------------
     public readonly struct ExecuteSyncResult {
-        public  readonly    SyncResponse    success;
-        public  readonly    ErrorResponse   error;
+        public   readonly   SyncResponse    success;
+        public   readonly   ErrorResponse   error;
 
         public ExecuteSyncResult (SyncResponse successResponse) {
             success = successResponse;
