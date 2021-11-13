@@ -48,7 +48,9 @@ namespace Friflo.Json.Tests.Main
             var hub                 = new FlioxHub(database);
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));            // optional - enables monitoring database access
             hub.EventBroker         = new EventBroker(true);                    // optional - eventBroker enables Instant Messaging & Pub-Sub
-            hub.Authenticator       = CreateUserAuthenticator(out var userDB);  // optional - otherwise all request tasks are authorized
+            
+            var userDB              = new FileDatabase("./Json.Tests/assets~/DB/UserStore", new UserDBHandler());
+            hub.Authenticator       = new UserAuthenticator(userDB);            // optional - otherwise all request tasks are authorized
             hub.AddExtensionDB("user_db", userDB);                              // optional - expose userStore as extension database
             
             var typeSchema          = CreateTypeSchema(true);                   // optional - used by DatabaseSchema & SchemaHandler
@@ -68,11 +70,6 @@ namespace Friflo.Json.Tests.Main
             }
             // using a NativeTypeSchema add an additional dependency by using the FlioxClient: PocStore
             return new NativeTypeSchema(typeof(PocStore));
-        }
-        
-        private static UserAuthenticator CreateUserAuthenticator (out EntityDatabase userDB) {
-            userDB = new FileDatabase("./Json.Tests/assets~/DB/UserStore", new UserDBHandler());
-            return new UserAuthenticator(userDB);
         }
     }
 }
