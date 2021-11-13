@@ -49,7 +49,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   </item>
     ///   <item>
     ///     Monitoring of database access (requests) by adding a <see cref="MonitorDB"/> with
-    ///     <see cref="AddExtensionDB(EntityDatabase)"/>.
+    ///     <see cref="AddExtensionDB"/>.
     ///   </item>
     /// </list>
     /// </summary>
