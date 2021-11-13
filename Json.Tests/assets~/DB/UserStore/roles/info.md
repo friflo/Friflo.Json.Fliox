@@ -2,14 +2,14 @@
 The records in a [roles](./) container are used to authorize (allow) execution of tasks.
 
 The container is a set of roles which are referenced in [permissions](../permissions) `roles[]`.
-Each `Role` contains a set of `rights[]`. A Task execution is authorized if any (at least one) right allows execution.
+Each `role` contains a set of `rights[]`. A Task execution is authorized if any (at least one) right allows execution.
 
 The following `Right` types are available:
 
 | `type`             | description                                                                              |
 | ------------------ | ---------------------------------------------------------------------------------------- |
-| `allow`            | Allow unrestricted access to a database if "grant" == true                               |
-| `database`         | Allow read / write operations and change subscriptions to the specified `containers`     |
+| `allow`            | Allow unrestricted access to a database                                                  |
+| `operation`        | Allow read / write operations and change subscriptions to the specified `containers`     |
 | `message`          | Allow sending the specified messages to a database by their `names`                      |
 | `subscribeMessage` | Allow subscribing to the specified messages sent to a database by their `names`          |
 | `task`             | Allow task execution of the specified task `types`.                                      |
