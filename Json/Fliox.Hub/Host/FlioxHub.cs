@@ -223,7 +223,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             }
         }
 
-        // --------------------------------- extension databases ---------------------------------
+        // --- extension databases
         private readonly   Dictionary<string, EntityDatabase> extensionDbs = new Dictionary<string, EntityDatabase>();
         
         public void AddExtensionDB(string name, EntityDatabase extensionDB) {
@@ -233,6 +233,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public virtual void Dispose() { }  // todo - remove
     }
     
+    // --------------------------------- ExecuteSyncResult ---------------------------------
     public readonly struct ExecuteSyncResult {
         public  readonly    SyncResponse    success;
         public  readonly    ErrorResponse   error;
