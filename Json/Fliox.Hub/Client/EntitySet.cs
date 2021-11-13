@@ -103,8 +103,9 @@ namespace Friflo.Json.Fliox.Hub.Client
     /// usually named <b>id</b>.
     /// Supported <see cref="TKey"/> types are:
     /// <see cref="string"/>, <see cref="long"/>, <see cref="int"/>, <see cref="short"/>, <see cref="byte"/>
-    /// and <see cref="Guid"/><br/>.
-    /// The key type <see cref="TKey"/> must match the <see cref="Type"/> used for the key field / property.
+    /// and <see cref="Guid"/>.
+    /// <br/>
+    /// The key type <see cref="TKey"/> must match the <see cref="Type"/> used for the key field / property in an entity class.
     /// In case of a type mismatch a runtime exceptions is thrown.
     /// </summary>
 #if !UNITY_5_3_OR_NEWER
