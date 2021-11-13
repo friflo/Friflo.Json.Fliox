@@ -4,9 +4,9 @@
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Validation;
 
-namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema
+namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Validation
 {
-    public static class SchemaExtensions
+    public static class Utils
     {
         public static bool ValidateObject (this TypeValidator validator, string json, ValidationType type, out string error) {
             return validator.ValidateObject(new JsonValue(json), type, out error);
