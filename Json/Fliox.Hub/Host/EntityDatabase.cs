@@ -39,7 +39,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     public abstract class EntityDatabase : IDisposable
     {
         /// <summary> map of of containers identified by their container name </summary>
-        private readonly    Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
+        private  readonly   Dictionary<string, EntityContainer> containers = new Dictionary<string, EntityContainer>();
         
         /// <summary>
         /// An optional <see cref="DatabaseSchema"/> used to validate the JSON payloads in all write operations
@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// By having the mapping function in <see cref="EntityContainer"/> it enables uniform mapping across different
         /// <see cref="EntityContainer"/> implementations.
         /// </summary>
-        public readonly     CustomContainerName customContainerName;
+        public   readonly   CustomContainerName customContainerName;
         
         /// <summary>
         /// The <see cref="handler"/> execute all <see cref="SyncRequest.tasks"/> send by a client.
