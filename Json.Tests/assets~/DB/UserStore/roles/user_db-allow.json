@@ -1,0 +1,7 @@
+{
+    "id": "user_db-allow",
+    "description": "Allow unrestricted access to database: user_db",
+    "rights": [
+        { "type": "allow", "database": "user_db" }
+    ]
+}

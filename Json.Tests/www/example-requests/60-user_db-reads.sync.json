@@ -14,7 +14,7 @@
     }
   ],
   "info": [
-    "query all permissions & roles from userStore"
+    "query all permissions & roles from user_db"
   ],
   "user":   "{{user}}",
   "token":  "{{token}}"
