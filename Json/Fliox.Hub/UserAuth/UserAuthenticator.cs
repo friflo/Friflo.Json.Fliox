@@ -10,6 +10,8 @@ using Friflo.Json.Fliox.Hub.Auth.Rights;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Schema.Definition;
+using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.Hub.UserAuth
 {
@@ -33,12 +35,12 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
     /// </summary>
     public class UserAuthenticator : Authenticator, IDisposable
     {
-        // --- public
-        public    readonly  FlioxHub                                    userHub;
-        public    readonly  IUserAuth                                   userAuth;
-        
         // --- private / internal
+        private   readonly  FlioxHub                                    userHub;
+        private   readonly  IUserAuth                                   userAuth;
         private   readonly  Authorizer                                  anonymousAuthorizer;
+        private   readonly  NativeTypeSchema                            typeSchema;
+        private   readonly  DatabaseSchema                              dbSchema;
         private   readonly  ConcurrentDictionary<string,  Authorizer>   authorizerByRole = new ConcurrentDictionary <string, Authorizer>();
 
         public UserAuthenticator (EntityDatabase userDatabase, SharedEnv env = null, IUserAuth userAuth = null, Authorizer anonymousAuthorizer = null)
@@ -46,6 +48,9 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         {
             if (!(userDatabase.handler is UserDBHandler))
                 throw new InvalidOperationException("userDatabase requires a handler of Type: " + nameof(UserDBHandler));
+            typeSchema              = new NativeTypeSchema(typeof(UserStore));
+            dbSchema                = new DatabaseSchema(typeSchema);
+            userDatabase.Schema     = dbSchema;
             userHub        	        = new FlioxHub(userDatabase, env);
             userHub.Authenticator   = new UserDatabaseAuthenticator();  // authorize access to userDatabase
             this.userAuth           = userAuth;
@@ -54,6 +59,8 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
         
         public void Dispose() {
             userHub.Dispose();
+            dbSchema.Dispose();
+            typeSchema.Dispose();
         }
         
         public async Task ValidateRoles() {
