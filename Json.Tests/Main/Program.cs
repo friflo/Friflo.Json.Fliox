@@ -39,7 +39,18 @@ namespace Friflo.Json.Tests.Main
         }
         
         /// <summary>
-        /// Note: Both extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
+        /// This method is intended to be a blueprint of a Fliox Server utilizing all features available via HTTP and WebSockets.
+        /// These features are:
+        /// <list type="bullet">
+        ///   <item> Providing all common database table operations to query, reads, create, updates and delete records </item>
+        ///   <item> Enabling Messaging and Pub-Sub to send messages or commands and setup subscriptions by multiple clients </item>
+        ///   <item> Enabling user authentication and authorization of tasks requested by a user </item>
+        ///   <item> Access and change user permission and roles required for authorization via the extension database: user_db</item>
+        ///   <item> Expose the server Monitor as an extension database to get statistics about requests and tasks executed by users and clients </item>
+        ///   <item> Adding a database schema to validate records written to the default database and exposing it as JSON Schema </item>
+        ///   <item> Adding a web playground to send and validate arbitrary requests to the Fliox server </item>
+        /// </list>
+        ///  Note: Both extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
         /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
         /// </summary> 
         private static void FlioxServer(string endpoint, string databaseFolder) {
