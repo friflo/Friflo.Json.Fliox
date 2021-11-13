@@ -1,7 +1,7 @@
 
-The records in a [Role](./) container are used to authorize (allow) execution of tasks.
+The records in a [roles](./) container are used to authorize (allow) execution of tasks.
 
-The container is a set of roles which are referenced in [UserPermission](../UserPermission) `roles[]`.
+The container is a set of roles which are referenced in [permissions](../permissions) `roles[]`.
 Each `Role` contains a set of `rights[]`. A Task execution is authorized if any (at least one) right allows execution.
 
 The following `Right` types are available:

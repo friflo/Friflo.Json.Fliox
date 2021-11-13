@@ -1,8 +1,8 @@
 
-The container [UserCredential](./) is used to store and validate credentials of a user.
+The container [credentials](./) is used to store and validate credentials of a user.
 These credentials are a hashed password and a user token.
 Tokens are used to authenticate users.
-If user authentication is successful the user is permitted to execute tasks which are permitted by its [UserPermission](../UserPermission).
+If user authentication is successful the user is permitted to execute tasks which are permitted by its [permissions](../permissions).
 
 Note:
 Performing user authentication is an optional feature.
@@ -20,6 +20,6 @@ The user database enables executing the listed tasks depending on the user (user
     - container: "UserCredential": read
 
 These rights given at: 
-[UserDatabaseAuthenticator.cs](../../../../../Json/Fliox.Client/UserAuth/UserDatabaseAuthenticator.cs)
+[UserDatabaseAuthenticator.cs](../../../../../Json/Fliox.Hub/UserAuth/UserDatabaseAuthenticator.cs)
 
 Additional users can be added to this list if required via `UserDatabaseAuthenticator.userRights`.
