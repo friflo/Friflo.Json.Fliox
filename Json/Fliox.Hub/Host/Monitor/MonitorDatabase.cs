@@ -10,29 +10,42 @@ using Friflo.Json.Fliox.Hub.Host.Stats;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.Hub.Host.Monitor
 {
     public class MonitorDB : EntityDatabase
     {
-        internal readonly   EntityDatabase  stateDB;
-        private  readonly   FlioxHub        monitorHub;
-        private  readonly   FlioxHub        hub;
-        private  readonly   string          name;
+        // --- private / internal
+        internal readonly   EntityDatabase      stateDB;
+        private  readonly   FlioxHub            monitorHub;
+        private  readonly   FlioxHub            hub;
+        private  readonly   string              name;
+        private   readonly  NativeTypeSchema    typeSchema;     // not really required as db is readonly - but enables exposing schema
+        private   readonly  DatabaseSchema      databaseSchema; // not really required as db is readonly - but enables exposing schema
 
-        public   override   string          ToString() => name;
+        public   override   string              ToString() => name;
 
         public const string Name = "monitor";
         
         public MonitorDB (FlioxHub hub, string name = null, DbOpt opt = null)
             : base (new MonitorHandler(hub), opt)
         {
-            this.hub    = hub  ?? throw new ArgumentNullException(nameof(hub));
-            this.name   = name ?? Name;
-            stateDB     = new MemoryDatabase();
-            monitorHub  = new FlioxHub(stateDB, hub.sharedEnv);
+            this.hub        = hub  ?? throw new ArgumentNullException(nameof(hub));
+            this.name       = name ?? Name;
+            typeSchema      = new NativeTypeSchema(typeof(MonitorStore));
+            databaseSchema  = new DatabaseSchema(typeSchema);
+            stateDB         = new MemoryDatabase();
+            stateDB.Schema  = databaseSchema;
+            monitorHub      = new FlioxHub(stateDB, hub.sharedEnv);
         }
-        
+
+        public override void Dispose() {
+            base.Dispose();
+            databaseSchema.Dispose();
+            typeSchema.Dispose();
+        }
+
         public override EntityContainer CreateContainer(string name, EntityDatabase database) {
             return stateDB.CreateContainer(name, database);
         }

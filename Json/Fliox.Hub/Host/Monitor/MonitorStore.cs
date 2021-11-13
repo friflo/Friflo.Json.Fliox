@@ -6,6 +6,7 @@ using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host.Stats;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Transform;
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Global
@@ -47,7 +48,14 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
                         public  int                             seq;
                         public  int                             queued;
                         public  List<string>                    messageSubs;
-                        public  List<SubscribeChanges>          changeSubs;
+                        public  List<ChangeSubscriptions>       changeSubs;
+    }
+    
+    public sealed class ChangeSubscriptions
+    {
+        [Fri.Required]  public  string                          container;
+        [Fri.Required]  public  List<Change>                    changes;
+                        public  FilterOperation                 filter;
     }
     
     public class UserInfo {

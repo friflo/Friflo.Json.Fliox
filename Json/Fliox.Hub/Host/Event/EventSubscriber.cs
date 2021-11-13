@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host.Monitor;
 using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -49,14 +50,21 @@ namespace Friflo.Json.Fliox.Hub.Host.Event
         internal            int                                     SentEventsCount => sentEvents.Count;
         internal            bool                                    IsRemoteTarget  => eventTarget is WebSocketHost;
         
-        internal List<SubscribeChanges> GetChangeSubscriptions (List<SubscribeChanges> subs) {
+        internal List<ChangeSubscriptions> GetChangeSubscriptions (List<ChangeSubscriptions> subs) {
             if (changeSubscriptions.Count == 0)
                 return null;
-            if (subs == null) subs = new List<SubscribeChanges>(changeSubscriptions.Count);
+            if (subs == null) subs = new List<ChangeSubscriptions>(changeSubscriptions.Count);
             subs.Clear();
             subs.Capacity = changeSubscriptions.Count;
-            foreach (var pair in changeSubscriptions)
-                subs.Add(pair.Value);
+            foreach (var pair in changeSubscriptions) {
+                SubscribeChanges sub = pair.Value;
+                var changeSubscription = new ChangeSubscriptions {
+                    container   = sub.container,
+                    changes     = sub.changes,
+                    filter      = sub.filter
+                };
+                subs.Add(changeSubscription);
+            }
             return subs;
         }
 
