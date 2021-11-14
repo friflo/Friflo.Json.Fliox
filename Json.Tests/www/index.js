@@ -1,5 +1,3 @@
-
-
 // --------------------------------------- WebSocket ---------------------------------------
 var connection;
 var websocketCount = 0;
@@ -147,6 +145,7 @@ export async function postSyncRequest() {
     responseState.innerHTML = `· ${duration} ms`;
 }
 
+// --------------------------------------- example requests ---------------------------------------
 export async function onExampleChange() {
     var exampleName = selectExample.value;
     if (exampleName == "") {
