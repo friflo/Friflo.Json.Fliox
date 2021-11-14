@@ -51,17 +51,17 @@ namespace Friflo.Json.Tests.Main
         public static HttpHostHub CreateHttpHost(string dbPath, string userDbPath, string wwwPath) {
             var database            = new FileDatabase(dbPath);
             var hub                 = new FlioxHub(database);
-            hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));            // optional - enables monitoring database access
-            hub.EventBroker         = new EventBroker(true);                    // optional - eventBroker enables Instant Messaging & Pub-Sub
+            hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - enables monitoring database access
+            hub.EventBroker         = new EventBroker(true);            // optional - eventBroker enables Instant Messaging & Pub-Sub
             
             var userDB              = new FileDatabase(userDbPath, new UserDBHandler());
-            hub.Authenticator       = new UserAuthenticator(userDB);            // optional - otherwise all request tasks are authorized
-            hub.AddExtensionDB("user_db", userDB);                              // optional - expose userStore as extension database
+            hub.Authenticator       = new UserAuthenticator(userDB);    // optional - otherwise all request tasks are authorized
+            hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
-            var typeSchema          = CreateTypeSchema(true);                   // optional - used by DatabaseSchema & SchemaHandler
-            database.Schema         = new DatabaseSchema(typeSchema);           // optional - enables type validation for create, upsert & patch operations
+            var typeSchema          = CreateTypeSchema(true);           // optional - used by DatabaseSchema & SchemaHandler
+            database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
             var hostHub             = new HttpHostHub(hub);
-            hostHub.requestHandler  = new RequestHandler(wwwPath);              // optional - used to serve static web content
+            hostHub.requestHandler  = new RequestHandler(wwwPath);      // optional - used to serve static web content
             hostHub.schemaHandler   = new SchemaHandler("/schema/", typeSchema, Utils.Zip); // optional - Web UI to serve DB schema as files (JSON Schema, Typescript, C#, Kotlin)
             return hostHub;
         }
