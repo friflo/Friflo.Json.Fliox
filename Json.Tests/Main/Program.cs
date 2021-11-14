@@ -51,7 +51,7 @@ namespace Friflo.Json.Tests.Main
         public static HttpHostHub CreateHttpHost(string dbPath, string userDbPath, string wwwPath) {
             var database            = new FileDatabase(dbPath);
             var hub                 = new FlioxHub(database);
-            hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - enables monitoring database access
+            hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - expose monitor stats as extension database
             hub.EventBroker         = new EventBroker(true);            // optional - eventBroker enables Instant Messaging & Pub-Sub
             
             var userDB              = new FileDatabase(userDbPath, new UserDBHandler());
