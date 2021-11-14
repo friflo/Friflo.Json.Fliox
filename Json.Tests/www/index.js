@@ -126,18 +126,25 @@ export async function postSyncRequest() {
 
     responseState.innerHTML = '<span class="spinner"></span>';
     let start = new Date().getTime();
-    const rawResponse = await fetch('', {        
+    let init = {        
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
         body: jsonRequest
-    });
-    var duration = new Date().getTime() - start;
+    }
+    var duration;
+    try {
+        const rawResponse = await fetch('', init);
+        const content = await rawResponse.text();
+        duration = new Date().getTime() - start;
+        responseModel.setValue(content);
+    } catch(error) {
+        duration = new Date().getTime() - start;
+        responseModel.setValue("POST error: " + error.message);
+    }
     responseState.innerHTML = `· ${duration} ms`;
-    const content = await rawResponse.text();
-    responseModel.setValue(content);
 }
 
 export async function onExampleChange() {
