@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Main
         //     $env:UserDomain 
         private static void FlioxServer(string endpoint) {
             var hostHub = CreateHttpHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/assets~/DB/UserStore", "./Json.Tests/www");
-            // var hostHub = CreateMinimalHost("./Json.Tests/assets~/DB/PocStore");
+            //var hostHub = CreateMinimalHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/www");
             var server = new HttpListenerHost(endpoint, hostHub);
             server.Start();
             server.Run();
@@ -66,12 +66,12 @@ namespace Friflo.Json.Tests.Main
             return hostHub;
         }
         
-        private static HttpHostHub CreateMinimalHost(string dbPath) {
+        private static HttpHostHub CreateMinimalHost(string dbPath, string wwwPath) {
             // Run a minimal Fliox server without monitoring, Pub-Sub, user authentication / authorization, entity validation
             var database            = new FileDatabase(dbPath);
             var hub          	    = new FlioxHub(database);
             var hostHub             = new HttpHostHub(hub);
-            hostHub.requestHandler  = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
+            hostHub.requestHandler  = new RequestHandler(wwwPath);   // optional. Used to serve static web content
             return hostHub;
         }
         
