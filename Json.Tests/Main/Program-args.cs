@@ -37,20 +37,19 @@ namespace Friflo.Json.Tests.Main
 
             var rootCommand = new RootCommand {
                 moduleOpt,
-                new Option<string>("--endpoint", () => "http://+:8010/",                    "endpoint the server listen at"),
-                new Option<string>("--database", () => "./Json.Tests/assets~/DB/PocStore",  "folder of the file database")
+                new Option<string>("--endpoint", () => "http://+:8010/",                    "endpoint the server listen at")
             };
             rootCommand.Description = "small tests within Friflo.Json.Tests";
 
-            rootCommand.Handler = CommandHandler.Create<Module, string, string>(async (module, endpoint, database) =>
+            rootCommand.Handler = CommandHandler.Create<Module, string>(async (module, endpoint) =>
             {
                 Console.WriteLine($"module: {module}");
                 switch (module) {
                     case Module.FlioxServer:
-                        FlioxServer(endpoint, database);
+                        FlioxServer(endpoint);
                         break;
                     case Module.FlioxServerAspNetCore:
-                        FlioxServerAspNetCore(endpoint, database);
+                        FlioxServerAspNetCore(endpoint);
                         break;
                     case Module.MemoryDbThroughput:
                         await Throughput.MemoryDbThroughput();

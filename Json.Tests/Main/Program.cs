@@ -25,12 +25,12 @@ namespace Friflo.Json.Tests.Main
         // Get DOMAIN\USER via  PowerShell
         //     $env:UserName
         //     $env:UserDomain 
-        private static void FlioxServer(string endpoint, string databaseFolder) {
-            var hostHub             = CreateHttpHost(databaseFolder);
-            // var hostHub          = CreateMinimalHost(databaseFolder);
-            var httpListener        = new HttpListenerHost(endpoint, hostHub);
-            httpListener.Start();
-            httpListener.Run();
+        private static void FlioxServer(string endpoint) {
+            var hostHub = CreateHttpHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/assets~/DB/UserStore", "./Json.Tests/www");
+            // var hostHub = CreateMinimalHost(databaseFolder);
+            var server = new HttpListenerHost(endpoint, hostHub);
+            server.Start();
+            server.Run();
         }
         
         /// <summary>
@@ -48,20 +48,20 @@ namespace Friflo.Json.Tests.Main
         ///  Note: Both extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
         /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
         /// </summary>         
-        public static HttpHostHub CreateHttpHost(string databaseFolder) {
-            var database            = new FileDatabase(databaseFolder);
+        public static HttpHostHub CreateHttpHost(string dbPath, string userDbPath, string wwwPath) {
+            var database            = new FileDatabase(dbPath);
             var hub                 = new FlioxHub(database);
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));            // optional - enables monitoring database access
             hub.EventBroker         = new EventBroker(true);                    // optional - eventBroker enables Instant Messaging & Pub-Sub
             
-            var userDB              = new FileDatabase("./Json.Tests/assets~/DB/UserStore", new UserDBHandler());
+            var userDB              = new FileDatabase(userDbPath, new UserDBHandler());
             hub.Authenticator       = new UserAuthenticator(userDB);            // optional - otherwise all request tasks are authorized
             hub.AddExtensionDB("user_db", userDB);                              // optional - expose userStore as extension database
             
             var typeSchema          = CreateTypeSchema(true);                   // optional - used by DatabaseSchema & SchemaHandler
             database.Schema         = new DatabaseSchema(typeSchema);           // optional - enables type validation for create, upsert & patch operations
             var hostHub             = new HttpHostHub(hub);
-            hostHub.requestHandler  = new RequestHandler("./Json.Tests/www");   // optional - used to serve static web content
+            hostHub.requestHandler  = new RequestHandler(wwwPath);              // optional - used to serve static web content
             hostHub.schemaHandler   = new SchemaHandler("/schema/", typeSchema, Utils.Zip); // optional - Web UI to serve DB schema as files (JSON Schema, Typescript, C#, Kotlin)
             return hostHub;
         }

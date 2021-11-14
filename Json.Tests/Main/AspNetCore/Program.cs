@@ -11,7 +11,7 @@ namespace Friflo.Json.Tests.Main
 {
     internal static partial class Program
     {
-        private static void FlioxServerAspNetCore(string endpoint, string databaseFolder)
+        private static void FlioxServerAspNetCore(string endpoint)
         {
             string [] args = {};
             CreateHostBuilder(args).Build().Run();
