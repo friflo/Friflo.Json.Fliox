@@ -31,6 +31,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Json\Burst\Friflo.Json.Burst.csproj" />
       <ProjectReference Include="..\Json\Fliox.Hub.AspNetCore\Friflo.Json.Fliox.Hub.AspNetCore.csproj" />
+      <ProjectReference Include="..\Json\Fliox.Hub.Cosmos\Friflo.Json.Fliox.Hub.Cosmos.csproj" />
       <ProjectReference Include="..\Json\Fliox.Hub\Friflo.Json.Fliox.Hub.csproj" />
       <ProjectReference Include="..\Json\Fliox\Friflo.Json.Fliox.csproj" />
     </ItemGroup>

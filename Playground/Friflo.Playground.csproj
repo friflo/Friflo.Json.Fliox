@@ -22,7 +22,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Json.Tests\Friflo.Json.Tests.csproj" />
-      <ProjectReference Include="..\Json\Fliox.Hub.Cosmos\Friflo.Json.Fliox.Hub.Cosmos.csproj" />
     </ItemGroup>
 	
     <ItemGroup>
