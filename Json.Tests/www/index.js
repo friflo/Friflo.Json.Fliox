@@ -267,18 +267,18 @@ export async function setupEditors()
         requestEditor.setModel (requestModel);
 
         var defaultRequest = `{
-    "msg": "sync",
-    "tasks": [
-        {
-            "task":  "message",
-            "name":  "Echo",
-            "value": "some value"
-        }
-    ],
-    "user":   "{{user}}",
-    "token":  "{{token}}"
+  "msg": "sync",
+  "tasks": [
+    {
+      "task":  "command",
+      "name":  "Echo",
+      "value": "Hello World"
+    }
+  ],
+  "user":   "{{user}}",
+  "token":  "{{token}}"
 }`;
-        requestModel.setValue("");
+        requestModel.setValue(defaultRequest);
     }
 
     // --- create response editor
