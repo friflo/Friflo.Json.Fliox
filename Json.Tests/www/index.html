@@ -70,7 +70,7 @@
         html            { max-width: 100%; overflow-x: hidden; } /* disable horizontal scrollbar */
         a               { text-decoration:  none; }
         tr              { vertical-align:   top; }
-        button          { width:            90px;}
+        button          { width:            90px; font-size: 14px;}
         .inline         { display:          inline; }
         h2              { margin:           0px;  }
         label           { display:          inline;  }
@@ -170,8 +170,10 @@
     <tr>
       <td>
         <select required title="example-requests" id="example" onchange="onExampleChange()"></select>
-        <button type="button" onclick="sendSyncRequest()" title="Send websocket request to server (Ctrl+Alt+Enter)">ws send</button>
-        <button type="button" onclick="postSyncRequest()" title="POST request to server">POST</button>
+        <span style="white-space:nowrap">
+          <button type="button" onclick="sendSyncRequest()" title="Send websocket request to server (Ctrl+Alt+Enter)">ws send</button>
+          <button type="button" onclick="postSyncRequest()" title="POST request to server">POST</button>
+        </span>
       </td>
       <td class="nobreak">
         <span>Response</span> <span id="response-state"></span>
