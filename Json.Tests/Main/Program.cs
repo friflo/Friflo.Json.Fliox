@@ -1,5 +1,4 @@
-﻿using System;
-using Friflo.Json.Fliox.Hub.Host;
+﻿using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Host.Monitor;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -26,21 +25,17 @@ namespace Friflo.Json.Tests.Main
         // Get DOMAIN\USER via  PowerShell
         //     $env:UserName
         //     $env:UserDomain 
-        private static void FlioxServerMinimal(string endpoint, string databaseFolder) {
-            // Run a minimal Fliox server without monitoring, Pub-Sub, user authentication / authorization, entity validation
-            Console.WriteLine($"FileDatabase: {databaseFolder}");
-            var database            = new FileDatabase(databaseFolder);
-            var hub          	    = new FlioxHub(database);
-            var hostHub             = new HttpHostHub(hub);
-            var host                = new HttpListenerHost(endpoint, hostHub);
-            hostHub.requestHandler  = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
-            host.Start();
-            host.Run();
+        private static void FlioxServer(string endpoint, string databaseFolder) {
+            var hostHub             = CreateHttpHost(databaseFolder);
+            // var hostHub          = CreateMinimalHost(databaseFolder);
+            var httpListener        = new HttpListenerHost(endpoint, hostHub);
+            httpListener.Start();
+            httpListener.Run();
         }
         
         /// <summary>
-        /// This method is intended to be a blueprint of a Fliox Server utilizing all features available via HTTP and WebSockets.
-        /// These features are:
+        /// This method is intended to be a blueprint of a <see cref="HttpHostHub"/> utilizing all features available
+        /// via HTTP and WebSockets. These features are:
         /// <list type="bullet">
         ///   <item> Providing all common database table operations to query, reads, create, updates and delete records </item>
         ///   <item> Enabling Messaging and Pub-Sub to send messages or commands and setup subscriptions by multiple clients </item>
@@ -52,9 +47,8 @@ namespace Friflo.Json.Tests.Main
         /// </list>
         ///  Note: Both extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
         /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
-        /// </summary> 
-        private static void FlioxServer(string endpoint, string databaseFolder) {
-            Console.WriteLine($"FileDatabase: {databaseFolder}");
+        /// </summary>         
+        public static HttpHostHub CreateHttpHost(string databaseFolder) {
             var database            = new FileDatabase(databaseFolder);
             var hub                 = new FlioxHub(database);
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));            // optional - enables monitoring database access
@@ -69,9 +63,16 @@ namespace Friflo.Json.Tests.Main
             var hostHub             = new HttpHostHub(hub);
             hostHub.requestHandler  = new RequestHandler("./Json.Tests/www");   // optional - used to serve static web content
             hostHub.schemaHandler   = new SchemaHandler("/schema/", typeSchema, Utils.Zip); // optional - Web UI to serve DB schema as files (JSON Schema, Typescript, C#, Kotlin)
-            var host                = new HttpListenerHost(endpoint, hostHub);
-            host.Start();
-            host.Run();
+            return hostHub;
+        }
+        
+        private static HttpHostHub CreateMinimalHost(string databaseFolder) {
+            // Run a minimal Fliox server without monitoring, Pub-Sub, user authentication / authorization, entity validation
+            var database            = new FileDatabase(databaseFolder);
+            var hub          	    = new FlioxHub(database);
+            var hostHub             = new HttpHostHub(hub);
+            hostHub.requestHandler  = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
+            return hostHub;
         }
         
         private static TypeSchema CreateTypeSchema(bool fromJsonSchema) {
@@ -79,7 +80,6 @@ namespace Friflo.Json.Tests.Main
                 var schemas = JsonTypeSchema.ReadSchemas("./Json.Tests/assets~/Schema/JSON/PocStore");
                 return new JsonTypeSchema(schemas, "./UnitTest.Fliox.Client.json#/definitions/PocStore");
             }
-            // using a NativeTypeSchema add an additional dependency by using the FlioxClient: PocStore
             return new NativeTypeSchema(typeof(PocStore));
         }
     }

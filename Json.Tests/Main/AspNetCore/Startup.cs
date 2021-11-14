@@ -28,11 +28,7 @@ namespace Friflo.Json.Tests.Main
             {
                 app.UseDeveloperExceptionPage();
             }
-            var database            = new MemoryDatabase();
-            var hub                 = new FlioxHub(database);
-            var hostHub             = new HttpHostHub (hub);
-            hub.EventBroker         = new EventBroker(true);                    // optional. eventBroker enables Pub-Sub
-            hostHub.requestHandler  = new RequestHandler("./Json.Tests/www");   // optional. Used to serve static web content
+            var hostHub = Program.CreateHttpHost("./Json.Tests/assets~/DB/PocStore");
 
             app.UseRouting();
             app.UseWebSockets();
