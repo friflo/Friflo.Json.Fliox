@@ -37,7 +37,7 @@ namespace Friflo.Json.Tests.Main
         /// This method is intended to be a blueprint of a <see cref="HttpHostHub"/> utilizing all features available
         /// via HTTP and WebSockets. These features are:
         /// <list type="bullet">
-        ///   <item> Providing all common database table operations to query, reads, create, updates and delete records </item>
+        ///   <item> Providing all common database table operations to query, read, create, updates and delete records </item>
         ///   <item> Enabling Messaging and Pub-Sub to send messages or commands and setup subscriptions by multiple clients </item>
         ///   <item> Enabling user authentication and authorization of tasks requested by a user </item>
         ///   <item> Access and change user permission and roles required for authorization via the extension database: user_db</item>
