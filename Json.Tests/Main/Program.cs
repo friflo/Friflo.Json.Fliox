@@ -27,7 +27,7 @@ namespace Friflo.Json.Tests.Main
         //     $env:UserDomain 
         private static void FlioxServer(string endpoint) {
             var hostHub = CreateHttpHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/assets~/DB/UserStore", "./Json.Tests/www");
-            //var hostHub = CreateMinimalHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/www");
+        //  var hostHub = CreateMiniHost("./Json.Tests/assets~/DB/PocStore", "./Json.Tests/www");
             var server = new HttpListenerHost(endpoint, hostHub);
             server.Start();
             server.Run();
