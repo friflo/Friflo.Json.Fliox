@@ -1,9 +1,6 @@
 #if !UNITY_2020_1_OR_NEWER
 
 using Friflo.Json.Fliox.Hub.AspNetCore;
-using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Event;
-using Friflo.Json.Fliox.Hub.Remote;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
