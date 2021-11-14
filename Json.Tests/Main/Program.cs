@@ -67,7 +67,7 @@ namespace Friflo.Json.Tests.Main
             return hostHub;
         }
         
-        private static HttpHostHub CreateMinimalHost(string dbPath, string wwwPath) {
+        private static HttpHostHub CreateMiniHost(string dbPath, string wwwPath) {
             // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
             var database            = new FileDatabase(dbPath);
             var hub          	    = new FlioxHub(database);
