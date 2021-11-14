@@ -22,6 +22,11 @@
                 sendSyncRequest();
                 event.preventDefault();
             }
+            if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
+                postSyncRequest();
+                event.preventDefault();
+            }
+
             // console.log(`KeyboardEvent: code='${event.code}', ctrl:${event.ctrlKey}, alt:${event.altKey}`);
         }, true);
 
@@ -171,8 +176,8 @@
       <td>
         <select required title="example-requests" id="example" onchange="onExampleChange()"></select>
         <span style="white-space:nowrap">
-          <button type="button" onclick="sendSyncRequest()" title="Send websocket request to server (Ctrl+Alt+Enter)">ws send</button>
-          <button type="button" onclick="postSyncRequest()" title="POST request to server">POST</button>
+          <button type="button" onclick="sendSyncRequest()" title="Send websocket request (Ctrl+Alt+Enter)">ws send</button>
+          <button type="button" onclick="postSyncRequest()" title="POST request (Ctrl+Alt+P)">POST</button>
         </span>
       </td>
       <td class="nobreak">
