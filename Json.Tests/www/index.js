@@ -136,7 +136,7 @@ export async function postSyncRequest() {
     }
     var duration;
     try {
-        const rawResponse = await fetch('', init);
+        const rawResponse = await fetch('./', init);
         const content = await rawResponse.text();
         duration = new Date().getTime() - start;
         responseModel.setValue(content);
@@ -159,7 +159,15 @@ export async function onExampleChange() {
 }
 
 export async function loadExampleRequestList() {
-    selectExample.add(document.createElement("option")); // empty entry on top
+    // [html - How do I make a placeholder for a 'select' box? - Stack Overflow] https://stackoverflow.com/questions/5805059/how-do-i-make-a-placeholder-for-a-select-box
+    var option = document.createElement("option");
+    option.value    = "";
+    option.disabled = true;
+    option.selected = true;
+    option.hidden   = true;
+    option.text = "Select request ...";
+    selectExample.add(option);
+
     var folder = './example-requests'
     var response = await fetch(folder);
     var exampleRequests = await response.json();
@@ -173,7 +181,7 @@ export async function loadExampleRequestList() {
             groupPrefix = name[0];
             groupCount++;
         }
-        var option = document.createElement("option");
+        option = document.createElement("option");
         option.value    = example;
         option.text     = (groupCount % 2 ? "\xA0\xA0" : "") + name;
         option.style    = groupCount % 2 ? "background-color: #ffffff;" : "background-color: #eeeeff;"

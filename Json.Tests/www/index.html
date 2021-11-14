@@ -70,7 +70,7 @@
         html            { max-width: 100%; overflow-x: hidden; } /* disable horizontal scrollbar */
         a               { text-decoration:  none; }
         tr              { vertical-align:   top; }
-        button          { width:            80px;}
+        button          { width:            90px;}
         .inline         { display:          inline; }
         h2              { margin:           0px;  }
         label           { display:          inline;  }
@@ -81,6 +81,11 @@
         li              { font-size:        14px;}
         sup             { font-size: 10px; color: rgb(143, 143, 255);}
         ul              { margin: 5px; padding-left: 15px; } 
+        /* [html - How do I make a placeholder for a 'select' box? - Stack Overflow] https://stackoverflow.com/questions/5805059/how-do-i-make-a-placeholder-for-a-select-box */
+        select:required:invalid     {  color: gray;  }
+        option[value=""][disabled]  {  display: none;  }
+        option                      {  color: black; }
+
         .spinner {
             border:         3px solid #f3f3f3;
             border-top:     3px solid #3498db;
@@ -164,7 +169,7 @@
   <table width="100%">
     <tr>
       <td>
-        <select title="example-requests" id="example" onchange="onExampleChange()"></select>
+        <select required title="example-requests" id="example" onchange="onExampleChange()"></select>
         <button type="button" onclick="sendSyncRequest()" title="Send websocket request to server (Ctrl+Alt+Enter)">ws send</button>
         <button type="button" onclick="postSyncRequest()" title="POST request to server">POST</button>
       </td>
@@ -177,7 +182,7 @@
       </td>
     </tr>
     <tr>
-      <td style="width: 400px;">
+      <td style="width: 410px;">
         <div id="requestContainer" style="height: 500px; border: 1px solid grey"></div>
         <code style="font-weight: bold">"req": <div id="req" class="inline">- </div></code>,
         <code style="font-weight: bold">"ack": <div id="ack" class="inline">- </div></code>,
