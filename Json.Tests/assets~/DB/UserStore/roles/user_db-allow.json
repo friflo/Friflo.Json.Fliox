@@ -1,7 +1,14 @@
 {
     "id": "user_db-allow",
-    "description": "Allow unrestricted access to database: user_db",
+    "description": "Allow unrestricted access to user_db permissions & roles",
     "rights": [
-        { "type": "allow", "database": "user_db" }
+        {
+            "type": "operation",
+            "database": "user_db",
+            "containers": {
+                "permissions": { "operations": ["full"] },
+                "roles":       { "operations": ["full"] }
+            }
+        }
     ]
 }
