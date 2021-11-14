@@ -119,6 +119,27 @@ export function sendSyncRequest() {
     reqIdElement.innerText  = req;
 }
 
+export async function postSyncRequest() {
+    var jsonRequest = requestModel.getValue();
+    jsonRequest = jsonRequest.replace("{{user}}",  defaultUser.value);
+    jsonRequest = jsonRequest.replace("{{token}}", defaultToken.value);
+
+    responseState.innerHTML = '<span class="spinner"></span>';
+    let start = new Date().getTime();
+    const rawResponse = await fetch('', {        
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: jsonRequest
+    });
+    var duration = new Date().getTime() - start;
+    responseState.innerHTML = `· ${duration} ms`;
+    const content = await rawResponse.text();
+    responseModel.setValue(content);
+}
+
 export async function onExampleChange() {
     var exampleName = selectExample.value;
     if (exampleName == "") {

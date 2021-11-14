@@ -9,10 +9,11 @@
     <title>Json.Fliox.Hub server</title>
 
     <script type="module">
-        import { connectWebsocket, closeWebsocket, sendSyncRequest, onExampleChange, loadExampleRequestList, addTableResize } from  "./index.js";
+        import { connectWebsocket, closeWebsocket, sendSyncRequest, postSyncRequest, onExampleChange, loadExampleRequestList, addTableResize } from  "./index.js";
         window.connectWebsocket = connectWebsocket;
         window.closeWebsocket   = closeWebsocket;
         window.sendSyncRequest  = sendSyncRequest;
+        window.postSyncRequest  = postSyncRequest;
         window.onExampleChange  = onExampleChange;
         loadExampleRequestList();
         addTableResize();
@@ -69,7 +70,7 @@
         html            { max-width: 100%; overflow-x: hidden; } /* disable horizontal scrollbar */
         a               { text-decoration:  none; }
         tr              { vertical-align:   top; }
-        button          { width:            90px;}
+        button          { width:            80px;}
         .inline         { display:          inline; }
         h2              { margin:           0px;  }
         label           { display:          inline;  }
@@ -163,9 +164,9 @@
   <table width="100%">
     <tr>
       <td>
-        Request 
         <select title="example-requests" id="example" onchange="onExampleChange()"></select>
-        <button type="button" onclick="sendSyncRequest()" title="Send request to server (Ctrl+Alt+Enter)">Send <small>▶</small></button>
+        <button type="button" onclick="sendSyncRequest()" title="Send websocket request to server (Ctrl+Alt+Enter)">ws send</button>
+        <button type="button" onclick="postSyncRequest()" title="POST request to server">POST</button>
       </td>
       <td class="nobreak">
         <span>Response</span> <span id="response-state"></span>
