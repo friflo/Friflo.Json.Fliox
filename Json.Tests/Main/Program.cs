@@ -58,7 +58,8 @@ namespace Friflo.Json.Tests.Main
             hub.Authenticator       = new UserAuthenticator(userDB);    // optional - otherwise all request tasks are authorized
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
-            var typeSchema          = CreateTypeSchema(true);           // optional - used by DatabaseSchema & SchemaHandler
+            var typeSchema          = new NativeTypeSchema(typeof(PocStore)); // optional - used by DatabaseSchema & SchemaHandler
+            // var typeSchema       = CreateTypeSchema();               // alternatively create typeSchema from JSON Schema 
             database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
             var hostHub             = new HttpHostHub(hub);
             hostHub.requestHandler  = new RequestHandler(wwwPath);      // optional - used to serve static web content
@@ -75,12 +76,9 @@ namespace Friflo.Json.Tests.Main
             return hostHub;
         }
         
-        private static TypeSchema CreateTypeSchema(bool fromJsonSchema) {
-            if (fromJsonSchema) {
-                var schemas = JsonTypeSchema.ReadSchemas("./Json.Tests/assets~/Schema/JSON/PocStore");
-                return new JsonTypeSchema(schemas, "./UnitTest.Fliox.Client.json#/definitions/PocStore");
-            }
-            return new NativeTypeSchema(typeof(PocStore));
+        private static TypeSchema CreateTypeSchema() {
+            var schemas = JsonTypeSchema.ReadSchemas("./Json.Tests/assets~/Schema/JSON/PocStore");
+            return new JsonTypeSchema(schemas, "./UnitTest.Fliox.Client.json#/definitions/PocStore");
         }
     }
 }
