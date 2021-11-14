@@ -59,7 +59,7 @@ namespace Friflo.Json.Tests.Main
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
             var typeSchema          = new NativeTypeSchema(typeof(PocStore)); // optional - used by DatabaseSchema & SchemaHandler
-            // var typeSchema       = CreateTypeSchema();               // alternatively create typeSchema from JSON Schema 
+        //  var typeSchema          = CreateTypeSchema();               // alternatively create typeSchema from JSON Schema 
             database.Schema         = new DatabaseSchema(typeSchema);   // optional - enables type validation for create, upsert & patch operations
             var hostHub             = new HttpHostHub(hub);
             hostHub.requestHandler  = new RequestHandler(wwwPath);      // optional - used to serve static web content
@@ -68,7 +68,7 @@ namespace Friflo.Json.Tests.Main
         }
         
         private static HttpHostHub CreateMinimalHost(string dbPath, string wwwPath) {
-            // Run a minimal Fliox server without monitoring, Pub-Sub, user authentication / authorization, entity validation
+            // Run a minimal Fliox server without monitoring, messaging, Pub-Sub, user authentication / authorization & entity validation
             var database            = new FileDatabase(dbPath);
             var hub          	    = new FlioxHub(database);
             var hostHub             = new HttpHostHub(hub);
