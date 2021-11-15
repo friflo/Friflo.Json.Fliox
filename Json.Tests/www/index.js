@@ -6,6 +6,7 @@ var clt = null;
 var requestStart;
 var subSeq   = 0;
 var subCount = 0;
+var activeTab;
 
 const responseState     = document.getElementById("response-state");
 const subscriptionCount = document.getElementById("subscriptionCount");
@@ -191,6 +192,17 @@ export async function loadExampleRequestList() {
     }
 }
 
+// --------------------------------------- Browser ---------------------------------------
+export function openTab (tabName) {
+    activeTab = tabName;
+    var tabContent = document.getElementsByClassName("tabContent");
+    for (var i = 0; i < tabContent.length; i++) {
+        const tab = tabContent[i]
+        tab.style.display = tab.id == tabName ? "block" : "none";
+    }
+    layoutEditors();
+}
+
 export async function loadCluster() {
     const request = JSON.stringify({
         "msg": "sync",
@@ -263,6 +275,7 @@ export async function loadEntities(database, container) {
 }
 
 
+
 // --------------------------------------- monaco editor ---------------------------------------
 // [Monaco Editor Playground] https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-configure-json-defaults
 
@@ -313,17 +326,22 @@ async function createProtocolSchemas() {
 
 var requestModel;
 var responseModel;
+var entityModel;
+
 var requestEditor;
 var responseEditor;
+var entityEditor;
 
 const requestContainer  = document.getElementById("requestContainer");
 const responseContainer = document.getElementById("responseContainer")
+const entityContainer   = document.getElementById("entityContainer");
 
 export async function setupEditors()
 {
     // --- setup JSON Schema for monaco
-    var requestUri  = monaco.Uri.parse("request://jsonRequest.json"); // a made up unique URI for our model
-    var responseUri = monaco.Uri.parse("request://jsonResponse.json"); // a made up unique URI for our model
+    var requestUri  = monaco.Uri.parse("request://jsonRequest.json");   // a made up unique URI for our model
+    var responseUri = monaco.Uri.parse("request://jsonResponse.json");  // a made up unique URI for our model
+    var entityUri   = monaco.Uri.parse("request://jsonEntity.json");    // a made up unique URI for our model
     var schemas     = await createProtocolSchemas();
 
     for (let i = 0; i < schemas.length; i++) {
@@ -374,10 +392,33 @@ export async function setupEditors()
         responseEditor.setModel (responseModel);
     }
 
+    // --- create entity editor
+    {
+        entityEditor = monaco.editor.create(entityContainer, { });
+        entityEditor.updateOptions({
+            lineNumbers:    "off",
+            minimap:        { enabled: false }
+        });
+        entityModel = monaco.editor.createModel(null, "json", entityUri);
+        entityEditor.setModel (entityModel);
+    }
+
     window.onresize = () => {
-        requestEditor.layout();
-        responseEditor.layout();
+        layoutEditors();        
     };
+}
+
+function layoutEditors() {
+    console.log("layoutEditors - activeTab: " + activeTab)
+    switch (activeTab) {
+        case "playground":
+            requestEditor?.layout();
+            responseEditor?.layout();
+            break;
+        case "browser":
+            entityEditor?.layout();
+            break;
+    }
 }
 
 export function addTableResize () {
@@ -412,8 +453,7 @@ export function addTableResize () {
         thElm.style.width = width;
         var elem = thElm.children[0];
         elem.style.width    = width;
-        requestEditor.layout();
-        responseEditor.layout();
+        layoutEditors();
         // console.log("---", width)
       }
     });

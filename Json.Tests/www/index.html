@@ -9,12 +9,13 @@
     <title>Json.Fliox.Hub</title>
 
     <script type="module">
-        import { connectWebsocket, closeWebsocket, sendSyncRequest, postSyncRequest, onExampleChange, loadExampleRequestList, loadCluster, addTableResize } from  "./index.js";
+        import { connectWebsocket, closeWebsocket, sendSyncRequest, postSyncRequest, onExampleChange, loadExampleRequestList, openTab, loadCluster, addTableResize } from  "./index.js";
         window.connectWebsocket = connectWebsocket;
         window.closeWebsocket   = closeWebsocket;
         window.sendSyncRequest  = sendSyncRequest;
         window.postSyncRequest  = postSyncRequest;
         window.onExampleChange  = onExampleChange;
+        window.openTab          = openTab;
         loadExampleRequestList();
         loadCluster();
         addTableResize();
@@ -37,14 +38,6 @@
             document.getElementById("user").value = value;
             document.getElementById("token").value = value;
         };
-
-        window.openTab = function (tabName) {
-            var tabContent = document.getElementsByClassName("tabContent");
-            for (var i = 0; i < tabContent.length; i++) {
-                const tab = tabContent[i]
-                tab.style.display = tab.id == tabName ? "block" : "none";
-            }
-        }
         window.openTab("playground");
 
     </script>
@@ -244,7 +237,7 @@
           <div id="entityExplorer" style="height: 500px; border: 1px solid grey"></div>
         </td>
         <td style="display: grid;">
-          <div id="entityEditor" style="min-width:100px; height: 500px; border: 1px solid grey"></div>
+          <div id="entityContainer" style="min-width:100px; height: 500px; border: 1px solid grey"></div>
         </td>
       </tr>
     </table>
