@@ -16,7 +16,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
     
     
     public class Catalog {
-        [Fri.Key]       public  string          name;
+        [Fri.Key]
+        [Fri.Required]  public  string          name;
         
         [Fri.Required]  public  string[]        containers;
                         
