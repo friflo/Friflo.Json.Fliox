@@ -18,6 +18,8 @@ const cltElement        = document.getElementById("clt");
 const defaultUser       = document.getElementById("user");
 const defaultToken      = document.getElementById("token");
 const hubExplorer       = document.getElementById("hubExplorer");
+const entityExplorer    = document.getElementById("entityExplorer");
+
 
 
 export function connectWebsocket() {
@@ -205,14 +207,20 @@ export async function loadCluster() {
     const rawResponse = await fetch('./', init);
     const content = await rawResponse.json();
     const catalogs = content.containers[0].entities;
-    var ul = document.createElement('ul');
+    var ulCatalogs = document.createElement('ul');
     for (var catalog of catalogs) {
-        var li = document.createElement('li');
-        li.innerText = catalog.name;
-        ul.append(li);
+        var liCatalog = document.createElement('li');
+        liCatalog.innerText = catalog.name;
+        ulCatalogs.append(liCatalog);
         if (catalog.containers.length > 0) {
             var ulContainers = document.createElement('ul');
-            li.append(ulContainers);
+            ulContainers.onclick = (ev) => {
+                const database  = ev.path[2].childNodes[0].textContent;
+                const container = ev.path[0].innerText;
+                // console.log(database, container);
+                loadEntities(database, container);
+            }
+            liCatalog.append(ulContainers);
             for (const container of catalog.containers) {
                 var liContainer = document.createElement('li');
                 liContainer.innerText = container;
@@ -220,7 +228,38 @@ export async function loadCluster() {
             }
         }
     }
-    hubExplorer.appendChild(ul);
+    hubExplorer.textContent = "";
+    hubExplorer.appendChild(ulCatalogs);
+}
+
+export async function loadEntities(database, container) {
+    const request = JSON.stringify({
+        "msg": "sync",
+        "database": database == "default" ? undefined : database,
+        "tasks": [{ "task": "query", "container": container, "filter":{ "op": "true" }}],
+        "user":   defaultUser.value,
+        "token":  defaultToken.value
+    });
+    let init = {        
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: request
+    }
+    const rawResponse = await fetch('./', init);
+    const content = await rawResponse.json();
+    const ids = content.tasks[0].ids;
+    var ulIds = document.createElement('ul');
+    ulIds.onclick = (ev) => {
+        const entityId = ev.path[0].innerText;
+        console.log(entityId);
+    }
+    for (var id of ids) {
+        var liId = document.createElement('li');
+        liId.innerText = id;
+        ulIds.append(liId);
+    }
+    entityExplorer.textContent = "";
+    entityExplorer.appendChild(ulIds);
 }
 
 
