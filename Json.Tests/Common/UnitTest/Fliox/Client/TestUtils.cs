@@ -154,7 +154,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             stopwatch.Start();
             int count = 1; // 1_000_000;
             for (int n = 0; n < count; n++) {
-                new PocStore(hub); // ~ 1.2 µs (Release)
+                new PocStore(hub);                      // ~ 1.2 µs (Release)
             }
             stopwatch.Stop();
             Console.WriteLine($"client instantiation count: {count}, ms: {stopwatch.ElapsedMilliseconds}");
@@ -165,7 +165,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
             var platform    = Environment.OSVersion.Platform;
             var isWindows   = platform == PlatformID.Win32NT; 
-            var expected    = isWindows ? 2648 : 2432;
+            var expected    = isWindows ? 2648 : 2432;  // Test Windows & Linux
             Console.WriteLine($"PocStore allocation. platform: {platform}, memory: {diff}");
             AreEqual(expected, diff);
         }
@@ -209,14 +209,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             var env         = new SharedEnv();
             var hub         = new NoopDatabaseHub(env);
             var store       = new PocStore(hub);
-            await store.SyncTasks(); // force one time allocations
+            await store.SyncTasks();                    // force one time allocations
             // GC.Collect();
             
             var start = GC.GetAllocatedBytesForCurrentThread();
-            await store.SyncTasks(); // ~ 1 µs
+            await store.SyncTasks();                    // ~ 1 µs
             var diff = GC.GetAllocatedBytesForCurrentThread() - start;
-            var expected = IsDebug() ? 1656 : 1568; // Test Debug & Release
-            AreEqual(expected, diff);   // Test Release also
+            var expected = IsDebug() ? 1656 : 1568;     // Test Debug & Release
+            AreEqual(expected, diff);
         }
         
         [Test]
@@ -230,7 +230,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client
             for (int n = 0; n < 100; n++)
                 ids[n] = n;
             read.FindRange(ids);
-            await store.SyncTasks(); // force one time allocations
+            await store.SyncTasks();                // force one time allocations
             
             var start = GC.GetAllocatedBytesForCurrentThread();
             for (int n = 0; n < 1; n++) {
