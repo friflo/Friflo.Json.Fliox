@@ -99,7 +99,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         private             ClientController    clientController    = new IncrementClientController();
 
         
-        /// <summary> Construct a default database </summary>
+        /// <summary>
+        /// Construct a <see cref="FlioxHub"/> with the given default database.
+        /// database can be null in case of using a <see cref="FlioxHub"/> instance without a default database. 
+        /// </summary>
         public FlioxHub (EntityDatabase database, SharedEnv env = null, string hostName = null) {
             sharedEnv       = env  ?? SharedEnv.Default;
             this.database   = database;
@@ -227,9 +230,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         internal Dictionary<string, EntityDatabase> GetDatabases() {
-            var result = new Dictionary<string, EntityDatabase> (extensionDbs.Count + 1) {
-                { "default", database }
-            };
+            var result = new Dictionary<string, EntityDatabase> (extensionDbs.Count + 1);
+            if (database != null) {
+                result.Add("default", database);
+            }
             foreach (var extensionDB in extensionDbs) {
                 result.Add(extensionDB.Key, extensionDB.Value);
             }
