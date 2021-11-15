@@ -46,7 +46,7 @@ namespace Friflo.Json.Tests.Main
         ///   <item> Adding a database schema to validate records written to the default database and exposing it as JSON Schema </item>
         ///   <item> Adding a web playground to send and validate arbitrary requests to the Fliox server </item>
         /// </list>
-        ///  Note: Both extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
+        ///  Note: All extension databases added by <see cref="FlioxHub.AddExtensionDB"/> could be exposed by an
         /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
         /// </summary>         
         public static HttpHostHub CreateHttpHost(string dbPath, string userDbPath, string wwwPath) {
