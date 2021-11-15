@@ -55,7 +55,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
             using (var pooled  = pool.Type(() => new ClusterStore(clusterHub)).Get()) {
                 var cluster = pooled.instance;
                 var tasks = syncRequest.tasks;
-                if (FindTask(nameof(ClusterStore.catalogs),  tasks)) cluster.UpdateCatalogs  (hub, name);
+                if (FindTask(nameof(ClusterStore.catalogs),  tasks)) cluster.UpdateCatalogs  (hub);
                 
                 await cluster.TrySyncTasks().ConfigureAwait(false);
             }
@@ -74,7 +74,19 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
     
     public partial class ClusterStore
     {
-        internal void UpdateCatalogs(FlioxHub hub, string clusterName) {
+        internal void UpdateCatalogs(FlioxHub hub) {
+            var databases = hub.GetDatabases();
+            foreach (var pair in databases) {
+                var dbName        = pair.Key;
+                catalogs.TryGet(dbName, out var catalog);
+                if (catalog == null) {
+                    catalog = new Catalog {
+                        name        =  dbName,
+                        containers  = new string[0]
+                    };
+                }
+                catalogs.Upsert(catalog);
+            }
         }
     }
 }

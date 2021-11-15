@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
     public class Catalog {
         [Fri.Key]       public  string          name;
         
-        [Fri.Required]  public  List<string>    containers;
+        [Fri.Required]  public  string[]        containers;
                         
         public override         string          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }

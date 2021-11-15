@@ -225,6 +225,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         public void AddExtensionDB(string name, EntityDatabase extensionDB) {
             extensionDbs.Add(name, extensionDB);
         }
+        
+        internal Dictionary<string, EntityDatabase> GetDatabases() {
+            var result = new Dictionary<string, EntityDatabase> (extensionDbs);
+            result.Add("default", database);
+            return result;
+        }
 
         public virtual void Dispose() { }  // todo - remove
     }

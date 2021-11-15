@@ -1,4 +1,5 @@
 ﻿using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Host.Monitor;
 using Friflo.Json.Fliox.Hub.Remote;
@@ -51,6 +52,7 @@ namespace Friflo.Json.Tests.Main
         public static HttpHostHub CreateHttpHost(string dbPath, string userDbPath, string wwwPath) {
             var database            = new FileDatabase(dbPath);
             var hub                 = new FlioxHub(database);
+            hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose cluster infos as extension database
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - expose monitor stats as extension database
             hub.EventBroker         = new EventBroker(true);            // optional - eventBroker enables Instant Messaging & Pub-Sub
             

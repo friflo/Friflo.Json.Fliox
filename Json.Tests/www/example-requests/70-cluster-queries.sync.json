@@ -1,0 +1,12 @@
+{
+  "msg": "sync",
+  "database": "cluster",
+  "tasks": [
+    { "task": "query", "container": "catalogs", "filter":{ "op": "true" }}
+  ],
+  "info": [
+    "query all catalogs from cluster"
+  ],
+  "user":   "{{user}}",
+  "token":  "{{token}}"
+}
