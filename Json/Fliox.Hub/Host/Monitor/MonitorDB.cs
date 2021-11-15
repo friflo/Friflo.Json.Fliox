@@ -65,8 +65,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
             }
         }
         
-        public override string[] GetContainerNames() {
-            return stateDB.GetContainerNames();
+        public override DatabaseInfo GetDatabaseInfo() {
+            return stateDB.GetDatabaseInfo();
         }
         
         private static bool FindTask(string container, List<SyncRequestTask> tasks) {

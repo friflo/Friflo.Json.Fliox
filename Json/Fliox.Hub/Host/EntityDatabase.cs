@@ -96,25 +96,31 @@ namespace Friflo.Json.Fliox.Hub.Host
             return container;
         }
         
-        public virtual string[] GetContainerNames() {
+        public virtual DatabaseInfo GetDatabaseInfo() {
             int n = 0;
-            string[] result;
+            string[] containerList;
             if (Schema != null) {
                 var rootType = Schema.typeSchema.RootType;
                 var fields = rootType.Fields;
-                result = new string [fields.Count];
+                containerList = new string [fields.Count];
                 foreach (var field in fields) {
-                    result[n++] = field.name;
+                    containerList[n++] = field.name;
                 }
-                return result;
+            } else {
+                containerList = new string[containers.Count];
+                foreach (var container in containers) {
+                    containerList[n++] = container.Key;
+                }
             }
-            result = new string[containers.Count];
-            foreach (var container in containers) {
-                result[n++] = container.Key;
-            }
-            return result;
+            return new DatabaseInfo {
+                containers = containerList
+            };
         }
 
         public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
     }
+}
+
+public class DatabaseInfo {
+    public string[]     containers;
 }
