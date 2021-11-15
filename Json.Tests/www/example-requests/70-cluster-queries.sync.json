@@ -5,6 +5,7 @@
     { "task": "query", "container": "catalogs", "filter":{ "op": "true" }}
   ],
   "info": [
+    "provide infos about hosted databases",
     "query all catalogs from cluster"
   ],
   "user":   "{{user}}",
