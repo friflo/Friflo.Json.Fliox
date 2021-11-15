@@ -112,9 +112,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     containerList[n++] = container.Key;
                 }
             }
-            return new DatabaseInfo {
-                containers = containerList
-            };
+            return new DatabaseInfo { containers = containerList };
         }
 
         public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
