@@ -37,6 +37,15 @@
             document.getElementById("token").value = value;
         };
 
+        window.openTab = function (tabName) {
+            var tabContent = document.getElementsByClassName("tabContent");
+            for (var i = 0; i < tabContent.length; i++) {
+                const tab = tabContent[i]
+                tab.style.display = tab.id == tabName ? "block" : "none";
+            }
+        }
+        window.openTab("Playground");
+
     </script>
     <style>
         .dropbtn {
@@ -90,6 +99,9 @@
         select:required:invalid     {  color: gray;  }
         option[value=""][disabled]  {  display: none;  }
         option                      {  color: black; }
+
+        .tab            { cursor: pointer; }
+        .tabContent     { display: none; border-top: none; }
 
         .spinner {
             border:         3px solid #f3f3f3;
@@ -151,7 +163,11 @@
       </td>
     </tr>
   </table>
-  <a href="" onclick="">Playground</a> | <a href="" onclick="">Browser</a>
+  <!-- [How To Create Tabs] https://www.w3schools.com/howto/howto_js_tabs.asp -->
+  <span class="tab">
+    <span class="tab" onclick="openTab('Playground')">Playground</span> |
+    <span class="tab" onclick="openTab('Browser')"   >Browser</span>
+  </span>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <label for="form-user"><code>user</code></label>   <input type="text" id="user"  name="form-user"  style="width: 100px;" value="admin">&nbsp;
   <label for="form-token"><code>token</code></label> <input type="text" id="token" name="form-token" style="width: 100px;" value="admin">
@@ -167,6 +183,7 @@
   </div>
   <br/><br/>
 
+  <div id="Playground" class="tabContent">
   <span style="overflow:auto;white-space:nowrap">
     <select required title="example-requests" id="example" onchange="onExampleChange()"></select>
     <button type="button" onclick="postSyncRequest()" title="POST request (Ctrl+Alt+P)">POST</button>
@@ -207,6 +224,12 @@
       </td>
     </tr>
   </table>
+  </div>
+
+  <div id="Browser" class="tabContent">
+    <h3>Browser</h3>
+    <p>...</p>
+  </div>
   
 </body>
 </html>
