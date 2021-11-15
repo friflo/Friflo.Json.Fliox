@@ -38,7 +38,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
                 case TaskType.query:
                     return base.ExecuteTask(task, monitorDB.stateDB, response, messageContext);
                 default:
-                    SyncTaskResult result = SyncRequestTask.InvalidTask ($"MonitorDatabase does not support task: '{task.TaskType}'");
+                    SyncTaskResult result = SyncRequestTask.InvalidTask ($"MonitorDB does not support task: '{task.TaskType}'");
                     return Task.FromResult(result);
             }
         }
