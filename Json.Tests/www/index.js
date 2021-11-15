@@ -17,6 +17,7 @@ const ackElement        = document.getElementById("ack");
 const cltElement        = document.getElementById("clt");
 const defaultUser       = document.getElementById("user");
 const defaultToken      = document.getElementById("token");
+const hubExplorer       = document.getElementById("hubExplorer");
 
 
 export function connectWebsocket() {
@@ -187,6 +188,41 @@ export async function loadExampleRequestList() {
         selectExample.add(option);
     }
 }
+
+export async function loadCluster() {
+    const request = JSON.stringify({
+        "msg": "sync",
+        "database": "cluster",
+        "tasks": [{ "task": "query", "container": "catalogs", "filter":{ "op": "true" }}],
+        "user":   defaultUser.value,
+        "token":  defaultToken.value
+    });
+    let init = {        
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: request
+    }
+    const rawResponse = await fetch('./', init);
+    const content = await rawResponse.json();
+    const catalogs = content.containers[0].entities;
+    var ul = document.createElement('ul');
+    for (var catalog of catalogs) {
+        var li = document.createElement('li');
+        li.innerText = catalog.name;
+        ul.append(li);
+        if (catalog.containers.length > 0) {
+            var ulContainers = document.createElement('ul');
+            li.append(ulContainers);
+            for (const container of catalog.containers) {
+                var liContainer = document.createElement('li');
+                liContainer.innerText = container;
+                ulContainers.append(liContainer);
+            }
+        }
+    }
+    hubExplorer.appendChild(ul);
+}
+
 
 // --------------------------------------- monaco editor ---------------------------------------
 // [Monaco Editor Playground] https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-configure-json-defaults

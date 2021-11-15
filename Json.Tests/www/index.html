@@ -9,13 +9,14 @@
     <title>Json.Fliox.Hub</title>
 
     <script type="module">
-        import { connectWebsocket, closeWebsocket, sendSyncRequest, postSyncRequest, onExampleChange, loadExampleRequestList, addTableResize } from  "./index.js";
+        import { connectWebsocket, closeWebsocket, sendSyncRequest, postSyncRequest, onExampleChange, loadExampleRequestList, loadCluster, addTableResize } from  "./index.js";
         window.connectWebsocket = connectWebsocket;
         window.closeWebsocket   = closeWebsocket;
         window.sendSyncRequest  = sendSyncRequest;
         window.postSyncRequest  = postSyncRequest;
         window.onExampleChange  = onExampleChange;
         loadExampleRequestList();
+        loadCluster();
         addTableResize();
         window.addEventListener("keydown", function(event) {
             if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
@@ -235,7 +236,9 @@
       </tr>
       <tr>
         <td style="width: 200px;">
-          <div id="hubExplorer" style="height: 500px; border: 1px solid grey"></div>
+          <div id="hubExplorer" style="height: 500px; border: 1px solid grey">
+            <!-- todo: [How To Create a Tree View] https://www.w3schools.com/howto/howto_js_treeview.asp -->
+          </div>
         </td>
         <td style="width: 200px;">
           <div id="entityExplorer" style="height: 500px; border: 1px solid grey"></div>
