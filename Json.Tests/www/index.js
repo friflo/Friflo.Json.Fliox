@@ -17,7 +17,7 @@ const ackElement        = document.getElementById("ack");
 const cltElement        = document.getElementById("clt");
 const defaultUser       = document.getElementById("user");
 const defaultToken      = document.getElementById("token");
-const hubExplorer       = document.getElementById("hubExplorer");
+const catalogExplorer   = document.getElementById("catalogExplorer");
 const entityExplorer    = document.getElementById("entityExplorer");
 
 
@@ -228,8 +228,8 @@ export async function loadCluster() {
             }
         }
     }
-    hubExplorer.textContent = "";
-    hubExplorer.appendChild(ulCatalogs);
+    catalogExplorer.textContent = "";
+    catalogExplorer.appendChild(ulCatalogs);
 }
 
 export async function loadEntities(database, container) {
@@ -251,7 +251,7 @@ export async function loadEntities(database, container) {
     var ulIds = document.createElement('ul');
     ulIds.onclick = (ev) => {
         const entityId = ev.path[0].innerText;
-        console.log(entityId);
+        // console.log(entityId);
     }
     for (var id of ids) {
         var liId = document.createElement('li');
