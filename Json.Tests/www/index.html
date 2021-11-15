@@ -75,7 +75,7 @@
         html            { max-width: 100%; overflow-x: hidden; } /* disable horizontal scrollbar */
         a               { text-decoration:  none; }
         tr              { vertical-align:   top; }
-        button          { width:            90px; font-size: 14px;}
+        button          { width:            80px; font-size: 14px;}
         .inline         { display:          inline; }
         h2              { margin:           0px;  }
         label           { display:          inline;  }
@@ -151,37 +151,42 @@
       </td>
     </tr>
   </table>
+  <a href="" onclick="">Playground</a> | <a href="" onclick="">Browser</a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <label for="form-user"><code>user</code></label>   <input type="text" id="user"  name="form-user"  style="width: 100px;" value="admin">&nbsp;
+  <label for="form-token"><code>token</code></label> <input type="text" id="token" name="form-token" style="width: 100px;" value="admin">
+  <div class="dropdown">
+    <button class="dropbtn">▼</button>
+    <div class="dropdown-content">
+      <a onclick="selectUser(this)">admin</a>
+      <a onclick="selectUser(this)">poc-admin</a>
+      <a onclick="selectUser(this)">poc-reader</a>
+      <a onclick="selectUser(this)">monitor-admin</a>
+      <a onclick="selectUser(this)">user-admin</a>
+    </div>
+  </div>
+  <br/><br/>
+
   <span style="overflow:auto;white-space:nowrap">
-    WebSocket &nbsp;
-    <button type="button" onclick="connectWebsocket()">Connect</button> 
-    <button type="button" onclick="closeWebsocket()">Close</button> &nbsp;
-    <div id="socketStatus" class="inline">disconnected</div> &nbsp;&nbsp;&nbsp;&nbsp;
-    <label for="form-user"><code>user</code></label>   <input type="text" id="user"  name="form-user"  style="width: 100px;" value="admin">&nbsp;
-    <label for="form-token"><code>token</code></label> <input type="text" id="token" name="form-token" style="width: 100px;" value="admin">
-    <div class="dropdown">
-        <button class="dropbtn">▼</button>
-        <div class="dropdown-content">
-          <a onclick="selectUser(this)">admin</a>
-          <a onclick="selectUser(this)">poc-admin</a>
-          <a onclick="selectUser(this)">poc-reader</a>
-          <a onclick="selectUser(this)">monitor-admin</a>
-          <a onclick="selectUser(this)">user-admin</a>
-        </div>
-      </div>
-    </span>
-  <br><br>
+    <select required title="example-requests" id="example" onchange="onExampleChange()"></select>
+    <button type="button" onclick="postSyncRequest()" title="POST request (Ctrl+Alt+P)">POST</button>
+
+    &nbsp;&nbsp;&nbsp;&nbsp; <small>WebSocket</small> &nbsp;
+    <button type="button" onclick="sendSyncRequest()" title="Send websocket request (Ctrl+Alt+Enter)">send</button>
+    &nbsp;&nbsp;
+    <button type="button" onclick="connectWebsocket()">connect</button> 
+    <button type="button" onclick="closeWebsocket()">close</button> &nbsp;
+    <small id="socketStatus" class="inline">disconnected</small> &nbsp;&nbsp;&nbsp;&nbsp;
+  </span>
+  <br>
 
   <table width="100%">
     <tr>
       <td>
-        <select required title="example-requests" id="example" onchange="onExampleChange()"></select>
-        <span style="white-space:nowrap">
-          <button type="button" onclick="sendSyncRequest()" title="Send websocket request (Ctrl+Alt+Enter)">ws send</button>
-          <button type="button" onclick="postSyncRequest()" title="POST request (Ctrl+Alt+P)">POST</button>
-        </span>
+        <small style="opacity: 0.7;">Request</small>
       </td>
       <td class="nobreak">
-        <span>Response</span> <span id="response-state"></span>
+        <small style="opacity: 0.7;">Response</small> <small id="response-state"></small>
         <span style="float:right;">
           <small>events: <span id="subscriptionCount">0</span></small>&nbsp;
           <code style="font-weight: bold">"seq": <span id="subscriptionSeq">-</span></code>
@@ -194,7 +199,7 @@
         <code style="font-weight: bold">"req": <div id="req" class="inline">- </div></code>,
         <code style="font-weight: bold">"ack": <div id="ack" class="inline">- </div></code>,
         <code style="font-weight: bold">"clt": <div id="clt" class="inline">- </div></code><br>
-        <small style="opacity: 0.5;">added by client on: ws send</small>
+        <small style="opacity: 0.5;">added by client on: WebSocket send</small>
       </td>
       <td style="display: grid;">
         <div id="responseContainer" style="min-width:100px; height: 500px; border: 1px solid grey"></div>
