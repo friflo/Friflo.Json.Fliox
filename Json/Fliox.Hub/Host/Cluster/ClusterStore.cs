@@ -1,10 +1,10 @@
 // Copyright (c) Ullrich Praetz. All rights reserved.
 // See LICENSE file in the project root for full license information.
 
-using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Mapper;
 
+// ReSharper disable UnassignedReadonlyField
 namespace Friflo.Json.Fliox.Hub.Host.Cluster
 {
     public partial class ClusterStore : FlioxClient

@@ -227,8 +227,12 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         internal Dictionary<string, EntityDatabase> GetDatabases() {
-            var result = new Dictionary<string, EntityDatabase> (extensionDbs);
-            result.Add("default", database);
+            var result = new Dictionary<string, EntityDatabase> (extensionDbs.Count + 1) {
+                { "default", database }
+            };
+            foreach (var extensionDB in extensionDbs) {
+                result.Add(extensionDB.Key, extensionDB.Value);
+            }
             return result;
         }
 

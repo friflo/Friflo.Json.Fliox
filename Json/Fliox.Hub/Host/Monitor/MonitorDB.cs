@@ -65,6 +65,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Monitor
             }
         }
         
+        public override string[] GetContainerNames() {
+            return stateDB.GetContainerNames();
+        }
+        
         private static bool FindTask(string container, List<SyncRequestTask> tasks) {
             foreach (var task in tasks) {
                 if (task is ReadEntities read && read.container == container)

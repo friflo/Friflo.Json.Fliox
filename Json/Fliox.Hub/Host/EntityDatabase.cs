@@ -60,7 +60,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// An <see cref="EntityDatabase"/> implementation is able to assign as custom handler by constructor
         /// </summary>
         public   readonly   TaskHandler         handler;
-
+        
         /// <summary>
         /// constructor parameters are mandatory to force implementations having them in their constructors also or
         /// pass null by implementations.
@@ -96,6 +96,25 @@ namespace Friflo.Json.Fliox.Hub.Host
             return container;
         }
         
+        public virtual string[] GetContainerNames() {
+            int n = 0;
+            string[] result;
+            if (Schema != null) {
+                var rootType = Schema.typeSchema.RootType;
+                var fields = rootType.Fields;
+                result = new string [fields.Count];
+                foreach (var field in fields) {
+                    result[n++] = field.name;
+                }
+                return result;
+            }
+            result = new string[containers.Count];
+            foreach (var container in containers) {
+                result[n++] = container.Key;
+            }
+            return result;
+        }
+
         public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
     }
 }

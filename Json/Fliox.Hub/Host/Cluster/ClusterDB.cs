@@ -4,12 +4,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Auth;
-using Friflo.Json.Fliox.Hub.Client;
-using Friflo.Json.Fliox.Hub.Host.Stats;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.Hub.Host.Cluster
@@ -61,6 +57,10 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
             }
         }
         
+        public override string[] GetContainerNames() {
+            return stateDB.GetContainerNames();
+        }
+        
         private static bool FindTask(string container, List<SyncRequestTask> tasks) {
             foreach (var task in tasks) {
                 if (task is ReadEntities read && read.container == container)
@@ -77,14 +77,13 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
         internal void UpdateCatalogs(FlioxHub hub) {
             var databases = hub.GetDatabases();
             foreach (var pair in databases) {
-                var dbName        = pair.Key;
-                catalogs.TryGet(dbName, out var catalog);
-                if (catalog == null) {
-                    catalog = new Catalog {
-                        name        =  dbName,
-                        containers  = new string[0]
-                    };
-                }
+                var database        = pair.Value;
+                var databaseName    = pair.Key;
+                var containers      = database.GetContainerNames();
+                var catalog = new Catalog {
+                    name        = databaseName,
+                    containers  = containers
+                };
                 catalogs.Upsert(catalog);
             }
         }
