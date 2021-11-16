@@ -195,11 +195,11 @@ export async function loadExampleRequestList() {
 // --------------------------------------- Browser ---------------------------------------
 var monacoTheme = "light";
 
-async function postRequest(database, tasks) {
-    database = database == "default" ? undefined : database;
+async function postRequest(database, tasks, tag) {
+    const db = database == "default" ? undefined : database;
     const request = JSON.stringify({
         "msg":      "sync",
-        "database": database,
+        "database": db,
         "tasks":    tasks,
         "user":     defaultUser.value,
         "token":    defaultToken.value
@@ -209,7 +209,9 @@ async function postRequest(database, tasks) {
         headers: { 'Content-Type': 'application/json' },
         body:    request
     }
-    return await fetch(`./`, init);
+
+    const path = `./?${database}[${tag}]`;
+    return await fetch(path, init);
 }
 
 function getTaskError(content) {
@@ -247,7 +249,7 @@ var selectedEntity;
 
 export async function loadCluster() {
     const tasks = [{ "task": "query", "container": "catalogs", "filter":{ "op": "true" }}];
-    const rawResponse = await postRequest("cluster", tasks);
+    const rawResponse = await postRequest("cluster", tasks, "catalogs");
     const content = await rawResponse.json();
     const catalogs = content.containers[0].entities;
     var ulCatalogs = document.createElement('ul');
@@ -292,7 +294,7 @@ export async function loadCluster() {
 export async function loadEntities(database, container) {
     entityModel.setValue("");    
     const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
-    const rawResponse = await postRequest(database, tasks);
+    const rawResponse = await postRequest(database, tasks, container);
     const content = await rawResponse.json();
     entityExplorer.textContent = "";
     var error = getTaskError (content);
@@ -321,7 +323,7 @@ export async function loadEntities(database, container) {
 
 export async function loadEntity(database, container, entityId) {
     const tasks = [{ "task": "read", "container": container, "reads": [{ "ids": [entityId] }] }];
-    const rawResponse = await postRequest(database, tasks);
+    const rawResponse = await postRequest(database, tasks, entityId);
     const content = await rawResponse.json();
     const error = getTaskError (content);
     if (error) {
