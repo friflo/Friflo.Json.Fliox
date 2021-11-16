@@ -232,9 +232,10 @@ export async function loadCluster() {
         if (catalog.containers.length > 0) {
             var ulContainers = document.createElement('ul');
             ulContainers.onclick = (ev) => {
-                if (selectedCatalog) selectedCatalog.classList = undefined;
-                const database  = ev.path[3].childNodes[0].innerText;
-                selectedCatalog = ev.path[0];
+                if (selectedCatalog) selectedCatalog.classList.remove("selected");
+                var path = ev.composedPath();
+                const database  = path[3].childNodes[0].innerText;
+                selectedCatalog = path[0];
                 selectedCatalog.classList = "selected";
                 const container = selectedCatalog.innerText;
                 // console.log(database, container);
@@ -273,8 +274,9 @@ export async function loadEntities(database, container) {
     const ids = content.tasks[0].ids;
     var ulIds = document.createElement('ul');
     ulIds.onclick = (ev) => {
-        if (selectedEntity) selectedEntity.classList = undefined;
-        selectedEntity = ev.path[0];
+        if (selectedEntity) selectedEntity.classList.remove("selected");
+        var path = ev.composedPath();
+        selectedEntity = path[0];
         const entityId = selectedEntity.innerText;
         selectedEntity.classList = "selected";
         // console.log(entityId);
@@ -310,7 +312,7 @@ export async function loadEntity(database, container, entityId) {
     const content = await rawResponse.json();
     const entityValue = content.containers[0].entities[0];
     const entityJson = JSON.stringify(entityValue, null, 2);
-    console.log(entityJson);
+    // console.log(entityJson);
 
     entityModel.setValue(entityJson);
 }
