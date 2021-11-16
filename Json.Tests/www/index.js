@@ -238,6 +238,11 @@ export async function loadCluster() {
     const content = await rawResponse.json();
     const catalogs = content.containers[0].entities;
     var ulCatalogs = document.createElement('ul');
+    ulCatalogs.onclick = (ev) => {
+        var path = ev.composedPath();
+        var style = path[1].childNodes[1].style;
+        style.display = style.display == "none" ? "" : "none";
+    }
     for (var catalog of catalogs) {
         var liCatalog = document.createElement('li');
         var catalogLabel = document.createElement('div');
@@ -247,6 +252,7 @@ export async function loadCluster() {
         if (catalog.containers.length > 0) {
             var ulContainers = document.createElement('ul');
             ulContainers.onclick = (ev) => {
+                ev.stopPropagation();
                 if (selectedCatalog) selectedCatalog.classList.remove("selected");
                 var path = ev.composedPath();
                 const database  = path[3].childNodes[0].innerText;
