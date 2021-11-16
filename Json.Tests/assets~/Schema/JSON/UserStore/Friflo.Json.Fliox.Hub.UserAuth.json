@@ -6,13 +6,13 @@
             "type": "object",
             "isAbstract": true,
             "properties": {
-                "permissions": { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.UserAuth.UserPermission.json#/definitions/UserPermission" }, "type": "object" },
                 "credentials": { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.UserAuth.UserCredential.json#/definitions/UserCredential" }, "type": "object" },
+                "permissions": { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.UserAuth.UserPermission.json#/definitions/UserPermission" }, "type": "object" },
                 "roles":       { "additionalProperties": { "$ref": "./Friflo.Json.Fliox.Hub.UserAuth.Role.json#/definitions/Role" }, "type": "object" }
             },
             "required": [
-                "permissions",
                 "credentials",
+                "permissions",
                 "roles"
             ],
             "additionalProperties": false

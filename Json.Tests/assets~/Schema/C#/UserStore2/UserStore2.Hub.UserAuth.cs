@@ -7,17 +7,17 @@ using UserStore2.Hub.Auth.Rights;
 
 namespace UserStore2.Hub.UserAuth {
 
-public class UserPermission {
-    [Fri.Required]
-    string        id;
-    List<string>  roles;
-}
-
 public class UserCredential {
     [Fri.Required]
     string  id;
     string  passHash;
     string  token;
+}
+
+public class UserPermission {
+    [Fri.Required]
+    string        id;
+    List<string>  roles;
 }
 
 public class Role {

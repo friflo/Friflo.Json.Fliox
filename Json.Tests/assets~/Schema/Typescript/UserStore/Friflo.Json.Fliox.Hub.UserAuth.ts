@@ -3,8 +3,8 @@ import { Right }       from "./Friflo.Json.Fliox.Hub.Auth.Rights"
 import { Right_Union } from "./Friflo.Json.Fliox.Hub.Auth.Rights"
 
 export abstract class UserStore {
-    permissions  : { [key: string]: UserPermission };
     credentials  : { [key: string]: UserCredential };
+    permissions  : { [key: string]: UserPermission };
     roles        : { [key: string]: Role };
 }
 
@@ -13,15 +13,15 @@ export interface UserStoreService {
     Echo             (command: any) : any;
 }
 
-export class UserPermission {
-    id     : string;
-    roles? : string[] | null;
-}
-
 export class UserCredential {
     id        : string;
     passHash? : string | null;
     token?    : string | null;
+}
+
+export class UserPermission {
+    id     : string;
+    roles? : string[] | null;
 }
 
 export class Role {

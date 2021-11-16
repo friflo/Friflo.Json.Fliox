@@ -21,8 +21,8 @@ namespace Friflo.Json.Fliox.Hub.UserAuth
     /// </summary>
     public class UserStore : FlioxClient, IUserAuth
     {
-        public  readonly    EntitySet <JsonKey, UserPermission>  permissions;
         public  readonly    EntitySet <JsonKey, UserCredential>  credentials;
+        public  readonly    EntitySet <JsonKey, UserPermission>  permissions;
         public  readonly    EntitySet <string,  Role>            roles;
         
         /// <summary>"userId" used for a <see cref="UserStore"/> to perform user authentication.</summary>

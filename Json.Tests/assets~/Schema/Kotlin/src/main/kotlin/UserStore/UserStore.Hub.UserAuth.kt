@@ -6,16 +6,16 @@ import CustomSerializer.*
 import UserStore.Hub.Auth.Rights.*
 
 @Serializable
-data class UserPermission (
-              val id    : String,
-              val roles : List<String>? = null,
-)
-
-@Serializable
 data class UserCredential (
               val id       : String,
               val passHash : String? = null,
               val token    : String? = null,
+)
+
+@Serializable
+data class UserPermission (
+              val id    : String,
+              val roles : List<String>? = null,
 )
 
 @Serializable
