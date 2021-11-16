@@ -203,6 +203,9 @@ export function openTab (tabName) {
     layoutEditors();
 }
 
+var selectedCatalog;
+var selectedEntity;
+
 export async function loadCluster() {
     const request = JSON.stringify({
         "msg": "sync",
@@ -229,8 +232,11 @@ export async function loadCluster() {
         if (catalog.containers.length > 0) {
             var ulContainers = document.createElement('ul');
             ulContainers.onclick = (ev) => {
+                if (selectedCatalog) selectedCatalog.classList = undefined;
                 const database  = ev.path[3].childNodes[0].innerText;
-                const container = ev.path[0].innerText;
+                selectedCatalog = ev.path[0];
+                selectedCatalog.classList = "selected";
+                const container = selectedCatalog.innerText;
                 // console.log(database, container);
                 loadEntities(database, container);
             }
@@ -266,7 +272,10 @@ export async function loadEntities(database, container) {
     const ids = content.tasks[0].ids;
     var ulIds = document.createElement('ul');
     ulIds.onclick = (ev) => {
-        const entityId = ev.path[0].innerText;
+        if (selectedEntity) selectedEntity.classList = undefined;
+        selectedEntity = ev.path[0];
+        const entityId = selectedEntity.innerText;
+        selectedEntity.classList = "selected";
         // console.log(entityId);
         loadEntity(database, container, entityId);
     }
