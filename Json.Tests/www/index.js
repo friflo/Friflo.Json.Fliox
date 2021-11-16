@@ -204,10 +204,16 @@ export function setTheme () {
 
 export function openTab (tabName) {
     activeTab = tabName;
-    var tabContent = document.getElementsByClassName("tabContent");
-    for (var i = 0; i < tabContent.length; i++) {
-        const tab = tabContent[i]
-        tab.style.display = tab.id == tabName ? "block" : "none";
+    var tabContents = document.getElementsByClassName("tabContent");
+    var tabs = document.getElementsByClassName("tab");
+    for (var i = 0; i < tabContents.length; i++) {
+        const tabContent = tabContents[i]
+        tabContent.style.display = tabContent.id == tabName ? "block" : "none";
+        if (tabContent.id == tabName) {
+            tabs[i].classList.add("selected");
+        } else {
+            tabs[i].classList.remove("selected");
+        }
     }
     layoutEditors();
 }

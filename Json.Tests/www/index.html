@@ -44,9 +44,17 @@
     <style>
         :root {
             --selected-color: #0000ff18;
+            --tab-color:    #f1f1f1;
+            --tab-hover:    #e0e0e0;
+            --tab-selected: #ffffff;
+            --tab-border:   #ccc;
         }
         [data-theme="dark"] {
             --selected-color: #0000ff80;
+            --tab-color:    #404040;
+            --tab-hover:    #606060;
+            --tab-selected: #000000;
+            --tab-border:   #444;
         }
         .dropbtn {
             background-color: lightgrey;
@@ -100,7 +108,9 @@
         option[value=""][disabled]  {  display: none;  }
         option                      {  color: black; }
 
-        .tab            { cursor: pointer; }
+        .tab            { cursor: pointer; background-color: var(--tab-color); border: 1px solid var(--tab-border); margin: 0px; padding: 5px 10px; }
+        .tab:hover      { background-color: var(--tab-hover);     border-bottom: 1px solid #ffffff00; }
+        .tab.selected   { background-color: var(--tab-selected);  border-bottom: 1px solid #ffffff00; }
         .tabContent     { display: none; border-top: none; }
 
         .catalogs > ul              { padding-left: 0px; }
@@ -177,24 +187,25 @@
     </tr>
   </table>
   <!-- [How To Create Tabs] https://www.w3schools.com/howto/howto_js_tabs.asp -->
-  <span class="tab">
-    <span class="tab" onclick="openTab('playground')">Playground</span> |
+  <div style="margin-bottom: 10px; display:flex;">
+    <span class="tab" onclick="openTab('playground')">Playground</span>
     <span class="tab" onclick="openTab('explorer')"   >Explorer</span>
-  </span>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <label for="form-user"><code>user</code></label>   <input type="text" id="user"  name="form-user"  style="width: 100px;" value="admin">&nbsp;
-  <label for="form-token"><code>token</code></label> <input type="text" id="token" name="form-token" style="width: 100px;" value="admin">
-  <div class="dropdown">
-    <button class="dropbtn">▼</button>
-    <div class="dropdown-content">
-      <a onclick="selectUser(this)">admin</a>
-      <a onclick="selectUser(this)">poc-admin</a>
-      <a onclick="selectUser(this)">poc-reader</a>
-      <a onclick="selectUser(this)">monitor-admin</a>
-      <a onclick="selectUser(this)">user-admin</a>
-    </div>
+    <span style="border-bottom: 1px solid var(--tab-border); width:100%;">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <label for="form-user"><code>user</code></label>   <input type="text" id="user"  name="form-user"  style="width: 100px;" value="admin">&nbsp;
+      <label for="form-token"><code>token</code></label> <input type="text" id="token" name="form-token" style="width: 100px;" value="admin">    
+      <div class="dropdown">
+        <button class="dropbtn">▼</button>
+        <div class="dropdown-content">
+          <a onclick="selectUser(this)">admin</a>
+          <a onclick="selectUser(this)">poc-admin</a>
+          <a onclick="selectUser(this)">poc-reader</a>
+          <a onclick="selectUser(this)">monitor-admin</a>
+          <a onclick="selectUser(this)">user-admin</a>
+        </div>
+      </div>
+    </span>
   </div>
-  <br/><br/>
 
   <div id="playground" class="tabContent">
   <span style="overflow:auto;white-space:nowrap">
