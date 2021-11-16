@@ -212,6 +212,13 @@ async function postRequest(database, tasks) {
     return await fetch(`./`, init);
 }
 
+function getTaskError(content) {
+    var task = content.tasks[0];
+    if (task.task == "error")
+        return "error: " + task.message;
+    return undefined;
+}
+
 export function setTheme () {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.documentElement.setAttribute('data-theme', 'dark');
@@ -287,6 +294,12 @@ export async function loadEntities(database, container) {
     const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
     const rawResponse = await postRequest(database, tasks);
     const content = await rawResponse.json();
+    entityExplorer.textContent = "";
+    var error = getTaskError (content);
+    if (error) {
+        entityExplorer.innerHTML = `<div style="color:red">${error}</div>`
+        return;
+    }
     const ids = content.tasks[0].ids;
     var ulIds = document.createElement('ul');
     ulIds.onclick = (ev) => {
@@ -303,7 +316,6 @@ export async function loadEntities(database, container) {
         liId.innerText = id;
         ulIds.append(liId);
     }
-    entityExplorer.textContent = "";
     entityExplorer.appendChild(ulIds);
 }
 
@@ -311,6 +323,11 @@ export async function loadEntity(database, container, entityId) {
     const tasks = [{ "task": "read", "container": container, "reads": [{ "ids": [entityId] }] }];
     const rawResponse = await postRequest(database, tasks);
     const content = await rawResponse.json();
+    const error = getTaskError (content);
+    if (error) {
+        entityModel.setValue(error);
+        return;
+    }
     const entityValue = content.containers[0].entities[0];
     const entityJson = JSON.stringify(entityValue, null, 2);
     // console.log(entityJson);
