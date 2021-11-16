@@ -222,12 +222,14 @@ export async function loadCluster() {
     var ulCatalogs = document.createElement('ul');
     for (var catalog of catalogs) {
         var liCatalog = document.createElement('li');
-        liCatalog.innerText = catalog.name;
+        var catalogLabel = document.createElement('div');
+        catalogLabel.innerText = catalog.name;
+        liCatalog.append(catalogLabel)
         ulCatalogs.append(liCatalog);
         if (catalog.containers.length > 0) {
             var ulContainers = document.createElement('ul');
             ulContainers.onclick = (ev) => {
-                const database  = ev.path[2].childNodes[0].textContent;
+                const database  = ev.path[3].childNodes[0].innerText;
                 const container = ev.path[0].innerText;
                 // console.log(database, container);
                 loadEntities(database, container);
@@ -235,7 +237,9 @@ export async function loadCluster() {
             liCatalog.append(ulContainers);
             for (const container of catalog.containers) {
                 var liContainer = document.createElement('li');
-                liContainer.innerText = container;
+                var containerLabel = document.createElement('div');
+                containerLabel.innerText = container;
+                liContainer.append(containerLabel)
                 ulContainers.append(liContainer);
             }
         }

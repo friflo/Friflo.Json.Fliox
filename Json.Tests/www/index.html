@@ -97,6 +97,17 @@
         .tab            { cursor: pointer; }
         .tabContent     { display: none; border-top: none; }
 
+        .catalogs > ul          { padding-left: 0px; }
+        .catalogs > ul > li > ul{ margin-top: 0px; margin-left: 0px; }
+        .catalogs li            { list-style:none; }
+        .catalogs li div        { cursor: pointer; }
+        .catalogs li div:hover  { background-color: #0000ff20;}
+
+        .entities > ul          { padding-left: 0px; }
+        .entities li            { cursor: pointer; list-style:none; }
+        .entities li:hover      { background-color: #0000ff20;}
+
+
         .spinner {
             border:         3px solid #f3f3f3;
             border-top:     3px solid #3498db;
@@ -229,12 +240,12 @@
       </tr>
       <tr>
         <td style="width: 200px;">
-          <div id="catalogExplorer" style="height: 500px; border: 1px solid grey">
+          <div class="catalogs" id="catalogExplorer" style="height: 500px; border: 1px solid grey">
             <!-- todo: [How To Create a Tree View] https://www.w3schools.com/howto/howto_js_treeview.asp -->
           </div>
         </td>
         <td style="width: 200px;">
-          <div id="entityExplorer" style="height: 500px; border: 1px solid grey"></div>
+          <div class="entities" id="entityExplorer" style="height: 500px; border: 1px solid grey"></div>
         </td>
         <td style="display: grid;">
           <div id="entityContainer" style="min-width:100px; height: 500px; border: 1px solid grey"></div>
