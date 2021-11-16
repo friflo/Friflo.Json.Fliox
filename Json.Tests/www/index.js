@@ -128,17 +128,9 @@ export async function postSyncRequest() {
 
     responseState.innerHTML = '<span class="spinner"></span>';
     let start = new Date().getTime();
-    let init = {        
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: jsonRequest
-    }
     var duration;
     try {
-        const rawResponse = await fetch('./', init);
+        const rawResponse = await postRequest('./', jsonRequest);
         const content = await rawResponse.text();
         duration = new Date().getTime() - start;
         responseModel.setValue(content);
@@ -195,21 +187,12 @@ export async function loadExampleRequestList() {
 // --------------------------------------- Browser ---------------------------------------
 var monacoTheme = "light";
 
-async function postRequest(database, tasks, tag) {
-    const db = database == "default" ? undefined : database;
-    const request = JSON.stringify({
-        "msg":      "sync",
-        "database": db,
-        "tasks":    tasks,
-        "user":     defaultUser.value,
-        "token":    defaultToken.value
-    });
+async function postRequest(path, request) {
     let init = {        
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    request
     }
-    const path = `./?${database}[${tag}]`;
     try {
         return await fetch(path, init);
     } catch (error) {
@@ -218,6 +201,19 @@ async function postRequest(database, tasks, tag) {
             "message": error.message
         };
     }
+}
+
+async function postRequestTasks(database, tasks, tag) {
+    const db = database == "default" ? undefined : database;
+    const request = JSON.stringify({
+        "msg":      "sync",
+        "database": db,
+        "tasks":    tasks,
+        "user":     defaultUser.value,
+        "token":    defaultToken.value
+    });
+    const path = `./?${database}[${tag}]`;
+    return await postRequest(path, request);
 }
 
 function getTaskError(content, taskIndex) {
@@ -262,7 +258,7 @@ var selectedEntity;
 
 export async function loadCluster() {
     const tasks = [{ "task": "query", "container": "catalogs", "filter":{ "op": "true" }}];
-    const rawResponse = await postRequest("cluster", tasks, "catalogs");
+    const rawResponse = await postRequestTasks("cluster", tasks, "catalogs");
     const content = await rawResponse.json();
     var error = getTaskError (content, 0);
     if (error) {
@@ -312,7 +308,7 @@ export async function loadCluster() {
 export async function loadEntities(database, container) {
     entityModel.setValue("");    
     const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
-    const rawResponse = await postRequest(database, tasks, container);
+    const rawResponse = await postRequestTasks(database, tasks, container);
     const content = await rawResponse.json();
     entityExplorer.textContent = "";
     var error = getTaskError (content, 0);
@@ -341,7 +337,7 @@ export async function loadEntities(database, container) {
 
 export async function loadEntity(database, container, entityId) {
     const tasks = [{ "task": "read", "container": container, "reads": [{ "ids": [entityId] }] }];
-    const rawResponse = await postRequest(database, tasks, entityId);
+    const rawResponse = await postRequestTasks(database, tasks, entityId);
     const content = await rawResponse.json();
     const error = getTaskError (content, 0);
     if (error) {
