@@ -209,13 +209,22 @@ async function postRequest(database, tasks, tag) {
         headers: { 'Content-Type': 'application/json' },
         body:    request
     }
-
     const path = `./?${database}[${tag}]`;
-    return await fetch(path, init);
+    try {
+        return await fetch(path, init);
+    } catch (error) {
+        return {
+            "msg":    "error",
+            "message": error.message
+        };
+    }
 }
 
-function getTaskError(content) {
-    var task = content.tasks[0];
+function getTaskError(content, taskIndex) {
+    if (content.msg == "error") {
+        return content.message;
+    }
+    var task = content.tasks[taskIndex];
     if (task.task == "error")
         return "error: " + task.message;
     return undefined;
@@ -251,6 +260,11 @@ export async function loadCluster() {
     const tasks = [{ "task": "query", "container": "catalogs", "filter":{ "op": "true" }}];
     const rawResponse = await postRequest("cluster", tasks, "catalogs");
     const content = await rawResponse.json();
+    var error = getTaskError (content, 0);
+    if (error) {
+        catalogExplorer.innerHTML = `<div style="color:red">${error}</div>`
+        return 
+    }
     const catalogs = content.containers[0].entities;
     var ulCatalogs = document.createElement('ul');
     ulCatalogs.onclick = (ev) => {
@@ -297,7 +311,7 @@ export async function loadEntities(database, container) {
     const rawResponse = await postRequest(database, tasks, container);
     const content = await rawResponse.json();
     entityExplorer.textContent = "";
-    var error = getTaskError (content);
+    var error = getTaskError (content, 0);
     if (error) {
         entityExplorer.innerHTML = `<div style="color:red">${error}</div>`
         return;
@@ -325,7 +339,7 @@ export async function loadEntity(database, container, entityId) {
     const tasks = [{ "task": "read", "container": container, "reads": [{ "ids": [entityId] }] }];
     const rawResponse = await postRequest(database, tasks, entityId);
     const content = await rawResponse.json();
-    const error = getTaskError (content);
+    const error = getTaskError (content, 0);
     if (error) {
         entityModel.setValue(error);
         return;
