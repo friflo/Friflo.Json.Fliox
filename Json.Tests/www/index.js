@@ -219,7 +219,7 @@ export async function loadCluster() {
         headers: { 'Content-Type': 'application/json' },
         body: request
     }
-    const rawResponse = await fetch('./', init);
+    const rawResponse = await fetch(`./?catalogs`, init);
     const content = await rawResponse.json();
     const catalogs = content.containers[0].entities;
     var ulCatalogs = document.createElement('ul');
@@ -267,7 +267,7 @@ export async function loadEntities(database, container) {
         headers: { 'Content-Type': 'application/json' },
         body: request
     }
-    const rawResponse = await fetch('./', init);
+    const rawResponse = await fetch(`./?${container}`, init);
     const content = await rawResponse.json();
     const ids = content.tasks[0].ids;
     var ulIds = document.createElement('ul');
@@ -305,7 +305,7 @@ export async function loadEntity(database, container, entityId) {
         headers: { 'Content-Type': 'application/json' },
         body: request
     }
-    const rawResponse = await fetch('./', init);
+    const rawResponse = await fetch(`./?${container},${entityId}`, init);
     const content = await rawResponse.json();
     const entityValue = content.containers[0].entities[0];
     const entityJson = JSON.stringify(entityValue, null, 2);
