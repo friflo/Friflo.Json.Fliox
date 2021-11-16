@@ -34,14 +34,22 @@
 
         window.selectUser = function (element) {
             let value = element.innerText;
-            console.log("xxx", value);
             document.getElementById("user").value = value;
             document.getElementById("token").value = value;
         };
         window.openTab("playground");
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
 
     </script>
     <style>
+        :root {
+            --selected-color: #0000ff18;
+        }
+        [data-theme="dark"] {
+            --selected-color: #0000ff80;
+        }
         .dropbtn {
             background-color: lightgrey;
             color: white;
@@ -101,12 +109,12 @@
         .catalogs > ul > li > ul    { margin-top: 0px; margin-left: 0px; }
         .catalogs li                { list-style:none; }
         .catalogs li div            { cursor: pointer; }
-        .catalogs li div.selected   { background-color: #0000ff20; }
+        .catalogs li div.selected   { background-color: var(--selected-color); }
         .catalogs li div:hover      { text-decoration:underline; }
 
         .entities > ul              { padding-left: 0px; }
         .entities li                { cursor: pointer; list-style:none; }
-        .entities li.selected       { background-color: #0000ff20; }
+        .entities li.selected       { background-color: var(--selected-color); }
         .entities li:hover          { text-decoration:underline; }
 
 
