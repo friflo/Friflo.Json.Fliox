@@ -393,6 +393,7 @@ export async function saveEntity() {
         return;
     }
     writeResult.innerHTML = "write successful";
+    entityId.innerHTML = "todo";
 }
 
 export async function deleteEntity() {
@@ -407,6 +408,7 @@ export async function deleteEntity() {
         writeResult.innerHTML = "delete failed: " + error;
     } else {
         writeResult.innerHTML = "delete successful";
+        entityId.innerHTML = "";
         entityModel.setValue("");
     }
 }
