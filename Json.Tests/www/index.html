@@ -9,7 +9,8 @@
     <title>Json.Fliox.Hub</title>
 
     <script type="module">
-        import { connectWebsocket, closeWebsocket, sendSyncRequest, postSyncRequest, onExampleChange, loadExampleRequestList, setTheme, openTab, loadCluster, addTableResize } from  "./index.js";
+        import { connectWebsocket, closeWebsocket, sendSyncRequest, postSyncRequest, onExampleChange, loadExampleRequestList,
+            setTheme, openTab, loadCluster, addTableResize, saveEntity } from  "./index.js";
         setTheme();
         window.connectWebsocket = connectWebsocket;
         window.closeWebsocket   = closeWebsocket;
@@ -17,6 +18,7 @@
         window.postSyncRequest  = postSyncRequest;
         window.onExampleChange  = onExampleChange;
         window.openTab          = openTab;
+        window.saveEntity       = saveEntity;
         loadExampleRequestList();
         loadCluster();
         addTableResize();
@@ -255,7 +257,8 @@
       <tr>
         <td><small style="opacity: 0.7;">Catalogs</small></td>
         <td><small style="opacity: 0.7;">Entities</small></td>
-        <td><small style="opacity: 0.7;">Entity</small></td>
+        <td><small style="opacity: 0.7;">Entity</small>
+            <button type="button" onclick="saveEntity()" title="Save">Save</button></td>
       </tr>
       <tr>
         <td style="width: 200px;">
@@ -268,6 +271,7 @@
         </td>
         <td style="display: grid;">
           <div id="entityContainer" style="min-width:100px; height: 500px; border: 1px solid grey"></div>
+          <small id="writeResult"></small>
         </td>
       </tr>
     </table>

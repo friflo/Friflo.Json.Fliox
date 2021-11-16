@@ -20,6 +20,7 @@ const defaultUser       = document.getElementById("user");
 const defaultToken      = document.getElementById("token");
 const catalogExplorer   = document.getElementById("catalogExplorer");
 const entityExplorer    = document.getElementById("entityExplorer");
+const writeResult       = document.getElementById("writeResult");
 
 
 
@@ -335,7 +336,14 @@ export async function loadEntities(database, container) {
     entityExplorer.appendChild(ulIds);
 }
 
+var entityIdentity = {}
+
 export async function loadEntity(database, container, entityId) {
+    entityIdentity = {
+        database:   database,
+        container:  container,
+        entityId:   entityId
+    }
     const tasks = [{ "task": "read", "container": container, "reads": [{ "ids": [entityId] }] }];
     const rawResponse = await postRequestTasks(database, tasks, entityId);
     const content = await rawResponse.json();
@@ -347,11 +355,42 @@ export async function loadEntity(database, container, entityId) {
     const entityValue = content.containers[0].entities[0];
     const entityJson = JSON.stringify(entityValue, null, 2);
     // console.log(entityJson);
-
     entityModel.setValue(entityJson);
 }
 
+export async function saveEntity() {
+    var container = entityIdentity.container;
+    var database = entityIdentity.database == "default" ? undefined : entityIdentity.database;
+    var jsonValue = entityModel.getValue();
+    const request = {
+        "msg": "sync",
+        "database": database,
+        "tasks": [
+          {
+            "task":      "upsert",
+            "container": container,
+            "entities":  ["{value}"]
+          }
+        ],
+        "user":     defaultUser.value,
+        "token":    defaultToken.value
+    };
+    var body = JSON.stringify(request).replace('"{value}"', jsonValue);
 
+    const rawResponse = await postRequest("./", body);
+    const content = await rawResponse.json();
+    var error = getTaskError (content, 0);
+    if (error) {
+        writeResult.innerHTML = "write failed: " + error;
+        return;
+    }
+    if (content.upsertErrors) {
+        error = content.upsertErrors[container].errors[entityIdentity.entityId].message;
+        writeResult.innerHTML = "write failed: " + error;
+        return;
+    }
+    writeResult.innerHTML = "write successful";
+}
 
 // --------------------------------------- monaco editor ---------------------------------------
 // [Monaco Editor Playground] https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-configure-json-defaults
