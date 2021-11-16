@@ -9,7 +9,8 @@
     <title>Json.Fliox.Hub</title>
 
     <script type="module">
-        import { connectWebsocket, closeWebsocket, sendSyncRequest, postSyncRequest, onExampleChange, loadExampleRequestList, openTab, loadCluster, addTableResize } from  "./index.js";
+        import { connectWebsocket, closeWebsocket, sendSyncRequest, postSyncRequest, onExampleChange, loadExampleRequestList, setTheme, openTab, loadCluster, addTableResize } from  "./index.js";
+        setTheme();
         window.connectWebsocket = connectWebsocket;
         window.closeWebsocket   = closeWebsocket;
         window.sendSyncRequest  = sendSyncRequest;
@@ -38,9 +39,6 @@
             document.getElementById("token").value = value;
         };
         window.openTab("playground");
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        }
 
     </script>
     <style>

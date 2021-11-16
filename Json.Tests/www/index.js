@@ -193,6 +193,15 @@ export async function loadExampleRequestList() {
 }
 
 // --------------------------------------- Browser ---------------------------------------
+var monacoTheme = "light";
+
+export function setTheme () {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        monacoTheme = "vs-dark";
+    }
+}
+
 export function openTab (tabName) {
     activeTab = tabName;
     var tabContent = document.getElementsByClassName("tabContent");
@@ -404,7 +413,8 @@ export async function setupEditors()
         requestEditor = monaco.editor.create(requestContainer, { /* model: model */ });
         requestEditor.updateOptions({
             lineNumbers:    "off",
-            minimap:        { enabled: false }
+            minimap:        { enabled: false },
+            theme:          monacoTheme,
         });
         requestModel = monaco.editor.createModel(null, "json", requestUri);
         requestEditor.setModel (requestModel);
