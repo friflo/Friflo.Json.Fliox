@@ -226,8 +226,12 @@ function getTaskError(content, taskIndex) {
     }
     var task = content.tasks[taskIndex];
     if (task.task == "error")
-        return "error: " + task.message;
+        return "task error:\n" + task.message;
     return undefined;
+}
+
+function errorAsHtml(error) {
+    return `<code style="white-space: pre-line; color:red">${error}</code>`;
 }
 
 export function setTheme () {
@@ -262,7 +266,7 @@ export async function loadCluster() {
     const content = await rawResponse.json();
     var error = getTaskError (content, 0);
     if (error) {
-        catalogExplorer.innerHTML = `<div style="color:red">${error}</div>`
+        catalogExplorer.innerHTML = errorAsHtml(error);
         return 
     }
     const catalogs = content.containers[0].entities;
@@ -313,7 +317,7 @@ export async function loadEntities(database, container) {
     entityExplorer.textContent = "";
     var error = getTaskError (content, 0);
     if (error) {
-        entityExplorer.innerHTML = `<div style="color:red">${error}</div>`
+        entityExplorer.innerHTML = errorAsHtml(error);
         return;
     }
     const ids = content.tasks[0].ids;
