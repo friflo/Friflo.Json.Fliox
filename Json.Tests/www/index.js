@@ -255,6 +255,7 @@ export async function loadCluster() {
 }
 
 export async function loadEntities(database, container) {
+    entityModel.setValue("");
     const request = JSON.stringify({
         "msg": "sync",
         "database": database == "default" ? undefined : database,
@@ -455,7 +456,7 @@ function layoutEditors() {
             requestEditor?.layout();
             responseEditor?.layout();
             break;
-        case "browser":
+        case "explorer":
             entityEditor?.layout();
             break;
     }
