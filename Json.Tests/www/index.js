@@ -268,6 +268,7 @@ export async function loadEntities(database, container) {
     ulIds.onclick = (ev) => {
         const entityId = ev.path[0].innerText;
         // console.log(entityId);
+        loadEntity(database, container, entityId);
     }
     for (var id of ids) {
         var liId = document.createElement('li');
@@ -276,6 +277,32 @@ export async function loadEntities(database, container) {
     }
     entityExplorer.textContent = "";
     entityExplorer.appendChild(ulIds);
+}
+
+export async function loadEntity(database, container, entityId) {
+    const request = JSON.stringify({
+        "msg": "sync",
+        "database": database == "default" ? undefined : database,
+        "tasks": [{
+            "task":       "read",
+            "container":  container,
+            "reads": [{ "ids": [entityId] }]
+          }],
+        "user":   defaultUser.value,
+        "token":  defaultToken.value
+    });
+    let init = {        
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: request
+    }
+    const rawResponse = await fetch('./', init);
+    const content = await rawResponse.json();
+    const entityValue = content.containers[0].entities[0];
+    const entityJson = JSON.stringify(entityValue, null, 2);
+    console.log(entityJson);
+
+    entityModel.setValue(entityJson);
 }
 
 
