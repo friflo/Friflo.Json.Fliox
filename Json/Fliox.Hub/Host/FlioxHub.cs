@@ -139,18 +139,17 @@ namespace Friflo.Json.Fliox.Hub.Host
             
             await authenticator.Authenticate(syncRequest, messageContext).ConfigureAwait(false);
             messageContext.clientIdValidation = authenticator.ValidateClientId(clientController, messageContext);
-
+            
+            var requestTasks = syncRequest.tasks;
+            if (requestTasks == null) {
+                return new ExecuteSyncResult ("missing field: tasks (array)");
+            }
             var dbName = syncRequest.database;
             EntityDatabase db = database;
             if (dbName != null) {
                 if (!extensionDbs.TryGetValue(dbName, out db))
                     return new ExecuteSyncResult($"database not found: '{syncRequest.database}'");
                 await db.ExecuteSyncPrepare(syncRequest, messageContext).ConfigureAwait(false);
-            }
-                    
-            var requestTasks = syncRequest.tasks;
-            if (requestTasks == null) {
-                return new ExecuteSyncResult ("missing field: tasks (array)");
             }
             var tasks       = new List<SyncTaskResult>(requestTasks.Count);
             var resultMap   = new Dictionary<string, ContainerEntities>();
