@@ -21,6 +21,7 @@ const defaultToken      = document.getElementById("token");
 const catalogExplorer   = document.getElementById("catalogExplorer");
 const entityExplorer    = document.getElementById("entityExplorer");
 const writeResult       = document.getElementById("writeResult");
+const entityId          = document.getElementById("entityId");
 
 
 
@@ -312,6 +313,7 @@ export async function loadEntities(database, container) {
     const rawResponse = await postRequestTasks(database, tasks, container);
     const content = await rawResponse.json();
     entityExplorer.textContent = "";
+    entityId.innerHTML = "";
     var error = getTaskError (content, 0);
     if (error) {
         entityExplorer.innerHTML = errorAsHtml(error);
@@ -338,14 +340,15 @@ export async function loadEntities(database, container) {
 
 var entityIdentity = {}
 
-export async function loadEntity(database, container, entityId) {
+export async function loadEntity(database, container, id) {
     entityIdentity = {
         database:   database,
         container:  container,
-        entityId:   entityId
-    }
-    const tasks = [{ "task": "read", "container": container, "reads": [{ "ids": [entityId] }] }];
-    const rawResponse = await postRequestTasks(database, tasks, entityId);
+        entityId:   id
+    };
+    entityId.innerHTML = id;
+    const tasks = [{ "task": "read", "container": container, "reads": [{ "ids": [id] }] }];
+    const rawResponse = await postRequestTasks(database, tasks, id);
     const content = await rawResponse.json();
     const error = getTaskError (content, 0);
     if (error) {
@@ -390,6 +393,22 @@ export async function saveEntity() {
         return;
     }
     writeResult.innerHTML = "write successful";
+}
+
+export async function deleteEntity() {
+    const id = entityIdentity.entityId;
+    var container = entityIdentity.container;
+    var database = entityIdentity.database == "default" ? undefined : entityIdentity.database;
+    const tasks =  [{ "task": "delete", "container": container, "ids": [id]}];
+    const rawResponse = await postRequestTasks(database, tasks, "delete");
+    const content = await rawResponse.json();
+    var error = getTaskError (content, 0);
+    if (error) {
+        writeResult.innerHTML = "delete failed: " + error;
+    } else {
+        writeResult.innerHTML = "delete successful";
+        entityModel.setValue("");
+    }
 }
 
 // --------------------------------------- monaco editor ---------------------------------------

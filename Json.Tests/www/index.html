@@ -10,7 +10,7 @@
 
     <script type="module">
         import { connectWebsocket, closeWebsocket, sendSyncRequest, postSyncRequest, onExampleChange, loadExampleRequestList,
-            setTheme, openTab, loadCluster, addTableResize, saveEntity } from  "./index.js";
+            setTheme, openTab, loadCluster, addTableResize, saveEntity, deleteEntity } from  "./index.js";
         setTheme();
         window.connectWebsocket = connectWebsocket;
         window.closeWebsocket   = closeWebsocket;
@@ -19,6 +19,7 @@
         window.onExampleChange  = onExampleChange;
         window.openTab          = openTab;
         window.saveEntity       = saveEntity;
+        window.deleteEntity     = deleteEntity;
         loadExampleRequestList();
         loadCluster();
         addTableResize();
@@ -257,8 +258,13 @@
       <tr>
         <td><small style="opacity: 0.7;">Catalogs</small></td>
         <td><small style="opacity: 0.7;">Entities</small></td>
-        <td><small style="opacity: 0.7;">Entity</small>
-            <button type="button" onclick="saveEntity()" title="Save">Save</button></td>
+        <td>
+          <small style="opacity: 0.7;">Entity</small>
+          <small id="entityId"></small>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <button type="button" onclick="deleteEntity()" title="Save">Delete</button>
+          <button type="button" onclick="saveEntity()" title="Save">Save</button>
+        </td>
       </tr>
       <tr>
         <td style="width: 200px;">
