@@ -195,6 +195,23 @@ export async function loadExampleRequestList() {
 // --------------------------------------- Browser ---------------------------------------
 var monacoTheme = "light";
 
+async function postRequest(database, tasks) {
+    database = database == "default" ? undefined : database;
+    const request = JSON.stringify({
+        "msg":      "sync",
+        "database": database,
+        "tasks":    tasks,
+        "user":     defaultUser.value,
+        "token":    defaultToken.value
+    });
+    let init = {        
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    request
+    }
+    return await fetch(`./`, init);
+}
+
 export function setTheme () {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.documentElement.setAttribute('data-theme', 'dark');
@@ -222,19 +239,8 @@ var selectedCatalog;
 var selectedEntity;
 
 export async function loadCluster() {
-    const request = JSON.stringify({
-        "msg": "sync",
-        "database": "cluster",
-        "tasks": [{ "task": "query", "container": "catalogs", "filter":{ "op": "true" }}],
-        "user":   defaultUser.value,
-        "token":  defaultToken.value
-    });
-    let init = {        
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: request
-    }
-    const rawResponse = await fetch(`./?catalogs`, init);
+    const tasks = [{ "task": "query", "container": "catalogs", "filter":{ "op": "true" }}];
+    const rawResponse = await postRequest("cluster", tasks);
     const content = await rawResponse.json();
     const catalogs = content.containers[0].entities;
     var ulCatalogs = document.createElement('ul');
@@ -277,20 +283,9 @@ export async function loadCluster() {
 }
 
 export async function loadEntities(database, container) {
-    entityModel.setValue("");
-    const request = JSON.stringify({
-        "msg": "sync",
-        "database": database == "default" ? undefined : database,
-        "tasks": [{ "task": "query", "container": container, "filter":{ "op": "true" }}],
-        "user":   defaultUser.value,
-        "token":  defaultToken.value
-    });
-    let init = {        
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: request
-    }
-    const rawResponse = await fetch(`./?${container}`, init);
+    entityModel.setValue("");    
+    const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
+    const rawResponse = await postRequest(database, tasks);
     const content = await rawResponse.json();
     const ids = content.tasks[0].ids;
     var ulIds = document.createElement('ul');
@@ -313,23 +308,8 @@ export async function loadEntities(database, container) {
 }
 
 export async function loadEntity(database, container, entityId) {
-    const request = JSON.stringify({
-        "msg": "sync",
-        "database": database == "default" ? undefined : database,
-        "tasks": [{
-            "task":       "read",
-            "container":  container,
-            "reads": [{ "ids": [entityId] }]
-          }],
-        "user":   defaultUser.value,
-        "token":  defaultToken.value
-    });
-    let init = {        
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: request
-    }
-    const rawResponse = await fetch(`./?${container},${entityId}`, init);
+    const tasks = [{ "task": "read", "container": container, "reads": [{ "ids": [entityId] }] }];
+    const rawResponse = await postRequest(database, tasks);
     const content = await rawResponse.json();
     const entityValue = content.containers[0].entities[0];
     const entityJson = JSON.stringify(entityValue, null, 2);
