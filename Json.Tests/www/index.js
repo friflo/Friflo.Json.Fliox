@@ -327,9 +327,9 @@ function createEntitySchemas(catalogSchemas) {
     for (var catalogSchema of catalogSchemas) {
         var jsonSchemas     = catalogSchema.schemas;
         var database        = catalogSchema.id;
-        var dbSchemaJson    = jsonSchemas[catalogSchema.rootPath];
+        var dbSchemaJson    = jsonSchemas[catalogSchema.schemaPath];
         var dbSchema        = JSON.parse(dbSchemaJson);
-        var dbType          = dbSchema.definitions[catalogSchema.rootType];
+        var dbType          = dbSchema.definitions[catalogSchema.schemaName];
         var containers      = dbType.properties;
         var typeMap    = {};
         for (var containerName in containers) {

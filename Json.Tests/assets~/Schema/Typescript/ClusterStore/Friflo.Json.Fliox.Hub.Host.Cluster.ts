@@ -15,9 +15,9 @@ export class Catalog {
 }
 
 export class CatalogSchema {
-    id        : string;
-    rootType  : string;
-    rootPath  : string;
-    schemas   : { [key: string]: string };
+    id          : string;
+    schemaName  : string;
+    schemaPath  : string;
+    schemas     : { [key: string]: string };
 }
 
