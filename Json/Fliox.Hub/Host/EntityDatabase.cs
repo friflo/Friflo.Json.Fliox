@@ -97,7 +97,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             return container;
         }
         
-        public virtual CatalogInfo GetCatalogInfo() {
+        public virtual DatabaseInfo GetDatabaseInfo() {
             int n = 0;
             string[] containerList;
             if (Schema != null) {
@@ -113,14 +113,14 @@ namespace Friflo.Json.Fliox.Hub.Host
                     containerList[n++] = container.Key;
                 }
             }
-            return new CatalogInfo { containers = containerList, schema = Schema };
+            return new DatabaseInfo { containers = containerList, schema = Schema };
         }
 
         public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
     }
 }
 
-public class CatalogInfo {
+public class DatabaseInfo {
     public string[]         containers;
     public DatabaseSchema   schema;
 }
