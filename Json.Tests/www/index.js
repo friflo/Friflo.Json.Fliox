@@ -505,10 +505,12 @@ export async function setupEditors()
             schemas[i].fileMatch = [responseUri.toString()]; // associate with our model
         }
     }
+    // [DiagnosticsOptions | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.json.DiagnosticsOptions.html
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
         validate: true,
         schemas: schemas
     });
+
     // --- create request editor
     { 
         requestEditor = monaco.editor.create(requestContainer, { /* model: model */ });
