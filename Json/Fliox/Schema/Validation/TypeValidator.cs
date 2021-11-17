@@ -157,12 +157,12 @@ namespace Friflo.Json.Fliox.Schema.Validation
                     case JsonEvent.ObjectStart:
                         if (!ValidationType.FindField(type, this, out field, foundFields))
                             return false;
+                        if (field.isDictionary) {
+                            if (ValidateElement (field.type, field.isNullableElement, type, depth))
+                                continue;
+                            return false;
+                        }
                         if (field.typeId == TypeId.Class) {
-                            if (field.isDictionary) {
-                                if (ValidateElement (field.type, field.isNullableElement, type, depth))
-                                    continue;
-                                return false;
-                            }
                             if (ValidateObject (field.type, depth + 1))
                                 continue;
                             return false;
