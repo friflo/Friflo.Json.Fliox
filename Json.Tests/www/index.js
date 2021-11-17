@@ -21,6 +21,7 @@ const defaultToken      = document.getElementById("token");
 const catalogExplorer   = document.getElementById("catalogExplorer");
 const entityExplorer    = document.getElementById("entityExplorer");
 const writeResult       = document.getElementById("writeResult");
+const readEntities      = document.getElementById("readEntities");
 const entityId          = document.getElementById("entityId");
 
 
@@ -319,10 +320,11 @@ export async function loadCluster() {
 export async function loadEntities(database, container) {
     entityModel.setValue("");    
     const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
-    entityExplorer.innerHTML = 'read entities <span class="spinner"></span>';
+    readEntities.innerHTML = `read ${container} <span class="spinner"></span>`;
     const response = await postRequestTasks(database, tasks, container);
     const content = response.json;
     entityId.innerHTML = "";
+    readEntities.innerText = "";
     var error = getTaskError (content, 0);
     if (error) {
         entityExplorer.innerHTML = errorAsHtml(error);
@@ -356,7 +358,7 @@ export async function loadEntity(database, container, id) {
         container:  container,
         entityId:   id
     };
-    entityId.innerHTML = 'read entity <span class="spinner"></span>';;
+    entityId.innerHTML = `read ${id} <span class="spinner"></span>`;
     const tasks = [{ "task": "read", "container": container, "reads": [{ "ids": [id] }] }];
     const response = await postRequestTasks(database, tasks, `${container}/${id}`);
     const content = response.json;
