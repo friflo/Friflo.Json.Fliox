@@ -28,6 +28,8 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
     
     public class CatalogSchema {
         [Fri.Required]  public  string                      id;
+        [Fri.Required]  public  string                      rootType;
+        [Fri.Required]  public  string                      rootPath;
         [Fri.Required]  public  Dictionary<string,string>   schemas;
                         
         public override         string                      ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");

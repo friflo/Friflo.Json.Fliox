@@ -90,12 +90,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
                 }
                 if (ClusterDB.FindTask(nameof(catalogSchemas), tasks)) {
                     var typeSchema  = databaseInfo.schema.typeSchema;
+                    var rootType    = typeSchema.RootType;
                     var entityTypes = typeSchema.GetEntityTypes();
                     var generator   = new Generator(typeSchema, ".json", null, entityTypes);
                     JsonSchemaGenerator.Generate(generator);
                     var schema = new CatalogSchema {
-                        id      = databaseName,
-                        schemas = generator.files
+                        id          = databaseName,
+                        rootType    = rootType.Name,
+                        rootPath    = rootType.Path + generator.fileExt,
+                        schemas     = generator.files
                     };
                     catalogSchemas.Upsert(schema);
                 }

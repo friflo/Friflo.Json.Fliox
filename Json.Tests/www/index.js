@@ -268,7 +268,10 @@ var selectedCatalog;
 var selectedEntity;
 
 export async function loadCluster() {
-    const tasks = [{ "task": "query", "container": "catalogs", "filter":{ "op": "true" }}];
+    const tasks = [
+        { "task": "query", "container": "catalogs",       "filter":{ "op": "true" }},
+        { "task": "query", "container": "catalogSchemas", "filter":{ "op": "true" }}
+    ];
     catalogExplorer.innerHTML = 'read catalogs <span class="spinner"></span>';
     const response = await postRequestTasks("cluster", tasks, "catalogs");
     const content = response.json;
@@ -277,7 +280,8 @@ export async function loadCluster() {
         catalogExplorer.innerHTML = errorAsHtml(error);
         return 
     }
-    const catalogs = content.containers[0].entities;
+    const catalogs          = content.containers[0].entities;
+    const catalogSchemas    = content.containers[1].entities;
     var ulCatalogs = document.createElement('ul');
     ulCatalogs.onclick = (ev) => {
         var path = ev.composedPath();
@@ -313,8 +317,43 @@ export async function loadCluster() {
             }
         }
     }
+    createEntitySchemas(catalogSchemas)
     catalogExplorer.textContent = "";
     catalogExplorer.appendChild(ulCatalogs);
+}
+
+function createEntitySchemas(catalogSchemas) {
+    var schemas = [];
+    for (var catalogSchema of catalogSchemas) {
+        var jsonSchemas     = catalogSchema.schemas;
+        var dbSchemaJson    = jsonSchemas[catalogSchema.rootPath];
+        var dbSchema        = JSON.parse(dbSchemaJson);
+        var dbType          = dbSchema.definitions[catalogSchema.rootType];
+        var containers      = dbType.properties;
+        var typeMap    = {};
+        for (var containerName in containers) {
+            var container   = containers[containerName];
+            var type        = container.additionalProperties.$ref;
+            var hashPos     = type.indexOf("#");
+            type = type.substring(2, hashPos);
+            typeMap[type] = containerName;
+        }
+
+        for (var schemaName in jsonSchemas) {
+            var jsonSchema  = jsonSchemas[schemaName];
+            var url         = catalogSchema.id + "/" + schemaName;
+            var schemaEntry = {
+                uri:    "http://" + url,
+                schema: jsonSchema            
+            }
+            schemas.push(schemaEntry);
+            var container = typeMap[schemaName];
+            if (container) {
+                var entityUri = monaco.Uri.parse(`entity://${catalogSchema.id}.${container}.json`);
+                schemaEntry.fileMatch = [entityUri]; // associate with our model
+            }
+        }
+    }
 }
 
 export async function loadEntities(database, container) {
