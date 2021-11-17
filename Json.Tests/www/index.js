@@ -318,7 +318,7 @@ export async function loadCluster() {
 }
 
 export async function loadEntities(database, container) {
-    entityModel.setValue("");    
+    setEntityValue("todo", "");
     const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
     readEntities.innerHTML = `read ${container} <span class="spinner"></span>`;
     const response = await postRequestTasks(database, tasks, container);
@@ -365,14 +365,14 @@ export async function loadEntity(database, container, id) {
     const error = getTaskError (content, 0);
     if (error) {
         entityId.innerText = "read failed"
-        entityModel.setValue(error);        
+        setEntityValue("todo", error);        
         return;
     }
     entityId.innerHTML = id;
     const entityValue = content.containers[0].entities[0];
     const entityJson = JSON.stringify(entityValue, null, 2);
     // console.log(entityJson);
-    entityModel.setValue(entityJson);
+    setEntityValue("todo", entityJson);   
 }
 
 export async function saveEntity() {
@@ -425,8 +425,22 @@ export async function deleteEntity() {
     } else {
         writeResult.innerHTML = "delete successful";
         entityId.innerHTML = "";
-        entityModel.setValue("");
+        setEntityValue("todo", "");
     }
+}
+
+var entityModel;
+var entityModels = {};
+
+function setEntityValue(schema, value) {
+    entityModel = entityModels[schema];
+    if (!entityModel) {
+        var entityUri   = monaco.Uri.parse("request://jsonEntity.json");
+        entityModel = monaco.editor.createModel(null, "json", entityUri);
+        entityModels[schema] = entityModel;
+    }
+    entityEditor.setModel (entityModel);
+    entityModel.setValue(value);
 }
 
 // --------------------------------------- monaco editor ---------------------------------------
@@ -479,7 +493,6 @@ async function createProtocolSchemas() {
 
 var requestModel;
 var responseModel;
-var entityModel;
 
 var requestEditor;
 var responseEditor;
@@ -494,7 +507,6 @@ export async function setupEditors()
     // --- setup JSON Schema for monaco
     var requestUri  = monaco.Uri.parse("request://jsonRequest.json");   // a made up unique URI for our model
     var responseUri = monaco.Uri.parse("request://jsonResponse.json");  // a made up unique URI for our model
-    var entityUri   = monaco.Uri.parse("request://jsonEntity.json");    // a made up unique URI for our model
     var schemas     = await createProtocolSchemas();
 
     for (let i = 0; i < schemas.length; i++) {
@@ -555,8 +567,6 @@ export async function setupEditors()
             lineNumbers:    "off",
             minimap:        { enabled: false }
         });
-        entityModel = monaco.editor.createModel(null, "json", entityUri);
-        entityEditor.setModel (entityModel);
     }
 
     window.onresize = () => {
