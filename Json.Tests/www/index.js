@@ -268,6 +268,7 @@ var selectedEntity;
 
 export async function loadCluster() {
     const tasks = [{ "task": "query", "container": "catalogs", "filter":{ "op": "true" }}];
+    catalogExplorer.innerHTML = 'read catalogs <span class="spinner"></span>';
     const response = await postRequestTasks("cluster", tasks, "catalogs");
     const content = response.json;
     var error = getTaskError (content, 0);
@@ -318,9 +319,9 @@ export async function loadCluster() {
 export async function loadEntities(database, container) {
     entityModel.setValue("");    
     const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
+    entityExplorer.innerHTML = 'read entities <span class="spinner"></span>';
     const response = await postRequestTasks(database, tasks, container);
     const content = response.json;
-    entityExplorer.textContent = "";
     entityId.innerHTML = "";
     var error = getTaskError (content, 0);
     if (error) {
@@ -343,6 +344,7 @@ export async function loadEntities(database, container) {
         liId.innerText = id;
         ulIds.append(liId);
     }
+    entityExplorer.innerText = ""
     entityExplorer.appendChild(ulIds);
 }
 
@@ -354,15 +356,17 @@ export async function loadEntity(database, container, id) {
         container:  container,
         entityId:   id
     };
-    entityId.innerHTML = id;
+    entityId.innerHTML = 'read entity <span class="spinner"></span>';;
     const tasks = [{ "task": "read", "container": container, "reads": [{ "ids": [id] }] }];
     const response = await postRequestTasks(database, tasks, `${container}/${id}`);
     const content = response.json;
     const error = getTaskError (content, 0);
     if (error) {
-        entityModel.setValue(error);
+        entityId.innerText = "read failed"
+        entityModel.setValue(error);        
         return;
     }
+    entityId.innerHTML = id;
     const entityValue = content.containers[0].entities[0];
     const entityJson = JSON.stringify(entityValue, null, 2);
     // console.log(entityJson);
@@ -387,20 +391,21 @@ export async function saveEntity() {
         "token":    defaultToken.value
     };
     var body = JSON.stringify(request).replace('"{value}"', jsonValue);
+    writeResult.innerHTML = 'save <span class="spinner"></span>';
 
     const response = await postRequest(body, `${entityIdentity.database}/${container}-Save`);
     const content = response.json;
     var error = getTaskError (content, 0);
     if (error) {
-        writeResult.innerHTML = "write failed: " + error;
+        writeResult.innerHTML = "save failed: " + error;
         return;
     }
     if (content.upsertErrors) {
         error = content.upsertErrors[container].errors[entityIdentity.entityId].message;
-        writeResult.innerHTML = "write failed: " + error;
+        writeResult.innerHTML = "save failed: " + error;
         return;
     }
-    writeResult.innerHTML = "write successful";
+    writeResult.innerHTML = "save successful";
     entityId.innerHTML = "todo";
 }
 
@@ -409,6 +414,7 @@ export async function deleteEntity() {
     var container = entityIdentity.container;
     var database = entityIdentity.database;
     const tasks =  [{ "task": "delete", "container": container, "ids": [id]}];
+    writeResult.innerHTML = 'delete <span class="spinner"></span>';
     const response = await postRequestTasks(database, tasks, `${container}-Delete`);
     const content = response.json;
     var error = getTaskError (content, 0);
