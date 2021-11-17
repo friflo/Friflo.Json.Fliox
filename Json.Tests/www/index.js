@@ -132,8 +132,8 @@ export async function postSyncRequest() {
     let start = new Date().getTime();
     var duration;
     try {
-        const rawResponse = await postRequest('./', jsonRequest);
-        const content = await rawResponse.text();
+        const response = await postRequest(jsonRequest, "POST");
+        const content = await response.text;
         duration = new Date().getTime() - start;
         responseModel.setValue(content);
     } catch(error) {
@@ -189,18 +189,27 @@ export async function loadExampleRequestList() {
 // --------------------------------------- Browser ---------------------------------------
 var monacoTheme = "light";
 
-async function postRequest(path, request) {
+async function postRequest(request, tag) {
     let init = {        
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    request
     }
     try {
-        return await fetch(path, init);
+        const path          = `./?${tag}`;
+        const rawResponse   = await fetch(path, init);
+        const text          = await rawResponse.text();
+        return {
+            text: text,
+            json: JSON.parse(text)
+        };            
     } catch (error) {
         return {
-            "msg":    "error",
-            "message": error.message
+            text: error.message,
+            json: {
+                "msg":    "error",
+                "message": error.message
+            }
         };
     }
 }
@@ -214,8 +223,7 @@ async function postRequestTasks(database, tasks, tag) {
         "user":     defaultUser.value,
         "token":    defaultToken.value
     });
-    const path = `./?${database}[${tag}]`;
-    return await postRequest(path, request);
+    return await postRequest(request, `${database}/${tag}`);
 }
 
 function getTaskError(content, taskIndex) {
@@ -260,8 +268,8 @@ var selectedEntity;
 
 export async function loadCluster() {
     const tasks = [{ "task": "query", "container": "catalogs", "filter":{ "op": "true" }}];
-    const rawResponse = await postRequestTasks("cluster", tasks, "catalogs");
-    const content = await rawResponse.json();
+    const response = await postRequestTasks("cluster", tasks, "catalogs");
+    const content = response.json;
     var error = getTaskError (content, 0);
     if (error) {
         catalogExplorer.innerHTML = errorAsHtml(error);
@@ -310,8 +318,8 @@ export async function loadCluster() {
 export async function loadEntities(database, container) {
     entityModel.setValue("");    
     const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
-    const rawResponse = await postRequestTasks(database, tasks, container);
-    const content = await rawResponse.json();
+    const response = await postRequestTasks(database, tasks, container);
+    const content = response.json;
     entityExplorer.textContent = "";
     entityId.innerHTML = "";
     var error = getTaskError (content, 0);
@@ -348,8 +356,8 @@ export async function loadEntity(database, container, id) {
     };
     entityId.innerHTML = id;
     const tasks = [{ "task": "read", "container": container, "reads": [{ "ids": [id] }] }];
-    const rawResponse = await postRequestTasks(database, tasks, id);
-    const content = await rawResponse.json();
+    const response = await postRequestTasks(database, tasks, `${container}/${id}`);
+    const content = response.json;
     const error = getTaskError (content, 0);
     if (error) {
         entityModel.setValue(error);
@@ -380,8 +388,8 @@ export async function saveEntity() {
     };
     var body = JSON.stringify(request).replace('"{value}"', jsonValue);
 
-    const rawResponse = await postRequest("./", body);
-    const content = await rawResponse.json();
+    const response = await postRequest(body, `${entityIdentity.database}/${container}-Save`);
+    const content = response.json;
     var error = getTaskError (content, 0);
     if (error) {
         writeResult.innerHTML = "write failed: " + error;
@@ -399,10 +407,10 @@ export async function saveEntity() {
 export async function deleteEntity() {
     const id = entityIdentity.entityId;
     var container = entityIdentity.container;
-    var database = entityIdentity.database == "default" ? undefined : entityIdentity.database;
+    var database = entityIdentity.database;
     const tasks =  [{ "task": "delete", "container": container, "ids": [id]}];
-    const rawResponse = await postRequestTasks(database, tasks, "delete");
-    const content = await rawResponse.json();
+    const response = await postRequestTasks(database, tasks, `${container}-Delete`);
+    const content = response.json;
     var error = getTaskError (content, 0);
     if (error) {
         writeResult.innerHTML = "delete failed: " + error;
