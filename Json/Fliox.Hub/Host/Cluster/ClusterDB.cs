@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
                 var databaseInfo    = database.GetDatabaseInfo();
                 if (ClusterDB.FindTask(nameof(catalogs), tasks)) {
                     var catalog = new Catalog {
-                        name        = databaseName,
+                        id          = databaseName,
                         containers  = databaseInfo.containers
                     };
                     catalogs.Upsert(catalog);

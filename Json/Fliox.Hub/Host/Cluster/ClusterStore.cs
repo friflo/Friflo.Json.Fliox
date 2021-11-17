@@ -16,14 +16,11 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
         public ClusterStore (FlioxHub hub, string database = null) : base(hub, database) { }
     }
     
-    
     public class Catalog {
-        [Fri.Key]
-        [Fri.Required]  public  string          name;
-        
-        [Fri.Required]  public  string[]        containers;
+        [Fri.Required]  public  string                      id;
+        [Fri.Required]  public  string[]                    containers;
                         
-        public override         string          ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
+        public override         string                      ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
     
     public class CatalogSchema {

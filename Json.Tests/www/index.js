@@ -291,7 +291,7 @@ export async function loadCluster() {
     for (var catalog of catalogs) {
         var liCatalog = document.createElement('li');
         var catalogLabel = document.createElement('div');
-        catalogLabel.innerText = catalog.name;
+        catalogLabel.innerText = catalog.id;
         liCatalog.append(catalogLabel)
         ulCatalogs.append(liCatalog);
         if (catalog.containers.length > 0) {
