@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 
 namespace Friflo.Json.Fliox.Hub.Host
@@ -112,7 +113,7 @@ namespace Friflo.Json.Fliox.Hub.Host
                     containerList[n++] = container.Key;
                 }
             }
-            return new CatalogInfo { containers = containerList };
+            return new CatalogInfo { containers = containerList, schema = Schema };
         }
 
         public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
@@ -120,5 +121,6 @@ namespace Friflo.Json.Fliox.Hub.Host
 }
 
 public class CatalogInfo {
-    public string[]     containers;
+    public string[]         containers;
+    public DatabaseSchema   schema;
 }

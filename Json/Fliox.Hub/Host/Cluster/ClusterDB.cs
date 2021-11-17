@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Native;
 
 namespace Friflo.Json.Fliox.Hub.Host.Cluster
@@ -51,9 +52,9 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
             using (var pooled  = pool.Type(() => new ClusterStore(clusterHub)).Get()) {
                 var cluster = pooled.instance;
                 var tasks = syncRequest.tasks;
-                if (FindTask(nameof(ClusterStore.catalogs),  tasks)) cluster.UpdateCatalogs  (hub);
+                cluster.UpdateCatalogs  (hub, tasks);
                 
-                await cluster.TrySyncTasks().ConfigureAwait(false);
+                await cluster.SyncTasks().ConfigureAwait(false);
             }
         }
         
@@ -61,7 +62,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
             return stateDB.GetCatalogInfo();
         }
         
-        private static bool FindTask(string container, List<SyncRequestTask> tasks) {
+        internal static bool FindTask(string container, List<SyncRequestTask> tasks) {
             foreach (var task in tasks) {
                 if (task is ReadEntities read && read.container == container)
                     return true;
@@ -74,17 +75,30 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
     
     public partial class ClusterStore
     {
-        internal void UpdateCatalogs(FlioxHub hub) {
+        internal void UpdateCatalogs(FlioxHub hub, List<SyncRequestTask> tasks) {
             var databases = hub.GetDatabases();
             foreach (var pair in databases) {
                 var database        = pair.Value;
                 var databaseName    = pair.Key;
                 var databaseInfo    = database.GetCatalogInfo();
-                var catalog = new Catalog {
-                    name        = databaseName,
-                    containers  = databaseInfo.containers
-                };
-                catalogs.Upsert(catalog);
+                if (ClusterDB.FindTask(nameof(catalogs), tasks)) {
+                    var catalog = new Catalog {
+                        name        = databaseName,
+                        containers  = databaseInfo.containers
+                    };
+                    catalogs.Upsert(catalog);
+                }
+                if (ClusterDB.FindTask(nameof(catalogSchemas), tasks)) {
+                    var typeSchema  = databaseInfo.schema.typeSchema;
+                    var entityTypes = typeSchema.GetEntityTypes();
+                    var generator   = new Generator(typeSchema, ".json", null, entityTypes);
+                    JsonSchemaGenerator.Generate(generator);
+                    var schema = new CatalogSchema {
+                        id      = databaseName,
+                        schemas = generator.files
+                    };
+                    catalogSchemas.Upsert(schema);
+                }
             }
         }
     }
