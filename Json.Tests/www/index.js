@@ -362,7 +362,7 @@ function createEntitySchemas(catalogSchemas) {
 export async function loadEntities(database, container) {
     setEntityValue(database, container, "");
     const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
-    readEntities.innerHTML = `read ${container} <span class="spinner"></span>`;
+    readEntities.innerHTML = `${container} <span class="spinner"></span>`;
     const response = await postRequestTasks(database, tasks, container);
     const content = response.json;
     entityId.innerHTML = "";
@@ -400,7 +400,7 @@ export async function loadEntity(database, container, id) {
         container:  container,
         entityId:   id
     };
-    entityId.innerHTML = `read ${id} <span class="spinner"></span>`;
+    entityId.innerHTML = `${id} <span class="spinner"></span>`;
     const tasks = [{ "task": "read", "container": container, "reads": [{ "ids": [id] }] }];
     const response = await postRequestTasks(database, tasks, `${container}/${id}`);
     const content = response.json;
