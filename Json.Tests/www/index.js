@@ -187,7 +187,7 @@ export async function loadExampleRequestList() {
     }
 }
 
-// --------------------------------------- Browser ---------------------------------------
+// --------------------------------------- Explorer ---------------------------------------
 var monacoTheme = "light";
 
 async function postRequest(request, tag) {
@@ -326,6 +326,7 @@ function createEntitySchemas(catalogSchemas) {
     var schemas = [];
     for (var catalogSchema of catalogSchemas) {
         var jsonSchemas     = catalogSchema.schemas;
+        var database        = catalogSchema.id;
         var dbSchemaJson    = jsonSchemas[catalogSchema.rootPath];
         var dbSchema        = JSON.parse(dbSchemaJson);
         var dbType          = dbSchema.definitions[catalogSchema.rootType];
@@ -341,23 +342,25 @@ function createEntitySchemas(catalogSchemas) {
 
         for (var schemaName in jsonSchemas) {
             var jsonSchema  = jsonSchemas[schemaName];
-            var url         = catalogSchema.id + "/" + schemaName;
+            var schema      = JSON.parse(jsonSchema);
+            var url         = database + "/" + schemaName;
             var schemaEntry = {
-                uri:    "http://" + url,
-                schema: jsonSchema            
+                uri:   "http://" + url,
+                schema: schema            
             }
             schemas.push(schemaEntry);
             var container = typeMap[schemaName];
             if (container) {
-                var entityUri = monaco.Uri.parse(`entity://${catalogSchema.id}.${container}.json`);
-                schemaEntry.fileMatch = [entityUri]; // associate with our model
+                var url = `entity://${database}.${container}.json`; // e.g. 'entity://default.orders.json'
+                schemaEntry.fileMatch = [url]; // associate with our model
             }
         }
     }
+    addSchemas(schemas);
 }
 
 export async function loadEntities(database, container) {
-    setEntityValue("todo", "");
+    setEntityValue(database, container, "");
     const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
     readEntities.innerHTML = `read ${container} <span class="spinner"></span>`;
     const response = await postRequestTasks(database, tasks, container);
@@ -404,14 +407,14 @@ export async function loadEntity(database, container, id) {
     const error = getTaskError (content, 0);
     if (error) {
         entityId.innerText = "read failed"
-        setEntityValue("todo", error);        
+        setEntityValue(database, container, error);
         return;
     }
     entityId.innerHTML = id;
     const entityValue = content.containers[0].entities[0];
     const entityJson = JSON.stringify(entityValue, null, 2);
     // console.log(entityJson);
-    setEntityValue("todo", entityJson);   
+    setEntityValue(database, container, entityJson);
 }
 
 export async function saveEntity() {
@@ -464,19 +467,20 @@ export async function deleteEntity() {
     } else {
         writeResult.innerHTML = "delete successful";
         entityId.innerHTML = "";
-        setEntityValue("todo", "");
+        setEntityValue(database, container, "");
     }
 }
 
 var entityModel;
 var entityModels = {};
 
-function setEntityValue(schema, value) {
-    entityModel = entityModels[schema];
+function setEntityValue(database, container, value) {
+    var url = `entity://${database}.${container}.json`;
+    entityModel = entityModels[url];
     if (!entityModel) {
-        var entityUri   = monaco.Uri.parse("request://jsonEntity.json");
+        var entityUri   = monaco.Uri.parse(url);
         entityModel = monaco.editor.createModel(null, "json", entityUri);
-        entityModels[schema] = entityModel;
+        entityModels[url] = entityModel;
     }
     entityEditor.setModel (entityModel);
     entityModel.setValue(value);
@@ -541,6 +545,17 @@ const requestContainer  = document.getElementById("requestContainer");
 const responseContainer = document.getElementById("responseContainer")
 const entityContainer   = document.getElementById("entityContainer");
 
+const allSchemas = [];
+
+function addSchemas(schemas) {
+    allSchemas.push(...schemas);
+    // [DiagnosticsOptions | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.json.DiagnosticsOptions.html
+    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+        validate: true,
+        schemas: allSchemas
+    });
+}
+
 export async function setupEditors()
 {
     // --- setup JSON Schema for monaco
@@ -556,11 +571,7 @@ export async function setupEditors()
             schemas[i].fileMatch = [responseUri.toString()]; // associate with our model
         }
     }
-    // [DiagnosticsOptions | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.json.DiagnosticsOptions.html
-    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-        validate: true,
-        schemas: schemas
-    });
+    addSchemas(schemas);
 
     // --- create request editor
     { 
