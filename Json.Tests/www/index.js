@@ -324,7 +324,7 @@ export async function loadEntities(database, container) {
     const response = await postRequestTasks(database, tasks, container);
     const content = response.json;
     entityId.innerHTML = "";
-    readEntities.innerText = "";
+    readEntities.innerText = container;
     var error = getTaskError (content, 0);
     if (error) {
         entityExplorer.innerHTML = errorAsHtml(error);
