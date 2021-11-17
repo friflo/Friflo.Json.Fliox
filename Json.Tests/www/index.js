@@ -269,8 +269,8 @@ var selectedEntity;
 
 export async function loadCluster() {
     const tasks = [
-        { "task": "query", "container": "catalogs",       "filter":{ "op": "true" }},
-        { "task": "query", "container": "catalogSchemas", "filter":{ "op": "true" }}
+        { "task": "query", "container": "catalogs",  "filter":{ "op": "true" }},
+        { "task": "query", "container": "schemas",   "filter":{ "op": "true" }}
     ];
     catalogExplorer.innerHTML = 'read catalogs <span class="spinner"></span>';
     const response = await postRequestTasks("cluster", tasks, "catalogs");
@@ -280,8 +280,8 @@ export async function loadCluster() {
         catalogExplorer.innerHTML = errorAsHtml(error);
         return 
     }
-    const catalogs          = content.containers[0].entities;
-    const catalogSchemas    = content.containers[1].entities;
+    const catalogs  = content.containers[0].entities;
+    const schemas   = content.containers[1].entities;
     var ulCatalogs = document.createElement('ul');
     ulCatalogs.onclick = (ev) => {
         var path = ev.composedPath();
@@ -317,13 +317,13 @@ export async function loadCluster() {
             }
         }
     }
-    createEntitySchemas(catalogSchemas)
+    createEntitySchemas(schemas)
     catalogExplorer.textContent = "";
     catalogExplorer.appendChild(ulCatalogs);
 }
 
 function createEntitySchemas(catalogSchemas) {
-    var schemas = [];
+    var monacoSchemas = [];
     for (var catalogSchema of catalogSchemas) {
         var jsonSchemas     = catalogSchema.schemas;
         var database        = catalogSchema.id;
@@ -348,7 +348,7 @@ function createEntitySchemas(catalogSchemas) {
                 uri:   "http://" + url,
                 schema: schema            
             }
-            schemas.push(schemaEntry);
+            monacoSchemas.push(schemaEntry);
             var container = typeMap[schemaName];
             if (container) {
                 var url = `entity://${database}.${container}.json`; // e.g. 'entity://default.orders.json'
@@ -356,7 +356,7 @@ function createEntitySchemas(catalogSchemas) {
             }
         }
     }
-    addSchemas(schemas);
+    addSchemas(monacoSchemas);
 }
 
 export async function loadEntities(database, container) {
@@ -545,33 +545,33 @@ const requestContainer  = document.getElementById("requestContainer");
 const responseContainer = document.getElementById("responseContainer")
 const entityContainer   = document.getElementById("entityContainer");
 
-const allSchemas = [];
+const allMonacoSchemas = [];
 
-function addSchemas(schemas) {
-    allSchemas.push(...schemas);
+function addSchemas(monacoSchemas) {
+    allMonacoSchemas.push(...monacoSchemas);
     // [DiagnosticsOptions | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.json.DiagnosticsOptions.html
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
         validate: true,
-        schemas: allSchemas
+        schemas: allMonacoSchemas
     });
 }
 
 export async function setupEditors()
 {
     // --- setup JSON Schema for monaco
-    var requestUri  = monaco.Uri.parse("request://jsonRequest.json");   // a made up unique URI for our model
-    var responseUri = monaco.Uri.parse("request://jsonResponse.json");  // a made up unique URI for our model
-    var schemas     = await createProtocolSchemas();
+    var requestUri      = monaco.Uri.parse("request://jsonRequest.json");   // a made up unique URI for our model
+    var responseUri     = monaco.Uri.parse("request://jsonResponse.json");  // a made up unique URI for our model
+    var monacoSchemas   = await createProtocolSchemas();
 
-    for (let i = 0; i < schemas.length; i++) {
-        if (schemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.ProtocolRequest.json") {
-            schemas[i].fileMatch = [requestUri.toString()]; // associate with our model
+    for (let i = 0; i < monacoSchemas.length; i++) {
+        if (monacoSchemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.ProtocolRequest.json") {
+            monacoSchemas[i].fileMatch = [requestUri.toString()]; // associate with our model
         }
-        if (schemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.ProtocolMessage.json") {
-            schemas[i].fileMatch = [responseUri.toString()]; // associate with our model
+        if (monacoSchemas[i].uri == "http://protocol/json-schema/Friflo.Json.Fliox.Hub.Protocol.ProtocolMessage.json") {
+            monacoSchemas[i].fileMatch = [responseUri.toString()]; // associate with our model
         }
     }
-    addSchemas(schemas);
+    addSchemas(monacoSchemas);
 
     // --- create request editor
     { 

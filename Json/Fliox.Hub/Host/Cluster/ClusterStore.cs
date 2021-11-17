@@ -11,7 +11,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
     public partial class ClusterStore : FlioxClient
     {
         public  readonly    EntitySet <string, Catalog>       catalogs;
-        public  readonly    EntitySet <string, CatalogSchema> catalogSchemas;
+        public  readonly    EntitySet <string, CatalogSchema> schemas;
         
         public ClusterStore (FlioxHub hub, string database = null) : base(hub, database) { }
     }

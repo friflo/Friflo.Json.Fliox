@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
                     };
                     catalogs.Upsert(catalog);
                 }
-                if (ClusterDB.FindTask(nameof(catalogSchemas), tasks)) {
+                if (ClusterDB.FindTask(nameof(schemas), tasks)) {
                     var typeSchema  = databaseInfo.schema.typeSchema;
                     var rootType    = typeSchema.RootType;
                     var entityTypes = typeSchema.GetEntityTypes();
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
                         rootPath    = rootType.Path + generator.fileExt,
                         schemas     = generator.files
                     };
-                    catalogSchemas.Upsert(schema);
+                    schemas.Upsert(schema);
                 }
             }
         }
