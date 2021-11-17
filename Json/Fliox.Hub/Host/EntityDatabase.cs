@@ -113,7 +113,8 @@ namespace Friflo.Json.Fliox.Hub.Host
                     containerList[n++] = container.Key;
                 }
             }
-            return new DatabaseInfo { containers = containerList, schema = Schema };
+            var databaseType = GetType().Name;
+            return new DatabaseInfo { containers = containerList, schema = Schema, databaseType = databaseType };
         }
 
         public abstract EntityContainer CreateContainer     (string name, EntityDatabase database);
@@ -123,4 +124,5 @@ namespace Friflo.Json.Fliox.Hub.Host
 public class DatabaseInfo {
     public string[]         containers;
     public DatabaseSchema   schema;
+    public string           databaseType;
 }

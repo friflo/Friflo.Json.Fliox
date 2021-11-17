@@ -10,8 +10,9 @@ export interface ClusterStoreService {
 }
 
 export class Catalog {
-    id          : string;
-    containers  : string[];
+    id            : string;
+    databaseType  : string;
+    containers    : string[];
 }
 
 export class CatalogSchema {
