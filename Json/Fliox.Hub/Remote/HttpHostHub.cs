@@ -15,6 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public              IRequestHandler     requestHandler;
         
         private  readonly   SchemaHandler       protocolSchemaHandler;
+        private  readonly   RestHandler         restHandler;
 
         
         public HttpHostHub(FlioxHub hub, SharedEnv env = null, string hostName = null)
@@ -24,6 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var types               = ProtocolMessage.Types;
             var sepTypes            = protocolSchema.TypesAsTypeDefs(types);
             protocolSchemaHandler   = new SchemaHandler("/protocol/", protocolSchema, sepTypes);
+            restHandler              = new RestHandler(hub);
         }
         
         public async Task<bool> ExecuteHttpRequest(RequestContext reqCtx) {
@@ -47,6 +49,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (await schemaHandler.HandleRequest(request).ConfigureAwait(false))
                     return true;
             }
+            if (await restHandler.HandleRequest(request))
+                return true;
             if (await protocolSchemaHandler.HandleRequest(request).ConfigureAwait(false))
                 return true;
             if (requestHandler == null)
