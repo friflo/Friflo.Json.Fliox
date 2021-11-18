@@ -394,7 +394,8 @@ export async function loadEntities(database, container) {
     readEntities.innerHTML = `${container} <span class="spinner"></span>`;
     const response = await postRequestTasks(database, tasks, container);
     const content = response.json;
-    entityId.innerHTML = "";
+    entityId.innerHTML      = "";
+    writeResult.innerHTML   = "";
     readEntities.innerText = container;
     var error = getTaskError (content, 0);
     if (error) {
@@ -434,7 +435,8 @@ export async function loadEntity(database, container, id) {
         container:  container,
         entityId:   id
     };
-    entityId.innerHTML = `${id} <span class="spinner"></span>`;
+    entityId.innerHTML      = `${id} <span class="spinner"></span>`;
+    writeResult.innerHTML   = "";
     const tasks = [{ "task": "read", "container": container, "reads": [{ "ids": [id] }] }];
     const response = await postRequestTasks(database, tasks, `${container}/${id}`);
     const content = response.json;
@@ -502,6 +504,8 @@ export async function deleteEntity() {
         writeResult.innerHTML = "delete successful";
         entityId.innerHTML = "";
         setEntityValue(database, container, "");
+        var selected = entityExplorer.querySelector(`li.selected`);
+        selected.remove();
     }
 }
 
