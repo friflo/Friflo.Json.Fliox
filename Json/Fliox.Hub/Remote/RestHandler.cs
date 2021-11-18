@@ -36,6 +36,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteString("GET expect: /database/container/id", "application/json", 400);
                 return true;
             }
+            var database    = section[0];
             var container   = section[1];
             var entityId    = new JsonKey(section[2]);
             var readEntitiesSet = new ReadEntitiesSet ();
@@ -47,7 +48,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 }
             };
             var synRequest = new SyncRequest {
-                database    = section[0],
+                database    = database,
                 tasks       = tasks,
                 userId      = new JsonKey("admin"),
                 token       = "admin"
