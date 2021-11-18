@@ -2,14 +2,12 @@
   "msg": "sync",
   "database": "monitor",
   "tasks": [
-    { "task": "query", "container": "clients",  "filter": {"op": "true"} },
     { "task": "query", "container": "users",    "filter": {"op": "true"} },
-    { "task": "query", "container": "histories","filter": {"op": "true"} },
-    { "task": "query", "container": "hosts",    "filter": {"op": "true"} }
+    { "task": "query", "container": "histories","filter": {"op": "true"} }
   ],
   "info": [
-    "monitor: query all clients & users",
-    "list request, task & event statistics"
+    "monitor: query all users & histories",
+    "list request & task statistics"
   ],
   "user":   "{{user}}",
   "token":  "{{token}}"
