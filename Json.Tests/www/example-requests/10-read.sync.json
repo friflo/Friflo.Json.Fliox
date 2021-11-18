@@ -13,7 +13,5 @@
       ]
     }
   ],
-  "info": "read entities by their ids in the given container",
-  "user":   "{{user}}",
-  "token":  "{{token}}"
+  "info": "read entities by their ids in the given container"
 }

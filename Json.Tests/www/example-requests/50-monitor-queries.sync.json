@@ -8,7 +8,5 @@
   "info": [
     "monitor: query all users & histories",
     "list request & task statistics"
-  ],
-  "user":   "{{user}}",
-  "token":  "{{token}}"
+  ]
 }

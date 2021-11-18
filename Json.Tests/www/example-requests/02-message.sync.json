@@ -13,7 +13,5 @@
     "Need no message handler at host.",
     "Enables other clients subscribing messages.",
     "In constrast to command it returns no result"
-  ],
-  "user":   "{{user}}",
-  "token":  "{{token}}"
+  ]
 }

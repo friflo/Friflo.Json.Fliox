@@ -7,7 +7,5 @@
   "info": [
     "provide infos about hosted databases",
     "query all catalogs from cluster"
-  ],
-  "user":   "{{user}}",
-  "token":  "{{token}}"
+  ]
 }

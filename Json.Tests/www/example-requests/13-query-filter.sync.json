@@ -10,7 +10,5 @@
       }
     }
   ],
-  "info": "query articles with a filter => .name == 'Smartphone'",
-  "user":   "{{user}}",
-  "token":  "{{token}}"
+  "info": "query articles with a filter => .name == 'Smartphone'"
 }

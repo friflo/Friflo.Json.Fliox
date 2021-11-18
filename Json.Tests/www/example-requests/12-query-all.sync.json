@@ -10,7 +10,5 @@
   "info": [
     "query all articles",
     "'filter': { 'op': 'true' } - a predicate function - means return all"
-  ],
-  "user":   "{{user}}",
-  "token":  "{{token}}"
+  ]
 }

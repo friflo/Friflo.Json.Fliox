@@ -12,7 +12,5 @@
       "When handled by host it returns a result.",
       "'Echo' is a standard host command.",
       "It simply echos the given value."
-  ],
-  "user":   "{{user}}",
-  "token":  "{{token}}"
+  ]
 }

@@ -9,7 +9,5 @@
     ],
     "info": [
       "monitor: clear user & client stats"
-    ],
-    "user":   "{{user}}",
-    "token":  "{{token}}"
+    ]
   }

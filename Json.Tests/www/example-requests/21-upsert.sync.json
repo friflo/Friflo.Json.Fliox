@@ -12,8 +12,6 @@
   "info": [
       "upsert an article in the given container",
       "update if entity exsit or insert a new one"
-  ],
-  "user":   "{{user}}",
-  "token":  "{{token}}"
+  ]
 }
   

@@ -12,8 +12,6 @@
   "info": [
       "create an article in the given container",
       "return an error if entity already exist"
-  ],
-  "user":   "{{user}}",
-  "token":  "{{token}}"
+  ]
 }
   

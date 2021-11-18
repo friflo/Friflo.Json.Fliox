@@ -12,7 +12,5 @@
 
     "Websocket only. Requires client id: 'clt'",
     "No events are send for changes the client made by itself"
-  ],
-  "user": "{{user}}",
-  "token":"{{token}}"
+  ]
 }

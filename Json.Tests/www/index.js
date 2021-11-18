@@ -91,14 +91,24 @@ export function closeWebsocket() {
     connection.close();
 }
 
+function addUserToken(jsonRequest) {
+    var endBracket  = jsonRequest.lastIndexOf("}");
+    if (endBracket == -1)
+        return jsonRequest;
+    var before      = jsonRequest.substring(0, endBracket);
+    var after       = jsonRequest.substring(endBracket);
+    var userToken   = JSON.stringify({ user: defaultUser.value, token: defaultToken.value});
+    userToken       = userToken.substring(1, userToken.length - 1);
+    return `${before},${userToken}${after}`;
+}
+
 export function sendSyncRequest() {
     if (!connection || connection.readyState != 1) { // 1 == OPEN {
         responseModel.setValue(`Request ${req} failed. WebSocket not connected`)
         responseState.innerHTML = "";
     } else {
         var jsonRequest = requestModel.getValue();
-        jsonRequest = jsonRequest.replace("{{user}}",  defaultUser.value);
-        jsonRequest = jsonRequest.replace("{{token}}", defaultToken.value);
+        jsonRequest = addUserToken(jsonRequest);
         try {
             var request     = JSON.parse(jsonRequest);
             if (request) {
@@ -125,10 +135,8 @@ export function sendSyncRequest() {
 }
 
 export async function postSyncRequest() {
-    var jsonRequest = requestModel.getValue();
-    jsonRequest = jsonRequest.replace("{{user}}",  defaultUser.value);
-    jsonRequest = jsonRequest.replace("{{token}}", defaultToken.value);
-
+    var jsonRequest         = requestModel.getValue();
+    jsonRequest             = addUserToken(jsonRequest);
     responseState.innerHTML = '<span class="spinner"></span>';
     let start = new Date().getTime();
     var duration;
@@ -630,9 +638,7 @@ export async function setupEditors()
       "name":  "Echo",
       "value": "Hello World"
     }
-  ],
-  "user":   "{{user}}",
-  "token":  "{{token}}"
+  ]
 }`;
         requestModel.setValue(defaultRequest);
     }

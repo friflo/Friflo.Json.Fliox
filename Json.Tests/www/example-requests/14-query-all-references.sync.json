@@ -22,7 +22,5 @@
   "info": [
     "query all articles",
     "their referenced .producer",
-    "and the .employees[*] referenced by .producer"],
-  "user":   "{{user}}",
-  "token":  "{{token}}"
+    "and the .employees[*] referenced by .producer"]
 }

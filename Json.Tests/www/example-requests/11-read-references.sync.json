@@ -17,8 +17,6 @@
       ]
     }
   ],
-  "info": "read entity 'order-1' and its reference to .customer",
-  "user":   "{{user}}",
-  "token":  "{{token}}"
+  "info": "read entity 'order-1' and its reference to .customer"
 }
   
