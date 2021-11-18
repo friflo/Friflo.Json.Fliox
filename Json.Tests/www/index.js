@@ -298,10 +298,14 @@ export async function loadCluster() {
             var ulContainers = document.createElement('ul');
             ulContainers.onclick = (ev) => {
                 ev.stopPropagation();
-                if (selectedCatalog) selectedCatalog.classList.remove("selected");
                 var path = ev.composedPath();
+                const selectedElement = path[0];
+                // in case of a multiline text selection selectedElement is the parent
+                if (selectedElement.tagName.toLowerCase() != "div")
+                    return;
+                if (selectedCatalog) selectedCatalog.classList.remove("selected");
                 const database  = path[3].childNodes[0].innerText;
-                selectedCatalog = path[0];
+                selectedCatalog = selectedElement;
                 selectedCatalog.classList = "selected";
                 const container = selectedCatalog.innerText;
                 // console.log(database, container);
@@ -375,9 +379,14 @@ export async function loadEntities(database, container) {
     const ids = content.tasks[0].ids;
     var ulIds = document.createElement('ul');
     ulIds.onclick = (ev) => {
-        if (selectedEntity) selectedEntity.classList.remove("selected");
         var path = ev.composedPath();
-        selectedEntity = path[0];
+        const selectedElement = path[0];
+        // in case of a multiline text selection selectedElement is the parent
+        if (selectedElement.tagName.toLowerCase() != "li")
+            return;
+        if (selectedEntity) selectedEntity.classList.remove("selected");
+        selectedEntity = selectedElement;
+
         const entityId = selectedEntity.innerText;
         selectedEntity.classList = "selected";
         // console.log(entityId);
