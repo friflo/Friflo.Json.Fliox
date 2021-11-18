@@ -482,10 +482,10 @@ export async function saveEntity() {
     }
     if (content.upsertErrors) {
         error = content.upsertErrors[container].errors[entityIdentity.entityId].message;
-        writeResult.innerHTML = "save failed: " + error;
+        writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
         return;
     }
-    writeResult.innerHTML = "save successful";
+    writeResult.innerHTML = "Save successful";
     entityId.innerHTML = "todo";
 }
 
@@ -499,9 +499,9 @@ export async function deleteEntity() {
     const content = response.json;
     var error = getTaskError (content, 0);
     if (error) {
-        writeResult.innerHTML = "delete failed: " + error;
+        writeResult.innerHTML = `<span style="color:red">Delete failed: ${error}</code>`;;
     } else {
-        writeResult.innerHTML = "delete successful";
+        writeResult.innerHTML = "Delete successful";
         entityId.innerHTML = "";
         setEntityValue(database, container, "");
         var selected = entityExplorer.querySelector(`li.selected`);
