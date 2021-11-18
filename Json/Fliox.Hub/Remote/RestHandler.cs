@@ -37,6 +37,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return true;
             }
             var database    = section[0];
+            if (database == "default")
+                database = null;
             var container   = section[1];
             var entityId    = new JsonKey(section[2]);
             var readEntitiesSet = new ReadEntitiesSet ();
