@@ -8,8 +8,8 @@
   "response": {
     "folder":       "response"
   },
-  "variables": {
-    "{{user}}":     "admin",
-    "{{token}}":    "admin"
+  "additionalProperties": {
+    "user":     "admin",
+    "token":    "admin"
   }
 }
