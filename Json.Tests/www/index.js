@@ -494,7 +494,20 @@ export async function saveEntity() {
         return;
     }
     writeResult.innerHTML = "Save successful";
-    entityId.innerHTML = "todo";
+    const id = JSON.parse(jsonValue).id;
+    // add as HTML element to entityExplorer if new
+    if (entityIdentity.entityId != id) {
+        entityIdentity.entityId = id;
+        entityId.innerHTML = id;
+        if (selectedEntity) selectedEntity.classList.remove("selected");
+        var liId = document.createElement('li');
+        liId.innerText = id;
+        liId.classList = "selected";
+        const ulIds= entityExplorer.querySelector("ul");
+        ulIds.append(liId);
+        selectedEntity = liId;
+        selectedEntity.scrollIntoView();
+    }
 }
 
 export async function deleteEntity() {
