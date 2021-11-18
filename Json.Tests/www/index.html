@@ -23,18 +23,6 @@
         loadExampleRequestList();
         loadCluster();
         addTableResize();
-        window.addEventListener("keydown", function(event) {
-            if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
-                sendSyncRequest();
-                event.preventDefault();
-            }
-            if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
-                postSyncRequest();
-                event.preventDefault();
-            }
-
-            // console.log(`KeyboardEvent: code='${event.code}', ctrl:${event.ctrlKey}, alt:${event.altKey}`);
-        }, true);
 
         window.selectUser = function (element) {
             let value = element.innerText;
@@ -267,8 +255,8 @@
           <small style="opacity: 0.5;">Entity</small>
           <small style="width: 150px; display:inline-block;" id="entityId"></small>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <button type="button" onclick="deleteEntity()" title="Save">Delete</button>
-          <button type="button" onclick="saveEntity()" title="Save">Save</button>
+          <button type="button" onclick="deleteEntity()" title="Delete">Delete</button>
+          <button type="button" onclick="saveEntity()" title="Save (Ctrl+S)">Save</button>
         </td>
       </tr>
       <tr>

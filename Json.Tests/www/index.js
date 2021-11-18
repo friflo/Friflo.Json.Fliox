@@ -144,6 +144,31 @@ export async function postSyncRequest() {
     responseState.innerHTML = `· ${duration} ms`;
 }
 
+window.addEventListener("keydown", function(event) {
+    switch (activeTab) {
+        case "playground":
+            if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
+                sendSyncRequest();
+                event.preventDefault();
+            }
+            if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
+                postSyncRequest();
+                event.preventDefault();
+            }
+            if (event.code == 'KeyS' && event.ctrlKey) {
+                // event.preventDefault(); // avoid accidentally opening "Save As" dialog
+            }
+            break;
+        case "explorer":
+            if (event.code == 'KeyS' && event.ctrlKey) {
+                saveEntity()
+                event.preventDefault();
+            }
+            break;
+    }
+    // console.log(`KeyboardEvent: code='${event.code}', ctrl:${event.ctrlKey}, alt:${event.altKey}`);
+}, true);
+
 // --------------------------------------- example requests ---------------------------------------
 export async function onExampleChange() {
     var exampleName = selectExample.value;
