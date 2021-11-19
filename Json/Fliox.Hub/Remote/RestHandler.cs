@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if ((command != null || message != null) && (isGet || isPost)) {
                 var database = path.Substring(RestBase.Length);
                 if (database.IndexOf('/') != -1) {
-                    context.WriteError(GetErrorType(command), $"database must not contain /. database: {database}", 400);
+                    context.WriteError(GetErrorType(command), $"messages & commands operate on database. was: {database}", 400);
                     return true;
                 }
                 if (database == "default")
