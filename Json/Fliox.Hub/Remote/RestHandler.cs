@@ -22,7 +22,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
             
         public async Task<bool> HandleRequest(RequestContext context) {
-            if (!context.path.StartsWith(RestBase))
+            var path = context.path;
+            if (!path.StartsWith(RestBase))
                 return false;
             var queryKeyValues  = HttpUtility.ParseQueryString(context.query);
             var command         = queryKeyValues["command"];
@@ -31,6 +32,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var isPost          = context.method == "POST";
             
             if ((command != null || message != null) && (isGet || isPost)) {
+                var database = path.Substring(RestBase.Length);
+                if (database.IndexOf('/') != -1) {
+                    context.WriteError(GetErrorType(command), $"database must not contain /. database: {database}", 400);
+                    return true;
+                }
+                if (database == "default")
+                    database = null;
                 JsonValue value;
                 if (isPost) {
                     value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
@@ -42,17 +50,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     using (var pooled = hub.sharedEnv.Pool.TypeValidator.Get()) {
                         var validator = pooled.instance;
                         if (!validator.ValidateJson(value, out string error)) {
-                            var errorType = command != null ? "command error" : "message error";
-                            context.WriteError(errorType, error, 400);
+                            context.WriteError(GetErrorType(command), error, 400);
                             return true;
                         }
                     }
                 }
                 if (command != null) {
-                    await HandleCommand(context, command, value);
+                    await HandleCommand(context, database, command, value);
                     return true;
                 }
-                await HandleMessage(context, message, value);
+                await HandleMessage(context, database, message, value);
                 return true;
             }
             if (isGet) {
@@ -104,12 +111,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.Write(content.Json, 0, "application/json", entityStatus);
         }
         
-        // ----------------------------------------- command -----------------------------------------
-        private async Task HandleCommand(RequestContext context, string command, JsonValue value) {
-            var database = context.path.Substring(RestBase.Length);
-            if (database == "default")
-                database = null;
-            
+        // ----------------------------------------- command / message -----------------------------------------
+        private static string GetErrorType (string command) {
+            return command != null ? "command error" : "message error";
+        }
+        
+        private async Task HandleCommand(RequestContext context, string database, string command, JsonValue value) {
             var sendCommand = new SendCommand {
                 name    = command,
                 value   = value
@@ -127,12 +134,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.Write(sendResult.result, 0, "application/json", 200);
         }
         
-        // ----------------------------------------- message -----------------------------------------
-        private async Task HandleMessage(RequestContext context, string message, JsonValue value) {
-            var database = context.path.Substring(RestBase.Length);
-            if (database == "default")
-                database = null;
-            
+        private async Task HandleMessage(RequestContext context, string database, string message, JsonValue value) {
             var sendCommand = new SendMessage {
                 name    = message,
                 value   = value
