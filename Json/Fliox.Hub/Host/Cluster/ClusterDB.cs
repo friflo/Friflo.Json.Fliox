@@ -99,7 +99,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
                         id          = databaseName,
                         schemaName  = schemaType.Name,
                         schemaPath  = schemaType.Path + generator.fileExt,
-                        schemas     = generator.files
+                        jsonSchemas = generator.files
                     };
                     schemas.Upsert(schema);
                 }

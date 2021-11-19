@@ -16,9 +16,9 @@ export class Catalog {
 }
 
 export class CatalogSchema {
-    id          : string;
-    schemaName  : string;
-    schemaPath  : string;
-    schemas     : { [key: string]: string };
+    id           : string;
+    schemaName   : string;
+    schemaPath   : string;
+    jsonSchemas  : { [key: string]: string };
 }
 

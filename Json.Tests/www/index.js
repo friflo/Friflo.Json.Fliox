@@ -362,7 +362,7 @@ export async function loadCluster() {
 function createEntitySchemas(catalogSchemas) {
     var monacoSchemas = [];
     for (var catalogSchema of catalogSchemas) {
-        var jsonSchemas     = catalogSchema.schemas;
+        var jsonSchemas     = catalogSchema.jsonSchemas;
         var database        = catalogSchema.id;
         var dbSchemaJson    = jsonSchemas[catalogSchema.schemaPath];
         var dbSchema        = JSON.parse(dbSchemaJson);

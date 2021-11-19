@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
         [Fri.Required]  public  string                      id;
         [Fri.Required]  public  string                      schemaName;
         [Fri.Required]  public  string                      schemaPath;
-        [Fri.Required]  public  Dictionary<string,string>   schemas;
+        [Fri.Required]  public  Dictionary<string,string>   jsonSchemas;
                         
         public override         string                      ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
