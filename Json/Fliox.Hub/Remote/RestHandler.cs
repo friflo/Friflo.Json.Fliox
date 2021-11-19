@@ -91,10 +91,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (taskResult is TaskErrorResult errorResult) {
                 int status;
                 switch (errorResult.type) {
-                    case TaskErrorResultType.InvalidTask:       status = 400;   break;
-                    case TaskErrorResultType.PermissionDenied:  status = 403;   break;
-                    case TaskErrorResultType.DatabaseError:     status = 503;   break;
-                    default:                                    status = 500;   break;
+                    case TaskErrorResultType.InvalidTask:           status = 400;   break;
+                    case TaskErrorResultType.PermissionDenied:      status = 403;   break;
+                    case TaskErrorResultType.DatabaseError:         status = 500;   break;
+                    case TaskErrorResultType.None:                  status = 500;   break;
+                    case TaskErrorResultType.UnhandledException:    status = 500;   break;
+                    case TaskErrorResultType.NotImplemented:        status = 500;   break;
+                    case TaskErrorResultType.SyncError:             status = 500;   break;
+                    default:                                        status = 500;   break;
                 }
                 context.WriteString($"task error: {errorResult.type} - {errorResult.message}", "text/plain", status);
                 return default;
