@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -49,12 +48,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var path = context.path.Substring(basePath.Length);
                 Result result   = new Result();
                 bool success    = GetSchemaFile(path, ref result);
-                var  status     = success ? HttpStatusCode.OK : HttpStatusCode.BadRequest;
-                if (result.isText) {
-                    context.WriteString(result.content, result.contentType, (int)status);
+                if (!success) {
+                    context.WriteError("schema error", result.content, 404);
                     return Task.FromResult(true);
                 }
-                context.Write(new JsonValue(result.bytes), 0, result.contentType, (int)HttpStatusCode.OK);
+                if (result.isText) {
+                    context.WriteString(result.content, result.contentType);
+                    return Task.FromResult(true);
+                }
+                context.Write(new JsonValue(result.bytes), 0, result.contentType, 200);
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);
@@ -117,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return result.Set(schemaSet.directory, "application/json");
             }
             if (!schemaSet.files.TryGetValue(fileName, out string content)) {
-                return result.Error("file not found");
+                return result.Error($"file not found: {fileName}");
             }
             return result.Set(content, schemaSet.contentType);
         }

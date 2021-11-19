@@ -36,10 +36,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
             Offset              = offset;
         }
         
-        public void WriteString (string value, string contentType, int statusCode) {
+        public void WriteString (string value, string contentType) {
             ResponseContentType = contentType;
-            StatusCode          = statusCode;
+            StatusCode          = 200;
             Response            = new JsonValue(value);
+            Offset              = 0;
+        }
+        
+        public void WriteError (string errorType, string message, int statusCode) {
+            var error           = $"{errorType} - {message}";
+            ResponseContentType = "text/plain";
+            StatusCode          = statusCode;
+            Response            = new JsonValue(error);
             Offset              = 0;
         }
     }

@@ -22,8 +22,8 @@ namespace Friflo.Json.Tests.Main
                 }
             }
             catch (Exception ) {
-                var response = $"error - method: {context.method}, url: {context.path}";
-                context.WriteString(response, "text/plain", (int)HttpStatusCode.OK);
+                var response = $"method: {context.method}, url: {context.path}";
+                context.WriteError("request exception", response, 500);
             }
             return true; // return true to signal request was handled -> no subsequent handlers are invoked 
         }
@@ -40,14 +40,14 @@ namespace Friflo.Json.Tests.Main
             var filePath = wwwRoot + path;
             var content = await ReadFile(filePath).ConfigureAwait(false);
             var contentType = ContentTypeFromPath(path);
-            context.Write(new JsonValue(content), 0, contentType, (int)HttpStatusCode.OK);
+            context.Write(new JsonValue(content), 0, contentType, 200);
         }
         
         private void ListDirectory (RequestContext context) {
             var path = wwwRoot + context.path;
             if (!Directory.Exists(path)) {
                 var msg = $"directory doesnt exist: {path}";
-                context.WriteString(msg, "text/plain", (int)HttpStatusCode.NotFound);
+                context.WriteError("list directory", msg, 404);
                 return;
             }
             string[] fileNames = Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly);
@@ -56,7 +56,7 @@ namespace Friflo.Json.Tests.Main
             }
             var options = new SerializerOptions{ Pretty = true };
             var jsonList = JsonSerializer.Serialize(fileNames, options);
-            context.WriteString(jsonList, "application/json", (int)HttpStatusCode.OK);
+            context.WriteString(jsonList, "application/json");
         }
         
         private static string ContentTypeFromPath(string path) {

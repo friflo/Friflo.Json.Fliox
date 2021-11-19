@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var path    = context.path.Substring(RestBase.Length);
             var section = path.Split('/');
             if (section.Length < 3) {
-                context.WriteString("GET expect: /database/container/id", "application/json", 400);
+                context.WriteError("request error", "GET expect: /database/container/id", 400);
                 return true;
             }
             var database    = section[0];
@@ -55,13 +55,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var resultSet   = readResult.reads[0];
             var readError   = resultSet.Error;
             if (readError != null) {
-                context.WriteString($"read error - {readError.message}", "text/plain", 500);
+                context.WriteError("read error", readError.message, 500);
                 return true;
             }
             var content     = restResult.syncResponse.resultMap[container].entityMap[entityId];
             var entityError = content.Error;
             if (entityError != null) {
-                context.WriteString($"entity error: {entityError.type} - {entityError.message}", "application/json", 404);
+                context.WriteError("entity error", $"{entityError.type} - {entityError.message}", 404);
                 return true;
             }
             var entityStatus = content.Json.IsNull() ? 404 : 200;
@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var error = result.error;
             if (error != null) {
                 var status = error.type == ErrorResponseType.BadRequest ? 400 : 500;
-                context.WriteString($"sync error: {error.message}", "text/plain", status);
+                context.WriteError("sync error", error.message, status);
                 return default;
             }
             var syncResponse    = result.success;
@@ -100,7 +100,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     case TaskErrorResultType.SyncError:             status = 500;   break;
                     default:                                        status = 500;   break;
                 }
-                context.WriteString($"task error: {errorResult.type} - {errorResult.message}", "text/plain", status);
+                context.WriteError("task error", $"{errorResult.type} - {errorResult.message}", status);
                 return default;
             }
             return new RestResult { taskResult = taskResult, syncResponse = syncResponse };
