@@ -25,7 +25,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public async Task<bool> HandleRequest(RequestContext context) {
             if (!context.path.StartsWith(RestBase))
                 return false;
-            var query   = context.query;
+            var query       = context.query;
             var commaPos    = query.IndexOf(',');
             var commandEnd  = commaPos != -1 ? commaPos : query.Length; 
             var command     = query.StartsWith(Cmd) ? query.Substring(Cmd.Length, commandEnd - Cmd.Length) : null;
@@ -77,9 +77,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
             var readResult  = (ReadEntitiesResult)restResult.taskResult;
             var resultSet   = readResult.reads[0];
-            var readError   = resultSet.Error;
-            if (readError != null) {
-                context.WriteError("read error", readError.message, 500);
+            var resultError = resultSet.Error;
+            if (resultError != null) {
+                context.WriteError("read error", resultError.message, 500);
                 return;
             }
             var content     = restResult.syncResponse.resultMap[container].entityMap[entityId];
@@ -93,9 +93,26 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // ----------------------------------------- command -----------------------------------------
-        private Task HandleCommand(RequestContext context, string command) {
-            context.WriteError("invalid command", command, 400);
-            return Task.CompletedTask;
+        private async Task HandleCommand(RequestContext context, string command) {
+            var database = context.path.Substring(RestBase.Length);
+            if (database == "default")
+                database = null;
+            
+            var sendCommand = new SendCommand {
+                name    = command,
+                value   = new JsonValue()
+            };
+            var restResult = await ExecuteTask(context, database, sendCommand); 
+            if (restResult.taskResult == null)
+                return;
+            
+            var sendResult  = (SendCommandResult)restResult.taskResult;
+            var resultError = sendResult.Error;
+            if (resultError != null) {
+                context.WriteError("send error", resultError.message, 500);
+                return;
+            }
+            context.Write(sendResult.result, 0, "application/json", 200);
         }
         
         // ----------------------------------------- message -----------------------------------------
