@@ -89,8 +89,8 @@ export class ErrorResponse extends ProtocolResponse {
 }
 
 export type ErrorResponseType =
-    | "Internal"
     | "BadRequest"
+    | "Exception"
     | "BadResponse"
 ;
 

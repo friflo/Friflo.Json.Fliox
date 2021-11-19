@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             catch (Exception e) {
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                return JsonResponse.CreateError(messageContext, errorMsg, ErrorResponseType.Internal);
+                return JsonResponse.CreateError(messageContext, errorMsg, ErrorResponseType.Exception);
             }
         }
         

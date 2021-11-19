@@ -78,8 +78,8 @@ data class ErrorResponse (
 ) : ProtocolResponse()
 
 enum class ErrorResponseType {
-    Internal,
     BadRequest,
+    Exception,
     BadResponse,
 }
 

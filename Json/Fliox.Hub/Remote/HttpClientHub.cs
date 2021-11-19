@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
                 var msg = $"Request failed: Exception: {error}";
-                return new ExecuteSyncResult(msg, ErrorResponseType.Internal);
+                return new ExecuteSyncResult(msg, ErrorResponseType.Exception);
             }
         }
     }

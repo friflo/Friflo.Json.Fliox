@@ -86,8 +86,8 @@
         },
         "ErrorResponseType": {
             "enum": [
-                "Internal",
                 "BadRequest",
+                "Exception",
                 "BadResponse"
             ]
         },

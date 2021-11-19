@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         public static JsonResponse CreateError(MessageContext messageContext, string message, ErrorResponseType type)
         {
-            var status          = type == ErrorResponseType.Internal ? JsonResponseStatus.Exception : JsonResponseStatus.Error;
+            var status          = type == ErrorResponseType.Exception ? JsonResponseStatus.Exception : JsonResponseStatus.Error;
             var errorResponse   = new ErrorResponse { message = message, type = type };
             using (var pooled = messageContext.pool.ObjectMapper.Get()) {
                 ObjectWriter writer     = pooled.instance.writer;

@@ -41,8 +41,11 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     
     public enum ErrorResponseType
     {
-        Internal,
+        /// Invalid JSON request or invalid request parameters. Maps to HTTP status code 400 (Bad Request)
         BadRequest,
+        /// Internal exception. Maps to HTTP status code 500 (Internal Server Error)
+        Exception,
+        /// Invalid JSON response. Maps to HTTP status code 500 (Internal Server Error)
         BadResponse
     }
 }

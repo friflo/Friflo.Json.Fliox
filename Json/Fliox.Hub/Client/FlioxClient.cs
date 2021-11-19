@@ -313,7 +313,7 @@ namespace Friflo.Json.Fliox.Hub.Client
             catch (Exception e) {
                 _intern.pendingSyncs.TryRemove(task, out _);
                 var errorMsg = ErrorResponse.ErrorFromException(e).ToString();
-                return new ExecuteSyncResult(errorMsg, ErrorResponseType.Internal);
+                return new ExecuteSyncResult(errorMsg, ErrorResponseType.Exception);
             }
         }
         
