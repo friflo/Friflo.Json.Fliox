@@ -116,13 +116,29 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // ----------------------------------------- message -----------------------------------------
-        private Task HandleMessage(RequestContext context, string message) {
-            context.WriteError("invalid message", message, 400);
-            return Task.CompletedTask;
+        private async Task HandleMessage(RequestContext context, string message) {
+            var database = context.path.Substring(RestBase.Length);
+            if (database == "default")
+                database = null;
+            
+            var sendCommand = new SendMessage {
+                name    = message,
+                value   = new JsonValue()
+            };
+            var restResult = await ExecuteTask(context, database, sendCommand); 
+            if (restResult.taskResult == null)
+                return;
+            
+            var sendResult  = (SendMessageResult)restResult.taskResult;
+            var resultError = sendResult.Error;
+            if (resultError != null) {
+                context.WriteError("send error", resultError.message, 500);
+                return;
+            }
+            context.WriteString("received", "text/plain");
         }
 
-        
-        
+
         // ----------------------------------------- utils -----------------------------------------
         private async Task<RestResult> ExecuteTask (RequestContext context, string database, SyncRequestTask task) {
             var tasks   = new List<SyncRequestTask> { task };
