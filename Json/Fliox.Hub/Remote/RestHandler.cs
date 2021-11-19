@@ -14,6 +14,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
     public class RestHandler : IRequestHandler
     {
         private     const string    RestBase = "/rest/";
+        private     const string    Cmd = "?command=";
+        private     const string    Msg = "?message=";
         private     readonly        FlioxHub    hub;
         
         public RestHandler (FlioxHub    hub) {
@@ -24,10 +26,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             if (!context.path.StartsWith(RestBase))
                 return false;
             var query   = context.query;
-            var command = query.StartsWith("?command=") ? query.Substring("?command=".Length) : null;
-            var message = query.StartsWith("?message=") ? query.Substring("?message=".Length) : null;
-            var isGet   = context.method == "GET";
-            var isPost  = context.method == "POST";
+            var commaPos    = query.IndexOf(',');
+            var commandEnd  = commaPos != -1 ? commaPos : query.Length; 
+            var command     = query.StartsWith(Cmd) ? query.Substring(Cmd.Length, commandEnd - Cmd.Length) : null;
+            var message     = query.StartsWith(Msg) ? query.Substring(Msg.Length, commandEnd - Msg.Length) : null;
+            var isGet       = context.method == "GET";
+            var isPost      = context.method == "POST";
             
             if (isGet || isPost) {
                 if (command != null) {
