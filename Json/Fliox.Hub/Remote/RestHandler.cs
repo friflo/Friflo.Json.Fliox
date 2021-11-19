@@ -39,14 +39,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (isPost) {
                     value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
                 } else {
-                    value = new JsonValue(query.Substring(colonPos + 1));
+                    if (colonPos != -1) {
+                        value = new JsonValue(query.Substring(colonPos + 1));
+                    }
                 }
-                using (var pooled = hub.sharedEnv.Pool.TypeValidator.Get()) {
-                    var validator = pooled.instance;
-                    if (!validator.ValidateJson(value, out string error)) {
-                        var errorType = command != null ? "command error" : "message error";
-                        context.WriteError(errorType, error, 400);
-                        return true;
+                if (!value.IsNull()) {
+                    using (var pooled = hub.sharedEnv.Pool.TypeValidator.Get()) {
+                        var validator = pooled.instance;
+                        if (!validator.ValidateJson(value, out string error)) {
+                            var errorType = command != null ? "command error" : "message error";
+                            context.WriteError(errorType, error, 400);
+                            return true;
+                        }
                     }
                 }
                 if (command != null) {
