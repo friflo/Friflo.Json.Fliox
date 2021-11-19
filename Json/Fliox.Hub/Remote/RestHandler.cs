@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             readEntitiesSet.ids.Add(entityId);
             var readEntities = new ReadEntities {
                 container   = container,
-                reads       = new List<ReadEntitiesSet> { readEntitiesSet }
+                sets        = new List<ReadEntitiesSet> { readEntitiesSet }
             };
             var restResult = await ExecuteTask(context, database, readEntities); 
             if (restResult.taskResult == null)

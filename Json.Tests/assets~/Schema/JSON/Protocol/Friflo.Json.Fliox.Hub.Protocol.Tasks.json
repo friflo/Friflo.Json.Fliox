@@ -69,13 +69,13 @@
                 "container": { "type": "string" },
                 "keyName":   { "type": ["string", "null"] },
                 "isIntKey":  { "type": ["boolean", "null"] },
-                "reads":     { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReadEntitiesSet" } },
+                "sets":      { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReadEntitiesSet" } },
                 "info":      {  }
             },
             "required": [
                 "task",
                 "container",
-                "reads"
+                "sets"
             ],
             "additionalProperties": false
         },

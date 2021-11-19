@@ -15,7 +15,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         [Fri.Required]  public  string                  container;
                         public  string                  keyName;
                         public  bool?                   isIntKey;
-        [Fri.Required]  public  List<ReadEntitiesSet>   reads;
+        [Fri.Required]  public  List<ReadEntitiesSet>   sets;
         
         internal override       TaskType                TaskType => TaskType.read;
         public   override       string                  TaskName =>  $"container: '{container}'";
@@ -23,15 +23,15 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
         internal override async Task<SyncTaskResult> Execute(EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (container == null)
                 return MissingContainer();
-            if (reads == null)
-                return MissingField(nameof(reads));
+            if (sets == null)
+                return MissingField(nameof(sets));
             var result = new ReadEntitiesResult {
-                reads = new List<ReadEntitiesSetResult>(reads.Count)
+                reads = new List<ReadEntitiesSetResult>(sets.Count)
             };
             // Optimization:
             // Count & Combine all reads to a single read to call ReadEntitiesSet() only once instead of #reads times
             var combineCount = 0;
-            foreach (var read in reads) {
+            foreach (var read in sets) {
                 if (read == null)
                     return InvalidTask("elements in reads must not be null");
                 if (read.ids == null)
@@ -46,7 +46,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             }
             // Combine
             var combinedRead = new ReadEntitiesSet { keyName = keyName, isIntKey = isIntKey, ids = Helper.CreateHashSet(combineCount, JsonKey.Equality) };
-            foreach (var read in reads) {
+            foreach (var read in sets) {
                 combinedRead.ids.UnionWith(read.ids);
             }
             var entityContainer = database.GetOrCreateContainer(container);
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             var containerResult = response.GetContainerResult(container);
             containerResult.AddEntities(combinedEntities);
             
-            foreach (var read in reads) {
+            foreach (var read in sets) {
                 var readResult  = new ReadEntitiesSetResult {
                     entities = new Dictionary<JsonKey, EntityValue>(read.ids.Count, JsonKey.Equality)
                 };

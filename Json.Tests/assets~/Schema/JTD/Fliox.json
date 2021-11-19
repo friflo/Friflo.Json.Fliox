@@ -76,7 +76,7 @@
                 "container": { "type": "string" },
                 "keyName":   { "type": "string", "nullable": true },
                 "isIntKey":  { "type": "boolean", "nullable": true },
-                "reads":     { "elements": { "ref":  "ReadEntitiesSet" } },
+                "sets":      { "elements": { "ref":  "ReadEntitiesSet" } },
                 "info":      { "nullable": true }
             }
         },

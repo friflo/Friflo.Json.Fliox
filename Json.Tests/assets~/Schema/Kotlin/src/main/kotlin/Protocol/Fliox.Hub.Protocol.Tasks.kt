@@ -40,7 +40,7 @@ data class ReadEntities (
               val container : String,
               val keyName   : String? = null,
               val isIntKey  : Boolean? = null,
-              val reads     : List<ReadEntitiesSet>,
+              val sets      : List<ReadEntitiesSet>,
     override  val info      : JsonElement? = null,
 ) : SyncRequestTask()
 

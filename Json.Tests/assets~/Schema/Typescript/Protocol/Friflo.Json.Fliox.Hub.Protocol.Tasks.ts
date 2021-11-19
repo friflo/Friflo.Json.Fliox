@@ -63,7 +63,7 @@ export class ReadEntities extends SyncRequestTask {
     container  : string;
     keyName?   : string | null;
     isIntKey?  : boolean | null;
-    reads      : ReadEntitiesSet[];
+    sets       : ReadEntitiesSet[];
 }
 
 export class QueryEntities extends SyncRequestTask {

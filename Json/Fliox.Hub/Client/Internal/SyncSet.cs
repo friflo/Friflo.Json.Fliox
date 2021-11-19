@@ -371,7 +371,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             if (_reads == null || _reads.Count == 0)
                 return;
             var readList = new ReadEntities {
-                reads       = new List<ReadEntitiesSet>(_reads.Count),
+                sets       = new List<ReadEntitiesSet>(_reads.Count),
                 container   = set.name,
                 keyName     = SyncKeyName(set.GetKeyName()),
                 isIntKey    = IsIntKey(set.IsIntKey())
@@ -391,7 +391,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
                     ids         = ids,
                     references  = references
                 };
-                readList.reads.Add(req);
+                readList.sets.Add(req);
             }
             tasks.Add(readList);
         }

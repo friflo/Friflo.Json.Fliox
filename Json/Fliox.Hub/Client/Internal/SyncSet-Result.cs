@@ -169,13 +169,13 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             }
             var readListResult = (ReadEntitiesResult) result;
             var expect = reads.Count;
-            var actual = taskList.reads.Count;
+            var actual = taskList.sets.Count;
             if (expect != actual) {
                 throw new InvalidOperationException($"Expect reads.Count == result.reads.Count. expect: {expect}, actual: {actual}");
             }
 
-            for (int i = 0; i < taskList.reads.Count; i++) {
-                var task = taskList.reads[i];
+            for (int i = 0; i < taskList.sets.Count; i++) {
+                var task = taskList.sets[i];
                 var read = reads[i];
                 var readResult = readListResult.reads[i];
                 ReadEntitiesSetResult(task, readResult, read, readEntities);

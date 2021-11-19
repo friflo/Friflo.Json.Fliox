@@ -4,7 +4,7 @@
     {
       "task":       "read",
       "container":  "orders",
-      "reads": [
+      "sets": [
         {
           "ids": ["order-1"],
           "references": [

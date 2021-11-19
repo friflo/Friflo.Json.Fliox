@@ -445,7 +445,7 @@ export async function loadEntity(database, container, id) {
     };
     entityId.innerHTML      = `${id} <span class="spinner"></span>`;
     writeResult.innerHTML   = "";
-    const tasks = [{ "task": "read", "container": container, "reads": [{ "ids": [id] }] }];
+    const tasks = [{ "task": "read", "container": container, "sets": [{ "ids": [id] }] }];
     const response = await postRequestTasks(database, tasks, `${container}/${id}`);
     const content = response.json;
     const error = getTaskError (content, 0);
