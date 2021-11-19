@@ -63,23 +63,19 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return true;
             }
             if (isGet) {
-                await HandleGet(context);
+                var resourcePath    = path.Substring(RestBase.Length);
+                var resource        = resourcePath.Split('/');
+                if (resource.Length == 3) {
+                    await HandleGetEntity(context, resource[0], resource[1], resource[2]);
+                    return true;
+                }
+                context.WriteError("invalid GET request", "expect: /database/container/id", 400);
                 return true;
             }
             return false;
         }
         
         // ----------------------------------------- POST -----------------------------------------
-        private Task HandleGet(RequestContext context) {
-            var path    = context.path.Substring(RestBase.Length);
-            var section = path.Split('/');
-            if (section.Length == 3) {
-                return HandleGetEntity(context, section[0], section[1], section[2]);
-            }
-            context.WriteError("invalid GET request", "expect: /database/container/id", 400);
-            return Task.CompletedTask;
-        }
-        
         private async Task HandleGetEntity(RequestContext context, string database, string container, string id) {
             if (database == "default")
                 database = null;
