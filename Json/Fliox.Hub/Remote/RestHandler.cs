@@ -39,16 +39,38 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var database    = section[0];
             if (database == "default")
                 database = null;
-            var container   = section[1];
-            var entityId    = new JsonKey(section[2]);
+            var container       = section[1];
+            var entityId        = new JsonKey(section[2]);
             var readEntitiesSet = new ReadEntitiesSet ();
             readEntitiesSet.ids.Add(entityId);
-            var tasks   = new List<SyncRequestTask> {
-                new ReadEntities {
-                    container   = container,
-                    reads       = new List<ReadEntitiesSet> { readEntitiesSet }
-                }
+            var readEntities = new ReadEntities {
+                container   = container,
+                reads       = new List<ReadEntitiesSet> { readEntitiesSet }
             };
+            var restResult = await ExecuteTask(context, database, readEntities); 
+            if (restResult.taskResult == null)
+                return true;
+
+            var readResult  = (ReadEntitiesResult)restResult.taskResult;
+            var resultSet   = readResult.reads[0];
+            var readError   = resultSet.Error;
+            if (readError != null) {
+                context.WriteString($"read error - {readError.message}", "text/plain", 500);
+                return true;
+            }
+            var content     = restResult.syncResponse.resultMap[container].entityMap[entityId];
+            var entityError = content.Error;
+            if (entityError != null) {
+                context.WriteString($"entity error: {entityError.type} - {entityError.message}", "application/json", 404);
+                return true;
+            }
+            var entityStatus = content.Json.IsNull() ? 404 : 200;
+            context.Write(content.Json, 0, "application/json", entityStatus);
+            return true;
+        }
+        
+        private async Task<RestResult> ExecuteTask (RequestContext context, string database, SyncRequestTask task) {
+            var tasks   = new List<SyncRequestTask> { task };
             var synRequest = new SyncRequest {
                 database    = database,
                 tasks       = tasks,
@@ -60,30 +82,29 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var result = await hub.ExecuteSync(synRequest, messageContext);
             var error = result.error;
             if (error != null) {
-                context.WriteString(error.message, "application/json", 400);
-                return true;
+                var status = error.type == ErrorResponseType.BadRequest ? 400 : 500;
+                context.WriteString($"sync error: {error.message}", "text/plain", status);
+                return default;
             }
-            var success     = result.success;
-            var taskResult  = success.tasks[0];
+            var syncResponse    = result.success;
+            var taskResult      = syncResponse.tasks[0];
             if (taskResult is TaskErrorResult errorResult) {
-                context.WriteString(errorResult.message, "application/json", 400);
-                return true;
+                int status;
+                switch (errorResult.type) {
+                    case TaskErrorResultType.InvalidTask:       status = 400;   break;
+                    case TaskErrorResultType.PermissionDenied:  status = 403;   break;
+                    case TaskErrorResultType.DatabaseError:     status = 503;   break;
+                    default:                                    status = 500;   break;
+                }
+                context.WriteString($"task error: {errorResult.type} - {errorResult.message}", "text/plain", status);
+                return default;
             }
-            var readResult  = (ReadEntitiesResult)success.tasks[0];
-            var resultSet   = readResult.reads[0];
-            var readError   = resultSet.Error;
-            if (readError != null) {
-                context.WriteString(readError.message, "application/json", 400);
-                return true;
-            }
-            var content     = success.resultMap[container].entityMap[entityId];
-            var entityError = content.Error;
-            if (entityError != null) {
-                context.WriteString(entityError.message, "application/json", 200);
-                return true;
-            }
-            context.Write(content.Json, 0, "application/json", 200);
-            return true;
+            return new RestResult { taskResult = taskResult, syncResponse = syncResponse };
         }
     }
+    
+    internal struct RestResult {
+        internal    SyncResponse    syncResponse;
+        internal    SyncTaskResult  taskResult;
+    } 
 }
