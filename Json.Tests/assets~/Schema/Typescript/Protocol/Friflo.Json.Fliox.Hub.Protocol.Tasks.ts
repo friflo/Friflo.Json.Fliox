@@ -175,8 +175,8 @@ export class UpsertEntitiesResult extends SyncTaskResult {
 }
 
 export class ReadEntitiesResult extends SyncTaskResult {
-    task   : "read";
-    reads  : ReadEntitiesSetResult[];
+    task  : "read";
+    sets  : ReadEntitiesSetResult[];
 }
 
 export class QueryEntitiesResult extends SyncTaskResult {

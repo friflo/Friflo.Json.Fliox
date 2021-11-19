@@ -26,7 +26,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
             if (sets == null)
                 return MissingField(nameof(sets));
             var result = new ReadEntitiesResult {
-                reads = new List<ReadEntitiesSetResult>(sets.Count)
+                sets = new List<ReadEntitiesSetResult>(sets.Count)
             };
             // Optimization:
             // Count & Combine all reads to a single read to call ReadEntitiesSet() only once instead of #reads times
@@ -76,7 +76,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
                     readResult.references = readRefResults.references;
                 }
                 readResult.entities = null;
-                result.reads.Add(readResult);
+                result.sets.Add(readResult);
             }
             return result;
         }
@@ -85,7 +85,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol.Tasks
     // ----------------------------------- task result -----------------------------------
     public sealed class ReadEntitiesResult : SyncTaskResult
     {
-        [Fri.Required]  public  List<ReadEntitiesSetResult>    reads;
+        [Fri.Required]  public  List<ReadEntitiesSetResult> sets;
         
         internal override       TaskType                    TaskType => TaskType.read;
     }

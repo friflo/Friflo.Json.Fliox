@@ -293,12 +293,12 @@
             "type": "object",
             "extends": { "$ref": "#/definitions/SyncTaskResult" },
             "properties": {
-                "task":  { "enum": ["read"] },
-                "reads": { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReadEntitiesSetResult" } }
+                "task": { "enum": ["read"] },
+                "sets": { "type": "array", "items": { "$ref": "./Friflo.Json.Fliox.Hub.Protocol.Models.json#/definitions/ReadEntitiesSetResult" } }
             },
             "required": [
                 "task",
-                "reads"
+                "sets"
             ],
             "additionalProperties": false
         },

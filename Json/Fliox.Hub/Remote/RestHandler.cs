@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return;
 
             var readResult  = (ReadEntitiesResult)restResult.taskResult;
-            var resultSet   = readResult.reads[0];
+            var resultSet   = readResult.sets[0];
             var resultError = resultSet.Error;
             if (resultError != null) {
                 context.WriteError("read error", resultError.message, 500);

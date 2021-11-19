@@ -177,7 +177,7 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal
             for (int i = 0; i < taskList.sets.Count; i++) {
                 var task = taskList.sets[i];
                 var read = reads[i];
-                var readResult = readListResult.reads[i];
+                var readResult = readListResult.sets[i];
                 ReadEntitiesSetResult(task, readResult, read, readEntities);
             }
         }

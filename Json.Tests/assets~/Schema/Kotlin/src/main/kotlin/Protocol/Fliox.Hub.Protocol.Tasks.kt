@@ -153,7 +153,7 @@ data class UpsertEntitiesResult (
 @Serializable
 @SerialName("read")
 data class ReadEntitiesResult (
-              val reads : List<ReadEntitiesSetResult>,
+              val sets : List<ReadEntitiesSetResult>,
 ) : SyncTaskResult()
 
 @Serializable

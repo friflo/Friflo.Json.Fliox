@@ -626,7 +626,7 @@
         },
         "ReadEntitiesResult": {
             "properties": {
-                "reads": { "elements": { "ref":  "ReadEntitiesSetResult" } }
+                "sets": { "elements": { "ref":  "ReadEntitiesSetResult" } }
             }
         },
         "ReadEntitiesSetResult": {
