@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -25,23 +26,27 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public async Task<bool> HandleRequest(RequestContext context) {
             if (!context.path.StartsWith(RestBase))
                 return false;
-            var query       = context.query;
-            var commaPos    = query.IndexOf(',');
-            var commandEnd  = commaPos != -1 ? commaPos : query.Length; 
+            var query       = HttpUtility.UrlDecode(context.query);
+            var colonPos    = query.IndexOf(':');
+            var commandEnd  = colonPos != -1 ? colonPos : query.Length;
             var command     = query.StartsWith(Cmd) ? query.Substring(Cmd.Length, commandEnd - Cmd.Length) : null;
             var message     = query.StartsWith(Msg) ? query.Substring(Msg.Length, commandEnd - Msg.Length) : null;
             var isGet       = context.method == "GET";
             var isPost      = context.method == "POST";
             
-            if (isGet || isPost) {
+            if ((command != null || message != null) && (isGet || isPost)) {
+                JsonValue value;
+                if (isPost) {
+                    value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+                } else {
+                    value = new JsonValue(query.Substring(colonPos + 1));
+                }
                 if (command != null) {
-                    await HandleCommand(context, command);
+                    await HandleCommand(context, command, value);
                     return true;
                 }
-                if (message != null) {
-                    await HandleMessage(context, message);
-                    return true;
-                }
+                await HandleMessage(context, message, value);
+                return true;
             }
             if (isGet) {
                 await HandleGet(context);
@@ -93,14 +98,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // ----------------------------------------- command -----------------------------------------
-        private async Task HandleCommand(RequestContext context, string command) {
+        private async Task HandleCommand(RequestContext context, string command, JsonValue value) {
             var database = context.path.Substring(RestBase.Length);
             if (database == "default")
                 database = null;
             
             var sendCommand = new SendCommand {
                 name    = command,
-                value   = new JsonValue()
+                value   = value
             };
             var restResult = await ExecuteTask(context, database, sendCommand); 
             if (restResult.taskResult == null)
@@ -116,14 +121,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // ----------------------------------------- message -----------------------------------------
-        private async Task HandleMessage(RequestContext context, string message) {
+        private async Task HandleMessage(RequestContext context, string message, JsonValue value) {
             var database = context.path.Substring(RestBase.Length);
             if (database == "default")
                 database = null;
             
             var sendCommand = new SendMessage {
                 name    = message,
-                value   = new JsonValue()
+                value   = value
             };
             var restResult = await ExecuteTask(context, database, sendCommand); 
             if (restResult.taskResult == null)
@@ -132,7 +137,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var sendResult  = (SendMessageResult)restResult.taskResult;
             var resultError = sendResult.Error;
             if (resultError != null) {
-                context.WriteError("send error", resultError.message, 500);
+                context.WriteError("message error", resultError.message, 500);
                 return;
             }
             context.WriteString("received", "text/plain");
