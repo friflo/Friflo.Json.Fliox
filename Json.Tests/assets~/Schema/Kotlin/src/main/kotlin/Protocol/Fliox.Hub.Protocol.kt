@@ -74,7 +74,14 @@ data class ErrorResponse (
     override  val req     : Int? = null,
     override  val clt     : String? = null,
               val message : String? = null,
+              val type    : ErrorResponseType,
 ) : ProtocolResponse()
+
+enum class ErrorResponseType {
+    Internal,
+    BadRequest,
+    BadResponse,
+}
 
 @Serializable
 @SerialName("ev")

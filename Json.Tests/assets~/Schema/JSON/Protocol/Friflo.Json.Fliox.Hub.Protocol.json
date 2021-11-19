@@ -75,12 +75,21 @@
                 "msg":     { "enum": ["error"] },
                 "req":     { "oneOf": [{"type": "null"}, { "$ref": "./Standard.json#/definitions/int32" }] },
                 "clt":     { "type": ["string", "null"] },
-                "message": { "type": ["string", "null"] }
+                "message": { "type": ["string", "null"] },
+                "type":    { "$ref": "#/definitions/ErrorResponseType" }
             },
             "required": [
-                "msg"
+                "msg",
+                "type"
             ],
             "additionalProperties": false
+        },
+        "ErrorResponseType": {
+            "enum": [
+                "Internal",
+                "BadRequest",
+                "BadResponse"
+            ]
         },
         "EventMessage": {
             "type": "object",

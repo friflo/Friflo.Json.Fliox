@@ -142,13 +142,13 @@ namespace Friflo.Json.Fliox.Hub.Host
             
             var requestTasks = syncRequest.tasks;
             if (requestTasks == null) {
-                return new ExecuteSyncResult ("missing field: tasks (array)");
+                return new ExecuteSyncResult ("missing field: tasks (array)", ErrorResponseType.BadRequest);
             }
             var dbName = syncRequest.database;
             EntityDatabase db = database;
             if (dbName != null) {
                 if (!extensionDbs.TryGetValue(dbName, out db))
-                    return new ExecuteSyncResult($"database not found: '{syncRequest.database}'");
+                    return new ExecuteSyncResult($"database not found: '{syncRequest.database}'", ErrorResponseType.BadRequest);
                 await db.ExecuteSyncPrepare(syncRequest, messageContext).ConfigureAwait(false);
             }
             var tasks       = new List<SyncTaskResult>(requestTasks.Count);
@@ -252,9 +252,9 @@ namespace Friflo.Json.Fliox.Hub.Host
             error   = null;
         }
         
-        public ExecuteSyncResult (string errorMessage) {
+        public ExecuteSyncResult (string errorMessage, ErrorResponseType errorType) {
             success = null;
-            error   = new ErrorResponse { message = errorMessage };
+            error   = new ErrorResponse { message = errorMessage, type = errorType };
         }
         
         public  ProtocolResponse Result { get {

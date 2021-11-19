@@ -85,7 +85,14 @@ export class EntityErrors {
 export class ErrorResponse extends ProtocolResponse {
     msg      : "error";
     message? : string | null;
+    type     : ErrorResponseType;
 }
+
+export type ErrorResponseType =
+    | "Internal"
+    | "BadRequest"
+    | "BadResponse"
+;
 
 export type ProtocolEvent_Union =
     | EventMessage

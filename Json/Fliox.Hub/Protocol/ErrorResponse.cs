@@ -8,11 +8,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     // ----------------------------------- response -----------------------------------
     public sealed class ErrorResponse : ProtocolResponse
     {
-        public              string      message;
+        public              string              message;
+        public              ErrorResponseType   type;
         
-        internal override   MessageType MessageType => MessageType.error;
+        internal override   MessageType         MessageType => MessageType.error;
 
-        public override     string      ToString() => message;
+        public override     string              ToString() => message;
 
         public static StringBuilder ErrorFromException(Exception e) {
             var sb = new StringBuilder();
@@ -36,5 +37,12 @@ namespace Friflo.Json.Fliox.Hub.Protocol
             }
             return sb;
         }
+    }
+    
+    public enum ErrorResponseType
+    {
+        Internal,
+        BadRequest,
+        BadResponse
     }
 }

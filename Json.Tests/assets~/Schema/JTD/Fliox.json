@@ -752,8 +752,16 @@
             "properties": {
                 "req":     { "type": "int32", "nullable": true },
                 "clt":     { "type": "string", "nullable": true },
-                "message": { "type": "string", "nullable": true }
+                "message": { "type": "string", "nullable": true },
+                "type":    { "ref":  "ErrorResponseType" }
             }
+        },
+        "ErrorResponseType": {
+            "enum": [
+                "Internal",
+                "BadRequest",
+                "BadResponse"
+            ]
         },
         "EventMessage": {
             "properties": {

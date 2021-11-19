@@ -40,18 +40,18 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 var response    = RemoteUtils.ReadProtocolMessage (jsonBody, messageContext.pool, out string error);
                 switch (response) {
                     case null:
-                        return  new ExecuteSyncResult(error);
+                        return  new ExecuteSyncResult(error, ErrorResponseType.BadResponse);
                     case SyncResponse syncResponse:
                         if (httpResponse.StatusCode == HttpStatusCode.OK) {
                             return new ExecuteSyncResult(syncResponse);
                         }
                         var msg = $"Request failed. StatusCode: {httpResponse.StatusCode}, error: {jsonBody.AsString()}";
-                        return new ExecuteSyncResult(msg);
+                        return new ExecuteSyncResult(msg, ErrorResponseType.BadResponse);
                     case ErrorResponse errorResponse:
-                        return new ExecuteSyncResult(errorResponse.message);
+                        return new ExecuteSyncResult(errorResponse.message, errorResponse.type);
                     default:
                         var msg2 = $"Unknown response. StatusCode: {httpResponse.StatusCode}, Type: {response.GetType().Name}";
-                        return new ExecuteSyncResult(msg2);
+                        return new ExecuteSyncResult(msg2, ErrorResponseType.BadResponse);
                 }
             }
             catch (HttpRequestException e) {
@@ -59,7 +59,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
                 var msg = $"Request failed: Exception: {error}";
-                return new ExecuteSyncResult(msg);
+                return new ExecuteSyncResult(msg, ErrorResponseType.Internal);
             }
         }
     }

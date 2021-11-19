@@ -76,7 +76,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteString(readError.message, "application/json", 400);
                 return true;
             }
-            var content = success.resultMap[container].entityMap[entityId];
+            var content     = success.resultMap[container].entityMap[entityId];
+            var entityError = content.Error;
+            if (entityError != null) {
+                context.WriteString(entityError.message, "application/json", 200);
+                return true;
+            }
             context.Write(content.Json, 0, "application/json", 200);
             return true;
         }

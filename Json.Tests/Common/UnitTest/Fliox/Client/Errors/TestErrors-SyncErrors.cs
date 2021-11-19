@@ -3,6 +3,7 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
 using static Friflo.Json.Tests.Common.Utils.AssertUtils;
@@ -26,7 +27,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Errors
             // use SendCommand() to simulate error/exception
             var msgSyncError        = "MsgSyncError";
             var msgSyncException    = "MsgSyncException";
-            testHub.syncErrors.Add(msgSyncError,       () => new ExecuteSyncResult("simulated SyncError"));
+            testHub.syncErrors.Add(msgSyncError,       () => new ExecuteSyncResult("simulated SyncError", ErrorResponseType.Internal));
             testHub.syncErrors.Add(msgSyncException,   () => throw new SimulationException ("simulated SyncException"));
             
             var helloTask1 = store.Echo("Hello World 1");

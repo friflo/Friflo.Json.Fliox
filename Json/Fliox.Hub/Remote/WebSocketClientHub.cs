@@ -142,14 +142,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 if (response is SyncResponse syncResponse) {
                     return new ExecuteSyncResult(syncResponse);
                 }
-                return new ExecuteSyncResult($"invalid response: Was: {response.MessageType}");
+                return new ExecuteSyncResult($"invalid response: Was: {response.MessageType}", ErrorResponseType.BadResponse);
             }
             catch (Exception e) {
                 var error = ErrorResponse.ErrorFromException(e);
                 error.Append(" endpoint: ");
                 error.Append(endpoint);
                 var msg = error.ToString();
-                return new ExecuteSyncResult(msg);
+                return new ExecuteSyncResult(msg, ErrorResponseType.Internal);
             }
         }
     }
