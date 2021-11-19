@@ -115,7 +115,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 await WebSocketHost.SendReceiveMessages (websocket, hostHub).ConfigureAwait(false);
                 return;
             }
-            var reqCtx = new RequestContext(ctx.Request.HttpMethod, ctx.Request.Url.AbsolutePath, req.InputStream);
+            var request = ctx.Request;
+            var url     = request.Url; 
+            var reqCtx  = new RequestContext(request.HttpMethod, url.AbsolutePath, url.Query, req.InputStream);
             bool handled = await hostHub.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
             
             if (handled) {

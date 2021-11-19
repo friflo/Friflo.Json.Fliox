@@ -20,27 +20,47 @@ namespace Friflo.Json.Fliox.Hub.Remote
             this.hub = hub;
         }
             
-        public Task<bool> HandleRequest(RequestContext context) {
+        public async Task<bool> HandleRequest(RequestContext context) {
             if (!context.path.StartsWith(RestBase))
-                return Task.FromResult(false);
-            if (context.method == "GET") {
-                return HandleGet(context);
+                return false;
+            var query   = context.query;
+            var command = query.StartsWith("?command=") ? query.Substring("?command=".Length) : null;
+            var message = query.StartsWith("?message=") ? query.Substring("?message=".Length) : null;
+            var isGet   = context.method == "GET";
+            var isPost  = context.method == "POST";
+            
+            if (isGet || isPost) {
+                if (command != null) {
+                    await HandleCommand(context, command);
+                    return true;
+                }
+                if (message != null) {
+                    await HandleMessage(context, message);
+                    return true;
+                }
             }
-            return Task.FromResult(false);
-        }
-        
-        private async Task<bool> HandleGet(RequestContext context) {
-            var path    = context.path.Substring(RestBase.Length);
-            var section = path.Split('/');
-            if (section.Length < 3) {
-                context.WriteError("request error", "GET expect: /database/container/id", 400);
+            if (isGet) {
+                await HandleGet(context);
                 return true;
             }
-            var database    = section[0];
+            return false;
+        }
+        
+        // ----------------------------------------- POST -----------------------------------------
+        private Task HandleGet(RequestContext context) {
+            var path    = context.path.Substring(RestBase.Length);
+            var section = path.Split('/');
+            if (section.Length == 3) {
+                return HandleGetEntity(context, section[0], section[1], section[2]);
+            }
+            context.WriteError("invalid GET request", "expect: /database/container/id", 400);
+            return Task.CompletedTask;
+        }
+        
+        private async Task HandleGetEntity(RequestContext context, string database, string container, string id) {
             if (database == "default")
                 database = null;
-            var container       = section[1];
-            var entityId        = new JsonKey(section[2]);
+            var entityId        = new JsonKey(id);
             var readEntitiesSet = new ReadEntitiesSet ();
             readEntitiesSet.ids.Add(entityId);
             var readEntities = new ReadEntities {
@@ -49,26 +69,40 @@ namespace Friflo.Json.Fliox.Hub.Remote
             };
             var restResult = await ExecuteTask(context, database, readEntities); 
             if (restResult.taskResult == null)
-                return true;
+                return;
 
             var readResult  = (ReadEntitiesResult)restResult.taskResult;
             var resultSet   = readResult.reads[0];
             var readError   = resultSet.Error;
             if (readError != null) {
                 context.WriteError("read error", readError.message, 500);
-                return true;
+                return;
             }
             var content     = restResult.syncResponse.resultMap[container].entityMap[entityId];
             var entityError = content.Error;
             if (entityError != null) {
                 context.WriteError("entity error", $"{entityError.type} - {entityError.message}", 404);
-                return true;
+                return;
             }
             var entityStatus = content.Json.IsNull() ? 404 : 200;
             context.Write(content.Json, 0, "application/json", entityStatus);
-            return true;
         }
         
+        // ----------------------------------------- command -----------------------------------------
+        private Task HandleCommand(RequestContext context, string command) {
+            context.WriteError("invalid command", command, 400);
+            return Task.CompletedTask;
+        }
+        
+        // ----------------------------------------- message -----------------------------------------
+        private Task HandleMessage(RequestContext context, string message) {
+            context.WriteError("invalid message", message, 400);
+            return Task.CompletedTask;
+        }
+
+        
+        
+        // ----------------------------------------- utils -----------------------------------------
         private async Task<RestResult> ExecuteTask (RequestContext context, string database, SyncRequestTask task) {
             var tasks   = new List<SyncRequestTask> { task };
             var synRequest = new SyncRequest {

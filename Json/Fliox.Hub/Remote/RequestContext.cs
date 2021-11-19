@@ -16,16 +16,20 @@ namespace Friflo.Json.Fliox.Hub.Remote
     {
         public readonly string          method;
         public readonly string          path;
+        public readonly string          query;
         public readonly Stream          body;
         
         public          string          ResponseContentType { get; private set; }
         public          int             StatusCode          { get; private set; }
         public          JsonValue       Response            { get; private set; }
         public          int             Offset              { get; private set; }
-        
-        public RequestContext (string  method,string path, Stream body) {
+
+        public override string          ToString() => $"{method} {path}{query}";
+
+        public RequestContext (string  method, string path, string query, Stream body) {
             this.method = method;
             this.path   = path;
+            this.query  = query;
             this.body   = body;
         }
         

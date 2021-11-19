@@ -22,7 +22,7 @@ namespace Friflo.Json.Fliox.Hub.AspNetCore
                 return;
             }
             var httpRequest = context.Request;
-            var reqCtx = new RequestContext(httpRequest.Method, httpRequest.Path.Value, httpRequest.Body);
+            var reqCtx = new RequestContext(httpRequest.Method, httpRequest.Path.Value, httpRequest.QueryString.Value, httpRequest.Body);
             await hostHub.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
                     
             var httpResponse            = context.Response;
