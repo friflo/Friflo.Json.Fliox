@@ -143,14 +143,14 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             AreEqual("{'id':'monitor-admin','clients':['monitor-client'],'counts':[{'db':'monitor','requests':1,'tasks':1}]}", adminInfo);
             
             var pocAdmin = users[new JsonKey("poc-admin")].ToString();
-            AreEqual("{'id':'poc-admin','clients':['poc-client'],'counts':[{'db':'default','requests':1,'tasks':2}]}", pocAdmin);
+            AreEqual("{'id':'poc-admin','clients':['poc-client'],'counts':[{'db':'db','requests':1,'tasks':2}]}", pocAdmin);
             
             // --- clients
             var clients = result.clients.Results;
             AreEqual(2, clients.Count);
             
             var pocClientInfo = clients[new JsonKey("poc-client")].ToString();
-            AreEqual("{'id':'poc-client','user':'poc-admin','counts':[{'db':'default','requests':1,'tasks':2}]}", pocClientInfo);
+            AreEqual("{'id':'poc-client','user':'poc-admin','counts':[{'db':'db','requests':1,'tasks':2}]}", pocClientInfo);
             
             var monitorClientInfo = clients[new JsonKey("monitor-client")].ToString();
             AreEqual("{'id':'monitor-client','user':'monitor-admin','counts':[{'db':'monitor','requests':1,'tasks':1}]}", monitorClientInfo);

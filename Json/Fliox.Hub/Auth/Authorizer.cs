@@ -34,7 +34,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
         protected AuthorizerDatabase (string database) {
             if (database == null) {
-                dbLabel = "default";
+                dbLabel = EntityDatabase.DefaultDb;
                 return;
             }
             dbLabel     = database;

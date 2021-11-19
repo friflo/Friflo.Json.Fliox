@@ -37,7 +37,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     context.WriteError(GetErrorType(command), $"messages & commands operate on database. was: {database}", 400);
                     return true;
                 }
-                if (database == "default")
+                if (database == EntityDatabase.DefaultDb)
                     database = null;
                 JsonValue value;
                 if (isPost) {
@@ -77,7 +77,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         // ----------------------------------------- POST -----------------------------------------
         private async Task HandleGetEntity(RequestContext context, string database, string container, string id) {
-            if (database == "default")
+            if (database == EntityDatabase.DefaultDb)
                 database = null;
             var entityId        = new JsonKey(id);
             var readEntitiesSet = new ReadEntitiesSet ();

@@ -210,7 +210,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         private void UpdateRequestStats(string database, SyncRequest syncRequest, MessageContext messageContext) {
-            if (database == null) database = "default";
+            if (database == null) database = EntityDatabase.DefaultDb;
             var user = messageContext.User;
             RequestCount.UpdateCounts(user.requestCounts, database, syncRequest);
             ref var clientId = ref messageContext.clientId;
@@ -231,7 +231,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal Dictionary<string, EntityDatabase> GetDatabases() {
             var result = new Dictionary<string, EntityDatabase> (extensionDbs.Count + 1);
             if (database != null) {
-                result.Add("default", database);
+                result.Add(EntityDatabase.DefaultDb, database);
             }
             foreach (var extensionDB in extensionDbs) {
                 result.Add(extensionDB.Key, extensionDB.Value);

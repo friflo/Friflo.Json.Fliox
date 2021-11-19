@@ -249,7 +249,7 @@ async function postRequest(request, tag) {
 }
 
 async function postRequestTasks(database, tasks, tag) {
-    const db = database == "default" ? undefined : database;
+    const db = database == "db" ? undefined : database;
     const request = JSON.stringify({
         "msg":      "sync",
         "database": db,
@@ -388,7 +388,7 @@ function createEntitySchemas(catalogSchemas) {
             monacoSchemas.push(schemaEntry);
             var container = typeMap[schemaName];
             if (container) {
-                var url = `entity://${database}.${container}.json`; // e.g. 'entity://default.orders.json'
+                var url = `entity://${database}.${container}.json`; // e.g. 'entity://db.orders.json'
                 schemaEntry.fileMatch = [url]; // associate with our model
             }
         }
@@ -463,7 +463,7 @@ export async function loadEntity(database, container, id) {
 
 export async function saveEntity() {
     var container = entityIdentity.container;
-    var database = entityIdentity.database == "default" ? undefined : entityIdentity.database;
+    var database = entityIdentity.database == "db" ? undefined : entityIdentity.database;
     var jsonValue = entityModel.getValue();
     const request = {
         "msg": "sync",

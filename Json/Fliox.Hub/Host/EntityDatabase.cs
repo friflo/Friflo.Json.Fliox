@@ -62,6 +62,9 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public   readonly   TaskHandler         handler;
         
+        
+        internal const string DefaultDb = "db";
+        
         /// <summary>
         /// constructor parameters are mandatory to force implementations having them in their constructors also or
         /// pass null by implementations.
