@@ -62,6 +62,20 @@ namespace Friflo.Json.Fliox.Schema.Validation
             return RootError(type, "Expected EOF after reading JSON", out error);
         }
         
+        public bool ValidateJson(JsonValue json, out string error) {
+            jsonBytes.Clear();
+            jsonBytes.AppendArray(json);
+            parser.InitParser(jsonBytes);
+            parser.SkipTree();
+            var success = !parser.error.ErrSet;
+            if (success) {
+                error = null;
+            } else {
+                error = parser.error.msg.AsString();
+            }
+            return success;
+        }
+        
         public bool ValidateObject (JsonValue json, ValidationType type, out string error) {
             Init(json);
             var ev = parser.NextEvent();

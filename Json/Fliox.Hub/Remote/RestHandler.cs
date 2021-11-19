@@ -41,6 +41,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 } else {
                     value = new JsonValue(query.Substring(colonPos + 1));
                 }
+                using (var pooled = hub.sharedEnv.Pool.TypeValidator.Get()) {
+                    var validator = pooled.instance;
+                    if (!validator.ValidateJson(value, out string error)) {
+                        var errorType = command != null ? "command error" : "message error";
+                        context.WriteError(errorType, error, 400);
+                        return true;
+                    }
+                }
                 if (command != null) {
                     await HandleCommand(context, command, value);
                     return true;
