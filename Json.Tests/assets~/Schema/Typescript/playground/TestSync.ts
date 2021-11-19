@@ -13,14 +13,14 @@ var exampleSync: ProtocolMessage_Union =
         {
             "task":         "read",
             "container":    "Article",
-            "reads": [
+            "sets": [
                 { "ids": ["article-galaxy", "article-ipad"] }
             ]
         },
         {
             "task":         "read",
             "container":    "Order",
-            "reads": [
+            "sets": [
                 {
                     "ids": ["order-1"],
                     "references": [
