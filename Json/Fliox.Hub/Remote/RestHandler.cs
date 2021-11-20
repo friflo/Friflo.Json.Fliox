@@ -78,16 +78,17 @@ namespace Friflo.Json.Fliox.Hub.Remote
             // ------------------    POST    /database/container
             if (isPost) {
                 var resource = resourcePath.Split('/');
-                if (resource.Length == 2) {
-                    var value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
-                    if (!IsValidJson(hub.sharedEnv, value, out string error)) {
-                        context.WriteError("POST error", error, 400);
-                        return true;
-                    }
-                    await HandleUpsertEntity(context, resource[0], resource[1], value);
+                if (resource.Length != 2) {
+                    context.WriteError("invalid POST", "expect: /database/container", 400);
                     return true;
                 }
-                context.WriteError("invalid POST", "expect: /database/container", 400);
+                var value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+                if (!IsValidJson(hub.sharedEnv, value, out string error)) {
+                    context.WriteError("POST error", error, 400);
+                    return true;
+                }
+                var keyName = queryKeyValues["keyName"];
+                await HandleUpsertEntity(context, resource[0], resource[1], keyName, value);
                 return true;
             }
             return false;
@@ -161,11 +162,14 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.WriteString("deleted successful", "text/plain");
         }
         
-        private async Task HandleUpsertEntity(RequestContext context, string database, string container, JsonValue value) {
+        private async Task HandleUpsertEntity(RequestContext context, string database, string container, string keyName, JsonValue value) {
             if (database == EntityDatabase.DefaultDb)
                 database = null;
-            var upsertEntities  = new UpsertEntities { container = container };
-            upsertEntities.entities.Add(value);
+            var upsertEntities  = new UpsertEntities {
+                container   = container,
+                keyName     = keyName,
+                entities    = new List<JsonValue> {value} 
+            };
             var restResult  = await ExecuteTask(context, database, upsertEntities);
             
             if (restResult.taskResult == null)
