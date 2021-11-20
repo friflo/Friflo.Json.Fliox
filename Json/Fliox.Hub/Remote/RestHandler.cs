@@ -25,11 +25,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var path = context.path;
             if (!path.StartsWith(RestBase))
                 return false;
+            var method          = context.method;
             var queryKeyValues  = HttpUtility.ParseQueryString(context.query);
             var command         = queryKeyValues["command"];
             var message         = queryKeyValues["message"];
-            var isGet           = context.method == "GET";
-            var isPost          = context.method == "POST";
+            var isGet           = method == "GET";
+            var isPost          = method == "POST";
             
             if ((command != null || message != null) && (isGet || isPost)) {
                 var database = path.Substring(RestBase.Length);
@@ -57,14 +58,19 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 await HandleMessage(context, database, message, value);
                 return true;
             }
-            if (isGet) {
+            var isDelete = method == "delete";
+            if (isGet || isDelete) {
                 var resourcePath    = path.Substring(RestBase.Length);
                 var resource        = resourcePath.Split('/');
                 if (resource.Length == 3) {
-                    await HandleGetEntity(context, resource[0], resource[1], resource[2]);
+                    if (isGet) {
+                        await HandleGetEntity(context, resource[0], resource[1], resource[2]);    
+                        return true;
+                    }
+                    await HandleDeleteEntity(context, resource[0], resource[1], resource[2]);
                     return true;
                 }
-                context.WriteError("invalid GET request", "expect: /database/container/id", 400);
+                context.WriteError("invalid request", "expect: /database/container/id", 400);
                 return true;
             }
             return false;
@@ -117,6 +123,25 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var entityStatus = content.Json.IsNull() ? 404 : 200;
             context.Write(content.Json, 0, "application/json", entityStatus);
+        }
+        
+        private async Task HandleDeleteEntity(RequestContext context, string database, string container, string id) {
+            if (database == EntityDatabase.DefaultDb)
+                database = null;
+            var entityId        = new JsonKey(id);
+            var deleteEntities  = new DeleteEntities { container = container };
+            deleteEntities.ids.Add(entityId);
+            var restResult  = await ExecuteTask(context, database, deleteEntities); 
+            if (restResult.taskResult == null)
+                return;
+            
+            var sendResult  = (DeleteEntitiesResult)restResult.taskResult;
+            var resultError = sendResult.Error;
+            if (resultError != null) {
+                context.WriteError("delete error", resultError.message, 500);
+                return;
+            }
+            context.WriteString("deleted", "text/plain");
         }
         
         // ----------------------------------------- command / message -----------------------------------------
