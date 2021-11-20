@@ -3,7 +3,9 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Auth;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.Host.Cluster;
 using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -37,11 +39,22 @@ namespace Friflo.Json.Fliox.Hub.Host
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
         
         public TaskHandler () {
-            AddCommandHandler(StdCommand.Echo, new CommandHandler<JsonValue, JsonValue>(Echo)); // todo add handler via scanning TaskHandler
+            AddCommandHandler(StdCommand.Echo,      new CommandHandler<JsonValue, JsonValue>(Echo));    // todo add handler via scanning TaskHandler
+            AddCommandHandler(StdCommand.Catalog,   new CommandHandler<Empty,     Catalog>(Catalog));   // todo add handler via scanning TaskHandler
         }
         
         private static JsonValue Echo (Command<JsonValue> command) {
             return command.JsonValue;
+        }
+        
+        private Catalog Catalog (Command<Empty> command) {
+            var hub = command.Hub;
+            var databaseInfo = hub.database.GetDatabaseInfo();
+            var catalog = new Catalog {
+                databaseType    = databaseInfo.databaseType,
+                containers      = databaseInfo.containers
+            };
+            return catalog;
         }
         
         internal bool TryGetCommand(string name, out CommandCallback command) {

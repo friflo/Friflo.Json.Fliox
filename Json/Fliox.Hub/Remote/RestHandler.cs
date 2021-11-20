@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
+using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
@@ -64,6 +65,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var resource = resourcePath.Split('/');
             var isDelete = method == "delete";
+            // ------------------    GET            /database
+            if (isGet && resource.Length == 1) {
+                await Command(context, resource[0], StdCommand.Catalog, new JsonValue()); 
+                return true;
+            }
             // ------------------    GET            /database/container
             if (isGet && resource.Length == 2) {
                 await GetEntities(context, resource[0], resource[1]); 
