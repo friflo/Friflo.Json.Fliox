@@ -51,6 +51,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             var database        = command.Database;  
             var databaseInfo    = database.GetDatabaseInfo();
             var catalog = new Catalog {
+                id              = command.DatabaseName,        
                 databaseType    = databaseInfo.databaseType,
                 containers      = databaseInfo.containers
             };

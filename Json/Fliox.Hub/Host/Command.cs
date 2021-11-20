@@ -6,16 +6,17 @@ using Friflo.Json.Fliox.Mapper;
 namespace Friflo.Json.Fliox.Hub.Host
 {
     public readonly struct Command<TValue>{
-        public              string          Name    { get; }
-        public              IPool           Pool        => messageContext.pool;
-        public              FlioxHub        Hub         => messageContext.hub;
-        public              JsonValue       JsonValue   => json;
-        public              EntityDatabase  Database    => messageContext.Database;
+        public              string          Name            { get; }
+        public              IPool           Pool            => messageContext.pool;
+        public              FlioxHub        Hub             => messageContext.hub;
+        public              JsonValue       JsonValue       => json;
+        public              string          DatabaseName    => messageContext.DatabaseName;
+        public              EntityDatabase  Database        => messageContext.Database;
         
         private  readonly   JsonValue       json;
         private  readonly   MessageContext  messageContext;
 
-        public   override   string          ToString() => Name;
+        public   override   string          ToString()      => Name;
         
         public              TValue          Value { get {
             using (var pooledMapper = messageContext.pool.ObjectMapper.Get()) {
