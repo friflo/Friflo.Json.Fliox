@@ -133,7 +133,10 @@ namespace Friflo.Json.Fliox.Hub.Host
         /// </summary>
         public virtual async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.hub          = this;
-            messageContext.DatabaseName = syncRequest.database;
+            var dbName = syncRequest.database;
+            if (dbName == EntityDatabase.DefaultDb)
+                dbName = null;
+            messageContext.DatabaseName = dbName;
             if (messageContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
             messageContext.clientId = syncRequest.clientId;
             
@@ -144,7 +147,6 @@ namespace Friflo.Json.Fliox.Hub.Host
             if (requestTasks == null) {
                 return new ExecuteSyncResult ("missing field: tasks (array)", ErrorResponseType.BadRequest);
             }
-            var dbName = syncRequest.database;
             EntityDatabase db = database;
             if (dbName != null) {
                 if (!extensionDbs.TryGetValue(dbName, out db))
