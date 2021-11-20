@@ -75,16 +75,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("invalid request", "expect: /database/container/id", 400);
                 return true;
             }
-            // ------------------    POST    /database/container
-            if (isPost) {
+            // ------------------    PUT    /database/container
+            if (method == "PUT") {
                 var resource = resourcePath.Split('/');
                 if (resource.Length != 2) {
-                    context.WriteError("invalid POST", "expect: /database/container", 400);
+                    context.WriteError("invalid PUT", "expect: /database/container", 400);
                     return true;
                 }
                 var value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
                 if (!IsValidJson(hub.sharedEnv, value, out string error)) {
-                    context.WriteError("POST error", error, 400);
+                    context.WriteError("PUT error", error, 400);
                     return true;
                 }
                 var keyName = queryKeyValues["keyName"];
@@ -177,10 +177,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var upsertResult  = (UpsertEntitiesResult)restResult.taskResult;
             var resultError = upsertResult.Error;
             if (resultError != null) {
-                context.WriteError("upsert error", resultError.message, 500);
+                context.WriteError("PUT error", resultError.message, 500);
                 return;
             }
-            context.WriteString("upsert successful", "text/plain");
+            context.WriteString("PUT successful", "text/plain");
         }
         
         // ----------------------------------------- command / message -----------------------------------------
