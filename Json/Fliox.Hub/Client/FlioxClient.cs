@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Client.Internal;
 using Friflo.Json.Fliox.Hub.Client.Internal.Map;
 using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Cluster;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
@@ -245,7 +246,8 @@ namespace Friflo.Json.Fliox.Hub.Client
             return SendCommand<TCommand,TCommand>(StdCommand.Echo, command);
         }
         
-        // public CommandTask           Catalog() => SendCommand<Catalog>(StdCommand.Catalog);
+        public CommandTask<Catalog>         Catalog()       => SendCommand<Catalog>         (StdCommand.Catalog);
+        public CommandTask<CatalogSchema>   CatalogSchema() => SendCommand<CatalogSchema>   (StdCommand.CatalogSchema);
 
         // Declared only to generate command in Schema 
         internal CommandTask<JsonValue> Echo(JsonValue _) => throw new InvalidOperationException("unexpected call of Echo command");
