@@ -48,8 +48,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
         
         private Catalog Catalog (Command<Empty> command) {
-            var hub = command.Hub;
-            var databaseInfo = hub.database.GetDatabaseInfo();
+            var database        = command.Database;  
+            var databaseInfo    = database.GetDatabaseInfo();
             var catalog = new Catalog {
                 databaseType    = databaseInfo.databaseType,
                 containers      = databaseInfo.containers

@@ -7,9 +7,10 @@ namespace Friflo.Json.Fliox.Hub.Host
 {
     public readonly struct Command<TValue>{
         public              string          Name    { get; }
-        public              IPool           Pool       => messageContext.pool;
+        public              IPool           Pool        => messageContext.pool;
         public              FlioxHub        Hub         => messageContext.hub;
         public              JsonValue       JsonValue   => json;
+        public              EntityDatabase  Database    => messageContext.Database;
         
         private  readonly   JsonValue       json;
         private  readonly   MessageContext  messageContext;

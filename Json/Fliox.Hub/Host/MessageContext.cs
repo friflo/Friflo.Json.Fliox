@@ -29,7 +29,8 @@ namespace Friflo.Json.Fliox.Hub.Host
         public              ClientIdValidation  clientIdValidation;
         public              User                User            => authState.user;
         public              bool                Authenticated   => authState.authenticated;
-        public              string              Database        { get; internal set; }
+        public              string              DatabaseName    { get; internal set; }
+        public              EntityDatabase      Database        => hub.GetDatabase(DatabaseName);
 
         // --- internal / private by intention
         /// <summary>Is set for clients requests only. In other words - from the initiator of a <see cref="ProtocolRequest"/></summary>

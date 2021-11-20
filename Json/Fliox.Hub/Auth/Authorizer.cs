@@ -47,7 +47,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
         }
         
         protected bool AuthorizeDatabase(MessageContext messageContext) {
-            var db = messageContext.Database;
+            var db = messageContext.DatabaseName;
             if (isPrefix) {
                 if (db != null) 
                     return db.StartsWith(database);
