@@ -46,14 +46,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     var queryValue = queryKeyValues["value"];
                     value = new JsonValue(queryValue);
                 }
-                if (!value.IsNull()) {
-                    using (var pooled = hub.sharedEnv.Pool.TypeValidator.Get()) {
-                        var validator = pooled.instance;
-                        if (!validator.ValidateJson(value, out string error)) {
-                            context.WriteError(GetErrorType(command), error, 400);
-                            return true;
-                        }
-                    }
+                if (!IsValidJson(hub.sharedEnv, value, out string error)) {
+                    context.WriteError(GetErrorType(command), error, 400);
+                    return true;
                 }
                 if (command != null) {
                     await HandleCommand(context, database, command, value);
@@ -75,7 +70,24 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return false;
         }
         
-        // ----------------------------------------- POST -----------------------------------------
+        private static bool IsValidJson (SharedEnv sharedEnv, JsonValue value, out string error) {
+            error = null;
+            if (value.IsNull())
+                return true;
+            using (var pooled = sharedEnv.Pool.TypeValidator.Get()) {
+                var validator = pooled.instance;
+                if (!validator.ValidateJson(value, out error)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        private static string GetErrorType (string command) {
+            return command != null ? "command error" : "message error";
+        }
+        
+        // ----------------------------------------- read entity  -----------------------------------------
         private async Task HandleGetEntity(RequestContext context, string database, string container, string id) {
             if (database == EntityDatabase.DefaultDb)
                 database = null;
@@ -108,10 +120,6 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // ----------------------------------------- command / message -----------------------------------------
-        private static string GetErrorType (string command) {
-            return command != null ? "command error" : "message error";
-        }
-        
         private async Task HandleCommand(RequestContext context, string database, string command, JsonValue value) {
             var sendCommand = new SendCommand {
                 name    = command,
