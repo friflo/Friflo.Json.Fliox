@@ -16,6 +16,8 @@
         "Linq",
         "NETFX",
         "netsh",
+        "noopener",
+        "noreferrer",
         "nullary",
         "Postgres",
         "Praetz",

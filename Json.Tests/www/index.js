@@ -21,6 +21,7 @@ const defaultToken      = document.getElementById("token");
 const catalogExplorer   = document.getElementById("catalogExplorer");
 const entityExplorer    = document.getElementById("entityExplorer");
 const writeResult       = document.getElementById("writeResult");
+const readEntitiesDB    = document.getElementById("readEntitiesDB");
 const readEntities      = document.getElementById("readEntities");
 const entityId          = document.getElementById("entityId");
 
@@ -399,12 +400,13 @@ function createEntitySchemas(catalogSchemas) {
 export async function loadEntities(database, container) {
     setEntityValue(database, container, "");
     const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
-    readEntities.innerHTML = `${container} <span class="spinner"></span>`;
+    readEntitiesDB.innerHTML = `<a href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;;
+    readEntities.innerHTML  = `${container} <span class="spinner"></span>`;
     const response = await postRequestTasks(database, tasks, container);
     const content = response.json;
     entityId.innerHTML      = "";
     writeResult.innerHTML   = "";
-    readEntities.innerText = container;
+    readEntities.innerHTML  = `<a href="./rest/${database}/${container}" target="_blank" rel="noopener noreferrer">${container}</a>`;
     var error = getTaskError (content, 0);
     if (error) {
         entityExplorer.innerHTML = errorAsHtml(error);
@@ -454,7 +456,7 @@ export async function loadEntity(database, container, id) {
         setEntityValue(database, container, error);
         return;
     }
-    entityId.innerHTML = id;
+    entityId.innerHTML = `<a href="./rest/${database}/${container}/${id}" target="_blank" rel="noopener noreferrer">${id}</a>`;
     const entityValue = content.containers[0].entities[0];
     const entityJson = JSON.stringify(entityValue, null, 2);
     // console.log(entityJson);
