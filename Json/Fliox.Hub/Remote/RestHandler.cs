@@ -9,7 +9,9 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Models;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
+using Friflo.Json.Fliox.Transform;
 
+// ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 namespace Friflo.Json.Fliox.Hub.Remote
 {
     public class RestHandler : IRequestHandler
@@ -33,7 +35,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var isPost          = method == "POST";
             var resourcePath    = path.Substring(RestBase.Length);
             
-            // ------------------    GET / POST   /database?command=...   /database?message=...
+            // ------------------    GET / POST     /database?command=...   /database?message=...
             if ((command != null || message != null) && (isGet || isPost)) {
                 var database = resourcePath;
                 if (database.IndexOf('/') != -1) {
@@ -60,10 +62,15 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 await HandleMessage(context, database, message, value);
                 return true;
             }
+            var resource = resourcePath.Split('/');
             var isDelete = method == "delete";
-            // ------------------    GET / DELETE    /database/container/id
+            // ------------------    GET            /database/container
+            if (isGet && resource.Length == 2) {
+                await HandleGetEntities(context, resource[0], resource[1]); 
+                return true;
+            }
+            // ------------------    GET / DELETE   /database/container/id
             if (isGet || isDelete) {
-                var resource = resourcePath.Split('/');
                 if (resource.Length == 3) {
                     if (isGet) {
                         await HandleGetEntity(context, resource[0], resource[1], resource[2]);    
@@ -75,9 +82,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 context.WriteError("invalid request", "expect: /database/container/id", 400);
                 return true;
             }
-            // ------------------    PUT    /database/container
+            // ------------------    PUT            /database/container
             if (method == "PUT") {
-                var resource = resourcePath.Split('/');
                 if (resource.Length != 2) {
                     context.WriteError("invalid PUT", "expect: /database/container", 400);
                     return true;
@@ -111,7 +117,34 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return command != null ? "command error" : "message error";
         }
         
-        // ----------------------------------------- read entity  -----------------------------------------
+        // -------------------------------------- resource access  --------------------------------------
+        private async Task HandleGetEntities(RequestContext context, string database, string container) {
+            if (database == EntityDatabase.DefaultDb)
+                database = null;
+            var queryEntities   = new QueryEntities{ container = container, filter = Operation.FilterTrue };
+            var restResult      = await ExecuteTask(context, database, queryEntities);
+            
+            if (restResult.taskResult == null)
+                return;
+            var queryResult  = (QueryEntitiesResult)restResult.taskResult;
+            var resultError = queryResult.Error;
+            if (resultError != null) {
+                context.WriteError("query error", resultError.message, 500);
+                return;
+            }
+            var entityMap     = restResult.syncResponse.resultMap[container].entityMap;
+            var entities = new List<JsonValue>(entityMap.Count);
+            foreach (var pair in entityMap) {
+                entities.Add(pair.Value.Json);
+            }
+            using (var pooled = hub.sharedEnv.Pool.ObjectMapper.Get()) {
+                var writer = pooled.instance.writer;
+                var entityArray = writer.WriteAsArray(entities);
+                var response = new JsonValue(entityArray);
+                context.Write(response, 0, "application/json", 200);
+            }
+        }
+        
         private async Task HandleGetEntity(RequestContext context, string database, string container, string id) {
             if (database == EntityDatabase.DefaultDb)
                 database = null;
