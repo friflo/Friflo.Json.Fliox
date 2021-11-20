@@ -39,23 +39,31 @@ namespace Friflo.Json.Fliox.Hub.Host
         private readonly Dictionary<string, CommandCallback> commands = new Dictionary<string, CommandCallback>();
         
         public TaskHandler () {
-            AddCommandHandler(StdCommand.Echo,      new CommandHandler<JsonValue, JsonValue>(Echo));    // todo add handler via scanning TaskHandler
-            AddCommandHandler(StdCommand.Catalog,   new CommandHandler<Empty,     Catalog>(Catalog));   // todo add handler via scanning TaskHandler
+            AddCommandHandler(StdCommand.Echo,          new CommandHandler<JsonValue, JsonValue>    (Echo));    // todo add handler via scanning TaskHandler
+            AddCommandHandler(StdCommand.Catalog,       new CommandHandler<Empty,     Catalog>      (Catalog));
+            AddCommandHandler(StdCommand.CatalogSchema, new CommandHandler<Empty,     CatalogSchema>(CatalogSchema));
         }
         
         private static JsonValue Echo (Command<JsonValue> command) {
             return command.JsonValue;
         }
         
-        private Catalog Catalog (Command<Empty> command) {
+        private static Catalog Catalog (Command<Empty> command) {
             var database        = command.Database;  
             var databaseInfo    = database.GetDatabaseInfo();
             var catalog = new Catalog {
-                id              = command.DatabaseName,        
+                id              = command.DatabaseName,
                 databaseType    = databaseInfo.databaseType,
                 containers      = databaseInfo.containers
             };
             return catalog;
+        }
+        
+        private static CatalogSchema CatalogSchema (Command<Empty> command) {
+            var database        = command.Database;  
+            var databaseName    = command.DatabaseName;
+            var databaseInfo    = database.GetDatabaseInfo();
+            return ClusterStore.CreateCatalogSchema(databaseInfo, databaseName);
         }
         
         internal bool TryGetCommand(string name, out CommandCallback command) {

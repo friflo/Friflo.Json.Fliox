@@ -116,10 +116,11 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// <summary>
         /// Echoes the value specified in <see cref="FlioxClient.SendCommand{TCommand,TResult}(string,TCommand)"/> in <see cref="CommandTask.ResultJson"/>
         /// </summary>
-        public const string Echo    = "Echo";
+        public const string Echo            = "Echo";
         
-        public const string Catalog = "Catalog";
-
+        public const string Catalog         = "Catalog";
+        
+        public const string CatalogSchema   = "CatalogSchema";
     }
 
     public delegate void MessageHandler<TMessage>   (Message<TMessage>  message);

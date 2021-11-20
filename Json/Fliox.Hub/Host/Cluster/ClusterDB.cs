@@ -90,20 +90,25 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
                     catalogs.Upsert(catalog);
                 }
                 if (ClusterDB.FindTask(nameof(schemas), tasks)) {
-                    var typeSchema  = databaseInfo.schema.typeSchema;
-                    var schemaType  = typeSchema.RootType;
-                    var entityTypes = typeSchema.GetEntityTypes();
-                    var generator   = new Generator(typeSchema, ".json", null, entityTypes);
-                    JsonSchemaGenerator.Generate(generator);
-                    var schema = new CatalogSchema {
-                        id          = databaseName,
-                        schemaName  = schemaType.Name,
-                        schemaPath  = schemaType.Path + generator.fileExt,
-                        jsonSchemas = generator.files
-                    };
+                    var schema = CreateCatalogSchema(databaseInfo, databaseName);
                     schemas.Upsert(schema);
                 }
             }
+        }
+        
+        internal static CatalogSchema CreateCatalogSchema (DatabaseInfo databaseInfo, string databaseName) {
+            var typeSchema  = databaseInfo.schema.typeSchema;
+            var schemaType  = typeSchema.RootType;
+            var entityTypes = typeSchema.GetEntityTypes();
+            var generator   = new Generator(typeSchema, ".json", null, entityTypes);
+            JsonSchemaGenerator.Generate(generator);
+            var schema = new CatalogSchema {
+                id          = databaseName,
+                schemaName  = schemaType.Name,
+                schemaPath  = schemaType.Path + generator.fileExt,
+                jsonSchemas = generator.files
+            };
+            return schema;
         }
     }
 }
