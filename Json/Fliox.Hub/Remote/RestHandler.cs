@@ -121,11 +121,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         // ----------------------------------------- command / message -----------------------------------------
         private async Task HandleCommand(RequestContext context, string database, string command, JsonValue value) {
-            var sendCommand = new SendCommand {
-                name    = command,
-                value   = value
-            };
-            var restResult = await ExecuteTask(context, database, sendCommand); 
+            var sendCommand = new SendCommand { name    = command, value   = value };
+            var restResult  = await ExecuteTask(context, database, sendCommand); 
             if (restResult.taskResult == null)
                 return;
             
@@ -139,11 +136,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private async Task HandleMessage(RequestContext context, string database, string message, JsonValue value) {
-            var sendCommand = new SendMessage {
-                name    = message,
-                value   = value
-            };
-            var restResult = await ExecuteTask(context, database, sendCommand); 
+            var sendMessage = new SendMessage { name = message, value   = value };
+            var restResult  = await ExecuteTask(context, database, sendMessage); 
             if (restResult.taskResult == null)
                 return;
             
