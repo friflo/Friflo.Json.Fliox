@@ -56,27 +56,27 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return true;
                 }
                 if (command != null) {
-                    await HandleCommand(context, database, command, value);
+                    await Command(context, database, command, value);
                     return true;
                 }
-                await HandleMessage(context, database, message, value);
+                await Message(context, database, message, value);
                 return true;
             }
             var resource = resourcePath.Split('/');
             var isDelete = method == "delete";
             // ------------------    GET            /database/container
             if (isGet && resource.Length == 2) {
-                await HandleGetEntities(context, resource[0], resource[1]); 
+                await GetEntities(context, resource[0], resource[1]); 
                 return true;
             }
             // ------------------    GET / DELETE   /database/container/id
             if (isGet || isDelete) {
                 if (resource.Length == 3) {
                     if (isGet) {
-                        await HandleGetEntity(context, resource[0], resource[1], resource[2]);    
+                        await GetEntity(context, resource[0], resource[1], resource[2]);    
                         return true;
                     }
-                    await HandleDeleteEntity(context, resource[0], resource[1], resource[2]);
+                    await DeleteEntity(context, resource[0], resource[1], resource[2]);
                     return true;
                 }
                 context.WriteError("invalid request", "expect: /database/container/id", 400);
@@ -94,7 +94,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return true;
                 }
                 var keyName = queryKeyValues["keyName"];
-                await HandleUpsertEntity(context, resource[0], resource[1], keyName, value);
+                await UpsertEntity(context, resource[0], resource[1], keyName, value);
                 return true;
             }
             return false;
@@ -118,7 +118,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // -------------------------------------- resource access  --------------------------------------
-        private async Task HandleGetEntities(RequestContext context, string database, string container) {
+        private async Task GetEntities(RequestContext context, string database, string container) {
             if (database == EntityDatabase.DefaultDb)
                 database = null;
             var queryEntities   = new QueryEntities{ container = container, filter = Operation.FilterTrue };
@@ -145,7 +145,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
         }
         
-        private async Task HandleGetEntity(RequestContext context, string database, string container, string id) {
+        private async Task GetEntity(RequestContext context, string database, string container, string id) {
             if (database == EntityDatabase.DefaultDb)
                 database = null;
             var entityId        = new JsonKey(id);
@@ -176,7 +176,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.Write(content.Json, 0, "application/json", entityStatus);
         }
         
-        private async Task HandleDeleteEntity(RequestContext context, string database, string container, string id) {
+        private async Task DeleteEntity(RequestContext context, string database, string container, string id) {
             if (database == EntityDatabase.DefaultDb)
                 database = null;
             var entityId        = new JsonKey(id);
@@ -195,7 +195,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.WriteString("deleted successful", "text/plain");
         }
         
-        private async Task HandleUpsertEntity(RequestContext context, string database, string container, string keyName, JsonValue value) {
+        private async Task UpsertEntity(RequestContext context, string database, string container, string keyName, JsonValue value) {
             if (database == EntityDatabase.DefaultDb)
                 database = null;
             var upsertEntities  = new UpsertEntities {
@@ -217,7 +217,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         // ----------------------------------------- command / message -----------------------------------------
-        private async Task HandleCommand(RequestContext context, string database, string command, JsonValue value) {
+        private async Task Command(RequestContext context, string database, string command, JsonValue value) {
             var sendCommand = new SendCommand { name    = command, value   = value };
             var restResult  = await ExecuteTask(context, database, sendCommand);
             
@@ -232,7 +232,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.Write(sendResult.result, 0, "application/json", 200);
         }
         
-        private async Task HandleMessage(RequestContext context, string database, string message, JsonValue value) {
+        private async Task Message(RequestContext context, string database, string message, JsonValue value) {
             var sendMessage = new SendMessage { name = message, value   = value };
             var restResult  = await ExecuteTask(context, database, sendMessage);
             
