@@ -14,7 +14,6 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
         
         internal ClusterHandler (FlioxHub hub) {
             this.hub = hub;
-
         }
         
         public override Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
