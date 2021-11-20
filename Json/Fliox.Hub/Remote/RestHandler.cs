@@ -31,9 +31,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var message         = queryKeyValues["message"];
             var isGet           = method == "GET";
             var isPost          = method == "POST";
+            var resourcePath    = path.Substring(RestBase.Length);
             
+            // ------------------    GET / POST   /database?command=...   /database?message=...
             if ((command != null || message != null) && (isGet || isPost)) {
-                var database = path.Substring(RestBase.Length);
+                var database = resourcePath;
                 if (database.IndexOf('/') != -1) {
                     context.WriteError(GetErrorType(command), $"messages & commands operate on database. was: {database}", 400);
                     return true;
@@ -59,9 +61,9 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return true;
             }
             var isDelete = method == "delete";
+            // ------------------    GET / DELETE    /database/container/id
             if (isGet || isDelete) {
-                var resourcePath    = path.Substring(RestBase.Length);
-                var resource        = resourcePath.Split('/');
+                var resource = resourcePath.Split('/');
                 if (resource.Length == 3) {
                     if (isGet) {
                         await HandleGetEntity(context, resource[0], resource[1], resource[2]);    
@@ -71,6 +73,21 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return true;
                 }
                 context.WriteError("invalid request", "expect: /database/container/id", 400);
+                return true;
+            }
+            // ------------------    POST    /database/container
+            if (isPost) {
+                var resource = resourcePath.Split('/');
+                if (resource.Length == 2) {
+                    var value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
+                    if (!IsValidJson(hub.sharedEnv, value, out string error)) {
+                        context.WriteError("POST error", error, 400);
+                        return true;
+                    }
+                    await HandleUpsertEntity(context, resource[0], resource[1], value);
+                    return true;
+                }
+                context.WriteError("invalid POST", "expect: /database/container", 400);
                 return true;
             }
             return false;
@@ -104,10 +121,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 container   = container,
                 sets        = new List<ReadEntitiesSet> { readEntitiesSet }
             };
-            var restResult = await ExecuteTask(context, database, readEntities); 
+            var restResult = await ExecuteTask(context, database, readEntities);
+            
             if (restResult.taskResult == null)
                 return;
-
             var readResult  = (ReadEntitiesResult)restResult.taskResult;
             var resultSet   = readResult.sets[0];
             var resultError = resultSet.Error;
@@ -131,26 +148,44 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var entityId        = new JsonKey(id);
             var deleteEntities  = new DeleteEntities { container = container };
             deleteEntities.ids.Add(entityId);
-            var restResult  = await ExecuteTask(context, database, deleteEntities); 
+            var restResult  = await ExecuteTask(context, database, deleteEntities);
+            
             if (restResult.taskResult == null)
                 return;
-            
-            var sendResult  = (DeleteEntitiesResult)restResult.taskResult;
-            var resultError = sendResult.Error;
+            var deleteResult  = (DeleteEntitiesResult)restResult.taskResult;
+            var resultError = deleteResult.Error;
             if (resultError != null) {
                 context.WriteError("delete error", resultError.message, 500);
                 return;
             }
-            context.WriteString("deleted", "text/plain");
+            context.WriteString("deleted successful", "text/plain");
+        }
+        
+        private async Task HandleUpsertEntity(RequestContext context, string database, string container, JsonValue value) {
+            if (database == EntityDatabase.DefaultDb)
+                database = null;
+            var upsertEntities  = new UpsertEntities { container = container };
+            upsertEntities.entities.Add(value);
+            var restResult  = await ExecuteTask(context, database, upsertEntities);
+            
+            if (restResult.taskResult == null)
+                return;
+            var upsertResult  = (UpsertEntitiesResult)restResult.taskResult;
+            var resultError = upsertResult.Error;
+            if (resultError != null) {
+                context.WriteError("upsert error", resultError.message, 500);
+                return;
+            }
+            context.WriteString("upsert successful", "text/plain");
         }
         
         // ----------------------------------------- command / message -----------------------------------------
         private async Task HandleCommand(RequestContext context, string database, string command, JsonValue value) {
             var sendCommand = new SendCommand { name    = command, value   = value };
-            var restResult  = await ExecuteTask(context, database, sendCommand); 
+            var restResult  = await ExecuteTask(context, database, sendCommand);
+            
             if (restResult.taskResult == null)
                 return;
-            
             var sendResult  = (SendCommandResult)restResult.taskResult;
             var resultError = sendResult.Error;
             if (resultError != null) {
@@ -162,10 +197,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         private async Task HandleMessage(RequestContext context, string database, string message, JsonValue value) {
             var sendMessage = new SendMessage { name = message, value   = value };
-            var restResult  = await ExecuteTask(context, database, sendMessage); 
+            var restResult  = await ExecuteTask(context, database, sendMessage);
+            
             if (restResult.taskResult == null)
                 return;
-            
             var sendResult  = (SendMessageResult)restResult.taskResult;
             var resultError = sendResult.Error;
             if (resultError != null) {
