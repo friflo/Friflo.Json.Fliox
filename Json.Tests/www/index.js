@@ -101,13 +101,17 @@ function getCookie(name) {
 export function initUserToken() {
     var user    = getCookie("fliox-user")   ?? "admin";
     var token   = getCookie("fliox-token")  ?? "admin";
-    setUserToken(user, token);
+    setUser(user);
+    setToken(token);
 }
 
-export function setUserToken(user, token) {
+export function setUser(user) {
     defaultUser.value   = user;
-    defaultToken.value  = token;
     document.cookie = `fliox-user=${user};`;
+}
+
+export function setToken(token) {
+    defaultToken.value  = token;
     document.cookie = `fliox-token=${token};`;
 }
 

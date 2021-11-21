@@ -9,10 +9,12 @@
     <title>Json.Fliox.Hub</title>
 
     <script type="module">
-        import { connectWebsocket, closeWebsocket, initUserToken, setUserToken, sendSyncRequest, postSyncRequest, onExampleChange, loadExampleRequestList,
+        import { connectWebsocket, closeWebsocket, initUserToken, setUser, setToken, sendSyncRequest, postSyncRequest, onExampleChange, loadExampleRequestList,
             setTheme, openTab, loadCluster, addTableResize, saveEntity, deleteEntity } from  "./index.js";
         setTheme();
         initUserToken();
+        window.setUser          = setUser;
+        window.setToken         = setToken;
         window.connectWebsocket = connectWebsocket;
         window.closeWebsocket   = closeWebsocket;
         window.sendSyncRequest  = sendSyncRequest;
@@ -27,7 +29,8 @@
 
         window.selectUser = function (element) {
             let value = element.innerText;
-            setUserToken(value, value)
+            setUser(value);
+            setToken(value);
         };
         window.openTab("playground");
 
@@ -186,8 +189,8 @@
     <span class="tab" onclick="openTab('explorer')"   >Explorer</span>
     <span style="border-bottom: 1px solid var(--tab-border); width:100%;">
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <label for="form-user"><code>user</code></label>   <input type="text" id="user"  name="form-user"  style="width: 100px;" value="admin">&nbsp;
-      <label for="form-token"><code>token</code></label> <input type="text" id="token" name="form-token" style="width: 100px;" value="admin">    
+      <label for="form-user"><code>user</code></label>   <input onchange="setUser(value)"  type="text" id="user"  name="form-user"  style="width: 100px;" value="admin">&nbsp;
+      <label for="form-token"><code>token</code></label> <input onchange="setToken(value)" type="text" id="token" name="form-token" style="width: 100px;" value="admin">    
       <div class="dropdown">
         <button class="dropbtn">▼</button>
         <div class="dropdown-content">
