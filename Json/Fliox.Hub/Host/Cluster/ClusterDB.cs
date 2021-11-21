@@ -92,12 +92,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
                 }
                 if (ClusterDB.FindTask(nameof(schemas), tasks)) {
                     var schema = CreateCatalogSchema(databaseInfo, databaseName);
-                    schemas.Upsert(schema);
+                    if (schema != null)
+                        schemas.Upsert(schema);
                 }
             }
         }
         
         internal static CatalogSchema CreateCatalogSchema (DatabaseInfo databaseInfo, string databaseName) {
+            if (databaseInfo.schema == null)
+                return null;
             var typeSchema  = databaseInfo.schema.typeSchema;
             var schemaType  = typeSchema.RootType;
             var entityTypes = typeSchema.GetEntityTypes();
