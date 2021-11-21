@@ -119,7 +119,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var request = ctx.Request;
             var url     = request.Url; 
             var headers = new HttpListenerHeaders(request.Headers);
-            var reqCtx  = new RequestContext(request.HttpMethod, url.AbsolutePath, url.Query, req.InputStream, headers);
+            var cookies = new HttpListenerCookies(request.Cookies);
+            var reqCtx  = new RequestContext(request.HttpMethod, url.AbsolutePath, url.Query, req.InputStream, headers, cookies);
             bool handled = await hostHub.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
             
             if (handled) {
@@ -182,6 +183,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         internal HttpListenerHeaders(NameValueCollection headers) {
             this.headers = headers;    
+        }
+    }
+    
+    internal class HttpListenerCookies : IHttpCookies {
+        private  readonly   CookieCollection    cookies;
+        
+        public              string              this[string key] => cookies[key]?.Value;
+        
+        internal HttpListenerCookies(CookieCollection cookies) {
+            this.cookies = cookies;    
         }
     }
 }

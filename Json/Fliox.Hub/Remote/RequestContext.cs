@@ -19,6 +19,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public readonly string          query;
         public readonly Stream          body;
         public readonly IHttpHeaders    headers;
+        public readonly IHttpCookies    cookies;
         
         public          string          ResponseContentType { get; private set; }
         public          int             StatusCode          { get; private set; }
@@ -27,12 +28,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
 
         public override string          ToString() => $"{method} {path}{query}";
 
-        public RequestContext (string  method, string path, string query, Stream body, IHttpHeaders headers) {
+        public RequestContext (string  method, string path, string query, Stream body, IHttpHeaders headers, IHttpCookies cookies) {
             this.method     = method;
             this.path       = path;
             this.query      = query;
             this.body       = body;
             this.headers    = headers;
+            this.cookies    = cookies;
         }
         
         public void Write (JsonValue value, int offset, string contentType, int statusCode) {
@@ -59,6 +61,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
     }
     
     public interface IHttpHeaders {
+        string this[string key] { get; }
+    }
+    
+    public interface IHttpCookies {
         string this[string key] { get; }
     }
 }

@@ -257,11 +257,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
         // ----------------------------------------- utils -----------------------------------------
         private async Task<RestResult> ExecuteTask (RequestContext context, string database, SyncRequestTask task) {
             var tasks   = new List<SyncRequestTask> { task };
+            var userId  = context.cookies["fliox-user"];
+            var token   = context.cookies["fliox-token"];
             var synRequest = new SyncRequest {
                 database    = database,
                 tasks       = tasks,
-                userId      = new JsonKey("admin"),
-                token       = "admin"
+                userId      = new JsonKey(userId),
+                token       = token
             };
             var pool            = new Pool(hub.sharedEnv);
             var messageContext  = new MessageContext(pool, null);
