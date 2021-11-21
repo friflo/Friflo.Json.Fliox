@@ -9,30 +9,14 @@
     <title>Json.Fliox.Hub</title>
 
     <script type="module">
-        import { connectWebsocket, closeWebsocket, initUserToken, setUser, setToken, sendSyncRequest, postSyncRequest, onExampleChange, loadExampleRequestList,
-            setTheme, openTab, loadCluster, addTableResize, saveEntity, deleteEntity } from  "./index.js";
-        setTheme();
-        initUserToken();
-        window.setUser          = setUser;
-        window.setToken         = setToken;
-        window.connectWebsocket = connectWebsocket;
-        window.closeWebsocket   = closeWebsocket;
-        window.sendSyncRequest  = sendSyncRequest;
-        window.postSyncRequest  = postSyncRequest;
-        window.onExampleChange  = onExampleChange;
-        window.openTab          = openTab;
-        window.saveEntity       = saveEntity;
-        window.deleteEntity     = deleteEntity;
-        loadExampleRequestList();
-        loadCluster();
-        addTableResize();
-
-        window.selectUser = function (element) {
-            let value = element.innerText;
-            setUser(value);
-            setToken(value);
-        };
-        window.openTab("playground");
+        import { app } from  "./index.js";
+        window.app = app;
+        app.setTheme();
+        app.initUserToken();
+        app.loadExampleRequestList();
+        app.loadCluster();
+        app.addTableResize();
+        app.openTab("playground");
 
     </script>
     <style>
@@ -145,8 +129,7 @@
     <script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.nls.js"></script>
     <script src="https://microsoft.github.io/monaco-editor/node_modules/monaco-editor/min/vs/editor/editor.main.js"></script>
     <script type="module">
-        import { setupEditors } from  "./index.js";
-        setupEditors();
+        app.setupEditors();
     </script>
 </head>
 
@@ -185,8 +168,8 @@
   </table>
   <!-- [How To Create Tabs] https://www.w3schools.com/howto/howto_js_tabs.asp -->
   <div style="overflow:initial; white-space:nowrap; margin-bottom: 10px; display:flex;">
-    <span class="tab" onclick="openTab('playground')">Playground</span>
-    <span class="tab" onclick="openTab('explorer')"   >Explorer</span>
+    <span class="tab" onclick="app.openTab('playground')">Playground</span>
+    <span class="tab" onclick="app.openTab('explorer')"   >Explorer</span>
     <span style="border-bottom: 1px solid var(--tab-border); width:100%;">
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <label for="form-user"><code>user</code></label>   <input onchange="setUser(value)"  type="text" id="user"  name="form-user"  style="width: 100px;" value="admin">&nbsp;
@@ -194,11 +177,11 @@
       <div class="dropdown">
         <button class="dropbtn">▼</button>
         <div class="dropdown-content">
-          <a onclick="selectUser(this)">admin</a>
-          <a onclick="selectUser(this)">poc-admin</a>
-          <a onclick="selectUser(this)">poc-reader</a>
-          <a onclick="selectUser(this)">monitor-admin</a>
-          <a onclick="selectUser(this)">user-admin</a>
+          <a onclick="app.selectUser(this)">admin</a>
+          <a onclick="app.selectUser(this)">poc-admin</a>
+          <a onclick="app.selectUser(this)">poc-reader</a>
+          <a onclick="app.selectUser(this)">monitor-admin</a>
+          <a onclick="app.selectUser(this)">user-admin</a>
         </div>
       </div>
     </span>
@@ -206,14 +189,14 @@
 
   <div id="playground" class="tabContent">
   <span style="overflow:auto;white-space:nowrap">
-    <select required title="example-requests" id="example" onchange="onExampleChange()"></select>
-    <button type="button" onclick="postSyncRequest()" title="POST request (Ctrl+Alt+P)">POST</button>
+    <select required title="example-requests" id="example" onchange="app.onExampleChange()"></select>
+    <button type="button" onclick="app.postSyncRequest()" title="POST request (Ctrl+Alt+P)">POST</button>
 
     &nbsp;&nbsp;&nbsp;&nbsp; <small>WebSocket</small> &nbsp;
-    <button type="button" onclick="sendSyncRequest()" title="Send websocket request (Ctrl+Alt+Enter)">send</button>
+    <button type="button" onclick="app.sendSyncRequest()" title="Send websocket request (Ctrl+Alt+Enter)">send</button>
     &nbsp;&nbsp;
-    <button type="button" onclick="connectWebsocket()">connect</button> 
-    <button type="button" onclick="closeWebsocket()">close</button> &nbsp;
+    <button type="button" onclick="app.connectWebsocket()">connect</button> 
+    <button type="button" onclick="app.closeWebsocket()">close</button> &nbsp;
     <small id="socketStatus" class="inline">disconnected</small> &nbsp;&nbsp;&nbsp;&nbsp;
   </span>
   <br>
@@ -260,8 +243,8 @@
           <small style="opacity: 0.5;">Entity</small>
           <small style="width: 150px; display:inline-block;" id="entityId"></small>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <button type="button" onclick="deleteEntity()" title="Delete">Delete</button>
-          <button type="button" onclick="saveEntity()" title="Save (Ctrl+S)">Save</button>
+          <button type="button" onclick="app.deleteEntity()" title="Delete">Delete</button>
+          <button type="button" onclick="app.saveEntity()" title="Save (Ctrl+S)">Save</button>
         </td>
       </tr>
       <tr>
