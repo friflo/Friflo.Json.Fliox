@@ -89,8 +89,7 @@ export function connectWebsocket() {
 }
 
 export function closeWebsocket() {
-    document.cookie = `fliox-user=${user};`;
-    document.cookie = `fliox-token=${token};`;
+    connection.close();
 }
 
 function getCookie(name) {
