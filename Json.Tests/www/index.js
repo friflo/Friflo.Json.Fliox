@@ -89,7 +89,27 @@ export function connectWebsocket() {
 }
 
 export function closeWebsocket() {
-    connection.close();
+    document.cookie = `fliox-user=${user};`;
+    document.cookie = `fliox-token=${token};`;
+}
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+export function initUserToken() {
+    var user    = getCookie("fliox-user")   ?? "admin";
+    var token   = getCookie("fliox-token")  ?? "admin";
+    setUserToken(user, token);
+}
+
+export function setUserToken(user, token) {
+    defaultUser.value   = user;
+    defaultToken.value  = token;
+    document.cookie = `fliox-user=${user};`;
+    document.cookie = `fliox-token=${token};`;
 }
 
 function addUserToken(jsonRequest) {

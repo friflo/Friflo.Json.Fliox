@@ -9,9 +9,10 @@
     <title>Json.Fliox.Hub</title>
 
     <script type="module">
-        import { connectWebsocket, closeWebsocket, sendSyncRequest, postSyncRequest, onExampleChange, loadExampleRequestList,
+        import { connectWebsocket, closeWebsocket, initUserToken, setUserToken, sendSyncRequest, postSyncRequest, onExampleChange, loadExampleRequestList,
             setTheme, openTab, loadCluster, addTableResize, saveEntity, deleteEntity } from  "./index.js";
         setTheme();
+        initUserToken();
         window.connectWebsocket = connectWebsocket;
         window.closeWebsocket   = closeWebsocket;
         window.sendSyncRequest  = sendSyncRequest;
@@ -26,10 +27,7 @@
 
         window.selectUser = function (element) {
             let value = element.innerText;
-            document.getElementById("user").value = value;
-            document.getElementById("token").value = value;
-            document.cookie = `fliox-user=${value};`;
-            document.cookie = `fliox-token=${value};`;
+            setUserToken(value, value)
         };
         window.openTab("playground");
 
