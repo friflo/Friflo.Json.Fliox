@@ -28,7 +28,7 @@ const entityId          = document.getElementById("entityId");
 
 class App {
 
-    connectWebsocket = function () {
+    connectWebsocket () {
         if (connection) {
             connection.close();
             connection = null;
@@ -90,40 +90,40 @@ class App {
         };
     }
 
-    closeWebsocket = function () {
+    closeWebsocket  () {
         connection.close();
     }
 
-    getCookie = function (name) {
+    getCookie  (name) {
         const value = `; ${document.cookie}`;
         const parts = value.split(`; ${name}=`);
         if (parts.length === 2) return parts.pop().split(';').shift();
     }
 
-    initUserToken = function () {
+    initUserToken  () {
         var user    = this.getCookie("fliox-user")   ?? "admin";
         var token   = this.getCookie("fliox-token")  ?? "admin";
         this.setUser(user);
         this.setToken(token);
     }
 
-    setUser = function (user) {
+    setUser (user) {
         defaultUser.value   = user;
         document.cookie = `fliox-user=${user};`;
     }
 
-    setToken = function (token) {
+    setToken  (token) {
         defaultToken.value  = token;
         document.cookie = `fliox-token=${token};`;
     }
 
-    selectUser = function (element) {
+    selectUser (element) {
         let value = element.innerText;
         this.setUser(value);
         this.setToken(value);
     };
 
-    addUserToken = function (jsonRequest) {
+    addUserToken (jsonRequest) {
         var endBracket  = jsonRequest.lastIndexOf("}");
         if (endBracket == -1)
             return jsonRequest;
@@ -134,7 +134,7 @@ class App {
         return `${before},${userToken}${after}`;
     }
 
-    sendSyncRequest = function () {
+    sendSyncRequest () {
         if (!connection || connection.readyState != 1) { // 1 == OPEN {
             this.responseModel.setValue(`Request ${req} failed. WebSocket not connected`)
             responseState.innerHTML = "";
@@ -166,7 +166,7 @@ class App {
         reqIdElement.innerText  = req;
     }
 
-    postSyncRequest = async function() {
+    async postSyncRequest () {
         var jsonRequest         = this.requestModel.getValue();
         jsonRequest             = this.addUserToken(jsonRequest);
         responseState.innerHTML = '<span class="spinner"></span>';
@@ -184,7 +184,7 @@ class App {
         responseState.innerHTML = `· ${duration} ms`;
     }
 
-    onKeyDown = function (event) {
+    onKeyDown (event) {
         switch (activeTab) {
             case "playground":
                 if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
@@ -210,7 +210,7 @@ class App {
     }
 
     // --------------------------------------- example requests ---------------------------------------
-    onExampleChange = async function () {
+    async onExampleChange () {
         var exampleName = selectExample.value;
         if (exampleName == "") {
             this.requestModel.setValue("")
@@ -221,7 +221,7 @@ class App {
         this.requestModel.setValue(example)
     }
 
-    loadExampleRequestList = async function () {
+    async loadExampleRequestList () {
         // [html - How do I make a placeholder for a 'select' box? - Stack Overflow] https://stackoverflow.com/questions/5805059/how-do-i-make-a-placeholder-for-a-select-box
         var option = document.createElement("option");
         option.value    = "";
@@ -254,7 +254,7 @@ class App {
     // --------------------------------------- Explorer ---------------------------------------
     monacoTheme = "light";
 
-    postRequest = async function (request, tag) {
+    async postRequest (request, tag) {
         let init = {        
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -279,7 +279,7 @@ class App {
         }
     }
 
-    postRequestTasks = async function (database, tasks, tag) {
+    async postRequestTasks (database, tasks, tag) {
         const db = database == "default_db" ? undefined : database;
         const request = JSON.stringify({
             "msg":      "sync",
@@ -291,7 +291,7 @@ class App {
         return await this.postRequest(request, `${database}/${tag}`);
     }
 
-    getTaskError = function (content, taskIndex) {
+    getTaskError (content, taskIndex) {
         if (content.msg == "error") {
             return content.message;
         }
@@ -301,18 +301,18 @@ class App {
         return undefined;
     }
 
-    errorAsHtml = function (error) {
+    errorAsHtml (error) {
         return `<code style="white-space: pre-line; color:red">${error}</code>`;
     }
 
-    setTheme = function  () {
+    setTheme () {
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.setAttribute('data-theme', 'dark');
             this.monacoTheme = "vs-dark";
         }
     }
 
-    openTab = function  (tabName) {
+    openTab (tabName) {
         activeTab = tabName;
         var tabContents = document.getElementsByClassName("tabContent");
         var tabs = document.getElementsByClassName("tab");
@@ -331,7 +331,7 @@ class App {
     selectedCatalog;
     selectedEntity;
 
-    loadCluster = async function () {
+    async loadCluster () {
         const tasks = [
             { "task": "query", "container": "catalogs",  "filter":{ "op": "true" }},
             { "task": "query", "container": "schemas",   "filter":{ "op": "true" }}
@@ -390,7 +390,7 @@ class App {
         catalogExplorer.appendChild(ulCatalogs);
     }
 
-    createEntitySchemas = function (catalogSchemas) {
+    createEntitySchemas (catalogSchemas) {
         var monacoSchemas = [];
         for (var catalogSchema of catalogSchemas) {
             var jsonSchemas     = catalogSchema.jsonSchemas;
@@ -425,7 +425,7 @@ class App {
         this.addSchemas(monacoSchemas);
     }
 
-    loadEntities = async function (database, container) {
+    async loadEntities (database, container) {
         this.setEntityValue(database, container, "");
         const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
         readEntitiesDB.innerHTML = `<a href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
@@ -467,7 +467,7 @@ class App {
 
     entityIdentity = {}
 
-    loadEntity = async function (database, container, id) {
+    async loadEntity (database, container, id) {
         this.entityIdentity = {
             database:   database,
             container:  container,
@@ -491,7 +491,7 @@ class App {
         this.setEntityValue(database, container, entityJson);
     }
 
-    saveEntity = async function () {
+    async saveEntity () {
         var container = this.entityIdentity.container;
         var database  = this.entityIdentity.database == "default_db" ? undefined : this.entityIdentity.database;
         var jsonValue = this.entityModel.getValue();
@@ -541,7 +541,7 @@ class App {
         }
     }
 
-    deleteEntity = async function () {
+    async deleteEntity () {
         const id        = this.entityIdentity.entityId;
         var container   = this.entityIdentity.container;
         var database    = this.entityIdentity.database;
@@ -564,7 +564,7 @@ class App {
     entityModel;
     entityModels = {};
 
-    setEntityValue = function (database, container, value) {
+    setEntityValue (database, container, value) {
         var url = `entity://${database}.${container}.json`;
         this.entityModel = this.entityModels[url];
         if (!this.entityModel) {
@@ -579,7 +579,7 @@ class App {
     // --------------------------------------- monaco editor ---------------------------------------
     // [Monaco Editor Playground] https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-configure-json-defaults
 
-    createProtocolSchemas = async function () {
+    async createProtocolSchemas () {
 
         // configure the JSON language support with schemas and schema associations
         // var schemaUrlsResponse  = await fetch("/protocol/json-schema/directory");
@@ -638,7 +638,7 @@ class App {
 
     allMonacoSchemas = [];
 
-    addSchemas = function (monacoSchemas) {
+    addSchemas (monacoSchemas) {
         this.allMonacoSchemas.push(...monacoSchemas);
         // [DiagnosticsOptions | Monaco Editor API] https://microsoft.github.io/monaco-editor/api/interfaces/monaco.languages.json.DiagnosticsOptions.html
         monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
@@ -647,7 +647,7 @@ class App {
         });
     }
 
-    setupEditors = async function ()
+    async setupEditors ()
     {
         // --- setup JSON Schema for monaco
         var requestUri      = monaco.Uri.parse("request://jsonRequest.json");   // a made up unique URI for our model
@@ -713,7 +713,7 @@ class App {
         };
     }
 
-    layoutEditors = function () {
+    layoutEditors () {
         console.log("layoutEditors - activeTab: " + activeTab)
         switch (activeTab) {
             case "playground":
@@ -726,7 +726,7 @@ class App {
         }
     }
 
-    addTableResize = function  () {
+    addTableResize () {
         var thElm;
         var startOffset;
 
