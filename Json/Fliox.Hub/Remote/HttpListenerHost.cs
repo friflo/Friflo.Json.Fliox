@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Specialized;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -117,7 +118,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var request = ctx.Request;
             var url     = request.Url; 
-            var reqCtx  = new RequestContext(request.HttpMethod, url.AbsolutePath, url.Query, req.InputStream);
+            var headers = new HttpListenerHeaders(request.Headers);
+            var reqCtx  = new RequestContext(request.HttpMethod, url.AbsolutePath, url.Query, req.InputStream, headers);
             bool handled = await hostHub.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
             
             if (handled) {
@@ -170,6 +172,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
 #else
             Console.WriteLine(msg);
 #endif
+        }
+    }
+    
+    internal class HttpListenerHeaders : IHttpHeaders {
+        private  readonly   NameValueCollection headers;
+        
+        public              string              this[string key] => headers[key];
+        
+        internal HttpListenerHeaders(NameValueCollection headers) {
+            this.headers = headers;    
         }
     }
 }
