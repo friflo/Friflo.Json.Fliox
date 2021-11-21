@@ -184,31 +184,29 @@ class App {
         responseState.innerHTML = `· ${duration} ms`;
     }
 
-    initApp = function () {
-        window.addEventListener("keydown", function(event) {
-            switch (activeTab) {
-                case "playground":
-                    if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
-                        sendSyncRequest();
-                        event.preventDefault();
-                    }
-                    if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
-                        postSyncRequest();
-                        event.preventDefault();
-                    }
-                    if (event.code == 'KeyS' && event.ctrlKey) {
-                        // event.preventDefault(); // avoid accidentally opening "Save As" dialog
-                    }
-                    break;
-                case "explorer":
-                    if (event.code == 'KeyS' && event.ctrlKey) {
-                        saveEntity()
-                        event.preventDefault();
-                    }
-                    break;
-            }
-            // console.log(`KeyboardEvent: code='${event.code}', ctrl:${event.ctrlKey}, alt:${event.altKey}`);
-        }, true);
+    onKeyDown = function (event) {
+        switch (activeTab) {
+            case "playground":
+                if (event.code == 'Enter' && event.ctrlKey && event.altKey) {
+                    this.sendSyncRequest();
+                    event.preventDefault();
+                }
+                if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
+                    this.postSyncRequest();
+                    event.preventDefault();
+                }
+                if (event.code == 'KeyS' && event.ctrlKey) {
+                    // event.preventDefault(); // avoid accidentally opening "Save As" dialog
+                }
+                break;
+            case "explorer":
+                if (event.code == 'KeyS' && event.ctrlKey) {
+                    this.saveEntity()
+                    event.preventDefault();
+                }
+                break;
+        }
+        // console.log(`KeyboardEvent: code='${event.code}', ctrl:${event.ctrlKey}, alt:${event.altKey}`);
     }
 
     // --------------------------------------- example requests ---------------------------------------
@@ -772,4 +770,4 @@ class App {
 }
 
 export const app = new App();
-app.initApp();
+window.addEventListener("keydown", event => app.onKeyDown(event), true);
