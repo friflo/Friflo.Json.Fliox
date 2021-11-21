@@ -553,8 +553,8 @@ function setEntityValue(database, container, value) {
 async function createProtocolSchemas() {
 
     // configure the JSON language support with schemas and schema associations
-    var schemaUrlsResponse  = await fetch("/protocol/json-schema/directory");
-    var schemaUrls          = await schemaUrlsResponse.json();
+    // var schemaUrlsResponse  = await fetch("/protocol/json-schema/directory");
+    // var schemaUrls          = await schemaUrlsResponse.json();
     /* var schemas = [{
             uri: "http://myserver/foo-schema.json", // id of the first schema
             // fileMatch: [modelUri.toString()], // associate with our model
@@ -581,11 +581,12 @@ async function createProtocolSchemas() {
             }
         }]; */
     var schemas = [];
-    for (let i = 0; i < schemaUrls.length; i++) {
-        var schemaName      = schemaUrls[i]
+    var jsonSchemaResponse  = await fetch("protocol/json-schema.json");
+    var jsonSchema          = await jsonSchemaResponse.json();
+
+    for (let schemaName in jsonSchema) {
+        var schema          = jsonSchema[schemaName];
         var url             = "protocol/json-schema/" + schemaName;
-        var schemaResponse  = await fetch(url);
-        var schema          = await schemaResponse.json();
         var schemaEntry = {
             uri:    "http://" + url,
             schema: schema            

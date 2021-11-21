@@ -84,6 +84,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 HtmlFooter(sb);
                 return result.Set(sb.ToString(), "text/html");
             }
+            if (path == "json-schema.json") {
+                var jsonSchema = schemas["json-schema"];
+                return result.Set(jsonSchema.fullSchema, jsonSchema.contentType);
+            }
             var schemaTypeEnd = path.IndexOf('/');
             if (schemaTypeEnd <= 0) {
                 return result.Error($"invalid path:  {path}");
@@ -119,7 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return result.Set(schemaSet.directory, "application/json");
             }
             if (!schemaSet.files.TryGetValue(fileName, out string content)) {
-                return result.Error($"file not found: {fileName}");
+                return result.Error($"file not found: '{fileName}'");
             }
             return result.Set(content, schemaSet.contentType);
         }
@@ -130,7 +134,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             
             var jsonOptions         = new JsonTypeOptions(typeSchema) { separateTypes = separateTypes };
             var jsonGenerator       = JsonSchemaGenerator.Generate(jsonOptions);
-            var jsonSchema          = new SchemaSet (writer, "JSON Schema", "application/json", jsonGenerator.files);
+            var jsonSchemaMap       = new Dictionary<string, JsonValue>();
+            foreach (var pair in jsonGenerator.files) {
+                jsonSchemaMap.Add(pair.Key,new JsonValue(pair.Value));
+            }
+            var fullSchema          = writer.Write(jsonSchemaMap);
+            var jsonSchema          = new SchemaSet (writer, "JSON Schema", "application/json", jsonGenerator.files, fullSchema);
             result.Add("json-schema",  jsonSchema);
             
             var options             = new JsonTypeOptions(typeSchema);
@@ -208,6 +217,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         public  readonly    string                      name;
         public  readonly    string                      contentType;
         public  readonly    Dictionary<string, string>  files;
+        public  readonly    string                      fullSchema;
         public  readonly    string                      directory;
         private             byte[]                      zipArchive;
 
@@ -218,10 +228,11 @@ namespace Friflo.Json.Fliox.Hub.Remote
             return zipArchive;
         }
 
-        public SchemaSet (ObjectWriter writer, string name, string contentType, Dictionary<string, string> files) {
+        public SchemaSet (ObjectWriter writer, string name, string contentType, Dictionary<string, string> files, string fullSchema = null) {
             this.name           = name;
             this.contentType    = contentType;
             this.files          = files;
+            this.fullSchema     = fullSchema;
             directory           = writer.Write(files.Keys.ToList());
         }
     }
