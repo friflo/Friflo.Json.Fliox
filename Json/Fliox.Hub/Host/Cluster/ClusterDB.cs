@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
+using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Native;
 
@@ -102,11 +103,15 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
             var entityTypes = typeSchema.GetEntityTypes();
             var generator   = new Generator(typeSchema, ".json", null, entityTypes);
             JsonSchemaGenerator.Generate(generator);
+            var jsonSchemas = new Dictionary<string, JsonValue>();
+            foreach (var pair in generator.files) {
+                jsonSchemas.Add(pair.Key,new JsonValue(pair.Value));
+            }
             var schema = new CatalogSchema {
                 id          = databaseName,
                 schemaName  = schemaType.Name,
                 schemaPath  = schemaType.Path + generator.fileExt,
-                jsonSchemas = generator.files
+                jsonSchemas = jsonSchemas
             };
             return schema;
         }

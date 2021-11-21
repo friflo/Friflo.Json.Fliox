@@ -19,6 +19,6 @@ export class CatalogSchema {
     id           : string;
     schemaName   : string;
     schemaPath   : string;
-    jsonSchemas  : { [key: string]: string };
+    jsonSchemas  : { [key: string]: any };
 }
 
