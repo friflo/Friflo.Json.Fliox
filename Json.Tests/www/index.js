@@ -398,7 +398,7 @@ function createEntitySchemas(catalogSchemas) {
 export async function loadEntities(database, container) {
     setEntityValue(database, container, "");
     const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
-    readEntitiesDB.innerHTML = `<a href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;;
+    readEntitiesDB.innerHTML = `<a href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
     readEntities.innerHTML  = `${container} <span class="spinner"></span>`;
     const response = await postRequestTasks(database, tasks, container);
     const content = response.json;
@@ -485,7 +485,7 @@ export async function saveEntity() {
     const content = response.json;
     var error = getTaskError (content, 0);
     if (error) {
-        writeResult.innerHTML = "save failed: " + error;
+        writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
         return;
     }
     if (content.upsertErrors) {
@@ -520,7 +520,7 @@ export async function deleteEntity() {
     const content = response.json;
     var error = getTaskError (content, 0);
     if (error) {
-        writeResult.innerHTML = `<span style="color:red">Delete failed: ${error}</code>`;;
+        writeResult.innerHTML = `<span style="color:red">Delete failed: ${error}</code>`;
     } else {
         writeResult.innerHTML = "Delete successful";
         entityId.innerHTML = "";
