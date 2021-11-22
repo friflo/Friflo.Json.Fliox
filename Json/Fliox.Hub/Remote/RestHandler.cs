@@ -18,7 +18,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
 {
     public class RestHandler : IRequestHandler
     {
-        private     const string    RestBase = "/rest/";
+        private     const string    RestBase = "/rest";
         private     readonly        FlioxHub    hub;
         
         public RestHandler (FlioxHub    hub) {
@@ -26,16 +26,28 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
             
         public async Task<bool> HandleRequest(RequestContext context) {
-            var path = context.path;
+            var path    = context.path;
             if (!path.StartsWith(RestBase))
                 return false;
+            if (path.Length == RestBase.Length) {
+                // ------------------    GET            (no path)
+                if (context.method == "GET") { 
+                    await Command(context, ClusterDB.Name, StdCommand.Catalogs, new JsonValue()); 
+                    return true;
+                }
+                context.WriteError("invalid request", "access to root only applicable with GET", 400);
+                return true;
+            }
+            if (path[RestBase.Length] != '/') {
+                return false;
+            }
             var method          = context.method;
             var queryKeyValues  = HttpUtility.ParseQueryString(context.query);
             var command         = queryKeyValues["command"];
             var message         = queryKeyValues["message"];
             var isGet           = method == "GET";
             var isPost          = method == "POST";
-            var resourcePath    = path.Substring(RestBase.Length);
+            var resourcePath    = path.Substring(RestBase.Length + 1);
             
             // ------------------    GET / POST     /database?command=...   /database?message=...
             if ((command != null || message != null) && (isGet || isPost)) {
@@ -65,12 +77,13 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return true;
             }
             var resource = resourcePath.Split('/');
-            var isDelete = method == "DELETE";
-            // ------------------    GET            /
-            if (isGet && resource.Length == 1 && resource[0] == "") {
-                await Command(context, ClusterDB.Name, StdCommand.Catalogs, new JsonValue()); 
+            var resourceError = GetResourceError(resource);
+            if (resourceError != null) {
+                context.WriteError("invalid request", resourceError, 400);
                 return true;
             }
+            var isDelete = method == "DELETE";
+
             // ------------------    GET            /database
             if (isGet && resource.Length == 1) {
                 await Command(context, resource[0], StdCommand.Catalog, new JsonValue()); 
@@ -110,6 +123,16 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return true;
             }
             return false;
+        }
+        
+        private static string GetResourceError(string[] resource) {
+            if (resource[0] == "")
+                return "missing database path";
+            if (resource.Length == 2 && resource[1] == "")
+                return "missing container path";
+            if (resource.Length == 3 && resource[2] == "")
+                return "missing id path";
+            return null;
         }
         
         private static bool IsValidJson (SharedEnv sharedEnv, JsonValue value, out string error) {
