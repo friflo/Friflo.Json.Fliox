@@ -79,7 +79,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var resource = resourcePath.Split('/');
             var resourceError = GetResourceError(resource);
             if (resourceError != null) {
-                context.WriteError("invalid request", resourceError, 400);
+                context.WriteError("invalid path /database/container/id", resourceError, 400);
                 return true;
             }
             var isDelete = method == "DELETE";
