@@ -291,6 +291,26 @@ class App {
         return await this.postRequest(request, `${database}/${tag}`);
     }
 
+    async restRequest (method, body, database, container, id) {
+        let path = `./rest/${database}`;
+        if (container)  path = `${path}/${container}`;
+        if (id)         path = `${path}/${id}`;
+        
+        let init = {        
+            method:  method,
+            headers: { 'Content-Type': 'application/json' },
+            body:    body
+        }
+        try {
+            return await fetch(path, init);
+        } catch (error) {
+            return {
+                ok:     false,
+                text:   () => error.message
+            }
+        }
+    }
+
     getTaskError (content, taskIndex) {
         if (content.msg == "error") {
             return content.message;
@@ -432,6 +452,7 @@ class App {
         var containerLink       = `<a href="./rest/${database}/${container}" target="_blank" rel="noopener noreferrer">${container}</a>`;
         readEntities.innerHTML  = `${containerLink} <span class="spinner"></span>`;
         const response = await this.postRequestTasks(database, tasks, container);
+
         const content = response.json;
         entityId.innerHTML      = "";
         writeResult.innerHTML   = "";
@@ -477,19 +498,15 @@ class App {
         var entityLink          = `<a href="./rest/${database}/${container}/${id}" target="_blank" rel="noopener noreferrer">${id}</a>`
         entityId.innerHTML      = `${entityLink} <span class="spinner"></span>`;
         writeResult.innerHTML   = "";
-        const tasks = [{ "task": "read", "container": container, "sets": [{ "ids": [id] }] }];
-        const response = await this.postRequestTasks(database, tasks, `${container}/${id}`);
-        const content = response.json;
-        const error = this.getTaskError (content, 0);
+        const response  = await this.restRequest("GET", null, database, container, id);        
+        const content   = await response.text();
         entityId.innerHTML = entityLink;
-        if (error) {
-            this.setEntityValue(database, container, error);
+        if (!response.ok) {
+            this.setEntityValue(database, container, content);
             return;
         }
-        const entityValue = content.containers[0].entities[0];
-        const entityJson = JSON.stringify(entityValue, null, 2);
         // console.log(entityJson);
-        this.setEntityValue(database, container, entityJson);
+        this.setEntityValue(database, container, content);
     }
 
     async saveEntity () {
