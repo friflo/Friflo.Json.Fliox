@@ -4,7 +4,7 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Host;
 
-namespace Friflo.Json.Fliox.Hub.UserAuth
+namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
     public class UserDBHandler : TaskHandler
     {

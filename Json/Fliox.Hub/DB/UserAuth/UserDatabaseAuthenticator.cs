@@ -11,7 +11,7 @@ using Friflo.Json.Fliox.Mapper;
 
 
 // ReSharper disable MemberCanBePrivate.Global
-namespace Friflo.Json.Fliox.Hub.UserAuth
+namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
     /// <summary>
     /// Authenticate users stored in the user database.

@@ -4,13 +4,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Fliox.Schema.Native;
 
-namespace Friflo.Json.Fliox.Hub.Host.Cluster
+namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     public class ClusterDB : EntityDatabase
     {
@@ -82,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
                 var database        = pair.Value;
                 var databaseName    = pair.Key;
                 var databaseInfo    = database.GetDatabaseInfo();
-                if (ClusterDB.FindTask(nameof(catalogs), tasks)) {
+                if (ClusterDB.FindTask(nameof(ClusterStore.catalogs), tasks)) {
                     var catalog = new Catalog {
                         id              = databaseName,
                         databaseType    = databaseInfo.databaseType,
@@ -90,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Cluster
                     };
                     catalogs.Upsert(catalog);
                 }
-                if (ClusterDB.FindTask(nameof(schemas), tasks)) {
+                if (ClusterDB.FindTask(nameof(ClusterStore.schemas), tasks)) {
                     var schema = CreateCatalogSchema(databaseInfo, databaseName);
                     if (schema != null)
                         schemas.Upsert(schema);

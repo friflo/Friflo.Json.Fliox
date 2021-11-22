@@ -12,7 +12,7 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnassignedField.Global
 // ReSharper disable CollectionNeverUpdated.Global
-namespace Friflo.Json.Fliox.Hub.UserAuth
+namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
     /// <summary>
     /// Provide access to a <see cref="FlioxHub"/> storing user credentials ands roles.

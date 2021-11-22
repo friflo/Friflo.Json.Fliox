@@ -4,11 +4,11 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Auth.Rights;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Event;
 using Friflo.Json.Fliox.Hub.Threading;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
-using Friflo.Json.Fliox.Hub.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;

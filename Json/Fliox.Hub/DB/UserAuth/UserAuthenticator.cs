@@ -12,7 +12,7 @@ using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Native;
 
-namespace Friflo.Json.Fliox.Hub.UserAuth
+namespace Friflo.Json.Fliox.Hub.DB.UserAuth
 {
     internal class AuthCred {
         internal readonly   string          token;

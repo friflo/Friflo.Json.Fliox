@@ -2,7 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 
-using Friflo.Json.Fliox.Hub.Host.Cluster;
+using Friflo.Json.Fliox.Hub.DB.Cluster;
 using Friflo.Json.Fliox.Schema;
 using Friflo.Json.Tests.Common.Utils;
 using NUnit.Framework;

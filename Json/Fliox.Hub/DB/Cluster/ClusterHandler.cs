@@ -2,11 +2,11 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
-
-namespace Friflo.Json.Fliox.Hub.Host.Cluster
+namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     internal sealed class ClusterHandler : TaskHandler
     {

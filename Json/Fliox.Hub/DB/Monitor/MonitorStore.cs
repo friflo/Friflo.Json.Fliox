@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Stats;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
@@ -11,7 +12,7 @@ using Friflo.Json.Fliox.Transform;
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable FieldCanBeMadeReadOnly.Global
 // ReSharper disable UnassignedReadonlyField
-namespace Friflo.Json.Fliox.Hub.Host.Monitor
+namespace Friflo.Json.Fliox.Hub.DB.Monitor
 {
     public partial class  MonitorStore :  FlioxClient
     {

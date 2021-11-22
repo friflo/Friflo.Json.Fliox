@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Auth;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Host.Stats;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Fliox.Schema.Native;
 
-namespace Friflo.Json.Fliox.Hub.Host.Monitor
+namespace Friflo.Json.Fliox.Hub.DB.Monitor
 {
     public class MonitorDB : EntityDatabase
     {

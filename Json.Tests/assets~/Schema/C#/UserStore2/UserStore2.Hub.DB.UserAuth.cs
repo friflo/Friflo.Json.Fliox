@@ -5,7 +5,7 @@ using UserStore2.Hub.Auth.Rights;
 
 #pragma warning disable 0169 // [CS0169] The field '...' is never used
 
-namespace UserStore2.Hub.UserAuth {
+namespace UserStore2.Hub.DB.UserAuth {
 
 public class UserCredential {
     [Fri.Required]

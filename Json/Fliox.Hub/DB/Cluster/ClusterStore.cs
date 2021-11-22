@@ -3,10 +3,11 @@
 
 using System.Collections.Generic;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 
 // ReSharper disable UnassignedReadonlyField
-namespace Friflo.Json.Fliox.Hub.Host.Cluster
+namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     public partial class ClusterStore : FlioxClient
     {

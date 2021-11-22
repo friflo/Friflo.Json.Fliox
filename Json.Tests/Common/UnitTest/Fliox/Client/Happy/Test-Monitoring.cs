@@ -4,10 +4,10 @@
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Auth;
 using Friflo.Json.Fliox.Hub.Client;
+using Friflo.Json.Fliox.Hub.DB.Monitor;
+using Friflo.Json.Fliox.Hub.DB.UserAuth;
 using Friflo.Json.Fliox.Hub.Host;
-using Friflo.Json.Fliox.Hub.Host.Monitor;
 using Friflo.Json.Fliox.Hub.Remote;
-using Friflo.Json.Fliox.Hub.UserAuth;
 using Friflo.Json.Fliox.Mapper;
 using Friflo.Json.Tests.Common.UnitTest.Fliox.Hubs;
 using Friflo.Json.Tests.Common.Utils;

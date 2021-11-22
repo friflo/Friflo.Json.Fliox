@@ -2,11 +2,12 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Threading.Tasks;
+using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
 
-namespace Friflo.Json.Fliox.Hub.Host.Monitor
+namespace Friflo.Json.Fliox.Hub.DB.Monitor
 {
     internal sealed class MonitorHandler : TaskHandler
     {
