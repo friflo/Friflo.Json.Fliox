@@ -9,6 +9,11 @@
                 "permissions": { "operations": ["full"] },
                 "roles":       { "operations": ["full"] }
             }
+        },
+        {
+            "type":     "message",
+            "database": "user_db",
+            "names":    ["Catalog*", "Echo"]
         }
     ]
 }
