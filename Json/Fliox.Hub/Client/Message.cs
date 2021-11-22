@@ -118,9 +118,12 @@ namespace Friflo.Json.Fliox.Hub.Client
         /// </summary>
         public const string Echo            = "Echo";
         
+        // --- Catalog*
         public const string Catalog         = "Catalog";
         
         public const string CatalogSchema   = "CatalogSchema";
+        
+        public const string Catalogs        = "Catalogs";
     }
 
     public delegate void MessageHandler<TMessage>   (Message<TMessage>  message);

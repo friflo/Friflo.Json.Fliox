@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public const string Name = "cluster";
         
         public ClusterDB (FlioxHub hub, string name = null, DbOpt opt = null)
-            : base (new ClusterHandler(), opt)
+            : base (new ClusterHandler(hub), opt)
         {
             this.hub        = hub  ?? throw new ArgumentNullException(nameof(hub));
             this.name       = name ?? Name;
@@ -83,7 +83,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 var database        = pair.Value;
                 var databaseName    = pair.Key;
                 var databaseInfo    = database.GetDatabaseInfo();
-                if (ClusterDB.FindTask(nameof(ClusterStore.catalogs), tasks)) {
+                if (ClusterDB.FindTask(nameof(catalogs), tasks)) {
                     var catalog = new Catalog {
                         id              = databaseName,
                         databaseType    = databaseInfo.databaseType,
@@ -91,7 +91,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                     };
                     catalogs.Upsert(catalog);
                 }
-                if (ClusterDB.FindTask(nameof(ClusterStore.schemas), tasks)) {
+                if (ClusterDB.FindTask(nameof(schemas), tasks)) {
                     var schema = CreateCatalogSchema(databaseInfo, databaseName);
                     if (schema != null)
                         schemas.Upsert(schema);
