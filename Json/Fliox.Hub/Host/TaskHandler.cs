@@ -2,6 +2,7 @@
 // See LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Friflo.Json.Fliox.Hub.Auth;
 using Friflo.Json.Fliox.Hub.Client;
@@ -86,11 +87,20 @@ namespace Friflo.Json.Fliox.Hub.Host
                 error = null;
                 return true;
             }
-            var message = "not authorized";
+            var sb = new StringBuilder(); // todo StringBuilder could be pooled
+            sb.Append("not authorized");
             var authError = messageContext.authState.error; 
             if (authError != null) {
-                message = $"{message}. {authError}";
+                sb.Append(". ");
+                sb.Append(authError);
             }
+            var anonymous = messageContext.hub.Authenticator.anonymousUser;
+            var user = messageContext.User;
+            if (user != anonymous) {
+                sb.Append(". user: ");
+                sb.Append(user.userId);
+            }
+            var message = sb.ToString();
             error = SyncRequestTask.PermissionDenied(message);
             return false;
         }

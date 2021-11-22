@@ -20,7 +20,7 @@ namespace Friflo.Json.Fliox.Hub.Auth
     {
         protected readonly  Dictionary<string, AuthorizePredicate>  registeredPredicates;
         internal  readonly  ConcurrentDictionary<JsonKey, User>     users;  // todo make private
-        protected readonly  User                                    anonymousUser;
+        internal  readonly  User                                    anonymousUser;
         
             
         public abstract Task    Authenticate    (SyncRequest syncRequest, MessageContext messageContext);
