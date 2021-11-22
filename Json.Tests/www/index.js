@@ -511,33 +511,13 @@ class App {
 
     async saveEntity () {
         var container = this.entityIdentity.container;
-        var database  = this.entityIdentity.database == "default_db" ? undefined : this.entityIdentity.database;
         var jsonValue = this.entityModel.getValue();
-        const request = {
-            "msg": "sync",
-            "database": database,
-            "tasks": [
-            {
-                "task":      "upsert",
-                "container": container,
-                "entities":  ["{value}"]
-            }
-            ],
-            "user":     defaultUser.value,
-            "token":    defaultToken.value
-        };
-        var body = JSON.stringify(request).replace('"{value}"', jsonValue);
+
         writeResult.innerHTML = 'save <span class="spinner"></span>';
 
-        const response = await this.postRequest(body, `${this.entityIdentity.database}/${container}-Save`);
-        const content = response.json;
-        var error = this.getTaskError (content, 0);
-        if (error) {
-            writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
-            return;
-        }
-        if (content.upsertErrors) {
-            error = content.upsertErrors[container].errors[this.entityIdentity.entityId].message;
+        const response = await this.restRequest("PUT", jsonValue, this.entityIdentity.database, container);
+        if (!response.ok) {
+            const error = await response.text();
             writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
             return;
         }
