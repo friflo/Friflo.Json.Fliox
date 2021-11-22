@@ -33,7 +33,6 @@ class App {
             connection.close();
             connection = null;
         }
-        var self    = this;
         var loc     = window.location;
         var nr      = ("" + (++websocketCount)).padStart(3,0)
         var uri     = `ws://${loc.host}/ws-${nr}`;
@@ -45,36 +44,36 @@ class App {
             socketStatus.innerText = "connect failed: err";
             return;
         }
-        connection.onopen = function () {
+        connection.onopen = () => {
             socketStatus.innerHTML = "connected <small>🟢</small>";
             console.log('WebSocket connected');
             req         = 1;
             subCount    = 0;
         };
 
-        connection.onclose = function (e) {
+        connection.onclose = (e) => {
             socketStatus.innerText = "closed (code: " + e.code + ")";
             responseState.innerText = "";
             console.log('WebSocket closed');
         };
 
         // Log errors
-        connection.onerror = function (error) {
+        connection.onerror = (error) => {
             socketStatus.innerText = "error";
             console.log('WebSocket Error ' + error);
         };
 
         // Log messages from the server
-        connection.onmessage = function (e) {
+        connection.onmessage = (e) => {
             var duration = new Date().getTime() - requestStart;
             var data = JSON.parse(e.data);
             // console.log('server:', e.data);
-            switch (data.msg){ 
+            switch (data.msg) {
                 case "resp":
                 case "error":
                     clt = data.clt;
                     cltElement.innerText  = clt ?? " - ";
-                    self.responseModel.setValue(e.data)
+                    this.responseModel.setValue(e.data)
                     responseState.innerHTML = `· ${duration} ms`;
                     break;
                 case "ev":
@@ -726,10 +725,10 @@ class App {
     addTableResize () {
         var thElm;
         var startOffset;
+        const selector = document.querySelectorAll("table td");
 
-        Array.prototype.forEach.call(
-        document.querySelectorAll("table td"),
-        function (th) {
+        Array.prototype.forEach.call(selector, (th) =>
+        {
             th.style.position = 'relative';
 
             var grip = document.createElement('div');
