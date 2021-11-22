@@ -302,6 +302,7 @@ class App {
             body:    body
         }
         try {
+            // authenticate with cookies: "fliox-user" & "fliox-token"
             return await fetch(path, init);
         } catch (error) {
             return {
