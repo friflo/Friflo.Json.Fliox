@@ -543,12 +543,10 @@ class App {
         const id        = this.entityIdentity.entityId;
         var container   = this.entityIdentity.container;
         var database    = this.entityIdentity.database;
-        const tasks     =  [{ "task": "delete", "container": container, "ids": [id]}];
         writeResult.innerHTML = 'delete <span class="spinner"></span>';
-        const response = await this.postRequestTasks(database, tasks, `${container}-Delete`);
-        const content = response.json;
-        var error = this.getTaskError (content, 0);
-        if (error) {
+        const response = await this.restRequest("DELETE", null, database, container, id);
+        if (!response.ok) {
+            var error = await response.text();
             writeResult.innerHTML = `<span style="color:red">Delete failed: ${error}</code>`;
         } else {
             writeResult.innerHTML = "Delete successful";

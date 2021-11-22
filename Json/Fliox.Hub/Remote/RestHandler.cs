@@ -64,7 +64,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return true;
             }
             var resource = resourcePath.Split('/');
-            var isDelete = method == "delete";
+            var isDelete = method == "DELETE";
             // ------------------    GET            /database
             if (isGet && resource.Length == 1) {
                 await Command(context, resource[0], StdCommand.Catalog, new JsonValue()); 
