@@ -54,7 +54,7 @@ namespace Friflo.Json.Tests.Main
         /// additional <see cref="HttpHostHub"/> only accessible from Intranet as they contains sensitive data.
         /// </summary>         
         public static HttpHostHub CreateHttpHost(string dbPath, string userDbPath, string wwwPath) {
-            var database            = new FileDatabase(dbPath);
+            var database            = new FileDatabase(dbPath, null, null, false);
             var hub                 = new FlioxHub(database);
             hub.AddExtensionDB (ClusterDB.Name, new ClusterDB(hub));    // optional - expose info about catalogs (databases) as extension database
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - expose monitor stats as extension database
