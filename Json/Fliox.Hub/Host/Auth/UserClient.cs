@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 using Friflo.Json.Fliox.Hub.Host.Stats;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Hub.Auth
+namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     public readonly struct UserClient {
         internal readonly   JsonKey                                     userId;

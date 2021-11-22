@@ -8,7 +8,7 @@ using System.Threading;
 using Friflo.Json.Fliox.Hub.Host;
 using Friflo.Json.Fliox.Mapper;
 
-namespace Friflo.Json.Fliox.Hub.Auth
+namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     /// <summary>
     /// Create a unique client id for a given <see cref="User"/> by <see cref="NewClientIdFor"/> or

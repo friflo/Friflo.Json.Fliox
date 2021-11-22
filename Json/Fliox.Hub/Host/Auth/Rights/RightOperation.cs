@@ -9,7 +9,7 @@ using Friflo.Json.Fliox.Mapper;
 // ReSharper disable CollectionNeverUpdated.Global
 // ReSharper disable UnassignedField.Global
 // ReSharper disable MemberCanBePrivate.Global
-namespace Friflo.Json.Fliox.Hub.Auth.Rights
+namespace Friflo.Json.Fliox.Hub.Host.Auth.Rights
 {
     public sealed class RightOperation : Right
     {

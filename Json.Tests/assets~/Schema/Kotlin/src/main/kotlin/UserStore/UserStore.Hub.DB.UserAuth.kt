@@ -3,7 +3,7 @@ package UserStore.Hub.DB.UserAuth
 
 import kotlinx.serialization.*
 import CustomSerializer.*
-import UserStore.Hub.Auth.Rights.*
+import UserStore.Hub.Host.Auth.Rights.*
 
 @Serializable
 data class UserCredential (

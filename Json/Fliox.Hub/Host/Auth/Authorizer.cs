@@ -3,11 +3,10 @@
 
 using System;
 using System.Collections.Generic;
-using Friflo.Json.Fliox.Hub.Auth.Rights;
-using Friflo.Json.Fliox.Hub.Host;
+using Friflo.Json.Fliox.Hub.Host.Auth.Rights;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
 
-namespace Friflo.Json.Fliox.Hub.Auth
+namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     /// <summary>
     /// Authorize a given task.

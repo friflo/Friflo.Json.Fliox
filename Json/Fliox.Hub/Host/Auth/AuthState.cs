@@ -3,7 +3,7 @@
 
 using Friflo.Json.Fliox.Hub.Host;
 
-namespace Friflo.Json.Fliox.Hub.Auth
+namespace Friflo.Json.Fliox.Hub.Host.Auth
 {
     /// <summary>
     /// Contains the authentication and authorization result of <see cref="Authenticator.Authenticate"/>.

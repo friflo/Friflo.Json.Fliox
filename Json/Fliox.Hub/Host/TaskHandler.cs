@@ -4,9 +4,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Friflo.Json.Fliox.Hub.Auth;
 using Friflo.Json.Fliox.Hub.Client;
 using Friflo.Json.Fliox.Hub.DB.Cluster;
+using Friflo.Json.Fliox.Hub.Host.Auth;
 using Friflo.Json.Fliox.Hub.Host.Internal;
 using Friflo.Json.Fliox.Hub.Protocol;
 using Friflo.Json.Fliox.Hub.Protocol.Tasks;
