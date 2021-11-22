@@ -123,7 +123,7 @@ namespace Friflo.Json.Fliox.Hub.Client
         
         public const string CatalogSchema   = "CatalogSchema";
         
-        public const string Catalogs        = "Catalogs";
+        public const string CatalogList     = "CatalogList";
     }
 
     public delegate void MessageHandler<TMessage>   (Message<TMessage>  message);

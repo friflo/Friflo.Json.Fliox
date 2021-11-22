@@ -246,7 +246,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                                                                 SendCommand<TCommand,TCommand>  (StdCommand.Echo, command);
         public CommandTask<Catalog>         Catalog()       =>  SendCommand<Catalog>            (StdCommand.Catalog);
         public CommandTask<CatalogSchema>   CatalogSchema() =>  SendCommand<CatalogSchema>      (StdCommand.CatalogSchema);
-        public CommandTask<List<Catalog>>   Catalogs()      =>  SendCommand<List<Catalog>>      (StdCommand.Catalogs);
+        public CommandTask<List<Catalog>>   CatalogList()   =>  SendCommand<List<Catalog>>      (StdCommand.CatalogList);
 
         // Declared only to generate command in Schema 
         internal CommandTask<JsonValue> Echo(JsonValue _) => throw new InvalidOperationException("unexpected call of Echo command");

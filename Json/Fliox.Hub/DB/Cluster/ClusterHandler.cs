@@ -17,10 +17,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         
         public ClusterHandler (FlioxHub hub) {
             this.hub = hub;
-            AddCommandHandler<Empty, List<Catalog>>(StdCommand.Catalogs, Catalogs);
+            AddCommandHandler<Empty, List<Catalog>>(StdCommand.CatalogList, CatalogList);
         }
         
-        private List<Catalog> Catalogs (Command<Empty> command) {
+        private List<Catalog> CatalogList (Command<Empty> command) {
             var databases = hub.GetDatabases();
             var catalogs = new List<Catalog>(databases.Count);
             foreach (var pair in databases) {
