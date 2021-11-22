@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Friflo.Json.Fliox.Mapper.Utils;
 
+// ReSharper disable NotAccessedField.Local
 namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
 {
     internal static class ClientEntityUtils

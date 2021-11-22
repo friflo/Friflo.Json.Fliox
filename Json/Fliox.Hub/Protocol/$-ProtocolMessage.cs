@@ -88,7 +88,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
         /// <summary>
         /// Set to <see cref="ProtocolRequest.clientId"/> of a <see cref="SyncRequest"/> in case the given
         /// <see cref="ProtocolRequest.clientId"/> was valid. Otherwise it is set to null.
-        /// Calling <see cref="Auth.Authenticator.EnsureValidClientId"/> when <see cref="clientId"/> == null a
+        /// Calling <see cref="Host.Auth.Authenticator.EnsureValidClientId"/> when <see cref="clientId"/> == null a
         /// new unique client id will be assigned.
         /// For tasks which require a <see cref="clientId"/> a client need to set <see cref="ProtocolRequest.clientId"/>
         /// to <see cref="clientId"/>.

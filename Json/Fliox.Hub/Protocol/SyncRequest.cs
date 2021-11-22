@@ -12,7 +12,7 @@ namespace Friflo.Json.Fliox.Hub.Protocol
     {
         /// <summary>
         /// Identify the user performing a sync request.
-        /// In case using of using <see cref="UserAuth.UserAuthenticator"/> the <see cref="userId"/> and <see cref="token"/>
+        /// In case using of using <see cref="DB.UserAuth.UserAuthenticator"/> the <see cref="userId"/> and <see cref="token"/>
         /// are use for user authentication.
         /// </summary>
         [Fri.Property(Name = "user")]   public  JsonKey                 userId;

@@ -10,12 +10,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
 {
     internal sealed class ClusterHandler : TaskHandler
     {
-        private readonly   FlioxHub            hub;
-        
-        internal ClusterHandler (FlioxHub hub) {
-            this.hub = hub;
-        }
-        
         public override Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {
             if (!AuthorizeTask(task, messageContext, out var error)) {
                 return Task.FromResult(error);

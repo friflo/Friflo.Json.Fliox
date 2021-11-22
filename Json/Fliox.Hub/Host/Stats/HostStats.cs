@@ -8,7 +8,7 @@ namespace Friflo.Json.Fliox.Hub.Host.Stats
     internal sealed class HostStats
     {
         internal readonly   RequestHistories    requestHistories = new RequestHistories();
-        internal            RequestCount        requestCount = new RequestCount();
+        internal            RequestCount        requestCount;
 
         internal void Update(SyncRequest syncRequest) {
             requestHistories.Update();

@@ -45,7 +45,7 @@ namespace Friflo.Json.Fliox.Hub.Host
     ///   </item>
     ///   <item>
     ///     User authentication and task authorization. Each task is authorized individually. To enable this assign 
-    ///     a <see cref="UserAuth.UserAuthenticator"/> to <see cref="Authenticator"/>.
+    ///     a <see cref="DB.UserAuth.UserAuthenticator"/> to <see cref="Authenticator"/>.
     ///   </item>
     ///   <item>
     ///     Monitoring of database access (requests) by adding a <see cref="MonitorDB"/> with
@@ -84,7 +84,7 @@ namespace Friflo.Json.Fliox.Hub.Host
 
         /// <summary>
         /// A host name that is assigned to a default database.
-        /// Its only purpose is to use it as id in <see cref="Monitor.HostInfo.id"/>.
+        /// Its only purpose is to use it as id in <see cref="DB.Monitor.HostInfo.id"/>.
         /// </summary>
         /// 
         public   readonly   string              hostName;
