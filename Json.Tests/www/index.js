@@ -429,12 +429,13 @@ class App {
         this.setEntityValue(database, container, "");
         const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
         readEntitiesDB.innerHTML = `<a href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
-        readEntities.innerHTML  = `${container} <span class="spinner"></span>`;
+        var containerLink       = `<a href="./rest/${database}/${container}" target="_blank" rel="noopener noreferrer">${container}</a>`;
+        readEntities.innerHTML  = `${containerLink} <span class="spinner"></span>`;
         const response = await this.postRequestTasks(database, tasks, container);
         const content = response.json;
         entityId.innerHTML      = "";
         writeResult.innerHTML   = "";
-        readEntities.innerHTML  = `<a href="./rest/${database}/${container}" target="_blank" rel="noopener noreferrer">${container}</a>`;
+        readEntities.innerHTML  = containerLink;
         var error = this.getTaskError (content, 0);
         if (error) {
             entityExplorer.innerHTML = this.errorAsHtml(error);
@@ -473,18 +474,18 @@ class App {
             container:  container,
             entityId:   id
         };
-        entityId.innerHTML      = `${id} <span class="spinner"></span>`;
+        var entityLink          = `<a href="./rest/${database}/${container}/${id}" target="_blank" rel="noopener noreferrer">${id}</a>`
+        entityId.innerHTML      = `${entityLink} <span class="spinner"></span>`;
         writeResult.innerHTML   = "";
         const tasks = [{ "task": "read", "container": container, "sets": [{ "ids": [id] }] }];
         const response = await this.postRequestTasks(database, tasks, `${container}/${id}`);
         const content = response.json;
         const error = this.getTaskError (content, 0);
+        entityId.innerHTML = entityLink;
         if (error) {
-            entityId.innerText = "read failed"
             this.setEntityValue(database, container, error);
             return;
         }
-        entityId.innerHTML = `<a href="./rest/${database}/${container}/${id}" target="_blank" rel="noopener noreferrer">${id}</a>`;
         const entityValue = content.containers[0].entities[0];
         const entityJson = JSON.stringify(entityValue, null, 2);
         // console.log(entityJson);
