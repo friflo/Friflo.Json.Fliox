@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Friflo.Json.Fliox.Mapper;
 
 namespace Friflo.Json.Fliox.Hub.Remote
@@ -117,10 +118,10 @@ namespace Friflo.Json.Fliox.Hub.Remote
                 return;
             }
             var request = ctx.Request;
-            var url     = request.Url; 
+            var url     = request.Url;
             var headers = new HttpListenerHeaders(request.Headers);
             var cookies = new HttpListenerCookies(request.Cookies);
-            var reqCtx  = new RequestContext(request.HttpMethod, url.AbsolutePath, url.Query, req.InputStream, headers, cookies);
+            var reqCtx  = new RequestContext(request.HttpMethod, url.LocalPath, url.Query, req.InputStream, headers, cookies);
             bool handled = await hostHub.ExecuteHttpRequest(reqCtx).ConfigureAwait(false);
             
             if (handled) {
