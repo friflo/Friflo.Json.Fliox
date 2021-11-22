@@ -20,6 +20,6 @@ The user database enables executing the listed tasks depending on the user (user
     - container: "UserCredential": read
 
 These rights given at: 
-[UserDatabaseAuthenticator.cs](../../../../../Json/Fliox.Hub/UserAuth/UserDatabaseAuthenticator.cs)
+[UserDatabaseAuthenticator.cs](../../../../../Json/Fliox.Hub/DB/UserAuth/UserDatabaseAuthenticator.cs)
 
 Additional users can be added to this list if required via `UserDatabaseAuthenticator.userRights`.
