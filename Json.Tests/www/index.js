@@ -715,7 +715,7 @@ class App {
     }
 
     layoutEditors () {
-        console.log("layoutEditors - activeTab: " + activeTab)
+        // console.log("layoutEditors - activeTab: " + activeTab)
         switch (activeTab) {
             case "playground":
                 this.requestEditor?.layout();
@@ -745,7 +745,7 @@ class App {
             grip.style.position = 'absolute';
             grip.style.cursor = 'col-resize';
             grip.style.userSelect = 'none'; // disable text selection while dragging
-            grip.addEventListener('mousedown', function (e) {
+            grip.addEventListener('mousedown', (e) => {
                 thElm = th;
                 startOffset = th.offsetWidth - e.pageX;
             });
@@ -753,7 +753,7 @@ class App {
             th.appendChild(grip);
         });
 
-        document.addEventListener('mousemove', function (e) {
+        document.addEventListener('mousemove', (e) => {
         if (thElm) {
             var width = startOffset + e.pageX + 'px'
             thElm.style.width = width;
@@ -764,7 +764,7 @@ class App {
         }
         });
 
-        document.addEventListener('mouseup', function () {
+        document.addEventListener('mouseup', () => {
             thElm = undefined;
         });
     }
