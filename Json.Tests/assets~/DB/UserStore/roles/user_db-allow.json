@@ -1,6 +1,6 @@
 {
     "id": "user_db-allow",
-    "description": "Allow unrestricted access to user_db permissions & roles and execution of the given commands",
+    "description": "Allow unrestricted access to user_db: permissions & roles. Allow execution of the given commands",
     "rights": [
         {
             "type": "operation",

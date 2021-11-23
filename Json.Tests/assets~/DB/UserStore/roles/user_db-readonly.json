@@ -1,6 +1,6 @@
 {
     "id": "user_db-readonly",
-    "description": "Allow readonly access to user_db permissions & roles",
+    "description": "Allow readonly access to user_db: permissions & roles",
     "rights": [
         {
             "type": "operation",
