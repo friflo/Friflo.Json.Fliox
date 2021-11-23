@@ -134,7 +134,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         public virtual async Task<ExecuteSyncResult> ExecuteSync(SyncRequest syncRequest, MessageContext messageContext) {
             messageContext.hub          = this;
             var dbName = syncRequest.database;
-            if (dbName == EntityDatabase.DefaultDb)
+            if (dbName == EntityDatabase.MainDB)
                 dbName = null;
             messageContext.DatabaseName = dbName;
             if (messageContext.authState.authExecuted) throw new InvalidOperationException("Expect AuthExecuted == false");
@@ -212,7 +212,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         }
 
         private void UpdateRequestStats(string database, SyncRequest syncRequest, MessageContext messageContext) {
-            if (database == null) database = EntityDatabase.DefaultDb;
+            if (database == null) database = EntityDatabase.MainDB;
             var user = messageContext.User;
             RequestCount.UpdateCounts(user.requestCounts, database, syncRequest);
             ref var clientId = ref messageContext.clientId;
@@ -239,7 +239,7 @@ namespace Friflo.Json.Fliox.Hub.Host
         internal Dictionary<string, EntityDatabase> GetDatabases() {
             var result = new Dictionary<string, EntityDatabase> (extensionDbs.Count + 1);
             if (database != null) {
-                result.Add(EntityDatabase.DefaultDb, database);
+                result.Add(EntityDatabase.MainDB, database);
             }
             foreach (var extensionDB in extensionDbs) {
                 result.Add(extensionDB.Key, extensionDB.Value);

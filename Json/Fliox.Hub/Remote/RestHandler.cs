@@ -56,7 +56,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     context.WriteError(GetErrorType(command), $"messages & commands operate on database. was: {database}", 400);
                     return true;
                 }
-                if (database == EntityDatabase.DefaultDb)
+                if (database == EntityDatabase.MainDB)
                     database = null;
                 JsonValue value;
                 if (isPost) {
@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         
         // -------------------------------------- resource access  --------------------------------------
         private async Task GetEntities(RequestContext context, string database, string container) {
-            if (database == EntityDatabase.DefaultDb)
+            if (database == EntityDatabase.MainDB)
                 database = null;
             var queryEntities   = new QueryEntities{ container = container, filter = Operation.FilterTrue };
             var restResult      = await ExecuteTask(context, database, queryEntities);
@@ -181,7 +181,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private async Task GetEntity(RequestContext context, string database, string container, string id) {
-            if (database == EntityDatabase.DefaultDb)
+            if (database == EntityDatabase.MainDB)
                 database = null;
             var entityId        = new JsonKey(id);
             var readEntitiesSet = new ReadEntitiesSet ();
@@ -212,7 +212,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private async Task DeleteEntity(RequestContext context, string database, string container, string id) {
-            if (database == EntityDatabase.DefaultDb)
+            if (database == EntityDatabase.MainDB)
                 database = null;
             var entityId        = new JsonKey(id);
             var deleteEntities  = new DeleteEntities { container = container };
@@ -231,7 +231,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
         }
         
         private async Task UpsertEntity(RequestContext context, string database, string container, string keyName, JsonValue value) {
-            if (database == EntityDatabase.DefaultDb)
+            if (database == EntityDatabase.MainDB)
                 database = null;
             var upsertEntities  = new UpsertEntities {
                 container   = container,
