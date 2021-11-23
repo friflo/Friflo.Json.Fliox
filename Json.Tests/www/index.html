@@ -235,6 +235,17 @@
   <div id="explorer" class="tabContent">
     <table width="100%">
       <tr>
+        <td style="overflow:auto;white-space:nowrap">
+        </td>
+        <td style="overflow:auto;white-space:nowrap">
+        </td>
+        <td style="overflow:auto;white-space:nowrap">
+            <button type="button" onclick="app.deleteEntity()" title="Delete">Delete</button>
+            <button type="button" onclick="app.saveEntity()" title="Save (Ctrl+S)">Save</button>
+        </td>
+      </tr>
+
+      <tr>
         <td>
           <small><a href="./rest" target="_blank" rel="noopener noreferrer">Catalogs</a></small>
         </td>
@@ -243,10 +254,7 @@
         </td>
         <td style="overflow:auto;white-space:nowrap">
           <small style="opacity: 0.5;">Entity</small>
-          <small style="width: 150px; display:inline-block;" id="entityId"></small>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <button type="button" onclick="app.deleteEntity()" title="Delete">Delete</button>
-          <button type="button" onclick="app.saveEntity()" title="Save (Ctrl+S)">Save</button>
+          <small id="entityId"></small>
         </td>
       </tr>
       <tr>
