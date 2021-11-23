@@ -279,7 +279,7 @@ class App {
     }
 
     async postRequestTasks (database, tasks, tag) {
-        const db = database == "default_db" ? undefined : database;
+        const db = database == "main_db" ? undefined : database;
         const request = JSON.stringify({
             "msg":      "sync",
             "database": db,
@@ -437,7 +437,7 @@ class App {
                 monacoSchemas.push(schemaEntry);
                 var container = typeMap[schemaName];
                 if (container) {
-                    var url = `entity://${database}.${container}.json`; // e.g. 'entity://default_db.orders.json'
+                    var url = `entity://${database}.${container}.json`; // e.g. 'entity://main_db.orders.json'
                     schemaEntry.fileMatch = [url]; // associate with our model
                 }
             }
