@@ -316,6 +316,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var pool            = new Pool(hub.sharedEnv);
             var messageContext  = new MessageContext(pool, null);
             var result = await hub.ExecuteSync(synRequest, messageContext);
+            
             var error = result.error;
             if (error != null) {
                 var status = error.type == ErrorResponseType.BadRequest ? 400 : 500;
