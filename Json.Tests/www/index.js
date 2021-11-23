@@ -514,7 +514,8 @@ class App {
         const jsonValue = this.entityModel.getValue();
         let id;
         try {
-            id = JSON.parse(jsonValue).id;
+            var keyName = "id"; // could be different. keyName can be retrieved from schema
+            id = JSON.parse(jsonValue)[keyName];
         } catch (error) {
             writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
             return;
