@@ -171,10 +171,7 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 if (addProps.reference != null) {
                     fieldType = FindRef(addProps.reference, context);
                 } else {
-                    // todo support other types than "object" also
-                    if (!field.type.IsEqual(JsonObject))
-                        throw new InvalidOperationException("additionalProperties requires '$ref'");
-                    fieldType = context.standardTypes.JsonValue;
+                    fieldType = FindTypeFromJson(field, jsonType, items, context, ref isArray);
                 }
             }
             else if (!jsonType.IsNull()) {
@@ -248,9 +245,9 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 case "string":  return types.String;
                 case "integer": return types.Int32;
                 case "number":  return types.Double;
+                case "object":  return types.JsonValue;
                 // case "null":    return null;
                 // case "array":   return null;
-                // case "object":  return null;
             }
             throw new InvalidOperationException($"unexpected standard type: {type}");
         }
