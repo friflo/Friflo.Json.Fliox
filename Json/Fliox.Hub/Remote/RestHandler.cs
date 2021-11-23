@@ -109,8 +109,8 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             // ------------------    PUT            /database/container
             if (method == "PUT") {
-                if (resource.Length != 2) {
-                    context.WriteError("invalid PUT", "expect: /database/container", 400);
+                if (resource.Length != 3) {
+                    context.WriteError("invalid PUT", "expect: /database/container/id", 400);
                     return true;
                 }
                 var value = await JsonValue.ReadToEndAsync(context.body).ConfigureAwait(false);
@@ -119,7 +119,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
                     return true;
                 }
                 var keyName = queryKeyValues["keyName"];
-                await UpsertEntity(context, resource[0], resource[1], keyName, value);
+                await UpsertEntity(context, resource[0], resource[1], resource[2], keyName, value);
                 return true;
             }
             return false;
@@ -230,7 +230,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             context.WriteString("deleted successful", "text/plain");
         }
         
-        private async Task UpsertEntity(RequestContext context, string database, string container, string keyName, JsonValue value) {
+        private async Task UpsertEntity(RequestContext context, string database, string container, string id, string keyName, JsonValue value) {
             if (database == EntityDatabase.MainDB)
                 database = null;
             var upsertEntities  = new UpsertEntities {
@@ -246,6 +246,12 @@ namespace Friflo.Json.Fliox.Hub.Remote
             var resultError = upsertResult.Error;
             if (resultError != null) {
                 context.WriteError("PUT error", resultError.message, 500);
+                return;
+            }
+            var upsertErrors = restResult.syncResponse.upsertErrors;
+            if (upsertErrors != null) {
+                var error = upsertErrors[container].errors[new JsonKey(id)];
+                context.WriteError("PUT error", error.message, 400);
                 return;
             }
             context.WriteString("PUT successful", "text/plain");

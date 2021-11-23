@@ -510,19 +510,24 @@ class App {
     }
 
     async saveEntity () {
-        var container = this.entityIdentity.container;
-        var jsonValue = this.entityModel.getValue();
-
+        const container = this.entityIdentity.container;
+        const jsonValue = this.entityModel.getValue();
+        let id;
+        try {
+            id = JSON.parse(jsonValue).id;
+        } catch (error) {
+            writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
+            return;
+        }
         writeResult.innerHTML = 'save <span class="spinner"></span>';
 
-        const response = await this.restRequest("PUT", jsonValue, this.entityIdentity.database, container);
+        const response = await this.restRequest("PUT", jsonValue, this.entityIdentity.database, container, id);
         if (!response.ok) {
             const error = await response.text();
             writeResult.innerHTML = `<span style="color:red">Save failed: ${error}</code>`;
             return;
         }
         writeResult.innerHTML = "Save successful";
-        const id = JSON.parse(jsonValue).id;
         // add as HTML element to entityExplorer if new
         if (this.entityIdentity.entityId != id) {
             this.entityIdentity.entityId = id;
