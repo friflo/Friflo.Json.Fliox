@@ -49,14 +49,16 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             var resultType = returnTypeArgs[0];
             if (resultType.IsGenericParameter)
                 return false;
-            var parameters = methodInfo.GetParameters();
-            if (parameters.Length != 1)
-                return false;
             var name = AttributeUtils.CommandName(methodInfo.CustomAttributes);
             if (name == null)
                 name = methodInfo.Name;
-            var param = parameters[0];
-            var valueType = param.ParameterType;
+            var parameters = methodInfo.GetParameters();
+            if (parameters.Length != 1)
+                return false;
+            Type valueType = typeof(JsonValue);
+            if (parameters.Length == 1) {
+                valueType = parameters[0].ParameterType;
+            }
             commandInfo = new CommandInfo(name, valueType, resultType);
             return true;
         }

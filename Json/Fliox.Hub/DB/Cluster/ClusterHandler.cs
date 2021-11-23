@@ -17,10 +17,10 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         
         public ClusterHandler (FlioxHub hub) {
             this.hub = hub;
-            AddCommandHandler<Empty, List<Catalog>>(StdCommand.CatalogList, CatalogList);
+            AddCommandHandler<Empty, CatalogList>(StdCommand.CatalogList, CatalogList);
         }
         
-        private List<Catalog> CatalogList (Command<Empty> command) {
+        private CatalogList CatalogList (Command<Empty> command) {
             var databases = hub.GetDatabases();
             var catalogs = new List<Catalog>(databases.Count);
             foreach (var pair in databases) {
@@ -33,7 +33,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                 };
                 catalogs.Add(catalog);
             }
-            return catalogs;
+            return new CatalogList{ catalogs = catalogs };
         }
         
         public override Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {

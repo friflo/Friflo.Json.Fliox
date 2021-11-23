@@ -33,4 +33,9 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
                         
         public override         string  ToString() => JsonSerializer.Serialize(this).Replace("\"", "'");
     }
+    
+    // --- commands
+    public class CatalogList {
+         public  List<Catalog>                   catalogs;
+    }
 }
