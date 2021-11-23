@@ -394,7 +394,7 @@ class App {
                     this.selectedCatalog.classList = "selected";
                     const container = this.selectedCatalog.innerText;
                     // console.log(database, container);
-                    var schema = schemas.find(s => s.id == catalog.id);
+                    var schema = schemas.find(s => s.id == database);
                     this.loadEntities(database, container, schema);
                 }
                 liCatalog.append(ulContainers);
