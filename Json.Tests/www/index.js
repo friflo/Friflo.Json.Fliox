@@ -447,11 +447,20 @@ class App {
         this.addSchemas(monacoSchemas);
     }
 
+    getContainerType(schema, container) {
+        var dbSchema = schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName];
+        var ref = dbSchema.properties[container].additionalProperties["$ref"];
+        var lastSlashPos = ref.lastIndexOf('/');
+        return ref.substring(lastSlashPos + 1);
+    }
+
     async loadEntities (database, container, schema) {
         this.setEntityValue(database, container, "");
         const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
         if (schema) {
-            catalogSchema.innerHTML  = `<a href="./rest/${database}?command=CatalogSchema" target="_blank" rel="noopener noreferrer">${schema.schemaName}</a>`;
+            const containerType = this.getContainerType (schema, container);
+            const label = `${schema.schemaName} ${containerType}`;
+            catalogSchema.innerHTML  = `<a href="./rest/${database}?command=CatalogSchema" target="_blank" rel="noopener noreferrer">${label}</a>`;
         }
         readEntitiesDB.innerHTML = `<a href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
         var containerLink        = `<a href="./rest/${database}/${container}" target="_blank" rel="noopener noreferrer">${container}</a>`;
