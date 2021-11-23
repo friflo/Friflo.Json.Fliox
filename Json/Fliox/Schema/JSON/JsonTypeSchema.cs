@@ -24,6 +24,8 @@ namespace Friflo.Json.Fliox.Schema.JSON
         
         private readonly    Dictionary<string, JsonTypeDef> typeMap;
         
+        private static readonly  JsonValue JsonObject = new JsonValue ("\"object\"");
+        
         public JsonTypeSchema(List<JsonSchema> schemaList, string rootType = null) {
             typeMap = new Dictionary<string, JsonTypeDef>(schemaList.Count);
             foreach (JsonSchema schema in schemaList) {
@@ -169,7 +171,10 @@ namespace Friflo.Json.Fliox.Schema.JSON
                 if (addProps.reference != null) {
                     fieldType = FindRef(addProps.reference, context);
                 } else {
-                    throw new InvalidOperationException("additionalProperties requires '$ref'");
+                    // todo support other types than "object" also
+                    if (!field.type.IsEqual(JsonObject))
+                        throw new InvalidOperationException("additionalProperties requires '$ref'");
+                    fieldType = context.standardTypes.JsonValue;
                 }
             }
             else if (!jsonType.IsNull()) {

@@ -88,7 +88,7 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Schema.Misc
             foreach (var expectName in expectNames) {
                 var expectContent = File.ReadAllText(expectFolder + expectName, Encoding.UTF8);
                 var otherContent  = File.ReadAllText(otherFolder  + expectName, Encoding.UTF8);
-                Assert.AreEqual (expectContent, otherContent);
+                Assert.AreEqual (expectContent, otherContent, $"file: {expectName}");
             }
         }
     }

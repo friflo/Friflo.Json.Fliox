@@ -32,7 +32,10 @@
         "EntityIdStoreService": {
             "type": "object",
             "commands": {
-                "Echo": { "command": [{  }, {  }] }
+                "Catalog":       { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/Catalog" }] },
+                "CatalogSchema": { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/CatalogSchema" }] },
+                "CatalogList":   { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/CatalogList" }] },
+                "Echo":          { "command": [{  }, {  }] }
             }
         }
     }

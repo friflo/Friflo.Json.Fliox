@@ -26,8 +26,11 @@
         "PocStoreService": {
             "type": "object",
             "commands": {
-                "TestCommand": { "command": [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }] },
-                "Echo":        { "command": [{  }, {  }] }
+                "TestCommand":   { "command": [{ "$ref": "#/definitions/TestCommand" }, { "type": "boolean" }] },
+                "Catalog":       { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/Catalog" }] },
+                "CatalogSchema": { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/CatalogSchema" }] },
+                "CatalogList":   { "command": [{  }, { "$ref": "./Friflo.Json.Fliox.Hub.DB.Cluster.json#/definitions/CatalogList" }] },
+                "Echo":          { "command": [{  }, {  }] }
             }
         },
         "OrderItem": {

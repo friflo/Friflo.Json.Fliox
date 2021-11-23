@@ -53,7 +53,7 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
             if (name == null)
                 name = methodInfo.Name;
             var parameters = methodInfo.GetParameters();
-            if (parameters.Length != 1)
+            if (parameters.Length > 1)
                 return false;
             Type valueType = typeof(JsonValue);
             if (parameters.Length == 1) {

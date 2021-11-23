@@ -36,6 +36,6 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
     
     // --- commands
     public class CatalogList {
-         public  List<Catalog>                   catalogs;
+        [Fri.Required]  public  List<Catalog>                   catalogs;
     }
 }
