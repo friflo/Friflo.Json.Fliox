@@ -1,6 +1,6 @@
 {
     "id": "main_db-readonly",
-    "description": "Allow readonly access to main_db and execution of the given commands",
+    "description": "Allow readonly access to default database and execution of the given commands",
     "rights": [
         { "type": "task", "types": ["read", "query", "subscribeChanges", "subscribeMessage"] },
         { "type": "message", "names": ["Catalog*", "Echo"] }
