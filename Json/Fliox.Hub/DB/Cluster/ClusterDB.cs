@@ -119,5 +119,21 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
             };
             return schema;
         }
+        
+        internal static CatalogList CatalogList (FlioxHub hub) {
+            var databases = hub.GetDatabases();
+            var catalogs = new List<Catalog>(databases.Count);
+            foreach (var pair in databases) {
+                var database        = pair.Value;
+                var databaseInfo    = database.GetDatabaseInfo();
+                var catalog = new Catalog {
+                    id              = pair.Key,
+                    databaseType    = databaseInfo.databaseType,
+                    containers      = databaseInfo.containers
+                };
+                catalogs.Add(catalog);
+            }
+            return new CatalogList{ catalogs = catalogs };
+        }
     }
 }

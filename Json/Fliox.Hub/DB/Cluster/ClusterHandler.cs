@@ -21,19 +21,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         }
         
         private CatalogList CatalogList (Command<Empty> command) {
-            var databases = hub.GetDatabases();
-            var catalogs = new List<Catalog>(databases.Count);
-            foreach (var pair in databases) {
-                var database        = pair.Value;
-                var databaseInfo    = database.GetDatabaseInfo();
-                var catalog = new Catalog {
-                    id              = pair.Key,
-                    databaseType    = databaseInfo.databaseType,
-                    containers      = databaseInfo.containers
-                };
-                catalogs.Add(catalog);
-            }
-            return new CatalogList{ catalogs = catalogs };
+            return ClusterStore.CatalogList(hub);
         }
         
         public override Task<SyncTaskResult> ExecuteTask (SyncRequestTask task, EntityDatabase database, SyncResponse response, MessageContext messageContext) {

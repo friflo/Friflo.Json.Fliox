@@ -43,6 +43,7 @@ namespace Friflo.Json.Fliox.Hub.Host
             AddCommandHandler(StdCommand.Echo,          new CommandHandler<JsonValue, JsonValue>    (Echo));    // todo add handler via scanning TaskHandler
             AddCommandHandler(StdCommand.Catalog,       new CommandHandler<Empty,     Catalog>      (Catalog));
             AddCommandHandler(StdCommand.CatalogSchema, new CommandHandler<Empty,     CatalogSchema>(CatalogSchema));
+            AddCommandHandler(StdCommand.CatalogList,   new CommandHandler<Empty,     CatalogList>  (CatalogList));
         }
         
         private static JsonValue Echo (Command<JsonValue> command) {
@@ -65,6 +66,11 @@ namespace Friflo.Json.Fliox.Hub.Host
             var databaseName    = command.DatabaseName;
             var databaseInfo    = database.GetDatabaseInfo();
             return ClusterStore.CreateCatalogSchema(databaseInfo, databaseName);
+        }
+        
+        private static CatalogList CatalogList (Command<Empty> command) {
+            var hub = command.Hub;
+            return ClusterStore.CatalogList(hub);
         }
         
         internal bool TryGetCommand(string name, out CommandCallback command) {
