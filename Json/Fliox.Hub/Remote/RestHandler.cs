@@ -233,6 +233,19 @@ namespace Friflo.Json.Fliox.Hub.Remote
         private async Task UpsertEntity(RequestContext context, string database, string container, string id, string keyName, JsonValue value) {
             if (database == EntityDatabase.MainDB)
                 database = null;
+            var entityId = new JsonKey(id);
+            keyName = keyName ?? "id";
+            using (var pooled = hub.sharedEnv.Pool.EntityProcessor.Get()) {
+                var processor = pooled.instance;
+                if (!processor.GetEntityKey(value, keyName, out JsonKey key, out string entityError)) {
+                    context.WriteError("PUT error", entityError, 400);
+                    return;
+                }
+                if (!entityId.IsEqual(key)) {
+                    context.WriteError("PUT error", $"entity {keyName} != resource id. expect: {id}, was: {key.AsString()}", 400);
+                    return;
+                }
+            }
             var upsertEntities  = new UpsertEntities {
                 container   = container,
                 keyName     = keyName,
@@ -250,7 +263,7 @@ namespace Friflo.Json.Fliox.Hub.Remote
             }
             var upsertErrors = restResult.syncResponse.upsertErrors;
             if (upsertErrors != null) {
-                var error = upsertErrors[container].errors[new JsonKey(id)];
+                var error = upsertErrors[container].errors[entityId];
                 context.WriteError("PUT error", error.message, 400);
                 return;
             }
