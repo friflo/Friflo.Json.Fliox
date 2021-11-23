@@ -38,13 +38,16 @@ namespace Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Happy
             var catalogList     = store.CatalogList();
             await store.SyncTasks();
             
-            AreEqual(6,             catalog.Result.containers.Length);
-            AreEqual(9,             catalogSchema.Result.jsonSchemas.Count);
+            var catalogResult = catalog.Result;
+            
+            AreEqual(6,                 catalogResult.containers.Length);
+            AreEqual("FileDatabase",    catalogResult.databaseType);
+            AreEqual(9,                 catalogSchema.Result.jsonSchemas.Count);
             var catalogs = catalogList.Result.catalogs;
             var catalog0 = catalogs[0];
-            AreEqual(1,             catalogs.Count);
-            AreEqual(6,             catalog0.containers.Length);
-            AreEqual("FileDatabase",catalog0.databaseType);
+            AreEqual(1,                 catalogs.Count);
+            AreEqual(6,                 catalog0.containers.Length);
+            AreEqual("FileDatabase",    catalog0.databaseType);
         }
     }
 }
