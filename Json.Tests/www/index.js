@@ -23,6 +23,7 @@ const entityExplorer    = document.getElementById("entityExplorer");
 const writeResult       = document.getElementById("writeResult");
 const readEntitiesDB    = document.getElementById("readEntitiesDB");
 const readEntities      = document.getElementById("readEntities");
+const catalogSchema     = document.getElementById("catalogSchema");
 const entityId          = document.getElementById("entityId");
 
 
@@ -393,7 +394,8 @@ class App {
                     this.selectedCatalog.classList = "selected";
                     const container = this.selectedCatalog.innerText;
                     // console.log(database, container);
-                    this.loadEntities(database, container);
+                    var schema = schemas.find(s => s.id == catalog.id);
+                    this.loadEntities(database, container, schema);
                 }
                 liCatalog.append(ulContainers);
                 for (const container of catalog.containers) {
@@ -445,12 +447,15 @@ class App {
         this.addSchemas(monacoSchemas);
     }
 
-    async loadEntities (database, container) {
+    async loadEntities (database, container, schema) {
         this.setEntityValue(database, container, "");
         const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
+        if (schema) {
+            catalogSchema.innerHTML  = `<a href="./rest/${database}?command=CatalogSchema" target="_blank" rel="noopener noreferrer">${schema.schemaName}</a>`;
+        }
         readEntitiesDB.innerHTML = `<a href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
-        var containerLink       = `<a href="./rest/${database}/${container}" target="_blank" rel="noopener noreferrer">${container}</a>`;
-        readEntities.innerHTML  = `${containerLink} <span class="spinner"></span>`;
+        var containerLink        = `<a href="./rest/${database}/${container}" target="_blank" rel="noopener noreferrer">${container}</a>`;
+        readEntities.innerHTML   = `${containerLink} <span class="spinner"></span>`;
         const response = await this.postRequestTasks(database, tasks, container);
 
         const content = response.json;
