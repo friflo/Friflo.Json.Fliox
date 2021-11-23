@@ -37,6 +37,8 @@ namespace Friflo.Json.Fliox.Hub.Client.Internal.Map
                 fieldInfo.SetValue(this, fields);
             }
             var commands = CommandUtils.GetCommandTypes(type);
+            if (commands == null)
+                return;
             foreach (var command in commands) {
                 if (command.valueType != null)
                     typeStore.GetTypeMapper(command.valueType);

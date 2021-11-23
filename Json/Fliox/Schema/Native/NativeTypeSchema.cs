@@ -114,7 +114,7 @@ namespace Friflo.Json.Fliox.Schema.Native
                     }
                 }
                 var commands = CommandUtils.GetCommandTypes(typeDef.native);
-                if (commands.Length > 0) {
+                if (commands != null) {
                     var commandTypeDef = new NativeTypeDef (typeDef.Name + "Service", typeDef.Namespace) {
                         messages = new List<MessageDef>(commands.Length)
                     };

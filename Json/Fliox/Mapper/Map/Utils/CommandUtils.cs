@@ -27,6 +27,10 @@ namespace Friflo.Json.Fliox.Mapper.Map.Utils
                     continue;
                 commands.Add(commandInfo);
             }
+            if (commands.Count == 0) {
+                CommandInfoCache[type] = null;
+                return null;
+            }
             var array = commands.ToArray();
             CommandInfoCache[type] = array;
             return array;
