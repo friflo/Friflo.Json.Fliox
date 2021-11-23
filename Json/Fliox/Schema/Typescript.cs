@@ -154,7 +154,7 @@ namespace Friflo.Json.Fliox.Schema
                 var commandValue    = GetTypeName(message.value,  context);
                 var commandResult   = GetTypeName(message.result, context);
                 var indent = Indent(maxFieldName, message.name);
-                var command = $"(command: {commandValue}) : {commandResult}";
+                var command = $"(value: {commandValue}) : {commandResult}";
                 sb.AppendLine($"    {message.name}{indent} {command};");
             }
             sb.AppendLine("}");

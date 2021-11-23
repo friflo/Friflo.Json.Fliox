@@ -21,11 +21,11 @@ export abstract class PocStore {
 }
 
 export interface PocStoreService {
-    TestCommand   (command: TestCommand) : boolean;
-    Catalog       (command: any) : Catalog;
-    CatalogSchema (command: any) : CatalogSchema;
-    CatalogList   (command: any) : CatalogList;
-    Echo          (command: any) : any;
+    TestCommand   (value: TestCommand) : boolean;
+    Catalog       (value: any) : Catalog;
+    CatalogSchema (value: any) : CatalogSchema;
+    CatalogList   (value: any) : CatalogList;
+    Echo          (value: any) : any;
 }
 
 export class Order {

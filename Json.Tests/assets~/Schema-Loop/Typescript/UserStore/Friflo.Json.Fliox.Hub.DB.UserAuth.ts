@@ -12,11 +12,11 @@ export abstract class UserStore {
 }
 
 export interface UserStoreService {
-    AuthenticateUser (command: AuthenticateUser) : AuthenticateUserResult;
-    Catalog          (command: any) : Catalog;
-    CatalogSchema    (command: any) : CatalogSchema;
-    CatalogList      (command: any) : CatalogList;
-    Echo             (command: any) : any;
+    AuthenticateUser (value: AuthenticateUser) : AuthenticateUserResult;
+    Catalog          (value: any) : Catalog;
+    CatalogSchema    (value: any) : CatalogSchema;
+    CatalogList      (value: any) : CatalogList;
+    Echo             (value: any) : any;
 }
 
 export class AuthenticateUser {

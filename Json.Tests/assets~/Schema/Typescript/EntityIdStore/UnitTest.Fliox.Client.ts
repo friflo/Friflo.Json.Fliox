@@ -21,10 +21,10 @@ export abstract class EntityIdStore {
 }
 
 export interface EntityIdStoreService {
-    Catalog       (command: any) : Catalog;
-    CatalogSchema (command: any) : CatalogSchema;
-    CatalogList   (command: any) : CatalogList;
-    Echo          (command: any) : any;
+    Catalog       (value: any) : Catalog;
+    CatalogSchema (value: any) : CatalogSchema;
+    CatalogList   (value: any) : CatalogList;
+    Echo          (value: any) : any;
 }
 
 export class GuidEntity {

@@ -16,11 +16,11 @@ export abstract class MonitorStore {
 }
 
 export interface MonitorStoreService {
-    ClearStats    (command: ClearStats) : ClearStatsResult;
-    Catalog       (command: any) : Catalog;
-    CatalogSchema (command: any) : CatalogSchema;
-    CatalogList   (command: any) : CatalogList;
-    Echo          (command: any) : any;
+    ClearStats    (value: ClearStats) : ClearStatsResult;
+    Catalog       (value: any) : Catalog;
+    CatalogSchema (value: any) : CatalogSchema;
+    CatalogList   (value: any) : CatalogList;
+    Echo          (value: any) : any;
 }
 
 export class HostInfo {
