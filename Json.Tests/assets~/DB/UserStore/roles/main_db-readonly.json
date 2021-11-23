@@ -1,5 +1,5 @@
 {
-    "id": "db-readonly",
+    "id": "main_db-readonly",
     "description": "Allow execution readonly tasks",
     "rights": [
         { "type": "task", "types": ["read", "query", "subscribeChanges", "subscribeMessage"] },

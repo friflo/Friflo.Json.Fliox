@@ -1,5 +1,5 @@
 {
-    "id": "db-allow",
+    "id": "main_db-allow",
     "description": "Allow unrestricted access to a database",
     "rights": [
         { "type": "allow" }

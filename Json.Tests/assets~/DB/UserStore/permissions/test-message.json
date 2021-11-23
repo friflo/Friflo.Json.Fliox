@@ -1,4 +1,4 @@
 {
     "id": "test-message",
-    "roles": ["db-message"]
+    "roles": ["main_db-message"]
 }

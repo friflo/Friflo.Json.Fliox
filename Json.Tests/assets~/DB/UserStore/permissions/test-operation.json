@@ -1,4 +1,4 @@
 {
     "id": "test-operation",
-    "roles": ["db-operation"]
+    "roles": ["main_db-operation"]
 }
