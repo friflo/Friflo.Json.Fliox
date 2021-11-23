@@ -461,10 +461,10 @@ class App {
         if (schema) {
             const entityLabel = this.getEntityType (schema, container);            
             entityType.innerText  = entityLabel;
-            catalogSchema.innerHTML  = `<a href="./rest/${database}?command=CatalogSchema" target="_blank" rel="noopener noreferrer">${schema.schemaName}</a>`;
+            catalogSchema.innerHTML  = `<a title="database schema" href="./rest/${database}?command=CatalogSchema" target="_blank" rel="noopener noreferrer">${schema.schemaName}</a>`;
         }
-        readEntitiesDB.innerHTML = `<a href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
-        var containerLink        = `<a href="./rest/${database}/${container}" target="_blank" rel="noopener noreferrer">${container}</a>`;
+        readEntitiesDB.innerHTML = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
+        var containerLink        = `<a title="container" href="./rest/${database}/${container}" target="_blank" rel="noopener noreferrer">${container}</a>`;
         readEntities.innerHTML   = `${containerLink} <span class="spinner"></span>`;
         const response = await this.postRequestTasks(database, tasks, container);
 
@@ -514,7 +514,7 @@ class App {
             container:  container,
             entityId:   id
         };
-        var entityLink          = `<a href="./rest/${database}/${container}/${id}" target="_blank" rel="noopener noreferrer">${id}</a>`
+        var entityLink          = `<a title="entity id" href="./rest/${database}/${container}/${id}" target="_blank" rel="noopener noreferrer">${id}</a>`
         entityId.innerHTML      = `${entityLink} <span class="spinner"></span>`;
         writeResult.innerHTML   = "";
         const response  = await this.restRequest("GET", null, database, container, id);        
