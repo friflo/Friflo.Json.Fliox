@@ -24,6 +24,7 @@ const writeResult       = document.getElementById("writeResult");
 const readEntitiesDB    = document.getElementById("readEntitiesDB");
 const readEntities      = document.getElementById("readEntities");
 const catalogSchema     = document.getElementById("catalogSchema");
+const entityType        = document.getElementById("entityType");
 const entityId          = document.getElementById("entityId");
 
 
@@ -447,7 +448,7 @@ class App {
         this.addSchemas(monacoSchemas);
     }
 
-    getContainerType(schema, container) {
+    getEntityType(schema, container) {
         var dbSchema = schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName];
         var ref = dbSchema.properties[container].additionalProperties["$ref"];
         var lastSlashPos = ref.lastIndexOf('/');
@@ -458,9 +459,9 @@ class App {
         this.setEntityValue(database, container, "");
         const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
         if (schema) {
-            const containerType = this.getContainerType (schema, container);
-            const label = `${schema.schemaName} ${containerType}`;
-            catalogSchema.innerHTML  = `<a href="./rest/${database}?command=CatalogSchema" target="_blank" rel="noopener noreferrer">${label}</a>`;
+            const entityLabel = this.getEntityType (schema, container);            
+            entityType.innerText  = entityLabel;
+            catalogSchema.innerHTML  = `<a href="./rest/${database}?command=CatalogSchema" target="_blank" rel="noopener noreferrer">${schema.schemaName}</a>`;
         }
         readEntitiesDB.innerHTML = `<a href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
         var containerLink        = `<a href="./rest/${database}/${container}" target="_blank" rel="noopener noreferrer">${container}</a>`;
