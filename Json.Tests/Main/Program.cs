@@ -60,7 +60,7 @@ namespace Friflo.Json.Tests.Main
             hub.AddExtensionDB (MonitorDB.Name, new MonitorDB(hub));    // optional - expose monitor stats as extension database
             hub.EventBroker         = new EventBroker(true);            // optional - eventBroker enables Instant Messaging & Pub-Sub
             
-            var userDB              = new FileDatabase(userDbPath, new UserDBHandler());
+            var userDB              = new FileDatabase(userDbPath, new UserDBHandler(), null, false);
             hub.Authenticator       = new UserAuthenticator(userDB);    // optional - otherwise all request tasks are authorized
             hub.AddExtensionDB("user_db", userDB);                      // optional - expose userStore as extension database
             
