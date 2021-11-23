@@ -162,7 +162,7 @@ namespace Friflo.Json.Fliox.Hub.Client
                             var name = message.name;
                             // callbacks require their own reader as store._intern.jsonMapper.reader cannot be used.
                             // This jsonMapper is used in various threads caused by .ConfigureAwait(false) continuations
-                            // and ProcessEvent() can be called concurrently from the "main" thread.
+                            // and ProcessEvent() can be called concurrently from the 'main' thread.
                             var reader = mapper.reader;
                             if (client._intern.subscriptions.TryGetValue(name, out MessageSubscriber subscriber)) {
                                 subscriber.InvokeCallbacks(reader, name, message.value);    

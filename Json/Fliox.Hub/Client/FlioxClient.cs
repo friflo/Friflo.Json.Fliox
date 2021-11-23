@@ -364,7 +364,7 @@ namespace Friflo.Json.Fliox.Hub.Client
 
         /// <summary>
         /// Returning current <see cref="ClientIntern.syncStore"/> as <see cref="syncStore"/> enables request handling
-        /// in a worker thread while calling <see cref="SyncStore"/> methods from "main" thread.
+        /// in a worker thread while calling <see cref="SyncStore"/> methods from 'main' thread.
         /// 
         /// If store has <see cref="ClientIntern.subscriptionProcessor"/> acknowledge received events to clear
         /// <see cref="Host.Event.EventSubscriber.sentEvents"/>. This avoids resending already received events on reconnect. 
