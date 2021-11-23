@@ -487,7 +487,11 @@ class App {
         entityExplorer.appendChild(ulIds);
     }
 
-    entityIdentity = {}
+    entityIdentity = {
+        database:   undefined,
+        container:  undefined,
+        entityId:   undefined
+    }
 
     async loadEntity (database, container, id) {
         this.entityIdentity = {
