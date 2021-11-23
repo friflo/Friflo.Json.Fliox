@@ -28,7 +28,7 @@ namespace Friflo.Json.Fliox.Hub.DB.Cluster
         public const string Name = "cluster";
         
         public ClusterDB (FlioxHub hub, string name = null, DbOpt opt = null)
-            : base (new ClusterHandler(hub), opt)
+            : base (new ClusterHandler(), opt)
         {
             this.hub        = hub  ?? throw new ArgumentNullException(nameof(hub));
             this.name       = name ?? Name;
