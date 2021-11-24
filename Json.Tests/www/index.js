@@ -805,6 +805,7 @@ class App {
                 lineNumbers:    "off",
                 minimap:        { enabled: false }
             });
+            this.commandValueEditor.setValue("{}");
         }
         this.commandResponseModel = monaco.editor.createModel(null, "json");
 
