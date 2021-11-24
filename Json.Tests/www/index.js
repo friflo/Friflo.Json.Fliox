@@ -460,12 +460,28 @@ class App {
     }
 
     listCommands (database, commands) {
-        this.entityModel.setValue("");
+        commandValueContainer.style.display = "";
+        this.layoutEditors();
+        this.entityModel?.setValue("");
         readEntitiesDB.innerHTML = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
         readEntities.innerHTML   = ` commands`;
         entityId.innerHTML      = "";
+        entityType.innerText    = "";
 
         var ulCommands = document.createElement('ul');
+        ulCommands.onclick = (ev) => {
+            var path = ev.composedPath();
+            const selectedElement = path[0];
+            // in case of a multiline text selection selectedElement is the parent
+            if (selectedElement.tagName.toLowerCase() != "li")
+                return;
+            if (this.selectedEntity) this.selectedEntity.classList.remove("selected");
+            this.selectedEntity = selectedElement;
+
+            const command = this.selectedEntity.innerText;
+            entityId.innerHTML    = `<a title="command" href="./rest/${database}?command=${command}" target="_blank" rel="noopener noreferrer">${command}</a>`;
+            this.selectedEntity.classList = "selected";
+        }
         for (const command in commands) {
             var liCommand = document.createElement('li');
             liCommand.innerText = command;
@@ -476,6 +492,8 @@ class App {
     }
 
     async loadEntities (database, container, schema) {
+        commandValueContainer.style.display = "none";
+        this.layoutEditors();
         this.setEntityValue(database, container, "");
         const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
         if (schema) {
@@ -674,10 +692,11 @@ class App {
     entityEditor;
     commandValueEditor;
 
-    requestContainer  = document.getElementById("requestContainer");
-    responseContainer = document.getElementById("responseContainer")
-    commandValue      = document.getElementById("commandValue");
-    entityContainer   = document.getElementById("entityContainer");
+    requestContainer        = document.getElementById("requestContainer");
+    responseContainer       = document.getElementById("responseContainer")
+    commandValueContainer   = document.getElementById("commandValueContainer");
+    commandValue            = document.getElementById("commandValue");
+    entityContainer         = document.getElementById("entityContainer");
 
     allMonacoSchemas = [];
 
