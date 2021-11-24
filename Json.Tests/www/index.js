@@ -748,13 +748,15 @@ class App {
     }
 
     addTableResize () {
-        var thElm;
+        var tdElm;
         var startOffset;
         const selector = document.querySelectorAll("table td");
 
-        Array.prototype.forEach.call(selector, (th) =>
+        Array.prototype.forEach.call(selector, (td) =>
         {
-            th.style.position = 'relative';
+            if (!td.classList.contains("vbar"))
+                return;
+            td.style.position = 'relative';
 
             var grip = document.createElement('div');
             grip.innerHTML = "&nbsp;";
@@ -766,18 +768,19 @@ class App {
             grip.style.cursor = 'col-resize';
             grip.style.userSelect = 'none'; // disable text selection while dragging
             grip.addEventListener('mousedown', (e) => {
-                thElm = th;
-                startOffset = th.offsetWidth - e.pageX;
+                var previous = td.previousElementSibling;
+                tdElm = previous;
+                startOffset = previous.offsetWidth - e.pageX;
             });
 
-            th.appendChild(grip);
+            td.appendChild(grip);
         });
 
         document.addEventListener('mousemove', (e) => {
-        if (thElm) {
+        if (tdElm) {
             var width = startOffset + e.pageX + 'px'
-            thElm.style.width = width;
-            var elem = thElm.children[0];
+            tdElm.style.width = width;
+            var elem = tdElm.children[0];
             elem.style.width    = width;
             this.layoutEditors();
             // console.log("---", width)
@@ -785,7 +788,7 @@ class App {
         });
 
         document.addEventListener('mouseup', () => {
-            thElm = undefined;
+            tdElm = undefined;
         });
     }
 }
