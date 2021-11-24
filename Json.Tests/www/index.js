@@ -583,12 +583,13 @@ class App {
     }
 
     async executeCommand() {
+        var value = this.commandValueEditor.getValue();
         const database = this.entityIdentity.database;
         const command  = this.entityIdentity.command;
-        var response = await this.restRequest("POST", "null", database, null, null, `command=${command}`);
+        var response = await this.restRequest("POST", value, database, null, null, `command=${command}`);
         var body = await response.text();
-        // this.entityEditor.setModel (null);
-        // this.entityEditor.setValue(body, "json");
+        this.entityEditor.setModel(this.commandResponseModel);
+        this.commandResponseModel.setValue(body);
     }
 
     async saveEntity () {
@@ -711,6 +712,7 @@ class App {
 
     requestModel;
     responseModel;
+    commandResponseModel;
 
     requestEditor;
     responseEditor;
@@ -796,12 +798,16 @@ class App {
         }
         // --- create command value editor
         {
+            this.commandValueModel   = monaco.editor.createModel(null, "json");
             this.commandValueEditor = monaco.editor.create(commandValue, { });
+            this.commandValueEditor.setModel(this.commandValueModel);
             this.commandValueEditor.updateOptions({
                 lineNumbers:    "off",
                 minimap:        { enabled: false }
             });
         }
+        this.commandResponseModel = monaco.editor.createModel(null, "json");
+
 
         window.onresize = () => {
             this.layoutEditors();        
