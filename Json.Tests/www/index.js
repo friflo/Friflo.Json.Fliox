@@ -472,7 +472,7 @@ class App {
         this.layoutEditors();
         this.entityModel?.setValue("");
         readEntitiesDB.innerHTML = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
-        readEntities.innerHTML   = ` commands`;
+        readEntities.innerHTML   = ` <i>commands</i>`;
         entityId.innerHTML      = "";
         entityType.innerText    = "";
 
