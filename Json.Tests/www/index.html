@@ -22,20 +22,21 @@
     <style>
         :root {
             --selected-color: #0000ff18;
-            --tab-color:    #f1f1f1;
+            --tab-color:    #e8e8e8;
             --tab-hover:    #e0e0e0;
-            --tab-selected: #ffffff;
             --tab-border:   #ccc;
             --editor-border: #e8e8e8;
-            --vbar-colored:  #f8f8f8;
+            --background:  #f9f9f9;
+            --background2: #ffffff;
         }
         [data-theme="dark"] {
             --selected-color: #0000ff80;
             --tab-color:    #404040;
             --tab-hover:    #606060;
-            --tab-selected: #000000;
             --tab-border:   #444;
             --editor-border:#000;
+            --background:  #000;
+            --background2: #1e1e1e;
         }
         .dropbtn {
             background-color: lightgrey;
@@ -91,12 +92,10 @@
         option                      {  color: black; }
 
         .vbar           { width: 4px; padding: 0px; }
-        .vbar-colored   { border-top: 1px solid var(--editor-border); border-bottom: 1px solid var(--editor-border); background-color: var(--vbar-colored);}
-        .editor-cell    { border: 1px solid var(--editor-border); }
 
         .tab            { cursor: pointer; background-color: var(--tab-color); border: 1px solid var(--tab-border); margin: 0px; padding: 5px 10px; }
-        .tab:hover      { background-color: var(--tab-hover);     border-bottom: 1px solid #ffffff00; }
-        .tab.selected   { background-color: var(--tab-selected);  border-bottom: 1px solid #ffffff00; }
+        .tab:hover      { background-color: var(--tab-hover);   border-bottom: 1px solid #ffffff00; }
+        .tab.selected   { background-color: var(--background);  border-bottom: 1px solid #ffffff00; }
         .tabContent     { display: none; border-top: none; }
 
         .catalogs > ul              { padding-left: 0px; }
@@ -141,7 +140,7 @@
     </script>
 </head>
 
-<body style="font-family: sans-serif">
+<body style="font-family: sans-serif; background-color: var(--background);">
   <table class="header" style="width: max-content;">
     <tr>
       <td><a href="https://github.com/friflo/Friflo.Json.Fliox/blob/main/Json.Tests/Main/Program.cs" target='_blank' rel='noopener'><img src='/Json-Fliox-53x43.svg' alt="friflo JSON Fliox"></a></td>
@@ -229,7 +228,7 @@
       <td class="editor-cell" style="width: 410px; border-right: 0px;">
         <div id="requestContainer" style="height: 500px; "></div>
       </td>
-      <td class="vbar-colored"></td>
+      <td></td>
       <td class="editor-cell" style="display: grid; border-left: 0px;">
         <div id="responseContainer" style="min-width:100px;  height: 500px;"></div>
       </td>
@@ -282,16 +281,16 @@
         </td>
       </tr>
       <tr>
-        <td class="editor-cell" style="width: 130px; border-right: 0px;">
+        <td class="editor-cell" style="width: 130px; border-right: 0px; background-color: var(--background2);">
           <div class="catalogs" id="catalogExplorer" style="width: 130px; display: block; overflow: auto; white-space:nowrap; height: 500px;">
             <!-- todo: [How To Create a Tree View] https://www.w3schools.com/howto/howto_js_treeview.asp -->
           </div>
         </td>
-        <td class="vbar-colored";"></td>
-        <td class="editor-cell" style="width: 200px; border-left: 0px; border-right: 0px;">
+        <td></td>
+        <td class="editor-cell" style="width: 200px; border-left: 0px; border-right: 0px; background-color: var(--background2);">
           <div class="entities" id="entityExplorer"  style="width: 200px; display: block; overflow: auto; white-space:nowrap; height: 500px;"></div>
         </td>
-        <td class="vbar-colored""></td>
+        <td></td>
         <td class="editor-cell" style="display: grid; border-left: 0px;">
           <div id="entityContainer" style="min-width:100px; height: 500px;"></div>
           <small id="writeResult"></small>
