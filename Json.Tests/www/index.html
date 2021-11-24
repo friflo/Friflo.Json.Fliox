@@ -26,6 +26,8 @@
             --tab-hover:    #e0e0e0;
             --tab-selected: #ffffff;
             --tab-border:   #ccc;
+            --editor-border: #e8e8e8;
+            --vbar-colored:  #f8f8f8;
         }
         [data-theme="dark"] {
             --selected-color: #0000ff80;
@@ -33,6 +35,7 @@
             --tab-hover:    #606060;
             --tab-selected: #000000;
             --tab-border:   #444;
+            --editor-border:#000;
         }
         .dropbtn {
             background-color: lightgrey;
@@ -80,11 +83,16 @@
         table.header td { padding-right:    10px; }
         li              { font-size:        14px;}
         sup             { font-size: 10px; color: rgb(143, 143, 255);}
-        ul              { margin: 5px; padding-left: 15px; } 
+        ul              { margin: 5px; padding-left: 15px; }
+        td              { padding: 0px; }
         /* [html - How do I make a placeholder for a 'select' box? - Stack Overflow] https://stackoverflow.com/questions/5805059/how-do-i-make-a-placeholder-for-a-select-box */
         select:required:invalid     {  color: gray;  }
         option[value=""][disabled]  {  display: none;  }
         option                      {  color: black; }
+
+        .vbar           { width: 4px; padding: 0px; }
+        .vbar-colored   { border-top: 1px solid var(--editor-border); border-bottom: 1px solid var(--editor-border); background-color: var(--vbar-colored);}
+        .editor-cell    { border: 1px solid var(--editor-border); }
 
         .tab            { cursor: pointer; background-color: var(--tab-color); border: 1px solid var(--tab-border); margin: 0px; padding: 5px 10px; }
         .tab:hover      { background-color: var(--tab-hover);     border-bottom: 1px solid #ffffff00; }
@@ -203,11 +211,12 @@
   </span>
   <br>
 
-  <table width="100%">
+  <table width="100%" style="border-spacing: 0px;">
     <tr>
       <td>
         <small style="opacity: 0.7;">Request</small>
       </td>
+      <td class="vbar"></td>
       <td class="nobreak">
         <small style="opacity: 0.7;">Response</small> <small id="response-state"></small>
         <span style="float:right;">
@@ -217,15 +226,23 @@
       </td>
     </tr>
     <tr>
-      <td style="width: 410px;">
-        <div id="requestContainer" style="height: 500px; border: 1px solid grey"></div>
+      <td class="editor-cell" style="width: 410px; border-right: 0px;">
+        <div id="requestContainer" style="height: 500px; "></div>
+      </td>
+      <td class="vbar-colored"></td>
+      <td class="editor-cell" style="display: grid; border-left: 0px;">
+        <div id="responseContainer" style="min-width:100px;  height: 500px;"></div>
+      </td>
+    </tr>
+    <tr>
+      <td>
         <code style="font-weight: bold">"req": <div id="req" class="inline">- </div></code>,
         <code style="font-weight: bold">"ack": <div id="ack" class="inline">- </div></code>,
         <code style="font-weight: bold">"clt": <div id="clt" class="inline">- </div></code><br>
         <small style="opacity: 0.5;">added by client on: WebSocket send</small>
       </td>
-      <td style="display: grid;">
-        <div id="responseContainer" style="min-width:100px; height: 500px; border: 1px solid grey"></div>
+      <td class="vbar"></td>
+      <td>
         <small style="opacity: 0.5;">all messages / events: DevTools · Network · ws-* · Messages</small>
       </td>
     </tr>
@@ -233,13 +250,15 @@
   </div>
 
   <div id="explorer" class="tabContent">
-    <table width="100%">
+    <table width="100%" style="border-spacing: 0px;"">
       <tr>
         <td style="overflow:auto;white-space:nowrap">
         </td>
+        <td class="vbar"></td>
         <td style="overflow:auto;white-space:nowrap">
           <small id="catalogSchema"><span style="opacity: 0.4;">schema</span></small>
         </td>
+        <td class="vbar"></td>
         <td style="overflow:auto;white-space:nowrap">
           <small id="entityType" style="min-width: 100px; display:inline-block;"><span style="opacity: 0.4;">entity type</span></small>
           <button type="button" onclick="app.deleteEntity()" title="Delete">Delete</button>
@@ -251,26 +270,30 @@
         <td>
           <small><a href="./rest" target="_blank" rel="noopener noreferrer">Catalogs</a></small>
         </td>
+        <td class="vbar"></td>
         <td style="overflow:auto;white-space:nowrap">
           <small>
             <span id="readEntitiesDB"><span style="opacity: 0.4;">database</span></span>/<span id="readEntities"><span style="opacity: 0.4;">container</span></span>/
           </small>
         </td>
+        <td class="vbar"></td>
         <td style="overflow:auto;white-space:nowrap">          
           <small id="entityId"></small>
         </td>
       </tr>
       <tr>
-        <td style="width: 130px;">
-          <div class="catalogs" id="catalogExplorer" style="width: 130px; display: block; overflow: auto; white-space:nowrap; height: 500px; border: 1px solid grey">
+        <td class="editor-cell" style="width: 130px; border-right: 0px;">
+          <div class="catalogs" id="catalogExplorer" style="width: 130px; display: block; overflow: auto; white-space:nowrap; height: 500px;">
             <!-- todo: [How To Create a Tree View] https://www.w3schools.com/howto/howto_js_treeview.asp -->
           </div>
         </td>
-        <td style="width: 200px;">
-          <div class="entities" id="entityExplorer"  style="width: 200px; display: block; overflow: auto; white-space:nowrap; height: 500px; border: 1px solid grey"></div>
+        <td class="vbar-colored";"></td>
+        <td class="editor-cell" style="width: 200px; border-left: 0px; border-right: 0px;">
+          <div class="entities" id="entityExplorer"  style="width: 200px; display: block; overflow: auto; white-space:nowrap; height: 500px;"></div>
         </td>
-        <td style="display: grid;">
-          <div id="entityContainer" style="min-width:100px; height: 500px; border: 1px solid grey"></div>
+        <td class="vbar-colored""></td>
+        <td class="editor-cell" style="display: grid; border-left: 0px;">
+          <div id="entityContainer" style="min-width:100px; height: 500px;"></div>
           <small id="writeResult"></small>
         </td>
       </tr>
