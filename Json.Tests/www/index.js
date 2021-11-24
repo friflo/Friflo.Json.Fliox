@@ -371,8 +371,12 @@ class App {
         var ulCatalogs = document.createElement('ul');
         ulCatalogs.onclick = (ev) => {
             var path = ev.composedPath();
-            var style = path[1].childNodes[1].style;
-            style.display = style.display == "none" ? "" : "none";
+            const database = path[0].innerText;
+            var schema = schemas.find(s => s.id == database);
+            var service = schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName + "Service"];
+            this.listCommands(database, service.commands);
+            // var style = path[1].childNodes[1].style;
+            // style.display = style.display == "none" ? "" : "none";
         }
         for (var catalog of catalogs) {
             var liCatalog = document.createElement('li');
@@ -455,6 +459,22 @@ class App {
         return ref.substring(lastSlashPos + 1);
     }
 
+    listCommands (database, commands) {
+        this.entityModel.setValue("");
+        readEntitiesDB.innerHTML = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
+        readEntities.innerHTML   = ` commands`;
+        entityId.innerHTML      = "";
+
+        var ulCommands = document.createElement('ul');
+        for (const command in commands) {
+            var liCommand = document.createElement('li');
+            liCommand.innerText = command;
+            ulCommands.append(liCommand);
+        }
+        entityExplorer.innerText = ""
+        entityExplorer.appendChild(ulCommands);
+    }
+
     async loadEntities (database, container, schema) {
         this.setEntityValue(database, container, "");
         const tasks =  [{ "task": "query", "container": container, "filter":{ "op": "true" }}];
@@ -463,8 +483,8 @@ class App {
             entityType.innerText  = entityLabel;
             catalogSchema.innerHTML  = `<a title="database schema" href="./rest/${database}?command=CatalogSchema" target="_blank" rel="noopener noreferrer">${schema.schemaName}</a>`;
         }
-        readEntitiesDB.innerHTML = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
-        var containerLink        = `<a title="container" href="./rest/${database}/${container}" target="_blank" rel="noopener noreferrer">${container}</a>`;
+        readEntitiesDB.innerHTML = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}/</a>`;
+        var containerLink        = `<a title="container" href="./rest/${database}/${container}" target="_blank" rel="noopener noreferrer">${container}/</a>`;
         readEntities.innerHTML   = `${containerLink} <span class="spinner"></span>`;
         const response = await this.postRequestTasks(database, tasks, container);
 
