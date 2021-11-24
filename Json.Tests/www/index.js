@@ -292,10 +292,11 @@ class App {
         return await this.postRequest(request, `${database}/${tag}`);
     }
 
-    async restRequest (method, body, database, container, id) {
+    async restRequest (method, body, database, container, id, query) {
         let path = `./rest/${database}`;
         if (container)  path = `${path}/${container}`;
         if (id)         path = `${path}/${id}`;
+        if (query)      path = `${path}?${query}`;
         
         let init = {        
             method:  method,
@@ -373,6 +374,7 @@ class App {
             var path = ev.composedPath();
             const database = path[0].innerText;
             var schema = schemas.find(s => s.id == database);
+            catalogSchema.innerHTML  = this.schemaLink(database, schema)
             var service = schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName + "Service"];
             this.listCommands(database, service.commands);
             // var style = path[1].childNodes[1].style;
@@ -459,7 +461,13 @@ class App {
         return ref.substring(lastSlashPos + 1);
     }
 
+    showExplorerButtons(show) {
+        document.getElementById("explorerEntityButtons") .style.display = show == "entity" ? "" : "none";
+        document.getElementById("explorerCommandButtons").style.display = show == "command" ? "" : "none";
+    }
+
     listCommands (database, commands) {
+        this.showExplorerButtons("command");
         commandValueContainer.style.display = "";
         this.layoutEditors();
         this.entityModel?.setValue("");
@@ -481,6 +489,8 @@ class App {
             const command = this.selectedEntity.innerText;
             entityId.innerHTML    = `<a title="command" href="./rest/${database}?command=${command}" target="_blank" rel="noopener noreferrer">${command}</a>`;
             this.selectedEntity.classList = "selected";
+            this.entityIdentity.command = command;
+            this.entityIdentity.database = database;
         }
         for (const command in commands) {
             var liCommand = document.createElement('li');
@@ -491,7 +501,12 @@ class App {
         entityExplorer.appendChild(ulCommands);
     }
 
+    schemaLink(database, schema) {
+        return `<a title="database schema" href="./rest/${database}?command=CatalogSchema" target="_blank" rel="noopener noreferrer">${schema.schemaName}</a>`;
+    }
+
     async loadEntities (database, container, schema) {
+        this.showExplorerButtons("entity");
         commandValueContainer.style.display = "none";
         this.layoutEditors();
         this.setEntityValue(database, container, "");
@@ -499,7 +514,7 @@ class App {
         if (schema) {
             const entityLabel = this.getEntityType (schema, container);            
             entityType.innerText  = entityLabel;
-            catalogSchema.innerHTML  = `<a title="database schema" href="./rest/${database}?command=CatalogSchema" target="_blank" rel="noopener noreferrer">${schema.schemaName}</a>`;
+            catalogSchema.innerHTML  = this.schemaLink(database, schema)
         }
         readEntitiesDB.innerHTML = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}/</a>`;
         var containerLink        = `<a title="container" href="./rest/${database}/${container}" target="_blank" rel="noopener noreferrer">${container}/</a>`;
@@ -543,7 +558,8 @@ class App {
     entityIdentity = {
         database:   undefined,
         container:  undefined,
-        entityId:   undefined
+        entityId:   undefined,
+        command:    undefined
     }
 
     async loadEntity (database, container, id) {
@@ -564,6 +580,15 @@ class App {
         }
         // console.log(entityJson);
         this.setEntityValue(database, container, content);
+    }
+
+    async executeCommand() {
+        const database = this.entityIdentity.database;
+        const command  = this.entityIdentity.command;
+        var response = await this.restRequest("POST", "null", database, null, null, `command=${command}`);
+        var body = await response.text();
+        // this.entityEditor.setModel (null);
+        // this.entityEditor.setValue(body, "json");
     }
 
     async saveEntity () {

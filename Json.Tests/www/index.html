@@ -260,8 +260,13 @@
         <td class="vbar2"></td>
         <td style="overflow:auto;white-space:nowrap">
           <small id="entityType" style="min-width: 100px; display:inline-block;"><span style="opacity: 0.4;">entity type</span></small>
-          <button type="button" onclick="app.deleteEntity()" title="Delete">Delete</button>
-          <button type="button" onclick="app.saveEntity()" title="Save (Ctrl+S)">Save</button>
+          <span id="explorerEntityButtons">
+            <button type="button" onclick="app.deleteEntity()" title="Delete">Delete</button>
+            <button type="button" onclick="app.saveEntity()" title="Save (Ctrl+S)">Save</button>
+          </span>
+          <span style="display: none;" id="explorerCommandButtons">
+            <button type="button" onclick="app.executeCommand()" title="execute command">Execute</button>
+          </span>
         </td>
       </tr>
 
