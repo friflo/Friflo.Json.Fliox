@@ -424,30 +424,37 @@ class App {
         for (var catalogSchema of catalogSchemas) {
             var jsonSchemas     = catalogSchema.jsonSchemas;
             var database        = catalogSchema.id;
-            var dbSchema        = jsonSchemas[catalogSchema.schemaPath];
-            var dbType          = dbSchema.definitions[catalogSchema.schemaName];
-            var containers      = dbType.properties;
-            var typeMap    = {};
-            for (var containerName in containers) {
-                var container   = containers[containerName];
-                var type        = container.additionalProperties.$ref;
-                var hashPos     = type.indexOf("#");
-                type = type.substring(2, hashPos);
-                typeMap[type] = containerName;
-            }
 
-            for (var schemaName in jsonSchemas) {
-                var schema      = jsonSchemas[schemaName];
-                var url         = database + "/" + schemaName;
+            for (var schemaPath in jsonSchemas) {
+                var schema      = jsonSchemas[schemaPath];
+                var url         = database + "/" + schemaPath;
                 var schemaEntry = {
                     uri:   "http://" + url,
                     schema: schema            
                 }
                 monacoSchemas.push(schemaEntry);
-                var container = typeMap[schemaName];
-                if (container) {
-                    var url = `entity://${database}.${container}.json`; // e.g. 'entity://main_db.orders.json'
-                    schemaEntry.fileMatch = [url]; // associate with our model
+                if (schemaPath != catalogSchema.schemaPath)
+                    continue;
+                var dbSchema        = jsonSchemas[catalogSchema.schemaPath];
+                var dbType          = dbSchema.definitions[catalogSchema.schemaName];
+                var containers      = dbType.properties;
+                // create schema for every container using its type in "additionalProperties"
+                // e.g. { "$ref": "./Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order.json#/definitions/Order" }
+                for (var containerName in containers) {
+                    var container   = containers[containerName];
+                    var contSchema  = container.additionalProperties;
+
+                    // e.g. http://main_db/Friflo.Json.Tests.Common.UnitTest.Fliox.Client.Order.json#/definitions/Order
+                    var uri = "http://" + database + contSchema.$ref.substring(1);
+                    
+                    // e.g. entity://main_db.orders.json
+                    var url = `entity://${database}.${containerName}.json`;
+                    var schemaEntry = {                        
+                        uri:    uri,
+                        schema: contSchema,
+                        fileMatch: [url] // associate with our model
+                    }
+                    monacoSchemas.push(schemaEntry);
                 }
             }
         }
