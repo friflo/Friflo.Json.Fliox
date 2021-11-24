@@ -672,9 +672,11 @@ class App {
     requestEditor;
     responseEditor;
     entityEditor;
+    commandValueEditor;
 
     requestContainer  = document.getElementById("requestContainer");
     responseContainer = document.getElementById("responseContainer")
+    commandValue      = document.getElementById("commandValue");
     entityContainer   = document.getElementById("entityContainer");
 
     allMonacoSchemas = [];
@@ -748,6 +750,14 @@ class App {
                 minimap:        { enabled: false }
             });
         }
+        // --- create command value editor
+        {
+            this.commandValueEditor = monaco.editor.create(commandValue, { });
+            this.commandValueEditor.updateOptions({
+                lineNumbers:    "off",
+                minimap:        { enabled: false }
+            });
+        }
 
         window.onresize = () => {
             this.layoutEditors();        
@@ -762,6 +772,9 @@ class App {
                 this.responseEditor?.layout();
                 break;
             case "explorer":
+                commandValue.children[0].style.width = "100px"; // required to shrink width
+                entityContainer.children[0].style.width = "100px"; // required to shrink width
+                this.commandValueEditor?.layout();
                 this.entityEditor?.layout();
                 break;
         }
