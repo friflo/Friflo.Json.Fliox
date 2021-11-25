@@ -531,8 +531,12 @@ class App {
     }
 
     showExplorerButtons(show) {
-        document.getElementById("explorerEntityButtons") .style.display = show == "entity" ? "" : "none";
-        document.getElementById("explorerCommandButtons").style.display = show == "command" ? "" : "none";
+        var displayEntity  = show == "entity" ? "" : "none";
+        var displayCommand = show == "command" ? "" : "none";
+        document.getElementById("explorerButtonsEntity") .style.display = displayEntity;        
+        document.getElementById("explorerButtonsCommand").style.display = displayCommand;
+        document.getElementById("editorButtonsEntity") .style.display = displayEntity;        
+        document.getElementById("editorButtonsCommand").style.display = displayCommand;
     }
 
     listCommands (database, commands) {
@@ -543,8 +547,7 @@ class App {
         this.entityModel?.setValue("");
         readEntitiesDB.innerHTML = `<a title="database" href="./rest/${database}" target="_blank" rel="noopener noreferrer">${database}</a>`;
         readEntities.innerHTML   = ` <i style="opacity: 0.5;">commands</i>`;
-        entityId.innerHTML      = "";
-        entityType.innerText    = "";
+        commandId.innerHTML      = ""
 
         var ulCommands = document.createElement('ul');
         ulCommands.onclick = (ev) => {
@@ -557,7 +560,7 @@ class App {
             this.selectedEntity = selectedElement;
 
             const command = this.selectedEntity.innerText;
-            entityId.innerHTML    = `<a title="command" href="./rest/${database}?command=${command}" target="_blank" rel="noopener noreferrer">${command}</a>`;
+            commandId.innerHTML    = `<a title="command" href="./rest/${database}?command=${command}" target="_blank" rel="noopener noreferrer">${command}()</a>`;
             this.selectedEntity.classList = "selected";
             this.entityIdentity.command = command;
             this.entityIdentity.database = database;
@@ -616,7 +619,6 @@ class App {
 
             const entityId = this.selectedEntity.innerText;
             this.selectedEntity.classList = "selected";
-            // console.log(entityId);
             this.loadEntity(database, container, entityId);
         }
         for (var id of ids) {

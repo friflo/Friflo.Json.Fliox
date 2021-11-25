@@ -263,14 +263,15 @@
         </td>
         <td class="vbar2"></td>
         <td style="overflow:auto;white-space:nowrap">
-          <small id="entityType" style="min-width: 100px; display:inline-block;"><span style="opacity: 0.4;">entity type</span></small>
-          <span id="explorerEntityButtons">
+          <span id="explorerButtonsEntity">
             <button type="button" onclick="app.deleteEntity()" title="Delete entity via a DELETE request">Delete</button>
             <button type="button" onclick="app.saveEntity()" title="Save entity via a POST request (Ctrl+S)">Save</button>
+            &nbsp;&nbsp;
+            <small id="entityType"><span style="opacity: 0.4;">entity type</span></small>
           </span>
-          <span style="display: none;" id="explorerCommandButtons">
+          <span style="display: none;" id="explorerButtonsCommand">
             <button type="button" onclick="app.executeCommand()" title="Send command via a POST request (Ctrl+Alt+P)"">POST</button>
-          </span>
+        </span>
         </td>
       </tr>
 
@@ -285,8 +286,13 @@
           </small>
         </td>
         <td class="vbar2"></td>
-        <td style="overflow:auto;white-space:nowrap">          
-          <small id="entityId"></small>
+        <td style="overflow:auto;white-space:nowrap">
+          <span id="editorButtonsEntity">
+            <small id="entityId">entity id</small>
+          </span>
+          <span id="editorButtonsCommand" style="display: none;" >
+            <small id="commandId">command</small>
+          </span>
         </td>
       </tr>
       <tr>
