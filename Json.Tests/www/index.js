@@ -539,6 +539,29 @@ class App {
         document.getElementById("editorButtonsCommand").style.display = displayCommand;
     }
 
+    getTypeLabel(type) {
+        if (type.type) {
+            return type.type;
+        }
+        if (type.$ref) {
+            var lastSlash = type.$ref.lastIndexOf("/");
+            return type.$ref.substring(lastSlash + 1);
+        }        
+        var result = JSON.stringify(type);
+        return result = result == "{}" ? "any" : result;
+    }
+
+    getCommandLabel(database, command, signature) {
+        /* var dbSchema = schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName];
+        var ref = dbSchema.properties[container].additionalProperties["$ref"];
+        var lastSlashPos = ref.lastIndexOf('/');
+        return ref.substring(lastSlashPos + 1); */
+        var param  = this.getTypeLabel(signature.command[0]);
+        var result = this.getTypeLabel(signature.command[1]);
+        var name   = `${command}(${param}) : ${result}`;
+        return `<a title="command" href="./rest/${database}?command=${command}" target="_blank" rel="noopener noreferrer">${name}</a>`;
+    }
+
     listCommands (database, commands) {
         this.showExplorerButtons("command");
         commandValueContainer.style.display = "";
@@ -560,10 +583,11 @@ class App {
             this.selectedEntity = selectedElement;
 
             const command = this.selectedEntity.innerText;
-            commandId.innerHTML    = `<a title="command" href="./rest/${database}?command=${command}" target="_blank" rel="noopener noreferrer">${command}()</a>`;
-            this.selectedEntity.classList = "selected";
-            this.entityIdentity.command = command;
-            this.entityIdentity.database = database;
+            const label = this.getCommandLabel(database, command, commands[command]);
+            commandId.innerHTML             = label;
+            this.selectedEntity.classList   = "selected";
+            this.entityIdentity.command     = command;
+            this.entityIdentity.database    = database;
             this.setCommandParam (database, command, "{}");
             this.setCommandResult(database, command);
         }
