@@ -205,6 +205,10 @@ class App {
                     this.saveEntity()
                     event.preventDefault();
                 }
+                if (event.code == 'KeyP' && event.ctrlKey && event.altKey) {
+                    this.executeCommand();
+                    event.preventDefault();
+                }
                 break;
         }
         // console.log(`KeyboardEvent: code='${event.code}', ctrl:${event.ctrlKey}, alt:${event.altKey}`);
@@ -431,19 +435,22 @@ class App {
                 var schema      = jsonSchemas[schemaPath];
                 var uri         = "http://" + database + "/" + schemaPath;
                 var schemaEntry = {
-                    uri:    uri,
-                    schema: schema            
+                    uri:        uri,
+                    schema:     schema,
+                    fileMatch:  [] // can have multiple in case schema is used by multiple editor models
                 }
                 schemaMap[uri] = schemaEntry;
                 const definitions = schema.definitions;
                 for (var definitionName in definitions) {
-                    var definition  = this.getResolvedType(definitions[definitionName], schemaPath);
-                    var uri         = "http://" + database + "/" + schemaPath + "#/definitions/" + definitionName;
-                    var schemaEntry = {
-                        uri:    uri,
-                        schema: definition            
+                    var path    = "/" + schemaPath + "#/definitions/" + definitionName;
+                    var uri     = "http://" + database + path;
+                    // add reference for definitionName pointing to definition in current schemaPath
+                    var definitionEntry = {
+                        uri:        uri,
+                        schema:     { $ref: "." + path },
+                        fileMatch:  [] // can have multiple in case schema is used by multiple editor models
                     }
-                    schemaMap[uri] = schemaEntry;
+                    schemaMap[uri] = definitionEntry;
                 }
             }
             this.addFileMatcher(database, catalogSchema, schemaMap);
@@ -466,7 +473,7 @@ class App {
             var uri = "http://" + database + containerType.$ref.substring(1);
             const schema = schemaMap[uri];
             var url = `entity://${database}.${containerName.toLocaleLowerCase()}.json`;
-            schema.fileMatch = [url]; // requires a lower case string
+            schema.fileMatch.push(url); // requires a lower case string
         }
         var commandType     = dbSchema.definitions[schemaName + "Service"];
         var commands        = commandType.commands;
@@ -478,13 +485,13 @@ class App {
             if (paramType.$ref) {
                 var uri = "http://" + database + paramType.$ref.substring(1);
                 const schema = schemaMap[uri];
-                schema.fileMatch = [url]; // requires a lower case string
+                schema.fileMatch.push(url); // requires a lower case string
             } else {
                 // uri if never referenced - create an arbitrary unique uri
                 var uri = "http://" + database + "/command/param" + commandName;
                 const schema = {
                     schema:     paramType,
-                    fileMatch: [url]
+                    fileMatch:  [url]
                 };
                 schemaMap[uri] = schema;
             }
@@ -494,7 +501,7 @@ class App {
             if (resultType.$ref) {
                 var uri = "http://" + database + resultType.$ref.substring(1);
                 const schema = schemaMap[uri];
-                schema.fileMatch = [url]; // requires a lower case string
+                schema.fileMatch.push(url); // requires a lower case string
             } else {
                 // uri if never referenced - create an arbitrary unique uri
                 var uri = "http://" + database + "/command/result" + commandName;
@@ -731,8 +738,11 @@ class App {
 
     setCommandParam (database, command, value) {
         var url = `command-param://${database}.${command}.json`;
+        var isNewModel = this.entityModels[url] == undefined;
         var model = this.getModel(url)
-        model.setValue(value);
+        if (isNewModel) {
+            model.setValue(value);
+        }
         this.commandValueEditor.setModel (model);
     }
 
