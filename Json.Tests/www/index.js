@@ -472,17 +472,34 @@ class App {
         var commands        = commandType.commands;
         for (var commandName in commands) {
             const command   = commands[commandName];
+            // assign file matcher for command param
             var paramType   = this.getResolvedType(command.command[0], schemaPath);
-            var url = `command://${database}.${commandName.toLocaleLowerCase()}.json`;
+            var url = `command-param://${database}.${commandName.toLocaleLowerCase()}.json`;
             if (paramType.$ref) {
                 var uri = "http://" + database + paramType.$ref.substring(1);
                 const schema = schemaMap[uri];
                 schema.fileMatch = [url]; // requires a lower case string
             } else {
                 // uri if never referenced - create an arbitrary unique uri
-                var uri = "http://" + database + "?command=" + commandName;
+                var uri = "http://" + database + "/command/param" + commandName;
                 const schema = {
                     schema:     paramType,
+                    fileMatch: [url]
+                };
+                schemaMap[uri] = schema;
+            }
+            // assign file matcher for command result
+            var resultType   = this.getResolvedType(command.command[1], schemaPath);
+            var url = `command-result://${database}.${commandName.toLocaleLowerCase()}.json`;
+            if (resultType.$ref) {
+                var uri = "http://" + database + resultType.$ref.substring(1);
+                const schema = schemaMap[uri];
+                schema.fileMatch = [url]; // requires a lower case string
+            } else {
+                // uri if never referenced - create an arbitrary unique uri
+                var uri = "http://" + database + "/command/result" + commandName;
+                const schema = {
+                    schema:     resultType,
                     fileMatch: [url]
                 };
                 schemaMap[uri] = schema;
@@ -536,7 +553,8 @@ class App {
             this.selectedEntity.classList = "selected";
             this.entityIdentity.command = command;
             this.entityIdentity.database = database;
-            this.setCommandParam(database, command, "{}");
+            this.setCommandParam (database, command, "{}");
+            this.setCommandResult(database, command);
         }
         for (const command in commands) {
             var liCommand = document.createElement('li');
@@ -634,8 +652,7 @@ class App {
         const command  = this.entityIdentity.command;
         var response = await this.restRequest("POST", value, database, null, null, `command=${command}`);
         var body = await response.text();
-        this.entityEditor.setModel(this.commandResponseModel);
-        this.commandResponseModel.setValue(body);
+        this.entityEditor.setValue(body);
     }
 
     async saveEntity () {
@@ -713,10 +730,16 @@ class App {
     }
 
     setCommandParam (database, command, value) {
-        var url = `command://${database}.${command}.json`;
+        var url = `command-param://${database}.${command}.json`;
         var model = this.getModel(url)
         model.setValue(value);
         this.commandValueEditor.setModel (model);
+    }
+
+    setCommandResult (database, command) {
+        var url = `command-result://${database}.${command}.json`;
+        var model = this.getModel(url)
+        this.entityEditor.setModel (model);
     }
 
 
@@ -771,7 +794,6 @@ class App {
 
     requestModel;
     responseModel;
-    commandResponseModel;
 
     requestEditor;
     responseEditor;
@@ -866,8 +888,7 @@ class App {
             });
             //this.commandValueEditor.setValue("{}");
         }
-        this.commandResponseModel = monaco.editor.createModel(null, "json");
-
+        // this.commandResponseModel = monaco.editor.createModel(null, "json");
 
         window.onresize = () => {
             this.layoutEditors();        
