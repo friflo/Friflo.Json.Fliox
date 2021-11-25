@@ -376,7 +376,11 @@ class App {
         var ulCatalogs = document.createElement('ul');
         ulCatalogs.onclick = (ev) => {
             var path = ev.composedPath();
-            const database = path[0].innerText;
+            const selectedElement = path[0];
+            if (this.selectedCatalog) this.selectedCatalog.classList.remove("selected");
+            this.selectedCatalog = selectedElement;
+            this.selectedCatalog.classList = "selected";
+            const database = selectedElement.innerText;
             var schema = schemas.find(s => s.id == database);
             catalogSchema.innerHTML  = this.schemaLink(database, schema)
             var service = schema.jsonSchemas[schema.schemaPath].definitions[schema.schemaName + "Service"];
@@ -400,11 +404,10 @@ class App {
                     if (selectedElement.tagName.toLowerCase() != "div")
                         return;
                     if (this.selectedCatalog) this.selectedCatalog.classList.remove("selected");
-                    const database  = path[3].childNodes[0].innerText;
                     this.selectedCatalog = selectedElement;
                     this.selectedCatalog.classList = "selected";
                     const container = this.selectedCatalog.innerText;
-                    // console.log(database, container);
+                    const database  = path[3].childNodes[0].innerText;
                     var schema = schemas.find(s => s.id == database);
                     this.loadEntities(database, container, schema);
                 }
