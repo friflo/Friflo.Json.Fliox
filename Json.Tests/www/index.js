@@ -479,10 +479,13 @@ class App {
                 const schema = schemaMap[uri];
                 schema.fileMatch = [url]; // requires a lower case string
             } else {
-                /* const schema = {
-
-                }
-                schema.fileMatch = [url]; */
+                // uri if never referenced - create an arbitrary unique uri
+                var uri = "http://" + database + "?command=" + commandName;
+                const schema = {
+                    schema:     paramType,
+                    fileMatch: [url]
+                };
+                schemaMap[uri] = schema;
             }
         }
     }
